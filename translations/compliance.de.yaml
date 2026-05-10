@@ -1099,3 +1099,8 @@ fulfillment:
                 control: 'Wenn dieses Control geändert oder deaktiviert wird, betrifft das die folgenden Framework-Anforderungen — sie verlieren u.U. ihre Erfüllung.'
                 risk: 'Dieses Risk steht in Bezug zu den folgenden Framework-Anforderungen (über gemappte Controls bzw. data-source mapping).'
             view_modal: 'Details anzeigen'
+
+# Top-level coverage alias for templates using coverage.impact.* directly
+coverage:
+    impact:
+        view_modal: 'Details anzeigen'

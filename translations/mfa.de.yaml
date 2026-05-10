@@ -1,5 +1,7 @@
 mfa:
     title: Zwei-Faktor-Authentifizierung
+    section:
+        title: 'Multi-Faktor-Authentifizierung'
     tokens: MFA-Token
     my_tokens: 'Meine MFA-Token'
     enabled: 'MFA aktiviert'
@@ -149,6 +151,7 @@ mfa_token:
     new: 'Neues MFA-Token'
     new.subtitle: 'Neues Authentifizierungsgerät einrichten'
     section:
+        title: 'Multi-Faktor-Authentifizierung'
         basic_info: 'Grundlegende Informationen'
         settings: 'Token-Einstellungen'
     field:

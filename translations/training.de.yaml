@@ -46,6 +46,7 @@ training:
     controls: Zugeordnete Maßnahmen
     materials: Materialien
     status: Status
+    details: Details
   materials: Materialien
   feedback: Feedback
   covered_controls: Abgedeckte Maßnahmen

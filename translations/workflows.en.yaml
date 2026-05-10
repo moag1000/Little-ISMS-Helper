@@ -369,3 +369,44 @@ workflow.dashboard.alert.overdue_message: '%overdue% of %total% workflows are ov
 workflow.dashboard.alert.pending_title: '%count% pending workflow approvals'
 workflow.dashboard.alert.pending_message: 'You have %count% workflows awaiting your approval.'
 workflow.dashboard.alert.view_all: 'View all workflows'
+
+# Top-level approval namespace (templates use approval.* directly)
+approval:
+    section_title: 'For approval'
+    error:
+        clarification_empty: 'Please formulate a concrete question.'
+    success:
+        clarification_sent: 'Question sent.'
+    deadline:
+        label: 'Deadline'
+        overdue: 'overdue'
+        critical_warning: 'Critical — less than 24 hours remaining'
+    business_summary:
+        heading: 'At a glance'
+        what_is_it_label: 'What is this about?'
+        what_is_it_default: 'You are asked to approve an internal policy that affects your area of responsibility.'
+        what_expected_label: 'What is expected of you?'
+        what_expected: 'Please check whether the content makes sense and is feasible from your business perspective.'
+        what_if_reject_label: 'What happens on "Reject"?'
+        what_if_reject: 'The document goes back to the author with your justification.'
+        what_if_idle_label: 'What happens if no action?'
+        what_if_idle: 'When the deadline expires, the task is automatically escalated.'
+        what_if_idle_with_target: 'When the deadline (%deadline%) expires, the task is automatically escalated to %target%.'
+    action:
+        approve: 'Approve'
+        reject: 'Reject with justification'
+        clarify: 'Ask question'
+    score:
+        tooltip: 'Confidence score: how confident is this recommendation?'
+    approve_modal:
+        title: 'Confirm approval'
+        comment_label: 'Comment (optional)'
+        comment_placeholder: 'e.g. publication notes or implementation conditions...'
+        submit: 'Approve now'
+    clarify_modal:
+        title: 'Ask a question about this document'
+        intro: 'You can send a question to the author without rejecting or approving.'
+        question_label: 'Your question'
+        question_placeholder: 'e.g. "In section 3, it is unclear whether this also applies to external service providers."'
+        cancel: 'Cancel'
+        submit: 'Send question'

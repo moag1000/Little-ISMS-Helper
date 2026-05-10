@@ -1,6 +1,11 @@
 document:
     title: Documents
     subtitle: 'Management and storage of policies, evidence and ISMS documents'
+    status:
+        draft: 'Draft'
+        in_review: 'In review'
+        approved: 'Approved'
+        published: 'Published'
     action:
         upload: 'Upload document'
         update: Update

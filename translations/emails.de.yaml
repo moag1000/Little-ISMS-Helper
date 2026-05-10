@@ -194,3 +194,54 @@ emails:
         action_document: 'Dokumentieren Sie alle Änderungen oder Maßnahmen'
         view_risk: 'Risiko anzeigen'
         automated_notification: 'Dies ist eine automatische Benachrichtigung des Risikomanagement-Systems.'
+
+    # Auto-Reaction-Emails (event-driven)
+    auto_reaction:
+        risk:
+            subject: 'Auto-Reaktion: Risiko %title% erfordert Aufmerksamkeit'
+            title: 'Risiko-Trigger ausgelöst'
+            intro: 'Eine ereignisbasierte Auto-Reaktion hat ein Risiko in Ihrem Bereich markiert.'
+            footer: 'Diese Reaktion wurde automatisch durch das ISMS ausgelöst.'
+        ca:
+            subject: 'Auto-Reaktion: Korrekturmaßnahme erstellt'
+            title: 'Korrekturmaßnahme angelegt'
+            intro: 'Aufgrund eines Findings wurde automatisch eine Korrekturmaßnahme erstellt.'
+            target_30d: 'Zielfrist: 30 Tage ab Erstellung'
+            footer: 'Diese Korrekturmaßnahme wurde automatisch angelegt.'
+        training:
+            subject: 'Auto-Reaktion: Training erforderlich'
+            title: 'Schulungsbedarf identifiziert'
+            greeting: 'Sehr geehrte/r %name%,'
+            intro: 'Aufgrund eines Vorfalls wurde ein Schulungsbedarf für Sie identifiziert.'
+            footer: 'Diese Empfehlung wurde automatisch durch das ISMS generiert.'
+        dpia:
+            subject: 'Auto-Reaktion: DSFA-Prüfung erforderlich'
+            title: 'DSFA-Bedarf erkannt'
+            intro: 'Aufgrund einer Risiko- oder Asset-Änderung wurde ein DSFA-Bedarf erkannt.'
+            reasons: 'Gründe'
+            footer: 'Diese Empfehlung wurde automatisch durch das DSGVO-Modul generiert.'
+
+    # Document / ICT-Policy
+    document:
+        ict_policy:
+            subject: 'ICT-Risk-Policy zur Freigabe'
+            title: 'ICT-Risk-Management-Policy aktualisiert'
+            intro: 'Die ICT-Risk-Management-Policy wurde aktualisiert und benötigt Ihre Freigabe.'
+            footer: 'DORA Art. 6 - ICT-Risk-Management-Framework'
+
+    # DPIA reminder
+    dpia:
+        reminder:
+            subject: 'Erinnerung: DSFA überfällig'
+            title: 'DSFA-Erinnerung'
+            intro: 'Eine geplante Datenschutz-Folgenabschätzung ist überfällig oder steht zur Überprüfung an.'
+            footer: 'DSGVO Art. 35 - Datenschutz-Folgenabschätzung'
+
+    # Asset / Schutzbedarf-DPIA-Check
+    asset:
+        schutzbedarf_dpia_check:
+            subject: 'Schutzbedarf-Erhöhung: DSFA-Prüfung empfohlen'
+            title: 'Asset-Schutzbedarf erhöht — DSFA prüfen'
+            intro: 'Der Schutzbedarf eines Assets wurde erhöht. Bitte prüfen Sie, ob eine DSFA notwendig wird.'
+            pa_list: 'Betroffene Verarbeitungstätigkeiten'
+            footer: 'Diese Prüfung wurde automatisch ausgelöst.'

@@ -1,4 +1,5 @@
 risk:
+  not_found: 'Risk not found.'
   prefill:
     title_from_vulnerability: 'Risk derived from vulnerability: %title%'
     title_from_incident: 'Risk derived from incident: %title%'
@@ -364,6 +365,8 @@ risk:
       high: High
       medium: Medium
       low: Low
+      minor: Minor
+    risks_total: 'Risks total'
     cell_title: 'Risk Level: %level% (%count% risks)'
     likelihood:
       1: 'Very rare'

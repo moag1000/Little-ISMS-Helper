@@ -136,6 +136,63 @@ auditor:
         open: 'Open'
         overdue: 'Overdue'
 
+# Compliance Manager Dashboard
+compliance_manager:
+    title: 'Compliance Manager Dashboard'
+    subtitle: 'Frameworks, findings, audits, approval queue — Head of GRC view'
+    badge: 'GRC'
+    action:
+        ciso_view: 'CISO View'
+        compliance_wizards: 'Compliance Wizards'
+    kpi:
+        frameworks_active: 'Active Frameworks'
+        avg_compliance: 'Avg. Compliance'
+        at_risk: 'Frameworks At Risk'
+        open_findings: 'Open Findings'
+        upcoming_audits: 'Audits 90d'
+        approval_queue: 'Doc Approval Queue'
+    section:
+        coverage_heatmap: 'Coverage heatmap by framework'
+        lowest_coverage: 'Top 3 frameworks with lowest coverage'
+        findings_by_severity: 'Open findings by severity'
+        audit_schedule: 'Audit schedule (next 90 days)'
+        approval_queue: 'Document approval queue'
+        quick_actions: 'Quick actions'
+    table:
+        framework: 'Framework'
+        coverage: 'Coverage'
+        bar: 'Bar'
+        status: 'Status'
+        actions: 'Actions'
+    status:
+        ok: 'OK'
+        at_risk: 'At Risk'
+        gap: 'Gap'
+    severity:
+        critical: 'Critical'
+        high: 'High'
+        medium: 'Medium'
+        low: 'Low'
+    empty:
+        no_frameworks_title: 'No frameworks active yet'
+        no_frameworks_text: 'Activate a framework via the compliance wizard overview.'
+        no_frameworks_action: 'Choose wizard'
+        no_audits_title: 'No audits scheduled'
+        no_audits_text: 'No audits scheduled in the next 90 days.'
+        no_pending_docs_title: 'Approval queue empty'
+        no_pending_docs_text: 'No documents waiting for your approval.'
+    lowest:
+        coverage_hint: '%coverage%% coverage — prioritized for next sprint'
+        edit: 'Edit'
+    audit:
+        prefix: 'Audit #'
+    quick:
+        new_wizard: 'Start new wizard'
+        cross_mapping: 'Cross-framework mapping'
+        compare_wizards: 'Compare wizards'
+    common:
+        wizard: 'Wizard'
+
 # Board Dashboard
 board:
     title: 'Board Dashboard'

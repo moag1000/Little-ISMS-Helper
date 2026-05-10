@@ -136,6 +136,63 @@ auditor:
         open: 'Offen'
         overdue: 'Überfällig'
 
+# Compliance Manager Dashboard
+compliance_manager:
+    title: 'Compliance-Manager-Dashboard'
+    subtitle: 'Frameworks, Findings, Audits, Approval-Queue — Head-of-GRC-Sicht'
+    badge: 'GRC'
+    action:
+        ciso_view: 'CISO-Sicht'
+        compliance_wizards: 'Compliance-Wizards'
+    kpi:
+        frameworks_active: 'Frameworks aktiv'
+        avg_compliance: 'Ø Compliance'
+        at_risk: 'Frameworks at-risk'
+        open_findings: 'Open Findings'
+        upcoming_audits: 'Audits 90d'
+        approval_queue: 'Doc-Approval-Queue'
+    section:
+        coverage_heatmap: 'Coverage-Heatmap pro Framework'
+        lowest_coverage: 'Top-3 Frameworks mit niedrigster Coverage'
+        findings_by_severity: 'Open Findings nach Severity'
+        audit_schedule: 'Audit-Schedule (nächste 90 Tage)'
+        approval_queue: 'Dokument-Approval-Queue'
+        quick_actions: 'Quick-Actions'
+    table:
+        framework: 'Framework'
+        coverage: 'Coverage'
+        bar: 'Bar'
+        status: 'Status'
+        actions: 'Aktionen'
+    status:
+        ok: 'OK'
+        at_risk: 'At Risk'
+        gap: 'Lücke'
+    severity:
+        critical: 'Critical'
+        high: 'High'
+        medium: 'Medium'
+        low: 'Low'
+    empty:
+        no_frameworks_title: 'Noch keine Frameworks aktiv'
+        no_frameworks_text: 'Aktivieren Sie ein Framework über die Compliance-Wizard-Übersicht.'
+        no_frameworks_action: 'Wizard wählen'
+        no_audits_title: 'Keine Audits geplant'
+        no_audits_text: 'In den nächsten 90 Tagen ist kein Audit terminiert.'
+        no_pending_docs_title: 'Approval-Queue leer'
+        no_pending_docs_text: 'Keine Dokumente warten auf Ihre Freigabe.'
+    lowest:
+        coverage_hint: '%coverage%% Coverage — Priorisiert für nächsten Sprint'
+        edit: 'Bearbeiten'
+    audit:
+        prefix: 'Audit #'
+    quick:
+        new_wizard: 'Neuen Wizard starten'
+        cross_mapping: 'Cross-Framework-Mapping'
+        compare_wizards: 'Wizards vergleichen'
+    common:
+        wizard: 'Wizard'
+
 # Board Dashboard
 board:
     title: 'Vorstands-Dashboard'

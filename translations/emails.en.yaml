@@ -194,3 +194,54 @@ emails:
         action_document: 'Document any changes or actions'
         view_risk: 'View Risk'
         automated_notification: 'This is an automated notification from the Risk Management System.'
+
+    # Auto-Reaction emails (event-driven)
+    auto_reaction:
+        risk:
+            subject: 'Auto-reaction: risk %title% requires attention'
+            title: 'Risk trigger fired'
+            intro: 'An event-driven auto-reaction has flagged a risk in your area.'
+            footer: 'This reaction was triggered automatically by the ISMS.'
+        ca:
+            subject: 'Auto-reaction: corrective action created'
+            title: 'Corrective action created'
+            intro: 'Based on a finding, a corrective action was automatically created.'
+            target_30d: 'Target deadline: 30 days from creation'
+            footer: 'This corrective action was created automatically.'
+        training:
+            subject: 'Auto-reaction: training required'
+            title: 'Training need identified'
+            greeting: 'Dear %name%,'
+            intro: 'Based on an incident, a training need has been identified for you.'
+            footer: 'This recommendation was generated automatically by the ISMS.'
+        dpia:
+            subject: 'Auto-reaction: DPIA review required'
+            title: 'DPIA need detected'
+            intro: 'Due to a risk or asset change, a DPIA need has been detected.'
+            reasons: 'Reasons'
+            footer: 'This recommendation was generated automatically by the GDPR module.'
+
+    # Document / ICT-Policy
+    document:
+        ict_policy:
+            subject: 'ICT risk policy for approval'
+            title: 'ICT risk management policy updated'
+            intro: 'The ICT risk management policy has been updated and requires your approval.'
+            footer: 'DORA Art. 6 - ICT risk management framework'
+
+    # DPIA reminder
+    dpia:
+        reminder:
+            subject: 'Reminder: DPIA overdue'
+            title: 'DPIA reminder'
+            intro: 'A scheduled data protection impact assessment is overdue or pending review.'
+            footer: 'GDPR Art. 35 - Data Protection Impact Assessment'
+
+    # Asset / Schutzbedarf DPIA check
+    asset:
+        schutzbedarf_dpia_check:
+            subject: 'Protection level increased: DPIA review recommended'
+            title: 'Asset protection level increased — DPIA review'
+            intro: 'The protection level of an asset has been increased. Please review whether a DPIA is required.'
+            pa_list: 'Affected processing activities'
+            footer: 'This review was triggered automatically.'

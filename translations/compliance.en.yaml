@@ -1097,5 +1097,10 @@ fulfillment:
                 risk: 'This risk relates to the following framework requirements (via mapped controls or data-source mapping).'
             view_modal: 'View details'
 
+# Top-level coverage alias for templates using coverage.impact.* directly
+coverage:
+    impact:
+        view_modal: 'View details'
+
 nis2:
     article: Article

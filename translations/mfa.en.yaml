@@ -1,5 +1,7 @@
 mfa:
     title: 'Two-Factor Authentication'
+    section:
+        title: 'Multi-factor authentication'
     tokens: 'MFA Tokens'
     my_tokens: 'My MFA Tokens'
     enabled: 'MFA Enabled'
@@ -148,6 +150,7 @@ mfa_token:
     new: 'New MFA Token'
     new.subtitle: 'Set up new authentication device'
     section:
+        title: 'Multi-factor authentication'
         basic_info: 'Basic Information'
         settings: 'Token Settings'
     field:
