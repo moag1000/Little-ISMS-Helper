@@ -1,0 +1,720 @@
+policy:
+    nis2:
+        nis2_governance_framework:
+            v1:
+                title: 'Cybersecurity-Governance-Rahmenwerk (NIS2 Art. 20-21 Abs. 1)'
+                body: |-
+                    # Cybersecurity-Governance-Rahmenwerk der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Top-Level-Leitlinie | Regulatorische Grundlage: Richtlinie (EU) 2022/2555 (NIS2-RL) Art. 20 in Verbindung mit Art. 21 Abs. 1 sowie deutsches NIS2UmsuCG (Bundestags-Beschluss 13.11.2025) und BSIG §§ 8a/8b | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: jaehrlich sowie ad hoc bei wesentlicher Aenderung*
+
+                    ## 1. Zweck und Verbindlichkeit
+                    Diese Leitlinie etabliert das Cybersecurity-Governance-Rahmenwerk der {{ tenant.legal_name }} gemaess Art. 20 NIS2-RL ("Governance"). Sie ist die hoechste normative Aussage zur Cybersicherheit im Sinne von Art. 21 Abs. 1 NIS2-RL und ergaenzt die Informationssicherheits-Leitlinie nach ISO/IEC 27001:2022 Klausel 5.2 um die spezifischen Anforderungen des EU-Cybersicherheitsrechts. Die Leitlinie wird gemaess Art. 20 Abs. 1 NIS2-RL durch das Leitungsorgan ("management body") genehmigt; die Letztverantwortung ist gemaess Art. 20 Abs. 1 Satz 2 NIS2-RL nicht delegierbar. Verstoesse koennen gemaess Art. 34 NIS2-RL sowie §§ 60-62 NIS2UmsuCG mit Bussgeldern bis zu 10 Mio. EUR oder 2 Prozent des weltweiten Jahresumsatzes geahndet werden (wesentliche Einrichtungen).
+
+                    ## 2. Geltungsbereich
+                    Diese Leitlinie gilt fuer saemtliche Netz- und Informationssysteme, ICT-Dienste, Geschaeftsprozesse, Standorte und Dritte (einschliesslich Lieferanten, Auftragnehmer und Konzerntoechter) im Geltungsbereich der {{ tenant.legal_name }}.
+
+                    Geltungsbereich: {{ tenant.scope_statement }}.
+
+                    Klassifikation gemaess NIS2UmsuCG: {{ nis2.entity_class }} (wesentliche Einrichtung / wichtige Einrichtung); Sektor gemaess Anhang I/II NIS2-RL: {{ nis2.sector }}; Zustaendige Behoerde: {{ nis2.competent_authority }} (Bundesamt fuer Sicherheit in der Informationstechnik [BSI] bzw. sektorspezifische Aufsicht gemaess § 28 NIS2UmsuCG).
+
+                    ## 3. Verantwortlichkeit des Leitungsorgans
+                    Gemaess Art. 20 Abs. 1 NIS2-RL traegt das Leitungsorgan der {{ tenant.legal_name }} die nicht delegierbare Verantwortung fuer die Genehmigung dieser Leitlinie, die Umsetzung der in Art. 21 NIS2-RL verlangten Cybersicherheits-Risikomanagement-Massnahmen sowie deren Ueberwachung. Mitglieder des Leitungsorgans sind gemaess Art. 20 Abs. 2 NIS2-RL verpflichtet, regelmaessig an Cybersicherheits-Schulungen teilzunehmen, um die erforderlichen Kenntnisse und Faehigkeiten zu erwerben, damit Cybersicherheitsrisiken erkannt und Cybersicherheitspraktiken eingeschaetzt werden koennen.
+
+                    Konkretisierung: Das Leitungsorgan tagt mindestens quartalsweise zur Cybersicherheitslage (NIS2-Steuerungsbericht). Die Schulung erfolgt jaehrlich, dokumentiert ueber den Schulungsnachweis im Lernmanagement-System.
+
+                    ## 4. Rollen und Verantwortlichkeiten
+                    Die folgenden Rollen sind verbindlich besetzt und in der Anlage *Rollenmatrix* (RACI) dokumentiert:
+
+                    - **Leitungsorgan** – Letztverantwortung gemaess Art. 20 Abs. 1 NIS2-RL; jaehrliche Genehmigung dieser Leitlinie; verbindliche Teilnahme an Cybersicherheits-Schulungen gemaess Art. 20 Abs. 2 NIS2-RL.
+                    - **Informationssicherheitsbeauftragter (ISB)** – {{ roles.isb.fullName }}: operative Steuerung des ISMS, regelmaessige Berichterstattung an das Leitungsorgan, zentraler Ansprechpartner gegenueber dem BSI gemaess § 32 NIS2UmsuCG.
+                    - **Chief Information Security Officer (CISO)** – {{ roles.ciso.fullName }}: strategische Steuerung des Cybersicherheits-Programms, Verantwortung fuer die Wirksamkeitsbewertung gemaess Art. 21 Abs. 2 lit. f NIS2-RL.
+                    - **Datenschutzbeauftragter (DSB)** – {{ roles.dpo.fullName }}: Pruefung datenschutzrelevanter Aspekte der Cybersicherheits-Massnahmen gemaess Art. 38-39 DSGVO sowie Schnittstelle zu Datenschutzvorfaellen gemaess Art. 33 DSGVO.
+                    - **Internal Audit / Revision** – unabhaengige Pruefung der Wirksamkeit des Cybersicherheits-Rahmenwerks mindestens jaehrlich.
+                    - **Process Owner / Risk Owner** – Verantwortung fuer die fachliche Risikobewertung und Massnahmenumsetzung im jeweiligen Geschaeftsprozess.
+
+                    ## 5. Steuerungsorgane und Berichtswege
+                    Das Cybersecurity-Steering-Committee tagt mindestens quartalsweise unter Vorsitz des CISO und beraet das Leitungsorgan zu strategischen Cybersicherheits-Themen. Vorlagepflichtig sind: signifikante Vorfaelle (Art. 23 NIS2-RL), Ergebnisse der jaehrlichen Wirksamkeitsbewertung, Ergebnisse interner und externer Audits, wesentliche Aenderungen der Bedrohungslage sowie der Status der NIS2-konformen Umsetzung der zehn Mindestmassnahmen aus Art. 21 Abs. 2 NIS2-RL.
+
+                    ## 6. Politik der Cybersicherheit
+                    Die {{ tenant.legal_name }} verpflichtet sich zur Umsetzung der zehn technischen, betrieblichen und organisatorischen Mindestmassnahmen gemaess Art. 21 Abs. 2 lit. a-j NIS2-RL. Hierzu zaehlen insbesondere: Risikoanalyse und Informationssicherheitspolitik, Vorfallsbearbeitung, Business Continuity, Lieferkettensicherheit, Sicherheit beim Erwerb / der Entwicklung / Wartung, Wirksamkeitsbewertung, grundlegende Cyber-Hygiene und Schulung, Kryptographie und Schluesselmanagement, Zugriffskontrolle und Asset-Management, sowie Multi-Faktor-Authentifizierung und sichere Kommunikation.
+
+                    Jede der zehn Mindestmassnahmen ist in einer eigenstaendigen Pflicht-Richtlinie konkretisiert (Cross-Ref untergeordnete NIS2-Richtlinien sowie ISO 27001 Annex A Mappings).
+
+                    ## 7. Risikoorientierter Ansatz
+                    Die Cybersicherheits-Massnahmen werden gemaess Art. 21 Abs. 1 Satz 1 NIS2-RL risikoorientiert dimensioniert. Grundlage ist die jaehrliche unternehmensweite Cybersicherheits-Risikoanalyse (siehe NIS2-Risikomanagement-Konzept). Das Risikoniveau orientiert sich am Stand der Technik, den Implementierungskosten sowie der Schwere und Wahrscheinlichkeit potenzieller Vorfaelle und ihrer gesellschaftlichen und wirtschaftlichen Auswirkungen.
+
+                    ## 8. Meldepflichten
+                    Signifikante Cybersicherheits-Vorfaelle werden gemaess Art. 23 NIS2-RL und § 32 NIS2UmsuCG an das BSI bzw. die zustaendige Aufsichtsbehoerde gemeldet (Detail-Verfahren: NIS2-Meldeverfahrens-Richtlinie):
+
+                    | Meldetyp | Frist | Inhalt |
+                    | --- | --- | --- |
+                    | Fruehwarnung | innerhalb 24 Stunden ab Kenntnis | Vermutung boeswilliger Handlung, grenzueberschreitende Auswirkungen |
+                    | Vorfallsmeldung | innerhalb 72 Stunden ab Kenntnis | Erstbewertung, Schweregrad, Indicators of Compromise |
+                    | Zwischenbericht | auf Anforderung | Lagebild und Massnahmenstatus |
+                    | Abschlussbericht | innerhalb 1 Monats nach Vorfallsmeldung | Ursachenanalyse, ergriffene/geplante Massnahmen, grenzueberschreitende Auswirkungen |
+
+                    ## 9. Schnittstellen zu anderen Frameworks
+                    Die NIS2-Anforderungen werden ueber das bestehende ISMS gemaess ISO/IEC 27001:2022 umgesetzt (Data-Reuse-Prinzip): Annex-A-Controls dienen gleichzeitig als Nachweis fuer mehrere Frameworks (NIS2, DORA fuer Finanzentitaeten, BSI IT-Grundschutz, BAIT/VAIT). Die Mapping-Tabelle wird im Cross-Framework-Compliance-Modul gepflegt.
+
+                    ## 10. Aufsicht und Sanktionen
+                    Die zustaendige Behoerde {{ nis2.competent_authority }} kann gemaess Art. 32 NIS2-RL und §§ 64-65 NIS2UmsuCG Aufsichtsmassnahmen einschliesslich Vor-Ort-Pruefungen, Sicherheitsaudits und Anweisungen verhaengen. Fuer wesentliche Einrichtungen sieht Art. 34 Abs. 4 NIS2-RL Bussgelder bis zu 10 Mio. EUR oder 2 Prozent des weltweiten Jahresumsatzes vor; fuer wichtige Einrichtungen bis 7 Mio. EUR oder 1,4 Prozent (Art. 34 Abs. 5).
+
+                    ## 11. Pruefintervall und Aenderungszyklus
+                    Diese Leitlinie wird mindestens jaehrlich sowie ad hoc bei wesentlichen Aenderungen ueberprueft. Wesentliche Aenderungen umfassen: Aenderungen des Geltungsbereichs, neue regulatorische Anforderungen (insbesondere neue Durchfuehrungsrechtsakte zur NIS2-RL oder Aenderungen des NIS2UmsuCG), wesentliche Cybersicherheits-Vorfaelle, organisatorische Restrukturierungen sowie Aenderungen der Bedrohungslage.
+
+                    ## 12. Kryptographische Mindeststandards (Querverweis)
+                    Cryptographische Anforderungen folgen der separaten *NIS2-Kryptographie-Richtlinie* unter Verwendung der zugelassenen Algorithmen: {{ crypto.algorithms }}.
+
+                    ## 13. Genehmigung
+                    Genehmigt durch das Leitungsorgan der {{ tenant.legal_name }}: {{ approval.chain }}.
+
+                    ---
+                    *Diese Leitlinie ist die hoechste normative Aussage zur Cybersicherheits-Governance der {{ tenant.legal_name }}. Untergeordnete Richtlinien (NIS2-Risikomanagement, NIS2-Vorfallsbearbeitung, NIS2-Lieferketten-Sicherheit etc.) konkretisieren die Vorgaben dieser Leitlinie. Cross-Ref ISO/IEC 27001:2022 Klausel 5.2 sowie Annex A 5.1, 5.2, 5.3, 5.4.*
+
+        nis2_risk_management_policy:
+            v1:
+                title: 'NIS2-Risikomanagement-Konzept (Art. 21 Abs. 2 lit. a)'
+                body: |-
+                    # NIS2-Risikomanagement-Konzept der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Konzept | Regulatorische Grundlage: Art. 21 Abs. 2 lit. a NIS2-RL ("Konzepte in Bezug auf die Risikoanalyse und Sicherheit fuer Informationssysteme") | Sprache: Deutsch | Pruefintervall: jaehrlich*
+
+                    ## 1. Zweck
+                    Dieses Konzept regelt die systematische Identifikation, Analyse, Bewertung, Behandlung und Ueberwachung von Cybersicherheits-Risiken bei der {{ tenant.legal_name }} gemaess Art. 21 Abs. 2 lit. a NIS2-RL. Es operationalisiert das im NIS2-Governance-Rahmenwerk verankerte risikoorientierte Vorgehen (Art. 21 Abs. 1 NIS2-RL).
+
+                    ## 2. Geltungsbereich
+                    Das Konzept gilt fuer alle Netz- und Informationssysteme, ICT-Dienste, Geschaeftsprozesse, Standorte und Dritte im Geltungsbereich der {{ tenant.legal_name }}: {{ tenant.scope_statement }}. Erfasst sind insbesondere kritische bzw. wichtige Funktionen im Sinne des NIS2UmsuCG.
+
+                    ## 3. Methodik
+                    Die Risikobewertung erfolgt nach ISO/IEC 27005:2022 in Verbindung mit ISO 31000:2018. Die Methodik umfasst die Schritte: Risikoidentifikation, Risikoanalyse (Eintrittswahrscheinlichkeit x Schadensausmass), Risikobewertung gegen die definierte Risikotoleranz, Risikobehandlung (vermeiden / mindern / uebertragen / akzeptieren) sowie kontinuierliche Risikoueberwachung.
+
+                    Die Skalen sind: Eintrittswahrscheinlichkeit 1-5 (sehr selten bis sehr haeufig); Schadensausmass 1-5 (vernachlaessigbar bis existenzbedrohend) entlang der Dimensionen Vertraulichkeit, Integritaet, Verfuegbarkeit, finanzieller Schaden, Reputation, regulatorische Konsequenzen sowie gesellschaftliche Auswirkungen (NIS2-spezifisch wegen kritischer Versorgungssicherheit).
+
+                    ## 4. Rollen
+                    - **Risk Owner** – fachlich verantwortlich fuer die Identifikation und Bewertung der Risiken im jeweiligen Geschaeftsprozess.
+                    - **CISO ({{ roles.ciso.fullName }})** – Methodik-Verantwortung, konsolidierte Berichterstattung an das Leitungsorgan.
+                    - **ISB ({{ roles.isb.fullName }})** – operative Durchfuehrung der Risikoworkshops, Pflege des Risikoregisters.
+                    - **Internal Audit** – unabhaengige Pruefung der Wirksamkeit des Risikomanagements.
+
+                    ## 5. Risikoidentifikation
+                    Die Risikoidentifikation erfolgt mindestens jaehrlich im Rahmen einer ganzheitlichen Risikoanalyse sowie anlassbezogen bei wesentlichen Aenderungen (z.B. neue IT-Systeme, neue Dienstleister, neue Bedrohungslage, neue regulatorische Anforderungen, signifikante Vorfaelle). Quellen: Asset-Inventar, Bedrohungs- und Schwachstellenkataloge (BSI IT-Grundschutz-Gefaehrdungskataloge, MITRE ATT&CK, Threat Intelligence Feeds), Erkenntnisse aus Vorfaellen und Audits, Lieferkettenanalysen.
+
+                    ## 6. Risikobehandlung
+                    Fuer jedes Risiko wird eine Behandlungsoption gewaehlt. Akzeptanz oberhalb der definierten Risikotoleranz erfordert die Genehmigung des Leitungsorgans im Vier-Augen-Prinzip. Behandlungsmassnahmen werden im Risikobehandlungsplan dokumentiert; deren Umsetzung wird ueber die Massnahmen-Tracking-Liste nachverfolgt.
+
+                    ## 7. Restrisiko und Risikoakzeptanz
+                    Das Restrisiko nach Massnahmenumsetzung wird dokumentiert und vom Risk Owner formal akzeptiert. Restrisiken oberhalb der Risikotoleranz erfordern die Akzeptanz durch das Leitungsorgan und werden in den NIS2-Quartalsbericht aufgenommen.
+
+                    ## 8. Kommunikation und Reporting
+                    Das aggregierte Risikobild wird mindestens quartalsweise im Cybersecurity-Steering-Committee berichtet und mindestens jaehrlich dem Leitungsorgan vorgelegt. Bei kritischen Risikoveraenderungen erfolgt eine Ad-hoc-Eskalation an den CISO und das Leitungsorgan.
+
+                    ## 9. Schnittstellen
+                    Die NIS2-Risikobewertung integriert sich in die uebergeordneten Risikoarten der {{ tenant.legal_name }} (Operational Risk, Compliance Risk, Reputational Risk). Cross-Ref Lieferketten-Risiken (Art. 21 Abs. 2 lit. d NIS2-RL) werden mit dem Lieferanten-Risikomanagement konsolidiert.
+
+                    ## 10. Pruefintervall
+                    Dieses Konzept wird mindestens jaehrlich sowie ad hoc bei wesentlichen Aenderungen ueberprueft. Verantwortlich fuer die Pflege: {{ roles.ciso.fullName }} (CISO).
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 5.1 (Information security policy), 5.7 (Threat intelligence), 5.8 (Information security in project management); ISO/IEC 27005:2022.*
+
+        nis2_incident_handling_policy:
+            v1:
+                title: 'NIS2-Vorfallsbearbeitungs-Richtlinie (Art. 21 Abs. 2 lit. b + Art. 23)'
+                body: |-
+                    # NIS2-Vorfallsbearbeitungs-Richtlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Regulatorische Grundlage: Art. 21 Abs. 2 lit. b NIS2-RL ("Bewaeltigung von Sicherheitsvorfaellen") und Art. 23 NIS2-RL ("Berichtspflichten") in Verbindung mit § 32 NIS2UmsuCG | Sprache: Deutsch | Pruefintervall: jaehrlich, anlassbezogen nach jedem signifikanten Vorfall*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt das Vorgehen der {{ tenant.legal_name }} bei der Erkennung, Bewertung, Eindaemmung, Beseitigung und Nachbereitung von Cybersicherheits-Vorfaellen sowie die Erfuellung der Meldepflichten nach Art. 23 NIS2-RL. Sie operationalisiert die in Art. 21 Abs. 2 lit. b NIS2-RL geforderte "Bewaeltigung von Sicherheitsvorfaellen" und ergaenzt das ISO/IEC 27001:2022 Incident-Response-Verfahren um die NIS2-spezifischen Meldefristen.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle Cybersicherheits-Vorfaelle und Beinahe-Vorfaelle, die Netz- und Informationssysteme der {{ tenant.legal_name }} betreffen: {{ tenant.scope_statement }}. Sie gilt fuer alle Beschaeftigten, Auftragnehmer und Drittanbieter mit Zugriff auf solche Systeme.
+
+                    ## 3. Definitionen
+                    - **Sicherheitsvorfall** (Art. 6 Nr. 6 NIS2-RL): Ein Ereignis, das die Verfuegbarkeit, Authentizitaet, Integritaet oder Vertraulichkeit gespeicherter, uebermittelter oder verarbeiteter Daten oder die Dienste, die ueber Netz- und Informationssysteme angeboten werden oder zugaenglich sind, beeintraechtigt.
+                    - **Signifikanter Vorfall** (Art. 23 Abs. 3 NIS2-RL): Ein Vorfall, der schwere Betriebsstoerungen, finanzielle Verluste oder erhebliche materielle/immaterielle Schaeden verursacht hat oder verursachen kann oder andere natuerliche oder juristische Personen erheblich beeintraechtigt hat oder beeintraechtigen kann.
+                    - **Beinahe-Vorfall** (Art. 6 Nr. 5 NIS2-RL): Ein Ereignis, das die Verfuegbarkeit, Authentizitaet, Integritaet oder Vertraulichkeit haette beeintraechtigen koennen, dessen Eintritt jedoch erfolgreich verhindert wurde.
+
+                    ## 4. Rollen und Verantwortlichkeiten
+                    - **Incident Response Team (IRT) / CSIRT** – operatives Team unter Leitung des CISO {{ roles.ciso.fullName }}; Eindaemmung, Beseitigung und Wiederherstellung.
+                    - **CISO** – Gesamtverantwortung fuer den Incident-Response-Prozess; Eskalation an das Leitungsorgan.
+                    - **ISB ({{ roles.isb.fullName }})** – Pflege der Vorfallsdokumentation, Erstellung der Meldungen an das BSI gemaess § 32 NIS2UmsuCG.
+                    - **DSB ({{ roles.dpo.fullName }})** – Pruefung auf Datenschutzverletzungen gemaess Art. 33-34 DSGVO; ggf. parallele Meldung an Aufsichtsbehoerde.
+                    - **Krisenstab** – Aktivierung bei kritischen Vorfaellen mit potenzieller Auswirkung auf kritische bzw. wichtige Funktionen.
+                    - **Rechtsabteilung / Legal** – Pruefung weiterer Meldepflichten (DSGVO, BAIT/VAIT, branchenspezifische Aufsicht).
+
+                    ## 5. Vorfallsbewertung und Klassifikation
+                    Vorfaelle werden anhand des Schweregrad-Schemas klassifiziert:
+
+                    - **P1 (kritisch)** – signifikanter Vorfall mit Auswirkung auf kritische bzw. wichtige Funktionen oder grenzueberschreitende Wirkung; Aktivierung des Krisenstabs.
+                    - **P2 (hoch)** – signifikanter Vorfall ohne Krisenstab-Aktivierung; meldepflichtig nach Art. 23 NIS2-RL.
+                    - **P3 (mittel)** – Vorfall ohne signifikante Auswirkung, jedoch mit potenzieller Eskalation; interne Behandlung.
+                    - **P4 (niedrig)** – einfacher Vorfall ohne Auswirkung; Standard-Bearbeitung.
+
+                    Klassifikationskriterien folgen Art. 23 Abs. 3 NIS2-RL und ggf. konkretisierenden Durchfuehrungsrechtsakten (Implementing Acts) der EU-Kommission.
+
+                    ## 6. NIS2-Meldepflichten (Art. 23)
+                    Signifikante Vorfaelle werden gemaess Art. 23 NIS2-RL und § 32 NIS2UmsuCG an die zustaendige Behoerde {{ nis2.competent_authority }} (in der Regel das BSI) gemeldet:
+
+                    | # | Meldetyp | Frist | Inhalt |
+                    | --- | --- | --- | --- |
+                    | 1 | Fruehwarnung | innerhalb 24 Stunden ab Kenntnis | Erste Bewertung; Hinweise auf moegliche boeswillige Handlung; Hinweise auf grenzueberschreitende Auswirkungen |
+                    | 2 | Vorfallsmeldung | innerhalb 72 Stunden ab Kenntnis | Erstbewertung Schwere, Auswirkung, Indicators of Compromise (IoC), Update zur Fruehwarnung |
+                    | 3 | Zwischenbericht | auf Anforderung der Behoerde | Lagebild, Status der Eindaemmungs- und Wiederherstellungsmassnahmen |
+                    | 4 | Abschlussbericht | innerhalb 1 Monats nach Vorfallsmeldung | Detaillierte Beschreibung, Schwere und Auswirkung, Art der Bedrohung, ergriffene und geplante Abhilfemassnahmen, grenzueberschreitende Auswirkungen |
+                    | 5 | Fortschrittsbericht | bei langlaufenden Vorfaellen, monatlich | Fortschritt der Behandlung, neue Erkenntnisse |
+
+                    Die Meldungen erfolgen ueber das vom BSI bereitgestellte Meldeportal bzw. die nach § 32 NIS2UmsuCG vorgeschriebenen Meldewege.
+
+                    ## 7. Verzahnung mit weiteren Meldepflichten
+                    Bei Vorfaellen mit personenbezogenen Daten erfolgt parallel die DSGVO-Meldung gemaess Art. 33 DSGVO (innerhalb 72 Stunden an die Datenschutzaufsicht) und ggf. Benachrichtigung der Betroffenen gemaess Art. 34 DSGVO. Fuer Finanzentitaeten ist parallel die DORA-Meldung gemaess Art. 19 DORA in Verbindung mit ITS 2024/1502 einzuhalten. Branchenspezifische Meldungen (z.B. BaFin, BNetzA) folgen den jeweiligen Sektorgesetzen.
+
+                    ## 8. Incident-Response-Prozess
+                    Der IR-Prozess folgt den Phasen NIST SP 800-61 Rev. 2:
+
+                    1. **Preparation** – Trainings, Tooling, Playbooks, Kontaktlisten.
+                    2. **Detection & Analysis** – SIEM-Alerts, manuelle Meldungen, Analyse zur Bestaetigung.
+                    3. **Containment** – Kurzfristige (Isolation) und langfristige (Hardening) Eindaemmung.
+                    4. **Eradication** – Beseitigung der Ursache (z.B. Patching, Account-Loeschung).
+                    5. **Recovery** – Wiederherstellung der Systeme und Dienste; verifizierte Beseitigung.
+                    6. **Post-Incident Review** – Lessons Learned innerhalb 4 Wochen nach Wiederherstellung.
+
+                    ## 9. Forensik und Beweissicherung
+                    Bei P1/P2-Vorfaellen werden Beweise gemaess BSI-Standard 200-3 in Verbindung mit ISO/IEC 27037:2012 forensisch gesichert. Chain-of-Custody-Dokumentation wird gefuehrt; Loeschung von Beweismitteln nur nach formaler Freigabe durch Legal und CISO.
+
+                    ## 10. Kommunikation
+                    Externe Kommunikation (Behoerden, Kunden, Oeffentlichkeit, Medien) erfolgt ausschliesslich durch das Krisenkommunikations-Team in Abstimmung mit Legal, DSB und Leitungsorgan. Interne Kommunikation folgt der Eskalationsmatrix.
+
+                    ## 11. Lessons Learned und kontinuierliche Verbesserung
+                    Nach jedem P1/P2-Vorfall erfolgt ein dokumentiertes Post-Incident-Review. Erkenntnisse fliessen in die Aktualisierung dieser Richtlinie, der Playbooks, der Risikoanalyse sowie ggf. der NIS2-Pflicht-Richtlinien ein.
+
+                    ## 12. Pruefintervall
+                    Diese Richtlinie wird mindestens jaehrlich, anlassbezogen nach jedem signifikanten Vorfall sowie bei Aenderung der NIS2-Durchfuehrungsrechtsakte ueberprueft. Verantwortlich: {{ roles.ciso.fullName }} (CISO) in Abstimmung mit {{ roles.isb.fullName }} (ISB) und {{ roles.dpo.fullName }} (DSB).
+
+                    ## 13. Genehmigung
+                    Genehmigt durch das Leitungsorgan: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 5.24 (Planning), 5.25 (Assessment), 5.26 (Response), 5.27 (Lessons), 5.28 (Evidence), 6.8 (Reporting); DSGVO Art. 33-34; DORA Art. 17-23 (fuer Finanzentitaeten).*
+
+        nis2_business_continuity_crisis_policy:
+            v1:
+                title: 'NIS2-Business-Continuity- und Krisenmanagement-Richtlinie (Art. 21 Abs. 2 lit. c)'
+                body: |-
+                    # NIS2-Business-Continuity- und Krisenmanagement-Richtlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Regulatorische Grundlage: Art. 21 Abs. 2 lit. c NIS2-RL ("Aufrechterhaltung des Betriebs, einschliesslich Backup-Management und Wiederherstellung nach einem Notfall, sowie Krisenmanagement") | Sprache: Deutsch | Pruefintervall: jaehrlich, Tests halbjaehrlich*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt das Business-Continuity-Management (BCM) und Krisenmanagement der {{ tenant.legal_name }} gemaess Art. 21 Abs. 2 lit. c NIS2-RL. Sie sichert die Aufrechterhaltung kritischer bzw. wichtiger Funktionen sowie die rasche Wiederherstellung nach disruptiven Ereignissen.
+
+                    ## 2. Geltungsbereich
+                    Geltungsbereich: {{ tenant.scope_statement }}. Erfasst sind alle Geschaeftsprozesse, IT-Systeme, Standorte und Dritte, die zur Erbringung kritischer bzw. wichtiger Funktionen im Sinne des NIS2UmsuCG erforderlich sind.
+
+                    ## 3. Methodik
+                    Das BCM folgt ISO/IEC 22301:2019 und BSI-Standard 200-4. Die Methodik umfasst: Business Impact Analysis (BIA), Risikobewertung der Kontinuitaet, Definition von RTO/RPO/MTPD, Erstellung von Continuity-Plaenen, regelmaessige Tests und Uebungen, Krisenmanagement-Strukturen.
+
+                    ## 4. Business Impact Analysis (BIA)
+                    Die BIA wird mindestens jaehrlich durchgefuehrt und umfasst die Identifikation kritischer Geschaeftsprozesse, deren Abhaengigkeiten (IT-Systeme, Standorte, Personen, Dritte), die Festlegung der maximal tolerierbaren Ausfallzeit (MTPD), des Recovery-Time-Objective (RTO) und des Recovery-Point-Objective (RPO).
+
+                    ## 5. Continuity-Plaene
+                    Fuer jeden kritischen Geschaeftsprozess existiert ein dokumentierter Business-Continuity-Plan (BCP) mit Aktivierungstrigger, Verantwortlichkeiten, Wiederanlauf-Schritten, Ressourcenbedarf und Kommunikationsplan. IT-spezifische Wiederanlaufverfahren werden in Disaster-Recovery-Plaenen (DRP) konkretisiert.
+
+                    ## 6. Backup-Management
+                    Backups erfolgen nach dem 3-2-1-Prinzip (3 Kopien, 2 unterschiedliche Medien, 1 offsite/offline). Backup-Frequenz, Aufbewahrungsdauer und Verschluesselung folgen der RPO-Vorgabe pro System. Restore-Tests erfolgen mindestens vierteljaehrlich; Vollwiederherstellungstests jaehrlich. Immutable / Air-gapped Backups werden fuer kritische Systeme zwingend eingesetzt zum Schutz gegen Ransomware.
+
+                    ## 7. Wiederherstellung nach Notfall
+                    Im Notfall wird der Wiederanlauf gemaess der priorisierten Wiederanlaufreihenfolge initiiert. Der Notfallbeauftragte koordiniert die Wiederherstellung; der CISO {{ roles.ciso.fullName }} verantwortet die parallele Cybersicherheits-Verifikation (z.B. Forensik vor Wiederinbetriebnahme).
+
+                    ## 8. Krisenmanagement
+                    Bei kritischen Disruptionen wird der Krisenstab unter Vorsitz des Krisenstabsleiters einberufen. Mitglieder: CISO, ISB ({{ roles.isb.fullName }}), DSB ({{ roles.dpo.fullName }}), Geschaeftsfuehrung, Legal, Kommunikation, fachliche Process Owner. Der Krisenstab tagt mindestens taeglich, fuehrt ein Logbuch und entscheidet ueber externe Kommunikation.
+
+                    ## 9. Tests und Uebungen
+                    Continuity- und Krisenmanagement-Plaene werden mindestens halbjaehrlich (Tabletop) und jaehrlich (Simulationsuebung) getestet. Erkenntnisse fliessen in die Aktualisierung der Plaene ein. Testberichte werden dem Leitungsorgan vorgelegt.
+
+                    ## 10. Schnittstellen
+                    Schnittstellen bestehen zur Vorfallsbearbeitung (NIS2 Art. 21 Abs. 2 lit. b), Lieferkettensicherheit (Art. 21 Abs. 2 lit. d) sowie zur Erkennung anomaler Aktivitaeten (Art. 21 Abs. 2 lit. e). Fuer Finanzentitaeten gilt parallel DORA Art. 11 (Reaktion und Wiederherstellung); fuer KRITIS-Betreiber gilt parallel BSI-Standard 200-4.
+
+                    ## 11. Pruefintervall
+                    Diese Richtlinie wird mindestens jaehrlich sowie nach jedem aktivierten Krisenfall ueberprueft. Verantwortlich: Notfallbeauftragter in Abstimmung mit CISO.
+
+                    ## 12. Genehmigung
+                    Genehmigt durch das Leitungsorgan: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 5.29 (ICT readiness for business continuity), 5.30 (Information security during disruption), 8.13 (Backup), 8.14 (Redundancy); ISO/IEC 22301:2019; BSI-Standard 200-4.*
+
+        nis2_supply_chain_security_policy:
+            v1:
+                title: 'NIS2-Lieferkettensicherheits-Richtlinie (Art. 21 Abs. 2 lit. d)'
+                body: |-
+                    # NIS2-Lieferkettensicherheits-Richtlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Regulatorische Grundlage: Art. 21 Abs. 2 lit. d NIS2-RL ("Sicherheit der Lieferkette einschliesslich sicherheitsbezogener Aspekte der Beziehungen zwischen den einzelnen Einrichtungen und ihren unmittelbaren Anbietern oder Diensteanbietern") | Sprache: Deutsch | Pruefintervall: jaehrlich, Lieferantenbewertung jaehrlich*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Steuerung von Cybersicherheits-Risiken in der Lieferkette der {{ tenant.legal_name }} gemaess Art. 21 Abs. 2 lit. d NIS2-RL. Sie umfasst die Auswahl, vertragliche Bindung, laufende Ueberwachung und Beendigung von Lieferanten- und Dienstleisterbeziehungen, die Auswirkungen auf die Cybersicherheit haben koennen.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Lieferanten und Dienstleister, die direkten oder indirekten Zugriff auf Netz- und Informationssysteme der {{ tenant.legal_name }} haben oder Bestandteile zu deren Erbringung beisteuern: {{ tenant.scope_statement }}.
+
+                    ## 3. Lieferantenklassifikation
+                    Lieferanten werden nach Kritikalitaet klassifiziert:
+
+                    - **kritisch** – Auswirkung auf kritische bzw. wichtige Funktionen, Verarbeitung sensibler Daten, oder priviligierter Systemzugriff. Beispiele: Cloud-Hyperscaler, Managed-Service-Provider, SaaS fuer Kerngeschaeftsprozesse.
+                    - **wichtig** – mittelbare Auswirkung auf operative Resilienz, z.B. Standard-Software, Identity-Provider.
+                    - **standard** – minimale Cybersicherheits-Relevanz.
+
+                    ## 4. Auswahl und Due Diligence
+                    Vor Vertragsabschluss erfolgt eine Cybersicherheits-Due-Diligence gemaess Lieferantenkritikalitaet. Mindestanforderungen: Nachweis ISMS-Reife (ISO 27001-Zertifikat oder gleichwertig), Vorlage von SOC-2- oder C5-Bericht (bei Cloud-Diensten), Pruefung der Lieferanten-Lieferkette (Subcontracting-Transparenz), Datenstandort-Klaerung, Pruefung der Auftrittssperre und etwaiger Sanktionen.
+
+                    ## 5. Vertragliche Anforderungen
+                    Vertraege mit kritischen und wichtigen Lieferanten enthalten verbindlich:
+
+                    - Cybersicherheits-Anforderungen (Mindestmassnahmen analog NIS2 Art. 21 Abs. 2)
+                    - Recht auf Audit (eigenes Audit oder Pruefberichts-Anforderung)
+                    - Vorfalls-Meldepflichten innerhalb 24/72 Stunden gegenueber der {{ tenant.legal_name }}
+                    - Subcontracting-Genehmigungspflicht
+                    - Datenschutz-Klauseln (Art. 28 DSGVO, Standardvertragsklauseln bei Drittlandstransfer)
+                    - Exit-Strategie und Datenrueckgabe-/Loeschungsverpflichtungen
+                    - Haftung und Versicherungsanforderungen
+
+                    Fuer Finanzentitaeten gelten zusaetzlich die vertraglichen Mindestanforderungen gemaess DORA Art. 30.
+
+                    ## 6. Laufende Ueberwachung
+                    Lieferanten werden mindestens jaehrlich (kritisch: halbjaehrlich) re-bewertet. Quellen: Lieferanten-Selbstauskunft (Standardised Information Gathering Questionnaire), externe Bonitaets- und Cybersicherheits-Ratings, Auditberichte, Vorfallshistorie, Threat Intelligence.
+
+                    ## 7. Konzentrationsrisiko
+                    Konzentrationsrisiken (Single Points of Failure in der Lieferkette) werden identifiziert und bewertet. Bei kritischen Konzentrationen wird die Etablierung redundanter Lieferantenbeziehungen geprueft.
+
+                    ## 8. Subcontracting / Sub-Lieferanten
+                    Subcontracting durch Lieferanten ist genehmigungspflichtig. Die {{ tenant.legal_name }} fuehrt ein Verzeichnis der wesentlichen Sub-Lieferanten kritischer Dienstleister.
+
+                    ## 9. Lieferanten-Vorfaelle
+                    Cybersicherheits-Vorfaelle bei Lieferanten mit Auswirkung auf die {{ tenant.legal_name }} werden im internen Vorfallsmanagement bearbeitet. Meldepflichten nach Art. 23 NIS2-RL koennen ausgeloest werden.
+
+                    ## 10. Beendigung der Geschaeftsbeziehung
+                    Bei Beendigung erfolgt eine kontrollierte Datenrueckgabe und -loeschung sowie Sperrung saemtlicher Zugriffsberechtigungen gemaess Exit-Plan.
+
+                    ## 11. Pruefintervall
+                    Diese Richtlinie wird mindestens jaehrlich ueberprueft. Verantwortlich: {{ roles.ciso.fullName }} (CISO) in Abstimmung mit Procurement.
+
+                    ## 12. Genehmigung
+                    Genehmigt durch: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 5.19 (Information security in supplier relationships), 5.20 (Addressing information security within supplier agreements), 5.21 (Managing information security in the ICT supply chain), 5.22 (Monitoring, review and change management of supplier services), 5.23 (Information security for use of cloud services); DORA Art. 28-30 (fuer Finanzentitaeten); ENISA Guidelines on Securing the Supply Chain.*
+
+        nis2_acquisition_development_security:
+            v1:
+                title: 'Sicherheit bei Beschaffung, Entwicklung und Wartung (NIS2 Art. 21 Abs. 2 lit. e)'
+                body: |-
+                    # Sicherheit bei Beschaffung, Entwicklung und Wartung der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Regulatorische Grundlage: Art. 21 Abs. 2 lit. e NIS2-RL ("Sicherheit beim Erwerb, der Entwicklung und der Wartung von Netz- und Informationssystemen, einschliesslich Management und Offenlegung von Schwachstellen") | Sprache: Deutsch | Pruefintervall: jaehrlich*
+
+                    ## 1. Zweck
+                    Diese Richtlinie stellt sicher, dass Cybersicherheit ueber den gesamten Lebenszyklus von Netz- und Informationssystemen integriert wird ("Security by Design" und "Security by Default") gemaess Art. 21 Abs. 2 lit. e NIS2-RL.
+
+                    ## 2. Geltungsbereich
+                    Geltungsbereich: alle eigenen und beschafften Informationssysteme, Software, Hardware und Dienste im Verantwortungsbereich der {{ tenant.legal_name }}: {{ tenant.scope_statement }}.
+
+                    ## 3. Beschaffung
+                    Beschaffungsprozesse beruecksichtigen Cybersicherheit als verbindliches Auswahlkriterium. Anforderungen: Sicherheits-Spezifikation, Pruefung der Lieferantenkritikalitaet (siehe Lieferkettensicherheits-Richtlinie), Verwendung sicherer Standardkonfigurationen ("Secure-by-Default"), Bevorzugung von Komponenten mit Common-Criteria- oder BSI-Zertifizierung wo verfuegbar.
+
+                    ## 4. Sichere Entwicklung
+                    Eigenentwickelte Software folgt einem definierten Secure-Software-Development-Lifecycle (SSDLC) mit folgenden Pflichtkomponenten: Threat Modeling in der Designphase, Secure-Coding-Guidelines (z.B. OWASP ASVS, BSI-Empfehlungen), Code-Reviews mit Security-Fokus, Static Application Security Testing (SAST), Dynamic Application Security Testing (DAST), Software-Composition-Analysis (SCA) zur Abdeckung von Drittkomponenten-Schwachstellen.
+
+                    ## 5. Test und Freigabe
+                    Vor Produktivnahme erfolgt ein dedizierter Sicherheitstest. Bei kritischen Anwendungen zusaetzlich Penetrationstests durch unabhaengige Tester. Freigabe nur nach Beseitigung kritischer und hoher Schwachstellen oder dokumentierter Risikoakzeptanz durch den Risk Owner.
+
+                    ## 6. Wartung und Patch-Management
+                    Sicherheits-Patches werden gemaess SLA-Vorgabe ausgerollt: kritische Patches innerhalb 7 Tagen, hohe Patches innerhalb 30 Tagen, mittlere Patches innerhalb 90 Tagen. Notfall-Patches (out-of-band) werden gemaess Change-Management-Notfallverfahren behandelt. End-of-Life-Komponenten werden ersetzt; Verbleib in Produktion erfordert Risikoakzeptanz und kompensierende Massnahmen.
+
+                    ## 7. Schwachstellenmanagement
+                    Schwachstellenscans erfolgen mindestens monatlich, bei extern exponierten Systemen woechentlich. Identifizierte Schwachstellen werden nach CVSS klassifiziert und gemaess SLA behandelt. Coordinated Vulnerability Disclosure (CVD) gemaess Art. 12 NIS2-RL: Externe Meldungen werden ueber security@{{ tenant.contact_domain }} entgegen genommen und an das CSIRT weitergeleitet; Kontakt zur ENISA-CVD-Datenbank gegeben.
+
+                    ## 8. Konfigurationsmanagement
+                    Sichere Standard-Konfigurationen werden zentral definiert (z.B. CIS Benchmarks, BSI IT-Grundschutz-Empfehlungen) und durch Configuration-Management-Tools enforced. Drift wird kontinuierlich detektiert.
+
+                    ## 9. Change Management
+                    Aenderungen an produktiven Systemen folgen dem Change-Management-Prozess mit Risiko-, Sicherheits- und Backout-Bewertung. Notfaelle: Emergency-Change-Verfahren mit nachgelagerter Dokumentation.
+
+                    ## 10. Outsourcing der Entwicklung
+                    Bei Outsourcing der Software-Entwicklung gelten die Anforderungen der Lieferkettensicherheits-Richtlinie sowie zusaetzliche vertragliche Pflichten zu Code-Eigentum, Quellcode-Hinterlegung (Escrow) und Sicherheitsanforderungen.
+
+                    ## 11. Dokumentation
+                    Sicherheitsrelevante Designentscheidungen, Bedrohungsmodelle, Testberichte und Restrisiken werden in der Systemdokumentation gefuehrt.
+
+                    ## 12. Pruefintervall
+                    Diese Richtlinie wird mindestens jaehrlich ueberprueft. Verantwortlich: CISO {{ roles.ciso.fullName }}.
+
+                    ## 13. Genehmigung
+                    Genehmigt durch: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 8.25 (Secure development lifecycle), 8.26 (Application security requirements), 8.27 (Secure system architecture), 8.28 (Secure coding), 8.29 (Security testing), 8.30 (Outsourced development), 8.31 (Separation of environments), 8.32 (Change management); BSI-Empfehlungen zu Schwachstellenmanagement; ENISA CVD-Guidelines.*
+
+        nis2_assessment_effectiveness_policy:
+            v1:
+                title: 'Wirksamkeitsbewertung der Cybersicherheits-Massnahmen (NIS2 Art. 21 Abs. 2 lit. f)'
+                body: |-
+                    # Wirksamkeitsbewertung der Cybersicherheits-Massnahmen der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Regulatorische Grundlage: Art. 21 Abs. 2 lit. f NIS2-RL ("Konzepte und Verfahren zur Bewertung der Wirksamkeit von Risikomanagementmassnahmen im Bereich der Cybersicherheit") | Sprache: Deutsch | Pruefintervall: jaehrlich*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die systematische Bewertung der Wirksamkeit der Cybersicherheits-Massnahmen der {{ tenant.legal_name }} gemaess Art. 21 Abs. 2 lit. f NIS2-RL und stellt einen geschlossenen Plan-Do-Check-Act-Zyklus sicher.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle gemaess Art. 21 Abs. 2 NIS2-RL umgesetzten Cybersicherheits-Massnahmen sowie die zugrunde liegenden ISO/IEC 27001:2022 Annex-A-Controls: {{ tenant.scope_statement }}.
+
+                    ## 3. Methodik
+                    Die Wirksamkeitsbewertung folgt dem CMMI-aehnlichen Reifegrad-Modell mit den Stufen 0 (nicht vorhanden), 1 (initial), 2 (definiert), 3 (etabliert), 4 (gesteuert), 5 (optimiert). Datenquellen: Selbstbewertung der Control Owner, technische Mess-Indikatoren (KPIs), Audit-Befunde, Vorfaelle, Penetrationstest- und Schwachstellenscan-Ergebnisse, Lieferanten-Berichte.
+
+                    ## 4. KPIs und Metriken
+                    Pro Cybersicherheits-Massnahme sind Wirksamkeits-KPIs definiert. Beispiele:
+
+                    - Patch-Compliance: Anteil rechtzeitig gepatchter kritischer Schwachstellen.
+                    - MFA-Abdeckung: Anteil priviligierter Konten mit MFA.
+                    - Backup-Restore-Erfolgsrate: Anteil erfolgreicher Restore-Tests.
+                    - Incident-Reaktionszeit: Mittlere Zeit bis Detektion (MTTD), bis Eindaemmung (MTTC), bis Wiederherstellung (MTTR).
+                    - Schulungsabdeckung: Anteil geschulter Beschaeftigter.
+
+                    ## 5. Pruefarten
+                    - **Selbstbewertung** – Control Owner bewerten quartalsweise.
+                    - **Internes Audit** – jaehrliche Pruefung durch Internal Audit / Revision; Stichprobenpruefung der Wirksamkeit.
+                    - **Externes Audit** – jaehrlich oder gemaess Zertifizierungs-Zyklus (z.B. ISO 27001) durch akkreditierte Pruefer.
+                    - **Penetrationstest** – jaehrlich extern; halbjaehrlich intern.
+                    - **Schwachstellenscan** – kontinuierlich (siehe Schwachstellenmanagement-Richtlinie).
+                    - **Tabletop / Simulation** – mindestens jaehrlich (Krisenmanagement).
+                    - **Behoerdenpruefung** – auf Anforderung gemaess § 64 NIS2UmsuCG.
+
+                    ## 6. Befunde und Massnahmenmanagement
+                    Befunde werden nach Schwere klassifiziert (kritisch / hoch / mittel / niedrig) und mit Korrekturmassnahmen, Verantwortlichkeiten und Faelligkeitsdaten in der Massnahmen-Tracking-Liste hinterlegt. Kritische Befunde sind sofort zu eskalieren.
+
+                    ## 7. Berichtswesen
+                    Quartalsbericht: Wirksamkeitsstatus an das Cybersecurity-Steering-Committee. Jahresbericht: konsolidierter Wirksamkeitsbericht an das Leitungsorgan; Eingang in die jaehrliche Managementbewertung gemaess ISO 27001 Klausel 9.3.
+
+                    ## 8. Pruefintervall
+                    Diese Richtlinie wird mindestens jaehrlich ueberprueft. Verantwortlich: CISO {{ roles.ciso.fullName }} in Abstimmung mit Internal Audit.
+
+                    ## 9. Genehmigung
+                    Genehmigt durch: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 5.35 (Independent review of information security), 5.36 (Compliance with policies), 8.34 (Protection of information systems during audit testing); ISO/IEC 27004:2016 (Monitoring, measurement, analysis and evaluation).*
+
+        nis2_basic_cyber_hygiene_training:
+            v1:
+                title: 'Cyber-Hygiene und Sicherheitsschulung (NIS2 Art. 21 Abs. 2 lit. g)'
+                body: |-
+                    # Cyber-Hygiene und Sicherheitsschulung der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Regulatorische Grundlage: Art. 21 Abs. 2 lit. g NIS2-RL ("grundlegende Verfahren im Bereich der Cyberhygiene und Schulungen im Bereich der Cybersicherheit") | Sprache: Deutsch | Pruefintervall: jaehrlich*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Vermittlung grundlegender Cyber-Hygiene-Praktiken sowie die laufende Cybersicherheits-Schulung der Beschaeftigten der {{ tenant.legal_name }} gemaess Art. 21 Abs. 2 lit. g NIS2-RL.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle Beschaeftigten (einschliesslich Zeitarbeitskraefte und Praktikanten) sowie Auftragnehmer mit Zugriff auf Netz- und Informationssysteme der {{ tenant.legal_name }}: {{ tenant.scope_statement }}.
+
+                    ## 3. Cyber-Hygiene-Grundsaetze
+                    Die {{ tenant.legal_name }} verankert folgende Cyber-Hygiene-Praktiken organisationsweit verbindlich:
+
+                    - Verwendung starker, einzigartiger Passwoerter und/oder Passphrases ueber Passwortmanager.
+                    - Nutzung von Multi-Faktor-Authentifizierung fuer alle Zugaenge mit Internet-Exposure und priviligierte Konten (siehe NIS2-MFA-Richtlinie).
+                    - Pflicht zur sofortigen Bildschirmsperrung beim Verlassen des Arbeitsplatzes (Clear Desk / Clear Screen).
+                    - Sensibilisierung gegenueber Phishing, Social Engineering, Vishing, Smishing.
+                    - Zeitnahe Installation verfuegbarer Sicherheitsupdates auf Endgeraeten.
+                    - Sicherer Umgang mit Wechseldatentraegern (USB-Disziplin, verschluesselte Speicher).
+                    - Trennung dienstlicher und privater Nutzung; Bring-Your-Own-Device-Beschraenkungen siehe Asset-Management-Richtlinie.
+                    - Meldung verdaechtiger Ereignisse an security@{{ tenant.contact_domain }} bzw. internen Vorfalls-Hotline.
+
+                    ## 4. Schulungsprogramm
+                    Das Schulungsprogramm umfasst:
+
+                    - **Grundschulung "Cyber-Hygiene"** – verpflichtend bei Eintritt sowie jaehrliche Wiederholung. Mindestumfang 60 Minuten. Themen: Passwortdisziplin, Phishing, Datenschutz, Vorfalls-Meldung, sicheres mobiles Arbeiten.
+                    - **Rollenbasierte Vertiefung** – fuer Administratoren, Entwickler, Risk Owner, Procurement: jaehrliche fachspezifische Vertiefung mit hoeherem Detailgrad.
+                    - **Fuehrungs-/Leitungs-Schulung** – verbindliche jaehrliche Schulung des Leitungsorgans gemaess Art. 20 Abs. 2 NIS2-RL ("management body training").
+                    - **Anlassbezogene Awareness-Kampagnen** – z.B. nach signifikanten Vorfaellen, bei neuen Bedrohungslagen, vor Reisen in kritische Laender.
+
+                    ## 5. Phishing-Simulationen
+                    Es werden mindestens halbjaehrlich kontrollierte Phishing-Simulationen durchgefuehrt. Click-Raten und Melde-Raten werden ausgewertet; Beschaeftigte mit wiederholten Klicks erhalten Zusatzschulung.
+
+                    ## 6. Schulungsnachweise
+                    Schulungsteilnahme wird im Lernmanagement-System (LMS) protokolliert. Nicht-Teilnahme nach Mahnung kann disziplinarische Konsequenzen nach sich ziehen. Auswertung quartalsweise an das Cybersecurity-Steering-Committee.
+
+                    ## 7. Verantwortlichkeiten
+                    - **HR ({{ roles.hr.fullName }})** – organisatorische Durchfuehrung, LMS-Verwaltung.
+                    - **CISO ({{ roles.ciso.fullName }})** – fachliche Inhalte, Awareness-Kampagnen, Phishing-Simulationen.
+                    - **Datenschutzbeauftragter** – Schulungsinhalte zu Datenschutz/DSGVO.
+
+                    ## 8. Pruefintervall
+                    Diese Richtlinie wird mindestens jaehrlich ueberprueft. Inhaltliche Aktualisierung der Schulungsmaterialien quartalsweise nach aktueller Bedrohungslage.
+
+                    ## 9. Genehmigung
+                    Genehmigt durch: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 6.3 (Information security awareness, education and training), 7.7 (Clear desk and clear screen), 8.1 (User endpoint devices); BSI-Standard 200-2; ENISA Cybersecurity Awareness Best Practices.*
+
+        nis2_cryptography_policy:
+            v1:
+                title: 'NIS2-Kryptographie- und Schluesselmanagement-Richtlinie (Art. 21 Abs. 2 lit. h)'
+                body: |-
+                    # NIS2-Kryptographie- und Schluesselmanagement-Richtlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Regulatorische Grundlage: Art. 21 Abs. 2 lit. h NIS2-RL ("Konzepte und Verfahren fuer den Einsatz von Kryptografie und gegebenenfalls Verschluesselung") | Sprache: Deutsch | Pruefintervall: alle 24 Monate, ad hoc bei Aenderung der BSI-Empfehlungen*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt den Einsatz kryptographischer Verfahren und das Schluesselmanagement bei der {{ tenant.legal_name }} gemaess Art. 21 Abs. 2 lit. h NIS2-RL und stellt die Erfuellung der Anforderungen an Vertraulichkeit, Integritaet und Authentizitaet sicher.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind saemtliche kryptographischen Verfahren in Anwendung, Datenuebertragung, Datenspeicherung sowie zur Authentisierung im Geltungsbereich der {{ tenant.legal_name }}: {{ tenant.scope_statement }}.
+
+                    ## 3. Zugelassene Algorithmen
+                    Die {{ tenant.legal_name }} setzt ausschliesslich kryptographische Verfahren ein, die der aktuellen Technischen Richtlinie BSI TR-02102 ("Kryptographische Verfahren: Empfehlungen und Schluessellaengen") in der jeweils gueltigen Fassung entsprechen.
+
+                    Aktuell zugelassene Verfahren: {{ crypto.algorithms }}. Beispiele:
+
+                    - **Symmetrisch** – AES-256 (GCM, CCM)
+                    - **Asymmetrisch** – RSA mit min. 3000 Bit, ECDSA / EdDSA mit Kurven brainpoolP256r1 / brainpoolP384r1
+                    - **Hashing** – SHA-256, SHA-384, SHA-512, SHA3-256
+                    - **Key Derivation** – HKDF, PBKDF2 (min. 600.000 Iterationen), Argon2id
+                    - **Transport-Verschluesselung** – TLS 1.2 (mit AEAD-Suiten) oder TLS 1.3
+                    - **Post-Quantum-Vorbereitung** – Tracking der NIST-PQC-Standards (z.B. ML-KEM, ML-DSA gemaess FIPS 203/204) und Beobachtung der BSI-Empfehlungen zur kryptographischen Migration
+
+                    ## 4. Anwendungsfaelle
+                    - **Daten in Transit** – obligatorische TLS-Verschluesselung; sichere E-Mail (S/MIME, PGP) wo angewendet; VPN gemaess BSI-Empfehlung.
+                    - **Daten in Ruhe** – Festplattenverschluesselung auf mobilen Endgeraeten zwingend; Verschluesselung sensibler Daten in Datenbanken / Backups.
+                    - **Datenbank-Felder** – Feldverschluesselung fuer hochsensible Daten (z.B. PII, Authentisierungsdaten, Finanzdaten).
+                    - **Authentisierung** – Passwort-Hashing mit Argon2id, MFA-Tokens (siehe NIS2-MFA-Richtlinie).
+                    - **Code-Signierung** – Signatur eigenentwickelter Software und Konfigurationsartefakte.
+                    - **Backups** – Verschluesselung mit von Produktivsystemen getrennten Schluesseln.
+
+                    ## 5. Schluesselmanagement
+                    Schluesselmanagement folgt ISO/IEC 11770 und BSI TR-03116 wo anwendbar:
+
+                    - **Erzeugung** – kryptographisch sichere Zufallsquellen (HSM bevorzugt).
+                    - **Verteilung** – sichere Out-of-Band-Verteilung; PKI fuer Zertifikate.
+                    - **Speicherung** – HSM oder Key-Vault bevorzugt; Schluessel niemals im Klartext im Quellcode oder Konfigurationsdateien.
+                    - **Rotation** – periodisch sowie ad hoc bei Verdacht auf Kompromittierung.
+                    - **Zerstoerung** – nachweisbare und vollstaendige Loeschung am Lebensende des Schluessels.
+                    - **Backup von Schluesseln** – nur fuer Schluessel mit Wiederherstellungsbedarf, im Vier-Augen-Prinzip in HSM-gestuetzten Recovery-Verfahren.
+
+                    ## 6. Public-Key-Infrastruktur (PKI)
+                    Die {{ tenant.legal_name }} betreibt bzw. nutzt eine PKI (eigene oder externe). Trust-Anker werden zentral verwaltet; Zertifikate haben definierte Gueltigkeitsdauern (z.B. Server-Zertifikate max. 1 Jahr, Code-Signing 1-3 Jahre, Root-CA mehrjaehrig). Zertifikatsablauf wird zentral ueberwacht (Certificate-Transparency / Monitoring).
+
+                    ## 7. Crypto-Agility
+                    Systeme werden so designed, dass kryptographische Verfahren austauschbar sind ("Crypto-Agility") zur schnellen Reaktion auf neue Empfehlungen oder Bedrohungen, einschliesslich Vorbereitung auf Post-Quantum-Cryptography.
+
+                    ## 8. Audit
+                    Die Einhaltung dieser Richtlinie wird jaehrlich im Rahmen des internen Audits geprueft. Zusaetzlich erfolgt eine externe TLS-Konfigurationspruefung (z.B. Mozilla Observatory, BSI-Konfig-Empfehlungen) mindestens halbjaehrlich.
+
+                    ## 9. Pruefintervall
+                    Diese Richtlinie wird alle 24 Monate sowie ad hoc bei Aenderungen der BSI TR-02102 oder bei Bekanntwerden kryptographischer Schwaechen ueberprueft. Verantwortlich: CISO {{ roles.ciso.fullName }}.
+
+                    ## 10. Genehmigung
+                    Genehmigt durch: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 8.24 (Use of cryptography); BSI TR-02102 / TR-03116; ISO/IEC 11770; NIST SP 800-57 / FIPS 203/204 (PQC).*
+
+        nis2_access_control_asset_mgmt:
+            v1:
+                title: 'NIS2-Zugriffskontrolle und Asset-Management (Art. 21 Abs. 2 lit. i)'
+                body: |-
+                    # NIS2-Zugriffskontrolle und Asset-Management der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Regulatorische Grundlage: Art. 21 Abs. 2 lit. i NIS2-RL ("Sicherheit des Personals, Konzepte fuer die Zugriffskontrolle und Asset-Management") | Sprache: Deutsch | Pruefintervall: jaehrlich*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Zugriffskontrolle und das Asset-Management der {{ tenant.legal_name }} gemaess Art. 21 Abs. 2 lit. i NIS2-RL und sichert das Need-to-Know- sowie Least-Privilege-Prinzip.
+
+                    ## 2. Geltungsbereich
+                    Geltungsbereich: alle Informationssysteme, Anwendungen, physikalischen Bereiche und Daten der {{ tenant.legal_name }}: {{ tenant.scope_statement }}.
+
+                    ## 3. Asset-Management
+                    Die {{ tenant.legal_name }} fuehrt ein Asset-Inventar ueber alle Informationssysteme, Hardware, Software, Daten und Cloud-Dienste. Pflichtfelder pro Asset: Bezeichnung, Verantwortlicher (Asset Owner), Klassifikation (oeffentlich / intern / vertraulich / streng vertraulich), Schutzbedarf (CIA: Vertraulichkeit, Integritaet, Verfuegbarkeit), Standort, Lebenszyklus-Status.
+
+                    Das Inventar wird mindestens vierteljaehrlich abgeglichen (technisches Discovery + manuelle Validierung) und bei Aenderungen aktualisiert.
+
+                    ## 4. Klassifikation und Kennzeichnung
+                    Informationen werden gemaess Klassifikationsschema klassifiziert. Vertrauliche und streng vertrauliche Informationen werden gekennzeichnet (z.B. Wasserzeichen, Header/Footer, Metadaten) und entsprechend gehandhabt.
+
+                    ## 5. Zugriffsmodell
+                    Zugriffe folgen dem Need-to-Know- und Least-Privilege-Prinzip. Rollenbasiertes Zugriffsmodell (RBAC) wird genutzt; Attribute-Based Access Control (ABAC) wo erforderlich. Trennung von Funktionen (Segregation of Duties) bei kritischen Vorgaengen ist verbindlich.
+
+                    ## 6. Identitaetsmanagement
+                    Identitaeten werden zentral verwaltet (Identity-Provider). Mitarbeitende erhalten genau eine Primaeridentitaet ueber den HR-Onboarding-Prozess. Externe Identitaeten (Auftragnehmer, Lieferanten) werden ueber dedizierte Sponsoren verwaltet und zeitlich befristet.
+
+                    ## 7. Joiner-Mover-Leaver
+                    - **Joiner** – Berechtigungen werden ueber Standard-Profile zum Eintritt provisioniert.
+                    - **Mover** – Berechtigungen werden bei Funktionswechsel umgehend angepasst (alte Berechtigungen entzogen).
+                    - **Leaver** – Berechtigungen werden zum letzten Arbeitstag deaktiviert; Konten innerhalb 30 Tagen geloescht (Backup-Aufbewahrung gemaess Loeschkonzept).
+
+                    ## 8. Priviligierte Zugriffe
+                    Priviligierte Zugriffe werden ueber Privileged-Access-Management (PAM) gesteuert: Just-in-Time-Provisionierung, Sitzungs-Aufzeichnung, MFA-Pflicht, kein direkter administrativer Zugang von Standard-Arbeitsplaetzen, dedizierte Privileged-Access-Workstations (PAW) fuer Administratoren kritischer Systeme.
+
+                    ## 9. Zugriffsrezertifizierung
+                    Zugriffsberechtigungen werden mindestens jaehrlich (priviligiert: halbjaehrlich) rezertifiziert. Owner / Manager bestaetigen die Notwendigkeit; nicht bestaetigte Berechtigungen werden entzogen.
+
+                    ## 10. Physische Zugangskontrolle
+                    Zugang zu Rechenzentren, Serverraeumen und sicherheitsrelevanten Bereichen ist auf autorisierte Personen beschraenkt. Besucher werden registriert und begleitet. Mehrstufige Zugangskontrollen werden nach Schutzbedarf abgestuft (Badge, MFA-Badge, Biometrie).
+
+                    ## 11. Audit
+                    Zugriffe auf kritische Systeme werden protokolliert (siehe Logging- und Monitoring-Richtlinie) und regelmaessig auswertet. Auffaelligkeiten werden ueber das SIEM detektiert.
+
+                    ## 12. Pruefintervall
+                    Diese Richtlinie wird mindestens jaehrlich ueberprueft. Verantwortlich: CISO {{ roles.ciso.fullName }}.
+
+                    ## 13. Genehmigung
+                    Genehmigt durch: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 5.9 (Inventory of information and other associated assets), 5.10 (Acceptable use), 5.15 (Access control), 5.16 (Identity management), 5.17 (Authentication information), 5.18 (Access rights), 8.2 (Privileged access rights), 8.3 (Information access restriction).*
+
+        nis2_mfa_communication_policy:
+            v1:
+                title: 'NIS2-MFA und sichere Kommunikation (Art. 21 Abs. 2 lit. j)'
+                body: |-
+                    # NIS2-Multi-Faktor-Authentifizierung und sichere Kommunikation der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Regulatorische Grundlage: Art. 21 Abs. 2 lit. j NIS2-RL ("Verwendung von Multi-Faktor-Authentifizierungs- oder kontinuierlichen Authentifizierungsloesungen, gesicherter Sprach-, Video- und Textkommunikation sowie gegebenenfalls gesicherter Notfallkommunikationssysteme") | Sprache: Deutsch | Pruefintervall: jaehrlich*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt den verpflichtenden Einsatz von Multi-Faktor-Authentifizierung sowie sicherer Kommunikationsmittel bei der {{ tenant.legal_name }} gemaess Art. 21 Abs. 2 lit. j NIS2-RL.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Authentifizierungsvorgaenge sowie Sprach-, Video- und Textkommunikation im Geltungsbereich der {{ tenant.legal_name }}: {{ tenant.scope_statement }}.
+
+                    ## 3. MFA-Pflicht
+                    Multi-Faktor-Authentifizierung ist verpflichtend fuer:
+
+                    - alle priviligierten Konten (Administratoren, Service-Konten mit erhoehten Rechten),
+                    - alle Konten mit Zugriff aus dem Internet (Remote-Access, VPN, Cloud-Konsolen, SaaS),
+                    - alle Konten mit Zugriff auf personenbezogene Daten besonderer Kategorien (Art. 9 DSGVO) oder vergleichbar sensible Daten,
+                    - alle Konten mit Zugriff auf kritische bzw. wichtige Funktionen im Sinne des NIS2UmsuCG.
+
+                    Der zweite Faktor folgt der "phishing-resistant"-Empfehlung (z.B. FIDO2/WebAuthn-Hardware-Token, Plattform-Authentikatoren). Time-based One-Time-Passwords (TOTP) sind zulaessig wo FIDO2 nicht praktikabel; SMS-OTP ist NICHT zulaessig fuer priviligierte Konten oder kritische Anwendungen.
+
+                    ## 4. Kontinuierliche Authentifizierung
+                    Fuer kritische Anwendungen werden Risk-Based-Authentication-Verfahren eingesetzt (Bewertung von Geraet, Standort, Verhalten); ungewoehnliche Sitzungen werden re-authentisiert oder beendet.
+
+                    ## 5. Sichere Sprach- und Videokommunikation
+                    Geschaeftliche Sprach- und Videokommunikation erfolgt ueber Plattformen mit Ende-zu-Ende- oder Client-Server-Verschluesselung gemaess BSI-Empfehlung. Externe Konferenzen mit vertraulichen Inhalten werden nur ueber freigegebene Plattformen durchgefuehrt; private Tools (Consumer-Messenger) sind fuer dienstliche Inhalte nicht zulaessig.
+
+                    ## 6. Sichere Textkommunikation
+                    E-Mail mit vertraulichen Inhalten wird verschluesselt (S/MIME oder PGP) bzw. ueber sichere Kollaborationsplattformen ausgetauscht. Anhaenge mit personenbezogenen Daten werden zwingend verschluesselt; Passwort wird ueber separaten Kanal uebermittelt.
+
+                    ## 7. Notfallkommunikation
+                    Fuer Krisenfaelle besteht ein redundantes, vom Standardbetrieb unabhaengiges Notfallkommunikationssystem (z.B. Out-of-Band-Krisen-Hotline, separater Messaging-Kanal). Test der Notfallkommunikation erfolgt mindestens halbjaehrlich.
+
+                    ## 8. Identifikation und Authentisierung externer Stellen
+                    Bei Kommunikation mit Behoerden, Aufsicht oder Lieferanten werden Identifikationsmassnahmen ergriffen, um Social Engineering und Vishing zu verhindern (Rueckruf ueber bekannte Nummer, Verifikation ueber zweiten Kanal).
+
+                    ## 9. Audit
+                    Die Einhaltung wird kontinuierlich ueber das Identity-Provider-Reporting und SIEM ueberwacht. KPI: MFA-Abdeckung priviligierter Konten = 100 Prozent.
+
+                    ## 10. Pruefintervall
+                    Diese Richtlinie wird mindestens jaehrlich ueberprueft. Verantwortlich: CISO {{ roles.ciso.fullName }}.
+
+                    ## 11. Genehmigung
+                    Genehmigt durch: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 5.14 (Information transfer), 8.5 (Secure authentication), 8.20 (Networks security), 8.21 (Security of network services); FIDO2/WebAuthn; BSI-Empfehlungen zu sicherer Kommunikation; NIST SP 800-63B.*
+
+        nis2_reporting_obligations_procedure:
+            v1:
+                title: 'NIS2-Meldeverfahren BSI / Aufsicht (Art. 23 NIS2-RL + NIS2UmsuCG)'
+                body: |-
+                    # NIS2-Meldeverfahren BSI / Aufsicht der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verfahrensanweisung | Regulatorische Grundlage: Art. 23 NIS2-RL in Verbindung mit § 32 NIS2UmsuCG sowie ggf. sektorspezifische Meldepflichten | Sprache: Deutsch | Pruefintervall: jaehrlich, anlassbezogen nach jedem Vorfall*
+
+                    ## 1. Zweck
+                    Diese Verfahrensanweisung regelt operativ den Ablauf der gesetzlich verpflichtenden Meldungen nach NIS2 an das Bundesamt fuer Sicherheit in der Informationstechnik (BSI) bzw. an die fuer die {{ tenant.legal_name }} zustaendige sektorspezifische Aufsichtsbehoerde gemaess Art. 23 NIS2-RL und § 32 NIS2UmsuCG.
+
+                    ## 2. Geltungsbereich
+                    Die Verfahrensanweisung gilt fuer alle Beschaeftigten der {{ tenant.legal_name }}, die in den Erkennungs-, Bewertungs- oder Reaktionsprozess von Cybersicherheits-Vorfaellen eingebunden sind: {{ tenant.scope_statement }}.
+
+                    ## 3. Bewertung der Meldepflicht
+                    Meldepflichtig sind "signifikante Vorfaelle" gemaess Art. 23 Abs. 3 NIS2-RL. Ein Vorfall ist signifikant, wenn er
+
+                    - schwere Betriebsstoerungen oder finanzielle Verluste verursacht hat oder verursachen kann oder
+                    - andere natuerliche oder juristische Personen erheblich beeintraechtigt hat oder beeintraechtigen kann.
+
+                    Die Bewertung erfolgt durch das CSIRT / Incident Response Team unter Verantwortung des CISO {{ roles.ciso.fullName }}. Die Konkretisierung der Schwellwerte erfolgt nach den Durchfuehrungsrechtsakten (Implementing Acts) der EU-Kommission und ggf. ergaenzenden BSI-Vorgaben.
+
+                    ## 4. Meldefristen und Inhalte (Art. 23 NIS2-RL)
+                    Bei Bestaetigung der Signifikanz erfolgen die Meldungen gemaess folgender Tabelle:
+
+                    | # | Meldetyp | Frist | Pflicht-Inhalt |
+                    | --- | --- | --- | --- |
+                    | 1 | Fruehwarnung ("early warning") | innerhalb 24 Stunden ab Kenntnis | Erste Bewertung; Hinweise auf moegliche boeswillige Handlung; Hinweise auf grenzueberschreitende Auswirkungen |
+                    | 2 | Vorfallsmeldung ("incident notification") | innerhalb 72 Stunden ab Kenntnis | Erstbewertung Schwere und Auswirkung, Indicators of Compromise (IoC), Update zur Fruehwarnung, ggf. erste Massnahmen |
+                    | 3 | Zwischenbericht ("intermediate report") | auf Anforderung der Behoerde | Lagebild und Status der Eindaemmungs- und Wiederherstellungsmassnahmen |
+                    | 4 | Abschlussbericht ("final report") | innerhalb 1 Monats nach Vorfallsmeldung | Detaillierte Beschreibung des Vorfalls, Schwere und Auswirkung, Art der Bedrohung bzw. Ursache, ergriffene und geplante Abhilfemassnahmen, ggf. grenzueberschreitende Auswirkungen |
+                    | 5 | Fortschrittsbericht ("progress report") | bei langlaufender Bearbeitung, monatlich | Fortschritt der Behandlung, neue Erkenntnisse |
+
+                    Die 24-Stunden-Frist beginnt mit dem Zeitpunkt der Kenntnis von der Signifikanz, nicht der Vorfalls-Erstdetektion.
+
+                    ## 5. Meldewege
+                    Meldungen erfolgen an:
+
+                    - **Primaer:** Bundesamt fuer Sicherheit in der Informationstechnik (BSI) ueber das BSI-Meldeportal bzw. die nach § 32 NIS2UmsuCG vorgesehene technische Schnittstelle.
+                    - **Sektorspezifische Aufsicht:** parallel oder ersetzend gemaess § 28 NIS2UmsuCG (z.B. BaFin fuer Finanzentitaeten, BNetzA fuer Telekommunikation, BAFA wo zustaendig).
+                    - **Datenschutzaufsicht:** zusaetzlich bei DSGVO-Relevanz nach Art. 33 DSGVO innerhalb 72 Stunden.
+                    - **EU-Schnittstelle (CSIRTs-Network / EU-CyCLONe):** durch das BSI bzw. zustaendige Behoerde im erforderlichen Fall.
+
+                    ## 6. Verantwortlichkeiten
+                    - **CISO ({{ roles.ciso.fullName }})** – Bestaetigung der Meldepflicht, Freigabe der Meldungsinhalte.
+                    - **ISB ({{ roles.isb.fullName }})** – Erstellung und Versand der Meldungen, Pflege der Vorfallsakte.
+                    - **DSB ({{ roles.dpo.fullName }})** – parallele DSGVO-Pruefung und ggf. Datenschutz-Meldung.
+                    - **Legal** – Pruefung weiterer rechtlicher Meldepflichten und Folgen.
+                    - **Geschaeftsfuehrung / Leitungsorgan** – Information, ggf. Entscheidungen ueber externe Kommunikation.
+
+                    ## 7. Inhaltliche Anforderungen
+                    Meldungen enthalten mindestens:
+
+                    - Identifikation der meldenden Einrichtung (Name, Anschrift, Sektor, Status wesentlich/wichtig).
+                    - Vorfallsbeschreibung (Was, wann, wo, wer, wie).
+                    - Bewertung der Signifikanz mit Begruendung.
+                    - Schweregrad und Auswirkung (geschaetzt) auf Verfuegbarkeit, Vertraulichkeit, Integritaet.
+                    - Anzahl betroffener Nutzer / Diensteempfaenger.
+                    - Dauer der Beeintraechtigung.
+                    - Geographische Verbreitung (auch grenzueberschreitend).
+                    - Art und Quelle der Bedrohung soweit bekannt.
+                    - Ergriffene und geplante Massnahmen.
+                    - Ansprechpartner (Name, Telefon, E-Mail).
+
+                    ## 8. Vertraulichkeit der Meldung
+                    Meldungen werden gegenueber unbefugten Dritten vertraulich behandelt. Die {{ tenant.legal_name }} kann beim BSI gemaess § 32 Abs. 5 NIS2UmsuCG anregen, dass bestimmte Informationen vertraulich bleiben (z.B. zum Schutz laufender Strafverfolgungs- oder Wiederherstellungsmassnahmen).
+
+                    ## 9. Freiwillige Meldungen
+                    Beinahe-Vorfaelle und Cyberbedrohungen koennen gemaess Art. 30 NIS2-RL freiwillig gemeldet werden, um zur kollektiven Cybersicherheit beizutragen. Entscheidung trifft der CISO im Einzelfall.
+
+                    ## 10. Schnittstelle zu DSGVO-Meldung
+                    Bei Vorfaellen mit personenbezogenen Daten ist parallel die DSGVO-Meldung gemaess Art. 33 DSGVO innerhalb 72 Stunden an die zustaendige Datenschutzaufsicht zu pruefen. Inhalt und Zustaendigkeit unterscheiden sich; doppelte Bearbeitung ist sicherzustellen.
+
+                    ## 11. Schnittstelle zu DORA-Meldung (Finanzentitaeten)
+                    Bei Finanzentitaeten ersetzt bzw. ergaenzt die DORA-Meldung gemaess Art. 19 DORA in Verbindung mit ITS (EU) 2024/1502 die NIS2-Meldung gemaess der lex-specialis-Regel des Art. 4 Abs. 1 NIS2-RL. Klarstellung im Einzelfall durch Legal.
+
+                    ## 12. Vorfallsakte und Nachweise
+                    Pro Meldung wird eine Vorfallsakte gefuehrt mit Zeitstempeln aller Meldungen, Quittungen, Antworten der Behoerden und ggf. Nachforderungen. Die Akte ist mind. 5 Jahre revisionssicher aufzubewahren.
+
+                    ## 13. Tests und Schulung
+                    Mindestens jaehrlich erfolgt ein Tabletop-Test des Meldeverfahrens mit dem CSIRT, ISB, DSB und Legal. Beteiligte Rollen werden mindestens jaehrlich geschult.
+
+                    ## 14. Pruefintervall
+                    Diese Verfahrensanweisung wird mindestens jaehrlich, anlassbezogen nach jedem Meldefall sowie bei Aenderungen der Durchfuehrungsrechtsakte zur NIS2-RL ueberprueft. Verantwortlich: ISB {{ roles.isb.fullName }} in Abstimmung mit CISO und DSB.
+
+                    ## 15. Genehmigung
+                    Genehmigt durch das Leitungsorgan: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27001:2022 Annex A 5.5 (Contact with authorities), 5.6 (Contact with special interest groups), 5.24 (Incident planning), 5.25 (Incident assessment), 5.26 (Incident response), 6.8 (Reporting); DSGVO Art. 33-34; DORA Art. 17-23 (fuer Finanzentitaeten).*
