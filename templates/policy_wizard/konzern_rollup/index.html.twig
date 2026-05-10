@@ -15,12 +15,31 @@
         title: 'policy_wizard.konzern_rollup.title'|trans,
         subtitle: 'policy_wizard.konzern_rollup.subtitle'|trans,
         actions: [
+            { label: 'policy_wizard.konzern_rollup.one_pager.cta'|trans,
+              variant: 'primary',
+              icon: 'file-earmark-pdf',
+              href: not_a_konzern ? '#' : path('app_policy_wizard_konzern_rollup_one_pager_pdf') },
             { label: 'policy_wizard.action.back'|trans,
               variant: 'ghost',
               icon: 'arrow-left',
               href: path('app_policy_wizard_index') }
         ]
     }) }}
+
+    {# CISO Task #130 — One-Pager Date-Picker (HTML form, GET, no JS) #}
+    {% if not not_a_konzern and report is not null and not report.isEmpty %}
+        <form method="get" action="{{ path('app_policy_wizard_konzern_rollup_one_pager_pdf') }}" class="d-flex align-items-center gap-2 mb-3">
+            <label for="as_of_input" class="form-label mb-0 small">
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                {{ 'policy_wizard.konzern_rollup.one_pager.as_of_label'|trans }}
+            </label>
+            <input type="date" id="as_of_input" name="as_of" value="{{ 'now'|date('Y-m-d') }}" class="form-control form-control-sm" style="max-width: 180px;">
+            <button type="submit" class="btn btn-sm btn-primary">
+                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                {{ 'policy_wizard.konzern_rollup.one_pager.cta_short'|trans }}
+            </button>
+        </form>
+    {% endif %}
 
     {{ _fa_alert.render({
         variant: 'info',
@@ -63,6 +82,13 @@
                         {% if report.outstandingActions|length > 0 %}
                             <span class="badge bg-warning text-dark ms-1">{{ report.outstandingActions|length }}</span>
                         {% endif %}
+                    </button>
+                </li>
+                {# CISO Task #130 — Severity heatmap (Subsidiary x severity bucket). #}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-heatmap-btn" data-bs-toggle="tab" data-bs-target="#tab-heatmap" type="button" role="tab" aria-controls="tab-heatmap" aria-selected="false">
+                        <i class="bi bi-grid-3x3-gap-fill" aria-hidden="true"></i>
+                        {{ 'policy_wizard.konzern_rollup.tab.heatmap'|trans }}
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -198,7 +224,63 @@
                 }) }}
             </div>
 
-            {# Compliance tab — Chart.js stacked bar per tenant #}
+            {# CISO Task #130 — Outstanding-Action severity Heatmap
+               (Subsidiary x severity bucket). #}
+            <div class="tab-pane fade" id="tab-heatmap" role="tabpanel" aria-labelledby="tab-heatmap-btn">
+                {% set heatmap_body %}
+                    {% if report.outstandingActions|length == 0 %}
+                        {{ _fa_empty_state.render({
+                            mood: 'happy',
+                            title: 'policy_wizard.konzern_rollup.heatmap.empty'|trans
+                        }) }}
+                    {% else %}
+                        {# Build {tenant_name => {danger:n, warning:n, info:n}} #}
+                        {% set heat = {} %}
+                        {% for action in report.outstandingActions %}
+                            {% set tenantKey = action.tenant_name %}
+                            {% set bucket = heat[tenantKey]|default({'danger': 0, 'warning': 0, 'info': 0, 'tenant_code': action.tenant_code}) %}
+                            {% set sevKey = action.severity in ['danger','warning','info'] ? action.severity : 'info' %}
+                            {% set bucket = bucket|merge({(sevKey): bucket[sevKey] + 1}) %}
+                            {% set heat = heat|merge({(tenantKey): bucket}) %}
+                        {% endfor %}
+                        <p class="text-muted small mb-2">{{ 'policy_wizard.konzern_rollup.heatmap.legend'|trans }}</p>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered align-middle text-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-start">{{ 'policy_wizard.konzern_rollup.heatmap.col.tenant'|trans }}</th>
+                                        <th scope="col">{{ 'policy_wizard.konzern_rollup.heatmap.col.danger'|trans }}</th>
+                                        <th scope="col">{{ 'policy_wizard.konzern_rollup.heatmap.col.warning'|trans }}</th>
+                                        <th scope="col">{{ 'policy_wizard.konzern_rollup.heatmap.col.info'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for tenantName, cells in heat %}
+                                        <tr>
+                                            <td class="text-start">
+                                                <strong>{{ tenantName }}</strong>
+                                                <br><code class="small text-muted">{{ cells.tenant_code }}</code>
+                                            </td>
+                                            {% set dangerCls = cells.danger > 5 ? 'bg-danger text-white' : (cells.danger > 0 ? 'bg-danger-subtle' : '') %}
+                                            {% set warningCls = cells.warning > 2 ? 'bg-warning' : (cells.warning > 0 ? 'bg-warning-subtle' : '') %}
+                                            {% set infoCls = cells.info > 0 ? 'bg-info-subtle' : '' %}
+                                            <td class="{{ dangerCls }}"><strong>{{ cells.danger }}</strong></td>
+                                            <td class="{{ warningCls }}"><strong>{{ cells.warning }}</strong></td>
+                                            <td class="{{ infoCls }}"><strong>{{ cells.info }}</strong></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                {% endset %}
+                {{ _fa_section.render({
+                    title: 'policy_wizard.konzern_rollup.tab.heatmap'|trans,
+                    body: heatmap_body
+                }) }}
+            </div>
+
+            {# Compliance tab — Chart.js stacked bar per tenant + CISO #130 Trend rows #}
             <div class="tab-pane fade" id="tab-compliance" role="tabpanel" aria-labelledby="tab-compliance-btn">
                 {% set compliance_body %}
                     {% if report.complianceScore|length == 0 %}
@@ -214,6 +296,70 @@
                             {{ 'policy_wizard.konzern_rollup.tab.compliance'|trans }} ·
                             {{ report.complianceScore|length }} rows
                         </p>
+
+                        {# CISO Task #130 — Per-Subsidiary trend table (sparkline + delta + direction). #}
+                        {% if trend is not null and not trend.isEmpty %}
+                            <h3 class="h6 mt-4 mb-2 fw-semibold">
+                                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                {{ 'policy_wizard.konzern_rollup.trend.heading'|trans }}
+                            </h3>
+                            <p class="text-muted small mb-2">
+                                {{ 'policy_wizard.konzern_rollup.trend.subtitle'|trans({'%count%': trend.quarters|length}) }}
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">{{ 'policy_wizard.konzern_rollup.trend.col.tenant'|trans }}</th>
+                                            <th scope="col">{{ 'policy_wizard.konzern_rollup.trend.col.sparkline'|trans }}</th>
+                                            <th scope="col">{{ 'policy_wizard.konzern_rollup.trend.col.latest'|trans }}</th>
+                                            <th scope="col">{{ 'policy_wizard.konzern_rollup.trend.col.delta'|trans }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in trend.perSubsidiary %}
+                                            {% set scores = row.compliance_scores %}
+                                            {% set minV = min(scores) %}
+                                            {% set maxV = max(scores) %}
+                                            {% set range = (maxV - minV) > 0.0001 ? (maxV - minV) : 1 %}
+                                            <tr>
+                                                <td>
+                                                    <strong>{{ row.tenant_name }}</strong>
+                                                    <br><code class="small text-muted">{{ row.tenant_code }}</code>
+                                                </td>
+                                                <td>
+                                                    {# Inline SVG sparkline (no JS dependency, safe in print). #}
+                                                    <svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg" aria-label="{{ 'policy_wizard.konzern_rollup.trend.col.sparkline'|trans }}">
+                                                        {% set pts = [] %}
+                                                        {% for v in scores %}
+                                                            {% set x = (loop.index0 / (scores|length - 1 > 0 ? scores|length - 1 : 1)) * 116 + 2 %}
+                                                            {% set y = 28 - ((v - minV) / range) * 24 %}
+                                                            {% set pts = pts|merge([(x|number_format(1, '.', '')) ~ ',' ~ (y|number_format(1, '.', ''))]) %}
+                                                        {% endfor %}
+                                                        <polyline points="{{ pts|join(' ') }}" fill="none" stroke="#0d6efd" stroke-width="1.5" />
+                                                    </svg>
+                                                </td>
+                                                <td>
+                                                    <span class="fw-bold">{{ row.latest_score }}%</span>
+                                                </td>
+                                                <td>
+                                                    {% if row.direction == 'up' %}
+                                                        <i class="bi bi-arrow-up-circle-fill text-success" aria-hidden="true"></i>
+                                                        <span class="text-success fw-bold">+{{ row.delta_percentage_points }} pp</span>
+                                                    {% elseif row.direction == 'down' %}
+                                                        <i class="bi bi-arrow-down-circle-fill text-danger" aria-hidden="true"></i>
+                                                        <span class="text-danger fw-bold">{{ row.delta_percentage_points }} pp</span>
+                                                    {% else %}
+                                                        <i class="bi bi-dash-circle text-muted" aria-hidden="true"></i>
+                                                        <span class="text-muted">{{ row.delta_percentage_points }} pp</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 {% endset %}
                 {{ _fa_section.render({
