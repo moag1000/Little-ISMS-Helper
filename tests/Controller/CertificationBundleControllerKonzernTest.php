@@ -128,7 +128,7 @@ final class CertificationBundleControllerKonzernTest extends WebTestCase
         $this->groupCisoUser->setEmail('cb_gciso_' . $uniqueId . '@example.test');
         $this->groupCisoUser->setFirstName('Group');
         $this->groupCisoUser->setLastName('CISO');
-        $this->groupCisoUser->setRoles(['ROLE_USER', 'ROLE_GROUP_CISO']);
+        $this->groupCisoUser->setRoles(['ROLE_USER', 'ROLE_MANAGER', 'ROLE_GROUP_CISO']);
         $this->groupCisoUser->setPassword('hashed_password');
         $this->groupCisoUser->setTenant($this->holding);
         $this->groupCisoUser->setIsActive(true);
@@ -150,7 +150,7 @@ final class CertificationBundleControllerKonzernTest extends WebTestCase
         $this->standaloneCisoUser->setEmail('cb_st_gciso_' . $uniqueId . '@example.test');
         $this->standaloneCisoUser->setFirstName('Lone');
         $this->standaloneCisoUser->setLastName('GCISO');
-        $this->standaloneCisoUser->setRoles(['ROLE_USER', 'ROLE_GROUP_CISO']);
+        $this->standaloneCisoUser->setRoles(['ROLE_USER', 'ROLE_MANAGER', 'ROLE_GROUP_CISO']);
         $this->standaloneCisoUser->setPassword('hashed_password');
         $this->standaloneCisoUser->setTenant($this->standalone);
         $this->standaloneCisoUser->setIsActive(true);
@@ -159,16 +159,40 @@ final class CertificationBundleControllerKonzernTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    private function loginAndGenerateCsrfToken(User $user): string
+    {
+        // Mirror RiskControllerTest::loginAndGenerateCsrfToken — login,
+        // then GET to bootstrap session, then write token directly via
+        // SessionTokenStorage's `_csrf/<id>` key. Required because the
+        // BrowserKit client's session does not survive plain ->getToken()
+        // when no prior request has touched the firewall.
+        $this->client->loginUser($user);
+        $this->client->request('GET', '/en/certification-bundle');
+        $session = $this->client->getRequest()->getSession();
+        $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
+        $tokenValue = $tokenGenerator->generateToken();
+        $session->set('_csrf/certification_bundle_konzern_export', $tokenValue);
+        $session->save();
+        return $tokenValue;
+    }
+
     private function fetchCsrfToken(): string
     {
-        // Hit the index page first so the session bootstraps and the
-        // CSRF token store has a request to attach to (matches the pattern
-        // used by other controller tests in this suite — see CSRF memory
-        // note in CLAUDE.md).
-        $this->client->request('GET', '/en/certification-bundle');
-        $container = static::getContainer();
-        $tokenManager = $container->get('security.csrf.token_manager');
-        return $tokenManager->getToken('certification_bundle_konzern_export')->getValue();
+        // Backwards-compat alias: the old code called fetchCsrfToken()
+        // after loginUser() had already happened. We now bundle login +
+        // token in one call via loginAndGenerateCsrfToken(); this method
+        // returns a token tied to the currently-logged-in user (assuming
+        // the test already called loginUser).
+        $session = $this->client->getRequest()?->getSession();
+        if ($session === null) {
+            $this->client->request('GET', '/en/certification-bundle');
+            $session = $this->client->getRequest()->getSession();
+        }
+        $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
+        $tokenValue = $tokenGenerator->generateToken();
+        $session->set('_csrf/certification_bundle_konzern_export', $tokenValue);
+        $session->save();
+        return $tokenValue;
     }
 
     // ─── Tests ─────────────────────────────────────────────────────────
@@ -176,9 +200,7 @@ final class CertificationBundleControllerKonzernTest extends WebTestCase
     #[Test]
     public function testRequiresGroupCisoOrKonzernAuditor(): void
     {
-        $this->client->loginUser($this->unprivilegedUser);
-
-        $token = $this->fetchCsrfToken();
+        $token = $this->loginAndGenerateCsrfToken($this->unprivilegedUser);
         $this->client->request('POST', '/en/certification-bundle/konzern-export', [
             '_token' => $token,
             'frameworks' => ['ISO27001'],
@@ -196,9 +218,7 @@ final class CertificationBundleControllerKonzernTest extends WebTestCase
     #[Test]
     public function testGroupCisoOnNonHoldingTenantGetsRedirectedWithFlash(): void
     {
-        $this->client->loginUser($this->standaloneCisoUser);
-
-        $token = $this->fetchCsrfToken();
+        $token = $this->loginAndGenerateCsrfToken($this->standaloneCisoUser);
         $this->client->request('POST', '/en/certification-bundle/konzern-export', [
             '_token' => $token,
             'frameworks' => ['ISO27001'],
