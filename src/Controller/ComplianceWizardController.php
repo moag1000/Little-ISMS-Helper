@@ -15,6 +15,7 @@ use App\Service\ComplianceWizardService;
 use App\Service\MappingLibraryLoader;
 use App\Service\GapEffortCalculator;
 use App\Service\ModuleConfigurationService;
+use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,6 +55,7 @@ class ComplianceWizardController extends AbstractController
         private readonly ?ComplianceMappingRepository $mappingRepository = null,
         private readonly ?MappingLibraryLoader $mappingLibraryLoader = null,
         private readonly ?WizardSessionRepository $wizardSessionRepository = null,
+        private readonly ?PdfExportService $pdfExportService = null,
     ) {
     }
 
@@ -209,9 +211,9 @@ class ComplianceWizardController extends AbstractController
     }
 
     /**
-     * Export assessment as PDF
+     * Export assessment as PDF — V3 W2-M6: real PDF via PdfExportService (DomPDF).
      */
-    #[Route('/{wizard}/export/pdf', name: 'app_compliance_wizard_export_pdf')]
+    #[Route('/{wizard}/export/pdf', name: 'app_compliance_wizard_export_pdf', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
     #[IsGranted('ROLE_MANAGER')]
     public function exportPdf(string $wizard): Response
     {
@@ -229,19 +231,32 @@ class ComplianceWizardController extends AbstractController
 
         $config = $this->wizardService->getWizardConfig($wizard);
 
-        // Render PDF template
-        $html = $this->renderView('compliance_wizard/pdf/report.html.twig', [
+        $payload = [
             'wizard' => $wizard,
             'config' => $config,
             'result' => $result,
             'tenant' => $tenant,
             'generated_at' => new \DateTimeImmutable(),
-        ]);
+        ];
 
-        // For now, return HTML preview (PDF generation can be added later with DomPDF/wkhtmltopdf)
-        return new Response($html, Response::HTTP_OK, [
-            'Content-Type' => 'text/html',
-        ]);
+        // V3 W2-M6: Real PDF via DomPDF if service available; HTML fallback
+        // for environments where PdfExportService isn't wired (test bench).
+        if ($this->pdfExportService !== null) {
+            $pdf = $this->pdfExportService->generatePdf('compliance_wizard/pdf/report.html.twig', $payload);
+            $filename = sprintf(
+                'compliance-%s-%s.pdf',
+                $wizard,
+                (new \DateTimeImmutable())->format('Y-m-d'),
+            );
+            return new Response($pdf, Response::HTTP_OK, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+                'Content-Length' => (string) strlen($pdf),
+            ]);
+        }
+
+        $html = $this->renderView('compliance_wizard/pdf/report.html.twig', $payload);
+        return new Response($html, Response::HTTP_OK, ['Content-Type' => 'text/html']);
     }
 
     /**
@@ -429,20 +444,30 @@ class ComplianceWizardController extends AbstractController
     }
 
     /**
-     * WS-7: Compare-PDF export — renders multi-framework comparison as HTML (PDF-ready).
+     * WS-7: Compare-PDF export — renders multi-framework comparison.
+     *
+     * V3 W2-M7: dynamic allow-list = all currently available wizards
+     * (capped at 10 frameworks for PDF readability), no longer hardcoded
+     * to 5. V3 W2-M6: real PDF via DomPDF when PdfExportService present.
      */
     #[Route('/compare/export/pdf', name: 'app_compliance_wizard_compare_export_pdf', priority: 10)]
     #[IsGranted('ROLE_MANAGER')]
     public function compareExportPdf(Request $request): Response
     {
-        $allowed = ['iso27001', 'nis2', 'dora', 'tisax', 'gdpr'];
-        $selected = array_values(array_intersect(
+        // V3 W2-M7: derive allow-list from available wizards rather than
+        // hardcoded 5. ComplianceWizardService::getAvailableWizards() returns
+        // an associative array keyed by wizard code.
+        $availableKeys = array_keys($this->wizardService->getAvailableWizards());
+        $requested = array_filter(
             (array) $request->query->all('wizards'),
-            $allowed,
-        ));
+            static fn($v) => is_string($v) && $v !== '',
+        );
+        $selected = array_values(array_intersect($requested, $availableKeys));
         if ($selected === []) {
-            $selected = ['iso27001', 'nis2', 'dora'];
+            $selected = array_slice($availableKeys, 0, 3);
         }
+        // Cap at 10 frameworks for PDF readability
+        $selected = array_slice($selected, 0, 10);
 
         $tenant = $this->tenantContext->getCurrentTenant();
         $results = [];
@@ -452,13 +477,24 @@ class ComplianceWizardController extends AbstractController
             }
         }
 
-        $html = $this->renderView('compliance_wizard/pdf/compare.html.twig', [
+        $payload = [
             'wizards' => $selected,
             'results' => $results,
             'tenant' => $tenant,
             'generated_at' => new \DateTimeImmutable(),
-        ]);
+        ];
 
+        if ($this->pdfExportService !== null) {
+            $pdf = $this->pdfExportService->generatePdf('compliance_wizard/pdf/compare.html.twig', $payload);
+            $filename = sprintf('compliance-compare-%s.pdf', (new \DateTimeImmutable())->format('Y-m-d'));
+            return new Response($pdf, Response::HTTP_OK, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+                'Content-Length' => (string) strlen($pdf),
+            ]);
+        }
+
+        $html = $this->renderView('compliance_wizard/pdf/compare.html.twig', $payload);
         return new Response($html, Response::HTTP_OK, ['Content-Type' => 'text/html']);
     }
 
@@ -641,22 +677,15 @@ class ComplianceWizardController extends AbstractController
     }
 
     /**
-     * Map fine-grained wizard codes (e.g. bsi_c5, bsi_grundschutz_kern) to coarser
-     * WizardSession::WIZARD_* slot used for grouping snapshots.
+     * Map wizard codes 1:1 to WizardSession slot. V3 W2-M1: Each of the 22
+     * supported wizards now has its own slot — History/Trend no longer
+     * collapse 16 wizards into the ISO27001 bucket. Falls back to ISO27001
+     * for unknown codes (defensive default).
      */
     private function mapWizardCodeToSessionType(string $wizard): string
     {
-        return match (true) {
-            $wizard === 'iso27001' => WizardSession::WIZARD_ISO27001,
-            $wizard === 'nis2' => WizardSession::WIZARD_NIS2,
-            $wizard === 'dora' => WizardSession::WIZARD_DORA,
-            $wizard === 'tisax' => WizardSession::WIZARD_TISAX,
-            $wizard === 'gdpr' => WizardSession::WIZARD_GDPR,
-            str_starts_with($wizard, 'bsi_') => WizardSession::WIZARD_BSI,
-            // For the rest (iso22301, pci_dss, etc.) we group under the most
-            // closely-related slot. Snapshot tracking still works because
-            // the actual assessment uses the wizard parameter, not the slot.
-            default => WizardSession::WIZARD_ISO27001,
-        };
+        return in_array($wizard, WizardSession::ALL_WIZARDS, true)
+            ? $wizard
+            : WizardSession::WIZARD_ISO27001;
     }
 }

@@ -36,6 +36,53 @@ class WizardSession
     public const WIZARD_TISAX = 'tisax';
     public const WIZARD_GDPR = 'gdpr';
     public const WIZARD_BSI = 'bsi_grundschutz';
+    // V3 W2-M1: Per-wizard slots so History/Trend doesn't collapse 16 of 22
+    // wizards into the ISO27001 bucket. Each wizard has its own snapshot lane.
+    public const WIZARD_BSI_C5 = 'bsi_c5';
+    public const WIZARD_BSI_C5_2026 = 'bsi_c5_2026';
+    public const WIZARD_BSI_GRUNDSCHUTZ_STANDARD = 'bsi_grundschutz_standard';
+    public const WIZARD_BSI_GRUNDSCHUTZ_KERN = 'bsi_grundschutz_kern';
+    public const WIZARD_ISO22301 = 'iso22301';
+    public const WIZARD_ISO27017 = 'iso27017';
+    public const WIZARD_ISO27018 = 'iso27018';
+    public const WIZARD_ISO27701 = 'iso27701';
+    public const WIZARD_ISO42001 = 'iso42001';
+    public const WIZARD_NIST_CSF = 'nist_csf';
+    public const WIZARD_KRITIS = 'kritis';
+    public const WIZARD_PCI_DSS = 'pci_dss';
+    public const WIZARD_SOC2 = 'soc2';
+    public const WIZARD_EU_AI_ACT = 'eu_ai_act';
+    public const WIZARD_EUCS = 'eucs';
+    public const WIZARD_CRA = 'cra';
+
+    /**
+     * V3 W2-M1: Full list of supported wizard slots. Used by Choice-Validator
+     * and ComplianceWizardController::mapWizardCodeToSessionType().
+     */
+    public const ALL_WIZARDS = [
+        self::WIZARD_ISO27001,
+        self::WIZARD_NIS2,
+        self::WIZARD_DORA,
+        self::WIZARD_TISAX,
+        self::WIZARD_GDPR,
+        self::WIZARD_BSI,
+        self::WIZARD_BSI_C5,
+        self::WIZARD_BSI_C5_2026,
+        self::WIZARD_BSI_GRUNDSCHUTZ_STANDARD,
+        self::WIZARD_BSI_GRUNDSCHUTZ_KERN,
+        self::WIZARD_ISO22301,
+        self::WIZARD_ISO27017,
+        self::WIZARD_ISO27018,
+        self::WIZARD_ISO27701,
+        self::WIZARD_ISO42001,
+        self::WIZARD_NIST_CSF,
+        self::WIZARD_KRITIS,
+        self::WIZARD_PCI_DSS,
+        self::WIZARD_SOC2,
+        self::WIZARD_EU_AI_ACT,
+        self::WIZARD_EUCS,
+        self::WIZARD_CRA,
+    ];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -52,14 +99,7 @@ class WizardSession
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
-    #[Assert\Choice(choices: [
-        self::WIZARD_ISO27001,
-        self::WIZARD_NIS2,
-        self::WIZARD_DORA,
-        self::WIZARD_TISAX,
-        self::WIZARD_GDPR,
-        self::WIZARD_BSI,
-    ])]
+    #[Assert\Choice(choices: self::ALL_WIZARDS)]
     private ?string $wizardType = null;
 
     #[ORM\Column(length: 20)]
@@ -361,6 +401,22 @@ class WizardSession
             self::WIZARD_TISAX => 'TISAX',
             self::WIZARD_GDPR => 'GDPR/DSGVO',
             self::WIZARD_BSI => 'BSI IT-Grundschutz',
+            self::WIZARD_BSI_C5 => 'BSI C5:2020',
+            self::WIZARD_BSI_C5_2026 => 'BSI C5:2026',
+            self::WIZARD_BSI_GRUNDSCHUTZ_STANDARD => 'BSI Grundschutz Standard',
+            self::WIZARD_BSI_GRUNDSCHUTZ_KERN => 'BSI Grundschutz Kern',
+            self::WIZARD_ISO22301 => 'ISO 22301',
+            self::WIZARD_ISO27017 => 'ISO 27017',
+            self::WIZARD_ISO27018 => 'ISO 27018',
+            self::WIZARD_ISO27701 => 'ISO 27701',
+            self::WIZARD_ISO42001 => 'ISO 42001 (AI)',
+            self::WIZARD_NIST_CSF => 'NIST CSF 2.0',
+            self::WIZARD_KRITIS => 'KRITIS',
+            self::WIZARD_PCI_DSS => 'PCI DSS',
+            self::WIZARD_SOC2 => 'SOC 2',
+            self::WIZARD_EU_AI_ACT => 'EU AI Act',
+            self::WIZARD_EUCS => 'EUCS',
+            self::WIZARD_CRA => 'EU CRA',
             default => $this->wizardType ?? 'Unknown',
         };
     }

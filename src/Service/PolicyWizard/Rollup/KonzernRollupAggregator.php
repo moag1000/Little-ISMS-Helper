@@ -490,7 +490,11 @@ final class KonzernRollupAggregator
 
     private function countAcknowledgementsForTenant(Tenant $tenant): int
     {
-        $acks = $this->policyAcknowledgementRepository->findBy(['tenant' => $tenant]);
+        // Audit V3 W2-C4: count only completed ACKNOWLEDGED rows.
+        $acks = $this->policyAcknowledgementRepository->findBy([
+            'tenant' => $tenant,
+            'status' => PolicyAcknowledgement::STATUS_ACKNOWLEDGED,
+        ]);
         // Use unique (document, user) pairs so multi-version acks count
         // as a single coverage hit per (doc, user).
         $seen = [];
