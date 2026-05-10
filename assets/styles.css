@@ -43,3 +43,8 @@
 
 /* Policy-Wizard W7-E — Mobile responsive Bulk-Approval-Inbox enhancements */
 @import './styles/policy-wizard-mobile.css';
+
+/* Report-Doc 5-slot template — Cover · Exec · Data · Appendix · Footer
+   (used by templates/_components/_fa_report_doc.html.twig).
+   Sister-stylesheet to the policy-doc renderer; same Aurora-token philosophy. */
+@import './styles/report-doc.css';
