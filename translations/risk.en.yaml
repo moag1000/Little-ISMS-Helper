@@ -215,6 +215,9 @@ risk:
     ict_dependencies_help: 'Which IT systems/services are directly or indirectly affected by this risk (DORA Art. 8 + ISO 27001 A.5.9).'
     treatment_plans: Treatment Plans
     treatment_plans_help: 'Concrete mitigation plans for this risk (ISO 27005:2022 + ISO 27001 Cl. 6.1.3).'
+    # V3 W2-FV-2 — Unified Asset-overview on Risk-Show
+    all_linked_assets: All linked assets
+    all_linked_assets_help: 'Unified overview combining the primary risk subject with ICT asset dependencies, including each asset’s maximum CIA protection requirement.'
   help:
     title: Unique designation of the risk for internal reference
     category: Categorization of the risk (financial, operational, compliance, etc.)

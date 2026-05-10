@@ -192,6 +192,57 @@
                 </div>
             {% endif %}
 
+            {# V3 W2-FV-2 — Unified "All linked Assets" overview.
+               Aggregates the primary risk-subject asset and every
+               ictAssetDependency entry into a single explorable list so
+               the auditor can see EVERY asset behind the risk at a
+               glance, including the maximum CIA Schutzbedarf. #}
+            {% set _all_linked_assets = [] %}
+            {% if risk.asset %}
+                {% set _all_linked_assets = _all_linked_assets|merge([risk.asset]) %}
+            {% endif %}
+            {% if risk.ictAssetDependency is defined %}
+                {% for ictAsset in risk.ictAssetDependency %}
+                    {% if ictAsset.id not in _all_linked_assets|map(a => a.id) %}
+                        {% set _all_linked_assets = _all_linked_assets|merge([ictAsset]) %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% if _all_linked_assets|length > 1 %}
+                <div class="detail-section">
+                    <h3>
+                        <i class="fa-icon fa-icon--nav-cpu" aria-hidden="true"></i>
+                        {{ 'risk.section.all_linked_assets'|trans({}, 'risk') }}
+                        <span class="badge bg-info ms-2">{{ _all_linked_assets|length }}</span>
+                    </h3>
+                    <p class="text-muted small mb-3">{{ 'risk.section.all_linked_assets_help'|trans({}, 'risk') }}</p>
+                    <div class="row g-2">
+                        {% for a in _all_linked_assets %}
+                            {% set _max_cia = max(a.confidentialityValue|default(0), a.integrityValue|default(0), a.availabilityValue|default(0)) %}
+                            {% set _cia_class = _max_cia >= 4 ? 'danger' : (_max_cia == 3 ? 'warning' : 'secondary') %}
+                            <div class="col-md-6">
+                                <div class="card fa-section h-100">
+                                    <div class="card-body py-2 px-3">
+                                        <div class="d-flex align-items-center justify-content-between gap-2">
+                                            <a href="{{ path('app_asset_show', {id: a.id}) }}" class="text-decoration-none flex-grow-1">
+                                                <strong>{{ a.name }}</strong>
+                                            </a>
+                                            <span class="badge bg-{{ _cia_class }}-subtle text-{{ _cia_class }} small">
+                                                CIA {{ _max_cia }}/5
+                                            </span>
+                                        </div>
+                                        <small class="text-muted d-block">
+                                            {% if a.assetType %}{{ a.assetType }}{% endif %}
+                                            {% if a.dataClassification %} · {{ a.dataClassification }}{% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             {# Risk Subject: Asset, Person, Location, or Supplier #}
             {% if risk.asset or risk.person or risk.location or risk.supplier %}
                 <div class="detail-section">
