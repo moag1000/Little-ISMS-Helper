@@ -204,20 +204,34 @@ class PolicyPdfExporter
      */
     private function renderBodyHtml(Document $doc): string
     {
+        return $this->renderBodyHtmlPublic($doc, true);
+    }
+
+    /**
+     * Public surface so the document show-view (and other callers)
+     * can render the same safe-subset Markdown → HTML preview that
+     * the PDF exporter ships. When `$withFallback` is false and no
+     * body is resolvable, returns `null` — callers can hide the
+     * preview block instead of emitting a stub.
+     */
+    public function renderBodyHtmlPublic(Document $doc, bool $withFallback = true): ?string
+    {
         $effective = $doc->getEffectivePolicyBody();
         if (is_string($effective) && $effective !== '') {
             return $this->markdownToHtml($effective);
         }
 
-        $body = (string) ($doc->getDescription() ?? '');
         $vars = $doc->getSubstitutionVariables() ?? [];
         if (isset($vars['_body']) && is_string($vars['_body']) && $vars['_body'] !== '') {
-            $body = $vars['_body'];
-        } elseif ($body === '') {
-            $body = '_(empty body)_';
+            return $this->markdownToHtml($vars['_body']);
         }
 
-        return $this->markdownToHtml($body);
+        $description = (string) ($doc->getDescription() ?? '');
+        if ($description !== '') {
+            return $this->markdownToHtml($description);
+        }
+
+        return $withFallback ? $this->markdownToHtml('_(empty body)_') : null;
     }
 
     private function markdownToHtml(string $markdown): string

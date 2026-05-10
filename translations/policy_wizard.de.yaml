@@ -754,11 +754,11 @@ policy_wizard:
                 action:
                     regenerate: 'Re-Generierung starten'
                 help:
-                    title: 'Diff-Vorschau verstehen'
-                    body: 'Hier sehen Sie, welche Setting-Werte sich seit der letzten Freigabe geändert haben. Gelb hinterlegte Zeilen sind „Drift" — der aktuelle Wert weicht von der freigegebenen Baseline ab.'
-                    example: 'Beispiel: Backup-RPO wurde von 24 h (freigegeben) auf 12 h (aktuell) reduziert → Drift, gelb markiert. Re-Generierung übernimmt 12 h in das neue Dokument.'
+                    title: 'Vergleich verstehen'
+                    body: 'Hier sehen Sie, welche Einstellungs-Werte sich seit der letzten Freigabe geändert haben. Gelb hinterlegte Zeilen weichen vom freigegebenen Stand ab — der aktuelle Wert ist anders als der zuletzt geprüfte.'
+                    example: 'Beispiel: Backup-RPO wurde von 24 h (freigegeben) auf 12 h (aktuell) reduziert → Abweichung, gelb markiert. Bei Neuerzeugung übernimmt das neue Dokument 12 h.'
                 tooltip:
-                    drift: 'Drift = Abweichung zwischen aktuell wirksamem Wert und der zuletzt audit-freigegebenen Baseline.'
+                    drift: 'Abweichung = der aktuell wirksame Wert unterscheidet sich vom zuletzt audit-freigegebenen Wert.'
             generate:
                 title: 'Re-Generierung bestätigen'
                 subtitle: 'Letzter Schritt: die ausgewählten Themen werden neu erzeugt. Sandbox-Modus persistiert nichts.'
@@ -802,13 +802,13 @@ policy_wizard:
     konzern_rollup:
         title: 'Konzern Roll-Up'
         subtitle: 'Compliance-Übersicht über alle Tochtergesellschaften der Holding.'
-        alva_tipp: 'Tipp: Wechseln Sie über die Tabs zwischen Coverage, Aktionen, Compliance, Drift und Acknowledgement. Die Drift-Spalte zeigt sofort, wo eine Tochter strenger oder lascher als die Konzern-Vorgabe arbeitet.'
+        alva_tipp: 'Tipp: Wechseln Sie über die Tabs zwischen Coverage, Aktionen, Compliance, Abweichungen und Bestätigung. Die Abweichungs-Spalte zeigt sofort, wo eine Tochter strenger oder lascher als die Konzern-Vorgabe arbeitet.'
         tab:
             coverage: 'Coverage'
             actions: 'Offene Aktionen'
             compliance: 'Compliance-Score'
-            drift: 'Settings-Drift'
-            acknowledgement: 'Acknowledgement'
+            drift: 'Abweichungen'
+            acknowledgement: 'Bestätigung'
         empty:
             not_konzern: 'Diese Mandantenebene ist keine Holding.'
             no_subsidiaries: 'Es sind keine Tochtergesellschaften unterhalb dieses Tenants vorhanden.'
@@ -1069,12 +1069,12 @@ policy_wizard:
     # Drift-Badge auf Dokumenten-Index. W7-C liefert SettingsDriftDetector
     # — die Anzeige-Strings landen hier, damit W7-E den Badge wiren kann.
     drift_badge:
-        label: 'Konzern-Drift'
-        title: 'Diese Richtlinie wurde nach einer Konzern-Settings-Verschärfung nicht erneut generiert.'
-        aria_label: 'Konzern-Settings-Drift erkannt'
+        label: 'Konzern-Vorlage geändert'
+        title: 'Die Konzern-Vorgaben wurden nach Erzeugung dieser Richtlinie verschärft. Bitte neu erzeugen.'
+        aria_label: 'Konzern-Vorgaben haben sich geändert'
         settings_drift:
-            label: 'Settings-Drift'
-            tooltip: 'Settings, die diese Richtlinie steuern, haben sich seit der Erzeugung geaendert. Re-Run empfohlen.'
+            label: 'Einstellungen geändert'
+            tooltip: 'Einstellungen, die diese Richtlinie steuern, haben sich seit der Erzeugung geändert. Bitte neu erzeugen.'
 
     # W7-C — Re-generation diff UX (doc-level + variable-level only).
     diff:

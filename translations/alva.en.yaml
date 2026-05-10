@@ -128,9 +128,9 @@ alva_hint:
         cta_label: 'Open BSI wizard'
         dismiss_label: 'Not now'
     konzern_ciso_drift_alert:
-        title: 'Subsidiary drifted from konzern baseline'
-        body: 'Inside konzern %konzern_name%, %affected_count% subsidiary settings violate strict konzern defaults (forbidden_to_change / forbidden_to_relax). First sample: tenant "%first_tenant_name%", setting "%first_setting_key%". Review the drift tab in the konzern rollup and ask the subsidiary to realign before the audit catches it.'
-        cta_label: 'Open drift tab'
+        title: 'Subsidiary differs from konzern baseline'
+        body: 'Inside konzern %konzern_name%, %affected_count% subsidiary settings violate strict konzern defaults (non-changeable / non-relaxable). First sample: tenant "%first_tenant_name%", setting "%first_setting_key%". Review the "Differences" tab in the konzern rollup and ask the subsidiary to realign before the audit catches it.'
+        cta_label: 'Open differences'
         dismiss_label: 'Remind me later'
     open_finding_reference:
         title: 'Audit finding without re-run closure'

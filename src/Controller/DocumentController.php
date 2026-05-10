@@ -439,8 +439,10 @@ class DocumentController extends AbstractController
     }
 
     #[Route('/document/{id}', name: 'app_document_show', requirements: ['id' => '\d+'])]
-    public function show(Document $document): Response
-    {
+    public function show(
+        Document $document,
+        ?\App\Service\PolicyWizard\Export\PolicyPdfExporter $pdfExporter = null,
+    ): Response {
         // Security: Check if user has permission to view this document (OWASP #1 - Broken Access Control)
         $this->denyAccessUnlessGranted('view', $document);
 
@@ -462,6 +464,15 @@ class DocumentController extends AbstractController
         // calculateForDocument returns null for non-Wizard docs.
         $auditorScore = $this->auditorScoreCalculator?->calculateForDocument($document);
 
+        // Body-preview: only for wizard-generated docs (legacy uploads
+        // have no resolvable body and would render a stub). Reuses the
+        // PDF exporter's safe-subset Markdown → HTML renderer so the
+        // preview matches the printed PDF.
+        $policyBodyHtml = null;
+        if ($document->getGeneratedFromTemplate() !== null && $pdfExporter !== null) {
+            $policyBodyHtml = $pdfExporter->renderBodyHtmlPublic($document, false);
+        }
+
         return $this->render('document/show.html.twig', [
             'document' => $document,
             'isInherited' => $isInherited,
@@ -469,6 +480,7 @@ class DocumentController extends AbstractController
             'currentTenant' => $tenant,
             'inverse_coverage' => $inverseCoverage,
             'auditorScore' => $auditorScore,
+            'policyBodyHtml' => $policyBodyHtml,
         ]);
     }
 
