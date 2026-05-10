@@ -540,10 +540,31 @@
                     <div class="data-reuse-list">
                         {% for risk in incident.realizedRisks %}
                             <div class="data-reuse-item">
-                                <strong>{{ risk.title }}</strong>
-                                {% set riskClass = risk.inherentRiskLevel >= 16 ? 'danger' : (risk.inherentRiskLevel >= 9 ? 'warning' : 'success') %}
-                                {% include '_components/_badge.html.twig' with { variant: riskClass, content: 'incident.reuse.risk_level'|trans({'%level%': risk.inherentRiskLevel}, 'incident') } %}
-                                <small>{{ 'incident.reuse.probability'|trans({'%value%': risk.probability}, 'incident') }}</small>
+                                <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                    <div>
+                                        <strong>{{ risk.title }}</strong>
+                                        {% set riskClass = risk.inherentRiskLevel >= 16 ? 'danger' : (risk.inherentRiskLevel >= 9 ? 'warning' : 'success') %}
+                                        {% include '_components/_badge.html.twig' with { variant: riskClass, content: 'incident.reuse.risk_level'|trans({'%level%': risk.inherentRiskLevel}, 'incident') } %}
+                                        <small>{{ 'incident.reuse.probability'|trans({'%value%': risk.probability}, 'incident') }}</small>
+                                        {# V3 W2-FV-5 — show audit-trail of last incident-driven reassessment #}
+                                        {% if risk.lastIncidentReassessmentAt %}
+                                            <small class="text-muted d-block">
+                                                <i class="fa-icon fa-icon--util-clock" aria-hidden="true"></i>
+                                                {{ 'incident.fv5.last_reassessed'|trans({'%date%': risk.lastIncidentReassessmentAt|date('Y-m-d H:i')}, 'incident') }}
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                    {# V3 W2-FV-5 — Update Risk-Assessment button #}
+                                    <form method="post" action="{{ path('app_incident_risk_reassess', {id: incident.id, riskId: risk.id}) }}" class="m-0">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('incident-risk-reassess-' ~ incident.id ~ '-' ~ risk.id) }}">
+                                        <button type="submit"
+                                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                                title="{{ 'incident.fv5.reassess_help'|trans({}, 'incident') }}">
+                                            <i class="fa-icon fa-icon--util-refresh" aria-hidden="true"></i>
+                                            {{ 'incident.fv5.reassess_button'|trans({}, 'incident') }}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
