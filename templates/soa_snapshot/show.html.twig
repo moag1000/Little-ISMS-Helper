@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'soa' %}
+
+{% block title %}{{ 'soa.snapshot.show.title'|trans({'%date%': snapshot.asOfDate|date('Y-m-d')}, 'soa') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.soa'|trans({}, 'nav'), url: path('app_soa_index') },
+        { label: 'soa.snapshot.page.title'|trans({}, 'soa'), url: path('app_soa_snapshot_index') },
+        { label: snapshot.asOfDate|date('Y-m-d') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'camera', label: 'soa.snapshot.badge'|trans({}, 'soa') },
+    title: 'soa.snapshot.show.title'|trans({'%date%': snapshot.asOfDate|date('Y-m-d')}, 'soa'),
+    subtitle: snapshot.purpose|default(''),
+    actions: [
+        { label: 'soa.snapshot.action.export_csv'|trans({}, 'soa'), variant: 'primary', icon: 'download', href: path('app_soa_snapshot_export_csv', { id: snapshot.id }), attrs: { 'data-turbo': 'false' } },
+        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_soa_snapshot_index') }
+    ]
+}) }}
+
+<main class="fa-aurora-surface">
+    <div class="row mb-4">
+        <div class="col-md-3">
+            {{ _fa_feature_card.render({ label: 'soa.snapshot.kpi.controls'|trans({}, 'soa'), value: snapshot.controlCount, variant: 'primary' }) }}
+        </div>
+        <div class="col-md-3">
+            {{ _fa_feature_card.render({ label: 'soa.snapshot.kpi.as_of'|trans({}, 'soa'), value: snapshot.asOfDate|date('Y-m-d'), variant: 'info' }) }}
+        </div>
+        <div class="col-md-3">
+            {{ _fa_feature_card.render({ label: 'soa.snapshot.kpi.frozen_at'|trans({}, 'soa'), value: snapshot.createdAt|date('Y-m-d H:i'), variant: 'secondary' }) }}
+        </div>
+        <div class="col-md-3">
+            {{ _fa_feature_card.render({ label: 'soa.snapshot.kpi.created_by'|trans({}, 'soa'), value: snapshot.createdBy ? snapshot.createdBy.email : '—', variant: 'secondary' }) }}
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h2 class="h5">{{ 'soa.snapshot.section.integrity'|trans({}, 'soa') }}</h2>
+        <p class="mb-1"><strong>{{ 'soa.snapshot.field.checksum'|trans({}, 'soa') }}:</strong> <code>{{ snapshot.checksumSha256 }}</code></p>
+        {% if snapshot.notes %}
+            <p class="mb-0 mt-2"><strong>{{ 'soa.snapshot.field.notes'|trans({}, 'soa') }}:</strong> {{ snapshot.notes }}</p>
+        {% endif %}
+    </div>
+
+    <h2 class="h5 mb-3">{{ 'soa.snapshot.section.controls'|trans({}, 'soa') }}</h2>
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'soa.snapshot.col.control_id'|trans({}, 'soa') }}</th>
+                    <th scope="col">{{ 'soa.snapshot.col.name'|trans({}, 'soa') }}</th>
+                    <th scope="col">{{ 'soa.snapshot.col.applicable'|trans({}, 'soa') }}</th>
+                    <th scope="col">{{ 'soa.snapshot.col.status'|trans({}, 'soa') }}</th>
+                    <th scope="col">{{ 'soa.snapshot.col.evidence'|trans({}, 'soa') }}</th>
+                    <th scope="col">{{ 'soa.snapshot.col.approved_by'|trans({}, 'soa') }}</th>
+                    <th scope="col">{{ 'soa.snapshot.col.approved_at'|trans({}, 'soa') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for cid, c in controls %}
+                <tr>
+                    <td><strong>{{ c.control_id|default(cid) }}</strong></td>
+                    <td>{{ c.name|default('—') }}</td>
+                    <td>{{ c.applicable ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}</td>
+                    <td><span class="badge bg-secondary-subtle text-secondary-emphasis">{{ c.status|default('—') }}</span></td>
+                    <td>{{ c.evidence_documents is defined ? c.evidence_documents|length : 0 }}</td>
+                    <td>{{ c.approved_by_email|default('—') }}</td>
+                    <td><small>{{ c.approved_at|default('—') }}</small></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}
