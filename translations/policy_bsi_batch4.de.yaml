@@ -789,3 +789,1308 @@ policy:
 
                     ---
                     *Cross-Ref: BSI DER.2.1, ISO/IEC 27001:2022 A.5.24-A.5.27, NIST SP 800-61 Rev. 2, DSGVO Art. 33-34, NIS2-UmsuG § 32, DORA Art. 17-23, BSIG § 8b.*
+        information_exchange_policy:
+            v1:
+                title: 'Richtlinie zum Informationsaustausch'
+                body: |-
+                    # Richtlinie zum Informationsaustausch der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themen-Richtlinie | Norm-Anker: BSI CON.5 (Entwicklung und Einsatz allgemeiner Anwendungen) i.V.m. CON.1 Kryptokonzept, OPS.1.2.2 Archivierung | ISO/IEC 27001:2022 Annex A 5.14 (Information Transfer) | DSGVO Art. 32, 44–49 | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Schutzziel
+                    Diese Richtlinie regelt den sicheren Austausch von Informationen zwischen der {{ tenant.legal_name }} und internen Stellen, externen Partnern, Auftraggebern, Auftragnehmern, Aufsichtsbehoerden sowie sonstigen Dritten. Ziel ist die Wahrung von Vertraulichkeit, Integritaet, Authentizitaet und Nachweisbarkeit waehrend des gesamten Uebermittlungs-Lebenszyklus, einschliesslich Vorbereitung, Transport, Empfang, Quittierung und revisionssicherer Ablage. Sie konkretisiert die IT-Sicherheitsleitlinie und die Klassifikationsschemata der Organisationsrichtlinie (Baustein ORP.1) und ist verbindliche Vorgabe fuer alle Beschaeftigten und Beauftragten der {{ tenant.legal_name }}.
+
+                    ## 2. Geltungsbereich
+                    Die Richtlinie gilt organisatorisch fuer alle Beschaeftigten, Auftragnehmer und Dritten, die im Auftrag der {{ tenant.legal_name }} Informationen erzeugen, empfangen, weiterleiten oder loeschen. Geographisch umfasst sie alle Standorte gemaess Geltungsbereich der IT-Sicherheitsleitlinie sowie alle Cloud-Standorte gemaess Cloud-Nutzungsrichtlinie (Baustein OPS.2.2). Technisch betrifft sie saemtliche Uebertragungskanaele: E-Mail (SMTP/SMIME/PGP), Dateiaustausch (SFTP, HTTPS, Managed-File-Transfer), API-basierte Uebermittlung (REST/SOAP), physische Datentraeger (USB, optische Medien, Papier), Postdienstleistungen, Faxnachfolgedienste, Sprach- und Videokommunikation sowie Kollaborationsplattformen.
+
+                    ## 3. Klassifikations- und Kanal-Matrix
+                    Die zulaessige Wahl des Uebertragungskanals richtet sich nach der Klassifikation der zu uebertragenden Information gemaess Organisationsrichtlinie (ORP.1.A2):
+
+                    - **Oeffentlich:** Alle Kanaele zulaessig, sofern keine Integritaetsanforderung besteht.
+                    - **Intern:** Nur autorisierte interne Kanaele; bei externer Uebermittlung Verschluesselung gemaess CON.1.
+                    - **Vertraulich:** Ausschliesslich Ende-zu-Ende-verschluesselte Kanaele; Schluessellaenge und Verfahren gemaess Kryptokonzept ({{ crypto.algorithms }}); Empfaenger-Authentizitaet ist nachweispflichtig.
+                    - **Streng vertraulich / VS-NfD oder hoeher:** Ausschliesslich freigegebene Verfahren gemaess BSI-Empfehlung TR-03116 bzw. VSA. Versand nur durch namentlich Berechtigte; Doppelkontrolle bei Erstuebermittlung.
+
+                    Die Matrix ist als Anlage A dokumentiert und durch den ISB {{ roles.isb.fullName }} jaehrlich zu pruefen.
+
+                    ## 4. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Klassifikation der Information | Informationseigentuemer | Fachbereichsleitung | ISB | DSB |
+                    | Wahl des Kanals und der Schutzmassnahmen | Versendender | Informationseigentuemer | ISB | – |
+                    | Bereitstellung freigegebener Werkzeuge | IT-Betrieb | CIO | ISB | Beschaeftigte |
+                    | Pruefung von Kanal-Ausnahmen | ISB {{ roles.isb.fullName }} | Leitungsebene | DSB, Justiziariat | Antragsteller |
+                    | Dokumentation und Auditierbarkeit | IT-Betrieb | ISB | Interne Revision | – |
+                    | Vorfallbehandlung bei Fehlversand | DSB / ISB | Leitungsebene | Justiziariat | Betroffene |
+
+                    ## 5. Regelungen je Kanaltyp
+                    ### 5.1 E-Mail
+                    Externe Uebermittlung vertraulicher Informationen erfolgt ausschliesslich Ende-zu-Ende-verschluesselt (S/MIME oder OpenPGP) mit gueltigen, durch das interne Trust-Center signierten Zertifikaten. Transportverschluesselung (TLS 1.2 oder hoeher gemaess BSI TR-02102-2) ist Mindestpflicht. Anhaenge mit personenbezogenen Daten unterliegen zusaetzlich einer Quittungs- und Lese-Bestaetigungs-Vorgabe.
+
+                    ### 5.2 Datei- und Bulk-Transfer
+                    Fuer regelmaessige Bulk-Transfers ist ausschliesslich das Managed-File-Transfer-System der {{ tenant.legal_name }} zu nutzen. Ad-hoc-Transfers ueber freigegebene Cloud-Tauschplattformen sind zulaessig, sofern Mandantentrennung, Verschluesselung at-rest und in-transit sowie revisionssichere Protokollierung gewaehrleistet sind (Cross-Ref OPS.2.2).
+
+                    ### 5.3 API-Schnittstellen
+                    APIs muessen zwingend per mTLS oder OAuth 2.0 mit Token-Bindung abgesichert sein; nicht-gegenseitig authentifizierte Schnittstellen sind unzulaessig. Schemata werden versioniert; jede Schnittstelle ist im Schnittstellenregister gefuehrt und unterliegt einer Pruefung im jaehrlichen Penetrationstest-Plan.
+
+                    ### 5.4 Physische Datentraeger und Papier
+                    Datentraeger werden nur in zugelassener Form (kryptographisch verschluesselt gemaess BSI TR-03116) ausgehaendigt; Kurierwege sind dokumentiert. Papier wird in verschlossenen Umschlaegen, klassifikationsgerecht gekennzeichnet und ueber Empfangsbestaetigung versandt; bei Klassifikation "vertraulich" oder hoeher zwingend doppelt verpackt.
+
+                    ### 5.5 Sprach-, Video- und Kollaboration
+                    Sprach- und Videokonferenzen werden ueber freigegebene Plattformen abgewickelt. Aufzeichnungen unterliegen der Dokumentenrichtlinie und sind klassifikationsgerecht abzulegen. Chat-Nachrichten gelten als geschaeftliche Korrespondenz und sind revisionssicher zu archivieren.
+
+                    ## 6. Internationale Uebermittlung personenbezogener Daten
+                    Uebermittlungen in Drittlaender erfordern eine Pruefung gemaess DSGVO Kap. V (Art. 44–49). Ohne Angemessenheitsbeschluss sind Standardvertragsklauseln (SCC) sowie ergaenzende technische und organisatorische Massnahmen verpflichtend. Der DSB {{ roles.dpo.fullName }} ist vorab zu konsultieren. Schrems-II-konforme Transfer-Impact-Assessments werden im Verzeichnis von Verarbeitungstaetigkeiten gefuehrt.
+
+                    ## 7. Beweissicherung und Protokollierung
+                    Saemtliche Uebermittlungs-Ereignisse werden protokolliert (Cross-Ref OPS.1.1.5 Logging-Richtlinie): Absender, Empfaenger, Zeitstempel, Pruefsumme der Nutzlast, verwendetes Verfahren, Ergebnis. Aufbewahrungsfristen richten sich nach der Aufbewahrungs- und Loeschmatrix; mindestens jedoch zwoelf Monate fuer betriebliche Auswertung und sechs Jahre fuer steuer- und handelsrechtliche Korrespondenz.
+
+                    ## 8. Ausnahmebehandlung
+                    Ausnahmen von dieser Richtlinie beduerfen eines schriftlichen Antrags an den ISB unter Angabe von Begruendung, Dauer, kompensierender Massnahmen und Risikobewertung. Genehmigung erfolgt durch die Leitungsebene; Aufnahme in das Ausnahmeregister; automatischer Wiedervorlage-Termin spaetestens nach zwoelf Monaten.
+
+                    ## 9. Schulung und Awareness
+                    Beschaeftigte werden im Rahmen der Awareness-Schulung (Baustein ORP.3) jaehrlich zur sicheren Informationsuebermittlung sensibilisiert. Phishing-Simulationen und Fehlversand-Uebungen werden quartalsweise durchgefuehrt.
+
+                    ## 10. Mess-Kriterien und KPIs
+                    - Anteil verschluesselt versendeter externer E-Mails (Ziel: groesser 95 Prozent)
+                    - Anzahl Fehlversaende pro Quartal (Ziel: kleiner gleich 0,5 pro 1.000 Versand-Vorgaenge)
+                    - Anteil Schnittstellen mit gueltigem Penetrationstest-Nachweis (Ziel: 100 Prozent)
+                    - Reaktionszeit auf Fehlversand-Meldung (Ziel: kleiner 4 Stunden)
+
+                    ## 11. Eskalation und Vorfallbehandlung
+                    Bekannt gewordene Fehlversande, kompromittierte Kanaele oder verlorengegangene Datentraeger sind unverzueglich an den Service Desk zu melden. Bei Verdacht auf Verletzung des Schutzes personenbezogener Daten greifen die Meldewege gemaess DSGVO Art. 33/34 (Pruefintervall 72 Stunden) sowie Baustein DER.2.1.
+
+                    ## 12. Geltung, Pruefung und Genehmigung
+                    Diese Richtlinie wird mindestens alle zwoelf Monate sowie anlassbezogen ueberprueft. Verstoesse werden gemaess Personalrichtlinie (Baustein ORP.2) sanktioniert. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ORP.1 (Klassifikation), CON.1 (Kryptokonzept), OPS.1.1.5 (Logging), OPS.2.2 (Cloud-Nutzung), DER.2.1 (Vorfaelle), ISO/IEC 27001:2022 A.5.14, DSGVO Art. 32 + Kap. V, BSI TR-02102-2.*
+
+        it_administration_policy:
+            v1:
+                title: 'Richtlinie zur ordnungsgemaessen IT-Administration'
+                body: |-
+                    # Richtlinie zur ordnungsgemaessen IT-Administration der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themen-Richtlinie | Norm-Anker: BSI APP.1.1 (Office-Produkte) i.V.m. OPS.1.1.2 (Ordnungsgemaesse IT-Administration), ORP.4 (IAM) | ISO/IEC 27001:2022 Annex A 8.2 (Privileged Access Rights) + A 8.3 (Information Access Restriction) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die geordnete Wahrnehmung administrativer Taetigkeiten an IT-Systemen der {{ tenant.legal_name }} und stellt sicher, dass privilegierte Zugriffe gerechtfertigt, dokumentiert, ueberwacht und nachweisbar erfolgen. Sie schuetzt vor Missbrauch, Fehlbedienung, unbeabsichtigten Konfigurationsaenderungen und Insider-Bedrohungen und schafft die organisatorische Grundlage fuer eine pruefsichere Betriebsfuehrung gemaess BSI 200-2.
+
+                    ## 2. Geltungsbereich
+                    Die Richtlinie gilt fuer alle Beschaeftigten, Dienstleister und externen Personen, die administrative Berechtigungen auf Informationsverarbeitungssystemen, Netzkomponenten, Datenbanken, Anwendungen, Container-Plattformen, Cloud-Tenants oder Sicherheits-Werkzeugen der {{ tenant.legal_name }} besitzen oder beantragen.
+
+                    ## 3. Begriffsbestimmungen
+                    "Administrative Taetigkeit" ist jede Handlung, die Konfiguration, Verfuegbarkeit, Sicherheit oder Datenbestand eines Zielobjekts veraendern kann oder umfangreichen Lesezugriff auf vertrauliche Datenbestaende ermoeglicht. "Privilegiertes Konto" ist ein Konto mit Berechtigungen jenseits eines normalen Endanwenderprofils.
+
+                    ## 4. Trennung von Rollen und Konten
+                    Administrative Taetigkeiten erfolgen ausschliesslich ueber dedizierte administrative Konten, die strikt von den Standard-Endanwenderkonten getrennt sind (Cross-Ref ORP.4.A8). E-Mail, Internet-Browsen und Office-Nutzung sind ueber administrative Konten unzulaessig. Privilegierte Konten werden nicht fuer Mehrpersonen-Nutzung freigegeben; Ausnahme bilden ausschliesslich revisionssicher protokollierte Notfall-Konten ("break-glass") gemaess Abschnitt 9.
+
+                    ## 5. Privileged Access Management (PAM)
+                    Saemtliche privilegierten Zugriffe erfolgen ueber das zentrale PAM-System der {{ tenant.legal_name }}. Sitzungen werden aufgezeichnet, mit nachvollziehbarem Sitzungs-Identifier versehen und fuer mindestens zwoelf Monate revisionssicher aufbewahrt. Zugang erfolgt zwingend mit Mehrfaktor-Authentisierung (Cross-Ref ORP.4.A22). Just-in-Time-Aktivierung mit zeitlich befristeter Privilegienerteilung ist der Standardmodus; Permanent-Erhebung von Privilegien beduerfen einer schriftlichen Begruendung und Risikobewertung.
+
+                    ## 6. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Vergabe administrativer Rechte | IAM-Team | CIO | ISB | Vorgesetzter |
+                    | Sitzungsdurchfuehrung | Administrator | Anwendungsverantwortlicher | – | – |
+                    | Sitzungsmitschnitt-Auswertung | ISB | Leitungsebene | Datenschutzbeauftragter | Betriebsrat |
+                    | Notfall-Aktivierung | Wachhabender Admin | ISB | CIO | Leitungsebene |
+                    | Rezertifizierung | IAM-Team | ISB | Vorgesetzter | – |
+
+                    ## 7. Vier-Augen-Prinzip
+                    Aenderungen mit weitreichender Wirkung (Loeschen von Datenbanken, Aenderung der Authentisierungsinfrastruktur, Aenderung kryptographischer Schluessel, Massenoperationen mit mehr als 100 betroffenen Datensaetzen, Re-Konfiguration von Backup-Zielen) erfordern Vier-Augen-Freigabe innerhalb des Workflow-Systems. Selbstfreigaben durch denselben Anwender sind technisch unterbunden.
+
+                    ## 8. Schulung und Befaehigung
+                    Administrative Taetigkeiten setzen einen Befaehigungsnachweis voraus. Vor Erstvergabe administrativer Rechte erfolgt eine fachliche Schulung und eine Schulung zur Sicherheits- und Verschwiegenheitsverpflichtung. Wiederholungsschulungen mindestens alle zwoelf Monate.
+
+                    ## 9. Notfall-Konten ("break-glass")
+                    Notfall-Konten sind in einem versiegelten Tresor (digital oder physisch) hinterlegt, mit eindeutigen Hashes versehen und unterliegen einer wiederkehrenden Pruefung. Aktivierung erfolgt ausschliesslich auf schriftlichen Auftrag der wachhabenden Krisenstabsleitung. Nach Nutzung wird das Passwort unverzueglich rotiert und der Vorgang innerhalb von 24 Stunden im Vorfallregister dokumentiert.
+
+                    ## 10. Externe Administratoren
+                    Externe Dienstleister mit administrativen Rechten unterliegen den Regelungen der Outsourcing-Richtlinie (Baustein OPS.2.1). Sie erhalten ausschliesslich Just-in-Time-Zugaenge ueber das PAM-System; persistierende VPN-Zugaenge fuer Wartungspartner sind unzulaessig. Wartungsfenster werden vorab im Change-Management angemeldet und nach Abschluss revisionssicher quittiert.
+
+                    ## 11. Logging und Auswertung
+                    Saemtliche administrativen Taetigkeiten werden in der zentralen Protokollierung erfasst (Cross-Ref OPS.1.1.5). Auffaelligkeiten werden durch Korrelationsregeln im SIEM ausgewertet. Stichprobenartige Sitzungs-Auswertungen erfolgen monatlich durch den ISB unter Beachtung der Mitbestimmungsrechte gemaess BetrVG § 87 Abs. 1 Nr. 6.
+
+                    ## 12. Trennung Produktions- und Test-Umgebungen
+                    Administrative Konten werden separiert nach Umgebung gefuehrt; ein Konto darf nicht gleichzeitig Produktions- und Testberechtigungen vereinen. Konfigurationen werden ueber Infrastructure-as-Code-Pipelines bereitgestellt; manuelle Aenderungen in Produktivumgebungen sind ausserhalb von Notfaellen unzulaessig (Cross-Ref OPS.1.2.4 Patch- und Aenderungsmanagement).
+
+                    ## 13. Mess-Kriterien und KPIs
+                    - Anteil PAM-vermittelter administrativer Sitzungen (Ziel: 100 Prozent)
+                    - Mittlere Privilegien-Verweildauer (Ziel: kleiner 8 Stunden)
+                    - Quote rezertifizierter privilegierter Konten je Quartal (Ziel: 100 Prozent)
+                    - Anzahl genehmigter Vier-Augen-Pflicht-Verstoesse (Ziel: 0)
+
+                    ## 14. Pruefung und Genehmigung
+                    Pruefintervall mindestens alle zwoelf Monate sowie anlassbezogen. Verstoesse werden disziplinarisch gemaess Personalrichtlinie (Baustein ORP.2) sowie ggf. arbeits-, zivil- oder strafrechtlich verfolgt. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ORP.4 (IAM), OPS.1.1.5 (Logging), OPS.1.2.4 (Patch/Change), OPS.2.1 (Outsourcing), ISO/IEC 27001:2022 A.8.2/A.8.3, BSI TR-02102.*
+
+        it_forensics:
+            v1:
+                title: 'Richtlinie zur IT-Forensik'
+                body: |-
+                    # Richtlinie zur IT-Forensik der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themen-Richtlinie | Norm-Anker: BSI DER.2.2 (Vorsorge fuer die IT-Forensik) i.V.m. DER.2.1 (Behandlung von Sicherheitsvorfaellen) | ISO/IEC 27001:2022 Annex A 5.28 (Collection of Evidence) | StPO §§ 94 ff., BDSG §§ 26, 32 | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie schafft die organisatorischen, personellen und technischen Voraussetzungen, um nach einem Sicherheitsvorfall beweissicher Spuren zu sichern, zu analysieren und gegebenenfalls Strafverfolgungs- oder Aufsichtsbehoerden zur Verfuegung zu stellen. Sie ergaenzt die Vorfallbehandlung (Baustein DER.2.1) um eine forensisch belastbare Evidenz-Verarbeitungskette und gewaehrleistet, dass die {{ tenant.legal_name }} im Konfliktfall ihre Sorgfaltspflichten gemaess BSIG, NIS2-UmsuG und DSGVO Art. 33 nachweisen kann.
+
+                    ## 2. Geltungsbereich
+                    Die Richtlinie gilt fuer alle IT-Systeme, Anwendungen, Cloud-Tenants und Speicherorte im Geltungsbereich der IT-Sicherheitsleitlinie. Sie umfasst Vor-Ort-Systeme, virtuelle Maschinen, Container, Cloud-Workloads, mobile Endgeraete und Wechseldatentraeger.
+
+                    ## 3. Forensik-Tier-Modell
+                    Die {{ tenant.legal_name }} unterscheidet drei Tiefenstufen forensischer Reaktion:
+
+                    1. **Tier-1 Triage:** Erstaufnahme durch SOC innerhalb von 60 Minuten; Sicherung fluechtiger Spuren (Hauptspeicher, Netzverbindungen, Prozesslisten).
+                    2. **Tier-2 Vertiefte Analyse:** Datentraegersicherung, Log-Korrelation, Malware-Reverse-Engineering, Zeitfenster-Rekonstruktion.
+                    3. **Tier-3 Gerichtsverwertbarkeit:** Mitwirkung von extern beauftragten Sachverstaendigen, lueckenlose Chain-of-Custody, gegebenenfalls Notarisierung der Hashes.
+
+                    Die Eskalation zwischen den Tiers erfolgt in Abstimmung des ISB {{ roles.isb.fullName }} mit dem Justiziariat und der Leitungsebene.
+
+                    ## 4. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Forensik-Bereitschaft (Werkzeuge, Trainings) | SOC-Lead | ISB | CIO | – |
+                    | Sicherung fluechtiger Daten | Forensik-Ersthelfer | SOC-Lead | ISB | – |
+                    | Datentraegerimage | Forensik-Spezialist | ISB | Justiziariat | DSB |
+                    | Beweismittel-Uebergabe | ISB | Leitungsebene | Justiziariat | Behoerde |
+                    | Zeugenaussage / Sachverstaendiger | Externer Forensiker | ISB | Justiziariat | – |
+
+                    ## 5. Vorbereitende Massnahmen (Readiness)
+                    - Forensik-Werkzeugkoffer (write-blocker, Imaging-Software, Hash-Tools, Schreibsperren) ist betriebsbereit hinterlegt.
+                    - Aktuelle Triage- und Imaging-Playbooks sind im ISMS-Dokumentensystem versioniert.
+                    - Zeit-Synchronisation aller Systeme ueber gehaertete NTP-Quellen ist sichergestellt; Drift-Schwelle 0,5 Sekunden.
+                    - Logging-Vorratsfristen sind so bemessen, dass eine Rueckschau ueber mindestens 180 Tage moeglich ist (Cross-Ref OPS.1.1.5).
+                    - Vertraege mit externen Forensik-Dienstleistern sind vorab abgeschlossen, inkl. Reaktionszeit (Ziel: kleiner 8 Stunden), Geheimhaltung und Gerichtsstandvereinbarung.
+
+                    ## 6. Beweissicherungs-Verfahren
+                    Saemtliche Sicherungen erfolgen schreibgeschuetzt; bei Datentraegern werden bit-genaue Images mit anschliessender Hashbildung (SHA-256 und SHA-512) erzeugt. Die Hash-Werte werden in einem revisionssicheren Beweismittelregister hinterlegt. Originale werden versiegelt und in einem zugriffsbeschraenkten Asservatenraum gemaess INF.1.A4 verwahrt. Die Chain-of-Custody (Datum, Uhrzeit, Person, Massnahme, Ergebnis) wird lueckenlos dokumentiert.
+
+                    ## 7. Cloud-Forensik
+                    In Cloud-Umgebungen werden Snapshots ueber API-gestuetzte, signierte Verfahren erstellt. Es ist sicherzustellen, dass die zugrundeliegenden Cloud-Vertraege (Cross-Ref OPS.2.2) Forensik-Klauseln enthalten, die Image-Bezug, Region-Spezifikation und Reaktionszeiten regeln. Auf gemeinsam genutzten Plattformen wird ausschliesslich auf den eigenen Mandanten zugegriffen; Drittmandanten-Daten sind aus dem Beweismaterial zu entfernen.
+
+                    ## 8. Datenschutz und Mitbestimmung
+                    Die forensische Analyse personenbezogener Daten erfolgt unter Mitwirkung des Datenschutzbeauftragten {{ roles.dpo.fullName }} und unter Beachtung der Mitbestimmungsrechte des Betriebsrats gemaess BetrVG § 87 Abs. 1 Nr. 6. Die Verhaeltnismaessigkeit ist im Einzelfall zu pruefen und schriftlich zu begruenden; eine Pre-Authorization-Liste mit Standardszenarien ist hinterlegt.
+
+                    ## 9. Beauftragung externer Sachverstaendiger
+                    Externe Forensiker werden ausschliesslich auf Grundlage eines schriftlichen Mandats und einer Verschwiegenheitsverpflichtung taetig. Die Auftragsvergabe erfolgt ueber das Justiziariat in Abstimmung mit dem ISB. Beweismittel werden lueckenlos verfolgbar uebergeben; Zwischenergebnisse unterliegen der Geheimhaltung.
+
+                    ## 10. Beweismittel-Aufbewahrung und Vernichtung
+                    Beweismittel werden mindestens fuer die Dauer eines laufenden Verfahrens, mindestens jedoch fuer drei Jahre aufbewahrt. Die Vernichtung erfolgt nach schriftlicher Freigabe durch das Justiziariat und unter Anwendung der Loeschrichtlinie (BSI APP.1.1.A11) sowie mittels physischer Vernichtung gemaess DIN 66399 Sicherheitsstufe H-7.
+
+                    ## 11. Schulung und Uebung
+                    Forensik-Ersthelfer und SOC-Mitarbeitende werden mindestens jaehrlich geschult; die Wirksamkeit der Playbooks wird durch eine simulationsgestuetzte Uebung pro Halbjahr nachgewiesen. Lessons Learned werden in das Vorfallregister und in das ISMS-Wirksamkeits-Programm rueckgefuehrt.
+
+                    ## 12. Mess-Kriterien und KPIs
+                    - Mittlere Zeit bis Triage-Beginn (Ziel: kleiner 60 Minuten)
+                    - Anteil Vorfaelle mit vollstaendiger Chain-of-Custody (Ziel: 100 Prozent)
+                    - Quote bestandener Forensik-Uebungen (Ziel: 100 Prozent)
+                    - Anzahl Beweismittel-Beanstandungen durch Aufsicht oder Justiz (Ziel: 0)
+
+                    ## 13. Eskalation
+                    Bei Verdacht strafbarer Handlungen erfolgt Information der Leitungsebene und Pruefung der Strafanzeige durch das Justiziariat. Bei Vorfaellen mit Bezug zu kritischen Infrastrukturen ist BSI binnen 24 Stunden gemaess BSIG § 8b zu informieren; bei DSGVO-Bezug greift die 72-Stunden-Frist gemaess Art. 33.
+
+                    ## 14. Pruefung und Genehmigung
+                    Pruefintervall jaehrlich sowie anlassbezogen. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: DER.2.1 (Vorfaelle), DER.4 (Notfallmanagement), OPS.1.1.5 (Logging), OPS.2.2 (Cloud), INF.1 (Gebaeude), ISO/IEC 27001:2022 A.5.28, DSGVO Art. 33/34.*
+
+        logging_policy:
+            v1:
+                title: 'Richtlinie zur Protokollierung'
+                body: |-
+                    # Richtlinie zur Protokollierung der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themen-Richtlinie | Norm-Anker: BSI OPS.1.1.5 (Protokollierung) | ISO/IEC 27001:2022 Annex A 8.15 (Logging) + A 8.16 (Monitoring Activities) | DSGVO Art. 32, 25 | BetrVG § 87 Abs. 1 Nr. 6 | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt den Umfang, die Methode, die Aufbewahrung, den Schutz und die Auswertung von Protokolldaten in den IT-Systemen, Anwendungen und Cloud-Diensten der {{ tenant.legal_name }}. Sie schafft die Grundlage fuer die Erkennung sicherheitsrelevanter Ereignisse, die forensische Aufarbeitung von Vorfaellen, die Erfuellung gesetzlicher Aufzeichnungspflichten sowie die kontinuierliche Wirksamkeitspruefung der Sicherheitsmassnahmen.
+
+                    ## 2. Geltungsbereich
+                    Sie umfasst saemtliche Komponenten des IT-Verbunds einschliesslich Server-, Client-, Netzkomponenten, Anwendungen, Datenbanken, Identity-Provider, Sicherheits-Werkzeuge (SIEM, EDR, IDS, NDR, WAF), Cloud-Tenants sowie betriebsrelevanter physischer Sicherheitssysteme (Zutritt, Video). Personenbezogene Protokolle werden gesondert markiert (siehe Abschnitt 8).
+
+                    ## 3. Mindest-Logging-Inhalte
+                    Pro Ereignis sind aufzuzeichnen:
+
+                    - Zeitstempel in UTC (sekundengenau, NTP-synchron)
+                    - Quelle (System-, Hostname und IP)
+                    - Subjekt (User-Identifier oder Service-Account)
+                    - Aktion (CRUD-Verb, Kommando, Ereignistyp)
+                    - Zielobjekt (Pfad, Datenbankobjekt, URL)
+                    - Ergebnis (Erfolg, Fehler, Code)
+                    - Korrelations-Identifier (Trace-/Session-ID)
+
+                    ## 4. Mindest-Loggable-Ereignisse
+                    Folgende Ereignistypen sind verpflichtend zu protokollieren (Mindestbasis gemaess OPS.1.1.5.A6):
+
+                    - An- und Abmeldungen, fehlgeschlagene Authentisierungen, Sperrungen
+                    - Vergabe, Aenderung und Entzug von Rechten
+                    - Privilegierte Aktionen administrativer Konten
+                    - Zugriffe auf vertrauliche und streng vertrauliche Daten
+                    - Sicherheitsrelevante Konfigurationsaenderungen
+                    - Start, Stopp und Aenderung sicherheitsrelevanter Dienste
+                    - Ereignisse aus Schadprogramm-Schutz, IDS, EDR und Firewall
+                    - Externe Schnittstellen-Zugriffe und Datenexporte
+
+                    ## 5. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Definition Logging-Anforderungen | ISB | Leitungsebene | DSB, IT-Architektur | Anwendungsverantwortliche |
+                    | Bereitstellung zentraler Log-Plattform | IT-Betrieb | CIO | ISB | – |
+                    | Korrelations-Regeln und Use Cases | SOC-Lead | ISB | Anwendungsverantwortliche | – |
+                    | Auswertung personenbezogener Logs | ISB | Leitungsebene | DSB, Betriebsrat | Betroffene |
+                    | Vorratspflege und Loeschung | IT-Betrieb | ISB | DSB | – |
+
+                    ## 6. Zentrale Protokollierung und Schutz
+                    Saemtliche relevante Logs werden in einer zentralen, gehaerteten Logging-Infrastruktur konsolidiert (SIEM). Der Transport erfolgt verschluesselt (TLS 1.2 oder hoeher). Log-Daten werden gegen Veraenderung geschuetzt durch Append-only-Speicher, Hash-Verkettung und revisionssichere Aufbewahrung. Administrative Zugriffe auf das Logging-System unterliegen Vier-Augen-Prinzip und werden ihrerseits protokolliert ("Logging das Logging").
+
+                    ## 7. Aufbewahrungsfristen
+                    Die Aufbewahrungsfristen orientieren sich an betrieblicher Notwendigkeit, Datenschutz und gesetzlicher Verpflichtung:
+
+                    - Sicherheitsrelevante Logs (Authentisierung, Privilegien, IDS): 12 Monate online, 24 Monate Archiv
+                    - Anwendungs-Audit-Logs mit Personenbezug: 6 Monate online, dann automatische Loeschung, sofern keine laufende Auswertung
+                    - Netz-Flow-Daten (NetFlow): 90 Tage rolling
+                    - Protokolldaten zur Erfuellung handels-/steuerrechtlicher Pflichten: 10 Jahre
+
+                    Abweichungen sind im Aufbewahrungsverzeichnis zu dokumentieren.
+
+                    ## 8. Datenschutzrechtliche Vorgaben
+                    Personenbezogene Auswertungen erfolgen ausschliesslich zweckgebunden und unter Mitwirkung von DSB {{ roles.dpo.fullName }} sowie Betriebsrat. Eine Vorabkontrolle mittels DSFA gemaess DSGVO Art. 35 erfolgt bei Einfuehrung neuer Auswertewerkzeuge. Pseudonymisierung wird, soweit technisch moeglich, eingesetzt; Re-Identifikation erfordert Vier-Augen-Freigabe und wird protokolliert.
+
+                    ## 9. Korrelation und Detektion
+                    Das SOC betreibt definierte Use-Case-Regeln, die mindestens halbjaehrlich gegen das aktuelle Bedrohungsbild und die SOC-Tier-Performance gemessen werden. Falsch-Positiv-Quoten sind Teil der KPI-Auswertung. Anomalie-Detektion auf Basis maschinellen Lernens darf nur auf nicht-personenbezogenen oder pseudonymisierten Daten betrieben werden.
+
+                    ## 10. Cloud- und SaaS-Logs
+                    Bei Cloud-Diensten ist sicherzustellen, dass mandantenfaehige Audit-Logs (z. B. Cloud Audit Logs, Azure Sign-In Logs, AWS CloudTrail) aktiviert und in das zentrale SIEM exportiert werden. Vertraege mit Cloud-Anbietern muessen Zugriff auf Audit-Logs sowie eine Mindestaufbewahrungsfrist von 90 Tagen vorsehen (Cross-Ref OPS.2.2).
+
+                    ## 11. Auswertung und Reporting
+                    Sicherheitsrelevante Auffaelligkeiten werden im SOC-Tagesreport dokumentiert; Wochen- und Monatsberichte gehen an ISB und Leitungsebene. Vorfallsverdaechtige Befunde fuehren zur Eskalation gemaess Vorfallrichtlinie (Baustein DER.2.1).
+
+                    ## 12. Mess-Kriterien und KPIs
+                    - Anteil Systeme, die Mindest-Logging-Anforderungen erfuellen (Ziel: groesser 95 Prozent)
+                    - Mittlere Zeit zwischen Ereignis und SIEM-Sichtbarkeit (Ziel: kleiner 5 Minuten)
+                    - Anteil regelmaessig getesteter Use Cases (Ziel: 100 Prozent pro Halbjahr)
+                    - Anzahl revisionssicher abgelehnter Loesch-Anfragen ohne Begruendung (Ziel: 0)
+
+                    ## 13. Pruefung und Genehmigung
+                    Pruefintervall jaehrlich sowie anlassbezogen. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ORP.4 (IAM), DER.1 (Detektion), DER.2.1 (Vorfaelle), OPS.2.2 (Cloud), ISO/IEC 27001:2022 A.8.15/A.8.16, DSGVO Art. 32, BetrVG § 87 Abs. 1 Nr. 6.*
+
+        malware_protection_policy:
+            v1:
+                title: 'Richtlinie zum Schutz vor Schadprogrammen'
+                body: |-
+                    # Richtlinie zum Schutz vor Schadprogrammen der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themen-Richtlinie | Norm-Anker: BSI OPS.1.1.4 (Schutz vor Schadprogrammen) i.V.m. SYS.2.1, NET.1.1, OPS.1.1.5 | ISO/IEC 27001:2022 Annex A 8.7 (Protection Against Malware) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Schutzziel
+                    Diese Richtlinie legt verbindliche Anforderungen an Praevention, Detektion, Reaktion und Wiederherstellung im Zusammenhang mit Schadprogrammen fest. Ziel ist die Begrenzung der Eintrittswahrscheinlichkeit, die fruehzeitige Erkennung und Eindaemmung sowie die geordnete Wiederherstellung des Geschaeftsbetriebs nach einem Vorfall mit Schadprogramm-Bezug. Sie ergaenzt die IT-Sicherheitsleitlinie und ist eingebettet in das Vorfall- und Notfallmanagement (Cross-Ref DER.2.1, DER.4).
+
+                    ## 2. Geltungsbereich
+                    Die Richtlinie gilt fuer alle Endgeraete, Server, virtuellen Maschinen, Container-Plattformen, mobile Geraete, Wechseldatentraeger sowie fuer Cloud-Workloads im Verantwortungsbereich der {{ tenant.legal_name }}. Sie umfasst auch BYOD-Geraete im Rahmen der MDM-Integration.
+
+                    ## 3. Praeventive Massnahmen
+                    - Endpoint-Detection-and-Response (EDR) ist auf allen unterstuetzten Endgeraeten und Servern installiert; Signatur- und Verhaltensregeln werden mindestens taeglich aktualisiert.
+                    - Software-Whitelisting bzw. Application-Control auf administrativen Workstations und kritischen Servern; Allow-Listen werden ueber Change-Management gepflegt (OPS.1.2.4).
+                    - Makro-Ausfuehrung in Office-Anwendungen ist standardmaessig deaktiviert; signierte Makros aus internen Vertrauenspfaden sind die Ausnahme.
+                    - E-Mail-Sicherheits-Gateway prueft Anhaenge und Links; Sandboxing fuer aktive Inhalte; URL-Defang und Time-of-Click-Pruefung.
+                    - Web-Proxy mit Kategorien-Filter und SSL-Inspektion (mit Datenschutz-Vorabkontrolle) ist verpflichtend.
+                    - Wechseldatentraeger werden vor Nutzung gescannt; nicht freigegebene Datentraeger sind technisch blockiert.
+
+                    ## 4. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Strategie und Architektur | ISB | CIO | SOC-Lead | – |
+                    | Betrieb EDR/AV-Plattform | IT-Betrieb | CIO | ISB | – |
+                    | Reaktion auf Funde | SOC | ISB | Anwendungsverantwortliche | Leitungsebene |
+                    | Wiederherstellung | IT-Betrieb | CIO | ISB | Anwendungsverantwortliche |
+                    | Lessons Learned | ISB | Leitungsebene | SOC, IT-Betrieb | – |
+
+                    ## 5. Detektion und Alarmierung
+                    EDR-Telemetrie wird in das zentrale SIEM eingespeist (Cross-Ref OPS.1.1.5). Alarme werden im SOC nach Tier-Modell triagiert; kritische Alarme (Bewertung "high" oder "critical") werden binnen 30 Minuten an einen Vorfall-Manager eskaliert. Ergaenzend werden Threat-Intelligence-Indikatoren (IOC) automatisch gegen Logbestaende und Live-Verkehr gematcht.
+
+                    ## 6. Reaktion
+                    Verdaechtige Endgeraete werden binnen 15 Minuten netzwerkseitig isoliert (EDR Containment). Bei bestaetigtem Befall greift die Vorfallrichtlinie (DER.2.1). Festplatten-Sicherung wird gemaess Forensik-Richtlinie (DER.2.2) durchgefuehrt. Wiederinbetriebnahme erfolgt ausschliesslich nach Wiederaufsetzen aus vertrauenswuerdigem Build (Image-basiert), nicht durch Reparatur.
+
+                    ## 7. Ransomware-spezifische Vorgaben
+                    - Backup-Konzept (Baustein CON.3) sieht zwingend Offline-/Air-gapped-Sicherung mit RPO {{ backup.rpo_hours }} Stunden vor.
+                    - Wiederanlauf-Tests (Restore-Drill) werden mindestens halbjaehrlich durchgefuehrt.
+                    - Loesegeldzahlungen sind grundsaetzlich unzulaessig; Ausnahmen ausschliesslich nach Beschluss der Leitungsebene unter Einbeziehung von Justiziariat, externer Beratung und Strafverfolgungsbehoerden.
+                    - Krisenstab tritt automatisch bei Ransomware-Verdacht zusammen (Cross-Ref BSI 200-4).
+
+                    ## 8. Sonderfaelle: ICS/OT, IoT, Mobile
+                    In ICS/OT-Umgebungen sind nur freigegebene, herstellerunterstuetzte Schutzloesungen einzusetzen (Cross-Ref IND-Schicht). Mobile Endgeraete unterliegen MDM-Konfiguration mit App-Reputation-Pruefung; Jailbroken/Rooted-Geraete werden technisch blockiert. IoT-Geraete werden netzsegmentiert (NET.1.1) und ueber dedizierte Sicherheits-Sensoren ueberwacht.
+
+                    ## 9. Schulung und Awareness
+                    Alle Beschaeftigten werden jaehrlich zu Schadprogramm-Risiken, Phishing und sicheren Verhaltensregeln geschult. Phishing-Simulationen werden quartalsweise durchgefuehrt; Wiederholungstaetern wird gezieltes Coaching angeboten.
+
+                    ## 10. Mess-Kriterien und KPIs
+                    - Anteil Geraete mit aktivem, aktuellem EDR (Ziel: groesser 98 Prozent)
+                    - Mittlere Zeit bis Containment kompromittierter Endgeraete (Ziel: kleiner 30 Minuten)
+                    - Erfolgsquote der Restore-Drills (Ziel: 100 Prozent innerhalb der RPO/RTO)
+                    - Phishing-Klick-Rate (Ziel: kleiner 5 Prozent, sinkend)
+
+                    ## 11. Berichtspflichten
+                    Schadprogramm-Vorfaelle mit erheblicher Auswirkung werden gemaess BSIG § 8b sowie ggf. NIS2-UmsuG-Meldewegen an das BSI gemeldet. Die DSGVO-Bewertung erfolgt parallel durch den DSB.
+
+                    ## 12. Pruefung und Genehmigung
+                    Pruefintervall jaehrlich sowie anlassbezogen. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: OPS.1.1.5 (Logging), OPS.1.2.4 (Patch/Change), CON.3 (Backup), DER.2.1 (Vorfaelle), DER.2.2 (Forensik), DER.4 (Notfall), NET.1.1 (Netzarchitektur), ISO/IEC 27001:2022 A.8.7.*
+
+        organization_policy:
+            v1:
+                title: 'Organisations-Richtlinie'
+                body: |-
+                    # Organisations-Richtlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themen-Richtlinie | Norm-Anker: BSI ORP.1 (Organisation) | ISO/IEC 27001:2022 Annex A 5.2 (Information Security Roles & Responsibilities), A 5.3 (Segregation of Duties), A 5.4 (Management Responsibilities) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie konkretisiert die organisatorische Verankerung der Informationssicherheit innerhalb der {{ tenant.legal_name }}. Sie regelt Rollen, Verantwortlichkeiten, Funktionstrennung, Berichtswege und Zusammenarbeitsmodelle und stellt sicher, dass Sicherheitsanforderungen entlang der Aufbau- und Ablauforganisation kontinuierlich, eindeutig und nachvollziehbar wahrgenommen werden.
+
+                    ## 2. Geltungsbereich
+                    Die Richtlinie gilt fuer saemtliche Organisationseinheiten, Beschaeftigte (unabhaengig vom Beschaeftigungsverhaeltnis), Praktikantinnen und Praktikanten, Auftragnehmer und Dritte im Geltungsbereich der IT-Sicherheitsleitlinie ({{ tenant.scope_statement }}).
+
+                    ## 3. Aufbauorganisation der Informationssicherheit
+                    Die Sicherheitsorganisation der {{ tenant.legal_name }} ist mindestens wie folgt aufgestellt (vgl. ISMS.1.A1, A3):
+
+                    - **Leitungsebene** mit Gesamtverantwortung
+                    - **Informationssicherheitsbeauftragter (ISB)** {{ roles.isb.fullName }} mit unmittelbarem Berichtsweg zur Leitungsebene
+                    - **IS-Management-Team** {{ roles.is_management_team }} als beratendes Gremium
+                    - **Datenschutzbeauftragter (DSB)** {{ roles.dpo.fullName }} – personenidentisch zum ISB unzulaessig
+                    - **Notfallbeauftragter** {{ roles.notfallbeauftragter.fullName }} – verantwortlich fuer das BCM
+                    - **CISO** (sofern eingerichtet) als strategisch-leitende Funktion
+                    - **Anwendungs- und Systemverantwortliche** in den Fachbereichen
+
+                    Die Funktionsbeschreibungen sind formal genehmigt, ressourciert und in der Stellenbeschreibung verankert.
+
+                    ## 4. Funktionstrennung (Segregation of Duties)
+                    Konflikt-traechtige Funktionspaare werden organisatorisch und technisch getrennt. Mindestens unzulaessig sind die Kombinationen: Entwickler / Produktiv-Administrator, Antragsteller / Genehmiger im IAM, Beschaffer / Rechnungsfreigeber, Verarbeiter / Pruefer im Datenschutz. Eine SoD-Matrix ist bei Bedarf in der IAM-Plattform technisch unterstuetzt; Verstoesse werden monatlich berichtet.
+
+                    ## 5. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Festlegung Aufbau- und Sicherheitsorganisation | ISB | Leitungsebene | HR, Justiziariat | Beschaeftigte |
+                    | Pflege der Stellenbeschreibungen | HR | Leitungsebene | ISB | Vorgesetzter |
+                    | Sicherstellung Funktionstrennung | ISB | Leitungsebene | IT-Betrieb, IAM | Vorgesetzter |
+                    | Genehmigung Sicherheitsdokumente | Leitungsebene | Leitungsebene | ISB | Beschaeftigte |
+                    | Quartals-Berichterstattung an Leitung | ISB | Leitungsebene | – | – |
+
+                    ## 6. Berichts- und Eskalationswege
+                    - Alle Beschaeftigten sind verpflichtet, sicherheitsrelevante Beobachtungen unverzueglich an den Service Desk oder den ISB zu melden.
+                    - Der ISB berichtet quartalsweise schriftlich und mindestens jaehrlich muendlich an die Leitungsebene.
+                    - Eskalation in die Krisenstabsorganisation (Baustein DER.4) erfolgt bei Vorfaellen mit hoher Geschaeftsauswirkung oder regulatorischer Meldepflicht.
+                    - Im Anlassfall hat der ISB ein Vetorecht bei sicherheitskritischen Vorhaben mit unmittelbarer Berichts-Pflicht an die Leitungsebene.
+
+                    ## 7. Zusammenarbeit mit anderen Funktionen
+                    - **Datenschutz:** Gemeinsame Vorhaben mit DSB; gegenseitige Konsultation bei DSFA, ISMS-Aenderungen und Vorfaellen mit Personenbezug.
+                    - **Compliance / Justiziariat:** Abstimmung bei vertraglichen, regulatorischen und aufsichtsrechtlichen Themen.
+                    - **Interne Revision:** Pruefungen werden im Auditprogramm vereinbart; Pruefberichte gehen an Leitungsebene und ISB.
+                    - **Beschaffung:** Verbindliche Beteiligung des ISB bei sicherheits- und datenschutzrelevanten Beschaffungen (Cross-Ref OPS.2.1).
+                    - **Personalvertretung:** Einbeziehung gemaess BetrVG bei mitbestimmungspflichtigen Werkzeugen (Cross-Ref Logging).
+
+                    ## 8. Klassifikationsschema fuer Informationen
+                    Informationen werden in vier Klassen verwaltet (oeffentlich, intern, vertraulich, streng vertraulich) gemaess ORP.1.A2. Die Klassifikation wird im Erstellzeitpunkt festgelegt und bei jeder relevanten Aenderung ueberprueft. Die Verantwortung liegt beim Informationseigentuemer.
+
+                    ## 9. Externe Personen und Besucher
+                    Externe Personen erhalten ausschliesslich kontrollierten Zutritt; Begleitpflicht in nicht-oeffentlichen Bereichen. Besucherausweise sind sichtbar zu tragen und am Ende des Aufenthalts abzugeben (Cross-Ref INF.1.A4). Externe Beschaeftigte werden vor Aufnahme der Taetigkeit auf Verschwiegenheit verpflichtet.
+
+                    ## 10. Reife- und Wirksamkeitsmessung
+                    Die Reife der Sicherheitsorganisation wird einmal jaehrlich anhand definierter Kriterien (z. B. Quote besetzte Sicherheitsfunktionen, Quote durchgefuehrter Schulungen, Anteil unverzueglich gemeldeter Beobachtungen) bewertet und im Bericht an die Leitungsebene aufgenommen.
+
+                    ## 11. Mess-Kriterien und KPIs
+                    - Anteil verbindlich besetzter Sicherheits-Schluesselrollen (Ziel: 100 Prozent)
+                    - Anteil mit aktueller Verschwiegenheitsverpflichtung (Ziel: 100 Prozent)
+                    - SoD-Verletzungen (Ziel: 0 ungenehmigte Verletzungen)
+                    - Quartals-Reportings rechtzeitig (Ziel: 100 Prozent)
+
+                    ## 12. Pruefung und Genehmigung
+                    Pruefintervall jaehrlich sowie anlassbezogen (Wechsel in der Leitungsebene, wesentliche Reorganisation, regulatorische Aenderungen). Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ISMS.1, ORP.2 (Personal), ORP.4 (IAM), INF.1, ISO/IEC 27001:2022 A.5.2/A.5.3/A.5.4.*
+
+        outsourcing_supplier_policy:
+            v1:
+                title: 'Richtlinie zur Auslagerung und zum Lieferantenmanagement'
+                body: |-
+                    # Richtlinie zur Auslagerung und zum Lieferantenmanagement der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themen-Richtlinie | Norm-Anker: BSI OPS.2.1 (Outsourcing fuer Auftraggeber) i.V.m. OPS.2.2 (Cloud-Nutzung) | ISO/IEC 27001:2022 Annex A 5.19–A 5.23 (Supplier Relationships) | EU-DORA Art. 28–30 (ICT third-party risk) | DSGVO Art. 28 (Auftragsverarbeitung) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die geordnete Steuerung externer Dienstleister, Lieferanten und Auftragsverarbeiter, die fuer die {{ tenant.legal_name }} sicherheits- oder datenschutzrelevante Leistungen erbringen. Ziel ist die durchgaengige Beruecksichtigung von Informationssicherheit und Datenschutz waehrend des gesamten Vertragslebenszyklus, einschliesslich Bedarfsklaerung, Auswahl, Vertragsgestaltung, Steuerung, Eskalation und Beendigung. Sie bildet die organisatorische Klammer um BSI-Outsourcing-Anforderungen, ISO/IEC 27001 A.5.19 ff., DSGVO Art. 28 sowie die ICT-Drittparteien-Pflichten gemaess EU-DORA Art. 28–30 (anwendbar ab 17. Januar 2025).
+
+                    ## 2. Geltungsbereich
+                    Die Richtlinie gilt fuer alle Auslagerungen und Lieferanten-Beziehungen einschliesslich Cloud-Diensten, Managed Services, IT-Beratungs- und Wartungsleistungen, Software-as-a-Service, Co-Location, Telekommunikationsanbietern, Datentraeger-Vernichtungs-Dienstleistern sowie Sub-Lieferanten der vorgenannten.
+
+                    ## 3. Klassifikation der Auslagerung
+                    Lieferanten werden in vier Kategorien nach Kritikalitaet eingestuft:
+
+                    1. **Wesentliche/kritische Auslagerung (Tier-1):** Beeintraechtigung wesentlicher Geschaeftsprozesse, regulatorischer Pflichten oder kritischer Daten; vollstaendige Pflicht-Tiefe einschliesslich Pre-Contract-DD und Audit-Recht.
+                    2. **Erhebliche Auslagerung (Tier-2):** Erhebliche, aber nicht existenzielle Wirkung; reduzierte Pflicht-Tiefe.
+                    3. **Standardlieferant (Tier-3):** Geringe Wirkung; Standard-Vertragsbausteine.
+                    4. **Bagatelle (Tier-4):** Vernachlaessigbare Wirkung; vereinfachtes Verfahren.
+
+                    Die Einstufung erfolgt durch das Compliance-/Beschaffungsteam in Abstimmung mit dem ISB {{ roles.isb.fullName }}; Re-Klassifizierung mindestens jaehrlich.
+
+                    ## 4. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Lieferanten-Klassifikation | Beschaffung | CFO | ISB, DSB | Fachbereich |
+                    | Pre-Contract Due Diligence | Beschaffung | ISB | DSB, Justiziariat | Fachbereich |
+                    | Vertragsgestaltung | Justiziariat | CFO | ISB, DSB | Beschaffung |
+                    | Onboarding (technisch) | IT-Betrieb | CIO | ISB | Fachbereich |
+                    | Laufende Steuerung | Vertragsmanager | Fachbereichsleitung | ISB | – |
+                    | Wirksamkeitspruefung / Audit | ISB | Leitungsebene | Justiziariat | Lieferant |
+                    | Beendigung und Datenrueckgabe | Vertragsmanager | Fachbereichsleitung | ISB, DSB | IT-Betrieb |
+
+                    ## 5. Pre-Contract Due Diligence
+                    Vor Vertragsschluss mit Tier-1 oder Tier-2 Lieferanten wird eine Sicherheits- und Datenschutz-Pruefung durchgefuehrt. Mindestkriterien: gueltige Zertifizierungen (z. B. ISO/IEC 27001, BSI C5 Typ 2, SOC 2 Typ 2), Subunternehmer-Liste, Standorte der Datenverarbeitung, Verschluesselungs- und Schluesselverwaltungs-Konzept, Notfall-/Exit-Plan, Bonitaet und Konzentrationsrisiko-Analyse.
+
+                    ## 6. Vertragliche Mindestklauseln
+                    - Sicherheitsanforderungen analog zur eigenen Schutzbedarfsfeststellung
+                    - Auftragsverarbeitungsvertrag gemaess DSGVO Art. 28 (sofern personenbezogene Daten)
+                    - Audit- und Pruefrecht (vor Ort und remote, mind. jaehrlich oder anlassbezogen)
+                    - Meldepflichten bei Sicherheitsvorfaellen (Frist max. 24 Stunden, im Sub-Tier 12 Stunden)
+                    - Meldepflicht bei wesentlichen Aenderungen, Sub-Lieferantenwechsel und Lokationswechsel
+                    - Exit-Klauseln (Datenrueckgabe innerhalb 30 Tagen, Loeschnachweis)
+                    - Haftung, Vertragsstrafen und Versicherungsnachweise
+                    - Geltendes Recht und Gerichtsstand (vorzugsweise EU)
+                    - Bei DORA-Pflicht: Register-Pflicht-Felder gemaess Implementing Technical Standards
+
+                    ## 7. Cloud-spezifische Anforderungen
+                    Cloud-Dienste unterliegen ergaenzend Baustein OPS.2.2 und ggf. der Cloud-Nutzungsrichtlinie. Schluesselverwaltung wird, sofern moeglich, mittels BYOK/HYOK durchgefuehrt. Dokumentation der Datenresidenz und Drittstaaten-Transfers gemaess Schrems-II-Anforderungen (DSGVO Kap. V).
+
+                    ## 8. Konzentrations- und Resilienz-Risiken
+                    Bei Tier-1-Auslagerungen wird ein Konzentrationsrisiko-Score gepflegt; alternative Anbieter sind im Multi-Provider-Plan dokumentiert. DORA-pflichtige Unternehmen pflegen das ICT-Drittparteien-Register und melden Aenderungen quartalsweise an die Aufsicht.
+
+                    ## 9. Steuerung im Regelbetrieb
+                    - Service-Reporting (mind. monatlich): SLA-Erfuellung, Sicherheitsereignisse, Aenderungen, Sub-Lieferanten
+                    - Jaehrlicher Lieferanten-Review unter Beteiligung von ISB, DSB und Fachbereich
+                    - Anlassbezogene Re-Bewertung nach Vorfaellen oder nach kritischen Sub-Wechseln
+
+                    ## 10. Sub-Lieferanten und Vier-Augen-Sub-Genehmigung
+                    Sub-Beauftragungen erfordern eine schriftliche Genehmigung gemaess Vertrag. Vier-Augen-Pruefung durch Vertragsmanager und ISB. Black-Listing offensichtlich kritischer Sub-Anbieter (z. B. wegen sanktionsrechtlicher Bedenken) ist verbindlich.
+
+                    ## 11. Beendigung und Exit
+                    Vor Vertragsende oder im Stoerfall greift der Exit-Plan: geordnete Datenrueckgabe in maschinell verarbeitbarem Format, Loeschnachweis (Loesch-Protokoll und Hash-Bestaetigung), Wissens-Transfer an Nachfolger, Schluessel-/Token-Rotation in eigenen Systemen.
+
+                    ## 12. Mess-Kriterien und KPIs
+                    - Anteil Tier-1-Lieferanten mit aktuellem Audit-Bericht (Ziel: 100 Prozent)
+                    - Quote SLA-Erfuellung der Tier-1-Auslagerungen (Ziel: groesser 99 Prozent)
+                    - Mittlere Time-to-Notify nach Vorfall durch Lieferant (Ziel: kleiner 24 Stunden)
+                    - Anzahl Konzentrationsrisiken ohne Mitigationsplan (Ziel: 0)
+
+                    ## 13. Eskalation
+                    SLA-Verletzungen, Verweigerung von Audits oder Sicherheitsvorfaelle beim Lieferanten loesen die Eskalationskette aus: ISB -> Leitungsebene -> Justiziariat -> ggf. Aufsichtsbehoerde (BaFin/BSI/Bundeskartellamt). Kuendigung als Ultima Ratio.
+
+                    ## 14. Pruefung und Genehmigung
+                    Pruefintervall jaehrlich sowie anlassbezogen. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: OPS.2.2 (Cloud), OPS.1.2.4 (Patch/Change), CON.1 (Krypto), DER.2.1 (Vorfaelle), ISO/IEC 27001:2022 A.5.19–A.5.23, DSGVO Art. 28, EU-DORA Art. 28–30.*
+
+        patch_change_management_policy:
+            v1:
+                title: 'Richtlinie zum Patch- und Aenderungsmanagement'
+                body: |-
+                    # Richtlinie zum Patch- und Aenderungsmanagement der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themen-Richtlinie | Norm-Anker: BSI OPS.1.1.3 (Patch- und Aenderungsmanagement) i.V.m. OPS.1.2.4 (Software-Tests und Freigaben) | ISO/IEC 27001:2022 Annex A 8.32 (Change Management) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die geordnete Planung, Pruefung, Genehmigung, Durchfuehrung und Dokumentation von Aenderungen an IT-Systemen, Anwendungen, Netzkomponenten, Cloud-Konfigurationen und Sicherheits-Infrastruktur der {{ tenant.legal_name }}. Sie reduziert das Risiko unbeabsichtigter Stoerungen und unerlaubter Konfigurationsdrift, schliesst zeitnah Schwachstellen und stellt Auditierbarkeit sicher.
+
+                    ## 2. Geltungsbereich
+                    Die Richtlinie gilt fuer alle Komponenten des IT-Verbunds einschliesslich Server, Clients, Netz, Anwendungen, Datenbanken, Containern, Sicherheits-Werkzeugen sowie fuer Konfigurationsaenderungen in Cloud-Tenants und IaC-Pipelines.
+
+                    ## 3. Aenderungsklassen
+                    1. **Standardaenderung:** Vorab definiert, niedriges Risiko, automatisiert; Beispiel: regelmaessiger Sicherheits-Patch innerhalb des Wartungsfensters.
+                    2. **Normaler Change:** Erstmalig oder mit relevantem Risiko; Pruefung im Change Advisory Board (CAB).
+                    3. **Notfall-Change:** Unverzueglich notwendig zur Schadensabwehr; verkuerztes Verfahren mit nachgelagerter Dokumentation.
+
+                    ## 4. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Antrag (RFC) | Antragsteller | Fachbereichsleitung | ISB | – |
+                    | Risiko- und Sicherheitspruefung | ISB | – | DSB, IT-Architektur | – |
+                    | Genehmigung Standard-/Normal-Change | CAB | CIO | ISB | Antragsteller |
+                    | Genehmigung Notfall-Change | Notfall-CAB | CIO | ISB | Leitungsebene |
+                    | Durchfuehrung | IT-Betrieb / Entwickler | Anwendungsverantwortlicher | – | Endnutzer |
+                    | Post-Implementation Review | ISB | Fachbereichsleitung | IT-Betrieb | – |
+
+                    ## 5. Schwachstellen- und Patch-Strategie
+                    Die {{ tenant.legal_name }} betreibt ein zentrales Vulnerability-Management. Schwachstellen werden gemaess CVSS und intern angereicherten Faktoren bewertet:
+
+                    - Kritisch (CVSS groesser gleich 9 oder aktive Exploits): Patch innerhalb 72 Stunden bei Internet-Exposition, andernfalls 7 Tage.
+                    - Hoch (7,0–8,9): Patch innerhalb 14 Tage.
+                    - Mittel (4,0–6,9): Patch innerhalb 30 Tage.
+                    - Gering (kleiner 4,0): Patch im naechsten regulaeren Wartungszyklus.
+
+                    Abweichungen erfordern Risikoakzeptanz durch ISB und Fachbereichsleitung mit definiertem Re-Assessment-Termin.
+
+                    ## 6. Change-Prozess
+                    1. RFC (Request for Change) im zentralen Change-Tool eroeffnen
+                    2. Auswirkungs- und Risikoanalyse, Sicherheits-/Datenschutzpruefung
+                    3. Test in nicht-produktiver Umgebung (Cross-Ref OPS.1.2.4)
+                    4. CAB-Sitzung; Aufnahme in Forward Schedule of Change
+                    5. Durchfuehrung im genehmigten Wartungsfenster; Backout-Plan obligatorisch
+                    6. Post-Implementation Review mit KPIs (Erfolg, Rollback, Vorfall-Korrelation)
+
+                    ## 7. Notfall-Change-Verfahren
+                    Notfall-Changes werden vom Wachhabenden gemeinsam mit dem ISB freigegeben. Dokumentation erfolgt spaetestens 24 Stunden nach Durchfuehrung; CAB-Nachpruefung in der naechsten Sitzung. Wiederholte Notfall-Changes loesen eine Ursachenanalyse aus.
+
+                    ## 8. Konfigurations- und Asset-Bezug
+                    Aenderungen werden gegen das Configuration Management Database (CMDB) gefuehrt; jede Anpassung aktualisiert den CI-Eintrag. Veraltete CIs werden vor jeder CAB-Sitzung bereinigt. IaC-Konfigurationsaenderungen sind Pull-Request-pflichtig mit Pflicht-Review durch zweiten Reviewer.
+
+                    ## 9. Sonderfaelle
+                    - **Datenbank-Schemata:** Aenderungen erfolgen ueber Migrations-Werkzeuge mit revisionssicherer Versionierung; Backup vor Migration verpflichtend.
+                    - **Cloud-Tenant-Konfiguration:** ueber Policy-as-Code (z. B. CSPM-Regeln) abgesichert; Drift-Detektion mindestens taeglich.
+                    - **Firmware:** Vorab-Test auf Referenzhardware, Backup der Konfiguration, Hersteller-Hash-Verifikation.
+
+                    ## 10. Schnittstellen
+                    Diese Richtlinie verzahnt sich mit der Vorfallrichtlinie (DER.2.1, gemeinsamer Tag im Workflow), dem Schwachstellen- und Pentest-Programm sowie dem Lieferantenmanagement (Hersteller-Wartungspflichten).
+
+                    ## 11. Mess-Kriterien und KPIs
+                    - Anteil kritischer Schwachstellen innerhalb SLA gepatcht (Ziel: 100 Prozent)
+                    - Erfolgsquote von Changes (kein Rollback / kein P1-Folge-Vorfall) (Ziel: groesser 95 Prozent)
+                    - Anteil Notfall-Changes (Ziel: kleiner 5 Prozent aller Changes)
+                    - Quote dokumentierter Backout-Plaene (Ziel: 100 Prozent)
+
+                    ## 12. Eskalation
+                    SLA-Verletzungen werden monatlich an ISB und CIO berichtet; bei systematischen Verstoessen Eskalation an Leitungsebene. Bei Vorfall mit Bezug zu unsachgemaessem Change greift DER.2.1.
+
+                    ## 13. Pruefung und Genehmigung
+                    Pruefintervall jaehrlich sowie anlassbezogen. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: OPS.1.2.4 (Software-Tests/Freigaben), DER.2.1 (Vorfaelle), CON.3 (Backup), ORP.4 (IAM), ISO/IEC 27001:2022 A.8.32.*
+
+        personnel_policy:
+            v1:
+                title: 'Personal-Richtlinie'
+                body: |-
+                    # Personal-Richtlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themen-Richtlinie | Norm-Anker: BSI ORP.2 (Personal) | ISO/IEC 27001:2022 Annex A 6.1–A 6.7 (People Controls) | DSGVO Art. 32 i.V.m. BetrVG, KSchG, BDSG | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die personalbezogenen Sicherheitsanforderungen vor Anstellung, waehrend des Beschaeftigungsverhaeltnisses und nach dessen Beendigung. Ziel ist die Sicherstellung, dass Personen, die im Auftrag der {{ tenant.legal_name }} taetig werden, die fuer ihre Aufgaben erforderliche Vertrauenswuerdigkeit, Befaehigung und Sicherheitsverpflichtung aufweisen und dass beim Eintritt, Wechsel und Austritt sicherheits- und datenschutzgerechte Verfahren greifen.
+
+                    ## 2. Geltungsbereich
+                    Die Richtlinie gilt fuer alle Beschaeftigten unabhaengig vom Beschaeftigungsverhaeltnis, einschliesslich Befristete, Auszubildende, Praktikantinnen und Praktikanten, Werkstudierende, Externe, Leiharbeitende sowie Beschaeftigte beauftragter Dienstleister, soweit sie Zugriff auf Informationen oder IT-Verfahren der {{ tenant.legal_name }} erhalten.
+
+                    ## 3. Vor Anstellung
+                    - Pflichtenheft- und Stellenbeschreibung enthalten Sicherheits- und Datenschutzpflichten (Cross-Ref ORP.1)
+                    - Auswahlverfahren mit dokumentiertem Bewerber-Screening; bei sicherheitsempfindlichen Stellen erweiterte Pruefung (Fuehrungszeugnis, Identitaetspruefung, ggf. Sicherheitsueberpruefung gemaess SUEG)
+                    - Schriftliche Verschwiegenheits- und Geheimhaltungserklaerung vor Aufnahme der Taetigkeit; Erweiterung bei IT-Administration und Krypto-Funktionen
+                    - Vertragliche Pflicht zur Einhaltung der ISMS-Dokumentation; Hinweis auf disziplinarische und arbeitsrechtliche Folgen bei Verstoss
+
+                    ## 4. Bei Eintritt (Onboarding)
+                    - Eintrittsschulung zu IT-Sicherheit, Datenschutz und Compliance binnen 14 Tagen
+                    - Bedarfsgerechte Vergabe von Berechtigungen ueber das IAM-System nach Mehraugen-Prinzip (Cross-Ref ORP.4)
+                    - Ausgabe von Hardware-Token, Mitarbeiterausweis und MFA-Einrichtung
+                    - Quittierung der ISMS-Dokumente und der Awareness-Verpflichtungen
+
+                    ## 5. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Stellen- und Verschwiegenheitsanforderungen | HR | Vorgesetzter | ISB, DSB | – |
+                    | Hintergrundpruefung | HR | Compliance | Justiziariat | – |
+                    | Onboarding-Schulung | HR | ISB | Datenschutz | Beschaeftigte |
+                    | Berechtigungsvergabe | IAM-Team | Vorgesetzter | ISB | Beschaeftigte |
+                    | Disziplinarmassnahmen | HR | Leitungsebene | Justiziariat, Betriebsrat | Beschaeftigte |
+                    | Offboarding | HR | Vorgesetzter | IAM, IT-Betrieb, ISB | Beschaeftigte |
+
+                    ## 6. Waehrend der Beschaeftigung
+                    - Jaehrliche Awareness-Schulung mit Pflicht-Wiederholung; ergaenzend Phishing-Simulationen quartalsweise
+                    - Rollen-spezifische Schulungen fuer Administration, Entwicklung, DSB-Funktionen, Notfall- und Krisenstab
+                    - Wechsel von Rollen oder Bereich loest Berechtigungs-Re-Bewertung innerhalb von 5 Werktagen aus
+                    - Disziplinarverfahren bei Sicherheits- oder Datenschutzverstoessen unter Wahrung der Mitbestimmungs- und Anhoerungsrechte
+
+                    ## 7. Sicherheits-Vorfaelle mit Personenbezug
+                    Verstoesse durch Beschaeftigte werden im Vier-Augen-Prinzip durch ISB und HR bewertet. Massnahmen reichen von Belehrung bis zur fristlosen Kuendigung; bei Straftatbestand wird Strafanzeige gepruefr. Jegliche Auswertung personenbezogener Daten erfolgt unter Einbindung von DSB und Betriebsrat.
+
+                    ## 8. Bei Beendigung (Offboarding)
+                    - Sofortige Sperrung saemtlicher Berechtigungen zum dokumentierten Beendigungszeitpunkt; bei Risikolage vorzeitige Sperrung mit Genehmigung Leitungsebene
+                    - Rueckgabe aller IT-Mittel (Notebooks, Token, Datentraeger, Schluessel, Ausweise)
+                    - Loesch- und Archivierungsvorgang persoenlicher Postfaecher gemaess Loesch- und Aufbewahrungs-Matrix
+                    - Aufrechterhaltung der nach- vertraglichen Verschwiegenheitspflichten (mind. 5 Jahre, je nach Klassifikation auch unbefristet)
+                    - Exit-Interview mit Sicherheits-Hinweisen
+
+                    ## 9. Externe Beschaeftigte und Leiharbeit
+                    Externe werden vor Aufnahme der Taetigkeit auf Verschwiegenheit verpflichtet. Berechtigungen werden zeitlich strikt begrenzt vergeben (Just-in-Time, max. Vertragslaufzeit). Wechsel von Dienstleister-Personal ist meldepflichtig (Cross-Ref OPS.2.1).
+
+                    ## 10. Mitbestimmung und Datenschutz
+                    Sicherheits-Werkzeuge mit Verhaltens- oder Leistungs-Bezug (z. B. PAM-Sitzungs-Mitschnitte, EDR, Kollaborations-Logs) unterliegen der Mitbestimmung gemaess BetrVG § 87 Abs. 1 Nr. 6. Ihre Einfuehrung wird in einer Betriebsvereinbarung geregelt; eine DSFA gemaess DSGVO Art. 35 wird durchgefuehrt.
+
+                    ## 11. Mess-Kriterien und KPIs
+                    - Anteil Beschaeftigter mit aktueller Awareness-Schulung (Ziel: groesser 95 Prozent)
+                    - Anteil Onboardings mit vollstaendiger Quittierung binnen 14 Tagen (Ziel: 100 Prozent)
+                    - Mittlere Zeit zwischen Austrittstermin und Berechtigungsentzug (Ziel: kleiner 4 Stunden)
+                    - Anzahl ungenehmigter Mehrfach-Konten je Beschaeftigtem (Ziel: 0)
+
+                    ## 12. Eskalation
+                    Verstoesse werden gemaess Sanktionskatalog stufenweise behandelt: Belehrung, Abmahnung, Aenderung der Aufgaben, Kuendigung. In Faellen mit moeglicher Aussenwirkung erfolgt Information der Leitungsebene und ggf. Meldung an Aufsichtsbehoerde.
+
+                    ## 13. Pruefung und Genehmigung
+                    Pruefintervall jaehrlich sowie anlassbezogen (z. B. nach Sicherheits-Vorfaellen mit Personalbezug). Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ORP.1 (Organisation), ORP.3 (Sensibilisierung), ORP.4 (IAM), OPS.2.1 (Outsourcing), DER.2.1 (Vorfaelle), ISO/IEC 27001:2022 A.6.1–A.6.7, BetrVG § 87 Abs. 1 Nr. 6, DSGVO Art. 32.*
+        privacy_policy:
+            v1:
+                title: 'Datenschutzrichtlinie'
+                body: |-
+                    # Datenschutzrichtlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verbindliche Richtlinie | Norm-Anker: BSI CON.2 (Datenschutz) + ISO/IEC 27001:2022 A.5.34 + DSGVO Art. 5, 24, 25, 28, 32 + BDSG | Baustein: CON.2.A1-A18 + ORP.5 | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate (DSGVO Art. 24 Abs. 1) sowie anlassbezogen*
+
+                    ## 1. Zweck und Zielsetzung
+                    Diese Richtlinie konkretisiert die Anforderungen der DSGVO, des BDSG sowie der bereichsspezifischen Datenschutzgesetze fuer die {{ tenant.legal_name }} und integriert diese verzahnt mit dem ISMS nach BSI IT-Grundschutz Edition {{ bsi.kompendium_edition }}. Ziel ist die Sicherstellung der Rechtmaessigkeit, Verarbeitung nach Treu und Glauben sowie der Transparenz (DSGVO Art. 5 Abs. 1 lit. a) bei jeder Verarbeitung personenbezogener Daten. Die Richtlinie schafft die organisatorische und technisch-organisatorische Basis fuer den Schutz der Rechte und Freiheiten Betroffener nach DSGVO Art. 24 i. V. m. Art. 32 und beruecksichtigt explizit die Vorgaben des Bausteins CON.2 (Datenschutz) sowie ORP.5 (Compliance Management).
+
+                    ## 2. Geltungsbereich
+                    Die Richtlinie gilt fuer:
+
+                    - **Personell:** Saemtliche Beschaeftigte der {{ tenant.legal_name }} (auch Leiharbeit, Praktikum, Werkstudierende), Auftragnehmer i. S. v. DSGVO Art. 28 sowie alle Personen, die Zugang zu personenbezogenen Daten haben.
+                    - **Sachlich:** Jede ganz oder teilweise automatisierte Verarbeitung personenbezogener Daten sowie nicht-automatisierte Verarbeitung in einem Dateisystem (DSGVO Art. 2 Abs. 1).
+                    - **Technisch:** Alle IT-Verfahren, Anwendungen, Cloud-Dienste und Endgeraete des Geltungsbereichs des ISMS gemaess Strukturanalyse nach BSI 200-2 Kap. 5.
+
+                    Tenant-Scope-Statement: {{ tenant.scope_statement }}.
+
+                    ## 3. Grundsaetze der Verarbeitung (DSGVO Art. 5)
+                    Die {{ tenant.legal_name }} haelt bei jeder Verarbeitung die folgenden Grundsaetze ein:
+
+                    1. **Rechtmaessigkeit, Treu und Glauben, Transparenz** (Art. 5 Abs. 1 lit. a) – Vorhandensein einer Rechtsgrundlage nach Art. 6, ggf. Art. 9 oder Art. 10.
+                    2. **Zweckbindung** (lit. b) – Eindeutige, festgelegte und legitime Zwecke; jede Weiterverarbeitung wird auf Vereinbarkeit nach Art. 6 Abs. 4 geprueft.
+                    3. **Datenminimierung** (lit. c) – Beschraenkung auf das fuer den Zweck notwendige Mass (Privacy by Default, Art. 25 Abs. 2).
+                    4. **Richtigkeit** (lit. d) – Pflege der Aktualitaet und Berichtigung unverzueglich.
+                    5. **Speicherbegrenzung** (lit. e) – Loeschung und Anonymisierung gemaess Loeschkonzept (siehe Loeschrichtlinie).
+                    6. **Integritaet und Vertraulichkeit** (lit. f) – Umsetzung angemessener TOMs gemaess Art. 32 i. V. m. BSI-Bausteinen (CON.1 Krypto, OPS.1.1.5 Protokollierung, ORP.4 IAM, NET-Schicht).
+                    7. **Rechenschaftspflicht** (Art. 5 Abs. 2) – Vollstaendige Dokumentation aller Verarbeitungstaetigkeiten und Sicherheitsmassnahmen.
+
+                    ## 4. RACI – Verantwortlichkeiten
+                    | Rolle | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Leitungsebene (Verantwortlicher i. S. v. Art. 4 Nr. 7) | – | X | X | X |
+                    | Datenschutzbeauftragter (DSB) {{ roles.dpo.fullName }} | X | – | X | X |
+                    | Informationssicherheitsbeauftragter (ISB) {{ roles.isb.fullName }} | X | – | X | X |
+                    | Fachverantwortliche / Process-Owner | X | – | X | X |
+                    | Beschaeftigte | X | – | – | X |
+                    | Auftragsverarbeiter | X | – | X | X |
+
+                    Der DSB ist gemaess DSGVO Art. 38 Abs. 3 weisungsfrei und direkt der Leitungsebene unterstellt. Personenidentitaet zwischen DSB und ISB ist unzulaessig (BSI-Empfehlung CON.2.A1, Art. 38 Abs. 6).
+
+                    ## 5. Verarbeitungsverzeichnis (DSGVO Art. 30)
+                    Die {{ tenant.legal_name }} fuehrt ein vollstaendiges Verzeichnis der Verarbeitungstaetigkeiten (VVT). Jede neue oder geaenderte Verarbeitung wird vor Inbetriebnahme erfasst und vom DSB freigegeben. Mindestinhalte: Zweck, Rechtsgrundlage, Kategorien Betroffener und Daten, Empfaenger, Drittlandtransfers, Loeschfristen, TOM-Kurzbeschreibung mit Verweis auf umgesetzte BSI-Bausteine.
+
+                    ## 6. Datenschutz-Folgenabschaetzung (DSFA, Art. 35)
+                    Eine DSFA wird zwingend durchgefuehrt bei: Profiling mit erheblichen Auswirkungen, Verarbeitung besonderer Kategorien gemaess Art. 9 in grossem Umfang, systematischer umfangreicher Ueberwachung oeffentlich zugaenglicher Bereiche sowie bei Verarbeitungen der Positivliste der Aufsichtsbehoerde. Die Methodik orientiert sich an BSI 200-3 (Risikoanalyse) und ist im DSFA-Verfahren dokumentiert. Bei verbleibendem hohem Risiko ist die Aufsichtsbehoerde nach Art. 36 zu konsultieren.
+
+                    ## 7. Technisch-organisatorische Massnahmen (Art. 32)
+                    Die TOM-Auswahl basiert auf dem aktuellen Stand der Technik und beruecksichtigt das Risikoappetit-Niveau {{ risk.appetite_tier }}. Verbindliche Mindeststandards:
+
+                    - **Kryptographie:** Verfahren {{ crypto.algorithms }} gemaess CON.1 und BSI TR-02102.
+                    - **Zugriffskontrolle:** Rollenbasiert nach Need-to-Know, MFA fuer privilegierte Zugriffe (ORP.4).
+                    - **Pseudonymisierung und Anonymisierung:** Wo zweckdienlich umgesetzt (Art. 25 i. V. m. CON.2.A12).
+                    - **Verfuegbarkeit und Wiederherstellung:** RPO {{ backup.rpo_hours }} h, BCM gemaess BSI 200-4 / DER.4.
+                    - **Protokollierung:** Vollstaendiges Logging zugriffsrelevanter Operationen (OPS.1.1.5), Aufbewahrung gemaess Logging-Richtlinie.
+
+                    ## 8. Auftragsverarbeitung (Art. 28)
+                    Jede Auftragsverarbeitung wird durch einen schriftlichen Auftragsverarbeitungsvertrag (AVV) abgesichert. Die Auswahl des Verarbeiters erfolgt nach dokumentierter Eignungspruefung (technische und organisatorische Faehigkeit, ggf. Zertifikate ISO 27001 / C5 / BSI-Grundschutz). Drittlandtransfers nur auf Basis Adaequanz-Beschluss, Standardvertragsklauseln (SCC, Durchfuehrungsbeschluss 2021/914) plus Transfer-Impact-Assessment (Schrems II). Cross-Ref Outsourcing-Richtlinie (OPS.2.3).
+
+                    ## 9. Betroffenenrechte (Art. 12-22)
+                    Die {{ tenant.legal_name }} stellt sicher, dass Betroffenenanfragen (Auskunft, Berichtigung, Loeschung, Einschraenkung, Datenuebertragbarkeit, Widerspruch, Widerruf) innerhalb der Frist von einem Monat (Art. 12 Abs. 3) bearbeitet werden. Die Identitaetspruefung erfolgt risikoangemessen. Ein zentrales Postfach (datenschutz@{{ tenant.email_domain }}) ist eingerichtet; Anfragen werden im DSAR-Workflow nachgehalten.
+
+                    ## 10. Meldepflichten bei Datenschutzverletzungen (Art. 33, 34)
+                    Datenschutzverletzungen sind unverzueglich, spaetestens innerhalb von 72 Stunden nach Bekanntwerden, an die zustaendige Aufsichtsbehoerde zu melden, sofern ein Risiko fuer Rechte und Freiheiten besteht. Bei voraussichtlich hohem Risiko sind zusaetzlich Betroffene zu benachrichtigen (Art. 34). Der Workflow ist im Incident-Response-Verfahren (DER.2.1) integriert; Eskalation an DSB {{ roles.dpo.fullName }} ist innerhalb von 1 Stunde verbindlich.
+
+                    ## 11. Schulung und Sensibilisierung
+                    Alle Beschaeftigten werden bei Eintritt sowie mindestens jaehrlich zu Datenschutz und Vertraulichkeitspflichten geschult (Cross-Ref ORP.3 Sensibilisierung). Verpflichtungserklaerung auf Vertraulichkeit nach BDSG § 53 wird vor erstem Datenzugriff schriftlich eingeholt.
+
+                    ## 12. Mess-Kriterien und Wirksamkeitspruefung
+                    Folgende KPIs werden quartalsweise an Leitungsebene und DSB berichtet:
+
+                    - Anzahl bearbeiteter Betroffenenanfragen / Einhaltungsquote 1-Monats-Frist
+                    - Anzahl gemeldeter Datenschutzverletzungen / Einhaltungsquote 72-h-Meldefrist
+                    - Stand der DSFA-Pflichtverarbeitungen
+                    - Anzahl offener Pruefpunkte aus internen und externen Audits
+                    - Schulungsabdeckung (% Soll-Ist)
+
+                    ## 13. Eskalation und Sanktionen
+                    Verstoesse werden gemaess Personalrichtlinie (ORP.2) sanktioniert. Schwere Verstoesse koennen disziplinarische, arbeits-, zivil- oder strafrechtliche Konsequenzen (BDSG §§ 42, 43) nach sich ziehen. Aufsichtsbehoerdliche Bussgelder nach Art. 83 koennen die Organisation und ggf. persoenlich Verantwortliche treffen.
+
+                    ## 14. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 12 Monate sowie anlassbezogen ueberprueft (Aenderung der Rechtslage, neue Verarbeitungsarten, signifikante Vorfaelle, Aufsichtsmassnahmen). Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI CON.2.A1-A18, ORP.5, ISO/IEC 27001:2022 A.5.34, DSGVO Art. 5, 24, 25, 28, 30, 32, 33, 34, 35, BDSG §§ 38, 53.*
+
+        protection_needs_methodology:
+            v1:
+                title: 'Methode zur Schutzbedarfsfeststellung'
+                body: |-
+                    # Methode zur Schutzbedarfsfeststellung der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Methode-Dokument | Norm-Anker: BSI-Standard 200-2 Kap. 6 + BSI 200-3 + ISO/IEC 27005:2022 | Baustein: ISMS.1.A6 + CON.7 (Vererbung) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, fachlich) | Pruefintervall: 24 Monate sowie nach Methoden-Aenderungen*
+
+                    ## 1. Zweck der Methode
+                    Diese Methode regelt verbindlich, wie die {{ tenant.legal_name }} den Schutzbedarf von Geschaeftsprozessen, Anwendungen, IT-Systemen, ICS/OT, Raeumen und Kommunikationsverbindungen gemaess BSI 200-2 Kap. 6 ermittelt. Sie schafft die Vergleichbarkeit ueber Bereiche, die Nachvollziehbarkeit der Bewertungen und die Grundlage fuer die Modellierung mit Bausteinen sowie ggf. die ergaenzende Risikoanalyse nach BSI 200-3.
+
+                    ## 2. Geltungsbereich
+                    Die Methode gilt fuer den gesamten Informationsverbund der {{ tenant.legal_name }} ({{ tenant.scope_statement }}) sowie alle in der Strukturanalyse erfassten Zielobjekte. Verantwortlich fuer die Anwendung sind die jeweiligen Anwendungs- und Systemverantwortlichen unter fachlicher Steuerung des ISB {{ roles.isb.fullName }}.
+
+                    ## 3. Schutzziele und Skala
+                    Die Bewertung erfolgt fuer die Grundwerte Vertraulichkeit (V), Integritaet (I) und Verfuegbarkeit (A) jeweils auf der dreistufigen BSI-Skala:
+
+                    | Stufe | Bezeichnung | Definitionskorridor |
+                    |---|---|---|
+                    | **Normal** | Schadensauswirkungen sind begrenzt und ueberschaubar. | Finanzschaden < {{ org.normal_threshold }}, kein nachhaltiger Reputationsschaden, keine personenbezogenen Daten besonderer Kategorien. |
+                    | **Hoch** | Schadensauswirkungen koennen betraechtlich sein. | Finanzschaden bis {{ org.hoch_threshold }}, regionale Reputationswirkung, Verstoesse gegen DSGVO mit Bussgeldrisiko, Beeintraechtigung kritischer Geschaeftsprozesse. |
+                    | **Sehr hoch** | Schadensauswirkungen koennen ein existenziell bedrohliches, katastrophales Ausmass erreichen. | Existenzbedrohung, schwere Verletzung Schutzguetern Betroffener, KRITIS-Ausfall, Verlust amtlicher Verschlusssachen. |
+
+                    Die quantitativen Schwellwerte sind tenant-spezifisch in der Risk-Appetite-Erklaerung verankert ({{ risk.appetite_tier }}).
+
+                    ## 4. Schadensszenarien (Pflicht-Kategorien)
+                    Bei jeder Bewertung sind die folgenden Szenarien-Kategorien zu pruefen (BSI 200-2 Kap. 6.2):
+
+                    1. Verstoesse gegen Gesetze, Vorschriften, Vertraege
+                    2. Beeintraechtigung des informationellen Selbstbestimmungsrechts (DSGVO-Bezug)
+                    3. Beeintraechtigung der persoenlichen Unversehrtheit
+                    4. Beeintraechtigung der Aufgabenerfuellung
+                    5. Negative Innen- und Aussenwirkung (Reputation)
+                    6. Finanzielle Auswirkungen
+
+                    Die hoechste Stufe aller anwendbaren Szenarien bestimmt den Schutzbedarf des Grundwerts (Maximum-Prinzip pro Grundwert).
+
+                    ## 5. Vererbungs- und Aggregationsregeln
+                    Die Vererbung folgt BSI 200-2 Kap. 6.3:
+
+                    - **Maximum-Prinzip:** Schutzbedarf eines uebergeordneten Zielobjekts entspricht mindestens dem Maximum der abhaengigen Objekte (Cross-Ref CON.7 sowie das tenant-eigene `AssetDependencyService`-Modell).
+                    - **Kumulationseffekt:** Mehrere normale Objekte koennen in Summe den Schutzbedarf des aggregierenden Objekts auf hoch oder sehr hoch heben (z. B. zentrales Backup-Repository).
+                    - **Verteilungseffekt:** Schutzbedarf kann sinken, wenn redundante Verteilung den Einzelausfall kompensiert (begruendungspflichtig).
+
+                    Jede Abweichung vom Maximum-Prinzip wird im Schutzbedarfsprotokoll mit Begruendung dokumentiert und vom ISB freigegeben.
+
+                    ## 6. RACI – Verantwortlichkeiten
+                    | Aufgabe | Process-Owner | Anwendungsverantw. | Systemverantw. | ISB {{ roles.isb.fullName }} | Leitung |
+                    |---|---|---|---|---|---|
+                    | Schutzbedarf Geschaeftsprozess | A/R | C | I | C | I |
+                    | Schutzbedarf Anwendung | C | A/R | C | C | I |
+                    | Schutzbedarf System | I | C | A/R | C | I |
+                    | Vererbung pruefen | – | R | R | A | I |
+                    | Plausibilitaet | – | – | – | A/R | I |
+                    | Freigabe sehr hoch | I | I | I | R | A |
+
+                    ## 7. Verfahren – Schritt-fuer-Schritt
+                    1. **Erfassung im Tool:** Anlage des Zielobjekts mit Typ, Eigentuemer, Standort, Verarbeitungstaetigkeit.
+                    2. **Szenarien-Walkthrough:** Bewertung aller sechs Schadensszenarien je Grundwert; Begruendung im Freitext.
+                    3. **Vererbung pruefen:** Abhaengigkeiten verknuepfen; das System schlaegt das Maximum vor.
+                    4. **Plausibilitaetscheck durch ISB:** Stichprobenartig oder vollstaendig je nach Stufe.
+                    5. **Freigabe:** Sehr hoher Schutzbedarf wird durch ISB freigegeben; Mitzeichnung Leitung in Managementbewertung.
+
+                    ## 8. Aufnahme in die Risikoanalyse (BSI 200-3)
+                    Fuer Zielobjekte mit Schutzbedarf hoch oder sehr hoch, mit nicht ausreichend modellierten Bausteinen oder mit besonderen Einsatzbedingungen ist eine ergaenzende Risikoanalyse nach BSI 200-3 verpflichtend (Cross-Ref BSI 200-3 Kap. 4-7).
+
+                    ## 9. Mess-Kriterien
+                    - Vollstaendigkeit: Anteil der Zielobjekte mit dokumentiertem Schutzbedarf (Ziel: 100 %).
+                    - Aktualitaet: Anteil mit Bewertungsalter ≤ 24 Monate (Ziel: ≥ 95 %).
+                    - Konsistenz: Stichprobenfehler-Quote pro Quartal (Ziel: < 5 %).
+                    - Anteil sehr hoher Schutzbedarf mit dokumentierter Risikoanalyse (Ziel: 100 %).
+
+                    ## 10. Eskalation
+                    Bei nicht aufloesbarer Diskrepanz zwischen Process-Owner und ISB entscheidet die Leitungsebene auf Basis des Schutzbedarfsprotokolls. Sehr hoher Schutzbedarf erzwingt eine Top-Management-Information binnen 5 Arbeitstagen.
+
+                    ## 11. Pruefzyklus und Genehmigung
+                    Die Methode wird alle 24 Monate sowie nach methodischen Aenderungen (z. B. neuer Edition Kompendium, geaendertem Risikoappetit) ueberprueft. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI 200-2 Kap. 6, BSI 200-3, ISO/IEC 27005:2022, ISMS.1.A6, CON.7 sowie tenant-eigenes Schutzbedarfsvererbungsmodell.*
+
+        remote_maintenance_policy:
+            v1:
+                title: 'Richtlinie Fernwartung'
+                body: |-
+                    # Richtlinie Fernwartung der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verbindliche Richtlinie | Norm-Anker: BSI OPS.2.4 (Fernwartung) + ISO/IEC 27001:2022 A.5.14 + A.8.1 + A.8.16 | Baustein: OPS.2.4.A1-A12 + NET.3.3 (VPN) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, technisch-juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die sichere Durchfuehrung von Fernwartungszugriffen auf IT-Systeme, ICS/OT-Systeme, Anwendungen und Netzkomponenten der {{ tenant.legal_name }} durch interne Administratoren und externe Dienstleister. Ziel ist die Beherrschung der Risiken fernwartungsbedingter unautorisierter Zugriffe, Datenabfluesse und Manipulationen gemaess Baustein OPS.2.4.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Fernwartungsformen einschliesslich:
+
+                    - VPN-basierte Zugriffe interner Administratoren
+                    - Anbieter-Fernwartung (z. B. Hersteller, Cloud-Provider, Managed-Service-Provider)
+                    - Tooling-basierte Fernwartung (Bastion-Hosts, Just-in-Time-Access, PAM-Loesungen)
+                    - Zugriffe auf ICS/OT-Komponenten gemaess IND-Schicht
+
+                    Tenant-Scope: {{ tenant.scope_statement }}.
+
+                    ## 3. Grundsaetze
+                    1. **Need-to-Use:** Fernwartung nur, wenn vor Ort nicht verhaeltnismaessig.
+                    2. **Auftragsbasiert:** Jeder Zugriff hat einen dokumentierten Auftrag (Ticket-ID).
+                    3. **Zeitbeschraenkt:** Just-in-Time-Aktivierung mit definiertem Zeitfenster.
+                    4. **Vier-Augen bei kritischen Systemen:** Schutzbedarf hoch/sehr hoch erfordert Mitzeichnung.
+                    5. **Vollstaendige Protokollierung:** Sitzungs-Logs (Befehle und ggf. Bildschirm-Aufzeichnung) gemaess OPS.1.1.5.
+
+                    ## 4. Anforderungen an die Fernwartungs-Architektur
+                    | Schutzobjekt | Anforderung | Norm-Bezug |
+                    |---|---|---|
+                    | Verbindung | Ende-zu-Ende verschluesselt, MFA pflicht, Verfahren {{ crypto.algorithms }} | OPS.2.4.A4, CON.1, BSI TR-02102 |
+                    | Authentifizierung | Personalisierte Konten, keine Shared Accounts, Privileged Access Management | ORP.4, OPS.2.4.A5 |
+                    | Endpoint | Gehaertet, aktuelle Patches, EDR aktiv | SYS.1.1, OPS.1.1.3 |
+                    | Netzpfad | Dedizierter Bastion-Host oder Jump-Server, Segmentierung | NET.1.1, NET.3.3 |
+                    | Protokollierung | Vollstaendiges Session-Logging, manipulationssicher | OPS.1.1.5 |
+                    | Notabschaltung | Sofortige Trennmoeglichkeit durch Operator | OPS.2.4.A6 |
+
+                    ## 5. RACI
+                    | Aufgabe | Auftraggeber | Administrator/Dienstleister | ISB {{ roles.isb.fullName }} | Datenschutz {{ roles.dpo.fullName }} |
+                    |---|---|---|---|---|
+                    | Auftragserstellung | A/R | C | I | I |
+                    | Freigabe Standard | – | – | A | I |
+                    | Freigabe kritisch | C | C | A | C |
+                    | Durchfuehrung | I | A/R | I | I |
+                    | Nachkontrolle Logs | – | – | A/R | C |
+
+                    ## 6. Externe Dienstleister
+                    Externe Fernwartung erfordert zusaetzlich: schriftlichen Vertrag mit Pflicht zur Geheimhaltung und Datenschutz (Cross-Ref OPS.2.3, DSGVO Art. 28 sofern personenbezogene Daten beruehrt), Eignungsnachweis (z. B. ISO 27001 oder C5-Testat), Ankuendigung von Wartungsfenstern, Sperrung der Konten ausserhalb aktiver Auftraege.
+
+                    ## 7. ICS/OT-Besonderheiten
+                    Fuer ICS/OT-Komponenten (IND.1, IND.2.x) gelten zusaetzlich: physische Trennung Wartungs- und Produktionsnetze, Zustimmung Anlagenfahrer fuer jeden Zugriff, Pflicht zur Wartungstaetigkeitsfreigabe vor sicherheitsrelevanten Aenderungen, eingeschraenkte Eingriffsfenster, Eskalationspfad bei Anomalien.
+
+                    ## 8. Protokollierung und Auswertung
+                    Saemtliche Sitzungen werden vollstaendig protokolliert (Verbindungsbeginn/-ende, Quelle, Konto, Befehle, ggf. Bildschirm). Aufbewahrung mindestens 12 Monate gemaess Logging-Richtlinie. Auswertung erfolgt risikoorientiert; bei Schutzbedarf sehr hoch verpflichtend stichprobenartig je Quartal.
+
+                    ## 9. Eskalation und Notfall
+                    Bei Verdacht auf unautorisierten Zugriff: sofortige Trennung, Sicherung der Logs, Eskalation an SOC und ISB binnen 30 Minuten, Aufnahme als Incident gemaess DER.2.1. RPO/RTO der Fernwartungsplattform: max. {{ backup.rpo_hours }} h.
+
+                    ## 10. Mess-Kriterien
+                    - Anteil Fernwartungssitzungen mit gueltiger Auftrags-ID (Ziel: 100 %)
+                    - Anteil Sitzungen mit MFA (Ziel: 100 %)
+                    - Auswertungsquote Logs bei kritischen Systemen (Ziel: ≥ 95 %)
+                    - Mittlere Reaktionszeit bei Notabschaltung (Ziel: ≤ 5 min)
+                    - Anteil externer Dienstleister mit aktuellem Eignungsnachweis (Ziel: 100 %)
+
+                    ## 11. Pruefzyklus und Genehmigung
+                    Die Richtlinie wird jaehrlich sowie nach signifikanten Vorfaellen oder Architekturaenderungen ueberprueft. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI OPS.2.4, NET.3.3, IND-Schicht, ISO/IEC 27001:2022 A.5.14, A.8.1, A.8.16, A.8.20.*
+
+        security_organization:
+            v1:
+                title: 'Sicherheits-Organisation'
+                body: |-
+                    # Sicherheits-Organisation der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verbindliche Richtlinie | Norm-Anker: BSI ORP.1 (Organisation) + ISO/IEC 27001:2022 A.5.2-A.5.6 + Klausel 5.3 | Baustein: ORP.1.A1-A15 + ISMS.1.A1-A3 | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, organisatorisch) | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie definiert die organisatorischen Strukturen, Rollen, Verantwortlichkeiten und Eskalationswege fuer Informationssicherheit der {{ tenant.legal_name }}. Sie konkretisiert Klausel 5.3 ISO/IEC 27001 und die Anforderungen ORP.1, ISMS.1.A1-A3 und schafft die Grundlage fuer eine ueberpruefbare Sicherheitssteuerung.
+
+                    ## 2. Geltungsbereich
+                    Die Richtlinie gilt fuer saemtliche Organisationseinheiten und Beschaeftigten der {{ tenant.legal_name }} im Geltungsbereich des ISMS ({{ tenant.scope_statement }}) sowie fuer Auftragnehmer, sofern sie sicherheitsrelevante Aufgaben uebernehmen.
+
+                    ## 3. Grundprinzipien
+                    1. **Trennung von Verantwortung und Ausfuehrung** (ORP.1.A2, A.5.3 SoD).
+                    2. **Direkte Anbindung der Sicherheitsfunktion an die Leitung** (ISMS.1.A3).
+                    3. **Personelle Unabhaengigkeit zwischen ISB und DSB** (BSI-Empfehlung, DSGVO Art. 38).
+                    4. **Vier-Augen-Prinzip bei kritischen Aenderungen** (OPS.1.1.4).
+                    5. **Vertretungsregelung fuer alle Schluesselrollen**.
+
+                    ## 4. Rollen und Verantwortlichkeiten
+                    ### 4.1 Leitungsebene
+                    Gesamtverantwortung gemaess ISMS.1.A1 und ISO/IEC 27001 Klausel 5.1. Genehmigt Leitlinien, Risikoappetit ({{ risk.appetite_tier }}), Ressourcen, fuehrt jaehrliche Managementbewertung durch.
+
+                    ### 4.2 Informationssicherheitsbeauftragter (ISB) {{ roles.isb.fullName }}
+                    Direkt der Leitung unterstellt. Nicht weisungsgebunden in Sicherheitsfragen, ausgestattet mit Veto-Recht bei sicherheitsgefaehrdenden Entscheidungen, vollstaendiger Einsicht in alle sicherheitsrelevanten Sachverhalte. Aufgaben: Steuerung des ISMS, Pruefung der Wirksamkeit, Bericht an Leitung mind. quartalsweise, Vertretung bei Aufsicht und Pruefern.
+
+                    ### 4.3 IS-Management-Team
+                    {{ roles.is_management_team }} – beraet den ISB. Mitglieder: Vertretung IT-Betrieb, Datenschutz, Compliance, BCM, ggf. Fachbereiche. Sitzungsfrequenz mindestens quartalsweise; Protokoll und Beschluesse beweissicher dokumentiert.
+
+                    ### 4.4 Datenschutzbeauftragter (DSB) {{ roles.dpo.fullName }}
+                    Bestellt nach DSGVO Art. 37, weisungsfrei nach Art. 38 Abs. 3, direkt der Leitungsebene berichtend. Stimmt sich systematisch mit ISB ab.
+
+                    ### 4.5 Notfallbeauftragter
+                    {{ roles.notfallbeauftragter.fullName }} – verantwortet Notfallmanagement nach BSI 200-4 / DER.4, fuehrt Krisenstab im Ernstfall.
+
+                    ### 4.6 IT-Sicherheitsbeauftragte der Bereiche
+                    Multiplikatoren in groesseren Organisationseinheiten; melden lokale Sicherheitsthemen an ISB, koordinieren Umsetzung.
+
+                    ### 4.7 Anwendungs- und Systemverantwortliche
+                    Operative Verantwortung fuer Sicherheit der zugeordneten Zielobjekte einschliesslich Schutzbedarfsfeststellung, Risikoeinordnung, Massnahmenumsetzung.
+
+                    ### 4.8 Beschaeftigte
+                    Beachten die Sicherheitsrichtlinien, melden Vorfaelle gemaess DER.2.1.
+
+                    ## 5. RACI-Uebersicht
+                    | Aufgabe | Leitung | ISB | IS-Mgmt-Team | DSB | Process-Owner |
+                    |---|---|---|---|---|---|
+                    | Genehmigung Leitlinien | A | R | C | C | I |
+                    | Risikoappetit | A | C | C | C | I |
+                    | Sicherheitskonzept | I | A/R | C | C | C |
+                    | Pruefung Wirksamkeit | I | A/R | C | C | I |
+                    | Vorfallsbearbeitung | I | A | R | C | R |
+                    | Managementbewertung | A | R | C | C | I |
+
+                    ## 6. Berichtswege und Eskalation
+                    - **Routine:** Quartalsbericht ISB an Leitung; Kurzbericht je Sitzung IS-Management-Team.
+                    - **Anlassbezogen:** Sofortbericht bei Schutzbedarf-Aenderung sehr hoch, Aufsichtsfaellen, Sicherheitsvorfaellen mit Reputationsrisiko.
+                    - **Notfall:** Aktivierung Krisenstab gemaess DER.4 binnen 1 h; Leitung wird unverzueglich informiert.
+
+                    ## 7. Vertretungsregelung
+                    Fuer alle Schluesselrollen ist eine namentlich benannte Vertretung dokumentiert. Bei laenger als 30 Tagen Abwesenheit ist die Uebergabe formal protokolliert.
+
+                    ## 8. Schnittstellen
+                    Definierte Schnittstellen zu: Datenschutz, Compliance/GRC, Recht, IT-Betrieb, HR (ORP.2, ORP.3), Einkauf (OPS.2.3), interne Revision, BCM ({{ roles.notfallbeauftragter.fullName }}), Krisenkommunikation.
+
+                    ## 9. Mess-Kriterien
+                    - Erfuellungsgrad geplanter Sitzungen IS-Management-Team (Ziel: 100 %)
+                    - Quote rechtzeitig erstellter Quartalsberichte (Ziel: 100 %)
+                    - Anzahl Eskalationen mit dokumentierter Entscheidung (Ziel: 100 % nachvollziehbar)
+                    - Vertretungsabdeckung Schluesselrollen (Ziel: 100 %)
+
+                    ## 10. Sanktionen
+                    Verstoesse gegen Rollen- und Berichtspflichten werden gemaess Personalrichtlinie (ORP.2) sanktioniert.
+
+                    ## 11. Pruefzyklus und Genehmigung
+                    Diese Richtlinie wird alle 24 Monate sowie bei wesentlichen Reorganisationen ueberprueft. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI ORP.1, ISMS.1.A1-A3, ISO/IEC 27001:2022 Klausel 5.1-5.3, A.5.2-A.5.6, DSGVO Art. 37-39.*
+
+        software_development_policy:
+            v1:
+                title: 'Richtlinie Softwareentwicklung'
+                body: |-
+                    # Richtlinie Softwareentwicklung der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verbindliche Richtlinie | Norm-Anker: BSI APP.6 (Allgemeine Softwareentwicklung) + ISO/IEC 27001:2022 A.8.25-A.8.31 + OWASP ASVS | Baustein: APP.6.A1-A14 + APP.4.4 (CI/CD) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, technisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie etabliert die verbindlichen Anforderungen an die sichere Entwicklung von Software durch und im Auftrag der {{ tenant.legal_name }}. Sie verankert Security-by-Design und Privacy-by-Design ueber den gesamten Entwicklungslebenszyklus (SDLC) gemaess Baustein APP.6 sowie ISO/IEC 27001:2022 A.8.25-A.8.31.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind: Eigenentwicklungen, Auftragsentwicklungen Dritter, wesentliche Anpassungen von Standardsoftware, Entwicklung interner Tools, Skripte mit Geschaeftsrelevanz. Geltung im Tenant-Scope: {{ tenant.scope_statement }}.
+
+                    ## 3. Grundsaetze (Security-by-Design)
+                    1. **Sichere SDLC-Phasen:** Anforderungen, Entwurf, Implementierung, Test, Freigabe, Betrieb, Ausserbetriebnahme.
+                    2. **Bedrohungsmodellierung verpflichtend** ab Schutzbedarf hoch (Cross-Ref BSI 200-3, ISO 27005).
+                    3. **Privacy-by-Design** gemaess DSGVO Art. 25 und CON.2.
+                    4. **Trennung Entwicklung-Test-Produktion** (APP.6.A11).
+                    5. **Code unter Versionskontrolle**, Mehr-Augen-Review verpflichtend.
+                    6. **Reproduzierbare Builds** (Supply-Chain-Integritaet, SLSA).
+                    7. **Geheimnisse niemals im Code** – zentraler Secret-Store.
+
+                    ## 4. RACI
+                    | Aufgabe | Product-Owner | Entwickler | Architekt | Sec-Champion | ISB {{ roles.isb.fullName }} |
+                    |---|---|---|---|---|---|
+                    | Sicherheits-Anforderungen | A/R | C | C | C | C |
+                    | Bedrohungsmodellierung | C | C | A | R | C |
+                    | Code-Review | – | A/R | C | C | I |
+                    | SAST/DAST/SCA | I | R | I | A | C |
+                    | Freigabe Release | A/R | C | C | C | C |
+                    | Pen-Test (hoch/sehr hoch) | I | I | C | A | R |
+
+                    ## 5. Anforderungen je SDLC-Phase
+                    ### 5.1 Anforderungen
+                    - Sicherheits- und Datenschutzanforderungen sind funktionalen gleichgestellt.
+                    - Schutzbedarf der zu verarbeitenden Daten dokumentiert.
+                    - Compliance-Bezuege erfasst (DSGVO, BSIG, branchenspezifisch).
+
+                    ### 5.2 Entwurf
+                    - Bedrohungsmodellierung (z. B. STRIDE) bei Schutzbedarf hoch/sehr hoch verpflichtend.
+                    - Architekturreview mit Sec-Champion.
+                    - Auswahl etablierter Frameworks; keine Eigenentwicklung sicherheitskritischer Primitiven (Krypto: {{ crypto.algorithms }} gemaess CON.1, BSI TR-02102).
+
+                    ### 5.3 Implementierung
+                    - Coding-Guidelines in Anlehnung an OWASP ASVS Level 2 (mind.) bzw. Level 3 fuer hochkritische Funktionen.
+                    - Pflicht-Tooling: SAST (Static Analysis), SCA (Software Composition Analysis), Secret-Scanner im CI.
+                    - Pull-Request-Reviews mit mindestens einem zweiten Reviewer.
+
+                    ### 5.4 Test
+                    - Unit-, Integrations-, Sicherheits-Tests automatisiert.
+                    - DAST gegen Test-Umgebung mind. vor jedem Major-Release.
+                    - Pen-Test bei Schutzbedarf hoch/sehr hoch vor Erstinbetriebnahme und nach signifikanten Aenderungen.
+
+                    ### 5.5 Freigabe
+                    Siehe Test- und Freigabe-Richtlinie.
+
+                    ### 5.6 Betrieb und Ausserbetriebnahme
+                    - Patch- und Vulnerability-Management gemaess OPS.1.1.3.
+                    - Sichere Datenmigration und -loeschung (CON.6) bei Ausserbetriebnahme.
+
+                    ## 6. Lieferanten und Open-Source
+                    Auftragsentwickler werden gemaess Outsourcing-Richtlinie (OPS.2.3) ausgewaehlt und vertraglich auf diese Richtlinie verpflichtet. Open-Source-Komponenten werden ueber SBOM nachgehalten; Lizenz- und Sicherheits-Compliance via SCA pruefen.
+
+                    ## 7. Trennung der Umgebungen
+                    Entwicklung, Test und Produktion sind technisch und organisatorisch getrennt (APP.6.A11). Produktionsdaten werden in Entwicklung und Test nur anonymisiert oder pseudonymisiert genutzt (DSGVO Art. 25, CON.2.A12). Backup-Strategie mit RPO {{ backup.rpo_hours }} h.
+
+                    ## 8. Schulung
+                    Entwicklerinnen und Entwickler werden mindestens jaehrlich zu sicherer Entwicklung und OWASP Top-10 geschult. Sec-Champions absolvieren vertiefende Schulungen.
+
+                    ## 9. Mess-Kriterien
+                    - Anteil Releases mit erfolgreichem SAST/SCA/DAST-Lauf (Ziel: 100 %)
+                    - Mittlere Time-to-Fix kritische Findings (Ziel: ≤ 14 Tage)
+                    - Anteil Codebasen mit gepflegtem SBOM (Ziel: 100 %)
+                    - Anteil Pen-Test-Findings High/Critical mit Behebungsnachweis vor Go-Live (Ziel: 100 %)
+                    - Anteil Entwickelnder mit aktueller Schulung (Ziel: ≥ 95 %)
+
+                    ## 10. Eskalation
+                    Kritische Sicherheitsfindings ohne Behebungspfad werden binnen 24 h an ISB eskaliert; Go-Live-Stopp moeglich.
+
+                    ## 11. Pruefzyklus und Genehmigung
+                    Jaehrliche Ueberpruefung sowie nach signifikanten Toolchain-Aenderungen. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI APP.6, APP.4.4, OPS.1.1.3, CON.1, CON.2.A12, ISO/IEC 27001:2022 A.8.25-A.8.31, OWASP ASVS, OWASP Top-10.*
+
+        software_test_release_policy:
+            v1:
+                title: 'Richtlinie Test- und Freigabeverfahren'
+                body: |-
+                    # Richtlinie Test- und Freigabeverfahren der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verbindliche Richtlinie | Norm-Anker: BSI APP.6.A5 + APP.6.A7 + ISO/IEC 27001:2022 A.8.29 + A.8.32 | Baustein: APP.6 + OPS.1.1.4 (Aenderung) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, technisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt verbindlich, wie Software vor produktiver Nutzung getestet, freigegeben und in Betrieb ueberfuehrt wird. Ziel ist die Sicherstellung der Funktionssicherheit, Sicherheitsanforderungen und Compliance-Erfuellung gemaess APP.6.A5 (Sicherheitstests) und APP.6.A7 (Freigabe von Software).
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind: Eigen- und Auftragsentwicklungen, Major- und Minor-Releases, Patches mit funktionalen Aenderungen, signifikante Konfigurationsaenderungen produktiver Systeme. Tenant-Scope: {{ tenant.scope_statement }}.
+
+                    ## 3. Grundsaetze
+                    1. **Strikte Trennung Test- und Produktionsumgebung** (APP.6.A11).
+                    2. **Vier-Augen-Prinzip bei Freigabe** kritischer Releases (OPS.1.1.4).
+                    3. **Reproduzierbare Tests** (automatisiert wo moeglich, dokumentiert).
+                    4. **Risikoorientierte Testtiefe** abhaengig vom Schutzbedarf.
+                    5. **Vollstaendige Freigabedokumentation** (Was wurde getestet, durch wen, mit welchem Ergebnis).
+
+                    ## 4. RACI
+                    | Aufgabe | Entwickler | QA/Tester | Product-Owner | Sec-Champion | ISB {{ roles.isb.fullName }} | Betrieb |
+                    |---|---|---|---|---|---|---|
+                    | Testkonzept | C | A/R | C | C | I | C |
+                    | Funktionstest | C | A/R | C | I | I | I |
+                    | Sicherheitstest | C | R | I | A | C | I |
+                    | Freigabe Standard | C | C | A/R | C | I | C |
+                    | Freigabe kritisch | C | C | R | C | A | C |
+                    | Rollback | – | – | C | I | I | A/R |
+
+                    ## 5. Teststufen
+                    | Teststufe | Inhalt | Pflicht ab Schutzbedarf |
+                    |---|---|---|
+                    | Unit-Test | Funktion einzelner Komponenten, Code-Coverage | Normal |
+                    | Integrations-Test | Schnittstellen und Datenfluesse | Normal |
+                    | Sicherheits-Test (SAST/SCA) | Statische Analyse Code/Abhaengigkeiten | Normal |
+                    | Sicherheits-Test (DAST) | Dynamische Analyse laufender Anwendung | Hoch |
+                    | Penetrations-Test | Manuelles Testen Erst-Release/Major-Release | Hoch / sehr hoch |
+                    | Last- und Stress-Test | Verfuegbarkeitsverhalten | Hoch (Verfuegbarkeit) |
+                    | Datenschutz-Compliance-Pruefung | DSGVO Art. 25, 32 | Wenn personenbezogene Daten |
+                    | Abnahme-Test (UAT) | Fachliche Abnahme durch Process-Owner | Alle |
+
+                    Testdaten: Produktionsdaten nur anonymisiert/pseudonymisiert nutzbar.
+
+                    ## 6. Freigabeverfahren
+                    1. **Antrag:** Release-Manager stellt Freigabeantrag mit Versionsnummer, Aenderungsumfang, Testergebnissen, Risikoeinschaetzung.
+                    2. **Pruefung:** Product-Owner prueft fachlich, Sec-Champion sicherheitlich, Betrieb betrieblich.
+                    3. **Sicherheits-Sign-off:** Bei Schutzbedarf hoch/sehr hoch zusaetzliche Mitzeichnung ISB {{ roles.isb.fullName }}.
+                    4. **Datenschutz-Sign-off:** Bei Verarbeitung personenbezogener Daten Mitzeichnung DSB {{ roles.dpo.fullName }}.
+                    5. **Change-Approval:** Eintragung im Change-Management gemaess OPS.1.1.4.
+                    6. **Deployment:** Nach Freigabe innerhalb genehmigtem Zeitfenster.
+                    7. **Post-Deployment-Verifikation:** Funktions- und Sicherheits-Smoke-Tests.
+
+                    ## 7. Notfall-Releases
+                    Bei sicherheitskritischen Patches kann ein verkuerztes Verfahren genutzt werden: Mindesttests dokumentiert, Sign-off ISB asynchron, vollstaendige Nachdokumentation binnen 5 Arbeitstagen.
+
+                    ## 8. Rollback
+                    Vor jedem Release verbindlicher Rollback-Plan. Restoreziele fuer Daten: RPO {{ backup.rpo_hours }} h. Rollback-Faehigkeit wird mindestens jaehrlich geprobt.
+
+                    ## 9. Mess-Kriterien
+                    - Anteil Releases mit vollstaendiger Freigabedokumentation (Ziel: 100 %)
+                    - Anteil Releases mit kritischen Findings ohne Behebung (Ziel: 0 %)
+                    - Time-to-Recovery nach Rollback (Ziel: ≤ {{ backup.rpo_hours }} h)
+                    - Anteil dokumentierter Notfall-Releases mit nachgereichter Vollstaendigkeit ≤ 5 AT (Ziel: 100 %)
+
+                    ## 10. Eskalation
+                    Verstoesse gegen das Freigabeverfahren werden als Sicherheitsvorfall behandelt (DER.2.1) und an Leitung berichtet.
+
+                    ## 11. Pruefzyklus und Genehmigung
+                    Jaehrliche Ueberpruefung sowie nach Toolchain-Aenderungen. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI APP.6.A5, APP.6.A7, APP.6.A11, OPS.1.1.4, ISO/IEC 27001:2022 A.8.29, A.8.32.*
+
+        teleworking_policy:
+            v1:
+                title: 'Richtlinie Telearbeit / Home-Office'
+                body: |-
+                    # Richtlinie Telearbeit / Home-Office der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verbindliche Richtlinie | Norm-Anker: BSI INF.9 (Mobiler Arbeitsplatz) + ISO/IEC 27001:2022 A.6.7 + A.7.9 | Baustein: INF.9.A1-A12 + ORP.4 + SYS.3.1 (Notebook) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, organisatorisch-technisch) | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die sichere Verarbeitung von Informationen und den Einsatz von IT der {{ tenant.legal_name }} an Telearbeits- und Home-Office-Arbeitsplaetzen sowie an mobilen Arbeitsorten. Sie operationalisiert Baustein INF.9 sowie ISO/IEC 27001:2022 A.6.7 (Remote Working) und A.7.9 (Sicherheit von Werten ausserhalb der Organisation).
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Beschaeftigten, die regelmaessig oder gelegentlich ausserhalb der Unternehmensstandorte arbeiten, einschliesslich Telearbeit gemaess ArbStaettV, alternierender Telearbeit, mobiler Arbeit und Geschaeftsreisen mit IT-Nutzung. Tenant-Scope: {{ tenant.scope_statement }}.
+
+                    ## 3. Voraussetzungen fuer Telearbeit
+                    1. Schriftliche Vereinbarung zwischen Beschaeftigtem und {{ tenant.legal_name }}.
+                    2. Datenschutz- und Vertraulichkeitsverpflichtung (BDSG § 53).
+                    3. Eingewiesener Beschaeftigter (mindestens jaehrliche Awareness-Schulung, ORP.3).
+                    4. Bereitstellung gehaerteter Endgeraete durch {{ tenant.legal_name }} (kein BYOD ohne explizite Zulassung).
+                    5. Geeigneter Arbeitsplatz mit Zutrittsschutz, Sichtschutz, Diebstahlsicherung.
+
+                    ## 4. RACI
+                    | Aufgabe | Beschaeftigter | Fuehrungskraft | IT-Betrieb | ISB {{ roles.isb.fullName }} | Datenschutz {{ roles.dpo.fullName }} |
+                    |---|---|---|---|---|---|
+                    | Antrag und Vereinbarung | A/R | A | I | C | C |
+                    | Einrichtung Arbeitsplatz | A/R | C | C | I | I |
+                    | Bereitstellung Endgeraet | I | I | A/R | I | I |
+                    | Sicherheitsvorgaben einhalten | A/R | C | C | A | C |
+                    | Vorfallsmeldung | A/R | I | C | A | C |
+
+                    ## 5. Technische Anforderungen
+                    | Anforderung | Konkretisierung | Norm-Bezug |
+                    |---|---|---|
+                    | Endgeraet | Vollverschluesselte Festplatte ({{ crypto.algorithms }}), MDM-/EDR-Anbindung | INF.9.A4, SYS.3.1, CON.1 |
+                    | Authentifizierung | Personalisierter Account, MFA verpflichtend bei Remote-Zugriff | ORP.4, INF.9.A6 |
+                    | Verbindung | VPN mit moderner Krypto, Split-Tunneling restriktiv | NET.3.3, INF.9.A6 |
+                    | Druck/Speichern lokal | Standardmaessig deaktiviert, Ausnahmen genehmigungspflichtig | INF.9.A8 |
+                    | Bildschirm-Sperre | Automatisch nach 5 min Inaktivitaet | INF.9.A5 |
+                    | Backup | Automatisch ueber Unternehmens-Backup, RPO {{ backup.rpo_hours }} h | CON.3 |
+                    | Patch | Automatische Pflicht-Updates ohne Aufschub > 7 Tage | OPS.1.1.3 |
+
+                    ## 6. Organisatorische Anforderungen
+                    - Vertrauliche Informationen nicht in Anwesenheit Dritter (Familie, Mitbewohner, Cafe).
+                    - Telefonate ueber sensible Inhalte nur in geschlossenen Raeumen.
+                    - Papier-Unterlagen sind beim Verlassen des Arbeitsplatzes zu verschliessen (Clean-Desk).
+                    - Vernichtung gemaess Loeschrichtlinie (Schredder mind. P-4 fuer vertrauliche Dokumente).
+                    - Sofortige Meldung bei Verlust oder Diebstahl an IT-Service-Desk und ISB.
+                    - Keine Verarbeitung besonderer Kategorien personenbezogener Daten ausserhalb gesicherter Umgebung ohne explizite Genehmigung DSB {{ roles.dpo.fullName }}.
+
+                    ## 7. Geschaeftsreisen und Ausland
+                    Bei Reisen ins Ausland gelten zusaetzlich: Risikobewertung des Ziellandes (z. B. Krypto-Restriktionen), Pruefung Drittlandtransfer (Schrems II), reduzierte Datenmitnahme (Reise-Notebook), VPN-Zwang fuer alle Verbindungen, ggf. Verzicht auf hochsensible Daten.
+
+                    ## 8. Vorfallsmeldung
+                    Sicherheitsvorfaelle (Verlust, Diebstahl, Schadcode-Verdacht, unautorisierter Zugriff Dritter) sind unverzueglich, spaetestens binnen 1 Stunde, zu melden (Cross-Ref DER.2.1). Bei Verdacht auf Datenschutzverletzung Eskalation an DSB binnen 1 Stunde.
+
+                    ## 9. Mess-Kriterien
+                    - Anteil Telearbeitender mit aktueller Schulung (Ziel: ≥ 95 %)
+                    - Anteil Endgeraete mit aktiver Verschluesselung (Ziel: 100 %)
+                    - Anteil Endgeraete mit aktuellem Patch-Stand (Ziel: ≥ 98 %)
+                    - Mittlere Meldezeit Sicherheitsvorfall (Ziel: ≤ 1 h)
+                    - Anteil schriftlicher Telearbeitsvereinbarungen (Ziel: 100 %)
+
+                    ## 10. Eskalation und Sanktionen
+                    Verstoesse werden gemaess Personalrichtlinie (ORP.2) sanktioniert; bei wiederholten oder groben Verstoessen Entzug der Telearbeitserlaubnis.
+
+                    ## 11. Pruefzyklus und Genehmigung
+                    Pruefung alle 24 Monate sowie bei wesentlichen Aenderungen (Endgeraete-Architektur, Bedrohungslage, Recht). Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI INF.9, SYS.3.1, NET.3.3, ORP.3, ORP.4, OPS.1.1.3, ISO/IEC 27001:2022 A.6.7, A.7.9, ArbStaettV.*
+
+        web_application_policy:
+            v1:
+                title: 'Richtlinie Web-Anwendungen'
+                body: |-
+                    # Richtlinie Web-Anwendungen der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verbindliche Richtlinie | Norm-Anker: BSI APP.3.1 (Webanwendungen) + ISO/IEC 27001:2022 A.8.26 + OWASP Top-10 + OWASP ASVS | Baustein: APP.3.1.A1-A18 + APP.3.2 (Webserver) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Sprache: Deutsch (Sie-Form, technisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie etabliert verbindliche Sicherheitsanforderungen fuer Web-Anwendungen, die durch oder im Auftrag der {{ tenant.legal_name }} entwickelt, betrieben oder beschafft werden. Sie verankert die Anforderungen aus Baustein APP.3.1, ISO/IEC 27001:2022 A.8.26 (Application Security Requirements) sowie OWASP Top-10 und ASVS.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle internen und externen Web-Anwendungen, REST-/GraphQL-APIs, Web-Portale fuer Beschaeftigte, Kunden, Geschaeftspartner sowie sicherheitsrelevante Mikroservices. Tenant-Scope: {{ tenant.scope_statement }}.
+
+                    ## 3. Grundsaetze
+                    1. **Sichere Entwicklung gemaess SDLC-Richtlinie** (APP.6).
+                    2. **Defense-in-Depth** (mehrlagige Sicherheit: WAF, Authentifizierung, Eingabe-Validierung, Ausgabe-Kodierung).
+                    3. **Least Privilege** (minimale Berechtigung Anwendung und Nutzer).
+                    4. **Vertraulichkeit der Verbindung** (TLS, HSTS).
+                    5. **Beobachtbarkeit** (Logging, Monitoring, Alerting).
+                    6. **Resilienz** (Fail-secure, Rate-Limiting, Bot-Abwehr).
+
+                    ## 4. RACI
+                    | Aufgabe | Entwickler | Architekt | Sec-Champion | ISB {{ roles.isb.fullName }} | Betrieb |
+                    |---|---|---|---|---|---|
+                    | Sicherheitsanforderungen | C | A | R | C | I |
+                    | Bedrohungsmodellierung | C | A/R | C | C | I |
+                    | Implementierung | A/R | C | C | I | I |
+                    | Code-Review | A/R | C | R | I | I |
+                    | Penetrations-Test | I | C | A | R | I |
+                    | Betrieb / WAF | I | I | C | C | A/R |
+                    | Vorfallsbearbeitung | C | C | R | A | C |
+
+                    ## 5. Verbindliche Sicherheitskontrollen (OWASP Top-10 + ASVS)
+                    | Bedrohung | Pflicht-Kontrolle |
+                    |---|---|
+                    | A01 Broken Access Control | Server-seitige Autorisierung an jeder Endpoint, RBAC/ABAC, Resource-Owner-Pruefung, Verbot direkter Object-References ohne Pruefung |
+                    | A02 Cryptographic Failures | TLS 1.2+ Pflicht, HSTS, CSP, sichere Cookies, Verfahren {{ crypto.algorithms }} gemaess CON.1, BSI TR-02102 |
+                    | A03 Injection | Parametrisierte Queries, ORM, Eingabe-Validierung, Ausgabe-Kodierung, Whitelist-Filter |
+                    | A04 Insecure Design | Threat-Modeling Pflicht ab Schutzbedarf hoch, sichere Defaults |
+                    | A05 Security Misconfiguration | Hardening-Baselines, Verbot Default-Credentials, restriktive Header (X-Frame-Options, X-Content-Type-Options) |
+                    | A06 Vulnerable Components | SCA im CI, SBOM-Pflege, max. 30 Tage zur Patch-Anwendung kritischer CVEs |
+                    | A07 Identification & Authentication | MFA fuer privilegierte Zugriffe, sichere Session-Verwaltung, Account-Lockout, Credential-Stuffing-Schutz |
+                    | A08 Software & Data Integrity Failures | Signierte Releases, Subresource Integrity, vertrauenswuerdige Update-Quellen |
+                    | A09 Security Logging & Monitoring | Vollstaendiges Logging zugriffsrelevanter Operationen, SIEM-Integration, Alerting (OPS.1.1.5, DER.1) |
+                    | A10 SSRF | URL-Whitelisting, Netzsegmentierung, Verbot interner Endpunkte aus Anwendungs-Frontend |
+
+                    ## 6. Authentifizierung und Sitzung
+                    - Personalisierte Konten, keine geteilten Accounts.
+                    - MFA fuer Backend, Admin-Bereiche, sensible Self-Service-Funktionen.
+                    - Sitzungen mit kurzem Timeout (max. 30 min Inaktivitaet) und Re-Authentifizierung bei kritischen Aktionen.
+                    - Sichere Cookies (HttpOnly, Secure, SameSite=strict/lax).
+                    - Schutz vor CSRF (Token oder SameSite-Cookies + Referer-Pruefung).
+
+                    ## 7. Schnittstellen / APIs
+                    - Authentifizierung pro Request (OAuth 2.0/OIDC, JWT mit kurzer Lebensdauer).
+                    - Eingabe- und Ausgabe-Schemavalidierung (z. B. JSON-Schema, OpenAPI).
+                    - Rate-Limiting und Quota.
+                    - Versionsverwaltung der APIs, Deprecation-Policy.
+
+                    ## 8. Betrieb und Verfuegbarkeit
+                    - Web-Application-Firewall (WAF) im Block-Modus fuer extern erreichbare Anwendungen.
+                    - DDoS-Schutz vorgelagert.
+                    - Patches innerhalb definierter Fristen (kritisch ≤ 7 Tage, hoch ≤ 30 Tage).
+                    - Backup gemaess CON.3 mit RPO {{ backup.rpo_hours }} h, Restore mind. jaehrlich erprobt.
+
+                    ## 9. Penetrations-Tests und Schwachstellen-Management
+                    - Jede neue extern erreichbare Web-Anwendung wird vor Erstinbetriebnahme einem Pen-Test unterzogen.
+                    - Wiederholungs-Pen-Tests mind. alle 24 Monate sowie nach Major-Release.
+                    - Findings High/Critical Block-Kriterium fuer Go-Live.
+                    - Bug-Bounty oder Coordinated-Vulnerability-Disclosure-Verfahren empfohlen.
+
+                    ## 10. Datenschutz
+                    Bei Verarbeitung personenbezogener Daten gelten zusaetzlich Datenschutzrichtlinie und DSGVO Art. 25, 32; DSFA Pflicht bei hohen Risiken.
+
+                    ## 11. Mess-Kriterien
+                    - Anteil extern erreichbarer Anwendungen mit aktivem Pen-Test ≤ 24 Monate (Ziel: 100 %)
+                    - Mittlere Time-to-Patch kritischer CVEs (Ziel: ≤ 7 Tage)
+                    - Anteil Anwendungen mit aktiver WAF (Ziel: 100 %)
+                    - Anteil Anwendungen mit MFA fuer privilegierte Zugriffe (Ziel: 100 %)
+                    - Anteil Releases ohne offene High/Critical-Findings (Ziel: 100 %)
+
+                    ## 12. Eskalation
+                    High/Critical-Vorfaelle werden binnen 1 h an ISB gemeldet, Notfall-Reaktion gemaess DER.2.1 inkl. Krisenstab-Pruefung bei kundenwirksamen Stoerungen.
+
+                    ## 13. Pruefzyklus und Genehmigung
+                    Jaehrliche Ueberpruefung sowie nach signifikanten Bedrohungslage- oder Toolchain-Aenderungen. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI APP.3.1, APP.3.2, APP.6, OPS.1.1.5, DER.1, ISO/IEC 27001:2022 A.8.26, OWASP Top-10, OWASP ASVS, BSI TR-02102.*

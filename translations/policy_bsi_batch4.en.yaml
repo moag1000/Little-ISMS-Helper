@@ -789,3 +789,1308 @@ policy:
 
                     ---
                     *Cross-reference: BSI DER.2.1, ISO/IEC 27001:2022 A.5.24-A.5.27, NIST SP 800-61 Rev. 2, GDPR Art. 33-34, NIS2-UmsuG Section 32, DORA Art. 17-23, BSIG Section 8b.*
+        information_exchange_policy:
+            v1:
+                title: 'Information Exchange Policy'
+                body: |-
+                    # Information Exchange Policy of {{ tenant.legal_name }}
+
+                    *Document class: Topic Policy | Norm anchor: BSI CON.5 (Development & Operation of General Applications) in conjunction with CON.1 (Cryptographic Concept), OPS.1.2.2 (Archiving) | ISO/IEC 27001:2022 Annex A 5.14 (Information Transfer) | EU GDPR Art. 32, 44–49 | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal, legal) | Review interval: 12 months*
+
+                    ## 1. Purpose and protection objective
+                    This policy governs the secure exchange of information between {{ tenant.legal_name }} and internal departments, external partners, customers, contractors, supervisory authorities and other third parties. The objective is to preserve confidentiality, integrity, authenticity and accountability throughout the entire transmission lifecycle, including preparation, transport, receipt, acknowledgement and audit-proof storage. The policy operationalises the IT Security Policy and the classification scheme contained in the Organisation Policy (Building Block ORP.1) and is binding on all employees and authorised representatives of {{ tenant.legal_name }}.
+
+                    ## 2. Scope
+                    The policy applies organisationally to all employees, contractors and third parties who, on behalf of {{ tenant.legal_name }}, create, receive, forward or delete information. Geographically it covers all sites within the scope of the IT Security Policy as well as all cloud locations referenced in the Cloud Usage Policy (Building Block OPS.2.2). Technically it covers all transmission channels: e-mail (SMTP/SMIME/PGP), file transfer (SFTP, HTTPS, Managed File Transfer), API-based transfers (REST/SOAP), physical media (USB, optical media, paper), postal services, fax-replacement services, voice and video communication, and collaboration platforms.
+
+                    ## 3. Classification and channel matrix
+                    The permissible transmission channel depends on the classification of the information per the Organisation Policy (ORP.1.A2):
+
+                    - **Public:** all channels permitted, provided no integrity requirement applies.
+                    - **Internal:** authorised internal channels only; encryption per CON.1 required for any external delivery.
+                    - **Confidential:** end-to-end encrypted channels exclusively; algorithms and key length per cryptographic concept ({{ crypto.algorithms }}); recipient authenticity must be evidenced.
+                    - **Strictly confidential / VS-NfD or higher:** only channels approved per BSI TR-03116 or the German classified-information framework (VSA). Sending only by named authorised individuals; dual control on initial transmission.
+
+                    The matrix is maintained as Annex A and reviewed annually by the ISO {{ roles.isb.fullName }}.
+
+                    ## 4. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Information classification | Information owner | Department head | ISO | DPO |
+                    | Channel and safeguard selection | Sender | Information owner | ISO | – |
+                    | Provision of approved tools | IT Operations | CIO | ISO | Employees |
+                    | Approval of channel exceptions | ISO {{ roles.isb.fullName }} | Executive Board | DPO, Legal | Requestor |
+                    | Documentation and auditability | IT Operations | ISO | Internal Audit | – |
+                    | Incident handling on misdelivery | DPO / ISO | Executive Board | Legal | Affected parties |
+
+                    ## 5. Channel-specific rules
+                    ### 5.1 E-mail
+                    External transmission of confidential information must be end-to-end encrypted (S/MIME or OpenPGP) using valid certificates issued by the internal trust centre. Transport encryption (TLS 1.2 or above per BSI TR-02102-2) is mandatory at minimum. Attachments containing personal data are subject to receipt and read-confirmation requirements.
+
+                    ### 5.2 File and bulk transfer
+                    Recurring bulk transfers must use the Managed File Transfer system of {{ tenant.legal_name }}. Ad-hoc transfers via approved cloud sharing platforms are permitted provided tenant separation, encryption at-rest and in-transit, and audit-proof logging are guaranteed (cross-ref OPS.2.2).
+
+                    ### 5.3 API interfaces
+                    APIs must be protected by mTLS or OAuth 2.0 with token binding; non-mutually authenticated interfaces are not permitted. Schemas are versioned; every interface is recorded in the interface register and subject to review in the annual penetration test plan.
+
+                    ### 5.4 Physical media and paper
+                    Media are released only in approved (cryptographically encrypted per BSI TR-03116) form; courier paths are documented. Paper documents are dispatched in sealed envelopes, classification-marked and with delivery acknowledgement; classification "confidential" or higher requires double-bag packaging.
+
+                    ### 5.5 Voice, video and collaboration
+                    Voice and video conferences are conducted via approved platforms. Recordings are subject to the Document Policy and must be filed according to classification. Chat messages count as business correspondence and must be archived in an audit-proof manner.
+
+                    ## 6. International transfers of personal data
+                    Transfers to third countries require an assessment per GDPR Chapter V (Art. 44–49). Without an adequacy decision, Standard Contractual Clauses (SCC) and supplementary technical and organisational measures are mandatory. The DPO {{ roles.dpo.fullName }} must be consulted in advance. Schrems II compliant transfer impact assessments are kept in the Records of Processing Activities.
+
+                    ## 7. Evidence preservation and logging
+                    All transmission events are logged (cross-ref OPS.1.1.5 Logging Policy): sender, recipient, timestamp, payload checksum, mechanism used, outcome. Retention follows the retention and deletion matrix; minimum twelve months for operational evaluation and six years for tax- and commercial-law correspondence.
+
+                    ## 8. Exception handling
+                    Exceptions require a written request to the ISO stating rationale, duration, compensating controls and risk assessment. Approval rests with the Executive Board; entry into the exception register; mandatory re-review at most after twelve months.
+
+                    ## 9. Training and awareness
+                    Employees are sensitised annually within the awareness programme (Building Block ORP.3) on secure information transmission. Phishing simulations and misdelivery drills are conducted quarterly.
+
+                    ## 10. Metrics and KPIs
+                    - Share of externally encrypted e-mails (target: greater than 95 percent)
+                    - Number of misdeliveries per quarter (target: less than or equal to 0.5 per 1,000 send operations)
+                    - Share of interfaces with valid penetration test evidence (target: 100 percent)
+                    - Response time to a misdelivery report (target: less than 4 hours)
+
+                    ## 11. Escalation and incident handling
+                    Misdeliveries, compromised channels or lost media must be reported immediately to the Service Desk. Where personal data are concerned, the GDPR Art. 33/34 escalation paths apply (72-hour clock) along with Building Block DER.2.1.
+
+                    ## 12. Validity, review and approval
+                    The policy is reviewed at least every twelve months and on a triggered basis. Breaches are sanctioned per the Personnel Policy (Building Block ORP.2). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ORP.1 (Classification), CON.1 (Crypto Concept), OPS.1.1.5 (Logging), OPS.2.2 (Cloud), DER.2.1 (Incidents), ISO/IEC 27001:2022 A.5.14, GDPR Art. 32 + Chapter V, BSI TR-02102-2.*
+
+        it_administration_policy:
+            v1:
+                title: 'IT Administration Policy'
+                body: |-
+                    # IT Administration Policy of {{ tenant.legal_name }}
+
+                    *Document class: Topic Policy | Norm anchor: BSI APP.1.1 (Office) in conjunction with OPS.1.1.2 (Proper IT Administration), ORP.4 (IAM) | ISO/IEC 27001:2022 Annex A 8.2 (Privileged Access Rights) + A 8.3 (Information Access Restriction) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal, legal) | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy ensures that administrative activities on the IT systems of {{ tenant.legal_name }} are justified, documented, monitored and accountable. It guards against misuse, error, unintended configuration changes and insider threats and provides the organisational foundation for audit-proof operations per BSI 200-2.
+
+                    ## 2. Scope
+                    The policy applies to all employees, contractors and external personnel who hold or request administrative privileges on information processing systems, network components, databases, applications, container platforms, cloud tenants or security tooling of {{ tenant.legal_name }}.
+
+                    ## 3. Definitions
+                    "Administrative activity" means any action that may alter configuration, availability, security or data of a target object, or which provides extensive read access to confidential data. A "privileged account" is an account with permissions beyond a normal end-user profile.
+
+                    ## 4. Separation of roles and accounts
+                    Administrative activities are performed exclusively from dedicated administrative accounts that are strictly separated from standard end-user accounts (cross-ref ORP.4.A8). E-mail, web browsing and office work via administrative accounts is prohibited. Privileged accounts must not be released for shared use; the only exception are auditable break-glass accounts per Section 9.
+
+                    ## 5. Privileged Access Management (PAM)
+                    All privileged access is brokered through the central PAM system of {{ tenant.legal_name }}. Sessions are recorded, given a traceable session identifier, and retained in an audit-proof manner for at least twelve months. Access requires multi-factor authentication (cross-ref ORP.4.A22). Just-in-time activation with time-bound elevation is the default; permanent elevation requires written justification and a risk assessment.
+
+                    ## 6. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Granting administrative rights | IAM team | CIO | ISO | Manager |
+                    | Session execution | Administrator | Application owner | – | – |
+                    | Session recording review | ISO | Executive Board | DPO | Works Council |
+                    | Emergency activation | On-call admin | ISO | CIO | Executive Board |
+                    | Recertification | IAM team | ISO | Manager | – |
+
+                    ## 7. Four-eyes principle
+                    Changes with broad impact (deletion of databases, modification of authentication infrastructure, change of cryptographic keys, mass operations affecting more than 100 records, reconfiguration of backup destinations) require four-eyes approval inside the workflow system. Self-approval by the same user is technically prevented.
+
+                    ## 8. Training and qualification
+                    Administrative activities require a competency record. Before initial granting of administrative rights, technical training and a security and confidentiality briefing are mandatory. Refresher training at least every twelve months.
+
+                    ## 9. Break-glass accounts
+                    Break-glass accounts are stored in a sealed vault (digital or physical), labelled with unique hashes and subject to recurring inspection. Activation is permitted only on written instruction of the on-call crisis lead. After use, the password is rotated immediately and the event documented in the incident register within 24 hours.
+
+                    ## 10. External administrators
+                    External providers with administrative rights are governed by the Outsourcing Policy (Building Block OPS.2.1). They receive just-in-time access via PAM only; persistent VPN tunnels for maintenance partners are prohibited. Maintenance windows are pre-registered through change management and acknowledged in an audit-proof manner upon completion.
+
+                    ## 11. Logging and review
+                    All administrative activity is captured by central logging (cross-ref OPS.1.1.5). Anomalies are evaluated by SIEM correlation rules. Sample session reviews are performed monthly by the ISO under co-determination rules per § 87 (1) No. 6 BetrVG (German Works Council Constitution Act).
+
+                    ## 12. Separation of production and test environments
+                    Administrative accounts are separated by environment; an account must not combine production and test rights. Configurations are deployed through Infrastructure-as-Code pipelines; manual changes in production are not permitted outside emergencies (cross-ref OPS.1.2.4 Patch and Change Management).
+
+                    ## 13. Metrics and KPIs
+                    - Share of administrative sessions brokered by PAM (target: 100 percent)
+                    - Mean privilege dwell time (target: less than 8 hours)
+                    - Quarterly recertification quota for privileged accounts (target: 100 percent)
+                    - Approved four-eyes violations (target: 0)
+
+                    ## 14. Review and approval
+                    Reviewed at least every twelve months and on a triggered basis. Breaches are addressed disciplinarily per the Personnel Policy (Building Block ORP.2) and may give rise to civil or criminal action. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ORP.4 (IAM), OPS.1.1.5 (Logging), OPS.1.2.4 (Patch/Change), OPS.2.1 (Outsourcing), ISO/IEC 27001:2022 A.8.2/A.8.3, BSI TR-02102.*
+
+        it_forensics:
+            v1:
+                title: 'IT Forensics Policy'
+                body: |-
+                    # IT Forensics Policy of {{ tenant.legal_name }}
+
+                    *Document class: Topic Policy | Norm anchor: BSI DER.2.2 (Forensic Readiness) in conjunction with DER.2.1 (Incident Handling) | ISO/IEC 27001:2022 Annex A 5.28 (Collection of Evidence) | German Code of Criminal Procedure (StPO) §§ 94 ff., BDSG §§ 26, 32 | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal, legal) | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy establishes the organisational, personnel and technical preconditions for evidentially sound preservation, analysis and, where applicable, hand-over of digital evidence to law enforcement or supervisory authorities after a security incident. It complements incident handling (Building Block DER.2.1) with a forensically robust chain of evidence and ensures that {{ tenant.legal_name }} can demonstrate due care under the BSIG, NIS2 implementation act and GDPR Art. 33.
+
+                    ## 2. Scope
+                    The policy applies to all IT systems, applications, cloud tenants and storage locations within the scope of the IT Security Policy. It covers on-premise systems, virtual machines, containers, cloud workloads, mobile endpoints and removable media.
+
+                    ## 3. Forensic tier model
+                    {{ tenant.legal_name }} distinguishes three depths of forensic response:
+
+                    1. **Tier 1 Triage:** initial capture by SOC within 60 minutes; preservation of volatile evidence (RAM, network connections, process lists).
+                    2. **Tier 2 In-depth analysis:** disk imaging, log correlation, malware reverse engineering, timeline reconstruction.
+                    3. **Tier 3 Court-grade:** engagement of external experts, complete chain of custody, optional notarisation of hash values.
+
+                    Escalation between tiers is decided by the ISO {{ roles.isb.fullName }} together with Legal and the Executive Board.
+
+                    ## 4. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Forensic readiness (tooling, training) | SOC lead | ISO | CIO | – |
+                    | Volatile data preservation | First-responder | SOC lead | ISO | – |
+                    | Disk imaging | Forensic specialist | ISO | Legal | DPO |
+                    | Evidence hand-over | ISO | Executive Board | Legal | Authority |
+                    | Witness / expert testimony | External forensics | ISO | Legal | – |
+
+                    ## 5. Readiness measures
+                    - Forensic toolkit (write-blockers, imaging software, hash tools) ready for use.
+                    - Triage and imaging playbooks versioned in the ISMS document system.
+                    - All systems time-synchronised against hardened NTP sources; drift threshold 0.5 seconds.
+                    - Logging retention sufficient for at least 180 days of look-back (cross-ref OPS.1.1.5).
+                    - Pre-arranged contracts with external forensic providers (response time target less than 8 hours), including NDA and venue.
+
+                    ## 6. Evidence preservation procedure
+                    All capture is read-only; for media, bit-precise images are produced and hashed (SHA-256 and SHA-512). Hashes are stored in an audit-proof evidence register. Originals are sealed and held in an access-restricted evidence room per INF.1.A4. The chain of custody (date, time, person, action, result) is documented without gaps.
+
+                    ## 7. Cloud forensics
+                    In cloud environments snapshots are taken via API-based, signed procedures. Cloud contracts (cross-ref OPS.2.2) must include forensic clauses governing image retrieval, region specifics and response times. On shared platforms only the own tenant must be addressed; data of other tenants must be excluded from evidence.
+
+                    ## 8. Data protection and co-determination
+                    Forensic analysis of personal data is performed with the involvement of the DPO {{ roles.dpo.fullName }} and observes Works Council co-determination per § 87 (1) No. 6 BetrVG. Proportionality is assessed in writing for the individual case; a pre-authorisation list for standard scenarios is maintained.
+
+                    ## 9. Engagement of external experts
+                    External forensic providers act exclusively under written mandate and NDA. Award occurs through Legal in coordination with the ISO. Evidence hand-over is fully traceable; interim findings are subject to confidentiality.
+
+                    ## 10. Evidence retention and destruction
+                    Evidence is retained for the duration of any pending proceedings, at minimum three years. Destruction occurs after written release by Legal and applies the Deletion Policy (BSI APP.1.1.A11) plus physical destruction per DIN 66399 security level H-7.
+
+                    ## 11. Training and exercises
+                    First-responders and SOC personnel are trained at least annually; effectiveness of playbooks is demonstrated through one simulation per half-year. Lessons learned feed back into the incident register and the ISMS effectiveness programme.
+
+                    ## 12. Metrics and KPIs
+                    - Mean time to triage start (target: less than 60 minutes)
+                    - Share of incidents with complete chain of custody (target: 100 percent)
+                    - Pass rate of forensic exercises (target: 100 percent)
+                    - Number of evidence rejections by authorities or courts (target: 0)
+
+                    ## 13. Escalation
+                    On suspicion of criminal acts, the Executive Board is informed and Legal evaluates a criminal complaint. For incidents touching critical infrastructure, BSI is informed within 24 hours per BSIG § 8b; the GDPR 72-hour clock under Art. 33 applies in parallel where personal data are involved.
+
+                    ## 14. Review and approval
+                    Reviewed annually and on a triggered basis. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: DER.2.1 (Incidents), DER.4 (BCM), OPS.1.1.5 (Logging), OPS.2.2 (Cloud), INF.1 (Buildings), ISO/IEC 27001:2022 A.5.28, GDPR Art. 33/34.*
+
+        logging_policy:
+            v1:
+                title: 'Logging Policy'
+                body: |-
+                    # Logging Policy of {{ tenant.legal_name }}
+
+                    *Document class: Topic Policy | Norm anchor: BSI OPS.1.1.5 (Logging) | ISO/IEC 27001:2022 Annex A 8.15 (Logging) + A 8.16 (Monitoring Activities) | GDPR Art. 32, 25 | BetrVG § 87 (1) No. 6 | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal, legal) | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy governs the scope, method, retention, protection and evaluation of log data on IT systems, applications and cloud services of {{ tenant.legal_name }}. It establishes the basis for detecting security-relevant events, forensic post-incident analysis, fulfilment of statutory record-keeping duties, and continuous effectiveness assessment of security controls.
+
+                    ## 2. Scope
+                    The policy covers all components of the IT compound, including server, client and network components, applications, databases, identity providers, security tooling (SIEM, EDR, IDS, NDR, WAF), cloud tenants and operationally relevant physical security systems (access control, video). Logs containing personal data are flagged separately (see Section 8).
+
+                    ## 3. Minimum log content
+                    Each event must record:
+
+                    - Timestamp in UTC (second-precision, NTP-synchronised)
+                    - Source (system name, hostname and IP)
+                    - Subject (user identifier or service account)
+                    - Action (CRUD verb, command, event type)
+                    - Target object (path, database object, URL)
+                    - Outcome (success, failure, code)
+                    - Correlation identifier (trace / session ID)
+
+                    ## 4. Mandatory logged events
+                    The following event types must be logged (minimum baseline per OPS.1.1.5.A6):
+
+                    - Sign-in / sign-out, authentication failures, lockouts
+                    - Granting, modification and revocation of permissions
+                    - Privileged actions of administrative accounts
+                    - Access to confidential and strictly confidential data
+                    - Security-relevant configuration changes
+                    - Start, stop and modification of security-relevant services
+                    - Events from anti-malware, IDS, EDR and firewall
+                    - External interface access and data exports
+
+                    ## 5. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Define logging requirements | ISO | Executive Board | DPO, IT Architecture | Application owners |
+                    | Operate central log platform | IT Operations | CIO | ISO | – |
+                    | Correlation rules and use cases | SOC lead | ISO | Application owners | – |
+                    | Evaluation of personal-data logs | ISO | Executive Board | DPO, Works Council | Affected parties |
+                    | Retention and deletion | IT Operations | ISO | DPO | – |
+
+                    ## 6. Central logging and protection
+                    All relevant logs are consolidated in a central, hardened logging infrastructure (SIEM). Transport is encrypted (TLS 1.2 or above). Log data are protected against alteration through append-only storage, hash chaining and audit-proof retention. Administrative access to the logging system is subject to four-eyes principle and is itself logged ("logging the logging").
+
+                    ## 7. Retention periods
+                    Retention periods balance operational need, data protection and statutory obligation:
+
+                    - Security logs (authentication, privileges, IDS): 12 months online, 24 months archive
+                    - Application audit logs containing personal data: 6 months online, then automatic deletion unless an evaluation is in progress
+                    - Network flow data (NetFlow): 90 days rolling
+                    - Logs required for tax and commercial-law purposes: 10 years
+
+                    Deviations are documented in the retention register.
+
+                    ## 8. Data-protection requirements
+                    Personal-data evaluations are strictly purpose-bound and performed with the involvement of DPO {{ roles.dpo.fullName }} and Works Council. A DPIA per GDPR Art. 35 is performed when introducing new evaluation tools. Pseudonymisation is used wherever technically feasible; re-identification requires four-eyes release and is logged.
+
+                    ## 9. Correlation and detection
+                    The SOC operates defined use-case rules, measured at least every six months against the current threat landscape and SOC tier performance. False-positive rates are part of KPI reporting. Anomaly detection based on machine learning may only be operated on non-personal or pseudonymised data.
+
+                    ## 10. Cloud and SaaS logs
+                    For cloud services tenant-aware audit logs (e.g. Cloud Audit Logs, Azure Sign-In Logs, AWS CloudTrail) must be enabled and exported to the central SIEM. Cloud contracts must provide access to audit logs and a minimum retention of 90 days (cross-ref OPS.2.2).
+
+                    ## 11. Evaluation and reporting
+                    Security-relevant findings are documented in the SOC daily report; weekly and monthly reports go to ISO and Executive Board. Suspected incidents trigger escalation per the Incident Policy (Building Block DER.2.1).
+
+                    ## 12. Metrics and KPIs
+                    - Share of systems meeting minimum logging requirements (target: greater than 95 percent)
+                    - Mean time between event and SIEM visibility (target: less than 5 minutes)
+                    - Share of regularly tested use cases (target: 100 percent per half-year)
+                    - Number of audit-proof rejections of unjustified deletion requests (target: 0)
+
+                    ## 13. Review and approval
+                    Reviewed annually and on a triggered basis. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ORP.4 (IAM), DER.1 (Detection), DER.2.1 (Incidents), OPS.2.2 (Cloud), ISO/IEC 27001:2022 A.8.15/A.8.16, GDPR Art. 32, BetrVG § 87 (1) No. 6.*
+
+        malware_protection_policy:
+            v1:
+                title: 'Malware Protection Policy'
+                body: |-
+                    # Malware Protection Policy of {{ tenant.legal_name }}
+
+                    *Document class: Topic Policy | Norm anchor: BSI OPS.1.1.4 (Protection Against Malware) in conjunction with SYS.2.1, NET.1.1, OPS.1.1.5 | ISO/IEC 27001:2022 Annex A 8.7 (Protection Against Malware) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal, legal) | Review interval: 12 months*
+
+                    ## 1. Purpose and protection objective
+                    This policy sets binding requirements on prevention, detection, response and recovery in relation to malware. The objective is to limit the likelihood of compromise, to detect and contain incidents early, and to recover business operations in an orderly manner. It complements the IT Security Policy and is embedded in the incident and continuity management framework (cross-ref DER.2.1, DER.4).
+
+                    ## 2. Scope
+                    The policy applies to all endpoints, servers, virtual machines, container platforms, mobile devices, removable media and cloud workloads under {{ tenant.legal_name }} responsibility. It also covers BYOD devices integrated through MDM.
+
+                    ## 3. Preventive measures
+                    - Endpoint Detection and Response (EDR) is installed on all supported endpoints and servers; signature and behavioural rules are updated at least daily.
+                    - Software whitelisting / application control on administrative workstations and critical servers; allow-lists are maintained through change management (OPS.1.2.4).
+                    - Macro execution in Office applications is disabled by default; signed macros from internal trust paths are exceptional.
+                    - E-mail security gateway inspects attachments and links; sandboxing of active content; URL defang and time-of-click checking.
+                    - Web proxy with category filtering and SSL inspection (with prior data-protection review) is mandatory.
+                    - Removable media are scanned before use; non-approved media are blocked technically.
+
+                    ## 4. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Strategy and architecture | ISO | CIO | SOC lead | – |
+                    | Operation of EDR/AV platform | IT Operations | CIO | ISO | – |
+                    | Response to findings | SOC | ISO | Application owners | Executive Board |
+                    | Recovery | IT Operations | CIO | ISO | Application owners |
+                    | Lessons learned | ISO | Executive Board | SOC, IT Operations | – |
+
+                    ## 5. Detection and alerting
+                    EDR telemetry is fed into the central SIEM (cross-ref OPS.1.1.5). Alerts are triaged by SOC under the tier model; high or critical alerts are escalated to an incident manager within 30 minutes. Threat-intelligence indicators (IOC) are matched automatically against log stores and live traffic.
+
+                    ## 6. Response
+                    Suspected endpoints are isolated from the network within 15 minutes (EDR containment). Confirmed compromise triggers the Incident Policy (DER.2.1). Disk preservation is performed per the Forensics Policy (DER.2.2). Re-introduction occurs only via re-image from a trusted build, never via repair.
+
+                    ## 7. Ransomware-specific provisions
+                    - The backup concept (Building Block CON.3) mandates offline / air-gapped copies with RPO {{ backup.rpo_hours }} hours.
+                    - Restore drills are performed at least every six months.
+                    - Ransom payments are prohibited as a rule; exceptions only by Executive Board decision after consultation with Legal, external counsel and law enforcement.
+                    - The crisis team convenes automatically on ransomware suspicion (cross-ref BSI 200-4).
+
+                    ## 8. Special cases: ICS/OT, IoT, mobile
+                    In ICS/OT environments only vendor-supported, approved protection solutions are deployed (cross-ref IND layer). Mobile endpoints are governed by MDM policy with app-reputation checks; jailbroken/rooted devices are technically blocked. IoT devices are network-segmented (NET.1.1) and monitored via dedicated security sensors.
+
+                    ## 9. Training and awareness
+                    All employees are trained annually on malware risks, phishing and safe behaviour. Phishing simulations are run quarterly; repeat clickers receive targeted coaching.
+
+                    ## 10. Metrics and KPIs
+                    - Share of devices with active, up-to-date EDR (target: greater than 98 percent)
+                    - Mean time to containment of compromised endpoints (target: less than 30 minutes)
+                    - Restore drill success rate (target: 100 percent within RPO/RTO)
+                    - Phishing click rate (target: less than 5 percent, decreasing)
+
+                    ## 11. Reporting obligations
+                    Material malware incidents are reported per BSIG § 8b and, where applicable, the NIS2 implementation act. The DPO assesses GDPR notification obligations in parallel.
+
+                    ## 12. Review and approval
+                    Reviewed annually and on a triggered basis. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: OPS.1.1.5 (Logging), OPS.1.2.4 (Patch/Change), CON.3 (Backup), DER.2.1 (Incidents), DER.2.2 (Forensics), DER.4 (BCM), NET.1.1 (Network architecture), ISO/IEC 27001:2022 A.8.7.*
+
+        organization_policy:
+            v1:
+                title: 'Organisation Policy'
+                body: |-
+                    # Organisation Policy of {{ tenant.legal_name }}
+
+                    *Document class: Topic Policy | Norm anchor: BSI ORP.1 (Organisation) | ISO/IEC 27001:2022 Annex A 5.2 (Information Security Roles & Responsibilities), A 5.3 (Segregation of Duties), A 5.4 (Management Responsibilities) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal, legal) | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy operationalises the organisational embedding of information security within {{ tenant.legal_name }}. It governs roles, responsibilities, segregation of duties, reporting lines and cooperation models, ensuring that security requirements are exercised continuously, unambiguously and traceably across the organisational and process structure.
+
+                    ## 2. Scope
+                    The policy applies to all organisational units, employees regardless of contract type, interns, contractors and third parties within scope of the IT Security Policy ({{ tenant.scope_statement }}).
+
+                    ## 3. Information security organisation
+                    The security organisation of {{ tenant.legal_name }} comprises at minimum (cf. ISMS.1.A1, A3):
+
+                    - **Executive Board** carrying overall accountability
+                    - **Information Security Officer (ISO)** {{ roles.isb.fullName }} reporting directly to the Executive Board
+                    - **Information Security Management Team** {{ roles.is_management_team }} as an advisory body
+                    - **Data Protection Officer (DPO)** {{ roles.dpo.fullName }} – must not be the same person as the ISO
+                    - **BC Officer** {{ roles.notfallbeauftragter.fullName }} – responsible for BCM
+                    - **CISO** (where appointed) as the strategic leadership function
+                    - **Application and system owners** within business units
+
+                    Job descriptions are formally approved, resourced and reflected in HR records.
+
+                    ## 4. Segregation of duties
+                    Conflict-prone function pairs are separated organisationally and technically. Prohibited at minimum: developer / production administrator, requestor / approver in IAM, buyer / invoice approver, processor / reviewer in data protection. A SoD matrix is supported in the IAM platform where applicable; violations are reported monthly.
+
+                    ## 5. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Define security organisation | ISO | Executive Board | HR, Legal | Employees |
+                    | Maintain job descriptions | HR | Executive Board | ISO | Manager |
+                    | Ensure segregation of duties | ISO | Executive Board | IT Operations, IAM | Manager |
+                    | Approve security documents | Executive Board | Executive Board | ISO | Employees |
+                    | Quarterly board reporting | ISO | Executive Board | – | – |
+
+                    ## 6. Reporting and escalation
+                    - All employees must report security observations immediately to the Service Desk or the ISO.
+                    - The ISO reports quarterly in writing and at least annually in person to the Executive Board.
+                    - Escalation into the crisis organisation (Building Block DER.4) occurs for incidents with severe business impact or regulatory notification duties.
+                    - The ISO holds a veto right on security-critical projects with immediate notification to the Executive Board.
+
+                    ## 7. Cooperation with other functions
+                    - **Data Protection:** joint initiatives with DPO; mutual consultation on DPIAs, ISMS changes and personal-data incidents.
+                    - **Compliance / Legal:** alignment on contractual, regulatory and supervisory matters.
+                    - **Internal Audit:** audits planned in the audit programme; reports go to Executive Board and ISO.
+                    - **Procurement:** mandatory ISO involvement in security- and privacy-relevant procurement (cross-ref OPS.2.1).
+                    - **Works Council:** involvement per BetrVG for co-determined tools (cross-ref Logging).
+
+                    ## 8. Information classification scheme
+                    Information is managed in four classes (public, internal, confidential, strictly confidential) per ORP.1.A2. Classification is set at creation and reviewed at every relevant change. Responsibility rests with the information owner.
+
+                    ## 9. External persons and visitors
+                    External persons receive controlled access only; escort obligation in non-public areas. Visitor badges must be worn visibly and returned at the end of the visit (cross-ref INF.1.A4). External staff are bound to confidentiality before commencing work.
+
+                    ## 10. Maturity and effectiveness measurement
+                    Maturity of the security organisation is assessed annually against defined criteria (e.g. share of filled key roles, share of completed trainings, proportion of immediately reported observations) and included in the report to the Executive Board.
+
+                    ## 11. Metrics and KPIs
+                    - Share of mandatory security key roles filled (target: 100 percent)
+                    - Share of staff with current confidentiality undertaking (target: 100 percent)
+                    - SoD violations (target: 0 unapproved violations)
+                    - Quarterly reports delivered on time (target: 100 percent)
+
+                    ## 12. Review and approval
+                    Reviewed annually and on a triggered basis (board changes, material reorganisation, regulatory changes). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISMS.1, ORP.2 (Personnel), ORP.4 (IAM), INF.1, ISO/IEC 27001:2022 A.5.2/A.5.3/A.5.4.*
+
+        outsourcing_supplier_policy:
+            v1:
+                title: 'Outsourcing and Supplier Policy'
+                body: |-
+                    # Outsourcing and Supplier Policy of {{ tenant.legal_name }}
+
+                    *Document class: Topic Policy | Norm anchor: BSI OPS.2.1 (Outsourcing for the Customer) in conjunction with OPS.2.2 (Cloud Usage) | ISO/IEC 27001:2022 Annex A 5.19–A 5.23 (Supplier Relationships) | EU DORA Art. 28–30 (ICT third-party risk) | GDPR Art. 28 (Processor agreements) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal, legal) | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy governs the orderly management of external service providers, suppliers and processors that deliver security- or privacy-relevant services to {{ tenant.legal_name }}. The objective is to embed information security and data protection across the entire contract lifecycle, including need analysis, selection, contracting, steering, escalation and termination. It frames BSI outsourcing requirements, ISO/IEC 27001 A.5.19 ff., GDPR Art. 28 and the ICT third-party duties under EU DORA Art. 28–30 (applicable from 17 January 2025).
+
+                    ## 2. Scope
+                    The policy applies to all outsourcing and supplier relationships including cloud services, managed services, IT consulting and maintenance, software-as-a-service, co-location, telecommunications providers, media destruction services, and the sub-suppliers of the foregoing.
+
+                    ## 3. Outsourcing classification
+                    Suppliers are tiered by criticality:
+
+                    1. **Critical / material outsourcing (Tier 1):** impact on essential business processes, regulatory duties or critical data; full obligation depth including pre-contract due diligence and audit rights.
+                    2. **Significant outsourcing (Tier 2):** material but non-existential impact; reduced obligation depth.
+                    3. **Standard supplier (Tier 3):** low impact; standard contractual modules.
+                    4. **De-minimis (Tier 4):** negligible impact; simplified procedure.
+
+                    Tiering is performed by Compliance / Procurement in alignment with the ISO {{ roles.isb.fullName }}; re-tiering at least annually.
+
+                    ## 4. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Supplier classification | Procurement | CFO | ISO, DPO | Business unit |
+                    | Pre-contract due diligence | Procurement | ISO | DPO, Legal | Business unit |
+                    | Contract drafting | Legal | CFO | ISO, DPO | Procurement |
+                    | Onboarding (technical) | IT Operations | CIO | ISO | Business unit |
+                    | Ongoing steering | Contract manager | Business head | ISO | – |
+                    | Effectiveness review / audit | ISO | Executive Board | Legal | Supplier |
+                    | Termination and data return | Contract manager | Business head | ISO, DPO | IT Operations |
+
+                    ## 5. Pre-contract due diligence
+                    Before contracting Tier-1 or Tier-2 suppliers a security and data-protection assessment is performed. Minimum criteria: valid certifications (e.g. ISO/IEC 27001, BSI C5 Type 2, SOC 2 Type 2), sub-processor list, processing locations, encryption and key-management concept, BCM/exit plan, financial standing and concentration-risk analysis.
+
+                    ## 6. Mandatory contract clauses
+                    - Security requirements aligned to internal protection requirement
+                    - Processor agreement per GDPR Art. 28 (where personal data are processed)
+                    - Audit and inspection rights (on-site and remote, at least annually or on cause)
+                    - Incident notification duties (max. 24 hours, in sub-tiers 12 hours)
+                    - Notification of material change, sub-processor change, location change
+                    - Exit clauses (data return within 30 days, deletion certificate)
+                    - Liability, contractual penalties and insurance evidence
+                    - Governing law and venue (preferably EU)
+                    - Where DORA applies: register-mandatory fields per Implementing Technical Standards
+
+                    ## 7. Cloud-specific requirements
+                    Cloud services are additionally governed by Building Block OPS.2.2 and, where applicable, the Cloud Usage Policy. Key management is performed via BYOK/HYOK where feasible. Data residency and third-country transfers are documented per Schrems II requirements (GDPR Chapter V).
+
+                    ## 8. Concentration and resilience risk
+                    For Tier-1 outsourcings a concentration-risk score is maintained; alternative providers are documented in the multi-provider plan. DORA-obligated firms maintain the ICT third-party register and report changes quarterly to the supervisor.
+
+                    ## 9. Steering during operations
+                    - Service reporting (at least monthly): SLA performance, security events, changes, sub-processors
+                    - Annual supplier review with ISO, DPO and business unit
+                    - Triggered re-assessment after incidents or critical sub-processor changes
+
+                    ## 10. Sub-suppliers and four-eyes sub-approval
+                    Sub-engagements require written approval per the contract. Four-eyes review by contract manager and ISO. Black-listing of clearly problematic sub-providers (e.g. for sanctions reasons) is binding.
+
+                    ## 11. Termination and exit
+                    Before contract end or in disruption the exit plan applies: orderly data return in machine-processable format, deletion certificate (deletion log and hash confirmation), knowledge transfer to successor, key/token rotation in own systems.
+
+                    ## 12. Metrics and KPIs
+                    - Share of Tier-1 suppliers with current audit report (target: 100 percent)
+                    - SLA performance of Tier-1 outsourcings (target: greater than 99 percent)
+                    - Mean time-to-notify after a supplier incident (target: less than 24 hours)
+                    - Concentration risks without mitigation plan (target: 0)
+
+                    ## 13. Escalation
+                    SLA breaches, refused audits or supplier security incidents trigger the escalation chain: ISO -> Executive Board -> Legal -> if applicable supervisory authority (BaFin/BSI/Federal Cartel Office). Termination as ultima ratio.
+
+                    ## 14. Review and approval
+                    Reviewed annually and on a triggered basis. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: OPS.2.2 (Cloud), OPS.1.2.4 (Patch/Change), CON.1 (Crypto), DER.2.1 (Incidents), ISO/IEC 27001:2022 A.5.19–A.5.23, GDPR Art. 28, EU DORA Art. 28–30.*
+
+        patch_change_management_policy:
+            v1:
+                title: 'Patch and Change Management Policy'
+                body: |-
+                    # Patch and Change Management Policy of {{ tenant.legal_name }}
+
+                    *Document class: Topic Policy | Norm anchor: BSI OPS.1.1.3 (Patch and Change Management) in conjunction with OPS.1.2.4 (Software Tests and Releases) | ISO/IEC 27001:2022 Annex A 8.32 (Change Management) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal, legal) | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy governs the orderly planning, evaluation, approval, execution and documentation of changes to IT systems, applications, network components, cloud configurations and security infrastructure of {{ tenant.legal_name }}. It reduces the risk of unintended outages and unauthorised configuration drift, closes vulnerabilities promptly, and ensures auditability.
+
+                    ## 2. Scope
+                    The policy covers all components of the IT compound including servers, clients, network, applications, databases, containers, security tooling, and configuration changes in cloud tenants and IaC pipelines.
+
+                    ## 3. Change classes
+                    1. **Standard change:** pre-defined, low risk, automated; e.g. recurring security patch within the maintenance window.
+                    2. **Normal change:** novel or with relevant risk; reviewed by the Change Advisory Board (CAB).
+                    3. **Emergency change:** required without delay to avert harm; abridged procedure with after-the-fact documentation.
+
+                    ## 4. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Request (RFC) | Requestor | Business head | ISO | – |
+                    | Risk and security review | ISO | – | DPO, IT Architecture | – |
+                    | Approval standard / normal change | CAB | CIO | ISO | Requestor |
+                    | Approval emergency change | Emergency CAB | CIO | ISO | Executive Board |
+                    | Execution | IT Operations / Engineers | Application owner | – | End-users |
+                    | Post-implementation review | ISO | Business head | IT Operations | – |
+
+                    ## 5. Vulnerability and patch strategy
+                    {{ tenant.legal_name }} operates central vulnerability management. Vulnerabilities are scored using CVSS plus internal enrichment:
+
+                    - Critical (CVSS greater than or equal to 9 or active exploit): patch within 72 hours where internet-exposed, otherwise 7 days.
+                    - High (7.0–8.9): patch within 14 days.
+                    - Medium (4.0–6.9): patch within 30 days.
+                    - Low (less than 4.0): patch in the next regular maintenance cycle.
+
+                    Deviations require risk acceptance by ISO and business head with a defined re-assessment date.
+
+                    ## 6. Change process
+                    1. Open RFC in central change tooling
+                    2. Impact and risk analysis, security/privacy review
+                    3. Test in non-production environment (cross-ref OPS.1.2.4)
+                    4. CAB session; placement in Forward Schedule of Change
+                    5. Execution in approved maintenance window; back-out plan mandatory
+                    6. Post-implementation review with KPIs (success, rollback, incident correlation)
+
+                    ## 7. Emergency change procedure
+                    Emergency changes are approved by the on-call lead together with the ISO. Documentation is completed at the latest 24 hours after execution; the next CAB performs after-the-fact review. Repeated emergency changes trigger a root-cause analysis.
+
+                    ## 8. Configuration and asset linkage
+                    Changes are recorded against the Configuration Management Database (CMDB); each change updates the CI record. Stale CIs are cleaned up before each CAB. IaC configuration changes require pull-request review by a second reviewer.
+
+                    ## 9. Special cases
+                    - **Database schemas:** changes via migration tooling with audit-proof versioning; backup before migration is mandatory.
+                    - **Cloud tenant configuration:** secured via policy-as-code (e.g. CSPM rules); drift detection at least daily.
+                    - **Firmware:** prior testing on reference hardware, configuration backup, vendor hash verification.
+
+                    ## 10. Interfaces
+                    The policy interlocks with the Incident Policy (DER.2.1, shared workflow tag), the vulnerability and pen-test programme, and supplier management (vendor maintenance duties).
+
+                    ## 11. Metrics and KPIs
+                    - Share of critical vulnerabilities patched within SLA (target: 100 percent)
+                    - Change success rate (no rollback / no P1 follow-on incident) (target: greater than 95 percent)
+                    - Share of emergency changes (target: less than 5 percent)
+                    - Share of changes with documented back-out plan (target: 100 percent)
+
+                    ## 12. Escalation
+                    SLA breaches are reported monthly to ISO and CIO; systematic breaches escalate to the Executive Board. An incident attributable to an improper change triggers DER.2.1.
+
+                    ## 13. Review and approval
+                    Reviewed annually and on a triggered basis. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: OPS.1.2.4 (Software Tests/Releases), DER.2.1 (Incidents), CON.3 (Backup), ORP.4 (IAM), ISO/IEC 27001:2022 A.8.32.*
+
+        personnel_policy:
+            v1:
+                title: 'Personnel Policy'
+                body: |-
+                    # Personnel Policy of {{ tenant.legal_name }}
+
+                    *Document class: Topic Policy | Norm anchor: BSI ORP.2 (Personnel) | ISO/IEC 27001:2022 Annex A 6.1–A 6.7 (People Controls) | GDPR Art. 32 in conjunction with BetrVG, KSchG, BDSG | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal, legal) | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy governs personnel-related security requirements before employment, during employment and upon termination. The objective is to ensure that persons working on behalf of {{ tenant.legal_name }} have the trustworthiness, competence and confidentiality undertakings required for their tasks, and that joiner / mover / leaver processes are executed securely.
+
+                    ## 2. Scope
+                    The policy applies to all employees regardless of contract type, including fixed-term, apprentices, interns, working students, externals, agency staff, and staff of contracted service providers, where they have access to information or IT systems of {{ tenant.legal_name }}.
+
+                    ## 3. Before employment
+                    - Job profiles and descriptions contain security and data-protection duties (cross-ref ORP.1)
+                    - Selection process with documented background screening; for security-sensitive positions extended checks (good-conduct certificate, identity verification, where applicable security clearance under SUEG)
+                    - Written confidentiality and secrecy undertaking before commencing work; extended for IT administration and crypto roles
+                    - Contractual obligation to comply with ISMS documentation; reference to disciplinary and employment consequences
+
+                    ## 4. On joining (onboarding)
+                    - Induction training on IT security, data protection and compliance within 14 days
+                    - Need-based granting of permissions through IAM following four-eyes principle (cross-ref ORP.4)
+                    - Issue of hardware tokens, employee badge and MFA enrolment
+                    - Acknowledgement of ISMS documents and awareness obligations
+
+                    ## 5. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Job and confidentiality requirements | HR | Manager | ISO, DPO | – |
+                    | Background checks | HR | Compliance | Legal | – |
+                    | Onboarding training | HR | ISO | Data Protection | Employees |
+                    | Access provisioning | IAM team | Manager | ISO | Employees |
+                    | Disciplinary action | HR | Executive Board | Legal, Works Council | Employees |
+                    | Offboarding | HR | Manager | IAM, IT Operations, ISO | Employees |
+
+                    ## 6. During employment
+                    - Annual mandatory awareness training; quarterly phishing simulations
+                    - Role-specific training for administration, development, DPO functions, BC and crisis team
+                    - Role or department change triggers permission re-evaluation within 5 working days
+                    - Disciplinary procedure for security or privacy breaches respecting co-determination and hearing rights
+
+                    ## 7. Personnel-related security incidents
+                    Breaches by employees are evaluated under four-eyes by ISO and HR. Measures range from instruction to immediate termination; a criminal complaint is considered for criminal offences. Any evaluation of personal data involves DPO and Works Council.
+
+                    ## 8. On termination (offboarding)
+                    - Immediate revocation of all permissions at the documented termination date; in elevated risk advance revocation with Executive Board approval
+                    - Return of all IT equipment (laptops, tokens, media, keys, badges)
+                    - Deletion / archiving of personal mailboxes per the retention and deletion matrix
+                    - Continuation of post-contractual confidentiality obligations (minimum 5 years, indefinite for higher classifications)
+                    - Exit interview with security reminders
+
+                    ## 9. External staff and agency workers
+                    Externals are bound to confidentiality before commencing work. Permissions are granted strictly time-bound (just-in-time, max. contract duration). Changes of provider personnel are notification-required (cross-ref OPS.2.1).
+
+                    ## 10. Co-determination and data protection
+                    Security tooling with behavioural or performance reference (e.g. PAM session recording, EDR, collaboration logs) is subject to co-determination per § 87 (1) No. 6 BetrVG. Introduction is governed by a works agreement; a DPIA per GDPR Art. 35 is performed.
+
+                    ## 11. Metrics and KPIs
+                    - Share of employees with current awareness training (target: greater than 95 percent)
+                    - Share of onboardings with full acknowledgement within 14 days (target: 100 percent)
+                    - Mean time between leaving date and access removal (target: less than 4 hours)
+                    - Number of unapproved multiple accounts per employee (target: 0)
+
+                    ## 12. Escalation
+                    Breaches are addressed in stages per the sanctions catalogue: instruction, written warning, change of duties, termination. Cases with public impact involve information of the Executive Board and possibly notification of the supervisor.
+
+                    ## 13. Review and approval
+                    Reviewed annually and on a triggered basis (e.g. after personnel-related security incidents). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ORP.1 (Organisation), ORP.3 (Awareness), ORP.4 (IAM), OPS.2.1 (Outsourcing), DER.2.1 (Incidents), ISO/IEC 27001:2022 A.6.1–A.6.7, BetrVG § 87 (1) No. 6, GDPR Art. 32.*
+        privacy_policy:
+            v1:
+                title: 'Data Protection Policy'
+                body: |-
+                    # Data Protection Policy of {{ tenant.legal_name }}
+
+                    *Document Class: Binding Policy | Norm Anchor: BSI CON.2 (Data Protection) + ISO/IEC 27001:2022 A.5.34 + GDPR Art. 5, 24, 25, 28, 32 + German BDSG | Building Block: CON.2.A1-A18 + ORP.5 | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal) | Review Cycle: 12 months (GDPR Art. 24 (1)) and event-driven*
+
+                    ## 1. Purpose and Objective
+                    This policy operationalises the requirements of the GDPR, the German BDSG and sector-specific data protection laws for {{ tenant.legal_name }} and integrates them with the ISMS based on BSI IT-Grundschutz edition {{ bsi.kompendium_edition }}. The objective is to ensure lawfulness, fairness and transparency (GDPR Art. 5 (1) (a)) for every processing of personal data. The policy establishes the organisational and technical baseline for protecting the rights and freedoms of data subjects in line with GDPR Art. 24 in conjunction with Art. 32 and explicitly considers building block CON.2 (Data Protection) and ORP.5 (Compliance Management).
+
+                    ## 2. Scope
+                    This policy applies to:
+
+                    - **Personal:** All employees of {{ tenant.legal_name }} (including temporary staff, interns, working students), processors as defined in GDPR Art. 28 and any person with access to personal data.
+                    - **Material:** Any wholly or partially automated processing of personal data and any non-automated processing within a filing system (GDPR Art. 2 (1)).
+                    - **Technical:** All IT procedures, applications, cloud services and endpoints in scope of the ISMS as per the structure analysis (BSI 200-2 chapter 5).
+
+                    Tenant scope statement: {{ tenant.scope_statement }}.
+
+                    ## 3. Processing Principles (GDPR Art. 5)
+                    {{ tenant.legal_name }} adheres to the following principles for every processing activity:
+
+                    1. **Lawfulness, fairness, transparency** (Art. 5 (1) (a)) – legal basis under Art. 6, where applicable Art. 9 or Art. 10.
+                    2. **Purpose limitation** (lit. b) – defined and legitimate purposes; further processing only after compatibility check (Art. 6 (4)).
+                    3. **Data minimisation** (lit. c) – privacy by default per Art. 25 (2).
+                    4. **Accuracy** (lit. d) – timely correction.
+                    5. **Storage limitation** (lit. e) – deletion and anonymisation per the deletion policy.
+                    6. **Integrity and confidentiality** (lit. f) – appropriate technical and organisational measures (TOMs) per Art. 32 in conjunction with BSI building blocks (CON.1 crypto, OPS.1.1.5 logging, ORP.4 IAM, NET layer).
+                    7. **Accountability** (Art. 5 (2)) – complete documentation of processing and security measures.
+
+                    ## 4. RACI – Responsibilities
+                    | Role | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Top Management (Controller per Art. 4 (7)) | – | X | X | X |
+                    | Data Protection Officer (DPO) {{ roles.dpo.fullName }} | X | – | X | X |
+                    | Information Security Officer (ISO) {{ roles.isb.fullName }} | X | – | X | X |
+                    | Process Owners | X | – | X | X |
+                    | Employees | X | – | – | X |
+                    | Processors | X | – | X | X |
+
+                    The DPO is independent per GDPR Art. 38 (3) and reports directly to top management. Personal identity between DPO and ISO is prohibited (BSI guidance CON.2.A1, Art. 38 (6)).
+
+                    ## 5. Records of Processing Activities (GDPR Art. 30)
+                    {{ tenant.legal_name }} maintains a complete Record of Processing Activities (RoPA). Every new or modified processing activity is captured before go-live and approved by the DPO. Mandatory contents: purpose, legal basis, data subject and data categories, recipients, third-country transfers, retention periods and a TOM summary referring to implemented BSI building blocks.
+
+                    ## 6. Data Protection Impact Assessment (DPIA, Art. 35)
+                    A DPIA is mandatory for: profiling with significant impact, large-scale processing of special categories per Art. 9, systematic large-scale monitoring of publicly accessible areas and processing on the supervisory authority's positive list. The methodology is aligned with BSI 200-3 (risk analysis) and documented in the DPIA procedure. If high residual risk remains, the supervisory authority must be consulted under Art. 36.
+
+                    ## 7. Technical and Organisational Measures (Art. 32)
+                    TOM selection considers state of the art and the risk appetite tier {{ risk.appetite_tier }}. Mandatory minimums:
+
+                    - **Cryptography:** Algorithms {{ crypto.algorithms }} per CON.1 and BSI TR-02102.
+                    - **Access control:** Role-based, need-to-know, MFA for privileged access (ORP.4).
+                    - **Pseudonymisation and anonymisation:** Where appropriate (Art. 25 in conjunction with CON.2.A12).
+                    - **Availability and recovery:** RPO {{ backup.rpo_hours }} h, BCM per BSI 200-4 / DER.4.
+                    - **Logging:** Complete logging of access-relevant operations (OPS.1.1.5), retention per the logging policy.
+
+                    ## 8. Processor Engagement (Art. 28)
+                    Every engagement is governed by a written Data Processing Agreement (DPA). Processor selection follows a documented fitness assessment (technical/organisational capability, certifications such as ISO 27001 / C5 / BSI Grundschutz). Third-country transfers only based on adequacy decision, Standard Contractual Clauses (Implementing Decision 2021/914) plus a Transfer Impact Assessment (Schrems II). Cross-Ref outsourcing policy (OPS.2.3).
+
+                    ## 9. Data Subject Rights (Art. 12-22)
+                    {{ tenant.legal_name }} ensures that data subject requests (access, rectification, erasure, restriction, portability, objection, withdrawal of consent) are processed within one month (Art. 12 (3)). Identity verification is risk-proportionate. A central inbox (datenschutz@{{ tenant.email_domain }}) is in place; requests are tracked through the DSAR workflow.
+
+                    ## 10. Breach Notification (Art. 33, 34)
+                    Personal data breaches must be reported to the competent supervisory authority without undue delay and in any case within 72 hours of becoming aware, where there is a risk to rights and freedoms. Where high risk is likely, data subjects must additionally be notified (Art. 34). The workflow is integrated with incident response (DER.2.1); escalation to the DPO {{ roles.dpo.fullName }} is mandatory within 1 hour.
+
+                    ## 11. Training and Awareness
+                    All employees receive privacy and confidentiality training upon onboarding and at least annually (Cross-Ref ORP.3 awareness). A confidentiality undertaking per BDSG sec. 53 is signed before the first data access.
+
+                    ## 12. Metrics and Effectiveness
+                    The following KPIs are reported quarterly to top management and the DPO:
+
+                    - Number of DSARs handled / 1-month deadline compliance
+                    - Number of breaches reported / 72-hour deadline compliance
+                    - Status of mandatory DPIAs
+                    - Open audit findings (internal and external)
+                    - Training coverage (% target vs. actual)
+
+                    ## 13. Escalation and Sanctions
+                    Violations are sanctioned per the personnel policy (ORP.2). Severe violations may have disciplinary, employment, civil or criminal consequences (BDSG sec. 42, 43). Supervisory fines per Art. 83 may affect the organisation and individual responsibles.
+
+                    ## 14. Review and Approval
+                    This policy is reviewed at least every 12 months and event-driven (legal changes, new processing types, significant incidents, supervisory action). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI CON.2.A1-A18, ORP.5, ISO/IEC 27001:2022 A.5.34, GDPR Art. 5, 24, 25, 28, 30, 32, 33, 34, 35, BDSG sec. 38, 53.*
+
+        protection_needs_methodology:
+            v1:
+                title: 'Protection Needs Methodology'
+                body: |-
+                    # Protection Needs Methodology of {{ tenant.legal_name }}
+
+                    *Document Class: Methodology | Norm Anchor: BSI 200-2 chapter 6 + BSI 200-3 + ISO/IEC 27005:2022 | Building Block: ISMS.1.A6 + CON.7 (Inheritance) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal) | Review Cycle: 24 months and after methodology changes*
+
+                    ## 1. Purpose
+                    This methodology defines how {{ tenant.legal_name }} determines protection needs for business processes, applications, IT systems, ICS/OT, rooms and communication links per BSI 200-2 chapter 6. It ensures comparability across business areas, traceability of assessments and forms the basis for building-block modelling and supplementary risk analysis per BSI 200-3.
+
+                    ## 2. Scope
+                    The methodology applies to the entire information network of {{ tenant.legal_name }} ({{ tenant.scope_statement }}) and to all target objects captured during structure analysis. The application is the responsibility of application and system owners under the technical guidance of the Information Security Officer {{ roles.isb.fullName }}.
+
+                    ## 3. Protection Goals and Scale
+                    Assessment uses the BSI three-step scale for confidentiality (C), integrity (I) and availability (A):
+
+                    | Level | Label | Definition |
+                    |---|---|---|
+                    | **Normal** | Limited and manageable impact. | Financial loss < {{ org.normal_threshold }}, no lasting reputational damage, no special-category personal data. |
+                    | **High** | Considerable impact possible. | Financial loss up to {{ org.hoch_threshold }}, regional reputational impact, GDPR violations with fine risk, impairment of critical business processes. |
+                    | **Very High** | Existential or catastrophic impact. | Existential threat, severe violation of data subject rights, KRITIS outage, loss of classified information. |
+
+                    Quantitative thresholds are tenant-specific and anchored in the risk appetite statement ({{ risk.appetite_tier }}).
+
+                    ## 4. Damage Scenarios (Mandatory Categories)
+                    The following scenario categories must be reviewed for every assessment (BSI 200-2 chapter 6.2):
+
+                    1. Violations of laws, regulations and contracts
+                    2. Impairment of informational self-determination (GDPR)
+                    3. Impairment of personal physical integrity
+                    4. Impairment of task performance
+                    5. Negative internal and external impact (reputation)
+                    6. Financial impact
+
+                    The highest level of any applicable scenario determines the protection need per protection goal (maximum principle per goal).
+
+                    ## 5. Inheritance and Aggregation Rules
+                    Inheritance follows BSI 200-2 chapter 6.3:
+
+                    - **Maximum principle:** Protection need of a parent target object is at least the maximum of dependent objects (Cross-Ref CON.7 and the tenant `AssetDependencyService` model).
+                    - **Cumulative effect:** Several normal objects may collectively raise the aggregating object to high or very high (e.g. central backup repository).
+                    - **Distribution effect:** Protection need may decrease where redundant distribution compensates single failure (justification mandatory).
+
+                    Any deviation from the maximum principle is documented in the protection-need record with justification and approved by the Information Security Officer.
+
+                    ## 6. RACI – Responsibilities
+                    | Task | Process Owner | Application Owner | System Owner | ISO {{ roles.isb.fullName }} | Top Management |
+                    |---|---|---|---|---|---|
+                    | Process protection need | A/R | C | I | C | I |
+                    | Application protection need | C | A/R | C | C | I |
+                    | System protection need | I | C | A/R | C | I |
+                    | Inheritance review | – | R | R | A | I |
+                    | Plausibility | – | – | – | A/R | I |
+                    | Approval very high | I | I | I | R | A |
+
+                    ## 7. Procedure – Step by Step
+                    1. **Capture in tooling:** Create the target object with type, owner, location, processing activity.
+                    2. **Scenario walk-through:** Assess all six damage scenarios per goal; provide written justification.
+                    3. **Inheritance check:** Link dependencies; the system proposes the maximum.
+                    4. **ISO plausibility check:** Sample-based or full depending on level.
+                    5. **Approval:** Very high protection need is approved by the ISO; co-signed by top management in the management review.
+
+                    ## 8. Inclusion in Risk Analysis (BSI 200-3)
+                    A supplementary risk analysis per BSI 200-3 is mandatory for target objects with high or very high protection need, insufficient building-block coverage or special operational conditions (Cross-Ref BSI 200-3 chapters 4-7).
+
+                    ## 9. Metrics
+                    - Completeness: share of target objects with documented protection need (target: 100%).
+                    - Currency: share with assessment age ≤ 24 months (target: ≥ 95%).
+                    - Consistency: sampling error rate per quarter (target: < 5%).
+                    - Share of very-high objects with documented risk analysis (target: 100%).
+
+                    ## 10. Escalation
+                    Where process owner and ISO disagree without resolution, top management decides on the basis of the protection-need record. Very high protection need triggers top-management notification within five business days.
+
+                    ## 11. Review and Approval
+                    The methodology is reviewed every 24 months and after methodology changes (e.g. new compendium edition, changed risk appetite). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI 200-2 chapter 6, BSI 200-3, ISO/IEC 27005:2022, ISMS.1.A6, CON.7 and tenant-specific protection-need inheritance model.*
+
+        remote_maintenance_policy:
+            v1:
+                title: 'Remote Maintenance Policy'
+                body: |-
+                    # Remote Maintenance Policy of {{ tenant.legal_name }}
+
+                    *Document Class: Binding Policy | Norm Anchor: BSI OPS.2.4 (Remote Maintenance) + ISO/IEC 27001:2022 A.5.14 + A.8.1 + A.8.16 | Building Block: OPS.2.4.A1-A12 + NET.3.3 (VPN) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal) | Review Cycle: 12 months*
+
+                    ## 1. Purpose
+                    This policy governs the secure execution of remote-maintenance access to IT, ICS/OT, applications and network components of {{ tenant.legal_name }} by internal administrators and external service providers. The objective is to control the risk of remote-maintenance-related unauthorised access, data leakage and manipulation per building block OPS.2.4.
+
+                    ## 2. Scope
+                    Covered are all forms of remote maintenance, including:
+
+                    - VPN-based access by internal administrators
+                    - Vendor remote maintenance (e.g. manufacturers, cloud providers, MSPs)
+                    - Tooling-based remote maintenance (bastion hosts, just-in-time access, PAM solutions)
+                    - Access to ICS/OT components per IND layer
+
+                    Tenant scope: {{ tenant.scope_statement }}.
+
+                    ## 3. Principles
+                    1. **Need-to-use:** Remote maintenance only where on-site work is not proportionate.
+                    2. **Ticket-based:** Every access has a documented ticket ID.
+                    3. **Time-bounded:** Just-in-time activation with a defined window.
+                    4. **Four-eyes for critical systems:** High / very high protection need requires co-approval.
+                    5. **Full logging:** Session logs (commands and where appropriate screen capture) per OPS.1.1.5.
+
+                    ## 4. Architecture Requirements
+                    | Object | Requirement | Norm Reference |
+                    |---|---|---|
+                    | Connection | End-to-end encryption, MFA mandatory, algorithms {{ crypto.algorithms }} | OPS.2.4.A4, CON.1, BSI TR-02102 |
+                    | Authentication | Personalised accounts, no shared accounts, Privileged Access Management | ORP.4, OPS.2.4.A5 |
+                    | Endpoint | Hardened, fully patched, EDR active | SYS.1.1, OPS.1.1.3 |
+                    | Network path | Dedicated bastion / jump server, segmentation | NET.1.1, NET.3.3 |
+                    | Logging | Complete session logging, tamper-resistant | OPS.1.1.5 |
+                    | Emergency stop | Immediate disconnect by operator | OPS.2.4.A6 |
+
+                    ## 5. RACI
+                    | Task | Requester | Administrator/Vendor | ISO {{ roles.isb.fullName }} | DPO {{ roles.dpo.fullName }} |
+                    |---|---|---|---|---|
+                    | Ticket creation | A/R | C | I | I |
+                    | Standard approval | – | – | A | I |
+                    | Critical approval | C | C | A | C |
+                    | Execution | I | A/R | I | I |
+                    | Log review | – | – | A/R | C |
+
+                    ## 6. External Service Providers
+                    External remote maintenance additionally requires: a written contract with confidentiality and data protection clauses (Cross-Ref OPS.2.3, GDPR Art. 28 where personal data are involved), proof of capability (e.g. ISO 27001 or C5 attestation), advance notice of maintenance windows, account suspension outside active engagements.
+
+                    ## 7. ICS/OT Specifics
+                    For ICS/OT components (IND.1, IND.2.x) additional rules apply: physical separation of maintenance and production networks, plant operator approval per access, mandatory work-permit prior to safety-relevant changes, restricted intervention windows, escalation path on anomaly.
+
+                    ## 8. Logging and Review
+                    All sessions are fully logged (start/end, source, account, commands, where appropriate screen capture). Retention at least 12 months per the logging policy. Review is risk-based; for very-high protection need at least quarterly sample review.
+
+                    ## 9. Escalation and Emergency
+                    On suspicion of unauthorised access: immediate disconnect, log preservation, escalation to SOC and ISO within 30 minutes, recording as incident per DER.2.1. RPO/RTO of the remote-maintenance platform: max. {{ backup.rpo_hours }} h.
+
+                    ## 10. Metrics
+                    - Share of sessions with valid ticket ID (target: 100%)
+                    - Share of sessions with MFA (target: 100%)
+                    - Log-review coverage for critical systems (target: ≥ 95%)
+                    - Mean reaction time for emergency disconnect (target: ≤ 5 min)
+                    - Share of external providers with current capability proof (target: 100%)
+
+                    ## 11. Review and Approval
+                    Reviewed annually and after significant incidents or architectural changes. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI OPS.2.4, NET.3.3, IND layer, ISO/IEC 27001:2022 A.5.14, A.8.1, A.8.16, A.8.20.*
+
+        security_organization:
+            v1:
+                title: 'Security Organisation'
+                body: |-
+                    # Security Organisation of {{ tenant.legal_name }}
+
+                    *Document Class: Binding Policy | Norm Anchor: BSI ORP.1 (Organisation) + ISO/IEC 27001:2022 A.5.2-A.5.6 + clause 5.3 | Building Block: ORP.1.A1-A15 + ISMS.1.A1-A3 | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal) | Review Cycle: 24 months*
+
+                    ## 1. Purpose
+                    This policy defines the organisational structures, roles, responsibilities and escalation paths for information security at {{ tenant.legal_name }}. It operationalises ISO/IEC 27001 clause 5.3 and the requirements ORP.1, ISMS.1.A1-A3 and provides the basis for a verifiable security governance.
+
+                    ## 2. Scope
+                    Applies to all organisational units and employees of {{ tenant.legal_name }} within the ISMS scope ({{ tenant.scope_statement }}) and to contractors performing security-relevant tasks.
+
+                    ## 3. Core Principles
+                    1. **Separation of accountability and execution** (ORP.1.A2, A.5.3 SoD).
+                    2. **Direct reporting line of the security function to top management** (ISMS.1.A3).
+                    3. **Personnel independence between ISO and DPO** (BSI guidance, GDPR Art. 38).
+                    4. **Four-eyes principle for critical changes** (OPS.1.1.4).
+                    5. **Deputy assignment for every key role**.
+
+                    ## 4. Roles and Responsibilities
+                    ### 4.1 Top Management
+                    Overall responsibility per ISMS.1.A1 and ISO/IEC 27001 clause 5.1. Approves policies, risk appetite ({{ risk.appetite_tier }}), resources; conducts the annual management review.
+
+                    ### 4.2 Information Security Officer (ISO) {{ roles.isb.fullName }}
+                    Reports directly to top management. Independent on security matters with veto right against security-jeopardising decisions, full access to all security-relevant matters. Tasks: ISMS steering, effectiveness review, quarterly reporting to top management, representation vis-a-vis supervisors and auditors.
+
+                    ### 4.3 Security Management Team
+                    {{ roles.is_management_team }} – advises the ISO. Members: IT operations, data protection, compliance, BCM, business representatives. Meeting frequency at least quarterly; minutes and decisions recorded for evidence.
+
+                    ### 4.4 Data Protection Officer (DPO) {{ roles.dpo.fullName }}
+                    Appointed per GDPR Art. 37, independent per Art. 38 (3), reporting directly to top management. Coordinates systematically with the ISO.
+
+                    ### 4.5 Emergency Officer
+                    {{ roles.notfallbeauftragter.fullName }} – owns emergency management per BSI 200-4 / DER.4, leads the crisis team in case of emergency.
+
+                    ### 4.6 Departmental Security Officers
+                    Multipliers in larger organisational units; report local security matters to the ISO and coordinate implementation.
+
+                    ### 4.7 Application and System Owners
+                    Operationally responsible for the security of assigned target objects, including protection-need assessment, risk classification and control implementation.
+
+                    ### 4.8 Employees
+                    Comply with security policies and report incidents per DER.2.1.
+
+                    ## 5. RACI Overview
+                    | Task | Top Mgmt | ISO | Sec Mgmt Team | DPO | Process Owner |
+                    |---|---|---|---|---|---|
+                    | Policy approval | A | R | C | C | I |
+                    | Risk appetite | A | C | C | C | I |
+                    | Security concept | I | A/R | C | C | C |
+                    | Effectiveness review | I | A/R | C | C | I |
+                    | Incident handling | I | A | R | C | R |
+                    | Management review | A | R | C | C | I |
+
+                    ## 6. Reporting and Escalation
+                    - **Routine:** Quarterly ISO report to top management; brief report after each Security Management Team meeting.
+                    - **Event-driven:** Immediate report on protection-need change to very high, supervisory matters, security incidents with reputational risk.
+                    - **Emergency:** Crisis team activation per DER.4 within 1 hour; top management informed without delay.
+
+                    ## 7. Deputy Coverage
+                    For every key role a named deputy is documented. For absences exceeding 30 days, formal hand-over is recorded.
+
+                    ## 8. Interfaces
+                    Defined interfaces with: data protection, compliance/GRC, legal, IT operations, HR (ORP.2, ORP.3), procurement (OPS.2.3), internal audit, BCM ({{ roles.notfallbeauftragter.fullName }}), crisis communication.
+
+                    ## 9. Metrics
+                    - Achievement rate of planned Security Management Team meetings (target: 100%)
+                    - Quarterly reports delivered on time (target: 100%)
+                    - Number of escalations with documented decisions (target: 100% traceable)
+                    - Deputy coverage for key roles (target: 100%)
+
+                    ## 10. Sanctions
+                    Violations of role and reporting duties are sanctioned per the personnel policy (ORP.2).
+
+                    ## 11. Review and Approval
+                    Reviewed every 24 months and after significant reorganisations. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI ORP.1, ISMS.1.A1-A3, ISO/IEC 27001:2022 clauses 5.1-5.3, A.5.2-A.5.6, GDPR Art. 37-39.*
+
+        software_development_policy:
+            v1:
+                title: 'Software Development Policy'
+                body: |-
+                    # Software Development Policy of {{ tenant.legal_name }}
+
+                    *Document Class: Binding Policy | Norm Anchor: BSI APP.6 (General Software Development) + ISO/IEC 27001:2022 A.8.25-A.8.31 + OWASP ASVS | Building Block: APP.6.A1-A14 + APP.4.4 (CI/CD) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal) | Review Cycle: 12 months*
+
+                    ## 1. Purpose
+                    This policy establishes binding requirements for the secure development of software by and on behalf of {{ tenant.legal_name }}. It anchors security-by-design and privacy-by-design across the full SDLC per building block APP.6 and ISO/IEC 27001:2022 A.8.25-A.8.31.
+
+                    ## 2. Scope
+                    Covered are: in-house developments, contracted developments, material modifications of standard software, internal tooling and scripts with business relevance. Tenant scope: {{ tenant.scope_statement }}.
+
+                    ## 3. Principles (Security-by-Design)
+                    1. **Secure SDLC phases:** requirements, design, implementation, testing, release, operation, decommissioning.
+                    2. **Mandatory threat modelling** from high protection need (Cross-Ref BSI 200-3, ISO 27005).
+                    3. **Privacy-by-design** per GDPR Art. 25 and CON.2.
+                    4. **Separation of development, test, production** (APP.6.A11).
+                    5. **Code under version control**, multi-eyes review mandatory.
+                    6. **Reproducible builds** (supply-chain integrity, SLSA).
+                    7. **Secrets never in code** – central secret store.
+
+                    ## 4. RACI
+                    | Task | Product Owner | Developer | Architect | Sec Champion | ISO {{ roles.isb.fullName }} |
+                    |---|---|---|---|---|---|
+                    | Security requirements | A/R | C | C | C | C |
+                    | Threat modelling | C | C | A | R | C |
+                    | Code review | – | A/R | C | C | I |
+                    | SAST/DAST/SCA | I | R | I | A | C |
+                    | Release approval | A/R | C | C | C | C |
+                    | Pen-test (high/very high) | I | I | C | A | R |
+
+                    ## 5. Phase Requirements
+                    ### 5.1 Requirements
+                    - Security and privacy requirements ranked equally with functional ones.
+                    - Protection need of processed data documented.
+                    - Compliance references captured (GDPR, BSIG, sector-specific).
+
+                    ### 5.2 Design
+                    - Threat modelling (e.g. STRIDE) mandatory at high / very high protection need.
+                    - Architecture review with Sec Champion.
+                    - Use established frameworks; no in-house implementation of security-critical primitives (crypto: {{ crypto.algorithms }} per CON.1, BSI TR-02102).
+
+                    ### 5.3 Implementation
+                    - Coding guidelines aligned with OWASP ASVS Level 2 (minimum), Level 3 for highly critical features.
+                    - Mandatory tooling: SAST, SCA, secret scanning in CI.
+                    - Pull-request reviews with at least one second reviewer.
+
+                    ### 5.4 Test
+                    - Unit, integration and security tests automated.
+                    - DAST against test environment at least before each major release.
+                    - Pen-test for high / very high protection need before initial go-live and after significant changes.
+
+                    ### 5.5 Release
+                    See test and release policy.
+
+                    ### 5.6 Operation and Decommissioning
+                    - Patch and vulnerability management per OPS.1.1.3.
+                    - Secure data migration and deletion (CON.6) on decommissioning.
+
+                    ## 6. Suppliers and Open Source
+                    Contracted developers are selected per the outsourcing policy (OPS.2.3) and contractually bound to this policy. Open-source components are tracked via SBOM; license and security compliance via SCA.
+
+                    ## 7. Environment Separation
+                    Development, test and production are technically and organisationally separated (APP.6.A11). Production data are used in development and test only anonymised or pseudonymised (GDPR Art. 25, CON.2.A12). Backup strategy with RPO {{ backup.rpo_hours }} h.
+
+                    ## 8. Training
+                    Developers are trained at least annually on secure development and OWASP Top-10. Sec Champions complete deeper training.
+
+                    ## 9. Metrics
+                    - Share of releases with successful SAST/SCA/DAST run (target: 100%)
+                    - Mean time-to-fix critical findings (target: ≤ 14 days)
+                    - Share of code bases with maintained SBOM (target: 100%)
+                    - Share of pen-test high/critical findings remediated before go-live (target: 100%)
+                    - Share of developers with current training (target: ≥ 95%)
+
+                    ## 10. Escalation
+                    Critical findings without remediation path are escalated to the ISO within 24 h; go-live stop possible.
+
+                    ## 11. Review and Approval
+                    Annual review and after significant toolchain changes. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI APP.6, APP.4.4, OPS.1.1.3, CON.1, CON.2.A12, ISO/IEC 27001:2022 A.8.25-A.8.31, OWASP ASVS, OWASP Top-10.*
+
+        software_test_release_policy:
+            v1:
+                title: 'Software Test and Release Policy'
+                body: |-
+                    # Software Test and Release Policy of {{ tenant.legal_name }}
+
+                    *Document Class: Binding Policy | Norm Anchor: BSI APP.6.A5 + APP.6.A7 + ISO/IEC 27001:2022 A.8.29 + A.8.32 | Building Block: APP.6 + OPS.1.1.4 (Change) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal) | Review Cycle: 12 months*
+
+                    ## 1. Purpose
+                    This policy defines how software is tested, approved and transitioned to production. The objective is to safeguard functional security, security requirements and compliance per APP.6.A5 (security tests) and APP.6.A7 (software release).
+
+                    ## 2. Scope
+                    Covered are: in-house and contracted developments, major and minor releases, patches with functional changes, significant configuration changes of production systems. Tenant scope: {{ tenant.scope_statement }}.
+
+                    ## 3. Principles
+                    1. **Strict separation of test and production** (APP.6.A11).
+                    2. **Four-eyes principle** for critical releases (OPS.1.1.4).
+                    3. **Reproducible tests** (automated where possible, otherwise documented).
+                    4. **Risk-based test depth** dependent on protection need.
+                    5. **Complete release documentation** (what was tested, by whom, with what result).
+
+                    ## 4. RACI
+                    | Task | Developer | QA/Tester | Product Owner | Sec Champion | ISO {{ roles.isb.fullName }} | Operations |
+                    |---|---|---|---|---|---|---|
+                    | Test concept | C | A/R | C | C | I | C |
+                    | Functional test | C | A/R | C | I | I | I |
+                    | Security test | C | R | I | A | C | I |
+                    | Standard approval | C | C | A/R | C | I | C |
+                    | Critical approval | C | C | R | C | A | C |
+                    | Rollback | – | – | C | I | I | A/R |
+
+                    ## 5. Test Stages
+                    | Stage | Content | Mandatory from Protection Need |
+                    |---|---|---|
+                    | Unit test | Function of single components, code coverage | Normal |
+                    | Integration test | Interfaces and data flows | Normal |
+                    | Security test (SAST/SCA) | Static analysis of code/dependencies | Normal |
+                    | Security test (DAST) | Dynamic analysis of running application | High |
+                    | Penetration test | Manual testing for initial / major releases | High / very high |
+                    | Load and stress test | Availability behaviour | High (availability) |
+                    | Privacy compliance check | GDPR Art. 25, 32 | If personal data |
+                    | User acceptance test (UAT) | Business acceptance by process owner | All |
+
+                    Test data: production data may only be used anonymised or pseudonymised.
+
+                    ## 6. Release Procedure
+                    1. **Request:** Release manager submits release request with version, change scope, test results, risk assessment.
+                    2. **Review:** Product Owner (functional), Sec Champion (security), Operations (operational).
+                    3. **Security sign-off:** For high / very high protection need additional ISO sign-off {{ roles.isb.fullName }}.
+                    4. **Privacy sign-off:** For processing of personal data DPO sign-off {{ roles.dpo.fullName }}.
+                    5. **Change approval:** Recorded in change management per OPS.1.1.4.
+                    6. **Deployment:** After approval within an authorised window.
+                    7. **Post-deployment verification:** Functional and security smoke tests.
+
+                    ## 7. Emergency Releases
+                    For security-critical patches a streamlined procedure may apply: minimum tests documented, ISO sign-off asynchronously, full documentation completed within 5 business days.
+
+                    ## 8. Rollback
+                    Every release requires a binding rollback plan. Restore targets for data: RPO {{ backup.rpo_hours }} h. Rollback capability is exercised at least annually.
+
+                    ## 9. Metrics
+                    - Share of releases with complete release documentation (target: 100%)
+                    - Share of releases with critical findings unresolved (target: 0%)
+                    - Time-to-recovery after rollback (target: ≤ {{ backup.rpo_hours }} h)
+                    - Share of emergency releases with completed documentation within 5 business days (target: 100%)
+
+                    ## 10. Escalation
+                    Violations of the release procedure are treated as a security incident (DER.2.1) and reported to top management.
+
+                    ## 11. Review and Approval
+                    Annual review and after toolchain changes. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI APP.6.A5, APP.6.A7, APP.6.A11, OPS.1.1.4, ISO/IEC 27001:2022 A.8.29, A.8.32.*
+
+        teleworking_policy:
+            v1:
+                title: 'Teleworking / Home-Office Policy'
+                body: |-
+                    # Teleworking / Home-Office Policy of {{ tenant.legal_name }}
+
+                    *Document Class: Binding Policy | Norm Anchor: BSI INF.9 (Mobile Workplace) + ISO/IEC 27001:2022 A.6.7 + A.7.9 | Building Block: INF.9.A1-A12 + ORP.4 + SYS.3.1 (Notebook) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal) | Review Cycle: 24 months*
+
+                    ## 1. Purpose
+                    This policy governs the secure processing of information and use of IT belonging to {{ tenant.legal_name }} at teleworking and home-office workplaces and at mobile work locations. It operationalises building block INF.9 and ISO/IEC 27001:2022 A.6.7 (Remote Working) and A.7.9 (Security of Assets Off-Premises).
+
+                    ## 2. Scope
+                    Covered are all employees who work outside corporate sites regularly or occasionally, including teleworking per German ArbStaettV, alternating teleworking, mobile work and business travel with IT use. Tenant scope: {{ tenant.scope_statement }}.
+
+                    ## 3. Prerequisites for Teleworking
+                    1. Written agreement between employee and {{ tenant.legal_name }}.
+                    2. Privacy and confidentiality undertaking (BDSG sec. 53).
+                    3. Trained employee (at least annual awareness training, ORP.3).
+                    4. Provision of hardened endpoints by {{ tenant.legal_name }} (no BYOD without explicit authorisation).
+                    5. Suitable workplace with access protection, screen privacy, theft protection.
+
+                    ## 4. RACI
+                    | Task | Employee | Manager | IT Operations | ISO {{ roles.isb.fullName }} | DPO {{ roles.dpo.fullName }} |
+                    |---|---|---|---|---|---|
+                    | Application and agreement | A/R | A | I | C | C |
+                    | Workplace setup | A/R | C | C | I | I |
+                    | Endpoint provisioning | I | I | A/R | I | I |
+                    | Compliance with security rules | A/R | C | C | A | C |
+                    | Incident notification | A/R | I | C | A | C |
+
+                    ## 5. Technical Requirements
+                    | Requirement | Detail | Norm Reference |
+                    |---|---|---|
+                    | Endpoint | Full-disk encryption ({{ crypto.algorithms }}), MDM/EDR | INF.9.A4, SYS.3.1, CON.1 |
+                    | Authentication | Personalised account, MFA mandatory for remote access | ORP.4, INF.9.A6 |
+                    | Connection | VPN with modern crypto, restrictive split-tunneling | NET.3.3, INF.9.A6 |
+                    | Local print/save | Disabled by default, exceptions require approval | INF.9.A8 |
+                    | Screen lock | Automatic after 5 min inactivity | INF.9.A5 |
+                    | Backup | Automatic via corporate backup, RPO {{ backup.rpo_hours }} h | CON.3 |
+                    | Patch | Mandatory automatic updates, no deferral > 7 days | OPS.1.1.3 |
+
+                    ## 6. Organisational Requirements
+                    - No confidential information in the presence of third parties (family, flatmates, café).
+                    - Sensitive phone calls only in closed rooms.
+                    - Paper documents secured when leaving the workplace (clean desk).
+                    - Disposal per the deletion policy (shredder min. P-4 for confidential documents).
+                    - Immediate reporting of loss or theft to IT Service Desk and ISO.
+                    - No processing of special-category personal data outside a secured environment without explicit approval by the DPO {{ roles.dpo.fullName }}.
+
+                    ## 7. Business Travel and Abroad
+                    Additional rules apply for travel abroad: country risk assessment (e.g. crypto restrictions), third-country transfer review (Schrems II), reduced data carry (travel notebook), mandatory VPN for all connections, possibly waiver of highly sensitive data.
+
+                    ## 8. Incident Reporting
+                    Security incidents (loss, theft, malware suspicion, third-party access) must be reported without delay, at the latest within 1 hour (Cross-Ref DER.2.1). On suspicion of personal data breach, escalation to the DPO within 1 hour.
+
+                    ## 9. Metrics
+                    - Share of teleworkers with current training (target: ≥ 95%)
+                    - Share of endpoints with active encryption (target: 100%)
+                    - Share of endpoints with current patch level (target: ≥ 98%)
+                    - Mean reporting time of security incidents (target: ≤ 1 h)
+                    - Share of written teleworking agreements (target: 100%)
+
+                    ## 10. Escalation and Sanctions
+                    Violations are sanctioned per the personnel policy (ORP.2); for repeated or severe violations the teleworking permission may be revoked.
+
+                    ## 11. Review and Approval
+                    Reviewed every 24 months and on material changes (endpoint architecture, threat landscape, law). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI INF.9, SYS.3.1, NET.3.3, ORP.3, ORP.4, OPS.1.1.3, ISO/IEC 27001:2022 A.6.7, A.7.9, ArbStaettV.*
+
+        web_application_policy:
+            v1:
+                title: 'Web Application Policy'
+                body: |-
+                    # Web Application Policy of {{ tenant.legal_name }}
+
+                    *Document Class: Binding Policy | Norm Anchor: BSI APP.3.1 (Web Applications) + ISO/IEC 27001:2022 A.8.26 + OWASP Top-10 + OWASP ASVS | Building Block: APP.3.1.A1-A18 + APP.3.2 (Web Server) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English (formal) | Review Cycle: 12 months*
+
+                    ## 1. Purpose
+                    This policy establishes binding security requirements for web applications developed, operated or procured by {{ tenant.legal_name }}. It anchors the requirements from building block APP.3.1, ISO/IEC 27001:2022 A.8.26 (Application Security Requirements) and OWASP Top-10 / ASVS.
+
+                    ## 2. Scope
+                    Covered are all internal and external web applications, REST/GraphQL APIs, web portals for employees, customers and partners and security-relevant microservices. Tenant scope: {{ tenant.scope_statement }}.
+
+                    ## 3. Principles
+                    1. **Secure development per the SDLC policy** (APP.6).
+                    2. **Defense-in-depth** (multi-layer security: WAF, authentication, input validation, output encoding).
+                    3. **Least privilege** (minimal entitlement for application and users).
+                    4. **Connection confidentiality** (TLS, HSTS).
+                    5. **Observability** (logging, monitoring, alerting).
+                    6. **Resilience** (fail-secure, rate limiting, bot defence).
+
+                    ## 4. RACI
+                    | Task | Developer | Architect | Sec Champion | ISO {{ roles.isb.fullName }} | Operations |
+                    |---|---|---|---|---|---|
+                    | Security requirements | C | A | R | C | I |
+                    | Threat modelling | C | A/R | C | C | I |
+                    | Implementation | A/R | C | C | I | I |
+                    | Code review | A/R | C | R | I | I |
+                    | Penetration test | I | C | A | R | I |
+                    | Operations / WAF | I | I | C | C | A/R |
+                    | Incident handling | C | C | R | A | C |
+
+                    ## 5. Mandatory Controls (OWASP Top-10 + ASVS)
+                    | Threat | Mandatory Control |
+                    |---|---|
+                    | A01 Broken Access Control | Server-side authorisation per endpoint, RBAC/ABAC, resource-owner check, no insecure direct object references |
+                    | A02 Cryptographic Failures | TLS 1.2+ mandatory, HSTS, CSP, secure cookies, algorithms {{ crypto.algorithms }} per CON.1, BSI TR-02102 |
+                    | A03 Injection | Parameterised queries, ORM, input validation, output encoding, allow-list filters |
+                    | A04 Insecure Design | Threat modelling mandatory from high protection need, secure defaults |
+                    | A05 Security Misconfiguration | Hardening baselines, no default credentials, restrictive headers (X-Frame-Options, X-Content-Type-Options) |
+                    | A06 Vulnerable Components | SCA in CI, SBOM, max. 30 days to patch critical CVEs |
+                    | A07 Identification & Authentication | MFA for privileged access, secure session handling, account lockout, credential-stuffing protection |
+                    | A08 Software & Data Integrity Failures | Signed releases, Subresource Integrity, trusted update sources |
+                    | A09 Security Logging & Monitoring | Complete logging of access-relevant operations, SIEM integration, alerting (OPS.1.1.5, DER.1) |
+                    | A10 SSRF | URL allow-listing, network segmentation, no internal endpoints from app frontend |
+
+                    ## 6. Authentication and Session
+                    - Personalised accounts, no shared accounts.
+                    - MFA for back-end, admin areas, sensitive self-service functions.
+                    - Sessions with short timeout (max. 30 min inactivity) and re-authentication for critical actions.
+                    - Secure cookies (HttpOnly, Secure, SameSite=strict/lax).
+                    - CSRF protection (token or SameSite cookies + referer check).
+
+                    ## 7. Interfaces / APIs
+                    - Authentication per request (OAuth 2.0/OIDC, short-lived JWT).
+                    - Input and output schema validation (e.g. JSON Schema, OpenAPI).
+                    - Rate limiting and quotas.
+                    - API versioning, deprecation policy.
+
+                    ## 8. Operations and Availability
+                    - Web Application Firewall (WAF) in block mode for externally reachable applications.
+                    - Upstream DDoS protection.
+                    - Patches within defined SLAs (critical ≤ 7 days, high ≤ 30 days).
+                    - Backup per CON.3 with RPO {{ backup.rpo_hours }} h, restore exercised at least annually.
+
+                    ## 9. Penetration Tests and Vulnerability Management
+                    - Every new externally reachable web application is pen-tested before initial go-live.
+                    - Re-testing at least every 24 months and after major releases.
+                    - High/Critical findings block go-live.
+                    - Bug bounty or coordinated vulnerability disclosure recommended.
+
+                    ## 10. Data Protection
+                    Where personal data are processed, the data protection policy and GDPR Art. 25, 32 apply additionally; DPIA mandatory for high risks.
+
+                    ## 11. Metrics
+                    - Share of externally reachable applications with current pen-test ≤ 24 months (target: 100%)
+                    - Mean time-to-patch critical CVEs (target: ≤ 7 days)
+                    - Share of applications with active WAF (target: 100%)
+                    - Share of applications with MFA for privileged access (target: 100%)
+                    - Share of releases without open High/Critical findings (target: 100%)
+
+                    ## 12. Escalation
+                    High/Critical incidents are escalated to the ISO within 1 h, emergency response per DER.2.1 including crisis-team review for customer-impacting outages.
+
+                    ## 13. Review and Approval
+                    Annual review and after significant threat-landscape or toolchain changes. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI APP.3.1, APP.3.2, APP.6, OPS.1.1.5, DER.1, ISO/IEC 27001:2022 A.8.26, OWASP Top-10, OWASP ASVS, BSI TR-02102.*
