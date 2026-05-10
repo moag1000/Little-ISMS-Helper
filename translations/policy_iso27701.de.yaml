@@ -1,0 +1,1044 @@
+policy:
+    iso27701:
+        pims_top_level:
+            v1:
+                title: 'PIMS-Leitlinie (Privacy Information Management System)'
+                body: |-
+                    # PIMS-Leitlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Leitlinie (oberste Ebene Datenschutz-Managementsystem) | Norm-Anker: ISO 27701:2025 Cl. 5.2 + 6.1.1, ISO 27001:2022 Cl. 5.2 (Voraussetzung), DSGVO Art. 5 + Art. 24, BDSG-neu § 1 | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate | Genehmigung: {{ approval.chain }}*
+
+                    ## 1. Zweck und PIMS-Bekenntnis (ISO 27701:2025 Cl. 5.2)
+
+                    Diese Leitlinie etabliert das Datenschutz-Managementsystem (Privacy Information Management System, PIMS) der {{ tenant.legal_name }} (nachfolgend "die Organisation") gemaess ISO/IEC 27701:2025 als Erweiterung des bestehenden Informationssicherheits-Managementsystems (ISMS) nach ISO/IEC 27001:2022. Sie ist die oberste normative Aussage der Organisation zum Schutz personenbezogener Daten (Personally Identifiable Information, PII) und verbindet den ISMS-Geltungsbereich mit den Datenschutz-Verpflichtungen aus der Verordnung (EU) 2016/679 (DSGVO), dem Bundesdatenschutzgesetz (BDSG-neu) sowie den sektoralen Vorgaben (TTDSG, SGB, KHZG, EHDS, AI Act, NIS2 + DORA bei Finanzdienstleistern).
+
+                    Die oberste Leitung erkennt an, dass das PIMS die ISO-27001-Konformitaet als Voraussetzung hat und dass die Cl. 6 + Annex A/B des Standards inhaltlich nur erfuellbar sind, wenn das ISMS bereits etabliert, dokumentiert und auditiert ist (ISO 27701:2025 Cl. 4.4 verweist explizit auf ISO 27001:2022 Cl. 4-10). Diese Leitlinie verpflichtet die Organisation gemaess Art. 24 Abs. 1 DSGVO zur Implementierung geeigneter technischer und organisatorischer Massnahmen, um die Konformitaet aller Verarbeitungstaetigkeiten nachweisen zu koennen ("Rechenschaftspflicht" / Accountability).
+
+                    ## 2. Geltungsbereich des PIMS (ISO 27701:2025 Cl. 4.3)
+
+                    Der PIMS-Geltungsbereich umfasst alle Verarbeitungstaetigkeiten der Organisation in den DSGVO-Rollen Verantwortlicher (Art. 4 Nr. 7 DSGVO; ISO 27701 Cl. 7) und Auftragsverarbeiter (Art. 4 Nr. 8 DSGVO; ISO 27701 Cl. 8). Erfasst sind saemtliche Beschaeftigte, Werkstudierende, Praktikantinnen und Praktikanten, Auftragnehmer, gemeinsam Verantwortliche (Art. 26 DSGVO) sowie Auftragsverarbeiter und Sub-Auftragsverarbeiter (Art. 28 DSGVO).
+
+                    Inhaltlich erfasst der Geltungsbereich alle Lebenszyklusphasen personenbezogener Daten gemaess Art. 4 Nr. 2 DSGVO sowie ISO 27701:2025 Cl. 7.4 + 8.4 (Erhebung, Verwendung, Speicherung, Uebermittlung, Loeschung).
+
+                    ## 3. Rollen und Verantwortlichkeiten (ISO 27701:2025 Cl. 5.3 + 6.3)
+
+                    Folgende Rollen sind im PIMS verbindlich besetzt und voneinander zu trennen (BSI-Trennungsgebot):
+
+                    - **Datenschutzbeauftragter (DSB / DPO)** {{ roles.dpo.fullName }} — gemaess Art. 37-39 DSGVO bestellt, weisungsfrei in Datenschutzfragen, berichtet unmittelbar an die oberste Leitung (Art. 38 Abs. 3 DSGVO), nicht in Personalunion mit dem ISB.
+                    - **Informationssicherheitsbeauftragter (ISB / CISO)** {{ roles.ciso.fullName }} — verantwortlich fuer das ISMS gemaess ISO 27001:2022.
+                    - **Vertretung des Verantwortlichen** {{ roles.controller_repr.fullName }} — Ansprechpartner der federfuehrenden Aufsichtsbehoerde gemaess Art. 56 DSGVO.
+                    - **Oberste Leitung** — verantwortlich fuer die Bereitstellung der Ressourcen, Genehmigung der PIMS-Leitlinie und der Datenschutzziele.
+
+                    ## 4. Datenschutzziele (ISO 27701:2025 Cl. 6.2)
+
+                    Die Organisation legt jaehrlich messbare Datenschutzziele fest, mindestens fuer die Bereiche:
+
+                    1. **Vollstaendigkeit des Verarbeitungsverzeichnisses** (Art. 30 DSGVO; ISO 27701 Cl. 7.2.8 / 8.2.6) — Zielwert: 100 % aller Verfahren erfasst, Toleranz 0.
+                    2. **DSFA-Abdeckung** (Art. 35 DSGVO) — alle Hochrisiko-Verarbeitungen mit gueltiger DSFA, Toleranz 0.
+                    3. **DSR-Bearbeitungsfrist** (Art. 12 Abs. 3 DSGVO) — durchschnittliche Bearbeitungszeit < 14 Kalendertage gegenueber gesetzlicher Frist von 30 Tagen.
+                    4. **Datenpannen-Meldequote** (Art. 33 DSGVO) — Reduktion meldepflichtiger Verletzungen gegenueber Vorjahr.
+                    5. **Schulungs-Abschlussquote** (Art. 39 Abs. 1 lit. b DSGVO) — 100 % aller Beschaeftigten mit aktueller Datenschutz-Schulung.
+                    6. **Drittland-Uebermittlungen mit gueltigem Transfer-Mechanismus** (Kapitel V DSGVO) — 100 %, Toleranz 0.
+
+                    ## 5. Risikomanagement-Ansatz (ISO 27701:2025 Cl. 6.1.2)
+
+                    Die Organisation erweitert den ISO-27001-Risikomanagement-Prozess um die Dimension "Risiken fuer die Rechte und Freiheiten betroffener Personen" gemaess Erwaegungsgrund 75 DSGVO. Bewertet werden Wahrscheinlichkeit und Schadensschwere fuer die betroffene Person, nicht primaer fuer die Organisation. Der Risiko-Appetit fuer Datenschutzrisiken wird im Risikoappetit-Statement der Organisation separat ausgewiesen. Die Methodik ist im Dokument *PIA/DSFA-Methodik* geregelt.
+
+                    ## 6. PIMS-Pflicht-Dokumente (ISO 27701:2025 Anhang A/B Mapping)
+
+                    Folgende nachgelagerte Dokumente sind verbindliche Bestandteile des PIMS:
+
+                    - **Pflichten als Verantwortlicher** (Cl. 7.2 + Anhang A) — Anwendung Annex A.7.2-A.7.5.
+                    - **Pflichten als Auftragsverarbeiter** (Cl. 8.2 + Anhang B) — Anwendung Annex B.8.2-B.8.5.
+                    - **PII-Inventar + Verarbeitungsverzeichnis** (Cl. 7.2.1, 7.2.8, 8.2.1, 8.2.6).
+                    - **Einwilligung + Rechtsgrundlage** (Cl. 7.2.2-7.2.5).
+                    - **Verfahren Betroffenenrechte** (Cl. 7.3.1-7.3.10).
+                    - **PIA/DSFA-Methodik** (Cl. 7.2.5).
+                    - **PII-Breach-Notification** (Cl. 6.13).
+                    - **Drittland-Uebermittlung** (Cl. 7.5 + 8.5).
+                    - **Aufbewahrung + Loeschung** (Cl. 7.4 + 8.4).
+
+                    ## 7. Bekenntnis zu Betroffenenrechten (ISO 27701:2025 Cl. 7.3, DSGVO Art. 12-22)
+
+                    Die Organisation gewaehrleistet die Ausuebung saemtlicher Betroffenenrechte: Auskunft (Art. 15 / Cl. 7.3.4), Berichtigung (Art. 16 / Cl. 7.3.6), Loeschung (Art. 17 / Cl. 7.3.7), Einschraenkung (Art. 18 / Cl. 7.3.7), Mitteilungspflicht (Art. 19), Datenuebertragbarkeit (Art. 20 / Cl. 7.3.8), Widerspruch (Art. 21 / Cl. 7.3.5), kein-automatisierter-Entscheidung (Art. 22). Antraege werden innerhalb von {{ gdpr.dsr_response_deadline_days }} Kalendertagen gemaess Art. 12 Abs. 3 DSGVO beantwortet.
+
+                    ## 8. ISMS-PIMS-Verzahnung (ISO 27701:2025 Cl. 4.4 + Annex A/B)
+
+                    Die folgenden ISO 27001:2022 Annex-A-Controls werden um Datenschutz-Aspekte erweitert (PIMS-Sicht):
+
+                    - **A.5.34** (Privacy + protection of PII) — Host-Control fuer alle PIMS-Dokumente.
+                    - **A.5.31** (Legal, statutory, regulatory requirements) — DSGVO + BDSG als zentrale gesetzliche Anforderungen.
+                    - **A.5.33** (Protection of records) — RoPA-Pflege gemaess Art. 30 DSGVO.
+                    - **A.5.24-A.5.30** (Incident management) — verzahnt mit PII-Breach-Notification gemaess Art. 33/34 DSGVO.
+                    - **A.5.19-A.5.23** (Supplier relationships) — AVV-Vertraege gemaess Art. 28 DSGVO.
+                    - **A.6.3** (Awareness, education, training) — erweitert um Datenschutz-Schulungen (Art. 39 Abs. 1 lit. b DSGVO).
+                    - **A.8.10** (Information deletion) — verzahnt mit Aufbewahrungs- + Loeschpolitik.
+                    - **A.8.11** (Data masking) — Pseudonymisierung gemaess Art. 4 Nr. 5 DSGVO.
+
+                    ## 9. Pruef- und Aenderungszyklus
+
+                    Diese Leitlinie wird mindestens alle 12 Monate sowie ausserplanmaessig auf folgende Trigger geprueft: neue Verarbeitungstaetigkeit mit hohem Risiko, neuer Auftragsverarbeiter in einem Drittland ohne Angemessenheitsbeschluss, Aenderung sektoraler Vorgaben, neue Leitlinien der federfuehrenden Aufsichtsbehoerde oder des Europaeischen Datenschutzausschusses (EDSA), wesentliche organisatorische Aenderung. Aenderungen unterliegen der Genehmigungskette {{ approval.chain }} mit zwingender Sondergenehmigung des DSB (DSB-Veto i.S.d. ISO 27701:2025 Cl. 5.1).
+
+                    ## 10. Cross-Reference zu weiteren Frameworks
+
+                    - **ISO 27001:2022 A.5.34** — Host-Control im ISMS, dieses PIMS-Dokument ist die Erfuellung.
+                    - **DSGVO Art. 24 + 32** — Rechenschaftspflicht + technische Massnahmen.
+                    - **EU-DORA Art. 19** — ICT-Major-Incident-Meldung bei Finanzdienstleistern (parallel zur Art. 33 DSGVO Meldung).
+                    - **NIS2 Art. 23** — Cybersecurity-Incident-Meldungen (parallel).
+                    - **AI Act** — Transparenzpflichten bei KI-Verarbeitung personenbezogener Daten (Art. 22 DSGVO Schnittstelle).
+
+                    ---
+
+                    *Genehmigt durch DPO {{ roles.dpo.fullName }} am [Datum] — der DSB-Sign-off ist gemaess Art. 38 Abs. 3 DSGVO und ISO 27701:2025 Cl. 5.1 unabhaengig vom CISO-Sign-off zu erteilen.*
+
+                    *Genehmigungskette: {{ approval.chain }}*
+        role_data_controller_responsibilities:
+            v1:
+                title: 'Pflichten als Verantwortlicher (Controller-Rolle)'
+                body: |-
+                    # Pflichten als Verantwortlicher der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie (Rolle Verantwortlicher) | Norm-Anker: ISO 27701:2025 Cl. 7.2 + Anhang A, ISO 27001:2022 A.5.34 (Voraussetzung), DSGVO Art. 4 Nr. 7, Art. 24, Art. 26 + Kapitel IV | Sprache: Deutsch | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+
+                    Diese Richtlinie regelt verbindlich die Pflichten der {{ tenant.legal_name }} in der Rolle als Verantwortlicher i.S.v. Art. 4 Nr. 7 DSGVO. Sie operationalisiert ISO 27701:2025 Cl. 7.2 (Conditions for collection and processing) sowie den vollstaendigen Anhang A des Standards (PIMS-spezifische Controls fuer Verantwortliche).
+
+                    ## 2. Definition der Rolle (Art. 4 Nr. 7 DSGVO)
+
+                    Verantwortlicher ist die Organisation, sofern sie allein oder gemeinsam mit anderen ueber die Zwecke und Mittel der Verarbeitung personenbezogener Daten entscheidet. Beispiele in der Organisation:
+
+                    - HR-Verarbeitungen (Beschaeftigtendaten gemaess § 26 BDSG-neu);
+                    - Kunden-Verarbeitungen (CRM, Vertragsabwicklung, Marketing);
+                    - Eigene Website-Tracking-Systeme;
+                    - Interne IT-Logging und Sicherheits-Telemetrie;
+                    - Lieferanten-Stammdaten zur Vertragsabwicklung.
+
+                    ## 3. Identifikation der Zwecke und Rechtsgrundlagen (ISO 27701:2025 Cl. 7.2.1 + 7.2.2)
+
+                    Vor Beginn jeder Verarbeitung dokumentiert die Organisation:
+
+                    1. Den **legitimen Zweck** der Verarbeitung (Art. 5 Abs. 1 lit. b DSGVO — Zweckbindung);
+                    2. Die **Rechtsgrundlage** nach Art. 6 Abs. 1 lit. a-f DSGVO; bei besonderen Kategorien zusaetzlich Art. 9 Abs. 2 oder § 22 BDSG-neu;
+                    3. Die **Datenkategorien** und **Betroffenenkategorien** mit Bezug auf den Datenkatalog der Organisation;
+                    4. Die **Aufbewahrungsfristen** gemaess Loeschkonzept.
+
+                    Die Festlegung erfolgt nach der Methodik *Einwilligung + Rechtsgrundlage*. Eine Verarbeitung ohne dokumentierte Rechtsgrundlage ist untersagt.
+
+                    ## 4. Pflichten gegenueber betroffenen Personen (ISO 27701:2025 Cl. 7.3, DSGVO Art. 12-14)
+
+                    Der Verantwortliche stellt zum Zeitpunkt der Erhebung die Informationspflichten gemaess Art. 13 DSGVO (Direkterhebung) bzw. Art. 14 DSGVO (Indirekterhebung) sicher. Dies erfolgt durch:
+
+                    - **Datenschutzhinweise** auf der Website ({{ gdpr.privacy_notice_url }});
+                    - **Layered Privacy Notices** in Anwendungen mit Drilldown-Moeglichkeit;
+                    - **Mitarbeiter-Datenschutzhinweise** im Intranet;
+                    - **Bewerber-Datenschutzhinweise** im Bewerbungsportal.
+
+                    ## 5. Privacy by Design und Default (ISO 27701:2025 Cl. 7.4.x, DSGVO Art. 25)
+
+                    Bei jedem neuen IT-Verfahren wird vor der Inbetriebnahme die Methodik Privacy by Design angewendet:
+
+                    - **Datenminimierung** in der Erhebungsmaske (Art. 5 Abs. 1 lit. c);
+                    - **Default-Einstellungen privacy-freundlich** (z. B. Opt-in statt Opt-out fuer optionale Datenfelder);
+                    - **Pseudonymisierung** wo technisch moeglich (Art. 4 Nr. 5);
+                    - **Verschluesselung** in Transit und at Rest (Art. 32);
+                    - **Berechtigungskonzept** mit Need-to-know (A.5.15-A.5.18 ISO 27001).
+
+                    ## 6. Auftragsverarbeitung (Art. 28 DSGVO + ISO 27701:2025 Cl. 7.2.6 + Annex A.7.2.6)
+
+                    Vor jeder Beauftragung eines Auftragsverarbeiters:
+
+                    1. **Pruefung der Eignung** des Auftragsverarbeiters gemaess Art. 28 Abs. 1 DSGVO (technisch-organisatorische Massnahmen, hinreichende Garantien);
+                    2. **Abschluss eines AVV** gemaess Art. 28 Abs. 3 DSGVO mit allen Pflichtinhalten (Gegenstand, Dauer, Art und Zweck, Datenkategorien, Pflichten und Rechte des Verantwortlichen, Vertraulichkeit, TOMs, Sub-Verarbeiter, Unterstuetzung bei DSR und Breaches, Loeschung/Rueckgabe nach Vertragsende, Audit-Recht);
+                    3. **Genehmigung von Sub-Auftragsverarbeitern** (Art. 28 Abs. 2 DSGVO);
+                    4. **Audit-Recht** mindestens jaehrlich oder anlassbezogen.
+
+                    ## 7. Gemeinsam Verantwortliche (Art. 26 DSGVO + ISO 27701:2025 Cl. 7.2.7)
+
+                    Bei gemeinsamer Festlegung der Zwecke und Mittel:
+
+                    - **Joint-Controller-Vereinbarung** gemaess Art. 26 Abs. 1 DSGVO mit klarer Rollenverteilung (Verteilung der DSGVO-Pflichten, insbesondere zur Wahrnehmung der Betroffenenrechte und zur Erfuellung der Informationspflichten);
+                    - **Wesentlicher Inhalt** der Vereinbarung wird den Betroffenen gemaess Art. 26 Abs. 2 DSGVO zur Verfuegung gestellt.
+
+                    ## 8. Vertretung in der EU (Art. 27 DSGVO + ISO 27701:2025 Cl. 7.2.7)
+
+                    Sofern die Organisation als nicht in der EU niedergelassener Verantwortlicher Daten betroffener EU-Personen verarbeitet, wird ein EU-Vertreter gemaess Art. 27 DSGVO benannt und in den Datenschutzhinweisen veroeffentlicht.
+
+                    ## 9. Verarbeitungsverzeichnis (Art. 30 Abs. 1 DSGVO + ISO 27701:2025 Cl. 7.2.8)
+
+                    Das Verarbeitungsverzeichnis (RoPA) wird gemaess der separaten Methodik *PII-Inventar + Verarbeitungsverzeichnis* gefuehrt und mindestens jaehrlich auditiert. Es enthaelt alle Pflichtinhalte des Art. 30 Abs. 1 DSGVO.
+
+                    ## 10. DSFA (Art. 35 DSGVO + ISO 27701:2025 Cl. 7.2.5)
+
+                    Bei voraussichtlich hohem Risiko fuer Rechte und Freiheiten betroffener Personen ist eine Datenschutz-Folgenabschaetzung gemaess der Methodik *PIA/DSFA* durchzufuehren. Triggerlogik: Profiling mit rechtlicher Wirkung; grossflaechige Verarbeitung besonderer Kategorien; systematische oeffentliche Ueberwachung; Treffer auf Liste der federfuehrenden Aufsichtsbehoerde.
+
+                    ## 11. Drittland-Uebermittlungen (Kapitel V DSGVO + ISO 27701:2025 Cl. 7.5)
+
+                    Drittland-Uebermittlungen erfolgen nur auf Basis eines gueltigen Transfer-Mechanismus (Angemessenheitsbeschluss, Standardvertragsklauseln 2021/914 mit Schrems-II-konformem TIA, Binding Corporate Rules) gemaess der separaten Richtlinie *Drittland-Uebermittlung*.
+
+                    ## 12. Datenpannen (Art. 33/34 DSGVO + ISO 27701:2025 Cl. 6.13)
+
+                    Datenpannen-Meldung an die Aufsichtsbehoerde binnen 72h gemaess der separaten Prozedur *PII-Breach-Notification*.
+
+                    ## 13. Loeschung (Art. 5 Abs. 1 lit. e + Art. 17 DSGVO + ISO 27701:2025 Cl. 7.4)
+
+                    Loeschung gemaess Loeschkonzept; Pseudonymisierung wo Aufbewahrungspflichten (HGB § 257, AO § 147) entgegenstehen.
+
+                    ## 14. Audit + Nachweis (ISO 27701:2025 Cl. 9 + Annex A)
+
+                    Jaehrliche interne Audits der Verantwortlichen-Pflichten gemaess Annex A; externe Re-Zertifizierung alle 3 Jahre. Nachweise im Audit-Trail (Beweismittel-Modul).
+
+                    ---
+
+                    *Genehmigt durch DPO + CISO + Top-Mgmt | Genehmigungskette: {{ approval.chain }}*
+        role_data_processor_responsibilities:
+            v1:
+                title: 'Pflichten als Auftragsverarbeiter (Processor-Rolle)'
+                body: |-
+                    # Pflichten als Auftragsverarbeiter der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie (Rolle Auftragsverarbeiter) | Norm-Anker: ISO 27701:2025 Cl. 8.2 + Anhang B, ISO 27001:2022 A.5.34 (Voraussetzung), DSGVO Art. 4 Nr. 8, Art. 28 + Kapitel IV | Sprache: Deutsch | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+
+                    Diese Richtlinie regelt verbindlich die Pflichten der {{ tenant.legal_name }} in der Rolle als Auftragsverarbeiter i.S.v. Art. 4 Nr. 8 DSGVO. Sie operationalisiert ISO 27701:2025 Cl. 8.2 (Conditions for collection and processing) sowie Anhang B des Standards (PIMS-spezifische Controls fuer Auftragsverarbeiter).
+
+                    ## 2. Definition der Rolle (Art. 4 Nr. 8 DSGVO)
+
+                    Auftragsverarbeiter ist die Organisation, sofern sie personenbezogene Daten **im Auftrag** eines Verantwortlichen verarbeitet, ohne ueber Zwecke und Mittel zu entscheiden. Beispiele in der Organisation: SaaS-Bereitstellung fuer Kunden, Hosting-Dienstleistungen, Lohnabrechnung im Auftrag, Kundenservice-Ticketing fuer Kundenmandanten.
+
+                    ## 3. Auftragsverarbeitungs-Vertrag (Art. 28 Abs. 3 DSGVO + ISO 27701:2025 Cl. 8.2.2)
+
+                    Verarbeitung erfolgt ausschliesslich auf Basis eines schriftlichen oder elektronischen AVV mit dem Verantwortlichen, der mindestens enthaelt:
+
+                    1. Gegenstand und Dauer der Verarbeitung;
+                    2. Art und Zweck der Verarbeitung;
+                    3. Kategorien personenbezogener Daten und betroffener Personen;
+                    4. Pflichten und Rechte des Verantwortlichen;
+                    5. Verpflichtung zur Vertraulichkeit (Art. 28 Abs. 3 lit. b);
+                    6. Technisch-organisatorische Massnahmen gemaess Art. 32 DSGVO;
+                    7. Bedingungen zur Hinzuziehung von Sub-Auftragsverarbeitern;
+                    8. Unterstuetzung des Verantwortlichen bei der Erfuellung der DSR-Pflichten (Art. 12-22) und Breach-Pflichten (Art. 33-34);
+                    9. Loeschung oder Rueckgabe aller Daten nach Vertragsende (nach Wahl des Verantwortlichen);
+                    10. Audit-Recht und Mitwirkungspflicht.
+
+                    ## 4. Verarbeitung nach dokumentierter Weisung (Art. 28 Abs. 3 lit. a + ISO 27701:2025 Cl. 8.2.2)
+
+                    Die Verarbeitung erfolgt ausschliesslich auf dokumentierte Weisungen des Verantwortlichen. Weisungen werden im Ticketing- oder Vertragsmanagement-System dokumentiert. Liegt eine Weisung vor, die nach Auffassung des Auftragsverarbeiters gegen die DSGVO oder andere EU-/mitgliedstaatliche Datenschutzvorschriften verstoesst, ist der Verantwortliche unverzueglich zu informieren (Art. 28 Abs. 3 letzter Satz).
+
+                    ## 5. Vertraulichkeit (Art. 28 Abs. 3 lit. b + ISO 27701:2025 Cl. 8.2.2)
+
+                    Alle mit der Verarbeitung befassten Personen werden zur Vertraulichkeit verpflichtet (separates Vertraulichkeitsdokument, Aufnahme im Arbeitsvertrag oder Verpflichtungserklaerung gemaess § 53 BDSG-neu fuer DSB-relevante Funktionen).
+
+                    ## 6. Sicherheit der Verarbeitung (Art. 28 Abs. 3 lit. c + Art. 32 + ISO 27701:2025 Cl. 8.2.4)
+
+                    Die technisch-organisatorischen Massnahmen werden gemaess ISMS (ISO 27001:2022 Annex A) implementiert und im AVV-Anhang dokumentiert. Mindestens enthaltend:
+
+                    - Pseudonymisierung und Verschluesselung;
+                    - Sicherstellung der laufenden Vertraulichkeit, Integritaet, Verfuegbarkeit und Belastbarkeit;
+                    - Wiederherstellbarkeit nach Zwischenfall;
+                    - Verfahren zur regelmaessigen Ueberpruefung, Bewertung und Evaluation der Wirksamkeit der TOMs.
+
+                    ## 7. Sub-Auftragsverarbeiter (Art. 28 Abs. 2 + 4 + ISO 27701:2025 Cl. 8.2.5)
+
+                    1. Allgemeine schriftliche Genehmigung des Verantwortlichen oder spezifische Genehmigung pro Sub-Verarbeiter;
+                    2. Vorabinformation ueber jede beabsichtigte Aenderung mit Einspruchsmoeglichkeit;
+                    3. Sub-AVV mit Sub-Verarbeiter mit identischen oder strengeren Pflichten;
+                    4. Vollstaendige Haftung gegenueber Verantwortlichem fuer Sub-Verarbeiter-Verstoesse;
+                    5. Sub-Verarbeiter-Liste oeffentlich oder Verantwortlichem zugaenglich.
+
+                    ## 8. Unterstuetzung bei Betroffenenrechten (Art. 28 Abs. 3 lit. e + ISO 27701:2025 Cl. 8.3)
+
+                    Der Auftragsverarbeiter unterstuetzt den Verantwortlichen mittels geeigneter technischer und organisatorischer Massnahmen bei der Beantwortung von Antraegen Betroffener (Art. 12-22 DSGVO). Konkretes Vorgehen: Weiterleitung des Antrags an den Verantwortlichen binnen {{ gdpr.dsr_processor_forwarding_hours }} Stunden; Bereitstellung der notwendigen Daten durch standardisierte API oder Export-Mechanismus.
+
+                    ## 9. Unterstuetzung bei Breach-Notification (Art. 28 Abs. 3 lit. f + Art. 33 Abs. 2 + ISO 27701:2025 Cl. 8.2.4)
+
+                    Der Auftragsverarbeiter meldet eine Datenpanne dem Verantwortlichen **unverzueglich** nach Bekanntwerden — gemaess der separaten Prozedur *PII-Breach-Notification*. Konkrete Frist im AVV: maximal {{ gdpr.processor_breach_notification_hours }} Stunden, da der Verantwortliche seinerseits die 72h-Frist gegenueber der Aufsichtsbehoerde einhalten muss.
+
+                    ## 10. Loeschung oder Rueckgabe nach Vertragsende (Art. 28 Abs. 3 lit. g + ISO 27701:2025 Cl. 8.4.2)
+
+                    Nach Beendigung der Auftragsverarbeitung loescht der Auftragsverarbeiter alle personenbezogenen Daten oder gibt sie nach Wahl des Verantwortlichen zurueck und vernichtet vorhandene Kopien, sofern keine gesetzliche Aufbewahrungspflicht entgegensteht. Loeschnachweis (Loeschprotokoll) wird dem Verantwortlichen ausgehaendigt.
+
+                    ## 11. Audit-Recht (Art. 28 Abs. 3 lit. h + ISO 27701:2025 Cl. 8.2.4)
+
+                    Der Verantwortliche hat das Recht zu Audits durch sich oder Dritte; alternativ Bereitstellung von Zertifikaten und Audit-Berichten (z. B. ISO 27001, SOC 2 Typ II, BSI C5). Audit-Vorbereitung gemaess separater Audit-Logistik-Richtlinie.
+
+                    ## 12. Drittland-Uebermittlungen (ISO 27701:2025 Cl. 8.5, DSGVO Art. 44-49)
+
+                    Sub-Verarbeiter in Drittlaendern nur mit Transfer-Mechanismus gemaess separater Richtlinie *Drittland-Uebermittlung*. TIA (Transfer Impact Assessment) gemaess Schrems-II-Rechtsprechung verpflichtend.
+
+                    ## 13. Verzeichnis von Verarbeitungstaetigkeiten (Art. 30 Abs. 2 + ISO 27701:2025 Cl. 8.2.6)
+
+                    Auftragsverarbeiter-RoPA mit:
+
+                    - Name und Kontaktdaten der Auftragsverarbeiter und jedes Verantwortlichen;
+                    - Kategorien der im Auftrag durchgefuehrten Verarbeitungen;
+                    - Drittland-Uebermittlungen mit Garantien;
+                    - Allgemeine Beschreibung der TOMs.
+
+                    Gefuehrt im RoPA-Modul mit Filter "Rolle = Auftragsverarbeiter".
+
+                    ## 14. Audit + Nachweis
+
+                    Jaehrliche interne Audits gemaess Annex B; Bereitstellung von Audit-Reports an Verantwortliche auf Anfrage. Externe Re-Zertifizierung alle 3 Jahre.
+
+                    ---
+
+                    *Genehmigt durch DPO + CISO + Top-Mgmt | Genehmigungskette: {{ approval.chain }}*
+        pii_inventory_records_processing:
+            v1:
+                title: 'PII-Inventar und Verarbeitungsverzeichnis (RoPA)'
+                body: |-
+                    # PII-Inventar und Verarbeitungsverzeichnis der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Methodik | Norm-Anker: ISO 27701:2025 Cl. 7.2.1 + 7.2.8 + 8.2.1 + 8.2.6, DSGVO Art. 30, BDSG-neu § 70 | Sprache: Deutsch | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+
+                    Diese Methodik regelt verbindlich, wie die {{ tenant.legal_name }} das PII-Inventar (ISO 27701:2025 Cl. 7.2.1 + 8.2.1) und das Verzeichnis von Verarbeitungstaetigkeiten (Records of Processing Activities, RoPA) gemaess Art. 30 DSGVO erstellt, fuehrt, aktualisiert, ueberprueft und der Aufsichtsbehoerde gemaess Art. 30 Abs. 4 DSGVO zur Verfuegung stellt. Das eigentliche Register wird im bestehenden Modul `ProcessingActivity` gefuehrt; diese Methodik definiert die Pflege-Disziplin.
+
+                    ## 2. Geltungsbereich (Doppelrolle Verantwortlicher + Auftragsverarbeiter)
+
+                    Erfasst sind alle Verarbeitungstaetigkeiten in beiden DSGVO-Rollen:
+
+                    - **Verantwortlicher (Art. 30 Abs. 1 + ISO 27701:2025 Cl. 7.2.8)** — Pflichtinhalte (a)-(g): Name und Kontaktdaten des Verantwortlichen, gemeinsam Verantwortlicher und DSB; Verarbeitungszwecke; Kategorien betroffener Personen und personenbezogener Daten; Kategorien von Empfaengern; Drittland-Uebermittlungen mit Garantien; vorgesehene Loeschfristen; allgemeine TOM-Beschreibung.
+                    - **Auftragsverarbeiter (Art. 30 Abs. 2 + ISO 27701:2025 Cl. 8.2.6)** — Pflichtinhalte (a)-(d): Name und Kontaktdaten der Auftragsverarbeiter und Verantwortlichen; Kategorien der Verarbeitungen; Drittland-Uebermittlungen; allgemeine TOM-Beschreibung.
+
+                    Die Befreiung des Art. 30 Abs. 5 DSGVO (< 250 Beschaeftigte) wird **nicht in Anspruch genommen**, da die Ausnahmen (regelmaessige Verarbeitung, Risiko fuer Rechte und Freiheiten, besondere Kategorien) praktisch immer greifen.
+
+                    ## 3. PII-Inventar (ISO 27701:2025 Cl. 7.2.1)
+
+                    Das PII-Inventar ist die Bestandsaufnahme aller PII-Datenkategorien, die die Organisation erhebt, speichert oder verarbeitet. Es ist die Basis fuer das RoPA und wird im Modul `DataCategory` gefuehrt:
+
+                    - **Datenkategorie** (z. B. Stammdaten, Kontaktdaten, Bankverbindung, Gesundheitsdaten);
+                    - **Klassifikation** (Standard / besondere Kategorie nach Art. 9 / strafrechtlich nach Art. 10);
+                    - **Risikoklasse** (niedrig / mittel / hoch / sehr hoch);
+                    - **Verknuepfung mit Asset** (welches IT-System speichert die Kategorie);
+                    - **Loeschfrist** (Default; wird pro Verfahren ueberschrieben);
+                    - **TOM-Mindestanforderungen**.
+
+                    ## 4. Trigger fuer einen RoPA-Eintrag
+
+                    Eine neue RoPA-Eintragung ist verpflichtend bei:
+
+                    1. Einfuehrung eines neuen IT-Verfahrens, einer neuen Anwendung oder eines neuen Cloud-Dienstes mit PII;
+                    2. Aufnahme eines neuen Auftragsverarbeiters oder Sub-Auftragsverarbeiters (Art. 28 DSGVO);
+                    3. Aenderung des Verarbeitungszwecks oder der Rechtsgrundlage einer bestehenden Verarbeitung;
+                    4. Erweiterung der Datenkategorien oder Betroffenenkategorien;
+                    5. Einfuehrung einer Marketing-Kampagne, eines neuen HR-Prozesses oder eines neuen Kundenbindungsprogramms;
+                    6. Einfuehrung einer Drittland-Uebermittlung (Kapitel V);
+                    7. Wechsel des Auftragsverarbeiters oder Sub-Auftragsverarbeiters;
+                    8. Einsatz neuer KI-/automatisierter Entscheidungsfindungs-Verfahren (Art. 22 DSGVO; AI Act).
+
+                    ## 5. Pflichtfelder pro RoPA-Eintrag (Verantwortlicher)
+
+                    | Feld | Art. 30 Abs. 1 | Bemerkung |
+                    |---|---|---|
+                    | Name + Kontaktdaten Verantwortlicher | (a) | Aus Tenant-Stammdaten |
+                    | Name + Kontaktdaten DSB | (a) | {{ roles.dpo.fullName }} |
+                    | Verarbeitungszwecke | (b) | Konkret, nicht generisch |
+                    | Kategorien Betroffener | (c) | Aus DataSubjectCategory |
+                    | Kategorien personenbezogener Daten | (c) | Aus DataCategory |
+                    | Kategorien Empfaenger | (d) | Inkl. Drittland-Empfaenger |
+                    | Drittland-Uebermittlung + Garantien | (e) | Verweis auf Transfer-Mechanismus |
+                    | Loeschfristen | (f) | Aus Loeschkonzept |
+                    | TOM-Beschreibung | (g) | Aus ISMS (Annex A) |
+
+                    Zusaetzlich erfasst (best practice, ueber Pflicht hinaus):
+
+                    - Rechtsgrundlage (Art. 6 Abs. 1 lit. a-f, Art. 9 Abs. 2, Art. 10);
+                    - LIA (Legitimate Interest Assessment) wenn lit. f;
+                    - DSFA-Pflicht-Pruefung (Art. 35);
+                    - Verknuepfung mit IT-Asset im ISMS-Modul;
+                    - Risikoklasse der Verarbeitung.
+
+                    ## 6. Pflichtfelder pro RoPA-Eintrag (Auftragsverarbeiter)
+
+                    | Feld | Art. 30 Abs. 2 | Bemerkung |
+                    |---|---|---|
+                    | Name + Kontaktdaten Auftragsverarbeiter | (a) | Eigene Organisation |
+                    | Name + Kontaktdaten Verantwortlicher | (a) | Aus Kunden-/Vertragsdaten |
+                    | Kategorien der Verarbeitungen | (b) | Pro Kunde |
+                    | Drittland-Uebermittlung + Garantien | (c) | TIA-Verweis |
+                    | TOM-Beschreibung | (d) | Aus ISMS (Annex A) |
+
+                    ## 7. Aktualisierungsfrequenz
+
+                    - **Quartalsweise Pflichtreview** durch DSB ({{ roles.dpo.fullName }}) auf Plausibilitaet und Vollstaendigkeit;
+                    - **Anlassbezogene Aktualisierung** bei jedem Trigger (siehe §4);
+                    - **Jaehrliches RoPA-Audit** durch interne Revision oder externen Auditor.
+
+                    ## 8. Bereitstellung an Aufsichtsbehoerde (Art. 30 Abs. 4)
+
+                    Auf Anforderung der Aufsichtsbehoerde wird das RoPA innerhalb von {{ gdpr.ropa_authority_response_days }} Werktagen elektronisch zur Verfuegung gestellt. Format: maschinenlesbares CSV/JSON-Export aus dem `ProcessingActivity`-Modul.
+
+                    ## 9. ISMS-Verzahnung (Data-Reuse-Prinzip)
+
+                    Das RoPA reutilisiert bestehende ISMS-Daten, statt sie zu duplizieren:
+
+                    - **Asset → ProcessingActivity**: Asset speichert Datenkategorie X → automatische Verknuepfung mit RoPA-Eintraegen, die diese Kategorie verarbeiten;
+                    - **Supplier → Sub-Processor**: Lieferant verarbeitet PII → automatischer AVV-Reminder;
+                    - **Control → TOM**: ISO-27001-Annex-A-Controls werden als TOMs gemaess Art. 32 DSGVO referenziert;
+                    - **Risk → DPIA-Trigger**: Risk mit `requiresDpia=true` triggert DSFA-Pflichtpruefung.
+
+                    ## 10. Audit-Trail
+
+                    Jede RoPA-Aenderung wird im Audit-Log mit HMAC-Chain protokolliert (ISO 27001:2022 A.8.15). Aenderungshistorie pro RoPA-Eintrag mit Diff-Visualisierung.
+
+                    ---
+
+                    *Genehmigt durch DPO + CISO | Genehmigungskette: {{ approval.chain }}*
+        consent_management_legal_basis:
+            v1:
+                title: 'Einwilligung und Rechtsgrundlage'
+                body: |-
+                    # Einwilligung und Rechtsgrundlage der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie + Methodik | Norm-Anker: ISO 27701:2025 Cl. 7.2.2-7.2.5, DSGVO Art. 6 + 7 + 8 + 9 + 10, BDSG-neu §§ 22, 24, 26 | Sprache: Deutsch | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+
+                    Diese Richtlinie regelt verbindlich, welche Rechtsgrundlage gemaess Art. 6 (allgemeine Daten), Art. 9 (besondere Kategorien) bzw. Art. 10 (strafrechtliche Daten) DSGVO fuer welche Verarbeitungstaetigkeit der {{ tenant.legal_name }} herangezogen wird, und stellt das Einwilligungsmanagement gemaess Art. 7 DSGVO sicher.
+
+                    ## 2. Hierarchie der Rechtsgrundlagen (Art. 6 Abs. 1 DSGVO)
+
+                    Eine Verarbeitung ohne dokumentierte Rechtsgrundlage ist untersagt. Die Festlegung erfolgt vor Beginn der Verarbeitung in folgender Pruefreihenfolge:
+
+                    1. **Art. 6 Abs. 1 lit. b — Vertragserfuellung / vorvertragliche Massnahmen**: bevorzugt, wenn die Verarbeitung zur Erfuellung des Vertrags erforderlich ist (kein Pflichtkriterium "absolut notwendig", aber objektiv erforderlich).
+                    2. **Art. 6 Abs. 1 lit. c — Rechtliche Verpflichtung**: bei gesetzlicher Verarbeitungsverpflichtung; konkrete Norm zu zitieren (HGB §§ 238, 257; AO § 147; SGB; GwG; BetrVG; BBG; § 26 BDSG-neu fuer Beschaeftigte).
+                    3. **Art. 6 Abs. 1 lit. d — Lebenswichtige Interessen**: enge Auslegung; nur Notlagen.
+                    4. **Art. 6 Abs. 1 lit. e — Oeffentliche Aufgabe / Hoheitsgewalt**: nur fuer oeffentlich-rechtliche Aufgaben oder gesetzliche Hoheitsgewalt.
+                    5. **Art. 6 Abs. 1 lit. f — Berechtigte Interessen**: Drei-Stufen-Pruefung verpflichtend (Vorliegen berechtigtes Interesse, Erforderlichkeit, Abwaegung mit Betroffeneninteressen) — dokumentiert als LIA gemaess Erwaegungsgrund 47.
+                    6. **Art. 6 Abs. 1 lit. a — Einwilligung**: nur, wenn keine andere Rechtsgrundlage einschlaegig ist; Einwilligung darf nicht zur Umgehung anderer Rechtsgrundlagen dienen.
+
+                    Standard-Rechtsgrundlage in der Organisation fuer neue Verfahren: {{ gdpr.legal_basis_default }}.
+
+                    ## 3. Besondere Kategorien (Art. 9 DSGVO + § 22 BDSG-neu)
+
+                    Verarbeitungen besonderer Kategorien (Rasse, ethnische Herkunft, politische Meinungen, religioese / weltanschauliche Ueberzeugungen, Gewerkschaftszugehoerigkeit, genetische Daten, biometrische Daten zur eindeutigen Identifizierung, Gesundheitsdaten, Daten zum Sexualleben, sexuelle Orientierung) erfordern **zusaetzlich** zur Art-6-Rechtsgrundlage eine Rechtsgrundlage nach Art. 9 Abs. 2 lit. a-j DSGVO oder § 22 BDSG-neu. Praxisrelevante Auspraegungen:
+
+                    - **Art. 9 Abs. 2 lit. a — ausdrueckliche Einwilligung**: bei Marketing/Forschung;
+                    - **Art. 9 Abs. 2 lit. b + § 22 Abs. 1 Nr. 1 lit. b BDSG-neu — Beschaeftigungsverhaeltnis**: bei Eingliederungsmanagement, Schwerbehindertenmeldung;
+                    - **Art. 9 Abs. 2 lit. c — lebenswichtige Interessen**;
+                    - **Art. 9 Abs. 2 lit. f — Rechtsanspruchs-Verteidigung**;
+                    - **Art. 9 Abs. 2 lit. h + § 22 Abs. 1 Nr. 1 lit. b BDSG-neu — Gesundheitsversorgung**: KIS-Systeme, betriebliche Gesundheitsfoerderung;
+                    - **Art. 9 Abs. 2 lit. i — oeffentliches Interesse Gesundheit**;
+                    - **Art. 9 Abs. 2 lit. j + § 27 BDSG-neu — wissenschaftliche / historische Forschung**: Anonymisierungsgebot beachten.
+
+                    ## 4. Strafrechtliche Daten (Art. 10 DSGVO + §§ 24 + 26 Abs. 3 BDSG-neu)
+
+                    Verarbeitung strafrechtlicher Verurteilungen und Straftaten nur nach Art. 10 DSGVO i.V.m. § 24 BDSG-neu (z. B. Hintergrundpruefungen bei sicherheitskritischen Funktionen) bzw. § 26 Abs. 3 BDSG-neu (Beschaeftigungskontext mit Mitwirkung des Betriebsrats).
+
+                    ## 5. Beschaeftigtendaten (§ 26 BDSG-neu)
+
+                    Verarbeitung von Beschaeftigtendaten erfolgt vorrangig auf Basis § 26 Abs. 1 BDSG-neu (Erforderlichkeit fuer das Beschaeftigungsverhaeltnis). Einwilligung im Beschaeftigungskontext nur dort, wo sie tatsaechlich freiwillig ist (§ 26 Abs. 2 BDSG-neu): wirtschaftlicher / rechtlicher Vorteil fuer Beschaeftigte, keine negativen Konsequenzen bei Verweigerung. Schriftform fuer Einwilligung (§ 26 Abs. 2 Satz 3 BDSG-neu).
+
+                    ## 6. Einwilligungsmanagement (Art. 7 + ISO 27701:2025 Cl. 7.2.4)
+
+                    Wo Einwilligung Rechtsgrundlage ist, gelten:
+
+                    1. **Granular** — pro Zweck einzeln (kein Bundling unterschiedlicher Zwecke).
+                    2. **Informiert** — Klare einfache Sprache, Vorab-Informationen gemaess Art. 13/14 (Verantwortlicher, Zweck, Datenkategorien, Empfaenger, Dauer, Rechte, Widerrufsrecht).
+                    3. **Frei** — keine Kopplung an Vertragsleistung (Art. 7 Abs. 4) wenn nicht erforderlich.
+                    4. **Aktiv** — Opt-in (kein vorangekreuztes Kaestchen, EuGH C-673/17 Planet49).
+                    5. **Widerrufbar** — Widerruf so einfach wie Erteilung (Art. 7 Abs. 3); kein Begruendungszwang.
+                    6. **Versioniert** — bei Zweckaenderung neue Einwilligung; alte bleibt fuer Altdaten gueltig.
+                    7. **Nachweisbar** (Art. 7 Abs. 1) — wer, wann, was, wie eingewilligt; Speicherung im Modul `Consent` mit Zeitstempel, IP-Hash, Versionsnummer.
+
+                    Eingesetztes Werkzeug: {{ gdpr.consent_management_tool }}.
+
+                    ## 7. Einwilligung Minderjaehriger (Art. 8 + § 8 BDSG-neu)
+
+                    Bei Diensten der Informationsgesellschaft direkt gegenueber Kindern: elterliche Einwilligung bis 16 Jahre (DE-Standard nach § 8 BDSG-neu, Mitgliedstaatenoption Art. 8 Abs. 1 DSGVO). Verifizierungspflicht der Einwilligungsperson "unter Beruecksichtigung der verfuegbaren Technik" (Art. 8 Abs. 2). Werbliche Ansprache Minderjaehriger: zusaetzliche Anforderungen aus UWG.
+
+                    ## 8. Legitimate Interest Assessment (LIA)
+
+                    Bei Art. 6 Abs. 1 lit. f obligatorisch dokumentierte Drei-Stufen-Pruefung:
+
+                    - **Stufe 1**: Liegt ein berechtigtes Interesse vor? (eigenes oder eines Dritten; rechtmaessig, klar artikuliert, real und gegenwaertig);
+                    - **Stufe 2**: Ist die Verarbeitung erforderlich? (kein milderes Mittel; Datenminimierung beruecksichtigt);
+                    - **Stufe 3**: Ueberwiegen Interessen / Grundrechte / Grundfreiheiten der Betroffenen? (insbesondere bei Kindern, Erwaegungsgrund 47/48; vernuenftige Erwartungen der Betroffenen; Sensibilitaet der Daten; potenzieller Schaden).
+
+                    Speicherung als LIA-Dokument im RoPA-Eintrag.
+
+                    ## 9. Widerruf (Art. 7 Abs. 3 + ISO 27701:2025 Cl. 7.3.5)
+
+                    Widerruf-Prozess:
+
+                    1. **Empfangskanal**: E-Mail an {{ gdpr.dpo_email }}, Self-Service im Account-Bereich, Antwort an Marketing-Mail-Footer ("Abmeldelink").
+                    2. **Bearbeitungsfrist**: unverzueglich, spaetestens binnen 7 Kalendertagen.
+                    3. **Wirkung**: Beendigung der einwilligungsbasierten Verarbeitung; Loeschung der einwilligungsbasiert erhobenen Daten (sofern keine andere Rechtsgrundlage greift).
+                    4. **Audit-Trail**: Speicherung im `Consent`-Modul mit Widerrufszeitstempel, Widerrufskanal.
+
+                    ## 10. ePrivacy-Schnittstelle (TTDSG)
+
+                    Cookies und vergleichbare Speichertechnologien unterliegen § 25 TTDSG (Umsetzung der ePrivacy-Richtlinie). Einwilligung fuer alle nicht-technisch-notwendigen Cookies. Cookie-Banner gemaess BfDI-Leitlinien (klare Auswahl, gleichwertige Alternativen, kein Dark Pattern, granular pro Kategorie).
+
+                    ---
+
+                    *Genehmigt durch DPO + CISO | Genehmigungskette: {{ approval.chain }}*
+        data_subject_rights_procedure:
+            v1:
+                title: 'Verfahren Betroffenenrechte'
+                body: |-
+                    # Verfahren Betroffenenrechte der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verfahren | Norm-Anker: ISO 27701:2025 Cl. 7.3.1-7.3.10, DSGVO Art. 12-22, BDSG-neu §§ 32-37 | Sprache: Deutsch | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+
+                    Dieses Verfahren regelt die Annahme, Identifikation, Bearbeitung und Beantwortung von Antraegen Betroffener gemaess Art. 12-22 DSGVO durch die {{ tenant.legal_name }}. Das eigentliche Antragsmanagement erfolgt im Modul `DataSubjectRequest` (DSR).
+
+                    ## 2. Erfasste Rechte
+
+                    | Recht | DSGVO | ISO 27701:2025 |
+                    |---|---|---|
+                    | Transparente Information | Art. 12 | Cl. 7.3.2 |
+                    | Information bei Direkterhebung | Art. 13 | Cl. 7.3.3 |
+                    | Information bei Indirekterhebung | Art. 14 | Cl. 7.3.3 |
+                    | Auskunft | Art. 15 | Cl. 7.3.4 |
+                    | Berichtigung | Art. 16 | Cl. 7.3.6 |
+                    | Loeschung ("Recht auf Vergessenwerden") | Art. 17 | Cl. 7.3.7 |
+                    | Einschraenkung | Art. 18 | Cl. 7.3.7 |
+                    | Mitteilungspflicht | Art. 19 | Cl. 7.3.6 |
+                    | Datenuebertragbarkeit | Art. 20 | Cl. 7.3.8 |
+                    | Widerspruch | Art. 21 | Cl. 7.3.5 |
+                    | Kein-automatisierter-Entscheidung | Art. 22 | Cl. 7.3.10 |
+
+                    ## 3. Empfangskanaele (ISO 27701:2025 Cl. 7.3.1)
+
+                    Antraege werden ueber folgende Kanaele entgegengenommen:
+
+                    - **E-Mail** an {{ gdpr.dsr_email }} (Default-Kanal, von DSGVO-Auskunfts-Postfach getrennt);
+                    - **Postalisch** an die Anschrift der Organisation;
+                    - **Self-Service** im Kunden-/Mitarbeiter-Account (sofern technisch implementiert);
+                    - **Telefonisch** unter {{ gdpr.dsr_phone }} (mit anschliessender schriftlicher Bestaetigung);
+                    - **Persoenlich** bei der Vertretung des Verantwortlichen.
+
+                    Antraege werden formlos angenommen — die Organisation darf keine bestimmte Form (z. B. eigenes Formular) zur Wirksamkeitsvoraussetzung machen.
+
+                    ## 4. Identitaetspruefung (ISO 27701:2025 Cl. 7.3.4 + DSGVO Erwaegungsgrund 64)
+
+                    **Kritisch**: falsche Auskunftsherausgabe ist selbst eine Datenpanne. Identitaetspruefung erfolgt risikobasiert:
+
+                    - **Niedriges Risiko** (Berichtigung der eigenen E-Mail-Adresse im Account): Bestaetigung ueber den Bestandskanal;
+                    - **Mittleres Risiko** (Auskunft zu Stammdaten): Klarnameabgleich + Verifizierungs-E-Mail an die im System hinterlegte Adresse;
+                    - **Hohes Risiko** (Auskunft zu besonderen Kategorien, Loeschung umfangreicher Daten): zusaetzliche Identitaetsmerkmale (z. B. Vertragsnummer, Geburtsdatum, Postadresse) oder Video-Ident.
+
+                    Bei begruendeten Zweifeln darf die Organisation gemaess Art. 12 Abs. 6 DSGVO zusaetzliche Informationen anfordern; die Frist beginnt erst mit Vorlage der Identitaetsnachweise. Aussage **nicht** "ID-Kopie generell anfordern" — DSK-Empfehlung beachten (nur soweit erforderlich, Schwaerzung nicht relevanter Felder).
+
+                    ## 5. Bearbeitungsfrist (Art. 12 Abs. 3 DSGVO)
+
+                    - **Default**: 30 Kalendertage ab Eingang (bzw. ab Vorlage Identitaetsnachweise);
+                    - **Verlaengerung**: bis zu 60 zusaetzliche Tage (also max. 90) bei Komplexitaet oder hohem Antragsvolumen;
+                    - **Verlaengerungsmitteilung** muss **innerhalb der ersten 30 Tage** an Betroffene erfolgen mit Begruendung;
+                    - **Ablehnung** (offensichtlich unbegruendet oder exzessiv, Art. 12 Abs. 5 lit. b): mit Begruendung und Hinweis auf Beschwerderecht (Art. 77) und Klagerecht (Art. 79).
+
+                    Organisations-Ziel: durchschnittliche Bearbeitungszeit < 14 Kalendertage.
+
+                    ## 6. Bearbeitungsablauf (Workflow)
+
+                    1. **Eingang** → Erfassung im `DataSubjectRequest`-Modul → Auto-Assignment an DSB ({{ roles.dpo.fullName }});
+                    2. **Identitaetspruefung** binnen 3 Werktagen → Eingangsbestaetigung mit Hinweis auf Frist;
+                    3. **Pruefung Antragsart** (Auskunft/Berichtigung/Loeschung/Einschraenkung/Portabilitaet/Widerspruch) → Workflow-Routing;
+                    4. **Datenermittlung** quer ueber alle Asset-Systeme via DSGVO-Suche (Tenant-isolated);
+                    5. **Pruefung Ausnahmen** (z. B. § 34 BDSG-neu Auskunftsbeschraenkung, § 35 BDSG-neu Loeschbeschraenkung wegen Aufbewahrungspflicht);
+                    6. **Antwortbereitstellung** (siehe §7 Format) → Versand;
+                    7. **Audit-Trail** im DSR-Modul mit HMAC-Chain (ISO 27001:2022 A.8.15);
+                    8. **KPI-Reporting** monatlich an DSB.
+
+                    ## 7. Antragsspezifika
+
+                    - **Auskunft (Art. 15 / Cl. 7.3.4)**: Kopie aller verarbeiteten Daten + Pflichtinformationen (Zwecke, Kategorien, Empfaenger, Dauer, Rechte, Beschwerderecht, Herkunft, automatisierte Entscheidungsfindung). Format: PDF + JSON-Anhang.
+                    - **Berichtigung (Art. 16 / Cl. 7.3.6)**: Korrektur in allen Quellsystemen + Mitteilung an Empfaenger (Art. 19), sofern verhaeltnismaessig.
+                    - **Loeschung (Art. 17 / Cl. 7.3.7)**: Pruefung Ausnahmen Art. 17 Abs. 3 (gesetzliche Aufbewahrung, Rechtsverteidigung); bei Greifen Pseudonymisierung statt Loeschung.
+                    - **Einschraenkung (Art. 18 / Cl. 7.3.7)**: Markierung im System (z. B. "DSGVO-Sperre"), Aussetzung aller Verarbeitungen ausser Speicherung.
+                    - **Datenuebertragbarkeit (Art. 20 / Cl. 7.3.8)**: strukturiert, gaengig, maschinenlesbar — JSON oder CSV; nur bei Rechtsgrundlage Einwilligung oder Vertrag und automatisierter Verarbeitung.
+                    - **Widerspruch (Art. 21 / Cl. 7.3.5)**: bei berechtigten Interessen (lit. f) Pruefung ueberwiegender schutzwuerdiger Gruende; bei Direktwerbung **bedingungsloser** Stopp.
+                    - **Kein-automatisierter-Entscheidung (Art. 22 / Cl. 7.3.10)**: bei Profiling mit rechtlicher / aehnlich erheblicher Wirkung — menschliches Eingreifen, Standpunktdarlegung, Anfechtung.
+
+                    ## 8. Mitteilung an Empfaenger (Art. 19)
+
+                    Berichtigungen, Loeschungen und Einschraenkungen werden allen Empfaengern mitgeteilt, an die die Daten offengelegt wurden — sofern dies nicht unmoeglich oder mit unverhaeltnismaessigem Aufwand verbunden ist. Pflicht zur Mitteilung der Empfaenger an die Betroffene Person auf Anfrage.
+
+                    ## 9. Auftragsverarbeiter-Beteiligung (ISO 27701:2025 Cl. 8.3)
+
+                    Wenn Daten beim Auftragsverarbeiter liegen: Antrag wird gemaess AVV an Auftragsverarbeiter weitergeleitet, der gemaess Art. 28 Abs. 3 lit. e DSGVO unterstuetzt. Antwortdaten werden zentral konsolidiert und an Betroffene ausgeliefert.
+
+                    ## 10. Eskalation und Beschwerden
+
+                    - **Aufsichtsbehoerden-Beschwerde**: Betroffene werden in jeder Antwort auf das Beschwerderecht bei der federfuehrenden Aufsichtsbehoerde (Art. 77 DSGVO) hingewiesen;
+                    - **Schadenersatz** (Art. 82 DSGVO): bei Vermoegens- oder immateriellem Schaden;
+                    - **Klagerecht** (Art. 78/79 DSGVO).
+
+                    ## 11. Audit-Trail + KPI
+
+                    Jeder DSR-Antrag wird mit allen Bearbeitungsschritten, Entscheidungstraeger, Antwortdokument im `DataSubjectRequest`-Modul dokumentiert. KPIs:
+
+                    - Anzahl DSR-Antraege pro Monat (Trend);
+                    - Durchschnittliche Bearbeitungszeit (Soll: < 14 Tage);
+                    - Quote vollstaendig beantwortet (Soll: 100 %);
+                    - Anzahl Verlaengerungen (Soll: < 5 %);
+                    - Anzahl Ablehnungen (Soll: < 1 %).
+
+                    ---
+
+                    *Genehmigt durch DPO + CISO | Genehmigungskette: {{ approval.chain }}*
+        pia_dpia_methodology:
+            v1:
+                title: 'PIA / DSFA-Methodik (Privacy Impact Assessment)'
+                body: |-
+                    # PIA / DSFA-Methodik der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Methodik | Norm-Anker: ISO 27701:2025 Cl. 6.2 + 7.2.5, DSGVO Art. 35 + 36, EDSA Leitlinien WP248 + WP250 | Sprache: Deutsch | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+
+                    Diese Methodik regelt verbindlich, wann und wie die {{ tenant.legal_name }} eine Datenschutz-Folgenabschaetzung (DSFA / Privacy Impact Assessment, PIA) gemaess Art. 35 DSGVO und ISO 27701:2025 Cl. 7.2.5 durchfuehrt. Das DSFA-Workflow-Tool ist das Modul `DataProtectionImpactAssessment` mit 6-Schritt-Workflow.
+
+                    ## 2. Pflicht-Auftakt (Art. 35 Abs. 1 DSGVO)
+
+                    Eine DSFA ist verpflichtend, wenn die geplante Verarbeitung **voraussichtlich ein hohes Risiko** fuer die Rechte und Freiheiten betroffener Personen zur Folge hat. Eine DSFA ist **vor** Beginn der Verarbeitung durchzufuehren, nicht nachgelagert.
+
+                    ## 3. Triggerlogik (Art. 35 Abs. 3 + EDSA WP248 9-Kriterien-Liste)
+
+                    Eine DSFA ist verpflichtend bei mindestens einem der folgenden Kriterien:
+
+                    1. **Profiling und Scoring** (Bewertung oder Einstufung mit rechtlicher / aehnlich erheblicher Wirkung — Art. 35 Abs. 3 lit. a, EDSA #1);
+                    2. **Automatisierte Entscheidungen** mit rechtlicher Wirkung (Art. 22 DSGVO Bezug);
+                    3. **Systematische Ueberwachung** (z. B. Videoueberwachung, Mitarbeiter-Monitoring — Art. 35 Abs. 3 lit. c, EDSA #3);
+                    4. **Besondere Kategorien** (Art. 9) oder **strafrechtliche Daten** (Art. 10) in grossem Umfang (Art. 35 Abs. 3 lit. b, EDSA #4);
+                    5. **Daten in grossem Umfang** verarbeitet (EDSA #5);
+                    6. **Datensaetze, die abgeglichen oder zusammengefuehrt werden** (EDSA #6);
+                    7. **Daten zu schutzbeduerftigen Betroffenen** (Kinder, Patienten, Beschaeftigte, Auslaenderbehoerden-Klienten — EDSA #7);
+                    8. **Innovative Nutzung neuer technologischer Loesungen** (KI, Biometrie, IoT — EDSA #8);
+                    9. **Verhinderung Rechtsausuebung der Betroffenen** (z. B. Krediteinstufungen — EDSA #9).
+
+                    Treffen **2 von 9 Kriterien** zu: DSFA verpflichtend (EDSA-Faustregel). Bei nur 1 Kriterium: Pflichtpruefung des DSB; im Zweifel DSFA durchfuehren.
+
+                    Zusaetzlich gilt die DSFA-Pflichtliste der federfuehrenden Aufsichtsbehoerde (Art. 35 Abs. 4); fuer DE: BfDI-Liste bzw. der zustaendigen Landesbehoerde.
+
+                    ## 4. Pflichtinhalte einer DSFA (Art. 35 Abs. 7 + ISO 27701:2025 Cl. 7.2.5)
+
+                    Jede DSFA enthaelt mindestens:
+
+                    1. **Systematische Beschreibung** der geplanten Verarbeitungsvorgaenge und -zwecke, ggf. inklusive der vom Verantwortlichen verfolgten berechtigten Interessen (Art. 35 Abs. 7 lit. a);
+                    2. **Bewertung der Notwendigkeit und Verhaeltnismaessigkeit** der Verarbeitungsvorgaenge in Bezug auf den Zweck (lit. b);
+                    3. **Bewertung der Risiken** fuer die Rechte und Freiheiten der Betroffenen (lit. c) — incl. Wahrscheinlichkeit und Schwere;
+                    4. **Geplante Abhilfemassnahmen** (Garantien, Sicherheitsvorkehrungen, Verfahren) zur Bewaeltigung der Risiken und zum Nachweis der Konformitaet (lit. d).
+
+                    ## 5. Sechs-Schritt-Workflow (Modul-Implementierung)
+
+                    | Step | Verantwortlich | Beschreibung |
+                    |---|---|---|
+                    | 1 — Beschreibung | Verfahrensverantwortlicher | Verarbeitung beschreiben (Datenfluss-Diagramm, Systeme, Beteiligte) |
+                    | 2 — Notwendigkeit + Verhaeltnismaessigkeit | DSB + Verfahrensverantwortlicher | Pruefung gegen Datenminimierung, Zweckbindung, milderes Mittel |
+                    | 3 — Risikoanalyse | DSB + ISB | Bewertung Wahrscheinlichkeit + Schwere fuer Betroffene |
+                    | 4 — Abhilfemassnahmen | DSB + ISB | Ableitung TOMs (Pseudonymisierung, Verschluesselung, Zugriffsbeschraenkung, Logging) |
+                    | 5 — DPO-Konsultation | DSB ({{ roles.dpo.fullName }}) | **Pflicht** gemaess Art. 35 Abs. 2; auditierbar dokumentiert |
+                    | 6 — Bei Restrisiko hoch: Vorabkonsultation | Vertretung des Verantwortlichen | Aufsichtsbehoerde gemaess Art. 36 Abs. 1 |
+
+                    Workflow-Auto-Progression: Step 1 → 2 nach Beschreibungsfeld vollstaendig; 2 → 3 nach Begruendung; 3 → 4 nach Risikobewertung; 4 → 5 nach Massnahmen-Liste; 5 → 6 nur wenn Restrisiko = "hoch" nach Massnahmen.
+
+                    ## 6. DPO-Konsultation (Art. 35 Abs. 2 — PFLICHT)
+
+                    Der DSB ist **verpflichtend** in jeder DSFA zu konsultieren. Die DPO-Konsultation kann nicht uebersprungen oder durch einen anderen Sign-off ersetzt werden. Konsultation umfasst Bewertung der Methodikangemessenheit, Risikobewertung, Massnahmenangemessenheit. DSB-Veto-Recht: bei Nicht-Beruecksichtigung der DPO-Empfehlung schriftliche Begruendung des Verantwortlichen erforderlich.
+
+                    ## 7. Vorabkonsultation Aufsichtsbehoerde (Art. 36 + ISO 27701:2025 Cl. 7.2.5)
+
+                    Bei Restrisiko **hoch** trotz geplanter Massnahmen: vorherige Konsultation der federfuehrenden Aufsichtsbehoerde. Vorlage gemaess Art. 36 Abs. 3 lit. a-f. Die Aufsichtsbehoerde antwortet binnen 8 Wochen (verlaengerbar um 6 Wochen). Verarbeitung darf vor Antwort **nicht** beginnen.
+
+                    ## 8. Konsultation Betroffener (Art. 35 Abs. 9)
+
+                    Sofern moeglich und angemessen: Einbeziehung der Betroffenen oder ihrer Vertreter. Format: Befragung, Workshops, Stakeholder-Reviews. Dokumentation im DSFA-Bericht.
+
+                    ## 9. Aktualisierungspflicht
+
+                    Eine DSFA ist zu aktualisieren bei wesentlicher Aenderung der Verarbeitung; spaetestens **alle 3 Jahre** im Rahmen des PIMS-Reviews (ISO 27701:2025 Cl. 9). Trigger: neue Datenkategorie, neuer Zweck, neuer Auftragsverarbeiter, technologische Aenderung, neue Bedrohungslage, behoerdliche Vorgaben.
+
+                    ## 10. ISMS-Verzahnung (Data-Reuse)
+
+                    - **Asset (ISMS) → DSFA-Scope**: bestehende Asset-Risikoklassen werden uebernommen;
+                    - **Risk (ISMS) → DSFA-Risiko**: bestehende Risikoanalyse als Ausgangspunkt;
+                    - **Control (ISMS A.5-A.8) → TOM (DSFA Step 4)**: bestehende Controls referenzieren;
+                    - **DPIA-Output → Risk-Treatment-Plan**: Massnahmen fliessen ins Risk-Treatment-Modul.
+
+                    ## 11. Audit-Trail + Aufbewahrung
+
+                    DSFA-Dokumentation mindestens **fuer Dauer der Verarbeitung + 3 Jahre** aufbewahren (Nachweispflicht). Bei behoerdlicher Pruefung: Vorlage binnen 5 Werktagen.
+
+                    ---
+
+                    *Genehmigt durch DPO + CISO | Genehmigungskette: {{ approval.chain }}*
+        data_breach_notification:
+            v1:
+                title: 'Verfahren PII-Breach-Notification'
+                body: |-
+                    # Verfahren PII-Breach-Notification der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verfahren | Norm-Anker: ISO 27701:2025 Cl. 6.13 (frueher 6.13.1.5 in 2019), DSGVO Art. 33 + 34, BDSG-neu §§ 65, 66 | Sprache: Deutsch | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+
+                    Dieses Verfahren regelt die Erkennung, Bewertung, Meldung und Dokumentation von Verletzungen des Schutzes personenbezogener Daten (PII-Breaches) durch die {{ tenant.legal_name }} gemaess Art. 33 (Meldung an Aufsichtsbehoerde, 72h-Frist) und Art. 34 DSGVO (Benachrichtigung Betroffener bei hohem Risiko).
+
+                    ## 2. Definition (Art. 4 Nr. 12 DSGVO)
+
+                    Eine Verletzung des Schutzes personenbezogener Daten ist eine Verletzung der Sicherheit, die zur **Vernichtung**, zum **Verlust**, zur **Veraenderung**, zur **unbefugten Offenlegung** oder zum **unbefugten Zugang** zu personenbezogenen Daten fuehrt, die uebermittelt, gespeichert oder auf sonstige Weise verarbeitet wurden — unbeabsichtigt oder unrechtmaessig.
+
+                    ## 3. Klassifikation (CIA-Triade)
+
+                    | Typ | Definition | Beispiel |
+                    |---|---|---|
+                    | **Vertraulichkeitsverletzung** | Unbefugter Zugriff oder Offenlegung | Versehentlicher Mailversand an falsche Empfaengerliste |
+                    | **Integritaetsverletzung** | Unbefugte oder versehentliche Aenderung | Manipulation von Datenbankeintraegen |
+                    | **Verfuegbarkeitsverletzung** | Versehentlicher oder unbefugter Verlust des Zugangs / Vernichtung | Ransomware-Verschluesselung, Loeschung ohne Backup |
+
+                    ## 4. Erkennungs-Trigger (ISO 27701:2025 Cl. 6.13)
+
+                    Eine Verletzung gilt als entdeckt, wenn die Organisation **hinreichende Gewissheit** hat, dass ein Sicherheitsvorfall stattgefunden hat, der personenbezogene Daten betrifft. Ueblicherweise nach erster forensischer Pruefung. Trigger:
+
+                    - SIEM-/IDS-Alerts;
+                    - Mitarbeiter-Meldung (verstaerkt durch Awareness);
+                    - Externe Hinweise (Aufsichtsbehoerde, Sicherheitsforscher, Betroffene);
+                    - Auftragsverarbeiter-Meldung (Art. 33 Abs. 2 — Auftragsverarbeiter meldet Verantwortlichem unverzueglich, AVV-Verpflichtung);
+                    - Routine-Audit-Befund.
+
+                    ## 5. 72-Stunden-Meldefrist (Art. 33 Abs. 1)
+
+                    Meldung an die federfuehrende Aufsichtsbehoerde **unverzueglich, spaetestens jedoch binnen 72 Stunden** nach Bekanntwerden des Vorfalls. Wenn nicht binnen 72h moeglich: Meldung mit Begruendung der Verzoegerung.
+
+                    Frist beginnt **mit Bekanntwerden** des Vorfalls (i. d. R. Abschluss der ersten forensischen Bewertung mit hinreichender Gewissheit, nicht mit Detektion durch Tool-Alert).
+
+                    ## 6. Bewertungskriterien (Risiko fuer Rechte und Freiheiten)
+
+                    Pflicht zur Aufsichtsbehoerden-Meldung **entfaellt nur**, wenn die Verletzung "voraussichtlich nicht zu einem Risiko fuer die Rechte und Freiheiten natuerlicher Personen fuehrt" (Art. 33 Abs. 1). Bewertung gemaess EDSA-WP250-Kriterien:
+
+                    - **Datentyp und Sensibilitaet** (besondere Kategorien Art. 9 = sehr hoch);
+                    - **Identifizierbarkeit** der Betroffenen;
+                    - **Schwere der Folgen** (finanziell, reputativ, gesundheitlich, diskriminierend);
+                    - **Anzahl Betroffener**;
+                    - **Persoenliche Merkmale** (Kinder, schutzbeduerftige Gruppen);
+                    - **Zweck und Schaden** (z. B. Identitaetsdiebstahl-Risiko).
+
+                    Im Zweifel: melden.
+
+                    ## 7. Meldeinhalt (Art. 33 Abs. 3)
+
+                    Die Meldung enthaelt mindestens:
+
+                    1. **Beschreibung** der Verletzung (Art, Kategorien Betroffener, Anzahl, Datenkategorien, Anzahl Datensaetze);
+                    2. **Name und Kontaktdaten** des DSB ({{ roles.dpo.fullName }}, {{ gdpr.dpo_email }}, {{ gdpr.dpo_phone }});
+                    3. **Wahrscheinliche Folgen** der Verletzung;
+                    4. **Ergriffene oder vorgeschlagene Massnahmen** zur Behebung und ggf. Schadensbegrenzung.
+
+                    Fehlen Informationen: Stufenmeldung gemaess Art. 33 Abs. 4 (Erstmeldung mit verfuegbaren Infos + Nachmeldung).
+
+                    ## 8. Meldekanal
+
+                    Meldung erfolgt ueber das Online-Portal der federfuehrenden Aufsichtsbehoerde (BfDI bzw. zustaendige Landesbehoerde). Eingangsbestaetigung wird im `DataBreach`-Modul archiviert. Parallele Pruefung sektoraler Meldepflichten:
+
+                    - **EU-DORA Art. 19** (Finanzdienstleister): ICT-Major-Incident in 4h-Initial / 72h-Zwischen / 1-Monat-Final an BaFin / EBA / EIOPA / ESMA;
+                    - **NIS2 Art. 23** (wesentliche/wichtige Einrichtungen): Cybersecurity-Incident in 24h-Frueh / 72h-Initial / 1-Monat-Final an BSI;
+                    - **TKG § 109a / TTDSG** (Telekommunikation): an BNetzA und ggf. BfDI;
+                    - **KRITIS-Verordnung**: an BSI.
+
+                    ## 9. Benachrichtigung Betroffener (Art. 34)
+
+                    Bei voraussichtlich **hohem Risiko** fuer die Rechte und Freiheiten der Betroffenen: zusaetzlich Benachrichtigung der Betroffenen **unverzueglich** in klarer, einfacher Sprache. Mindestinhalte: Beschreibung der Art, Kontaktdaten DSB, wahrscheinliche Folgen, Massnahmen.
+
+                    Ausnahmen (Art. 34 Abs. 3): geeignete TOMs (z. B. Verschluesselung) wurden angewendet UND verbleibendes Risiko ausgeschlossen; nachtraegliche Massnahmen schliessen Risiko aus; unverhaeltnismaessiger Aufwand → oeffentliche Bekanntmachung als Ersatz.
+
+                    ## 10. Interne Dokumentation (Art. 33 Abs. 5 — IMMER, unabhaengig von Meldepflicht)
+
+                    Saemtliche Verletzungen sind im `DataBreach`-Modul zu dokumentieren — auch wenn keine Meldung an Aufsichtsbehoerde erfolgt. Pflichtfelder:
+
+                    - Vorfall (Datum/Uhrzeit, Quelle, Beschreibung);
+                    - Datenkategorien + Anzahl Betroffener;
+                    - Folgen (tatsaechlich + potenziell);
+                    - Massnahmen (sofortig, nachgelagert);
+                    - Bewertung Meldepflicht (Begruendung Ja/Nein);
+                    - Meldungs-Status (Behoerde, Betroffene);
+                    - Lessons Learned.
+
+                    ## 11. Workflow (6-Schritt mit Auto-Progression)
+
+                    1. Detection → DataBreach-Eintrag → DSB-Auto-Assignment + Timer-Start (72h);
+                    2. DPO-Assessment (severity, scope, affectedDataSubjectsCount, dataCategories);
+                    3. Technical-Assessment (CISO) — TOM-Wirksamkeit, Eindaemmung;
+                    4. Notification-Decision (DSB + CISO + Top-Mgmt bei high) — meldepflicht-Pruefung;
+                    5. Authority-Notification + Subject-Notification (parallel falls erforderlich);
+                    6. Post-Incident-Review (Lessons Learned, Risk-Update, Control-Update).
+
+                    ## 12. Auftragsverarbeiter-Sicht (Art. 33 Abs. 2 + ISO 27701:2025 Cl. 8.2.4)
+
+                    Bei Verletzung in einem Verfahren, in dem die Organisation **Auftragsverarbeiter** ist: Meldung an Verantwortlichen **unverzueglich** (im AVV: max. {{ gdpr.processor_breach_notification_hours }} Stunden), damit dieser seinerseits 72h-Frist einhalten kann. KEIN eigene Meldung an Aufsichtsbehoerde, sofern AVV nichts anderes regelt.
+
+                    ## 13. Audit-Trail + Beweismittel
+
+                    Vollstaendige Dokumentation im `DataBreach`-Modul mit HMAC-Chain. Beweismittel-Sicherung gemaess Forensik-Richtlinie. Bei behoerdlicher Pruefung: Vorlage binnen 24 Stunden.
+
+                    ## 14. KPI
+
+                    - Mean-Time-to-Detection (MTTD);
+                    - Mean-Time-to-Response (MTTR);
+                    - Mean-Time-to-Notification (Soll < 72h ab Bekanntwerden);
+                    - Anzahl meldepflichtige vs. nur intern dokumentierte Verletzungen;
+                    - Trend gegenueber Vorjahr.
+
+                    ---
+
+                    *Genehmigt durch DPO + CISO + Top-Mgmt | Genehmigungskette: {{ approval.chain }}*
+        third_party_transfer_policy:
+            v1:
+                title: 'Drittland-Uebermittlungsrichtlinie'
+                body: |-
+                    # Drittland-Uebermittlungsrichtlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Norm-Anker: ISO 27701:2025 Cl. 7.5 + 8.5, DSGVO Kapitel V (Art. 44-49), Schrems-II-Urteil (EuGH C-311/18), EDSA Empfehlungen 01/2020 (TIA) + 02/2020 (zusaetzliche Massnahmen) | Sprache: Deutsch | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+
+                    Diese Richtlinie regelt verbindlich, unter welchen Bedingungen die {{ tenant.legal_name }} personenbezogene Daten in Drittlaender (Nicht-EU-/EWR-Staaten) oder an internationale Organisationen uebermittelt. Sie operationalisiert ISO 27701:2025 Cl. 7.5 (Verantwortlicher) und Cl. 8.5 (Auftragsverarbeiter).
+
+                    ## 2. Geltungsbereich
+
+                    Erfasst sind alle Konstellationen einer Drittland-Uebermittlung:
+
+                    - Datenfluss von einem EU-/EWR-Standort an einen Empfaenger im Drittland;
+                    - Zugriff von einem Drittland auf in der EU gespeicherte Daten ("Remote Access");
+                    - Sub-Auftragsverarbeitung in einem Drittland;
+                    - Cloud-Speicherung mit Drittland-Datacenter;
+                    - Zugriff auf EU-Daten durch Drittland-Behoerden ("FISA 702 / Cloud Act / EO 12333" Risiko).
+
+                    ## 3. Allgemeines Verbot mit Erlaubnisvorbehalt (Art. 44)
+
+                    Drittland-Uebermittlungen sind grundsaetzlich verboten und nur zulaessig auf Basis eines der nachfolgenden Mechanismen.
+
+                    ## 4. Mechanismen-Hierarchie (Art. 45-49)
+
+                    **Pruefreihenfolge:**
+
+                    1. **Angemessenheitsbeschluss** (Art. 45) — bevorzugt;
+                    2. **Geeignete Garantien** (Art. 46): SCC, BCR, CoC, Zertifizierung;
+                    3. **Ausnahmen** (Art. 49) — eng auszulegen, nicht fuer dauerhafte Verarbeitung.
+
+                    ## 5. Angemessenheitsbeschluss (Art. 45)
+
+                    Aktuelle EU-Kommissions-Beschluesse (Stand: laufend zu verifizieren via EU-Kommissions-Webseite):
+
+                    - **EU-US Data Privacy Framework** (DPF, 2023) — fuer zertifizierte US-Empfaenger; Pruefung: ist Empfaenger im DPF-Register?
+                    - **Andere Laender mit Angemessenheitsbeschluss** (Andorra, Argentinien, Faroeer, Guernsey, Israel, Isle of Man, Japan, Jersey, Kanada [kommerzielle Organisationen, PIPEDA], Neuseeland, Schweiz, Sued-Korea, Uruguay, UK).
+
+                    Bei Vorliegen eines Angemessenheitsbeschlusses: Uebermittlung ohne weitere Genehmigung; **kein TIA erforderlich**.
+
+                    ## 6. Geeignete Garantien (Art. 46) — Standard-Mechanismus
+
+                    ### 6.1 Standardvertragsklauseln (SCC, Art. 46 Abs. 2 lit. c)
+
+                    Verwendung der **EU-Kommissions-SCC 2021/914** (vom 4. Juni 2021) — vier Module:
+
+                    - Modul 1: Controller-to-Controller;
+                    - Modul 2: Controller-to-Processor;
+                    - Modul 3: Processor-to-(Sub-)Processor;
+                    - Modul 4: Processor-to-Controller (Reverse).
+
+                    Pflichtanlagen: Anhang I (Beschreibung Uebermittlung), Anhang II (TOMs), Anhang III (Sub-Verarbeiter-Liste).
+
+                    Aeltere SCC (2001/497, 2010/87) sind seit 27. Dezember 2022 unwirksam und unverzueglich abzuloesen.
+
+                    ### 6.2 Binding Corporate Rules (BCR, Art. 47)
+
+                    Konzern-interne Datentransfers, Genehmigung durch federfuehrende Aufsichtsbehoerde nach Konsultationsverfahren mit EDSA. Sinnvoll bei multi-jurisdiktionalen Konzernen.
+
+                    ### 6.3 Verhaltensregeln (Art. 40 + 46 Abs. 2 lit. e) und Zertifizierung (Art. 42 + 46 Abs. 2 lit. f)
+
+                    Vorbehaltlich genehmigter CoC oder Zertifizierungs-Schemata; aktuell wenig praxisrelevant.
+
+                    ## 7. Schrems-II — Transfer Impact Assessment (TIA, EDSA Empf. 01/2020)
+
+                    Bei jeder Art-46-Uebermittlung ohne Angemessenheitsbeschluss ist ein **Transfer Impact Assessment (TIA)** verpflichtend (EuGH C-311/18 "Schrems II"; EDSA-Empfehlungen 01/2020):
+
+                    1. **Schritt 1**: Daten-Mapping (welche Daten, an wen, in welches Drittland, Zweck, Datenkategorien);
+                    2. **Schritt 2**: Identifikation des Uebermittlungs-Mechanismus (in der Regel SCC 2021/914);
+                    3. **Schritt 3**: Bewertung der Wirksamkeit des Uebermittlungs-Mechanismus im Drittland-Kontext (Rechtslage des Drittlands, insb. Zugriffsrechte staatlicher Stellen — fuer USA: FISA 702, EO 12333, Cloud Act, ECPA; fuer CN: NSL, DSL, PIPL; fuer RU: SORM);
+                    4. **Schritt 4**: Bei festgestellten Luecken: zusaetzliche Massnahmen (technisch [Verschluesselung mit Schluesseln in EU, Pseudonymisierung], vertraglich [Transparency Reports, Government-Access-Reporting], organisatorisch [Daten-Lokalisierung, Zugriffstrennung]);
+                    5. **Schritt 5**: Wiederholte Pruefung der Wirksamkeit nach Massnahmen;
+                    6. **Schritt 6**: Dokumentation + DPO-Sign-off + jaehrliche Re-Bewertung.
+
+                    Bei Nicht-Erreichbarkeit eines im Wesentlichen gleichwertigen Schutzniveaus: **Uebermittlung untersagt**.
+
+                    ## 8. Ausnahmen (Art. 49) — eng auszulegen
+
+                    Nur **wenn weder Angemessenheitsbeschluss noch Garantien greifen**. Praxisrelevant:
+
+                    - **Art. 49 Abs. 1 lit. a — Ausdrueckliche Einwilligung** nach Information ueber Risiken;
+                    - **Art. 49 Abs. 1 lit. b — Vertragserfuellung mit Betroffenem** (z. B. Hotelbuchung in USA);
+                    - **Art. 49 Abs. 1 lit. d — Wichtige Gruende des oeffentlichen Interesses**;
+                    - **Art. 49 Abs. 1 lit. e — Rechtsverteidigung**;
+                    - **Art. 49 Abs. 1 lit. f — Lebenswichtige Interessen**.
+
+                    Ausnahmen sind **nicht** fuer dauerhafte oder strukturelle Uebermittlungen geeignet (EDSA Leitlinien 2/2018).
+
+                    ## 9. Pflicht-Pruefung pro neuem Verfahren
+
+                    Vor Inbetriebnahme eines Verfahrens mit Drittland-Bezug:
+
+                    1. **DPO-Konsultation** (Art. 38 Abs. 1);
+                    2. **Mechanismus-Auswahl** (Stufe 1-3);
+                    3. **TIA-Durchfuehrung** wenn kein Angemessenheitsbeschluss;
+                    4. **Vertragsabschluss** (SCC 2021/914 mit allen Anhaengen);
+                    5. **RoPA-Eintrag** mit Drittland-Markierung (Art. 30 Abs. 1 lit. e DSGVO);
+                    6. **Aktualisierung Datenschutzhinweise** (Art. 13 Abs. 1 lit. f) mit Drittland-Information und Verfuegbarkeit der Garantien;
+                    7. **Audit-Trail** im `ProcessingActivity` und `Supplier`-Modul.
+
+                    ## 10. Sub-Auftragsverarbeiter im Drittland (ISO 27701:2025 Cl. 8.5)
+
+                    Wenn die Organisation als Auftragsverarbeiter Sub-Verarbeiter im Drittland einsetzt: identische Pruefung. Verantwortlicher ist vorab zu informieren und hat Einspruchsrecht (Art. 28 Abs. 2). Sub-AVV mit identischen oder strengeren SCC-Modulen.
+
+                    ## 11. Audit + Re-Bewertung
+
+                    - **Jaehrliche TIA-Re-Bewertung** je Drittland-Empfaenger;
+                    - **Anlass-bezogene Re-Bewertung** bei: neuer Rechtslage des Drittlands (z. B. neue Ueberwachungsgesetzgebung), neuer Schrems-/EuGH-Rechtsprechung, neuer EDSA-Empfehlung, Wechsel des Empfaengers, Cloud-Region-Aenderung;
+                    - **Audit-Recht** nach SCC Klausel 8.9 (Modul 2/3) — jaehrlich oder anlassbezogen.
+
+                    ## 12. Spezialfall USA
+
+                    Selbst bei DPF-Zertifizierung: laufende Beobachtung der Rechtsentwicklung (Trump-DPF-Stress 2025+, evtl. neuer Schrems-III-Fall vor EuGH). Empfehlung: SCC 2021/914 + TIA als Backup-Strategie auch bei DPF-Empfaengern; bei Cloud-Anbietern Daten-Lokalisierung in EU-Region + Customer-Managed-Keys (CMK) in EU-KMS.
+
+                    ## 13. Datenschutzhinweise (Art. 13 Abs. 1 lit. f + Art. 14 Abs. 1 lit. f)
+
+                    Veroeffentlichung der Drittland-Empfaenger und der zugrundeliegenden Garantien-Mechanismen in den oeffentlichen Datenschutzhinweisen ({{ gdpr.privacy_notice_url }}). Bereitstellung einer Kopie der Garantien an Betroffene auf Anfrage.
+
+                    ---
+
+                    *Genehmigt durch DPO + CISO + Top-Mgmt | Genehmigungskette: {{ approval.chain }}*
+        retention_disposal_policy:
+            v1:
+                title: 'Aufbewahrungs- und Loeschrichtlinie'
+                body: |-
+                    # Aufbewahrungs- und Loeschrichtlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie + Methodik | Norm-Anker: ISO 27701:2025 Cl. 7.4 + 8.4, DSGVO Art. 5 Abs. 1 lit. e + Art. 17, BDSG-neu §§ 35, 75; HGB §§ 238, 257, 261; AO § 147; GoBD; TMG §§ 13, 15; TTDSG | Sprache: Deutsch | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+
+                    Diese Richtlinie regelt verbindlich die Aufbewahrungsfristen und das Loesch- bzw. Pseudonymisierungsverfahren personenbezogener Daten der {{ tenant.legal_name }}. Sie operationalisiert die DSGVO-Speicherbegrenzung (Art. 5 Abs. 1 lit. e) gegenueber den entgegenstehenden gesetzlichen Aufbewahrungspflichten und ISO 27701:2025 Cl. 7.4 (Verantwortlicher) sowie Cl. 8.4 (Auftragsverarbeiter).
+
+                    ## 2. Grundsaetze
+
+                    1. **Speicherbegrenzung** (Art. 5 Abs. 1 lit. e DSGVO): Aufbewahrung nur, solange fuer den Zweck erforderlich;
+                    2. **Loeschpflicht** (Art. 17 DSGVO): bei Wegfall des Zwecks oder erfolgreichem DSR-Loeschantrag;
+                    3. **Aufbewahrungspflicht** geht Loeschpflicht **vor** (Art. 17 Abs. 3 lit. b DSGVO), wenn gesetzliche Aufbewahrung greift — dann **Pseudonymisierung statt Loeschung** und Sperrung weiterer Verarbeitung (§ 35 BDSG-neu);
+                    4. **Loeschnachweis**: Loeschung wird im Audit-Log dokumentiert (Loeschprotokoll).
+
+                    ## 3. Aufbewahrungsmatrix (deutsches Recht)
+
+                    ### 3.1 Handelsrechtliche Aufbewahrung (HGB §§ 238, 257)
+
+                    | Datenkategorie | Frist | Norm |
+                    |---|---|---|
+                    | Handelsbuecher, Inventare, Eroeffnungsbilanzen, Jahresabschluesse, Lageberichte, Konzernabschluesse, Konzernlageberichte, Arbeitsanweisungen, sonstige Organisationsunterlagen | 10 Jahre | HGB § 257 Abs. 1 Nr. 1 + Abs. 4 |
+                    | Empfangene Handels- oder Geschaeftsbriefe | 6 Jahre | HGB § 257 Abs. 1 Nr. 2 + Abs. 4 |
+                    | Wiedergaben der abgesandten Handels- oder Geschaeftsbriefe | 6 Jahre | HGB § 257 Abs. 1 Nr. 3 + Abs. 4 |
+                    | Belege fuer Buchungen (Buchungsbelege) | 10 Jahre | HGB § 257 Abs. 1 Nr. 4 + Abs. 4 |
+
+                    ### 3.2 Steuerrechtliche Aufbewahrung (AO § 147)
+
+                    | Datenkategorie | Frist | Norm |
+                    |---|---|---|
+                    | Buecher und Aufzeichnungen, Inventare, Jahresabschluesse, Lageberichte, Eroeffnungsbilanzen, Buchungsbelege | 10 Jahre | AO § 147 Abs. 3 i.V.m. Abs. 1 Nr. 1, 4, 4a |
+                    | Empfangene Handels- und Geschaeftsbriefe | 6 Jahre | AO § 147 Abs. 3 i.V.m. Abs. 1 Nr. 2 |
+                    | Wiedergaben abgesandter Handels- und Geschaeftsbriefe | 6 Jahre | AO § 147 Abs. 3 i.V.m. Abs. 1 Nr. 3 |
+                    | Sonstige fuer die Besteuerung bedeutsame Unterlagen | 6 Jahre | AO § 147 Abs. 3 i.V.m. Abs. 1 Nr. 5 |
+
+                    Frist beginnt mit Schluss des Kalenderjahrs der letzten Eintragung / Erstellung (HGB § 257 Abs. 5; AO § 147 Abs. 4).
+
+                    ### 3.3 Personalakten / Beschaeftigtendaten (§ 26 BDSG-neu)
+
+                    | Datenkategorie | Frist | Begruendung |
+                    |---|---|---|
+                    | Lohnkonten, Lohn-/Gehalts-Abrechnungen | 6 Jahre nach letzter Eintragung | AO § 147 Abs. 1 Nr. 5 |
+                    | Sozialversicherungsbelege | bis zur naechsten Pruefung, mind. 4 Jahre nach Faelligkeit | § 28f Abs. 1 SGB IV |
+                    | Bewerbungsunterlagen abgelehnter Bewerber | max. 6 Monate nach Absage (AGG-Fristverlaengerung bei Klage) | § 15 Abs. 4 AGG |
+                    | Personalakte aktiver Beschaeftigter | bis Beendigung Arbeitsverhaeltnis + 3 Jahre | § 195 BGB / § 199 BGB Verjaehrung allgemein |
+                    | Arbeitszeugnisse, Arbeitsvertraege | 30 Jahre nach Beendigung | § 197 BGB Verjaehrung +Sozialversicherungsbezug |
+                    | Schwerbehinderten-Anzeigen | 5 Jahre nach Ende Beschaeftigung | § 154 SGB IX |
+
+                    ### 3.4 Telemedien / Cookies (TMG, TTDSG)
+
+                    | Datenkategorie | Frist | Norm |
+                    |---|---|---|
+                    | Bestandsdaten (Vertragsverhaeltnis) | bis Beendigung Vertrag + 3 Jahre Verjaehrung | § 14 TMG / § 75 TKG |
+                    | Nutzungsdaten (Logs ohne Abrechnungsbezug) | unverzueglich nach Sitzungsende, max. 7 Tage | § 15 TMG, § 95 TKG / DSK-Empfehlung |
+                    | Abrechnungsdaten | 6 Monate nach Rechnungsversand | § 95 Abs. 3 TKG |
+
+                    ### 3.5 Dokumentation Datenschutz selbst
+
+                    | Datenkategorie | Frist | Begruendung |
+                    |---|---|---|
+                    | DSFA-Dokumentation | Dauer Verarbeitung + 3 Jahre | Nachweispflicht Art. 5 Abs. 2 |
+                    | DSR-Bearbeitungs-Akten | 3 Jahre nach Abschluss | Verjaehrung Art. 79 + § 195 BGB |
+                    | Datenpannen-Dokumentation | 5 Jahre | EDSA-Empfehlung + Bussgeldverjaehrung Art. 83 i.V.m. § 31 OWiG |
+                    | Einwilligungs-Nachweise | bis 3 Jahre nach Widerruf | Nachweispflicht + Verjaehrung |
+                    | Audit-Logs (HMAC-Chain) | 10 Jahre | ISO 27001:2022 A.8.15 + KonTraG |
+
+                    ### 3.6 Sektorale Sonderfristen
+
+                    - **Gesundheitsdaten / Patientendokumentation**: 10 Jahre (§ 630f Abs. 3 BGB), Aufbewahrung Roentgenbilder 30 Jahre (§ 28 RoeV);
+                    - **Geldwaesche-Pflichtkundendaten**: 5 Jahre nach Geschaeftsbeziehung (§ 8 GwG);
+                    - **Bankenaufsichtsrecht**: 6 Jahre Geschaeftsunterlagen (§ 25a KWG);
+                    - **Telekommunikation Verkehrsdaten**: max. 6 Monate Abrechnungsdaten (§ 96 TKG);
+                    - **Forschungsdaten**: bis Forschungszweckerfuellung + 10 Jahre Nachvollziehbarkeit (DFG-Leitlinie zur Sicherung guter wissenschaftlicher Praxis).
+
+                    ## 4. Loeschverfahren (ISO 27701:2025 Cl. 7.4.5 + 7.4.6 + 8.4)
+
+                    ### 4.1 Trigger
+
+                    - **Periodischer Trigger**: Cron-Job prueft taeglich Loeschfristen aller Daten;
+                    - **Ad-hoc Trigger**: DSR-Loeschantrag (Art. 17);
+                    - **Vertragsende-Trigger**: bei Auftragsverarbeitung (Art. 28 Abs. 3 lit. g);
+                    - **Zweckwegfall-Trigger**: bei Aenderung Verarbeitungszweck;
+                    - **Einwilligungs-Widerruf** (Art. 7 Abs. 3): einwilligungsbasierte Daten loeschen, sofern keine andere Rechtsgrundlage greift.
+
+                    ### 4.2 Loeschungs-Standards
+
+                    - **Logische Loeschung** in Datenbanken: Datensatz wird als "geloescht" markiert + nach 30 Tagen Nachfrist physisch entfernt;
+                    - **Physische Loeschung** auf Datentraegern: NIST SP 800-88 "Clear" (Standard-Loeschung); fuer hochsensible Daten "Purge" (Cryptographic Erase) oder "Destroy" (physische Zerstoerung);
+                    - **Backup-Loeschung**: gemaess Backup-Aufbewahrungsfrist; "Right to be forgotten" greift in Backups gemaess EDSA-Empfehlung erst bei naechster Wiederherstellung — Garantie durch dokumentierte Loeschpflicht;
+                    - **Cloud-Loeschung**: Tenant-Daten via Provider-API; Loeschnachweis vom Provider einholen;
+                    - **Papier-Loeschung**: Schreddern nach DIN 66399 Stufe P-4 (Standard) bzw. P-5 (sensibel) bzw. P-7 (Hochsensibel).
+
+                    ### 4.3 Pseudonymisierung statt Loeschung (Art. 4 Nr. 5 + Art. 17 Abs. 3 lit. b)
+
+                    Wenn Aufbewahrungspflicht der Loeschung entgegensteht: **Pseudonymisierung** mit Trennung der Zuordnungsschluessel + Sperrung jeglicher Verarbeitung ueber den Aufbewahrungszweck hinaus (§ 35 Abs. 3 BDSG-neu). Der Zuordnungsschluessel wird im separaten KMS unter Vier-Augen-Prinzip aufbewahrt.
+
+                    ## 5. Loeschkonzept-Integration mit RoPA
+
+                    Jeder RoPA-Eintrag (Art. 30 Abs. 1 lit. f) enthaelt verpflichtend die Loeschfrist mit Norm-Verweis. Aenderungen der Loeschfrist im Loeschkonzept fuehren zu RoPA-Update.
+
+                    ## 6. Workflow Loesch-Disziplin
+
+                    1. Cron-Job prueft taeglich Loeschfaelligkeiten je Asset/Modul;
+                    2. Auto-Loeschung wo definiert; **bei sensiblen Datenkategorien Vier-Augen-Loeschung** durch DSB + Datenverantwortlicher;
+                    3. Loeschprotokoll mit Datensatzanzahl, Pruefer, Zeitstempel, Hash-Beweis;
+                    4. Eintrag im Audit-Log (HMAC-Chain) — Loeschnachweis bleibt 10 Jahre erhalten (auch nach Loeschung der eigentlichen Daten);
+                    5. Quartalsbericht an DSB ueber durchgefuehrte Loeschungen.
+
+                    ## 7. Auftragsverarbeiter-Sicht (ISO 27701:2025 Cl. 8.4.2)
+
+                    Nach Vertragsende: Loeschung oder Rueckgabe **nach Wahl des Verantwortlichen** (Art. 28 Abs. 3 lit. g). Loeschnachweis (Loeschprotokoll mit Hash) wird Verantwortlichem ausgehaendigt. Bei gesetzlicher Aufbewahrungspflicht beim Auftragsverarbeiter (z. B. AO § 147 fuer Rechnungs-Sub-Daten): Information an Verantwortlichen mit Begruendung.
+
+                    ## 8. Anonymisierung (§ 9 BDSG-neu, Erwaegungsgrund 26)
+
+                    Anonymisierte Daten fallen aus dem DSGVO-Anwendungsbereich. Anforderungen an Anonymisierung gemaess EDSA Stellungnahme 05/2014 (Art. 29-Gruppe): Linkability + Inference + Singling-Out unwahrscheinlich. Pseudonymisierung allein **ist keine** Anonymisierung. Re-Identifizierungs-Risiko regelmaessig pruefen.
+
+                    ## 9. Audit + Berichtspflicht
+
+                    - **Quartalsbericht** des DSB an Top-Mgmt: Anzahl Loeschungen, Anzahl Pseudonymisierungen, Loeschfaehigkeits-Quote;
+                    - **Jaehrlicher Loeschkonzept-Audit** durch interne Revision oder externen Auditor;
+                    - **Behoerden-Vorlage** auf Anfrage binnen 5 Werktagen.
+
+                    ---
+
+                    *Genehmigt durch DPO + CISO | Genehmigungskette: {{ approval.chain }}*
