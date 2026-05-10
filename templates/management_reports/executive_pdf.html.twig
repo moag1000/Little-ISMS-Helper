@@ -1,248 +1,241 @@
-{% trans_default_domain 'management_reports' %}
+{# ─────────────────────────────────────────────────────────────────────────
+   Executive ISMS Report PDF — fa-report-doc 5-slot macro
+   Audience: vorstand (Top-Management Board)
+   Status:   confidential
+   ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'management_reports.executive.title'|trans({}, 'management_reports') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; margin: 0; padding: 20px; }
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
-            padding-bottom: 10px;
-        }
-        .header h1 { color: var(--bg); margin: 0; font-size: 20pt; text-transform: uppercase; letter-spacing: 0.5pt; }
-        .header .subtitle { color: #666; font-size: 10pt; margin-top: 3px; }
-        .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
-
-        .stats-grid { display: table; width: 100%; margin: 15px 0; }
-        .stat-box {
-            display: table-cell;
-            width: 25%;
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            text-align: center;
-            background: linear-gradient(135deg, var(--bg) 0%, var(--surface-2) 100%);
-        }
-        .stat-box .number { font-size: 24pt; font-weight: bold; color: var(--primary); }
-        .stat-box .number.danger { color: var(--danger); }
-        .stat-box .number.success { color: #16a34a; }
-        .stat-box .number.warning { color: #d97706; }
-        .stat-box .label { font-size: 8pt; color: var(--bg); text-transform: uppercase; font-weight: bold; letter-spacing: 0.3pt; }
-
-        .section { margin: 20px 0; page-break-inside: avoid; }
-        .section h2 {
-            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
-            color: var(--primary);
-            padding: 8px;
-            font-size: 11pt;
-            margin: 0 0 10px 0;
-            text-transform: uppercase;
-            letter-spacing: 0.3pt;
-        }
-
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th {
-            background: var(--bg);
-            color: var(--primary);
-            padding: 6px;
-            text-align: left;
-            font-size: 9pt;
-            text-transform: uppercase;
-        }
-        td { padding: 6px; border-bottom: 1px solid #ddd; font-size: 9pt; }
-        tr:nth-child(even) { background: var(--bg); }
-
-        .progress-bar { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; margin: 3px 0; }
-        .progress-fill { height: 100%; border-radius: 6px; }
-        .progress-fill.danger { background: var(--danger); }
-        .progress-fill.warning { background: #d97706; }
-        .progress-fill.info { background: #0ea5e9; }
-        .progress-fill.success { background: #16a34a; }
-
-        .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 8pt; font-weight: bold; }
-        .badge-danger { background: #fecaca; color: #991b1b; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-info { background: #e0f2fe; color: #0369a1; }
-        .badge-success { background: #dcfce7; color: #166534; }
-
-        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 8pt; color: #888; border-top: 1px solid #ddd; padding-top: 8px; }
-        .page-break { page-break-after: always; }
+        :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--success-glow:rgba(5,150,105,.20);--warning:#d97706;--warning-strong:#b45309;--warning-glow:rgba(217,119,6,.20);--danger:#dc2626;--danger-strong:#b91c1c;--danger-glow:rgba(220,38,38,.20);}
+        @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
+        body{background:#fff;font-family:'DejaVu Sans',sans-serif;margin:0;padding:0;}
+        .report-doc{background:var(--surface);color:var(--fg-1);font-size:10pt;line-height:1.45;max-width:none;margin:0;border:0;border-radius:0;}
+        .report-doc__cover{padding:18pt 14pt 12pt;border-bottom:1px solid var(--border);}
+        .report-doc__cover-top{display:table;width:100%;}
+        .report-doc__brand{display:table-cell;vertical-align:middle;}
+        .report-doc__chips{display:table-cell;text-align:right;vertical-align:middle;}
+        .report-doc__logo{display:inline-block;width:32pt;height:32pt;border-radius:6pt;background:var(--primary);color:#fff;text-align:center;line-height:32pt;font-weight:700;font-size:18pt;vertical-align:middle;margin-right:8pt;}
+        .report-doc__brand-name{font-weight:700;font-size:11pt;color:var(--fg-1);display:inline-block;vertical-align:middle;}
+        .report-doc__brand-meta{font-size:8pt;color:var(--fg-3);}
+        .report-doc__chip{display:inline-block;padding:2pt 7pt;border-radius:8pt;background:var(--surface-2);color:var(--fg-2);font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border);margin-left:4pt;}
+        .report-doc__chip--status-confidential{background:var(--danger-glow);color:var(--danger-strong);border-color:transparent;}
+        .report-doc__chip--audience-vorstand{background:var(--primary-tint);color:var(--primary-strong);border-color:transparent;}
+        .report-doc__chip--classification{background:var(--fg-1);color:#fff;border-color:transparent;}
+        .report-doc__cover-center{padding:16pt 0 12pt;}
+        .report-doc__kicker{font-size:8pt;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4pt;}
+        .report-doc__title{font-size:22pt;font-weight:800;color:var(--fg-1);margin:0 0 6pt;line-height:1.05;}
+        .report-doc__sub{font-size:10pt;color:var(--fg-2);margin:0;}
+        .report-doc__cover-grid{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8pt 0;margin:0;}
+        .report-doc__cover-grid>div{display:inline-block;width:31%;margin:0 1% 6pt 0;vertical-align:top;}
+        .report-doc__cover-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 2pt;}
+        .report-doc__cover-value{font-size:9pt;color:var(--fg-1);font-weight:600;margin:0;}
+        .report-doc__exec-summary{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__exec-heading{font-size:13pt;font-weight:800;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__kpi-grid{display:table;width:100%;border-spacing:6pt;}
+        .report-doc__kpi-tile{display:table-cell;padding:10pt;border:1px solid var(--border);border-radius:4pt;vertical-align:top;background:var(--surface);}
+        .report-doc__kpi-tile--success{border-left:3pt solid var(--success);}
+        .report-doc__kpi-tile--warning{border-left:3pt solid var(--warning);}
+        .report-doc__kpi-tile--danger{border-left:3pt solid var(--danger);}
+        .report-doc__kpi-tile--neutral{border-left:3pt solid var(--primary);}
+        .report-doc__kpi-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4pt;}
+        .report-doc__kpi-value{font-size:18pt;font-weight:800;color:var(--fg-1);margin-bottom:2pt;}
+        .report-doc__kpi-trend{font-size:8pt;font-weight:600;}
+        .report-doc__kpi-trend--up{color:var(--success-strong);}
+        .report-doc__kpi-trend--down{color:var(--danger-strong);}
+        .report-doc__tldr{background:var(--surface);border:1px solid var(--border);border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 12pt;}
+        .report-doc__tldr-label{font-size:7pt;color:var(--primary-strong);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 6pt;}
+        .report-doc__tldr-list{list-style:none;margin:0;padding:0;}
+        .report-doc__tldr-item{font-size:9pt;color:var(--fg-1);padding:2pt 0;}
+        .report-doc__tldr-item--ok{border-left:2pt solid var(--success);padding-left:6pt;}
+        .report-doc__tldr-item--warn{border-left:2pt solid var(--warning);padding-left:6pt;}
+        .report-doc__tldr-item--danger{border-left:2pt solid var(--danger);padding-left:6pt;}
+        .report-doc__tldr-dot{display:none;}
+        .report-doc__data-section{padding:12pt 14pt;border-bottom:1px solid var(--border);page-break-inside:avoid;}
+        .report-doc__section-heading{font-size:12pt;font-weight:700;color:var(--fg-1);margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__section-body{font-size:9pt;color:var(--fg-1);margin:6pt 0;}
+        .report-doc__table{width:100%;border-collapse:collapse;font-size:9pt;}
+        .report-doc__table th{background:var(--surface-2);color:var(--fg-2);padding:5pt 6pt;border:.5pt solid var(--border-strong);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:7pt;text-align:left;}
+        .report-doc__table td{padding:5pt 6pt;border:.5pt solid var(--border);color:var(--fg-1);vertical-align:top;}
+        .report-doc__table tbody tr:nth-child(even) td{background:var(--surface-2);}
+        .report-doc__table-wrap{margin:8pt 0;}
+        .report-doc__appendix{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__appendix-heading{font-size:12pt;font-weight:700;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__appendix-subheading{font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:8pt 0 4pt;}
+        .report-doc__appendix-body{font-size:8pt;color:var(--fg-2);}
+        .report-doc__appendix-sources{padding-left:14pt;font-size:8pt;color:var(--fg-2);}
+        .report-doc__footer-disclaimer{padding:12pt 14pt;background:var(--surface);border-top:1px solid var(--border-strong);}
+        .report-doc__distribution-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 4pt;}
+        .report-doc__distribution-list{list-style:none;padding:0;margin:0 0 8pt;font-size:9pt;color:var(--fg-2);}
+        .report-doc__distribution-list li{display:inline-block;border-left:2pt solid var(--border);padding:0 8pt;}
+        .report-doc__disclaimer-text{font-size:8pt;color:var(--fg-3);padding:8pt;background:var(--surface-2);border-radius:4pt;border:1px solid var(--border);margin:0 0 8pt;}
+        .report-doc__footer-meta{font-size:7pt;color:var(--fg-3);}
+        .report-doc__footer-brand{font-weight:700;color:var(--fg-2);}
+        .report-doc__footer-classification{color:var(--danger-strong);font-weight:700;text-transform:uppercase;}
+        .badge{display:inline-block;padding:2pt 5pt;border-radius:3pt;font-size:7pt;font-weight:700;}
+        .badge-success{background:var(--success-tint);color:var(--success-strong);}
+        .badge-warning{background:rgba(217,119,6,.12);color:var(--warning-strong);}
+        .badge-danger{background:rgba(220,38,38,.12);color:var(--danger-strong);}
+        .badge-info{background:var(--primary-tint);color:var(--primary-strong);}
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>{{ 'management_reports.executive.title'|trans({}, 'management_reports') }}</h1>
-        <div class="subtitle">{{ 'management_reports.executive.subtitle'|trans({}, 'management_reports') }}</div>
-        <div class="date">{{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {# Key Metrics #}
-    <div class="stats-grid">
-        <div class="stat-box">
-            <div class="number">{{ summary.summary.total_assets }}</div>
-            <div class="label">{{ 'management_reports.executive.assets'|trans({}, 'management_reports') }}</div>
-        </div>
-        <div class="stat-box">
-            <div class="number">{{ summary.summary.total_risks }}</div>
-            <div class="label">{{ 'management_reports.executive.risks'|trans({}, 'management_reports') }}</div>
-        </div>
-        <div class="stat-box">
-            <div class="number success">{{ summary.summary.compliance_percentage }}%</div>
-            <div class="label">{{ 'management_reports.executive.compliance'|trans({}, 'management_reports') }}</div>
-        </div>
-        <div class="stat-box">
-            <div class="number">{{ summary.summary.total_controls }}</div>
-            <div class="label">{{ 'management_reports.executive.controls'|trans({}, 'management_reports') }}</div>
-        </div>
-    </div>
+{# Risk distribution table #}
+{% set _risk_rows = [
+    [ '<span class="badge badge-danger">' ~ ('management_reports.risk_level.critical'|trans({}, 'management_reports')) ~ ' (≥20)</span>',
+      summary.risk_distribution.critical,
+      summary.summary.total_risks > 0 ? (summary.risk_distribution.critical / summary.summary.total_risks * 100)|round(1) ~ '%' : '0%' ],
+    [ '<span class="badge badge-warning">' ~ ('management_reports.risk_level.high'|trans({}, 'management_reports')) ~ ' (12-19)</span>',
+      summary.risk_distribution.high,
+      summary.summary.total_risks > 0 ? (summary.risk_distribution.high / summary.summary.total_risks * 100)|round(1) ~ '%' : '0%' ],
+    [ '<span class="badge badge-info">' ~ ('management_reports.risk_level.medium'|trans({}, 'management_reports')) ~ ' (6-11)</span>',
+      summary.risk_distribution.medium,
+      summary.summary.total_risks > 0 ? (summary.risk_distribution.medium / summary.summary.total_risks * 100)|round(1) ~ '%' : '0%' ],
+    [ '<span class="badge badge-success">' ~ ('management_reports.risk_level.low'|trans({}, 'management_reports')) ~ ' (&lt;6)</span>',
+      summary.risk_distribution.low,
+      summary.summary.total_risks > 0 ? (summary.risk_distribution.low / summary.summary.total_risks * 100)|round(1) ~ '%' : '0%' ],
+] %}
 
-    {# Risk Distribution #}
-    <div class="section">
-        <h2>{{ 'management_reports.executive.risk_distribution'|trans({}, 'management_reports') }}</h2>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.executive.header.level'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.executive.header.count'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.executive.header.distribution'|trans({}, 'management_reports') }}</th>
-            </tr>
-            <tr>
-                <td><span class="badge badge-danger">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }} (≥20)</span></td>
-                <td>{{ summary.risk_distribution.critical }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill danger" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.critical / summary.summary.total_risks * 100) : 0 }}%"></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-warning">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }} (12-19)</span></td>
-                <td>{{ summary.risk_distribution.high }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill warning" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.high / summary.summary.total_risks * 100) : 0 }}%"></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-info">{{ 'management_reports.risk_level.medium'|trans({}, 'management_reports') }} (6-11)</span></td>
-                <td>{{ summary.risk_distribution.medium }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill info" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.medium / summary.summary.total_risks * 100) : 0 }}%"></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-success">{{ 'management_reports.risk_level.low'|trans({}, 'management_reports') }} (&lt;6)</span></td>
-                <td>{{ summary.risk_distribution.low }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill success" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.low / summary.summary.total_risks * 100) : 0 }}%"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
+{# Control status table #}
+{% set _ctrl_rows = [
+    [ '<span class="badge badge-success">' ~ ('management_reports.control_status.implemented'|trans({}, 'management_reports')) ~ '</span>',
+      summary.control_status.implemented,
+      summary.summary.total_controls > 0 ? (summary.control_status.implemented / summary.summary.total_controls * 100)|round(1) ~ '%' : '0%' ],
+    [ '<span class="badge badge-warning">' ~ ('management_reports.control_status.in_progress'|trans({}, 'management_reports')) ~ '</span>',
+      summary.control_status.in_progress,
+      summary.summary.total_controls > 0 ? (summary.control_status.in_progress / summary.summary.total_controls * 100)|round(1) ~ '%' : '0%' ],
+    [ '<span class="badge badge-info">' ~ ('management_reports.control_status.not_started'|trans({}, 'management_reports')) ~ '</span>',
+      summary.control_status.not_started,
+      summary.summary.total_controls > 0 ? (summary.control_status.not_started / summary.summary.total_controls * 100)|round(1) ~ '%' : '0%' ],
+] %}
 
-    {# Control Implementation Status #}
-    <div class="section">
-        <h2>{{ 'management_reports.executive.control_status'|trans({}, 'management_reports') }}</h2>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.executive.header.status'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.executive.header.count'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.executive.header.progress'|trans({}, 'management_reports') }}</th>
-            </tr>
-            <tr>
-                <td><span class="badge badge-success">{{ 'management_reports.control_status.implemented'|trans({}, 'management_reports') }}</span></td>
-                <td>{{ summary.control_status.implemented }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill success" style="width: {{ summary.summary.total_controls > 0 ? (summary.control_status.implemented / summary.summary.total_controls * 100) : 0 }}%"></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-warning">{{ 'management_reports.control_status.in_progress'|trans({}, 'management_reports') }}</span></td>
-                <td>{{ summary.control_status.in_progress }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill warning" style="width: {{ summary.summary.total_controls > 0 ? (summary.control_status.in_progress / summary.summary.total_controls * 100) : 0 }}%"></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-info">{{ 'management_reports.control_status.not_started'|trans({}, 'management_reports') }}</span></td>
-                <td>{{ summary.control_status.not_started }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill info" style="width: {{ summary.summary.total_controls > 0 ? (summary.control_status.not_started / summary.summary.total_controls * 100) : 0 }}%"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
+{# Operational metrics #}
+{% set _ops_rows = [
+    [ 'management_reports.executive.open_incidents_12m'|trans({}, 'management_reports'),
+      summary.incident_summary.open,
+      summary.incident_summary.open > 5
+        ? '<span class="badge badge-warning">' ~ ('management_reports.executive.status.attention'|trans({}, 'management_reports')) ~ '</span>'
+        : '<span class="badge badge-success">' ~ ('management_reports.executive.status.normal'|trans({}, 'management_reports')) ~ '</span>' ],
+    [ 'management_reports.executive.total_incidents_12m'|trans({}, 'management_reports'),
+      summary.incident_summary.total_12_months,
+      '<span class="badge badge-info">' ~ ('management_reports.executive.status.tracked'|trans({}, 'management_reports')) ~ '</span>' ],
+    [ 'management_reports.executive.audits_completed'|trans({}, 'management_reports'),
+      summary.audit_summary.completed_this_year,
+      summary.audit_summary.completed_this_year >= 1
+        ? '<span class="badge badge-success">' ~ ('management_reports.audit.compliant'|trans({}, 'management_reports')) ~ '</span>'
+        : '<span class="badge badge-warning">' ~ ('management_reports.audit.pending'|trans({}, 'management_reports')) ~ '</span>' ],
+    [ 'management_reports.executive.total_trainings'|trans({}, 'management_reports'),
+      summary.training_summary.total_trainings,
+      '<span class="badge badge-success">' ~ ('management_reports.executive.status.active'|trans({}, 'management_reports')) ~ '</span>' ],
+] %}
 
-    {# Operational Metrics #}
-    <div class="section">
-        <h2>{{ 'management_reports.executive.operational_metrics'|trans({}, 'management_reports') }}</h2>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.executive.header.metric'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.executive.header.value'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.executive.header.status'|trans({}, 'management_reports') }}</th>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.executive.open_incidents_12m'|trans({}, 'management_reports') }}</td>
-                <td>{{ summary.incident_summary.open }}</td>
-                <td>{% if summary.incident_summary.open > 5 %}<span class="badge badge-warning">{{ 'management_reports.executive.status.attention'|trans({}, 'management_reports') }}</span>{% else %}<span class="badge badge-success">{{ 'management_reports.executive.status.normal'|trans({}, 'management_reports') }}</span>{% endif %}</td>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.executive.total_incidents_12m'|trans({}, 'management_reports') }}</td>
-                <td>{{ summary.incident_summary.total_12_months }}</td>
-                <td><span class="badge badge-info">{{ 'management_reports.executive.status.tracked'|trans({}, 'management_reports') }}</span></td>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.executive.audits_completed'|trans({}, 'management_reports') }}</td>
-                <td>{{ summary.audit_summary.completed_this_year }}</td>
-                <td>{% if summary.audit_summary.completed_this_year >= 1 %}<span class="badge badge-success">{{ 'management_reports.audit.compliant'|trans({}, 'management_reports') }}</span>{% else %}<span class="badge badge-warning">{{ 'management_reports.audit.pending'|trans({}, 'management_reports') }}</span>{% endif %}</td>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.executive.total_trainings'|trans({}, 'management_reports') }}</td>
-                <td>{{ summary.training_summary.total_trainings }}</td>
-                <td><span class="badge badge-success">{{ 'management_reports.executive.status.active'|trans({}, 'management_reports') }}</span></td>
-            </tr>
-        </table>
-    </div>
+{# Risk trends section #}
+{% set _sections = [
+    {
+        heading: 'management_reports.executive.risk_distribution'|trans({}, 'management_reports'),
+        table: {
+            headers: [
+                'management_reports.executive.header.level'|trans({}, 'management_reports'),
+                'management_reports.executive.header.count'|trans({}, 'management_reports'),
+                'management_reports.executive.header.distribution'|trans({}, 'management_reports'),
+            ],
+            rows: _risk_rows,
+        },
+    },
+    {
+        heading: 'management_reports.executive.control_status'|trans({}, 'management_reports'),
+        table: {
+            headers: [
+                'management_reports.executive.header.status'|trans({}, 'management_reports'),
+                'management_reports.executive.header.count'|trans({}, 'management_reports'),
+                'management_reports.executive.header.progress'|trans({}, 'management_reports'),
+            ],
+            rows: _ctrl_rows,
+        },
+    },
+    {
+        heading: 'management_reports.executive.operational_metrics'|trans({}, 'management_reports'),
+        table: {
+            headers: [
+                'management_reports.executive.header.metric'|trans({}, 'management_reports'),
+                'management_reports.executive.header.value'|trans({}, 'management_reports'),
+                'management_reports.executive.header.status'|trans({}, 'management_reports'),
+            ],
+            rows: _ops_rows,
+        },
+    },
+] %}
 
-    {# Trend Data #}
-    {% if risk_trends|length > 0 %}
-    <div class="section">
-        <h2>{{ 'management_reports.executive.risk_trends'|trans({}, 'management_reports') }}</h2>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.trend.month'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.trend.total_risks'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.trend.high_critical'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.trend.new_risks'|trans({}, 'management_reports') }}</th>
-            </tr>
-            {% for trend in risk_trends %}
-            <tr>
-                <td>{{ trend.month_name }}</td>
-                <td><strong>{{ trend.total }}</strong></td>
-                <td>{% if trend.high_critical > 0 %}<span class="badge badge-danger">{{ trend.high_critical }}</span>{% else %}<span class="badge badge-success">0</span>{% endif %}</td>
-                <td>{{ trend.new_risks }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-    {% endif %}
+{% if risk_trends|length > 0 %}
+    {% set _trend_rows = [] %}
+    {% for trend in risk_trends %}
+        {% set _trend_rows = _trend_rows|merge([[
+            trend.month,
+            trend.total_risks,
+            (trend.critical ?? 0) + (trend.high ?? 0),
+        ]]) %}
+    {% endfor %}
+    {% set _sections = _sections|merge([{
+        heading: 'management_reports.executive.risk_trends'|trans({}, 'management_reports'),
+        table: {
+            headers: [
+                'management_reports.trend.month'|trans({}, 'management_reports'),
+                'management_reports.trend.total_risks'|trans({}, 'management_reports'),
+                'management_reports.trend.high_critical'|trans({}, 'management_reports'),
+            ],
+            rows: _trend_rows,
+        },
+    }]) %}
+{% endif %}
 
-    <div class="footer">
-        {{ 'management_reports.executive.footer'|trans({}, 'management_reports') }}
-    </div>
+{{ _fa_report_doc.render({
+    report: {
+        title:          'management_reports.executive.title'|trans({}, 'management_reports'),
+        subtitle:       'management_reports.executive.subtitle'|trans({}, 'management_reports'),
+        kicker:         'ISMS · Executive Summary',
+        status:         'confidential',
+        audience:       'vorstand',
+        classification: 'CONFIDENTIAL',
+        generated_at:   generated_at|date('d.m.Y H:i'),
+        prepared_by:    version,
+    },
+    brand_name: 'Little ISMS Helper',
+    key_findings: [
+        { label: ('management_reports.executive.assets'|trans({}, 'management_reports')) ~ ': ' ~ summary.summary.total_assets, tone: 'ok' },
+        { label: ('management_reports.executive.risks'|trans({}, 'management_reports')) ~ ': ' ~ summary.summary.total_risks,
+          tone: summary.risk_distribution.critical > 0 ? 'danger' : (summary.risk_distribution.high > 5 ? 'warn' : 'ok') },
+        { label: ('management_reports.executive.compliance'|trans({}, 'management_reports')) ~ ': ' ~ summary.summary.compliance_percentage ~ '%',
+          tone: summary.summary.compliance_percentage >= 80 ? 'ok' : (summary.summary.compliance_percentage >= 60 ? 'warn' : 'danger') },
+        { label: ('management_reports.executive.controls'|trans({}, 'management_reports')) ~ ': ' ~ summary.summary.total_controls, tone: 'ok' },
+    ],
+    kpis: [
+        { label: 'management_reports.executive.assets'|trans({}, 'management_reports'),
+          value: summary.summary.total_assets, tone: 'neutral' },
+        { label: 'management_reports.executive.risks'|trans({}, 'management_reports'),
+          value: summary.summary.total_risks,
+          tone: summary.risk_distribution.critical > 0 ? 'danger' : (summary.risk_distribution.high > 5 ? 'warning' : 'success') },
+        { label: 'management_reports.executive.compliance'|trans({}, 'management_reports'),
+          value: summary.summary.compliance_percentage ~ '%',
+          tone: summary.summary.compliance_percentage >= 80 ? 'success' : (summary.summary.compliance_percentage >= 60 ? 'warning' : 'danger') },
+        { label: 'management_reports.executive.controls'|trans({}, 'management_reports'),
+          value: summary.summary.total_controls, tone: 'neutral' },
+    ],
+    sections: _sections,
+    appendix: {
+        methodology: '<p>Executive summary aggregates key ISMS metrics: assets, risks (by level), control implementation, and incident status. Risk score = L × I (1-25). Compliance rate = implemented / applicable controls.</p>',
+        sources: [
+            { label: 'ManagementReportService', detail: 'getExecutiveSummary() — aggregated cross-module KPIs' },
+        ],
+    },
+    distribution: [
+        { role: 'Geschäftsführung', name: '—' },
+        { role: 'CISO',             name: '—' },
+        { role: 'Aufsichtsrat',     name: '—' },
+    ],
+}) }}
 </body>
 </html>

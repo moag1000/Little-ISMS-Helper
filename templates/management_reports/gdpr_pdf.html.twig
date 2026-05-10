@@ -1,224 +1,220 @@
-{% trans_default_domain 'management_reports' %}
+{# ─────────────────────────────────────────────────────────────────────────
+   GDPR Data Breach Report PDF — fa-report-doc 5-slot macro
+   Audience: aufsicht (Datenschutzbehörde / DPO)
+   Status:   confidential
+   ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'management_reports.gdpr.title'|trans({}, 'management_reports') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 15px; }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #1f2937;
-            padding-bottom: 10px;
-        }
-        .header h1 { color: var(--bg); margin: 0; font-size: 18pt; }
-        .header .subtitle { color: #666; font-size: 10pt; margin-top: 3px; }
-        .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
-
-        .stats-grid { display: table; width: 100%; margin: 15px 0; }
-        .stat-box {
-            display: table-cell;
-            width: 25%;
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            text-align: center;
-        }
-        .stat-box .number { font-size: 24pt; font-weight: bold; }
-        .stat-box .label { font-size: 7pt; color: #666; text-transform: uppercase; }
-
-        .section { margin: 15px 0; page-break-inside: avoid; }
-        .section h2 { background: #1f2937; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
-
-        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
-        th { background: var(--bg); color: var(--primary); padding: 5px; text-align: left; font-size: 8pt; }
-        td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
-        tr:nth-child(even) { background: var(--bg); }
-
-        .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
-        .badge-danger { background: #fecaca; color: #991b1b; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-success { background: #dcfce7; color: #166534; }
-        .badge-info { background: #e0f2fe; color: #0369a1; }
-
-        .alert { padding: 8px; margin: 10px 0; border-radius: 4px; font-size: 8pt; }
-        .alert-danger { background: #fecaca; color: #991b1b; border: 1px solid var(--danger); }
-        .alert-info { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
-
-        .progress-bar { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 6px; }
-
-        .footer { position: fixed; bottom: 10px; left: 15px; right: 15px; text-align: center; font-size: 7pt; color: #888; border-top: 1px solid #ddd; padding-top: 5px; }
+        :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--warning:#d97706;--warning-strong:#b45309;--danger:#dc2626;--danger-strong:#b91c1c;}
+        @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
+        body{background:#fff;font-family:'DejaVu Sans',sans-serif;margin:0;padding:0;}
+        .report-doc{background:var(--surface);color:var(--fg-1);font-size:9pt;line-height:1.45;max-width:none;margin:0;border:0;border-radius:0;}
+        .report-doc__cover{padding:16pt 14pt 12pt;border-bottom:1px solid var(--border);}
+        .report-doc__cover-top{display:table;width:100%;}
+        .report-doc__brand{display:table-cell;vertical-align:middle;}
+        .report-doc__chips{display:table-cell;text-align:right;vertical-align:middle;}
+        .report-doc__logo{display:inline-block;width:28pt;height:28pt;border-radius:5pt;background:var(--primary);color:#fff;text-align:center;line-height:28pt;font-weight:700;font-size:16pt;vertical-align:middle;margin-right:6pt;}
+        .report-doc__brand-name{font-weight:700;font-size:10pt;color:var(--fg-1);display:inline-block;vertical-align:middle;}
+        .report-doc__brand-meta{font-size:7pt;color:var(--fg-3);}
+        .report-doc__chip{display:inline-block;padding:2pt 6pt;border-radius:8pt;background:var(--surface-2);color:var(--fg-2);font-size:6pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border);margin-left:3pt;}
+        .report-doc__chip--status-confidential{background:rgba(220,38,38,.15);color:var(--danger-strong);border-color:transparent;}
+        .report-doc__chip--audience-aufsicht{background:rgba(124,58,237,.12);color:#6d28d9;border-color:transparent;}
+        .report-doc__cover-center{padding:14pt 0 10pt;}
+        .report-doc__kicker{font-size:7pt;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4pt;}
+        .report-doc__title{font-size:18pt;font-weight:800;color:var(--fg-1);margin:0 0 6pt;line-height:1.1;}
+        .report-doc__sub{font-size:9pt;color:var(--fg-2);margin:0;}
+        .report-doc__cover-grid{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8pt 0;margin:0;}
+        .report-doc__cover-grid>div{display:inline-block;width:31%;margin:0 1% 4pt 0;vertical-align:top;}
+        .report-doc__cover-label{font-size:6pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 2pt;}
+        .report-doc__cover-value{font-size:8pt;color:var(--fg-1);font-weight:600;margin:0;}
+        .report-doc__exec-summary{padding:10pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__exec-heading{font-size:11pt;font-weight:800;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__kpi-grid{display:table;width:100%;border-spacing:4pt;}
+        .report-doc__kpi-tile{display:table-cell;padding:7pt 8pt;border:1px solid var(--border);border-radius:4pt;vertical-align:top;background:var(--surface);}
+        .report-doc__kpi-tile--success{border-left:2pt solid var(--success);}
+        .report-doc__kpi-tile--warning{border-left:2pt solid var(--warning);}
+        .report-doc__kpi-tile--danger{border-left:2pt solid var(--danger);}
+        .report-doc__kpi-tile--neutral{border-left:2pt solid var(--primary);}
+        .report-doc__kpi-label{font-size:6pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:2pt;}
+        .report-doc__kpi-value{font-size:14pt;font-weight:800;color:var(--fg-1);}
+        .report-doc__tldr{background:var(--surface);border:1px solid var(--border);border-left:3pt solid var(--primary);padding:7pt 10pt;margin:0 0 10pt;}
+        .report-doc__tldr-label{font-size:6pt;color:var(--primary-strong);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 5pt;}
+        .report-doc__tldr-list{list-style:none;margin:0;padding:0;}
+        .report-doc__tldr-item{font-size:8pt;color:var(--fg-1);padding:2pt 0;}
+        .report-doc__tldr-item--ok{border-left:2pt solid var(--success);padding-left:6pt;}
+        .report-doc__tldr-item--warn{border-left:2pt solid var(--warning);padding-left:6pt;}
+        .report-doc__tldr-item--danger{border-left:2pt solid var(--danger);padding-left:6pt;}
+        .report-doc__tldr-dot{display:none;}
+        .report-doc__data-section{padding:10pt 14pt;border-bottom:1px solid var(--border);page-break-inside:avoid;}
+        .report-doc__section-heading{font-size:11pt;font-weight:700;color:var(--fg-1);margin:0 0 6pt;padding-bottom:3pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__section-body{font-size:8pt;color:var(--fg-1);margin:6pt 0;}
+        .report-doc__table{width:100%;border-collapse:collapse;font-size:7.5pt;}
+        .report-doc__table th{background:var(--surface-2);color:var(--fg-2);padding:4pt 5pt;border:.5pt solid var(--border-strong);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:6pt;text-align:left;}
+        .report-doc__table td{padding:4pt 5pt;border:.5pt solid var(--border);color:var(--fg-1);vertical-align:top;}
+        .report-doc__table tbody tr:nth-child(even) td{background:var(--surface-2);}
+        .report-doc__table-wrap{margin:8pt 0;}
+        .report-doc__appendix{padding:10pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__appendix-heading{font-size:11pt;font-weight:700;margin:0 0 8pt;padding-bottom:3pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__appendix-subheading{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:7pt 0 3pt;}
+        .report-doc__appendix-body{font-size:8pt;color:var(--fg-2);}
+        .report-doc__appendix-sources{padding-left:12pt;font-size:7.5pt;color:var(--fg-2);}
+        .report-doc__footer-disclaimer{padding:10pt 14pt;background:var(--surface);border-top:1px solid var(--border-strong);}
+        .report-doc__distribution-label{font-size:6pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 3pt;}
+        .report-doc__distribution-list{list-style:none;padding:0;margin:0 0 6pt;font-size:8pt;color:var(--fg-2);}
+        .report-doc__distribution-list li{display:inline-block;border-left:2pt solid var(--border);padding:0 7pt;}
+        .report-doc__disclaimer-text{font-size:7pt;color:var(--fg-3);padding:6pt;background:var(--surface-2);border:1px solid var(--border);border-radius:3pt;margin:0 0 6pt;}
+        .report-doc__footer-meta{font-size:6pt;color:var(--fg-3);}
+        .report-doc__footer-brand{font-weight:700;color:var(--fg-2);}
+        .badge{display:inline-block;padding:1pt 4pt;border-radius:3pt;font-size:6.5pt;font-weight:700;}
+        .badge-success{background:var(--success-tint);color:var(--success-strong);}
+        .badge-warning{background:rgba(217,119,6,.12);color:var(--warning-strong);}
+        .badge-danger{background:rgba(220,38,38,.12);color:var(--danger-strong);}
+        .badge-info{background:var(--primary-tint);color:var(--primary-strong);}
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>{{ 'management_reports.gdpr.title'|trans({}, 'management_reports') }}</h1>
-        <div class="subtitle">{{ 'management_reports.gdpr.subtitle'|trans({}, 'management_reports') }}</div>
-        <div class="date">{{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {# Summary Statistics #}
-    <div class="stats-grid">
-        <div class="stat-box">
-            <div class="number" style="color: #1f2937;">{{ report.total_breaches }}</div>
-            <div class="label">{{ 'management_reports.gdpr.total_breaches'|trans({}, 'management_reports') }}</div>
-        </div>
-        <div class="stat-box">
-            <div class="number" style="color: #0ea5e9;">{{ report.this_year }}</div>
-            <div class="label">{{ 'management_reports.gdpr.this_year'|trans({}, 'management_reports') }}</div>
-        </div>
-        <div class="stat-box">
-            <div class="number" style="color: #16a34a;">{{ report.notification_status.notified }}</div>
-            <div class="label">{{ 'management_reports.gdpr.notified'|trans({}, 'management_reports') }}</div>
-        </div>
-        <div class="stat-box">
-            <div class="number" style="color: #d97706;">{{ report.notification_status.pending }}</div>
-            <div class="label">{{ 'management_reports.gdpr.pending_notification'|trans({}, 'management_reports') }}</div>
-        </div>
-    </div>
+{# Severity breakdown table #}
+{% set _severity_rows = [
+    [ '<span class="badge badge-danger">' ~ ('management_reports.severity.critical'|trans({}, 'management_reports')) ~ '</span>',
+      report.by_severity.critical,
+      report.total_breaches > 0 ? (report.by_severity.critical / report.total_breaches * 100)|round(1) ~ '%' : '0%' ],
+    [ '<span class="badge badge-warning">' ~ ('management_reports.severity.high'|trans({}, 'management_reports')) ~ '</span>',
+      report.by_severity.high,
+      report.total_breaches > 0 ? (report.by_severity.high / report.total_breaches * 100)|round(1) ~ '%' : '0%' ],
+    [ '<span class="badge badge-info">' ~ ('management_reports.severity.medium'|trans({}, 'management_reports')) ~ '</span>',
+      report.by_severity.medium,
+      report.total_breaches > 0 ? (report.by_severity.medium / report.total_breaches * 100)|round(1) ~ '%' : '0%' ],
+    [ '<span class="badge badge-success">' ~ ('management_reports.severity.low'|trans({}, 'management_reports')) ~ '</span>',
+      report.by_severity.low,
+      report.total_breaches > 0 ? (report.by_severity.low / report.total_breaches * 100)|round(1) ~ '%' : '0%' ],
+] %}
 
-    {# Pending Notification Alert #}
-    {% if report.notification_status.pending > 0 %}
-    <div class="alert alert-danger">
-        <strong>{{ 'management_reports.gdpr.urgent_attention'|trans({}, 'management_reports') }}:</strong> {{ 'management_reports.gdpr.pending_notification_warning'|trans({'%count%': report.notification_status.pending}, 'management_reports') }}
-        {{ 'management_reports.gdpr.art33_72h_note'|trans({}, 'management_reports') }}
-    </div>
-    {% endif %}
+{# GDPR requirements table #}
+{% set _req_rows = [
+    [ 'management_reports.gdpr.72h_notification'|trans({}, 'management_reports'), 'management_reports.gdpr.72h_description'|trans({}, 'management_reports') ],
+    [ 'management_reports.gdpr.data_subject_notification'|trans({}, 'management_reports'), 'management_reports.gdpr.data_subject_description'|trans({}, 'management_reports') ],
+    [ 'management_reports.gdpr.documentation'|trans({}, 'management_reports'), 'management_reports.gdpr.documentation_description'|trans({}, 'management_reports') ],
+    [ 'management_reports.gdpr.risk_assessment'|trans({}, 'management_reports'), 'management_reports.gdpr.risk_assessment_description'|trans({}, 'management_reports') ],
+] %}
 
-    {# Severity Breakdown #}
-    <div class="section">
-        <h2>{{ 'management_reports.gdpr.by_severity'|trans({}, 'management_reports') }}</h2>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.gdpr.header.severity'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.gdpr.header.count'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.gdpr.header.distribution'|trans({}, 'management_reports') }}</th>
-            </tr>
-            <tr>
-                <td><span class="badge badge-danger">{{ 'management_reports.severity.critical'|trans({}, 'management_reports') }}</span></td>
-                <td>{{ report.by_severity.critical }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: {{ report.total_breaches > 0 ? (report.by_severity.critical / report.total_breaches * 100) : 0 }}%; background: var(--danger);"></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-warning">{{ 'management_reports.severity.high'|trans({}, 'management_reports') }}</span></td>
-                <td>{{ report.by_severity.high }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: {{ report.total_breaches > 0 ? (report.by_severity.high / report.total_breaches * 100) : 0 }}%; background: #d97706;"></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-info">{{ 'management_reports.severity.medium'|trans({}, 'management_reports') }}</span></td>
-                <td>{{ report.by_severity.medium }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: {{ report.total_breaches > 0 ? (report.by_severity.medium / report.total_breaches * 100) : 0 }}%; background: #0ea5e9;"></div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-success">{{ 'management_reports.severity.low'|trans({}, 'management_reports') }}</span></td>
-                <td>{{ report.by_severity.low }}</td>
-                <td>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: {{ report.total_breaches > 0 ? (report.by_severity.low / report.total_breaches * 100) : 0 }}%; background: #16a34a;"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
+{# Breach list table #}
+{% set _breach_rows = [] %}
+{% for breach in report.breaches %}
+    {% set _sev = breach.severity|default('medium') %}
+    {% set _sev_badge = _sev == 'critical' ? 'badge-danger' : (_sev == 'high' ? 'badge-warning' : (_sev == 'medium' ? 'badge-info' : 'badge-success')) %}
+    {% set _notif_cell = breach.notificationDate
+        ? breach.notificationDate|date('Y-m-d')
+        : (breach.notificationRequired
+            ? '<span class="badge badge-warning">' ~ ('management_reports.gdpr.pending'|trans({}, 'management_reports')) ~ '</span>'
+            : '-') %}
+    {% set _breach_rows = _breach_rows|merge([[
+        breach.id,
+        breach.title|length > 28 ? breach.title[:28] ~ '…' : breach.title,
+        '<span class="badge ' ~ _sev_badge ~ '">' ~ _sev ~ '</span>',
+        breach.discoveredAt ? breach.discoveredAt|date('Y-m-d') : '-',
+        breach.notificationRequired ? 'management_reports.gdpr.yes'|trans({}, 'management_reports') : 'management_reports.gdpr.no'|trans({}, 'management_reports'),
+        _notif_cell,
+    ]]) %}
+{% endfor %}
 
-    {# GDPR Requirements #}
-    <div class="section">
-        <h2>{{ 'management_reports.gdpr.requirements'|trans({}, 'management_reports') }}</h2>
-        <div class="alert alert-info">
-            <strong>{{ 'management_reports.gdpr.article_33_34'|trans({}, 'management_reports') }}</strong>
-        </div>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.gdpr.header.requirement'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.gdpr.header.description'|trans({}, 'management_reports') }}</th>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.gdpr.72h_notification'|trans({}, 'management_reports') }}</td>
-                <td>{{ 'management_reports.gdpr.72h_description'|trans({}, 'management_reports') }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.gdpr.data_subject_notification'|trans({}, 'management_reports') }}</td>
-                <td>{{ 'management_reports.gdpr.data_subject_description'|trans({}, 'management_reports') }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.gdpr.documentation'|trans({}, 'management_reports') }}</td>
-                <td>{{ 'management_reports.gdpr.documentation_description'|trans({}, 'management_reports') }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.gdpr.risk_assessment'|trans({}, 'management_reports') }}</td>
-                <td>{{ 'management_reports.gdpr.risk_assessment_description'|trans({}, 'management_reports') }}</td>
-            </tr>
-        </table>
-    </div>
+{% set _pending_alert = report.notification_status.pending > 0
+    ? '<p style="background:rgba(220,38,38,.10);border:1pt solid var(--danger);padding:6pt;border-radius:3pt;font-size:8pt;color:var(--danger-strong);"><strong>' ~ ('management_reports.gdpr.urgent_attention'|trans({}, 'management_reports')) ~ ':</strong> ' ~ ('management_reports.gdpr.pending_notification_warning'|trans({'%count%': report.notification_status.pending}, 'management_reports')) ~ ' ' ~ ('management_reports.gdpr.art33_72h_note'|trans({}, 'management_reports')) ~ '</p>'
+    : '' %}
 
-    {# Breach List #}
-    {% if report.breaches|length > 0 %}
-    <div class="section">
-        <h2>{{ 'management_reports.gdpr.breach_list'|trans({}, 'management_reports') }}</h2>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.gdpr.header.id'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.gdpr.header.title'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.gdpr.header.severity'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.gdpr.header.discovered'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.gdpr.header.notification_required'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.gdpr.header.notified'|trans({}, 'management_reports') }}</th>
-            </tr>
-            {% for breach in report.breaches %}
-            <tr>
-                <td>{{ breach.id }}</td>
-                <td>{{ breach.title|slice(0, 30) }}{% if breach.title|length > 30 %}...{% endif %}</td>
-                <td>
-                    {% set severity = breach.severity|default('medium') %}
-                    {% if severity == 'critical' %}
-                    <span class="badge badge-danger">{{ severity }}</span>
-                    {% elseif severity == 'high' %}
-                    <span class="badge badge-warning">{{ severity }}</span>
-                    {% elseif severity == 'medium' %}
-                    <span class="badge badge-info">{{ severity }}</span>
-                    {% else %}
-                    <span class="badge badge-success">{{ severity }}</span>
-                    {% endif %}
-                </td>
-                <td>{{ breach.discoveredAt ? breach.discoveredAt|date('Y-m-d') : '-' }}</td>
-                <td>{{ breach.notificationRequired ? 'management_reports.gdpr.yes'|trans({}, 'management_reports') : 'management_reports.gdpr.no'|trans({}, 'management_reports') }}</td>
-                <td>
-                    {% if breach.notificationDate %}
-                    {{ breach.notificationDate|date('Y-m-d') }}
-                    {% elseif breach.notificationRequired %}
-                    <span class="badge badge-warning">{{ 'management_reports.gdpr.pending'|trans({}, 'management_reports') }}</span>
-                    {% else %}
-                    -
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-    {% else %}
-    <div class="section">
-        <h2>{{ 'management_reports.gdpr.breach_list'|trans({}, 'management_reports') }}</h2>
-        <div class="alert" style="background: #dcfce7; color: #166534; border: 1px solid #86efac;">
-            <strong>{{ 'management_reports.gdpr.no_breaches_title'|trans({}, 'management_reports') }}.</strong> {{ 'management_reports.gdpr.no_breaches_text'|trans({}, 'management_reports') }}
-        </div>
-    </div>
-    {% endif %}
+{% set _sections = [
+    {
+        heading: 'management_reports.gdpr.by_severity'|trans({}, 'management_reports'),
+        body_html: _pending_alert,
+        table: {
+            headers: [
+                'management_reports.gdpr.header.severity'|trans({}, 'management_reports'),
+                'management_reports.gdpr.header.count'|trans({}, 'management_reports'),
+                'management_reports.gdpr.header.distribution'|trans({}, 'management_reports'),
+            ],
+            rows: _severity_rows,
+        },
+    },
+    {
+        heading: 'management_reports.gdpr.requirements'|trans({}, 'management_reports'),
+        intro: 'management_reports.gdpr.article_33_34'|trans({}, 'management_reports'),
+        table: {
+            headers: [
+                'management_reports.gdpr.header.requirement'|trans({}, 'management_reports'),
+                'management_reports.gdpr.header.description'|trans({}, 'management_reports'),
+            ],
+            rows: _req_rows,
+        },
+    },
+    {
+        heading: 'management_reports.gdpr.breach_list'|trans({}, 'management_reports'),
+        intro: _breach_rows|length == 0 ? ('management_reports.gdpr.no_breaches_title'|trans({}, 'management_reports') ~ '. ' ~ 'management_reports.gdpr.no_breaches_text'|trans({}, 'management_reports')) : null,
+        table: _breach_rows|length > 0 ? {
+            headers: [
+                'management_reports.gdpr.header.id'|trans({}, 'management_reports'),
+                'management_reports.gdpr.header.title'|trans({}, 'management_reports'),
+                'management_reports.gdpr.header.severity'|trans({}, 'management_reports'),
+                'management_reports.gdpr.header.discovered'|trans({}, 'management_reports'),
+                'management_reports.gdpr.header.notification_required'|trans({}, 'management_reports'),
+                'management_reports.gdpr.header.notified'|trans({}, 'management_reports'),
+            ],
+            rows: _breach_rows,
+        } : null,
+    },
+] %}
 
-    <div class="footer">
-        {{ 'management_reports.gdpr.footer'|trans({}, 'management_reports') }}
-    </div>
+{{ _fa_report_doc.render({
+    report: {
+        title:          'management_reports.gdpr.title'|trans({}, 'management_reports'),
+        subtitle:       'management_reports.gdpr.subtitle'|trans({}, 'management_reports'),
+        kicker:         'GDPR Art. 33/34 · Data Breach',
+        status:         'confidential',
+        audience:       'aufsicht',
+        classification: 'CONFIDENTIAL',
+        generated_at:   generated_at|date('d.m.Y H:i'),
+        prepared_by:    version,
+    },
+    brand_name: 'Little ISMS Helper',
+    key_findings: [
+        { label: ('management_reports.gdpr.total_breaches'|trans({}, 'management_reports')) ~ ': ' ~ report.total_breaches,
+          tone: report.total_breaches > 0 ? 'warn' : 'ok' },
+        { label: ('management_reports.gdpr.this_year'|trans({}, 'management_reports')) ~ ': ' ~ report.this_year,
+          tone: report.this_year > 0 ? 'warn' : 'ok' },
+        { label: ('management_reports.gdpr.notified'|trans({}, 'management_reports')) ~ ': ' ~ report.notification_status.notified, tone: 'ok' },
+        { label: ('management_reports.gdpr.pending_notification'|trans({}, 'management_reports')) ~ ': ' ~ report.notification_status.pending,
+          tone: report.notification_status.pending > 0 ? 'danger' : 'ok' },
+    ],
+    kpis: [
+        { label: 'management_reports.gdpr.total_breaches'|trans({}, 'management_reports'),
+          value: report.total_breaches, tone: report.total_breaches > 0 ? 'warning' : 'success' },
+        { label: 'management_reports.gdpr.this_year'|trans({}, 'management_reports'),
+          value: report.this_year, tone: 'neutral' },
+        { label: 'management_reports.gdpr.notified'|trans({}, 'management_reports'),
+          value: report.notification_status.notified, tone: 'success' },
+        { label: 'management_reports.gdpr.pending_notification'|trans({}, 'management_reports'),
+          value: report.notification_status.pending, tone: report.notification_status.pending > 0 ? 'danger' : 'success' },
+    ],
+    sections: _sections,
+    appendix: {
+        methodology: '<p>GDPR Art. 33/34 data breach register. Notification required = risk to rights/freedoms of individuals (Art. 33 threshold). 72h deadline from breach discovery.</p>',
+        sources: [
+            { label: 'DataBreachRepository', detail: 'findByTenant() — all breach records with notification status' },
+        ],
+        glossary: [
+            { term: 'Art. 33', definition: 'GDPR — notification to supervisory authority within 72h of discovery' },
+            { term: 'Art. 34', definition: 'GDPR — notification to affected data subjects without undue delay' },
+        ],
+    },
+    distribution: [
+        { role: 'Datenschutzbeauftragter', name: '—' },
+        { role: 'CISO',                    name: '—' },
+        { role: 'Datenschutzbehörde',      name: '—' },
+    ],
+}) }}
 </body>
 </html>
