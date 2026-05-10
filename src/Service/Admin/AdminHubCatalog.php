@@ -85,6 +85,13 @@ class AdminHubCatalog
                         'description' => 'admin.hub.module.tenant_compliance_settings.desc',
                         'route' => 'admin_tenant_compliance_settings_current',
                     ],
+                    [
+                        'key' => 'report_style',
+                        'icon' => 'file-earmark-bar-graph',
+                        'label' => 'admin.hub.module.report_style.label',
+                        'description' => 'admin.hub.module.report_style.desc',
+                        'route' => 'app_admin_report_style_edit',
+                    ],
                 ],
             ],
             [

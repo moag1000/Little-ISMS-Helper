@@ -26,6 +26,7 @@ admin:
             locations: { label: 'Locations', desc: 'Physical sites for asset assignment' }
             tenant_branding: { label: 'Tenant branding', desc: 'Per-tenant email logos and senders' }
             tenant_compliance_settings: { label: 'Compliance settings', desc: 'Locale, TLP, DPO, risk methodology, escalation, JSON defaults' }
+            report_style: { label: 'Report look', desc: 'Cover pattern, audience default, watermark, chart colors per tenant' }
             users: { label: 'Users', desc: 'Accounts, status, lockouts' }
             roles: { label: 'Roles', desc: 'Tenant roles and templates' }
             permissions: { label: 'Permissions', desc: 'Module × role permission matrix' }
@@ -895,6 +896,88 @@ kpi_threshold:
         wizard_maturity_target: 'Default wizard maturity target'
         wizard_maturity_target_help: 'Shown as target maturity in every wizard result.'
     cancel: "Cancel"
+
+    report_style:
+        title: 'Report Look'
+        subtitle: 'Layout, watermark and audience defaults for generated reports — per tenant. Live preview on the right.'
+        save: 'Save'
+        reset: 'Reset to defaults'
+        reset_confirm: 'Really reset all 12 fields to defaults?'
+        flash:
+            saved: 'Report style updated.'
+            reset: 'Report style reset to defaults.'
+        section:
+            form: 'Configuration'
+            form_subtitle: 'Aurora defaults are sensible. Tuning per audience (board / auditor / supervisor) makes stakeholder-specific reports faster.'
+            preview: 'Live preview'
+            preview_subtitle: '5-slot layout (cover, exec summary, data, appendix, footer). Audience toggle changes the cover eyebrow label.'
+        group:
+            cover: 'Cover & Audience'
+            typography: 'Typography & Format'
+            charts: 'Chart Colors'
+            watermark: 'Watermark'
+            slots: 'Visible sections'
+            footer: 'Footer Disclaimer'
+            advanced: 'Advanced (Custom CSS)'
+        field:
+            cover_pattern: 'Cover pattern'
+            default_audience: 'Default audience'
+            font_family: 'Font family'
+            page_orientation: 'Page orientation'
+            chart_color_scheme: 'Chart color scheme'
+            watermark_enabled: 'Watermark enabled'
+            watermark_opacity: 'Watermark opacity'
+            show_exec_summary: 'Show executive summary'
+            show_appendix: 'Show appendix'
+            show_distribution_list: 'Show distribution list'
+            footer_disclaimer: 'Footer disclaimer (overrides default)'
+            custom_css: 'Custom CSS (paste-only)'
+        help:
+            cover_pattern: 'Visual style for the title page — from minimal (clean) to auditor-formal (serif).'
+            default_audience: 'Default audience for new reports — layout and watermark adapt accordingly.'
+            font_family: 'Used in cover and body. Inter is neutral; Merriweather creates an audit / authority look.'
+            page_orientation: 'Auto picks per content; portrait for text reports, landscape for data tables.'
+            chart_color_scheme: 'Aurora is vibrant; Audit/Print-friendly for B/W print; Colorblind-safe for accessibility.'
+            watermark_enabled: 'Watermark with classification (e.g. TLP:AMBER) as a diagonal label.'
+            watermark_opacity: 'Low values (5–10 %) are subtle; higher to flag drafts visibly.'
+            show_exec_summary: 'Board reports usually have one; auditor reports do not need it.'
+            show_appendix: 'Detail tables, methodology notes. Supervisory reports usually need it.'
+            show_distribution_list: 'In the appendix. Mandatory for supervisors, optional for internal reports.'
+            footer_disclaimer: 'Overrides the default footer with the tenant name. Max 1,000 characters.'
+            custom_css: 'Embedded via |raw on export. Caution: layout can break. ROLE_ADMIN only.'
+        cover:
+            minimal: 'Minimal (clean, no accents)'
+            branded: 'Branded (tenant primary color)'
+            board_formal: 'Board formal (centered, serif title)'
+            auditor_formal: 'Auditor formal (serif, uppercase headings)'
+        audience:
+            vorstand: 'Board / C-Level'
+            auditor: 'Auditor (internal/external)'
+            aufsicht: 'Supervisor (BaFin, BSI)'
+            internal: 'Internal (CISO/ISO team)'
+        orientation:
+            portrait: 'Portrait'
+            landscape: 'Landscape'
+            auto: 'Auto (per content)'
+        chart:
+            aurora: 'Aurora (cyan/violet/green/amber/red)'
+            audit: 'Audit (greyscale, subtle)'
+            print_friendly: 'Print friendly (B/W safe)'
+            colorblind_safe: 'Colorblind safe (Wong palette)'
+        swatches:
+            label: 'Current palette (preview)'
+        preview:
+            period: 'Reporting period'
+            classification: 'Classification'
+            audience: 'Audience'
+            exec_summary: 'Executive Summary'
+            data_section: 'Data & Analysis'
+            appendix: 'Appendix'
+            distribution_list: 'Distribution List'
+            col_recipient: 'Recipient'
+            col_role: 'Role'
+            default_footer: '%tenant% — confidential. Do not share without authorization.'
+            custom_css_inert: 'Custom CSS (only active on export — preview stays unaffected)'
 
 industry_preset:
     title: 'Industry Presets'
