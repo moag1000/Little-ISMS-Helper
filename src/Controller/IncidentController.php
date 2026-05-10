@@ -14,6 +14,7 @@ use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Form\IncidentType;
 use App\Repository\AuditLogRepository;
+use App\Repository\CommentRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
@@ -55,7 +56,8 @@ class IncidentController extends AbstractController
         private readonly WorkflowService $workflowService,
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly IncidentRiskFeedbackService $incidentRiskFeedbackService,
-        private readonly RiskRepository $riskRepository
+        private readonly RiskRepository $riskRepository,
+        private readonly ?CommentRepository $commentRepository = null,
     ) {}
     #[Route('/incident/', name: 'app_incident_index')]
     #[IsGranted('ROLE_USER')]
@@ -373,6 +375,13 @@ class IncidentController extends AbstractController
             }
         }
 
+        // V3 W3-Aurora: Comment-Thread (C7) — load thread for this Incident.
+        $comments = [];
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($this->commentRepository !== null && $tenant !== null && $incident->getId() !== null) {
+            $comments = $this->commentRepository->findThread($tenant, 'Incident', $incident->getId());
+        }
+
         return $this->render('incident/show.html.twig', [
             'incident' => $incident,
             'auditLogs' => $recentAuditLogs,
@@ -382,6 +391,8 @@ class IncidentController extends AbstractController
             // Data-Reuse: one-click link matrix
             'linkedRisks' => $incident->getRealizedRisks(),
             'linkedVulnerabilities' => $incident->getRelatedVulnerabilities(),
+            // V3 W3-Aurora: Comments thread
+            'comments' => $comments,
         ]);
     }
     #[Route('/incident/{id}/edit', name: 'app_incident_edit', requirements: ['id' => '\d+'])]
