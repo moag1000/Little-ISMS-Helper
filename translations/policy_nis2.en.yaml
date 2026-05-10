@@ -1,0 +1,720 @@
+policy:
+    nis2:
+        nis2_governance_framework:
+            v1:
+                title: 'Cybersecurity Governance Framework (NIS2 Art. 20-21(1))'
+                body: |-
+                    # Cybersecurity Governance Framework of {{ tenant.legal_name }}
+
+                    *Document class: Top-level policy | Regulatory basis: Directive (EU) 2022/2555 (NIS2 Directive) Art. 20 in conjunction with Art. 21(1), German NIS2UmsuCG (Bundestag adoption 13 Nov 2025), and BSIG §§ 8a/8b | Language: English | Review interval: annually and ad hoc upon material change*
+
+                    ## 1. Purpose and Binding Nature
+                    This policy establishes the cybersecurity governance framework of {{ tenant.legal_name }} pursuant to Art. 20 NIS2 Directive ("Governance"). It is the highest normative statement on cybersecurity within the meaning of Art. 21(1) NIS2 Directive and complements the information-security policy under ISO/IEC 27001:2022 Clause 5.2 with the specific requirements of EU cybersecurity law. The policy is approved by the management body pursuant to Art. 20(1) NIS2 Directive; ultimate accountability is non-delegable per Art. 20(1) sentence 2. Breaches may attract fines under Art. 34 NIS2 Directive and §§ 60-62 NIS2UmsuCG of up to EUR 10 million or 2 percent of worldwide annual turnover (essential entities).
+
+                    ## 2. Scope
+                    This policy applies to all network and information systems, ICT services, business processes, sites and third parties (including suppliers, contractors and group affiliates) within the scope of {{ tenant.legal_name }}.
+
+                    Scope: {{ tenant.scope_statement }}.
+
+                    Classification under NIS2UmsuCG: {{ nis2.entity_class }} (essential entity / important entity); sector under Annex I/II NIS2 Directive: {{ nis2.sector }}; competent authority: {{ nis2.competent_authority }} (Federal Office for Information Security [BSI] or sectoral supervisor pursuant to § 28 NIS2UmsuCG).
+
+                    ## 3. Accountability of the Management Body
+                    Pursuant to Art. 20(1) NIS2 Directive, the management body of {{ tenant.legal_name }} bears non-delegable responsibility for the approval of this policy, the implementation of the cybersecurity risk-management measures required by Art. 21 NIS2 Directive, and their oversight. Members of the management body are required, pursuant to Art. 20(2) NIS2 Directive, to attend regular cybersecurity training to acquire the knowledge and skills necessary to identify cybersecurity risks and assess cybersecurity practices.
+
+                    Operationalisation: The management body convenes at least quarterly on the cybersecurity posture (NIS2 governance report). Training is delivered annually and recorded in the learning-management system.
+
+                    ## 4. Roles and Responsibilities
+                    The following roles are mandatory and documented in the *Role Matrix* (RACI) annex:
+
+                    - **Management body** – ultimate accountability per Art. 20(1) NIS2 Directive; annual approval of this policy; mandatory attendance at cybersecurity training per Art. 20(2) NIS2 Directive.
+                    - **Information Security Officer (ISO)** – {{ roles.isb.fullName }}: operational steering of the ISMS, regular reporting to the management body, central point of contact with the BSI per § 32 NIS2UmsuCG.
+                    - **Chief Information Security Officer (CISO)** – {{ roles.ciso.fullName }}: strategic steering of the cybersecurity programme, accountable for effectiveness assessment per Art. 21(2)(f) NIS2 Directive.
+                    - **Data Protection Officer (DPO)** – {{ roles.dpo.fullName }}: review of data-protection-relevant aspects of cybersecurity measures per Art. 38-39 GDPR and interface to data-breach reporting per Art. 33 GDPR.
+                    - **Internal Audit** – independent review of the effectiveness of the cybersecurity framework, at least annually.
+                    - **Process Owner / Risk Owner** – accountable for risk assessment and mitigation in their respective business process.
+
+                    ## 5. Steering Bodies and Reporting Lines
+                    The Cybersecurity Steering Committee meets at least quarterly under the chairmanship of the CISO and advises the management body on strategic cybersecurity matters. Mandatory agenda items: significant incidents (Art. 23 NIS2 Directive), results of the annual effectiveness assessment, internal and external audit findings, material changes in the threat landscape, and the implementation status of the ten minimum measures from Art. 21(2) NIS2 Directive.
+
+                    ## 6. Cybersecurity Policy
+                    {{ tenant.legal_name }} commits to implementing the ten technical, operational and organisational minimum measures pursuant to Art. 21(2)(a)-(j) NIS2 Directive: risk analysis and information-security policies, incident handling, business continuity, supply-chain security, security in acquisition / development / maintenance, effectiveness assessment, basic cyber hygiene and training, cryptography and key management, access control and asset management, and multi-factor authentication and secure communications.
+
+                    Each of the ten minimum measures is operationalised in a dedicated mandatory policy (cross-ref to subordinate NIS2 policies and ISO 27001 Annex A mappings).
+
+                    ## 7. Risk-based Approach
+                    Cybersecurity measures are dimensioned in a risk-based manner pursuant to Art. 21(1) sentence 1 NIS2 Directive. The basis is the annual enterprise-wide cybersecurity risk analysis (see NIS2 risk-management policy). The risk level reflects state of the art, implementation cost, and the severity and likelihood of potential incidents and their societal and economic impact.
+
+                    ## 8. Reporting Obligations
+                    Significant cybersecurity incidents are reported pursuant to Art. 23 NIS2 Directive and § 32 NIS2UmsuCG to the BSI or the competent sectoral authority (detailed procedure: NIS2 reporting-procedure):
+
+                    | Report type | Deadline | Content |
+                    | --- | --- | --- |
+                    | Early warning | within 24 hours of awareness | Suspicion of malicious act, cross-border impact |
+                    | Incident notification | within 72 hours of awareness | Initial assessment, severity, indicators of compromise |
+                    | Intermediate report | upon request | Status update, mitigation status |
+                    | Final report | within 1 month of the incident notification | Root-cause analysis, measures taken/planned, cross-border impact |
+
+                    ## 9. Interfaces to Other Frameworks
+                    NIS2 requirements are implemented through the existing ISMS pursuant to ISO/IEC 27001:2022 (data-reuse principle): Annex A controls simultaneously serve as evidence for multiple frameworks (NIS2, DORA for financial entities, BSI IT-Grundschutz, BAIT/VAIT). The mapping table is maintained in the cross-framework compliance module.
+
+                    ## 10. Supervision and Sanctions
+                    The competent authority {{ nis2.competent_authority }} may impose supervisory measures pursuant to Art. 32 NIS2 Directive and §§ 64-65 NIS2UmsuCG, including on-site inspections, security audits and instructions. Art. 34(4) NIS2 Directive provides for fines of up to EUR 10 million or 2 percent of worldwide annual turnover for essential entities; up to EUR 7 million or 1.4 percent for important entities (Art. 34(5)).
+
+                    ## 11. Review Interval and Change Cycle
+                    This policy is reviewed at least annually and ad hoc upon material change. Material changes include: scope changes, new regulatory requirements (in particular new implementing acts under the NIS2 Directive or amendments to NIS2UmsuCG), significant cybersecurity incidents, organisational restructuring, and threat-landscape shifts.
+
+                    ## 12. Cryptographic Minimum Standards (Cross-Reference)
+                    Cryptographic requirements follow the separate *NIS2 cryptography policy* using the approved algorithms: {{ crypto.algorithms }}.
+
+                    ## 13. Approval
+                    Approved by the management body of {{ tenant.legal_name }}: {{ approval.chain }}.
+
+                    ---
+                    *This policy is the highest normative statement on cybersecurity governance of {{ tenant.legal_name }}. Subordinate policies (NIS2 risk management, NIS2 incident handling, NIS2 supply-chain security, etc.) operationalise the requirements herein. Cross-ref ISO/IEC 27001:2022 Clause 5.2 and Annex A 5.1, 5.2, 5.3, 5.4.*
+
+        nis2_risk_management_policy:
+            v1:
+                title: 'NIS2 Risk Management Policy (Art. 21(2)(a))'
+                body: |-
+                    # NIS2 Risk Management Policy of {{ tenant.legal_name }}
+
+                    *Document class: Concept | Regulatory basis: Art. 21(2)(a) NIS2 Directive ("policies on risk analysis and information-system security") | Language: English | Review interval: annually*
+
+                    ## 1. Purpose
+                    This policy regulates the systematic identification, analysis, evaluation, treatment and monitoring of cybersecurity risks at {{ tenant.legal_name }} pursuant to Art. 21(2)(a) NIS2 Directive. It operationalises the risk-based approach anchored in the NIS2 governance framework (Art. 21(1) NIS2 Directive).
+
+                    ## 2. Scope
+                    The policy applies to all network and information systems, ICT services, business processes, sites and third parties within the scope of {{ tenant.legal_name }}: {{ tenant.scope_statement }}. In particular, critical or important functions within the meaning of NIS2UmsuCG are covered.
+
+                    ## 3. Methodology
+                    Risk assessment follows ISO/IEC 27005:2022 in conjunction with ISO 31000:2018. The methodology comprises: risk identification, risk analysis (likelihood x impact), risk evaluation against the defined risk tolerance, risk treatment (avoid / mitigate / transfer / accept), and continuous risk monitoring.
+
+                    Scales: likelihood 1-5 (very rare to very frequent); impact 1-5 (negligible to existential) along the dimensions confidentiality, integrity, availability, financial loss, reputation, regulatory consequences, and societal impact (NIS2-specific because of critical-supply concerns).
+
+                    ## 4. Roles
+                    - **Risk Owner** – accountable for identification and assessment of risks in their business process.
+                    - **CISO ({{ roles.ciso.fullName }})** – methodology owner, consolidated reporting to the management body.
+                    - **ISO ({{ roles.isb.fullName }})** – operational delivery of risk workshops, maintenance of the risk register.
+                    - **Internal Audit** – independent review of the effectiveness of risk management.
+
+                    ## 5. Risk Identification
+                    Risk identification is performed at least annually as part of an enterprise-wide risk analysis and ad hoc upon material change (e.g. new IT systems, new providers, new threat landscape, new regulatory requirements, significant incidents). Sources: asset inventory, threat and vulnerability catalogues (BSI IT-Grundschutz threat catalogues, MITRE ATT&CK, threat-intelligence feeds), insights from incidents and audits, supply-chain analyses.
+
+                    ## 6. Risk Treatment
+                    For each risk a treatment option is selected. Acceptance above the defined risk tolerance requires four-eyes approval by the management body. Treatment measures are documented in the risk-treatment plan; their implementation is tracked via the action-tracking list.
+
+                    ## 7. Residual Risk and Risk Acceptance
+                    Residual risk after treatment is documented and formally accepted by the Risk Owner. Residual risks above the risk tolerance require management-body acceptance and are included in the NIS2 quarterly report.
+
+                    ## 8. Communication and Reporting
+                    The aggregated risk picture is reported at least quarterly in the Cybersecurity Steering Committee and at least annually to the management body. Critical risk changes trigger ad-hoc escalation to the CISO and the management body.
+
+                    ## 9. Interfaces
+                    NIS2 risk assessment integrates into the enterprise risk taxonomy of {{ tenant.legal_name }} (operational risk, compliance risk, reputational risk). Cross-ref supply-chain risks (Art. 21(2)(d) NIS2 Directive) are consolidated with supplier risk management.
+
+                    ## 10. Review Interval
+                    This policy is reviewed at least annually and ad hoc upon material change. Owner: {{ roles.ciso.fullName }} (CISO).
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 5.1, 5.7, 5.8; ISO/IEC 27005:2022.*
+
+        nis2_incident_handling_policy:
+            v1:
+                title: 'NIS2 Incident Handling Policy (Art. 21(2)(b) + Art. 23)'
+                body: |-
+                    # NIS2 Incident Handling Policy of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Regulatory basis: Art. 21(2)(b) NIS2 Directive ("incident handling") and Art. 23 NIS2 Directive ("reporting obligations") in conjunction with § 32 NIS2UmsuCG | Language: English | Review interval: annually, after every significant incident*
+
+                    ## 1. Purpose
+                    This policy regulates how {{ tenant.legal_name }} detects, assesses, contains, eradicates and follows up cybersecurity incidents and meets the reporting obligations under Art. 23 NIS2 Directive. It operationalises the "incident handling" required by Art. 21(2)(b) NIS2 Directive and complements the ISO/IEC 27001:2022 incident-response procedure with the NIS2-specific reporting deadlines.
+
+                    ## 2. Scope
+                    This policy applies to all cybersecurity incidents and near-miss events affecting network and information systems of {{ tenant.legal_name }}: {{ tenant.scope_statement }}. It applies to all employees, contractors and third-party providers with access to such systems.
+
+                    ## 3. Definitions
+                    - **Incident** (Art. 6 No. 6 NIS2 Directive): an event compromising the availability, authenticity, integrity or confidentiality of stored, transmitted or processed data or of the services offered by, or accessible via, network and information systems.
+                    - **Significant incident** (Art. 23(3) NIS2 Directive): an incident that has caused or is capable of causing severe operational disruption, financial loss or substantial material/non-material damage, or has affected or is capable of affecting other natural or legal persons substantially.
+                    - **Near-miss** (Art. 6 No. 5 NIS2 Directive): an event which could have compromised availability, authenticity, integrity or confidentiality but whose realisation was successfully prevented.
+
+                    ## 4. Roles and Responsibilities
+                    - **Incident Response Team (IRT) / CSIRT** – operational team led by the CISO {{ roles.ciso.fullName }}; containment, eradication and recovery.
+                    - **CISO** – overall accountability for the IR process; escalation to the management body.
+                    - **ISO ({{ roles.isb.fullName }})** – maintenance of the incident dossier, drafting of notifications to the BSI per § 32 NIS2UmsuCG.
+                    - **DPO ({{ roles.dpo.fullName }})** – assessment for personal-data breach per Art. 33-34 GDPR; parallel notification to data-protection authority where applicable.
+                    - **Crisis Team** – activated on critical incidents potentially affecting critical or important functions.
+                    - **Legal** – assessment of further reporting obligations (GDPR, BAIT/VAIT, sector supervisor).
+
+                    ## 5. Incident Assessment and Classification
+                    Incidents are classified using the severity scheme:
+
+                    - **P1 (critical)** – significant incident affecting critical or important functions or with cross-border effect; activates crisis team.
+                    - **P2 (high)** – significant incident without crisis-team activation; reportable per Art. 23 NIS2 Directive.
+                    - **P3 (medium)** – incident without significant impact, escalation potential; internal handling.
+                    - **P4 (low)** – minor incident; standard handling.
+
+                    Classification criteria follow Art. 23(3) NIS2 Directive and any clarifying EU implementing acts.
+
+                    ## 6. NIS2 Reporting Obligations (Art. 23)
+                    Significant incidents are reported pursuant to Art. 23 NIS2 Directive and § 32 NIS2UmsuCG to the competent authority {{ nis2.competent_authority }} (typically the BSI):
+
+                    | # | Report type | Deadline | Content |
+                    | --- | --- | --- | --- |
+                    | 1 | Early warning | within 24 hours of awareness | Initial assessment; signs of malicious act; cross-border impact indicators |
+                    | 2 | Incident notification | within 72 hours of awareness | Severity, impact, indicators of compromise (IoC), early-warning update |
+                    | 3 | Intermediate report | upon authority request | Status, containment / recovery progress |
+                    | 4 | Final report | within 1 month of the incident notification | Detailed description, severity and impact, threat type, measures taken/planned, cross-border impact |
+                    | 5 | Progress report | for long-running incidents, monthly | Treatment progress, new findings |
+
+                    Notifications are submitted via the BSI reporting portal or the technical interfaces required by § 32 NIS2UmsuCG.
+
+                    ## 7. Interfaces with Other Reporting Duties
+                    For incidents involving personal data, parallel GDPR notification per Art. 33 GDPR is performed (within 72 hours to the data-protection authority) and, where applicable, affected individuals are informed per Art. 34 GDPR. Financial entities additionally apply DORA notification per Art. 19 DORA in conjunction with ITS 2024/1502. Sector-specific notifications (e.g. BaFin, BNetzA) follow the respective sector law.
+
+                    ## 8. Incident-Response Process
+                    The IR process follows the phases of NIST SP 800-61 Rev. 2:
+
+                    1. **Preparation** – training, tooling, playbooks, contact lists.
+                    2. **Detection & Analysis** – SIEM alerts, manual reports, confirmation analysis.
+                    3. **Containment** – short-term (isolation) and long-term (hardening) containment.
+                    4. **Eradication** – elimination of the root cause (e.g. patching, account deletion).
+                    5. **Recovery** – restoration of systems and services; verified clean state.
+                    6. **Post-Incident Review** – lessons learned within 4 weeks of recovery.
+
+                    ## 9. Forensics and Evidence Preservation
+                    For P1/P2 incidents, evidence is preserved forensically pursuant to BSI Standard 200-3 in conjunction with ISO/IEC 27037:2012. Chain-of-custody documentation is maintained; deletion of evidence only after formal release by Legal and CISO.
+
+                    ## 10. Communication
+                    External communication (authorities, customers, public, media) is performed exclusively by the crisis-communication team in coordination with Legal, DPO and the management body. Internal communication follows the escalation matrix.
+
+                    ## 11. Lessons Learned and Continual Improvement
+                    A documented post-incident review is performed after every P1/P2 incident. Findings feed into updates of this policy, the playbooks, the risk analysis, and other NIS2 mandatory policies.
+
+                    ## 12. Review Interval
+                    This policy is reviewed at least annually, after every significant incident, and upon changes to NIS2 implementing acts. Owner: {{ roles.ciso.fullName }} (CISO) in coordination with {{ roles.isb.fullName }} (ISO) and {{ roles.dpo.fullName }} (DPO).
+
+                    ## 13. Approval
+                    Approved by the management body: {{ approval.chain }}.
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 5.24, 5.25, 5.26, 5.27, 5.28, 6.8; GDPR Art. 33-34; DORA Art. 17-23 (financial entities).*
+
+        nis2_business_continuity_crisis_policy:
+            v1:
+                title: 'NIS2 Business Continuity and Crisis Management Policy (Art. 21(2)(c))'
+                body: |-
+                    # NIS2 Business Continuity and Crisis Management Policy of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Regulatory basis: Art. 21(2)(c) NIS2 Directive ("business continuity, such as backup management and disaster recovery, and crisis management") | Language: English | Review interval: annually, tests bi-annually*
+
+                    ## 1. Purpose
+                    This policy governs business continuity management (BCM) and crisis management at {{ tenant.legal_name }} pursuant to Art. 21(2)(c) NIS2 Directive. It safeguards the continuity of critical or important functions and rapid recovery after disruptive events.
+
+                    ## 2. Scope
+                    Scope: {{ tenant.scope_statement }}. Covers all business processes, IT systems, sites and third parties required to deliver critical or important functions within the meaning of NIS2UmsuCG.
+
+                    ## 3. Methodology
+                    BCM follows ISO/IEC 22301:2019 and BSI Standard 200-4. The methodology comprises: business impact analysis (BIA), continuity risk assessment, RTO/RPO/MTPD definition, continuity plans, regular tests and exercises, crisis-management structures.
+
+                    ## 4. Business Impact Analysis (BIA)
+                    The BIA is performed at least annually and identifies critical business processes, their dependencies (IT systems, sites, people, third parties), and defines maximum tolerable period of disruption (MTPD), recovery time objective (RTO) and recovery point objective (RPO).
+
+                    ## 5. Continuity Plans
+                    Each critical business process has a documented business-continuity plan (BCP) with activation triggers, accountability, restart steps, resource requirements and communication plan. IT-specific recovery procedures are operationalised in disaster-recovery plans (DRP).
+
+                    ## 6. Backup Management
+                    Backups follow the 3-2-1 principle (3 copies, 2 different media, 1 offsite/offline). Backup frequency, retention and encryption follow the per-system RPO. Restore tests at least quarterly; full restoration tests annually. Immutable / air-gapped backups are mandatory for critical systems as a ransomware safeguard.
+
+                    ## 7. Disaster Recovery
+                    In a disaster, restart proceeds along the prioritised recovery sequence. The emergency officer coordinates recovery; the CISO {{ roles.ciso.fullName }} owns the parallel cybersecurity verification (e.g. forensics before re-entry to production).
+
+                    ## 8. Crisis Management
+                    Critical disruptions trigger convening of the crisis team chaired by the crisis-team lead. Members: CISO, ISO ({{ roles.isb.fullName }}), DPO ({{ roles.dpo.fullName }}), executive management, Legal, Communications, business process owners. The crisis team meets at least daily, keeps a logbook and decides on external communication.
+
+                    ## 9. Tests and Exercises
+                    Continuity and crisis-management plans are tested at least bi-annually (tabletop) and annually (simulation). Findings flow into plan updates. Test reports are submitted to the management body.
+
+                    ## 10. Interfaces
+                    Interfaces exist with incident handling (NIS2 Art. 21(2)(b)), supply-chain security (Art. 21(2)(d)), and detection of anomalous activity (Art. 21(2)(e)). For financial entities, DORA Art. 11 (response and recovery) applies in parallel; for KRITIS operators, BSI Standard 200-4 applies in parallel.
+
+                    ## 11. Review Interval
+                    This policy is reviewed at least annually and after every activated crisis. Owner: emergency officer in coordination with CISO.
+
+                    ## 12. Approval
+                    Approved by the management body: {{ approval.chain }}.
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 5.29, 5.30, 8.13, 8.14; ISO/IEC 22301:2019; BSI Standard 200-4.*
+
+        nis2_supply_chain_security_policy:
+            v1:
+                title: 'NIS2 Supply Chain Security Policy (Art. 21(2)(d))'
+                body: |-
+                    # NIS2 Supply Chain Security Policy of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Regulatory basis: Art. 21(2)(d) NIS2 Directive ("supply-chain security, including security-related aspects concerning the relationships between each entity and its direct suppliers or service providers") | Language: English | Review interval: annually, supplier reassessment annually*
+
+                    ## 1. Purpose
+                    This policy governs the management of cybersecurity risks in the supply chain of {{ tenant.legal_name }} pursuant to Art. 21(2)(d) NIS2 Directive. It covers selection, contractual binding, ongoing monitoring and termination of supplier and service-provider relationships that may impact cybersecurity.
+
+                    ## 2. Scope
+                    Covers all suppliers and service providers with direct or indirect access to network and information systems of {{ tenant.legal_name }} or contributing components to their delivery: {{ tenant.scope_statement }}.
+
+                    ## 3. Supplier Classification
+                    Suppliers are classified by criticality:
+
+                    - **critical** – impact on critical or important functions, processing of sensitive data, or privileged system access. Examples: hyperscaler clouds, managed-service providers, SaaS for core business processes.
+                    - **important** – indirect impact on operational resilience, e.g. standard software, identity providers.
+                    - **standard** – minimal cybersecurity relevance.
+
+                    ## 4. Selection and Due Diligence
+                    Prior to contracting, a cybersecurity due diligence is performed in accordance with supplier criticality. Minimum requirements: ISMS maturity proof (ISO 27001 certificate or equivalent), SOC 2 / C5 reports for cloud services, supplier-supply-chain transparency, data-residency clarification, sanctions-list screening.
+
+                    ## 5. Contractual Requirements
+                    Contracts with critical and important suppliers shall include the following binding clauses:
+
+                    - cybersecurity requirements (minimum measures equivalent to NIS2 Art. 21(2))
+                    - audit rights (own audit or audit-report demand)
+                    - incident-notification within 24/72 hours to {{ tenant.legal_name }}
+                    - subcontracting approval requirement
+                    - data-protection clauses (Art. 28 GDPR, SCC for third-country transfers)
+                    - exit strategy and data return / deletion obligations
+                    - liability and insurance requirements
+
+                    For financial entities, DORA Art. 30 contractual minimum requirements additionally apply.
+
+                    ## 6. Ongoing Monitoring
+                    Suppliers are reassessed at least annually (critical: bi-annually). Sources: supplier self-assessment (Standardised Information Gathering Questionnaire), external credit and cyber-rating sources, audit reports, incident history, threat intelligence.
+
+                    ## 7. Concentration Risk
+                    Concentration risks (single points of failure in the supply chain) are identified and assessed. For critical concentrations, redundant supplier relationships are evaluated.
+
+                    ## 8. Subcontracting
+                    Subcontracting by suppliers is subject to approval. {{ tenant.legal_name }} keeps a register of material sub-suppliers of critical service providers.
+
+                    ## 9. Supplier Incidents
+                    Cybersecurity incidents at suppliers with impact on {{ tenant.legal_name }} are processed via the internal incident management. NIS2 Art. 23 reporting may be triggered.
+
+                    ## 10. Termination of the Relationship
+                    Upon termination, controlled data return and deletion as well as revocation of all access rights are performed per the exit plan.
+
+                    ## 11. Review Interval
+                    This policy is reviewed at least annually. Owner: {{ roles.ciso.fullName }} (CISO) in coordination with Procurement.
+
+                    ## 12. Approval
+                    Approved by: {{ approval.chain }}.
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 5.19, 5.20, 5.21, 5.22, 5.23; DORA Art. 28-30 (financial entities); ENISA Guidelines on Securing the Supply Chain.*
+
+        nis2_acquisition_development_security:
+            v1:
+                title: 'Security in Acquisition, Development and Maintenance (NIS2 Art. 21(2)(e))'
+                body: |-
+                    # Security in Acquisition, Development and Maintenance of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Regulatory basis: Art. 21(2)(e) NIS2 Directive ("security in network and information systems acquisition, development and maintenance, including vulnerability handling and disclosure") | Language: English | Review interval: annually*
+
+                    ## 1. Purpose
+                    This policy ensures that cybersecurity is integrated across the lifecycle of network and information systems ("Security by Design" and "Security by Default") pursuant to Art. 21(2)(e) NIS2 Directive.
+
+                    ## 2. Scope
+                    Scope: all in-house and procured information systems, software, hardware and services within the responsibility of {{ tenant.legal_name }}: {{ tenant.scope_statement }}.
+
+                    ## 3. Acquisition
+                    Procurement processes treat cybersecurity as a binding selection criterion. Requirements: security specification, supplier-criticality screening (see supply-chain security policy), use of secure default configurations ("Secure-by-Default"), preference for components with Common Criteria or BSI certification where available.
+
+                    ## 4. Secure Development
+                    In-house software follows a defined Secure Software Development Lifecycle (SSDLC) with the following mandatory components: threat modelling at design, secure coding guidelines (e.g. OWASP ASVS, BSI recommendations), security-focused code reviews, Static Application Security Testing (SAST), Dynamic Application Security Testing (DAST), Software Composition Analysis (SCA) for third-party-component vulnerabilities.
+
+                    ## 5. Test and Release
+                    Before production go-live, dedicated security testing is performed. For critical applications additionally penetration testing by independent testers. Release only after critical and high-severity findings have been remediated or formally risk-accepted by the Risk Owner.
+
+                    ## 6. Maintenance and Patch Management
+                    Security patches are deployed per SLA: critical patches within 7 days, high within 30 days, medium within 90 days. Out-of-band emergency patches follow the emergency change procedure. End-of-life components are replaced; remaining in production requires risk acceptance and compensating controls.
+
+                    ## 7. Vulnerability Management
+                    Vulnerability scans run at least monthly; weekly for internet-exposed systems. Identified vulnerabilities are classified by CVSS and treated per SLA. Coordinated Vulnerability Disclosure (CVD) per Art. 12 NIS2 Directive: external reports are received via security@{{ tenant.contact_domain }} and forwarded to the CSIRT; coordination with the ENISA CVD database where appropriate.
+
+                    ## 8. Configuration Management
+                    Secure default configurations are centrally defined (e.g. CIS Benchmarks, BSI IT-Grundschutz recommendations) and enforced by configuration-management tools. Drift is continuously detected.
+
+                    ## 9. Change Management
+                    Changes to production systems follow the change-management process with risk, security and back-out evaluation. Emergencies: emergency-change procedure with retrospective documentation.
+
+                    ## 10. Outsourced Development
+                    Where development is outsourced, the supply-chain security policy applies, plus contractual obligations on code ownership, source-code escrow and security requirements.
+
+                    ## 11. Documentation
+                    Security-relevant design decisions, threat models, test reports and residual risks are maintained in the system documentation.
+
+                    ## 12. Review Interval
+                    This policy is reviewed at least annually. Owner: CISO {{ roles.ciso.fullName }}.
+
+                    ## 13. Approval
+                    Approved by: {{ approval.chain }}.
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 8.25, 8.26, 8.27, 8.28, 8.29, 8.30, 8.31, 8.32; BSI vulnerability-management recommendations; ENISA CVD guidelines.*
+
+        nis2_assessment_effectiveness_policy:
+            v1:
+                title: 'Effectiveness Assessment of Cybersecurity Measures (NIS2 Art. 21(2)(f))'
+                body: |-
+                    # Effectiveness Assessment of Cybersecurity Measures of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Regulatory basis: Art. 21(2)(f) NIS2 Directive ("policies and procedures to assess the effectiveness of cybersecurity risk-management measures") | Language: English | Review interval: annually*
+
+                    ## 1. Purpose
+                    This policy governs the systematic effectiveness assessment of {{ tenant.legal_name }}'s cybersecurity measures pursuant to Art. 21(2)(f) NIS2 Directive and ensures a closed plan-do-check-act cycle.
+
+                    ## 2. Scope
+                    Covers all cybersecurity measures implemented under Art. 21(2) NIS2 Directive and the underlying ISO/IEC 27001:2022 Annex A controls: {{ tenant.scope_statement }}.
+
+                    ## 3. Methodology
+                    The effectiveness assessment uses a CMMI-like maturity model with levels 0 (non-existent), 1 (initial), 2 (defined), 3 (established), 4 (managed), 5 (optimised). Data sources: control-owner self-assessment, technical metrics (KPIs), audit findings, incidents, penetration-test and vulnerability-scan results, supplier reports.
+
+                    ## 4. KPIs and Metrics
+                    Effectiveness KPIs are defined per cybersecurity measure. Examples:
+
+                    - Patch compliance: share of critical vulnerabilities patched on time.
+                    - MFA coverage: share of privileged accounts with MFA.
+                    - Backup-restore success rate: share of successful restore tests.
+                    - Incident response time: mean time to detect (MTTD), to contain (MTTC), to recover (MTTR).
+                    - Training coverage: share of employees trained.
+
+                    ## 5. Review Types
+                    - **Self-assessment** – control owners assess quarterly.
+                    - **Internal audit** – annual assessment by Internal Audit; sample-based effectiveness checks.
+                    - **External audit** – annually or per certification cycle (e.g. ISO 27001) by accredited auditors.
+                    - **Penetration test** – annually external; bi-annually internal.
+                    - **Vulnerability scan** – continuous (see vulnerability-management policy).
+                    - **Tabletop / simulation** – at least annually (crisis management).
+                    - **Authority inspection** – upon request per § 64 NIS2UmsuCG.
+
+                    ## 6. Findings and Action Management
+                    Findings are classified by severity (critical / high / medium / low) and entered into the action-tracking list with corrective actions, owners and due dates. Critical findings are escalated immediately.
+
+                    ## 7. Reporting
+                    Quarterly report: effectiveness status to the Cybersecurity Steering Committee. Annual report: consolidated effectiveness report to the management body; input to the annual management review per ISO 27001 Clause 9.3.
+
+                    ## 8. Review Interval
+                    This policy is reviewed at least annually. Owner: CISO {{ roles.ciso.fullName }} in coordination with Internal Audit.
+
+                    ## 9. Approval
+                    Approved by: {{ approval.chain }}.
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 5.35, 5.36, 8.34; ISO/IEC 27004:2016.*
+
+        nis2_basic_cyber_hygiene_training:
+            v1:
+                title: 'Cyber Hygiene and Security Training (NIS2 Art. 21(2)(g))'
+                body: |-
+                    # Cyber Hygiene and Security Training of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Regulatory basis: Art. 21(2)(g) NIS2 Directive ("basic cyber-hygiene practices and cybersecurity training") | Language: English | Review interval: annually*
+
+                    ## 1. Purpose
+                    This policy governs the dissemination of basic cyber-hygiene practices and the ongoing cybersecurity training of {{ tenant.legal_name }} employees pursuant to Art. 21(2)(g) NIS2 Directive.
+
+                    ## 2. Scope
+                    This policy applies to all employees (including agency workers and interns) and contractors with access to network and information systems of {{ tenant.legal_name }}: {{ tenant.scope_statement }}.
+
+                    ## 3. Cyber-Hygiene Principles
+                    {{ tenant.legal_name }} embeds the following cyber-hygiene practices organisation-wide as binding rules:
+
+                    - use of strong, unique passwords and/or passphrases via password managers.
+                    - mandatory multi-factor authentication for all internet-exposed accounts and privileged accounts (see NIS2 MFA policy).
+                    - immediate screen-lock when leaving the workplace (clear desk / clear screen).
+                    - awareness against phishing, social engineering, vishing, smishing.
+                    - timely installation of available security updates on endpoints.
+                    - secure handling of removable media (USB discipline, encrypted storage).
+                    - separation of business and private use; bring-your-own-device restrictions per asset-management policy.
+                    - reporting of suspicious events to security@{{ tenant.contact_domain }} or the internal incident hotline.
+
+                    ## 4. Training Programme
+                    The training programme comprises:
+
+                    - **Basic "Cyber-Hygiene" training** – mandatory at onboarding and annually thereafter. Minimum 60 minutes. Topics: password discipline, phishing, data protection, incident reporting, secure mobile working.
+                    - **Role-based deepening** – for administrators, developers, risk owners, procurement: annual role-specific deepening with higher technical depth.
+                    - **Management training** – mandatory annual training of the management body per Art. 20(2) NIS2 Directive ("management body training").
+                    - **Event-driven awareness campaigns** – e.g. after significant incidents, on new threat landscapes, before travel to critical countries.
+
+                    ## 5. Phishing Simulations
+                    Controlled phishing simulations are run at least bi-annually. Click-rate and reporting-rate are evaluated; employees with repeated clicks receive additional training.
+
+                    ## 6. Training Records
+                    Training participation is recorded in the learning-management system (LMS). Persistent non-participation may attract disciplinary measures. Quarterly evaluation to the Cybersecurity Steering Committee.
+
+                    ## 7. Responsibilities
+                    - **HR ({{ roles.hr.fullName }})** – organisational delivery, LMS administration.
+                    - **CISO ({{ roles.ciso.fullName }})** – content, awareness campaigns, phishing simulations.
+                    - **DPO** – content on data protection / GDPR.
+
+                    ## 8. Review Interval
+                    This policy is reviewed at least annually. Training material is refreshed quarterly to track current threats.
+
+                    ## 9. Approval
+                    Approved by: {{ approval.chain }}.
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 6.3, 7.7, 8.1; BSI Standard 200-2; ENISA Cybersecurity Awareness Best Practices.*
+
+        nis2_cryptography_policy:
+            v1:
+                title: 'NIS2 Cryptography and Key Management Policy (Art. 21(2)(h))'
+                body: |-
+                    # NIS2 Cryptography and Key Management Policy of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Regulatory basis: Art. 21(2)(h) NIS2 Directive ("policies and procedures regarding the use of cryptography and, where appropriate, encryption") | Language: English | Review interval: every 24 months, ad hoc upon BSI recommendation changes*
+
+                    ## 1. Purpose
+                    This policy governs the use of cryptographic mechanisms and key management at {{ tenant.legal_name }} pursuant to Art. 21(2)(h) NIS2 Directive and ensures fulfilment of confidentiality, integrity and authenticity requirements.
+
+                    ## 2. Scope
+                    Covers all cryptographic mechanisms in application, data transmission, data storage and authentication within the scope of {{ tenant.legal_name }}: {{ tenant.scope_statement }}.
+
+                    ## 3. Approved Algorithms
+                    {{ tenant.legal_name }} uses exclusively cryptographic algorithms compliant with the current Technical Guideline BSI TR-02102 ("Cryptographic mechanisms: recommendations and key lengths") in its applicable version.
+
+                    Currently approved mechanisms: {{ crypto.algorithms }}. Examples:
+
+                    - **Symmetric** – AES-256 (GCM, CCM)
+                    - **Asymmetric** – RSA with at least 3000 bit, ECDSA / EdDSA with brainpoolP256r1 / brainpoolP384r1 curves
+                    - **Hashing** – SHA-256, SHA-384, SHA-512, SHA3-256
+                    - **Key Derivation** – HKDF, PBKDF2 (min. 600,000 iterations), Argon2id
+                    - **Transport encryption** – TLS 1.2 (with AEAD suites) or TLS 1.3
+                    - **Post-quantum readiness** – tracking of NIST PQC standards (e.g. ML-KEM, ML-DSA per FIPS 203/204) and BSI cryptographic-migration recommendations
+
+                    ## 4. Use Cases
+                    - **Data in transit** – mandatory TLS encryption; secure email (S/MIME, PGP) where used; VPN per BSI recommendation.
+                    - **Data at rest** – mandatory full-disk encryption on mobile endpoints; encryption of sensitive data in databases / backups.
+                    - **Database fields** – field encryption for highly sensitive data (e.g. PII, authentication data, financial data).
+                    - **Authentication** – password hashing with Argon2id, MFA tokens (see NIS2 MFA policy).
+                    - **Code signing** – signing of in-house software and configuration artifacts.
+                    - **Backups** – encryption with keys segregated from production systems.
+
+                    ## 5. Key Management
+                    Key management follows ISO/IEC 11770 and BSI TR-03116 where applicable:
+
+                    - **Generation** – cryptographically secure random sources (HSM preferred).
+                    - **Distribution** – secure out-of-band distribution; PKI for certificates.
+                    - **Storage** – HSM or key vault preferred; keys never in plaintext in source code or config files.
+                    - **Rotation** – periodic and ad hoc upon suspected compromise.
+                    - **Destruction** – verifiable, complete deletion at end of life.
+                    - **Key backup** – only for keys that require recovery, in HSM-backed four-eyes recovery procedures.
+
+                    ## 6. Public Key Infrastructure (PKI)
+                    {{ tenant.legal_name }} operates or uses a PKI (own or external). Trust anchors are managed centrally; certificates have defined validity periods (e.g. server certs max. 1 year, code-signing 1-3 years, root CA multi-year). Certificate expiry is centrally monitored (Certificate Transparency / monitoring).
+
+                    ## 7. Crypto Agility
+                    Systems are designed so that cryptographic mechanisms are interchangeable ("crypto agility"), enabling rapid response to new recommendations or threats, including post-quantum cryptography migration.
+
+                    ## 8. Audit
+                    Compliance with this policy is audited annually as part of the internal audit. Additionally, an external TLS configuration check (e.g. Mozilla Observatory, BSI configuration recommendations) is performed at least bi-annually.
+
+                    ## 9. Review Interval
+                    This policy is reviewed every 24 months and ad hoc upon changes to BSI TR-02102 or upon disclosure of cryptographic weaknesses. Owner: CISO {{ roles.ciso.fullName }}.
+
+                    ## 10. Approval
+                    Approved by: {{ approval.chain }}.
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 8.24; BSI TR-02102 / TR-03116; ISO/IEC 11770; NIST SP 800-57 / FIPS 203/204 (PQC).*
+
+        nis2_access_control_asset_mgmt:
+            v1:
+                title: 'NIS2 Access Control and Asset Management (Art. 21(2)(i))'
+                body: |-
+                    # NIS2 Access Control and Asset Management of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Regulatory basis: Art. 21(2)(i) NIS2 Directive ("human-resources security, access-control policies and asset management") | Language: English | Review interval: annually*
+
+                    ## 1. Purpose
+                    This policy governs access control and asset management at {{ tenant.legal_name }} pursuant to Art. 21(2)(i) NIS2 Directive and enforces the need-to-know and least-privilege principles.
+
+                    ## 2. Scope
+                    Scope: all information systems, applications, physical areas and data of {{ tenant.legal_name }}: {{ tenant.scope_statement }}.
+
+                    ## 3. Asset Management
+                    {{ tenant.legal_name }} maintains an asset inventory covering all information systems, hardware, software, data and cloud services. Mandatory fields per asset: name, owner, classification (public / internal / confidential / strictly confidential), protection need (CIA: confidentiality, integrity, availability), location, lifecycle status.
+
+                    The inventory is reconciled at least quarterly (technical discovery + manual validation) and updated on changes.
+
+                    ## 4. Classification and Labelling
+                    Information is classified per the classification scheme. Confidential and strictly confidential information is labelled (e.g. watermarks, headers/footers, metadata) and handled accordingly.
+
+                    ## 5. Access Model
+                    Access follows need-to-know and least-privilege. Role-based access control (RBAC) is used; attribute-based access control (ABAC) where required. Segregation of duties for critical operations is mandatory.
+
+                    ## 6. Identity Management
+                    Identities are managed centrally (identity provider). Employees receive exactly one primary identity via the HR onboarding process. External identities (contractors, suppliers) are managed via dedicated sponsors and time-limited.
+
+                    ## 7. Joiner-Mover-Leaver
+                    - **Joiner** – entitlements provisioned via standard profiles upon entry.
+                    - **Mover** – entitlements adjusted promptly on role change (old entitlements revoked).
+                    - **Leaver** – entitlements deactivated by last working day; accounts deleted within 30 days (backup retention per deletion policy).
+
+                    ## 8. Privileged Access
+                    Privileged access is managed via Privileged Access Management (PAM): just-in-time provisioning, session recording, MFA mandatory, no direct administrative access from standard workstations, dedicated Privileged Access Workstations (PAW) for critical-system administrators.
+
+                    ## 9. Access Recertification
+                    Entitlements are recertified at least annually (privileged: bi-annually). Owners / managers confirm continued need; unconfirmed entitlements are revoked.
+
+                    ## 10. Physical Access Control
+                    Access to data centres, server rooms and security-relevant areas is restricted to authorised persons. Visitors are registered and escorted. Multi-stage controls scale with protection need (badge, MFA badge, biometrics).
+
+                    ## 11. Audit
+                    Access to critical systems is logged (see logging-and-monitoring policy) and regularly reviewed. Anomalies are detected via SIEM.
+
+                    ## 12. Review Interval
+                    This policy is reviewed at least annually. Owner: CISO {{ roles.ciso.fullName }}.
+
+                    ## 13. Approval
+                    Approved by: {{ approval.chain }}.
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 5.9, 5.10, 5.15, 5.16, 5.17, 5.18, 8.2, 8.3.*
+
+        nis2_mfa_communication_policy:
+            v1:
+                title: 'NIS2 MFA and Secure Communications (Art. 21(2)(j))'
+                body: |-
+                    # NIS2 Multi-Factor Authentication and Secure Communications of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Regulatory basis: Art. 21(2)(j) NIS2 Directive ("the use of multi-factor authentication or continuous-authentication solutions, secured voice, video and text communications and secured emergency-communication systems within the entity, where appropriate") | Language: English | Review interval: annually*
+
+                    ## 1. Purpose
+                    This policy governs the mandatory use of multi-factor authentication and secure communications at {{ tenant.legal_name }} pursuant to Art. 21(2)(j) NIS2 Directive.
+
+                    ## 2. Scope
+                    Covers all authentication operations and voice / video / text communications within the scope of {{ tenant.legal_name }}: {{ tenant.scope_statement }}.
+
+                    ## 3. MFA Mandate
+                    Multi-factor authentication is mandatory for:
+
+                    - all privileged accounts (administrators, service accounts with elevated rights),
+                    - all internet-exposed accounts (remote access, VPN, cloud consoles, SaaS),
+                    - all accounts with access to special-category personal data (Art. 9 GDPR) or comparably sensitive data,
+                    - all accounts with access to critical or important functions within the meaning of NIS2UmsuCG.
+
+                    The second factor follows the "phishing-resistant" recommendation (e.g. FIDO2/WebAuthn hardware tokens, platform authenticators). Time-based One-Time Passwords (TOTP) are admissible where FIDO2 is impractical; SMS OTP is NOT admissible for privileged accounts or critical applications.
+
+                    ## 4. Continuous Authentication
+                    For critical applications, risk-based authentication is used (assessment of device, location, behaviour); unusual sessions are re-authenticated or terminated.
+
+                    ## 5. Secure Voice and Video Communication
+                    Business voice and video communication uses platforms with end-to-end or client-server encryption per BSI recommendation. External conferences with confidential content use only approved platforms; consumer messengers are not admissible for business content.
+
+                    ## 6. Secure Text Communication
+                    Email with confidential content is encrypted (S/MIME or PGP) or exchanged via secure collaboration platforms. Attachments with personal data are mandatorily encrypted; the password is conveyed via a separate channel.
+
+                    ## 7. Emergency Communication
+                    A redundant, production-independent emergency communication system exists for crisis situations (e.g. out-of-band crisis hotline, separate messaging channel). Tests of emergency communication are performed at least bi-annually.
+
+                    ## 8. Identification and Authentication of External Parties
+                    When communicating with authorities, supervisors or suppliers, identification measures are taken to prevent social engineering and vishing (callback to a known number, second-channel verification).
+
+                    ## 9. Audit
+                    Compliance is continuously monitored via identity-provider reporting and SIEM. KPI: MFA coverage of privileged accounts = 100 percent.
+
+                    ## 10. Review Interval
+                    This policy is reviewed at least annually. Owner: CISO {{ roles.ciso.fullName }}.
+
+                    ## 11. Approval
+                    Approved by: {{ approval.chain }}.
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 5.14, 8.5, 8.20, 8.21; FIDO2/WebAuthn; BSI secure-communication recommendations; NIST SP 800-63B.*
+
+        nis2_reporting_obligations_procedure:
+            v1:
+                title: 'NIS2 Reporting Procedure to BSI / Supervisor (Art. 23 NIS2 + NIS2UmsuCG)'
+                body: |-
+                    # NIS2 Reporting Procedure to BSI / Supervisor of {{ tenant.legal_name }}
+
+                    *Document class: Procedure | Regulatory basis: Art. 23 NIS2 Directive in conjunction with § 32 NIS2UmsuCG and any sector-specific reporting obligations | Language: English | Review interval: annually, after each reporting case*
+
+                    ## 1. Purpose
+                    This procedure operationalises the statutory NIS2 reporting obligations to the Federal Office for Information Security (BSI) or the sector-specific supervisor competent for {{ tenant.legal_name }} pursuant to Art. 23 NIS2 Directive and § 32 NIS2UmsuCG.
+
+                    ## 2. Scope
+                    The procedure applies to all employees of {{ tenant.legal_name }} involved in detection, assessment or response to cybersecurity incidents: {{ tenant.scope_statement }}.
+
+                    ## 3. Assessment of Reporting Obligation
+                    "Significant incidents" pursuant to Art. 23(3) NIS2 Directive are reportable. An incident is significant if it
+
+                    - has caused or is capable of causing severe operational disruption or financial loss, or
+                    - has affected or is capable of affecting other natural or legal persons substantially.
+
+                    The assessment is performed by the CSIRT / Incident Response Team under the responsibility of the CISO {{ roles.ciso.fullName }}. Concretisation of thresholds follows the EU implementing acts and any complementary BSI guidance.
+
+                    ## 4. Reporting Deadlines and Content (Art. 23 NIS2 Directive)
+                    Once significance is confirmed, the reports are submitted as follows:
+
+                    | # | Report type | Deadline | Mandatory content |
+                    | --- | --- | --- | --- |
+                    | 1 | Early warning | within 24 hours of awareness | Initial assessment; signs of malicious act; cross-border impact indicators |
+                    | 2 | Incident notification | within 72 hours of awareness | Severity, impact, indicators of compromise (IoC), early-warning update, initial measures |
+                    | 3 | Intermediate report | upon authority request | Status, containment / recovery progress |
+                    | 4 | Final report | within 1 month of the incident notification | Detailed description, severity and impact, threat type/cause, measures taken/planned, cross-border impact |
+                    | 5 | Progress report | for long-running cases, monthly | Treatment progress, new findings |
+
+                    The 24-hour deadline begins on awareness of significance, not on initial detection of the event.
+
+                    ## 5. Reporting Channels
+                    Reports are submitted to:
+
+                    - **Primary:** Federal Office for Information Security (BSI) via the BSI reporting portal or the technical interface required by § 32 NIS2UmsuCG.
+                    - **Sector-specific supervisor:** in parallel or in lieu of, per § 28 NIS2UmsuCG (e.g. BaFin for financial entities, BNetzA for telecommunications, BAFA where competent).
+                    - **Data-protection authority:** additionally upon GDPR relevance per Art. 33 GDPR within 72 hours.
+                    - **EU interface (CSIRTs Network / EU-CyCLONe):** by the BSI or competent authority where appropriate.
+
+                    ## 6. Responsibilities
+                    - **CISO ({{ roles.ciso.fullName }})** – confirmation of reporting obligation, release of report content.
+                    - **ISO ({{ roles.isb.fullName }})** – drafting and dispatch of reports, maintenance of the incident dossier.
+                    - **DPO ({{ roles.dpo.fullName }})** – parallel GDPR review and any data-protection notification.
+                    - **Legal** – assessment of further legal reporting duties and consequences.
+                    - **Executive management / management body** – information; decisions on external communication.
+
+                    ## 7. Content Requirements
+                    Reports include at minimum:
+
+                    - identification of the reporting entity (name, address, sector, status essential/important).
+                    - incident description (what, when, where, who, how).
+                    - significance assessment with rationale.
+                    - severity and impact (estimated) on availability, confidentiality, integrity.
+                    - number of affected users / service recipients.
+                    - duration of disruption.
+                    - geographic spread (incl. cross-border).
+                    - threat type and source as known.
+                    - measures taken and planned.
+                    - point of contact (name, phone, email).
+
+                    ## 8. Confidentiality of the Report
+                    Reports are treated confidentially against unauthorised third parties. {{ tenant.legal_name }} may request confidential treatment of certain information from the BSI per § 32(5) NIS2UmsuCG (e.g. to protect ongoing law-enforcement or recovery measures).
+
+                    ## 9. Voluntary Reports
+                    Near-misses and cyber threats may be voluntarily reported per Art. 30 NIS2 Directive to contribute to collective cybersecurity. Decision is taken case by case by the CISO.
+
+                    ## 10. Interface to GDPR Notification
+                    For incidents involving personal data, parallel GDPR notification per Art. 33 GDPR within 72 hours to the competent data-protection authority is to be assessed. Content and competence differ; double processing must be ensured.
+
+                    ## 11. Interface to DORA Notification (Financial Entities)
+                    For financial entities, the DORA notification per Art. 19 DORA in conjunction with ITS (EU) 2024/1502 may replace or complement the NIS2 notification under the lex-specialis rule of Art. 4(1) NIS2 Directive. Case-by-case clarification by Legal.
+
+                    ## 12. Incident Dossier and Records
+                    A dossier is kept per report containing timestamps of all submissions, acknowledgements, authority responses and any follow-up requests. The dossier is retained for at least 5 years in tamper-resistant form.
+
+                    ## 13. Tests and Training
+                    A tabletop test of the reporting procedure with CSIRT, ISO, DPO and Legal is performed at least annually. Roles involved are trained at least annually.
+
+                    ## 14. Review Interval
+                    This procedure is reviewed at least annually, after each reporting case, and upon changes to NIS2 implementing acts. Owner: ISO {{ roles.isb.fullName }} in coordination with CISO and DPO.
+
+                    ## 15. Approval
+                    Approved by the management body: {{ approval.chain }}.
+
+                    ---
+                    *Cross-ref ISO/IEC 27001:2022 Annex A 5.5, 5.6, 5.24, 5.25, 5.26, 6.8; GDPR Art. 33-34; DORA Art. 17-23 (financial entities).*
