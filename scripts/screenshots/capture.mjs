@@ -90,7 +90,7 @@ async function captureOne(browser, persona, theme, screen, viewport) {
 
     let status = '?';
     try {
-        const resp = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+        const resp = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45_000 });
         status = resp ? resp.status() : 'no-response';
         await page.waitForSelector(screen.wait || 'body', { timeout: 10_000 }).catch(() => {});
         // give async charts/turbo a moment

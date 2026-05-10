@@ -33,6 +33,8 @@ personas:
     description: "Operative ISO-27001-Praxis, Audit-Trail, SoA, Risikoregister"
     screens:
       - { name: dashboard,             path: /de/dashboard }
+      - { name: my-day,                path: /de/my-day }
+      - { name: activity-feed,         path: /de/activity-feed }
       - { name: soa,                   path: /de/soa/ }
       - { name: risk-register,         path: /de/risk/ }
       - { name: risk-treatment-plan,   path: /de/risk-treatment-plan/ }
@@ -43,6 +45,8 @@ personas:
       - { name: documents,             path: /de/document/ }
       - { name: management-review,     path: /de/management-review/ }
       - { name: kpi-dashboard,         path: /de/analytics }
+      - { name: audit-findings,        path: /de/audit-finding/ }
+      - { name: bsi-grundschutz-check, path: /de/bsi-grundschutz-check, full_page: false }
 
   # ─────────────────────────────────────────────────────────────────
   # CISO / Executive — heatmaps, trends, board reporting
@@ -58,12 +62,15 @@ personas:
       - { name: board-dashboard,       path: /de/dashboards/board }
       - { name: analytics-advanced,    path: /de/analytics/advanced }
       - { name: risk-forecast,         path: /de/analytics/risk/forecast }
+      - { name: asset-criticality,     path: /de/analytics/assets/criticality, full_page: false }
       - { name: compliance-frameworks-radar, path: /de/analytics/compliance/frameworks }
       - { name: management-reports,    path: /de/reports/management/ }
       - { name: portfolio-report,      path: /de/reports/management/portfolio }
       - { name: executive-report,      path: /de/reports/management/executive }
       - { name: scheduled-reports,     path: /de/reports/scheduled/ }
       - { name: dora-dashboard,        path: /de/dora-compliance }
+      - { name: certification-bundle,  path: /de/certification-bundle, full_page: false }
+      - { name: ai-agents,             path: /de/ai-agents }
 
   # ─────────────────────────────────────────────────────────────────
   # Compliance-Manager / Head of GRC — framework portfolio + reuse
@@ -74,10 +81,12 @@ personas:
     label: "Compliance-Manager / Head of GRC"
     description: "Framework-Portfolio, Cross-Mapping, Gap-Heatmap, Library-Reuse"
     screens:
+      - { name: cm-dashboard,           path: /de/dashboards/compliance-manager, full_page: false }
       - { name: compliance-overview,    path: /de/compliance }
       - { name: framework-list,         path: /de/compliance/framework/ }
       - { name: framework-manage,       path: /de/compliance/frameworks/manage }
       - { name: compliance-wizard,      path: /de/compliance-wizard }
+      - { name: compliance-wizard-compare, path: /de/compliance-wizard/compare }
       - { name: compliance-compare,     path: /de/compliance/compare }
       - { name: compliance-cross-framework, path: /de/compliance/cross-framework }
       - { name: compliance-transitive,  path: /de/compliance/transitive-compliance }
@@ -89,6 +98,13 @@ personas:
       - { name: requirements-list,      path: /de/compliance/requirement/ }
       - { name: suppliers,              path: /de/supplier/ }
       - { name: modules-overview,       path: /de/admin/modules }
+      - { name: policy-wizard,          path: /de/policy-wizard }
+      - { name: policy-wizard-konzern-rollup, path: /de/policy-wizard/konzern-rollup }
+      - { name: industry-presets,       path: /de/admin/industry-presets }
+      - { name: gstool-import,          path: /de/admin/import/gstool }
+      - { name: import-history,         path: /de/admin/import/history }
+      - { name: tenant-compliance-settings, path: /de/admin/tenant-compliance-settings }
+      - { name: bcm-data-reuse-insights, path: /de/bcm/data-reuse-insights }
 
   # ─────────────────────────────────────────────────────────────────
   # Junior-Implementer — setup, onboarding, guided paths
@@ -112,6 +128,7 @@ personas:
       - { name: setup-step8-compliance-frameworks, path: /de/setup/step8-compliance-frameworks }
       - { name: setup-step10-sample-data, path: /de/setup/step10-sample-data }
       - { name: setup-step11-complete, path: /de/setup/step11-complete }
+      - { name: setup-industry-preset, path: /de/setup/industry-preset }
       - { name: profile-mfa,           path: /de/profile/mfa }
       - { name: change-requests,       path: /de/change-request/ }
 
@@ -141,6 +158,7 @@ personas:
     description: "Reale Umsetzung, Übersetzungen, UX-Konsistenz, Aurora-Konformität, Mapping-Qualität"
     screens:
       - { name: design-system,         path: /de/dev/design-system }
+      - { name: admin-hub,             path: /de/admin/hub }
       - { name: mapping-quality,       path: /de/admin/mapping-quality }
       - { name: mapping-quality-coverage, path: /de/admin/mapping-quality/coverage/all }
       - { name: data-repair,           path: /de/admin/data-repair/ }
@@ -148,10 +166,29 @@ personas:
       - { name: admin-settings,        path: /de/admin/settings }
       - { name: admin-settings-application, path: /de/admin/settings/application }
       - { name: admin-settings-features, path: /de/admin/settings/features }
+      - { name: admin-settings-security, path: /de/admin/settings/security }
+      - { name: monitoring-health,     path: /de/admin/monitoring/health }
+      - { name: monitoring-performance, path: /de/admin/monitoring/performance }
+      - { name: monitoring-errors,     path: /de/admin/monitoring/errors }
+      - { name: sessions,              path: /de/admin/sessions }
+      - { name: roles,                 path: /de/admin/roles, full_page: false }
+      - { name: roles-compare,         path: /de/admin/roles/compare }
+      - { name: roles-templates,       path: /de/admin/roles/templates }
+      - { name: users,                 path: /de/admin/users }
+      - { name: permissions,           path: /de/admin/permissions }
+      - { name: tags,                  path: /de/admin/tags, full_page: false }
+      - { name: policy-style,          path: /de/admin/policy-style }
+      - { name: report-style,          path: /de/admin/report-style }
+      - { name: alva-hint-stats,       path: /de/admin/alva-hint/stats }
+      - { name: sample-data,           path: /de/admin/sample-data, full_page: false }
       - { name: tour-content-admin,    path: /de/admin/tours/content }
       - { name: tour-completion-admin, path: /de/admin/tours/completion }
+      - { name: kpi-thresholds,        path: /de/admin/kpi-thresholds/ }
+      - { name: incident-sla,          path: /de/admin/incident-sla }
+      - { name: risk-approval-config,  path: /de/admin/risk-governance/approval-thresholds }
       - { name: en-locale-dashboard,   path: /en/dashboard }
       - { name: en-locale-soa,         path: /en/soa/ }
+      - { name: en-locale-compliance,  path: /en/compliance }
 
   # ─────────────────────────────────────────────────────────────────
   # External Auditor (ISO 19011) — evidence-driven, point-in-time
@@ -166,8 +203,10 @@ personas:
       - { name: auditor-dashboard,     path: /de/dashboards/auditor }
       - { name: audit-program,         path: /de/audit/ }
       - { name: audit-freeze,          path: /de/audit-freeze }
+      - { name: certification-bundle-preflight, path: /de/certification-bundle/preflight }
       - { name: audit-log,             path: /de/admin/audit-log/ }
       - { name: audit-log-statistics,  path: /de/admin/audit-log/statistics }
+      - { name: audit-log-retention,   path: /de/admin/audit-log/retention }
       - { name: training-records,      path: /de/training/ }
       - { name: context-scope,         path: /de/context/ }
       - { name: interested-parties,    path: /de/interested-party/ }
