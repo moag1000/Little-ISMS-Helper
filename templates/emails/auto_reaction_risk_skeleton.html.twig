@@ -1,0 +1,32 @@
+{# V3 W2-H4 — Auto-Risk-Skeleton notification.
+   ISO 27001 Cl. 7.4 (Communication) on high-CVSS vulnerability detection. #}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'emails.auto_reaction.risk.subject'|trans({}, 'emails')|default('Auto-Risk skeleton created') }}</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: #dc2626; color: white; padding: 20px; border-radius: 6px 6px 0 0;">
+            <h1 style="margin: 0; font-size: 18px;">
+                {{ 'emails.auto_reaction.risk.title'|trans({}, 'emails')|default('Auto-Risk Skeleton Created') }}
+            </h1>
+        </div>
+
+        <div style="background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-radius: 0 0 6px 6px;">
+            <p>{{ 'emails.auto_reaction.risk.intro'|trans({}, 'emails')|default('A high-CVSS vulnerability was registered. The system auto-generated a Risk skeleton — please assign a Risk-Owner and complete the assessment:') }}</p>
+
+            <div style="background: white; padding: 12px; border-left: 4px solid #dc2626; margin: 16px 0;">
+                <p style="margin: 0;"><strong>CVE:</strong> {{ cve }}</p>
+                <p style="margin: 4px 0 0 0;"><strong>CVSS:</strong> {{ cvss }}</p>
+                <p style="margin: 4px 0 0 0;"><strong>Risk:</strong> {{ risk.title|default('—') }}</p>
+            </div>
+
+            <p style="font-size: 13px; color: #666; margin-top: 16px;">
+                {{ 'emails.auto_reaction.risk.footer'|trans({}, 'emails')|default('Please assign a Risk-Owner and complete the inherent/residual assessment.') }}
+            </p>
+        </div>
+    </div>
+</body>
+</html>
