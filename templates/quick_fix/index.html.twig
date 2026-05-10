@@ -148,10 +148,23 @@
             </details>
 
             {% if drift_destructive|length > 0 %}
-                <div class="flash error" style="margin-top: 16px;">
-                    {{ 'quick_fix.drift.destructive_warning'|trans({'count': drift_destructive|length}, 'quick_fix') }}
+                <div style="margin-top: 12px; color: var(--muted); font-size: 13px;">
+                    <strong style="color: var(--danger);">{{ drift_destructive|length }}</strong>
+                    {{ 'quick_fix.drift.destructive_count_label'|trans({}, 'quick_fix') }}
                 </div>
-                <p style="font-family: monospace; font-size: 12px;">php bin/console app:schema:reconcile</p>
+                <div class="flash error" style="margin-top: 16px;">
+                    {{ 'quick_fix.drift.destructive_warning'|trans({}, 'quick_fix') }}
+                </div>
+                <form method="POST" action="{{ path('app_quick_fix_reconcile') }}" style="margin-top: 12px;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_reconcile') }}">
+                    <label style="display: flex; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 13px; cursor: pointer; padding: 8px 0;">
+                        <input type="checkbox" name="confirm_destructive" value="1" required style="margin-top: 3px;">
+                        <span>{{ 'quick_fix.drift.destructive_confirm_label'|trans({}, 'quick_fix') }}</span>
+                    </label>
+                    <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                        {{ 'quick_fix.drift.destructive_button'|trans({}, 'quick_fix') }}
+                    </button>
+                </form>
             {% else %}
                 <form method="POST" action="{{ path('app_quick_fix_reconcile') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_reconcile') }}">

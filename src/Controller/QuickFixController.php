@@ -189,7 +189,9 @@ class QuickFixController extends AbstractController
             ], new Response('', Response::HTTP_FORBIDDEN));
         }
 
-        // Refuse when destructive drift exists — those need manual review.
+        // Destructive drift (DROP/TRUNCATE) requires explicit confirm-checkbox.
+        // No more CLI-only escape hatch — operator can apply via UI when they
+        // ticked the risk-acceptance checkbox in the form.
         try {
             $status = $maintenance->getMaintenanceStatus();
             $destructive = $status['schema_drift']['destructive'] ?? [];
@@ -198,8 +200,9 @@ class QuickFixController extends AbstractController
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
-        if ($destructive !== []) {
-            $this->addFlash('error', 'Destruktive Schema-Änderungen erkannt. Bitte manuell prüfen via CLI: php bin/console app:schema:reconcile');
+        $confirmDestructive = (bool) $request->request->get('confirm_destructive', false);
+        if ($destructive !== [] && !$confirmDestructive) {
+            $this->addFlash('error', 'Destruktive Statements erkannt — Risiko-Akzeptanz-Checkbox aktivieren um anzuwenden.');
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
