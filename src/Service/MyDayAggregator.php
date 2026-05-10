@@ -10,7 +10,9 @@ use App\Entity\Document;
 use App\Entity\DataSubjectRequest;
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\PolicyAcknowledgement;
+use App\Entity\Risk;
 use App\Entity\Tenant;
+use App\Entity\TrainingParticipation;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
 use App\Repository\AuditFindingRepository;
@@ -19,6 +21,8 @@ use App\Repository\DataSubjectRequestRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\FourEyesApprovalRequestRepository;
 use App\Repository\PolicyAcknowledgementRepository;
+use App\Repository\RiskRepository;
+use App\Repository\TrainingParticipationRepository;
 use App\Repository\WorkflowInstanceRepository;
 use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -26,14 +30,22 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * Audit V3 C1 — Mein-Tag (Central Inbox) Aggregator.
  *
- * Aggregates open items for the current user across the 7 distributed inboxes:
+ * Aggregates open items for the current user across the distributed inboxes.
+ * Original 7 buckets (Audit V3):
  *   - workflow/pending + workflow/overdue
  *   - four_eyes/inbox
  *   - policy_acknowledgement/inbox
  *   - audit_finding (assigned-to-me)
  *   - data_subject_request (assigned-to-me)
- *   - notification-bell items (open WorkflowInstances initiated by me)
  *   - corrective_action overdue
+ *
+ * Audit V4 V4-LB-1 (ISB-Practitioner) — added 3 ISB-Pflicht-Buckets:
+ *   - risk_acceptance_expiring  (Risk.acceptanceExpiryDate ≤ today+30d)
+ *   - documents_review_overdue  (Document.nextReviewDate  < today)
+ *   - trainings_pending         (TrainingParticipation.status = pending for me)
+ *
+ * (Notification-bell bucket dropped — no Notification entity exists yet;
+ *  WorkflowInstance pending already covers the "things I started" side.)
  *
  * Returns an associative result with categorised buckets and per-item
  * dictionaries shaped for the Aurora UI:
@@ -43,6 +55,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class MyDayAggregator
 {
+    /** Days-window for Risk-acceptance-expiry surfacing (Audit V4 V4-LB-1). */
+    private const RISK_ACCEPTANCE_WARN_DAYS = 30;
+
     public function __construct(
         private readonly TenantContext $tenantContext,
         private readonly WorkflowInstanceRepository $workflowInstances,
@@ -52,6 +67,8 @@ class MyDayAggregator
         private readonly DataSubjectRequestRepository $dsrRepo,
         private readonly CorrectiveActionRepository $caRepo,
         private readonly DocumentRepository $documentRepo,
+        private readonly RiskRepository $riskRepo,
+        private readonly TrainingParticipationRepository $trainingParticipationRepo,
         private readonly UrlGeneratorInterface $urls,
     ) {
     }
@@ -68,6 +85,9 @@ class MyDayAggregator
      *   findings: array<int, array<string, mixed>>,
      *   dsrs: array<int, array<string, mixed>>,
      *   corrective_actions_overdue: array<int, array<string, mixed>>,
+     *   risk_acceptance_expiring: array<int, array<string, mixed>>,
+     *   documents_review_overdue: array<int, array<string, mixed>>,
+     *   trainings_pending: array<int, array<string, mixed>>,
      *   total: int
      * }
      */
@@ -86,10 +106,15 @@ class MyDayAggregator
         $findings        = $tenant ? $this->buildFindings($user, $tenant) : [];
         $dsrs            = $tenant ? $this->buildDsrs($user, $tenant) : [];
         $caOverdue       = $tenant ? $this->buildCorrectiveActionsOverdue($user, $tenant) : [];
+        // Audit V4 V4-LB-1 — ISB-Pflicht-Buckets.
+        $riskAcceptance  = $tenant ? $this->buildRiskAcceptanceExpiring($user, $tenant) : [];
+        $docsReviewOver  = $tenant ? $this->buildDocumentsReviewOverdue($user, $tenant) : [];
+        $trainingsPending = $tenant ? $this->buildTrainingsPending($user, $tenant) : [];
 
         $total = count($workflowsPending) + count($workflowsOverdue)
             + count($fourEyes) + count($acks) + count($findings)
-            + count($dsrs) + count($caOverdue);
+            + count($dsrs) + count($caOverdue)
+            + count($riskAcceptance) + count($docsReviewOver) + count($trainingsPending);
 
         return [
             'summary' => [
@@ -100,6 +125,9 @@ class MyDayAggregator
                 'findings'          => count($findings),
                 'dsrs'              => count($dsrs),
                 'corrective_actions_overdue' => count($caOverdue),
+                'risk_acceptance_expiring' => count($riskAcceptance),
+                'documents_review_overdue' => count($docsReviewOver),
+                'trainings_pending' => count($trainingsPending),
             ],
             'workflows_pending' => $workflowsPending,
             'workflows_overdue' => $workflowsOverdue,
@@ -108,6 +136,9 @@ class MyDayAggregator
             'findings'          => $findings,
             'dsrs'              => $dsrs,
             'corrective_actions_overdue' => $caOverdue,
+            'risk_acceptance_expiring' => $riskAcceptance,
+            'documents_review_overdue' => $docsReviewOver,
+            'trainings_pending' => $trainingsPending,
             'total'             => $total,
             'generated_at'      => $today,
         ];
@@ -378,5 +409,143 @@ class MyDayAggregator
             return true;
         }
         return false;
+    }
+
+    /**
+     * Audit V4 V4-LB-1 — Risks whose formal acceptance expires within
+     * RISK_ACCEPTANCE_WARN_DAYS (or already has). The ISB has to renew
+     * acceptance OR pivot to a different treatment-strategy. Surfaces to
+     * the risk owner; CISO/Manager (ROLE_ADMIN/ROLE_MANAGER) sees them all
+     * because acceptance review is a governance-level duty.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildRiskAcceptanceExpiring(User $user, Tenant $tenant): array
+    {
+        $items = [];
+        foreach ($this->riskRepo->findAcceptanceExpiring($tenant, self::RISK_ACCEPTANCE_WARN_DAYS) as $risk) {
+            /** @var Risk $risk */
+            if (!$this->riskAcceptanceVisibleToUser($risk, $user)) {
+                continue;
+            }
+            $expiry = $risk->getAcceptanceExpiryDate();
+            $isExpired = $expiry !== null && $expiry < new DateTimeImmutable('today');
+            $items[] = [
+                'priority'    => $isExpired ? 'high' : 'medium',
+                'due_date'    => $expiry,
+                'link'        => $this->urls->generate('app_risk_show', ['id' => $risk->getId()]),
+                'entity_type' => 'risk_acceptance',
+                'tone'        => $isExpired ? 'danger' : 'warning',
+                'title'       => (string) $risk->getTitle(),
+                'subtitle'    => $isExpired ? 'expired' : 'expiring',
+                'badge'       => $isExpired ? 'expired' : 'expiring',
+            ];
+        }
+        return $items;
+    }
+
+    private function riskAcceptanceVisibleToUser(Risk $risk, User $user): bool
+    {
+        $owner = $risk->getRiskOwner();
+        if ($owner instanceof User && $owner->getId() === $user->getId()) {
+            return true;
+        }
+        // CISO / ISB-level governance roles see every accepted risk near
+        // expiry — that's the whole point of the ISB-Pflicht-Bucket.
+        $roles = $user->getRoles();
+        if (in_array('ROLE_ADMIN', $roles, true)
+            || in_array('ROLE_MANAGER', $roles, true)
+            || in_array('ROLE_GROUP_CISO', $roles, true)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Audit V4 V4-LB-1 — Approved Documents whose review-cycle is overdue.
+     * ISO 27001 Clause 7.5.3 requires periodic re-validation of documented
+     * information. Surfaces to the document-owner; falls back to ROLE_ADMIN
+     * / ROLE_MANAGER (governance-wide responsibility).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildDocumentsReviewOverdue(User $user, Tenant $tenant): array
+    {
+        $items = [];
+        foreach ($this->documentRepo->findReviewOverdue($tenant) as $document) {
+            /** @var Document $document */
+            if (!$this->documentReviewVisibleToUser($document, $user)) {
+                continue;
+            }
+            $title = method_exists($document, 'getTitle')
+                ? (string) ($document->getTitle() ?? '')
+                : (string) ($document->getOriginalFilename() ?? $document->getFilename() ?? 'Document');
+            $items[] = [
+                'priority'    => 'high',
+                'due_date'    => $document->getNextReviewDate(),
+                'link'        => $this->urls->generate('app_document_show', ['id' => $document->getId()]),
+                'entity_type' => 'document_review',
+                'tone'        => 'danger',
+                'title'       => $title,
+                'subtitle'    => 'review_overdue',
+                'badge'       => 'overdue',
+            ];
+        }
+        return $items;
+    }
+
+    private function documentReviewVisibleToUser(Document $document, User $user): bool
+    {
+        if (method_exists($document, 'getOwner')) {
+            $owner = $document->getOwner();
+            if ($owner instanceof User && $owner->getId() === $user->getId()) {
+                return true;
+            }
+        }
+        if (method_exists($document, 'getUploadedBy')) {
+            $uploader = $document->getUploadedBy();
+            if ($uploader instanceof User && $uploader->getId() === $user->getId()) {
+                return true;
+            }
+        }
+        $roles = $user->getRoles();
+        if (in_array('ROLE_ADMIN', $roles, true) || in_array('ROLE_MANAGER', $roles, true)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Audit V4 V4-LB-1 — TrainingParticipations with status=pending for the
+     * current user. Strict per-user filter (no governance fallback): a
+     * pending training is the responsibility of the assignee, not of the
+     * Manager.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildTrainingsPending(User $user, Tenant $tenant): array
+    {
+        $items = [];
+        foreach ($this->trainingParticipationRepo->findPendingForUser($user, $tenant) as $participation) {
+            /** @var TrainingParticipation $participation */
+            $training = $participation->getTraining();
+            if ($training === null) {
+                continue;
+            }
+            $title = method_exists($training, 'getTitle')
+                ? (string) ($training->getTitle() ?? '')
+                : 'Training';
+            $items[] = [
+                'priority'    => 'medium',
+                'due_date'    => $participation->getAssignedAt(),
+                'link'        => $this->urls->generate('app_training_show', ['id' => $training->getId()]),
+                'entity_type' => 'training',
+                'tone'        => 'info',
+                'title'       => $title,
+                'subtitle'    => 'pending',
+                'badge'       => 'pending',
+            ];
+        }
+        return $items;
     }
 }

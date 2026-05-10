@@ -69,6 +69,27 @@
             variant: inbox.summary.corrective_actions_overdue > 0 ? 'danger' : 'success',
             href: '#corrective-actions'
         }) }}
+        {{ _fa_feature_card.render({
+            icon: 'shield-exclamation',
+            label: 'kpi.risk_acceptance_expiring'|trans,
+            value: inbox.summary.risk_acceptance_expiring,
+            variant: inbox.summary.risk_acceptance_expiring > 0 ? 'warning' : 'success',
+            href: '#risk-acceptance-expiring'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'file-earmark-text',
+            label: 'kpi.documents_review_overdue'|trans,
+            value: inbox.summary.documents_review_overdue,
+            variant: inbox.summary.documents_review_overdue > 0 ? 'danger' : 'success',
+            href: '#documents-review-overdue'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'mortarboard',
+            label: 'kpi.trainings_pending'|trans,
+            value: inbox.summary.trainings_pending,
+            variant: inbox.summary.trainings_pending > 0 ? 'primary' : 'success',
+            href: '#trainings-pending'
+        }) }}
     </div>
 
     {% if inbox.total == 0 %}
@@ -89,6 +110,9 @@
         { id: 'findings', title: 'section.findings'|trans, items: inbox.findings },
         { id: 'dsrs', title: 'section.dsrs'|trans, items: inbox.dsrs },
         { id: 'corrective-actions', title: 'section.corrective_actions_overdue'|trans, items: inbox.corrective_actions_overdue },
+        { id: 'risk-acceptance-expiring', title: 'section.risk_acceptance_expiring'|trans, items: inbox.risk_acceptance_expiring },
+        { id: 'documents-review-overdue', title: 'section.documents_review_overdue'|trans, items: inbox.documents_review_overdue },
+        { id: 'trainings-pending', title: 'section.trainings_pending'|trans, items: inbox.trainings_pending },
     ] %}
 
     {% for section in sections %}
@@ -117,6 +141,12 @@
                                         <i class="bi bi-file-person" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'corrective_action' %}
                                         <i class="bi bi-hourglass-bottom" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'risk_acceptance' %}
+                                        <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'document_review' %}
+                                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'training' %}
+                                        <i class="bi bi-mortarboard" aria-hidden="true"></i>
                                     {% endif %}
                                     {{ item.title }}
                                 </div>

@@ -216,6 +216,38 @@ class RiskRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find risks whose formal acceptance is about to expire (or has already
+     * expired) — for ISB My-Day surfacing per Audit V4 V4-LB-1.
+     *
+     * Filter: treatmentStrategy = 'accept' AND status != 'closed' AND
+     * acceptanceExpiryDate IS NOT NULL AND acceptanceExpiryDate <= asOf+window.
+     *
+     * @return Risk[] Sorted by acceptanceExpiryDate ASC (most urgent first)
+     */
+    public function findAcceptanceExpiring(
+        Tenant $tenant,
+        int $withinDays = 30,
+        ?DateTimeInterface $asOf = null,
+    ): array {
+        $asOf ??= new DateTime('today');
+        $deadline = (clone $asOf)->modify(sprintf('+%d days', max(0, $withinDays)));
+
+        return $this->createQueryBuilder('r')
+            ->where('r.tenant = :tenant')
+            ->andWhere('r.treatmentStrategy = :accept')
+            ->andWhere('r.status != :closed')
+            ->andWhere('r.acceptanceExpiryDate IS NOT NULL')
+            ->andWhere('r.acceptanceExpiryDate <= :deadline')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('accept', \App\Enum\TreatmentStrategy::Accept)
+            ->setParameter('closed', \App\Enum\RiskStatus::Closed)
+            ->setParameter('deadline', $deadline)
+            ->orderBy('r.acceptanceExpiryDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find tenant-less (orphaned) risks — tenant_id IS NULL.
      *
      * TenantFilter is disabled during the query; otherwise Doctrine combines
