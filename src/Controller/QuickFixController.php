@@ -91,10 +91,10 @@ class QuickFixController extends AbstractController
             ], new Response('', Response::HTTP_FORBIDDEN));
         }
 
-        $result = $maintenance->executePendingMigrations('quick-fix');
+        $migrationResult = $maintenance->executePendingMigrations('quick-fix');
 
-        if (!$result['success']) {
-            $diagnosis = $result['diagnosis'] ?? null;
+        if (!$migrationResult['success']) {
+            $diagnosis = $migrationResult['diagnosis'] ?? null;
             if (is_array($diagnosis) && ($diagnosis['category'] ?? 'unknown') !== 'unknown') {
                 $this->addFlash('error', sprintf(
                     'Migration failed [%s]: %s — %s',
@@ -103,12 +103,44 @@ class QuickFixController extends AbstractController
                     $diagnosis['suggested_action'] ?? '',
                 ));
             } else {
-                $this->addFlash('error', sprintf('Migration failed: %s', $result['error'] ?? 'unknown error'));
+                $this->addFlash('error', sprintf('Migration failed: %s', $migrationResult['error'] ?? 'unknown error'));
             }
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
-        $this->addFlash('success', sprintf('%d Migration(en) erfolgreich angewendet.', $result['executed']));
+        // Auto-chain: after migrations land, re-check schema-drift. If
+        // non-destructive drift remains (entity-metadata vs DB), run
+        // reconcile in the same click. Destructive drift still requires
+        // manual review via CLI.
+        $reconcileExecuted = 0;
+        $reconcileError = null;
+        try {
+            $status = $maintenance->getMaintenanceStatus();
+            $driftCount = (int) ($status['schema_drift']['count'] ?? 0);
+            $destructive = $status['schema_drift']['destructive'] ?? [];
+
+            if ($driftCount > 0 && $destructive === []) {
+                $reconcileResult = $maintenance->reconcileSchema('quick-fix');
+                if ($reconcileResult['success']) {
+                    $reconcileExecuted = (int) $reconcileResult['executed'];
+                } else {
+                    $reconcileError = $reconcileResult['error'] ?? $reconcileResult['blocked'] ?? 'unknown error';
+                }
+            }
+        } catch (\Throwable $e) {
+            $reconcileError = $e->getMessage();
+        }
+
+        $this->addFlash('success', sprintf(
+            '%d Migration(en) angewendet%s.',
+            $migrationResult['executed'],
+            $reconcileExecuted > 0 ? sprintf(' + %d Schema-Statement(s) reconciled', $reconcileExecuted) : '',
+        ));
+
+        if ($reconcileError !== null) {
+            $this->addFlash('error', sprintf('Auto-Reconcile fehlgeschlagen: %s', $reconcileError));
+        }
+
         return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
     }
 
