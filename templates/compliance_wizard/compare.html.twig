@@ -1,30 +1,29 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'wizard.compare_title'|trans({}, 'wizard') }} - {{ 'wizard.title'|trans({}, 'wizard') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
-    {# Breadcrumb #}
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans({}, 'wizard') }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'wizard.compare_title'|trans({}, 'wizard') }}</li>
-        </ol>
-    </nav>
+    {# Aurora Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'wizard.title'|trans({}, 'wizard'), url: path('app_compliance_wizard_index') },
+            { label: 'wizard.compare_title'|trans({}, 'wizard') }
+        ]
+    } %}
 
-    {# Header #}
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h2 mb-1">
-                <i class="fa-icon me-2 fa-icon--nav-grid" aria-hidden="true"></i>{{ 'wizard.compare_title'|trans({}, 'wizard') }}
-            </h1>
-            <p class="text-muted">{{ 'wizard.compare_subtitle'|trans({}, 'wizard') }}</p>
-        </div>
-    </div>
+    {# Aurora Page Header #}
+    {{ _fa_page_header.render({
+        title: 'wizard.compare_title'|trans({}, 'wizard'),
+        subtitle: 'wizard.compare_subtitle'|trans({}, 'wizard'),
+        badge: { icon: 'columns-gap', label: 'wizard.title'|trans({}, 'wizard') },
+        actions: [
+            { label: 'wizard.back'|trans({}, 'wizard'), href: path('app_compliance_wizard_index'), variant: 'ghost', icon: 'arrow-left' }
+        ]
+    }) }}
 
     {# Framework Selection #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}

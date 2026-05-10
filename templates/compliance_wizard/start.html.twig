@@ -1,41 +1,37 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
 
 {% block title %}{{ config.name }} - {{ 'wizard.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
-    {# Breadcrumb #}
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ config.name }}</li>
-        </ol>
-    </nav>
+    {# Aurora Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'wizard.title'|trans({}, 'wizard'), url: path('app_compliance_wizard_index') },
+            { label: config.name }
+        ]
+    } %}
+
+    {# Aurora Page Header #}
+    {{ _fa_page_header.render({
+        title: config.name,
+        subtitle: config.description|trans,
+        badge: { icon: 'shield-check', label: config.code },
+        actions: [
+            { label: 'wizard.back'|trans({}, 'wizard'), href: path('app_compliance_wizard_index'), variant: 'ghost', icon: 'arrow-left' },
+            { label: 'wizard.run_assessment'|trans({}, 'wizard'), href: path('app_compliance_wizard_assess', {wizard: wizard}), variant: 'primary', icon: 'play-fill' }
+        ]
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">
-            {# Wizard Header #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-' ~ config.color } %}
-                {% block card_header %}
-                    <div class="card-header bg-{{ config.color }} bg-opacity-10 border-{{ config.color }}">
-                        <div class="d-flex align-items-center">
-                            <i class="{{ config.icon }} fs-2 text-{{ config.color }} me-3"></i>
-                            <div>
-                                <h1 class="h3 mb-0">{{ config.name }}</h1>
-                                {% include '_components/_badge.html.twig' with { variant: config.color, content: config.code } %}
-                            </div>
-                        </div>
-                    </div>
-                {% endblock %}
+            {# Wizard scope/categories overview #}
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_body %}
-                    <p class="lead">{{ config.description|trans }}</p>
-
-                    <hr>
-
                     <h2 class="h5 mb-3">{{ 'wizard.assessment_scope'|trans }}</h2>
                     <p class="text-muted">{{ 'wizard.assessment_scope_desc'|trans({'%framework%': config.name}, 'wizard') }}</p>
 
@@ -143,13 +139,10 @@
             {% endembed %}
             {% endif %}
 
-            {# Start Button #}
-            <div class="d-grid gap-2 d-md-flex justify-content-md-between">
-                <a href="{{ path('app_compliance_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    <i class="fa-icon fa-icon--util-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back'|trans }}
-                </a>
-                <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="btn btn-{{ config.color }} btn-lg">
-                    <i class="fa-icon me-2 fa-icon--status-info" aria-hidden="true"></i>{{ 'wizard.run_assessment'|trans }}
+            {# Start Button (duplicate of header CTA for accessibility / scroll convenience) #}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
+                    <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>{{ 'wizard.run_assessment'|trans }}
                 </a>
             </div>
         </div>

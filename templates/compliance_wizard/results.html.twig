@@ -1,32 +1,38 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'wizard.results'|trans({}, 'wizard') }} - {{ result.framework_name }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
-    {# Breadcrumb #}
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans({}, 'wizard') }}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_compliance_wizard_start', {wizard: wizard}) }}">{{ result.framework_name }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'wizard.results'|trans({}, 'wizard') }}</li>
-        </ol>
-    </nav>
+    {# Aurora Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'wizard.title'|trans({}, 'wizard'), url: path('app_compliance_wizard_index') },
+            { label: result.framework_name, url: path('app_compliance_wizard_start', {wizard: wizard}) },
+            { label: 'wizard.results'|trans({}, 'wizard') }
+        ]
+    } %}
 
-    {# Header with Score #}
+    {# Aurora Page Header #}
+    {{ _fa_page_header.render({
+        title: result.framework_name,
+        subtitle: ('wizard.assessed_at'|trans({}, 'wizard')) ~ ': ' ~ (result.assessed_at|date('d.m.Y H:i')),
+        badge: { icon: 'clipboard2-check', label: ('wizard.results'|trans({}, 'wizard')) ~ ' · ' ~ result.overall_score ~ '%' },
+        actions: [
+            { label: 'wizard.export_pdf'|trans({}, 'wizard'), href: path('app_compliance_wizard_export_pdf', {wizard: wizard}), variant: 'primary', icon: 'file-pdf' }
+        ]
+    }) }}
+
+    {# Score summary card #}
     <div class="row mb-4">
         <div class="col-lg-8">
             {% embed '_components/_card.html.twig' with { 'class': 'border-0 shadow-sm' } %}
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h1 class="h3 mb-1">{{ result.framework_name }}</h1>
                             <p class="text-muted mb-0">
                                 {{ 'wizard.assessed_at'|trans({}, 'wizard') }}: {{ result.assessed_at|date('d.m.Y H:i') }}
                             </p>
