@@ -20,6 +20,7 @@
         <div class="col-12">
             {% embed '_components/_card.html.twig' with { 'class': (overall_compliance_score >= 95 ? 'border-success' : (overall_compliance_score >= 75 ? 'border-warning' : 'border-danger')) } %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="text-center">
                         <div class="h2 mb-3">{{ 'nis2.dashboard.overall_compliance'|trans({}, 'messages') }}</div>
                         <div class="display-1 {% if overall_compliance_score >= 95 %}text-success{% elseif overall_compliance_score >= 75 %}text-warning{% else %}text-danger{% endif %}">

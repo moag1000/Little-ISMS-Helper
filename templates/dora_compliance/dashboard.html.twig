@@ -35,6 +35,7 @@
         <div class="col-12">
             {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ (overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger')) } %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="text-center py-4">
                         <h2 class="h4 mb-3">{{ 'dora.dashboard.overall_compliance'|trans }}</h2>
                         <div class="display-1 fw-bold text-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger') }}">
@@ -92,6 +93,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="row g-3">
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
@@ -251,6 +253,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="row g-3">
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
@@ -316,6 +319,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="row align-items-center">
                         <div class="col-md-4 text-center">
                             <div class="display-4 text-{{ information_sharing.implementation_rate >= 80 ? 'success' : 'warning' }}">
