@@ -129,6 +129,11 @@ class RoleManagementController extends AbstractController
 
         // Handle template application
         if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('role_template_apply', $request->request->get('_token'))) {
+                $this->addFlash('danger', $translator->trans('common.csrf_error', [], 'messages'));
+                return $this->redirectToRoute('role_management_templates');
+            }
+
             $templateKey = $request->request->get('template');
             $customName = $request->request->get('custom_name');
 

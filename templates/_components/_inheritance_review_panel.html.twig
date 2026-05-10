@@ -19,6 +19,7 @@
     <form method="post"
           action="{{ path('app_compliance_inheritance_confirm', { id: log.id, _locale: app.request.locale }) }}"
           data-inheritance-review-target="confirmForm">
+        <input type="hidden" name="_token" value="{{ csrf_token('inheritance_confirm_' ~ log.id) }}">
         <div class="mb-3">
             <label for="ir-{{ log.id }}-comment" class="form-label">
                 {{ 'compliance_inheritance.panel.comment_label'|trans({}, 'compliance_inheritance') }}
@@ -107,6 +108,7 @@
     <div class="modal-dialog">
         <form method="post" class="modal-content"
               action="{{ path('app_compliance_inheritance_reject', { id: log.id, _locale: app.request.locale }) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('inheritance_reject_' ~ log.id) }}">
             <div class="modal-header">
                 <h5 class="modal-title" id="reject-modal-{{ log.id }}-label">
                     {{ 'compliance_inheritance.reject.title'|trans({}, 'compliance_inheritance') }}
@@ -138,6 +140,7 @@
     <div class="modal-dialog">
         <form method="post" class="modal-content"
               action="{{ path('app_compliance_inheritance_override', { id: log.id, _locale: app.request.locale }) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('inheritance_override_' ~ log.id) }}">
             <div class="modal-header">
                 <h5 class="modal-title" id="override-modal-{{ log.id }}-label">
                     {{ 'compliance_inheritance.override.title'|trans({}, 'compliance_inheritance') }}

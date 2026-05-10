@@ -140,6 +140,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <form method="post" id="setParentForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token('set_parent') }}">
                     <div class="modal-body">
                         <div class="mb-3">
                             {{ _fa_cyber.text('subsidiaryName', {
@@ -193,6 +194,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <form method="post" id="updateGovernanceForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token('update_governance') }}">
                     <div class="modal-body">
                         <div class="mb-3">
                             {{ _fa_cyber.text('governanceTenantName', {
@@ -306,6 +308,7 @@
                       data-controller="ui-actions"
                       data-action="submit->ui-actions#confirm"
                       data-ui-actions-message-param="{{ 'corporate.confirm.remove_parent'|trans({}, 'tenant') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('set_parent') }}">
                     <input type="hidden" name="parent_id" value="">
                     <button type="submit"
                             class="fa-cyber-btn fa-cyber-btn--danger"
