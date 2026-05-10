@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'processing_activity.page.new_title'|trans({}, 'privacy')}}{% endblock %}
 
@@ -13,11 +14,11 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'processing_activity.page.new_title'|trans({}, 'privacy'),
         subtitle: 'processing_activity.page.new_subtitle'|trans({}, 'privacy'),
-        icon: 'bi-plus-lg'
-    } %}
+        badge: { icon: 'plus-lg', label: '' }
+    }) }}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}

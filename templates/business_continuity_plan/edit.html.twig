@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bc_plans' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'common.edit'|trans({}, 'messages') }}: {{ bc_plan.name }}{% endblock %}
 
@@ -14,14 +15,14 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: ('common.edit'|trans({}, 'messages')) ~ ': ' ~ bc_plan.name,
-        icon: 'bi-pencil',
+        badge: { icon: 'pencil', label: '' },
         actions: [
-            { label: 'common.view'|trans({}, 'messages'), url: path('app_bc_plan_show', {id: bc_plan.id}), variant: 'outline-primary', icon: 'bi-eye' },
-            { label: 'common.back'|trans({}, 'messages'), url: path('app_bc_plan_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.view'|trans({}, 'messages'), href: path('app_bc_plan_show', {id: bc_plan.id}), variant: 'outline-primary', icon: 'eye' },
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_bc_plan_index'), variant: 'secondary', icon: 'arrow-left' }
         ]
-    } %}
+    }) }}
 
     <div class="row">
         <div class="col-lg-10 col-xl-9 mx-auto">

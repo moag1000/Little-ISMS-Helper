@@ -1,19 +1,17 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'user.profile.action.edit'|trans({}, 'user') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>
-            <i class="fa-icon fa-icon--user" aria-hidden="true"></i>
-            {{ 'user.profile.action.edit'|trans({}, 'user') }}
-        </h1>
-        <a href="{{ path('app_profile') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
-            {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+    title: ('user.profile.action.edit'|trans({}, 'user')),
+    badge: { icon: 'pencil', label: '' },
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_profile'), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
     <div class="row">
         <div class="col-md-8 offset-md-2">

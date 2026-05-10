@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'patches' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'patch.new'|trans({}, 'patches') }} - {{ parent() }}{% endblock %}
 
@@ -12,12 +13,12 @@
         ]
     } %}
 
+    {{ _fa_page_header.render({
+        title: 'patch.new'|trans({}, 'patches'),
+        badge: { icon: 'plus', label: '' }
+    }) }}
+
     {% embed '_components/_card.html.twig' %}
-        {% block card_header %}
-            <div class="card-header">
-                <h1 class="mb-0 h2"><i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'patch.new'|trans({}, 'patches') }}</h1>
-            </div>
-        {% endblock %}
         {% block card_body %}
             {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 

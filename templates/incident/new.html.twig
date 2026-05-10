@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'incident' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'incident.new'|trans({}, 'incident') }} - {{ parent() }}{% endblock %}
 
@@ -17,12 +18,13 @@
                 ]
             } %}
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0"><i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'incident.new'|trans({}, 'incident') }}</h1>
-                <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
-                    <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-                </a>
-            </div>
+            {{ _fa_page_header.render({
+    title: ('incident.new'|trans({}, 'incident')),
+    badge: { icon: 'plus', label: '' },
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_incident_index'), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
             {# NIS2 Reporting Alert Banner #}
             <div id="nis2-alert" class="fa-alert fa-alert--warning d-none mb-4" role="alert"

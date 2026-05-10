@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bc_exercises' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'bc_exercises.action.add_new'|trans({}, 'bc_exercises') }} - {{ parent() }}{% endblock %}
 
@@ -15,13 +16,13 @@
     } %}
 
     {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'bc_exercises.action.add_new'|trans({}, 'bc_exercises'),
-        icon: 'bi-plus-circle',
+        badge: { icon: 'plus-circle', label: '' },
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), url: path('app_bc_exercise_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_bc_exercise_index'), variant: 'secondary', icon: 'arrow-left' }
         ]
-    } %}
+    }) }}
 
     <div class="row">
         <div class="col-lg-10 col-xl-9 mx-auto">

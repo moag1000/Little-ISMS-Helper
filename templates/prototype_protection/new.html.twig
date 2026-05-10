@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'prototype_protection.page.new_title'|trans({}, 'prototype_protection') }}{% endblock %}
 
@@ -11,10 +12,10 @@
         ]
     } %}
 
-    <h1 class="h3 mb-3">
-        <i class="fa-icon fa-icon--control" aria-hidden="true"></i>
-        {{ 'prototype_protection.page.new_title'|trans({}, 'prototype_protection') }}
-    </h1>
+    {{ _fa_page_header.render({
+        title: 'prototype_protection.page.new_title'|trans({}, 'prototype_protection'),
+        badge: { icon: 'plus', label: '' }
+    }) }}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}

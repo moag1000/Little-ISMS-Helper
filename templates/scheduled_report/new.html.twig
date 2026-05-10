@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'scheduled_reports' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'scheduled_report.new.title'|trans({}, 'scheduled_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -14,11 +15,10 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2 mb-0">
-            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'scheduled_report.new.title'|trans({}, 'scheduled_reports') }}
-        </h1>
-    </div>
+    {{ _fa_page_header.render({
+    title: ('scheduled_report.new.title'|trans({}, 'scheduled_reports')),
+    badge: { icon: 'plus', label: '' }
+}) }}
 
     {# Info Alert #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-4' } } %}

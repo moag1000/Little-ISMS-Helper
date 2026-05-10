@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'processing_activity.page.edit_title'|trans({}, 'privacy')}} - {{ processing_activity.name }}{% endblock %}
 
@@ -14,14 +15,14 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'processing_activity.page.edit_title'|trans({}, 'privacy'),
         subtitle: processing_activity.name,
-        icon: 'bi-pencil',
+        badge: { icon: 'pencil', label: '' },
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), url: path('app_processing_activity_show', {id: processing_activity.id}), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_processing_activity_show', {id: processing_activity.id}), variant: 'secondary', icon: 'arrow-left' }
         ]
-    } %}
+    }) }}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}

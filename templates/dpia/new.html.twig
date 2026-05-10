@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block title %}{{ 'dpia.new.title'|trans({}, 'privacy')}}{% endblock %}
 
 {% block body %}
@@ -12,14 +13,14 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'dpia.new.page_title'|trans({}, 'privacy'),
         subtitle: 'dpia.new.page_subtitle'|trans({}, 'privacy'),
-        icon: 'bi-plus-circle',
+        badge: { icon: 'plus-circle', label: '' },
         actions: [
-            { label: 'dpia.new.button_cancel'|trans({}, 'privacy'), url: path('app_dpia_index'), variant: 'secondary', icon: 'bi-x-lg' }
+            { label: 'dpia.new.button_cancel'|trans({}, 'privacy'), href: path('app_dpia_index'), variant: 'secondary', icon: 'x-lg' }
         ]
-    } %}
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">

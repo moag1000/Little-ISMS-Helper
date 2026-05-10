@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'change_requests' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'change_request.edit'|trans({}, 'change_requests') }} {{ change_request.changeNumber }} - {{ parent() }}{% endblock %}
 
@@ -23,17 +24,13 @@
                 </ol>
             </nav>
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="mb-0">
-                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                    {{ 'change_request.page.edit'|trans({}, 'change_requests') }}: {{ change_request.changeNumber }}
-                </h1>
-                <div>
-                    <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
-                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'change_request.action.view'|trans({}, 'change_requests') }}
-                    </a>
-                </div>
-            </div>
+            {{ _fa_page_header.render({
+    title: ('change_request.page.edit'|trans({}, 'change_requests')) ~ ': ' ~ (change_request.changeNumber),
+    badge: { icon: 'pencil', label: '' },
+    actions: [
+        { label: 'change_request.action.view'|trans({}, 'change_requests'), href: path('app_change_request_show', {id: change_request.id}), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}

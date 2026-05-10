@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'data_subject_request' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'dsr.page.new_title'|trans({}, 'data_subject_request') }}{% endblock %}
 
@@ -13,14 +14,14 @@
         ]
     } only %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'dsr.page.new_title'|trans({}, 'data_subject_request'),
         subtitle: 'dsr.page.new_subtitle'|trans({}, 'data_subject_request'),
-        icon: 'bi-person-raised-hand',
+        badge: { icon: 'person-raised-hand', label: '' },
         actions: [
-            { label: 'common.cancel'|trans({}, 'messages'), url: path('app_data_subject_request_index'), variant: 'secondary', icon: 'bi-x-lg' }
+            { label: 'common.cancel'|trans({}, 'messages'), href: path('app_data_subject_request_index'), variant: 'secondary', icon: 'x-lg' }
         ]
-    } only %}
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">

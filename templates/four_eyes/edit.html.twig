@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'four_eyes' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'edit.title'|trans({}, 'four_eyes') }} - {{ parent() }}{% endblock %}
 
@@ -11,13 +12,13 @@
     ]
 } %}
 
-{% include '_components/_page_header.html.twig' with {
+{{ _fa_page_header.render({
     title: 'edit.title'|trans({}, 'four_eyes'),
-    icon: 'bi-pencil-square',
+    badge: { icon: 'pencil-square', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), url: path('app_four_eyes_inbox'), variant: 'secondary', icon: 'bi-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_four_eyes_inbox'), variant: 'secondary', icon: 'arrow-left' }
     ]
-} %}
+}) }}
 
 {% embed '_components/_card.html.twig' %}
     {% block card_header %}

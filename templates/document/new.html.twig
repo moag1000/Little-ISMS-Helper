@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'document' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'document.new'|trans({}, 'document')}} - {{ parent() }}{% endblock %}
 
@@ -13,13 +14,13 @@
 } %}
 
 {# Page Header #}
-{% include '_components/_page_header.html.twig' with {
+{{ _fa_page_header.render({
     title: 'document.new'|trans({}, 'document'),
-    icon: 'bi-plus-circle',
+    badge: { icon: 'plus-circle', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), url: path('app_document_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_document_index'), variant: 'secondary', icon: 'arrow-left' }
     ]
-} %}
+}) }}
 
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}
