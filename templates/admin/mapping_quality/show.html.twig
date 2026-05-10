@@ -101,16 +101,16 @@
                         <small class="text-muted">{{ 'admin.mapping_quality.mqs_max'|trans({}, 'admin') }}</small>
                     </div>
                     {% if mapping.mqsBreakdown %}
-                        <table class="table table-sm mb-0">
-                            <tbody>
-                                <tr><td class="small">Provenance</td><td class="text-end small">{{ mapping.mqsBreakdown.provenance }} / 25</td></tr>
-                                <tr><td class="small">Methodology</td><td class="text-end small">{{ mapping.mqsBreakdown.methodology }} / 20</td></tr>
-                                <tr><td class="small">Confidence</td><td class="text-end small">{{ mapping.mqsBreakdown.confidence }} / 15</td></tr>
-                                <tr><td class="small">Coverage</td><td class="text-end small">{{ mapping.mqsBreakdown.coverage }} / 15</td></tr>
-                                <tr><td class="small">Bidirectional</td><td class="text-end small">{{ mapping.mqsBreakdown.bidirectional }} / 15</td></tr>
-                                <tr><td class="small">Lifecycle</td><td class="text-end small">{{ mapping.mqsBreakdown.lifecycle }} / 10</td></tr>
-                            </tbody>
-                        </table>
+                        {% embed '_components/_fa_table.html.twig' with { compact: true, hover: false } %}
+                            {% block table_body %}
+                                <tr class="fa-table__row"><td class="fa-table__cell small">Provenance</td><td class="fa-table__cell fa-table__cell--num small">{{ mapping.mqsBreakdown.provenance }} / 25</td></tr>
+                                <tr class="fa-table__row"><td class="fa-table__cell small">Methodology</td><td class="fa-table__cell fa-table__cell--num small">{{ mapping.mqsBreakdown.methodology }} / 20</td></tr>
+                                <tr class="fa-table__row"><td class="fa-table__cell small">Confidence</td><td class="fa-table__cell fa-table__cell--num small">{{ mapping.mqsBreakdown.confidence }} / 15</td></tr>
+                                <tr class="fa-table__row"><td class="fa-table__cell small">Coverage</td><td class="fa-table__cell fa-table__cell--num small">{{ mapping.mqsBreakdown.coverage }} / 15</td></tr>
+                                <tr class="fa-table__row"><td class="fa-table__cell small">Bidirectional</td><td class="fa-table__cell fa-table__cell--num small">{{ mapping.mqsBreakdown.bidirectional }} / 15</td></tr>
+                                <tr class="fa-table__row"><td class="fa-table__cell small">Lifecycle</td><td class="fa-table__cell fa-table__cell--num small">{{ mapping.mqsBreakdown.lifecycle }} / 10</td></tr>
+                            {% endblock %}
+                        {% endembed %}
                     {% endif %}
                 </div>
             </section>

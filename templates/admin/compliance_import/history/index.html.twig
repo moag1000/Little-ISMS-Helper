@@ -38,75 +38,72 @@
                 </h2>
             </div>
             <div class="fa-section__body">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle"
-                           aria-label="{{ 'compliance_import.history.table_aria'|trans({}, 'compliance_import') }}">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'compliance_import.history.col_filename'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col">{{ 'compliance_import.history.col_hash'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col">{{ 'compliance_import.history.col_uploader'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col">{{ 'compliance_import.history.col_committed_at'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col" class="text-end">{{ 'compliance_import.history.col_imported'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col" class="text-end">{{ 'compliance_import.history.col_superseded'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col" class="text-end">{{ 'compliance_import.history.col_skipped'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col">{{ 'compliance_import.history.col_status'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col" class="text-end">{{ 'compliance_import.history.col_actions'|trans({}, 'compliance_import') }}</th>
+                {% embed '_components/_fa_table.html.twig' with { striped: true } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_import.history.col_filename'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_import.history.col_hash'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_import.history.col_uploader'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_import.history.col_committed_at'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'compliance_import.history.col_imported'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'compliance_import.history.col_superseded'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'compliance_import.history.col_skipped'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_import.history.col_status'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'compliance_import.history.col_actions'|trans({}, 'compliance_import') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for session in sessions %}
+                            {% set status_variant = {
+                                'committed': 'success',
+                                'preview': 'warning',
+                                'cancelled': 'secondary'
+                            }[session.status]|default('secondary') %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
+                                    <code>{{ session.originalFilename }}</code>
+                                    <div class="small text-muted">{{ session.format }}</div>
+                                </td>
+                                <td class="fa-table__cell">
+                                    <code title="{{ session.fileSha256 }}">{{ session.shortHash }}</code>
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% if session.uploadedBy %}
+                                        {{ session.uploadedBy.email }}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% if session.committedAt %}
+                                        {{ session.committedAt|date('Y-m-d H:i') }}
+                                    {% else %}
+                                        {{ session.uploadedAt|date('Y-m-d H:i') }}
+                                        <div class="small text-muted">
+                                            ({{ 'compliance_import.history.uploaded'|trans({}, 'compliance_import') }})
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ session.rowCountImported }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ session.rowCountSuperseded }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ session.rowCountSkipped }}</td>
+                                <td class="fa-table__cell">
+                                    {% set _spill = status_variant in ['info'] ? 'primary' : (status_variant in ['secondary','light','dark'] ? 'neutral' : status_variant) %}
+                                    <span class="badge bg-{{ status_variant }} fa-status-pill fa-status-pill--{{ _spill }}">
+                                        {{ ('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import') }}
+                                    </span>
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    <a href="{{ path('admin_import_history_show', { id: session.id }) }}"
+                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                        {{ 'compliance_import.history.view_detail'|trans({}, 'compliance_import') }}
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for session in sessions %}
-                                {% set status_variant = {
-                                    'committed': 'success',
-                                    'preview': 'warning',
-                                    'cancelled': 'secondary'
-                                }[session.status]|default('secondary') %}
-                                <tr>
-                                    <td>
-                                        <code>{{ session.originalFilename }}</code>
-                                        <div class="small text-muted">{{ session.format }}</div>
-                                    </td>
-                                    <td>
-                                        <code title="{{ session.fileSha256 }}">{{ session.shortHash }}</code>
-                                    </td>
-                                    <td>
-                                        {% if session.uploadedBy %}
-                                            {{ session.uploadedBy.email }}
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if session.committedAt %}
-                                            {{ session.committedAt|date('Y-m-d H:i') }}
-                                        {% else %}
-                                            {{ session.uploadedAt|date('Y-m-d H:i') }}
-                                            <div class="small text-muted">
-                                                ({{ 'compliance_import.history.uploaded'|trans({}, 'compliance_import') }})
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end">{{ session.rowCountImported }}</td>
-                                    <td class="text-end">{{ session.rowCountSuperseded }}</td>
-                                    <td class="text-end">{{ session.rowCountSkipped }}</td>
-                                    <td>
-                                        {% set _spill = status_variant in ['info'] ? 'primary' : (status_variant in ['secondary','light','dark'] ? 'neutral' : status_variant) %}
-                                        <span class="badge bg-{{ status_variant }} fa-status-pill fa-status-pill--{{ _spill }}">
-                                            {{ ('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import') }}
-                                        </span>
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="{{ path('admin_import_history_show', { id: session.id }) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                            {{ 'compliance_import.history.view_detail'|trans({}, 'compliance_import') }}
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
 
                 {% if page_count > 1 %}
                     <nav aria-label="{{ 'compliance_import.history.pagination_aria'|trans({}, 'compliance_import') }}">

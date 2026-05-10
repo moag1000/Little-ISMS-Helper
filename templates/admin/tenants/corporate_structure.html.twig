@@ -92,40 +92,38 @@
                 </h2>
             </div>
             <div class="fa-section__body">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
-                                <th scope="col">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
-                                <th scope="col">{{ 'corporate.field.actions'|trans({}, 'tenant') }}</th>
+                {% embed '_components/_fa_table.html.twig' %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'corporate.field.actions'|trans({}, 'tenant') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for tenant in standaloneTenants %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell"><code class="text-primary">{{ tenant.code }}</code></td>
+                                <td class="fa-table__cell">{{ tenant.name }}</td>
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    <button type="button"
+                                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                                            data-controller="corporate-modals"
+                                            data-corporate-modals-tenant-id-value="{{ tenant.id }}"
+                                            data-corporate-modals-tenant-name-value="{{ tenant.name }}"
+                                            data-action="corporate-modals#showSetParent"
+                                            aria-label="{{ 'corporate.action.set_parent'|trans({}, 'tenant') }}">
+                                        <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.action.set_parent'|trans({}, 'tenant') }}
+                                    </button>
+                                    <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
+                                       class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for tenant in standaloneTenants %}
-                                <tr>
-                                    <td><code class="text-primary">{{ tenant.code }}</code></td>
-                                    <td>{{ tenant.name }}</td>
-                                    <td>
-                                        <button type="button"
-                                                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
-                                                data-controller="corporate-modals"
-                                                data-corporate-modals-tenant-id-value="{{ tenant.id }}"
-                                                data-corporate-modals-tenant-name-value="{{ tenant.name }}"
-                                                data-action="corporate-modals#showSetParent"
-                                                aria-label="{{ 'corporate.action.set_parent'|trans({}, 'tenant') }}">
-                                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.action.set_parent'|trans({}, 'tenant') }}
-                                        </button>
-                                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </section>
     {% endif %}

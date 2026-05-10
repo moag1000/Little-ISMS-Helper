@@ -30,61 +30,59 @@
     {% else %}
         <section class="fa-section">
             <div class="fa-section__body">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>{{ 'admin.mapping_quality.coverage.source_target'|trans({}, 'admin') }}</th>
-                                <th class="text-end">{{ 'admin.mapping_quality.coverage.coverage'|trans({}, 'admin') }}</th>
-                                <th class="text-center">{{ 'admin.mapping_quality.coverage.distribution'|trans({}, 'admin') }}</th>
-                                <th class="text-end">{{ 'admin.mapping_quality.coverage.unmapped'|trans({}, 'admin') }}</th>
+                {% embed '_components/_fa_table.html.twig' %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.coverage.source_target'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.mapping_quality.coverage.coverage'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--center">{{ 'admin.mapping_quality.coverage.distribution'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.mapping_quality.coverage.unmapped'|trans({}, 'admin') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for r in rows %}
+                            {% set covClass = r.coverage_pct >= 80 ? 'success' : (r.coverage_pct >= 50 ? 'warning' : 'danger') %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
+                                    <strong>{{ r.source.name }}</strong>
+                                    <i class="fa-icon fa-icon--util-arrow-right small text-muted" aria-hidden="true"></i>
+                                    <strong>{{ r.target.name }}</strong>
+                                    <div class="small text-muted">{{ r.source_total }} {{ 'admin.mapping_quality.coverage.items'|trans({}, 'admin') }}</div>
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--num">
+                                    <span class="fw-bold text-{{ covClass }}">{{ r.coverage_pct }}%</span>
+                                    <div class="small text-muted">{{ r.covered }} / {{ r.source_total }}</div>
+                                </td>
+                                <td class="fa-table__cell">
+                                    {# Stacked bar: high (success) | medium (warning) | low (secondary) #}
+                                    {% set total = r.high + r.medium + r.low %}
+                                    {% if total > 0 %}
+                                        <div class="progress progress-h-20">
+                                            <div class="progress-bar bg-success" style="width: {{ (r.high / total * 100)|round }}%" title="{{ r.high }} high">{{ r.high }}</div>
+                                            <div class="progress-bar bg-warning" style="width: {{ (r.medium / total * 100)|round }}%" title="{{ r.medium }} medium">{{ r.medium }}</div>
+                                            <div class="progress-bar bg-secondary" style="width: {{ (r.low / total * 100)|round }}%" title="{{ r.low }} low">{{ r.low }}</div>
+                                        </div>
+                                        <div class="d-flex justify-content-between small text-muted mt-1">
+                                            <span><span class="text-success">●</span> {{ r.high }} {{ 'admin.mapping_quality.coverage.high'|trans({}, 'admin') }}</span>
+                                            <span><span class="text-warning">●</span> {{ r.medium }} {{ 'admin.mapping_quality.coverage.medium'|trans({}, 'admin') }}</span>
+                                            <span><span class="text-secondary">●</span> {{ r.low }} {{ 'admin.mapping_quality.coverage.low'|trans({}, 'admin') }}</span>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted small">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--num">
+                                    {% if r.unmapped > 0 %}
+                                        <span class="text-danger fw-bold">{{ r.unmapped }}</span>
+                                        <div class="small text-muted">{{ 'admin.mapping_quality.coverage.gap'|trans({}, 'admin') }}</div>
+                                    {% else %}
+                                        <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span>
+                                    {% endif %}
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for r in rows %}
-                                {% set covClass = r.coverage_pct >= 80 ? 'success' : (r.coverage_pct >= 50 ? 'warning' : 'danger') %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ r.source.name }}</strong>
-                                        <i class="fa-icon fa-icon--util-arrow-right small text-muted" aria-hidden="true"></i>
-                                        <strong>{{ r.target.name }}</strong>
-                                        <div class="small text-muted">{{ r.source_total }} {{ 'admin.mapping_quality.coverage.items'|trans({}, 'admin') }}</div>
-                                    </td>
-                                    <td class="text-end">
-                                        <span class="fw-bold text-{{ covClass }}">{{ r.coverage_pct }}%</span>
-                                        <div class="small text-muted">{{ r.covered }} / {{ r.source_total }}</div>
-                                    </td>
-                                    <td>
-                                        {# Stacked bar: high (success) | medium (warning) | low (secondary) #}
-                                        {% set total = r.high + r.medium + r.low %}
-                                        {% if total > 0 %}
-                                            <div class="progress progress-h-20">
-                                                <div class="progress-bar bg-success" style="width: {{ (r.high / total * 100)|round }}%" title="{{ r.high }} high">{{ r.high }}</div>
-                                                <div class="progress-bar bg-warning" style="width: {{ (r.medium / total * 100)|round }}%" title="{{ r.medium }} medium">{{ r.medium }}</div>
-                                                <div class="progress-bar bg-secondary" style="width: {{ (r.low / total * 100)|round }}%" title="{{ r.low }} low">{{ r.low }}</div>
-                                            </div>
-                                            <div class="d-flex justify-content-between small text-muted mt-1">
-                                                <span><span class="text-success">●</span> {{ r.high }} {{ 'admin.mapping_quality.coverage.high'|trans({}, 'admin') }}</span>
-                                                <span><span class="text-warning">●</span> {{ r.medium }} {{ 'admin.mapping_quality.coverage.medium'|trans({}, 'admin') }}</span>
-                                                <span><span class="text-secondary">●</span> {{ r.low }} {{ 'admin.mapping_quality.coverage.low'|trans({}, 'admin') }}</span>
-                                            </div>
-                                        {% else %}
-                                            <span class="text-muted small">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end">
-                                        {% if r.unmapped > 0 %}
-                                            <span class="text-danger fw-bold">{{ r.unmapped }}</span>
-                                            <div class="small text-muted">{{ 'admin.mapping_quality.coverage.gap'|trans({}, 'admin') }}</div>
-                                        {% else %}
-                                            <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </section>
 
