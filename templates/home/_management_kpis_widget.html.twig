@@ -4,6 +4,7 @@
  # Only shows KPIs for active modules
  # Sections are collapsible - danger sections auto-expand
  #}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% if management_kpis is defined and management_kpis|length > 0 %}
 <div class="widget-card mb-4"
@@ -106,14 +107,7 @@
                                                 </span>
                                             </div>
                                             {% if kpi.details is defined and kpi.details.total is defined %}
-                                            <div class="progress progress-h-4 mt-1">
-                                                <div class="progress-bar bg-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : 'danger') }}"
-                                                     role="progressbar"
-                                                     style="width: {{ kpi.value }}%"
-                                                     aria-valuenow="{{ kpi.value }}"
-                                                     aria-valuemin="0"
-                                                     aria-valuemax="100"></div>
-                                            </div>
+                                            {{ _fa_progress.render({ value: kpi.value, tone: kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : 'danger'), class: 'mt-1' }) }}
                                             {% endif %}
                                         </div>
                                         {% else %}

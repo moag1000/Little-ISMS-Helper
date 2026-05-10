@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ 'welcome.title'|trans({}, 'welcome') }}{% endblock %}
 
@@ -10,7 +11,7 @@
             <div class="col-lg-10 col-xl-8">
                 {% embed '_components/_card.html.twig' with {borderColor: 'warning', class: 'shadow-sm', urgent_tasks: urgent_tasks, total_urgent_count: total_urgent_count} only %}
                     {% block card_header %}
-                        <div class="card-header bg-warning-subtle d-flex align-items-center">
+                        <div class="card-header d-flex align-items-center">
                             <i class="fa-icon fa-icon--ui-bell text-warning me-2" aria-hidden="true"></i>
                             <h2 class="h5 mb-0">{{ 'welcome.urgent_tasks.title'|trans({}, 'welcome') }}</h2>
                             {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'ms-auto', content: total_urgent_count } only %}
@@ -101,7 +102,7 @@
             <div class="col-lg-10 col-xl-8">
                 {% embed '_components/_card.html.twig' with {borderColor: 'info', class: 'shadow-sm', compliance_wizards: compliance_wizards} only %}
                     {% block card_header %}
-                        <div class="card-header bg-info-subtle d-flex align-items-center">
+                        <div class="card-header d-flex align-items-center">
                             <i class="fa-icon fa-icon--audit-internal text-info me-2" aria-hidden="true"></i>
                             <h2 class="h5 mb-0">{{ 'welcome.wizards.title'|trans({}, 'welcome') }}</h2>
                             <a href="{{ path('app_compliance_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm ms-auto">
@@ -121,14 +122,7 @@
                                                     <i class="bi {{ wizard.icon }} text-{{ wizard.color }} me-2 fa-glyph-size-sm" aria-hidden="true"></i>
                                                     <h3 class="h6 mb-0">{{ wizard.code }}</h3>
                                                 </div>
-                                                <div class="progress progress-h-8 mb-2">
-                                                    <div class="progress-bar bg-{{ wizard.color }}"
-                                                         role="progressbar"
-                                                         style="width: {{ wizard.score }}%"
-                                                         aria-valuenow="{{ wizard.score }}"
-                                                         aria-valuemin="0"
-                                                         aria-valuemax="100"></div>
-                                                </div>
+                                                {{ _fa_progress.render({ value: wizard.score, tone: wizard.color, class: 'mb-2' }) }}
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <small class="text-muted">{{ wizard.score }}% {{ 'welcome.wizards.complete'|trans({}, 'welcome') }}</small>
                                                     {% if wizard.critical_gaps > 0 %}
