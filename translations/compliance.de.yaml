@@ -578,6 +578,7 @@ compliance:
         applicable_description: 'Diese Anforderung gilt für unsere Organisation'
         save_quick_update: 'Schnell-Update speichern'
     cross_framework:
+        exceeds_tooltip: 'Erweiterte Abdeckung: Quell-Framework deckt %pct%% des Ziel-Requirements ab — mehr als 100 % bedeutet, dass Source-Controls strenger sind als die Ziel-Anforderung.'
         source_target_label: 'Quell- und Ziel-Framework'
         table:
             source: Quelle

@@ -160,9 +160,13 @@
                                 {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.mappingType|upper } %}
                             </td>
                             <td>
-                                <div class="mapping-strength">
+                                {# `exceeds` mapping_type = source-framework deckt mehr ab als
+                                   target verlangt → DB-Wert kann >100 sein. Bar visuell cappen,
+                                   echten %-Wert als Text + Tooltip behalten. #}
+                                {% set _bar_pct = mapping.mappingPercentage > 100 ? 100 : mapping.mappingPercentage %}
+                                <div class="mapping-strength" {% if mapping.mappingPercentage > 100 %}title="{{ 'compliance.cross_framework.exceeds_tooltip'|trans({'%pct%': mapping.mappingPercentage}, 'compliance') }}"{% endif %}>
                                     <div class="strength-bar">
-                                        <div class="strength-fill" style="width: {{ mapping.mappingPercentage }}%; background: {{ mapping.mappingPercentage >= 100 ? 'var(--success)' : (mapping.mappingPercentage >= 50 ? 'var(--warning)' : 'var(--primary)') }};"></div>
+                                        <div class="strength-fill" style="width: {{ _bar_pct }}%; background: {{ mapping.mappingPercentage >= 100 ? 'var(--success)' : (mapping.mappingPercentage >= 50 ? 'var(--warning)' : 'var(--primary)') }};"></div>
                                     </div>
                                     <span class="strength-value">{{ mapping.mappingPercentage }}%</span>
                                 </div>
