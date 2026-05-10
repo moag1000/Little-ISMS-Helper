@@ -104,7 +104,7 @@ class ActivityFeed
                 $items[] = [
                     'tone'      => 'info',
                     'icon'      => 'fa-icon--ui-document',
-                    'title'     => sprintf('Document %s · v%s', $doc->getTitle() ?? '—', $doc->getVersion() ?? '—'),
+                    'title'     => sprintf('Document %s · v%s', $doc->getOriginalFilename() ?? '—', $doc->getVersion() ?? '—'),
                     'subtitle'  => $doc->getStatus() ?? '',
                     'link'      => '/document/' . $doc->getId(),
                     'timestamp' => method_exists($doc, 'getUpdatedAt') ? $doc->getUpdatedAt() : null,
