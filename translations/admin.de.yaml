@@ -1,5 +1,8 @@
 admin:
     title: Administration
+    cancel: 'Abbrechen'
+    tenant_management:
+        title: 'Mandanten-Verwaltung'
     breadcrumb:
         home: 'Admin Dashboard'
     hub:
@@ -905,3 +908,40 @@ kpi_threshold:
         wizard_maturity_target: 'Default Wizard-Reife-Ziel'
         wizard_maturity_target_help: 'Wird in jedem Wizard-Result als Soll-Reife angezeigt.'
     cancel: "Cancel"
+
+industry_preset:
+    title: 'Industry-Presets'
+    badge: 'Setup'
+    subtitle: 'Branchen-Vorlagen für Module, Frameworks, Controls und Dokumente — in einem Schritt anwenden.'
+    action:
+        admin_hub: 'Admin-Hub'
+        preview: 'Preview'
+        apply: 'Anwenden'
+        back: 'Zurück'
+        apply_button: 'Preset anwenden'
+    badge_label:
+        modules: 'Module'
+        frameworks: 'Frameworks'
+        controls: 'Controls'
+        documents: 'Dokumente'
+    empty:
+        title: 'Keine Presets gefunden'
+        text: 'In fixtures/library/presets/ liegen keine YAML-Dateien.'
+    confirm:
+        apply_full: 'Preset wirklich anwenden? Module + Frameworks werden aktiviert, Controls und Dokumente angelegt.'
+        apply_short: 'Preset wirklich anwenden?'
+    preview:
+        badge: 'Preview'
+        subtitle: 'Inhalt des Industry-Presets vor Anwendung prüfen.'
+        section_description: 'Beschreibung'
+        section_modules: 'Module'
+        section_frameworks: 'Frameworks'
+        section_initial_controls: 'Initial-Controls'
+        section_initial_documents: 'Initial-Dokumente'
+        section_apply: 'Anwenden'
+        apply_hint: 'Mit dem Anwenden werden Module aktiviert, Frameworks freigeschaltet und Initial-Controls/Dokumente persistent angelegt. Bestehende Datensätze bleiben unangetastet.'
+        table:
+            code: 'Code'
+            priority: 'Priorität'
+            activate: 'Aktivieren'
+            optional: 'optional'

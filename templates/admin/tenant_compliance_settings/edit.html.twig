@@ -9,8 +9,8 @@
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'admin.dashboard'|trans, url: path('admin_dashboard') },
-        { label: 'admin.tenants'|trans, url: path('admin_tenant_management_index') },
+        { label: 'admin.dashboard.title'|trans({}, 'admin'), url: path('admin_dashboard') },
+        { label: 'admin.tenant_management.title'|trans({}, 'admin'), url: path('admin_tenant_management_index') },
         { label: 'admin.tenant_settings.title'|trans }
     ]
 } %}
