@@ -3672,10 +3672,22 @@ html[data-theme="dark"] .wizard-busy-overlay {
     justify-content: space-between;
     gap: 16px;
     padding-block: 20px 16px;
-    border-bottom: 2px solid transparent;
-    border-image: var(--brand-gradient-line) 1;
     margin-bottom: 24px;
     flex-wrap: wrap;
+    position: relative;
+}
+/* Brand-gradient bottom-divider via pseudo-element instead of border-image
+   (border-image: <src> 1 has Browser-Glitches mit slice=1 — Strich erscheint
+   teilweise durch den Header statt unter ihm). */
+.fa-page-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--brand-gradient-line);
+    pointer-events: none;
 }
 
 .fa-page-header__meta {
@@ -3757,8 +3769,18 @@ html[data-theme="dark"] .fa-page-header__badge {
     gap: 12px;
     padding-bottom: 10px;
     margin-bottom: 16px;
-    border-bottom: 1px solid transparent;
-    border-image: linear-gradient(90deg, var(--primary-tint), transparent) 1;
+    position: relative;
+}
+/* Bottom-divider via pseudo-element (border-image slice=1 hat Browser-Glitches). */
+.fa-section__header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--primary-tint), transparent);
+    pointer-events: none;
 }
 
 .fa-section__title {
