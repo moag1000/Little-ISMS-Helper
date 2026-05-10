@@ -10,12 +10,12 @@ monitoring:
         error: Error
         last_checked: 'Last Checked'
         json_api: 'JSON API'
-        yes: 'Yes'
-        no: 'No'
+        'yes': 'Yes'
+        'no': 'No'
         not_used: 'Not used'
         exists: 'Exists'
-        on: 'ON'
-        off: 'OFF'
+        'on': 'ON'
+        'off': 'OFF'
         present: 'Present'
     action:
         optimize_disk: 'Optimize Disk Space'
