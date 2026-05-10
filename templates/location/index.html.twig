@@ -6,6 +6,7 @@
 
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
@@ -23,6 +24,13 @@
         { label: 'location.action.create'|trans({}, 'locations'), variant: 'primary', icon: 'plus-circle', href: path('app_location_new') }
     ]
 }) }}
+{% set _global_hints = alva_hints('location_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 
 <main class="fa-aurora-surface">
 

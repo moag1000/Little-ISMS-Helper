@@ -6,6 +6,7 @@
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -22,6 +23,13 @@
             { label: 'bc_plans.action.add_new'|trans({}, 'bc_plans'), href: path('app_bc_plan_new'), variant: 'primary', icon: 'plus-circle' }
         ]
     }) }}
+{% set _global_hints = alva_hints('business_continuity_plan_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
     <main class="fa-aurora-surface">
 
     {% if overdue_tests|length > 0 %}

@@ -20,6 +20,13 @@
         { label: 'incident.header.action.report'|trans({}, 'incident'), variant: 'danger', icon: 'exclamation-circle', href: path('app_incident_new') }
     ]
 }) }}
+{% set _global_hints = alva_hints('incident_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 
 <main class="fa-aurora-surface">
 

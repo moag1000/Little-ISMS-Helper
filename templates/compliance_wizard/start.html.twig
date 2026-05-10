@@ -3,6 +3,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 
 {% block title %}{{ config.name }} - {{ 'wizard.title'|trans }}{% endblock %}
 
@@ -26,6 +27,13 @@
             { label: 'wizard.run_assessment'|trans({}, 'wizard'), href: path('app_compliance_wizard_assess', {wizard: wizard}), variant: 'primary', icon: 'play-fill' }
         ]
     }) }}
+{% set _global_hints = alva_hints('compliance_wizard_start') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 
     <div class="row">
         <div class="col-lg-8">

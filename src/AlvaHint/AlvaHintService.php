@@ -24,6 +24,10 @@ use Symfony\Bundle\SecurityBundle\Security;
  * - per-(user,tenant) dismissed-token set is fetched once
  * - shown hint keys are remembered so list pages don't rerender the
  *   same hint card per row
+ *
+ * Global (tenant-scoped) rules are discovered via the `alva.global_hint_rule`
+ * tag and returned by getTenantGlobalHints(). They receive no entity — they
+ * inspect tenant-wide aggregate state instead.
  */
 class AlvaHintService
 {
@@ -36,8 +40,12 @@ class AlvaHintService
     /** @var array<string, true> Hint keys already emitted this request (max-1-per-page-key). */
     private array $shownHintKeys = [];
 
+    /** Maximum hints returned from getTenantGlobalHints() per page-load. */
+    private const int MAX_GLOBAL_HINTS = 3;
+
     /**
-     * @param iterable<AlvaHintRuleInterface> $rules
+     * @param iterable<AlvaHintRuleInterface>       $rules
+     * @param iterable<GlobalAlvaHintRuleInterface> $globalRules
      */
     public function __construct(
         private readonly Security $security,
@@ -46,6 +54,7 @@ class AlvaHintService
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly iterable $rules = [],
         private readonly ?AlvaHintRenderCountRepository $renderCountRepository = null,
+        private readonly iterable $globalRules = [],
     ) {
     }
 
@@ -118,6 +127,154 @@ class AlvaHintService
         }
 
         return null;
+    }
+
+    /**
+     * Return up to MAX_GLOBAL_HINTS active, undismissed tenant-scoped hints
+     * for the current user and tenant. Optionally filtered to a page context.
+     *
+     * @return list<AlvaHint>
+     */
+    public function getTenantGlobalHints(?string $page = null): array
+    {
+        $user = $this->security->getUser();
+        if (!$user instanceof User) {
+            return [];
+        }
+
+        $tenant = $this->resolveTenant($user);
+        if ($tenant === null) {
+            return [];
+        }
+
+        $activeModules = $this->getActiveModules();
+        $dismissedSet = $this->getDismissedTokens($user, $tenant);
+
+        $candidates = [];
+        foreach ($this->globalRules as $rule) {
+            $required = $rule->requiredModules();
+            if ($required !== [] && array_diff($required, $activeModules) !== []) {
+                continue;
+            }
+            if ($page !== null) {
+                $pages = $rule->appliesToPages();
+                if ($pages !== [] && !in_array($page, $pages, true)) {
+                    continue;
+                }
+            }
+            $candidates[] = [$rule->priorityTier(), $rule];
+        }
+
+        if ($candidates === []) {
+            return [];
+        }
+
+        usort(
+            $candidates,
+            static fn(array $a, array $b): int => $a[0] <=> $b[0],
+        );
+
+        $results = [];
+        foreach ($candidates as [$tier, $rule]) {
+            if (count($results) >= self::MAX_GLOBAL_HINTS) {
+                break;
+            }
+
+            $hint = $rule->evaluate($tenant, $user);
+            if ($hint === null) {
+                continue;
+            }
+
+            if (!$this->userHasRequiredRoles($hint)) {
+                continue;
+            }
+
+            $token = $this->token($hint->key . '@' . $hint->version, $hint->entityType, $hint->entityId);
+            if ($hint->dismissible && isset($dismissedSet[$token])) {
+                continue;
+            }
+
+            if (isset($this->shownHintKeys[$hint->key])) {
+                continue;
+            }
+
+            $this->shownHintKeys[$hint->key] = true;
+
+            if ($this->renderCountRepository !== null) {
+                try {
+                    $this->renderCountRepository->increment($tenant, $hint->key);
+                } catch (\Throwable) {
+                    // Telemetry failure must never break the hint flow.
+                }
+            }
+
+            $results[] = $hint;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Return ALL active global hints for the inbox page (no page filter,
+     * no MAX_GLOBAL_HINTS cap). Used by AlvaHintInboxController.
+     *
+     * @return list<AlvaHint>
+     */
+    public function getAllTenantGlobalHints(): array
+    {
+        $user = $this->security->getUser();
+        if (!$user instanceof User) {
+            return [];
+        }
+
+        $tenant = $this->resolveTenant($user);
+        if ($tenant === null) {
+            return [];
+        }
+
+        $activeModules = $this->getActiveModules();
+        $dismissedSet = $this->getDismissedTokens($user, $tenant);
+
+        $candidates = [];
+        foreach ($this->globalRules as $rule) {
+            $required = $rule->requiredModules();
+            if ($required !== [] && array_diff($required, $activeModules) !== []) {
+                continue;
+            }
+            $candidates[] = [$rule->priorityTier(), $rule];
+        }
+
+        usort(
+            $candidates,
+            static fn(array $a, array $b): int => $a[0] <=> $b[0],
+        );
+
+        $results = [];
+        $seen = [];
+        foreach ($candidates as [$tier, $rule]) {
+            $hint = $rule->evaluate($tenant, $user);
+            if ($hint === null) {
+                continue;
+            }
+
+            if (!$this->userHasRequiredRoles($hint)) {
+                continue;
+            }
+
+            $token = $this->token($hint->key . '@' . $hint->version, $hint->entityType, $hint->entityId);
+            if ($hint->dismissible && isset($dismissedSet[$token])) {
+                continue;
+            }
+
+            if (isset($seen[$hint->key])) {
+                continue;
+            }
+            $seen[$hint->key] = true;
+
+            $results[] = $hint;
+        }
+
+        return $results;
     }
 
     /**

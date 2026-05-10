@@ -29,6 +29,13 @@
         { label: 'soa.action.preview_pdf'|trans({}, 'soa'), variant: 'ghost', icon: 'eye', href: path('app_soa_preview_pdf') }
     ]
 }) }}
+{% set _global_hints = alva_hints('soa_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 {# TODO: export/preview actions above use Turbo navigation; add data-turbo="false" via custom markup if full-page download is required #}
 <p class="text-muted small mb-3"><a href="{{ path('app_help_glossary') }}#glossary-soa" class="text-muted" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i> {{ 'common.glossary_link'|trans({}, 'messages') }}</a></p>
 

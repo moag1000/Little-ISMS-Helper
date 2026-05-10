@@ -24,6 +24,13 @@
         { label: 'asset.action.create'|trans({}, 'asset'), href: path('app_asset_new'), variant: 'primary', icon: 'plus-lg' }
     ]
 }) }}
+{% set _global_hints = alva_hints('asset_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 <main class="fa-aurora-surface">
 
 {# Tenant View Filter (Multi-Tenant Support) #}

@@ -24,6 +24,13 @@
             { label: 'privacy.data_breach.actions.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus-lg' }
         ]
     }) }}
+{% set _global_hints = alva_hints('data_breach_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
     <main class="fa-aurora-surface">
 
     {# CRITICAL: Overdue Notifications Alert #}

@@ -6,6 +6,7 @@
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
@@ -23,6 +24,13 @@
             { label: 'bcm.action.add_process'|trans({}, 'bcm'), href: path('app_business_process_new'), variant: 'primary', icon: 'plus-lg' }
         ]
     }) }}
+{% set _global_hints = alva_hints('bcm_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
     <main class="fa-aurora-surface fa-aurora-surface--dots">
 
     {# KPI Overview Cards #}

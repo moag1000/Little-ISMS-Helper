@@ -21,6 +21,13 @@
         { label: 'consent.header.action.new'|trans({}, 'consent'), href: path('app_consent_new'), variant: 'primary', icon: 'plus-lg' }
     ]
 }) }}
+{% set _global_hints = alva_hints('consent_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 <main class="fa-aurora-surface">
 
 {# KPI Cards Grid #}

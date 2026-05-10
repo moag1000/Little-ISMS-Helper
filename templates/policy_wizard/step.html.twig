@@ -10,6 +10,7 @@
 
 {% block body %}
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container-fluid py-4 fa-aurora-surface">
     {# Junior-ISB Wish #3 — prominent progress-bar above the step
        title. Controller injects current_step_index (0-based) and
@@ -40,6 +41,13 @@
               href: path('app_policy_wizard_index') }
         ]
     }) }}
+{% set _global_hints = alva_hints('policy_wizard_step') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 
     {# Junior-ISB Wish #4 — Cancel-State-Hint. Reassures the
        implementer that the run state is auto-saved and that
