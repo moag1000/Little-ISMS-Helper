@@ -125,7 +125,7 @@
 </div>
 {% endif %}
 
-{# Workflow Steps #}
+{# Workflow Steps — Aurora ISMS-Pattern: isms-approval-stages (V3 C7) #}
 {% if instance.workflow and instance.workflow.steps|length > 0 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_header %}
@@ -134,40 +134,49 @@
         </div>
     {% endblock %}
     {% block card_body %}
-        {% for step in instance.workflow.steps %}
-        {% set isCurrentStep = instance.currentStep and step.id == instance.currentStep.id %}
-        {% set isCompleted = step.id in instance.completedSteps %}
-        <div class="card fa-section mb-2 {% if isCurrentStep %}border-primary{% elseif isCompleted %}border-success fa-rag-card fa-rag-card--green{% endif %}">
-            <div class="card-body py-2">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong>{{ loop.index }}. {{ step.name }}</strong>
-                        {% if isCurrentStep %}
-                            {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-2', content: 'workflow.badge.current'|trans({}, 'workflows') } %}
-                        {% elseif isCompleted %}
-                            {% include '_components/_badge.html.twig' with { variant: 'success', class: 'ms-2', icon: 'bi-check', content: 'workflow.badge.completed'|trans({}, 'workflows') } %}
+        <ol class="isms-approval-stages" aria-label="{{ 'workflow.section.steps'|trans({}, 'workflows') }}">
+            {% for step in instance.workflow.steps %}
+                {% set isCurrentStep = instance.currentStep and step.id == instance.currentStep.id %}
+                {% set isCompleted = step.id in instance.completedSteps %}
+                {% set stageState = isCompleted ? 'completed' : (isCurrentStep ? 'current' : 'pending') %}
+                {% set stageIcon = isCompleted ? 'fa-icon--ui-check'
+                    : (isCurrentStep ? 'fa-icon--ui-edit' : 'fa-icon--ui-circle') %}
+
+                <li class="isms-approval-stages__item isms-approval-stages__item--{{ stageState }}">
+                    <span class="isms-approval-stages__dot" aria-hidden="true">
+                        <i class="fa-icon {{ stageIcon }}"></i>
+                    </span>
+                    <div class="isms-approval-stages__content">
+                        <div class="isms-approval-stages__head d-flex justify-content-between align-items-center">
+                            <strong>{{ loop.index }}. {{ step.name }}</strong>
+                            <span>
+                                {% if isCurrentStep %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-2', content: 'workflow.badge.current'|trans({}, 'workflows') } %}
+                                {% elseif isCompleted %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', class: 'ms-2', icon: 'bi-check', content: 'workflow.badge.completed'|trans({}, 'workflows') } %}
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% if step.description %}
+                            <p class="text-muted mb-2 mt-1 small">{{ step.description }}</p>
+                        {% endif %}
+                        {% if isCurrentStep and can_approve %}
+                            <div class="d-flex gap-2 mt-1">
+                                <form method="post" action="{{ path('app_workflow_instance_approve', {id: instance.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
+                                    </button>
+                                </form>
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
+                                </button>
+                            </div>
                         {% endif %}
                     </div>
-                    {% if isCurrentStep and can_approve %}
-                    <div>
-                        <form method="post" action="{{ path('app_workflow_instance_approve', {id: instance.id}) }}" class="d-inline">
-                            <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
-                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
-                            </button>
-                        </form>
-                        <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
-                        </button>
-                    </div>
-                    {% endif %}
-                </div>
-                {% if step.description %}
-                    <p class="text-muted mb-0 mt-1 small">{{ step.description }}</p>
-                {% endif %}
-            </div>
-        </div>
-        {% endfor %}
+                </li>
+            {% endfor %}
+        </ol>
     {% endblock %}
 {% endembed %}
 {% endif %}

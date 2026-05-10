@@ -5493,3 +5493,124 @@ html[data-theme="dark"] .framework-card {
     color: var(--fg-3);
     margin-top: var(--space-1);
 }
+
+/* ============================================================
+   ISMS Pattern: isms-approval-stages (Audit V3 C7)
+   Used by workflow/instance_show.html.twig — vertical pipeline
+   showing pending / current / completed approval stages.
+   ============================================================ */
+.isms-approval-stages {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.isms-approval-stages::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--fg-4, var(--border));
+    z-index: 0;
+}
+.isms-approval-stages__item {
+    position: relative;
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    z-index: 1;
+}
+.isms-approval-stages__dot {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 2px solid var(--fg-4, var(--border));
+    color: var(--fg-3);
+    font-size: 14px;
+}
+.isms-approval-stages__item--current .isms-approval-stages__dot {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-tint, var(--surface));
+    box-shadow: 0 0 0 4px rgba(var(--primary-rgb, 13 110 253), 0.18);
+}
+.isms-approval-stages__item--completed .isms-approval-stages__dot {
+    border-color: var(--success);
+    color: var(--success);
+    background: var(--success-tint, var(--surface));
+}
+.isms-approval-stages__content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.isms-approval-stages__head {
+    margin-bottom: var(--space-1);
+}
+
+/* ============================================================
+   ISMS Pattern: isms-comment (Audit V3 C7)
+   Generic comment thread — used for Risk, AuditFinding, etc.
+   ============================================================ */
+.isms-comment-thread {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+.isms-comment {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+}
+.isms-comment__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-tint, var(--surface));
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+.isms-comment__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin-bottom: var(--space-1);
+}
+.isms-comment__author {
+    font-weight: 600;
+    color: var(--fg);
+}
+.isms-comment__meta {
+    color: var(--fg-3);
+    font-size: 12px;
+}
+.isms-comment__body {
+    color: var(--fg-2);
+    line-height: 1.5;
+    word-break: break-word;
+}
+.isms-comment__body p:last-child {
+    margin-bottom: 0;
+}
+.isms-comment-form {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+}
