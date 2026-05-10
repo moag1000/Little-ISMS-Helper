@@ -174,3 +174,9 @@ management_review:
         action_items_with_deadlines: 'Structured action items with owners and deadlines. JSON format: [{action, owner, deadline (ISO date), status: open|in_progress|done}]'
     error:
         owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+    auto_collect:
+        title: 'Generate from current data'
+        title_prefix: 'Management Review (auto-generated)'
+        help: 'Saves 30 min of aggregation work: risks, audit findings, KPIs, treatment plans and improvement opportunities are pre-filled — you edit and finalize.'
+        cta: 'Pre-fill and create'
+        success: 'Management Review pre-filled from §9.3 data sources. Please review and complete.'

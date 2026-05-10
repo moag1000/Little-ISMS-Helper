@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use App\Entity\ManagementReview;
 use App\Form\ManagementReviewType;
 use App\Repository\ManagementReviewRepository;
+use App\Service\ManagementReportService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,6 +28,7 @@ class ManagementReviewController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
         private readonly PdfExportService $pdfExportService,
+        private readonly ManagementReportService $managementReportService,
     ) {}
     #[Route('/management-review/', name: 'app_management_review_index')]
     public function index(): Response
@@ -123,6 +125,38 @@ class ManagementReviewController extends AbstractController
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ]);
+    }
+
+    /**
+     * V3 B4 / EF-1: Auto-Collect ein Management-Review aus existierender §9.3-Datenlage.
+     * Pre-fills Risk-/Audit-/NC-/KPI-Narratives, anschliessend redirect auf edit.
+     */
+    #[Route('/management-review/auto-collect', name: 'app_management_review_auto_collect', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function autoCollect(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('auto_collect_review', (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('app_management_review_index');
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            $this->addFlash('error', $this->translator->trans('common.error.no_tenant', [], 'messages'));
+            return $this->redirectToRoute('app_management_review_index');
+        }
+
+        $referenceDate = new DateTimeImmutable();
+        $locale = $request->getLocale() === 'de' ? 'de' : 'en';
+
+        $review = $this->managementReportService->createManagementReviewFromReport(
+            $tenant,
+            $referenceDate,
+            $locale
+        );
+
+        $this->addFlash('success', $this->translator->trans('management_review.auto_collect.success', [], 'management_review'));
+        return $this->redirectToRoute('app_management_review_edit', ['id' => $review->getId()]);
     }
 
     #[Route('/management-review/{id}/delete', name: 'app_management_review_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
