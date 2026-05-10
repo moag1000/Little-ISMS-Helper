@@ -122,6 +122,10 @@ nav:
             # Audit-V3 ME-*: Discovery sections.
             my_inbox: 'My Inbox'
             reports: 'Reports & Exports'
+            # V3 B7 / KL-2: Compliance-Panel sub-sections
+            frameworks_mapping: 'Frameworks & Mapping'
+            wizards: 'Wizards & Assistants'
+            specialized_tools: 'DORA / NIS2 / MRIS / AI'
 
         help:
             iso9001_bridge: 'ISO 9001 → 27001 Bridge'

@@ -499,8 +499,12 @@
                         {% endif %}
                     </ul>
                 </div>
+                {# V3 B7 / KL-2: Frameworks-Section war 17 Items in einer Liste — gesplittet
+                   in 4 Sub-Sektionen für bessere Discoverability. #}
+
+                {# Sub-Sektion 1: Frameworks & Mapping #}
                 <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.frameworks'|trans({}, 'nav') }}</h3>
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.frameworks_mapping'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
                         {% if is_module_active('compliance') %}
                         <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_index' %}active{% endif %}" data-turbo-action="advance">
@@ -510,8 +514,6 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.compliance_frameworks'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
-                        {% endif %}
-                        {% if is_module_active('compliance') %}
                         <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -519,8 +521,6 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.framework_dashboard'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
-                        {% endif %}
-                        {% if is_module_active('compliance') %}
                         <li><a href="{{ path('app_compliance_mapping_hub') }}" class="{% if current_route starts with 'app_compliance_mapping_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -528,13 +528,89 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mapping_hub'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
-                        {% endif %}
-                        {% if is_module_active('compliance') %}
                         <li><a href="{{ path('app_mapping_quality_dashboard') }}" class="{% if current_route starts with 'app_mapping_quality_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-patch-check" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.mapping_quality'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mapping_quality'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_data_reuse_hub') }}" class="{% if current_route starts with 'app_data_reuse_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-collapse" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.data_reuse'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.data_reuse'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_industry_baseline_index') }}" class="{% if current_route starts with 'app_industry_baseline_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-boxes" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.industry_baselines'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.industry_baselines'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                {# Sub-Sektion 2: Wizards #}
+                {% if is_module_active('compliance') %}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.wizards'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_compliance_wizard_index') }}" class="{% if current_route starts with 'app_compliance_wizard_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.compliance_wizard'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.compliance_wizard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_policy_wizard_index') }}" class="{% if current_route starts with 'app_policy_wizard_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.policy_wizard'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.policy_wizard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_bsi_grundschutz_check') }}" class="{% if current_route starts with 'app_bsi_grundschutz_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.bsi_check'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.bsi_check'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% if is_module_active('controls') %}
+                        <li><a href="{{ path('app_prototype_protection_index') }}" class="{% if current_route starts with 'app_prototype_protection_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--control" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.prototype_protection'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.prototype_protection'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {# Sub-Sektion 3: Specialized Tools (DORA / NIS2 / MRIS / AI) #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.specialized_tools'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        {% if is_module_active('nis2_dora') or is_module_active('compliance') %}
+                        <li><a href="{{ path('app_dora_compliance_dashboard') }}" class="{% if current_route starts with 'app_dora_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-building-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.dora_compliance'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.dora_compliance'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {% if is_module_active('nis2_dora') %}
+                        <li><a href="{{ path('app_nis2_compliance_dashboard') }}" class="{% if current_route starts with 'app_nis2_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-building-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.nis2'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.nis2'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
                         {% endif %}
@@ -546,8 +622,6 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mris_kpis'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
-                        {% endif %}
-                        {% if is_module_active('compliance') %}
                         <li><a href="{{ path('app_mris_baselines_index') }}" class="{% if current_route starts with 'app_mris_baselines' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -555,17 +629,6 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mris_baselines'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
-                        {% endif %}
-                        {% if is_module_active('ai_governance') %}
-                        <li><a href="{{ path('app_ai_agents_index') }}" class="{% if current_route starts with 'app_ai_agents_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-robot" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'nav.ai_agents'|trans({}, 'nav') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.ai_agents'|trans({}, 'nav') }}</span>
-                            </div>
-                        </a></li>
-                        {% endif %}
-                        {% if is_module_active('compliance') %}
                         <li><a href="{{ path('app_mris_glossar') }}" class="{% if current_route starts with 'app_mris_glossar' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -583,64 +646,12 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        {% if is_module_active('compliance') %}
-                        <li><a href="{{ path('app_data_reuse_hub') }}" class="{% if current_route starts with 'app_data_reuse_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-collapse" aria-hidden="true"></i>
+                        {% if is_module_active('ai_governance') %}
+                        <li><a href="{{ path('app_ai_agents_index') }}" class="{% if current_route starts with 'app_ai_agents_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-robot" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'nav.data_reuse'|trans({}, 'nav') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.data_reuse'|trans({}, 'nav') }}</span>
-                            </div>
-                        </a></li>
-                        {% endif %}
-                        {% if is_module_active('nis2_dora') %}
-                        <li><a href="{{ path('app_nis2_compliance_dashboard') }}" class="{% if current_route starts with 'app_nis2_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-building-check" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'nav.nis2'|trans({}, 'nav') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.nis2'|trans({}, 'nav') }}</span>
-                            </div>
-                        </a></li>
-                        {% endif %}
-                        {% if is_module_active('compliance') %}
-                        <li><a href="{{ path('app_bsi_grundschutz_check') }}" class="{% if current_route starts with 'app_bsi_grundschutz_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'nav.bsi_check'|trans({}, 'nav') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.bsi_check'|trans({}, 'nav') }}</span>
-                            </div>
-                        </a></li>
-                        {% endif %}
-                        {% if is_module_active('controls') %}
-                        <li><a href="{{ path('app_prototype_protection_index') }}" class="{% if current_route starts with 'app_prototype_protection_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--control" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'nav.prototype_protection'|trans({}, 'nav') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.prototype_protection'|trans({}, 'nav') }}</span>
-                            </div>
-                        </a></li>
-                        {% endif %}
-                        {% if is_module_active('compliance') %}
-                        <li><a href="{{ path('app_compliance_wizard_index') }}" class="{% if current_route starts with 'app_compliance_wizard_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'nav.compliance_wizard'|trans({}, 'nav') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.compliance_wizard'|trans({}, 'nav') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('app_policy_wizard_index') }}" class="{% if current_route starts with 'app_policy_wizard_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'nav.policy_wizard'|trans({}, 'nav') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.policy_wizard'|trans({}, 'nav') }}</span>
-                            </div>
-                        </a></li>
-                        {% endif %}
-                        {% if is_module_active('compliance') %}
-                        <li><a href="{{ path('app_industry_baseline_index') }}" class="{% if current_route starts with 'app_industry_baseline_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-boxes" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'nav.industry_baselines'|trans({}, 'nav') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.industry_baselines'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-title">{{ 'nav.ai_agents'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.ai_agents'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
                         {% endif %}
@@ -650,17 +661,6 @@
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.group_report'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.group_report'|trans({}, 'nav') }}</span>
-                            </div>
-                        </a></li>
-                        {% endif %}
-                        {# Audit-V3 ME-12: DORA-Compliance-Dashboard — was direct-URL-only.
-                           Sits under Frameworks because DORA is treated as a regulatory framework. #}
-                        {% if is_module_active('nis2_dora') or is_module_active('compliance') %}
-                        <li><a href="{{ path('app_dora_compliance_dashboard') }}" class="{% if current_route starts with 'app_dora_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-building-check" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'nav.dora_compliance'|trans({}, 'nav') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.dora_compliance'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
                         {% endif %}
