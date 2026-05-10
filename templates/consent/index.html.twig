@@ -2,6 +2,7 @@
 {% trans_default_domain 'consent' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ 'consent.header.title'|trans({}, 'consent') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -86,10 +87,7 @@
                             <div class="status-label">{{ data.label }}</div>
                             <div class="status-count">{{ count }}</div>
                             {% if consents|length > 0 %}
-                                <div class="progress mt-2 progress-h-6">
-                                    <div class="progress-bar bg-{{ data.color }}"
-                                         style="width: {{ (count / consents|length * 100)|round }}%"></div>
-                                </div>
+                                {{ _fa_progress.render({ value: (count / consents|length * 100)|round, tone: data.color, class: 'mt-2' }) }}
                             {% endif %}
                         </div>
                     </div>

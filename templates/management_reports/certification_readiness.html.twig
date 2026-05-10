@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'management_reports' %}
 
 {% block title %}{{ 'cert_readiness.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -48,13 +49,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <h5>{{ 'cert_readiness.clause_compliance_score'|trans({}, 'management_reports') }}</h5>
-                    <div class="progress progress-h-24 mb-2">
-                        <div class="progress-bar {% if clause_score >= 80 %}bg-success{% elseif clause_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
-                             role="progressbar" style="width: {{ clause_score }}%"
-                             aria-valuenow="{{ clause_score }}" aria-valuemin="0" aria-valuemax="100">
-                            {{ clause_score }}%
-                        </div>
-                    </div>
+                    {{ _fa_progress.render({ value: clause_score, tone: clause_score >= 80 ? 'success' : (clause_score >= 60 ? 'warning' : 'danger'), showText: true, class: 'mb-2' }) }}
                     <small class="text-muted">{{ 'cert_readiness.clauses_4_10'|trans({}, 'management_reports') }}</small>
                 {% endblock %}
             {% endembed %}
@@ -63,13 +58,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <h5>{{ 'cert_readiness.annex_a_coverage'|trans({}, 'management_reports') }}</h5>
-                    <div class="progress progress-h-24 mb-2">
-                        <div class="progress-bar {% if control_percentage >= 80 %}bg-success{% elseif control_percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
-                             role="progressbar" style="width: {{ control_percentage }}%"
-                             aria-valuenow="{{ control_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                            {{ control_percentage }}%
-                        </div>
-                    </div>
+                    {{ _fa_progress.render({ value: control_percentage, tone: control_percentage >= 80 ? 'success' : (control_percentage >= 60 ? 'warning' : 'danger'), showText: true, class: 'mb-2' }) }}
                     <small class="text-muted">
                         {{ control_stats.implemented }} / {{ control_stats.total }} {{ 'cert_readiness.controls_implemented'|trans({}, 'management_reports') }}
                     </small>
@@ -106,13 +95,7 @@
                                 <strong>{{ clause.name|trans({}, 'compliance') }}</strong>
                             </td>
                             <td>
-                                <div class="progress" style="height: 20px; min-width: 100px;">
-                                    <div class="progress-bar {% if clause.score >= 80 %}bg-success{% elseif clause.score >= 40 %}bg-warning{% else %}bg-danger{% endif %}"
-                                         role="progressbar" style="width: {{ clause.score }}%"
-                                         aria-valuenow="{{ clause.score }}" aria-valuemin="0" aria-valuemax="100">
-                                        {{ clause.score }}%
-                                    </div>
-                                </div>
+                                {{ _fa_progress.render({ value: clause.score, tone: clause.score >= 80 ? 'success' : (clause.score >= 40 ? 'warning' : 'danger'), showText: true }) }}
                             </td>
                             <td>
                                 {% if clause.status == 'complete' %}

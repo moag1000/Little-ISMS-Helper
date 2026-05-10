@@ -2,6 +2,7 @@
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ 'wizard.results'|trans({}, 'wizard') }} - {{ result.framework_name }}{% endblock %}
 
@@ -107,19 +108,7 @@
                             </div>
                         </div>
                         <div class="text-end" style="min-width: 200px;">
-                            <div class="progress" style="height: 24px;">
-                                <div class="progress-bar
-                                    {% if result.catalogue_coverage.percent >= 80 %}bg-success
-                                    {% elseif result.catalogue_coverage.percent >= 50 %}bg-warning
-                                    {% else %}bg-danger{% endif %}"
-                                     role="progressbar"
-                                     style="width: {{ result.catalogue_coverage.percent }}%;"
-                                     aria-valuenow="{{ result.catalogue_coverage.percent }}"
-                                     aria-valuemin="0"
-                                     aria-valuemax="100">
-                                    {{ result.catalogue_coverage.percent }}%
-                                </div>
-                            </div>
+                            {{ _fa_progress.render({ value: result.catalogue_coverage.percent, tone: result.catalogue_coverage.percent >= 80 ? 'success' : (result.catalogue_coverage.percent >= 50 ? 'warning' : 'danger'), showText: true }) }}
                         </div>
                     </div>
                 {% endblock %}
@@ -180,18 +169,7 @@
                 {% endblock %}
                 {% block card_body %}
                     {# Progress Bar #}
-                    <div class="progress progress-h-8 mb-3">
-                        <div class="progress-bar
-                            {% if category.score >= 80 %}bg-success
-                            {% elseif category.score >= 60 %}bg-warning
-                            {% else %}bg-danger{% endif %}"
-                            role="progressbar"
-                            style="width: {{ category.score }}%"
-                            aria-valuenow="{{ category.score }}"
-                            aria-valuemin="0"
-                            aria-valuemax="100">
-                        </div>
-                    </div>
+                    {{ _fa_progress.render({ value: category.score, tone: category.score >= 80 ? 'success' : (category.score >= 60 ? 'warning' : 'danger'), class: 'mb-3' }) }}
 
                     {# Items Summary #}
                     <div class="small mb-3">

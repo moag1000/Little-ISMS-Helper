@@ -2,6 +2,7 @@
 {% trans_default_domain 'incident' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ 'incident.header.title'|trans({}, 'incident') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -133,10 +134,7 @@
                             <div class="status-label">{{ data.label }}</div>
                             <div class="status-count">{{ count }}</div>
                             {% if allIncidents|length > 0 %}
-                                <div class="progress mt-2 progress-h-6">
-                                    <div class="progress-bar bg-{{ data.color }}"
-                                         style="width: {{ (count / allIncidents|length * 100)|round }}%"></div>
-                                </div>
+                                {{ _fa_progress.render({ value: (count / allIncidents|length * 100)|round, tone: data.color, class: 'mt-2' }) }}
                             {% endif %}
                         </div>
                     </div>

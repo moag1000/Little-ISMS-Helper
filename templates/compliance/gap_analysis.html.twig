@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ 'compliance.title.gap_analysis'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
@@ -139,9 +140,7 @@
             </td>
             <td>
                 {% set fulfillment = gap.analysis.calculated_fulfillment ?? 0 %}
-                <div class="progress" style="height: 6px;" title="{{ fulfillment }}%">
-                    <div class="progress-bar" role="progressbar" style="width: {{ fulfillment }}%" aria-valuenow="{{ fulfillment }}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
+                {{ _fa_progress.render({ value: fulfillment, size: 'sm', label: fulfillment ~ '%' }) }}
                 <small class="text-muted">{{ fulfillment }}%</small>
             </td>
             <td class="text-center">

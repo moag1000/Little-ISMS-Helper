@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'management_reports' %}
 
 {% block title %}{{ 'management_reports.assets.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -60,9 +61,7 @@
                                 <span>{{ type }}</span>
                                 {% include '_components/_badge.html.twig' with { variant: 'primary', content: count } %}
                             </div>
-                            <div class="progress progress-h-8">
-                                <div class="progress-bar" style="width: {{ report.total_assets > 0 ? (count / report.total_assets * 100) : 0 }}%"></div>
-                            </div>
+                            {{ _fa_progress.render({ value: report.total_assets > 0 ? (count / report.total_assets * 100) : 0 }) }}
                         </div>
                         {% endfor %}
                     </div>

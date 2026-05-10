@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}Lizenz-Zusammenfassung{% endblock %}
 
@@ -187,12 +188,7 @@
                                     <td class="text-end"><strong>{{ stats.allowed }}</strong></td>
                                     <td class="text-end">{{ (stats.allowed / stats.total * 100)|round(1) }}%</td>
                                     <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-success" role="progressbar"
-                                                 style="width: {{ (stats.allowed / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.allowed }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: stats.allowed, max: stats.total, tone: 'success' }) }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -201,12 +197,7 @@
                                     <td class="text-end"><strong>{{ stats.restricted }}</strong></td>
                                     <td class="text-end">{{ (stats.restricted / stats.total * 100)|round(1) }}%</td>
                                     <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-warning" role="progressbar"
-                                                 style="width: {{ (stats.restricted / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.restricted }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: stats.restricted, max: stats.total, tone: 'warning' }) }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -215,12 +206,7 @@
                                     <td class="text-end"><strong>{{ stats.copyleft }}</strong></td>
                                     <td class="text-end">{{ (stats.copyleft / stats.total * 100)|round(1) }}%</td>
                                     <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-info" role="progressbar"
-                                                 style="width: {{ (stats.copyleft / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.copyleft }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: stats.copyleft, max: stats.total, tone: 'info' }) }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -229,12 +215,7 @@
                                     <td class="text-end"><strong>{{ stats.not_allowed }}</strong></td>
                                     <td class="text-end">{{ (stats.not_allowed / stats.total * 100)|round(1) }}%</td>
                                     <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-danger" role="progressbar"
-                                                 style="width: {{ (stats.not_allowed / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.not_allowed }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: stats.not_allowed, max: stats.total, tone: 'danger' }) }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -243,12 +224,7 @@
                                     <td class="text-end"><strong>{{ stats.unknown }}</strong></td>
                                     <td class="text-end">{{ (stats.unknown / stats.total * 100)|round(1) }}%</td>
                                     <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-secondary" role="progressbar"
-                                                 style="width: {{ (stats.unknown / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.unknown }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: stats.unknown, max: stats.total, tone: 'neutral' }) }}
                                     </td>
                                 </tr>
                             {% endblock %}

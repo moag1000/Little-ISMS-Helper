@@ -2,6 +2,7 @@
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ category.name|trans({}, 'wizard') }} - {{ config.name }}{% endblock %}
 
@@ -157,14 +158,7 @@
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="progress flex-grow-1 me-2" style="height: 6px; width: 60px;">
-                                        <div class="progress-bar
-                                            {% if item.score >= 80 %}bg-success
-                                            {% elseif item.score >= 50 %}bg-warning
-                                            {% else %}bg-danger{% endif %}"
-                                            style="width: {{ item.score }}%">
-                                        </div>
-                                    </div>
+                                    {{ _fa_progress.render({ value: item.score, tone: item.score >= 80 ? 'success' : (item.score >= 50 ? 'warning' : 'danger'), size: 'sm', class: 'flex-grow-1 me-2' }) }}
                                     <small class="fw-semibold">{{ item.score|round }}%</small>
                                 </div>
                             </td>

@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
@@ -431,13 +432,8 @@
                                         <div class="card-body">
                                             <h4 class="h6 mb-1">{{ row.tenant_name }}</h4>
                                             <code class="small text-muted">{{ row.tenant_code }}</code>
-                                            <div class="progress mt-2" role="progressbar" aria-valuenow="{{ row.coverage_percentage }}" aria-valuemin="0" aria-valuemax="100" style="height: 1.25rem;">
-                                                {% set pct = row.coverage_percentage %}
-                                                {% set bgClass = pct >= 90 ? 'bg-success' : (pct >= 60 ? 'bg-warning' : 'bg-danger') %}
-                                                <div class="progress-bar {{ bgClass }}" style="width: {{ pct }}%;">
-                                                    {{ pct }}%
-                                                </div>
-                                            </div>
+                                            {% set pct = row.coverage_percentage %}
+                                            {{ _fa_progress.render({ value: pct, tone: pct >= 90 ? 'success' : (pct >= 60 ? 'warning' : 'danger'), showText: true, class: 'mt-2' }) }}
                                             <small class="text-muted d-block mt-2">
                                                 {{ row.acknowledgements_count }} / {{ row.published_documents_count * row.total_users }}
                                                 <span class="ms-1">({{ row.published_documents_count }} docs · {{ row.total_users }} users)</span>

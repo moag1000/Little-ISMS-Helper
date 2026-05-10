@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'management_reports' %}
 
 {% block title %}{{ 'management_reports.audit.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -85,36 +86,28 @@
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'management_reports.audit_status.planned'|trans({}, 'management_reports') } %}
                             <span>{{ report.audits.by_status.planned }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-secondary" style="width: {{ report.audits.total > 0 ? (report.audits.by_status.planned / report.audits.total * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: report.audits.total > 0 ? (report.audits.by_status.planned / report.audits.total * 100) : 0, tone: 'neutral' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'primary', content: 'management_reports.audit_status.in_progress'|trans({}, 'management_reports') } %}
                             <span>{{ report.audits.by_status.in_progress }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-primary" style="width: {{ report.audits.total > 0 ? (report.audits.by_status.in_progress / report.audits.total * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: report.audits.total > 0 ? (report.audits.by_status.in_progress / report.audits.total * 100) : 0, tone: 'primary' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'success', content: 'management_reports.audit_status.completed'|trans({}, 'management_reports') } %}
                             <span>{{ report.audits.by_status.completed }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-success" style="width: {{ report.audits.total > 0 ? (report.audits.by_status.completed / report.audits.total * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: report.audits.total > 0 ? (report.audits.by_status.completed / report.audits.total * 100) : 0, tone: 'success' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'management_reports.audit_status.cancelled'|trans({}, 'management_reports') } %}
                             <span>{{ report.audits.by_status.cancelled }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-danger" style="width: {{ report.audits.total > 0 ? (report.audits.by_status.cancelled / report.audits.total * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: report.audits.total > 0 ? (report.audits.by_status.cancelled / report.audits.total * 100) : 0, tone: 'danger' }) }}
                     </div>
                 {% endblock %}
             {% endembed %}

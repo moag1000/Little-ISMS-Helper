@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'management_reports' %}
 
 {% block title %}{{ 'management_reports.gdpr.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -86,36 +87,28 @@
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'management_reports.severity.critical'|trans({}, 'management_reports') } %}
                             <span>{{ report.by_severity.critical }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-danger" style="width: {{ report.total_breaches > 0 ? (report.by_severity.critical / report.total_breaches * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: report.total_breaches > 0 ? (report.by_severity.critical / report.total_breaches * 100) : 0, tone: 'danger' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'management_reports.severity.high'|trans({}, 'management_reports') } %}
                             <span>{{ report.by_severity.high }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-warning" style="width: {{ report.total_breaches > 0 ? (report.by_severity.high / report.total_breaches * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: report.total_breaches > 0 ? (report.by_severity.high / report.total_breaches * 100) : 0, tone: 'warning' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'info', content: 'management_reports.severity.medium'|trans({}, 'management_reports') } %}
                             <span>{{ report.by_severity.medium }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-info" style="width: {{ report.total_breaches > 0 ? (report.by_severity.medium / report.total_breaches * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: report.total_breaches > 0 ? (report.by_severity.medium / report.total_breaches * 100) : 0, tone: 'info' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'success', content: 'management_reports.severity.low'|trans({}, 'management_reports') } %}
                             <span>{{ report.by_severity.low }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-success" style="width: {{ report.total_breaches > 0 ? (report.by_severity.low / report.total_breaches * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: report.total_breaches > 0 ? (report.by_severity.low / report.total_breaches * 100) : 0, tone: 'success' }) }}
                     </div>
                 {% endblock %}
             {% endembed %}

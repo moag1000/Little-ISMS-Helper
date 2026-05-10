@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% set step_title_key = 'policy_wizard.step.' ~ step ~ '.title' %}
 {% set step_subtitle_key = 'policy_wizard.step.' ~ step ~ '.subtitle' %}
@@ -26,13 +27,7 @@
             </span>
             <span class="small text-muted">{{ step_title_key|trans }}</span>
         </div>
-        <div class="progress" style="height: 6px;" role="progressbar"
-             aria-label="{{ 'policy_wizard.progress.aria_label'|trans }}"
-             aria-valuenow="{{ _step_n }}"
-             aria-valuemin="0"
-             aria-valuemax="{{ _ts }}">
-            <div class="progress-bar" style="width: {{ _percent }}%;"></div>
-        </div>
+        {{ _fa_progress.render({ value: _percent, size: 'sm', label: 'policy_wizard.progress.aria_label'|trans }) }}
     </div>
 
     {{ _fa_page_header.render({
