@@ -54,12 +54,15 @@
  *       'body': '<p>Content here</p>'
  *   } %}
  *
- * 2. KPI Card (use _fa_feature_card.html.twig directly for new code):
- *   {% include '_components/_card.html.twig' with {
- *       'variant': 'kpi',
- *       'borderColor': 'primary',
- *       'body': '<div class="kpi-card-content"><div class="kpi-card-value">42</div></div>'
- *   } %}
+ * 2. KPI Card — DEPRECATED variant:'kpi'. New code MUST use the dedicated
+ *    Aurora macro `_fa_feature_card`:
+ *   {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+ *   {{ _fa_feature_card.render({
+ *       label:   'Risk Score',
+ *       value:   42,
+ *       variant: 'primary',
+ *       icon:    'shield-check'
+ *   }) }}
  *
  * 3. Card with block content:
  *   {% embed '_components/_card.html.twig' with {
