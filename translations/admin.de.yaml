@@ -40,6 +40,7 @@ admin:
             locations: { label: 'Standorte', desc: 'Physische Locations für Asset-Zuordnung' }
             tenant_branding: { label: 'Mandanten-Branding', desc: 'E-Mail-Logos und Absender pro Mandant' }
             tenant_compliance_settings: { label: 'Compliance-Einstellungen', desc: 'Locale, TLP, DPO, Risk-Methodik, Eskalation, JSON-Defaults' }
+            policy_style: { label: 'Policy-Optik', desc: 'Layout, Wasserzeichen und Typografie für Richtlinien-Dokumente' }
             users: { label: 'Benutzer', desc: 'Konten, Status, Sperrungen' }
             roles: { label: 'Rollen', desc: 'Tenant-Rollen und Vorlagen' }
             permissions: { label: 'Berechtigungen', desc: 'Permission-Matrix Modul × Rolle' }
@@ -908,6 +909,76 @@ kpi_threshold:
         wizard_maturity_target: 'Default Wizard-Reife-Ziel'
         wizard_maturity_target_help: 'Wird in jedem Wizard-Result als Soll-Reife angezeigt.'
     cancel: "Cancel"
+    policy_style:
+        title: 'Policy-Optik'
+        subtitle: 'Layout, Typografie, Wasserzeichen und Signatur-Slots für generierte Richtlinien-Dokumente konfigurieren.'
+        section:
+            form: 'Konfiguration'
+            form_subtitle: 'Änderungen werden live in der Vorschau rechts angezeigt. Speichern persistiert die Werte für alle künftigen Policy-Dokumente.'
+            preview: 'Live-Vorschau'
+            preview_subtitle: 'Beispiel-Richtlinie mit aktuellen Einstellungen — Sample-Daten, kein Tenant-Inhalt.'
+        group:
+            cover: 'Deckblatt'
+            typography: 'Typografie & Layout'
+            watermark: 'Wasserzeichen'
+            layout: 'Sektionen & Signatur'
+            footer: 'Fußzeile'
+            advanced: 'Erweitert'
+        field:
+            font_family: 'Schriftart'
+            cover_pattern: 'Deckblatt-Muster'
+            cover_logo_size: 'Logo-Größe (Cover)'
+            page_margin: 'Seitenrand'
+            watermark_enabled: 'Wasserzeichen aktiviert'
+            watermark_opacity: 'Wasserzeichen-Deckkraft'
+            signature_lines: 'Anzahl Signatur-Felder'
+            show_toc: 'Inhaltsverzeichnis anzeigen'
+            show_history: 'Versionshistorie anzeigen'
+            show_annex_a_refs: 'Annex-A-Referenzen einblenden'
+            footer_text: 'Eigener Footer-Text'
+            custom_css: 'Benutzerdefiniertes CSS (Override)'
+        help:
+            font_family: 'Wirkt sich auf alle Texte im PDF-Export aus. Inter ist die ISMS-Default-Wahl.'
+            cover_pattern: '"Branded" für Marketing-Linie, "Auditor-Formal" für Zertifizierungs-Audits, "Engineering" für DevSecOps.'
+            page_margin: 'Kompakt = mehr Inhalt pro Seite; Wide = mehr Lesbarkeit für Approval-Reviews.'
+            watermark_enabled: 'Wenn aktiv, wird die Klassifizierung diagonal als Wasserzeichen über jeder Seite gerendert.'
+            watermark_opacity: '0 % unsichtbar, 8 % ist Default, > 25 % stört das Lesen.'
+            signature_lines: 'Anzahl der vorbereiteten Unterschriftsfelder auf der Signatur-Seite (1–6).'
+            footer_text: 'Wenn leer, wird der Default-Footer mit Tenant-Name + Klassifikation verwendet.'
+            custom_css: 'Wird |raw in <style>-Block des Policy-Doc gerendert. Nur ROLE_ADMIN. Falsches CSS kann die PDF-Generierung brechen.'
+        cover:
+            minimal: 'Minimal — Cover ohne Logo-Flächen, neutraler Look'
+            branded: 'Branded — Logo prominent, Primärfarbe als Akzent'
+            auditor_formal: 'Auditor-Formal — Serif, gedämpfte Farben, Zertifizierungs-Ton'
+            engineering: 'Engineering — Monospace-Akzente, DevSecOps-Look'
+        size:
+            small: 'Klein (40 px)'
+            medium: 'Mittel (64 px)'
+            large: 'Groß (88 px)'
+        margin:
+            compact: 'Kompakt (12 mm)'
+            standard: 'Standard (20 mm)'
+            wide: 'Großzügig (28 mm)'
+        save: 'Speichern'
+        reset: 'Auf Defaults zurücksetzen'
+        reset_confirm: 'Alle Policy-Optik-Einstellungen wirklich auf Defaults zurücksetzen?'
+        flash:
+            saved: 'Policy-Optik gespeichert. Neue Policy-PDFs verwenden ab sofort die aktualisierten Einstellungen.'
+            reset: 'Policy-Optik wurde auf Defaults zurückgesetzt.'
+        preview:
+            eyebrow: 'Information-Security-Management-System'
+            version: 'Version'
+            classification: 'Klassifikation'
+            toc: 'Inhaltsverzeichnis'
+            history: 'Versionshistorie'
+            signature: 'Unterschriften'
+            annex_a_refs: 'Annex-A'
+            col_version: 'Version'
+            col_date: 'Datum'
+            col_author: 'Autor'
+            col_note: 'Anmerkung'
+            default_footer: '%tenant% — Vertrauliches ISMS-Dokument — Ausdruck unkontrolliert'
+            custom_css_inert: 'Custom-CSS (in Vorschau inaktiv — wird nur in PDF-Export gerendert)'
 
 industry_preset:
     title: 'Industry-Presets'
