@@ -1407,3 +1407,24 @@ wizard:
     bcm:
         bcm_policies: 'BCM-Policy-Wizard-Outputs'
         bcm_policies_desc: 'Generierte BCM-Pflicht-Richtlinien gemäß ISO 22301:2019: BCM-Top-Level-Policy, BCMS-Geltungsbereich, BIA-Methodik, Übungsprogramm, Krisenstabsordnung, Recovery-Pläne und Management-Review.'
+
+    # V3 B5 / EF-2: Snapshot + History
+    snapshot:
+        cta: 'Diesen Stand als Snapshot speichern'
+        saved: 'Snapshot gespeichert. Verlauf zeigt jetzt den neuen Eintrag.'
+    history:
+        title: 'Coverage-Verlauf'
+        subtitle: 'Snapshots dieses Wizards über Zeit — für Stichtag-Vergleich und Trend-Analyse.'
+        snapshots: 'Snapshots'
+        empty:
+            title: 'Noch keine Snapshots'
+            description: 'Führen Sie das Assessment aus und speichern Sie den Stand als Snapshot, um den Coverage-Verlauf zu tracken.'
+        trend:
+            title: 'Coverage über Zeit'
+            score_label: 'Score (%)'
+        field:
+            completed_at: 'Abgeschlossen'
+            user: 'Benutzer'
+            score: 'Score'
+            status: 'Status'
+            gaps: 'Critical Gaps'

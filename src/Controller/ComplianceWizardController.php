@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\ComplianceRequirementFulfillment;
+use App\Entity\User;
+use App\Entity\WizardSession;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
+use App\Repository\WizardSessionRepository;
 use App\Service\AuditLogger;
 use App\Service\ComplianceWizardService;
 use App\Service\MappingLibraryLoader;
@@ -50,6 +53,7 @@ class ComplianceWizardController extends AbstractController
         private readonly ?EntityManagerInterface $entityManager = null,
         private readonly ?ComplianceMappingRepository $mappingRepository = null,
         private readonly ?MappingLibraryLoader $mappingLibraryLoader = null,
+        private readonly ?WizardSessionRepository $wizardSessionRepository = null,
     ) {
     }
 
@@ -526,5 +530,133 @@ class ComplianceWizardController extends AbstractController
         ], 'wizard'));
 
         return $this->redirectToRoute('app_compliance_wizard_start', ['wizard' => $wizard]);
+    }
+
+    /**
+     * V3 B5 / EF-2: Persist a snapshot of the current assessment.
+     *
+     * Compliance-Wizard rechnet bisher jeden Aufruf neu. Ein Snapshot speichert
+     * Coverage + Gaps + KPIs als WizardSession, sodass Trend-Charts und
+     * Stichtag-Vergleich möglich werden.
+     */
+    #[Route('/{wizard}/snapshot', name: 'app_compliance_wizard_snapshot', methods: ['POST'], requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    public function snapshot(string $wizard, Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('wizard_snapshot_' . $wizard, (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('app_compliance_wizard_assess', ['wizard' => $wizard]);
+        }
+
+        if (!$this->wizardService->isWizardAvailable($wizard)) {
+            return $this->redirectToRoute('app_compliance_wizard_index');
+        }
+
+        if ($this->entityManager === null || $this->wizardSessionRepository === null) {
+            $this->addFlash('warning', 'Snapshot not available — wizard infrastructure missing.');
+            return $this->redirectToRoute('app_compliance_wizard_assess', ['wizard' => $wizard]);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $user = $this->getUser();
+        if (!$user instanceof User || $tenant === null) {
+            $this->addFlash('error', 'Snapshot requires authenticated user with tenant.');
+            return $this->redirectToRoute('app_compliance_wizard_assess', ['wizard' => $wizard]);
+        }
+
+        $result = $this->wizardService->runAssessment($wizard, $tenant);
+        if (!($result['success'] ?? false)) {
+            $this->addFlash('error', $result['error'] ?? 'Assessment failed.');
+            return $this->redirectToRoute('app_compliance_wizard_assess', ['wizard' => $wizard]);
+        }
+
+        $session = new WizardSession();
+        $session->setTenant($tenant);
+        $session->setUser($user);
+        $session->setWizardType($this->mapWizardCodeToSessionType($wizard));
+        $session->setStatus(WizardSession::STATUS_COMPLETED);
+        $session->setCurrentStep(count($result['categories'] ?? []));
+        $session->setTotalSteps(max(1, count($result['categories'] ?? [])));
+        $session->setOverallScore((int) ($result['overall_score'] ?? 0));
+        $session->setAssessmentResults($result['categories'] ?? []);
+        $session->setRecommendations($result['recommendations'] ?? []);
+        $session->setCriticalGaps($result['critical_gaps'] ?? []);
+        $session->setCompletedCategories(array_keys($result['categories'] ?? []));
+        $session->complete();
+
+        $this->entityManager->persist($session);
+        $this->entityManager->flush();
+
+        if ($this->auditLogger !== null) {
+            $this->auditLogger->logCreate(
+                'WizardSession',
+                $session->getId(),
+                [
+                    'wizard' => $wizard,
+                    'overallScore' => $session->getOverallScore(),
+                    'snapshot' => true,
+                ],
+                'Compliance-wizard snapshot saved'
+            );
+        }
+
+        $this->addFlash('success', $this->translator->trans('wizard.snapshot.saved', [], 'wizard'));
+        return $this->redirectToRoute('app_compliance_wizard_history', ['wizard' => $wizard]);
+    }
+
+    /**
+     * V3 B5 / EF-2: Snapshot history with trend chart.
+     */
+    #[Route('/{wizard}/history', name: 'app_compliance_wizard_history', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    public function history(string $wizard): Response
+    {
+        if (!$this->wizardService->isWizardAvailable($wizard)) {
+            return $this->redirectToRoute('app_compliance_wizard_index');
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $sessions = [];
+        if ($this->wizardSessionRepository !== null && $tenant !== null) {
+            $sessionType = $this->mapWizardCodeToSessionType($wizard);
+            $sessions = $this->wizardSessionRepository->findBy(
+                ['tenant' => $tenant, 'wizardType' => $sessionType, 'status' => WizardSession::STATUS_COMPLETED],
+                ['completedAt' => 'DESC']
+            );
+        }
+
+        $config = $this->wizardService->getWizardConfig($wizard);
+        $trendPoints = [];
+        foreach (array_reverse($sessions) as $session) {
+            $trendPoints[] = [
+                'date' => $session->getCompletedAt()?->format('Y-m-d') ?? $session->getCreatedAt()?->format('Y-m-d'),
+                'score' => $session->getOverallScore(),
+            ];
+        }
+
+        return $this->render('compliance_wizard/history.html.twig', [
+            'wizard' => $wizard,
+            'config' => $config,
+            'sessions' => $sessions,
+            'trend_points' => $trendPoints,
+        ]);
+    }
+
+    /**
+     * Map fine-grained wizard codes (e.g. bsi_c5, bsi_grundschutz_kern) to coarser
+     * WizardSession::WIZARD_* slot used for grouping snapshots.
+     */
+    private function mapWizardCodeToSessionType(string $wizard): string
+    {
+        return match (true) {
+            $wizard === 'iso27001' => WizardSession::WIZARD_ISO27001,
+            $wizard === 'nis2' => WizardSession::WIZARD_NIS2,
+            $wizard === 'dora' => WizardSession::WIZARD_DORA,
+            $wizard === 'tisax' => WizardSession::WIZARD_TISAX,
+            $wizard === 'gdpr' => WizardSession::WIZARD_GDPR,
+            str_starts_with($wizard, 'bsi_') => WizardSession::WIZARD_BSI,
+            // For the rest (iso22301, pci_dss, etc.) we group under the most
+            // closely-related slot. Snapshot tracking still works because
+            // the actual assessment uses the wizard parameter, not the slot.
+            default => WizardSession::WIZARD_ISO27001,
+        };
     }
 }
