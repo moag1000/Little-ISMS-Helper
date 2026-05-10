@@ -1,0 +1,77 @@
+{#
+ # FairyAurora v4.0 — fa-bulk-action-bar macro (V3 W3-UX-Bulk)
+ #
+ # Sticky-bottom bulk-action toolbar that appears when ≥1 row is selected.
+ # Aurora-styled (token-only). Pairs with `fa-bulk-select` Stimulus-controller
+ # OR the legacy `bulk-actions` controller (target name compatible: actionBar,
+ # count).
+ #
+ # Usage:
+ #   {% import '_components/_fa_bulk_action_bar.html.twig' as _fa_bulk_bar %}
+ #   {{ _fa_bulk_bar.render({
+ #       label: 'selected',                  {# i18n string for "selected" #}
+ #       actions: [
+ #           { label: 'Export', icon: 'bi-download', variant: 'ghost',
+ #             dataAction: 'click->fa-bulk-select#bulkExport' },
+ #           { label: 'Delete', icon: 'bi-trash', variant: 'danger',
+ #             dataAction: 'click->fa-bulk-select#bulkDelete' }
+ #       ],
+ #       deselectLabel: 'Deselect all'
+ #   }) }}
+ #
+ # Variants per action: 'primary' | 'ghost' | 'success' | 'warning' | 'danger'
+ # Targets emitted (Stimulus-compatible):
+ #   data-fa-bulk-select-target="actionBar"   on host
+ #   data-fa-bulk-select-target="count"       on count value <span>
+ # (Legacy `bulk-actions` controller targets are also emitted as fallback.)
+ #
+ # A11y:
+ #   - aria-live="polite" + aria-atomic on count region
+ #   - Each button is focusable; close-button has aria-label
+ #}
+
+{% macro render(props = {}) %}
+    {% set actions       = props.actions|default([]) %}
+    {% set label         = props.label|default('bulk_actions.selected'|trans({}, 'messages')) %}
+    {% set deselectLabel = props.deselectLabel|default('bulk_actions.deselect'|trans({}, 'messages')) %}
+    {% set initialHidden = props.initiallyHidden is defined ? props.initiallyHidden : true %}
+
+    <div class="fa-bulk-action-bar"
+         data-fa-bulk-select-target="actionBar"
+         data-bulk-actions-target="actionBar"
+         {% if initialHidden %}hidden{% endif %}
+         role="toolbar"
+         aria-label="{{ 'bulk_actions.selected'|trans({}, 'messages') }}">
+
+        <div class="fa-bulk-action-bar__count" aria-live="polite" aria-atomic="true">
+            <span class="fa-bulk-action-bar__count-value"
+                  data-fa-bulk-select-target="count"
+                  data-bulk-actions-target="count">0</span>
+            <span class="fa-bulk-action-bar__count-label">{{ label }}</span>
+        </div>
+
+        {% if actions|length > 0 %}
+            <div class="fa-bulk-action-bar__divider" aria-hidden="true"></div>
+            <div class="fa-bulk-action-bar__actions">
+                {% for action in actions %}
+                    {% set variant = action.variant|default('ghost') %}
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--{{ variant }} fa-cyber-btn--sm"
+                            {% if action.dataAction is defined %}data-action="{{ action.dataAction }}"{% endif %}
+                            {% if action.ariaLabel is defined %}aria-label="{{ action.ariaLabel }}"{% endif %}>
+                        {% if action.icon is defined %}<i class="bi {{ action.icon }}" aria-hidden="true"></i> {% endif %}
+                        {{ action.label }}
+                    </button>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <button type="button"
+                class="fa-bulk-action-bar__close"
+                aria-label="{{ deselectLabel }}"
+                title="{{ deselectLabel }}"
+                data-action="click->fa-bulk-select#deselectAll click->bulk-actions#deselectAll">
+            &times;
+        </button>
+    </div>
+{% endmacro %}

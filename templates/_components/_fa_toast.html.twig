@@ -1,0 +1,109 @@
+{#
+  fa-toast — Aurora Toast Notification (V3 W3-UX-Toast)
+
+  Server-rendered toast (e.g. from a flash message). For dynamic toasts use the
+  `fa-toast` Stimulus-controller (`assets/controllers/fa_toast_controller.js`)
+  or dispatch the `fa-toast:show` window event:
+
+      window.dispatchEvent(new CustomEvent('fa-toast:show', { detail: {
+          tone: 'success', title: 'Saved.', message: '...', duration: 5000,
+          persistent: false,
+      }}));
+
+  This macro renders an inline toast inside an `.fa-toast-stack` container —
+  use it when you want immediate visibility on first paint without JS.
+
+  Usage:
+    {% import '_components/_fa_toast.html.twig' as _fa_toast %}
+    {{ _fa_toast.stack([
+        { tone: 'success', title: 'Saved.', message: 'Control updated.' },
+        { tone: 'warning', message: '3 reviews due in <7 days.' }
+    ]) }}
+
+    Single toast:
+    {{ _fa_toast.render({
+        tone: 'info',
+        title: 'Heads up.',
+        message: 'New audit run started — result in ~2 min.',
+        persistent: false
+    }) }}
+
+  Tones: 'info' (default) | 'success' | 'warning' | 'danger'
+
+  A11y:
+    - role="status" + aria-live="polite" for non-critical (info/success)
+    - role="alert"  + aria-live="assertive" for critical (warning/danger)
+#}
+
+{% macro render(props) %}
+    {% set tone       = props.tone|default('info') %}
+    {% set title      = props.title|default('') %}
+    {% set message    = props.message|default('') %}
+    {% set persistent = props.persistent|default(false) %}
+    {% set dismissible = props.dismissible is defined ? props.dismissible : true %}
+    {% set toneIcons  = {
+        info:    'bi-info-circle-fill',
+        success: 'bi-check-circle-fill',
+        warning: 'bi-exclamation-triangle-fill',
+        danger:  'bi-exclamation-octagon-fill'
+    } %}
+    {% set icon = props.icon|default(toneIcons[tone]|default('bi-info-circle-fill')) %}
+    {% set isCritical = tone in ['warning', 'danger'] %}
+    {% set role = isCritical ? 'alert' : 'status' %}
+    {% set live = isCritical ? 'assertive' : 'polite' %}
+
+    <div class="fa-toast fa-toast--{{ tone }}{% if persistent %} fa-toast--persistent{% endif %}"
+         role="{{ role }}"
+         aria-live="{{ live }}"
+         aria-atomic="true"
+         data-fa-toast-target="toast">
+        <i class="fa-toast__icon bi {{ icon }}" aria-hidden="true"></i>
+        <div class="fa-toast__body">
+            {% if title is not empty %}
+                <div class="fa-toast__title">{{ title }}</div>
+            {% endif %}
+            {% if message is not empty %}
+                <div class="fa-toast__message">{{ message|raw }}</div>
+            {% endif %}
+            {% if props.actions is defined and props.actions|length > 0 %}
+                <div class="fa-toast__actions">
+                    {% for action in props.actions %}
+                        <a href="{{ action.href|default('#') }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                           {% if action.target is defined %}target="{{ action.target }}"{% endif %}>
+                            {{ action.label }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        {% if dismissible %}
+            <button type="button"
+                    class="fa-toast__close"
+                    aria-label="{{ 'common.close'|trans({}, 'messages') }}"
+                    data-action="click->fa-toast#dismiss">
+                &times;
+            </button>
+        {% endif %}
+        {% if not persistent %}
+            <span class="fa-toast__progress" aria-hidden="true"></span>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro stack(toasts, position = 'top-right') %}
+    {% set positionClass = {
+        'top-right':    '',
+        'top-left':     'fa-toast-stack--top-left',
+        'bottom-right': 'fa-toast-stack--bottom-right',
+        'bottom-left':  'fa-toast-stack--bottom-left'
+    } %}
+    <div class="fa-toast-stack {{ positionClass[position]|default('') }}"
+         data-controller="fa-toast"
+         data-fa-toast-target="stack"
+         aria-label="Notifications">
+        {% for toast in toasts|default([]) %}
+            {{ _self.render(toast) }}
+        {% endfor %}
+    </div>
+{% endmacro %}

@@ -1,0 +1,115 @@
+{#
+ # FairyAurora v4.0 — fa-action-bar macro (V3 W3-UX-ActionBar)
+ #
+ # List/Detail-Page Action Toolbar. Sits between page-header and list/table
+ # content. Holds search, filter chips, secondary actions (export, ...) and a
+ # primary CTA. Aurora-styled (token-only).
+ #
+ # Usage:
+ #   {% import '_components/_fa_action_bar.html.twig' as _fa_action_bar %}
+ #   {{ _fa_action_bar.render({
+ #       title: 'All Risks',
+ #       count: risks|length,
+ #       search: {
+ #           placeholder: 'Search risks…',
+ #           name: 'q',
+ #           value: app.request.query.get('q')|default(''),
+ #           action: path('app_risk_index')
+ #       },
+ #       filters: [
+ #           { label: 'High',   href: '?severity=high',   active: false },
+ #           { label: 'Medium', href: '?severity=medium', active: true }
+ #       ],
+ #       secondary: [
+ #           { label: 'Export', icon: 'bi-download', href: path('app_risk_export') }
+ #       ],
+ #       primary: {
+ #           label: 'New Risk',
+ #           icon: 'bi-plus-lg',
+ #           variant: 'primary',
+ #           href: path('app_risk_new')
+ #       },
+ #       flush: false
+ #   }) }}
+ #
+ # A11y:
+ #   - <form role="search"> wraps search input; visually-hidden label
+ #   - Filter-chips are <a>; aria-current="true" on active
+ #   - Primary action: pass aria-label via attrs map for icon-only
+ #}
+
+{% macro render(props = {}) %}
+    {% set fa_flush = props.flush|default(false) %}
+    <div class="fa-action-bar{% if fa_flush %} fa-action-bar--flush{% endif %}"
+         {% if props.id is defined %}id="{{ props.id }}"{% endif %}>
+
+        <div class="fa-action-bar__lead">
+            {% if props.title is defined and props.title %}
+                <h2 class="fa-action-bar__title">{{ props.title }}</h2>
+                {% if props.count is defined and props.count is not null %}
+                    <span class="fa-action-bar__count">({{ props.count }})</span>
+                {% endif %}
+            {% endif %}
+
+            {% if props.search is defined and props.search %}
+                {% set _s = props.search %}
+                <form role="search"
+                      method="{{ _s.method|default('get') }}"
+                      action="{{ _s.action|default('') }}"
+                      class="fa-action-bar__search-wrap">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <label for="{{ _s.id|default('fa-action-bar-search') }}" class="visually-hidden">
+                        {{ _s.label|default('common.search'|trans({}, 'messages')) }}
+                    </label>
+                    <input type="search"
+                           id="{{ _s.id|default('fa-action-bar-search') }}"
+                           name="{{ _s.name|default('q') }}"
+                           value="{{ _s.value|default('') }}"
+                           placeholder="{{ _s.placeholder|default('common.search'|trans({}, 'messages')) }}"
+                           class="fa-action-bar__search">
+                </form>
+            {% endif %}
+
+            {% if props.filters is defined and props.filters|length > 0 %}
+                <span class="fa-action-bar__chip-group">
+                    {% for f in props.filters %}
+                        <a class="fa-filter-chip{% if f.active|default(false) %} is-active{% endif %}"
+                           href="{{ f.href|default('#') }}"
+                           {% if f.active|default(false) %}aria-current="true"{% endif %}>
+                            {% if f.icon is defined %}<i class="bi {{ f.icon }}" aria-hidden="true"></i> {% endif %}
+                            {{ f.label }}
+                        </a>
+                    {% endfor %}
+                </span>
+            {% endif %}
+        </div>
+
+        <div class="fa-action-bar__trail">
+            {% if props.secondary is defined and props.secondary|length > 0 %}
+                {% for action in props.secondary %}
+                    <a href="{{ action.href|default('#') }}"
+                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm{% if action.class is defined %} {{ action.class }}{% endif %}"
+                       {% if action.target is defined %}target="{{ action.target }}"{% endif %}
+                       {% if action.dataAction is defined %}data-action="{{ action.dataAction }}"{% endif %}
+                       {% if action.ariaLabel is defined %}aria-label="{{ action.ariaLabel }}"{% endif %}>
+                        {% if action.icon is defined %}<i class="bi {{ action.icon }}" aria-hidden="true"></i> {% endif %}
+                        {{ action.label }}
+                    </a>
+                {% endfor %}
+            {% endif %}
+
+            {% if props.primary is defined and props.primary %}
+                {% set _p = props.primary %}
+                {% set _pcls = 'fa-cyber-btn fa-cyber-btn--' ~ (_p.variant|default('primary')) %}
+                {% if _p.size is defined %}{% set _pcls = _pcls ~ ' fa-cyber-btn--' ~ _p.size %}{% endif %}
+                <a href="{{ _p.href|default('#') }}"
+                   class="{{ _pcls }}"
+                   {% if _p.dataAction is defined %}data-action="{{ _p.dataAction }}"{% endif %}
+                   {% if _p.ariaLabel is defined %}aria-label="{{ _p.ariaLabel }}"{% endif %}>
+                    {% if _p.icon is defined %}<i class="bi {{ _p.icon }}" aria-hidden="true"></i> {% endif %}
+                    {{ _p.label }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}

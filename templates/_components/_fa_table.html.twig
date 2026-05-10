@@ -1,0 +1,178 @@
+{#
+  fa-table — Aurora Table Pattern (V3 W3-UX-Table)
+
+  Real Aurora table component — token-only, NOT a sanctioned-bootstrap wrapper.
+  Replaces `<table class="table">` for new code. The legacy `_table.html.twig`
+  macro stays for backward-compat; new lists should use this.
+
+  Two usage modes:
+
+  1) Render-API (data-driven) — quick scaffolding for simple lists:
+        {% import '_components/_fa_table.html.twig' as _fa_table %}
+        {{ _fa_table.render({
+            id: 'risk-list',
+            headers: [
+                { label: 'Name',   key: 'name',     sortable: true },
+                { label: 'Status', key: 'status' },
+                { label: 'Owner',  key: 'owner',    align: 'right' }
+            ],
+            rows: rows,            {# array of arrays/values matching headers #}
+            stickyHead: false,
+            striped: true,
+            compact: false,
+            empty: 'No risks yet.'
+        }) }}
+
+  2) Embed-API (template-driven) — full control over cells / row-attrs:
+        {% embed '_components/_fa_table.html.twig' with {
+            stickyHead: true,
+            bulkSelect: true,
+            sortable: true,
+            id: 'asset-list'
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th class="fa-table__th fa-table__th--checkbox">
+                        <input type="checkbox" data-action="fa-bulk-select#selectAll">
+                    </th>
+                    <th class="fa-table__th fa-table__th--sortable" data-sort-key="name">
+                        {{ 'field.name'|trans({}, 'field') }}
+                    </th>
+                    <th class="fa-table__th fa-table__th--actions">
+                        <span class="visually-hidden">{{ 'common.actions'|trans({}, 'messages') }}</span>
+                    </th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for asset in assets %}
+                    <tr class="fa-table__row" data-fa-bulk-select-target="row">
+                        <td class="fa-table__cell fa-table__cell--checkbox">
+                            <input type="checkbox" value="{{ asset.id }}"
+                                   data-fa-bulk-select-target="item"
+                                   data-action="change->fa-bulk-select#updateBar">
+                        </td>
+                        <td class="fa-table__cell">{{ asset.name }}</td>
+                        <td class="fa-table__cell fa-table__cell--actions">
+                            <a href="{{ path('app_asset_show', {id: asset.id}) }}"
+                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                {{ 'common.view'|trans({}, 'messages') }}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+
+  A11y:
+    - Semantic <table>/<thead>/<tbody>/<tfoot>
+    - Sortable headers are <button>-like: tab-able, aria-sort attribute
+    - scope="col" on header cells
+    - Empty state slot rendered as full-row <td colspan="N">
+#}
+
+{% set fa_id        = id|default(null) %}
+{% set fa_class     = class|default('') %}
+{% set fa_wrap      = wrap is defined ? wrap : true %}
+{% set fa_striped   = striped|default(false) %}
+{% set fa_compact   = compact|default(false) %}
+{% set fa_stickyHead = stickyHead|default(false) %}
+{% set fa_hover     = hover is defined ? hover : true %}
+{% set fa_sortable  = sortable|default(false) %}
+{% set fa_bulkSelect = bulkSelect|default(false) %}
+
+{% set _classes = ['fa-table'] %}
+{% if fa_striped    %}{% set _classes = _classes|merge(['fa-table--striped']) %}{% endif %}
+{% if fa_compact    %}{% set _classes = _classes|merge(['fa-table--compact']) %}{% endif %}
+{% if fa_stickyHead %}{% set _classes = _classes|merge(['fa-table--sticky-head']) %}{% endif %}
+{% if fa_hover      %}{% set _classes = _classes|merge(['fa-table--hover']) %}{% endif %}
+{% if fa_class      %}{% set _classes = _classes|merge(fa_class|split(' ')) %}{% endif %}
+
+{% set _ctrls = [] %}
+{% if fa_sortable   %}{% set _ctrls = _ctrls|merge(['fa-table-sort']) %}{% endif %}
+{% if fa_bulkSelect %}{% set _ctrls = _ctrls|merge(['fa-bulk-select']) %}{% endif %}
+
+{% if fa_wrap %}<div class="fa-table-wrap"{% if _ctrls|length > 0 %} data-controller="{{ _ctrls|join(' ') }}"{% endif %}>{% endif %}
+    <table class="{{ _classes|join(' ') }}"{% if fa_id %} id="{{ fa_id }}"{% endif %}>
+        {% if block('table_head') is defined %}
+            <thead class="fa-table__head">
+                {% block table_head %}{% endblock %}
+            </thead>
+        {% endif %}
+        <tbody class="fa-table__body"{% if block('table_body_attrs') is defined %} {{ block('table_body_attrs') }}{% endif %}>
+            {% block table_body %}{% endblock %}
+        </tbody>
+        {% if block('table_foot') is defined %}
+            <tfoot class="fa-table__foot">
+                {% block table_foot %}{% endblock %}
+            </tfoot>
+        {% endif %}
+    </table>
+{% if fa_wrap %}</div>{% endif %}
+
+{# ---------------------------------------------------------------------------
+ # Render-API macro (data-driven mode) — used when you don't need cell-level
+ # control. Pass { headers, rows } where row is an array of cells matching
+ # header order. Cells may be raw HTML strings.
+ # ------------------------------------------------------------------------ #}
+{% macro render(props) %}
+    {% set headers    = props.headers|default([]) %}
+    {% set rows       = props.rows|default([]) %}
+    {% set striped    = props.striped|default(false) %}
+    {% set compact    = props.compact|default(false) %}
+    {% set stickyHead = props.stickyHead|default(false) %}
+    {% set hover      = props.hover is defined ? props.hover : true %}
+    {% set tableId    = props.id|default(null) %}
+    {% set emptyMsg   = props.empty|default('common.no_data'|trans({}, 'messages')) %}
+    {% set sortable   = props.sortable|default(false) %}
+
+    {% set _cls = ['fa-table'] %}
+    {% if striped    %}{% set _cls = _cls|merge(['fa-table--striped']) %}{% endif %}
+    {% if compact    %}{% set _cls = _cls|merge(['fa-table--compact']) %}{% endif %}
+    {% if stickyHead %}{% set _cls = _cls|merge(['fa-table--sticky-head']) %}{% endif %}
+    {% if hover      %}{% set _cls = _cls|merge(['fa-table--hover']) %}{% endif %}
+
+    <div class="fa-table-wrap"{% if sortable %} data-controller="fa-table-sort"{% endif %}>
+        <table class="{{ _cls|join(' ') }}"{% if tableId %} id="{{ tableId }}"{% endif %}>
+            {% if headers|length > 0 %}
+                <thead class="fa-table__head">
+                    <tr>
+                        {% for h in headers %}
+                            {% set thCls = ['fa-table__th'] %}
+                            {% if h.align|default('') == 'right' %}{% set thCls = thCls|merge(['fa-table__th--num']) %}{% endif %}
+                            {% if h.align|default('') == 'center' %}{% set thCls = thCls|merge(['fa-table__th--center']) %}{% endif %}
+                            {% if h.actions|default(false) %}{% set thCls = thCls|merge(['fa-table__th--actions']) %}{% endif %}
+                            {% if h.sortable|default(false) %}{% set thCls = thCls|merge(['fa-table__th--sortable']) %}{% endif %}
+                            <th scope="col"
+                                class="{{ thCls|join(' ') }}"
+                                {% if h.key is defined %}data-sort-key="{{ h.key }}"{% endif %}
+                                {% if h.sortable|default(false) %}tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort"{% endif %}>
+                                {{ h.label|raw }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+            {% endif %}
+            <tbody class="fa-table__body">
+                {% if rows|length == 0 %}
+                    <tr><td class="fa-table__empty" colspan="{{ headers|length|default(1) }}">{{ emptyMsg }}</td></tr>
+                {% else %}
+                    {% for row in rows %}
+                        <tr class="fa-table__row">
+                            {% if row is iterable and row.cells is not defined %}
+                                {% for cell in row %}
+                                    <td class="fa-table__cell">{{ cell|raw }}</td>
+                                {% endfor %}
+                            {% else %}
+                                {% for cell in row.cells|default([]) %}
+                                    <td class="fa-table__cell{% if cell.align|default('') == 'right' %} fa-table__cell--num{% endif %}{% if cell.align|default('') == 'center' %} fa-table__cell--center{% endif %}">
+                                        {{ cell.value|default(cell)|raw }}
+                                    </td>
+                                {% endfor %}
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}

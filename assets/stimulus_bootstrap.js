@@ -14,6 +14,9 @@ import BulkApprovalMobileController from './controllers/bulk_approval_mobile_con
 import PolicyWizardPresetPickerController from './controllers/policy_wizard_preset_picker_controller.js';
 import PolicyWizardTargetedPickController from './controllers/policy_wizard_targeted_pick_controller.js';
 import AnnexAFilterController from './controllers/annex_a_filter_controller.js';
+import FaToastController from './controllers/fa_toast_controller.js';
+import FaBulkSelectController from './controllers/fa_bulk_select_controller.js';
+import FaTableSortController from './controllers/fa_table_sort_controller.js';
 
 const app = startStimulusApp();
 
@@ -39,3 +42,6 @@ app.register('bulk-approval-mobile', BulkApprovalMobileController);
 app.register('policy-wizard-preset-picker', PolicyWizardPresetPickerController);
 app.register('policy-wizard-targeted-pick', PolicyWizardTargetedPickController);
 app.register('annex-a-filter', AnnexAFilterController);
+app.register('fa-toast', FaToastController);
+app.register('fa-bulk-select', FaBulkSelectController);
+app.register('fa-table-sort', FaTableSortController);
