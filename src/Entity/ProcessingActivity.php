@@ -224,6 +224,24 @@ class ProcessingActivity
     private Collection $implementedControls;
 
     /**
+     * V3 W2-Bug3 — Linked Assets (M:N).
+     *
+     * Used by the DPIA-Auto-Suggestion listener (W2-H5): when any
+     * linked Asset has `dataClassification` ∈ {confidential,
+     * restricted}, the processing activity is treated as high-risk
+     * and a DPIA skeleton is auto-generated.
+     *
+     * Owning side; the inverse lives on {@see Asset::$processingActivities}.
+     *
+     * @var Collection<int, Asset>
+     */
+    #[ORM\ManyToMany(targetEntity: Asset::class, inversedBy: 'processingActivities')]
+    #[ORM\JoinTable(name: 'processing_activity_asset')]
+    #[ORM\JoinColumn(name: 'processing_activity_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'asset_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $assets;
+
+    /**
      * Consents for this processing activity (Art. 6(1)(a) GDPR)
      * Data Reuse: Track all consents when legalBasis = 'consent'
      */
@@ -470,6 +488,7 @@ class ProcessingActivity
     public function __construct()
     {
         $this->implementedControls = new ArrayCollection();
+        $this->assets = new ArrayCollection();
         $this->consents = new ArrayCollection();
         $this->contactDeputyPersons = new ArrayCollection();
         $this->dataProtectionOfficerDeputyPersons = new ArrayCollection();
@@ -785,6 +804,30 @@ class ProcessingActivity
     public function removeImplementedControl(Control $control): static
     {
         $this->implementedControls->removeElement($control);
+        return $this;
+    }
+
+    /**
+     * V3 W2-Bug3 — Linked Assets (M:N).
+     *
+     * @return Collection<int, Asset>
+     */
+    public function getAssets(): Collection
+    {
+        return $this->assets;
+    }
+
+    public function addAsset(Asset $asset): static
+    {
+        if (!$this->assets->contains($asset)) {
+            $this->assets->add($asset);
+        }
+        return $this;
+    }
+
+    public function removeAsset(Asset $asset): static
+    {
+        $this->assets->removeElement($asset);
         return $this;
     }
 

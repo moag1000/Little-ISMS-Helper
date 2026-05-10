@@ -271,6 +271,21 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
+
+                    {# V3 W2-Bug3: Linked Assets — drives DPIA auto-suggestion #}
+                    {% if processing_activity.assets|length > 0 %}
+                        <h3 class="h6 mt-3">{{ 'processing_activity.show.linked_assets'|trans({}, 'privacy') }}:</h3>
+                        <ul>
+                            {% for asset in processing_activity.assets %}
+                                <li>
+                                    <a href="{{ path('app_asset_show', {id: asset.id}) }}">{{ asset.name }}</a>
+                                    {% if asset.dataClassification %}
+                                        <small class="text-muted">({{ asset.dataClassification }})</small>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 {% endblock %}
             {% endembed %}
         </div>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\Asset;
 use App\Entity\Control;
 use App\Entity\Person;
 use App\Entity\ProcessingActivity;
@@ -280,6 +281,22 @@ class ProcessingActivityType extends AbstractType
                 'choice_label' => fn(Control $control): string => $control->getControlId() . ' - ' . $control->getName(),
                 'multiple' => true,
                 'required' => false,
+                'attr' => ['data-controller' => 'tom-select'],
+            ])
+            // V3 W2-Bug3 — linked Assets (M:N). High-risk asset
+            // classifications (confidential / restricted) auto-trigger
+            // a DPIA suggestion via AutoReactionDpiaSuggestListener.
+            // Uses `field:` + `help:` keys (same convention as implemented_controls).
+            ->add('assets', EntityType::class, [
+                'label' => 'processing_activity.field.assets',
+                'help' => 'processing_activity.help.assets',
+                'class' => Asset::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'required' => false,
+                'query_builder' => static function ($repo) {
+                    return $repo->createQueryBuilder('a')->orderBy('a.name', 'ASC');
+                },
                 'attr' => ['data-controller' => 'tom-select'],
             ])
 

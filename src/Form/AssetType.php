@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\Asset;
 use App\Entity\Location;
 use App\Entity\Person;
+use App\Entity\ProcessingActivity;
 use App\Entity\User;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Service\ModuleConfigurationService;
@@ -128,6 +129,24 @@ class AssetType extends AbstractType
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'asset.help.depends_on',
+            ])
+            // V3 W2-Bug3 — linked Processing Activities (M:N inverse).
+            // Edit from either side; the owning side lives on
+            // ProcessingActivity::$assets.
+            ->add('processingActivities', EntityType::class, [
+                'label' => 'asset.field.processing_activities',
+                'help' => 'asset.help.processing_activities',
+                'class' => ProcessingActivity::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'required' => false,
+                'by_reference' => false,
+                'query_builder' => static function ($repo) {
+                    return $repo->createQueryBuilder('p')->orderBy('p.name', 'ASC');
+                },
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
             ])
             ->add('acquisitionValue', NumberType::class, [
                 'label' => 'asset.field.acquisition_value',

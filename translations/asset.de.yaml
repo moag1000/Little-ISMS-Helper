@@ -35,6 +35,7 @@ asset:
     protecting_controls: Schutzmaßnahmen
     related_risks: Zugehörige Risiken
     related_incidents: Zugehörige Incidents
+    processing_activities: Verknüpfte Verarbeitungstätigkeiten (VVT)
     history: Historie
     business_impact: Geschäftliche Auswirkung
     rto_analysis: RTO-Analyse
@@ -72,6 +73,7 @@ asset:
     owner_person: Verantwortlich (Person aus Stammdaten)
     owner_deputies: Vertretungen (Personen)
     depends_on: Abhängigkeiten (Upstream)
+    processing_activities: Verknüpfte Verarbeitungstätigkeiten (VVT)
   help:
     name: Eindeutiger Name des Assets
     type: Kategorie des Assets (Hardware, Software, Daten, etc.)
@@ -101,6 +103,9 @@ asset:
     owner_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
     depends_on: 'Assets, von denen dieser Asset abhängt. BSI 3.6 Maximumprinzip: höchste
       CIA-Werte werden vererbt.'
+    processing_activities: 'Verarbeitungstätigkeiten (Art. 30 GDPR / VVT), die dieses
+      Asset nutzen. Bei Datenklassifizierung „vertraulich"/„restricted" löst die
+      Verknüpfung automatisch eine DPIA-Empfehlung aus (Art. 35 GDPR).'
   protection:
     recommended: Empfohlen
     overall_level: Gesamtschutzbedarf

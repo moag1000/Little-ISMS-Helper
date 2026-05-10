@@ -430,6 +430,7 @@ processing_activity:
         retention_legal_basis: 'Retention Legal Basis'
         technical_organizational_measures: 'Technical Organizational Measures'
         implemented_controls: 'Implemented Controls'
+        assets: 'Linked Assets'
         responsible_department: 'Responsible Department'
         contact_person: 'Contact Person'
         contact_person_person: 'Contact Person (Person master data)'
@@ -469,6 +470,9 @@ processing_activity:
         retention_legal_basis: 'Legal basis for retention period (e.g., HGB §257, Tax Code)'
         technical_organizational_measures: 'Description of technical and organizational security measures (Art. 32 GDPR)'
         implemented_controls: 'Link to ISO 27001 controls (optional)'
+        assets: 'Assets (servers, databases, applications) used by this processing activity.
+            When a linked asset has data classification "confidential" or "restricted",
+            a DPIA suggestion is auto-generated (Art. 35 GDPR).'
         legal_basis: 'Legal basis for processing (Art. 6(1) GDPR)'
         legal_basis_details: 'Detailed explanation (mandatory for legitimate interests)'
         legal_basis_special_categories: 'Legal basis for processing special categories (Art. 9(2) GDPR)'
@@ -502,6 +506,7 @@ processing_activity:
         incomplete_activities: 'Incomplete Activities (%count%)'
     show:
         linked_controls: 'Linked ISO 27001 Controls'
+        linked_assets: 'Linked Assets'
         not_documented: 'Not documented'
         subtitle: 'Processing Activity Details (Art. 30 GDPR)'
         tab:
