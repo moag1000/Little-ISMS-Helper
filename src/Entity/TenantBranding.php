@@ -80,7 +80,11 @@ class TenantBranding
     #[ORM\Column(options: ['default' => true])]
     private bool $policyDocShowHistory = true;
 
-    #[ORM\Column(options: ['default' => true])]
+    // Explicit column-name: Doctrine's underscore_number_aware strategy
+    // would derive `policy_doc_show_annex_arefs` (no underscore between
+    // consecutive uppercase letters A/R), but migration created
+    // `policy_doc_show_annex_a_refs`. Pin the name to match migration.
+    #[ORM\Column(name: 'policy_doc_show_annex_a_refs', options: ['default' => true])]
     private bool $policyDocShowAnnexARefs = true;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
