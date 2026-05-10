@@ -1,5 +1,9 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Group Audit Program Report — fa-report-doc 5-slot macro (web variant)
+   Audience: auditor (Group Audit Committee)
+   Status:   auditor-only
+   ─────────────────────────────────────────────────────────────────────── #}
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'group_report.audit_program.title'|trans({}, 'group_report') }}{% endblock %}
 
@@ -12,110 +16,115 @@
         ]
     } %}
 
-    <div class="mb-4">
-        <h1 class="h2 mb-1">
-            <i class="fa-icon fa-icon--audit-external text-primary" aria-hidden="true"></i>
-            {{ 'group_report.audit_program.title'|trans({}, 'group_report') }}
-        </h1>
-        <p class="text-muted mb-0">{{ 'group_report.audit_program.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
-    </div>
+    {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
-        {% block alert_body %}<div class="small">{{ 'group_report.audit_program.intro'|trans({}, 'group_report')|raw }}</div>{% endblock %}
-    {% endembed %}
+    {# Build audit program matrix rows (program × subsidiaries) #}
+    {% set _prog_rows = [] %}
+    {% if programs is not empty and subsidiaries is not empty %}
+        {% for program in programs %}
+            {# First cell: program identity #}
+            {% set _prog_cell = '<strong>' ~ program.title ~ '</strong>'
+                ~ '<br><code style="font-size:.7em;color:var(--fg-3);">' ~ program.auditNumber ~ '</code>'
+                ~ (program.plannedDate ? ' <span style="font-size:.75em;color:var(--fg-3);">· ' ~ program.plannedDate|date('Y-m-d') ~ '</span>' : '')
+                ~ (program.scopeType ? ' <code style="font-size:.7em;">' ~ program.scopeType ~ '</code>' : '') %}
+            {% set _row = [ _prog_cell ] %}
 
-    {% if programs is empty %}
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
-            {% block alert_body %}{{ 'group_report.audit_program.empty'|trans({}, 'group_report') }}{% endblock %}
-        {% endembed %}
-    {% elseif subsidiaries is empty %}
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
-            {% block alert_body %}{{ 'group_report.audit_program.no_subsidiaries'|trans({}, 'group_report') }}{% endblock %}
-        {% endembed %}
-    {% else %}
-        {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
-            {% block card_body %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.audit_program.title'|trans({}, 'group_report') }}">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col">{{ 'group_report.audit_program.col.program'|trans({}, 'group_report') }}</th>
-                                {% for sub in subsidiaries %}
-                                    <th scope="col" class="text-center" title="{{ sub.name }}">
-                                        <code class="small">{{ sub.code }}</code>
-                                    </th>
-                                {% endfor %}
-                                <th scope="col" class="text-end">{{ 'group_report.audit_program.col.actions'|trans({}, 'group_report') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for program in programs %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ program.title }}</strong>
-                                        <div class="small text-muted">
-                                            <code>{{ program.auditNumber }}</code>
-                                            {% if program.plannedDate %}
-                                                · {{ program.plannedDate|date('Y-m-d') }}
-                                            {% endif %}
-                                            {% if program.scopeType %}
-                                                · <code>{{ program.scopeType }}</code>
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                    {% for sub in subsidiaries %}
-                                        {% set derived = matrix[program.id][sub.code] %}
-                                        <td class="text-center">
-                                            {% if derived is null %}
-                                                <span class="fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.audit_program.cell.missing_help'|trans({}, 'group_report') }}">
-                                                    <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
-                                                </span>
-                                            {% else %}
-                                                {% set status = derived.status %}
-                                                {% set cls = {
-                                                    'completed': 'bg-success',
-                                                    'in_progress': 'bg-warning-subtle text-warning',
-                                                    'planned': 'bg-info',
-                                                    'draft': 'bg-secondary'
-                                                }[status]|default('bg-secondary') %}
-                                                <span class="badge {{ cls }}" title="{{ status }} — {{ derived.auditNumber }}">
-                                                    {% if status == 'completed' %}✓
-                                                    {% elseif status == 'in_progress' %}◐
-                                                    {% elseif status == 'planned' %}◯
-                                                    {% else %}–{% endif %}
-                                                </span>
-                                            {% endif %}
-                                        </td>
-                                    {% endfor %}
-                                    <td class="text-end">
-                                        <form method="post" action="{{ path('app_group_report_audit_program_derive', {id: program.id}) }}" class="d-inline"
-                                              data-controller="ui-actions"
-                                              data-action="submit->ui-actions#confirm"
-                                              data-ui-actions-message-param="{{ 'group_report.audit_program.confirm_derive'|trans({'%count%': subsidiaries|length}, 'group_report') }}"
-                                              data-ui-actions-tone-param="danger">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('audit_program_derive_' ~ program.id) }}">
-                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
-                                                {{ 'group_report.audit_program.action.derive'|trans({}, 'group_report') }}
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endblock %}
-            {% block card_footer %}
-                <div class="card-footer small text-muted">
-                    <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
-                    <span class="fa-status-pill fa-status-pill--success">✓</span> {{ 'group_report.audit_program.legend.completed'|trans({}, 'group_report') }}
-                    · <span class="fa-status-pill fa-status-pill--warning">◐</span> {{ 'group_report.audit_program.legend.in_progress'|trans({}, 'group_report') }}
-                    · <span class="fa-status-pill fa-status-pill--primary">◯</span> {{ 'group_report.audit_program.legend.planned'|trans({}, 'group_report') }}
-                    · <span class="fa-status-pill fa-status-pill--neutral">–</span> {{ 'group_report.audit_program.legend.missing'|trans({}, 'group_report') }}
-                </div>
-            {% endblock %}
-        {% endembed %}
+            {# One cell per subsidiary #}
+            {% for sub in subsidiaries %}
+                {% set derived = matrix[program.id][sub.code] %}
+                {% if derived is null %}
+                    {% set _row = _row|merge([ '<span style="color:var(--fg-3);" title="' ~ ('group_report.audit_program.cell.missing_help'|trans({}, 'group_report')) ~ '">·</span>' ]) %}
+                {% else %}
+                    {% set status = derived.status %}
+                    {% set _chip = status == 'completed' ? 'final' : (status == 'in_progress' ? 'draft' : (status == 'planned' ? 'auditor-only' : 'confidential')) %}
+                    {% set _sym = status == 'completed' ? '✓' : (status == 'in_progress' ? '◐' : (status == 'planned' ? '◯' : '–')) %}
+                    {% set _row = _row|merge([ '<span class="report-doc__chip report-doc__chip--status-' ~ _chip ~ '" title="' ~ status ~ ' — ' ~ derived.auditNumber ~ '">' ~ _sym ~ '</span>' ]) %}
+                {% endif %}
+            {% endfor %}
+
+            {# Last cell: derive action form — preserved as interactive element #}
+            {% set _form_html = '<form method="post" action="' ~ path('app_group_report_audit_program_derive', {id: program.id}) ~ '" class="d-inline"'
+                ~ ' data-controller="ui-actions"'
+                ~ ' data-action="submit->ui-actions#confirm"'
+                ~ ' data-ui-actions-message-param="' ~ ('group_report.audit_program.confirm_derive'|trans({'%count%': subsidiaries|length}, 'group_report')) ~ '"'
+                ~ ' data-ui-actions-tone-param="danger">'
+                ~ '<input type="hidden" name="_token" value="' ~ csrf_token('audit_program_derive_' ~ program.id) ~ '">'
+                ~ '<button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">'
+                ~ ('group_report.audit_program.action.derive'|trans({}, 'group_report'))
+                ~ '</button></form>' %}
+            {% set _row = _row|merge([ _form_html ]) %}
+
+            {% set _prog_rows = _prog_rows|merge([_row]) %}
+        {% endfor %}
     {% endif %}
+
+    {# Build headers: Program + one per subsidiary + Actions #}
+    {% set _headers = [ 'group_report.audit_program.col.program'|trans({}, 'group_report') ] %}
+    {% if subsidiaries is defined %}
+        {% for sub in subsidiaries %}
+            {% set _headers = _headers|merge([ '<code>' ~ sub.code ~ '</code>' ]) %}
+        {% endfor %}
+    {% endif %}
+    {% set _headers = _headers|merge([ 'group_report.audit_program.col.actions'|trans({}, 'group_report') ]) %}
+
+    {# Legend body_html #}
+    {% set _legend_html = '<p style="font-size:8pt;color:var(--fg-2);">'
+        ~ '<strong>' ~ ('group_report.soa.legend.title'|trans({}, 'group_report')) ~ ':</strong> '
+        ~ '✓ ' ~ ('group_report.audit_program.legend.completed'|trans({}, 'group_report'))
+        ~ ' · ◐ ' ~ ('group_report.audit_program.legend.in_progress'|trans({}, 'group_report'))
+        ~ ' · ◯ ' ~ ('group_report.audit_program.legend.planned'|trans({}, 'group_report'))
+        ~ ' · · ' ~ ('group_report.audit_program.legend.missing'|trans({}, 'group_report'))
+        ~ '</p>' %}
+
+    {# Stats #}
+    {% set _total_programs = programs|default([])|length %}
+    {% set _total_subs = subsidiaries|default([])|length %}
+
+    {{ _fa_report_doc.render({
+        report: {
+            title:        'group_report.audit_program.title'|trans({}, 'group_report'),
+            subtitle:     'group_report.audit_program.subtitle'|trans({'%root%': root.name}, 'group_report'),
+            kicker:       'group_report.title'|trans({}, 'group_report'),
+            status:       'auditor-only',
+            audience:     'auditor',
+            generated_at: 'now'|date('d.m.Y H:i'),
+        },
+        brand_name: root.name,
+        key_findings: [
+            { label: ('group_report.audit_program.col.program'|trans({}, 'group_report')) ~ ': ' ~ _total_programs, tone: 'ok' },
+            { label: ('group_report.kpi.col.tenant'|trans({}, 'group_report')) ~ ': ' ~ _total_subs, tone: 'ok' },
+        ],
+        kpis: [
+            { label: 'group_report.audit_program.col.program'|trans({}, 'group_report'), value: _total_programs, tone: 'neutral' },
+            { label: 'group_report.kpi.col.tenant'|trans({}, 'group_report'),            value: _total_subs,     tone: 'neutral' },
+        ],
+        sections: [
+            {
+                heading: 'group_report.audit_program.title'|trans({}, 'group_report'),
+                intro: 'group_report.audit_program.intro'|trans({}, 'group_report'),
+                table: _prog_rows|length > 0 ? {
+                    headers: _headers,
+                    rows:    _prog_rows,
+                } : null,
+                body_html: _prog_rows|length == 0
+                    ? '<p style="color:var(--fg-3);font-style:italic;">' ~ ('group_report.audit_program.empty'|trans({}, 'group_report')) ~ '</p>'
+                    : _legend_html,
+            },
+        ],
+        appendix: {
+            sources: [
+                { label: 'AuditRepository', detail: 'findGroupAuditPrograms() — cross-tenant audit program × subsidiary matrix' },
+            ],
+            glossary: [
+                { term: 'Derive',    definition: 'Propagate parent audit program to subsidiary as a linked audit instance' },
+                { term: 'Completed', definition: 'Audit conducted and report finalized' },
+                { term: 'Planned',   definition: 'Audit scheduled but not yet started' },
+            ],
+        },
+        distribution: [
+            { role: 'Konzern-Auditor', name: 'Group Audit Committee' },
+            { role: 'Group-CISO',      name: '—' },
+        ],
+    }) }}
 </div>
 {% endblock %}

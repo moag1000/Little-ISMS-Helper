@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <title>{{ 'prototype_protection.pdf.title'|trans({'%title%': assessment.title}, 'prototype_protection') }}</title>
     <style>
+        :root {
+            --primary:       var(--primary);
+            --surface:       #ffffff;
+            --surface-2:     var(--surface-2);
+            --fg:            #0f172a;
+            --fg-2:          var(--fg-2);
+            --fg-3:          var(--fg-3);
+            --border:        var(--border);
+            --success:       var(--success);
+            --success-tint:  var(--success-tint);
+            --danger:        var(--danger);
+            --danger-tint:   var(--danger-tint);
+            --warning:       var(--warning);
+            --warning-tint:  var(--warning-tint);
+            --info-tint:     var(--info-tint);
+            --info-text:     var(--info-text);
+        }
+
         @page { size: A4; margin: 20mm 18mm 22mm 18mm; }
         body {
             font-family: 'DejaVu Sans', sans-serif;
@@ -11,15 +29,15 @@
             color: #222;
             line-height: 1.4;
         }
-        h1 { font-size: 18pt; margin: 0 0 4mm 0; color: #1b3a57; }
+        h1 { font-size: 18pt; margin: 0 0 4mm 0; color: var(--primary); }
         h2 {
             font-size: 12pt;
             margin: 6mm 0 2mm 0;
             padding-bottom: 1mm;
-            border-bottom: 1px solid #1b3a57;
-            color: #1b3a57;
+            border-bottom: 1px solid var(--primary);
+            color: var(--primary);
         }
-        h3 { font-size: 10.5pt; margin: 3mm 0 1mm 0; color: #365f87; }
+        h3 { font-size: 10.5pt; margin: 3mm 0 1mm 0; color: var(--fg-2); }
         table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm 0; }
         th, td {
             text-align: left;
@@ -27,13 +45,13 @@
             border: 1px solid var(--border);
             vertical-align: top;
         }
-        th { background: #eef3f8; font-weight: bold; width: 35%; }
+        th { background: var(--surface-2); font-weight: bold; width: 35%; }
         .meta-table th { width: 30%; }
         .section { margin-bottom: 6mm; }
         .section-text {
             white-space: pre-wrap;
-            background: #fafbfd;
-            border-left: 3px solid #365f87;
+            background: var(--surface-2);
+            border-left: 3px solid var(--fg-2);
             padding: 2mm 3mm;
             min-height: 6mm;
         }
@@ -50,23 +68,23 @@
             padding: 0.5mm 2mm;
             border-radius: 2mm;
             font-size: 8.5pt;
-            background: #e5eaf0;
-            color: #1b3a57;
+            background: var(--surface-2);
+            color: var(--primary);
         }
-        .result-good    { background: #dcfce7; color: #166534; }
-        .result-warn    { background: #fef3c7; color: #92400e; }
-        .result-bad     { background: #fee2e2; color: #991b1b; }
-        .result-na      { background: #e5eaf0; color: #555; }
+        .result-good    { background: var(--success-tint); color: var(--success); }
+        .result-warn    { background: var(--warning-tint); color: var(--warning); }
+        .result-bad     { background: var(--danger-tint); color: var(--danger); }
+        .result-na      { background: var(--surface-2); color: var(--fg-2); }
         .cover {
-            border: 1mm solid #1b3a57;
+            border: 1mm solid var(--primary);
             padding: 6mm 8mm;
             margin-bottom: 6mm;
-            background: #f7f9fc;
+            background: var(--surface-2);
         }
         .cover h1 { margin-bottom: 2mm; }
-        .cover .subtitle { font-size: 10.5pt; color: #365f87; }
+        .cover .subtitle { font-size: 10.5pt; color: var(--fg-2); }
         .signature-table td.sig-line {
-            border-bottom: 0.4mm solid #1b3a57;
+            border-bottom: 0.4mm solid var(--primary);
             height: 12mm;
         }
     </style>

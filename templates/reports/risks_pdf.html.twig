@@ -1,75 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'pdf.risk.title'|trans({}, 'reports') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
-            padding-bottom: 10px;
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       #ffffff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          #94a3b8;
+            --border:        #cbd5e1;
+            --success:       #166534;
+            --success-tint:  #dcfce7;
+            --danger:        #991b1b;
+            --danger-tint:   #fecaca;
+            --warning:       #92400e;
+            --warning-tint:  #fef3c7;
         }
-        .header h1 {
-            color: var(--bg);
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 10pt;
             margin: 0;
-            font-size: 20pt;
+            padding: 20px;
+            color: var(--fg);
+            background: var(--surface);
+        }
+
+        /* ── Cover ── */
+        .report-cover {
+            text-align: center;
+            margin-bottom: 16px;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 8px;
+        }
+        .report-cover h1 {
+            color: var(--fg);
+            margin: 0;
+            font-size: 18pt;
             text-transform: uppercase;
             letter-spacing: 0.5pt;
         }
-        .header .date { color: #666; font-size: 9pt; margin-top: 5px; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        .report-cover .date { color: var(--fg-2); font-size: 8pt; margin-top: 4px; }
+
+        /* ── Table ── */
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
         th {
-            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
-            color: var(--primary);
-            padding: 8px;
+            background: var(--fg);
+            color: var(--surface);
+            padding: 6px 5px;
             text-align: left;
-            font-size: 9pt;
-            border: 1px solid #1e3a8a;
+            font-size: 8pt;
+            border: 1px solid var(--border);
             text-transform: uppercase;
             letter-spacing: 0.3pt;
         }
-        td { padding: 8px; border: 1px solid #ddd; font-size: 9pt; }
-        tr:nth-child(even) { background: linear-gradient(135deg, var(--bg) 0%, var(--surface-2) 100%); }
-        .risk-critical { background: #fee2e2; font-weight: bold; }
-        .risk-high { background: #fed7aa; }
-        .risk-medium { background: #fef3c7; }
-        .risk-low { background: #d1fae5; }
+        td { padding: 6px 5px; border: 1px solid var(--border); font-size: 8.5pt; }
+
+        /* ── Row tinting ── */
+        .risk-critical { background: var(--danger-tint); font-weight: bold; }
+        .risk-high     { background: var(--warning-tint); }
+        .risk-medium   { background: #fef9c3; }
+        .risk-low      { background: var(--success-tint); }
+
+        /* ── Score badge ── */
         .score-badge {
             display: inline-block;
-            padding: 2px 8px;
+            padding: 1px 6px;
             border-radius: 3px;
             font-weight: bold;
-            color: white;
-            letter-spacing: 0.3pt;
-            border: 1.5pt solid transparent;
+            color: var(--surface);
+            font-size: 8pt;
         }
-        .score-critical {
-            background: linear-gradient(135deg, var(--danger) 0%, var(--danger) 100%);
-            border-color: var(--danger);
+        .score-critical { background: var(--danger); }
+        .score-high     { background: var(--warning); }
+        .score-medium   { background: #ca8a04; }
+        .score-low      { background: var(--success); }
+
+        /* ── Legend box ── */
+        .legend-box {
+            margin-top: 24px;
+            padding: 10px 12px;
+            background: var(--warning-tint);
+            border-left: 4px solid #d97706;
+            font-size: 8pt;
         }
-        .score-high {
-            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
-            border-color: #d97706;
-        }
-        .score-medium {
-            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
-            border-color: #ca8a04;
-            color: #fff;
-        }
-        .score-low {
-            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
-            border-color: #059669;
-        }
-        .footer { position: fixed; bottom: 20px; text-align: center; font-size: 8pt; color: #666; }
+
+        /* ── Footer ── */
+        .report-footer { position: fixed; bottom: 16px; text-align: center; font-size: 7.5pt; color: var(--fg-3); }
     </style>
 </head>
 <body>
-    <div class="header">
+    <div class="report-cover">
         <h1>{{ 'pdf.risk.title'|trans({}, 'reports') }}</h1>
-        <div class="date">{{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }} | {{ 'pdf.common.total'|trans({}, 'reports') }}: {{ risks|length }}</div>
+        <div class="date">
+            {{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }}
+            &nbsp;|&nbsp;
+            {{ 'pdf.common.total'|trans({}, 'reports') }}: {{ risks|length }}
+        </div>
     </div>
 
     <table>
@@ -92,13 +122,13 @@
             {% set riskLevel = risk.riskScore >= 20 ? 'critical' : (risk.riskScore >= 12 ? 'high' : (risk.riskScore >= 6 ? 'medium' : 'low')) %}
             <tr class="risk-{{ riskLevel }}">
                 <td>{{ risk.id }}</td>
-                <td>{{ risk.title|slice(0, 40) }}{% if risk.title|length > 40 %}...{% endif %}</td>
+                <td>{{ risk.title|length > 40 ? risk.title|slice(0, 40) ~ '…' : risk.title }}</td>
                 <td>{{ risk.category }}</td>
                 <td>{{ risk.probability }}</td>
                 <td>{{ risk.impact }}</td>
                 <td><span class="score-badge score-{{ riskLevel }}">{{ risk.riskScore }}</span></td>
                 <td>{{ riskLevel|upper }}</td>
-                <td>{{ risk.treatmentDescription|slice(0, 25)|default('-') }}{% if risk.treatmentDescription|length > 25 %}...{% endif %}</td>
+                <td>{{ risk.treatmentDescription|length > 25 ? risk.treatmentDescription|slice(0, 25) ~ '…' : risk.treatmentDescription|default('-') }}</td>
                 <td>{{ risk.status ? risk.status.value : '' }}</td>
                 <td>{{ (risk.effectiveRiskOwner ?? '-')|slice(0, 20) }}</td>
             </tr>
@@ -106,12 +136,12 @@
         </tbody>
     </table>
 
-    <div style="margin-top: 30px; padding: 15px; background: #fef3c7; border-left: 4px solid var(--warning);">
-        <strong>{{ 'pdf.risk.legend'|trans({}, 'reports') }}:</strong><br>
+    <div class="legend-box">
+        <strong>{{ 'pdf.risk.legend'|trans({}, 'reports') }}:</strong>
         {{ 'pdf.risk.legend_text'|trans({}, 'reports') }}
     </div>
 
-    <div class="footer">
+    <div class="report-footer">
         <p>{{ 'pdf.risk.footer'|trans({}, 'reports') }} | {{ 'pdf.common.page'|trans({}, 'reports') }} {PAGE_NUM}</p>
     </div>
 </body>

@@ -1,44 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'pdf.training.title'|trans({}, 'reports') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
-            padding-bottom: 10px;
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       #ffffff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          #94a3b8;
+            --border:        #cbd5e1;
+            --warning-tint:  #fef3c7;
         }
-        .header h1 {
-            color: var(--bg);
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 10pt;
             margin: 0;
-            font-size: 20pt;
+            padding: 20px;
+            color: var(--fg);
+            background: var(--surface);
+        }
+
+        /* ── Cover ── */
+        .report-cover {
+            text-align: center;
+            margin-bottom: 16px;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 8px;
+        }
+        .report-cover h1 {
+            color: var(--fg);
+            margin: 0;
+            font-size: 18pt;
             text-transform: uppercase;
             letter-spacing: 0.5pt;
         }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        .report-cover .meta { color: var(--fg-2); font-size: 8pt; margin-top: 4px; }
+
+        /* ── Table ── */
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
         th {
-            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
-            color: var(--primary);
-            padding: 8px;
+            background: var(--fg);
+            color: var(--surface);
+            padding: 6px 4px;
             text-align: left;
-            font-size: 9pt;
-            border: 1px solid #1e3a8a;
+            font-size: 8pt;
+            border: 1px solid var(--border);
             text-transform: uppercase;
             letter-spacing: 0.3pt;
         }
-        td { padding: 8px; border: 1px solid #ddd; font-size: 9pt; }
-        tr:nth-child(even) { background: linear-gradient(135deg, var(--bg) 0%, var(--surface-2) 100%); }
-        .mandatory { background: #fef3c7; font-weight: bold; }
+        td { padding: 6px 4px; border: 1px solid var(--border); font-size: 8.5pt; }
+        tr:nth-child(even) { background: var(--surface-2); }
+
+        /* ── Mandatory highlight ── */
+        .mandatory { background: var(--warning-tint); font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="header">
+    <div class="report-cover">
         <h1>{{ 'pdf.training.title'|trans({}, 'reports') }}</h1>
-        <div style="color: #666; font-size: 9pt; margin-top: 5px;">{{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }} | {{ 'pdf.common.total'|trans({}, 'reports') }}: {{ trainings|length }}</div>
+        <div class="meta">
+            {{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }}
+            &nbsp;|&nbsp;
+            {{ 'pdf.common.total'|trans({}, 'reports') }}: {{ trainings|length }}
+        </div>
     </div>
 
     <table>
@@ -56,14 +84,14 @@
         </thead>
         <tbody>
             {% for training in trainings %}
-            <tr {% if training.mandatory %}class="mandatory"{% endif %}>
+            <tr{% if training.mandatory %} class="mandatory"{% endif %}>
                 <td>{{ training.id }}</td>
-                <td>{{ training.title|slice(0, 35) }}{% if training.title|length > 35 %}...{% endif %}</td>
+                <td>{{ training.title|length > 35 ? training.title|slice(0, 35) ~ '…' : training.title }}</td>
                 <td>{{ training.trainingType }}</td>
                 <td>{{ training.scheduledDate|date('Y-m-d') }}</td>
                 <td>{{ training.duration }} min</td>
                 <td>{{ training.participants|length }}</td>
-                <td>{{ training.mandatory ? 'pdf.common.yes'|trans({}, 'reports') : 'pdf.common.no'|trans({}, 'reports') }}</td>
+                <td>{{ training.mandatory ? ('pdf.common.yes'|trans({}, 'reports')) : ('pdf.common.no'|trans({}, 'reports')) }}</td>
                 <td>{{ training.status }}</td>
             </tr>
             {% endfor %}

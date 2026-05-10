@@ -1,135 +1,161 @@
-{% trans_default_domain 'management_reports' %}
+{# ─────────────────────────────────────────────────────────────────────────
+   Quarterly Trend Report PDF — fa-report-doc 5-slot macro
+   Audience: internal (ISB / CISO quarterly review)
+   Status:   confidential
+   ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'management_reports.quarterly_trend.pdf_title'|trans({}, 'management_reports') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: var(--surface); }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
-            padding-bottom: 10px;
-        }
-        .header h1 { color: var(--bg); margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
-        .header .subtitle { color: #475569; font-size: 9pt; margin-top: 3px; }
-        .header .date { color: #64748b; font-size: 8pt; margin-top: 3px; }
-
-        .section { margin: 15px 0; page-break-inside: avoid; }
-        .section h2 {
-            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
-            color: var(--primary);
-            padding: 6px 10px;
-            font-size: 10pt;
-            margin: 0 0 8px 0;
-            text-transform: uppercase;
-            letter-spacing: 0.3pt;
-        }
-
-        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
-        th {
-            background: var(--bg);
-            color: var(--primary);
-            padding: 5px 6px;
-            text-align: left;
-            font-size: 8pt;
-            text-transform: uppercase;
-        }
-        td { padding: 5px 6px; border-bottom: 1px solid var(--border); font-size: 9pt; }
-        tr:nth-child(even) { background: var(--bg); }
-        .text-center { text-align: center; }
-
-        .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
-        .badge-danger { background: #fecaca; color: #991b1b; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-success { background: #dcfce7; color: #166534; }
-        .badge-info { background: #dbeafe; color: #1e40af; }
-        .badge-secondary { background: var(--border); color: #475569; }
-
-        .progress-bar { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; margin: 3px 0; }
-        .progress-fill { height: 100%; border-radius: 6px; }
-        .progress-fill.danger { background: var(--danger); }
-        .progress-fill.warning { background: #d97706; }
-        .progress-fill.success { background: #16a34a; }
-
-        .delta-positive { color: #16a34a; font-weight: bold; }
-        .delta-negative { color: var(--danger); font-weight: bold; }
-        .delta-neutral { color: #64748b; }
-
-        .no-data { text-align: center; padding: 20px; color: #94a3b8; font-style: italic; font-size: 10pt; }
-
-        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid var(--border); padding-top: 6px; }
+        :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--warning:#d97706;--warning-strong:#b45309;--danger:#dc2626;--danger-strong:#b91c1c;}
+        @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
+        body{background:#fff;font-family:'DejaVu Sans',sans-serif;margin:0;padding:0;}
+        .report-doc{background:var(--surface);color:var(--fg-1);font-size:9pt;line-height:1.45;max-width:none;margin:0;border:0;border-radius:0;}
+        .report-doc__cover{padding:16pt 14pt 12pt;border-bottom:1px solid var(--border);}
+        .report-doc__cover-top{display:table;width:100%;}
+        .report-doc__brand{display:table-cell;vertical-align:middle;}
+        .report-doc__chips{display:table-cell;text-align:right;vertical-align:middle;}
+        .report-doc__logo{display:inline-block;width:28pt;height:28pt;border-radius:5pt;background:var(--primary);color:#fff;text-align:center;line-height:28pt;font-weight:700;font-size:16pt;vertical-align:middle;margin-right:6pt;}
+        .report-doc__brand-name{font-weight:700;font-size:10pt;color:var(--fg-1);display:inline-block;vertical-align:middle;}
+        .report-doc__brand-meta{font-size:7pt;color:var(--fg-3);}
+        .report-doc__chip{display:inline-block;padding:2pt 6pt;border-radius:8pt;background:var(--surface-2);color:var(--fg-2);font-size:6pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border);margin-left:3pt;}
+        .report-doc__chip--status-confidential{background:rgba(220,38,38,.15);color:var(--danger-strong);border-color:transparent;}
+        .report-doc__chip--audience-internal{background:var(--accent-tint);color:var(--accent-strong);border-color:transparent;}
+        .report-doc__cover-center{padding:14pt 0 10pt;}
+        .report-doc__kicker{font-size:7pt;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4pt;}
+        .report-doc__title{font-size:18pt;font-weight:800;color:var(--fg-1);margin:0 0 6pt;line-height:1.1;}
+        .report-doc__sub{font-size:9pt;color:var(--fg-2);margin:0;}
+        .report-doc__cover-grid{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8pt 0;margin:0;}
+        .report-doc__cover-grid>div{display:inline-block;width:31%;margin:0 1% 4pt 0;vertical-align:top;}
+        .report-doc__cover-label{font-size:6pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 2pt;}
+        .report-doc__cover-value{font-size:8pt;color:var(--fg-1);font-weight:600;margin:0;}
+        .report-doc__exec-summary{padding:10pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__exec-heading{font-size:11pt;font-weight:800;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__kpi-grid{display:table;width:100%;border-spacing:4pt;}
+        .report-doc__kpi-tile{display:table-cell;padding:7pt 8pt;border:1px solid var(--border);border-radius:4pt;vertical-align:top;background:var(--surface);}
+        .report-doc__kpi-tile--success{border-left:2pt solid var(--success);}
+        .report-doc__kpi-tile--warning{border-left:2pt solid var(--warning);}
+        .report-doc__kpi-tile--danger{border-left:2pt solid var(--danger);}
+        .report-doc__kpi-tile--neutral{border-left:2pt solid var(--primary);}
+        .report-doc__kpi-label{font-size:6pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:2pt;}
+        .report-doc__kpi-value{font-size:14pt;font-weight:800;color:var(--fg-1);}
+        .report-doc__tldr{background:var(--surface);border:1px solid var(--border);border-left:3pt solid var(--primary);padding:7pt 10pt;margin:0 0 10pt;}
+        .report-doc__tldr-label{font-size:6pt;color:var(--primary-strong);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 5pt;}
+        .report-doc__tldr-list{list-style:none;margin:0;padding:0;}
+        .report-doc__tldr-item{font-size:8pt;color:var(--fg-1);padding:2pt 0;}
+        .report-doc__tldr-item--ok{border-left:2pt solid var(--success);padding-left:6pt;}
+        .report-doc__tldr-item--warn{border-left:2pt solid var(--warning);padding-left:6pt;}
+        .report-doc__tldr-item--danger{border-left:2pt solid var(--danger);padding-left:6pt;}
+        .report-doc__tldr-dot{display:none;}
+        .report-doc__data-section{padding:10pt 14pt;border-bottom:1px solid var(--border);page-break-inside:avoid;}
+        .report-doc__section-heading{font-size:11pt;font-weight:700;color:var(--fg-1);margin:0 0 6pt;padding-bottom:3pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__section-body{font-size:8pt;color:var(--fg-1);margin:6pt 0;}
+        .report-doc__table{width:100%;border-collapse:collapse;font-size:7.5pt;}
+        .report-doc__table th{background:var(--surface-2);color:var(--fg-2);padding:4pt 5pt;border:.5pt solid var(--border-strong);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:6pt;text-align:left;}
+        .report-doc__table td{padding:4pt 5pt;border:.5pt solid var(--border);color:var(--fg-1);vertical-align:top;}
+        .report-doc__table tbody tr:nth-child(even) td{background:var(--surface-2);}
+        .report-doc__table-wrap{margin:8pt 0;}
+        .report-doc__appendix{padding:10pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__appendix-heading{font-size:11pt;font-weight:700;margin:0 0 8pt;padding-bottom:3pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__appendix-subheading{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:7pt 0 3pt;}
+        .report-doc__appendix-body{font-size:8pt;color:var(--fg-2);}
+        .report-doc__appendix-sources{padding-left:12pt;font-size:7.5pt;color:var(--fg-2);}
+        .report-doc__footer-disclaimer{padding:10pt 14pt;background:var(--surface);border-top:1px solid var(--border-strong);}
+        .report-doc__distribution-label{font-size:6pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 3pt;}
+        .report-doc__distribution-list{list-style:none;padding:0;margin:0 0 6pt;font-size:8pt;color:var(--fg-2);}
+        .report-doc__distribution-list li{display:inline-block;border-left:2pt solid var(--border);padding:0 7pt;}
+        .report-doc__disclaimer-text{font-size:7pt;color:var(--fg-3);padding:6pt;background:var(--surface-2);border:1px solid var(--border);border-radius:3pt;margin:0 0 6pt;}
+        .report-doc__footer-meta{font-size:6pt;color:var(--fg-3);}
+        .report-doc__footer-brand{font-weight:700;color:var(--fg-2);}
+        .badge{display:inline-block;padding:1pt 4pt;border-radius:3pt;font-size:6.5pt;font-weight:700;}
+        .badge-success{background:var(--success-tint);color:var(--success-strong);}
+        .badge-warning{background:rgba(217,119,6,.12);color:var(--warning-strong);}
+        .badge-danger{background:rgba(220,38,38,.12);color:var(--danger-strong);}
+        .badge-secondary{background:var(--surface-2);color:var(--fg-2);}
+        .badge-info{background:var(--primary-tint);color:var(--primary-strong);}
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>{{ 'management_reports.quarterly_trend.pdf_title'|trans({}, 'management_reports') }}</h1>
-        <div class="subtitle">{{ 'management_reports.quarterly_trend.subtitle'|trans({}, 'management_reports') }}</div>
-        <div class="date">{{ 'management_reports.quarterly_trend.generated_at'|trans({}, 'management_reports') }}: {{ generated_at|date('d.m.Y H:i') }}</div>
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {% if not has_historical_data %}
-    <div class="no-data">
-        {{ 'management_reports.quarterly_trend.no_data_hint'|trans({}, 'management_reports') }}
-    </div>
+{# Quarter-over-quarter comparison table #}
+{% set _trend_rows = [] %}
+{% for metric in metrics %}
+    {% set _delta_cell = '' %}
+    {% if metric.delta is not null %}
+        {% if metric.delta > 0 %}
+            {% set _better = metric.higher_is_better ? 'style="color:var(--success);"' : 'style="color:var(--danger);"' %}
+            {% set _delta_cell = '<span ' ~ _better ~ '>+' ~ metric.delta ~ metric.unit ~ '</span>' %}
+        {% elseif metric.delta < 0 %}
+            {% set _better = metric.higher_is_better ? 'style="color:var(--danger);"' : 'style="color:var(--success);"' %}
+            {% set _delta_cell = '<span ' ~ _better ~ '>' ~ metric.delta ~ metric.unit ~ '</span>' %}
+        {% else %}
+            {% set _delta_cell = '0' %}
+        {% endif %}
+    {% else %}
+        {% set _delta_cell = '-' %}
     {% endif %}
+    {% set _trend_badge = metric.trend == 'better'
+        ? '<span class="badge badge-success">' ~ ('management_reports.quarterly_trend.better'|trans({}, 'management_reports')) ~ '</span>'
+        : (metric.trend == 'worse'
+            ? '<span class="badge badge-danger">' ~ ('management_reports.quarterly_trend.worse'|trans({}, 'management_reports')) ~ '</span>'
+            : '<span class="badge badge-secondary">' ~ ('management_reports.quarterly_trend.stable'|trans({}, 'management_reports')) ~ '</span>') %}
+    {% set _trend_rows = _trend_rows|merge([[
+        '<strong>' ~ metric.label ~ '</strong>',
+        metric.previous is not null ? metric.previous ~ metric.unit : '-',
+        '<strong>' ~ metric.current ~ metric.unit ~ '</strong>',
+        _delta_cell,
+        _trend_badge,
+    ]]) %}
+{% endfor %}
 
-    <div class="section">
-        <h2>
-            {{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}
-            vs.
-            {{ 'management_reports.quarterly_trend.previous_quarter'|trans({}, 'management_reports') }}
-        </h2>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.quarterly_trend.metric'|trans({}, 'management_reports') }}</th>
-                <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.previous_quarter'|trans({}, 'management_reports') }}</th>
-                <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports') }}</th>
-                <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.delta'|trans({}, 'management_reports') }}</th>
-                <th scope="col" class="text-center">{{ 'management_reports.quarterly_trend.trend_direction'|trans({}, 'management_reports') }}</th>
-            </tr>
-            {% for metric in metrics %}
-            <tr>
-                <td><strong>{{ metric.label }}</strong></td>
-                <td class="text-center">
-                    {% if metric.previous is not null %}
-                        {{ metric.previous }}{{ metric.unit }}
-                    {% else %}
-                        <span class="delta-neutral">-</span>
-                    {% endif %}
-                </td>
-                <td class="text-center"><strong>{{ metric.current }}{{ metric.unit }}</strong></td>
-                <td class="text-center">
-                    {% if metric.delta is not null %}
-                        {% if metric.delta > 0 %}
-                            <span class="{% if metric.higher_is_better %}delta-positive{% else %}delta-negative{% endif %}">+{{ metric.delta }}{{ metric.unit }}</span>
-                        {% elseif metric.delta < 0 %}
-                            <span class="{% if metric.higher_is_better %}delta-negative{% else %}delta-positive{% endif %}">{{ metric.delta }}{{ metric.unit }}</span>
-                        {% else %}
-                            <span class="delta-neutral">0</span>
-                        {% endif %}
-                    {% else %}
-                        <span class="delta-neutral">-</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    {% if metric.trend == 'better' %}
-                        <span class="badge badge-success">{{ 'management_reports.quarterly_trend.better'|trans({}, 'management_reports') }}</span>
-                    {% elseif metric.trend == 'worse' %}
-                        <span class="badge badge-danger">{{ 'management_reports.quarterly_trend.worse'|trans({}, 'management_reports') }}</span>
-                    {% else %}
-                        <span class="badge badge-secondary">{{ 'management_reports.quarterly_trend.stable'|trans({}, 'management_reports') }}</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-
-    <div class="footer">
-        {{ 'management_reports.quarterly_trend.footer'|trans({}, 'management_reports') }} | {{ generated_at|date('d.m.Y') }}
-    </div>
+{{ _fa_report_doc.render({
+    report: {
+        title:        'management_reports.quarterly_trend.pdf_title'|trans({}, 'management_reports'),
+        subtitle:     'management_reports.quarterly_trend.subtitle'|trans({}, 'management_reports'),
+        kicker:       'ISMS · Quarterly Trend Analysis',
+        status:       'confidential',
+        audience:     'internal',
+        generated_at: generated_at|date('d.m.Y H:i'),
+    },
+    brand_name: 'Little ISMS Helper',
+    key_findings: [
+        { label: has_historical_data
+            ? ('management_reports.quarterly_trend.metric'|trans({}, 'management_reports')) ~ ': ' ~ metrics|length ~ ' tracked'
+            : ('management_reports.quarterly_trend.no_data_hint'|trans({}, 'management_reports')),
+          tone: has_historical_data ? 'ok' : 'warn' },
+    ],
+    kpis: [],
+    sections: [
+        {
+            heading: ('management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports'))
+                ~ ' vs. '
+                ~ ('management_reports.quarterly_trend.previous_quarter'|trans({}, 'management_reports')),
+            intro: not has_historical_data ? ('management_reports.quarterly_trend.no_data_hint'|trans({}, 'management_reports')) : null,
+            table: _trend_rows|length > 0 ? {
+                headers: [
+                    'management_reports.quarterly_trend.metric'|trans({}, 'management_reports'),
+                    'management_reports.quarterly_trend.previous_quarter'|trans({}, 'management_reports'),
+                    'management_reports.quarterly_trend.current_quarter'|trans({}, 'management_reports'),
+                    'management_reports.quarterly_trend.delta'|trans({}, 'management_reports'),
+                    'management_reports.quarterly_trend.trend_direction'|trans({}, 'management_reports'),
+                ],
+                rows: _trend_rows,
+            } : null,
+        },
+    ],
+    appendix: {
+        methodology: '<p>Quarterly comparison uses last full quarter vs. previous quarter. Delta = current - previous. Trend direction: better/worse based on higher_is_better metric flag.</p>',
+        sources: [
+            { label: 'ManagementReportService', detail: 'getQuarterlyTrendMetrics() — aggregated KPIs per quarter' },
+        ],
+    },
+    distribution: [
+        { role: 'CISO',     name: '—' },
+        { role: 'ISB',      name: '—' },
+    ],
+}) }}
 </body>
 </html>

@@ -1,146 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ audit.title }} - {{ 'pdf.title'|trans({}, 'audit') }}</title>
     <style>
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       #ffffff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          #94a3b8;
+            --border:        #cbd5e1;
+            --success:       #166534;
+            --success-tint:  #dcfce7;
+            --danger:        #991b1b;
+            --danger-tint:   #fecaca;
+            --warning:       #92400e;
+            --warning-tint:  #fef3c7;
+            --info-tint:     #dbeafe;
+            --info-text:     #1e40af;
+            --violet-tint:   #e0e7ff;
+            --violet-text:   #3730a3;
+        }
+        * { box-sizing: border-box; }
         body {
-            font-family: 'DejaVu Sans', sans-serif;
+            font-family: 'DejaVu Sans', Arial, sans-serif;
             font-size: 10pt;
             line-height: 1.4;
-            color: var(--surface);
+            color: var(--fg);
+            background: var(--surface);
+            margin: 0;
+            padding: 20px;
         }
-        .header {
+
+        /* ── Cover ── */
+        .report-cover {
             text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
-            padding-bottom: 15px;
+            margin-bottom: 18px;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 12px;
         }
-        .header h1 {
-            color: var(--bg);
-            margin: 0 0 5px 0;
-            font-size: 18pt;
-            text-transform: uppercase;
-            letter-spacing: 0.5pt;
-        }
-        .header .audit-number {
-            font-size: 12pt;
-            color: var(--primary);
-            font-weight: bold;
-        }
-        .header .subtitle {
-            color: #64748b;
-            font-size: 9pt;
-            margin-top: 8px;
-        }
-        .section {
-            margin: 15px 0;
-            page-break-inside: avoid;
-        }
+        .report-cover h1        { color: var(--fg); margin: 0 0 4px; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+        .report-cover .audit-nr { font-size: 11pt; color: var(--primary); font-weight: bold; }
+        .report-cover .subtitle { color: var(--fg-2); font-size: 9pt; margin-top: 6px; }
+
+        /* ── Sections ── */
+        .section { margin: 14px 0; page-break-inside: avoid; }
         .section-title {
-            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
-            color: var(--primary);
-            padding: 8px 12px;
-            font-size: 11pt;
+            background: var(--fg);
+            color: var(--surface);
+            padding: 6px 10px;
+            font-size: 10pt;
             text-transform: uppercase;
             letter-spacing: 0.3pt;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .info-grid {
-            display: table;
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .info-row {
-            display: table-row;
-        }
-        .info-label {
-            display: table-cell;
-            width: 30%;
-            padding: 6px 10px;
-            background: var(--surface-2);
-            font-weight: bold;
-            border: 1px solid var(--border);
-            font-size: 9pt;
-        }
-        .info-value {
-            display: table-cell;
-            padding: 6px 10px;
-            border: 1px solid var(--border);
-            font-size: 9pt;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 8pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .status-planned { background: #fef3c7; color: #92400e; }
-        .status-in_progress { background: #dbeafe; color: #1e40af; }
-        .status-completed { background: #d1fae5; color: #065f46; }
-        .status-reported { background: #e0e7ff; color: #3730a3; }
-        .content-box {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            padding: 10px;
-            margin: 5px 0;
-            font-size: 9pt;
-        }
-        .findings-section {
-            margin-top: 15px;
-        }
-        .finding-type {
-            font-weight: bold;
-            color: var(--bg);
-            margin-bottom: 5px;
-            font-size: 10pt;
-        }
+
+        /* ── Info grid (CSS table for dompdf) ── */
+        .info-grid  { display: table; width: 100%; border-collapse: collapse; }
+        .info-row   { display: table-row; }
+        .info-label { display: table-cell; width: 30%; padding: 5px 8px; background: var(--surface-2); font-weight: bold; border: 1px solid var(--border); font-size: 8.5pt; }
+        .info-value { display: table-cell; padding: 5px 8px; border: 1px solid var(--border); font-size: 8.5pt; }
+
+        /* ── Status badges ── */
+        .status-badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 7.5pt; font-weight: bold; text-transform: uppercase; }
+        .status-planned     { background: var(--warning-tint); color: var(--warning); }
+        .status-in_progress { background: var(--info-tint);   color: var(--info-text); }
+        .status-completed   { background: var(--success-tint); color: var(--success); }
+        .status-reported    { background: var(--violet-tint);  color: var(--violet-text); }
+
+        /* ── Content boxes ── */
+        .content-box { background: var(--surface-2); border: 1px solid var(--border); padding: 8px; margin: 4px 0; font-size: 8.5pt; }
+
+        /* ── Findings ── */
+        .findings-section   { margin-top: 12px; }
+        .finding-type       { font-weight: bold; color: var(--fg); margin-bottom: 4px; font-size: 9.5pt; }
         .finding-type.non-conformities { color: var(--danger); }
-        .finding-type.observations { color: var(--warning); }
-        .finding-type.recommendations { color: #2563eb; }
-        table.assets-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-            font-size: 9pt;
-        }
-        table.assets-table th {
-            background: var(--surface);
-            color: var(--primary);
-            padding: 6px;
-            text-align: left;
-            border: 1px solid #334155;
-        }
-        table.assets-table td {
-            padding: 5px 6px;
-            border: 1px solid var(--border);
-        }
-        table.assets-table tr:nth-child(even) {
-            background: var(--bg);
-        }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 8pt;
-            color: #94a3b8;
-            padding: 10px;
-            border-top: 1px solid var(--border);
-        }
-        .page-break {
-            page-break-before: always;
-        }
+        .finding-type.observations     { color: var(--warning); }
+        .finding-type.recommendations  { color: var(--primary); }
+
+        /* ── Assets table ── */
+        table.assets-table         { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 8.5pt; }
+        table.assets-table th      { background: var(--fg); color: var(--surface); padding: 5px; text-align: left; border: 1px solid var(--border); }
+        table.assets-table td      { padding: 4px 5px; border: 1px solid var(--border); }
+        table.assets-table tr:nth-child(even) { background: var(--surface-2); }
+
+        /* ── Helpers ── */
+        .page-break { page-break-before: always; }
+
+        /* ── Footer ── */
+        .report-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 7.5pt; color: var(--fg-3); padding: 8px; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
-    <div class="header">
+    <div class="report-cover">
         <h1>{{ 'pdf.title'|trans({}, 'audit') }}</h1>
-        <div class="audit-number">{{ audit.auditNumber }}</div>
+        <div class="audit-nr">{{ audit.auditNumber }}</div>
         <div class="subtitle">{{ audit.title }}</div>
     </div>
 
@@ -164,7 +120,7 @@
             </div>
             <div class="info-row">
                 <div class="info-label">{{ 'pdf.label.scope_type'|trans({}, 'audit') }}</div>
-                <div class="info-value">{{ audit.scopeType ? ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') : 'pdf.default_scope'|trans({}, 'audit') }}</div>
+                <div class="info-value">{{ audit.scopeType ? ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') : ('pdf.default_scope'|trans({}, 'audit')) }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">{{ 'pdf.label.lead_auditor'|trans({}, 'audit') }}</div>
@@ -271,7 +227,7 @@
     </div>
     {% endif %}
 
-    {# Findings - Only if audit has results #}
+    {# Findings #}
     {% if audit.findings or audit.nonConformities or audit.observations or audit.recommendations %}
     <div class="section page-break">
         <div class="section-title">{{ 'pdf.section.audit_findings'|trans({}, 'audit') }}</div>
@@ -335,7 +291,7 @@
         </div>
     </div>
 
-    <div class="footer">
+    <div class="report-footer">
         {{ 'pdf.footer'|trans({'%audit_number%': audit.auditNumber, '%datetime%': "now"|date('d.m.Y H:i')}, 'audit') }}
     </div>
 </body>
