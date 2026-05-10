@@ -27,38 +27,37 @@
                     <h2 class="fa-section__title">Abhängigkeits-Graph</h2>
                 </div>
                 <div class="fa-section__body">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Modul</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Typ</th>
-                                    <th scope="col">Benötigt</th>
-                                    <th scope="col">Benötigt von</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    {% embed '_components/_fa_table.html.twig' %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">Modul</th>
+                                <th scope="col" class="fa-table__th">Status</th>
+                                <th scope="col" class="fa-table__th">Typ</th>
+                                <th scope="col" class="fa-table__th">Benötigt</th>
+                                <th scope="col" class="fa-table__th">Benötigt von</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for key, graph in dependency_graph %}
-                                <tr class="{{ key in active_modules ? 'table-success' : '' }}">
-                                    <td>
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell">
                                         <strong>{{ graph.name }}</strong>
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         {% if key in active_modules %}
                                             <span class="fa-status-pill fa-status-pill--success">Aktiv</span>
                                         {% else %}
                                             <span class="fa-status-pill fa-status-pill--neutral">Inaktiv</span>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         {% if graph.required %}
                                             <span class="fa-status-pill fa-status-pill--warning">Erforderlich</span>
                                         {% else %}
                                             <span class="fa-status-pill fa-status-pill--primary">Optional</span>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         {% if graph.dependencies|length > 0 %}
                                             {% for dep in graph.dependencies %}
                                                 <span class="fa-status-pill fa-status-pill--warning me-1">{{ dependency_graph[dep].name }}</span>
@@ -67,7 +66,7 @@
                                             <span class="text-muted">-</span>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         {% if graph.dependents|length > 0 %}
                                             {% for dep in graph.dependents %}
                                                 <span class="fa-status-pill fa-status-pill--primary me-1">{{ dependency_graph[dep].name }}</span>
@@ -78,9 +77,8 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </section>
         </div>

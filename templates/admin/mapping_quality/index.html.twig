@@ -101,44 +101,42 @@
             {% if mappings|length == 0 %}
                 {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: 'admin.mapping_quality.no_results'|trans({}, 'admin') }) }}
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>{{ 'admin.mapping_quality.col.source_target'|trans({}, 'admin') }}</th>
-                                <th>{{ 'admin.mapping_quality.col.relationship'|trans({}, 'admin') }}</th>
-                                <th>{{ 'admin.mapping_quality.col.confidence'|trans({}, 'admin') }}</th>
-                                <th>{{ 'admin.mapping_quality.col.lifecycle'|trans({}, 'admin') }}</th>
-                                <th class="text-end">{{ 'admin.mapping_quality.col.mqs'|trans({}, 'admin') }}</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                {% embed '_components/_fa_table.html.twig' %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.source_target'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.relationship'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.confidence'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'admin.mapping_quality.col.lifecycle'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.mapping_quality.col.mqs'|trans({}, 'admin') }}</th>
+                            <th class="fa-table__th fa-table__th--actions"></th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
                         {% for m in mappings %}
-                            <tr>
-                                <td>
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
                                     <code class="small">{{ m.sourceRequirement.requirementId }}</code>
                                     <i class="fa-icon fa-icon--util-arrow-right small text-muted" aria-hidden="true"></i>
                                     <code class="small">{{ m.targetRequirement.requirementId }}</code>
                                     <div class="small text-muted">{{ m.sourceRequirement.framework.name }} → {{ m.targetRequirement.framework.name }}</div>
                                 </td>
-                                <td>{% if m.relationship %}<span class="fa-status-pill fa-status-pill--neutral">{{ m.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</td>
-                                <td><span class="badge bg-{{ m.confidence == 'high' ? 'success' : (m.confidence == 'medium' ? 'warning' : 'secondary') }}">{{ m.confidence }}</span></td>
-                                <td><span class="badge bg-{{ m.lifecycleBadgeClass }}">{{ m.lifecycleState }}</span></td>
-                                <td class="text-end">
+                                <td class="fa-table__cell">{% if m.relationship %}<span class="fa-status-pill fa-status-pill--neutral">{{ m.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</td>
+                                <td class="fa-table__cell"><span class="badge bg-{{ m.confidence == 'high' ? 'success' : (m.confidence == 'medium' ? 'warning' : 'secondary') }}">{{ m.confidence }}</span></td>
+                                <td class="fa-table__cell"><span class="badge bg-{{ m.lifecycleBadgeClass }}">{{ m.lifecycleState }}</span></td>
+                                <td class="fa-table__cell fa-table__cell--num">
                                     {% set scoreClass = m.qualityScore >= 80 ? 'success' : (m.qualityScore >= 60 ? 'warning' : 'danger') %}
                                     <span class="fw-bold text-{{ scoreClass }}">{{ m.qualityScore ?? '–' }}</span>
                                 </td>
-                                <td class="text-end">
+                                <td class="fa-table__cell fa-table__cell--actions">
                                     <a href="{{ path('admin_mapping_quality_show', {id: m.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
                         {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
     </section>

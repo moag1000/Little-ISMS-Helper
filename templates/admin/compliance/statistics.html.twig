@@ -60,47 +60,45 @@
                 </h2>
             </div>
             <div class="fa-section__body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'admin.compliance.framework'|trans({}, 'admin') }}</th>
-                                <th scope="col" class="text-center">{{ 'admin.compliance.total_requirements'|trans({}, 'admin') }}</th>
-                                <th scope="col" class="text-center">{{ 'admin.compliance.assessed'|trans({}, 'admin') }}</th>
-                                <th scope="col" class="text-center">{{ 'admin.compliance.compliant'|trans({}, 'admin') }}</th>
-                                <th scope="col" class="text-center">{{ 'admin.compliance.compliance_rate'|trans({}, 'admin') }}</th>
-                                <th scope="col" class="text-center">{{ 'admin.compliance.progress'|trans({}, 'admin') }}</th>
+                {% embed '_components/_fa_table.html.twig' %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'admin.compliance.framework'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--center">{{ 'admin.compliance.total_requirements'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--center">{{ 'admin.compliance.assessed'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--center">{{ 'admin.compliance.compliant'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--center">{{ 'admin.compliance.compliance_rate'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--center">{{ 'admin.compliance.progress'|trans({}, 'admin') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for data in compliance_data %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
+                                    <strong>{{ data.framework.name }}</strong><br>
+                                    <small class="text-muted">{{ data.framework.code }}</small>
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--center">
+                                    <span class="fa-status-pill fa-status-pill--neutral">{{ data.total_requirements }}</span>
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--center">
+                                    <span class="fa-status-pill fa-status-pill--primary">{{ data.assessed_requirements }}</span>
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--center">
+                                    <span class="fa-status-pill fa-status-pill--success">{{ data.compliant_requirements }}</span>
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--center">
+                                    <strong class="{% if data.compliance_percentage >= 75 %}text-success{% elseif data.compliance_percentage >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                                        {{ data.compliance_percentage }}%
+                                    </strong>
+                                </td>
+                                <td class="fa-table__cell">
+                                    {{ _fa_progress.render({ value: data.compliance_percentage, tone: data.compliance_percentage >= 75 ? 'success' : (data.compliance_percentage >= 50 ? 'warning' : 'danger'), showText: true }) }}
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for data in compliance_data %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ data.framework.name }}</strong><br>
-                                        <small class="text-muted">{{ data.framework.code }}</small>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="fa-status-pill fa-status-pill--neutral">{{ data.total_requirements }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="fa-status-pill fa-status-pill--primary">{{ data.assessed_requirements }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="fa-status-pill fa-status-pill--success">{{ data.compliant_requirements }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <strong class="{% if data.compliance_percentage >= 75 %}text-success{% elseif data.compliance_percentage >= 50 %}text-warning{% else %}text-danger{% endif %}">
-                                            {{ data.compliance_percentage }}%
-                                        </strong>
-                                    </td>
-                                    <td>
-                                        {{ _fa_progress.render({ value: data.compliance_percentage, tone: data.compliance_percentage >= 75 ? 'success' : (data.compliance_percentage >= 50 ? 'warning' : 'danger'), showText: true }) }}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </section>
     {% else %}
