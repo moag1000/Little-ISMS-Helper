@@ -572,6 +572,16 @@ policy_wizard:
             annex_column:
                 control: 'Control ref'
                 applicable: 'Applicability'
+            annex_filter:
+                search_label: 'Full-text search (control ref or keyword)'
+                search_placeholder: 'e.g. "cloud", "A.5.23", "backup" …'
+                theme_label: 'Theme filter'
+                theme_all: 'All themes (93 controls)'
+                clear: 'Clear filter'
+                empty_match: 'No control matches the search.'
+            annex_counter:
+                of_total: 'of %total% controls marked applicable'
+                hint: 'Default = all applicable. Only un-tick a control when the exclusion reason can be audit-defended.'
             help:
                 title: 'What is decided here?'
                 body: 'Risk appetite is the overall tolerance for residual risk in your organisation. Data classification defines how many information levels you use. Annex A controls can be marked "not applicable" later in the SoA with a justification.'
@@ -591,6 +601,108 @@ policy_wizard:
             awareness_frequency_label: 'Awareness training frequency'
             crypto_allowlist_label: 'Allowed cryptographic algorithms'
             crypto_allowlist_help: 'Multi-select of permitted algorithms (BSI TR-02102 / NIST SP 800-131A compliant).'
+            crypto_decision_aid_title: 'Decision aid — what does each algorithm mean?'
+            crypto_decision_aid_intro: 'Junior ISBs often see 23 acronyms and do not know which ones they may un-tick. This table explains each algorithm in one sentence: what is it for, is it BSI TR-02102 compliant, and when is it optional. Yellow rows are mandatory — please do not un-tick.'
+            crypto_col:
+                algorithm: 'Algorithm'
+                purpose: 'Purpose'
+                bsi_status: 'BSI status'
+                optional_when: 'May be un-ticked when …'
+            crypto_algorithms:
+                # Junior-ISB plain language: per algorithm "purpose / BSI status / when can it be un-ticked".
+                # Source: BSI TR-02102-1:2024, NIST SP 800-131A Rev. 2, NIST SP 800-186.
+                'AES-128-GCM':
+                    purpose: 'Symmetric encryption (AEAD) — for data at rest and TLS 1.2/1.3.'
+                    bsi_status: 'BSI TR-02102-1 compliant ("suitable" through 2030+).'
+                    optional_when: 'Un-tick only if AES-256-GCM or ChaCha20-Poly1305 is enforced as the minimum.'
+                'AES-192-GCM':
+                    purpose: 'Symmetric encryption (AEAD) — middle ground between AES-128 and AES-256.'
+                    bsi_status: 'BSI TR-02102-1 compliant. Rarely prioritised in practice.'
+                    optional_when: 'Safe to un-tick — AES-128 or AES-256 cover the same use cases.'
+                'AES-256-GCM':
+                    purpose: 'Symmetric encryption (AEAD) — gold standard for data at rest and TLS 1.3.'
+                    bsi_status: 'BSI TR-02102-1 compliant and post-quantum resistant (Grover limit ≈ 128 bit).'
+                    optional_when: 'NEVER un-tick — mandatory minimum for high / very-high protection need.'
+                'CHACHA20-POLY1305':
+                    purpose: 'Symmetric encryption (AEAD) — for devices without AES-NI hardware (mobile, IoT).'
+                    bsi_status: 'BSI TR-02102-1 compliant since 2023. RFC 8439.'
+                    optional_when: 'Un-tick if all endpoints have AES hardware acceleration (standard servers / laptops since ~2012).'
+                'SHA-256':
+                    purpose: 'Hash function — for signatures, integrity, certificates (TLS, S/MIME, JWT).'
+                    bsi_status: 'BSI TR-02102-1 compliant. Recommended minimum hash length.'
+                    optional_when: 'NEVER un-tick — mandatorily required by TLS, X.509, OCSP.'
+                'SHA-384':
+                    purpose: 'Hash function — for signatures with elevated security margin (TLS 1.3 cipher suites).'
+                    bsi_status: 'BSI TR-02102-1 compliant. Mandatory for very-high protection need.'
+                    optional_when: 'Un-tick only if SHA-512 is permitted in its place.'
+                'SHA-512':
+                    purpose: 'Hash function with the highest security margin — for long-lived signatures.'
+                    bsi_status: 'BSI TR-02102-1 compliant.'
+                    optional_when: 'Un-tick if SHA-384 is enough (typical for standard protection need).'
+                'SHA3-256':
+                    purpose: 'Hash function (Keccak family) — structurally independent alternative to SHA-2.'
+                    bsi_status: 'BSI TR-02102-1 compliant. Still rare in standard TLS stacks.'
+                    optional_when: 'Safe to un-tick if only SHA-2 is in use (the standard case).'
+                'SHA3-384':
+                    purpose: 'Hash function (Keccak) — elevated security margin.'
+                    bsi_status: 'BSI TR-02102-1 compliant.'
+                    optional_when: 'Safe to un-tick if the SHA-2 family is sufficient.'
+                'SHA3-512':
+                    purpose: 'Hash function (Keccak) — highest security margin.'
+                    bsi_status: 'BSI TR-02102-1 compliant.'
+                    optional_when: 'Safe to un-tick if the SHA-2 family is sufficient.'
+                'ECDH-P256':
+                    purpose: 'Elliptic-curve key exchange (NIST P-256) — standard for TLS 1.2/1.3.'
+                    bsi_status: 'BSI TR-02102-1 compliant through 2030+. Globally adopted.'
+                    optional_when: 'Un-tick only if ECDH-P384 or Brainpool curves are enforced as minimum.'
+                'ECDH-P384':
+                    purpose: 'Elliptic-curve key exchange (NIST P-384) — elevated security margin.'
+                    bsi_status: 'BSI TR-02102-1 compliant.'
+                    optional_when: 'Un-tick if ECDH-P256 is sufficient (standard protection need).'
+                'ECDH-P521':
+                    purpose: 'Elliptic-curve key exchange (NIST P-521) — highest security margin in the NIST family.'
+                    bsi_status: 'BSI TR-02102-1 compliant.'
+                    optional_when: 'Safe to un-tick — rarely needed in practice.'
+                'ECDH-BRAINPOOLP256R1':
+                    purpose: 'Brainpool elliptic curve (BSI/RFC 5639) — BSI-preferred EU alternative to NIST curves.'
+                    bsi_status: 'BSI TR-02102-1 compliant and explicitly recommended for public-sector use.'
+                    optional_when: 'Un-tick if no BSI / EU public-sector connectivity is required (private sector).'
+                'ECDH-BRAINPOOLP384R1':
+                    purpose: 'Brainpool curve with elevated security margin — BSI/EU recommendation.'
+                    bsi_status: 'BSI TR-02102-1 compliant.'
+                    optional_when: 'Un-tick if ECDH-BRAINPOOLP256R1 is sufficient.'
+                'ECDH-BRAINPOOLP512R1':
+                    purpose: 'Brainpool curve with highest security margin — BSI/EU recommendation.'
+                    bsi_status: 'BSI TR-02102-1 compliant.'
+                    optional_when: 'Safe to un-tick if Brainpool 256/384 is sufficient.'
+                'ECDSA-P256':
+                    purpose: 'Digital signatures with elliptic curves (NIST P-256) — standard for TLS certs and JWT.'
+                    bsi_status: 'BSI TR-02102-1 compliant through 2030+.'
+                    optional_when: 'Un-tick if ED25519 is enforced as the preferred signature alternative.'
+                'ECDSA-P384':
+                    purpose: 'Digital signatures (NIST P-384) — elevated security margin.'
+                    bsi_status: 'BSI TR-02102-1 compliant.'
+                    optional_when: 'Un-tick if ECDSA-P256 is sufficient.'
+                'ECDSA-P521':
+                    purpose: 'Digital signatures (NIST P-521) — highest NIST security margin.'
+                    bsi_status: 'BSI TR-02102-1 compliant.'
+                    optional_when: 'Safe to un-tick — rarely needed in practice.'
+                'RSA-3072':
+                    purpose: 'Classic asymmetric crypto — signatures and key exchange (legacy / S/MIME / code-signing).'
+                    bsi_status: 'BSI TR-02102-1 compliant through 2030. Move to 4096-bit recommended afterwards.'
+                    optional_when: 'Un-tick if only elliptic curves (ECDH/ECDSA/ED25519) are used.'
+                'RSA-4096':
+                    purpose: 'Classic asymmetric crypto — signatures and key exchange (long-term security).'
+                    bsi_status: 'BSI TR-02102-1 compliant — minimum length for high protection need and long-lived certificates.'
+                    optional_when: 'Un-tick if only elliptic curves are used.'
+                'ED25519':
+                    purpose: 'Modern digital signatures (Edwards curve, RFC 8032) — fast, compact, side-channel resistant (SSH, JWT, modern TLS).'
+                    bsi_status: 'BSI TR-02102-1 compliant since 2024. Recommended for new systems.'
+                    optional_when: 'Un-tick only if ECDSA-P256 / RSA suffices (legacy compatibility).'
+                'ED448':
+                    purpose: 'Modern digital signatures (Edwards curve) with higher security margin than ED25519.'
+                    bsi_status: 'BSI TR-02102-1 compliant. Rarely needed in practice.'
+                    optional_when: 'Safe to un-tick if ED25519 covers the requirement.'
             backup_rpo_label: 'Backup RPO (hours)'
             backup_rpo_help: 'Recovery-Point-Objective: maximum tolerable data loss since the last backup.'
             patch_sla_critical_label: 'Patch SLA critical (h)'
@@ -657,15 +769,23 @@ policy_wizard:
                     intro: 'Three guiding questions to self-classify as a "significant entity" under DORA Art. 16. Server-side derives "significant" once at least 2 of 3 answers are yes.'
                     q1: 'Q1: Total balance-sheet of the organisation > EUR 5 bn?'
                     q1_help: 'Group-level value as of the latest annual report. Threshold aligned with the EBA/ESRB lex-RTS draft for DORA Art. 16.'
+                    q1_yes_implication: 'If "yes": one of three yes-points. Size threshold met — closer to "significant" status.'
+                    q1_no_implication: 'If "no": no yes-point added. Balance-sheet alone does not trigger heightened DORA requirements.'
                     q2: 'Q2: Number of ICT third parties > 100 or ICT concentration risk > 10%?'
                     q2_help: 'Third parties from the ICT third-party register (DORA Art. 28). Concentration: share of a single provider in critical ICT functions.'
+                    q2_yes_implication: 'If "yes": one of three yes-points. High ICT concentration triggers tighter third-party monitoring.'
+                    q2_no_implication: 'If "no": no yes-point added. A standard third-party register suffices.'
                     q3: 'Q3: Active in cross-border service provisioning across the EU?'
                     q3_help: 'Providing systemically relevant ICT services in more than one EU member state (relevant for ESA supervision).'
+                    q3_yes_implication: 'If "yes": one of three yes-points. ESA bodies (EBA/ESMA/EIOPA) become co-supervisors.'
+                    q3_no_implication: 'If "no": no yes-point added. Purely national supervision — typically only the lead competent authority.'
                     answer_yes: 'Yes'
                     answer_no: 'No'
                     derived_label: 'Derived:'
                     derived_yes: 'Significant entity (DORA Art. 16)'
                     derived_no: 'Standard entity (no Art. 16 threshold met)'
+                    derived_yes_consequence: 'Consequence: full DORA Art. 5–16 applies (heightened resilience requirements). Board sign-off for the ICT risk-management framework is mandatory.'
+                    derived_no_consequence: 'Consequence: standard DORA requirements (Art. 5–14). A simplified resilience programme is allowed, but minimum requirements still apply.'
                 not_applicable_hint:
                     title: 'DORA likely does not apply to you'
                     body: 'DORA primarily applies to financial-services providers (banks, investment firms, payment-service providers, FMIs, crypto providers etc.). If your organisation does not provide financial services, deactivate DORA in Step 1 (standards selection).'
