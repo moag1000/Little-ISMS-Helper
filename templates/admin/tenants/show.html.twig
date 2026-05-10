@@ -130,63 +130,61 @@
                             </h2>
                         </div>
                         <div class="fa-section__body">
-                            <div class="table-responsive">
-                                <table class="table table-sm mb-0">
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row" style="width: 40%;">{{ 'tenant.field.logo'|trans({}, 'tenant') }}</th>
-                                            <td>
-                                                {% if tenant.logoPath %}
-                                                    <img src="{{ asset(tenant.logoPath) }}"
-                                                         alt="{{ tenant.name }}"
-                                                         class="rounded"
-                                                         style="width: 60px; height: 60px; object-fit: contain;">
-                                                {% else %}
-                                                    <span class="text-muted">{{ 'tenant.no_logo'|trans({}, 'tenant') }}</span>
-                                                {% endif %}
-                                            </td>
+                            {% embed '_components/_fa_table.html.twig' with { compact: true, hover: false } %}
+                                {% block table_body %}
+                                    <tr class="fa-table__row">
+                                        <th scope="row" class="fa-table__cell" style="width: 40%;">{{ 'tenant.field.logo'|trans({}, 'tenant') }}</th>
+                                        <td class="fa-table__cell">
+                                            {% if tenant.logoPath %}
+                                                <img src="{{ asset(tenant.logoPath) }}"
+                                                     alt="{{ tenant.name }}"
+                                                     class="rounded"
+                                                     style="width: 60px; height: 60px; object-fit: contain;">
+                                            {% else %}
+                                                <span class="text-muted">{{ 'tenant.no_logo'|trans({}, 'tenant') }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr class="fa-table__row">
+                                        <th scope="row" class="fa-table__cell" style="width: 40%;">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
+                                        <td class="fa-table__cell"><code class="text-primary">{{ tenant.code }}</code></td>
+                                    </tr>
+                                    <tr class="fa-table__row">
+                                        <th scope="row" class="fa-table__cell">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
+                                        <td class="fa-table__cell">{{ tenant.name }}</td>
+                                    </tr>
+                                    <tr class="fa-table__row">
+                                        <th scope="row" class="fa-table__cell">{{ 'tenant.field.azure_tenant_id'|trans({}, 'tenant') }}</th>
+                                        <td class="fa-table__cell">
+                                            {% if tenant.azureTenantId %}
+                                                <code class="text-muted small">{{ tenant.azureTenantId }}</code>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr class="fa-table__row">
+                                        <th scope="row" class="fa-table__cell">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
+                                        <td class="fa-table__cell">
+                                            {% if tenant.isActive %}
+                                                <span class="fa-status-pill fa-status-pill--success">{{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
+                                            {% else %}
+                                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr class="fa-table__row">
+                                        <th scope="row" class="fa-table__cell">{{ 'tenant.field.created'|trans({}, 'tenant') }}</th>
+                                        <td class="fa-table__cell">{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
+                                    </tr>
+                                    {% if tenant.updatedAt %}
+                                        <tr class="fa-table__row">
+                                            <th scope="row" class="fa-table__cell">{{ 'tenant.field.updated'|trans({}, 'tenant') }}</th>
+                                            <td class="fa-table__cell">{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row" style="width: 40%;">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
-                                            <td><code class="text-primary">{{ tenant.code }}</code></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
-                                            <td>{{ tenant.name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">{{ 'tenant.field.azure_tenant_id'|trans({}, 'tenant') }}</th>
-                                            <td>
-                                                {% if tenant.azureTenantId %}
-                                                    <code class="text-muted small">{{ tenant.azureTenantId }}</code>
-                                                {% else %}
-                                                    <span class="text-muted">—</span>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
-                                            <td>
-                                                {% if tenant.isActive %}
-                                                    <span class="fa-status-pill fa-status-pill--success">{{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
-                                                {% else %}
-                                                    <span class="fa-status-pill fa-status-pill--neutral">{{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">{{ 'tenant.field.created'|trans({}, 'tenant') }}</th>
-                                            <td>{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
-                                        </tr>
-                                        {% if tenant.updatedAt %}
-                                            <tr>
-                                                <th scope="row">{{ 'tenant.field.updated'|trans({}, 'tenant') }}</th>
-                                                <td>{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
-                                            </tr>
-                                        {% endif %}
-                                    </tbody>
-                                </table>
-                            </div>
+                                    {% endif %}
+                                {% endblock %}
+                            {% endembed %}
 
                             {# Corporate Structure Information #}
                             {% if tenant.isPartOfCorporateStructure %}
@@ -194,61 +192,59 @@
                                 <h3 class="mb-3 h6">
                                     <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.section.structure'|trans({}, 'tenant') }}
                                 </h3>
-                                <div class="table-responsive">
-                                    <table class="table table-sm mb-0">
-                                        <tbody>
-                                            {% if tenant.parent %}
-                                                <tr>
-                                                    <th scope="row" style="width: 40%;">{{ 'corporate.field.parent'|trans({}, 'tenant') }}</th>
-                                                    <td>
-                                                        <a href="{{ path('tenant_management_show', {id: tenant.parent.id}) }}">
-                                                            {{ tenant.parent.name }}
-                                                        </a>
-                                                        <code class="text-muted ms-2">{{ tenant.parent.code }}</code>
-                                                    </td>
-                                                </tr>
-                                                {% if defaultGovernance %}
-                                                    <tr>
-                                                        <th scope="row">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</th>
-                                                        <td>
-                                                            {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[defaultGovernance.governanceModel.value]|default('secondary') %}
-                                                            {% if governance_variant == 'warning' %}
-                                                                <span class="fa-status-pill fa-status-pill--warning">{{ defaultGovernance.governanceModel.label }}</span>
-                                                            {% else %}
-                                                                <span class="badge bg-{{ governance_variant }}">{{ defaultGovernance.governanceModel.label }}</span>
-                                                            {% endif %}
-                                                            <br><small class="text-muted">{{ defaultGovernance.governanceModel.description }}</small>
-                                                        </td>
-                                                    </tr>
-                                                {% endif %}
-                                                <tr>
-                                                    <th scope="row">{{ 'corporate.field.hierarchy_depth'|trans({}, 'tenant') }}</th>
-                                                    <td>{{ 'corporate.level'|trans({'%level%': tenant.hierarchyDepth}, 'tenant') }}</td>
-                                                </tr>
-                                            {% endif %}
-                                            {% if tenant.isCorporateParent %}
-                                                <tr>
-                                                    <th scope="row">{{ 'corporate.field.subsidiaries'|trans({}, 'tenant') }}</th>
-                                                    <td>
-                                                        <span class="fa-status-pill fa-status-pill--primary">{{ tenant.subsidiaries|length }}</span>
-                                                        {% if tenant.subsidiaries|length > 0 %}
-                                                            <ul class="mt-2 mb-0">
-                                                                {% for subsidiary in tenant.subsidiaries %}
-                                                                    <li>
-                                                                        <a href="{{ path('tenant_management_show', {id: subsidiary.id}) }}">
-                                                                            {{ subsidiary.name }}
-                                                                        </a>
-                                                                        <code class="text-muted">{{ subsidiary.code }}</code>
-                                                                    </li>
-                                                                {% endfor %}
-                                                            </ul>
+                                {% embed '_components/_fa_table.html.twig' with { compact: true, hover: false } %}
+                                    {% block table_body %}
+                                        {% if tenant.parent %}
+                                            <tr class="fa-table__row">
+                                                <th scope="row" class="fa-table__cell" style="width: 40%;">{{ 'corporate.field.parent'|trans({}, 'tenant') }}</th>
+                                                <td class="fa-table__cell">
+                                                    <a href="{{ path('tenant_management_show', {id: tenant.parent.id}) }}">
+                                                        {{ tenant.parent.name }}
+                                                    </a>
+                                                    <code class="text-muted ms-2">{{ tenant.parent.code }}</code>
+                                                </td>
+                                            </tr>
+                                            {% if defaultGovernance %}
+                                                <tr class="fa-table__row">
+                                                    <th scope="row" class="fa-table__cell">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</th>
+                                                    <td class="fa-table__cell">
+                                                        {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[defaultGovernance.governanceModel.value]|default('secondary') %}
+                                                        {% if governance_variant == 'warning' %}
+                                                            <span class="fa-status-pill fa-status-pill--warning">{{ defaultGovernance.governanceModel.label }}</span>
+                                                        {% else %}
+                                                            <span class="badge bg-{{ governance_variant }}">{{ defaultGovernance.governanceModel.label }}</span>
                                                         {% endif %}
+                                                        <br><small class="text-muted">{{ defaultGovernance.governanceModel.description }}</small>
                                                     </td>
                                                 </tr>
                                             {% endif %}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            <tr class="fa-table__row">
+                                                <th scope="row" class="fa-table__cell">{{ 'corporate.field.hierarchy_depth'|trans({}, 'tenant') }}</th>
+                                                <td class="fa-table__cell">{{ 'corporate.level'|trans({'%level%': tenant.hierarchyDepth}, 'tenant') }}</td>
+                                            </tr>
+                                        {% endif %}
+                                        {% if tenant.isCorporateParent %}
+                                            <tr class="fa-table__row">
+                                                <th scope="row" class="fa-table__cell">{{ 'corporate.field.subsidiaries'|trans({}, 'tenant') }}</th>
+                                                <td class="fa-table__cell">
+                                                    <span class="fa-status-pill fa-status-pill--primary">{{ tenant.subsidiaries|length }}</span>
+                                                    {% if tenant.subsidiaries|length > 0 %}
+                                                        <ul class="mt-2 mb-0">
+                                                            {% for subsidiary in tenant.subsidiaries %}
+                                                                <li>
+                                                                    <a href="{{ path('tenant_management_show', {id: subsidiary.id}) }}">
+                                                                        {{ subsidiary.name }}
+                                                                    </a>
+                                                                    <code class="text-muted">{{ subsidiary.code }}</code>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endblock %}
+                                {% endembed %}
                                 <div class="d-grid">
                                     <a href="{{ path('tenant_management_corporate_structure') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                         <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.action.view_structure'|trans({}, 'tenant') }}

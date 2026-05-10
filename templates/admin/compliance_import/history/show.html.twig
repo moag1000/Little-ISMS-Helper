@@ -149,73 +149,70 @@
                     {{ 'compliance_import.history.detail.events_empty'|trans({}, 'compliance_import') }}
                 </p>
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle"
-                           aria-label="{{ 'compliance_import.history.detail.events_aria'|trans({}, 'compliance_import') }}">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'compliance_import.history.detail.line'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col">{{ 'compliance_import.history.detail.decision'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col">{{ 'compliance_import.history.detail.target'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col">{{ 'compliance_import.history.detail.before'|trans({}, 'compliance_import') }}</th>
-                                <th scope="col">{{ 'compliance_import.history.detail.after'|trans({}, 'compliance_import') }}</th>
+                {% embed '_components/_fa_table.html.twig' %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_import.history.detail.line'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_import.history.detail.decision'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_import.history.detail.target'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_import.history.detail.before'|trans({}, 'compliance_import') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_import.history.detail.after'|trans({}, 'compliance_import') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for event in events %}
+                            {% set variant = {
+                                'import': 'success',
+                                'update': 'primary',
+                                'merge': 'info',
+                                'skip': 'warning',
+                                'error': 'danger'
+                            }[event.decision]|default('secondary') %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ event.lineNumber }}</td>
+                                <td class="fa-table__cell">
+                                    {% set _dvpill = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
+                                    <span class="badge bg-{{ variant }}{% if variant == 'warning' %} text-dark{% endif %} fa-status-pill fa-status-pill--{{ _dvpill }}">
+                                        {{ ('compliance_import.history.decision.' ~ event.decision)|trans({}, 'compliance_import') }}
+                                    </span>
+                                    {% if event.errorMessage %}
+                                        <div class="small text-muted mt-1">{{ event.errorMessage }}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% if event.targetEntityType %}
+                                        <code>{{ event.targetEntityType }}</code>
+                                        {% if event.targetEntityId %}
+                                            <span class="text-muted">#</span><code>{{ event.targetEntityId }}</code>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% if event.beforeState %}
+                                        <details>
+                                            <summary class="small">{{ 'compliance_import.history.detail.show_json'|trans({}, 'compliance_import') }}</summary>
+                                            <pre class="small mb-0">{{ event.beforeState }}</pre>
+                                        </details>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% if event.afterState %}
+                                        <details>
+                                            <summary class="small">{{ 'compliance_import.history.detail.show_json'|trans({}, 'compliance_import') }}</summary>
+                                            <pre class="small mb-0">{{ event.afterState }}</pre>
+                                        </details>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for event in events %}
-                                {% set variant = {
-                                    'import': 'success',
-                                    'update': 'primary',
-                                    'merge': 'info',
-                                    'skip': 'warning',
-                                    'error': 'danger'
-                                }[event.decision]|default('secondary') %}
-                                <tr>
-                                    <td>{{ event.lineNumber }}</td>
-                                    <td>
-                                        {% set _dvpill = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
-                                        <span class="badge bg-{{ variant }}{% if variant == 'warning' %} text-dark{% endif %} fa-status-pill fa-status-pill--{{ _dvpill }}">
-                                            {{ ('compliance_import.history.decision.' ~ event.decision)|trans({}, 'compliance_import') }}
-                                        </span>
-                                        {% if event.errorMessage %}
-                                            <div class="small text-muted mt-1">{{ event.errorMessage }}</div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if event.targetEntityType %}
-                                            <code>{{ event.targetEntityType }}</code>
-                                            {% if event.targetEntityId %}
-                                                <span class="text-muted">#</span><code>{{ event.targetEntityId }}</code>
-                                            {% endif %}
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if event.beforeState %}
-                                            <details>
-                                                <summary class="small">{{ 'compliance_import.history.detail.show_json'|trans({}, 'compliance_import') }}</summary>
-                                                <pre class="small mb-0">{{ event.beforeState }}</pre>
-                                            </details>
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if event.afterState %}
-                                            <details>
-                                                <summary class="small">{{ 'compliance_import.history.detail.show_json'|trans({}, 'compliance_import') }}</summary>
-                                                <pre class="small mb-0">{{ event.afterState }}</pre>
-                                            </details>
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
 
                 {% if not is_search and page_count > 1 %}
                     <nav aria-label="{{ 'compliance_import.history.detail.events_pagination_aria'|trans({}, 'compliance_import') }}">

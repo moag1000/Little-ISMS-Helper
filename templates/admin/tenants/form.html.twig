@@ -205,26 +205,26 @@
                         <h2 class="fa-section__title">{{ 'tenant.info.metadata'|trans({}, 'tenant') }}</h2>
                     </div>
                     <div class="fa-section__body">
-                        <table class="table table-sm mb-0">
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="text-muted small">{{ 'common.created'|trans({}, 'messages') }}</th>
-                                    <td class="small">{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
+                        {% embed '_components/_fa_table.html.twig' with { compact: true, hover: false } %}
+                            {% block table_body %}
+                                <tr class="fa-table__row">
+                                    <th scope="row" class="fa-table__cell text-muted small">{{ 'common.created'|trans({}, 'messages') }}</th>
+                                    <td class="fa-table__cell small">{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
                                 </tr>
                                 {% if tenant.updatedAt %}
-                                    <tr>
-                                        <th scope="row" class="text-muted small">{{ 'common.updated'|trans({}, 'messages') }}</th>
-                                        <td class="small">{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
+                                    <tr class="fa-table__row">
+                                        <th scope="row" class="fa-table__cell text-muted small">{{ 'common.updated'|trans({}, 'messages') }}</th>
+                                        <td class="fa-table__cell small">{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
                                     </tr>
                                 {% endif %}
-                                <tr>
-                                    <th scope="row" class="text-muted small">{{ 'tenant.field.users'|trans({}, 'tenant') }}</th>
-                                    <td class="small">
+                                <tr class="fa-table__row">
+                                    <th scope="row" class="fa-table__cell text-muted small">{{ 'tenant.field.users'|trans({}, 'tenant') }}</th>
+                                    <td class="fa-table__cell small">
                                         <span class="fa-status-pill fa-status-pill--primary">{{ tenant.users|length }}</span>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
+                            {% endblock %}
+                        {% endembed %}
                     </div>
                 </section>
             {% endif %}

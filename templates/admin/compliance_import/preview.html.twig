@@ -81,55 +81,52 @@
                         {{ 'compliance_import.preview.empty'|trans({}, 'compliance_import') }}
                     </p>
                 {% else %}
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle"
-                               aria-label="{{ 'compliance_import.preview.table_aria'|trans({}, 'compliance_import') }}">
-                            <thead>
-                                <tr>
-                                    <th scope="col">{{ 'compliance_import.preview.col_line'|trans({}, 'compliance_import') }}</th>
-                                    <th scope="col">{{ 'compliance_import.preview.col_source'|trans({}, 'compliance_import') }}</th>
-                                    <th scope="col">{{ 'compliance_import.preview.col_target'|trans({}, 'compliance_import') }}</th>
-                                    <th scope="col">{{ 'compliance_import.preview.col_percentage'|trans({}, 'compliance_import') }}</th>
-                                    <th scope="col">{{ 'compliance_import.preview.col_status'|trans({}, 'compliance_import') }}</th>
+                    {% embed '_components/_fa_table.html.twig' %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'compliance_import.preview.col_line'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'compliance_import.preview.col_source'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'compliance_import.preview.col_target'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'compliance_import.preview.col_percentage'|trans({}, 'compliance_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'compliance_import.preview.col_status'|trans({}, 'compliance_import') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for row in rows %}
+                                {% set status_variant = {
+                                    'new': 'success',
+                                    'update': 'primary',
+                                    'conflict': 'warning',
+                                    'error': 'danger'
+                                }[row.status]|default('secondary') %}
+                                <tr class="fa-table__row">
+                                    <th scope="row" class="fa-table__cell">{{ row.line }}</th>
+                                    <td class="fa-table__cell">
+                                        <code>{{ row.source_framework }}</code>
+                                        <span class="text-muted">/</span>
+                                        <code>{{ row.source_requirement_id }}</code>
+                                    </td>
+                                    <td class="fa-table__cell">
+                                        <code>{{ row.target_framework }}</code>
+                                        <span class="text-muted">/</span>
+                                        <code>{{ row.target_requirement_id }}</code>
+                                    </td>
+                                    <td class="fa-table__cell">{{ row.percentage }}{% if row.percentage %} %{% endif %}</td>
+                                    <td class="fa-table__cell">
+                                        <span class="badge bg-{{ status_variant }}{% if status_variant == 'warning' %} text-dark{% endif %}"
+                                              aria-label="{{ ('compliance_import.status.' ~ row.status)|trans({}, 'compliance_import') }}">
+                                            {{ ('compliance_import.status.' ~ row.status)|trans({}, 'compliance_import') }}
+                                        </span>
+                                        {% if row.message %}
+                                            <div class="small text-muted mt-1">
+                                                {{ row.message|trans({}, 'compliance_import') }}
+                                            </div>
+                                        {% endif %}
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in rows %}
-                                    {% set status_variant = {
-                                        'new': 'success',
-                                        'update': 'primary',
-                                        'conflict': 'warning',
-                                        'error': 'danger'
-                                    }[row.status]|default('secondary') %}
-                                    <tr>
-                                        <th scope="row">{{ row.line }}</th>
-                                        <td>
-                                            <code>{{ row.source_framework }}</code>
-                                            <span class="text-muted">/</span>
-                                            <code>{{ row.source_requirement_id }}</code>
-                                        </td>
-                                        <td>
-                                            <code>{{ row.target_framework }}</code>
-                                            <span class="text-muted">/</span>
-                                            <code>{{ row.target_requirement_id }}</code>
-                                        </td>
-                                        <td>{{ row.percentage }}{% if row.percentage %} %{% endif %}</td>
-                                        <td>
-                                            <span class="badge bg-{{ status_variant }}{% if status_variant == 'warning' %} text-dark{% endif %}"
-                                                  aria-label="{{ ('compliance_import.status.' ~ row.status)|trans({}, 'compliance_import') }}">
-                                                {{ ('compliance_import.status.' ~ row.status)|trans({}, 'compliance_import') }}
-                                            </span>
-                                            {% if row.message %}
-                                                <div class="small text-muted mt-1">
-                                                    {{ row.message|trans({}, 'compliance_import') }}
-                                                </div>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                 {% endif %}
             </div>
         </section>
