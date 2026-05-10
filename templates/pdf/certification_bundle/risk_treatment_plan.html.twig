@@ -20,10 +20,10 @@
 {% block modified_date %}{{ generated_at|date('d.m.Y H:i') }}{% endblock %}
 
 {% block custom_styles %}
-    .risk-critical { color: #dc2626; font-weight: bold; }
-    .risk-high { color: #f97316; font-weight: bold; }
-    .risk-medium { color: #eab308; }
-    .risk-low { color: #22c55e; }
+    .risk-critical { color: var(--danger); font-weight: bold; }
+    .risk-high { color: var(--warning); font-weight: bold; }
+    .risk-medium { color: var(--warning); }
+    .risk-low { color: var(--success); }
 {% endblock %}
 
 {% block document_content %}

@@ -4,6 +4,23 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Gap Analysis Report - {{ framework.name }}</title>
     <style>
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       #ffffff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          #94a3b8;
+            --border:        #cbd5e1;
+            --success:       #166534;
+            --success-tint:  #dcfce7;
+            --danger:        #991b1b;
+            --danger-tint:   #fecaca;
+            --warning:       #92400e;
+            --warning-tint:  #fef3c7;
+            --info-tint:     #dbeafe;
+            --info-text:     #1e40af;
+        }
         @page {
             margin: 2cm 1.5cm;
         }
@@ -12,30 +29,30 @@
             font-family: DejaVu Sans, sans-serif;
             font-size: 9pt;
             line-height: 1.4;
-            color: #333;
+            color: var(--fg);
         }
 
         h1 {
             font-size: 18pt;
-            color: #1a56db;
+            color: var(--primary);
             text-align: center;
             margin-bottom: 5pt;
-            border-bottom: 3px solid #1a56db;
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 10pt;
         }
 
         h2 {
             font-size: 14pt;
-            color: #1a56db;
+            color: var(--primary);
             margin-top: 15pt;
             margin-bottom: 8pt;
-            border-bottom: 1px solid #cbd5e1;
+            border-bottom: 1px solid var(--border);
             padding-bottom: 5pt;
         }
 
         h3 {
             font-size: 11pt;
-            color: #334155;
+            color: var(--fg);
             margin-top: 12pt;
             margin-bottom: 6pt;
             font-weight: bold;
@@ -44,7 +61,7 @@
         .header-info {
             text-align: center;
             font-size: 9pt;
-            color: #64748b;
+            color: var(--fg-2);
             margin-bottom: 20pt;
         }
 
@@ -52,7 +69,7 @@
             display: table;
             width: 100%;
             margin-bottom: 20pt;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             border-collapse: collapse;
         }
 
@@ -64,55 +81,55 @@
             display: table-cell;
             padding: 10pt;
             text-align: center;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             width: 20%;
         }
 
         .stats-label {
             font-size: 8pt;
-            color: #64748b;
+            color: var(--fg-2);
             font-weight: bold;
             margin-bottom: 4pt;
         }
 
         .stats-value {
             font-size: 16pt;
-            color: #1a56db;
+            color: var(--primary);
             font-weight: bold;
         }
 
         .stats-value-success {
-            color: #10b981;
+            color: var(--success);
         }
 
         .stats-value-warning {
-            color: #f59e0b;
+            color: var(--warning);
         }
 
         .stats-value-danger {
-            color: #ef4444;
+            color: var(--danger);
         }
 
         .insight-box {
-            background: #f8fafc;
-            border-left: 4pt solid #1a56db;
+            background: var(--surface-2);
+            border-left: 4pt solid var(--primary);
             padding: 10pt;
             margin: 10pt 0;
             font-size: 8pt;
-            color: #475569;
+            color: var(--fg-2);
         }
 
         .insight-box strong {
-            color: #1e293b;
+            color: var(--fg);
         }
 
         .risk-box-low {
-            background: #f0fdf4;
+            background: var(--success-tint);
             border-left: 4pt solid #10b981;
         }
 
         .risk-box-medium {
-            background: #fffbeb;
+            background: var(--warning-tint);
             border-left: 4pt solid #f59e0b;
         }
 
@@ -129,27 +146,27 @@
         }
 
         table th {
-            background-color: #1a56db;
-            color: white;
+            background-color: var(--primary);
+            color: var(--surface);
             padding: 6pt;
             text-align: left;
             font-weight: bold;
-            border: 1px solid #1e3a8a;
+            border: 1px solid var(--border);
         }
 
         table td {
             padding: 5pt;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             vertical-align: top;
         }
 
         table tr:nth-child(even) {
-            background-color: #f8fafc;
+            background-color: var(--surface-2);
         }
 
         .highlight-row {
             font-weight: bold;
-            background: #e0e7ff !important;
+            background: var(--info-tint) !important;
         }
 
         .badge {
@@ -161,33 +178,33 @@
         }
 
         .badge-critical {
-            background-color: #ef4444;
-            color: white;
+            background: var(--danger-tint); color: var(--danger);
+            color: var(--surface);
         }
 
         .badge-high {
-            background-color: #f59e0b;
-            color: white;
+            background: var(--warning-tint); color: var(--warning);
+            color: var(--surface);
         }
 
         .badge-warning {
-            background-color: #f59e0b;
-            color: white;
+            background: var(--warning-tint); color: var(--warning);
+            color: var(--surface);
         }
 
         .badge-low {
-            background-color: #3b82f6;
-            color: white;
+            background: #dbeafe; color: var(--info-text);
+            color: var(--surface);
         }
 
         .badge-info {
-            background-color: #3b82f6;
-            color: white;
+            background: #dbeafe; color: var(--info-text);
+            color: var(--surface);
         }
 
         .badge-medium {
-            background-color: #10b981;
-            color: white;
+            background: var(--success-tint); color: var(--success);
+            color: var(--surface);
         }
 
         .page-break {
@@ -212,8 +229,8 @@
             height: 30pt;
             text-align: center;
             font-size: 7pt;
-            color: #64748b;
-            border-top: 1px solid #cbd5e1;
+            color: var(--fg-2);
+            border-top: 1px solid var(--border);
             padding-top: 5pt;
         }
     </style>
@@ -286,7 +303,7 @@
                 <td class="text-center"><strong>{{ weighted_compliance_score }}%</strong></td>
                 <td class="text-center">
                     {% set diff = weighted_compliance_score - compliance_score %}
-                    <span style="color: {% if diff < 0 %}#ef4444{% elseif diff > 0 %}#10b981{% else %}#64748b{% endif %}; font-weight: bold;">
+                    <span style="color: {% if diff < 0 %}#ef4444{% elseif diff > 0 %}#10b981{% else %}var(--fg-2){% endif %}; font-weight: bold;">
                         {{ diff > 0 ? '+' : '' }}{{ diff }}%
                     </span>
                 </td>
@@ -324,14 +341,14 @@
                 <td class="text-center"><strong>{{ uncovered_critical|length }}</strong></td>
                 <td class="text-center">{{ total_gaps > 0 ? ((uncovered_critical|length / total_gaps * 100)|round(1)) : 0 }}%</td>
                 <td class="text-center">10</td>
-                <td class="text-center"><strong style="color: #ef4444;">{{ uncovered_critical|length * 10 }}</strong></td>
+                <td class="text-center"><strong style="color: var(--danger);">{{ uncovered_critical|length * 10 }}</strong></td>
             </tr>
             <tr>
                 <td><span class="badge badge-high">High</span></td>
                 <td class="text-center"><strong>{{ uncovered_high|length }}</strong></td>
                 <td class="text-center">{{ total_gaps > 0 ? ((uncovered_high|length / total_gaps * 100)|round(1)) : 0 }}%</td>
                 <td class="text-center">5</td>
-                <td class="text-center"><strong style="color: #f59e0b;">{{ uncovered_high|length * 5 }}</strong></td>
+                <td class="text-center"><strong style="color: var(--warning);">{{ uncovered_high|length * 5 }}</strong></td>
             </tr>
             <tr>
                 <td><span class="badge badge-medium">Medium</span></td>
@@ -429,9 +446,9 @@
                 </td>
                 <td class="text-center">
                     {% if pattern.count >= 5 %}
-                        <span style="color: #ef4444; font-weight: bold;">Critical Cluster</span>
+                        <span style="color: var(--danger); font-weight: bold;">Critical Cluster</span>
                     {% elseif pattern.count >= 3 %}
-                        <span style="color: #f59e0b; font-weight: bold;">Significant Pattern</span>
+                        <span style="color: var(--warning); font-weight: bold;">Significant Pattern</span>
                     {% else %}
                         Moderate
                     {% endif %}
@@ -472,7 +489,7 @@
                 <td><strong>{{ rec.action }}</strong></td>
                 <td class="text-center">{{ rec.count }}</td>
                 <td class="text-center">{{ rec.timeline }}</td>
-                <td class="text-center"><strong style="color: #10b981;">-{{ rec.risk_reduction }}</strong></td>
+                <td class="text-center"><strong style="color: var(--success);">-{{ rec.risk_reduction }}</strong></td>
                 <td class="text-center">{{ rec.effort }}</td>
             </tr>
             {% endfor %}

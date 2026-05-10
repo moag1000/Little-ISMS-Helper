@@ -4,6 +4,23 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Framework Comparison Report</title>
     <style>
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       #ffffff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          #94a3b8;
+            --border:        #cbd5e1;
+            --success:       #166534;
+            --success-tint:  #dcfce7;
+            --danger:        #991b1b;
+            --danger-tint:   #fecaca;
+            --warning:       #92400e;
+            --warning-tint:  #fef3c7;
+            --info-tint:     #dbeafe;
+            --info-text:     #1e40af;
+        }
         @page {
             margin: 2cm 1.5cm;
         }
@@ -12,30 +29,30 @@
             font-family: DejaVu Sans, sans-serif;
             font-size: 9pt;
             line-height: 1.4;
-            color: #333;
+            color: var(--fg);
         }
 
         h1 {
             font-size: 18pt;
-            color: #1a56db;
+            color: var(--primary);
             text-align: center;
             margin-bottom: 5pt;
-            border-bottom: 3px solid #1a56db;
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 10pt;
         }
 
         h2 {
             font-size: 14pt;
-            color: #1a56db;
+            color: var(--primary);
             margin-top: 15pt;
             margin-bottom: 8pt;
-            border-bottom: 1px solid #cbd5e1;
+            border-bottom: 1px solid var(--border);
             padding-bottom: 5pt;
         }
 
         h3 {
             font-size: 11pt;
-            color: #334155;
+            color: var(--fg);
             margin-top: 12pt;
             margin-bottom: 6pt;
             font-weight: bold;
@@ -44,7 +61,7 @@
         .header-info {
             text-align: center;
             font-size: 9pt;
-            color: #64748b;
+            color: var(--fg-2);
             margin-bottom: 20pt;
         }
 
@@ -52,7 +69,7 @@
             display: table;
             width: 100%;
             margin-bottom: 20pt;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             border-collapse: collapse;
         }
 
@@ -64,42 +81,42 @@
             display: table-cell;
             padding: 10pt;
             text-align: center;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             width: 20%;
         }
 
         .stats-label {
             font-size: 8pt;
-            color: #64748b;
+            color: var(--fg-2);
             font-weight: bold;
             margin-bottom: 4pt;
         }
 
         .stats-value {
             font-size: 16pt;
-            color: #1a56db;
+            color: var(--primary);
             font-weight: bold;
         }
 
         .stats-value-success {
-            color: #10b981;
+            color: var(--success);
         }
 
         .stats-value-warning {
-            color: #f59e0b;
+            color: var(--warning);
         }
 
         .insight-box {
-            background: #f8fafc;
-            border-left: 4px solid #1a56db;
+            background: var(--surface-2);
+            border-left: 4px solid var(--primary);
             padding: 10pt;
             margin: 10pt 0;
             font-size: 8pt;
-            color: #475569;
+            color: var(--fg-2);
         }
 
         .insight-box strong {
-            color: #1e293b;
+            color: var(--fg);
         }
 
         table {
@@ -110,27 +127,27 @@
         }
 
         table th {
-            background-color: #1a56db;
-            color: white;
+            background-color: var(--primary);
+            color: var(--surface);
             padding: 6pt;
             text-align: left;
             font-weight: bold;
-            border: 1px solid #1e3a8a;
+            border: 1px solid var(--border);
         }
 
         table td {
             padding: 5pt;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             vertical-align: top;
         }
 
         table tr:nth-child(even) {
-            background-color: #f8fafc;
+            background-color: var(--surface-2);
         }
 
         .highlight-row {
             font-weight: bold;
-            background: #e0e7ff !important;
+            background: var(--info-tint) !important;
         }
 
         .badge {
@@ -142,42 +159,42 @@
         }
 
         .badge-success {
-            background-color: #10b981;
-            color: white;
+            background: var(--success-tint); color: var(--success);
+            color: var(--surface);
         }
 
         .badge-info {
-            background-color: #3b82f6;
-            color: white;
+            background: #dbeafe; color: var(--info-text);
+            color: var(--surface);
         }
 
         .badge-warning {
-            background-color: #f59e0b;
-            color: white;
+            background: var(--warning-tint); color: var(--warning);
+            color: var(--surface);
         }
 
         .badge-danger {
-            background-color: #ef4444;
-            color: white;
+            background: var(--danger-tint); color: var(--danger);
+            color: var(--surface);
         }
 
         .badge-secondary {
-            background-color: #6b7280;
-            color: white;
+            background: var(--surface-2); color: var(--fg-2);
+            color: var(--surface);
         }
 
         .quality-good {
-            color: #10b981;
+            color: var(--success);
             font-weight: bold;
         }
 
         .quality-medium {
-            color: #f59e0b;
+            color: var(--warning);
             font-weight: bold;
         }
 
         .quality-weak {
-            color: #ef4444;
+            color: var(--danger);
             font-weight: bold;
         }
 
@@ -203,8 +220,8 @@
             height: 30pt;
             text-align: center;
             font-size: 7pt;
-            color: #64748b;
-            border-top: 1px solid #cbd5e1;
+            color: var(--fg-2);
+            border-top: 1px solid var(--border);
             padding-top: 5pt;
         }
     </style>
@@ -463,7 +480,7 @@
                     {% if detail.framework2Requirement %}
                         {{ detail.framework2Requirement.description|slice(0, 60) }}{% if detail.framework2Requirement.description|length > 60 %}...{% endif %}
                     {% else %}
-                        <span style="color: #94a3b8;">No mapping</span>
+                        <span style="color: var(--fg-3);">No mapping</span>
                     {% endif %}
                 </td>
             </tr>
