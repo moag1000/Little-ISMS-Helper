@@ -1,4 +1,28 @@
 compliance_wizard:
+    # V4-EF-3: Diff View — Snapshot comparison
+    diff:
+        title: 'Snapshot Diff'
+        subtitle: 'Comparing %from% → %to%'
+        from_snapshot: 'Baseline Snapshot (Before)'
+        to_snapshot: 'Target Snapshot (After)'
+        from_label: 'Before'
+        to_label: 'After'
+        score_delta: 'Score Delta'
+        legend: 'Legend'
+        empty: 'No differences found'
+        empty_desc: 'Both snapshots contain identical assessment data or no checks.'
+        unavailable: 'Diff service unavailable — check service configuration.'
+        wizard_mismatch: 'The selected snapshots belong to different wizard types.'
+        select_different: 'Please select two different snapshots.'
+        summary:
+            added: 'Added'
+            changed: 'Changed'
+            removed: 'Removed'
+            unchanged: 'Unchanged'
+        action:
+            compare: 'Compare Snapshots'
+        section:
+            unchanged_badge: 'unchanged'
     delta:
         title: 'Delta Assessment'
         sheet:
