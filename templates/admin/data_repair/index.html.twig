@@ -428,7 +428,7 @@
                             <div class="col">
                                 <section class="fa-section text-center h-100">
         <div class="fa-section__body">
-            <h3 class="text-danger mb-1">{{ entities|length }}</h3>
+            <h3 class="mb-1" style="color: var(--danger-strong, var(--danger)); font-weight: 700;">{{ entities|length }}</h3>
                                         <p class="mb-0 small text-uppercase">{{ key|replace({'_': ' '}) }}</p>
         </div>
     </section>
@@ -1049,7 +1049,7 @@
                     {% for checkKey in checkKeys %}
                         {% set items = riskHealthIssues[checkKey] is defined ? riskHealthIssues[checkKey] : [] %}
                         <div class="col">
-                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : 'bg-success bg-opacity-10') }}">
+                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : '') }}" style="background-color: var(--success-tint); border: 1px solid var(--success);">
         <div class="fa-section__body">
             <h3 class="text-{{ items|length > 0 ? 'warning' : 'success' }} mb-1">{{ items|length }}</h3>
                                     <p class="mb-0 small">{{ ('admin.data_repair.risk_health.' ~ checkKey)|trans({}, 'admin') }}</p>
@@ -1244,7 +1244,7 @@
                     {% for checkKey in complianceCheckKeys %}
                         {% set items = complianceHealthIssues[checkKey] is defined ? complianceHealthIssues[checkKey] : [] %}
                         <div class="col">
-                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-danger bg-opacity-10' : 'bg-success bg-opacity-10') }}">
+                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-danger bg-opacity-10' : '') }}" style="background-color: var(--success-tint); border: 1px solid var(--success);">
         <div class="fa-section__body">
             <h3 class="text-{{ items|length > 0 ? 'danger' : 'success' }} mb-1">{{ items|length }}</h3>
                                     <p class="mb-0 small">{{ ('admin.data_repair.compliance_health.' ~ checkKey)|trans({}, 'admin') }}</p>
@@ -1497,7 +1497,7 @@
                     {% for checkKey in opCheckKeys %}
                         {% set items = operationalHealthIssues[checkKey] is defined ? operationalHealthIssues[checkKey] : [] %}
                         <div class="col">
-                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : 'bg-success bg-opacity-10') }}">
+                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : '') }}" style="background-color: var(--success-tint); border: 1px solid var(--success);">
         <div class="fa-section__body">
             <h3 class="text-{{ items|length > 0 ? 'warning' : 'success' }} mb-1">{{ items|length }}</h3>
                                     <p class="mb-0 small">{{ ('admin.data_repair.operational_health.' ~ checkKey)|trans({}, 'admin') }}</p>
@@ -1867,7 +1867,7 @@
                     {% for checkKey in dqCheckKeys %}
                         {% set items = dataQualityIssues[checkKey] is defined ? dataQualityIssues[checkKey] : [] %}
                         <div class="col">
-                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : 'bg-success bg-opacity-10') }}">
+                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : '') }}" style="background-color: var(--success-tint); border: 1px solid var(--success);">
         <div class="fa-section__body">
             <h3 class="text-{{ items|length > 0 ? 'warning' : 'success' }} mb-1">{{ items|length }}</h3>
                                     <p class="mb-0 small">{{ ('admin.data_repair.data_quality.' ~ checkKey)|trans({}, 'admin') }}</p>

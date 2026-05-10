@@ -28,7 +28,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-primary h-100' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-primary">{{ dashboard.metrics.total_controls }}</h2>
+                        <h2 class="" style="color: var(--primary-strong, var(--primary)); font-weight: 700;">{{ dashboard.metrics.total_controls }}</h2>
                         <p class="text-muted mb-0">{{ 'analytics.controls.kpi.total_controls'|trans({}, 'analytics') }}</p>
                     </div>
                 {% endblock %}
@@ -38,7 +38,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-success h-100' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-success">{{ dashboard.metrics.implementation_rate }}%</h2>
+                        <h2 class="" style="color: var(--success-strong, var(--success)); font-weight: 700;">{{ dashboard.metrics.implementation_rate }}%</h2>
                         <p class="text-muted mb-0">{{ 'analytics.controls.kpi.implementation_rate'|trans({}, 'analytics') }}</p>
                     </div>
                 {% endblock %}
@@ -48,7 +48,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-info h-100' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-info">{{ dashboard.metrics.average_effectiveness }}%</h2>
+                        <h2 class="" style="color: var(--info-strong, var(--info)); font-weight: 700;">{{ dashboard.metrics.average_effectiveness }}%</h2>
                         <p class="text-muted mb-0">{{ 'analytics.controls.kpi.avg_effectiveness'|trans({}, 'analytics') }}</p>
                     </div>
                 {% endblock %}
@@ -58,7 +58,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-warning h-100' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-warning">{{ dashboard.metrics.risk_coverage }}%</h2>
+                        <h2 class="" style="color: var(--warning-strong, var(--warning)); font-weight: 700;">{{ dashboard.metrics.risk_coverage }}%</h2>
                         <p class="text-muted mb-0">{{ 'analytics.controls.kpi.risk_coverage'|trans({}, 'analytics') }}</p>
                     </div>
                 {% endblock %}
@@ -303,7 +303,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'bg-success bg-opacity-10 border-success h-100' } %}
                         {% block card_body %}
                             <div class="text-center">
-                                <h3 class="text-success">{{ dashboard.aging_analysis.distribution.current }}</h3>
+                                <h3 class="" style="color: var(--success-strong, var(--success)); font-weight: 700;">{{ dashboard.aging_analysis.distribution.current }}</h3>
                                 <small class="text-muted">{{ 'analytics.controls.aging.current'|trans({}, 'analytics') }}</small>
                             </div>
                         {% endblock %}
@@ -313,7 +313,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'bg-info bg-opacity-10 border-info h-100' } %}
                         {% block card_body %}
                             <div class="text-center">
-                                <h3 class="text-info">{{ dashboard.aging_analysis.distribution.due_soon }}</h3>
+                                <h3 class="" style="color: var(--info-strong, var(--info)); font-weight: 700;">{{ dashboard.aging_analysis.distribution.due_soon }}</h3>
                                 <small class="text-muted">{{ 'analytics.controls.aging.due_soon'|trans({}, 'analytics') }}</small>
                             </div>
                         {% endblock %}
@@ -323,7 +323,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'bg-warning bg-opacity-10 border-warning h-100' } %}
                         {% block card_body %}
                             <div class="text-center">
-                                <h3 class="text-warning">{{ dashboard.aging_analysis.distribution.overdue }}</h3>
+                                <h3 class="" style="color: var(--warning-strong, var(--warning)); font-weight: 700;">{{ dashboard.aging_analysis.distribution.overdue }}</h3>
                                 <small class="text-muted">{{ 'analytics.controls.aging.overdue'|trans({}, 'analytics') }}</small>
                             </div>
                         {% endblock %}
@@ -333,7 +333,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'bg-danger bg-opacity-10 border-danger h-100' } %}
                         {% block card_body %}
                             <div class="text-center">
-                                <h3 class="text-danger">{{ dashboard.aging_analysis.distribution.critical }}</h3>
+                                <h3 class="" style="color: var(--danger-strong, var(--danger)); font-weight: 700;">{{ dashboard.aging_analysis.distribution.critical }}</h3>
                                 <small class="text-muted">{{ 'analytics.controls.aging.critical'|trans({}, 'analytics') }}</small>
                             </div>
                         {% endblock %}
@@ -343,7 +343,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'bg-secondary bg-opacity-10 border-secondary h-100' } %}
                         {% block card_body %}
                             <div class="text-center">
-                                <h3 class="text-secondary">{{ dashboard.aging_analysis.distribution.never_reviewed }}</h3>
+                                <h3 class="" style="color: var(--secondary-strong, var(--secondary)); font-weight: 700;">{{ dashboard.aging_analysis.distribution.never_reviewed }}</h3>
                                 <small class="text-muted">{{ 'analytics.controls.aging.never_reviewed'|trans({}, 'analytics') }}</small>
                             </div>
                         {% endblock %}
@@ -353,7 +353,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'bg-primary bg-opacity-10 border-primary h-100' } %}
                         {% block card_body %}
                             <div class="text-center">
-                                <h3 class="text-primary">{{ dashboard.aging_analysis.review_compliance_rate }}%</h3>
+                                <h3 class="" style="color: var(--primary-strong, var(--primary)); font-weight: 700;">{{ dashboard.aging_analysis.review_compliance_rate }}%</h3>
                                 <small class="text-muted">{{ 'analytics.controls.aging.compliance_rate'|trans({}, 'analytics') }}</small>
                             </div>
                         {% endblock %}

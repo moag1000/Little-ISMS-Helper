@@ -158,12 +158,12 @@
                         {% endblock %}
                         {% block card_body %}
                             <div class="text-center mb-4">
-                                <h2 class="text-primary">{{ overlap.frameworks|length }}</h2>
+                                <h2 class="" style="color: var(--primary-strong, var(--primary)); font-weight: 700;">{{ overlap.frameworks|length }}</h2>
                                 <p class="text-muted">{{ 'analytics.compliance.overlap.unique_controls'|trans({}, 'analytics') }}</p>
                             </div>
                             <div class="row text-center">
                                 <div class="col-6">
-                                    <h4 class="text-success">{{ overlap.overlaps|length }}</h4>
+                                    <h4 class="" style="color: var(--success-strong, var(--success)); font-weight: 700;">{{ overlap.overlaps|length }}</h4>
                                     <p class="text-muted small">{{ 'analytics.compliance.overlap.shared_controls'|trans({}, 'analytics') }}</p>
                                 </div>
                                 <div class="col-6">
@@ -171,7 +171,7 @@
                                     {% for o in overlap.overlaps %}
                                         {% set total_overlap = total_overlap + o.overlap_percentage %}
                                     {% endfor %}
-                                    <h4 class="text-info">{{ overlap.overlaps|length > 0 ? (total_overlap / overlap.overlaps|length)|round : 0 }}%</h4>
+                                    <h4 class="" style="color: var(--info-strong, var(--info)); font-weight: 700;">{{ overlap.overlaps|length > 0 ? (total_overlap / overlap.overlaps|length)|round : 0 }}%</h4>
                                     <p class="text-muted small">{{ 'analytics.compliance.overlap.overlap_rate'|trans({}, 'analytics') }}</p>
                                 </div>
                             </div>
@@ -256,7 +256,7 @@
                             {% embed '_components/_card.html.twig' with { 'class': 'bg-success bg-opacity-10 border-success' } %}
                                 {% block card_body %}
                                     <div class="text-center">
-                                        <h3 class="text-success">{{ roadmap.summary.frameworks_compliant }}</h3>
+                                        <h3 class="" style="color: var(--success-strong, var(--success)); font-weight: 700;">{{ roadmap.summary.frameworks_compliant }}</h3>
                                         <p class="mb-0">{{ 'analytics.compliance.table.compliant'|trans({}, 'analytics') }}</p>
                                     </div>
                                 {% endblock %}
@@ -266,7 +266,7 @@
                             {% embed '_components/_card.html.twig' with { 'class': 'bg-warning bg-opacity-10 border-warning' } %}
                                 {% block card_body %}
                                     <div class="text-center">
-                                        <h3 class="text-warning">{{ roadmap.summary.frameworks_in_progress }}</h3>
+                                        <h3 class="" style="color: var(--warning-strong, var(--warning)); font-weight: 700;">{{ roadmap.summary.frameworks_in_progress }}</h3>
                                         <p class="mb-0">{{ 'analytics.compliance.table.partial'|trans({}, 'analytics') }}</p>
                                     </div>
                                 {% endblock %}
@@ -276,7 +276,7 @@
                             {% embed '_components/_card.html.twig' with { 'class': 'bg-secondary bg-opacity-10 border-secondary' } %}
                                 {% block card_body %}
                                     <div class="text-center">
-                                        <h3 class="text-secondary">{{ roadmap.summary.frameworks_not_started }}</h3>
+                                        <h3 class="" style="color: var(--secondary-strong, var(--secondary)); font-weight: 700;">{{ roadmap.summary.frameworks_not_started }}</h3>
                                         <p class="mb-0">{{ 'analytics.compliance.table.non_compliant'|trans({}, 'analytics') }}</p>
                                     </div>
                                 {% endblock %}

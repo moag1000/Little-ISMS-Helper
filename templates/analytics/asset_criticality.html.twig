@@ -48,7 +48,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-primary h-100' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-primary">{{ incident_probability.summary.total_assets }}</h2>
+                        <h2 class="" style="color: var(--primary-strong, var(--primary)); font-weight: 700;">{{ incident_probability.summary.total_assets }}</h2>
                         <p class="text-muted mb-0">{{ 'analytics.assets.kpi.total_assets'|trans({}, 'analytics') }}</p>
                     </div>
                 {% endblock %}
@@ -58,7 +58,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-danger h-100' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-danger">{{ incident_probability.summary.high_risk_count }}</h2>
+                        <h2 class="" style="color: var(--danger-strong, var(--danger)); font-weight: 700;">{{ incident_probability.summary.high_risk_count }}</h2>
                         <p class="text-muted mb-0">{{ 'analytics.assets.kpi.high_risk'|trans({}, 'analytics') }}</p>
                     </div>
                 {% endblock %}
@@ -68,7 +68,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-warning h-100' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-warning">{{ with_incidents_count }}</h2>
+                        <h2 class="" style="color: var(--warning-strong, var(--warning)); font-weight: 700;">{{ with_incidents_count }}</h2>
                         <p class="text-muted mb-0">{{ 'analytics.assets.kpi.with_incidents'|trans({}, 'analytics') }}</p>
                     </div>
                 {% endblock %}
@@ -78,7 +78,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'border-info h-100' } %}
                 {% block card_body %}
                     <div class="text-center">
-                        <h2 class="text-info">{{ incident_probability.summary.average_probability }}%</h2>
+                        <h2 class="" style="color: var(--info-strong, var(--info)); font-weight: 700;">{{ incident_probability.summary.average_probability }}%</h2>
                         <p class="text-muted mb-0">{{ 'analytics.assets.kpi.avg_probability'|trans({}, 'analytics') }}</p>
                     </div>
                 {% endblock %}
@@ -188,7 +188,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'bg-danger bg-opacity-10 border-danger h-100' } %}
                         {% block card_body %}
                             <div class="text-center">
-                                <h3 class="text-danger">{{ critical_count }}</h3>
+                                <h3 class="" style="color: var(--danger-strong, var(--danger)); font-weight: 700;">{{ critical_count }}</h3>
                                 <small>{{ 'analytics.assets.risk_level.critical'|trans({}, 'analytics') }}</small>
                             </div>
                         {% endblock %}
@@ -198,7 +198,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'bg-warning bg-opacity-10 border-warning h-100' } %}
                         {% block card_body %}
                             <div class="text-center">
-                                <h3 class="text-warning">{{ high_count }}</h3>
+                                <h3 class="" style="color: var(--warning-strong, var(--warning)); font-weight: 700;">{{ high_count }}</h3>
                                 <small>{{ 'analytics.assets.risk_level.high'|trans({}, 'analytics') }}</small>
                             </div>
                         {% endblock %}
@@ -208,7 +208,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'bg-info bg-opacity-10 border-info h-100' } %}
                         {% block card_body %}
                             <div class="text-center">
-                                <h3 class="text-info">{{ medium_count }}</h3>
+                                <h3 class="" style="color: var(--info-strong, var(--info)); font-weight: 700;">{{ medium_count }}</h3>
                                 <small>{{ 'analytics.assets.risk_level.medium'|trans({}, 'analytics') }}</small>
                             </div>
                         {% endblock %}
@@ -218,7 +218,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'bg-success bg-opacity-10 border-success h-100' } %}
                         {% block card_body %}
                             <div class="text-center">
-                                <h3 class="text-success">{{ low_count }}</h3>
+                                <h3 class="" style="color: var(--success-strong, var(--success)); font-weight: 700;">{{ low_count }}</h3>
                                 <small>{{ 'analytics.assets.risk_level.low'|trans({}, 'analytics') }}</small>
                             </div>
                         {% endblock %}

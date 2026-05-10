@@ -104,7 +104,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+                        <div class="rounded-3 p-3 me-3" style="background-color: var(--primary-tint); border: 1px solid var(--primary);">
                             <i class="fa-icon fa-icon--nav-process fs-3 text-primary" aria-hidden="true"></i>
                         </div>
                         <div>
@@ -128,7 +128,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-success bg-opacity-10 rounded-3 p-3 me-3">
+                        <div class="rounded-3 p-3 me-3" style="background-color: var(--success-tint); border: 1px solid var(--success);">
                             <i class="fa-icon fa-icon--nav-sliders fs-3 text-success" aria-hidden="true"></i>
                         </div>
                         <div>
@@ -152,7 +152,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-warning bg-opacity-10 rounded-3 p-3 me-3">
+                        <div class="rounded-3 p-3 me-3" style="background-color: var(--warning-tint); border: 1px solid var(--warning);">
                             <i class="fa-icon fa-icon--nav-bar-chart fs-3 text-warning" aria-hidden="true"></i>
                         </div>
                         <div>
@@ -180,7 +180,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-info bg-opacity-10 rounded-3 p-3 me-3">
+                        <div class="rounded-3 p-3 me-3" style="background-color: var(--info-tint); border: 1px solid var(--info);">
                             <i class="fa-icon fa-icon--asset-server fs-3 fa-icon--info" aria-hidden="true"></i>
                         </div>
                         <div>
@@ -199,7 +199,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-secondary' } %}
                 {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
-                        <div class="bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
+                        <div class="rounded-3 p-3 me-3" style="background-color: var(--secondary-tint); border: 1px solid var(--secondary);">
                             <i class="fa-icon fa-icon--nav-bar-chart fs-3 text-secondary" aria-hidden="true"></i>
                         </div>
                         <div>
@@ -245,7 +245,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <div class="d-flex justify-content-between align-items-center p-3 bg-success bg-opacity-10 rounded">
+                    <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background-color: var(--success-tint); border: 1px solid var(--success);">
                         <div>
                             <h6 class="mb-0">{{ 'compliance.framework.status.compliant'|trans({}, 'compliance') }}</h6>
                             <small class="text-muted">100% {{ 'analytics.advanced.executive_summary.requirements'|trans({}, 'analytics') }}</small>
@@ -256,7 +256,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <div class="d-flex justify-content-between align-items-center p-3 bg-danger bg-opacity-10 rounded">
+                    <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background-color: var(--danger-tint); border: 1px solid var(--danger);">
                         <div>
                             <h6 class="mb-0">{{ 'risk.filter.at_risk'|trans({}, 'risk') }}</h6>
                             <small class="text-muted">< 80% {{ 'analytics.compliance.table.compliance'|trans({}, 'analytics') }}</small>
