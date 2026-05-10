@@ -175,6 +175,11 @@ jobs:
             echo "A11y audit script not found — skipping"
           fi
 
+      # Twig Macro-Scope Gate — catches {% import %} at file-scope used inside {% block %}
+      # (lint:twig does NOT catch this; fails at render-time with "Variable does not exist")
+      - name: Twig Macro-Scope Check
+        run: python3 scripts/quality/check_twig_macro_scope.py
+
       # DQL Field Mismatch Gate — catches QueryBuilder references to non-existent entity fields
       - name: DQL Field Mismatch Check
         run: php scripts/quality/check-dql-mismatches.php
