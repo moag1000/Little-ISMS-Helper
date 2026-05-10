@@ -8,6 +8,21 @@ policy_wizard:
     approval_routing:
         top_management_assigned: 'Freigabe für "%document%" wurde an die Geschäftsführung (%user%) geleitet.'
         top_management_assigned_short: 'Freigabe an Geschäftsführung geleitet'
+
+    # Task #126 — Approver-Role Validation per Topic.
+    # Aufgedeckt durch Persona-Walkthrough Risk-Owner-Business +
+    # Auditor-External: Approval-Chain im Wizard hatte keine
+    # Rollen-Validierung. Wenn ISB einen Risk-Owner Cryptography-Policy
+    # zur Freigabe schickt, gibt es keine Pruefung "passt der Approver
+    # fachlich". Audit-Trail "warum DIESER Approver fuer DIESES Topic"
+    # wird jetzt durch policy_wizard.approver_role_match*-Events erbracht.
+    approver_match:
+        strict_label: 'Passt'
+        weak_label: 'Empfohlene Rolle: %roles%'
+        mismatch_label: 'Empfohlene Rolle: %roles%'
+        recommended_roles_tooltip: 'Empfohlene Approver-Rolle(n) für dieses Topic: %roles%. Sie können auch eine andere Person freigeben — die Audit-Spur dokumentiert die Entscheidung.'
+        recommended_roles_hint: 'Empfohlen: %roles%'
+        chain_hint: 'Pro Topic prüft das System bei Freigabe automatisch, ob der Approver die fachlich passende Rolle trägt. Audit-Trail dokumentiert jede Match/Mismatch-Entscheidung — eine Mismatch-Freigabe ist erlaubt, wird aber im externen Audit nachvollziehbar.'
     # SoA-Auto-Update bei Dokumentengenerierung — Aurora-Flash + Audit-Trail-Strings.
     soa_auto_update:
         bumped: 'SoA-Eintrag %control% von "%old_status%" auf "%new_status%" angehoben (Policy-Wizard).'
