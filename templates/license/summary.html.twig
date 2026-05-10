@@ -260,9 +260,9 @@
                 {% if stats.unknown > 0 or stats.not_allowed > 0 %}
                     {% embed '_components/_card.html.twig' with {class: 'mb-4', borderColor: 'warning'} %}
                         {% block card_header %}
-                            <div class="card-header bg-warning-subtle text-warning">
+                            <div class="card-header">
                                 <h2 class="h5 mb-0">
-                                    <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>Handlungsbedarf
+                                    <i class="fa-icon fa-icon--status-warning text-warning me-2" aria-hidden="true"></i>Handlungsbedarf
                                 </h2>
                             </div>
                         {% endblock %}
