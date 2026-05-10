@@ -25,6 +25,29 @@ quick_fix:
         token_hint: 'If you have an installer token, enter it here:'
         token_placeholder: 'Token from var/setup-token'
         token_submit: 'Unlock with token'
+    repair:
+        section:
+            title: 'Data Integrity'
+        orphans:
+            title: 'Orphaned entities (no tenant assigned)'
+            button: 'Assign orphans'
+            empty: 'No orphans'
+        tenant_mismatches:
+            title: 'Tenant mismatches'
+            button: 'Fix mismatches'
+            empty: 'No mismatches'
+        duplicates:
+            title: 'Duplicates'
+            button: 'Merge'
+        all:
+            title: 'Safe repair all'
+            button: 'Safe repair all'
+            empty: 'All data integrity checks OK'
+        success:
+            orphans: '%count% orphan(s) assigned to default tenant.'
+            tenant_mismatches: '%count% tenant mismatch(es) fixed.'
+            duplicates: '%count% duplicate(s) merged for "%type%".'
+            all: 'All repairs done: %orphans% orphan(s), %mismatches% mismatch(es), %duplicates% duplicate(s).'
     settings:
         title: 'Quick Fix'
         description: 'Controls the public fallback page shown on schema mismatch instead of a 500 error.'

@@ -25,6 +25,29 @@ quick_fix:
         token_hint: 'Wenn dir ein Installer-Token vorliegt, kannst du es hier eingeben:'
         token_placeholder: 'Token aus var/setup-token'
         token_submit: 'Mit Token freischalten'
+    repair:
+        section:
+            title: 'Daten-Integrität'
+        orphans:
+            title: 'Verwaiste Entitäten (ohne Mandant)'
+            button: 'Orphans zuweisen'
+            empty: 'Keine Orphans'
+        tenant_mismatches:
+            title: 'Mandant-Fehlzuordnungen'
+            button: 'Mismatches beheben'
+            empty: 'Keine Mismatches'
+        duplicates:
+            title: 'Duplikate'
+            button: 'Bereinigen'
+        all:
+            title: 'Alles-Sicher-Reparieren'
+            button: 'Alles sicher reparieren'
+            empty: 'Alle Daten-Integritätsprüfungen OK'
+        success:
+            orphans: '%count% Orphan(s) dem Standard-Mandanten zugewiesen.'
+            tenant_mismatches: '%count% Mandant-Fehlzuordnung(en) behoben.'
+            duplicates: '%count% Duplikat(e) aus "%type%" bereinigt.'
+            all: 'Alle Repairs abgeschlossen: %orphans% Orphan(s), %mismatches% Mismatch(es), %duplicates% Duplikat(e).'
     settings:
         title: 'Quick-Fix'
         description: 'Steuert die öffentliche Fallback-Seite, die bei Schema-Mismatch statt eines 500er erscheint.'
