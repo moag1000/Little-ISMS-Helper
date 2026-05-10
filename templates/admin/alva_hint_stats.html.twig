@@ -42,32 +42,30 @@
                 <h2 class="fa-section__title">{{ 'alva.stats.title'|trans({}, 'alva') }}</h2>
             </div>
             <div class="fa-section__body">
-                <div class="table-responsive">
-                    <table class="table table-striped align-middle">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'alva.stats.col.hint_key'|trans({}, 'alva') }}</th>
-                                <th scope="col" class="text-end">{{ 'alva.stats.col.rendered'|trans({}, 'alva') }}</th>
-                                <th scope="col" class="text-end">{{ 'alva.stats.col.total'|trans({}, 'alva') }}</th>
-                                <th scope="col" class="text-end">{{ 'alva.stats.col.snoozed'|trans({}, 'alva') }}</th>
-                                <th scope="col" class="text-end">{{ 'alva.stats.col.distinct_users'|trans({}, 'alva') }}</th>
-                                <th scope="col" class="text-end">{{ 'alva.stats.col.dismiss_rate'|trans({}, 'alva') }}</th>
+                {% embed '_components/_fa_table.html.twig' with { striped: true } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'alva.stats.col.hint_key'|trans({}, 'alva') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'alva.stats.col.rendered'|trans({}, 'alva') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'alva.stats.col.total'|trans({}, 'alva') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'alva.stats.col.snoozed'|trans({}, 'alva') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'alva.stats.col.distinct_users'|trans({}, 'alva') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'alva.stats.col.dismiss_rate'|trans({}, 'alva') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for row in stats %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell"><code>{{ row.hintKey }}</code></td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ row.rendered }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ row.total }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ row.snoozed }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ row.distinctUsers }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ row.dismissRate }} %</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in stats %}
-                                <tr>
-                                    <td><code>{{ row.hintKey }}</code></td>
-                                    <td class="text-end">{{ row.rendered }}</td>
-                                    <td class="text-end">{{ row.total }}</td>
-                                    <td class="text-end">{{ row.snoozed }}</td>
-                                    <td class="text-end">{{ row.distinctUsers }}</td>
-                                    <td class="text-end">{{ row.dismissRate }} %</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </section>
     {% endif %}

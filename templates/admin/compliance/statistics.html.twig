@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block admin_title %}{{ 'admin.compliance.statistics'|trans({}, 'admin') }}{% endblock %}
 
@@ -93,16 +94,7 @@
                                         </strong>
                                     </td>
                                     <td>
-                                        <div class="progress progress-h-25">
-                                            <div class="progress-bar {% if data.compliance_percentage >= 75 %}bg-success{% elseif data.compliance_percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
-                                                 role="progressbar"
-                                                 style="width: {{ data.compliance_percentage }}%"
-                                                 aria-valuenow="{{ data.compliance_percentage }}"
-                                                 aria-valuemin="0"
-                                                 aria-valuemax="100">
-                                                {{ data.compliance_percentage }}%
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: data.compliance_percentage, tone: data.compliance_percentage >= 75 ? 'success' : (data.compliance_percentage >= 50 ? 'warning' : 'danger'), showText: true }) }}
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'dashboards' %}
 
 {% block title %}{{ 'auditor.title'|trans({}, 'dashboards') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -110,11 +111,7 @@
                         </div>
                         <small class="text-muted">{{ 'auditor.evidence_coverage_label'|trans({}, 'dashboards') }}</small>
                     </div>
-                    <div class="progress progress-h-20 mb-3">
-                        <div class="progress-bar bg-success" style="width: {{ dashboard.evidence_status.coverage_percentage }}%">
-                            {{ dashboard.evidence_status.with_evidence }} / {{ dashboard.evidence_status.total_controls }}
-                        </div>
-                    </div>
+                    {{ _fa_progress.render({ value: dashboard.evidence_status.coverage_percentage, tone: 'success' }) }}
                     <div class="row text-center">
                         <div class="col-6">
                             <h4 class="text-success">{{ dashboard.evidence_status.with_evidence }}</h4>

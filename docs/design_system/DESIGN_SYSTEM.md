@@ -76,47 +76,14 @@ Bootstrap-Utilities funktionieren analog: `m-2 = 8px`, `p-3 = 16px`, `gap-3 = 16
 ## 5. Radius & Shadow
 
 ```
---r-sm:   5px    --r-md:  6px    --r-lg: 8px    --r-xl: 12px
---r-2xl: 16px    --r-pill: 999px
---r-icon: 8px   /* Icon-Chip-Pattern (32×32 / 40×40) */
+--r-sm: 6px    --r-md: 10px    --r-lg: 14px    --r-xl: 20px    --r-pill: 999px
 
---shadow-sm:      0 1px 3px rgba(0,0,0,0.05)
---shadow-md:      0 4px 12px rgba(0,0,0,0.06)
---shadow-lg:      0 8px 24px rgba(0,0,0,0.08)
---shadow-up-sm:   0 -4px 12px rgba(0,0,0,0.06)   /* Mobile-Bottom-Sheet */
---shadow-up-md:   0 -4px 20px rgba(0,0,0,0.10)
---shadow-overlay: 0 20px 60px rgba(0,0,0,0.30)   /* Premium-Modal-Backdrop */
+--shadow-sm: 0 1px 3px rgba(0,0,0,0.05)
+--shadow-md: 0 4px 12px rgba(0,0,0,0.08)
+--shadow-lg: 0 8px 24px rgba(0,0,0,0.10)
 ```
 
-Dark-Mode-Shadows haben zusätzlichen Cyan-Glow (`+ 0 0 12px rgba(var(--primary-rgb),0.15)`).
-
-Plus theme-translucent: `--surface-translucent` (Light: `rgba(255,255,255,0.2)`, Dark: `rgba(255,255,255,0.06)`) für Info-Boxes auf colored gradient hero/banner.
-
----
-
-## 5.5 Z-Index-Stack
-
-Single source of truth: `assets/styles/fairy-aurora.css`. Layer-Order von unten nach oben:
-
-| Token | Wert | Verwendung |
-|---|---|---|
-| `--z-base` | 0 | Default |
-| `--z-popover` | 50 | Tooltips, Quick-Actions, Loading-Overlays |
-| `--z-dropdown` | 100 | User-Dropdown, Select-Menus |
-| `--z-sticky` | 200 | Sticky-Header, Sticky-Toolbar |
-| `--z-fixed` | 500 | Sidebar |
-| `--z-overlay` | 900 | Drawer-Backdrops, Mega-Menu, Alva-Dock |
-| `--z-modal-backdrop` | 1000 | Modal-Backdrop |
-| `--z-modal` | 1001 | Modal-Body |
-| `--z-popover-modal` | 1100 | Popover IN Modal |
-| `--z-toast` | 1500 | Toast-Notifications (über Modal) |
-| `--z-tour` | 2000 | Guided-Tour (über Toast) |
-| `--z-command` | 2500 | Command-Palette (`Cmd+K`) |
-| `--z-turbo-bar` | 999999 | Turbo-Drive-Loading-Bar |
-
-Plus `--alva-z: var(--z-overlay)` (Alva-Companion-Dock).
-
-Lokale stacking-contexts (Werte 0-5) in `position: relative` Containern: erlaubt mit Pflicht-Kommentar `/* local stacking-context */`. Stylelint-Regel blockt Werte ≥6 die nicht via Token gehen.
+Dark-Mode-Shadows haben zusätzlichen Cyan-Glow (`+ 0 0 12px rgba(56,189,248,0.15)`).
 
 ---
 
@@ -555,31 +522,6 @@ Vollständig: [`FAIRY_AURORA_MIGRATION.md`](FAIRY_AURORA_MIGRATION.md).
 
 <!-- ✅ Brand-Mark = Aurora-Rondelle ✦ · Alva nur in Empty-States/Hints -->
 <span class="fa-brand-mark"><span class="fa-brand-sparkle">✦</span></span>
-```
-
-```css
-/* ❌ Z-index hardcoded (Stylelint blockt Werte ≥6) */
-.user-dropdown { z-index: 9999; }
-
-/* ✅ Token */
-.user-dropdown { z-index: var(--z-dropdown); }
-```
-
-```css
-/* ❌ Border-radius hardcoded */
-.icon-chip { border-radius: 8px; }
-
-/* ✅ Token */
-.icon-chip { border-radius: var(--r-icon); }  /* 32×32 / 40×40 icon-chip */
-.card      { border-radius: var(--r-md); }    /* 6px standard card */
-```
-
-```css
-/* ❌ Brand-Background mit color: white */
-.btn-primary { background: var(--primary); color: white; }
-
-/* ✅ On-Token */
-.btn-primary { background: var(--primary); color: var(--on-primary); }
 ```
 
 ---

@@ -187,6 +187,19 @@ class SchemaHealthService
      *
      * @return list<string>
      */
+    /**
+     * Public getter for QuickFix UI — exposes file-system-discovered
+     * pending migrations (the same list applyUpdate() uses to gate).
+     * Lets the operator-UI surface the discrepancy when this list is
+     * non-empty but Doctrine's MigrationPlanCalculator says 0 pending.
+     *
+     * @return list<string>
+     */
+    public function listPendingMigrationVersions(): array
+    {
+        return $this->pendingMigrationVersions();
+    }
+
     private function pendingMigrationVersions(): array
     {
         /** @var Connection $conn */

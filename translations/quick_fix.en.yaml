@@ -12,6 +12,8 @@ quick_fix:
         show_sql: 'Show SQL'
         button: 'Reconcile schema now'
         destructive_count_label: 'destructive statement(s) (DROP/TRUNCATE)'
+        pending_fs_label: 'migration(s) on disk but not executed (file-system vs DB)'
+        pending_fs_show: 'Show versions'
         destructive_warning: 'Destructive statements detected. Review before applying — may delete data. If you accept the risk, tick the checkbox below.'
         destructive_confirm_label: 'I understand the risk and want to apply destructive statements'
         destructive_button: 'Reconcile incl. destructive statements'

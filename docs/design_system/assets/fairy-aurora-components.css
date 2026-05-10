@@ -4233,3 +4233,69 @@ button.fa-filter-chip.fa-filter-chip--active {
     color: var(--fg-2);
     font-weight: 500;
 }
+
+/* ==========================================================================
+   Aurora v4 Phase 4 — fa-rag-card (executive RAG status tile)
+   ==========================================================================
+   Red/Amber/Green status tile for board-level dashboards.
+   Uses badge + status-pill at top, title + detail line below.
+   Macro: _components/_fa_rag_card.html.twig
+   ========================================================================== */
+
+.fa-rag-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 18px 20px;
+    border-radius: var(--r-xl);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color var(--t-base), box-shadow var(--t-base), transform var(--t-fast);
+    overflow: hidden;
+}
+
+.fa-rag-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 0 0;
+    width: 4px;
+    background: var(--_rag-color, var(--success));
+}
+
+.fa-rag-card:hover {
+    border-color: var(--_rag-color, var(--success));
+    box-shadow: 0 0 0 3px var(--_rag-glow, var(--success-glow));
+    transform: translateY(-1px);
+}
+
+/* Status-Variants */
+.fa-rag-card--green { --_rag-color: var(--success); --_rag-glow: var(--success-glow); --_rag-tint: color-mix(in oklab, var(--success) 8%, transparent); }
+.fa-rag-card--amber { --_rag-color: var(--warning); --_rag-glow: var(--warning-glow); --_rag-tint: color-mix(in oklab, var(--warning) 8%, transparent); }
+.fa-rag-card--red   { --_rag-color: var(--danger);  --_rag-glow: var(--danger-glow);  --_rag-tint: color-mix(in oklab, var(--danger)  8%, transparent); }
+
+/* Pill: status icon at top */
+.fa-rag-card__pill {
+    display: inline-flex;
+}
+.fa-rag-card__pill .fa-status-pill,
+.fa-rag-card__pill .badge {
+    border-radius: 999px;
+}
+
+.fa-rag-card__title {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.fa-rag-card__detail {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--fg-2);
+    line-height: 1.5;
+}

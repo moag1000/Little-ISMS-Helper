@@ -93,69 +93,67 @@
     {# Table #}
     <section class="fa-section">
         <div class="fa-section__body">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">{{ 'admin.tour_completion.col.user'|trans({}, 'admin') }}</th>
-                            <th scope="col">{{ 'admin.tour_completion.col.auto_role'|trans({}, 'admin') }}</th>
-                            {% for t in tours %}
-                                <th scope="col" class="text-center small">
-                                    {{ ('guided_tour.' ~ t ~ '.meta.label')|trans({}, 'guided_tour')|split(' ')|first }}
-                                </th>
-                            {% endfor %}
-                            <th scope="col" class="text-end">{{ 'admin.tour_completion.col.actions'|trans({}, 'admin') }}</th>
+            {% embed '_components/_fa_table.html.twig' %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'admin.tour_completion.col.user'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.tour_completion.col.auto_role'|trans({}, 'admin') }}</th>
+                        {% for t in tours %}
+                            <th scope="col" class="fa-table__th fa-table__th--center small">
+                                {{ ('guided_tour.' ~ t ~ '.meta.label')|trans({}, 'guided_tour')|split(' ')|first }}
+                            </th>
+                        {% endfor %}
+                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'admin.tour_completion.col.actions'|trans({}, 'admin') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% if rows|length == 0 %}
+                        <tr class="fa-table__row">
+                            <td colspan="{{ 3 + tours|length }}" class="fa-table__empty">
+                                {{ 'admin.tour_completion.empty'|trans({}, 'admin') }}
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% if rows|length == 0 %}
-                            <tr>
-                                <td colspan="{{ 3 + tours|length }}" class="text-center text-muted py-4">
-                                    {{ 'admin.tour_completion.empty'|trans({}, 'admin') }}
+                    {% else %}
+                        {% for row in rows %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
+                                    <div class="fw-semibold">{{ row.user.fullName|default(row.user.email) }}</div>
+                                    <div class="small text-muted">{{ row.user.email }}</div>
                                 </td>
-                            </tr>
-                        {% else %}
-                            {% for row in rows %}
-                                <tr>
-                                    <td>
-                                        <div class="fw-semibold">{{ row.user.fullName|default(row.user.email) }}</div>
-                                        <div class="small text-muted">{{ row.user.email }}</div>
-                                    </td>
-                                    <td>
-                                        <span class="badge text-bg-secondary">{{ row.auto_role }}</span>
-                                    </td>
-                                    {% for t in tours %}
-                                        <td class="text-center">
-                                            {% if t in row.completed_tours %}
-                                                <i class="fa-icon fa-icon--status-ok" aria-label="{{ 'admin.tour_completion.completed'|trans({}, 'admin') }}"></i>
-                                            {% else %}
-                                                <i class="fa-icon text-muted fa-icon--status-pending" aria-label="{{ 'admin.tour_completion.not_completed'|trans({}, 'admin') }}"></i>
-                                            {% endif %}
-                                        </td>
-                                    {% endfor %}
-                                    <td class="text-end">
-                                        {% if row.completed_tours|length > 0 %}
-                                            <form method="post"
-                                                  action="{{ path('admin_tour_completion_reset', {id: row.user.id, role: 'all'}) }}"
-                                                  class="d-inline"
-                                                  data-controller="ui-actions"
-                                                  data-action="submit->ui-actions#confirm"
-                                                  data-ui-actions-message-param="{{ 'admin.tour_completion.confirm_reset'|trans({'%user%': row.user.email}, 'admin') }}"
-                                                  data-ui-actions-tone-param="danger">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('admin_tour_reset_' ~ row.user.id) }}">
-                                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
-                                                        title="{{ 'admin.tour_completion.reset_all'|trans({}, 'admin') }}">
-                                                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
+                                <td class="fa-table__cell">
+                                    <span class="badge text-bg-secondary">{{ row.auto_role }}</span>
+                                </td>
+                                {% for t in tours %}
+                                    <td class="fa-table__cell fa-table__cell--center">
+                                        {% if t in row.completed_tours %}
+                                            <i class="fa-icon fa-icon--status-ok" aria-label="{{ 'admin.tour_completion.completed'|trans({}, 'admin') }}"></i>
+                                        {% else %}
+                                            <i class="fa-icon text-muted fa-icon--status-pending" aria-label="{{ 'admin.tour_completion.not_completed'|trans({}, 'admin') }}"></i>
                                         {% endif %}
                                     </td>
-                                </tr>
-                            {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
+                                {% endfor %}
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    {% if row.completed_tours|length > 0 %}
+                                        <form method="post"
+                                              action="{{ path('admin_tour_completion_reset', {id: row.user.id, role: 'all'}) }}"
+                                              class="d-inline"
+                                              data-controller="ui-actions"
+                                              data-action="submit->ui-actions#confirm"
+                                              data-ui-actions-message-param="{{ 'admin.tour_completion.confirm_reset'|trans({'%user%': row.user.email}, 'admin') }}"
+                                              data-ui-actions-tone-param="danger">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin_tour_reset_' ~ row.user.id) }}">
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                                                    title="{{ 'admin.tour_completion.reset_all'|trans({}, 'admin') }}">
+                                                <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
         </div>
     </section>
 

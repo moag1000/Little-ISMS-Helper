@@ -12,6 +12,8 @@ quick_fix:
         show_sql: 'SQL anzeigen'
         button: 'Schema jetzt reconcilen'
         destructive_count_label: 'destruktive Statement(s) (DROP/TRUNCATE)'
+        pending_fs_label: 'Migration(en) im Code aber nicht ausgefuehrt (file-system gegen DB)'
+        pending_fs_show: 'Versionen anzeigen'
         destructive_warning: 'Destruktive Statements erkannt. Reviewen vor Anwenden — kann Daten loeschen. Wenn bewusst gewollt, Checkbox aktivieren.'
         destructive_confirm_label: 'Ich verstehe das Risiko und will destruktive Statements anwenden'
         destructive_button: 'Reconcile inkl. destruktiver Statements'

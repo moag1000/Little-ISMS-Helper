@@ -139,6 +139,25 @@
             <div class="count">{{ drift_count }}</div>
             <div class="count-label">{{ 'quick_fix.drift.count_label'|trans({}, 'quick_fix') }}</div>
 
+            {# File-system-discovered pending migrations — different source
+               than Doctrine's MigrationPlanCalculator. When this diverges
+               from `pending_count` it usually means PREPARE/EXECUTE-pattern
+               migrations recorded as executed but DDL never ran (CLAUDE.md
+               pitfall #6). Reconcile auto-recovers via apply+retry. #}
+            {% if pending_fs_count > 0 %}
+                <div style="margin-top: 12px; color: var(--muted); font-size: 13px;">
+                    <strong style="color: var(--danger);">{{ pending_fs_count }}</strong>
+                    {{ 'quick_fix.drift.pending_fs_label'|trans({}, 'quick_fix') }}
+                </div>
+                <details style="margin-top: 6px;">
+                    <summary style="cursor: pointer; color: var(--muted); font-size: 12px;">
+                        {{ 'quick_fix.drift.pending_fs_show'|trans({}, 'quick_fix') }}
+                    </summary>
+                    <pre style="background: var(--bg); padding: 8px; border-radius: 6px; overflow-x: auto; font-size: 11px; color: var(--muted); margin-top: 6px;">{% for v in pending_fs_names %}{{ v }}
+{% endfor %}</pre>
+                </details>
+            {% endif %}
+
             <details style="margin-top: 16px;">
                 <summary style="cursor: pointer; color: var(--muted); font-size: 13px;">
                     {{ 'quick_fix.drift.show_sql'|trans({}, 'quick_fix') }}

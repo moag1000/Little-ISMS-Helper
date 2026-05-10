@@ -378,6 +378,34 @@ class DeploymentWizardControllerTest extends WebTestCase
         }
     }
 
+    // ========== V4-EF-1: INDUSTRY-PRESET TESTS ==========
+
+    #[Test]
+    public function testIndustryPresetRedirectsWithoutAdminUser(): void
+    {
+        // Without admin_created in session, the preset chooser should
+        // redirect back to step4 (admin user creation).
+        $this->client->request('GET', '/en/setup/industry-preset');
+        $this->assertResponseRedirects();
+    }
+
+    #[Test]
+    public function testIndustryPresetApplyRequiresPost(): void
+    {
+        $this->client->request('GET', '/en/setup/industry-preset/apply');
+        $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
+    }
+
+    #[Test]
+    public function testIndustryPresetApplyRequiresCsrfToken(): void
+    {
+        // POST without valid token — should redirect (flash error) back to chooser.
+        $this->client->request('POST', '/en/setup/industry-preset/apply', [
+            'preset' => 'saas-iso27001',
+        ]);
+        $this->assertResponseRedirects();
+    }
+
     #[Test]
     public function testStep1ToStep2Navigation(): void
     {
