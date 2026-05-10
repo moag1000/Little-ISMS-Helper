@@ -16,11 +16,15 @@ use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 
 /**
- * Audit V3 C3 — Auto-Risk-Skeleton on high-CVSS Vulnerability.
+ * Audit V3 C3 / V4-LB-3 — Auto-Risk-Skeleton on high-CVSS Vulnerability.
  *
  * Whenever a Vulnerability with CVSS >= 7.0 is persisted/updated and no
  * Risk is yet linked, create a Risk skeleton with title "Vulnerability {CVE}"
  * and inherent probability/impact derived from CVSS via heuristic.
+ *
+ * Idempotency (V4-LB-3): uses Risk.linkedVulnerability FK lookup instead of
+ * title-string match, which was brittle against title renames and false-positives
+ * with similarly-named vulnerabilities.
  *
  * Toggle: AutoReactionService::KEY_RISK_SKELETON (default true).
  */
@@ -58,19 +62,21 @@ class AutoReactionRiskSkeletonListener
         }
 
         $cve = $vuln->getCveId() ?? ('VULN-' . ($vuln->getId() ?? '?'));
-        $expectedTitle = 'Vulnerability ' . $cve;
 
         try {
             $em = $args->getObjectManager();
 
-            // Already linked Risk?
+            // V4-LB-3: Idempotency via FK, not title-string match.
+            // Title-match is brittle: renames break it; similar CVE patterns
+            // (e.g. CVE-2026-1 vs CVE-2026-10) cause false-positives.
             $existing = $em->getRepository(Risk::class)->findOneBy([
-                'title' => $expectedTitle,
-                'tenant' => method_exists($vuln, 'getTenant') ? $vuln->getTenant() : null,
+                'linkedVulnerability' => $vuln,
             ]);
             if ($existing instanceof Risk) {
                 return;
             }
+
+            $expectedTitle = 'Vulnerability ' . $cve;
 
             // Heuristic mapping: CVSS 7.0-7.9 => p3/i3; 8.0-8.9 => p4/i4; 9.0+ => p5/i5
             [$prob, $imp] = match (true) {
@@ -96,6 +102,8 @@ class AutoReactionRiskSkeletonListener
             if (method_exists($risk, 'setImpact')) {
                 $risk->setImpact($imp);
             }
+            // V4-LB-3: Link Risk→Vulnerability via FK for reliable future idempotency checks.
+            $risk->setLinkedVulnerability($vuln);
 
             $em->persist($risk);
             $em->flush();
