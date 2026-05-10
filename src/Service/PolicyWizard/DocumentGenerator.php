@@ -668,6 +668,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         'bcm'       => ['policy_bcm_batch1', 'policy_bcm_batch2'],
         'dora'      => ['policy_dora'],
         'soc2'      => ['policy_soc2'],
+        'tisax'     => ['policy_tisax'],
     ];
 
     private function resolvePolicyTranslation(string $key, ?string $standard): string
