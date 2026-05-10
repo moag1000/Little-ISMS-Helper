@@ -131,6 +131,10 @@ nav:
 
         dashboard:
             compliance_manager: 'Compliance Manager Dashboard'
+            ciso: 'CISO Dashboard'
+            risk_manager: 'Risk Manager Dashboard'
+            auditor: 'Auditor Dashboard'
+            board: 'Board Dashboard'
 
         help:
             iso9001_bridge: 'ISO 9001 → 27001 Bridge'
@@ -171,6 +175,10 @@ nav:
             training: 'Security awareness training'
             management_reviews: 'Management review meetings'
             compliance_manager_dashboard: 'Coverage heatmap, open findings, audit plan, doc approvals'
+            ciso_dashboard: 'Risk, incident and control overview for CISOs'
+            risk_manager_dashboard: 'Top risks, treatments, acceptances, KRI trends'
+            auditor_dashboard: 'Findings, evidence, audit plan, sample tracking'
+            board_dashboard: 'Strategic risks, ROI, compliance status for executives'
             compliance_frameworks: 'Multi-framework management'
             framework_dashboard: 'Cross-framework overview'
             mapping_hub: 'Central entry: wizard, seeds, quality, transitive coverage'
