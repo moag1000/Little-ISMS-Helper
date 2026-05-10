@@ -73,6 +73,19 @@ nav:
     dpia: 'DSFA (Art. 35)'
     data_breaches: 'Datenschutzverletzungen (Art. 33/34)'
     consents: 'Einwilligungen (Art. 7)'
+    # Audit-V3 ME-1..ME-12: Module discoverability fix.
+    consent: 'Einwilligungen (Art. 7)'
+    data_subject_request: 'Betroffenenrechte (Art. 15-22)'
+    audit_findings: 'Audit-Findings'
+    audit_freeze: 'Audit-Freeze (SoA-Stichtag)'
+    audit_package: 'Audit-Paket (Framework-Export)'
+    corrective_actions: 'Korrekturmaßnahmen (Cl. 10.1)'
+    threat_intelligence: 'Threat Intelligence (A.5.7)'
+    policy_ack_inbox: 'Meine Richtlinien-Bestätigungen'
+    four_eyes_inbox: 'Vier-Augen-Inbox'
+    dora_compliance: 'DORA-Compliance-Dashboard'
+    scheduled_reports: 'Geplante Reports'
+    report_builder: 'Report-Builder'
     toggle_menu: 'Menü umschalten'
     main_navigation: Hauptnavigation
 
@@ -112,6 +125,9 @@ nav:
             frameworks: 'Compliance Frameworks'
             user_management: Benutzerverwaltung
             system: Systemverwaltung
+            # Audit-V3 ME-*: Discovery sections.
+            my_inbox: 'Meine Inbox'
+            reports: 'Reports & Exporte'
 
         desc:
             home: 'Übersicht und Schnellzugriff'
@@ -173,6 +189,19 @@ nav:
             glossary: 'ISMS-Fachbegriffe einfach erklärt — von Asset bis Vulnerability'
             keyboard_shortcuts: 'Alle Tastenkürzel und Schnellzugriffe auf einen Blick'
             mris_tour: 'Acht-Stopp-Rundgang durchs MRIS-Modul (~6 Min, jederzeit überspringbar)'
+            # Audit-V3 ME-1..ME-12: Module discoverability fix — descriptions.
+            consent: 'Einwilligungen für personenbezogene Daten (DSGVO Art. 7)'
+            data_subject_request: 'Auskunfts-, Lösch- und Berichtigungsanfragen (DSGVO Art. 15-22)'
+            audit_findings: 'Strukturierte Audit-Findings inkl. Schwere und Status'
+            audit_freeze: 'SoA-Stichtag für Audits einfrieren (versiegelt SHA-256)'
+            audit_package: 'Framework-spezifisches Audit-Paket exportieren'
+            corrective_actions: 'Korrektur- und Vorbeugemaßnahmen (ISO 27001 Cl. 10.1)'
+            threat_intelligence: 'Bedrohungsinformationen sammeln und mit Risiken verknüpfen (A.5.7)'
+            policy_ack_inbox: 'Eigene noch zu bestätigende Richtlinien'
+            four_eyes_inbox: 'Funktionstrennung — meine offenen Genehmigungen'
+            dora_compliance: 'EU-DORA Übersicht für ICT-Risk-Management und Drittanbieter'
+            scheduled_reports: 'Wiederkehrende Berichte (PDF/CSV) planen und versenden'
+            report_builder: 'Eigene Reports aus Widget-Bibliothek zusammenstellen'
 
     section:
         isms_core: 'ISMS Kern'

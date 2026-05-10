@@ -73,6 +73,19 @@ nav:
     dpia: 'DPIA (Art. 35)'
     data_breaches: 'Data Breaches (Art. 33/34)'
     consents: 'Consents (Art. 7)'
+    # Audit-V3 ME-1..ME-12: Module discoverability fix.
+    consent: 'Consents (Art. 7)'
+    data_subject_request: 'Data Subject Requests (Art. 15-22)'
+    audit_findings: 'Audit Findings'
+    audit_freeze: 'Audit Freeze (SoA snapshot)'
+    audit_package: 'Audit Package (framework export)'
+    corrective_actions: 'Corrective Actions (Cl. 10.1)'
+    threat_intelligence: 'Threat Intelligence (A.5.7)'
+    policy_ack_inbox: 'My Policy Acknowledgements'
+    four_eyes_inbox: 'Four-Eyes Inbox'
+    dora_compliance: 'DORA Compliance Dashboard'
+    scheduled_reports: 'Scheduled Reports'
+    report_builder: 'Report Builder'
     toggle_menu: 'Toggle Menu'
     main_navigation: 'Main Navigation'
 
@@ -106,6 +119,9 @@ nav:
             system: 'System Administration'
             help_resources: 'Help & Resources'
             shortcuts: Shortcuts
+            # Audit-V3 ME-*: Discovery sections.
+            my_inbox: 'My Inbox'
+            reports: 'Reports & Exports'
 
         help:
             iso9001_bridge: 'ISO 9001 → 27001 Bridge'
@@ -173,6 +189,19 @@ nav:
             glossary: 'ISMS terms explained — from Asset to Vulnerability'
             keyboard_shortcuts: 'All keyboard shortcuts at a glance'
             mris_tour: 'Eight-stop walkthrough of the MRIS module (~6 min, skip anytime)'
+            # Audit-V3 ME-1..ME-12: Module discoverability fix — descriptions.
+            consent: 'Consents for personal data processing (GDPR Art. 7)'
+            data_subject_request: 'Subject access, deletion and rectification requests (GDPR Art. 15-22)'
+            audit_findings: 'Structured audit findings incl. severity and status'
+            audit_freeze: 'Freeze SoA snapshot for audits (SHA-256 sealed)'
+            audit_package: 'Export framework-specific audit package'
+            corrective_actions: 'Corrective and preventive actions (ISO 27001 Cl. 10.1)'
+            threat_intelligence: 'Capture threat intel and link to risks (A.5.7)'
+            policy_ack_inbox: 'Your pending policy acknowledgements'
+            four_eyes_inbox: 'Segregation of duties — your pending approvals'
+            dora_compliance: 'EU-DORA overview for ICT risk and third-party management'
+            scheduled_reports: 'Schedule recurring report dispatch (PDF/CSV)'
+            report_builder: 'Compose custom reports from the widget library'
 
     section:
         isms_core: 'ISMS Core'
