@@ -569,4 +569,25 @@ class ComplianceAnalyticsService
             'period' => 'last_month',
         ];
     }
+
+    /**
+     * V4-EF-7 CM-Bucket — Frameworks with coverage below $thresholdPct (default 60 %).
+     * Returns enriched framework data shaped for the MyDay aggregator bucket.
+     *
+     * @param float $thresholdPct Percentage below which a framework is considered critically under-covered
+     * @return array<int, array{id: int, name: string, code: string, compliance_percentage: float, mandatory: bool, link: ?string}>
+     */
+    public function findFrameworkGapsCritical(float $thresholdPct = 60.0): array
+    {
+        $comparison = $this->getFrameworkComparison();
+        $critical = [];
+
+        foreach ($comparison['frameworks'] as $f) {
+            if ((float) $f['compliance_percentage'] < $thresholdPct) {
+                $critical[] = $f;
+            }
+        }
+
+        return $critical;
+    }
 }

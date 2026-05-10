@@ -4,6 +4,7 @@
 {% block title %}{{ 'title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 
 {% block body %}
 <main class="fa-aurora-surface">
@@ -15,6 +16,14 @@
             { label: 'action.standard_dashboard'|trans, variant: 'ghost', icon: 'house', href: path('app_dashboard') }
         ]
     }) }}
+
+    {# V4-EF-6 — Scope filter chips: All / Compliance #}
+    <div class="mb-3">
+        {{ _fa_filter_chip.group([
+            { label: 'scope.all'|trans,        href: path('app_activity_feed') },
+            { label: 'scope.compliance'|trans,  href: path('app_activity_feed', {scope: 'compliance'}) }
+        ], current_scope == 'compliance' ? 1 : 0) }}
+    </div>
 
     {% include '_components/_activity_feed_widget.html.twig' with { items: items, max: 50 } %}
 </main>

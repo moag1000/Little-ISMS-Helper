@@ -133,6 +133,34 @@
             variant: inbox.summary.management_review_upcoming > 0 ? 'success' : 'success',
             href: '#management-review-upcoming'
         }) }}
+        {# V4-EF-7 — Compliance-Manager CM-Buckets (only shown when non-zero) #}
+        {% if inbox.summary.documents_pending_approval_for_me is defined %}
+        {{ _fa_feature_card.render({
+            icon: 'file-earmark-check',
+            label: 'kpi.documents_pending_approval_for_me'|trans,
+            value: inbox.summary.documents_pending_approval_for_me,
+            variant: inbox.summary.documents_pending_approval_for_me > 0 ? 'warning' : 'success',
+            href: '#documents-pending-approval'
+        }) }}
+        {% endif %}
+        {% if inbox.summary.wizard_overdue is defined %}
+        {{ _fa_feature_card.render({
+            icon: 'hourglass-split',
+            label: 'kpi.wizard_overdue'|trans,
+            value: inbox.summary.wizard_overdue,
+            variant: inbox.summary.wizard_overdue > 0 ? 'warning' : 'success',
+            href: '#wizard-overdue'
+        }) }}
+        {% endif %}
+        {% if inbox.summary.framework_gaps_critical is defined %}
+        {{ _fa_feature_card.render({
+            icon: 'bar-chart-line',
+            label: 'kpi.framework_gaps_critical'|trans,
+            value: inbox.summary.framework_gaps_critical,
+            variant: inbox.summary.framework_gaps_critical > 0 ? 'danger' : 'success',
+            href: '#framework-gaps-critical'
+        }) }}
+        {% endif %}
     </div>
 
     {% if inbox.total == 0 %}
@@ -162,6 +190,9 @@
         { id: 'audit-checklist-due', title: 'section.audit_checklist_due'|trans, items: inbox.audit_checklist_due },
         { id: 'change-requests-pending-approval', title: 'section.change_requests_pending_approval'|trans, items: inbox.change_requests_pending_approval },
         { id: 'management-review-upcoming', title: 'section.management_review_upcoming'|trans, items: inbox.management_review_upcoming },
+        { id: 'documents-pending-approval', title: 'section.documents_pending_approval_for_me'|trans, items: inbox.documents_pending_approval_for_me ?? [] },
+        { id: 'wizard-overdue', title: 'section.wizard_overdue'|trans, items: inbox.wizard_overdue ?? [] },
+        { id: 'framework-gaps-critical', title: 'section.framework_gaps_critical'|trans, items: inbox.framework_gaps_critical ?? [] },
     ] %}
 
     {% for section in sections %}
@@ -208,6 +239,12 @@
                                         <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'management_review' %}
                                         <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'document_pending_approval' %}
+                                        <i class="bi bi-file-earmark-check" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'wizard_overdue' %}
+                                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'framework_gap' %}
+                                        <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
                                     {% endif %}
                                     {{ item.title }}
                                 </div>

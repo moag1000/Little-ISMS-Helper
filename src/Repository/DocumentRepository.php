@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Tenant;
 use App\Entity\Document;
+use App\Entity\User;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -206,6 +207,28 @@ class DocumentRepository extends ServiceEntityRepository
             ->setParameter('approved', 'approved')
             ->setParameter('asOf', $asOf)
             ->orderBy('d.nextReviewDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * V4-EF-7 CM-Bucket — Documents with status='in_review' for a given tenant.
+     * The CM sees all in-review documents when the filter is tenant-scoped
+     * (CM is responsible for the approval queue, not just their own documents).
+     * Optionally restrict to documents whose lastEffectivenessReviewBy matches the user
+     * to limit noise when the bucket is shown to ROLE_COMPLIANCE_MANAGER.
+     *
+     * @return Document[] Sorted by id ASC (oldest review first = most urgent)
+     */
+    public function findPendingApprovalForTenant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.tenant = :tenant')
+            ->andWhere('d.isArchived = false')
+            ->andWhere('d.status = :status')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('status', 'in_review')
+            ->orderBy('d.id', 'ASC')
             ->getQuery()
             ->getResult();
     }

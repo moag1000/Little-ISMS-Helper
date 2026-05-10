@@ -58,9 +58,26 @@ class ActivityFeed
     }
 
     /**
+     * Compliance-relevant entity types and audit-log action prefixes for
+     * scope=compliance filtering (V4-EF-6).
+     */
+    private const COMPLIANCE_ENTITY_TYPES = [
+        'Document',
+        'ComplianceFramework',
+        'ComplianceMapping',
+        'AuditFinding',
+        'CertificationBundle',
+        'WizardSession',
+    ];
+
+    private const COMPLIANCE_SOURCES = ['document', 'workflow'];
+
+    private const COMPLIANCE_ACTION_PREFIXES = ['approve', 'reject', 'compliance'];
+
+    /**
      * @return array<int, array<string, mixed>>
      */
-    public function recent(?User $user = null, int $limit = 50): array
+    public function recent(?User $user = null, int $limit = 50, string $scope = 'all'): array
     {
         $items = [];
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -72,10 +89,15 @@ class ActivityFeed
             ? $this->auditLogRepo->findAllOrderedForTenant($tenant, $limit, 0)
             : [];
         foreach ($auditLogs as $log) {
+            $entityType = $log->getEntityType() ?? '';
+            $action     = $log->getAction() ?? '';
+            if ($scope === 'compliance' && !$this->isComplianceAuditLog($entityType, $action)) {
+                continue;
+            }
             $items[] = [
-                'tone'      => $this->toneForAction($log->getAction() ?? ''),
-                'icon'      => $this->iconForAction($log->getAction() ?? ''),
-                'title'     => sprintf('%s %s', $log->getAction() ?? '?', $log->getEntityType() ?? ''),
+                'tone'      => $this->toneForAction($action),
+                'icon'      => $this->iconForAction($action),
+                'title'     => sprintf('%s %s', $action !== '' ? $action : '?', $entityType),
                 'subtitle'  => $log->getDescription() ?? '',
                 'link'      => null,
                 'timestamp' => $log->getCreatedAt(),
@@ -85,11 +107,18 @@ class ActivityFeed
         }
 
         // 2. WorkflowInstance recent (active) — tenant-scoped (Audit V3 W2-C1).
+        // scope=compliance: only Document-approval workflows surfaced.
         $activeWorkflows = $tenant
             ? $this->workflowRepo->findActiveForTenant($tenant)
             : [];
         foreach (array_slice($activeWorkflows, 0, 25) as $instance) {
             /** @var WorkflowInstance $instance */
+            if ($scope === 'compliance') {
+                $wfEntityType = $instance->getEntityType() ?? '';
+                if (!$this->isComplianceWorkflow($wfEntityType)) {
+                    continue;
+                }
+            }
             $items[] = [
                 'tone'      => $instance->getStatus() === 'rejected' ? 'danger'
                     : ($instance->getStatus() === 'approved' ? 'success' : 'warning'),
@@ -105,7 +134,7 @@ class ActivityFeed
             ];
         }
 
-        // 3. Recent Document changes
+        // 3. Recent Document changes (always compliance-relevant).
         if ($tenant) {
             $docs = $this->documentRepo->createQueryBuilder('d')
                 ->andWhere('d.tenant = :tenant')
@@ -129,8 +158,8 @@ class ActivityFeed
             }
         }
 
-        // 4. Recent Risks
-        if ($tenant) {
+        // 4. Recent Risks — excluded from compliance scope (operational, not compliance-specific).
+        if ($tenant && $scope !== 'compliance') {
             $risks = $this->riskRepo->createQueryBuilder('r')
                 ->andWhere('r.tenant = :tenant')
                 ->setParameter('tenant', $tenant)
@@ -163,6 +192,44 @@ class ActivityFeed
         });
 
         return array_slice($items, 0, $limit);
+    }
+
+    /**
+     * V4-EF-6: Determine whether an audit-log entry is compliance-relevant.
+     * Matches on entity type (Document, ComplianceFramework, …) or action prefix
+     * (approve, reject, compliance*).
+     */
+    private function isComplianceAuditLog(string $entityType, string $action): bool
+    {
+        // Strip namespace prefix to get the short class name.
+        $shortType = (string) preg_replace('#^.*\\\\#', '', $entityType);
+        foreach (self::COMPLIANCE_ENTITY_TYPES as $type) {
+            if (strcasecmp($shortType, $type) === 0) {
+                return true;
+            }
+        }
+        $lAction = strtolower($action);
+        foreach (self::COMPLIANCE_ACTION_PREFIXES as $prefix) {
+            if (str_starts_with($lAction, $prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * V4-EF-6: Determine whether a workflow is compliance-relevant based on the
+     * entity type it operates on (e.g. Document approval workflow).
+     */
+    private function isComplianceWorkflow(string $entityType): bool
+    {
+        $shortType = (string) preg_replace('#^.*\\\\#', '', $entityType);
+        foreach (self::COMPLIANCE_ENTITY_TYPES as $type) {
+            if (strcasecmp($shortType, $type) === 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function toneForAction(string $action): string
