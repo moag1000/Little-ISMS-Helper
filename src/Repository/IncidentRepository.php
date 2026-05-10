@@ -185,6 +185,41 @@ class IncidentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Audit V4 V4-LB-1 Round-2 — Open incidents currently assigned to a
+     * specific user (ISO 27035-1 §6.3 monitoring of incident-handling).
+     *
+     * `status NOT IN (resolved, closed)` AND (`assignedTo` matches user
+     * email/identifier OR user owns Reporter-FK). String-match keeps the
+     * legacy free-text `assignedTo` column usable until all incidents are
+     * migrated to typed FKs (Phase 8 Owner-Pattern A).
+     *
+     * @return Incident[]
+     */
+    public function findOpenAssignedToUser(\App\Entity\User $user, Tenant $tenant): array
+    {
+        $needle = $user->getUserIdentifier();
+        $needleEmail = method_exists($user, 'getEmail') ? (string) $user->getEmail() : '';
+
+        $qb = $this->createQueryBuilder('i')
+            ->andWhere('i.tenant = :tenant')
+            ->andWhere('i.status IN (:openStatuses)')
+            ->andWhere('(i.assignedTo IS NOT NULL AND (LOWER(i.assignedTo) LIKE :needle OR LOWER(i.assignedTo) LIKE :email)) OR i.reportedByUser = :user')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('openStatuses', [
+                \App\Enum\IncidentStatus::Reported,
+                \App\Enum\IncidentStatus::InInvestigation,
+                \App\Enum\IncidentStatus::InResolution,
+            ])
+            ->setParameter('needle', '%' . strtolower($needle) . '%')
+            ->setParameter('email', '%' . strtolower($needleEmail) . '%')
+            ->setParameter('user', $user)
+            ->orderBy('i.severity', 'DESC')
+            ->addOrderBy('i.detectedAt', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
      * Find tenant-less (orphaned) incidents — tenant_id IS NULL.
      *
      * TenantFilter is disabled during the query; otherwise Doctrine combines

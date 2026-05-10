@@ -90,6 +90,49 @@
             variant: inbox.summary.trainings_pending > 0 ? 'primary' : 'success',
             href: '#trainings-pending'
         }) }}
+        {# Audit V4 V4-LB-1 Round-2 — 6 ISB-Tagesgeschäft tiles #}
+        {{ _fa_feature_card.render({
+            icon: 'exclamation-octagon',
+            label: 'kpi.incidents_open_assigned'|trans,
+            value: inbox.summary.incidents_open_assigned,
+            variant: inbox.summary.incidents_open_assigned > 0 ? 'danger' : 'success',
+            href: '#incidents-open-assigned'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'shield-exclamation',
+            label: 'kpi.data_breaches_72h_ticking'|trans,
+            value: inbox.summary.data_breaches_72h_ticking,
+            variant: inbox.summary.data_breaches_72h_ticking > 0 ? 'danger' : 'success',
+            href: '#data-breaches-72h-ticking'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'bug',
+            label: 'kpi.vulnerabilities_critical_unpatched'|trans,
+            value: inbox.summary.vulnerabilities_critical_unpatched,
+            variant: inbox.summary.vulnerabilities_critical_unpatched > 0 ? 'warning' : 'success',
+            href: '#vulnerabilities-critical-unpatched'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'clipboard-check',
+            label: 'kpi.audit_checklist_due'|trans,
+            value: inbox.summary.audit_checklist_due,
+            variant: inbox.summary.audit_checklist_due > 0 ? 'primary' : 'success',
+            href: '#audit-checklist-due'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'arrow-repeat',
+            label: 'kpi.change_requests_pending_approval'|trans,
+            value: inbox.summary.change_requests_pending_approval,
+            variant: inbox.summary.change_requests_pending_approval > 0 ? 'primary' : 'success',
+            href: '#change-requests-pending-approval'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'clipboard-data',
+            label: 'kpi.management_review_upcoming'|trans,
+            value: inbox.summary.management_review_upcoming,
+            variant: inbox.summary.management_review_upcoming > 0 ? 'success' : 'success',
+            href: '#management-review-upcoming'
+        }) }}
     </div>
 
     {% if inbox.total == 0 %}
@@ -113,6 +156,12 @@
         { id: 'risk-acceptance-expiring', title: 'section.risk_acceptance_expiring'|trans, items: inbox.risk_acceptance_expiring },
         { id: 'documents-review-overdue', title: 'section.documents_review_overdue'|trans, items: inbox.documents_review_overdue },
         { id: 'trainings-pending', title: 'section.trainings_pending'|trans, items: inbox.trainings_pending },
+        { id: 'incidents-open-assigned', title: 'section.incidents_open_assigned'|trans, items: inbox.incidents_open_assigned },
+        { id: 'data-breaches-72h-ticking', title: 'section.data_breaches_72h_ticking'|trans, items: inbox.data_breaches_72h_ticking },
+        { id: 'vulnerabilities-critical-unpatched', title: 'section.vulnerabilities_critical_unpatched'|trans, items: inbox.vulnerabilities_critical_unpatched },
+        { id: 'audit-checklist-due', title: 'section.audit_checklist_due'|trans, items: inbox.audit_checklist_due },
+        { id: 'change-requests-pending-approval', title: 'section.change_requests_pending_approval'|trans, items: inbox.change_requests_pending_approval },
+        { id: 'management-review-upcoming', title: 'section.management_review_upcoming'|trans, items: inbox.management_review_upcoming },
     ] %}
 
     {% for section in sections %}
@@ -147,6 +196,18 @@
                                         <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'training' %}
                                         <i class="bi bi-mortarboard" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'incident' %}
+                                        <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'data_breach' %}
+                                        <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'vulnerability' %}
+                                        <i class="bi bi-bug" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'audit_checklist' %}
+                                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'change_request' %}
+                                        <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'management_review' %}
+                                        <i class="bi bi-clipboard-data" aria-hidden="true"></i>
                                     {% endif %}
                                     {{ item.title }}
                                 </div>

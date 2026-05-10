@@ -374,6 +374,41 @@ class DataBreachRepository extends ServiceEntityRepository
     }
 
     /**
+     * Audit V4 V4-LB-1 Round-2 — Data breaches whose 72h supervisory-authority
+     * notification clock is still ticking (GDPR Art. 33 (1)).
+     *
+     * Returns breaches that:
+     *   - were detected within the last 72h (clock has not run out yet),
+     *   - require authority notification,
+     *   - have NOT yet been notified.
+     *
+     * Breaches that are already overdue (>72h, not notified) live in
+     * `findAuthorityNotificationOverdue()` — separate bucket because the
+     * remediation pathway differs (overdue requires Art. 33 (1) reasoned
+     * delay-justification per `notificationDelayReason`).
+     *
+     * @return DataBreach[]
+     */
+    public function findAuthorityNotification72hTicking(Tenant $tenant): array
+    {
+        $now = new DateTime();
+        $deadline = new DateTime('-72 hours');
+
+        return $this->createQueryBuilder('db')
+            ->where('db.tenant = :tenant')
+            ->andWhere('db.requiresAuthorityNotification = :required')
+            ->andWhere('db.supervisoryAuthorityNotifiedAt IS NULL')
+            ->andWhere('db.detectedAt BETWEEN :deadline AND :now')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('required', true)
+            ->setParameter('deadline', $deadline)
+            ->setParameter('now', $now)
+            ->orderBy('db.detectedAt', 'ASC') // closest to deadline first
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find recent data breaches (last 30 days)
      */
     public function findRecent(Tenant $tenant, int $days = 30): array
