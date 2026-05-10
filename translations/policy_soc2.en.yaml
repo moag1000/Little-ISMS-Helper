@@ -1,0 +1,632 @@
+policy:
+    soc2:
+        security_governance:
+            v1:
+                title: 'SOC 2 Security Governance and Risk Management Policy'
+                body: |-
+                    # Security Governance and Risk Management Policy of {{ tenant.legal_name }}
+
+                    *Document class: Top-level governance policy | Normative anchor: AICPA Trust Services Criteria 2017 (revised 2022) Common Criteria CC1 (Control Environment), CC2 (Communication and Information), CC3 (Risk Assessment) | Reporting standard: AICPA SSAE 18 | ISO 27001:2022 cross-reference: Clauses 5.1, 5.2, 5.3, 6.1; Annex A 5.1, 5.2, 5.4, 5.7, 5.8, 6.3 | Review interval: 12 months | Audit window: every Type-II reporting period (typically 12 months trailing).*
+
+                    ## 1. Purpose
+                    This policy establishes how {{ tenant.legal_name }} governs information security, defines the Control Environment expected by the AICPA Trust Services Criteria (TSC) Common Criteria CC1, communicates security objectives and roles per CC2, and conducts risk assessment per CC3. It is the apex document of our SOC 2 control set; every subordinate SOC 2 policy (logical/physical access, system operations, change management, risk mitigation, principle-specific policies for Availability, Confidentiality, Processing Integrity, Privacy, and Incident Response) is derived from and consistent with this policy.
+
+                    ## 2. Scope
+                    This policy applies to:
+                    - all systems, applications, infrastructure components and data of {{ tenant.legal_name }} that are in scope of the SOC 2 examination as defined in the System Description (SSAE 18 §AT-C 320);
+                    - all employees, contractors, interns and authorised representatives;
+                    - all subservice organisations whose controls {{ tenant.legal_name }} relies upon. The treatment (carve-out vs. inclusive) is documented per service in the Subservice Organisation Register and disclosed in the System Description.
+
+                    ## 3. Trust Services Criteria Adopted
+                    {{ tenant.legal_name }} elects the following TSC categories for its SOC 2 report:
+                    - **Security (Common Criteria CC1-CC9)** — mandatory baseline.
+                    - **Availability (A1.1-A1.3)** — when uptime commitments are made to user entities.
+                    - **Confidentiality (C1.1-C1.2)** — when non-public customer data is processed.
+                    - **Processing Integrity (PI1.1-PI1.5)** — when accuracy/completeness of processing is a service commitment.
+                    - **Privacy (P1-P8)** — when personal information of data subjects is collected, used, retained, disclosed or disposed of.
+                    The current scope is recorded in the System Description and in the Statement of Applicability.
+
+                    ## 4. Control Environment (CC1)
+                    ### 4.1 Tone at the Top (CC1.1)
+                    The Board of Directors and senior management of {{ tenant.legal_name }} demonstrate a commitment to integrity and ethical values through the published Code of Conduct, mandatory annual ethics training and disciplinary procedures for violations.
+                    ### 4.2 Board Oversight (CC1.2)
+                    The Board (or Audit Committee where established) exercises oversight of the development and performance of internal control. Security posture is a standing agenda item at least quarterly.
+                    ### 4.3 Organisational Structure and Authority (CC1.3)
+                    Management establishes structures, reporting lines, authorities and responsibilities. The {{ roles.ciso.fullName }} (Chief Information Security Officer) reports independently of the engineering organisation and has direct access to the Board on material risks.
+                    ### 4.4 Competence (CC1.4)
+                    Hiring, onboarding, training and promotion processes ensure personnel possess the competence to perform assigned duties. Security-relevant roles require role-specific training documented under the Awareness and Training programme.
+                    ### 4.5 Accountability (CC1.5)
+                    Performance objectives include security and compliance KPIs. Failure to meet control responsibilities is addressed through the disciplinary process.
+
+                    ## 5. Communication and Information (CC2)
+                    ### 5.1 Quality of Information (CC2.1)
+                    {{ tenant.legal_name }} obtains and uses relevant, quality information to support the functioning of internal control. Logging, monitoring, vulnerability data, customer reports and audit findings feed the security operations function.
+                    ### 5.2 Internal Communication (CC2.2)
+                    Security objectives, this policy, and the Acceptable Use Policy are communicated to all personnel at hire and at least annually. Material policy changes trigger re-acknowledgement.
+                    ### 5.3 External Communication (CC2.3)
+                    Communication with customers, regulators, third parties and the public on security matters follows the Incident Response and Stakeholder Communication Policy. The trust portal (or equivalent) provides current security posture, certifications and incident history.
+
+                    ## 6. Risk Assessment (CC3)
+                    ### 6.1 Objective Setting (CC3.1)
+                    Security objectives are defined annually by the {{ roles.ciso.fullName }} and approved by senior management. Objectives are SMART (specific, measurable, achievable, relevant, time-bound) and trace to TSC and ISO 27001 Clause 6.2.
+                    ### 6.2 Risk Identification and Analysis (CC3.2)
+                    Risks to objectives are identified at least annually and on a triggering event (new product, major architectural change, significant incident, regulatory change). Identification draws on threat intelligence (A.5.7), vulnerability scanning, past incidents, vendor risk profiles and customer feedback.
+                    ### 6.3 Fraud Risk (CC3.3)
+                    Fraud risk is explicitly considered, including risk of management override, segregation-of-duties failures, and insider threat.
+                    ### 6.4 Significant Change (CC3.4)
+                    Significant changes — to technology, third-party relationships, product offerings or organisational structure — trigger an out-of-cycle risk reassessment. The change-management process (CC8.1) ensures security review of every significant change.
+
+                    ## 7. Roles and Responsibilities
+                    - **Board / Audit Committee:** oversight of internal control over security.
+                    - **CEO / President:** ultimate accountability for the System Description.
+                    - **CISO:** designs, implements and operates the security programme; reports control issues to the Audit Committee.
+                    - **Risk Owner:** named for each risk in the risk register.
+                    - **Control Owner:** named for each control in the Statement of Applicability; responsible for design and operating effectiveness.
+                    - **Internal Audit (or independent reviewer):** performs the periodic effectiveness assessment supporting CC4.
+
+                    ## 8. SOC 2 Report Type and Audit Window
+                    A **Type-I** report describes the design of controls at a point in time. A **Type-II** report tests operating effectiveness over a defined audit window (typically 6-12 months). {{ tenant.legal_name }} maintains evidence to support a Type-II opinion at all times so that any audit window can be examined retrospectively.
+
+                    ## 9. Subservice Organisations
+                    For each subservice provider whose controls {{ tenant.legal_name }} relies upon, the Subservice Organisation Register records: provider name, services provided, treatment (carve-out vs. inclusive), Complementary Subservice Organisation Controls (CSOCs) expected from the provider, and the most recent SOC 2 / SOC 3 / ISO 27001 attestation reviewed.
+
+                    ## 10. Continuous Improvement
+                    Internal review meetings (at least quarterly), management review (at least annually), incident lessons learned and external audit findings feed the improvement backlog. Tracked in the GRC tool and reviewed by the {{ roles.ciso.fullName }} monthly.
+
+                    ## 11. Approval
+                    This policy is approved by {{ approval.chain }} and reviewed at least every 12 months and on material change.
+
+                    ---
+                    ### Anhang DE — Sicherheitsgovernance- und Risikomanagement-Richtlinie der {{ tenant.legal_name }}
+                    Diese Richtlinie regelt die oberste Sicherheits-Governance gemaess AICPA Trust Services Criteria (Common Criteria CC1-CC3) und wird im SOC-2-Pruefungsbericht (SSAE 18) referenziert. Die Geschaeftsleitung von {{ tenant.legal_name }} bekennt sich zur Wirksamkeit der internen Kontrollen ueber die Sicherheit. Der CISO {{ roles.ciso.fullName }} berichtet unabhaengig von der Entwicklungsorganisation und hat direkten Zugang zum Board bei wesentlichen Risiken. Sicherheitsziele werden jaehrlich definiert, Risiken mindestens jaehrlich und bei wesentlichen Aenderungen erneut bewertet (CC3.1-CC3.4). Der Geltungsbereich umfasst alle Systeme im SOC-2-Scope sowie alle Mitarbeiterinnen und Mitarbeiter; Subdienstleister werden im Subservice-Organisation-Register gefuehrt (Carve-Out vs. Inclusive). Berichts-Typ I beschreibt das Kontrolldesign zu einem Stichtag, Typ II testet die operative Wirksamkeit ueber einen Pruefungszeitraum (in der Regel 6-12 Monate).
+
+        logical_physical_access_controls:
+            v1:
+                title: 'SOC 2 Logical and Physical Access Controls Policy'
+                body: |-
+                    # Logical and Physical Access Controls Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: AICPA TSC Common Criteria CC6 (Logical and Physical Access Controls) — CC6.1 through CC6.8 | ISO 27001:2022 cross-reference: A.5.15-A.5.18, A.7.1, A.7.2, A.8.2, A.8.3, A.8.5 | Review interval: 12 months | Subservice carve-out: physical access at colocation/cloud DCs is carved out and verified via provider SOC 2 reports (CSOCs).*
+
+                    ## 1. Purpose
+                    This policy establishes the logical and physical access controls required to satisfy SOC 2 Common Criterion CC6: identification, authentication, authorisation, modification and removal of access to in-scope systems, data and physical facilities of {{ tenant.legal_name }}.
+
+                    ## 2. Scope
+                    Applies to all in-scope production systems, source-code repositories, customer data stores, administrative consoles, network devices, build/CI systems, monitoring tooling, and any physical facility (office, lab, on-prem server room) hosting in-scope data or equipment.
+
+                    ## 3. Identity Lifecycle (CC6.2, CC6.3, CC6.5)
+                    ### 3.1 Provisioning (CC6.2)
+                    All access requires a unique, named user identity. Joiner provisioning is initiated by the hiring manager via the IT Service Management ticket type "Joiner". HR confirms the start date and role; default role-based access is granted automatically on day one. Privileged access requires separate approval (see §5).
+                    ### 3.2 Movers (CC6.2)
+                    Role changes trigger access review within 5 working days. Access not required in the new role is removed.
+                    ### 3.3 Leavers (CC6.5)
+                    Termination triggers immediate revocation of authentication credentials at the next business hour, and complete deprovisioning within 24 hours. For involuntary terminations, immediate revocation is performed in coordination with HR before notification.
+                    ### 3.4 Periodic User Access Review (CC6.8)
+                    Access is reviewed quarterly by the system owner; privileged access is reviewed monthly. Reviews are evidenced via signed-off reports in the GRC tool. Discrepancies must be remediated within 5 working days.
+
+                    ## 4. Authentication (CC6.1, CC6.6)
+                    ### 4.1 Standard Authentication
+                    All in-scope systems require authentication via the corporate identity provider (IdP) using SAML or OIDC. Local accounts are prohibited except for break-glass purposes (see §6).
+                    ### 4.2 Multi-Factor Authentication (CC6.6)
+                    MFA is required for: all administrative access; all access to production data; all access to source code repositories; all VPN access; all access to the IdP. Phishing-resistant factors (FIDO2/WebAuthn or platform authenticators) are required for privileged roles.
+                    ### 4.3 Password Standards
+                    Where passwords remain in use: minimum 14 characters, complexity per NIST SP 800-63B, breach-corpus checking, no rotation absent indication of compromise.
+
+                    ## 5. Authorisation and Privileged Access (CC6.3, CC6.7)
+                    ### 5.1 Least Privilege (CC6.7)
+                    Default access is denied. Access grants are role-based and follow the principle of least privilege. Standing privileged access is minimised; just-in-time elevation via the privileged access management (PAM) tool is the default.
+                    ### 5.2 Segregation of Duties
+                    Sensitive operations (production data export, change approval, audit log access) are separated from routine access. Conflicts are documented and compensating controls applied.
+                    ### 5.3 Approvals
+                    All privileged access requires approval by the system owner and the {{ roles.ciso.fullName }} or delegate. Approvals are recorded in the access management tool with timestamp and approver identity.
+
+                    ## 6. Break-Glass Procedures
+                    Emergency administrative access (break-glass) accounts exist for each critical system. Use of a break-glass account triggers an automated alert to the security operations function and a mandatory post-use review within 1 business day.
+
+                    ## 7. Physical Access (CC6.4)
+                    ### 7.1 Office Facilities
+                    Office entry uses access badges with role-based zones (general office, secure areas, server rooms). Visitor access is logged at reception and visitors are escorted in restricted areas.
+                    ### 7.2 Data Centres / Colocation
+                    Production infrastructure resides in colocation or public-cloud facilities. Physical access controls at these facilities are the responsibility of the subservice provider and are tested by the provider's auditor; {{ tenant.legal_name }} obtains the provider's SOC 2 (or equivalent) report annually and verifies that the relevant Complementary Subservice Organisation Controls remain operative.
+                    ### 7.3 Equipment Disposal
+                    Equipment leaving custody is wiped per NIST SP 800-88 (Clear, Purge or Destroy as appropriate) before disposal or re-issue. Certificates of destruction are retained for 3 years.
+
+                    ## 8. Logging and Monitoring of Access (Cross-Ref CC7)
+                    All authentication events, authorisation changes and privileged commands are logged to the central log platform with tamper-evident storage. Logs are retained per the Logging Policy (currently 12 months hot, 24 months archive).
+
+                    ## 9. Exceptions
+                    Time-bound exceptions require {{ roles.ciso.fullName }} approval, a documented compensating control and a remediation plan. Exceptions are reviewed monthly.
+
+                    ## 10. Approval
+                    Approved by {{ approval.chain }}; reviewed every 12 months and after material identity-stack changes.
+
+                    ---
+                    ### Anhang DE — Richtlinie zu logischen und physischen Zugangskontrollen der {{ tenant.legal_name }}
+                    Diese Richtlinie regelt die Identifikations-, Authentifizierungs-, Autorisierungs-, Aenderungs- und Loeschprozesse fuer Zugriffe auf in-scope Systeme und physische Bereiche gemaess SOC 2 Common Criterion CC6 (CC6.1-CC6.8). Alle Zugaenge erfordern eine namentliche, eindeutige Benutzeridentitaet ueber den zentralen Identity Provider; lokale Konten sind unzulaessig (Ausnahme: Break-Glass §6). Multi-Factor-Authentifizierung ist Pflicht fuer administrative Zugriffe, Produktionsdatenzugriffe, Quellcode-Repositorien, VPN und IdP-Konten. Privilegierter Zugriff erfolgt ueber Just-in-Time-Elevation (PAM); stehender privilegierter Zugriff wird minimiert. Joiner-Mover-Leaver-Prozesse sind ueber das ITSM-Tool standardisiert; Leaver werden innerhalb von 24 Stunden vollstaendig deprovisioniert (sofortige Sperrung bei unfreiwilliger Beendigung). Quartalsweise User-Access-Reviews durch Systemverantwortliche; monatliche Reviews fuer privilegierte Zugriffe. Physische Zugaenge zu Bueros ueber Badge-System; Rechenzentren werden ueber Subdienstleister-SOC-2-Berichte als Carve-Out abgedeckt (CSOCs).
+
+        system_operations:
+            v1:
+                title: 'SOC 2 System Operations and Monitoring Policy'
+                body: |-
+                    # System Operations and Monitoring Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: AICPA TSC Common Criteria CC7 (System Operations) — CC7.1 through CC7.5 | ISO 27001:2022 cross-reference: A.5.25, A.5.26, A.8.8, A.8.15, A.8.16, A.8.17 | Review interval: 12 months.*
+
+                    ## 1. Purpose
+                    This policy governs the day-to-day operation of in-scope systems at {{ tenant.legal_name }}: detection of new vulnerabilities and configuration drift (CC7.1), monitoring for security events (CC7.2), evaluation of detected events (CC7.3), response to incidents (CC7.4), and recovery from incidents (CC7.5).
+
+                    ## 2. Scope
+                    All in-scope production systems, network devices, identity infrastructure, build pipelines and supporting services.
+
+                    ## 3. Vulnerability and Configuration Detection (CC7.1)
+                    ### 3.1 Configuration Baselines
+                    Each system class has a hardened baseline (CIS Benchmark Level 1 or stricter). Deviations are detected by configuration management tooling within 24 hours and remediated or formally accepted as exceptions.
+                    ### 3.2 Vulnerability Scanning
+                    External-perimeter scans run daily. Internal authenticated scans run weekly. Container image scans run on every build and on a daily re-scan of running images. Cloud configuration assessments (CSPM) run continuously.
+                    ### 3.3 Patch and Remediation SLAs
+                    - Critical (CVSS 9.0-10.0 or actively exploited): 7 days.
+                    - High (CVSS 7.0-8.9): 30 days.
+                    - Medium (CVSS 4.0-6.9): 90 days.
+                    - Low (CVSS 0.1-3.9): next maintenance window.
+                    Exceptions require {{ roles.ciso.fullName }} sign-off with a compensating control and a fixed remediation date.
+
+                    ## 4. Security Monitoring (CC7.2)
+                    ### 4.1 Log Sources
+                    All in-scope systems forward security-relevant events to the central log platform: authentication events, authorisation changes, privileged commands, network flows, EDR telemetry, application security events, cloud control-plane API calls.
+                    ### 4.2 Detection Engineering
+                    A documented detection catalogue maps each detection to its data source, trigger logic, MITRE ATT&CK technique and expected response. The catalogue is reviewed quarterly.
+                    ### 4.3 Alert Triage
+                    24x7 alert triage is performed by the security operations function (in-house or MSSP). Mean Time to Acknowledge target: 15 minutes for High/Critical alerts.
+
+                    ## 5. Event Evaluation (CC7.3)
+                    Detected events are classified as: false positive, informational, security event (no impact), or security incident (impact). Classification is recorded in the case-management tool and reviewed weekly by the security lead.
+
+                    ## 6. Incident Response (CC7.4)
+                    Detailed procedures live in the Incident Response and Stakeholder Communication Policy. Summary:
+                    1. Identification — analyst confirms incident classification.
+                    2. Containment — short-term and long-term containment actions executed.
+                    3. Eradication — root cause removed.
+                    4. Recovery — services restored with monitoring for recurrence.
+                    5. Lessons Learned — post-incident review within 14 days; corrective actions tracked.
+
+                    ## 7. Recovery (CC7.5)
+                    System recovery objectives are defined in the Availability Policy (RTO/RPO). Recovery procedures are tested at least annually for Tier-1 services; quarterly for components with frequent changes.
+
+                    ## 8. Operational Documentation
+                    Each in-scope system has documented operating procedures (runbooks) covering normal operation, monitoring, alarm response, backup/restore and disaster recovery. Runbooks live in the operations wiki and are reviewed annually.
+
+                    ## 9. Capacity and Performance
+                    Capacity is monitored continuously. Forecasts are reviewed monthly to ensure availability commitments remain feasible (cross-reference Availability Policy A1.1).
+
+                    ## 10. Approval
+                    Approved by {{ approval.chain }}; reviewed every 12 months.
+
+                    ---
+                    ### Anhang DE — Richtlinie zu Systembetrieb und Monitoring der {{ tenant.legal_name }}
+                    Diese Richtlinie regelt den taeglichen Betrieb der in-scope Systeme gemaess AICPA TSC CC7 (CC7.1-CC7.5). Konfigurations-Baselines folgen CIS Level 1 oder strenger; Abweichungen werden binnen 24 Stunden erkannt. Verwundbarkeits-Scans: extern taeglich, intern authentifiziert woechentlich, Container-Images bei jedem Build und taeglich re-scan der laufenden Images. Patch-SLAs: Critical 7 Tage, High 30 Tage, Medium 90 Tage, Low naechstes Wartungsfenster. Sicherheitsrelevante Ereignisse werden zentral geloggt; 24x7-Triage durch Security Operations (MTTA-Ziel: 15 Minuten fuer High/Critical). Erkannte Ereignisse werden in der Fallverwaltung als False Positive, informational, Security Event oder Security Incident klassifiziert. Incident Response folgt dem Standard-Lifecycle (Identification, Containment, Eradication, Recovery, Lessons Learned mit Post-Incident-Review binnen 14 Tagen). Wiederherstellungstests jaehrlich fuer Tier-1-Services, quartalsweise fuer Komponenten mit hoher Aenderungsfrequenz.
+
+        change_management:
+            v1:
+                title: 'SOC 2 Change Management Policy'
+                body: |-
+                    # Change Management Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: AICPA TSC Common Criterion CC8.1 (Change Management) | ISO 27001:2022 cross-reference: A.8.9, A.8.29, A.8.31, A.8.32 | Review interval: 12 months.*
+
+                    ## 1. Purpose
+                    This policy ensures that changes to in-scope systems, applications and infrastructure of {{ tenant.legal_name }} are authorised, designed, tested, approved and deployed in a controlled manner that preserves security, availability, confidentiality, processing integrity and (where in scope) privacy.
+
+                    ## 2. Scope
+                    Applies to all changes to in-scope systems: application code, infrastructure-as-code, database schemas, configuration, network rules, identity policies, security control configuration. Documentation-only changes and routine operational tasks (defined in the runbooks) are out of scope.
+
+                    ## 3. Change Classes
+                    - **Standard:** pre-approved, low-risk, repeatable (e.g. account creation per policy). Documented in the standard-change catalogue.
+                    - **Normal:** non-standard, in-scope of a release process. Default class.
+                    - **Emergency:** required to remediate an incident or critical vulnerability. Expedited path with mandatory after-the-fact review within 1 business day.
+
+                    ## 4. Change Workflow
+                    ### 4.1 Authorisation
+                    Every Normal and Emergency change has a named requester, business justification, classification (security/availability/confidentiality/processing-integrity/privacy impact) and a designated approver per the RACI in §6.
+                    ### 4.2 Design and Risk Assessment
+                    Significant changes (CC3.4) include a security risk assessment, a privacy impact screening (where personal data is touched), and a rollback plan. The threshold for "significant" is defined in the Engineering Handbook.
+                    ### 4.3 Build and Test
+                    Code changes traverse the standard CI pipeline: static analysis (SAST), dependency scanning (SCA), unit tests, integration tests, infrastructure scanning. Failed gates block merge.
+                    ### 4.4 Pre-production Verification
+                    Changes are deployed to a staging environment that mirrors production architecture (data is synthetic or anonymised). User acceptance testing is performed where applicable.
+                    ### 4.5 Approval
+                    Production deployment requires merge approval from at least one engineer who is not the author (separation of duties); production-affecting infrastructure changes additionally require Change Advisory Board review.
+                    ### 4.6 Deployment
+                    Deployment uses automated pipelines with immutable artefacts. All deployments are logged with operator identity, artefact version, target environment and timestamp.
+                    ### 4.7 Post-deployment Verification
+                    Health checks and smoke tests run automatically post-deployment. Failure triggers automated rollback or operator-initiated rollback per the runbook.
+
+                    ## 5. Emergency Changes
+                    Emergency changes follow the same workflow with compressed timelines and post-hoc approval. The {{ roles.ciso.fullName }} (or delegate) is notified in real time. Post-implementation review within 1 business day to confirm controls were not bypassed inappropriately.
+
+                    ## 6. RACI
+                    | Activity | Requester | Engineering Lead | Security | CAB |
+                    | --- | --- | --- | --- | --- |
+                    | Submit change | R | A | C | I |
+                    | Risk assessment | C | R | A | I |
+                    | Approve standard | A | R | I | I |
+                    | Approve normal | C | A/R | C | I |
+                    | Approve emergency | C | A | R | I (post-hoc) |
+
+                    ## 7. Records and Evidence
+                    Every change has a record in the change-management system containing: ticket id, classification, approvers, code review record, test results, deployment record, post-deployment verification, rollback record (if applicable). Records are retained for 3 years.
+
+                    ## 8. Segregation of Duties
+                    No single individual may author code, approve the merge, deploy to production and access production data without the change traversing at least one independent control.
+
+                    ## 9. Approval
+                    Approved by {{ approval.chain }}; reviewed every 12 months.
+
+                    ---
+                    ### Anhang DE — Change-Management-Richtlinie der {{ tenant.legal_name }}
+                    Diese Richtlinie regelt die Autorisierung, Gestaltung, Testung, Freigabe und Bereitstellung von Aenderungen an in-scope Systemen gemaess AICPA TSC CC8.1. Aenderungsklassen: Standard (vorab freigegeben), Normal (Default), Emergency (zur Incident-Behebung, mit Post-hoc-Review binnen 1 Geschaeftstag). Jede Normal-/Emergency-Aenderung hat einen namentlichen Antragsteller, geschaeftliche Begruendung, Klassifizierung der Auswirkungen (Security/Availability/Confidentiality/Processing-Integrity/Privacy) und Genehmiger gemaess RACI. Code-Aenderungen durchlaufen die CI-Pipeline mit SAST/SCA/Unit/Integration-Tests; Fehlschlaege blockieren den Merge. Produktions-Deployment erfordert mindestens einen unabhaengigen Code-Review (Funktionstrennung); produktionsrelevante Infrastruktur-Aenderungen zusaetzlich CAB-Pruefung. Deployments ueber automatisierte Pipelines mit unveraenderlichen Artefakten und vollstaendiger Protokollierung. Aufbewahrung der Aenderungsdatensaetze: 3 Jahre.
+
+        risk_mitigation:
+            v1:
+                title: 'SOC 2 Risk Mitigation and Vendor Management Policy'
+                body: |-
+                    # Risk Mitigation and Vendor Management Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: AICPA TSC Common Criteria CC9.1 (Risk Mitigation — Business Disruption) and CC9.2 (Vendor and Business Partner Risk) | ISO 27001:2022 cross-reference: A.5.19, A.5.20, A.5.21, A.5.22, A.5.23 | Review interval: 12 months.*
+
+                    ## 1. Purpose
+                    This policy governs how {{ tenant.legal_name }} mitigates risk arising from business disruption events (CC9.1) and from relationships with vendors and business partners that have access to in-scope systems or data (CC9.2).
+
+                    ## 2. Scope
+                    - **CC9.1 Business Disruption:** insurance, contingency planning and risk transfer for events that could materially impact achievement of service commitments.
+                    - **CC9.2 Vendor Risk:** all vendors, subprocessors, contractors and business partners that store, process or transmit in-scope data, that have logical or physical access to in-scope systems, or whose service interruption would materially affect service commitments.
+
+                    ## 3. Business Disruption Risk Mitigation (CC9.1)
+                    ### 3.1 Insurance
+                    {{ tenant.legal_name }} maintains cyber liability, errors-and-omissions, and general commercial insurance with limits proportionate to the risk profile. Policies are reviewed annually with the broker.
+                    ### 3.2 Risk Transfer in Contracts
+                    Customer contracts include limitation-of-liability and warranty provisions consistent with insurance coverage. Vendor contracts include indemnification for failures within the vendor's control.
+                    ### 3.3 Continuity Planning
+                    Business continuity and disaster recovery activities are governed by the Availability Policy (A1.3) and the Business Continuity Plan.
+
+                    ## 4. Vendor Risk Lifecycle (CC9.2)
+                    ### 4.1 Inventory
+                    A complete vendor inventory is maintained in the GRC tool, recording for each vendor: services provided, data processed, data classification, system access scope, contract reference, security tier, attestation reference (if any), risk score, last review date, next review date.
+                    ### 4.2 Tiering
+                    - **Tier 1 (Critical):** stores or processes customer data; or service interruption would breach an availability commitment; or holds privileged access. Annual review, security questionnaire, attestation review.
+                    - **Tier 2 (Important):** material to operations but no customer data, no privileged access. Biennial review.
+                    - **Tier 3 (Low):** ancillary services, no in-scope data, no system access. Inventory only.
+                    ### 4.3 Onboarding Due Diligence
+                    Before contract signature for Tier 1 and Tier 2 vendors: security questionnaire, review of SOC 2 / ISO 27001 / equivalent attestation, data-protection screening (where personal data is involved), legal review of contractual terms.
+                    ### 4.4 Contractual Requirements
+                    Tier 1 vendor contracts include: defined security commitments, breach notification timelines (≤72 hours preferred), audit rights or attestation rights, data ownership and return-on-termination, sub-processor disclosure, indemnification.
+                    ### 4.5 Ongoing Monitoring
+                    Tier 1 vendors are reviewed annually: refreshed attestation reviewed; CSOCs re-validated; risk score recalculated; performance against SLAs reviewed; incident history reviewed.
+                    ### 4.6 Offboarding
+                    Vendor offboarding triggers: revocation of access, return or destruction of data with documented evidence, contract closure record retained for 3 years.
+
+                    ## 5. Subservice Organisations
+                    Where a vendor is treated as a subservice organisation in the SOC 2 System Description (carve-out vs. inclusive), the dedicated Subservice Organisation Register records the treatment, the CSOCs, and the most recent attestation reviewed.
+
+                    ## 6. Concentration Risk
+                    Concentration risk is reviewed annually: dependence on a single vendor for critical services, dependence on a single geographic region, dependence on a single technology stack. Mitigations are documented where the risk exceeds appetite.
+
+                    ## 7. Approval
+                    Approved by {{ approval.chain }}; reviewed every 12 months.
+
+                    ---
+                    ### Anhang DE — Risikominderungs- und Lieferantenmanagement-Richtlinie der {{ tenant.legal_name }}
+                    Diese Richtlinie regelt die Minderung von Risiken aus Geschaeftsunterbrechungen (CC9.1) und aus Beziehungen zu Lieferanten und Geschaeftspartnern (CC9.2). Geschaeftsunterbrechungs-Mitigation: Cyber-Haftpflichtversicherung, Errors-and-Omissions, allgemeine Betriebshaftpflicht; jaehrliche Pruefung mit Makler. Lieferanten-Lebenszyklus: vollstaendiges Inventar im GRC-Tool, dreistufige Klassifizierung (Tier 1 kritisch / Tier 2 wichtig / Tier 3 niedrig). Onboarding-Due-Diligence vor Vertragsabschluss fuer Tier 1/2: Security-Fragebogen, Pruefung der SOC-2-/ISO-27001-Attestierung, Datenschutz-Screening, juristische Pruefung. Vertragspflichten Tier 1: definierte Security-Commitments, Breach-Benachrichtigung (≤72 Stunden), Audit- oder Attestierungsrechte, Datenrueckgabe-/Loeschung bei Vertragsende, Sub-Auftragsverarbeiter-Offenlegung. Subdienstleister im SOC-2-System-Description-Register (Carve-Out vs. Inclusive) mit zugehoerigen Complementary Subservice Organisation Controls (CSOCs).
+
+        availability_principle:
+            v1:
+                title: 'SOC 2 Availability Policy'
+                body: |-
+                    # Availability Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: AICPA TSC Additional Category — Availability A1.1 (Capacity), A1.2 (Backup and Recovery), A1.3 (Business Continuity) | ISO 27001:2022 cross-reference: A.5.29, A.5.30, A.8.6, A.8.13, A.8.14 | Review interval: 12 months.*
+
+                    ## 1. Purpose
+                    This policy implements the SOC 2 Availability principle for in-scope services of {{ tenant.legal_name }}: ensuring the system is available for operation and use as committed or agreed.
+
+                    ## 2. Scope
+                    Applies to all in-scope production services where availability is a service commitment to user entities (committed in the System Description, contracts and Service Level Agreements).
+
+                    ## 3. Service Tiers and Availability Commitments
+                    Tier-1 services have a published availability commitment (e.g. 99.9% monthly uptime). Tier-2 services have internal targets without external commitment. Tier-3 services are best-effort. The current tier of each service is recorded in the Service Catalogue.
+
+                    ## 4. Capacity Planning (A1.1)
+                    ### 4.1 Monitoring
+                    Capacity utilisation (CPU, memory, storage, network, request rate, queue depth) is monitored in real time and dashboarded. Alerts fire at defined warning and critical thresholds.
+                    ### 4.2 Forecasting
+                    Capacity forecasts are reviewed monthly. Procurement / scaling actions are initiated when forecast utilisation exceeds 70% over the procurement lead time.
+                    ### 4.3 Performance Testing
+                    Load and stress testing of major releases ensures changes do not regress capacity. Results feed the capacity model.
+
+                    ## 5. Backup and Recovery (A1.2)
+                    ### 5.1 Backup Strategy
+                    Each in-scope data store has a documented backup specification: scope, frequency, retention, encryption, geographic distribution, integrity verification, restore-test cadence.
+                    ### 5.2 Backup Defaults
+                    Customer data: continuous replication plus snapshots every 1 hour, retained 30 days hot, 1 year cold. Configuration: snapshot daily, retained 90 days. All backups are encrypted at rest with keys managed per the Cryptography section of the Confidentiality Policy.
+                    ### 5.3 Restore Tests
+                    A live restore test is performed at least quarterly for each data class. Restore time and integrity outcomes are recorded in the GRC tool.
+                    ### 5.4 RPO / RTO Objectives
+                    - **Tier-1 customer data:** RPO ≤1 hour; RTO ≤4 hours.
+                    - **Tier-1 platform:** RPO ≤15 minutes (replication-based); RTO ≤1 hour.
+                    - **Tier-2 services:** RPO ≤24 hours; RTO ≤24 hours.
+
+                    ## 6. Business Continuity and Disaster Recovery (A1.3)
+                    ### 6.1 Plans
+                    A current Business Continuity Plan (BCP) and Disaster Recovery Plan (DRP) are maintained, naming the Crisis Management Team, communications protocol, recovery sequence and decision authorities.
+                    ### 6.2 Scenarios
+                    Tested scenarios include: regional cloud-provider outage, ransomware affecting production, key-personnel unavailability, third-party-dependency outage, building/facility loss.
+                    ### 6.3 Exercises
+                    Tabletop exercises are conducted semi-annually. A live failover exercise of one Tier-1 service is performed annually. Exercise reports include lessons learned and a tracked corrective-action plan.
+
+                    ## 7. Resilience by Design
+                    New Tier-1 services must demonstrate before launch: multi-zone deployment, automated failover where feasible, backup specification, restore test, runbook, monitoring and alerting.
+
+                    ## 8. Reporting
+                    Availability against commitment is reported monthly. SLA breaches are managed per the customer SLA terms and feed the lessons-learned cycle.
+
+                    ## 9. Approval
+                    Approved by {{ approval.chain }}; reviewed every 12 months.
+
+                    ---
+                    ### Anhang DE — Verfuegbarkeits-Richtlinie der {{ tenant.legal_name }}
+                    Diese Richtlinie setzt das SOC-2-Verfuegbarkeitsprinzip um (A1.1 Kapazitaet, A1.2 Backup und Wiederherstellung, A1.3 Geschaeftsfortfuehrung). Service-Tiers: Tier 1 mit veroeffentlichter Verfuegbarkeitszusage (z.B. 99,9% monatliche Uptime), Tier 2 interne Ziele, Tier 3 Best Effort. Kapazitaets-Monitoring in Echtzeit; Forecasts monatlich; Skalierung bei Forecast-Auslastung ueber 70% in der Beschaffungs-Vorlaufzeit. Backup-Default fuer Kundendaten: kontinuierliche Replikation plus stuendliche Snapshots, 30 Tage hot / 1 Jahr cold; Config-Snapshot taeglich, 90 Tage. Quartalsweise Live-Restore-Tests pro Datenklasse. RPO/RTO-Ziele: Tier-1-Kundendaten RPO ≤1h / RTO ≤4h; Tier-1-Plattform RPO ≤15min / RTO ≤1h. BCP und DRP werden gepflegt; halbjaehrliche Tabletop-Uebungen, jaehrliche Live-Failover-Uebung eines Tier-1-Service. Verfuegbarkeits-Reporting gegen Zusage monatlich.
+
+        confidentiality_principle:
+            v1:
+                title: 'SOC 2 Confidentiality Policy'
+                body: |-
+                    # Confidentiality Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: AICPA TSC Additional Category — Confidentiality C1.1 (Identification and Maintenance of Confidential Information) and C1.2 (Disposal of Confidential Information) | ISO 27001:2022 cross-reference: A.5.12, A.5.13, A.5.14, A.7.10, A.7.14, A.8.10, A.8.24 | Review interval: 12 months.*
+
+                    ## 1. Purpose
+                    This policy implements the SOC 2 Confidentiality principle for {{ tenant.legal_name }}: identifying confidential information, protecting it from unauthorised disclosure throughout its lifecycle, and disposing of it securely when no longer needed.
+
+                    ## 2. Scope
+                    Applies to all information that customers, partners, employees or applicable law require to be kept confidential, including: customer data designated as confidential under the customer agreement; intellectual property; security configuration data; financial and business plans; and personal information (cross-reference Privacy Policy).
+
+                    ## 3. Information Classification (C1.1)
+                    Information is classified as one of:
+                    - **Public:** explicitly approved for public release.
+                    - **Internal:** default for unclassified internal information.
+                    - **Confidential:** customer data, financial data, security data, IP.
+                    - **Restricted:** secrets, credentials, encryption keys, regulated personal data subsets (e.g. payment-card data, health data).
+                    Asset owners assign classification at the point of creation. Inheritance rules apply for derived data.
+
+                    ## 4. Labelling and Handling (C1.1)
+                    Labelling is mandatory for Confidential and Restricted classifications. Handling rules per classification:
+                    - **Encryption in transit:** TLS 1.2+ for all classifications, mTLS for Restricted between internal services.
+                    - **Encryption at rest:** Confidential and Restricted in all storage; encryption keys managed per §6.
+                    - **Sharing:** external sharing requires NDA in place and an approved sharing channel.
+                    - **Printing:** Restricted data shall not be printed except for legal/regulatory necessity with documented approval.
+
+                    ## 5. Access Restrictions
+                    Access to Confidential and Restricted data requires a documented business need, role-based authorisation per the Logical and Physical Access Controls Policy, and (for Restricted) MFA with phishing-resistant factors. Standing access is minimised.
+
+                    ## 6. Cryptography
+                    ### 6.1 Algorithms
+                    Approved algorithms only (AES-256-GCM, ChaCha20-Poly1305 for symmetric; RSA-3072+, ECDSA P-256+, Ed25519 for asymmetric; SHA-256+ for hashing). Deprecated algorithms (MD5, SHA-1, 3DES, RC4, TLS 1.0/1.1, RSA <2048) are prohibited.
+                    ### 6.2 Key Management
+                    Keys protecting Confidential / Restricted data are generated and stored in a Hardware Security Module (HSM) or cloud-provider key management service (KMS) with FIPS 140-2 Level 2 (or higher) validation. Key rotation: customer data encryption keys at least annually; signing keys per the Signing Procedure.
+                    ### 6.3 Customer-Held Keys
+                    Where customer-managed encryption keys (CMEK / BYOK) are offered, the operational procedure is documented and tested; customer key revocation is honoured per contract.
+
+                    ## 7. Data Loss Prevention
+                    Egress monitoring on email, endpoint and cloud SaaS detects unauthorised exfiltration patterns for Confidential and Restricted data. Confirmed incidents follow the Incident Response procedure.
+
+                    ## 8. Disposal of Confidential Information (C1.2)
+                    ### 8.1 Logical Disposal
+                    On expiration of retention or on contractual right of return, Confidential / Restricted data is deleted from all primary stores within 30 days and from all backups within the backup retention window. Deletion is verified and logged.
+                    ### 8.2 Physical Media Disposal
+                    Storage media and end-of-life equipment are sanitised per NIST SP 800-88 (Clear, Purge or Destroy as appropriate to the medium). Destruction certificates are retained for 3 years.
+                    ### 8.3 Cloud Data Disposal
+                    For cloud-hosted data, deletion follows the cloud provider's documented data-destruction procedure; the relevant CSOCs are validated.
+
+                    ## 9. Confidentiality Agreements
+                    Employees and contractors with access to Confidential / Restricted data sign a confidentiality agreement at hire; provisions survive termination per the agreement.
+
+                    ## 10. Approval
+                    Approved by {{ approval.chain }}; reviewed every 12 months.
+
+                    ---
+                    ### Anhang DE — Vertraulichkeits-Richtlinie der {{ tenant.legal_name }}
+                    Diese Richtlinie setzt das SOC-2-Vertraulichkeitsprinzip um (C1.1 Identifizierung und Pflege vertraulicher Informationen, C1.2 sichere Entsorgung). Klassifizierungsschema: Public / Internal / Confidential / Restricted; Eigentuemer klassifizieren bei Erstellung, Vererbungsregeln fuer abgeleitete Daten. Verschluesselung in Transit: TLS 1.2+ fuer alle Klassen, mTLS fuer Restricted zwischen internen Diensten. Verschluesselung at Rest: Confidential und Restricted in allen Speichern; Schluesselverwaltung in HSM oder Cloud-KMS mit FIPS-140-2-Level-2-Validierung. Zugelassene Algorithmen: AES-256-GCM, ChaCha20-Poly1305, RSA-3072+, ECDSA P-256+, Ed25519, SHA-256+; veraltete Verfahren (MD5, SHA-1, 3DES, RC4, TLS 1.0/1.1) verboten. Schluesselrotation: Kundendaten-Schluessel mindestens jaehrlich. Data Loss Prevention auf E-Mail, Endpoint und Cloud-SaaS. Logische Loeschung binnen 30 Tagen aus Primaerspeichern und im Rahmen der Backup-Retention; Medien-Sanitisierung nach NIST SP 800-88; Vernichtungszertifikate 3 Jahre aufbewahren.
+
+        processing_integrity_principle:
+            v1:
+                title: 'SOC 2 Processing Integrity Policy'
+                body: |-
+                    # Processing Integrity Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: AICPA TSC Additional Category — Processing Integrity PI1.1 (Definition of Processing Specifications), PI1.2 (Input Quality), PI1.3 (System Processing Quality), PI1.4 (Output Quality), PI1.5 (Stored Information Quality) | ISO 27001:2022 cross-reference: A.8.25, A.8.26, A.8.27, A.8.28, A.8.29 | Review interval: 12 months.*
+
+                    ## 1. Purpose
+                    This policy implements the SOC 2 Processing Integrity principle for in-scope services of {{ tenant.legal_name }}: ensuring system processing is complete, valid, accurate, timely and authorised to meet the entity's objectives and customer commitments.
+
+                    ## 2. Scope
+                    Applies to in-scope services where the accuracy, completeness or timeliness of processing is a service commitment. The applicable services are listed in the System Description.
+
+                    ## 3. Processing Specifications (PI1.1)
+                    For each in-scope processing function, a documented specification defines: inputs (source, format, validation rules), processing logic and timing, expected outputs and recipients, error handling and notification, integrity controls (hashes, totals, reconciliations).
+
+                    ## 4. Input Controls (PI1.2)
+                    ### 4.1 Validation
+                    All inputs are validated for type, range, format, completeness, and business-rule conformance at the boundary of trust. Invalid inputs are rejected with a logged reason.
+                    ### 4.2 Authentication of Source
+                    Inputs from external sources are authenticated (signed payloads, mTLS, signed webhooks, signed file transfers). Replay protection is applied where relevant.
+                    ### 4.3 Completeness Controls
+                    Batch inputs use sequence numbers, control totals or hash digests to detect missing or duplicated records.
+
+                    ## 5. Processing Controls (PI1.3)
+                    ### 5.1 Idempotency
+                    Operations affecting customer data are idempotent or use exactly-once semantics. Duplicate processing is prevented by deduplication keys.
+                    ### 5.2 Reconciliation
+                    Periodic reconciliations between sub-systems verify record counts, control totals and balances. Discrepancies trigger alerts and a documented investigation.
+                    ### 5.3 Error Handling
+                    Errors are classified (transient, permanent, security-relevant). Transient errors retry with exponential backoff and bounded attempts; permanent errors are quarantined to a dead-letter queue and surfaced to operations.
+                    ### 5.4 Auditability
+                    Processing events are logged with correlation identifiers enabling end-to-end traceability of any record from input through processing to output.
+
+                    ## 6. Output Controls (PI1.4)
+                    ### 6.1 Verification
+                    Output records are verified against the specification before delivery: completeness, format, recipient.
+                    ### 6.2 Delivery Assurance
+                    Delivery channels confirm receipt; failed deliveries retry per the spec and escalate after exhaustion.
+                    ### 6.3 Reporting Accuracy
+                    Customer-facing dashboards and reports are sourced from the system of record with a documented refresh cadence; staleness is surfaced to the user.
+
+                    ## 7. Stored Information Quality (PI1.5)
+                    ### 7.1 Data Integrity
+                    Critical data stores employ checksums, hashes or transaction logs to detect corruption. Periodic integrity scans run at least monthly for Tier-1 datasets.
+                    ### 7.2 Anomaly Detection
+                    Statistical anomaly detection on processing volumes and error rates surfaces deviations from baseline.
+                    ### 7.3 Customer-Reported Issues
+                    A customer-facing reporting channel for processing accuracy issues exists. Reports are triaged within 1 business day; root-cause analysis is performed; corrective actions are tracked.
+
+                    ## 8. Cross-Reference to Change Management
+                    Changes to in-scope processing specifications follow the Change Management Policy and additionally require sign-off from the business process owner.
+
+                    ## 9. Approval
+                    Approved by {{ approval.chain }}; reviewed every 12 months.
+
+                    ---
+                    ### Anhang DE — Verarbeitungsintegritaets-Richtlinie der {{ tenant.legal_name }}
+                    Diese Richtlinie setzt das SOC-2-Verarbeitungsintegritaetsprinzip um (PI1.1-PI1.5). Fuer jede in-scope Verarbeitungsfunktion existiert eine dokumentierte Spezifikation (Eingaben, Validierungsregeln, Logik, Zeitvorgaben, erwartete Ausgaben, Fehlerbehandlung, Integritaetskontrollen). Eingangskontrollen: Validierung an der Vertrauensgrenze, Authentifizierung externer Quellen (signierte Payloads, mTLS, signierte Webhooks), Vollstaendigkeitskontrollen ueber Sequenznummern, Kontrollsummen oder Hash-Digests. Verarbeitungskontrollen: Idempotenz oder Exactly-Once-Semantik, periodische Abstimmungen zwischen Subsystemen, Fehlerklassifizierung mit Retry/Dead-Letter-Strategie, vollstaendige Auditierbarkeit ueber Korrelations-IDs. Ausgangskontrollen: Verifikation gegen Spezifikation, Zustellbestaetigung, dokumentierte Aktualisierungs-Kadenz fuer Kunden-Dashboards. Datenintegritaet: Checksummen, monatliche Integritaets-Scans fuer Tier-1-Datensaetze, Anomalie-Erkennung. Kundenseitige Meldekanaele werden binnen 1 Geschaeftstag triagiert.
+
+        privacy_principle:
+            v1:
+                title: 'SOC 2 Privacy Policy'
+                body: |-
+                    # Privacy Policy of {{ tenant.legal_name }} (SOC 2 Privacy Principle)
+
+                    *Normative anchor: AICPA TSC Additional Category — Privacy P1 (Notice and Communication), P2 (Choice and Consent), P3 (Collection), P4 (Use, Retention and Disposal), P5 (Access), P6 (Disclosure to Third Parties), P7 (Quality), P8 (Monitoring and Enforcement) | ISO 27001:2022 cross-reference: A.5.34, A.8.10, A.8.11, A.8.12 | Review interval: 12 months | DPO sign-off required.*
+
+                    > **Note:** This policy implements the SOC 2 Privacy principle. Where {{ tenant.legal_name }} is subject to GDPR, CCPA/CPRA, LGPD or other privacy law, the dedicated GDPR / privacy policies remain the primary instrument; this SOC 2 Privacy Policy maps {{ tenant.legal_name }}'s privacy programme to the AICPA TSC framework for inclusion in the SOC 2 report.
+
+                    ## 1. Purpose
+                    This policy describes how {{ tenant.legal_name }} collects, uses, retains, discloses and disposes of personal information consistent with the AICPA TSC Privacy criteria.
+
+                    ## 2. Scope
+                    Applies to all personal information of customers, end users, employees, contractors and prospects processed by in-scope systems.
+
+                    ## 3. Notice and Communication (P1)
+                    {{ tenant.legal_name }} provides clear, conspicuous notice of its privacy practices via the public privacy notice. Notice is provided at or before the point of collection. Material changes are communicated 30 days in advance with documented evidence of distribution.
+
+                    ## 4. Choice and Consent (P2)
+                    Where consent is the lawful basis for processing, consent is obtained through a freely-given, specific, informed and unambiguous indication. Consent records (purpose, scope, timestamp, version of notice consented to, withdrawal mechanism) are retained as evidence. Withdrawal is honoured without detriment.
+
+                    ## 5. Collection (P3)
+                    Personal information is collected only for purposes identified in the notice and limited to what is necessary for those purposes (data minimisation). Sensitive personal information (special-category data under GDPR Article 9 or analogous categories) is collected only with an enhanced lawful basis.
+
+                    ## 6. Use, Retention and Disposal (P4)
+                    ### 6.1 Use Limitation
+                    Personal information is used only for the purposes for which it was collected (or compatible secondary purposes consistent with the notice and applicable law).
+                    ### 6.2 Retention Schedule
+                    Each personal-data category has a documented retention period grounded in business need and legal obligation. The retention schedule is reviewed annually by the {{ roles.dpo.fullName }}.
+                    ### 6.3 Disposal
+                    On expiry of retention or upon a valid deletion request, personal information is deleted per the Confidentiality Policy §8 (logical deletion within 30 days of primary stores; backup expiry within the backup window; destruction certificates retained 3 years).
+
+                    ## 7. Access (P5)
+                    Data subjects (or their authorised representatives) may request access to, correction of, or deletion of their personal information. Requests are handled by the privacy team via the published intake channel. Standard service level: acknowledged within 5 business days; substantive response within 30 days (or such shorter period as law requires). Identity is verified before disclosure.
+
+                    ## 8. Disclosure to Third Parties (P6)
+                    ### 8.1 Sub-processors
+                    A current list of sub-processors is maintained and made available to customers as required by their data processing agreements.
+                    ### 8.2 Contractual Safeguards
+                    Disclosures to third parties require contractual data-protection commitments at least equivalent to {{ tenant.legal_name }}'s own. International transfers use approved transfer mechanisms (SCCs + Transfer Impact Assessment, BCRs, adequacy decisions).
+                    ### 8.3 Government Requests
+                    Government requests for personal information are reviewed by Legal and challenged where lawful and appropriate. Where permitted, customers are notified.
+
+                    ## 9. Quality (P7)
+                    Personal information is kept accurate, complete and current as needed for the purposes for which it is used. Data subjects can request correction; updates propagate per the data-flow specification.
+
+                    ## 10. Monitoring and Enforcement (P8)
+                    ### 10.1 Privacy Incident Response
+                    Suspected or confirmed privacy incidents follow the Incident Response and Stakeholder Communication Policy with privacy-specific notification timelines (e.g. GDPR Art. 33 — 72 hours to supervisory authority; Art. 34 — without undue delay to affected data subjects where high risk).
+                    ### 10.2 Privacy Reviews
+                    Internal privacy reviews are conducted at least annually. Material changes to processing trigger a Data Protection Impact Assessment (DPIA / privacy impact screening) before deployment.
+                    ### 10.3 Complaints
+                    A complaints channel is maintained. Complaints are logged, triaged and responded to within 30 days.
+                    ### 10.4 Training
+                    All personnel receive privacy-awareness training annually; role-specific training is provided to teams handling personal data routinely.
+
+                    ## 11. Approval
+                    Approved by {{ approval.chain }} (DPO {{ roles.dpo.fullName }} co-signs); reviewed every 12 months and on material change to processing.
+
+                    ---
+                    ### Anhang DE — Datenschutz-Richtlinie der {{ tenant.legal_name }} (SOC-2-Privacy-Prinzip)
+                    Diese Richtlinie setzt das SOC-2-Privacy-Prinzip (P1-P8) um. Wo {{ tenant.legal_name }} der DSGVO, CCPA/CPRA, LGPD oder weiteren Datenschutzgesetzen unterliegt, bleiben die dedizierten DSGVO-/Datenschutzrichtlinien das Primaer-Instrument; diese Richtlinie mappt das Datenschutzprogramm auf das AICPA-TSC-Rahmenwerk fuer den SOC-2-Bericht. Notice & Communication (P1): klare, deutliche Hinweise vor oder bei der Erhebung; wesentliche Aenderungen 30 Tage vorab kommuniziert. Choice & Consent (P2): Einwilligungen sind freiwillig, spezifisch, informiert, unmissverstaendlich; Widerruf ohne Nachteil. Collection (P3): nur fuer die in der Hinweisbenachrichtigung genannten Zwecke und nur im erforderlichen Umfang. Use/Retention/Disposal (P4): dokumentierter Aufbewahrungsplan, jaehrliche Pruefung durch den DSB {{ roles.dpo.fullName }}; Loeschung gemaess Vertraulichkeits-Richtlinie §8. Access (P5): Auskunfts-/Berichtigungs-/Loeschungsanfragen binnen 5 Arbeitstagen bestaetigen, binnen 30 Tagen substantiell beantworten (oder kuerzer wo gesetzlich gefordert), Identitaetspruefung vor Auskunft. Disclosure (P6): Sub-Auftragsverarbeiter-Liste, vertragliche Datenschutzvereinbarungen, internationale Uebermittlungen via SCCs + TIA. Quality (P7): Aktualitaet und Korrektheit. Monitoring & Enforcement (P8): Privacy-Incident-Response mit gesetzlichen Fristen (DSGVO Art. 33 — 72 Stunden), DPIA bei wesentlichen Aenderungen, Beschwerdekanal, jaehrliche Awareness-Schulung, rollenspezifische Schulungen.
+
+        incident_response_communication:
+            v1:
+                title: 'SOC 2 Incident Response and Stakeholder Communication Policy'
+                body: |-
+                    # Incident Response and Stakeholder Communication Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: AICPA TSC Common Criteria CC2.3 (External Communication) and CC7.4 (Incident Response) | ISO 27001:2022 cross-reference: A.5.24, A.5.25, A.5.26, A.5.27, A.5.28, A.6.8 | Review interval: 12 months.*
+
+                    ## 1. Purpose
+                    This policy defines how {{ tenant.legal_name }} prepares for, detects, responds to, recovers from and learns from security incidents, and how it communicates incidents to internal stakeholders, customers, regulators and other external parties consistent with TSC CC7.4 and CC2.3.
+
+                    ## 2. Scope
+                    Applies to all suspected or confirmed security incidents affecting in-scope systems, data or services. Privacy incidents follow this lifecycle plus the additional notification timelines defined in the Privacy Policy.
+
+                    ## 3. Definitions
+                    - **Event:** any observable occurrence in a system or network.
+                    - **Security Event:** an event that may have security significance.
+                    - **Security Incident:** a confirmed adverse event affecting confidentiality, integrity or availability of in-scope assets.
+                    - **Major Incident:** a security incident with material customer or regulatory impact, declared per §5.
+
+                    ## 4. Lifecycle (CC7.4)
+                    ### 4.1 Preparation
+                    The incident response capability is documented (this policy + runbooks), staffed (named on-call rotation), tooled (case management, evidence collection, secure communications), exercised (semi-annually) and supported by the leadership chain.
+                    ### 4.2 Identification
+                    Sources of detection: SIEM alerts, EDR alerts, vulnerability disclosures, customer reports, external researcher reports (responsible disclosure), monitoring anomalies. Each candidate is triaged and classified per §5.
+                    ### 4.3 Containment
+                    Short-term containment limits ongoing damage (isolate host, revoke credential, block IP). Long-term containment restores trustworthy operation (rebuild, rotate keys, patch).
+                    ### 4.4 Eradication
+                    Root cause is identified and removed. Persistence mechanisms are eliminated.
+                    ### 4.5 Recovery
+                    Affected services are restored from known-good state with monitoring elevated. Customer-visible service restoration is communicated per the comms plan.
+                    ### 4.6 Lessons Learned
+                    A post-incident review is conducted within 14 calendar days for normal incidents and within 5 business days for Major Incidents. Outcomes: documented timeline, root cause, corrective and preventive actions tracked to closure, sharing of relevant lessons with peer organisations where appropriate.
+
+                    ## 5. Severity and Major-Incident Declaration
+                    | Severity | Examples | Initial response | Leadership |
+                    | --- | --- | --- | --- |
+                    | SEV1 (Major) | Confirmed customer-data breach; production-wide outage; ransomware in production | 15 minutes | CISO + CEO |
+                    | SEV2 | Targeted attack contained; partial outage; high-confidence indicator of compromise | 1 hour | CISO |
+                    | SEV3 | Isolated event with no customer impact; suspected phishing of single account | 1 business day | Security lead |
+                    Major Incident is declared by the on-call commander on first reasonable evidence; downgrade requires CISO sign-off.
+
+                    ## 6. Stakeholder Communication (CC2.3)
+                    ### 6.1 Internal
+                    Internal communication uses the dedicated incident channel with strict membership control. Status cadence: SEV1 every 30 minutes; SEV2 every 2 hours; SEV3 daily. Leadership briefings as required.
+                    ### 6.2 Customer
+                    Customer notification is initiated when there is reasonable belief of customer impact. Channels: status page, in-product banner, account-team email, support portal advisory. Notification content: nature of impact, current status, action required (if any), expected resolution, contact for questions. Updates continue at the cadence committed in the contract or status page until resolution + post-mortem.
+                    ### 6.3 Regulatory and Legal
+                    Where notification to a supervisory authority is required (e.g. GDPR Art. 33 — 72 hours; sector regulators; state breach laws), the timeline is calculated from the moment of becoming aware of a personal-data breach. The Legal team owns the notification; the DPO advises.
+                    ### 6.4 Public
+                    Where public communication is appropriate (mass-impact incidents, high media interest), the Communications team owns the message. Public statements are pre-cleared by Legal and Executive Leadership.
+                    ### 6.5 Subservice Organisations
+                    Where the incident originates with or affects a subservice organisation, that provider is engaged immediately and their incident-handling output is integrated into the timeline and notifications.
+
+                    ## 7. Evidence Handling
+                    Evidence (logs, memory captures, disk images, communications) is collected, preserved with chain of custody, hashed for integrity and retained per the legal hold instructions. Forensic investigation is performed in-house or by an approved external partner.
+
+                    ## 8. External Researcher and Vulnerability Reports
+                    A published Vulnerability Disclosure Policy (or bug bounty programme) defines safe-harbour, reporting channel and expected response times. Reports are acknowledged within 1 business day and triaged into the incident or vulnerability process as appropriate.
+
+                    ## 9. Exercises and Improvement
+                    Tabletop exercises are conducted semi-annually with rotating scenarios (ransomware, insider, third-party breach, account takeover, supply-chain compromise). Findings drive the improvement backlog.
+
+                    ## 10. Approval
+                    Approved by {{ approval.chain }}; reviewed every 12 months and after every Major Incident lessons-learned cycle.
+
+                    ---
+                    ### Anhang DE — Incident-Response- und Stakeholder-Kommunikations-Richtlinie der {{ tenant.legal_name }}
+                    Diese Richtlinie regelt Vorbereitung, Erkennung, Reaktion, Wiederherstellung und Lessons Learned bei Sicherheitsvorfaellen sowie die Kommunikation an interne und externe Stakeholder gemaess SOC 2 CC7.4 und CC2.3. Lifecycle: Preparation (dokumentiert, besetzt, getoolt, halbjaehrlich geuebt), Identification (SIEM, EDR, Kunden- und Forschermeldungen, Monitoring-Anomalien), Containment (kurzfristig + langfristig), Eradication, Recovery, Lessons Learned (Post-Incident-Review binnen 14 Kalendertagen normal, binnen 5 Geschaeftstagen Major). Severity-Stufen SEV1-SEV3 mit definierten Initialreaktionszeiten und Eskalationspfaden (SEV1 = Major, 15 Minuten, CISO + CEO). Kommunikations-Kadenz: SEV1 alle 30 Minuten intern, Kunden ueber Status-Page/Banner/Account-Team/Support-Portal. Regulatorische Meldungen (DSGVO Art. 33 — 72 Stunden ab Kenntnis eines personenbezogenen Datenschutzverstosses) durch Legal-Team, DSB beraet. Beweissicherung mit Chain-of-Custody, Hashing zur Integritaetspruefung, Retention gemaess Legal-Hold. Veroeffentlichte Vulnerability-Disclosure-Policy fuer Forschermeldungen mit Safe-Harbour. Halbjaehrliche Tabletop-Uebungen mit rotierenden Szenarien.
