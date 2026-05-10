@@ -91,6 +91,9 @@ jobs:
           APP_SECRET: test_secret_for_ci
         run: |
           php bin/console doctrine:migrations:migrate --no-interaction --env=test
+          # Reconcile residual schema drift (MySQL/MariaDB DEFAULT NULL serialization differs;
+          # without this the QuickFix-Schema-Drift redirect triggers in WebTestCase tests).
+          php bin/console app:schema:reconcile --env=test || true
           # Mark setup as complete to bypass setup wizard redirect
           touch config/setup_complete.lock
 

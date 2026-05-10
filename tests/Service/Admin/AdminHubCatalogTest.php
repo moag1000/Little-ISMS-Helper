@@ -77,8 +77,9 @@ class AdminHubCatalogTest extends TestCase
         foreach ($this->catalog->getGroups() as $group) {
             $count += count($group['modules']);
         }
-        // Documented intent: ~36 modules across 7 groups.
+        // Documented intent: ~36 modules across 7 groups (raised to 50 after
+        // policy-style + report-style admin tiles landed in May 2026).
         $this->assertGreaterThanOrEqual(30, $count);
-        $this->assertLessThanOrEqual(45, $count);
+        $this->assertLessThanOrEqual(50, $count);
     }
 }
