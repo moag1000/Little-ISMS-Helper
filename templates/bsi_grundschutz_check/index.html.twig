@@ -93,12 +93,12 @@
                         </div>
                         <div class="col-md-8">
                             {{ helpers.aggregate_bar(report.overall, status_variant) }}
-                            <table class="table table-sm mt-3 mb-0">
+                            <table class="fa-table fa-table--compact mt-3 mb-0">
                                 <thead>
                                     <tr>
-                                        <th scope="col">{{ 'bsi_check.type.label'|trans({}, 'messages') }}</th>
-                                        <th scope="col" class="text-end">{{ 'bsi_check.fulfilled_total'|trans({}, 'messages') }}</th>
-                                        <th scope="col" class="text-end">{{ 'bsi_check.avg_pct'|trans({}, 'messages') }}</th>
+                                        <th scope="col" class="fa-table__th">{{ 'bsi_check.type.label'|trans({}, 'messages') }}</th>
+                                        <th scope="col" class="fa-table__th text-end">{{ 'bsi_check.fulfilled_total'|trans({}, 'messages') }}</th>
+                                        <th scope="col" class="fa-table__th text-end">{{ 'bsi_check.avg_pct'|trans({}, 'messages') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -126,32 +126,31 @@
                     {% endblock %}
                     {% block card_body %}
                         {% import 'bsi_grundschutz_check/index.html.twig' as helpers %}
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">{{ 'bsi_check.layer.code'|trans({}, 'messages') }}</th>
-                                        <th scope="col">{{ 'bsi_check.layer.name'|trans({}, 'messages') }}</th>
-                                        <th scope="col" class="text-end">{{ 'bsi_check.fulfilled_total'|trans({}, 'messages') }}</th>
-                                        <th scope="col" class="text-end">{{ 'bsi_check.weighted_pct'|trans({}, 'messages') }}</th>
-                                        <th scope="col" style="min-width: 200px;">{{ 'bsi_check.progress'|trans({}, 'messages') }}</th>
+                        {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                            {% block table_head %}
+                                <tr>
+                                    <th scope="col" class="fa-table__th">{{ 'bsi_check.layer.code'|trans({}, 'messages') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'bsi_check.layer.name'|trans({}, 'messages') }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'bsi_check.fulfilled_total'|trans({}, 'messages') }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'bsi_check.weighted_pct'|trans({}, 'messages') }}</th>
+                                    <th scope="col" class="fa-table__th" style="min-width: 200px;">{{ 'bsi_check.progress'|trans({}, 'messages') }}</th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                {% import 'bsi_grundschutz_check/index.html.twig' as helpers %}
+                                {% for layer_code, layer in report.by_layer %}
+                                    <tr class="fa-table__row">
+                                        <th scope="row" class="fa-table__cell"><span class="border fa-status-pill fa-status-pill--neutral">{{ layer_code }}</span></th>
+                                        <td class="fa-table__cell">{{ layer.name }}</td>
+                                        <td class="fa-table__cell fa-table__cell--num">{{ layer.aggregate.fulfilled }} / {{ layer.aggregate.total }}</td>
+                                        <td class="fa-table__cell fa-table__cell--num">
+                                            {% if layer.aggregate.weighted_pct is null %}<span class="text-muted">—</span>{% else %}{{ layer.aggregate.weighted_pct }}%{% endif %}
+                                        </td>
+                                        <td class="fa-table__cell">{{ helpers.aggregate_bar(layer.aggregate, status_variant) }}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {% for layer_code, layer in report.by_layer %}
-                                        <tr>
-                                            <th scope="row"><span class="border fa-status-pill fa-status-pill--neutral">{{ layer_code }}</span></th>
-                                            <td>{{ layer.name }}</td>
-                                            <td class="text-end">{{ layer.aggregate.fulfilled }} / {{ layer.aggregate.total }}</td>
-                                            <td class="text-end">
-                                                {% if layer.aggregate.weighted_pct is null %}<span class="text-muted">—</span>{% else %}{{ layer.aggregate.weighted_pct }}%{% endif %}
-                                            </td>
-                                            <td>{{ helpers.aggregate_bar(layer.aggregate, status_variant) }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                                {% endfor %}
+                            {% endblock %}
+                        {% endembed %}
                     {% endblock %}
                 {% endembed %}
             </div>
@@ -194,7 +193,7 @@
                         {% block card_body %}
                             {% import 'bsi_grundschutz_check/index.html.twig' as helpers %}
                             {{ helpers.aggregate_bar(baustein.aggregate, status_variant) }}
-                            <table class="table table-sm mt-3 mb-2">
+                            <table class="fa-table fa-table--compact mt-3 mb-2">
                                 <tbody>
                                     {{ helpers.breakdown_row('bsi_check.type.muss'|trans({}, 'messages'), baustein.aggregate.breakdown.muss) }}
                                     {{ helpers.breakdown_row('bsi_check.type.sollte'|trans({}, 'messages'), baustein.aggregate.breakdown.sollte) }}
