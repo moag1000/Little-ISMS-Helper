@@ -16,7 +16,25 @@ Die ISB landet nach Login auf dem **Hauptdashboard**. Erwartung: "Was muss ich h
 
 ![ISB-Dashboard](img/isb-practitioner/dashboard.png)
 
-> *"KPIs offen-überfällig direkt sichtbar. Drilldown auf Top-Risiken. Wenn das Audit-Log auch oben ist, bin ich froh."*
+> *"KPIs offen-überfällig direkt sichtbar. Drilldown auf Top-Risiken."*
+
+---
+
+## My-Day — Zentrale Aufgaben-Inbox
+
+Aggregator über alle Module: anstehende Reviews, Maßnahmen-Fristen, eingehende Workflow-Freigaben, neue Findings. Eine Stelle, ein Tag.
+
+![My-Day](img/isb-practitioner/my-day.png)
+
+> *"Vor My-Day musste ich drei Module manuell durchklicken um den Stand des Tages zu kennen."*
+
+---
+
+## Activity-Feed
+
+Chronologischer Stream aller relevanten Aktivitäten — wer hat wann was angelegt/geändert/freigegeben. Audit-Log-Light für den Tagesüberblick.
+
+![Activity-Feed](img/isb-practitioner/activity-feed.png)
 
 ---
 
@@ -39,6 +57,14 @@ Liste mit Treatment-Status, Restrisiko, Owner und Behandlungsplänen. Filterbar 
 ![Risikoregister](img/isb-practitioner/risk-register.png)
 
 Verknüpfung Risiko↔Asset↔Control↔Nachweis ist die operative Pflicht der ISB. Jedes Risiko zeigt im Detail Bedrohung, Schwachstelle, getroffene und geplante Maßnahmen.
+
+---
+
+## Audit-Findings
+
+Strukturierte Befund-Liste statt Freitext. Severity (major-nc / minor-nc / observation / OFI), Status (open / in-progress / closed / wont-fix), finding-Nummer, Korrekturmaßnahme-Verknüpfung.
+
+![Audit-Findings](img/isb-practitioner/audit-findings.png)
 
 ---
 

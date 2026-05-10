@@ -54,6 +54,14 @@ Stichprobenfähig, exportierbar als PDF mit Audit-Trail-Signatur.
 
 ---
 
+## Audit-Log-Retention
+
+Aufbewahrungs-Konfiguration für Audit-Trail. ISO 27001 + DSGVO Art. 5(1)(e) verlangen definierte Storage-Limitation.
+
+![Audit-Log-Retention](img/auditor-external/audit-log-retention.png)
+
+---
+
 ## Management-Review
 
 Inputs/Outputs strukturiert nach ISO-27001-Klausel 9.3 — Performance-Indikatoren, Audit-Ergebnisse, Risikoänderungen, Verbesserungsvorschläge, Beschlüsse.
