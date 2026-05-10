@@ -122,42 +122,38 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="table-responsive">
-                <table class="table table-sm table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'management_reports.assets.header.id'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.assets.header.name'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.assets.header.type'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.assets.header.classification'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.assets.header.owner'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.assets.header.status'|trans({}, 'management_reports') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for asset in report.assets|slice(0, 50) %}
-                        <tr>
-                            <td>{{ asset.id }}</td>
-                            <td>
-                                <a href="{{ path('app_asset_show', {id: asset.id}) }}">
-                                    {{ asset.name }}
-                                </a>
-                            </td>
-                            <td>{{ asset.assetType }}</td>
-                            <td>
-                                {% set code = (asset.dataClassification ?? '')|lower %}
-                                {% set is_known = code in ['public','internal','confidential','restricted'] %}
-                                {% set label = is_known ? ('asset.classification.' ~ code)|trans({}, 'asset') : ('management_reports.assets.no_classification'|trans({}, 'management_reports')) %}
-                                {% set variant = (code in ['confidential','restricted']) ? 'danger' : (code == 'internal' ? 'warning' : (code == 'public' ? 'success' : 'secondary')) %}
-                                {% include '_components/_badge.html.twig' with { variant: variant, content: label } %}
-                            </td>
-                            <td>{{ asset.effectiveOwner ?? '-' }}</td>
-                            <td>{{ asset.status|default('Active') }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.assets.header.id'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.assets.header.name'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.assets.header.type'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.assets.header.classification'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.assets.header.owner'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.assets.header.status'|trans({}, 'management_reports') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for asset in report.assets|slice(0, 50) %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">{{ asset.id }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_asset_show', {id: asset.id}) }}">{{ asset.name }}</a>
+                        </td>
+                        <td class="fa-table__cell">{{ asset.assetType }}</td>
+                        <td class="fa-table__cell">
+                            {% set code = (asset.dataClassification ?? '')|lower %}
+                            {% set is_known = code in ['public','internal','confidential','restricted'] %}
+                            {% set label = is_known ? ('asset.classification.' ~ code)|trans({}, 'asset') : ('management_reports.assets.no_classification'|trans({}, 'management_reports')) %}
+                            {% set variant = (code in ['confidential','restricted']) ? 'danger' : (code == 'internal' ? 'warning' : (code == 'public' ? 'success' : 'secondary')) %}
+                            {% include '_components/_badge.html.twig' with { variant: variant, content: label } %}
+                        </td>
+                        <td class="fa-table__cell">{{ asset.effectiveOwner ?? '-' }}</td>
+                        <td class="fa-table__cell">{{ asset.status|default('Active') }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% if report.assets|length > 50 %}
             <div class="text-muted text-center mt-2">
                 {{ 'management_reports.assets.showing_first'|trans({'%count%': 50, '%total%': report.assets|length}, 'management_reports') }}

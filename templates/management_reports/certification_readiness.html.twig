@@ -78,46 +78,42 @@
         {% endblock %}
         {% block card_body %}
             {% if clause_compliance is not empty %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'cert_readiness.table.clause'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'cert_readiness.table.score'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'cert_readiness.table.status'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'cert_readiness.table.gaps'|trans({}, 'management_reports') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for key, clause in clause_compliance %}
-                        <tr>
-                            <td>
-                                <strong>{{ clause.name|trans({}, 'compliance') }}</strong>
-                            </td>
-                            <td>
-                                {{ _fa_progress.render({ value: clause.score, tone: clause.score >= 80 ? 'success' : (clause.score >= 40 ? 'warning' : 'danger'), showText: true }) }}
-                            </td>
-                            <td>
-                                {% if clause.status == 'complete' %}
-                                    <span class="fa-status-pill fa-status-pill--success">{{ 'cert_readiness.status.complete'|trans({}, 'management_reports') }}</span>
-                                {% elseif clause.status == 'partial' %}
-                                    <span class="fa-status-pill fa-status-pill--warning">{{ 'cert_readiness.status.partial'|trans({}, 'management_reports') }}</span>
-                                {% else %}
-                                    <span class="fa-status-pill fa-status-pill--danger">{{ 'cert_readiness.status.not_started'|trans({}, 'management_reports') }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if clause.gaps|length > 0 %}
-                                    <span class="text-danger">{{ clause.gaps|length }} {{ 'cert_readiness.gaps_found'|trans({}, 'management_reports') }}</span>
-                                {% else %}
-                                    <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_fa_table.html.twig' %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'cert_readiness.table.clause'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'cert_readiness.table.score'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'cert_readiness.table.status'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'cert_readiness.table.gaps'|trans({}, 'management_reports') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for key, clause in clause_compliance %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell"><strong>{{ clause.name|trans({}, 'compliance') }}</strong></td>
+                        <td class="fa-table__cell">
+                            {{ _fa_progress.render({ value: clause.score, tone: clause.score >= 80 ? 'success' : (clause.score >= 40 ? 'warning' : 'danger'), showText: true }) }}
+                        </td>
+                        <td class="fa-table__cell">
+                            {% if clause.status == 'complete' %}
+                                <span class="fa-status-pill fa-status-pill--success">{{ 'cert_readiness.status.complete'|trans({}, 'management_reports') }}</span>
+                            {% elseif clause.status == 'partial' %}
+                                <span class="fa-status-pill fa-status-pill--warning">{{ 'cert_readiness.status.partial'|trans({}, 'management_reports') }}</span>
+                            {% else %}
+                                <span class="fa-status-pill fa-status-pill--danger">{{ 'cert_readiness.status.not_started'|trans({}, 'management_reports') }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell">
+                            {% if clause.gaps|length > 0 %}
+                                <span class="text-danger">{{ clause.gaps|length }} {{ 'cert_readiness.gaps_found'|trans({}, 'management_reports') }}</span>
+                            {% else %}
+                                <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% else %}
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-info-circle', class: 'mb-0' } } %}
                 {% block alert_body %}{{ 'cert_readiness.no_iso_wizard'|trans({}, 'management_reports') }}{% endblock %}

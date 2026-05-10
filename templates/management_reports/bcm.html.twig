@@ -221,35 +221,31 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="table-responsive">
-                <table class="table table-sm table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'management_reports.bcm.header.name'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.bcm.header.status'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.bcm.header.last_review'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.bcm.header.next_review'|trans({}, 'management_reports') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for plan in report.bc_plans.plans %}
-                        <tr>
-                            <td>
-                                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">
-                                    {{ plan.name }}
-                                </a>
-                            </td>
-                            <td>
-                                {% set statusVariant = (plan.status == 'active' or plan.status == 'approved') ? 'success' : (plan.status == 'draft' ? 'warning' : (plan.status == 'review' ? 'info' : 'secondary')) %}
-                                {% include '_components/_badge.html.twig' with { variant: statusVariant, content: plan.status } %}
-                            </td>
-                            <td>{{ plan.lastReviewDate ? plan.lastReviewDate|date('Y-m-d') : '-' }}</td>
-                            <td>{{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : '-' }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.bcm.header.name'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.bcm.header.status'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.bcm.header.last_review'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.bcm.header.next_review'|trans({}, 'management_reports') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for plan in report.bc_plans.plans %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
+                        </td>
+                        <td class="fa-table__cell">
+                            {% set statusVariant = (plan.status == 'active' or plan.status == 'approved') ? 'success' : (plan.status == 'draft' ? 'warning' : (plan.status == 'review' ? 'info' : 'secondary')) %}
+                            {% include '_components/_badge.html.twig' with { variant: statusVariant, content: plan.status } %}
+                        </td>
+                        <td class="fa-table__cell">{{ plan.lastReviewDate ? plan.lastReviewDate|date('Y-m-d') : '-' }}</td>
+                        <td class="fa-table__cell">{{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
     {% endif %}

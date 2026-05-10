@@ -269,32 +269,32 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <table class="table table-sm">
-                        <thead>
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
                             <tr>
-                                <th scope="col">{{ 'management_reports.trend.month'|trans({}, 'management_reports') }}</th>
-                                <th scope="col">{{ 'management_reports.trend.total_risks'|trans({}, 'management_reports') }}</th>
-                                <th scope="col">{{ 'management_reports.trend.high_critical'|trans({}, 'management_reports') }}</th>
-                                <th scope="col">{{ 'management_reports.trend.new_risks'|trans({}, 'management_reports') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'management_reports.trend.month'|trans({}, 'management_reports') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">{{ 'management_reports.trend.total_risks'|trans({}, 'management_reports') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">{{ 'management_reports.trend.high_critical'|trans({}, 'management_reports') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">{{ 'management_reports.trend.new_risks'|trans({}, 'management_reports') }}</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for trend in risk_trends %}
-                            <tr>
-                                <td>{{ trend.month_name }}</td>
-                                <td><strong>{{ trend.total }}</strong></td>
-                                <td>
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ trend.month_name }}</td>
+                                <td class="fa-table__cell fa-table__cell--num"><strong>{{ trend.total }}</strong></td>
+                                <td class="fa-table__cell fa-table__cell--num">
                                     {% if trend.high_critical > 0 %}
                                     {% include '_components/_badge.html.twig' with { variant: 'danger', content: trend.high_critical } %}
                                     {% else %}
                                     {% include '_components/_badge.html.twig' with { variant: 'success', content: 0 } %}
                                     {% endif %}
                                 </td>
-                                <td>{{ trend.new_risks }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ trend.new_risks }}</td>
                             </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        {% endblock %}
+                    {% endembed %}
                 {% endblock %}
             {% endembed %}
         </div>
@@ -310,20 +310,20 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <table class="table table-sm">
-                        <thead>
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
                             <tr>
-                                <th scope="col">{{ 'management_reports.trend.month'|trans({}, 'management_reports') }}</th>
-                                <th scope="col">{{ 'management_reports.trend.total_incidents'|trans({}, 'management_reports') }}</th>
-                                <th scope="col">{{ 'management_reports.trend.high_critical'|trans({}, 'management_reports') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'management_reports.trend.month'|trans({}, 'management_reports') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">{{ 'management_reports.trend.total_incidents'|trans({}, 'management_reports') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">{{ 'management_reports.trend.high_critical'|trans({}, 'management_reports') }}</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for trend in incident_trends %}
-                            <tr>
-                                <td>{{ trend.month_name }}</td>
-                                <td>{{ trend.total }}</td>
-                                <td>
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ trend.month_name }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ trend.total }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">
                                     {% if trend.high_critical > 0 %}
                                     {% include '_components/_badge.html.twig' with { variant: 'danger', content: trend.high_critical } %}
                                     {% else %}
@@ -332,8 +332,8 @@
                                 </td>
                             </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        {% endblock %}
+                    {% endembed %}
                 {% endblock %}
             {% endembed %}
         </div>
