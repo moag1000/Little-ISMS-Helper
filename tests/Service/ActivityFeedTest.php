@@ -35,6 +35,7 @@ final class ActivityFeedTest extends TestCase
     private MockObject $documentRepo;
     private MockObject $riskRepo;
     private MockObject $tenantContext;
+    private MockObject $urlGenerator;
     private ActivityFeed $feed;
 
     protected function setUp(): void
@@ -44,6 +45,7 @@ final class ActivityFeedTest extends TestCase
         $this->documentRepo = $this->createMock(DocumentRepository::class);
         $this->riskRepo = $this->createMock(RiskRepository::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
+        $this->urlGenerator = $this->createMock(\Symfony\Component\Routing\Generator\UrlGeneratorInterface::class);
 
         $this->feed = new ActivityFeed(
             $this->auditLogRepo,
@@ -51,6 +53,7 @@ final class ActivityFeedTest extends TestCase
             $this->documentRepo,
             $this->riskRepo,
             $this->tenantContext,
+            $this->urlGenerator,
         );
     }
 
