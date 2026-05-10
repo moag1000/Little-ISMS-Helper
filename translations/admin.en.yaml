@@ -26,6 +26,7 @@ admin:
             locations: { label: 'Locations', desc: 'Physical sites for asset assignment' }
             tenant_branding: { label: 'Tenant branding', desc: 'Per-tenant email logos and senders' }
             tenant_compliance_settings: { label: 'Compliance settings', desc: 'Locale, TLP, DPO, risk methodology, escalation, JSON defaults' }
+            policy_style: { label: 'Policy appearance', desc: 'Layout, watermark and typography for policy documents' }
             users: { label: 'Users', desc: 'Accounts, status, lockouts' }
             roles: { label: 'Roles', desc: 'Tenant roles and templates' }
             permissions: { label: 'Permissions', desc: 'Module × role permission matrix' }
@@ -895,6 +896,76 @@ kpi_threshold:
         wizard_maturity_target: 'Default wizard maturity target'
         wizard_maturity_target_help: 'Shown as target maturity in every wizard result.'
     cancel: "Cancel"
+    policy_style:
+        title: 'Policy appearance'
+        subtitle: 'Configure layout, typography, watermark and signature slots for generated policy documents.'
+        section:
+            form: 'Configuration'
+            form_subtitle: 'Changes appear live in the preview on the right. Saving persists the values for all future policy documents.'
+            preview: 'Live preview'
+            preview_subtitle: 'Sample policy with current settings — synthetic data, no tenant content.'
+        group:
+            cover: 'Cover page'
+            typography: 'Typography & layout'
+            watermark: 'Watermark'
+            layout: 'Sections & signature'
+            footer: 'Footer'
+            advanced: 'Advanced'
+        field:
+            font_family: 'Font family'
+            cover_pattern: 'Cover pattern'
+            cover_logo_size: 'Cover logo size'
+            page_margin: 'Page margin'
+            watermark_enabled: 'Watermark enabled'
+            watermark_opacity: 'Watermark opacity'
+            signature_lines: 'Signature blocks'
+            show_toc: 'Show table of contents'
+            show_history: 'Show version history'
+            show_annex_a_refs: 'Show Annex A references'
+            footer_text: 'Custom footer text'
+            custom_css: 'Custom CSS override'
+        help:
+            font_family: 'Affects all text in the PDF export. Inter is the ISMS default.'
+            cover_pattern: '"Branded" for marketing tone, "Auditor formal" for certification audits, "Engineering" for DevSecOps.'
+            page_margin: 'Compact = more content per page; wide = better readability for approval reviews.'
+            watermark_enabled: 'When enabled, the classification is rendered diagonally as a watermark over every page.'
+            watermark_opacity: '0% invisible, 8% is the default, > 25% interferes with reading.'
+            signature_lines: 'Number of pre-rendered signature blocks on the signature page (1–6).'
+            footer_text: 'When empty, the default footer with tenant name + classification is used.'
+            custom_css: 'Rendered |raw inside the policy-doc <style> block. ROLE_ADMIN only. Bad CSS may break PDF generation.'
+        cover:
+            minimal: 'Minimal — neutral cover without logo blocks'
+            branded: 'Branded — logo prominent, primary color as accent'
+            auditor_formal: 'Auditor formal — serif, muted colors, certification look'
+            engineering: 'Engineering — monospace accents, DevSecOps look'
+        size:
+            small: 'Small (40 px)'
+            medium: 'Medium (64 px)'
+            large: 'Large (88 px)'
+        margin:
+            compact: 'Compact (12 mm)'
+            standard: 'Standard (20 mm)'
+            wide: 'Wide (28 mm)'
+        save: 'Save'
+        reset: 'Reset to defaults'
+        reset_confirm: 'Really reset all policy appearance settings to defaults?'
+        flash:
+            saved: 'Policy appearance saved. New policy PDFs will use the updated settings.'
+            reset: 'Policy appearance has been reset to defaults.'
+        preview:
+            eyebrow: 'Information Security Management System'
+            version: 'Version'
+            classification: 'Classification'
+            toc: 'Table of contents'
+            history: 'Version history'
+            signature: 'Signatures'
+            annex_a_refs: 'Annex A'
+            col_version: 'Version'
+            col_date: 'Date'
+            col_author: 'Author'
+            col_note: 'Note'
+            default_footer: '%tenant% — Confidential ISMS document — Uncontrolled when printed'
+            custom_css_inert: 'Custom CSS (inert in preview — only rendered in PDF export)'
 
 industry_preset:
     title: 'Industry Presets'

@@ -1,0 +1,315 @@
+{#
+ # Policy-Doc Live-Preview fragment.
+ #
+ # Receives the same `style_config` array shape that
+ # `_fa_policy_doc.html.twig` (sister-agent W7) consumes. We delegate
+ # rendering to the macro if it exists; otherwise we render a built-in
+ # "preview-light" layout so the configurator remains usable while the
+ # macro is in flight.
+ #
+ # Locals:
+ #   - tenant       : App\Entity\Tenant
+ #   - style_config : array<string, mixed> — policyDocStyleConfig snapshot
+ #   - sample       : array — sample document data (sections, history, approvers)
+ #}
+{% trans_default_domain 'admin' %}
+
+{% set _font = style_config.font_family|default('Inter') %}
+{% set _cover = style_config.cover_pattern|default('branded') %}
+{% set _logo_size = style_config.cover_logo_size|default('medium') %}
+{% set _margin = style_config.page_margin|default('standard') %}
+{% set _watermark_on = style_config.watermark_enabled|default(true) %}
+{% set _watermark_op = style_config.watermark_opacity|default(0.08) %}
+{% set _show_toc = style_config.show_toc|default(true) %}
+{% set _show_history = style_config.show_history|default(true) %}
+{% set _show_annex_a = style_config.show_annex_a_refs|default(true) %}
+{% set _signature_n = style_config.signature_lines|default(3) %}
+{% set _footer = style_config.footer_text|default('') %}
+{% set _primary = style_config.primary_color|default('#0d6efd') %}
+{% set _secondary = style_config.secondary_color|default('#6c757d') %}
+{% set _custom_css = style_config.custom_css|default('') %}
+
+{% set _margin_px = {
+    'compact': '12mm',
+    'standard': '20mm',
+    'wide': '28mm'
+}[_margin]|default('20mm') %}
+
+{% set _logo_px = {
+    'small': '40px',
+    'medium': '64px',
+    'large': '88px'
+}[_logo_size]|default('64px') %}
+
+<div class="policy-doc-preview policy-doc-preview--cover-{{ _cover }} policy-doc-preview--margin-{{ _margin }}"
+     style="--pd-font: '{{ _font }}', system-ui, sans-serif;
+            --pd-primary: {{ _primary }};
+            --pd-secondary: {{ _secondary }};
+            --pd-margin: {{ _margin_px }};
+            --pd-logo-size: {{ _logo_px }};
+            --pd-watermark-opacity: {{ _watermark_op }};">
+
+    {# --- Cover Slot --- #}
+    <article class="policy-doc-preview__page policy-doc-preview__page--cover">
+        {% if _watermark_on %}
+            <div class="policy-doc-preview__watermark" aria-hidden="true">
+                {{ sample.classification|default('TLP:AMBER') }}
+            </div>
+        {% endif %}
+
+        <header class="policy-doc-preview__cover-header">
+            <div class="policy-doc-preview__logo" aria-hidden="true">
+                <i class="bi bi-shield-shaded"></i>
+            </div>
+            <div>
+                <p class="policy-doc-preview__tenant">{{ sample.tenant_name|default(tenant.name) }}</p>
+                <p class="policy-doc-preview__doccode text-muted">{{ sample.document_code|default('POL-XXX-001') }}</p>
+            </div>
+        </header>
+
+        <div class="policy-doc-preview__cover-body">
+            <p class="policy-doc-preview__eyebrow">{{ 'admin.policy_style.preview.eyebrow'|trans }}</p>
+            <h1 class="policy-doc-preview__title">{{ sample.document_title|default('Information-Security-Policy') }}</h1>
+            <dl class="policy-doc-preview__meta">
+                <dt>{{ 'admin.policy_style.preview.version'|trans }}</dt>
+                <dd>{{ sample.version|default('1.0') }}</dd>
+                <dt>{{ 'admin.policy_style.preview.classification'|trans }}</dt>
+                <dd>{{ sample.classification|default('TLP:AMBER') }}</dd>
+            </dl>
+        </div>
+    </article>
+
+    {# --- TOC Slot --- #}
+    {% if _show_toc %}
+        <article class="policy-doc-preview__page policy-doc-preview__page--toc">
+            <h2 class="policy-doc-preview__h2">{{ 'admin.policy_style.preview.toc'|trans }}</h2>
+            <ol class="policy-doc-preview__toc-list">
+                {% for s in sample.sections %}
+                    <li><span>{{ s.number }}. {{ s.title }}</span><span class="policy-doc-preview__leader"></span><span>p.{{ loop.index + 1 }}</span></li>
+                {% endfor %}
+                {% if _show_history %}<li><span>{{ 'admin.policy_style.preview.history'|trans }}</span><span class="policy-doc-preview__leader"></span><span>p.{{ sample.sections|length + 2 }}</span></li>{% endif %}
+                <li><span>{{ 'admin.policy_style.preview.signature'|trans }}</span><span class="policy-doc-preview__leader"></span><span>p.{{ sample.sections|length + 3 }}</span></li>
+            </ol>
+        </article>
+    {% endif %}
+
+    {# --- Body Slot --- #}
+    <article class="policy-doc-preview__page policy-doc-preview__page--body">
+        {% for s in sample.sections %}
+            <section class="policy-doc-preview__section">
+                <h2 class="policy-doc-preview__h2">{{ s.number }} {{ s.title }}</h2>
+                <p class="policy-doc-preview__body-text">{{ s.preview }}</p>
+                {% if _show_annex_a and loop.first and sample.annex_a_refs is defined %}
+                    <p class="policy-doc-preview__annex-refs">
+                        <span class="policy-doc-preview__annex-label">{{ 'admin.policy_style.preview.annex_a_refs'|trans }}:</span>
+                        {% for ref in sample.annex_a_refs %}<code>{{ ref }}</code>{% if not loop.last %}, {% endif %}{% endfor %}
+                    </p>
+                {% endif %}
+            </section>
+        {% endfor %}
+    </article>
+
+    {# --- History Slot --- #}
+    {% if _show_history %}
+        <article class="policy-doc-preview__page policy-doc-preview__page--history">
+            <h2 class="policy-doc-preview__h2">{{ 'admin.policy_style.preview.history'|trans }}</h2>
+            <table class="policy-doc-preview__history-table">
+                <thead>
+                    <tr>
+                        <th>{{ 'admin.policy_style.preview.col_version'|trans }}</th>
+                        <th>{{ 'admin.policy_style.preview.col_date'|trans }}</th>
+                        <th>{{ 'admin.policy_style.preview.col_author'|trans }}</th>
+                        <th>{{ 'admin.policy_style.preview.col_note'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in sample.history %}
+                        <tr>
+                            <td>{{ h.version }}</td>
+                            <td>{{ h.date }}</td>
+                            <td>{{ h.author }}</td>
+                            <td>{{ h.note }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </article>
+    {% endif %}
+
+    {# --- Signature Slot --- #}
+    <article class="policy-doc-preview__page policy-doc-preview__page--signature">
+        <h2 class="policy-doc-preview__h2">{{ 'admin.policy_style.preview.signature'|trans }}</h2>
+        <div class="policy-doc-preview__signature-grid">
+            {% for n in 1.._signature_n %}
+                {% set signer = sample.approvers[n-1]|default({ name: '________________________', role: '________________' }) %}
+                <div class="policy-doc-preview__signature-block">
+                    <div class="policy-doc-preview__signature-line"></div>
+                    <p class="policy-doc-preview__signature-name">{{ signer.name }}</p>
+                    <p class="policy-doc-preview__signature-role text-muted">{{ signer.role }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </article>
+
+    {# --- Footer Slot --- #}
+    <footer class="policy-doc-preview__footer text-muted">
+        {% if _footer %}
+            {{ _footer }}
+        {% else %}
+            {{ 'admin.policy_style.preview.default_footer'|trans({ '%tenant%': sample.tenant_name|default(tenant.name) }) }}
+        {% endif %}
+    </footer>
+</div>
+
+{# Custom-CSS: rendered |raw inside a scoped <style> tag (only used in the
+   real export — preview shows it inert to avoid layout-breaking). #}
+{% if _custom_css %}
+    <details class="mt-3">
+        <summary class="text-muted small">{{ 'admin.policy_style.preview.custom_css_inert'|trans }}</summary>
+        <pre class="border rounded p-2 small bg-body-tertiary"><code>{{ _custom_css }}</code></pre>
+    </details>
+{% endif %}
+
+<style>
+.policy-doc-preview {
+    font-family: var(--pd-font);
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #dee2e6);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    transform: scale(0.92);
+    transform-origin: top center;
+}
+.policy-doc-preview__page {
+    padding: var(--pd-margin);
+    border-bottom: 1px dashed var(--border, #dee2e6);
+    position: relative;
+    min-height: 220px;
+}
+.policy-doc-preview__page:last-of-type { border-bottom: 0; }
+.policy-doc-preview__watermark {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 0.5rem;
+    color: var(--pd-primary);
+    opacity: var(--pd-watermark-opacity);
+    pointer-events: none;
+    transform: rotate(-30deg);
+    user-select: none;
+}
+.policy-doc-preview__cover-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.policy-doc-preview__logo {
+    width: var(--pd-logo-size);
+    height: var(--pd-logo-size);
+    border-radius: 8px;
+    background: var(--pd-primary);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: calc(var(--pd-logo-size) * 0.55);
+    flex: 0 0 auto;
+}
+.policy-doc-preview__tenant { font-weight: 700; margin: 0; font-size: 1.1rem; }
+.policy-doc-preview__doccode { margin: 0; font-size: 0.85rem; }
+.policy-doc-preview__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 0.75rem;
+    color: var(--pd-secondary);
+    margin: 0 0 0.5rem 0;
+}
+.policy-doc-preview__title {
+    font-size: 1.65rem;
+    color: var(--pd-primary);
+    margin: 0 0 1rem 0;
+    line-height: 1.15;
+}
+.policy-doc-preview__meta {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.25rem 1rem;
+    font-size: 0.85rem;
+    margin: 0;
+}
+.policy-doc-preview__meta dt { color: var(--pd-secondary); }
+.policy-doc-preview__meta dd { margin: 0; font-weight: 600; }
+.policy-doc-preview__h2 {
+    color: var(--pd-primary);
+    font-size: 1.05rem;
+    margin: 0 0 0.75rem 0;
+    border-bottom: 2px solid var(--pd-primary);
+    padding-bottom: 0.25rem;
+}
+.policy-doc-preview__toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+}
+.policy-doc-preview__toc-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+}
+.policy-doc-preview__leader {
+    flex: 1 1 auto;
+    border-bottom: 1px dotted var(--pd-secondary);
+    margin: 0 0.25rem 0.2rem 0.25rem;
+    height: 1px;
+}
+.policy-doc-preview__section { margin-bottom: 1rem; }
+.policy-doc-preview__body-text { font-size: 0.85rem; line-height: 1.55; margin: 0 0 0.5rem 0; }
+.policy-doc-preview__annex-refs { font-size: 0.75rem; color: var(--pd-secondary); }
+.policy-doc-preview__annex-label { font-weight: 600; }
+.policy-doc-preview__history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+.policy-doc-preview__history-table th,
+.policy-doc-preview__history-table td {
+    border: 1px solid var(--border, #dee2e6);
+    padding: 0.35rem 0.5rem;
+    text-align: left;
+}
+.policy-doc-preview__history-table th {
+    background: var(--surface-2, #f8f9fa);
+    color: var(--pd-secondary);
+    font-weight: 600;
+}
+.policy-doc-preview__signature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 1rem;
+}
+.policy-doc-preview__signature-line {
+    border-bottom: 1.5px solid var(--pd-secondary);
+    margin-bottom: 0.5rem;
+    height: 1.5rem;
+}
+.policy-doc-preview__signature-name { margin: 0; font-weight: 600; font-size: 0.85rem; }
+.policy-doc-preview__signature-role { margin: 0; font-size: 0.75rem; }
+.policy-doc-preview__footer {
+    padding: 0.75rem var(--pd-margin);
+    font-size: 0.7rem;
+    background: var(--surface-2, #f8f9fa);
+    border-top: 1px solid var(--border, #dee2e6);
+}
+.policy-doc-preview--cover-minimal .policy-doc-preview__title { color: var(--pd-secondary); border: 0; }
+.policy-doc-preview--cover-minimal .policy-doc-preview__h2 { border-color: var(--pd-secondary); }
+.policy-doc-preview--cover-auditor-formal .policy-doc-preview__title { font-family: 'Merriweather', serif; }
+.policy-doc-preview--cover-auditor-formal .policy-doc-preview__h2 { text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.95rem; }
+.policy-doc-preview--cover-engineering .policy-doc-preview__title { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; }
+.policy-doc-preview--cover-engineering .policy-doc-preview__doccode::before { content: '// '; }
+</style>
