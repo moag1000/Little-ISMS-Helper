@@ -14,6 +14,7 @@ use App\Repository\RiskRepository;
 use App\Repository\WorkflowInstanceRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Audit V3 C6 — Activity-Feed (Cross-Persona).
@@ -39,7 +40,21 @@ class ActivityFeed
         private readonly DocumentRepository $documentRepo,
         private readonly RiskRepository $riskRepo,
         private readonly TenantContext $tenantContext,
+        private readonly UrlGeneratorInterface $urlGenerator,
     ) {
+    }
+
+    /**
+     * Generate a route URL safely. Returns null if route does not exist
+     * (e.g. during refactors) instead of throwing.
+     */
+    private function safeUrl(string $route, array $params): ?string
+    {
+        try {
+            return $this->urlGenerator->generate($route, $params);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     /**
@@ -83,7 +98,7 @@ class ActivityFeed
                     $instance->getWorkflow()?->getName() ?? '?',
                     $instance->getStatus()),
                 'subtitle'  => $instance->getCurrentStep()?->getName() ?? '',
-                'link'      => '/workflow/instance/' . $instance->getId(),
+                'link'      => $this->safeUrl('app_workflow_instance_show', ['id' => $instance->getId()]),
                 'timestamp' => $instance->getStartedAt(),
                 'actor'     => $instance->getInitiatedBy() ? trim(($instance->getInitiatedBy()->getFirstName() ?? '') . ' ' . ($instance->getInitiatedBy()->getLastName() ?? '')) : '—',
                 'source'    => 'workflow',
@@ -106,7 +121,7 @@ class ActivityFeed
                     'icon'      => 'fa-icon--ui-document',
                     'title'     => sprintf('Document %s · v%s', $doc->getOriginalFilename() ?? '—', $doc->getVersion() ?? '—'),
                     'subtitle'  => $doc->getStatus() ?? '',
-                    'link'      => '/document/' . $doc->getId(),
+                    'link'      => $this->safeUrl('app_document_show', ['id' => $doc->getId()]),
                     'timestamp' => method_exists($doc, 'getUpdatedAt') ? $doc->getUpdatedAt() : null,
                     'actor'     => '—',
                     'source'    => 'document',
@@ -132,7 +147,7 @@ class ActivityFeed
                     'subtitle'  => method_exists($risk, 'getStatus')
                         ? (is_object($risk->getStatus()) ? $risk->getStatus()->value : (string) $risk->getStatus())
                         : '',
-                    'link'      => '/risk/' . $risk->getId(),
+                    'link'      => $this->safeUrl('app_risk_show', ['id' => $risk->getId()]),
                     'timestamp' => method_exists($risk, 'getUpdatedAt') ? $risk->getUpdatedAt() : null,
                     'actor'     => '—',
                     'source'    => 'risk',

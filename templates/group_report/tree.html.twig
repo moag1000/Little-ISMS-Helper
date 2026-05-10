@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import _self as macros %}
 
 {% block title %}{{ 'group_report.tree.title'|trans({}, 'group_report') }}{% endblock %}
 
@@ -37,7 +38,7 @@
         {% if tenant.subsidiaries|length > 0 %}
             <ul class="list-group list-group-flush mt-2 ms-3">
                 {% for child in tenant.subsidiaries %}
-                    {{ _self.renderNode(child, current, depth + 1) }}
+                    {{ macros.renderNode(child, current, depth + 1) }}
                 {% endfor %}
             </ul>
         {% endif %}
@@ -96,7 +97,7 @@
     {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
         {% block card_body %}
             <ul class="list-group list-group-flush">
-                {{ _self.renderNode(root, current, 0) }}
+                {{ macros.renderNode(root, current, 0) }}
             </ul>
         {% endblock %}
     {% endembed %}
