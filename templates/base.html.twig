@@ -222,14 +222,10 @@
                     {% include '_components/_notification_bell.html.twig' %}
                 {% endif %}
 
-                {# FairyAurora Alva-Topbar-Mount (zentralisierter Mood-Anchor) #}
-                {% if not is_setup_route %}
-                    {% import '_components/_alva.html.twig' as faAlva %}
-                    <span class="header-alva d-none d-md-inline-flex"
-                          data-current-mood="{{ alva_mood|default('idle') }}">
-                        {{ faAlva.render(alva_mood|default('idle'), { size: 32, decorative: false })|raw }}
-                    </span>
-                {% endif %}
+                {# V3 W2-H7: header-alva removed.
+                   Spec: Alva only in empty-states/hints/onboarding. The header
+                   already has fa-brand + user-avatar — a third brand-anchor
+                   here causes UX-confusion. Alva-Dock + Hint-Position remain. #}
 
                 {# FairyAurora System-Status-Pill (Topbar) #}
                 {% if not is_setup_route %}
