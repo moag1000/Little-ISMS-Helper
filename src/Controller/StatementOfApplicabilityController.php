@@ -14,6 +14,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Service\AnnexAControlsBootstrapService;
 use App\Service\AuditLogger;
+use App\Service\InverseCoverageService;
 use App\Service\MappingSuggestionService;
 use App\Service\ModuleConfigurationService;
 use App\Service\SoAReportService;
@@ -44,6 +45,7 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly AnnexAControlsBootstrapService $annexBootstrap,
         private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?InverseCoverageService $inverseCoverageService = null,
     ) {}
     #[Route('/soa/', name: 'app_soa_index')]
     public function index(Request $request): Response
@@ -228,10 +230,13 @@ class StatementOfApplicabilityController extends AbstractController
     public function show(Control $control): Response
     {
         $suggestions = $this->mappingSuggestionService->suggestForControl($control);
+        // V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
+        $impactCoverage = $this->inverseCoverageService?->forControl($control) ?? ['total' => 0, 'frameworks' => []];
         return $this->render('soa/show.html.twig', [
             'control' => $control,
             'mapping_suggestions' => $suggestions,
             'mapping_suggestions_total' => $this->mappingSuggestionService->totalCount($suggestions),
+            'impact_coverage' => $impactCoverage,
         ]);
     }
 

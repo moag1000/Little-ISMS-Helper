@@ -1,0 +1,91 @@
+{#
+ # V3 B6 / EF-4: Inverse-Coverage Impact-Analyse Block
+ #
+ # Renders a section that shows "If this entity changes, which frameworks
+ # are affected at which requirements?". Reusable for Control/Asset/Risk
+ # show templates. Pass `impact_coverage` from controller (output of
+ # InverseCoverageService::forControl/forAsset/forRisk).
+ #
+ # Usage:
+ #   {% include '_components/_impact_coverage.html.twig' with {
+ #       impact: impact_coverage,
+ #       entity_label: 'asset' | 'control' | 'risk'
+ #   } %}
+ #
+ # Parameters:
+ #   impact         - array{total: int, frameworks: array<string, {framework, requirements}>}
+ #   entity_label   - i18n-key suffix for messages (asset|control|risk)
+ #}
+
+{% if impact is defined and impact.total > 0 %}
+    <section class="fa-section mb-4" data-test="impact-coverage">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                {{ ('coverage.impact.title.' ~ entity_label)|trans({}, 'compliance') }}
+                <span class="badge bg-info ms-2">{{ impact.total }}</span>
+            </h2>
+            <div class="fa-section__tools">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#impactCoverageModal-{{ entity_label }}">
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                    {{ 'coverage.impact.view_modal'|trans({}, 'compliance') }}
+                </button>
+            </div>
+        </div>
+        <div class="fa-section__body">
+            <p class="text-muted small mb-2">{{ ('coverage.impact.help.' ~ entity_label)|trans({}, 'compliance') }}</p>
+            <div class="d-flex flex-wrap gap-2">
+                {% for code, group in impact.frameworks %}
+                    <span class="badge bg-secondary-subtle text-secondary">
+                        {{ group.framework.code }}: <strong>{{ group.requirements|length }}</strong>
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# Modal with detailed list #}
+    <div class="modal fade" id="impactCoverageModal-{{ entity_label }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5">
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        {{ ('coverage.impact.title.' ~ entity_label)|trans({}, 'compliance') }}
+                    </h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small">{{ ('coverage.impact.help.' ~ entity_label)|trans({}, 'compliance') }}</p>
+                    {% for code, group in impact.frameworks %}
+                        <div class="mb-3">
+                            <h3 class="h6 mb-2">
+                                <span class="badge bg-primary">{{ group.framework.code }}</span>
+                                {{ group.framework.name }}
+                                <span class="text-muted small">({{ group.requirements|length }})</span>
+                            </h3>
+                            <ul class="list-unstyled ms-3">
+                                {% for req in group.requirements %}
+                                    <li class="mb-1">
+                                        <a href="{{ path('app_compliance_requirement_show', {id: req.id}) }}"
+                                           class="text-decoration-none">
+                                            <code class="text-info">{{ req.requirementId }}</code>
+                                            <span class="text-body">{{ req.title }}</span>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
+                        {{ 'common.close'|trans({}, 'messages') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

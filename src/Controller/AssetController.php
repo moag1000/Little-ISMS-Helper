@@ -16,6 +16,7 @@ use App\Service\AiAgentInventoryService;
 use App\Service\AssetDependencyService;
 use App\Service\AssetService;
 use App\Service\AssetQrCodeService;
+use App\Service\InverseCoverageService;
 use App\Service\ProtectionRequirementService;
 use App\Service\TagFilterService;
 use App\Service\TenantContext;
@@ -48,6 +49,7 @@ class AssetController extends AbstractController
         private readonly TagFilterService $tagFilterService,
         private readonly ?AssetDependencyService $assetDependencyService = null,
         private readonly ?AiAgentInventoryService $aiAgentInventoryService = null,
+        private readonly ?InverseCoverageService $inverseCoverageService = null,
     ) {}
     #[Route('/asset/', name: 'app_asset_index')]
     #[IsGranted('ROLE_USER')]
@@ -347,6 +349,9 @@ class AssetController extends AbstractController
             ? $this->aiAgentInventoryService->findLinkedDpias($asset)
             : null;
 
+        // V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
+        $impactCoverage = $this->inverseCoverageService?->forAsset($asset) ?? ['total' => 0, 'frameworks' => []];
+
         return $this->render('asset/show.html.twig', [
             'asset' => $asset,
             'analysis' => $analysis,
@@ -358,6 +363,7 @@ class AssetController extends AbstractController
             'currentTenant' => $tenant,
             'inheritedProtection' => $inheritedProtection,
             'linkedDpias' => $linkedDpias,
+            'impact_coverage' => $impactCoverage,
         ]);
     }
     #[Route('/asset/{id}/edit', name: 'app_asset_edit', requirements: ['id' => '\d+'])]

@@ -22,6 +22,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\VulnerabilityRepository;
+use App\Service\InverseCoverageService;
 use App\Service\RiskMatrixService;
 use App\Service\RiskService;
 use App\Service\RiskAcceptanceWorkflowService;
@@ -55,7 +56,8 @@ class RiskController extends AbstractController
         private readonly TagFilterService $tagFilterService,
         private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly IncidentRepository $incidentRepository,
-        private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository
+        private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
+        private readonly ?InverseCoverageService $inverseCoverageService = null
     ) {}
     #[Route('/risk/', name: 'app_risk_index')]
     #[IsGranted('ROLE_USER')]
@@ -962,6 +964,9 @@ class RiskController extends AbstractController
         // Risk Treatment Plans linked to this risk (ISO 27001 Cl.6.1.3)
         $treatmentPlans = $this->riskTreatmentPlanRepository->findByRisk($risk);
 
+        // V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
+        $impactCoverage = $this->inverseCoverageService?->forRisk($risk) ?? ['total' => 0, 'frameworks' => []];
+
         return $this->render('risk/show.html.twig', [
             'risk' => $risk,
             'auditLogs' => $recentAuditLogs,
@@ -974,6 +979,8 @@ class RiskController extends AbstractController
             'linkedIncidents' => $risk->getIncidents(),
             // V3 B3: Treatment plans collection on Risk show
             'treatmentPlans' => $treatmentPlans,
+            // V3 B6: Impact analysis (which frameworks break if this risk changes?)
+            'impact_coverage' => $impactCoverage,
         ]);
     }
     #[Route('/risk/{id}/edit', name: 'app_risk_edit', requirements: ['id' => '\d+'])]
