@@ -8,6 +8,8 @@ use DateTimeInterface;
 use DateTime;
 use DateTimeImmutable;
 use App\Entity\AuditLog;
+use App\Entity\Tenant;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -46,6 +48,31 @@ class AuditLogRepository extends ServiceEntityRepository
     public function findAllOrdered(int $limit = 100, int $offset = 0): array
     {
         return $this->createQueryBuilder('a')
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find audit logs scoped to a specific tenant.
+     *
+     * AuditLog entries do not carry a tenant_id directly — multi-tenant
+     * scoping is achieved by joining via userName -> User -> Tenant. Logs
+     * authored by users that have since been re-assigned to a different
+     * tenant remain visible to the originating tenant only.
+     *
+     * Audit V3 W2-C1: prevents Cross-Tenant-Leakage in ActivityFeed.
+     *
+     * @return AuditLog[]
+     */
+    public function findAllOrderedForTenant(Tenant $tenant, int $limit = 100, int $offset = 0): array
+    {
+        return $this->createQueryBuilder('a')
+            ->innerJoin(User::class, 'u', 'WITH', 'u.email = a.userName')
+            ->andWhere('u.tenant = :tenant')
+            ->setParameter('tenant', $tenant)
             ->orderBy('a.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->setFirstResult($offset)
