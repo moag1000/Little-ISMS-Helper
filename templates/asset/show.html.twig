@@ -485,6 +485,25 @@
                 </div>
             {% endif %}
 
+            {# V3 W2-Bug3: Linked Processing Activities (M:N inverse) #}
+            {% if asset.processingActivities is defined and asset.processingActivities|length > 0 %}
+                <div class="detail-section">
+                    <h3>{{ 'asset.section.processing_activities'|trans({}, 'asset') }} ({{ asset.processingActivities|length }})</h3>
+                    <div class="processing-activities-list">
+                        {% for activity in asset.processingActivities %}
+                            <div class="processing-activity-item">
+                                <a href="{{ path('app_processing_activity_show', {id: activity.id}) }}">
+                                    <strong>{{ activity.name }}</strong>
+                                </a>
+                                {% if activity.legalBasis %}
+                                    <small class="text-muted">{{ activity.legalBasis }}</small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             {# Data Reuse: Related Incidents #}
             {% if asset.incidents is defined and asset.incidents|length > 0 %}
                 <div class="detail-section">

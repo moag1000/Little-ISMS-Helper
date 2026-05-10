@@ -298,6 +298,23 @@ class Asset
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'dependsOn')]
     private Collection $dependentAssets;
 
+    /**
+     * V3 W2-Bug3: GDPR Art. 30 / DPIA-trigger feedback loop.
+     *
+     * Inverse side of the M:N relation between processing activities
+     * and the assets they touch. The owning side is on
+     * {@see ProcessingActivity::$assets}; we only declare the inverse
+     * here so that callers can navigate `Asset → ProcessingActivities`
+     * (used e.g. in the asset show view's "Privacy / DPIA-Triggers"
+     * section). The DPIA-Auto-Suggest listener reads the reverse
+     * direction on ProcessingActivity to detect linked confidential /
+     * restricted assets.
+     *
+     * @var Collection<int, ProcessingActivity>
+     */
+    #[ORM\ManyToMany(targetEntity: ProcessingActivity::class, mappedBy: 'assets')]
+    private Collection $processingActivities;
+
     public function __construct()
     {
         $this->risks = new ArrayCollection();
@@ -306,6 +323,7 @@ class Asset
         $this->dependsOn = new ArrayCollection();
         $this->dependentAssets = new ArrayCollection();
         $this->ownerDeputyPersons = new ArrayCollection();
+        $this->processingActivities = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -853,5 +871,33 @@ class Asset
     public function getDependentAssets(): Collection
     {
         return $this->dependentAssets;
+    }
+
+    /**
+     * V3 W2-Bug3 — Linked processing activities (inverse side).
+     *
+     * @return Collection<int, ProcessingActivity>
+     */
+    public function getProcessingActivities(): Collection
+    {
+        return $this->processingActivities;
+    }
+
+    public function addProcessingActivity(ProcessingActivity $activity): static
+    {
+        if (!$this->processingActivities->contains($activity)) {
+            $this->processingActivities->add($activity);
+            // Keep the owning side in sync without recursing back.
+            $activity->addAsset($this);
+        }
+        return $this;
+    }
+
+    public function removeProcessingActivity(ProcessingActivity $activity): static
+    {
+        if ($this->processingActivities->removeElement($activity)) {
+            $activity->removeAsset($this);
+        }
+        return $this;
     }
 }

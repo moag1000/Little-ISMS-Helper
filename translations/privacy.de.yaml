@@ -427,6 +427,7 @@ processing_activity:
         retention_legal_basis: 'Rechtsgrundlage für Aufbewahrung'
         technical_organizational_measures: 'Technische und organisatorische Maßnahmen (TOMs, Art. 32 DSGVO)'
         implemented_controls: 'Implementierte Kontrollen'
+        assets: 'Verknüpfte Assets'
         responsible_department: 'Verantwortliche Abteilung'
         contact_person: Ansprechperson
         contact_person_person: 'Ansprechperson (Personenstammdaten)'
@@ -473,6 +474,7 @@ processing_activity:
         retention_legal_basis: 'Rechtsgrundlage für Aufbewahrung'
         technical_organizational_measures: 'Technische und organisatorische Maßnahmen (TOMs, Art. 32 DSGVO)'
         implemented_controls: 'Implementierte Kontrollen'
+        assets: 'Verknüpfte Assets'
         responsible_department: 'Verantwortliche Abteilung'
         contact_person: Ansprechperson
         data_protection_officer: 'Datenschutzbeauftragter (DSB)'
@@ -508,6 +510,9 @@ processing_activity:
         retention_legal_basis: 'Rechtsgrundlage für Aufbewahrungsfrist (z.B. HGB §257, Abgabenordnung)'
         technical_organizational_measures: 'Beschreibung der technischen und organisatorischen Sicherheitsmaßnahmen (Art. 32 DSGVO)'
         implemented_controls: 'Verknüpfung zu ISO 27001 Kontrollen (optional)'
+        assets: 'Assets, die diese Verarbeitungstätigkeit nutzt (Server, Datenbanken,
+            Anwendungen). Bei Datenklassifizierung „vertraulich"/„restricted" eines
+            verknüpften Assets wird automatisch eine DSFA-Empfehlung ausgelöst (Art. 35 DSGVO).'
         legal_basis: 'Rechtsgrundlage für die Verarbeitung (Art. 6(1) DSGVO)'
         legal_basis_details: 'Detaillierte Erläuterung (obligatorisch bei berechtigtem Interesse)'
         legal_basis_special_categories: 'Rechtsgrundlage für Verarbeitung besonderer Kategorien (Art. 9(2) DSGVO)'
@@ -642,6 +647,7 @@ processing_activity:
         incomplete_activities: 'Unvollständige Aktivitäten (%count%)'
     show:
         linked_controls: 'Verknüpfte ISO-27001-Maßnahmen'
+        linked_assets: 'Verknüpfte Assets'
         not_documented: 'Nicht dokumentiert'
         subtitle: 'Details zur Verarbeitungstätigkeit (Art. 30 DSGVO)'
         tab:

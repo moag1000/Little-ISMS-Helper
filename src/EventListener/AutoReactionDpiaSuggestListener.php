@@ -204,22 +204,17 @@ class AutoReactionDpiaSuggestListener
     }
 
     /**
-     * V3 W2-H5 — Inspect linked Assets (best-effort) and flag classifications
-     * `confidential` and `restricted`. Reflects ISO 27001 A.5.12 / Asset.dataClassification.
+     * V3 W2-H5 — Inspect linked Assets and flag classifications
+     * `confidential` and `restricted`. Reflects ISO 27001 A.5.12 /
+     * Asset.dataClassification.
+     *
+     * V3 W2-Bug3: ProcessingActivity↔Asset M:N relation now exists, so
+     * the previous method_exists()-defence has been replaced with a
+     * direct accessor call.
      */
     private function hasConfidentialAsset(ProcessingActivity $activity): bool
     {
-        if (!method_exists($activity, 'getAssets')) {
-            return false;
-        }
-        $assets = $activity->getAssets();
-        if ($assets === null) {
-            return false;
-        }
-        foreach ($assets as $asset) {
-            if (!is_object($asset) || !method_exists($asset, 'getDataClassification')) {
-                continue;
-            }
+        foreach ($activity->getAssets() as $asset) {
             $classification = strtolower((string) $asset->getDataClassification());
             if (in_array($classification, ['confidential', 'restricted'], true)) {
                 return true;

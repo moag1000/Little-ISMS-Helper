@@ -35,6 +35,7 @@ asset:
     protecting_controls: Protecting controls
     related_risks: Related risks
     related_incidents: Related incidents
+    processing_activities: Linked processing activities (RoPA)
     history: History
     business_impact: Business Impact
     rto_analysis: Rto Analysis
@@ -72,6 +73,7 @@ asset:
     owner_person: Owner (Person from master data)
     owner_deputies: Deputies (Persons)
     depends_on: Dependencies (upstream)
+    processing_activities: Linked processing activities (RoPA)
   help:
     name: Unique name of the asset
     type: Category of the asset (hardware, software, data, etc.)
@@ -101,6 +103,9 @@ asset:
     owner_deputies: Additional persons sharing ownership or deputising. Multiple selection possible.
     depends_on: 'Assets this one depends on. BSI 3.6 Maximumprinzip: highest CIA values
       are inherited.'
+    processing_activities: 'Processing activities (Art. 30 GDPR / RoPA) that touch
+      this asset. When the asset has data classification "confidential" or "restricted",
+      the link auto-triggers a DPIA suggestion (Art. 35 GDPR).'
   protection:
     recommended: Recommended
     overall_level: Overall Protection Level
