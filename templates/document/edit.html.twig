@@ -108,9 +108,9 @@
 {# Delete Danger Zone #}
 {% embed '_components/_card.html.twig' with {borderColor: 'danger', class: 'mt-4'} %}
     {% block card_header %}
-        <div class="card-header bg-danger text-white">
+        <div class="card-header">
             <h2 class="mb-0">
-                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>
                 {{ 'common.danger_zone'|trans({}, 'messages') }}
             </h2>
         </div>
