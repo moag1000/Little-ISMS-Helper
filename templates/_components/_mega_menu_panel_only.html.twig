@@ -286,6 +286,26 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {# Audit-V3 ME-1: Consent (DSGVO Art. 7) — was direct-URL-only. #}
+                        {% if is_module_active('privacy') %}
+                        <li><a href="{{ path('app_consent_index') }}" class="{% if current_route starts with 'app_consent_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.consent'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.consent'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {# Audit-V3 ME-2: DataSubjectRequest (DSGVO Art. 15-22) — was direct-URL-only. #}
+                        {% if is_module_active('privacy') %}
+                        <li><a href="{{ path('app_data_subject_request_index') }}" class="{% if current_route starts with 'app_data_subject_request_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.data_subject_request'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.data_subject_request'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -360,7 +380,41 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {# Audit-V3 ME-7: ThreatIntelligence (A.5.7) — gated behind risks/incidents. #}
+                        {% if is_module_active('incidents') or is_module_active('vulnerability_intel') or is_module_active('risks') %}
+                        <li><a href="{{ path('app_threat_intelligence_index') }}" class="{% if current_route starts with 'app_threat_intelligence_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--vulnerability" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.threat_intelligence'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.threat_intelligence'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
                         {% endif %}
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+                {# Audit-V3 ME-8/ME-9: User-Inboxen (PolicyAck + FourEyes).
+                   Visibility tied to authenticated session — these are
+                   personal worklists, not module features. #}
+                {% if app.user %}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.my_inbox'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_policy_ack_inbox') }}" class="{% if current_route starts with 'app_policy_ack_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.policy_ack_inbox'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.policy_ack_inbox'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_four_eyes_inbox') }}" class="{% if current_route starts with 'app_four_eyes_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.four_eyes_inbox'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.four_eyes_inbox'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
                     </ul>
                 </div>
                 {% endif %}
@@ -408,6 +462,38 @@
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.certification_bundle'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.certification_bundle'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {# Audit-V3 ME-4: AuditFinding — was direct-URL-only. #}
+                        {% if is_module_active('audits') %}
+                        <li><a href="{{ path('app_audit_finding_index') }}" class="{% if current_route starts with 'app_audit_finding_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-clipboard-data" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.audit_findings'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.audit_findings'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {# Audit-V3 ME-5: AuditFreeze (SoA-Stichtag) — was direct-URL-only. #}
+                        {% if is_module_active('audits') %}
+                        <li><a href="{{ path('app_audit_freeze_index') }}" class="{% if current_route starts with 'app_audit_freeze_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.audit_freeze'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.audit_freeze'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {# Audit-V3 ME-3: CorrectiveAction (Cl. 10.1) — was direct-URL-only.
+                           Lives in Auditing because Findings -> Corrective-Actions is the
+                           same flow auditors track. #}
+                        {% if is_module_active('audits') or is_module_active('core') %}
+                        <li><a href="{{ path('app_corrective_action_index') }}" class="{% if current_route starts with 'app_corrective_action_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.corrective_actions'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.corrective_actions'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
                         {% endif %}
@@ -564,6 +650,56 @@
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.group_report'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.group_report'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {# Audit-V3 ME-12: DORA-Compliance-Dashboard — was direct-URL-only.
+                           Sits under Frameworks because DORA is treated as a regulatory framework. #}
+                        {% if is_module_active('nis2_dora') or is_module_active('compliance') %}
+                        <li><a href="{{ path('app_dora_compliance_dashboard') }}" class="{% if current_route starts with 'app_dora_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-building-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.dora_compliance'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.dora_compliance'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {# Audit-V3 ME-6/ME-10/ME-11: Reports & Exports section makes
+                   the production-ready exporter / scheduling / custom-report
+                   modules discoverable instead of direct-URL-only. #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.reports'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        {# AuditPackage takes a {framework} path-param; we route to compliance hub
+                           where the user picks the framework, instead of hardcoding ISO27001. #}
+                        {% if is_module_active('audits') or is_module_active('compliance') %}
+                        <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_audit_package_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.audit_package'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.audit_package'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {# Report-Builder is core compliance ops — surface for compliance/audits. #}
+                        {% if is_module_active('audits') or is_module_active('compliance') %}
+                        <li><a href="{{ path('report_builder_index') }}" class="{% if current_route starts with 'report_builder_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-edit" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.report_builder'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.report_builder'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {# Scheduled-Reports surface for non-Admin users with audits/compliance. #}
+                        {% if is_module_active('audits') or is_module_active('compliance') %}
+                        <li><a href="{{ path('app_scheduled_report_index') }}" class="{% if current_route starts with 'app_scheduled_report_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.scheduled_reports'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.scheduled_reports'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
                         {% endif %}
