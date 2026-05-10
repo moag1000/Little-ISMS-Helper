@@ -128,6 +128,8 @@ services:
     _instanceof:
         App\AlvaHint\AlvaHintRuleInterface:
             tags: ['alva.hint_rule']
+        App\AlvaHint\GlobalAlvaHintRuleInterface:
+            tags: ['alva.global_hint_rule']
         App\Service\PolicyWizard\Step\StepInterface:
             tags: ['policy_wizard.step']
         App\Service\PolicyWizard\Mode\ModeHandlerInterface:
@@ -138,6 +140,7 @@ services:
     App\AlvaHint\AlvaHintService:
         arguments:
             $rules: !tagged_iterator alva.hint_rule
+            $globalRules: !tagged_iterator alva.global_hint_rule
 
     # Policy-Wizard W2 — collect every StepInterface implementation
     # into the StepEvaluator's $steps argument.
