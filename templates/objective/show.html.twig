@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'objective'%}
 
 {% block title %}{{ objective.title }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -30,7 +31,7 @@
         <div class="col-lg-8">
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header bg-primary text-white d-flex justify-content-between"><h1 class="mb-0 h2">{{ objective.title }}</h1>
+                    <div class="card-header d-flex justify-content-between"><h1 class="mb-0 h2">{{ objective.title }}</h1>
                         {% include '_components/_badge.html.twig' with { variant: objective.status == 'achieved' ? 'success' : 'info', class: 'fs-6', content: ('objective.status.' ~ objective.status)|trans({}, 'objective') } %}
                     </div>
                 {% endblock %}
@@ -54,12 +55,7 @@
                     {% endif %}
 
                     <div class="fw-semibold text-muted small text-uppercase mb-2">{{ 'objective.table.progress'|trans({}, 'objective') }}</div>
-                    <div class="progress progress-h-30 mb-2">
-                        <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
-                             style="width: {{ objective.progressPercentage }}%">
-                            {{ objective.progressPercentage }}%
-                        </div>
-                    </div>
+                    {{ _fa_progress.render({ value: objective.progressPercentage, tone: objective.progressPercentage >= 75 ? 'success' : (objective.progressPercentage >= 50 ? 'warning' : 'danger'), showText: true, class: 'mb-2' }) }}
                     <p><strong>{{ 'objective.label.current'|trans({}, 'objective') }}:</strong> {{ objective.currentValue }} {{ objective.unit }} / <strong>{{ 'objective.label.target'|trans({}, 'objective') }}:</strong> {{ objective.targetValue }} {{ objective.unit }}</p>
 
                     {% if objective.progressNotes %}

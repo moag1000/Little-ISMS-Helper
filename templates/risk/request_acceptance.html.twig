@@ -99,9 +99,9 @@
         {% set approval_variant = required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') %}
         {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ approval_variant } %}
             {% block card_header %}
-                <div class="card-header bg-{{ approval_variant }}-subtle">
+                <div class="card-header">
                     <h2 class="mb-0">
-                        <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--compliance-shield text-{{ approval_variant }}" aria-hidden="true"></i>
                         {{ 'risk.acceptance.required_approval_level'|trans({}, 'risk') }}
                     </h2>
                 </div>
