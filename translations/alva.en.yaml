@@ -121,6 +121,68 @@ policy_wizard:
         body: 'Konzern CISO of %konzern_name% raised setting "%setting_key%" from %old_value% to %new_value%. Affected settings in your tenant: %affected_count%. Re-run the wizard in targeted mode to realign the policies.'
         action: 'Re-run wizard'
 
+global:
+    asset_ohne_risk:
+        title: '%count% high-CIA assets without a risk entry'
+        body: '%count% assets with high/very-high protection need have no linked risk record. GDPR Art. 32 + ISO 27001 Cl. 6.1.2 require high-CIA assets to feed into the risk assessment.'
+        action: 'Create risk'
+    approved_doc_ohne_ack:
+        title: '%count% approved policies without acknowledgements'
+        body: '%count% approved documents have zero policy acknowledgement entries. ISO 27001 A.6.3 / Cl. 7.3 awareness requires demonstrable confirmation by all affected personnel.'
+        action: 'Review policies'
+    open_incident_ohne_sla:
+        title: 'GDPR privacy incident: 72h deadline running!'
+        body: '%count% high-severity privacy incident(s) open for more than 24 hours without a supervisory authority notification. GDPR Art. 33 requires notification within 72h!'
+        action: 'Review incidents'
+    risk_ohne_owner:
+        title: '%count% risks without an owner'
+        body: '%count% risk records have neither riskOwner nor riskOwnerName set. ISO 27001 A.5.4 / Cl. 6.1.2 require a documented risk owner.'
+        action: 'Assign risks'
+    overdue_audit_finding:
+        title: '%count% overdue audit findings'
+        body: '%count% audit findings have passed their due date without a completed corrective action. ISO 27001 Cl. 10.1 requires timely remediation.'
+        action: 'Review findings'
+    missing_dpo_for_gdpr:
+        title: 'No DPO assigned — GDPR Art. 37'
+        body: '%count% processing activities on record but no user holds ROLE_DPO. GDPR Art. 37 requires a designated Data Protection Officer for certain processing types.'
+        action: 'Review users'
+    missing_bc_exercise:
+        title: 'No BC exercise completed in the last 12 months'
+        body: 'No completed business continuity exercise has been documented in the last 12 months. ISO 22301 Cl. 8.5 requires regular BCP effectiveness testing.'
+        action: 'Create exercise'
+    vulnerability_without_patch:
+        title: '%count% critical CVEs without a patch record (> %days% days)'
+        body: '%count% open vulnerabilities with CVSS >= 7.0 have been unpatched for more than %days% days without a linked patch entry. OPS.1.1.3 / NIS2 Art. 21(2)(e) require documented patch SLA compliance.'
+        action: 'Review vulnerabilities'
+    missing_data_breach_procedure:
+        title: '%count% data breach(es) without authority notification'
+        body: '%count% data breach record(s) have no authority notification date (authorityNotificationAt). GDPR Art. 33 requires notification within 72h of awareness.'
+        action: 'Review data breaches'
+    konzern_settings_drift:
+        title: 'Divergence from Konzern baseline (%konzern_name%)'
+        body: '%count% compliance framework difference(s) detected between this tenant and the parent Konzern (%konzern_name%). ISB coordination recommended before the next audit.'
+        action: 'Review compliance'
+
+inbox:
+    title: 'Alva Inbox'
+    subtitle: 'All active Alva tips for your tenant — prioritised by tier'
+    empty_title: 'No active hints'
+    empty_body: 'Alva has no open recommendations for your tenant right now. Well done!'
+    badge: 'Alva Inbox'
+    filter:
+        all: 'All'
+        regulatory: 'Regulatory (Tier 1)'
+        audit_gap: 'Audit gap (Tier 2)'
+        efficiency: 'Efficiency (Tier 3)'
+    col:
+        tier: 'Priority'
+        title: 'Hint'
+        action: 'Action'
+    tier:
+        1: 'Regulatory'
+        2: 'Audit gap'
+        3: 'Efficiency'
+
 alva_hint:
     kritis_operator_readiness:
         title: 'KRITIS readiness gap: IT security policy missing'

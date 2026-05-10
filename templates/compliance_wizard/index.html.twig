@@ -6,6 +6,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {{ _fa_page_header.render({
     badge: { icon: 'compass', label: 'wizard.title'|trans({}, 'wizard') },
     title: 'wizard.title'|trans({}, 'wizard'),
@@ -14,6 +15,13 @@
         { label: 'wizard.compare_frameworks'|trans({}, 'wizard'), href: path('app_compliance_wizard_compare'), variant: 'ghost', icon: 'columns-gap' }
     ] : []
 }) }}
+{% set _global_hints = alva_hints('compliance_wizard_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 <main class="fa-aurora-surface fa-aurora-surface--dots">
 <div class="container-fluid py-4">
 

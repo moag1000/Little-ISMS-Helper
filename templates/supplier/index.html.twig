@@ -31,6 +31,13 @@
     title: 'supplier.page.title'|trans({}, 'suppliers'),
     actions: supplierActions
 }) }}
+{% set _global_hints = alva_hints('supplier_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 
 <main class="fa-aurora-surface">
 <div class="container">

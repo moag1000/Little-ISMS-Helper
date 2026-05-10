@@ -21,6 +21,14 @@
         ]
     }) }}
 
+    {% set _global_hints = alva_hints('dashboard_board') %}
+    {% if _global_hints|length > 0 %}
+        {% for _h in _global_hints %}
+            {{ _fa_alva_hint.render(_h) }}
+        {% endfor %}
+    {% endif %}
+
+
     {# Phase 8H.1: Skeleton placeholder during first paint. #}
     <div data-controller="skeleton" data-skeleton-duration-value="600">
         <div data-skeleton-target="skeleton">

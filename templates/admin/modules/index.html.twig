@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 
 {% block title %}{{ 'admin.modules.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -18,6 +19,14 @@
             { label: 'admin.modules.dependency_graph'|trans({}, 'admin'), variant: 'ghost', icon: 'diagram-3', href: path('admin_modules_graph') }
         ]
     }) }}
+
+    {% set _global_hints = alva_hints('admin_modules') %}
+    {% if _global_hints|length > 0 %}
+        {% for _h in _global_hints %}
+            {{ _fa_alva_hint.render(_h) }}
+        {% endfor %}
+    {% endif %}
+
 
     {# Statistics #}
     <div class="row g-3 mb-4">

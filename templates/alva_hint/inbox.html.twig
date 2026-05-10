@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'alva' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+
+{% block title %}{{ 'inbox.title'|trans({}, 'alva') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<main class="fa-aurora-surface">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'inbox.badge'|trans({}, 'alva') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'stars', label: 'inbox.badge'|trans({}, 'alva') },
+        title: 'inbox.title'|trans({}, 'alva'),
+        subtitle: 'inbox.subtitle'|trans({}, 'alva')
+    }) }}
+
+    {# Tier filter chips #}
+    {{ _fa_filter_chip.group([
+        { label: 'inbox.filter.all'|trans({}, 'alva'), href: path('app_alva_hint_inbox') },
+        { label: 'inbox.filter.regulatory'|trans({}, 'alva'), href: path('app_alva_hint_inbox', {tier: 1}) },
+        { label: 'inbox.filter.audit_gap'|trans({}, 'alva'), href: path('app_alva_hint_inbox', {tier: 2}) },
+        { label: 'inbox.filter.efficiency'|trans({}, 'alva'), href: path('app_alva_hint_inbox', {tier: 3}) }
+    ],
+        tierFilter == 0 ? 0
+        : (tierFilter == 1 ? 1
+        : (tierFilter == 2 ? 2 : 3)),
+        { class: 'mb-3', ariaLabel: 'inbox.filter.all'|trans({}, 'alva') }
+    ) }}
+
+    {% if hints|length == 0 %}
+        {{ _fa_empty_state.render({
+            mood: 'happy',
+            title: 'inbox.empty_title'|trans({}, 'alva'),
+            text: 'inbox.empty_body'|trans({}, 'alva')
+        }) }}
+    {% else %}
+        {# Tier 1 — Regulatory (shown first, non-dismissible) #}
+        {% if byTier[1]|length > 0 %}
+            <div class="mb-4">
+                <h2 class="h6 text-uppercase text-danger fw-bold mb-2">
+                    <i class="fa-icon fa-icon--ui-flag" aria-hidden="true"></i>
+                    {{ 'inbox.tier.1'|trans({}, 'alva') }}
+                    <span class="badge bg-danger ms-1">{{ byTier[1]|length }}</span>
+                </h2>
+                {% for h in byTier[1] %}
+                    {{ _fa_alva_hint.render(h) }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {# Tier 2 — Audit gap #}
+        {% if byTier[2]|length > 0 %}
+            <div class="mb-4">
+                <h2 class="h6 text-uppercase text-warning fw-bold mb-2">
+                    <i class="fa-icon fa-icon--ui-exclamation-triangle" aria-hidden="true"></i>
+                    {{ 'inbox.tier.2'|trans({}, 'alva') }}
+                    <span class="badge bg-warning text-dark ms-1">{{ byTier[2]|length }}</span>
+                </h2>
+                {% for h in byTier[2] %}
+                    {{ _fa_alva_hint.render(h) }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {# Tier 3 — Efficiency #}
+        {% if byTier[3]|length > 0 %}
+            <div class="mb-4">
+                <h2 class="h6 text-uppercase text-info fw-bold mb-2">
+                    <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
+                    {{ 'inbox.tier.3'|trans({}, 'alva') }}
+                    <span class="badge bg-info text-dark ms-1">{{ byTier[3]|length }}</span>
+                </h2>
+                {% for h in byTier[3] %}
+                    {{ _fa_alva_hint.render(h) }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+</main>
+{% endblock %}

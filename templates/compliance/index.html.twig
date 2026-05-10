@@ -5,6 +5,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -23,6 +24,13 @@
             { label: 'compliance.button.compare_frameworks'|trans({}, 'compliance'), href: path('app_compliance_compare'), variant: 'ghost', icon: 'sliders' }
         ]|merge(is_granted('ROLE_ADMIN') ? [{ label: 'compliance.manage_frameworks'|trans({}, 'compliance'), href: path('admin_compliance_index'), variant: 'primary', icon: 'gear' }] : [])
     }) }}
+{% set _global_hints = alva_hints('compliance_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
     <main class="fa-aurora-surface">
 
     {# Maturity Heatmap — CMMI Levels per Framework (C2) #}

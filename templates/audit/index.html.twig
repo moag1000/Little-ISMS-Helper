@@ -24,6 +24,13 @@
             { label: 'common.export_excel'|trans({}, 'messages'), href: path('app_audit_export_excel'), variant: 'ghost', icon: 'file-earmark-spreadsheet' }
         ]
     }) }}
+{% set _global_hints = alva_hints('audit_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 <main class="fa-aurora-surface">
 
     {# Calculate Stats #}
