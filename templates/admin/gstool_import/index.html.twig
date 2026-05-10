@@ -211,30 +211,29 @@
 
                     {% if result.massnahmen_rows is defined and result.massnahmen_rows|length > 0 %}
                     <div class="tab-pane fade" id="pane-massnahmen" role="tabpanel">
-                    <div class="table-responsive">
-                        <table class="table table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>{{ 'gstool_import.massnahmen.legacy_id'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.massnahmen.titel'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.massnahmen.baustein'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.massnahmen.umsetzungsstatus'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.massnahmen.implementation_status'|trans({}, 'gstool_import') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.massnahmen.legacy_id'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.massnahmen.titel'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.massnahmen.baustein'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.massnahmen.umsetzungsstatus'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.massnahmen.implementation_status'|trans({}, 'gstool_import') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for r in result.massnahmen_rows %}
-                                <tr>
-                                    <td><code>{{ r.legacy_id }}</code></td>
-                                    <td class="small">{{ r.titel ?? '–' }}</td>
-                                    <td>
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell"><code>{{ r.legacy_id }}</code></td>
+                                    <td class="fa-table__cell small">{{ r.titel ?? '–' }}</td>
+                                    <td class="fa-table__cell">
                                         <code>{{ r.baustein_legacy ?? '–' }}</code>
                                         {% if r.baustein_kompendium_2023 %}
                                             <span class="text-muted">→</span> <code class="text-success">{{ r.baustein_kompendium_2023 }}</code>
                                         {% endif %}
                                     </td>
-                                    <td><code class="small">{{ r.umsetzungsstatus_raw ?? '–' }}</code></td>
-                                    <td>
+                                    <td class="fa-table__cell"><code class="small">{{ r.umsetzungsstatus_raw ?? '–' }}</code></td>
+                                    <td class="fa-table__cell">
                                         {% set s = r.implementation_status %}
                                         {% if s == 'implemented' %}
                                             <span class="fa-status-pill fa-status-pill--success">{{ s }}</span>
@@ -250,54 +249,51 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                     </div>
                     {% endif %}
 
                     {% if result.risiken_rows is defined and result.risiken_rows|length > 0 %}
                     <div class="tab-pane fade" id="pane-risiken" role="tabpanel">
-                    <div class="table-responsive">
-                        <table class="table table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>{{ 'gstool_import.risiken.legacy_id'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.risiken.titel'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.risiken.haeufigkeit'|trans({}, 'gstool_import') }}</th>
-                                    <th class="text-end">L</th>
-                                    <th>{{ 'gstool_import.risiken.schaden'|trans({}, 'gstool_import') }}</th>
-                                    <th class="text-end">I</th>
-                                    <th class="text-end">{{ 'gstool_import.risiken.score'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.risiken.behandlung'|trans({}, 'gstool_import') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.risiken.legacy_id'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.risiken.titel'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.risiken.haeufigkeit'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">L</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.risiken.schaden'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">I</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">{{ 'gstool_import.risiken.score'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.risiken.behandlung'|trans({}, 'gstool_import') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for r in result.risiken_rows %}
-                                <tr>
-                                    <td><code>{{ r.legacy_id }}</code></td>
-                                    <td class="small">{{ r.titel ?? '–' }}</td>
-                                    <td class="small">{{ r.eintrittshaeufigkeit_raw ?? '–' }}</td>
-                                    <td class="text-end"><strong>{{ r.inherent_likelihood ?? '–' }}</strong></td>
-                                    <td class="small">{{ r.schadenshoehe_raw ?? '–' }}</td>
-                                    <td class="text-end"><strong>{{ r.inherent_impact ?? '–' }}</strong></td>
-                                    <td class="text-end">
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell"><code>{{ r.legacy_id }}</code></td>
+                                    <td class="fa-table__cell small">{{ r.titel ?? '–' }}</td>
+                                    <td class="fa-table__cell small">{{ r.eintrittshaeufigkeit_raw ?? '–' }}</td>
+                                    <td class="fa-table__cell fa-table__cell--num"><strong>{{ r.inherent_likelihood ?? '–' }}</strong></td>
+                                    <td class="fa-table__cell small">{{ r.schadenshoehe_raw ?? '–' }}</td>
+                                    <td class="fa-table__cell fa-table__cell--num"><strong>{{ r.inherent_impact ?? '–' }}</strong></td>
+                                    <td class="fa-table__cell fa-table__cell--num">
                                         {% if r.inherent_risk_score %}
                                             <span class="badge bg-{{ r.inherent_risk_score >= 13 ? 'danger' : r.inherent_risk_score >= 7 ? 'warning' : 'success' }}">
                                                 {{ r.inherent_risk_score }}
                                             </span>
                                         {% else %}–{% endif %}
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         {% if r.treatment_strategy %}
                                             <span class="fa-status-pill fa-status-pill--primary">{{ r.treatment_strategy }}</span>
                                         {% else %}<span class="text-muted small">–</span>{% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                     </div>
                     {% endif %}
 

@@ -12,6 +12,7 @@
  # - overdue_workflows: Array of all overdue WorkflowInstance entities
  # - upcoming_workflow_deadlines: Array of WorkflowInstance entities with deadlines < 24h
  #}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 
@@ -109,30 +110,23 @@
                         </div>
 
                         {# Progress Bar #}
-                        <div class="progress progress-h-4 mb-2">
-                            {% if dueDate %}
-                                {% set now = date() %}
-                                {% set isOverdue = dueDate < now %}
-                                {% set totalHours = ((dueDate.timestamp - now.timestamp) / 3600)|round(1) %}
-                                {% if isOverdue %}
-                                    {% set urgencyClass = 'danger' %}
-                                {% elseif totalHours < 2 %}
-                                    {% set urgencyClass = 'danger' %}
-                                {% elseif totalHours < 24 %}
-                                    {% set urgencyClass = 'warning' %}
-                                {% else %}
-                                    {% set urgencyClass = 'success' %}
-                                {% endif %}
+                        {% if dueDate %}
+                            {% set now = date() %}
+                            {% set isOverdue = dueDate < now %}
+                            {% set totalHours = ((dueDate.timestamp - now.timestamp) / 3600)|round(1) %}
+                            {% if isOverdue %}
+                                {% set urgencyClass = 'danger' %}
+                            {% elseif totalHours < 2 %}
+                                {% set urgencyClass = 'danger' %}
+                            {% elseif totalHours < 24 %}
+                                {% set urgencyClass = 'warning' %}
                             {% else %}
-                                {% set urgencyClass = 'secondary' %}
+                                {% set urgencyClass = 'success' %}
                             {% endif %}
-                            <div class="progress-bar bg-{{ urgencyClass }}"
-                                 role="progressbar"
-                                 style="width: {{ instance.progressPercentage }}%"
-                                 aria-valuenow="{{ instance.progressPercentage }}"
-                                 aria-valuemin="0"
-                                 aria-valuemax="100"></div>
-                        </div>
+                        {% else %}
+                            {% set urgencyClass = 'neutral' %}
+                        {% endif %}
+                        {{ _fa_progress.render({ value: instance.progressPercentage, tone: urgencyClass, class: 'mb-2' }) }}
 
                         {# Quick Action Buttons #}
                         <div class="d-flex gap-2">

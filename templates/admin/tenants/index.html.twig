@@ -76,101 +76,99 @@
                     ]
                 }) }}
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col" style="width: 60px;">{{ 'tenant.field.logo'|trans({}, 'tenant') }}</th>
-                                <th scope="col">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
-                                <th scope="col">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
-                                <th scope="col">{{ 'tenant.field.users'|trans({}, 'tenant') }}</th>
-                                <th scope="col">{{ 'tenant.field.azure_tenant_id'|trans({}, 'tenant') }}</th>
-                                <th scope="col">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
-                                <th scope="col">{{ 'tenant.field.created'|trans({}, 'tenant') }}</th>
-                                <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in tenants %}
-                                {% set tenant = item.tenant %}
-                                <tr>
-                                    <td>
-                                        {% if tenant.logoPath %}
-                                            <img src="{{ asset(tenant.logoPath) }}"
-                                                 alt="{{ tenant.name }}"
-                                                 class="rounded"
-                                                 style="width: 40px; height: 40px; object-fit: contain;">
-                                        {% else %}
-                                            <div class="bg-body-secondary rounded d-flex align-items-center justify-content-center"
-                                                 style="width: 40px; height: 40px;">
-                                                <i class="fa-icon fa-icon--nav-building text-muted" aria-hidden="true"></i>
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <code class="text-primary">{{ tenant.code }}</code>
-                                    </td>
-                                    <td>
-                                        <strong>{{ tenant.name }}</strong>
-                                        {% if tenant.description %}
-                                            <br><small class="text-muted">{{ tenant.description|u.truncate(50, '...') }}</small>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <span class="fa-status-pill fa-status-pill--primary"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ item.userCount }}</span>
-                                    </td>
-                                    <td>
-                                        {% if tenant.azureTenantId %}
-                                            <small class="font-monospace text-muted">{{ tenant.azureTenantId|u.truncate(20, '...') }}</small>
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if tenant.isActive %}
-                                            <span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
-                                        {% else %}
-                                            <span class="fa-status-pill fa-status-pill--neutral"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">{{ tenant.createdAt|date('d.m.Y') }}</small>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-1">
-                                            <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ path('admin_tenant_compliance_settings_edit', {tenantId: tenant.id}) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                               title="{{ 'admin.tenant_settings.title'|trans({}, 'admin') }}" aria-label="{{ 'admin.tenant_settings.title'|trans({}, 'admin') }}">
-                                                <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i>
-                                            </a>
-                                            <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
-                                                  data-controller="ui-actions"
-                                                  data-action="submit->ui-actions#confirm"
-                                                  data-ui-actions-message-param="{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}">
-                                                <button type="submit"
-                                                        class="fa-cyber-btn fa-cyber-btn--{{ tenant.isActive ? 'warning' : 'ghost' }} fa-cyber-btn--sm"
-                                                        title="{{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans({}, 'tenant') }}"
-                                                        aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                                    <i class="fa-icon {% if tenant.isActive %}fa-icon--status-pending{% else %}fa-icon--status-ok{% endif %}" aria-hidden="true"></i>
-                                                </button>
-                                            </form>
+                {% embed '_components/_fa_table.html.twig' %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th" style="width: 60px;">{{ 'tenant.field.logo'|trans({}, 'tenant') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'tenant.field.users'|trans({}, 'tenant') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'tenant.field.azure_tenant_id'|trans({}, 'tenant') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'tenant.field.created'|trans({}, 'tenant') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for item in tenants %}
+                            {% set tenant = item.tenant %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
+                                    {% if tenant.logoPath %}
+                                        <img src="{{ asset(tenant.logoPath) }}"
+                                             alt="{{ tenant.name }}"
+                                             class="rounded"
+                                             style="width: 40px; height: 40px; object-fit: contain;">
+                                    {% else %}
+                                        <div class="bg-body-secondary rounded d-flex align-items-center justify-content-center"
+                                             style="width: 40px; height: 40px;">
+                                            <i class="fa-icon fa-icon--nav-building text-muted" aria-hidden="true"></i>
                                         </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    <code class="text-primary">{{ tenant.code }}</code>
+                                </td>
+                                <td class="fa-table__cell">
+                                    <strong>{{ tenant.name }}</strong>
+                                    {% if tenant.description %}
+                                        <br><small class="text-muted">{{ tenant.description|u.truncate(50, '...') }}</small>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    <span class="fa-status-pill fa-status-pill--primary"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ item.userCount }}</span>
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% if tenant.azureTenantId %}
+                                        <small class="font-monospace text-muted">{{ tenant.azureTenantId|u.truncate(20, '...') }}</small>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% if tenant.isActive %}
+                                        <span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
+                                    {% else %}
+                                        <span class="fa-status-pill fa-status-pill--neutral"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    <small class="text-muted">{{ tenant.createdAt|date('d.m.Y') }}</small>
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    <div class="d-flex gap-1">
+                                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="{{ path('admin_tenant_compliance_settings_edit', {tenantId: tenant.id}) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                           title="{{ 'admin.tenant_settings.title'|trans({}, 'admin') }}" aria-label="{{ 'admin.tenant_settings.title'|trans({}, 'admin') }}">
+                                            <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
+                                              data-controller="ui-actions"
+                                              data-action="submit->ui-actions#confirm"
+                                              data-ui-actions-message-param="{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}">
+                                            <button type="submit"
+                                                    class="fa-cyber-btn fa-cyber-btn--{{ tenant.isActive ? 'warning' : 'ghost' }} fa-cyber-btn--sm"
+                                                    title="{{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans({}, 'tenant') }}"
+                                                    aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                                <i class="fa-icon {% if tenant.isActive %}fa-icon--status-pending{% else %}fa-icon--status-ok{% endif %}" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
     </section>
