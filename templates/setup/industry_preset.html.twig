@@ -1,0 +1,139 @@
+{#
+ # V4-EF-1 — Industry-Preset Express-Path
+ #
+ # Slots between step6 (organisation-info) and step7 (modules). Lets the
+ # user pick a curated preset (modules + frameworks bundle) instead of
+ # manually clicking through. Choosing a preset skips step7+8 and forwards
+ # directly to step9 base-data; choosing "Skip" continues the manual flow.
+ #
+ # Active-step "modules" reuses Alva's mood from step8 — the preset is
+ # logically still part of the "Inhalt" phase.
+ #}
+{% extends 'setup/_layout.html.twig' %}
+{% trans_default_domain 'setup' %}
+{% set active_step = 'modules' %}
+
+{% block title %}{{ 'setup.preset.title'|trans({}, 'setup') }}{% endblock %}
+
+{% block step_content %}
+    {% import '_components/_step_header.html.twig' as step_header %}
+    {% import '_components/_alert.html.twig' as faAlert %}
+    {% import '_components/_nav_bar.html.twig' as nav %}
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            {{ faAlert.render(
+                message|trans,
+                label == 'success' ? 'success' : (label in ['error','danger'] ? 'danger' : (label == 'warning' ? 'warning' : 'info')),
+                { dismissible: true }
+            )|raw }}
+        {% endfor %}
+    {% endfor %}
+
+    {{ step_header.render(
+        8,
+        12,
+        step.kind,
+        'setup.preset.header'|trans({}, 'setup'),
+        'setup.preset.intro'|trans({}, 'setup')
+    )|raw }}
+
+    {{ faAlert.render(
+        'setup.preset.info.message'|trans({}, 'setup'),
+        'info',
+        { title: 'setup.preset.info.title'|trans({}, 'setup'), icon: 'bi-lightbulb', withAlva: true }
+    )|raw }}
+
+    <form method="post" action="{{ path('setup_industry_preset_apply') }}" class="fa-setup-preset-form mt-3"
+          data-controller="wizard-busy"
+          data-wizard-busy-message-value="{{ 'setup.preset.busy'|trans({}, 'setup') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('setup_industry_preset') }}">
+
+        <h2 class="fa-setup-section-title">
+            <i class="fa-icon fa-icon--ui-star" style="color: var(--warning);" aria-hidden="true"></i>
+            {{ 'setup.preset.section.curated'|trans({}, 'setup') }}
+        </h2>
+
+        <div class="fa-toggle-card-grid" role="radiogroup"
+             aria-label="{{ 'setup.preset.aria.group'|trans({}, 'setup') }}">
+            {% for preset in presets %}
+                <label class="fa-toggle-card" for="preset_{{ preset.id }}">
+                    <input type="radio"
+                           name="preset"
+                           value="{{ preset.id }}"
+                           id="preset_{{ preset.id }}"
+                           class="fa-toggle-card__input"
+                           {% if loop.first %}checked{% endif %}>
+                    <span class="fa-toggle-card__box" aria-hidden="true">
+                        <svg viewBox="0 0 14 14" width="10" height="10" fill="none">
+                            <path d="M2 7 L6 11 L12 3" stroke="currentColor" stroke-width="2.5"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <div class="fa-toggle-card__body">
+                        <div class="fa-toggle-card__title">
+                            <i class="bi bi-{{ preset.icon }} text-{{ preset.variant }}" aria-hidden="true"></i>
+                            {{ preset.name }}
+                        </div>
+                        <div class="fa-toggle-card__sub">{{ preset.description }}</div>
+                        <div class="mt-2 d-flex flex-wrap gap-2 align-items-center">
+                            <span class="badge text-bg-secondary">
+                                <i class="bi bi-grid-3x3-gap-fill me-1" aria-hidden="true"></i>
+                                {{ 'setup.preset.stats.modules'|trans({'%count%': preset.modules_count}, 'setup') }}
+                            </span>
+                            <span class="badge text-bg-secondary">
+                                <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
+                                {{ 'setup.preset.stats.frameworks'|trans({'%count%': preset.frameworks_count}, 'setup') }}
+                            </span>
+                            {% if preset.controls_count > 0 %}
+                                <span class="badge text-bg-secondary">
+                                    <i class="bi bi-check2-square me-1" aria-hidden="true"></i>
+                                    {{ 'setup.preset.stats.controls'|trans({'%count%': preset.controls_count}, 'setup') }}
+                                </span>
+                            {% endif %}
+                            {% if preset.documents_count > 0 %}
+                                <span class="badge text-bg-secondary">
+                                    <i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>
+                                    {{ 'setup.preset.stats.documents'|trans({'%count%': preset.documents_count}, 'setup') }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        {% if preset.primary_frameworks|length > 0 %}
+                            <div class="mt-2 small text-muted">
+                                <strong>{{ 'setup.preset.includes'|trans({}, 'setup') }}:</strong>
+                                {{ preset.primary_frameworks|join(' · ') }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </label>
+            {% endfor %}
+
+            {# Skip option — same card layout for visual consistency. #}
+            <label class="fa-toggle-card" for="preset_skip">
+                <input type="radio"
+                       name="preset"
+                       value="skip"
+                       id="preset_skip"
+                       class="fa-toggle-card__input">
+                <span class="fa-toggle-card__box" aria-hidden="true">
+                    <svg viewBox="0 0 14 14" width="10" height="10" fill="none">
+                        <path d="M2 7 L6 11 L12 3" stroke="currentColor" stroke-width="2.5"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <div class="fa-toggle-card__body">
+                    <div class="fa-toggle-card__title">
+                        <i class="bi bi-sliders text-muted" aria-hidden="true"></i>
+                        {{ 'setup.preset.skip.title'|trans({}, 'setup') }}
+                    </div>
+                    <div class="fa-toggle-card__sub">{{ 'setup.preset.skip.description'|trans({}, 'setup') }}</div>
+                </div>
+            </label>
+        </div>
+
+        {{ nav.render({
+            back: { url: path('setup_step6_organisation_info'), label: 'setup.common.back'|trans({}, 'setup') },
+            next: { submit: true, label: 'setup.preset.actions.apply'|trans({}, 'setup'), icon: 'bi-rocket-takeoff' }
+        })|raw }}
+    </form>
+{% endblock %}
