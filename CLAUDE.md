@@ -21,7 +21,10 @@ Guidelines for Claude Code in this repository.
 
 **Multi-tenancy:** All entities use `tenant_id` field. `TenantContext` service manages context.
 
-**RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN, plus holding-level ROLE_GROUP_CISO and ROLE_KONZERN_AUDITOR. 50+ permissions.
+**RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN, plus holding-level
+ROLE_GROUP_CISO + ROLE_KONZERN_AUDITOR, plus persona-roles
+ROLE_CISO / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER (each
+gates own dashboard at `/dashboards/<persona>`). 50+ permissions.
 
 ## Essential Commands
 
@@ -49,7 +52,20 @@ php -l src/Service/MyService.php  # syntax check single file
 php bin/console cache:clear
 php bin/console lint:container    # validate service wiring
 php bin/console lint:twig templates/  # validate all templates
+python3 scripts/quality/check_twig_macro_scope.py  # embed-macro-import scope (CI-gate since v3.5)
+python3 scripts/quality/check_translation_issues.py  # i18n quality
 ```
+
+## Operator-UI (CLI-Vermeidung)
+
+Self-hosted-Operator hat `/quick-fix` als Web-UI fuer:
+- Pending-Migrations anwenden (mit Auto-Chain Reconcile bei non-destructive Drift)
+- Schema-Drift reconcilen (mit destructive-Confirm-Checkbox bei DROP/TRUNCATE)
+- DataRepair: Orphans assignen, Tenant-Mismatches fixen, Duplikate bereinigen
+- "Alles-Sicher-Reparieren" Convenience-Button
+
+CLI nur fuer destructive-edge-cases wenn UI-Auto-Recovery scheitert. Doku:
+`docs/user-guide/QUICK_FIX.md`.
 
 ## Architecture Quick Guide
 
@@ -378,7 +394,17 @@ next sprint's commits are merged to main.
    var(--bs-bg-opacity))`. Without the `-rgb` twin of a mapped token, Bootstrap
    falls back to hardcoded defaults and ignores Aurora mapping entirely. All
    color/bg tokens need both `--bs-X` and `--bs-X-rgb` in light AND dark forks.
-9. **Do NOT use Bootstrap `bg-*` / `text-white` on `.card` or `.card-header`** —
+10. **Twig macro-import in `{% embed %}` needs local re-import** — Twig
+    `{% embed %}` creates a new template scope. File-scope or parent-block
+    imports are NOT visible inside the embed-block. Symptom:
+    `Variable "_fa_X" does not exist`. **Static check:**
+    `python3 scripts/quality/check_twig_macro_scope.py` (CI-gated since
+    v3.5) detects file-scope-import + embed-block-use mismatches. Fix:
+    add `{% import '_components/_fa_X.html.twig' as _fa_X %}` as first
+    line inside the embed-block (or nested-embed-block). Regular
+    `{% block %}` under `{% extends %}` inherits file-scope imports — only
+    `{% embed %}` is the trap.
+11. **Do NOT use Bootstrap `bg-*` / `text-white` on `.card` or `.card-header`** —
    Aurora's `.card { background: var(--surface) }` and
    `.card > .card-header { background: var(--surface-2) }` (in
    `fairy-aurora-components.css`) win by load-order + equal specificity. The
@@ -408,6 +434,15 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-stepper` | Multi-step wizard chrome (Preset → Discovery → Test for SSO; Upload → Map → Preview → Commit for Bulk-Import) | `_fa_stepper.html.twig` |
 | `fa-diff-row` | Old → New value diff visualization for Bulk-Import Delta-Mode + OSCAL-Conflict-Cards | `_fa_diff_row.html.twig` |
 | `fa-condition-builder` | Visual rule-builder (chip-row WHEN/CONDITIONS) for Notification-Rules — replaces raw JSON editing | `_fa_condition_builder.html.twig` |
+| `fa-table` | Aurora-styled data table (replaces raw `<table class="table">`) — 80+ adopted in v3.5 | `_fa_table.html.twig` |
+| `fa-progress` | Aurora progress-bar (replaces hand-rolled `.progress > .progress-bar`) — 54 adopted in v3.5 | `_fa_progress.html.twig` |
+| `fa-action-bar` | Page-level action bar (sticky bottom, top of detail-views) | `_fa_action_bar.html.twig` |
+| `fa-bulk-action-bar` | Canonical bulk-action bar (selected-count + ops) — 7+ lists adopted | `_fa_bulk_action_bar.html.twig` |
+| `fa-toast` | Aurora toast/flash-message stack (replaces Bootstrap toast-container) — wired in `base.html.twig` | `_fa_toast.html.twig` |
+| `fa-audit-row` | ISMS-Audit-Trail row pattern (compact + full views) | `_fa_audit_row.html.twig` |
+| `fa-cyber-field` | Hand-rolled Aurora-Frame inputs (text/textarea/select) | `_fa_cyber_field.html.twig` |
+| `isms-comment-thread` | Comment-thread for Show-Pages (10 entities whitelisted by CommentController) | `_isms_comment_thread.html.twig` |
+| `isms-approval-stages` | Multi-stage approval visualization (workflow instances) | `_isms_approval_stages.html.twig` |
 | `.fa-aurora-surface` | Opt-in page-level Aurora atmosphere (CSS utility, not macro) | — |
 
 Import pattern: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
