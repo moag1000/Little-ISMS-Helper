@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block title %}{{ 'processing_activity.title'|trans({}, 'privacy')}}{% endblock %}
@@ -130,6 +129,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                         {% for pa in processing_activities %}
                             <tr>
                                 <td>

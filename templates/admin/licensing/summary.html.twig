@@ -2,8 +2,6 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}Lizenz-Zusammenfassung{% endblock %}
 
 {% block admin_content %}
@@ -157,6 +155,7 @@
                                 </tr>
                             {% endblock %}
                             {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> Erlaubt</span></td>
                                     <td class="fa-table__cell"><small>Permissive Lizenzen (MIT, BSD, Apache)</small></td>

@@ -1,6 +1,4 @@
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'welcome.title'|trans({}, 'welcome') }}{% endblock %}
 
 {% block body %}
@@ -111,6 +109,7 @@
                         </div>
                     {% endblock %}
                     {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                         <p class="text-muted mb-3">{{ 'welcome.wizards.description'|trans({}, 'welcome') }}</p>
                         <div class="row g-3">
                             {% for wizard in compliance_wizards %}

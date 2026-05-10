@@ -2,8 +2,6 @@
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'wizard.compare_title'|trans({}, 'wizard') }} - {{ 'wizard.title'|trans({}, 'wizard') }}{% endblock %}
 
 {% block body %}
@@ -125,6 +123,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {# Collect all unique categories #}
                     {% set all_categories = {} %}
                     {% for key, result in results %}

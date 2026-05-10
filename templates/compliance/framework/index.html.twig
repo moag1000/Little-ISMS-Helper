@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'compliance.framework.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
@@ -109,6 +107,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                         {% for framework in frameworks %}
                             <tr>
                                 <td><code>{{ framework.code }}</code></td>

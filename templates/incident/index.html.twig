@@ -2,8 +2,6 @@
 {% trans_default_domain 'incident' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'incident.header.title'|trans({}, 'incident') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
@@ -115,6 +113,7 @@
         </div>
     {% endblock %}
     {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
         <div class="row">
             {% set statuses = {
                 'reported': { label: 'incident.status.reported'|trans({}, 'incident'), icon: 'bi-exclamation-circle', color: 'danger' },

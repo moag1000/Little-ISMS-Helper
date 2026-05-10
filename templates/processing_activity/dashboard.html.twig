@@ -1,6 +1,4 @@
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}VVT Dashboard{% endblock %}
 
 {% block body %}
@@ -69,6 +67,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' %}
                 {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="text-muted fw-semibold">Completeness Rate</div>
                     <div class="fs-2 fw-bold">{{ statistics.completeness_rate }}%</div>
                     {{ _fa_progress.render({ value: statistics.completeness_rate, tone: 'success', class: 'mt-2' }) }}

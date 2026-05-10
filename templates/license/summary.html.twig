@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}Lizenz-Zusammenfassung{% endblock %}
 
 {% block body %}
@@ -182,6 +180,7 @@
                                 </tr>
                             {% endblock %}
                             {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                                 <tr>
                                     <td>{% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Erlaubt' } %}</td>
                                     <td><small>Permissive Lizenzen (MIT, BSD, Apache)</small></td>

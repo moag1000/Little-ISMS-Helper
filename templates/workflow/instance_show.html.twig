@@ -2,8 +2,6 @@
 {% trans_default_domain 'workflows' %}
 
 {% import '_components/_isms_approval_stages.html.twig' as _isms_approval_stages %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }} - {{ 'workflow.title.instance_show'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
@@ -86,6 +84,7 @@
         </div>
     {% endblock %}
     {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
         <div class="row">
             <div class="col-md-3 mb-3">
                 <strong class="d-block text-muted">{{ 'workflow.field.workflow'|trans({}, 'workflows') }}</strong>

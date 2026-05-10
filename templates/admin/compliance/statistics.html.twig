@@ -2,8 +2,6 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block admin_title %}{{ 'admin.compliance.statistics'|trans({}, 'admin') }}{% endblock %}
 
 {% block title %}{{ 'admin.compliance.statistics'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
@@ -72,6 +70,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                         {% for data in compliance_data %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">

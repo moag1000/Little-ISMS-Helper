@@ -3,8 +3,6 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'asset.modern.header.title'|trans({}, 'asset')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
@@ -125,6 +123,7 @@
         </div>
     {% endblock %}
     {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
         <div class="row">
             {% for stat in typeStats %}
             {% set sharePercent = (stat.count / typeStatsTotal * 100)|round %}

@@ -3,8 +3,6 @@
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'soa.page.title'|trans({}, 'soa') }} - Little ISMS Helper{% endblock %}
 
 {% block stylesheets %}
@@ -113,6 +111,7 @@
 
         {% embed '_components/_card.html.twig' %}
             {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                 <div class="fs-2-mb-sm">{{ icon }}</div>
                 <h2>{{ ('soa.category.' ~ category)|trans({}, 'soa') }} {{ 'soa.label.controls'|trans({}, 'soa') }}</h2>
                 <div class="stats-grid mt-2">

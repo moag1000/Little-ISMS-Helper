@@ -3,11 +3,10 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'policy_wizard.result.title'|trans }}{% endblock %}
 
 {% block body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 <div class="container-fluid py-4 fa-aurora-surface">
     {{ _fa_page_header.render({
         badge: { icon: 'check-circle', label: ('policy_wizard.status.' ~ run.status)|trans },

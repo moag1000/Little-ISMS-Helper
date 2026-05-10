@@ -3,13 +3,13 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'policy_wizard.konzern_rollup.title'|trans }} — {{ 'policy_wizard.title'|trans }}{% endblock %}
 
 {% block body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 <div class="container-fluid py-4 fa-aurora-surface">
     {{ _fa_page_header.render({
         badge: { icon: 'building-fill-gear', label: 'policy_wizard.konzern_defaults.badge'|trans },

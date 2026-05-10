@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'analytics' %}
 
 {% block title %}{{ 'analytics.assets.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -146,6 +145,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% for asset in incident_probability.high_risk_assets %}
                     <tr class="fa-table__row">
                         <td class="fa-table__cell">

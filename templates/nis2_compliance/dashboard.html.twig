@@ -1,10 +1,9 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'nis2.dashboard.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-12">
