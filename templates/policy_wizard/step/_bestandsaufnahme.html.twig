@@ -124,6 +124,7 @@
 
     {% embed '_components/_fa_table.html.twig' with { hover: true, class: 'mt-3' } %}
         {% block table_head %}
+            {% trans_default_domain 'policy_wizard' %}
             <tr>
                 <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.bestandsaufnahme.column.title'|trans }}</th>
                 <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.bestandsaufnahme.column.type'|trans }}</th>
@@ -133,6 +134,7 @@
             </tr>
         {% endblock %}
         {% block table_body %}
+                {% trans_default_domain 'policy_wizard' %}
                 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                 {% for row in rows %}
                     {% set doc_id = row.id %}
@@ -197,7 +199,7 @@
                                     {{ 'policy_wizard.step.bestandsaufnahme.suggested_topic_help'|trans }}:
                                     {% for sug in suggested_topic_list|slice(0, 3) %}
                                         {% if sug.topic != 'sammelpolitik' %}
-                                            <span class="badge bg-secondary-subtle text-body">
+                                            <span class="fa-filter-chip" style="margin-right: 4px;">
                                                 {{ ('policy_wizard.topic.' ~ sug.topic)|trans({}, 'policy_wizard') }} ({{ (sug.confidence * 100)|round }}%)
                                             </span>
                                         {% endif %}
@@ -220,7 +222,7 @@
                         </td>
                         <td class="fa-table__cell">
                             {% set suggestion_key = 'policy_wizard.step.bestandsaufnahme.suggestion.' ~ row.suggestedAction %}
-                            <span class="badge bg-info-subtle text-body mb-2 d-inline-block">
+                            <span class="fa-filter-chip fa-filter-chip--active mb-2 d-inline-block">
                                 <i class="bi bi-lightbulb" aria-hidden="true"></i>
                                 {{ 'policy_wizard.step.bestandsaufnahme.suggestion_label'|trans }}: {{ suggestion_key|trans|default(row.suggestedAction) }}
                             </span>
@@ -422,12 +424,14 @@
                     </p>
                     {% embed '_components/_fa_table.html.twig' with { compact: true } %}
                         {% block table_head %}
+                            {% trans_default_domain 'policy_wizard' %}
                             <tr>
                                 <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.bestandsaufnahme.topic_help.column_topic'|trans }}</th>
                                 <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.bestandsaufnahme.topic_help.column_description'|trans }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
+                            {% trans_default_domain 'policy_wizard' %}
                             {% for topic_key in topics %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell fw-semibold">
