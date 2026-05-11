@@ -4,6 +4,8 @@
 {% block title %}{{ 'soa.action.edit'|trans({}, 'soa') }} - {{ control.controlId }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -18,12 +20,9 @@
     title: ('soa.action.edit'|trans({}, 'soa')) ~ ': ' ~ (control.controlId),
     badge: { icon: 'pencil', label: '' },
     actions: [
-        { label: '← {{ \'common.back_to_list\'|trans({}, \'messages\') }}', href: path('app_soa_index'), variant: 'ghost', icon: 'arrow-left' }
+        { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_soa_index'), variant: 'ghost', icon: 'arrow-left' }
     ]
 }) }}
-
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}
     {% block alert_body %}
         <div class="fa-alert__title">{{ control.name|trans({}, 'control') }}</div>
