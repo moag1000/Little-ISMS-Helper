@@ -3,6 +3,14 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.5.1](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.5.0...v3.5.1) (2026-05-11)
+
+
+### Documentation
+
+* **plan:** roadmap v5 — DACH refocus + UX-specialist DS-integration patches ([85e0a81](https://github.com/moag1000/Little-ISMS-Helper/commit/85e0a81dd544fef07a0c176c40954c37f5f77edc))
+* **plan:** roadmap v6 — sprint sequencing redesign for CM-value-maximization ([4fb143c](https://github.com/moag1000/Little-ISMS-Helper/commit/4fb143c8bfdb30eddcadf109508e2be7ce8c21e4))
+
 ## [3.5.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.4.0...v3.5.0) (2026-05-11)
 
 
