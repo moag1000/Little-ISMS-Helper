@@ -134,7 +134,7 @@ jobs:
 
       - name: Comment on PR with results
         if: github.event_name == 'pull_request' && steps.check_script.outputs.script_exists == 'true' && steps.check_licenses.outputs.status != 'passed'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -188,7 +188,7 @@ jobs:
 
       - name: Create issue for problematic licenses
         if: steps.check_script.outputs.script_exists == 'true' && steps.check_licenses.outputs.status == 'failed' && github.event_name == 'schedule'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const notAllowed = '${{ steps.check_licenses.outputs.not_allowed }}';
