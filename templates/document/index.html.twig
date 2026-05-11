@@ -4,6 +4,7 @@
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'document.title'|trans({}, 'document') }}{% endblock %}
 
@@ -143,6 +144,20 @@
             value: excelDocs,
             variant: 'success'
         }) }}
+
+        {{ _fa_feature_card.render({
+            icon: 'file-earmark-text',
+            label: 'document.kpi.drafts'|trans({}, 'document'),
+            value: kpiDrafts,
+            variant: 'secondary'
+        }) }}
+
+        {{ _fa_feature_card.render({
+            icon: 'hourglass-split',
+            label: 'document.kpi.in_review'|trans({}, 'document'),
+            value: kpiInReview,
+            variant: 'warning'
+        }) }}
     </div>
 
     {# Document Type Distribution #}
@@ -214,25 +229,27 @@
 
     {# Aurora filter-chip quick row (Audit V3 C5) — quick toggles for status #}
     {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
-    {% set _activeDocStatus = app.request.query.get('status') %}
+    {% set _activeDocStatus = currentStatus %}
     {% set _baseDocUrl = path('app_document_index') %}
     {{ _fa_filter_chip.group([
         { label: 'common.all'|trans({}, 'messages'),                    href: _baseDocUrl },
         { label: 'document.status.draft'|trans({}, 'document'),         href: _baseDocUrl ~ '?status=draft' },
         { label: 'document.status.in_review'|trans({}, 'document'),     href: _baseDocUrl ~ '?status=in_review' },
         { label: 'document.status.approved'|trans({}, 'document'),      href: _baseDocUrl ~ '?status=approved' },
-        { label: 'document.status.published'|trans({}, 'document'),     href: _baseDocUrl ~ '?status=published' }
+        { label: 'document.status.published'|trans({}, 'document'),     href: _baseDocUrl ~ '?status=published' },
+        { label: 'document.status.archived'|trans({}, 'document'),      href: _baseDocUrl ~ '?status=archived' }
     ],
         _activeDocStatus == 'draft' ? 1
         : (_activeDocStatus == 'in_review' ? 2
         : (_activeDocStatus == 'approved' ? 3
-        : (_activeDocStatus == 'published' ? 4 : 0))),
+        : (_activeDocStatus == 'published' ? 4
+        : (_activeDocStatus == 'archived' ? 5 : 0)))),
         { class: 'mb-3', ariaLabel: 'document.section.all_documents'|trans({}, 'document') }
     ) }}
 
     {# Document List with Bulk Actions #}
     {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="bulk-actions document-filter" data-bulk-actions-endpoint-value="/document"{% endblock %}
+        {% block card_attrs %}data-controller="bulk-actions document-filter" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/document"{% endblock %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0">
@@ -272,45 +289,48 @@
         {% endblock %}
         {% block card_body %}
             {% if documents|length > 0 %}
-            {% embed '_components/_table.html.twig' with {
-                'class': 'table-hover table-bulk-selectable mb-0',
-                'theadClass': 'thead-sticky',
-                'noMargin': true,
-                'responsive': true
+            {% embed '_components/_fa_table.html.twig' with {
+                'stickyHead': true,
+                'hover': true,
+                'id': 'documentTable'
             } %}
                 {% block table_head %}
+                    {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+                    {% import '_components/_status_pill.html.twig' as pill %}
                     <tr>
-                        <th scope="col" class="bulk-select-column">
+                        <th scope="col" class="fa-table__th fa-table__th--checkbox bulk-select-column">
                             <input type="checkbox"
                                    data-action="bulk-actions#selectAll"
                                    data-bulk-actions-target="selectAllCheckbox"
                                    aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
                         </th>
-                        <th scope="col" class="w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans({}, 'document') }}</span></th>
-                        <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="w-150px">{{ 'common.category'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="w-100px">{{ 'common.size'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="w-150px">{{ 'document.table.uploaded_by'|trans({}, 'document') }}</th>
-                        <th scope="col" class="w-130px">{{ 'common.date'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="w-180px text-right">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="fa-table__th w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans({}, 'document') }}</span></th>
+                        <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="fa-table__th w-130px">{{ 'common.status'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="fa-table__th w-150px">{{ 'common.category'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="fa-table__th w-100px">{{ 'common.size'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="fa-table__th w-150px">{{ 'document.table.uploaded_by'|trans({}, 'document') }}</th>
+                        <th scope="col" class="fa-table__th w-130px">{{ 'common.date'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="fa-table__th w-180px text-right">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body_attrs %}id="documentTableBody" data-document-filter-target="tableBody"{% endblock %}
                 {% block table_body %}
                     {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+                    {% import '_components/_status_pill.html.twig' as pill %}
                     {% for document in documents %}
-                    <tr class="document-row"
+                    <tr class="fa-table__row document-row"
                         data-document-filter-target="row"
                         data-category="{{ document.category|lower }}"
                         data-name="{{ document.originalFilename|lower }}">
-                        <td class="bulk-select-column">
+                        <td class="fa-table__cell fa-table__cell--checkbox bulk-select-column">
                             <input type="checkbox"
                                    data-bulk-actions-target="item"
                                    data-action="bulk-actions#selectItem"
                                    value="{{ document.id }}"
                                    aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ document.originalFilename }}">
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             {# File Type Icon #}
                             {% if document.mimeType == 'application/pdf' %}
                                 <i class="fa-icon fa-icon--nav-file-pdf text-danger fs-15" aria-hidden="true"></i>
@@ -324,25 +344,20 @@
                                 <i class="fa-icon text-secondary fs-15 fa-icon--nav-document" aria-hidden="true"></i>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             <a href="{{ path('app_document_show', {id: document.id}) }}" class="text-decoration-none">
                                 <strong>{{ document.originalFilename }}</strong>
                             </a>
                             {{ inheritance.small_badge(document, currentTenant) }}
                             {# Policy-Wizard W7-C — settings-drift badge. #}
                             {% if driftMap[document.id] is defined and driftMap[document.id] %}
-                                <span class="badge bg-warning text-dark ms-1"
-                                      title="{{ 'policy_wizard.drift_badge.settings_drift.tooltip'|trans({}, 'policy_wizard') }}">
-                                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                                    {{ 'policy_wizard.drift_badge.settings_drift.label'|trans({}, 'policy_wizard') }}
-                                </span>
+                                {{ pill.render('policy_wizard.drift_badge.settings_drift.label'|trans({}, 'policy_wizard'), 'warning', {size: 'sm', icon: 'bi-exclamation-triangle-fill', class: 'ms-1', title: 'policy_wizard.drift_badge.settings_drift.tooltip'|trans({}, 'policy_wizard')}) }}
                             {% endif %}
                             {% if document.supersedes %}
                                 <a href="{{ path('app_policy_wizard_diff', {currentDocId: document.id}) }}"
-                                   class="badge bg-info text-decoration-none ms-1"
+                                   class="text-decoration-none ms-1"
                                    title="{{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}">
-                                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
-                                    {{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}
+                                    {{ pill.render('policy_wizard.diff.title'|trans({}, 'policy_wizard'), 'primary', {size: 'sm', icon: 'bi-arrow-left-right'}) }}
                                 </a>
                             {% endif %}
                             {# Editable-policy-body — "Lokal angepasst"
@@ -351,33 +366,21 @@
                                signal: this body deviates from the
                                wizard baseline. #}
                             {% if document.generatedFromTemplate is not null and document.hasPostGenerationEdits %}
-                                <span class="badge bg-secondary ms-1"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"
-                                      title="{{ 'document.policy_body.drift_badge.tooltip'|trans({}, 'document') }}">
-                                    <i class="bi bi-pencil-square" aria-hidden="true"></i>
-                                    {{ 'document.policy_body.drift_badge.label'|trans({}, 'document') }}
-                                </span>
+                                {{ pill.render('document.policy_body.drift_badge.label'|trans({}, 'document'), 'neutral', {size: 'sm', icon: 'bi-pencil-square', class: 'ms-1', title: 'document.policy_body.drift_badge.tooltip'|trans({}, 'document')}) }}
                             {% endif %}
                             {# Junior-ISB Wish #5 — Auditor-Score badge.
                                Only rendered for Wizard-generated docs
                                (provenance via generatedFromTemplate). #}
                             {% if document.generatedFromTemplate is not null and auditorScores[document.id] is defined %}
                                 {% set _score = auditorScores[document.id] %}
-                                {% set _variant = _score.tier == 'green' ? 'success' : (_score.tier == 'yellow' ? 'warning text-dark' : 'danger') %}
-                                {% set _icon = _score.tier == 'green' ? 'shield-check' : (_score.tier == 'yellow' ? 'shield-exclamation' : 'shield-x') %}
+                                {% set _tone = _score.tier == 'green' ? 'success' : (_score.tier == 'yellow' ? 'warning' : 'danger') %}
+                                {% set _icon = _score.tier == 'green' ? 'bi-shield-check' : (_score.tier == 'yellow' ? 'bi-shield-exclamation' : 'bi-shield-x') %}
                                 {% set _reason_lines = [] %}
                                 {% for r in _score.reasons %}
                                     {% set _key = 'policy_wizard.auditor_score.reason.' ~ (r|split(':')|first) %}
                                     {% set _reason_lines = _reason_lines|merge([_key|trans({}, 'policy_wizard')]) %}
                                 {% endfor %}
-                                <span class="badge bg-{{ _variant }} ms-1"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"
-                                      title="{{ ('policy_wizard.auditor_score.tier_' ~ _score.tier)|trans({}, 'policy_wizard') }} — {{ _reason_lines|join('; ')|default('OK') }}">
-                                    <i class="bi bi-{{ _icon }}" aria-hidden="true"></i>
-                                    {{ 'policy_wizard.auditor_score.label'|trans({}, 'policy_wizard') }}: {{ _score.score }}
-                                </span>
+                                {{ pill.render('policy_wizard.auditor_score.label'|trans({}, 'policy_wizard') ~ ': ' ~ _score.score, _tone, {size: 'sm', icon: _icon, class: 'ms-1', title: ('policy_wizard.auditor_score.tier_' ~ _score.tier)|trans({}, 'policy_wizard') ~ ' — ' ~ _reason_lines|join('; ')|default('OK')}) }}
                             {% endif %}
                             {# Effectiveness-Review overdue marker —
                                red "faellig" badge when no review has
@@ -387,38 +390,48 @@
                                but never lengthen). Auditor signal:
                                policy lacks Wirksamkeitspruefung. #}
                             {% if document.isEffectivenessOverdue(12) %}
-                                <span class="badge bg-danger ms-1"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"
-                                      title="{{ 'document.effectiveness.badge.overdue.tooltip'|trans({}, 'document') }}">
-                                    <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
-                                    {{ 'document.effectiveness.badge.overdue.label'|trans({}, 'document') }}
-                                </span>
+                                {{ pill.render('document.effectiveness.badge.overdue.label'|trans({}, 'document'), 'danger', {size: 'sm', icon: 'bi-shield-exclamation', class: 'ms-1', title: 'document.effectiveness.badge.overdue.tooltip'|trans({}, 'document')}) }}
                             {% endif %}
                             {% if document.description %}
                             <br>
                             <small class="text-muted">{{ document.description|length > 60 ? document.description|slice(0, 60) ~ '...' : document.description }}</small>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
+                            {# Status pill — direct Aurora tone mapping for document statuses #}
+                            {% set _docStatusTone = {
+                                'draft':      'neutral',
+                                'in_review':  'primary',
+                                'approved':   'success',
+                                'published':  'success',
+                                'active':     'neutral',
+                                'archived':   'neutral'
+                            }[document.status] ?? 'neutral' %}
+                            {{ pill.render(('document.status.' ~ document.status)|trans({}, 'document'), _docStatusTone, {size: 'sm'}) }}
+                            {# Superseded marker — only visible when history toggle is on #}
+                            {% if document.id in supersededIds|keys %}
+                                {{ pill.render('document.status.superseded'|trans({}, 'document'), 'warning', {size: 'sm', class: 'ms-1'}) }}
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell">
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: document.category|capitalize } %}
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             {{ document.fileSizeFormatted }}
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             <div class="d-flex align-items-center">
                                 <i class="fa-icon fa-icon--ui-person me-1" aria-hidden="true"></i>
                                 {{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}
                             </div>
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                             {{ document.uploadedAt|date('d.m.Y') }}
                             <br>
                             <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>
                         </td>
-                        <td class="text-right">
+                        <td class="fa-table__cell fa-table__cell--actions text-right">
                             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                 <a href="{{ path('app_document_download', {id: document.id}) }}"
                                    class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm"
@@ -451,7 +464,7 @@
 
             {# Bulk Action Bar #}
             {% include '_components/_bulk_action_bar.html.twig' with {
-                actions: ['delete', 'export']
+                actions: ['status_change', 'approve', 'export', 'delete']
             } %}
             {% else %}
             {# Empty State #}

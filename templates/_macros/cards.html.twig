@@ -82,7 +82,7 @@
 #}
 {# @deprecated Use _fa_feature_card.html.twig directly instead. This macro remains for backward-compat only. #}
 {% macro kpi_card(title, value, subtitle, progress_value, progress_color, border_class) %}
-    <div class="card shadow-sm h-100 {{ border_class|default('') }}">
+    <div class="card h-100 {{ border_class|default('') }}">
         <div class="card-body">
             <div class="small fw-semibold text-muted mb-2">{{ title }}</div>
             <h2 class="mb-0 {{ progress_color ? 'text-' ~ progress_color : '' }}">{{ value }}</h2>
@@ -158,7 +158,7 @@
   - excel_url: URL for Excel download
 #}
 {% macro report_card(title, icon, header_bg, header_text, description, features, pdf_url, excel_url) %}
-    <div class="card h-100 shadow-sm">
+    <div class="card h-100">
         <div class="card-header">
             <h3 class="mb-0"><i class="bi bi-{{ icon }}" aria-hidden="true"></i> {{ title }}</h3>
         </div>
@@ -172,7 +172,7 @@
                 </ul>
             {% endif %}
         </div>
-        <div class="card-footer bg-body-secondary">
+        <div class="card-footer">
             <div class="d-grid gap-2">
                 {% if pdf_url %}
                     <a href="{{ pdf_url }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" data-turbo="false">
@@ -203,8 +203,8 @@
   - actions: Optional HTML for header action buttons
 #}
 {% macro simple_card(title, icon, content, footer, header_class, border_class, actions) %}
-    <div class="card shadow-sm {{ border_class|default('') }}">
-        <div class="card-header {{ header_class|default('bg-body-secondary') }} d-flex justify-content-between align-items-center">
+    <div class="card {{ border_class|default('') }}">
+        <div class="card-header {{ header_class|default('') }} d-flex justify-content-between align-items-center">
             <h3 class="mb-0">
                 {% if icon %}
                     <i class="bi bi-{{ icon }}" aria-hidden="true"></i>

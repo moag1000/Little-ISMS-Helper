@@ -360,7 +360,7 @@ Alle Templates wrappen `<DetailTemplate id title eyebrow actions toolbar>` mit B
 
 **77 ISMS-Domain-Icons** als CSS-Mask, einfärbbar via `currentColor`. Stil: Outline 1.4, monochrom.
 
-> Aktualisiert: **186 Icons** (77 Domain + 109 weitere — Compliance, Frameworks, Entities, Status). Vollständige Gallery: [`design-system.html#icons-gallery`](design-system.html#icons-gallery).
+> Aktualisiert: **190 Icons** (77 Domain + 113 weitere — Compliance, Frameworks, Entities, Status, Persona-Dashboards, Alva-Inbox). Vollständige Gallery: [`design-system.html#icons-gallery`](design-system.html#icons-gallery).
 
 ```html
 <i class="fa-icon fa-icon--audit-trail"></i>                       <!-- 1em (Default) -->
@@ -484,7 +484,7 @@ Vollständig: [`FAIRY_AURORA_MIGRATION.md`](FAIRY_AURORA_MIGRATION.md).
 | `assets/styles/fairy-aurora.css` | Tokens-Source-of-Truth |
 | `assets/styles/fairy-aurora-components.css` | Alle `.fa-*`-Komponenten |
 | `assets/styles/fairy-aurora-edge.css` | Edge-Components (filter-state-chip, stepper, dropdown-panel, banner, …) |
-| `assets/styles/fairy-aurora-icons.css` | 186 Icon-Mask-Klassen + Framework-Lockup |
+| `assets/styles/fairy-aurora-icons.css` | 190 Icon-Mask-Klassen + Framework-Lockup |
 | `assets/icons/*.svg` | 77 Icon-Source-Files (24×24 Outline 1.4) |
 | `templates/form/fa_cyber_input.html.twig` | Symfony Form-Theme |
 | `states/FairyCharacter.jsx` | React-Companion (9 Moods, Tokens-Props) |

@@ -11,6 +11,7 @@
  #}
 {% extends 'setup/_layout.html.twig' %}
 {% trans_default_domain 'setup' %}
+{% import '_components/_status_pill.html.twig' as pill %}
 {% set active_step = 'modules' %}
 
 {% block title %}{{ 'setup.preset.title'|trans({}, 'setup') }}{% endblock %}
@@ -77,25 +78,13 @@
                         </div>
                         <div class="fa-toggle-card__sub">{{ preset.description }}</div>
                         <div class="mt-2 d-flex flex-wrap gap-2 align-items-center">
-                            <span class="badge text-bg-secondary">
-                                <i class="bi bi-grid-3x3-gap-fill me-1" aria-hidden="true"></i>
-                                {{ 'setup.preset.stats.modules'|trans({'%count%': preset.modules_count}, 'setup') }}
-                            </span>
-                            <span class="badge text-bg-secondary">
-                                <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
-                                {{ 'setup.preset.stats.frameworks'|trans({'%count%': preset.frameworks_count}, 'setup') }}
-                            </span>
+                            {{ pill.render('setup.preset.stats.modules'|trans({'%count%': preset.modules_count}, 'setup'), 'neutral', {size: 'sm', icon: 'bi-grid-3x3-gap-fill'}) }}
+                            {{ pill.render('setup.preset.stats.frameworks'|trans({'%count%': preset.frameworks_count}, 'setup'), 'neutral', {size: 'sm', icon: 'bi-shield-check'}) }}
                             {% if preset.controls_count > 0 %}
-                                <span class="badge text-bg-secondary">
-                                    <i class="bi bi-check2-square me-1" aria-hidden="true"></i>
-                                    {{ 'setup.preset.stats.controls'|trans({'%count%': preset.controls_count}, 'setup') }}
-                                </span>
+                                {{ pill.render('setup.preset.stats.controls'|trans({'%count%': preset.controls_count}, 'setup'), 'neutral', {size: 'sm', icon: 'bi-check2-square'}) }}
                             {% endif %}
                             {% if preset.documents_count > 0 %}
-                                <span class="badge text-bg-secondary">
-                                    <i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>
-                                    {{ 'setup.preset.stats.documents'|trans({'%count%': preset.documents_count}, 'setup') }}
-                                </span>
+                                {{ pill.render('setup.preset.stats.documents'|trans({'%count%': preset.documents_count}, 'setup'), 'neutral', {size: 'sm', icon: 'bi-file-earmark-text'}) }}
                             {% endif %}
                         </div>
                         {% if preset.primary_frameworks|length > 0 %}

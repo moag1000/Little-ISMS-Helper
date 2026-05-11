@@ -272,7 +272,7 @@
 
 {# Canonical bulk-action wrapper (per design-system spec): provides row-level
    selection state for the .table-bulk-selectable below + tag-bulk integration. #}
-<div data-controller="bulk-actions" data-bulk-actions-endpoint-value="/soa">
+<div data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/soa">
 {% embed '_components/_table.html.twig' with {
     'stickyHeader': true,
     'theadClass': 'table-light',

@@ -213,7 +213,7 @@
 
     {# All Trainings Section #}
     {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/training"{% endblock %}
+        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/training"{% endblock %}
         {% block card_header %}
             <div class="card-header">
                 <h2 class="mb-0"><i class="fa-icon fa-icon--ui-list text-primary" aria-hidden="true"></i> {{ 'training.all_trainings'|trans({}, 'training') }}</h2>

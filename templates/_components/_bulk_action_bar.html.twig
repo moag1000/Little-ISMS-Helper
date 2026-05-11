@@ -7,10 +7,17 @@
   Zwei Betriebs-Modi:
 
   1) Generic Actions (Default)
-     Parameter: actions (Array aus 'delete', 'export', 'tag', 'assign')
+     Parameter: actions (Array aus 'delete', 'export', 'tag', 'assign', 'approve', 'status_change')
      Rendert Buttons für die jeweilige Aktion. Der Controller braucht zusätzlich
      am Parent-Element `data-controller="bulk-actions"` und das
      `data-bulk-actions-endpoint-value="/<entity>"`.
+
+     'approve'       → Quick-Button (bulk-action-btn-success), ruft bulkStatusChange
+                       mit data-target-status="approved" auf.
+     'status_change' → Dropdown mit allen gültigen Zielstatus (draft, in_review,
+                       approved, published, archived); je ein <button class="dropdown-item">
+                       mit data-action="click->bulk-actions#bulkStatusChange"
+                       data-target-status="<status>".
 
   2) WS-5 Tag-Apply (polymorph, für zentralen Tag-Bulk-Endpoint)
      Parameter:
@@ -28,6 +35,11 @@
   Usage (generic):
     {% include '_components/_bulk_action_bar.html.twig' with {
         actions: ['export', 'delete']
+    } %}
+
+  Usage (status-change + quick-approve):
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['status_change', 'approve', 'export', 'delete']
     } %}
 
   Usage (WS-5 tag mode):
@@ -219,10 +231,71 @@
                 </button>
             {% endif %}
 
+            {% if 'status_change' in actions %}
+                <div class="dropdown">
+                    <button type="button"
+                            class="bulk-action-btn dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="{{ 'document.bulk.status_change.label'|trans({}, 'document') }}">
+                        <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                        {{ 'document.bulk.status_change.label'|trans({}, 'document') }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="draft">
+                                <i class="bi bi-file-earmark me-1" aria-hidden="true"></i>
+                                {{ 'document.bulk.status_change.target.draft'|trans({}, 'document') }}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="in_review">
+                                <i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>
+                                {{ 'document.bulk.status_change.target.in_review'|trans({}, 'document') }}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="approved">
+                                <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
+                                {{ 'document.bulk.status_change.target.approved'|trans({}, 'document') }}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="published">
+                                <i class="bi bi-send me-1" aria-hidden="true"></i>
+                                {{ 'document.bulk.status_change.target.published'|trans({}, 'document') }}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="archived">
+                                <i class="bi bi-archive me-1" aria-hidden="true"></i>
+                                {{ 'document.bulk.status_change.target.archived'|trans({}, 'document') }}
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+
             {% if 'approve' in actions %}
                 <button type="button"
                         class="bulk-action-btn bulk-action-btn-success"
-                        data-action="click->bulk-actions#bulkApprove">
+                        data-action="click->bulk-actions#bulkStatusChange"
+                        data-target-status="approved">
                     <i class="bi bi-check-lg" aria-hidden="true"></i>
                     {{ 'bulk_actions.approve'|trans({}, 'messages') }}
                 </button>

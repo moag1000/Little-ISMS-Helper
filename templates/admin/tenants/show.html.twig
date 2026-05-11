@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_status_pill.html.twig' as pill %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block admin_title %}{{ tenant.name }}{% endblock %}
@@ -194,6 +195,7 @@
                                 </h3>
                                 {% embed '_components/_fa_table.html.twig' with { compact: true, hover: false } %}
                                     {% block table_body %}
+                                        {% import '_components/_status_pill.html.twig' as pill %}
                                         {% if tenant.parent %}
                                             <tr class="fa-table__row">
                                                 <th scope="row" class="fa-table__cell" style="width: 40%;">{{ 'corporate.field.parent'|trans({}, 'tenant') }}</th>
@@ -209,11 +211,8 @@
                                                     <th scope="row" class="fa-table__cell">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</th>
                                                     <td class="fa-table__cell">
                                                         {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[defaultGovernance.governanceModel.value]|default('secondary') %}
-                                                        {% if governance_variant == 'warning' %}
-                                                            <span class="fa-status-pill fa-status-pill--warning">{{ defaultGovernance.governanceModel.label }}</span>
-                                                        {% else %}
-                                                            <span class="badge bg-{{ governance_variant }}">{{ defaultGovernance.governanceModel.label }}</span>
-                                                        {% endif %}
+                                                        {% set _gvtone = governance_variant in ['info'] ? 'primary' : (governance_variant in ['secondary','light','dark'] ? 'neutral' : governance_variant) %}
+                                                        {{ pill.render(defaultGovernance.governanceModel.label, _gvtone, {size: 'sm'}) }}
                                                         <br><small class="text-muted">{{ defaultGovernance.governanceModel.description }}</small>
                                                     </td>
                                                 </tr>

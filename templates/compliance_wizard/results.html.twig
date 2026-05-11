@@ -3,6 +3,7 @@
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as pill %}
 {% block title %}{{ 'wizard.results'|trans({}, 'wizard') }} - {{ result.framework_name }}{% endblock %}
 
 {% block body %}
@@ -50,6 +51,7 @@
         <div class="col-lg-8">
             {% embed '_components/_card.html.twig' with { 'class': 'border-0 shadow-sm' } %}
                 {% block card_body %}
+                    {% import '_components/_status_pill.html.twig' as pill %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <p class="text-muted mb-0">
@@ -63,13 +65,8 @@
                                 {% else %}text-danger{% endif %}">
                                 {{ result.overall_score }}%
                             </div>
-                            <span class="badge
-                                {% if result.status == 'compliant' %}bg-success
-                                {% elseif result.status == 'partial' %}bg-warning-subtle text-warning
-                                {% elseif result.status == 'in_progress' %}bg-info
-                                {% else %}bg-danger{% endif %}">
-                                {{ ('wizard.status.' ~ result.status)|trans({}, 'wizard') }}
-                            </span>
+                            {% set _status_tone = result.status == 'compliant' ? 'success' : (result.status == 'partial' ? 'warning' : (result.status == 'in_progress' ? 'primary' : 'danger')) %}
+                            {{ pill.render(('wizard.status.' ~ result.status)|trans({}, 'wizard'), _status_tone) }}
                         </div>
                     </div>
                 {% endblock %}
@@ -158,17 +155,14 @@
         <div class="col-md-6 col-lg-4 mb-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (category.score >= 80 ? 'border-success' : (category.score >= 60 ? 'border-warning' : 'border-danger')) } %}
                 {% block card_header %}
+                    {% import '_components/_status_pill.html.twig' as pill %}
                     <div class="card-header d-flex justify-content-between align-items-center {% if category.score >= 80 %}bg-success bg-opacity-10 {% elseif category.score >= 60 %}bg-warning bg-opacity-10 {% else %}{% endif %}" style="background-color: var(--danger-tint); border: 1px solid var(--danger);">
                         <div class="d-flex align-items-center">
                             <i class="{{ category.icon|default('fa-icon--status-ok') }} me-2"></i>
                             <span class="fw-semibold">{{ category.name|trans({}, 'wizard') }}</span>
                         </div>
-                        <span class="badge
-                            {% if category.score >= 80 %}bg-success
-                            {% elseif category.score >= 60 %}bg-warning-subtle text-warning
-                            {% else %}bg-danger{% endif %}">
-                            {{ category.score }}%
-                        </span>
+                        {% set _cat_tone = category.score >= 80 ? 'success' : (category.score >= 60 ? 'warning' : 'danger') %}
+                        {{ pill.render(category.score ~ '%', _cat_tone) }}
                     </div>
                 {% endblock %}
                 {% block card_body %}

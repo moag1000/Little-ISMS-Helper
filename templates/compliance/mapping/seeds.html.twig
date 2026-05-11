@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'compliance.mapping.seeds.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -47,9 +48,7 @@
                             </div>
                             {% if seed.currently_loaded is not null %}
                                 {% if seed.currently_loaded > 0 %}
-                                    <span class="badge text-bg-success-subtle text-success">
-                                        {{ 'compliance.mapping.seeds.status.loaded'|trans({'%count%': seed.currently_loaded}, 'compliance') }}
-                                    </span>
+                                    {{ pill.render('compliance.mapping.seeds.status.loaded'|trans({'%count%': seed.currently_loaded}, 'compliance'), 'success') }}
                                 {% else %}
                                     <span class="border fa-status-pill fa-status-pill--neutral">
                                         {{ 'compliance.mapping.seeds.status.not_loaded'|trans({}, 'compliance') }}

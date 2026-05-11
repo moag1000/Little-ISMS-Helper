@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'assets' %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ asset.name }}{% endblock %}
 
@@ -61,9 +62,10 @@
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
+            {% import '_components/_status_pill.html.twig' as pill %}
             <div class="card-header">
                 <h2>{{ 'asset.details.title'|trans({}, 'asset') }}</h2>
-                <span class="{{ badge_status(asset.status) }}">{{ asset.status|upper }}</span>
+                {{ pill.render(asset.status|upper, pill_tone_status(asset.status)) }}
             </div>
         {% endblock %}
         {% block card_body %}
@@ -229,9 +231,7 @@
                             <div class="detail-item">
                                 <span class="label">{{ 'asset.label.data_classification'|trans({}, 'asset') }}</span>
                                 <span class="value">
-                                    <span class="{{ badge_classification(asset.dataClassification) }}">
-                                        {{ ('asset.classification.' ~ asset.dataClassification)|trans({}, 'asset')|upper }}
-                                    </span>
+                                    {{ pill.render(('asset.classification.' ~ asset.dataClassification)|trans({}, 'asset')|upper, pill_tone_classification(asset.dataClassification)) }}
                                 </span>
                             </div>
                         {% endif %}
@@ -457,9 +457,7 @@
                         {% for control in asset.protectingControls %}
                             <div class="control-item">
                                 {% include '_components/_iso_reference_label.html.twig' with { control: control, code_class: 'fw-bold' } only %}
-                                <span class="{{ badge_status(control.implementationStatus) }}">
-                                    {{ control.implementationStatus|upper }}
-                                </span>
+                                {{ pill.render(control.implementationStatus|upper, pill_tone_status(control.implementationStatus)) }}
                                 <small>({{ control.implementationPercentage }}%)</small>
                             </div>
                         {% endfor %}
@@ -475,9 +473,7 @@
                         {% for risk in asset.risks %}
                             <div class="risk-item">
                                 <strong>{{ risk.title }}</strong>
-                                <span class="{{ badge_score(risk.inherentRiskLevel, 16, 9) }}">
-                                    {{ 'asset.risk_item.risk_level'|trans({'%value%': risk.inherentRiskLevel}, 'asset') }}
-                                </span>
+                                {{ pill.render('asset.risk_item.risk_level'|trans({'%value%': risk.inherentRiskLevel}, 'asset'), pill_tone_score(risk.inherentRiskLevel, 16, 9)) }}
                                 <small>{{ 'asset.risk_item.status'|trans({'%value%': (risk.status ? risk.status.value : '')|upper}, 'asset') }}</small>
                             </div>
                         {% endfor %}
@@ -512,9 +508,7 @@
                         {% for incident in asset.incidents %}
                             <div class="incident-item">
                                 <strong>{{ incident.title }}</strong>
-                                <span class="{{ badge_severity(incident.severity) }}">
-                                    {{ incident.severity ? incident.severity.value|upper : '' }}
-                                </span>
+                                {{ pill.render(incident.severity ? incident.severity.value|upper : '', pill_tone_severity(incident.severity)) }}
                                 <small>{{ incident.detectedAt|date('Y-m-d') }}</small>
                             </div>
                         {% endfor %}
@@ -530,9 +524,7 @@
                         {% for log in auditLogs %}
                             <div class="audit-log-item">
                                 <div class="audit-log-header">
-                                    <span class="{{ badge_action(log.action) }}">
-                                        {{ log.action|upper }}
-                                    </span>
+                                    {{ pill.render(log.action|upper, pill_tone_action(log.action)) }}
                                     <small class="text-muted">{{ log.createdAt|date('Y-m-d H:i:s') }}</small>
                                 </div>
                                 <div class="audit-log-details">

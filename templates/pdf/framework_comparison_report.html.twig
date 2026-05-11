@@ -1,495 +1,306 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Framework Comparison Report PDF — fa-report-doc 5-slot macro
+   Audience: auditor (Analysis Report)
+   Status:   final
+   ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('en') }}">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="UTF-8">
     <title>Framework Comparison Report</title>
     <style>
-        :root {
-            --primary:       #0ea5e9;
-            --surface:       #ffffff;
-            --surface-2:     #f1f5f9;
-            --fg:            #0f172a;
-            --fg-2:          #475569;
-            --fg-3:          #94a3b8;
-            --border:        #cbd5e1;
-            --success:       #166534;
-            --success-tint:  #dcfce7;
-            --danger:        #991b1b;
-            --danger-tint:   #fecaca;
-            --warning:       #92400e;
-            --warning-tint:  #fef3c7;
-            --info-tint:     #dbeafe;
-            --info-text:     #1e40af;
-        }
-        @page {
-            margin: 2cm 1.5cm;
-        }
-
-        body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 9pt;
-            line-height: 1.4;
-            color: var(--fg);
-        }
-
-        h1 {
-            font-size: 18pt;
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 5pt;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10pt;
-        }
-
-        h2 {
-            font-size: 14pt;
-            color: var(--primary);
-            margin-top: 15pt;
-            margin-bottom: 8pt;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 5pt;
-        }
-
-        h3 {
-            font-size: 11pt;
-            color: var(--fg);
-            margin-top: 12pt;
-            margin-bottom: 6pt;
-            font-weight: bold;
-        }
-
-        .header-info {
-            text-align: center;
-            font-size: 9pt;
-            color: var(--fg-2);
-            margin-bottom: 20pt;
-        }
-
-        .stats-grid {
-            display: table;
-            width: 100%;
-            margin-bottom: 20pt;
-            border: 1px solid var(--border);
-            border-collapse: collapse;
-        }
-
-        .stats-row {
-            display: table-row;
-        }
-
-        .stats-cell {
-            display: table-cell;
-            padding: 10pt;
-            text-align: center;
-            border: 1px solid var(--border);
-            width: 20%;
-        }
-
-        .stats-label {
-            font-size: 8pt;
-            color: var(--fg-2);
-            font-weight: bold;
-            margin-bottom: 4pt;
-        }
-
-        .stats-value {
-            font-size: 16pt;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .stats-value-success {
-            color: var(--success);
-        }
-
-        .stats-value-warning {
-            color: var(--warning);
-        }
-
-        .insight-box {
-            background: var(--surface-2);
-            border-left: 4px solid var(--primary);
-            padding: 10pt;
-            margin: 10pt 0;
-            font-size: 8pt;
-            color: var(--fg-2);
-        }
-
-        .insight-box strong {
-            color: var(--fg);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10pt 0;
-            font-size: 8pt;
-        }
-
-        table th {
-            background-color: var(--primary);
-            color: var(--surface);
-            padding: 6pt;
-            text-align: left;
-            font-weight: bold;
-            border: 1px solid var(--border);
-        }
-
-        table td {
-            padding: 5pt;
-            border: 1px solid var(--border);
-            vertical-align: top;
-        }
-
-        table tr:nth-child(even) {
-            background-color: var(--surface-2);
-        }
-
-        .highlight-row {
-            font-weight: bold;
-            background: var(--info-tint) !important;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 2pt 6pt;
-            border-radius: 3pt;
-            font-size: 7pt;
-            font-weight: bold;
-        }
-
-        .badge-success {
-            background: var(--success-tint); color: var(--success);
-            color: var(--surface);
-        }
-
-        .badge-info {
-            background: #dbeafe; color: var(--info-text);
-            color: var(--surface);
-        }
-
-        .badge-warning {
-            background: var(--warning-tint); color: var(--warning);
-            color: var(--surface);
-        }
-
-        .badge-danger {
-            background: var(--danger-tint); color: var(--danger);
-            color: var(--surface);
-        }
-
-        .badge-secondary {
-            background: var(--surface-2); color: var(--fg-2);
-            color: var(--surface);
-        }
-
-        .quality-good {
-            color: var(--success);
-            font-weight: bold;
-        }
-
-        .quality-medium {
-            color: var(--warning);
-            font-weight: bold;
-        }
-
-        .quality-weak {
-            color: var(--danger);
-            font-weight: bold;
-        }
-
-        .page-break {
-            page-break-before: always;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .w-10 { width: 10%; }
-        .w-15 { width: 15%; }
-        .w-20 { width: 20%; }
-        .w-30 { width: 30%; }
-        .w-50 { width: 50%; }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30pt;
-            text-align: center;
-            font-size: 7pt;
-            color: var(--fg-2);
-            border-top: 1px solid var(--border);
-            padding-top: 5pt;
-        }
+        :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--success-glow:rgba(5,150,105,.20);--warning:#d97706;--warning-strong:#b45309;--warning-glow:rgba(217,119,6,.20);--danger:#dc2626;--danger-strong:#b91c1c;--danger-glow:rgba(220,38,38,.20);}
+        @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
+        body{background:#fff;font-family:'DejaVu Sans',sans-serif;margin:0;padding:0;}
+        .report-doc{background:var(--surface);color:var(--fg-1);font-size:10pt;line-height:1.45;max-width:none;margin:0;border:0;border-radius:0;}
+        .report-doc__cover{padding:18pt 14pt 12pt;border-bottom:1px solid var(--border);}
+        .report-doc__cover-top{display:table;width:100%;}
+        .report-doc__brand{display:table-cell;vertical-align:middle;}
+        .report-doc__chips{display:table-cell;text-align:right;vertical-align:middle;}
+        .report-doc__logo{display:inline-block;width:32pt;height:32pt;border-radius:6pt;background:var(--primary);color:#fff;text-align:center;line-height:32pt;font-weight:700;font-size:18pt;vertical-align:middle;margin-right:8pt;}
+        .report-doc__brand-name{font-weight:700;font-size:11pt;color:var(--fg-1);display:inline-block;vertical-align:middle;}
+        .report-doc__brand-meta{font-size:8pt;color:var(--fg-3);}
+        .report-doc__chip{display:inline-block;padding:2pt 7pt;border-radius:8pt;background:var(--surface-2);color:var(--fg-2);font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border);margin-left:4pt;}
+        .report-doc__chip--status-confidential{background:var(--danger-glow);color:var(--danger-strong);border-color:transparent;}
+        .report-doc__chip--audience-vorstand{background:var(--primary-tint);color:var(--primary-strong);border-color:transparent;}
+        .report-doc__chip--classification{background:var(--fg-1);color:#fff;border-color:transparent;}
+        .report-doc__cover-center{padding:16pt 0 12pt;}
+        .report-doc__kicker{font-size:8pt;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4pt;}
+        .report-doc__title{font-size:22pt;font-weight:800;color:var(--fg-1);margin:0 0 6pt;line-height:1.05;}
+        .report-doc__sub{font-size:10pt;color:var(--fg-2);margin:0;}
+        .report-doc__cover-grid{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8pt 0;margin:0;}
+        .report-doc__cover-grid>div{display:inline-block;width:31%;margin:0 1% 6pt 0;vertical-align:top;}
+        .report-doc__cover-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 2pt;}
+        .report-doc__cover-value{font-size:9pt;color:var(--fg-1);font-weight:600;margin:0;}
+        .report-doc__exec-summary{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__exec-heading{font-size:13pt;font-weight:800;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__kpi-grid{display:table;width:100%;border-spacing:6pt;}
+        .report-doc__kpi-tile{display:table-cell;padding:10pt;border:1px solid var(--border);border-radius:4pt;vertical-align:top;background:var(--surface);}
+        .report-doc__kpi-tile--success{border-left:3pt solid var(--success);}
+        .report-doc__kpi-tile--warning{border-left:3pt solid var(--warning);}
+        .report-doc__kpi-tile--danger{border-left:3pt solid var(--danger);}
+        .report-doc__kpi-tile--neutral{border-left:3pt solid var(--primary);}
+        .report-doc__kpi-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4pt;}
+        .report-doc__kpi-value{font-size:18pt;font-weight:800;color:var(--fg-1);margin-bottom:2pt;}
+        .report-doc__kpi-trend{font-size:8pt;font-weight:600;}
+        .report-doc__kpi-trend--up{color:var(--success-strong);}
+        .report-doc__kpi-trend--down{color:var(--danger-strong);}
+        .report-doc__tldr{background:var(--surface);border:1px solid var(--border);border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 12pt;}
+        .report-doc__tldr-label{font-size:7pt;color:var(--primary-strong);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 6pt;}
+        .report-doc__tldr-list{list-style:none;margin:0;padding:0;}
+        .report-doc__tldr-item{font-size:9pt;color:var(--fg-1);padding:2pt 0;}
+        .report-doc__tldr-item--ok{border-left:2pt solid var(--success);padding-left:6pt;}
+        .report-doc__tldr-item--warn{border-left:2pt solid var(--warning);padding-left:6pt;}
+        .report-doc__tldr-item--danger{border-left:2pt solid var(--danger);padding-left:6pt;}
+        .report-doc__tldr-dot{display:none;}
+        .report-doc__data-section{padding:12pt 14pt;border-bottom:1px solid var(--border);page-break-inside:avoid;}
+        .report-doc__section-heading{font-size:12pt;font-weight:700;color:var(--fg-1);margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__section-body{font-size:9pt;color:var(--fg-1);margin:6pt 0;}
+        .report-doc__table{width:100%;border-collapse:collapse;font-size:9pt;}
+        .report-doc__table th{background:var(--surface-2);color:var(--fg-2);padding:5pt 6pt;border:.5pt solid var(--border-strong);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:7pt;text-align:left;}
+        .report-doc__table td{padding:5pt 6pt;border:.5pt solid var(--border);color:var(--fg-1);vertical-align:top;}
+        .report-doc__table tbody tr:nth-child(even) td{background:var(--surface-2);}
+        .report-doc__table-wrap{margin:8pt 0;}
+        .report-doc__appendix{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__appendix-heading{font-size:12pt;font-weight:700;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__appendix-subheading{font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:8pt 0 4pt;}
+        .report-doc__appendix-body{font-size:8pt;color:var(--fg-2);}
+        .report-doc__appendix-sources{padding-left:14pt;font-size:8pt;color:var(--fg-2);}
+        .report-doc__footer-disclaimer{padding:12pt 14pt;background:var(--surface);border-top:1px solid var(--border-strong);}
+        .report-doc__distribution-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 4pt;}
+        .report-doc__distribution-list{list-style:none;padding:0;margin:0 0 8pt;font-size:9pt;color:var(--fg-2);}
+        .report-doc__distribution-list li{display:inline-block;border-left:2pt solid var(--border);padding:0 8pt;}
+        .report-doc__disclaimer-text{font-size:8pt;color:var(--fg-3);padding:8pt;background:var(--surface-2);border-radius:4pt;border:1px solid var(--border);margin:0 0 8pt;}
+        .report-doc__footer-meta{font-size:7pt;color:var(--fg-3);}
+        .report-doc__footer-brand{font-weight:700;color:var(--fg-2);}
+        .report-doc__footer-classification{color:var(--danger-strong);font-weight:700;text-transform:uppercase;}
+        .badge{display:inline-block;padding:2pt 5pt;border-radius:3pt;font-size:7pt;font-weight:700;}
+        .badge-success{background:var(--success-tint);color:var(--success-strong);}
+        .badge-warning{background:rgba(217,119,6,.12);color:var(--warning-strong);}
+        .badge-danger{background:rgba(220,38,38,.12);color:var(--danger-strong);}
+        .badge-info{background:var(--primary-tint);color:var(--primary-strong);}
     </style>
 </head>
 <body>
-    <h1>Framework Comparison Report</h1>
-    <div class="header-info">
-        {{ framework1.name }} ↔ {{ framework2.name }}<br>
-        Generated: {{ pdf_generation_date|date('d.m.Y H:i') }}
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {# Executive Summary #}
-    <h2>Executive Summary</h2>
-    <div class="stats-grid">
-        <div class="stats-row">
-            <div class="stats-cell">
-                <div class="stats-label">{{ framework1.code }}</div>
-                <div class="stats-value">{{ framework1_count }}</div>
-                <div class="stats-label" style="margin-top: 2pt;">Requirements</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">{{ framework2.code }}</div>
-                <div class="stats-value">{{ framework2_count }}</div>
-                <div class="stats-label" style="margin-top: 2pt;">Requirements</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Mapped</div>
-                <div class="stats-value stats-value-success">{{ mapped_count }}</div>
-                <div class="stats-label" style="margin-top: 2pt;">{{ overlap_percentage }}%</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Avg. Quality</div>
-                <div class="stats-value {% if avg_mapping_quality >= 80 %}stats-value-success{% elseif avg_mapping_quality >= 60 %}stats-value-warning{% endif %}">{{ avg_mapping_quality }}%</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Symmetric Coverage</div>
-                <div class="stats-value {% if symmetric_coverage >= 70 %}stats-value-success{% endif %}">{{ symmetric_coverage }}%</div>
-            </div>
-        </div>
-    </div>
+{# ── Bidirectional Coverage rows ──────────────────────────────────────── #}
+{% set _bidi_rows = [
+    [
+        'Total Requirements (Source)',
+        framework1_count,
+        framework2_count,
+    ],
+    [
+        'Mapped Requirements',
+        bidirectional_coverage.framework1_to_framework2.covered_requirements ?? 0,
+        bidirectional_coverage.framework2_to_framework1.covered_requirements ?? 0,
+    ],
+    [
+        'Coverage Percentage',
+        '<strong style="color:' ~ (coverage_f1_to_f2 >= 70 ? 'var(--success-strong)' : (coverage_f1_to_f2 >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)')) ~ ';">' ~ coverage_f1_to_f2 ~ '%</strong>',
+        '<strong style="color:' ~ (coverage_f2_to_f1 >= 70 ? 'var(--success-strong)' : (coverage_f2_to_f1 >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)')) ~ ';">' ~ coverage_f2_to_f1 ~ '%</strong>',
+    ],
+    [
+        '<strong>Bidirectional Overlap (Average)</strong>',
+        '<strong>' ~ bidirectional_overlap ~ '%</strong>',
+        '',
+    ],
+    [
+        '<strong>Symmetric Coverage (Minimum)</strong>',
+        '<strong>' ~ symmetric_coverage ~ '%</strong>',
+        '',
+    ],
+] %}
 
-    {# Bidirectional Coverage #}
-    <h2>Bidirectional Coverage Analysis</h2>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-50">Metric</th>
-                <th scope="col" class="text-center w-20">{{ framework1.code }} → {{ framework2.code }}</th>
-                <th scope="col" class="text-center w-20">{{ framework2.code }} → {{ framework1.code }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Total Requirements (Source)</td>
-                <td class="text-center">{{ framework1_count }}</td>
-                <td class="text-center">{{ framework2_count }}</td>
-            </tr>
-            <tr>
-                <td>Mapped Requirements</td>
-                <td class="text-center">{{ bidirectional_coverage.framework1_to_framework2.covered_requirements ?? 0 }}</td>
-                <td class="text-center">{{ bidirectional_coverage.framework2_to_framework1.covered_requirements ?? 0 }}</td>
-            </tr>
-            <tr>
-                <td>Coverage Percentage</td>
-                <td class="text-center">
-                    <span class="{% if coverage_f1_to_f2 >= 70 %}quality-good{% elseif coverage_f1_to_f2 >= 50 %}quality-medium{% else %}quality-weak{% endif %}">
-                        {{ coverage_f1_to_f2 }}%
-                    </span>
-                </td>
-                <td class="text-center">
-                    <span class="{% if coverage_f2_to_f1 >= 70 %}quality-good{% elseif coverage_f2_to_f1 >= 50 %}quality-medium{% else %}quality-weak{% endif %}">
-                        {{ coverage_f2_to_f1 }}%
-                    </span>
-                </td>
-            </tr>
-            <tr class="highlight-row">
-                <td>Bidirectional Overlap (Average)</td>
-                <td colspan="2" class="text-center">{{ bidirectional_overlap }}%</td>
-            </tr>
-            <tr class="highlight-row">
-                <td>Symmetric Coverage (Minimum)</td>
-                <td colspan="2" class="text-center">{{ symmetric_coverage }}%</td>
-            </tr>
-        </tbody>
-    </table>
+{% set _bidi_analysis = '' %}
+{% if symmetric_coverage >= 70 %}
+    {% set _bidi_analysis = 'Excellent bidirectional coverage. Both frameworks are strongly aligned.' %}
+{% elseif symmetric_coverage >= 50 %}
+    {% set _bidi_analysis = 'Good mutual coverage with some gaps in both directions.' %}
+{% else %}
+    {% set _bidi_analysis = 'Asymmetric coverage detected. Review unmapped requirements in both frameworks.' %}
+{% endif %}
 
-    <div class="insight-box">
-        <strong>Analysis:</strong>
-        {% if symmetric_coverage >= 70 %}
-        Excellent bidirectional coverage. Both frameworks are strongly aligned.
-        {% elseif symmetric_coverage >= 50 %}
-        Good mutual coverage with some gaps in both directions.
-        {% else %}
-        Asymmetric coverage detected. Review unmapped requirements in both frameworks.
-        {% endif %}
-    </div>
+{# ── Mapping Quality Distribution rows ────────────────────────────────── #}
+{% set _qual_rows = [
+    [
+        '<span class="badge badge-success">Excellent</span>',
+        '90-100%',
+        '<strong>' ~ quality_distribution.excellent ~ '</strong>',
+        (mapped_count > 0 ? ((quality_distribution.excellent / mapped_count * 100)|round(1)) : 0) ~ '%',
+        'Precise mappings, high reliability',
+    ],
+    [
+        '<span class="badge badge-info">Good</span>',
+        '70-89%',
+        '<strong>' ~ quality_distribution.good ~ '</strong>',
+        (mapped_count > 0 ? ((quality_distribution.good / mapped_count * 100)|round(1)) : 0) ~ '%',
+        'pdf.framework_comparison.solid_mappings_minor'|trans({}, 'messages'),
+    ],
+    [
+        '<span class="badge badge-warning">Medium</span>',
+        '50-69%',
+        '<strong>' ~ quality_distribution.medium ~ '</strong>',
+        (mapped_count > 0 ? ((quality_distribution.medium / mapped_count * 100)|round(1)) : 0) ~ '%',
+        'Partial alignment, review recommended',
+    ],
+    [
+        '<span class="badge badge-danger">Weak</span>',
+        '&lt;50%',
+        '<strong>' ~ quality_distribution.weak ~ '</strong>',
+        (mapped_count > 0 ? ((quality_distribution.weak / mapped_count * 100)|round(1)) : 0) ~ '%',
+        'Low alignment, optimization needed',
+    ],
+    [
+        '<strong>Average Mapping Quality</strong>',
+        '',
+        '',
+        '<strong>' ~ avg_mapping_quality ~ '%</strong>',
+        '',
+    ],
+] %}
 
-    {# Mapping Quality Distribution #}
-    <div class="page-break"></div>
-    <h2>Mapping Quality Distribution</h2>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-30">Quality Level</th>
-                <th scope="col" class="text-center w-15">Range</th>
-                <th scope="col" class="text-center w-15">Count</th>
-                <th scope="col" class="text-center w-15">Percentage</th>
-                <th scope="col" class="w-25">Assessment</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><span class="badge badge-success">Excellent</span></td>
-                <td class="text-center">90-100%</td>
-                <td class="text-center"><strong>{{ quality_distribution.excellent }}</strong></td>
-                <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.excellent / mapped_count * 100)|round(1)) : 0 }}%</td>
-                <td>Precise mappings, high reliability</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-info">Good</span></td>
-                <td class="text-center">70-89%</td>
-                <td class="text-center"><strong>{{ quality_distribution.good }}</strong></td>
-                <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.good / mapped_count * 100)|round(1)) : 0 }}%</td>
-                <td>{{ 'pdf.framework_comparison.solid_mappings_minor'|trans({}, 'messages')}}</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-warning">Medium</span></td>
-                <td class="text-center">50-69%</td>
-                <td class="text-center"><strong>{{ quality_distribution.medium }}</strong></td>
-                <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.medium / mapped_count * 100)|round(1)) : 0 }}%</td>
-                <td>Partial alignment, review recommended</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-danger">Weak</span></td>
-                <td class="text-center">&lt;50%</td>
-                <td class="text-center"><strong>{{ quality_distribution.weak }}</strong></td>
-                <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.weak / mapped_count * 100)|round(1)) : 0 }}%</td>
-                <td>Low alignment, optimization needed</td>
-            </tr>
-            <tr class="highlight-row">
-                <td><strong>Average Mapping Quality</strong></td>
-                <td colspan="4" class="text-center"><strong>{{ avg_mapping_quality }}%</strong></td>
-            </tr>
-        </tbody>
-    </table>
+{% set excellent_good_pct = mapped_count > 0 ? (((quality_distribution.excellent + quality_distribution.good) / mapped_count * 100)|round(1)) : 0 %}
+{% set _qual_insight = '<strong>Quality Assessment:</strong> '
+    ~ excellent_good_pct ~ '% of mappings are good or better (≥70%).' %}
+{% if quality_distribution.weak > 0 %}
+    {% set _qual_insight = _qual_insight
+        ~ '<br><strong>Recommendation:</strong> Review and improve ' ~ quality_distribution.weak ~ ' weak mappings (&lt;50% quality) for better framework alignment.' %}
+{% endif %}
 
-    {% set excellent_good_pct = mapped_count > 0 ? (((quality_distribution.excellent + quality_distribution.good) / mapped_count * 100)|round(1)) : 0 %}
-    <div class="insight-box">
-        <strong>Quality Assessment:</strong>
-        {{ excellent_good_pct }}% of mappings are good or better (≥70%).
-        {% if quality_distribution.weak > 0 %}
-        <br><strong>Recommendation:</strong> Review and improve {{ quality_distribution.weak }} weak mappings (&lt;50% quality) for better framework alignment.
-        {% endif %}
-    </div>
+{# ── Category Coverage tables (F1→F2 and F2→F1) ──────────────────────── #}
+{% set _cat_f1_rows = [] %}
+{% for category, stats in category_coverage_f1_to_f2 %}
+    {% set _cov_color = stats.coverage >= 70 ? 'var(--success-strong)' : (stats.coverage >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)') %}
+    {% set _cat_f1_rows = _cat_f1_rows|merge([[
+        '<strong>' ~ category ~ '</strong>',
+        stats.total,
+        stats.mapped,
+        '<strong style="color:' ~ _cov_color ~ ';">' ~ stats.coverage ~ '%</strong>',
+        stats.avg_quality ~ '%',
+    ]]) %}
+{% endfor %}
 
-    {# Category Coverage Analysis #}
-    <div class="page-break"></div>
-    <h2>Category Coverage Analysis</h2>
+{% set _cat_f2_rows = [] %}
+{% for category, stats in category_coverage_f2_to_f1 %}
+    {% set _cov_color = stats.coverage >= 70 ? 'var(--success-strong)' : (stats.coverage >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)') %}
+    {% set _cat_f2_rows = _cat_f2_rows|merge([[
+        '<strong>' ~ category ~ '</strong>',
+        stats.total,
+        stats.mapped,
+        '<strong style="color:' ~ _cov_color ~ ';">' ~ stats.coverage ~ '%</strong>',
+        stats.avg_quality ~ '%',
+    ]]) %}
+{% endfor %}
 
-    <h2>{{ framework1.code }} → {{ framework2.code }}</h2>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-30">Category</th>
-                <th scope="col" class="text-center w-15">Total</th>
-                <th scope="col" class="text-center w-15">Mapped</th>
-                <th scope="col" class="text-center w-15">Coverage</th>
-                <th scope="col" class="text-center w-15">Avg. Quality</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for category, stats in category_coverage_f1_to_f2 %}
-            <tr>
-                <td><strong>{{ category }}</strong></td>
-                <td class="text-center">{{ stats.total }}</td>
-                <td class="text-center">{{ stats.mapped }}</td>
-                <td class="text-center">
-                    <span class="{% if stats.coverage >= 70 %}quality-good{% elseif stats.coverage >= 50 %}quality-medium{% else %}quality-weak{% endif %}">
-                        {{ stats.coverage }}%
-                    </span>
-                </td>
-                <td class="text-center">{{ stats.avg_quality }}%</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{# ── Detailed Requirement Mapping rows ────────────────────────────────── #}
+{% set _detail_rows = [] %}
+{% for detail in comparison_details %}
+    {% set _status_badge = detail.mapped
+        ? '<span class="badge badge-success">Mapped</span>'
+        : '<span class="badge badge-info">Not Mapped</span>' %}
 
-    <h3 style="margin-top: 15pt;">{{ framework2.code }} → {{ framework1.code }}</h3>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-30">Category</th>
-                <th scope="col" class="text-center w-15">Total</th>
-                <th scope="col" class="text-center w-15">Mapped</th>
-                <th scope="col" class="text-center w-15">Coverage</th>
-                <th scope="col" class="text-center w-15">Avg. Quality</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for category, stats in category_coverage_f2_to_f1 %}
-            <tr>
-                <td><strong>{{ category }}</strong></td>
-                <td class="text-center">{{ stats.total }}</td>
-                <td class="text-center">{{ stats.mapped }}</td>
-                <td class="text-center">
-                    <span class="{% if stats.coverage >= 70 %}quality-good{% elseif stats.coverage >= 50 %}quality-medium{% else %}quality-weak{% endif %}">
-                        {{ stats.coverage }}%
-                    </span>
-                </td>
-                <td class="text-center">{{ stats.avg_quality }}%</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% set _qual_cell = '-' %}
+    {% if detail.matchQuality is not null %}
+        {% set _qual_color = detail.matchQuality >= 90 ? 'var(--success-strong)' : (detail.matchQuality >= 70 ? 'var(--warning-strong)' : 'var(--danger-strong)') %}
+        {% set _qual_cell = '<strong style="color:' ~ _qual_color ~ ';">' ~ detail.matchQuality ~ '%</strong>' %}
+    {% endif %}
 
-    <div class="insight-box">
-        <strong>Category Insights:</strong>
-        Categories with coverage &lt;50% should be prioritized for improved mapping quality and completeness.
-    </div>
+    {% set _f2_desc = '' %}
+    {% if detail.framework2Requirement %}
+        {% set _f2_desc = (detail.framework2Requirement.description|slice(0, 60)) ~ (detail.framework2Requirement.description|length > 60 ? '...' : '') %}
+    {% else %}
+        {% set _f2_desc = '<span style="color:var(--fg-3);">No mapping</span>' %}
+    {% endif %}
 
-    {# Detailed Comparison #}
-    <div class="page-break"></div>
-    <h2>Detailed Requirement Mapping</h2>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-15">{{ framework1.code }} ID</th>
-                <th scope="col" class="w-30">{{ framework1.code }} Requirement</th>
-                <th scope="col" class="w-15">Mapping Status</th>
-                <th scope="col" class="w-10">Quality</th>
-                <th scope="col" class="w-30">{{ framework2.code }} Requirement</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for detail in comparison_details %}
-            <tr>
-                <td><strong>{{ detail.framework1Requirement.requirementId }}</strong></td>
-                <td>{{ (detail.framework1Requirement.description ?? '')|slice(0, 60) }}{% if (detail.framework1Requirement.description ?? '')|length > 60 %}...{% endif %}</td>
-                <td class="text-center">
-                    {% if detail.mapped %}
-                        <span class="badge badge-success">Mapped</span>
-                    {% else %}
-                        <span class="badge badge-secondary">Not Mapped</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    {% if detail.matchQuality is not null %}
-                        <span class="{% if detail.matchQuality >= 90 %}quality-good{% elseif detail.matchQuality >= 70 %}quality-medium{% else %}quality-weak{% endif %}">
-                            {{ detail.matchQuality }}%
-                        </span>
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>
-                    {% if detail.framework2Requirement %}
-                        {{ detail.framework2Requirement.description|slice(0, 60) }}{% if detail.framework2Requirement.description|length > 60 %}...{% endif %}
-                    {% else %}
-                        <span style="color: var(--fg-3);">No mapping</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% set _detail_rows = _detail_rows|merge([[
+        '<strong>' ~ detail.framework1Requirement.requirementId ~ '</strong>',
+        ((detail.framework1Requirement.description ?? '')|slice(0, 60)) ~ ((detail.framework1Requirement.description ?? '')|length > 60 ? '...' : ''),
+        _status_badge,
+        _qual_cell,
+        _f2_desc,
+    ]]) %}
+{% endfor %}
 
-    <div class="footer">
-        Framework Comparison Report - Generated on {{ pdf_generation_date|date('d.m.Y H:i:s') }} - Page <span class="pagenum"></span>
-    </div>
+{# ── Build sections array ─────────────────────────────────────────────── #}
+{% set _sections = [
+    {
+        heading: 'Bidirectional Coverage Analysis',
+        table: {
+            headers: ['Metric', framework1.code ~ ' → ' ~ framework2.code, framework2.code ~ ' → ' ~ framework1.code],
+            rows: _bidi_rows,
+        },
+        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Analysis:</strong> ' ~ _bidi_analysis ~ '</div>',
+    },
+    {
+        heading: 'Mapping Quality Distribution',
+        table: {
+            headers: ['Quality Level', 'Range', 'Count', 'Percentage', 'Assessment'],
+            rows: _qual_rows,
+        },
+        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">' ~ _qual_insight ~ '</div>',
+    },
+    {
+        heading: 'Category Coverage: ' ~ framework1.code ~ ' → ' ~ framework2.code,
+        table: {
+            headers: ['Category', 'Total', 'Mapped', 'Coverage', 'Avg. Quality'],
+            rows: _cat_f1_rows,
+        },
+    },
+    {
+        heading: 'Category Coverage: ' ~ framework2.code ~ ' → ' ~ framework1.code,
+        table: {
+            headers: ['Category', 'Total', 'Mapped', 'Coverage', 'Avg. Quality'],
+            rows: _cat_f2_rows,
+        },
+        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Category Insights:</strong> Categories with coverage &lt;50% should be prioritized for improved mapping quality and completeness.</div>',
+    },
+    {
+        heading: 'Detailed Requirement Mapping',
+        table: {
+            headers: [framework1.code ~ ' ID', framework1.code ~ ' Requirement', 'Mapping Status', 'Quality', framework2.code ~ ' Requirement'],
+            rows: _detail_rows,
+        },
+    },
+] %}
+
+{{ _fa_report_doc.render({
+    report: {
+        title:        'Framework Comparison Report',
+        subtitle:     framework1.name ~ ' ↔ ' ~ framework2.name,
+        kicker:       'Compliance · Framework Comparison',
+        status:       'final',
+        audience:     'auditor',
+        generated_at: pdf_generation_date|date('d.m.Y H:i'),
+    },
+    brand_name: 'Little ISMS Helper',
+    key_findings: [
+        { label: framework1.code ~ ': ' ~ framework1_count ~ ' requirements', tone: 'ok' },
+        { label: framework2.code ~ ': ' ~ framework2_count ~ ' requirements', tone: 'ok' },
+        { label: 'Mapped: ' ~ mapped_count ~ ' (' ~ overlap_percentage ~ '%)',
+          tone: overlap_percentage >= 60 ? 'ok' : (overlap_percentage >= 40 ? 'warn' : 'danger') },
+        { label: 'Avg. Quality: ' ~ avg_mapping_quality ~ '%',
+          tone: avg_mapping_quality >= 80 ? 'ok' : (avg_mapping_quality >= 60 ? 'warn' : 'danger') },
+        { label: 'Symmetric Coverage: ' ~ symmetric_coverage ~ '%',
+          tone: symmetric_coverage >= 70 ? 'ok' : (symmetric_coverage >= 50 ? 'warn' : 'danger') },
+    ],
+    kpis: [
+        { label: framework1.code ~ ' Req.', value: framework1_count, tone: 'neutral' },
+        { label: framework2.code ~ ' Req.', value: framework2_count, tone: 'neutral' },
+        { label: 'Mapped',                  value: mapped_count ~ ' (' ~ overlap_percentage ~ '%)', tone: 'success' },
+        { label: 'Avg. Quality',            value: avg_mapping_quality ~ '%',
+          tone: avg_mapping_quality >= 80 ? 'success' : (avg_mapping_quality >= 60 ? 'warning' : 'danger') },
+        { label: 'Symmetric Coverage',      value: symmetric_coverage ~ '%',
+          tone: symmetric_coverage >= 70 ? 'success' : (symmetric_coverage >= 50 ? 'warning' : 'danger') },
+    ],
+    sections: _sections,
+    appendix: {
+        methodology: '<p>Framework comparison analyzes bidirectional requirement mappings between two compliance frameworks. Coverage = mapped requirements / total requirements per direction. Mapping quality scored 0-100% based on semantic similarity. Symmetric coverage = minimum of both directional coverages (conservative measure). Quality levels: Excellent (90-100%), Good (70-89%), Medium (50-69%), Weak (&lt;50%).</p>',
+        sources: [
+            { label: 'FrameworkComparisonService', detail: 'compareFrameworks() — bidirectional mapping analysis' },
+        ],
+    },
+}) }}
 </body>
 </html>

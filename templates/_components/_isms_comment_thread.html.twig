@@ -17,12 +17,14 @@
 {% set _comments = comments|default([]) %}
 {% set _showForm = showForm|default(true) %}
 
+{% import '_components/_status_pill.html.twig' as pill %}
+
 <section class="fa-section mb-3" aria-label="{{ 'comments.section_title'|trans({}, 'messages') }}">
     <div class="fa-section__header">
         <h2 class="fa-section__title">
             <i class="fa-icon fa-icon--ui-chat" aria-hidden="true"></i>
             {{ 'comments.section_title'|trans({}, 'messages') }}
-            <span class="badge bg-secondary ms-2">{{ _comments|length }}</span>
+            {{ pill.render(_comments|length, 'neutral', {class: 'ms-2'}) }}
         </h2>
     </div>
     <div class="fa-section__body">

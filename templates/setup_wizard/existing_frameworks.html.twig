@@ -218,7 +218,7 @@
             var newlyAdded = collectCodes('newlyAdded');
 
             if (newlyAdded.length === 0) {
-                previewBox.innerHTML = '<div class="alert alert-info border" role="alert">' + noNewlyHtml + '</div>';
+                previewBox.innerHTML = '<div class="fa-alert fa-alert--info border" role="alert"><div class="fa-alert__body"><p class="fa-alert__message">' + noNewlyHtml + '</p></div></div>';
                 previewBox.setAttribute('aria-busy', 'false');
                 return;
             }
@@ -244,7 +244,7 @@
                     previewBox.setAttribute('aria-busy', 'false');
                 })
                 .catch(function() {
-                    previewBox.innerHTML = '<div class="alert alert-danger" role="alert">' + errorHtml + '</div>';
+                    previewBox.innerHTML = '<div class="fa-alert fa-alert--danger" role="alert"><div class="fa-alert__body"><p class="fa-alert__message">' + errorHtml + '</p></div></div>';
                     previewBox.setAttribute('aria-busy', 'false');
                 });
         }

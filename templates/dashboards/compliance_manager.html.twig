@@ -7,6 +7,7 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block body %}
 <main class="fa-aurora-surface role-dashboard compliance-manager-dashboard">
@@ -92,6 +93,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+                    {% import '_components/_status_pill.html.twig' as pill %}
                     {% for fw in dashboard.frameworks %}
                         {% set coverage = fw.compliance|default(0) %}
                         {% set tone = coverage >= 80 ? 'success' : (coverage >= 60 ? 'warning' : 'danger') %}
@@ -112,9 +114,7 @@
                                 </div>
                             </td>
                             <td class="fa-table__cell">
-                                <span class="badge" style="background-color: var(--{{ tone }}-tint); color: var(--{{ tone }}-strong, var(--{{ tone }})); border: 1px solid var(--{{ tone }});">
-                                    {{ coverage >= 80 ? 'compliance_manager.status.ok'|trans : (coverage >= 60 ? 'compliance_manager.status.at_risk'|trans : 'compliance_manager.status.gap'|trans) }}
-                                </span>
+                                {{ pill.render(coverage >= 80 ? 'compliance_manager.status.ok'|trans : (coverage >= 60 ? 'compliance_manager.status.at_risk'|trans : 'compliance_manager.status.gap'|trans), tone, {size: 'sm'}) }}
                             </td>
                             <td class="fa-table__cell fa-table__cell--actions">
                                 {# V4-EF-5: Drill-down link to heatmap detail page #}
@@ -239,8 +239,7 @@
                             </div>
                             <span>
                                 {% if audit.plannedDate is defined and audit.plannedDate %}
-                                    {# V3 W3-Aurora: Aurora-Tone via inline style. #}
-                                    <span class="badge" style="background-color: var(--info-tint); color: var(--info); border: 1px solid var(--info);">{{ audit.plannedDate|date('d.m.Y') }}</span>
+                                    {{ pill.render(audit.plannedDate|date('d.m.Y'), 'primary', {size: 'sm'}) }}
                                 {% endif %}
                             </span>
                         </a>
@@ -270,8 +269,7 @@
                                 <strong>{{ doc.originalFilename|default(doc.filename|default('Document #' ~ doc.id)) }}</strong>
                                 <small class="d-block text-muted">{{ doc.category|default('—') }} · v{{ doc.version|default('—') }}</small>
                             </div>
-                            {# V3 W3-Aurora: Aurora-Tone via inline style. #}
-                            <span class="badge" style="background-color: var(--warning-tint); color: var(--warning-strong, var(--warning)); border: 1px solid var(--warning);">{{ doc.status }}</span>
+                            {{ pill.render(doc.status, 'warning', {size: 'sm'}) }}
                         </a>
                     {% endfor %}
                 </div>

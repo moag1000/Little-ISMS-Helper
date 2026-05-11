@@ -36,7 +36,7 @@ class ScheduledReportController extends AbstractController
     #[Route('/', name: 'app_scheduled_report_index')]
     public function index(): Response
     {
-        $tenantId = $this->tenantContext->getTenantId();
+        $tenantId = $this->tenantContext->getCurrentTenantId();
         $reports = $this->repository->findByTenant($tenantId);
         $statistics = $this->repository->getStatistics($tenantId);
         $dueReports = $this->repository->findDueReports();
@@ -52,7 +52,7 @@ class ScheduledReportController extends AbstractController
     public function new(Request $request): Response
     {
         $report = new ScheduledReport();
-        $report->setTenantId($this->tenantContext->getTenantId());
+        $report->setTenantId($this->tenantContext->getCurrentTenantId());
         $report->setCreatedBy($this->getUser());
         $report->setLocale($request->getLocale());
 
@@ -194,7 +194,7 @@ class ScheduledReportController extends AbstractController
      */
     private function checkAccess(ScheduledReport $report): void
     {
-        if ($report->getTenantId() !== $this->tenantContext->getTenantId()) {
+        if ($report->getTenantId() !== $this->tenantContext->getCurrentTenantId()) {
             throw $this->createAccessDeniedException('Access denied to this scheduled report.');
         }
     }

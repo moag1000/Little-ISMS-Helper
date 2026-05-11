@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block admin_title %}{{ 'corporate.title'|trans({}, 'tenant') }}{% endblock %}
 {% block admin_subtitle %}
@@ -280,11 +281,8 @@
                 <code class="text-muted ms-2">{{ subsidiary.code }}</code>
                 {% if subsidiary.governanceLabel %}
                     {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[subsidiary.governanceModel]|default('secondary') %}
-                    {% if governance_variant == 'warning' %}
-                        <span class="fa-status-pill fa-status-pill--warning ms-2">{{ subsidiary.governanceLabel }}</span>
-                    {% else %}
-                        <span class="badge bg-{{ governance_variant }} ms-2">{{ subsidiary.governanceLabel }}</span>
-                    {% endif %}
+                    {% set _gvtone = governance_variant in ['info'] ? 'primary' : (governance_variant in ['secondary','light','dark'] ? 'neutral' : governance_variant) %}
+                    {{ pill.render(subsidiary.governanceLabel, _gvtone, {size: 'sm', class: 'ms-2'}) }}
                 {% endif %}
             </div>
             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">

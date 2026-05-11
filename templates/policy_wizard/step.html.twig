@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 {% set step_title_key = 'policy_wizard.step.' ~ step ~ '.title' %}
 {% set step_subtitle_key = 'policy_wizard.step.' ~ step ~ '.subtitle' %}
 
@@ -200,7 +201,7 @@
                                             <code>{{ ap.template_key }}</code> →
                                             <strong>{{ ap.display }}</strong>
                                             {% if ap.source == 'default' %}
-                                                <span class="badge bg-info-subtle text-info-emphasis ms-1">{{ 'policy_wizard.step.review_generate.confirm_box.default_approver_badge'|trans }}</span>
+                                                {{ pill.render('policy_wizard.step.review_generate.confirm_box.default_approver_badge'|trans, 'primary', {size: 'sm', class: 'ms-1'}) }}
                                             {% endif %}
                                         </li>
                                     {% endfor %}

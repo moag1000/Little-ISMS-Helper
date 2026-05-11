@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'compliance.mapping.wizard.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -43,8 +44,9 @@
         {# Step 1 — Framework-Paar — 8H.4 migrated #}
         {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-3' } %}
             {% block card_header %}
+                {% import '_components/_status_pill.html.twig' as pill %}
                 <div class="card-header">
-                    <span class="badge text-bg-primary me-2">1</span>
+                    {{ pill.render('1', 'primary', { noDot: true }) }}
                     <strong>{{ 'compliance.mapping.wizard.step1.title'|trans({}, 'compliance') }}</strong>
                     <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step1.hint'|trans({}, 'compliance') }}</span>
                 </div>
@@ -89,8 +91,9 @@
         {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-3' } %}
             {% block card_attrs %}data-mapping-wizard-target="step2" hidden{% endblock %}
             {% block card_header %}
+                {% import '_components/_status_pill.html.twig' as pill %}
                 <div class="card-header">
-                    <span class="badge text-bg-primary me-2">2</span>
+                    {{ pill.render('2', 'primary', { noDot: true }) }}
                     <strong>{{ 'compliance.mapping.wizard.step2.title'|trans({}, 'compliance') }}</strong>
                     <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step2.hint'|trans({}, 'compliance') }}</span>
                 </div>
@@ -128,8 +131,9 @@
         {# Step 3 — Typ wählt Prozent + Confidence vor — 8H.4 migrated #}
         {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-3' } %}
             {% block card_header %}
+                {% import '_components/_status_pill.html.twig' as pill %}
                 <div class="card-header">
-                    <span class="badge text-bg-primary me-2">3</span>
+                    {{ pill.render('3', 'primary', { noDot: true }) }}
                     <strong>{{ 'compliance.mapping.wizard.step3.title'|trans({}, 'compliance') }}</strong>
                     <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step3.hint'|trans({}, 'compliance') }}</span>
                 </div>
@@ -195,8 +199,9 @@
         {# Step 4 — Rationale — 8H.4 migrated #}
         {% embed '_components/_card.html.twig' with { class: 'shadow-sm mb-3' } %}
             {% block card_header %}
+                {% import '_components/_status_pill.html.twig' as pill %}
                 <div class="card-header">
-                    <span class="badge text-bg-primary me-2">4</span>
+                    {{ pill.render('4', 'primary', { noDot: true }) }}
                     <strong>{{ 'compliance.mapping.wizard.step4.title'|trans({}, 'compliance') }}</strong>
                     <span class="small text-muted ms-2">{{ 'compliance.mapping.wizard.step4.hint'|trans({}, 'compliance') }}</span>
                 </div>

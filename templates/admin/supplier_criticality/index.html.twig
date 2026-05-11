@@ -2,6 +2,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block admin_title %}{{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}{% endblock %}
 
@@ -48,6 +49,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+                        {% import '_components/_status_pill.html.twig' as pill %}
                         {% for level in levels %}
                         <tr class="fa-table__row">
                             <td class="fa-table__cell">{{ level.sortOrder }}</td>
@@ -56,8 +58,8 @@
                             <td class="fa-table__cell">{{ level.labelEn }}</td>
                             <td class="fa-table__cell">
                                 {% if level.color %}
-                                    {% set _cpill = level.color in ['info'] ? 'primary' : (level.color in ['secondary','light','dark'] ? 'neutral' : level.color) %}
-                                    <span class="badge bg-{{ level.color }} fa-status-pill fa-status-pill--{{ _cpill }}">{{ level.color }}</span>
+                                    {% set _ctone = level.color in ['info'] ? 'primary' : (level.color in ['secondary','light','dark'] ? 'neutral' : level.color) %}
+                                    {{ pill.render(level.color, _ctone, {size: 'sm'}) }}
                                 {% else %}
                                     <span class="text-muted">—</span>
                                 {% endif %}

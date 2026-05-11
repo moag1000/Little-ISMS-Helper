@@ -6,6 +6,9 @@ document:
         in_review: 'In review'
         approved: 'Approved'
         published: 'Published'
+        archived: 'Archived'
+        superseded: 'Superseded'
+        active: 'Active (legacy)'
     action:
         upload: 'Upload document'
         update: Update
@@ -19,6 +22,8 @@ document:
     kpi:
         total_documents: 'Total documents'
         total_size: 'Total size'
+        drafts: 'Drafts'
+        in_review: 'In review'
     details:
         title: Details
     label:
@@ -179,6 +184,22 @@ document:
     climate_change:
         badge: 'Climate-Change Aware (Amd. 1:2024)'
         tooltip: 'ISO 27001:2022 Amd. 1:2024 — climate-change considerations have been applied.'
+    bulk:
+        status_change:
+            label: 'Change status'
+            confirm: 'Change status of %count% documents to %newStatus%?'
+            success: '%count% documents updated'
+            partial: '%changed% updated, %rejected% rejected'
+            error: 'Update failed'
+            invalid_transition: 'Status transition not allowed'
+            not_found: 'Document not found'
+            tenant_mismatch: 'Access denied'
+            target:
+                draft: 'Draft'
+                in_review: 'In review'
+                approved: 'Approved'
+                published: 'Published'
+                archived: 'Archived'
     policy_body:
         section_title: 'Edit policy text (your customisation)'
         label: 'Policy text (your customisation)'

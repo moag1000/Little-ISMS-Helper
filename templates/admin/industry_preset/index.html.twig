@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'admin' %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'industry_preset.title'|trans }} · {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -42,18 +43,10 @@
                         <div class="fa-section__body">
                             <p class="text-muted small mb-3">{{ preset.description|nl2br }}</p>
                             <div class="d-flex flex-wrap gap-2 mb-3">
-                                <span class="badge bg-primary-subtle text-primary">
-                                    <i class="bi bi-box"></i> {{ preset.modules_count }} {{ 'industry_preset.badge_label.modules'|trans }}
-                                </span>
-                                <span class="badge bg-info-subtle text-info">
-                                    <i class="bi bi-shield-check"></i> {{ preset.frameworks_count }} {{ 'industry_preset.badge_label.frameworks'|trans }}
-                                </span>
-                                <span class="badge bg-success-subtle text-success">
-                                    <i class="bi bi-check2-square"></i> {{ preset.controls_count }} {{ 'industry_preset.badge_label.controls'|trans }}
-                                </span>
-                                <span class="badge bg-warning-subtle text-warning">
-                                    <i class="bi bi-file-earmark-text"></i> {{ preset.documents_count }} {{ 'industry_preset.badge_label.documents'|trans }}
-                                </span>
+                                {{ pill.render(preset.modules_count ~ ' ' ~ 'industry_preset.badge_label.modules'|trans, 'primary', {size: 'sm', icon: 'bi-box'}) }}
+                                {{ pill.render(preset.frameworks_count ~ ' ' ~ 'industry_preset.badge_label.frameworks'|trans, 'primary', {size: 'sm', icon: 'bi-shield-check'}) }}
+                                {{ pill.render(preset.controls_count ~ ' ' ~ 'industry_preset.badge_label.controls'|trans, 'success', {size: 'sm', icon: 'bi-check2-square'}) }}
+                                {{ pill.render(preset.documents_count ~ ' ' ~ 'industry_preset.badge_label.documents'|trans, 'warning', {size: 'sm', icon: 'bi-file-earmark-text'}) }}
                             </div>
                         </div>
                         <div class="fa-section__footer d-flex gap-2 justify-content-end">

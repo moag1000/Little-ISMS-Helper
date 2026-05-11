@@ -1,540 +1,365 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Gap Analysis Report PDF — fa-report-doc 5-slot macro
+   Audience: auditor (Analysis Report)
+   Status:   final
+   ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('en') }}">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="UTF-8">
     <title>Gap Analysis Report - {{ framework.name }}</title>
     <style>
-        :root {
-            --primary:       #0ea5e9;
-            --surface:       #ffffff;
-            --surface-2:     #f1f5f9;
-            --fg:            #0f172a;
-            --fg-2:          #475569;
-            --fg-3:          #94a3b8;
-            --border:        #cbd5e1;
-            --success:       #166534;
-            --success-tint:  #dcfce7;
-            --danger:        #991b1b;
-            --danger-tint:   #fecaca;
-            --warning:       #92400e;
-            --warning-tint:  #fef3c7;
-            --info-tint:     #dbeafe;
-            --info-text:     #1e40af;
-        }
-        @page {
-            margin: 2cm 1.5cm;
-        }
-
-        body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 9pt;
-            line-height: 1.4;
-            color: var(--fg);
-        }
-
-        h1 {
-            font-size: 18pt;
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 5pt;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10pt;
-        }
-
-        h2 {
-            font-size: 14pt;
-            color: var(--primary);
-            margin-top: 15pt;
-            margin-bottom: 8pt;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 5pt;
-        }
-
-        h3 {
-            font-size: 11pt;
-            color: var(--fg);
-            margin-top: 12pt;
-            margin-bottom: 6pt;
-            font-weight: bold;
-        }
-
-        .header-info {
-            text-align: center;
-            font-size: 9pt;
-            color: var(--fg-2);
-            margin-bottom: 20pt;
-        }
-
-        .stats-grid {
-            display: table;
-            width: 100%;
-            margin-bottom: 20pt;
-            border: 1px solid var(--border);
-            border-collapse: collapse;
-        }
-
-        .stats-row {
-            display: table-row;
-        }
-
-        .stats-cell {
-            display: table-cell;
-            padding: 10pt;
-            text-align: center;
-            border: 1px solid var(--border);
-            width: 20%;
-        }
-
-        .stats-label {
-            font-size: 8pt;
-            color: var(--fg-2);
-            font-weight: bold;
-            margin-bottom: 4pt;
-        }
-
-        .stats-value {
-            font-size: 16pt;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .stats-value-success {
-            color: var(--success);
-        }
-
-        .stats-value-warning {
-            color: var(--warning);
-        }
-
-        .stats-value-danger {
-            color: var(--danger);
-        }
-
-        .insight-box {
-            background: var(--surface-2);
-            border-left: 4pt solid var(--primary);
-            padding: 10pt;
-            margin: 10pt 0;
-            font-size: 8pt;
-            color: var(--fg-2);
-        }
-
-        .insight-box strong {
-            color: var(--fg);
-        }
-
-        .risk-box-low {
-            background: var(--success-tint);
-            border-left: 4pt solid #10b981;
-        }
-
-        .risk-box-medium {
-            background: var(--warning-tint);
-            border-left: 4pt solid #f59e0b;
-        }
-
-        .risk-box-high {
-            background: #fef2f2;
-            border-left: 4pt solid #ef4444;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10pt 0;
-            font-size: 8pt;
-        }
-
-        table th {
-            background-color: var(--primary);
-            color: var(--surface);
-            padding: 6pt;
-            text-align: left;
-            font-weight: bold;
-            border: 1px solid var(--border);
-        }
-
-        table td {
-            padding: 5pt;
-            border: 1px solid var(--border);
-            vertical-align: top;
-        }
-
-        table tr:nth-child(even) {
-            background-color: var(--surface-2);
-        }
-
-        .highlight-row {
-            font-weight: bold;
-            background: var(--info-tint) !important;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 2pt 6pt;
-            border-radius: 3pt;
-            font-size: 7pt;
-            font-weight: bold;
-        }
-
-        .badge-critical {
-            background: var(--danger-tint); color: var(--danger);
-            color: var(--surface);
-        }
-
-        .badge-high {
-            background: var(--warning-tint); color: var(--warning);
-            color: var(--surface);
-        }
-
-        .badge-warning {
-            background: var(--warning-tint); color: var(--warning);
-            color: var(--surface);
-        }
-
-        .badge-low {
-            background: #dbeafe; color: var(--info-text);
-            color: var(--surface);
-        }
-
-        .badge-info {
-            background: #dbeafe; color: var(--info-text);
-            color: var(--surface);
-        }
-
-        .badge-medium {
-            background: var(--success-tint); color: var(--success);
-            color: var(--surface);
-        }
-
-        .page-break {
-            page-break-before: always;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .w-15 { width: 15%; }
-        .w-20 { width: 20%; }
-        .w-25 { width: 25%; }
-        .w-30 { width: 30%; }
-        .w-40 { width: 40%; }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30pt;
-            text-align: center;
-            font-size: 7pt;
-            color: var(--fg-2);
-            border-top: 1px solid var(--border);
-            padding-top: 5pt;
-        }
+        :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--success-glow:rgba(5,150,105,.20);--warning:#d97706;--warning-strong:#b45309;--warning-glow:rgba(217,119,6,.20);--danger:#dc2626;--danger-strong:#b91c1c;--danger-glow:rgba(220,38,38,.20);}
+        @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
+        body{background:#fff;font-family:'DejaVu Sans',sans-serif;margin:0;padding:0;}
+        .report-doc{background:var(--surface);color:var(--fg-1);font-size:10pt;line-height:1.45;max-width:none;margin:0;border:0;border-radius:0;}
+        .report-doc__cover{padding:18pt 14pt 12pt;border-bottom:1px solid var(--border);}
+        .report-doc__cover-top{display:table;width:100%;}
+        .report-doc__brand{display:table-cell;vertical-align:middle;}
+        .report-doc__chips{display:table-cell;text-align:right;vertical-align:middle;}
+        .report-doc__logo{display:inline-block;width:32pt;height:32pt;border-radius:6pt;background:var(--primary);color:#fff;text-align:center;line-height:32pt;font-weight:700;font-size:18pt;vertical-align:middle;margin-right:8pt;}
+        .report-doc__brand-name{font-weight:700;font-size:11pt;color:var(--fg-1);display:inline-block;vertical-align:middle;}
+        .report-doc__brand-meta{font-size:8pt;color:var(--fg-3);}
+        .report-doc__chip{display:inline-block;padding:2pt 7pt;border-radius:8pt;background:var(--surface-2);color:var(--fg-2);font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border);margin-left:4pt;}
+        .report-doc__chip--status-confidential{background:var(--danger-glow);color:var(--danger-strong);border-color:transparent;}
+        .report-doc__chip--audience-vorstand{background:var(--primary-tint);color:var(--primary-strong);border-color:transparent;}
+        .report-doc__chip--classification{background:var(--fg-1);color:#fff;border-color:transparent;}
+        .report-doc__cover-center{padding:16pt 0 12pt;}
+        .report-doc__kicker{font-size:8pt;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4pt;}
+        .report-doc__title{font-size:22pt;font-weight:800;color:var(--fg-1);margin:0 0 6pt;line-height:1.05;}
+        .report-doc__sub{font-size:10pt;color:var(--fg-2);margin:0;}
+        .report-doc__cover-grid{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8pt 0;margin:0;}
+        .report-doc__cover-grid>div{display:inline-block;width:31%;margin:0 1% 6pt 0;vertical-align:top;}
+        .report-doc__cover-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 2pt;}
+        .report-doc__cover-value{font-size:9pt;color:var(--fg-1);font-weight:600;margin:0;}
+        .report-doc__exec-summary{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__exec-heading{font-size:13pt;font-weight:800;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__kpi-grid{display:table;width:100%;border-spacing:6pt;}
+        .report-doc__kpi-tile{display:table-cell;padding:10pt;border:1px solid var(--border);border-radius:4pt;vertical-align:top;background:var(--surface);}
+        .report-doc__kpi-tile--success{border-left:3pt solid var(--success);}
+        .report-doc__kpi-tile--warning{border-left:3pt solid var(--warning);}
+        .report-doc__kpi-tile--danger{border-left:3pt solid var(--danger);}
+        .report-doc__kpi-tile--neutral{border-left:3pt solid var(--primary);}
+        .report-doc__kpi-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4pt;}
+        .report-doc__kpi-value{font-size:18pt;font-weight:800;color:var(--fg-1);margin-bottom:2pt;}
+        .report-doc__kpi-trend{font-size:8pt;font-weight:600;}
+        .report-doc__kpi-trend--up{color:var(--success-strong);}
+        .report-doc__kpi-trend--down{color:var(--danger-strong);}
+        .report-doc__tldr{background:var(--surface);border:1px solid var(--border);border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 12pt;}
+        .report-doc__tldr-label{font-size:7pt;color:var(--primary-strong);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 6pt;}
+        .report-doc__tldr-list{list-style:none;margin:0;padding:0;}
+        .report-doc__tldr-item{font-size:9pt;color:var(--fg-1);padding:2pt 0;}
+        .report-doc__tldr-item--ok{border-left:2pt solid var(--success);padding-left:6pt;}
+        .report-doc__tldr-item--warn{border-left:2pt solid var(--warning);padding-left:6pt;}
+        .report-doc__tldr-item--danger{border-left:2pt solid var(--danger);padding-left:6pt;}
+        .report-doc__tldr-dot{display:none;}
+        .report-doc__data-section{padding:12pt 14pt;border-bottom:1px solid var(--border);page-break-inside:avoid;}
+        .report-doc__section-heading{font-size:12pt;font-weight:700;color:var(--fg-1);margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__section-body{font-size:9pt;color:var(--fg-1);margin:6pt 0;}
+        .report-doc__table{width:100%;border-collapse:collapse;font-size:9pt;}
+        .report-doc__table th{background:var(--surface-2);color:var(--fg-2);padding:5pt 6pt;border:.5pt solid var(--border-strong);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:7pt;text-align:left;}
+        .report-doc__table td{padding:5pt 6pt;border:.5pt solid var(--border);color:var(--fg-1);vertical-align:top;}
+        .report-doc__table tbody tr:nth-child(even) td{background:var(--surface-2);}
+        .report-doc__table-wrap{margin:8pt 0;}
+        .report-doc__appendix{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__appendix-heading{font-size:12pt;font-weight:700;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__appendix-subheading{font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:8pt 0 4pt;}
+        .report-doc__appendix-body{font-size:8pt;color:var(--fg-2);}
+        .report-doc__appendix-sources{padding-left:14pt;font-size:8pt;color:var(--fg-2);}
+        .report-doc__footer-disclaimer{padding:12pt 14pt;background:var(--surface);border-top:1px solid var(--border-strong);}
+        .report-doc__distribution-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 4pt;}
+        .report-doc__distribution-list{list-style:none;padding:0;margin:0 0 8pt;font-size:9pt;color:var(--fg-2);}
+        .report-doc__distribution-list li{display:inline-block;border-left:2pt solid var(--border);padding:0 8pt;}
+        .report-doc__disclaimer-text{font-size:8pt;color:var(--fg-3);padding:8pt;background:var(--surface-2);border-radius:4pt;border:1px solid var(--border);margin:0 0 8pt;}
+        .report-doc__footer-meta{font-size:7pt;color:var(--fg-3);}
+        .report-doc__footer-brand{font-weight:700;color:var(--fg-2);}
+        .report-doc__footer-classification{color:var(--danger-strong);font-weight:700;text-transform:uppercase;}
+        .badge{display:inline-block;padding:2pt 5pt;border-radius:3pt;font-size:7pt;font-weight:700;}
+        .badge-success{background:var(--success-tint);color:var(--success-strong);}
+        .badge-warning{background:rgba(217,119,6,.12);color:var(--warning-strong);}
+        .badge-danger{background:rgba(220,38,38,.12);color:var(--danger-strong);}
+        .badge-info{background:var(--primary-tint);color:var(--primary-strong);}
     </style>
 </head>
 <body>
-    <h1>Gap Analysis Report</h1>
-    <div class="header-info">
-        {{ framework.name }} ({{ framework.code }})<br>
-        Generated: {{ pdf_generation_date|date('d.m.Y H:i') }}
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {# Executive Summary #}
-    <h2>Executive Summary</h2>
-    <div class="stats-grid">
-        <div class="stats-row">
-            <div class="stats-cell">
-                <div class="stats-label">Total Requirements</div>
-                <div class="stats-value">{{ total_requirements }}</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Met Requirements</div>
-                <div class="stats-value stats-value-success">{{ met_requirements }}</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Identified Gaps</div>
-                <div class="stats-value stats-value-danger">{{ total_gaps }}</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Compliance Score</div>
-                <div class="stats-value {% if compliance_score >= 80 %}stats-value-success{% elseif compliance_score >= 60 %}stats-value-warning{% else %}stats-value-danger{% endif %}">{{ compliance_score }}%</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Risk Score</div>
-                <div class="stats-value {% if risk_score >= 50 %}stats-value-danger{% elseif risk_score >= 20 %}stats-value-warning{% else %}stats-value-success{% endif %}">{{ risk_score }}</div>
-            </div>
-        </div>
-    </div>
+{# ── Risk Assessment body HTML ────────────────────────────────────────── #}
+{% set _risk_status = '' %}
+{% if risk_score >= 50 %}
+    {% set _risk_status = '<strong>Status: CRITICAL</strong> - Immediate action required' %}
+{% elseif risk_score >= 20 %}
+    {% set _risk_status = '<strong>Status: HIGH</strong> - Urgent attention needed' %}
+{% elseif risk_score > 0 %}
+    {% set _risk_status = '<strong>Status: MEDIUM</strong> - Planned gap closure recommended' %}
+{% else %}
+    {% set _risk_status = '<strong>Status: LOW</strong> - Good compliance status' %}
+{% endif %}
 
-    {# Risk Assessment #}
-    <h2>Risk Assessment</h2>
-    <div class="{% if risk_score >= 50 %}risk-box-high{% elseif risk_score >= 20 %}risk-box-medium{% else %}risk-box-low{% endif %} insight-box">
-        <strong>Overall Risk Score: {{ risk_score }}</strong>
-        (Calculation: {{ (uncovered_critical ?? [])|length }} critical × 10 + {{ (uncovered_high ?? [])|length }} high × 5)
-        <br>
-        {% if risk_score >= 50 %}
-            <strong>Status: CRITICAL</strong> - Immediate action required
-        {% elseif risk_score >= 20 %}
-            <strong>Status: HIGH</strong> - Urgent attention needed
-        {% elseif risk_score > 0 %}
-            <strong>Status: MEDIUM</strong> - Planned gap closure recommended
+{% set _risk_body = '<div style="border-left:3pt solid '
+    ~ (risk_score >= 50 ? 'var(--danger)' : (risk_score >= 20 ? 'var(--warning)' : 'var(--success)'))
+    ~ ';padding:8pt 10pt;margin:0 0 8pt;background:'
+    ~ (risk_score >= 50 ? 'rgba(220,38,38,.08)' : (risk_score >= 20 ? 'rgba(217,119,6,.08)' : 'var(--success-tint)'))
+    ~ ';font-size:9pt;">'
+    ~ '<strong>Overall Risk Score: ' ~ risk_score ~ '</strong> '
+    ~ '(Calculation: ' ~ (uncovered_critical ?? [])|length ~ ' critical &times; 10 + ' ~ (uncovered_high ?? [])|length ~ ' high &times; 5)'
+    ~ '<br>' ~ _risk_status ~ '</div>' %}
+
+{# ── Compliance Scores Comparison rows ────────────────────────────────── #}
+{% set _comp_diff = weighted_compliance_score - compliance_score %}
+{% set _diff_color = _comp_diff < 0 ? 'var(--danger-strong)' : (_comp_diff > 0 ? 'var(--success-strong)' : 'var(--fg-2)') %}
+{% set _comp_rows = [
+    [
+        'Compliance Score',
+        compliance_score ~ '%',
+        '<strong>' ~ weighted_compliance_score ~ '%</strong>',
+        '<span style="color:' ~ _diff_color ~ ';font-weight:700;">' ~ (_comp_diff > 0 ? '+' : '') ~ _comp_diff ~ '%</span>',
+    ],
+] %}
+
+{% set _comp_interpretation = '' %}
+{% if weighted_compliance_score < compliance_score %}
+    {% set _comp_interpretation = 'The weighted score is lower, indicating that critical/high priority requirements are less well met than medium/low requirements. Focus on high-impact gaps required.' %}
+{% elseif weighted_compliance_score > compliance_score %}
+    {% set _comp_interpretation = 'The weighted score is higher - critical requirements are better met. Good prioritization!' %}
+{% else %}
+    {% set _comp_interpretation = 'Balanced compliance across all priority levels.' %}
+{% endif %}
+
+{# ── Gap Distribution by Severity rows ────────────────────────────────── #}
+{% set _sev_rows = [
+    [
+        '<span class="badge badge-danger">Critical</span>',
+        '<strong>' ~ uncovered_critical|length ~ '</strong>',
+        (total_gaps > 0 ? ((uncovered_critical|length / total_gaps * 100)|round(1)) : 0) ~ '%',
+        '10',
+        '<strong style="color:var(--danger-strong);">' ~ uncovered_critical|length * 10 ~ '</strong>',
+    ],
+    [
+        '<span class="badge badge-warning">High</span>',
+        '<strong>' ~ uncovered_high|length ~ '</strong>',
+        (total_gaps > 0 ? ((uncovered_high|length / total_gaps * 100)|round(1)) : 0) ~ '%',
+        '5',
+        '<strong style="color:var(--warning-strong);">' ~ uncovered_high|length * 5 ~ '</strong>',
+    ],
+    [
+        '<span class="badge badge-success">Medium</span>',
+        '<strong>' ~ priority_distribution.medium ~ '</strong>',
+        (total_gaps > 0 ? ((priority_distribution.medium / total_gaps * 100)|round(1)) : 0) ~ '%',
+        '-',
+        '-',
+    ],
+    [
+        '<span class="badge badge-info">Low</span>',
+        '<strong>' ~ priority_distribution.low ~ '</strong>',
+        (total_gaps > 0 ? ((priority_distribution.low / total_gaps * 100)|round(1)) : 0) ~ '%',
+        '-',
+        '-',
+    ],
+    [
+        '<strong>Total</strong>',
+        '<strong>' ~ total_gaps ~ '</strong>',
+        '<strong>100%</strong>',
+        '',
+        '<strong>Risk Score: ' ~ risk_score ~ '</strong>',
+    ],
+] %}
+
+{# ── Build sections array ─────────────────────────────────────────────── #}
+{% set _sections = [
+    {
+        heading: 'Risk Assessment',
+        body_html: _risk_body,
+    },
+    {
+        heading: 'Compliance Scores Comparison',
+        table: {
+            headers: ['Metric', 'Standard Score', 'Weighted Score', 'Difference'],
+            rows: _comp_rows,
+        },
+        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;"><strong>Interpretation:</strong> ' ~ _comp_interpretation ~ '</div>',
+    },
+    {
+        heading: 'pdf.gap_analysis.distribution_by_severity'|trans({}, 'messages'),
+        table: {
+            headers: ['Severity Level', 'Gap Count', 'Percentage', 'Risk Weight', 'Total Risk'],
+            rows: _sev_rows,
+        },
+    },
+] %}
+
+{# ── Root Cause Analysis section ──────────────────────────────────────── #}
+{% if root_cause_analysis is defined %}
+    {% set _rc_rows = [
+        [
+            '<span class="badge badge-danger">Not Started</span>',
+            '<strong>' ~ root_cause_analysis.summary.not_started_count ~ '</strong>',
+            (total_gaps > 0 ? ((root_cause_analysis.summary.not_started_count / total_gaps * 100)|round(1)) : 0) ~ '%',
+            'pdf.gap_analysis.not_addressed'|trans({}, 'messages'),
+        ],
+        [
+            '<span class="badge badge-warning">Missing Control</span>',
+            '<strong>' ~ root_cause_analysis.summary.missing_control_count ~ '</strong>',
+            (total_gaps > 0 ? ((root_cause_analysis.summary.missing_control_count / total_gaps * 100)|round(1)) : 0) ~ '%',
+            'pdf.gap_analysis.very_low'|trans({}, 'messages'),
+        ],
+        [
+            '<span class="badge badge-warning">Incomplete Implementation</span>',
+            '<strong>' ~ root_cause_analysis.summary.incomplete_implementation_count ~ '</strong>',
+            (total_gaps > 0 ? ((root_cause_analysis.summary.incomplete_implementation_count / total_gaps * 100)|round(1)) : 0) ~ '%',
+            'pdf.gap_analysis.partial'|trans({}, 'messages'),
+        ],
+        [
+            '<span class="badge badge-info">Missing Evidence</span>',
+            '<strong>' ~ root_cause_analysis.summary.missing_evidence_count ~ '</strong>',
+            (total_gaps > 0 ? ((root_cause_analysis.summary.missing_evidence_count / total_gaps * 100)|round(1)) : 0) ~ '%',
+            'High fulfillment (80-99%) - control exists but documentation lacking',
+        ],
+    ] %}
+
+    {% set _sections = _sections|merge([{
+        heading: 'Root Cause Analysis',
+        table: {
+            headers: ['Root Cause', 'Count', 'Percentage', 'Description'],
+            rows: _rc_rows,
+        },
+    }]) %}
+
+    {# Category-Specific Patterns (Top 5) #}
+    {% set _cat_rows = [] %}
+    {% for category, pattern in category_patterns|slice(0, 5) %}
+        {% set _rc_badge = '' %}
+        {% if pattern.dominant_root_cause == 'not_started' %}
+            {% set _rc_badge = '<span class="badge badge-danger">Not Started</span>' %}
+        {% elseif pattern.dominant_root_cause == 'missing_control' %}
+            {% set _rc_badge = '<span class="badge badge-warning">Missing Control</span>' %}
+        {% elseif pattern.dominant_root_cause == 'incomplete_implementation' %}
+            {% set _rc_badge = '<span class="badge badge-warning">Incomplete</span>' %}
         {% else %}
-            <strong>Status: LOW</strong> - Good compliance status
+            {% set _rc_badge = '<span class="badge badge-info">Missing Evidence</span>' %}
         {% endif %}
-    </div>
 
-    <h2>Compliance Scores Comparison</h2>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-40">Metric</th>
-                <th scope="col" class="text-center w-20">Standard Score</th>
-                <th scope="col" class="text-center w-20">Weighted Score</th>
-                <th scope="col" class="text-center w-20">Difference</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Compliance Score</td>
-                <td class="text-center">{{ compliance_score }}%</td>
-                <td class="text-center"><strong>{{ weighted_compliance_score }}%</strong></td>
-                <td class="text-center">
-                    {% set diff = weighted_compliance_score - compliance_score %}
-                    <span style="color: {% if diff < 0 %}#ef4444{% elseif diff > 0 %}#10b981{% else %}var(--fg-2){% endif %}; font-weight: bold;">
-                        {{ diff > 0 ? '+' : '' }}{{ diff }}%
-                    </span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="insight-box">
-        <strong>Interpretation:</strong>
-        {% if weighted_compliance_score < compliance_score %}
-            The weighted score is lower, indicating that critical/high priority requirements are less well met than medium/low requirements. Focus on high-impact gaps required.
-        {% elseif weighted_compliance_score > compliance_score %}
-            The weighted score is higher - critical requirements are better met. Good prioritization!
+        {% set _severity_label = '' %}
+        {% if pattern.count >= 5 %}
+            {% set _severity_label = '<strong style="color:var(--danger-strong);">Critical Cluster</strong>' %}
+        {% elseif pattern.count >= 3 %}
+            {% set _severity_label = '<strong style="color:var(--warning-strong);">Significant Pattern</strong>' %}
         {% else %}
-            Balanced compliance across all priority levels.
+            {% set _severity_label = 'Moderate' %}
         {% endif %}
-    </div>
 
-    {# Gap Distribution #}
-    <div class="page-break"></div>
-    <h2>{{ 'pdf.gap_analysis.distribution_by_severity'|trans({}, 'messages')}}</h2>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-30">Severity Level</th>
-                <th scope="col" class="text-center w-20">Gap Count</th>
-                <th scope="col" class="text-center w-20">Percentage</th>
-                <th scope="col" class="text-center w-15">Risk Weight</th>
-                <th scope="col" class="text-center w-15">Total Risk</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><span class="badge badge-critical">Critical</span></td>
-                <td class="text-center"><strong>{{ uncovered_critical|length }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((uncovered_critical|length / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td class="text-center">10</td>
-                <td class="text-center"><strong style="color: var(--danger);">{{ uncovered_critical|length * 10 }}</strong></td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-high">High</span></td>
-                <td class="text-center"><strong>{{ uncovered_high|length }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((uncovered_high|length / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td class="text-center">5</td>
-                <td class="text-center"><strong style="color: var(--warning);">{{ uncovered_high|length * 5 }}</strong></td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-medium">Medium</span></td>
-                <td class="text-center"><strong>{{ priority_distribution.medium }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((priority_distribution.medium / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td class="text-center">-</td>
-                <td class="text-center">-</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-low">Low</span></td>
-                <td class="text-center"><strong>{{ priority_distribution.low }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((priority_distribution.low / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td class="text-center">-</td>
-                <td class="text-center">-</td>
-            </tr>
-            <tr class="highlight-row">
-                <td><strong>Total</strong></td>
-                <td class="text-center"><strong>{{ total_gaps }}</strong></td>
-                <td class="text-center"><strong>100%</strong></td>
-                <td colspan="2" class="text-center"><strong>Risk Score: {{ risk_score }}</strong></td>
-            </tr>
-        </tbody>
-    </table>
+        {% set _cat_rows = _cat_rows|merge([[
+            '<strong>' ~ category ~ '</strong>',
+            pattern.count,
+            pattern.avg_fulfillment ~ '%',
+            _rc_badge,
+            _severity_label,
+        ]]) %}
+    {% endfor %}
 
-    {# Root Cause Analysis #}
-    {% if root_cause_analysis is defined %}
-    <div class="page-break"></div>
-    <h2>Root Cause Analysis</h2>
-
-    <h3>Root Cause Distribution</h3>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-30">Root Cause</th>
-                <th scope="col" class="text-center w-15">Count</th>
-                <th scope="col" class="text-center w-15">Percentage</th>
-                <th scope="col" class="w-40">Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><span class="badge badge-critical">Not Started</span></td>
-                <td class="text-center"><strong>{{ root_cause_analysis.summary.not_started_count }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.not_started_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td>{{ 'pdf.gap_analysis.not_addressed'|trans({}, 'messages')}}</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-high">Missing Control</span></td>
-                <td class="text-center"><strong>{{ root_cause_analysis.summary.missing_control_count }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.missing_control_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td>{{ 'pdf.gap_analysis.very_low'|trans({}, 'messages')}}</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-warning">Incomplete Implementation</span></td>
-                <td class="text-center"><strong>{{ root_cause_analysis.summary.incomplete_implementation_count }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.incomplete_implementation_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td>{{ 'pdf.gap_analysis.partial'|trans({}, 'messages')}}</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-info">Missing Evidence</span></td>
-                <td class="text-center"><strong>{{ root_cause_analysis.summary.missing_evidence_count }}</strong></td>
-                <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.missing_evidence_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td>High fulfillment (80-99%) - control exists but documentation lacking</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h3>Category-Specific Patterns (Top 5)</h3>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-30">Category</th>
-                <th scope="col" class="text-center w-15">Gap Count</th>
-                <th scope="col" class="text-center w-15">Avg. Fulfillment</th>
-                <th scope="col" class="text-center w-20">Dominant Root Cause</th>
-                <th scope="col" class="text-center w-20">Pattern Severity</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for category, pattern in category_patterns|slice(0, 5) %}
-            <tr>
-                <td><strong>{{ category }}</strong></td>
-                <td class="text-center">{{ pattern.count }}</td>
-                <td class="text-center">{{ pattern.avg_fulfillment }}%</td>
-                <td class="text-center">
-                    {% if pattern.dominant_root_cause == 'not_started' %}
-                        <span class="badge badge-critical">Not Started</span>
-                    {% elseif pattern.dominant_root_cause == 'missing_control' %}
-                        <span class="badge badge-high">Missing Control</span>
-                    {% elseif pattern.dominant_root_cause == 'incomplete_implementation' %}
-                        <span class="badge badge-warning">Incomplete</span>
-                    {% else %}
-                        <span class="badge badge-info">Missing Evidence</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    {% if pattern.count >= 5 %}
-                        <span style="color: var(--danger); font-weight: bold;">Critical Cluster</span>
-                    {% elseif pattern.count >= 3 %}
-                        <span style="color: var(--warning); font-weight: bold;">Significant Pattern</span>
-                    {% else %}
-                        Moderate
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="insight-box">
-        <strong>Quick Wins:</strong>
-        {% if root_cause_analysis.summary.missing_evidence_count > 0 %}
-            {{ root_cause_analysis.summary.missing_evidence_count }} gaps have missing documentation only.
-            A documentation sprint can close these gaps in 30-60 days!
-        {% endif %}
-    </div>
+    {% set _rc_quick_win_body = '' %}
+    {% if root_cause_analysis.summary.missing_evidence_count > 0 %}
+        {% set _rc_quick_win_body = '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">'
+            ~ '<strong>Quick Wins:</strong> '
+            ~ root_cause_analysis.summary.missing_evidence_count ~ ' gaps have missing documentation only. '
+            ~ 'A documentation sprint can close these gaps in 30-60 days!</div>' %}
     {% endif %}
 
-    {# Priority-Weighted Roadmap #}
-    {% if gap_recommendations is defined and gap_recommendations|length > 0 %}
-    <div class="page-break"></div>
-    <h2>Priority-Weighted Gap Closure Roadmap</h2>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-15">Priority</th>
-                <th scope="col" class="w-25">Action</th>
-                <th scope="col" class="w-15">Affected Gaps</th>
-                <th scope="col" class="w-15">Timeline</th>
-                <th scope="col" class="w-15">Risk Reduction</th>
-                <th scope="col" class="w-15">Effort</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for rec in gap_recommendations %}
-            <tr>
-                <td><span class="badge badge-{{ rec.priority|lower }}">{{ rec.priority }}</span></td>
-                <td><strong>{{ rec.action }}</strong></td>
-                <td class="text-center">{{ rec.count }}</td>
-                <td class="text-center">{{ rec.timeline }}</td>
-                <td class="text-center"><strong style="color: var(--success);">-{{ rec.risk_reduction }}</strong></td>
-                <td class="text-center">{{ rec.effort }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% endif %}
+    {% set _sections = _sections|merge([{
+        heading: 'Category-Specific Patterns (Top 5)',
+        table: {
+            headers: ['Category', 'Gap Count', 'Avg. Fulfillment', 'Dominant Root Cause', 'Pattern Severity'],
+            rows: _cat_rows,
+        },
+        body_html: _rc_quick_win_body,
+    }]) %}
+{% endif %}
 
-    {# Detailed Gap List #}
-    <div class="page-break"></div>
-    <h2>Detailed Gap List</h2>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-15">Requirement ID</th>
-                <th scope="col" class="w-30">Requirement</th>
-                <th scope="col" class="text-center w-15">Priority</th>
-                <th scope="col" class="text-center w-15">Fulfillment</th>
-                <th scope="col" class="w-25">Category</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for gap in gaps %}
-            {% set requirement = gap.requirement %}
-            {% set gapFulfillment = gap.fulfillment %}
-            {% set fulfillmentPct = gapFulfillment ? gapFulfillment.fulfillmentPercentage : 0 %}
-            <tr>
-                <td><strong>{{ requirement.requirementId }}</strong></td>
-                <td>{{ (requirement.description ?? '')|slice(0, 80) }}{% if (requirement.description ?? '')|length > 80 %}...{% endif %}</td>
-                <td class="text-center">
-                    {% set priority = requirement.priority|default('medium') %}
-                    <span class="badge badge-{{ priority }}">{{ priority|upper }}</span>
-                </td>
-                <td class="text-center">
-                    <strong style="color: {% if fulfillmentPct >= 80 %}#10b981{% elseif fulfillmentPct >= 50 %}#f59e0b{% else %}#ef4444{% endif %};">
-                        {{ fulfillmentPct }}%
-                    </strong>
-                </td>
-                <td>{{ requirement.category|default('N/A') }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{# ── Priority-Weighted Roadmap ────────────────────────────────────────── #}
+{% if gap_recommendations is defined and gap_recommendations|length > 0 %}
+    {% set _road_rows = [] %}
+    {% for rec in gap_recommendations %}
+        {% set _road_rows = _road_rows|merge([[
+            '<span class="badge badge-' ~ rec.priority|lower ~ '">' ~ rec.priority ~ '</span>',
+            '<strong>' ~ rec.action ~ '</strong>',
+            rec.count,
+            rec.timeline,
+            '<strong style="color:var(--success-strong);">-' ~ rec.risk_reduction ~ '</strong>',
+            rec.effort,
+        ]]) %}
+    {% endfor %}
 
-    <div class="footer">
-        Gap Analysis Report - Generated on {{ pdf_generation_date|date('d.m.Y H:i:s') }} - Page <span class="pagenum"></span>
-    </div>
+    {% set _sections = _sections|merge([{
+        heading: 'Priority-Weighted Gap Closure Roadmap',
+        table: {
+            headers: ['Priority', 'Action', 'Affected Gaps', 'Timeline', 'Risk Reduction', 'Effort'],
+            rows: _road_rows,
+        },
+    }]) %}
+{% endif %}
+
+{# ── Detailed Gap List ────────────────────────────────────────────────── #}
+{% set _gap_rows = [] %}
+{% for gap in gaps %}
+    {% set requirement = gap.requirement %}
+    {% set gapFulfillment = gap.fulfillment %}
+    {% set fulfillmentPct = gapFulfillment ? gapFulfillment.fulfillmentPercentage : 0 %}
+    {% set _prio = requirement.priority|default('medium') %}
+    {% set _ful_color = fulfillmentPct >= 80 ? 'var(--success-strong)' : (fulfillmentPct >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)') %}
+    {% set _gap_rows = _gap_rows|merge([[
+        '<strong>' ~ requirement.requirementId ~ '</strong>',
+        ((requirement.description ?? '')|slice(0, 80)) ~ ((requirement.description ?? '')|length > 80 ? '...' : ''),
+        '<span class="badge badge-' ~ _prio ~ '">' ~ _prio|upper ~ '</span>',
+        '<strong style="color:' ~ _ful_color ~ ';">' ~ fulfillmentPct ~ '%</strong>',
+        requirement.category|default('N/A'),
+    ]]) %}
+{% endfor %}
+
+{% set _sections = _sections|merge([{
+    heading: 'Detailed Gap List',
+    table: {
+        headers: ['Requirement ID', 'Requirement', 'Priority', 'Fulfillment', 'Category'],
+        rows: _gap_rows,
+    },
+}]) %}
+
+{{ _fa_report_doc.render({
+    report: {
+        title:        'Gap Analysis Report',
+        subtitle:     framework.name ~ ' (' ~ framework.code ~ ')',
+        kicker:       'Compliance · Gap Analysis',
+        status:       'final',
+        audience:     'auditor',
+        generated_at: pdf_generation_date|date('d.m.Y H:i'),
+    },
+    brand_name: 'Little ISMS Helper',
+    key_findings: [
+        { label: 'Total Requirements: ' ~ total_requirements, tone: 'ok' },
+        { label: 'Met Requirements: ' ~ met_requirements, tone: 'ok' },
+        { label: 'Identified Gaps: ' ~ total_gaps,
+          tone: total_gaps == 0 ? 'ok' : (total_gaps <= 5 ? 'warn' : 'danger') },
+        { label: 'Compliance Score: ' ~ compliance_score ~ '%',
+          tone: compliance_score >= 80 ? 'ok' : (compliance_score >= 60 ? 'warn' : 'danger') },
+        { label: 'Risk Score: ' ~ risk_score,
+          tone: risk_score < 20 ? 'ok' : (risk_score < 50 ? 'warn' : 'danger') },
+    ],
+    kpis: [
+        { label: 'Total Requirements', value: total_requirements,  tone: 'neutral' },
+        { label: 'Met Requirements',   value: met_requirements,    tone: 'success' },
+        { label: 'Identified Gaps',    value: total_gaps,
+          tone: total_gaps == 0 ? 'success' : (total_gaps <= 5 ? 'warning' : 'danger') },
+        { label: 'Compliance Score',   value: compliance_score ~ '%',
+          tone: compliance_score >= 80 ? 'success' : (compliance_score >= 60 ? 'warning' : 'danger') },
+        { label: 'Risk Score',         value: risk_score,
+          tone: risk_score < 20 ? 'success' : (risk_score < 50 ? 'warning' : 'danger') },
+    ],
+    sections: _sections,
+    appendix: {
+        methodology: '<p>Gap analysis compares framework requirements against implemented controls. Compliance Score = met requirements / total requirements. Weighted score applies priority multipliers (Critical &times;10, High &times;5). Risk Score = (critical gaps &times; 10) + (high gaps &times; 5). Root cause classification: Not Started (0%), Missing Control (&lt;30%), Incomplete Implementation (30-79%), Missing Evidence (80-99%).</p>',
+        sources: [
+            { label: 'GapAnalysisService', detail: 'analyzeGaps() — per-requirement fulfillment assessment' },
+        ],
+    },
+}) }}
 </body>
 </html>

@@ -2,6 +2,7 @@
 {% trans_default_domain 'compliance_wizard' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig'     as _fa_section %}
+{% import '_components/_status_pill.html.twig'    as pill %}
 {% import '_components/_fa_empty_state.html.twig'  as _fa_empty_state %}
 {% import '_components/_fa_diff_row.html.twig'     as _fa_diff_row %}
 
@@ -156,9 +157,9 @@
                             : section.name }}
                     </h2>
                     {% if sectionChanged > 0 %}
-                        <span class="badge bg-primary">{{ sectionChanged }}</span>
+                        {{ pill.render(sectionChanged, 'primary', { noDot: true }) }}
                     {% else %}
-                        <span class="badge bg-secondary">{{ 'diff.section.unchanged_badge'|trans({}, 'compliance_wizard') }}</span>
+                        {{ pill.render('diff.section.unchanged_badge'|trans({}, 'compliance_wizard'), 'neutral') }}
                     {% endif %}
                 </div>
                 <div class="card-body p-0">

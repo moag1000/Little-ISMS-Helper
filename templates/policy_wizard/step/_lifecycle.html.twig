@@ -2,6 +2,7 @@
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {# Form-Audit follow-up (May 2026).
    Template now matches LifecycleStep::validate() contract exactly:
@@ -164,7 +165,7 @@
                                 <div class="text-muted small">{{ tpl_key }}</div>
                             </td>
                             <td class="fa-table__cell">
-                                <span class="badge bg-secondary">{{ tpl.standard ? ('policy_wizard.standard_badge.' ~ tpl.standard)|trans({}, 'policy_wizard') : '—' }}</span>
+                                {{ pill.render(tpl.standard ? ('policy_wizard.standard_badge.' ~ tpl.standard)|trans({}, 'policy_wizard') : '—', 'neutral', {size: 'sm'}) }}
                             </td>
                             <td class="fa-table__cell">
                                 <input type="number"
@@ -200,26 +201,11 @@
                                 {% if recommended_roles|length > 0 %}
                                     {% if selected_match is not null %}
                                         {% if selected_match.state == 'strict_match' %}
-                                            <span class="badge bg-success-subtle text-success-emphasis mt-1"
-                                                  data-bs-toggle="tooltip"
-                                                  title="{{ 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')}) }}">
-                                                <i class="bi bi-check-circle" aria-hidden="true"></i>
-                                                {{ 'policy_wizard.approver_match.strict_label'|trans }}
-                                            </span>
+                                            {{ pill.render('policy_wizard.approver_match.strict_label'|trans, 'success', {size: 'sm', icon: 'bi-check-circle', class: 'mt-1', title: 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')})}) }}
                                         {% elseif selected_match.state == 'weak_match' %}
-                                            <span class="badge bg-warning-subtle text-warning-emphasis mt-1"
-                                                  data-bs-toggle="tooltip"
-                                                  title="{{ 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')}) }}">
-                                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                                                {{ 'policy_wizard.approver_match.weak_label'|trans({'%roles%': recommended_roles|join(', ')}) }}
-                                            </span>
+                                            {{ pill.render('policy_wizard.approver_match.weak_label'|trans({'%roles%': recommended_roles|join(', ')}), 'warning', {size: 'sm', icon: 'bi-exclamation-triangle', class: 'mt-1', title: 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')})}) }}
                                         {% else %}
-                                            <span class="badge bg-warning-subtle text-warning-emphasis mt-1"
-                                                  data-bs-toggle="tooltip"
-                                                  title="{{ 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')}) }}">
-                                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                                                {{ 'policy_wizard.approver_match.mismatch_label'|trans({'%roles%': recommended_roles|join(', ')}) }}
-                                            </span>
+                                            {{ pill.render('policy_wizard.approver_match.mismatch_label'|trans({'%roles%': recommended_roles|join(', ')}), 'warning', {size: 'sm', icon: 'bi-exclamation-triangle', class: 'mt-1', title: 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')})}) }}
                                         {% endif %}
                                     {% else %}
                                         <span class="form-text small text-muted mt-1">

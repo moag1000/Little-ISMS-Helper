@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
 {% trans_default_domain 'document' %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ document.originalFilename }}{% endblock %}
 
@@ -63,21 +64,13 @@
     {% if (doraValidityDate is defined and doraValidityDate is not null) or (climateChangeAware is defined and climateChangeAware) %}
         <div class="d-flex flex-wrap gap-2 mb-3" data-test="document-norm-anchor-chips">
             {% if doraValidityDate is defined and doraValidityDate is not null %}
-                <span class="badge text-bg-info d-inline-flex align-items-center gap-1"
-                      data-bs-toggle="tooltip"
-                      title="{{ 'document.dora_validity.tooltip'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document') }}"
-                      data-test="document-dora-validity-badge">
-                    <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                    {{ 'document.dora_validity.badge'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document') }}
+                <span data-test="document-dora-validity-badge">
+                    {{ pill.render('document.dora_validity.badge'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document'), 'primary', {icon: 'bi-calendar-event', title: 'document.dora_validity.tooltip'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document')}) }}
                 </span>
             {% endif %}
             {% if climateChangeAware is defined and climateChangeAware %}
-                <span class="badge text-bg-success d-inline-flex align-items-center gap-1"
-                      data-bs-toggle="tooltip"
-                      title="{{ 'document.climate_change.tooltip'|trans({}, 'document') }}"
-                      data-test="document-climate-change-badge">
-                    <i class="bi bi-globe2" aria-hidden="true"></i>
-                    {{ 'document.climate_change.badge'|trans({}, 'document') }}
+                <span data-test="document-climate-change-badge">
+                    {{ pill.render('document.climate_change.badge'|trans({}, 'document'), 'success', {icon: 'bi-globe2', title: 'document.climate_change.tooltip'|trans({}, 'document')}) }}
                 </span>
             {% endif %}
         </div>
@@ -138,6 +131,7 @@
         {% block card_body %}
             {# embed creates a new scope — re-import macros used inside. #}
             {% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
+            {% import '_components/_status_pill.html.twig' as pill %}
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.type'|trans({}, 'document') }}</span>
@@ -187,12 +181,7 @@
                         <i class="bi bi-file-earmark-richtext" aria-hidden="true"></i>
                         {{ 'document.policy_body.preview.heading'|trans({}, 'document') }}
                         {% if document.hasPostGenerationEdits() %}
-                            <span class="badge bg-warning text-dark ms-2"
-                                  data-bs-toggle="tooltip"
-                                  title="{{ 'document.policy_body.drift_badge.tooltip'|trans({}, 'document') }}">
-                                <i class="bi bi-pencil-square" aria-hidden="true"></i>
-                                {{ 'document.policy_body.drift_badge.label'|trans({}, 'document') }}
-                            </span>
+                            {{ pill.render('document.policy_body.drift_badge.label'|trans({}, 'document'), 'warning', {class: 'ms-2', icon: 'bi-pencil-square', title: 'document.policy_body.drift_badge.tooltip'|trans({}, 'document')}) }}
                         {% endif %}
                     </h3>
                     {% if document.hasPostGenerationEdits() %}
@@ -360,8 +349,12 @@
                             <label for="effectivenessReviewNotes" class="form-label">
                                 {{ 'document.effectiveness.modal.notes_label'|trans({}, 'document') }}
                             </label>
-                            <textarea class="form-control" id="effectivenessReviewNotes" name="notes" rows="4"
-                                      placeholder="{{ 'document.effectiveness.modal.notes_placeholder'|trans({}, 'document') }}"></textarea>
+                            <div class="fa-cyber-input">
+                                <div class="fa-cyber-input__frame">
+                                    <textarea class="fa-cyber-input__field" id="effectivenessReviewNotes" name="notes" rows="4"
+                                              placeholder="{{ 'document.effectiveness.modal.notes_placeholder'|trans({}, 'document') }}"></textarea>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="effectivenessReviewConfirmed" name="confirmed" value="1">

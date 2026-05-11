@@ -1,405 +1,266 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Data Reuse Insights Report PDF — fa-report-doc 5-slot macro
+   Audience: auditor (Analysis Report)
+   Status:   final
+   ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('en') }}">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="UTF-8">
     <title>Data Reuse Insights - {{ framework.name }}</title>
     <style>
-        :root {
-            --primary:       #0ea5e9;
-            --surface:       #ffffff;
-            --surface-2:     #f1f5f9;
-            --fg:            #0f172a;
-            --fg-2:          #475569;
-            --fg-3:          #94a3b8;
-            --border:        #cbd5e1;
-            --success:       #166534;
-            --success-tint:  #dcfce7;
-            --danger:        #991b1b;
-            --danger-tint:   #fecaca;
-            --warning:       #92400e;
-            --warning-tint:  #fef3c7;
-            --info-tint:     #dbeafe;
-            --info-text:     #1e40af;
-        }
-        @page {
-            margin: 2cm 1.5cm;
-        }
-
-        body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 9pt;
-            line-height: 1.4;
-            color: var(--fg);
-        }
-
-        h1 {
-            font-size: 18pt;
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 5pt;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10pt;
-        }
-
-        h2 {
-            font-size: 14pt;
-            color: var(--primary);
-            margin-top: 15pt;
-            margin-bottom: 8pt;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 5pt;
-        }
-
-        h3 {
-            font-size: 11pt;
-            color: var(--fg);
-            margin-top: 12pt;
-            margin-bottom: 6pt;
-            font-weight: bold;
-        }
-
-        .header-info {
-            text-align: center;
-            font-size: 9pt;
-            color: var(--fg-2);
-            margin-bottom: 20pt;
-        }
-
-        .stats-grid {
-            display: table;
-            width: 100%;
-            margin-bottom: 20pt;
-            border: 1px solid var(--border);
-            border-collapse: collapse;
-        }
-
-        .stats-row {
-            display: table-row;
-        }
-
-        .stats-cell {
-            display: table-cell;
-            padding: 10pt;
-            text-align: center;
-            border: 1px solid var(--border);
-            width: 20%;
-        }
-
-        .stats-label {
-            font-size: 8pt;
-            color: var(--fg-2);
-            font-weight: bold;
-            margin-bottom: 4pt;
-        }
-
-        .stats-value {
-            font-size: 16pt;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .stats-value-success {
-            color: var(--success);
-        }
-
-        .insight-box {
-            background: var(--surface-2);
-            border-left: 4pt solid var(--primary);
-            padding: 10pt;
-            margin: 10pt 0;
-            font-size: 8pt;
-            color: var(--fg-2);
-        }
-
-        .quick-win-box {
-            background: var(--success-tint);
-            border-left: 4pt solid #10b981;
-            padding: 10pt;
-            margin: 10pt 0;
-            font-size: 8pt;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10pt 0;
-            font-size: 8pt;
-        }
-
-        table th {
-            background-color: var(--primary);
-            color: var(--surface);
-            padding: 6pt;
-            text-align: left;
-            font-weight: bold;
-            border: 1px solid var(--border);
-        }
-
-        table td {
-            padding: 5pt;
-            border: 1px solid var(--border);
-            vertical-align: top;
-        }
-
-        table tr:nth-child(even) {
-            background-color: var(--surface-2);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 2pt 6pt;
-            border-radius: 3pt;
-            font-size: 7pt;
-            font-weight: bold;
-        }
-
-        .badge-success {
-            background: var(--success-tint); color: var(--success);
-            color: var(--surface);
-        }
-
-        .badge-warning {
-            background: var(--warning-tint); color: var(--warning);
-            color: var(--surface);
-        }
-
-        .badge-info {
-            background: #dbeafe; color: var(--info-text);
-            color: var(--surface);
-        }
-
-        .badge-secondary {
-            background: var(--surface-2); color: var(--fg-2);
-            color: var(--surface);
-        }
-
-        .page-break {
-            page-break-before: always;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .no-break {
-            page-break-inside: avoid;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30pt;
-            text-align: center;
-            font-size: 7pt;
-            color: var(--fg-2);
-            border-top: 1px solid var(--border);
-            padding-top: 5pt;
-        }
+        :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--success-glow:rgba(5,150,105,.20);--warning:#d97706;--warning-strong:#b45309;--warning-glow:rgba(217,119,6,.20);--danger:#dc2626;--danger-strong:#b91c1c;--danger-glow:rgba(220,38,38,.20);}
+        @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
+        body{background:#fff;font-family:'DejaVu Sans',sans-serif;margin:0;padding:0;}
+        .report-doc{background:var(--surface);color:var(--fg-1);font-size:10pt;line-height:1.45;max-width:none;margin:0;border:0;border-radius:0;}
+        .report-doc__cover{padding:18pt 14pt 12pt;border-bottom:1px solid var(--border);}
+        .report-doc__cover-top{display:table;width:100%;}
+        .report-doc__brand{display:table-cell;vertical-align:middle;}
+        .report-doc__chips{display:table-cell;text-align:right;vertical-align:middle;}
+        .report-doc__logo{display:inline-block;width:32pt;height:32pt;border-radius:6pt;background:var(--primary);color:#fff;text-align:center;line-height:32pt;font-weight:700;font-size:18pt;vertical-align:middle;margin-right:8pt;}
+        .report-doc__brand-name{font-weight:700;font-size:11pt;color:var(--fg-1);display:inline-block;vertical-align:middle;}
+        .report-doc__brand-meta{font-size:8pt;color:var(--fg-3);}
+        .report-doc__chip{display:inline-block;padding:2pt 7pt;border-radius:8pt;background:var(--surface-2);color:var(--fg-2);font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border);margin-left:4pt;}
+        .report-doc__chip--status-confidential{background:var(--danger-glow);color:var(--danger-strong);border-color:transparent;}
+        .report-doc__chip--audience-vorstand{background:var(--primary-tint);color:var(--primary-strong);border-color:transparent;}
+        .report-doc__chip--classification{background:var(--fg-1);color:#fff;border-color:transparent;}
+        .report-doc__cover-center{padding:16pt 0 12pt;}
+        .report-doc__kicker{font-size:8pt;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4pt;}
+        .report-doc__title{font-size:22pt;font-weight:800;color:var(--fg-1);margin:0 0 6pt;line-height:1.05;}
+        .report-doc__sub{font-size:10pt;color:var(--fg-2);margin:0;}
+        .report-doc__cover-grid{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8pt 0;margin:0;}
+        .report-doc__cover-grid>div{display:inline-block;width:31%;margin:0 1% 6pt 0;vertical-align:top;}
+        .report-doc__cover-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 2pt;}
+        .report-doc__cover-value{font-size:9pt;color:var(--fg-1);font-weight:600;margin:0;}
+        .report-doc__exec-summary{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__exec-heading{font-size:13pt;font-weight:800;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__kpi-grid{display:table;width:100%;border-spacing:6pt;}
+        .report-doc__kpi-tile{display:table-cell;padding:10pt;border:1px solid var(--border);border-radius:4pt;vertical-align:top;background:var(--surface);}
+        .report-doc__kpi-tile--success{border-left:3pt solid var(--success);}
+        .report-doc__kpi-tile--warning{border-left:3pt solid var(--warning);}
+        .report-doc__kpi-tile--danger{border-left:3pt solid var(--danger);}
+        .report-doc__kpi-tile--neutral{border-left:3pt solid var(--primary);}
+        .report-doc__kpi-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4pt;}
+        .report-doc__kpi-value{font-size:18pt;font-weight:800;color:var(--fg-1);margin-bottom:2pt;}
+        .report-doc__kpi-trend{font-size:8pt;font-weight:600;}
+        .report-doc__kpi-trend--up{color:var(--success-strong);}
+        .report-doc__kpi-trend--down{color:var(--danger-strong);}
+        .report-doc__tldr{background:var(--surface);border:1px solid var(--border);border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 12pt;}
+        .report-doc__tldr-label{font-size:7pt;color:var(--primary-strong);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 6pt;}
+        .report-doc__tldr-list{list-style:none;margin:0;padding:0;}
+        .report-doc__tldr-item{font-size:9pt;color:var(--fg-1);padding:2pt 0;}
+        .report-doc__tldr-item--ok{border-left:2pt solid var(--success);padding-left:6pt;}
+        .report-doc__tldr-item--warn{border-left:2pt solid var(--warning);padding-left:6pt;}
+        .report-doc__tldr-item--danger{border-left:2pt solid var(--danger);padding-left:6pt;}
+        .report-doc__tldr-dot{display:none;}
+        .report-doc__data-section{padding:12pt 14pt;border-bottom:1px solid var(--border);page-break-inside:avoid;}
+        .report-doc__section-heading{font-size:12pt;font-weight:700;color:var(--fg-1);margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__section-body{font-size:9pt;color:var(--fg-1);margin:6pt 0;}
+        .report-doc__table{width:100%;border-collapse:collapse;font-size:9pt;}
+        .report-doc__table th{background:var(--surface-2);color:var(--fg-2);padding:5pt 6pt;border:.5pt solid var(--border-strong);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:7pt;text-align:left;}
+        .report-doc__table td{padding:5pt 6pt;border:.5pt solid var(--border);color:var(--fg-1);vertical-align:top;}
+        .report-doc__table tbody tr:nth-child(even) td{background:var(--surface-2);}
+        .report-doc__table-wrap{margin:8pt 0;}
+        .report-doc__appendix{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__appendix-heading{font-size:12pt;font-weight:700;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__appendix-subheading{font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:8pt 0 4pt;}
+        .report-doc__appendix-body{font-size:8pt;color:var(--fg-2);}
+        .report-doc__appendix-sources{padding-left:14pt;font-size:8pt;color:var(--fg-2);}
+        .report-doc__footer-disclaimer{padding:12pt 14pt;background:var(--surface);border-top:1px solid var(--border-strong);}
+        .report-doc__distribution-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 4pt;}
+        .report-doc__distribution-list{list-style:none;padding:0;margin:0 0 8pt;font-size:9pt;color:var(--fg-2);}
+        .report-doc__distribution-list li{display:inline-block;border-left:2pt solid var(--border);padding:0 8pt;}
+        .report-doc__disclaimer-text{font-size:8pt;color:var(--fg-3);padding:8pt;background:var(--surface-2);border-radius:4pt;border:1px solid var(--border);margin:0 0 8pt;}
+        .report-doc__footer-meta{font-size:7pt;color:var(--fg-3);}
+        .report-doc__footer-brand{font-weight:700;color:var(--fg-2);}
+        .report-doc__footer-classification{color:var(--danger-strong);font-weight:700;text-transform:uppercase;}
+        .badge{display:inline-block;padding:2pt 5pt;border-radius:3pt;font-size:7pt;font-weight:700;}
+        .badge-success{background:var(--success-tint);color:var(--success-strong);}
+        .badge-warning{background:rgba(217,119,6,.12);color:var(--warning-strong);}
+        .badge-danger{background:rgba(220,38,38,.12);color:var(--danger-strong);}
+        .badge-info{background:var(--primary-tint);color:var(--primary-strong);}
     </style>
 </head>
 <body>
-    <h1>Data Reuse Insights Report</h1>
-    <div class="header-info">
-        {{ framework.name }} ({{ framework.code }})<br>
-        Generated: {{ pdf_generation_date|date('d.m.Y H:i') }}
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {# Executive Summary #}
-    <h2>Executive Summary</h2>
-    <div class="stats-grid">
-        <div class="stats-row">
-            <div class="stats-cell">
-                <div class="stats-label">Framework</div>
-                <div class="stats-value">{{ framework.code }}</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Analyzed Requirements</div>
-                <div class="stats-value">{{ total_requirements }}</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Time Savings (Hours)</div>
-                <div class="stats-value stats-value-success">{{ total_time_savings|round(1) }}</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Time Savings (Days)</div>
-                <div class="stats-value stats-value-success">{{ total_days_savings|round(1) }}</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Avg. Reuse %</div>
-                <div class="stats-value">{{ avg_reuse_percentage|round(1) }}%</div>
-            </div>
-        </div>
-    </div>
+{# ── Filter data sets used throughout ─────────────────────────────────── #}
+{% set high_reuse = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 50)|sort((a, b) => b.value.reuse_percentage - a.value.reuse_percentage) %}
+{% set quick_wins = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 80 and item.value.confidence == 'high')|sort((a, b) => b.value.estimated_hours_saved - a.value.estimated_hours_saved) %}
+{% set medium_reuse = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 50 and item.value.reuse_percentage < 80) %}
 
-    {# Top Reuse Potentials #}
-    <h2>Top Reuse Potentials</h2>
-    <div class="insight-box">
-        Requirements with highest data reuse potential (≥50% reuse)
-    </div>
-
-    {% set high_reuse = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 50)|sort((a, b) => b.value.reuse_percentage - a.value.reuse_percentage) %}
-
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" style="width: 12%;">ID</th>
-                <th scope="col" style="width: 28%;">Requirement</th>
-                <th scope="col" style="width: 15%;">Category</th>
-                <th scope="col" style="width: 15%;">Reusable Data</th>
-                <th scope="col" style="width: 12%;">Reuse %</th>
-                <th scope="col" style="width: 10%;">Time (h)</th>
-                <th scope="col" style="width: 8%;">Conf.</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in high_reuse|slice(0, 20) %}
-            {% set req = item.requirement %}
-            {% set value = item.value %}
-            {% set analysis = item.analysis %}
-            <tr class="no-break">
-                <td><strong>{{ req.requirementId }}</strong></td>
-                <td style="font-size: 8pt;">{{ req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title }}</td>
-                <td><span class="badge badge-info">{{ req.category ?? '-' }}</span></td>
-                <td class="text-center">{{ (analysis.reusable_data ?? [])|length }}</td>
-                <td class="text-center">
-                    {% if value.reuse_percentage >= 80 %}
-                        <span class="badge badge-success">{{ value.reuse_percentage|round }}%</span>
-                    {% elseif value.reuse_percentage >= 50 %}
-                        <span class="badge badge-warning">{{ value.reuse_percentage|round }}%</span>
-                    {% else %}
-                        <span class="badge badge-secondary">{{ value.reuse_percentage|round }}%</span>
-                    {% endif %}
-                </td>
-                <td class="text-center">{{ value.estimated_hours_saved|round(1) }}</td>
-                <td class="text-center" style="font-size: 7pt;">{{ value.confidence ?? 'low' }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    {# Quick Wins #}
-    <div class="page-break"></div>
-    <h2>Quick Wins - Immediate Reuse Opportunities</h2>
-
-    {% set quick_wins = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 80 and item.value.confidence == 'high')|sort((a, b) => b.value.estimated_hours_saved - a.value.estimated_hours_saved) %}
-
-    {% if quick_wins|length > 0 %}
-    <div class="quick-win-box">
-        <strong>{{ quick_wins|length }} Quick Win Opportunities Identified!</strong>
-        <br>
-        These requirements have ≥80% reuse potential with high confidence.
-        Estimated total savings: <strong>{{ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }} hours</strong>
-    </div>
-
-    <table style="width: 90%;">
-        <thead>
-            <tr>
-                <th scope="col" style="width: 15%;">ID</th>
-                <th scope="col" style="width: 40%;">Requirement</th>
-                <th scope="col" style="width: 25%;">Data Sources</th>
-                <th scope="col" style="width: 10%;">Reuse %</th>
-                <th scope="col" style="width: 10%;">Time (h)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in quick_wins|slice(0, 10) %}
-            {% set req = item.requirement %}
-            {% set value = item.value %}
-            {% set analysis = item.analysis %}
-            {% set sources = [] %}
-            {% if analysis.reusable_data is not empty %}
-                {% for data in analysis.reusable_data %}
-                    {% set sources = sources|merge([data.source ?? 'Unknown']) %}
-                {% endfor %}
-            {% endif %}
-            <tr class="no-break">
-                <td><strong>{{ req.requirementId }}</strong></td>
-                <td style="font-size: 8pt;">{{ req.title }}</td>
-                <td style="font-size: 7pt;">{{ sources|slice(0, 3)|join(', ') }}</td>
-                <td class="text-center"><span class="badge badge-success">{{ value.reuse_percentage|round }}%</span></td>
-                <td class="text-center"><strong>{{ value.estimated_hours_saved|round(1) }}</strong></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{# ── Top Reuse Potentials table rows ──────────────────────────────────── #}
+{% set _top_reuse_rows = [] %}
+{% for item in high_reuse|slice(0, 20) %}
+    {% set req = item.requirement %}
+    {% set value = item.value %}
+    {% set analysis = item.analysis %}
+    {% set _reuse_badge = '' %}
+    {% if value.reuse_percentage >= 80 %}
+        {% set _reuse_badge = '<span class="badge badge-success">' ~ value.reuse_percentage|round ~ '%</span>' %}
+    {% elseif value.reuse_percentage >= 50 %}
+        {% set _reuse_badge = '<span class="badge badge-warning">' ~ value.reuse_percentage|round ~ '%</span>' %}
     {% else %}
-    <div class="insight-box">
-        No Quick Wins with ≥80% Reuse + High Confidence found. Focus on mid-term potentials (50-80%).
-    </div>
+        {% set _reuse_badge = value.reuse_percentage|round ~ '%' %}
     {% endif %}
+    {% set _top_reuse_rows = _top_reuse_rows|merge([[
+        '<strong>' ~ req.requirementId ~ '</strong>',
+        req.title|length > 50 ? (req.title|slice(0, 50) ~ '...') : req.title,
+        '<span class="badge badge-info">' ~ (req.category ?? '-') ~ '</span>',
+        (analysis.reusable_data ?? [])|length,
+        _reuse_badge,
+        value.estimated_hours_saved|round(1),
+        value.confidence ?? 'low',
+    ]]) %}
+{% endfor %}
 
-    {# Recommendations #}
-    <div class="page-break"></div>
-    <h2>{{ 'pdf.data_reuse.recommendations_title'|trans({}, 'messages')}}</h2>
+{# ── Quick Wins table rows ────────────────────────────────────────────── #}
+{% set _qw_rows = [] %}
+{% for item in quick_wins|slice(0, 10) %}
+    {% set req = item.requirement %}
+    {% set value = item.value %}
+    {% set analysis = item.analysis %}
+    {% set sources = [] %}
+    {% if analysis.reusable_data is not empty %}
+        {% for data in analysis.reusable_data %}
+            {% set sources = sources|merge([data.source ?? 'Unknown']) %}
+        {% endfor %}
+    {% endif %}
+    {% set _qw_rows = _qw_rows|merge([[
+        '<strong>' ~ req.requirementId ~ '</strong>',
+        req.title,
+        sources|slice(0, 3)|join(', '),
+        '<span class="badge badge-success">' ~ value.reuse_percentage|round ~ '%</span>',
+        '<strong>' ~ value.estimated_hours_saved|round(1) ~ '</strong>',
+    ]]) %}
+{% endfor %}
 
-    <h2>Strategy: Maximize Data Reuse</h2>
-    <div class="insight-box">
-        <strong>Status:</strong> {{ total_requirements }} requirements analyzed, {{ high_reuse|length }} with ≥50% reuse potential, {{ quick_wins|length }} Quick Wins identified. <strong>Total savings: {{ total_time_savings|round(1) }}h ({{ total_days_savings|round(1) }} days)</strong>
-    </div>
+{# ── Implementation Plan table rows ───────────────────────────────────── #}
+{% set _plan_rows = [
+    [
+        '<strong>Week 1-2</strong>',
+        'Implement Quick Wins (' ~ quick_wins|length ~ ' req.), identify existing data/evidence, create cross-references',
+        '<strong>' ~ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ 'h</strong>',
+        '<span class="badge badge-success">Start Now</span>',
+    ],
+    [
+        '<strong>Week 3-8</strong>',
+        'Leverage mid-term potentials (' ~ medium_reuse|length ~ ' req.), adapt/reuse templates, implement common controls',
+        '<strong>' ~ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ 'h</strong>',
+        '<span class="badge badge-warning">Planning</span>',
+    ],
+    [
+        '<strong>Month 3-6</strong>',
+        'Build data repository, establish standardization &amp; versioning, establish automation',
+        '<strong>Long-term 30-50%</strong>',
+        '<span class="badge badge-info">Vision</span>',
+    ],
+] %}
 
-    <h3>Recommendation 1: Realize Quick Wins Immediately (Week 1-2)</h3>
-    <div class="quick-win-box insight-box">
-        <strong>Priority: Very High</strong> - {{ quick_wins|length }} Quick Wins immediately actionable: Reuse documentation/evidence, set references to existing controls, leverage cross-framework mappings. <strong>Time savings: {{ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong> | ROI: Very High
-    </div>
+{# ── Build sections array ─────────────────────────────────────────────── #}
+{% set _sections = [
+    {
+        heading: 'Top Reuse Potentials',
+        intro: 'Requirements with highest data reuse potential (≥50% reuse)',
+        table: {
+            headers: ['ID', 'Requirement', 'Category', 'Reusable Data', 'Reuse %', 'Time (h)', 'Conf.'],
+            rows: _top_reuse_rows,
+        },
+    },
+] %}
 
-    <h3>Recommendation 2: Leverage Mid-Term Potentials (Week 3-8)</h3>
-    {% set medium_reuse = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 50 and item.value.reuse_percentage < 80) %}
-    <div style="background: var(--warning-tint); border-left: 4pt solid #f59e0b; padding: 10pt; margin: 10pt 0; font-size: 8pt;">
-        <strong>Priority: High</strong> - {{ medium_reuse|length }} requirements with 50-80% reuse potential: Adapt/extend data, reuse templates, identify common control implementations. <strong>Time savings: {{ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong> | Effort: Medium
-    </div>
+{# Quick Wins section #}
+{% if quick_wins|length > 0 %}
+    {% set _sections = _sections|merge([{
+        heading: 'Quick Wins - Immediate Reuse Opportunities',
+        body_html: '<div style="border-left:3pt solid ' ~ 'var(--success)' ~ ';padding:8pt 10pt;margin:0 0 8pt;background:var(--success-tint);">'
+            ~ '<strong>' ~ quick_wins|length ~ ' Quick Win Opportunities Identified!</strong><br>'
+            ~ 'These requirements have ≥80% reuse potential with high confidence. '
+            ~ 'Estimated total savings: <strong>' ~ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ ' hours</strong>'
+            ~ '</div>',
+        table: {
+            headers: ['ID', 'Requirement', 'Data Sources', 'Reuse %', 'Time (h)'],
+            rows: _qw_rows,
+        },
+    }]) %}
+{% else %}
+    {% set _sections = _sections|merge([{
+        heading: 'Quick Wins - Immediate Reuse Opportunities',
+        body_html: '<p>No Quick Wins with ≥80% Reuse + High Confidence found. Focus on mid-term potentials (50-80%).</p>',
+    }]) %}
+{% endif %}
 
-    <h3>Recommendation 3: Build Data Repository (Long-term)</h3>
-    <div class="insight-box">
-        <strong>Strategic Initiative:</strong> Build central data repository with standardized templates, versioning & change tracking, automatic reuse opportunity identification, best-practice library. <strong>Long-term savings: 30-50% reduction in compliance effort</strong>
-    </div>
+{# Recommendations section #}
+{% set _rec_body = '<p><strong>Status:</strong> '
+    ~ total_requirements ~ ' requirements analyzed, '
+    ~ high_reuse|length ~ ' with ≥50% reuse potential, '
+    ~ quick_wins|length ~ ' Quick Wins identified. '
+    ~ '<strong>Total savings: ' ~ total_time_savings|round(1) ~ 'h (' ~ total_days_savings|round(1) ~ ' days)</strong></p>'
+    ~ '<h3 style="font-size:10pt;margin:8pt 0 4pt;">Recommendation 1: Realize Quick Wins Immediately (Week 1-2)</h3>'
+    ~ '<div style="border-left:3pt solid var(--success);padding:8pt 10pt;margin:4pt 0 8pt;background:var(--success-tint);font-size:9pt;">'
+    ~ '<strong>Priority: Very High</strong> - ' ~ quick_wins|length ~ ' Quick Wins immediately actionable: Reuse documentation/evidence, set references to existing controls, leverage cross-framework mappings. '
+    ~ '<strong>Time savings: ' ~ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ 'h</strong> | ROI: Very High</div>'
+    ~ '<h3 style="font-size:10pt;margin:8pt 0 4pt;">Recommendation 2: Leverage Mid-Term Potentials (Week 3-8)</h3>'
+    ~ '<div style="border-left:3pt solid var(--warning);padding:8pt 10pt;margin:4pt 0 8pt;background:rgba(217,119,6,.12);font-size:9pt;">'
+    ~ '<strong>Priority: High</strong> - ' ~ medium_reuse|length ~ ' requirements with 50-80% reuse potential: Adapt/extend data, reuse templates, identify common control implementations. '
+    ~ '<strong>Time savings: ' ~ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ 'h</strong> | Effort: Medium</div>'
+    ~ '<h3 style="font-size:10pt;margin:8pt 0 4pt;">Recommendation 3: Build Data Repository (Long-term)</h3>'
+    ~ '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:4pt 0 8pt;background:var(--surface-2);font-size:9pt;">'
+    ~ '<strong>Strategic Initiative:</strong> Build central data repository with standardized templates, versioning &amp; change tracking, automatic reuse opportunity identification, best-practice library. '
+    ~ '<strong>Long-term savings: 30-50% reduction in compliance effort</strong></div>' %}
 
-    <h3>Implementation Plan</h3>
-    <table style="width: 95%;">
-        <thead>
-            <tr>
-                <th scope="col" style="width: 15%;">Timeframe</th>
-                <th scope="col" style="width: 45%;">Activities</th>
-                <th scope="col" style="width: 20%;">Expected Savings</th>
-                <th scope="col" style="width: 20%;">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Week 1-2</strong></td>
-                <td style="font-size: 8pt;">
-                    Implement Quick Wins ({{ quick_wins|length }} req.), identify existing data/evidence, create cross-references
-                </td>
-                <td class="text-center"><strong>{{ quick_wins|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong></td>
-                <td class="text-center"><span class="badge badge-success">Start Now</span></td>
-            </tr>
-            <tr>
-                <td><strong>Week 3-8</strong></td>
-                <td style="font-size: 8pt;">
-                    Leverage mid-term potentials ({{ medium_reuse|length }} req.), adapt/reuse templates, implement common controls
-                </td>
-                <td class="text-center"><strong>{{ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong></td>
-                <td class="text-center"><span class="badge badge-warning">Planning</span></td>
-            </tr>
-            <tr>
-                <td><strong>Month 3-6</strong></td>
-                <td style="font-size: 8pt;">
-                    Build data repository, establish standardization & versioning, establish automation
-                </td>
-                <td class="text-center"><strong>Long-term 30-50%</strong></td>
-                <td class="text-center"><span class="badge badge-info">Vision</span></td>
-            </tr>
-        </tbody>
-    </table>
+{% set _sections = _sections|merge([
+    {
+        heading: 'pdf.data_reuse.recommendations_title'|trans({}, 'messages'),
+        body_html: _rec_body,
+    },
+    {
+        heading: 'Implementation Plan',
+        table: {
+            headers: ['Timeframe', 'Activities', 'Expected Savings', 'Status'],
+            rows: _plan_rows,
+        },
+        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">'
+            ~ '<strong>Next Steps (Start This Week):</strong> (1) Prioritize Top 5 Quick Wins &amp; assign owners, (2) Identify existing documentation/evidence, (3) Enter cross-references in compliance system, (4) Start template library, (5) Establish weekly review meeting.'
+            ~ '<br><strong>Pro Tip:</strong> Implement Top 3 Quick Wins within 2 weeks = ' ~ quick_wins|slice(0, 3)|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) ~ 'h savings!</div>',
+    },
+]) %}
 
-    <div class="insight-box">
-        <strong>Next Steps (Start This Week):</strong> (1) Prioritize Top 5 Quick Wins & assign owners, (2) Identify existing documentation/evidence, (3) Enter cross-references in compliance system, (4) Start template library, (5) Establish weekly review meeting.
-        <br><strong>Pro Tip:</strong> Implement Top 3 Quick Wins within 2 weeks = {{ quick_wins|slice(0, 3)|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h savings!
-    </div>
-
-    <div class="footer">
-        Data Reuse Insights Report - Generated on {{ pdf_generation_date|date('d.m.Y H:i:s') }} - Page <span class="pagenum"></span>
-    </div>
+{{ _fa_report_doc.render({
+    report: {
+        title:        'Data Reuse Insights Report',
+        subtitle:     framework.name ~ ' (' ~ framework.code ~ ')',
+        kicker:       'Compliance · Data Reuse Analysis',
+        status:       'final',
+        audience:     'auditor',
+        generated_at: pdf_generation_date|date('d.m.Y H:i'),
+    },
+    brand_name: 'Little ISMS Helper',
+    key_findings: [
+        { label: 'Framework: ' ~ framework.code, tone: 'ok' },
+        { label: 'Analyzed Requirements: ' ~ total_requirements, tone: 'ok' },
+        { label: 'Quick Wins: ' ~ quick_wins|length,
+          tone: quick_wins|length > 0 ? 'ok' : 'warn' },
+        { label: 'Total Time Savings: ' ~ total_time_savings|round(1) ~ 'h (' ~ total_days_savings|round(1) ~ ' days)',
+          tone: 'ok' },
+        { label: 'Avg. Reuse: ' ~ avg_reuse_percentage|round(1) ~ '%',
+          tone: avg_reuse_percentage >= 50 ? 'ok' : (avg_reuse_percentage >= 30 ? 'warn' : 'danger') },
+    ],
+    kpis: [
+        { label: 'Framework',        value: framework.code,                                    tone: 'neutral' },
+        { label: 'Analyzed Req.',     value: total_requirements,                                tone: 'neutral' },
+        { label: 'Time Savings (h)',  value: total_time_savings|round(1),                       tone: 'success' },
+        { label: 'Time Savings (d)',  value: total_days_savings|round(1),                       tone: 'success' },
+        { label: 'Avg. Reuse %',     value: avg_reuse_percentage|round(1) ~ '%',
+          tone: avg_reuse_percentage >= 50 ? 'success' : (avg_reuse_percentage >= 30 ? 'warning' : 'danger') },
+    ],
+    sections: _sections,
+    appendix: {
+        methodology: '<p>Data reuse analysis evaluates each framework requirement for potential overlap with existing ISMS data, controls, and documentation. Reuse percentage = reusable data points / total required data points. Confidence levels (low/medium/high) reflect mapping quality. Time savings estimated from historical compliance effort baselines.</p>',
+        sources: [
+            { label: 'DataReuseAnalysisService', detail: 'analyzeFrameworkReuse() — per-requirement reuse potential' },
+        ],
+    },
+}) }}
 </body>
 </html>

@@ -639,10 +639,10 @@
 
                         const result = await response.json();
 
-                        let alertClass = result.valid ? 'alert-success' : 'alert-danger';
+                        let alertClass = result.valid ? 'fa-alert--success' : 'fa-alert--danger';
                         let icon = result.valid ? 'check-circle' : 'x-circle';
 
-                        let message = `<div class="alert ${alertClass} mt-2">`;
+                        let message = `<div class="fa-alert ${alertClass} mt-2" role="alert"><div class="fa-alert__body">`;
                         message += `<i class="bi bi-${icon}" aria-hidden="true"></i> `;
                         message += result.valid ? '<strong>{{ 'data_management.backup.validation.valid'|trans({}, 'admin') }}</strong>' : '<strong>{{ 'data_management.backup.validation.invalid'|trans({}, 'admin') }}</strong>';
 
@@ -666,7 +666,7 @@
                             message += '</ul>';
                         }
 
-                        message += '</div>';
+                        message += '</div></div>';
 
                         // Insert message after row
                         const existingAlert = row.nextElementSibling;

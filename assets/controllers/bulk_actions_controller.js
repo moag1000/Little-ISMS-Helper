@@ -62,7 +62,10 @@ export default class extends Controller {
         exportError: { type: String, default: 'Error exporting' },
         tagPrompt: { type: String, default: 'Add tag:' },
         tagSuccess: { type: String, default: 'Tag added' },
-        tagError: { type: String, default: 'Error adding tag' }
+        tagError: { type: String, default: 'Error adding tag' },
+        statusChangeSuccess: { type: String, default: '%count% documents updated' },
+        statusChangePartial: { type: String, default: '%changed% updated, %rejected% rejected' },
+        statusChangeError: { type: String, default: 'Update failed' }
     };
 
     connect() {
@@ -314,6 +317,63 @@ export default class extends Controller {
 
         } catch (error) {
             this.showToast(this.tagErrorValue, 'error');
+        }
+    }
+
+    /**
+     * Bulk status-change action.
+     * Button must carry: data-target-status="approved" (or another valid status).
+     * Wired via: data-action="click->bulk-actions#bulkStatusChange"
+     */
+    async bulkStatusChange(event) {
+        event.preventDefault();
+
+        const ids = this.selectedIds();
+        if (ids.length === 0) {
+            return;
+        }
+
+        const newStatus = event.currentTarget.dataset.targetStatus;
+        if (!newStatus) {
+            this.showToast(this.statusChangeErrorValue, 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch(this.endpointValue + '/bulk-status-change', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ ids, newStatus })
+            });
+
+            const payload = await response.json();
+
+            if (!response.ok && !payload.ok) {
+                throw new Error(payload.error || this.statusChangeErrorValue);
+            }
+
+            const changed = payload.changed ?? 0;
+            const rejected = payload.rejected ?? [];
+
+            if (rejected.length > 0) {
+                // Partial success — surface non-blocking notice
+                const msg = this.statusChangePartialValue
+                    .replace('%changed%', changed)
+                    .replace('%rejected%', rejected.length);
+                this.showToast(msg, 'warning');
+            } else {
+                const msg = this.statusChangeSuccessValue.replace('%count%', changed);
+                this.showToast(msg, 'success');
+            }
+
+            // Reload page so status pills reflect the new state
+            setTimeout(() => window.location.reload(), 800);
+
+        } catch (error) {
+            this.showToast(this.statusChangeErrorValue + ': ' + error.message, 'error');
         }
     }
 

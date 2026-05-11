@@ -2,6 +2,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block admin_title %}{{ 'admin.tour_completion.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -107,6 +108,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+                    {% import '_components/_status_pill.html.twig' as pill %}
                     {% if rows|length == 0 %}
                         <tr class="fa-table__row">
                             <td colspan="{{ 3 + tours|length }}" class="fa-table__empty">
@@ -121,7 +123,7 @@
                                     <div class="small text-muted">{{ row.user.email }}</div>
                                 </td>
                                 <td class="fa-table__cell">
-                                    <span class="badge text-bg-secondary">{{ row.auto_role }}</span>
+                                    {{ pill.render(row.auto_role, 'neutral', {size: 'sm'}) }}
                                 </td>
                                 {% for t in tours %}
                                     <td class="fa-table__cell fa-table__cell--center">
