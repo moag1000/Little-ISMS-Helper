@@ -3,6 +3,15 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.5.2](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.5.1...v3.5.2) (2026-05-11)
+
+
+### Fixed
+
+* 3.5.2 — bulk-import wizard + audit-xlsx + aurora-sweep + quality-gates ([e9e1918](https://github.com/moag1000/Little-ISMS-Helper/commit/e9e19181787647a97aa9844b33da66c04faff137))
+* **policy-wizard:** bestandsaufnahme — embed-block domain-propagation + Aurora pill replacement ([a2d40a5](https://github.com/moag1000/Little-ISMS-Helper/commit/a2d40a59c1400cb972b68abcb610cc810c17fcfb))
+* **scheduled-report:** tenantContext method getTenantId() → getCurrentTenantId() ([8f309c2](https://github.com/moag1000/Little-ISMS-Helper/commit/8f309c2da53a1ed74643d1be9748f7e324bc40ba))
+
 ## [3.5.1](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.5.0...v3.5.1) (2026-05-11)
 
 
