@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop, 'claude/**' ]
+    branches: [ main, develop, 'claude/**', 'release-please--**' ]
     tags:
       - 'v*.*.*'  # Trigger on version tags for Docker releases
   pull_request:
