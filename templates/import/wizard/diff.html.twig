@@ -3,11 +3,24 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_entity_badge.html.twig' as _fa_entity_badge %}
 
 {% block title %}{{ 'import.wizard.step.diff.title'|trans({}, 'data_import') }}{% endblock %}
 
 {% block body %}
-<div class="container">
+{# Resolve status badge type for _fa_entity_badge #}
+{% set statusBadgeType = {
+    'completed': 'control',
+    'failed': 'finding',
+    'committing': 'training'
+}[batch.status] ?? 'audit' %}
+
+<div class="container"
+     data-controller="import-progress"
+     data-import-progress-batch-url-value="{{ path('app_bulk_import_diff', { _locale: app.request.locale, entityType: entityType, batchId: batch.id }) }}"
+     data-import-progress-poll-interval-value="3000"
+     data-import-progress-status-value="{{ batch.status }}">
+
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'import.page.title'|trans({}, 'data_import'), url: path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) },
@@ -36,20 +49,33 @@
             batchId: batch.id
         } %}
 
-        {# ── Auto-refresh banner when still committing ─────────────────── #}
-        {% if isCommitting %}
-            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
-                {% block alert_body %}
-                    <i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>
+        {# ── Status banner ─────────────────────────────────────────────────── #}
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <span data-import-progress-target="statusBadge">
+                {{ _fa_entity_badge.render({
+                    type: statusBadgeType,
+                    label: batch.status
+                }) }}
+            </span>
+            {% if isCommitting %}
+                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
+                <span class="small" style="color: var(--text-muted);" aria-live="polite">
                     {{ 'import.wizard.step.commit.title'|trans({}, 'data_import') }}…
-                {% endblock %}
-            {% endembed %}
-            {# Auto-refresh every 5 seconds while the worker is processing #}
-            <meta http-equiv="refresh" content="5">
+                </span>
+            {% endif %}
+        </div>
+
+        {# ── Committing info alert ──────────────────────────────────────────── #}
+        {% if isCommitting %}
+            {{ _fa_alert.render({
+                variant: 'info',
+                icon: 'bi-hourglass-split',
+                body: 'import.wizard.step.commit.title'|trans({}, 'data_import') ~ '…'
+            }) }}
         {% endif %}
 
-        {# ── Status + counters ─────────────────────────────────────────── #}
-        <div class="row mb-4">
+        {# ── Counters ──────────────────────────────────────────────────────── #}
+        <div class="row mb-4" data-import-progress-target="counters">
             <div class="col-6 col-md-3">
                 {{ _fa_feature_card.render({
                     label: 'import.delta.creates'|trans({}, 'data_import'),
@@ -84,9 +110,9 @@
             </div>
         </div>
 
-        {# ── Error rows table ──────────────────────────────────────────── #}
+        {# ── Error rows table ──────────────────────────────────────────────── #}
         {% if errorRows|length > 0 %}
-        <section class="fa-section">
+        <section class="fa-section" data-import-progress-target="errorList">
             <div class="fa-section__header">
                 <h2 class="fa-section__title">{{ 'import.delta.errors'|trans({}, 'data_import') }} ({{ errorRows|length }})</h2>
                 <div class="fa-section__tools">
@@ -99,20 +125,20 @@
             </div>
             <div class="fa-section__body">
                 <div class="table-responsive">
-                    <table class="table table-sm align-middle">
+                    <table class="table table-sm align-middle" aria-label="{{ 'import.delta.errors'|trans({}, 'data_import') }}">
                         <thead>
                             <tr>
-                                <th>Zeile</th>
-                                <th>Fehler</th>
-                                <th>Daten</th>
+                                <th scope="col">{{ 'import.diff.col_row'|trans({}, 'data_import') }}</th>
+                                <th scope="col">{{ 'import.diff.col_error'|trans({}, 'data_import') }}</th>
+                                <th scope="col">{{ 'import.diff.col_data'|trans({}, 'data_import') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for row in errorRows %}
-                            <tr class="table-danger">
+                            <tr class="isms-diff__line isms-diff__line--del">
                                 <td class="fw-semibold">{{ row.rowNumber }}</td>
                                 <td>
-                                    <span class="text-danger">
+                                    <span style="color: var(--color-danger);">
                                         <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
                                         {{ row.errorMessage }}
                                     </span>
@@ -127,9 +153,11 @@
                 </div>
             </div>
         </section>
+        {% else %}
+        <div data-import-progress-target="errorList"></div>
         {% endif %}
 
-        {# ── Back to index ─────────────────────────────────────────────── #}
+        {# ── Back to index ─────────────────────────────────────────────────── #}
         <div class="mt-4">
             <a href="{{ path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) }}"
                class="fa-cyber-btn fa-cyber-btn--ghost">

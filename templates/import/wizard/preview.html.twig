@@ -2,6 +2,8 @@
 {% trans_default_domain 'data_import' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
 
 {% block title %}{{ 'import.wizard.step.preview.title'|trans({}, 'data_import') }}{% endblock %}
 
@@ -28,7 +30,7 @@
             batchId: batch.id
         } %}
 
-        {# ── Delta summary tiles ─────────────────────────────────────── #}
+        {# ── Delta summary tiles ─────────────────────────────────────────── #}
         <div class="row mb-4">
             <div class="col-6 col-md-3">
                 {{ _fa_feature_card.render({
@@ -64,7 +66,38 @@
             </div>
         </div>
 
-        {# ── Confirm form ─────────────────────────────────────────────── #}
+        {# ── Error rows (collapsible) ─────────────────────────────────────── #}
+        {% if deltaResult.errorRows is defined and deltaResult.errorRows|length > 0 %}
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'import.delta.errors'|trans({}, 'data_import') }} ({{ deltaResult.errorRows|length }})</h2>
+                    <div class="fa-section__tools">
+                        <button type="button"
+                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#preview-errors"
+                                aria-expanded="false"
+                                aria-controls="preview-errors">
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">{{ 'import.preview.show_errors'|trans({}, 'data_import') }}</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="preview-errors" class="fa-section__body collapse" aria-live="polite">
+                    {% for row in deltaResult.errorRows %}
+                        {{ _fa_entity_card.render({
+                            type: 'finding',
+                            icon: 'finding',
+                            title: 'import.preview.row'|trans({}, 'data_import') ~ ' ' ~ row.rowNumber,
+                            meta: [row.errorMessage|default('')],
+                            status: { variant: 'danger', label: 'Error' }
+                        }) }}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        {# ── Confirm form ─────────────────────────────────────────────────── #}
         <section class="fa-section">
             <div class="fa-section__header">
                 <h2 class="fa-section__title">{{ 'import.wizard.step.commit.title'|trans({}, 'data_import') }}</h2>
@@ -89,15 +122,19 @@
                         {{ form_label(confirmForm.confirmText) }}
                         {{ form_widget(confirmForm.confirmText) }}
                         {{ form_errors(confirmForm.confirmText) }}
-                        <div class="form-text text-muted">
+                        <div class="form-text" style="color: var(--text-muted);">
                             {{ 'import.preview.confirm_text_label'|trans({}, 'data_import') }}
                         </div>
                     </div>
 
                     {{ form_widget(confirmForm.batchId) }}
 
-                    <div class="d-flex gap-2 mt-4">
-                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    {# Sticky commit bar ─────────────────────────────────────── #}
+                    <div class="d-flex gap-2 mt-4 sticky-bottom pb-3"
+                         style="background: var(--surface); z-index: 10;">
+                        <button type="submit"
+                                class="fa-cyber-btn fa-cyber-btn--primary"
+                                data-action="click->import-progress#onCommitClick">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
                             <span class="fa-cyber-btn__label">{{ 'import.action.commit'|trans({}, 'data_import') }}</span>
                         </button>
@@ -115,4 +152,16 @@
 
     </main>
 </div>
+
+<script>
+    {# Emit scanning mood when the commit button is clicked — F2.12 #}
+    document.addEventListener('turbo:load', function () {
+        var commitBtn = document.querySelector('[data-action="click->import-progress#onCommitClick"]');
+        if (commitBtn) {
+            commitBtn.addEventListener('click', function () {
+                window.alvaBus?.emit({ mood: 'scanning', reason: 'import-commit-started' });
+            });
+        }
+    });
+</script>
 {% endblock %}

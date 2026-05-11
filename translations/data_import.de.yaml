@@ -57,6 +57,8 @@ import:
         skip_on_error_label: 'Fehlerhafte Zeilen überspringen (anstatt abzubrechen)'
         confirm_text_label: 'Geben Sie "COMMIT" ein, um den Import zu bestätigen'
         summary: 'Bitte überprüfen Sie die erkannten Änderungen, bevor Sie den Import starten.'
+        show_errors: 'Fehler anzeigen'
+        row: 'Zeile'
 
     delta:
         creates: 'Neu erstellen'
@@ -79,7 +81,21 @@ import:
         delta: 'Delta-Modus (Update + Create)'
         dry_run: 'Testlauf (keine Änderungen speichern)'
 
+    index:
+        col_mode: 'Modus'
+        action_details: 'Details'
+
+    diff:
+        col_row: 'Zeile'
+        col_error: 'Fehler'
+        col_data: 'Daten'
+
     mapping:
+        subtitle: 'Ordnen Sie jede Quellspalte dem Zielfeld zu. Die Konfidenz zeigt die Treffsicherheit der Auto-Zuordnung.'
+        col_source: 'Spalte (Datei)'
+        col_target: 'Zuordnung'
+        col_confidence: 'Konfidenz'
+        reset: 'Zurücksetzen auf Auto-Zuordnung'
         ignore: '— Spalte ignorieren —'
         field:
             name: 'Name'

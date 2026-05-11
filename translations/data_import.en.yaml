@@ -57,6 +57,8 @@ import:
         skip_on_error_label: 'Skip rows with errors (instead of aborting)'
         confirm_text_label: 'Type "COMMIT" to confirm the import'
         summary: 'Please review the detected changes before starting the import.'
+        show_errors: 'Show errors'
+        row: 'Row'
 
     delta:
         creates: 'New Records'
@@ -79,7 +81,21 @@ import:
         delta: 'Delta Mode (update + create)'
         dry_run: 'Dry Run (no changes saved)'
 
+    index:
+        col_mode: 'Mode'
+        action_details: 'Details'
+
+    diff:
+        col_row: 'Row'
+        col_error: 'Error'
+        col_data: 'Data'
+
     mapping:
+        subtitle: 'Assign each source column to its target field. Confidence shows the auto-mapping accuracy.'
+        col_source: 'Column (file)'
+        col_target: 'Mapping'
+        col_confidence: 'Confidence'
+        reset: 'Reset to Auto-Mapping'
         ignore: '— Ignore column —'
         field:
             name: 'Name'

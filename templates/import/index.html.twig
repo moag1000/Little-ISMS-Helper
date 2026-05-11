@@ -4,6 +4,7 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_entity_badge.html.twig' as _fa_entity_badge %}
 
 {% block title %}{{ ('import.entity.' ~ entityType)|trans({}, 'data_import') }} — {{ 'import.page.title'|trans({}, 'data_import') }}{% endblock %}
 
@@ -63,7 +64,7 @@
             </div>
         </div>
 
-        {# ── Recent-batches table ────────────────────────────────────────── #}
+        {# ── Recent-batches table or empty-state ────────────────────────── #}
         {% if recentBatches|length > 0 %}
             <section class="fa-section">
                 <div class="fa-section__header">
@@ -71,44 +72,55 @@
                 </div>
                 <div class="fa-section__body">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-hover align-middle" aria-label="{{ 'import.page.title'|trans({}, 'data_import') }}">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>{{ 'import.wizard.step.upload.title'|trans({}, 'data_import') }}</th>
-                                    <th>Status</th>
-                                    <th>Modus</th>
-                                    <th>{{ 'import.delta.total'|trans({}, 'data_import') }}</th>
-                                    <th>{{ 'import.delta.creates'|trans({}, 'data_import') }}</th>
-                                    <th>{{ 'import.delta.updates'|trans({}, 'data_import') }}</th>
-                                    <th>{{ 'import.delta.errors'|trans({}, 'data_import') }}</th>
-                                    <th></th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">{{ 'import.wizard.step.upload.title'|trans({}, 'data_import') }}</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">{{ 'import.index.col_mode'|trans({}, 'data_import') }}</th>
+                                    <th scope="col">{{ 'import.delta.total'|trans({}, 'data_import') }}</th>
+                                    <th scope="col">{{ 'import.delta.creates'|trans({}, 'data_import') }}</th>
+                                    <th scope="col">{{ 'import.delta.updates'|trans({}, 'data_import') }}</th>
+                                    <th scope="col">{{ 'import.delta.errors'|trans({}, 'data_import') }}</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for batch in recentBatches %}
+                                {% set statusBadgeType = {
+                                    'completed': 'control',
+                                    'failed': 'finding',
+                                    'committing': 'training'
+                                }[batch.status] ?? 'audit' %}
                                 <tr>
-                                    <td class="text-muted small">{{ batch.id }}</td>
+                                    <td class="small" style="color: var(--text-muted);">{{ batch.id }}</td>
                                     <td>
                                         <span class="fw-semibold">{{ batch.sourceFileName }}</span>
                                         <br>
-                                        <small class="text-muted">{{ batch.createdAt|date('d.m.Y H:i') }}</small>
+                                        <small style="color: var(--text-muted);">{{ batch.createdAt|date('d.m.Y H:i') }}</small>
                                     </td>
                                     <td>
-                                        <span class="badge bg-{{ batch.status == 'completed' ? 'success' : (batch.status == 'failed' ? 'danger' : (batch.status == 'committing' ? 'warning' : 'secondary')) }}">
-                                            {{ batch.status }}
-                                        </span>
+                                        {{ _fa_entity_badge.render({
+                                            type: statusBadgeType,
+                                            label: batch.status
+                                        }) }}
                                     </td>
-                                    <td><span class="badge bg-secondary">{{ batch.mode }}</span></td>
+                                    <td>
+                                        {{ _fa_entity_badge.render({
+                                            type: 'audit',
+                                            label: batch.mode
+                                        }) }}
+                                    </td>
                                     <td>{{ batch.rowCountTotal }}</td>
-                                    <td class="text-success">{{ batch.rowCountSuccess }}</td>
-                                    <td class="text-info">{{ batch.rowCountUpdated }}</td>
-                                    <td class="text-danger">{{ batch.rowCountError }}</td>
+                                    <td style="color: var(--color-success);">{{ batch.rowCountSuccess }}</td>
+                                    <td style="color: var(--color-info);">{{ batch.rowCountUpdated }}</td>
+                                    <td style="color: var(--color-danger);">{{ batch.rowCountError }}</td>
                                     <td>
                                         <a href="{{ path('app_bulk_import_diff', { _locale: app.request.locale, entityType: entityType, batchId: batch.id }) }}"
                                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
-                                            <span class="fa-cyber-btn__label">Details</span>
+                                            <span class="fa-cyber-btn__label">{{ 'import.index.action_details'|trans({}, 'data_import') }}</span>
                                         </a>
                                     </td>
                                 </tr>
