@@ -1,0 +1,178 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'audit_workbook' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'audit_workbook.page.title'|trans({}, 'audit_workbook') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.audits'|trans({}, 'nav'), url: path('app_audit_index') },
+            { label: 'audit_workbook.nav.workbooks'|trans({}, 'audit_workbook') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'file-earmark-spreadsheet', label: 'audit_workbook.page.badge'|trans({}, 'audit_workbook') },
+        title: 'audit_workbook.index.title'|trans({}, 'audit_workbook'),
+        subtitle: 'audit_workbook.index.subtitle'|trans({}, 'audit_workbook')
+    }) }}
+
+    <main class="fa-aurora-surface">
+
+        {# ── KPI tiles: one per export type ─────────────────────────────── #}
+        <div class="row mb-4">
+            <div class="col-md-6 col-lg-3 mb-3">
+                {{ _fa_feature_card.render({
+                    label: 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook'),
+                    value: 'XLSX',
+                    icon: 'shield-check',
+                    variant: 'primary',
+                    hint: 'audit_workbook.export_type.soa.description'|trans({}, 'audit_workbook')
+                }) }}
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                {{ _fa_feature_card.render({
+                    label: 'audit_workbook.export_type.control_implementation.title'|trans({}, 'audit_workbook'),
+                    value: 'XLSX',
+                    icon: 'list-check',
+                    variant: 'success',
+                    hint: 'audit_workbook.export_type.control_implementation.description'|trans({}, 'audit_workbook')
+                }) }}
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                {{ _fa_feature_card.render({
+                    label: 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook'),
+                    value: 'XLSX',
+                    icon: 'patch-check',
+                    variant: 'info',
+                    hint: 'audit_workbook.export_type.compliance_fulfillment.description'|trans({}, 'audit_workbook')
+                }) }}
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                {{ _fa_feature_card.render({
+                    label: 'audit_workbook.export_type.risk_register.title'|trans({}, 'audit_workbook'),
+                    value: 'XLSX',
+                    icon: 'exclamation-triangle',
+                    variant: 'warning',
+                    hint: 'audit_workbook.export_type.risk_register.description'|trans({}, 'audit_workbook')
+                }) }}
+            </div>
+        </div>
+
+        {# ── Tenant-wide exports (no framework picker needed) ───────────── #}
+        <section class="fa-section mb-4">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'audit_workbook.index.section.tenant_wide'|trans({}, 'audit_workbook') }}</h2>
+            </div>
+            <div class="fa-section__body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-3 p-3 border rounded">
+                            <i class="bi bi-list-check fs-3 text-success" aria-hidden="true"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold">{{ 'audit_workbook.export_type.control_implementation.title'|trans({}, 'audit_workbook') }}</div>
+                                <div class="small text-muted">{{ 'audit_workbook.export_type.control_implementation.description'|trans({}, 'audit_workbook') }}</div>
+                            </div>
+                            <a href="{{ path('app_audit_workbook_control_implementation') }}"
+                               class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
+                               aria-label="{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}">
+                                <i class="bi bi-download" aria-hidden="true"></i>
+                                <span class="fa-cyber-btn__label">{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-3 p-3 border rounded">
+                            <i class="bi bi-exclamation-triangle fs-3 text-warning" aria-hidden="true"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold">{{ 'audit_workbook.export_type.risk_register.title'|trans({}, 'audit_workbook') }}</div>
+                                <div class="small text-muted">{{ 'audit_workbook.export_type.risk_register.description'|trans({}, 'audit_workbook') }}</div>
+                            </div>
+                            <a href="{{ path('app_audit_workbook_risk_register') }}"
+                               class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
+                               aria-label="{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}">
+                                <i class="bi bi-download" aria-hidden="true"></i>
+                                <span class="fa-cyber-btn__label">{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {# ── Framework-bound exports (SoA + Compliance Fulfillment) ─────── #}
+        <section class="fa-section mb-4">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'audit_workbook.index.section.framework_bound'|trans({}, 'audit_workbook') }}</h2>
+            </div>
+            <div class="fa-section__body">
+                {% if frameworks|length == 0 %}
+                    {{ _fa_empty_state.render({
+                        mood: 'working',
+                        title: 'audit_workbook.index.no_frameworks.title'|trans({}, 'audit_workbook'),
+                        description: 'audit_workbook.index.no_frameworks.description'|trans({}, 'audit_workbook'),
+                        actions: []
+                    }) }}
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'audit_workbook.index.table.framework'|trans({}, 'audit_workbook') }}</th>
+                                    <th>{{ 'audit_workbook.index.table.version'|trans({}, 'audit_workbook') }}</th>
+                                    <th class="text-end">{{ 'audit_workbook.index.table.downloads'|trans({}, 'audit_workbook') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for framework in frameworks %}
+                                <tr>
+                                    <td>
+                                        <i class="bi bi-shield-lock me-1 text-primary" aria-hidden="true"></i>
+                                        <strong>{{ framework.name }}</strong>
+                                        {% if framework.code %}
+                                            <span class="badge bg-secondary ms-1">{{ framework.code }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">{{ framework.version ?? '—' }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            <a href="{{ path('app_audit_workbook_soa', { frameworkId: framework.id }) }}"
+                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                               aria-label="{{ 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook') }}">
+                                                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                                                <span class="fa-cyber-btn__label">{{ 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook') }}</span>
+                                            </a>
+                                            <a href="{{ path('app_audit_workbook_compliance', { frameworkId: framework.id }) }}"
+                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                               aria-label="{{ 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook') }}">
+                                                <i class="bi bi-patch-check" aria-hidden="true"></i>
+                                                <span class="fa-cyber-btn__label">{{ 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook') }}</span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        {# ── Alva mood hint — TODO F40.4: wire alvaBus celebrate on click #}
+        {#
+            data-controller="alva-celebrate" data-action="click->alva-celebrate#trigger"
+            can be added to download buttons once the alva-celebrate Stimulus controller
+            is available. For now the page uses the 'working' mood in the empty state.
+        #}
+
+    </main>
+</div>
+{% endblock %}
