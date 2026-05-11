@@ -69,6 +69,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_status_pill.html.twig' as pill %}
             {# Phase 8H.1: standardised via _detail_group component #}
             {% include '_components/_detail_group.html.twig' with {
                 items: [
