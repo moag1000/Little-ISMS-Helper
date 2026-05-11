@@ -242,27 +242,47 @@ class BulkImportControllerTest extends WebTestCase
     {
         $this->client->loginUser($this->managerUser);
 
-        // Create a minimal valid XLSX fixture using the existing sample file if present,
-        // or skip if the orchestrator requires a real XLSX structure.
         $sampleXlsx = __DIR__ . '/../../../fixtures/sample-imports/assets-sample.xlsx';
 
-        if (!is_file($sampleXlsx)) {
-            $this->markTestSkipped('Sample XLSX fixture not available — Task F2.11 creates these.');
-        }
+        // The orchestrator calls $file->move() which relocates the file from disk.
+        // Copy the fixture to a temp path so the original is preserved for other tests.
+        $tmpXlsx = sys_get_temp_dir() . '/assets-sample-test-' . uniqid() . '.xlsx';
+        copy($sampleXlsx, $tmpXlsx);
 
-        $this->client->request('POST', '/en/import/asset/upload', [], [
-            'upload_step' => [
-                'entityType' => 'Asset',
-                'mode'       => 'initial',
-                'file'       => new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                    $sampleXlsx,
-                    'assets-sample.xlsx',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                    null,
-                    true,
-                ),
+        // GET the upload form first to establish a session and extract the CSRF token.
+        // Per memory `feedback_csrf_tests_session`: token generation requires an active session.
+        $crawler   = $this->client->request('GET', '/en/import/asset/upload');
+        $csrfToken = $crawler->filter('input[name="upload_step[_token]"]')->attr('value');
+
+        // KernelBrowser::request($method, $uri, $parameters, $files)
+        // POST fields (entityType, mode, _token) go in $parameters; file goes in $files.
+        $this->client->request(
+            'POST',
+            '/en/import/asset/upload',
+            [
+                'upload_step' => [
+                    'entityType' => 'Asset',
+                    'mode'       => 'initial',
+                    '_token'     => $csrfToken,
+                ],
             ],
-        ]);
+            [
+                'upload_step' => [
+                    'file' => new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                        $tmpXlsx,
+                        'assets-sample.xlsx',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        null,
+                        true,
+                    ),
+                ],
+            ],
+        );
+
+        // Clean up temp file if it still exists (orchestrator may have moved it)
+        if (is_file($tmpXlsx)) {
+            @unlink($tmpXlsx);
+        }
 
         $response = $this->client->getResponse();
         // On success, redirects to /map
