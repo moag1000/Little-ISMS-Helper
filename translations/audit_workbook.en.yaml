@@ -1,6 +1,8 @@
 audit_workbook:
     nav:
         workbooks: 'Audit Workbooks'
+        title: 'Audit Workbooks'
+        subtitle: 'XLSX exports for auditor handover'
 
     page:
         title: 'Audit Workbooks for Auditor Handover'
@@ -40,6 +42,7 @@ audit_workbook:
 
     action:
         download: 'Download'
+        export_xlsx: 'Export audit workbook (.xlsx)'
 
     error:
         no_tenant: 'No tenant context active. Please log in again.'

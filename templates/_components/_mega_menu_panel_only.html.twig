@@ -768,6 +768,16 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {# F40.4: Audit-Workbooks — XLSX exports for auditor handover. Requires ROLE_AUDITOR. #}
+                        {% if is_granted('ROLE_AUDITOR') %}
+                        <li><a href="{{ path('app_audit_workbook_index') }}" class="{% if current_route starts with 'app_audit_workbook_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'audit_workbook.nav.title'|trans({}, 'audit_workbook') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'audit_workbook.nav.subtitle'|trans({}, 'audit_workbook') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

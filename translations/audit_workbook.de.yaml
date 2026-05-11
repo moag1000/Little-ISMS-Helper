@@ -1,6 +1,8 @@
 audit_workbook:
     nav:
         workbooks: 'Audit-Workbooks'
+        title: 'Audit-Workbooks'
+        subtitle: 'XLSX-Exporte für Audit-Übergabe'
 
     page:
         title: 'Audit-Workbooks für Auditor-Übergabe'
@@ -40,6 +42,7 @@ audit_workbook:
 
     action:
         download: 'Herunterladen'
+        export_xlsx: 'Audit-Workbook (.xlsx) exportieren'
 
     error:
         no_tenant: 'Kein Mandantenkontext aktiv. Bitte melden Sie sich erneut an.'
