@@ -233,6 +233,10 @@
 .fa-icon--nav-inbox { --fa-icon: url("../icons/nav-inbox.svg"); }
 .fa-icon--nav-mortarboard { --fa-icon: url("../icons/nav-mortarboard.svg"); }
 .fa-icon--nav-shield-alert { --fa-icon: url("../icons/nav-shield-alert.svg"); }
+.fa-icon--nav-shield { --fa-icon: url("../icons/nav-shield.svg"); }
+.fa-icon--nav-clipboard-check { --fa-icon: url("../icons/nav-clipboard-check.svg"); }
+.fa-icon--nav-target { --fa-icon: url("../icons/nav-target.svg"); }
+.fa-icon--ui-stars { --fa-icon: url("../icons/ui-stars.svg"); }
 .fa-icon--nav-activity { --fa-icon: url("../icons/nav-activity.svg"); }
 .fa-icon--nav-list-ordered { --fa-icon: url("../icons/nav-list-ordered.svg"); }
 .fa-icon--nav-cpu { --fa-icon: url("../icons/nav-cpu.svg"); }

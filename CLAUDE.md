@@ -101,6 +101,15 @@ CLI nur fuer destructive-edge-cases wenn UI-Auto-Recovery scheitert. Doku:
 6. Translations → `translations/[domain].{de,en}.yaml` (see Translation Domains below)
 7. Tests → `tests/`
 
+**Status fields are first-class lifecycle fields.** When an entity has a
+`status` column (e.g. `draft`, `in_review`, `approved`, `published`,
+`archived`), wire bulk-status-change support via the canonical
+`_bulk_action_bar.html.twig` with `actions: ['status_change', 'approve']`.
+The server enforces a 5-transition matrix: `draft→in_review`,
+`in_review→approved`, `in_review→draft`, `approved→published`,
+`published→archived`, `archived→published`. Do not allow arbitrary
+status targets; validate the transition server-side.
+
 **Modal Pattern (Important):**
 Bootstrap loaded async via ES Module. For inline scripts:
 ```javascript
@@ -384,6 +393,7 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
    var(--bs-bg-opacity))`. Without the `-rgb` twin of a mapped token, Bootstrap
    falls back to hardcoded defaults and ignores Aurora mapping entirely. All
    color/bg tokens need both `--bs-X` and `--bs-X-rgb` in light AND dark forks.
+9. *(number reserved — see item 10 below)*
 10. **Twig macro-import in `{% embed %}` needs local re-import** — Twig
     `{% embed %}` creates a new template scope. File-scope or parent-block
     imports are NOT visible inside the embed-block. Symptom:
@@ -394,6 +404,16 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
     line inside the embed-block (or nested-embed-block). Regular
     `{% block %}` under `{% extends %}` inherits file-scope imports — only
     `{% embed %}` is the trap.
+10b. **`trans_default_domain` has the same scope-isolation in `{% embed %}`** —
+    A file-level `{% trans_default_domain 'X' %}` directive is NOT inherited
+    inside `{% embed %}` blocks. Symptom: translation keys resolve against the
+    `messages` fallback domain instead of the intended domain, causing silent
+    wrong-language or missing-key lookups (hit in `_operational_baselines.html.twig`
+    crypto_col keys). Fix: either repeat `{% trans_default_domain 'X' %}` as the
+    first line inside every embed-block, or use the explicit domain parameter on
+    every `|trans` call inside the embed (e.g. `|trans({}, 'crypto')`). Regular
+    `{% block %}` under `{% extends %}` inherits the file-scope default domain —
+    only `{% embed %}` is the trap.
 11. **Do NOT use Bootstrap `bg-*` / `text-white` on `.card` or `.card-header`** —
    Aurora's `.card { background: var(--surface) }` and
    `.card > .card-header { background: var(--surface-2) }` (in
@@ -427,7 +447,7 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-table` | Aurora-styled data table (replaces raw `<table class="table">`) — 80+ adopted in v3.5 | `_fa_table.html.twig` |
 | `fa-progress` | Aurora progress-bar (replaces hand-rolled `.progress > .progress-bar`) — 54 adopted in v3.5 | `_fa_progress.html.twig` |
 | `fa-action-bar` | Page-level action bar (sticky bottom, top of detail-views) | `_fa_action_bar.html.twig` |
-| `fa-bulk-action-bar` | Canonical bulk-action bar (selected-count + ops) — 7+ lists adopted | `_fa_bulk_action_bar.html.twig` |
+| `bulk-action-bar` | Canonical bulk-action bar (selected-count + ops, 7+ lists). Use `{% include '_components/_bulk_action_bar.html.twig' with { actions: ['export', 'delete', 'tag', 'assign', 'approve', 'status_change'] } %}`. `approve` renders a quick-approve button; `status_change` renders a dropdown of valid lifecycle targets (draft→in_review→approved→published→archived). CSS classes: `.bulk-action-bar`, `.bulk-action-btn`, `.bulk-action-btn-success`, `.bulk-action-btn-danger`. **DEPRECATED**: `_fa_bulk_action_bar.html.twig` is kept as a BC-bridge only — new code must not use it. | `_components/_bulk_action_bar.html.twig` (include, not macro) |
 | `fa-toast` | Aurora toast/flash-message stack (replaces Bootstrap toast-container) — wired in `base.html.twig` | `_fa_toast.html.twig` |
 | `fa-audit-row` | ISMS-Audit-Trail row pattern (compact + full views) | `_fa_audit_row.html.twig` |
 | `fa-cyber-field` | Hand-rolled Aurora-Frame inputs (text/textarea/select) | `_fa_cyber_field.html.twig` |
@@ -435,9 +455,18 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `isms-approval-stages` | Multi-stage approval visualization (workflow instances) | `_isms_approval_stages.html.twig` |
 | `.fa-aurora-surface` | Opt-in page-level Aurora atmosphere (CSS utility, not macro) | — |
 
-Import pattern: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
+Import pattern for macros: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
+For the bulk-action bar use `{% include '_components/_bulk_action_bar.html.twig' with { actions: [...] } %}` (it is a plain include, not a macro).
 Legacy `.kpi-card` / `variant:'kpi'` still works for backward-compat but emits
 a dev-env console deprecation warning.
+
+**FORWARD-SPEC warning**: `docs/design_system/sections/generics-extra.html`
+§ "Bulk-Action-Bar" (section id `bulk-action-bar`) uses CSS classes
+`.fa-bulk-bar`, `.fa-bulk-bar--brand`, `.fa-bulk-btn`, `.fa-bulk-bar__count`,
+etc. These classes are a **design-system preview spec and are NOT yet shipped**
+in application CSS. Do not implement against them. The shipped (canonical) CSS
+class set is `.bulk-action-bar` / `.bulk-action-btn*` (in
+`assets/styles/bulk-actions.css`). Implement against the canonical set only.
 
 Stylelint (`npm run stylelint`) bans raw hex in 14 color-valued properties
 app-wide; use Aurora tokens only. Allow-list: `fairy-aurora.css` (SoT),

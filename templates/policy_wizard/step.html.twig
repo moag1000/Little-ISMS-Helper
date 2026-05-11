@@ -180,7 +180,7 @@
             {% if _gc is iterable and _gc.approvers is defined %}
                 <div class="card mb-3 border-primary">
                     <div class="card-header py-2 d-flex align-items-center gap-2">
-                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                         <h4 class="h6 mb-0">{{ 'policy_wizard.step.review_generate.confirm_box.title'|trans }}</h4>
                     </div>
                     <div class="card-body py-3 small">
@@ -269,7 +269,7 @@
                     class="fa-cyber-btn fa-cyber-btn--primary"
                     data-policy-wizard-generate-target="button"
                     {{ hierarchy_conflicts|default([])|length > 0 ? 'disabled' : 'disabled' }}>
-                <i class="bi bi-magic" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-stars" aria-hidden="true"></i>
                 <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.generate'|trans }}</span>
             </button>
         </form>
