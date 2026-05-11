@@ -136,6 +136,14 @@ services:
             tags: ['policy_wizard.mode_handler']
         App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface:
             tags: ['policy_wizard.compliance_check']
+        # F40 — Audit-Workbook generators auto-register via interface tag.
+        App\Service\Audit\Generator\AuditWorkbookGeneratorInterface:
+            tags: ['app.audit.workbook_generator']
+
+    # F40 — Audit-Workbook orchestrator: receives all tagged generators.
+    App\Service\Audit\AuditWorkbookGenerator:
+        arguments:
+            $generators: !tagged_iterator app.audit.workbook_generator
 
     App\AlvaHint\AlvaHintService:
         arguments:
@@ -495,3 +503,20 @@ services:
 
     App\Command\LoadIso27701v2025RequirementsCommand:
         public: true
+
+    # ── F2.3: Bulk-Import Mapper Registry ────────────────────────────────────
+    # Mappers are collected via tagged-service iterator; each mapper must be
+    # tagged with `app.import.mapper` to be picked up by EntityMapperRegistry.
+
+    App\Service\Import\Mapper\AssetMapper:
+        tags: ['app.import.mapper']
+
+    App\Service\Import\Mapper\SupplierMapper:
+        tags: ['app.import.mapper']
+
+    App\Service\Import\Mapper\ControlMapper:
+        tags: ['app.import.mapper']
+
+    App\Service\Import\EntityMapperRegistry:
+        arguments:
+            $mappers: !tagged_iterator app.import.mapper
