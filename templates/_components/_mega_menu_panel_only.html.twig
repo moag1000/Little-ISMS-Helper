@@ -91,6 +91,15 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.soa'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {% if is_granted('ROLE_MANAGER') %}
+                        <li><a href="{{ path('app_bulk_import_index', {entityType: 'control'}) }}" class="{% if current_route starts with 'app_bulk_import_' and app.request.attributes.get('entityType') == 'control' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.bulk_import.controls'|trans({}, 'data_import') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.bulk_import.controls_desc'|trans({}, 'data_import') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                         {% endif %}
                         {% if is_module_active('core') %}
                         <li><a href="{{ path('app_objective_index') }}" class="{% if current_route starts with 'app_objective_' %}active{% endif %}" data-turbo-action="advance">
@@ -124,6 +133,15 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.assets'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {% if is_granted('ROLE_MANAGER') %}
+                        <li><a href="{{ path('app_bulk_import_index', {entityType: 'asset'}) }}" class="{% if current_route starts with 'app_bulk_import_' and app.request.attributes.get('entityType') == 'asset' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.bulk_import.assets'|trans({}, 'data_import') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.bulk_import.assets_desc'|trans({}, 'data_import') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                         {% endif %}
                         {% if is_module_active('assets') %}
                         <li><a href="{{ path('app_supplier_index') }}" class="{% if current_route starts with 'app_supplier_' %}active{% endif %}" data-turbo-action="advance">
@@ -133,6 +151,15 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.suppliers'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {% if is_granted('ROLE_MANAGER') %}
+                        <li><a href="{{ path('app_bulk_import_index', {entityType: 'supplier'}) }}" class="{% if current_route starts with 'app_bulk_import_' and app.request.attributes.get('entityType') == 'supplier' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.bulk_import.suppliers'|trans({}, 'data_import') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.bulk_import.suppliers_desc'|trans({}, 'data_import') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                         {% if is_module_active('assets') %}
                         <li><a href="{{ path('app_location_index') }}" class="{% if current_route starts with 'app_location_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-location" aria-hidden="true"></i>

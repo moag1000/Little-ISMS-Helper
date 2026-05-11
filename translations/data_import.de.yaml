@@ -1,3 +1,12 @@
+nav:
+    bulk_import:
+        assets: 'Assets-Bulk-Import'
+        assets_desc: 'Asset-Liste aus Excel/CSV importieren'
+        suppliers: 'Supplier-Bulk-Import'
+        suppliers_desc: 'Lieferantenliste aus Excel/CSV importieren'
+        controls: 'Controls-Bulk-Import'
+        controls_desc: 'Controls aus Excel/CSV importieren'
+
 import:
     page:
         title: 'Bulk-Import'
