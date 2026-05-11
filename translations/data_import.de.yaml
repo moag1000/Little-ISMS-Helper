@@ -52,6 +52,8 @@ import:
         preview: 'Vorschau anzeigen'
         commit: 'Import starten'
         download_error_csv: 'Fehler-CSV herunterladen'
+        download_sample: 'Muster-Excel herunterladen'
+        download_sample_help: 'Vorausgefüllte Beispieldatei mit korrekten Spaltenüberschriften zum Anpassen.'
 
     preview:
         skip_on_error_label: 'Fehlerhafte Zeilen überspringen (anstatt abzubrechen)'

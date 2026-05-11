@@ -15,5 +15,5 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class MustEqualCommit extends Constraint
 {
-    public string $message = 'data_import.error.must_equal_commit';
+    public string $message = 'import.error.must_equal_commit';
 }

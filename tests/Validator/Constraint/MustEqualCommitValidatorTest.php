@@ -41,7 +41,7 @@ class MustEqualCommitValidatorTest extends ConstraintValidatorTestCase
     {
         $this->validator->validate('', new MustEqualCommit());
 
-        $this->buildViolation('data_import.error.must_equal_commit')->assertRaised();
+        $this->buildViolation('import.error.must_equal_commit')->assertRaised();
     }
 
     #[Test]
@@ -49,7 +49,7 @@ class MustEqualCommitValidatorTest extends ConstraintValidatorTestCase
     {
         $this->validator->validate(null, new MustEqualCommit());
 
-        $this->buildViolation('data_import.error.must_equal_commit')->assertRaised();
+        $this->buildViolation('import.error.must_equal_commit')->assertRaised();
     }
 
     #[Test]
@@ -57,7 +57,7 @@ class MustEqualCommitValidatorTest extends ConstraintValidatorTestCase
     {
         $this->validator->validate('yes', new MustEqualCommit());
 
-        $this->buildViolation('data_import.error.must_equal_commit')->assertRaised();
+        $this->buildViolation('import.error.must_equal_commit')->assertRaised();
     }
 
     #[Test]
@@ -73,6 +73,6 @@ class MustEqualCommitValidatorTest extends ConstraintValidatorTestCase
     {
         $this->validator->validate('COMMI', new MustEqualCommit());
 
-        $this->buildViolation('data_import.error.must_equal_commit')->assertRaised();
+        $this->buildViolation('import.error.must_equal_commit')->assertRaised();
     }
 }

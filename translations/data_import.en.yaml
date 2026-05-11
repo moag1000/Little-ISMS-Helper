@@ -52,6 +52,8 @@ import:
         preview: 'Show Preview'
         commit: 'Start Import'
         download_error_csv: 'Download Error CSV'
+        download_sample: 'Download Sample Excel'
+        download_sample_help: 'Pre-filled example file with correct column headers to adapt.'
 
     preview:
         skip_on_error_label: 'Skip rows with errors (instead of aborting)'

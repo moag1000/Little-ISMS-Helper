@@ -93,11 +93,18 @@
                         <div data-file-drop-target="preview" aria-live="polite"></div>
                     </div>
 
-                    <div class="d-flex gap-2 mt-4">
+                    <div class="d-flex gap-2 mt-4 flex-wrap">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="bi bi-arrow-right" aria-hidden="true"></i>
                             <span class="fa-cyber-btn__label">{{ 'import.action.upload'|trans({}, 'data_import') }}</span>
                         </button>
+                        <a href="{{ path('app_bulk_import_sample', { _locale: app.request.locale, entityType: entityType }) }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
+                           download
+                           title="{{ 'import.action.download_sample_help'|trans({}, 'data_import') }}">
+                            <i class="bi bi-download" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">{{ 'import.action.download_sample'|trans({}, 'data_import') }}</span>
+                        </a>
                         <a href="{{ path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost">
                             <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>

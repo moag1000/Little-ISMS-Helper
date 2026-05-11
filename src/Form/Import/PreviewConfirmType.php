@@ -31,15 +31,15 @@ class PreviewConfirmType extends AbstractType
     {
         $builder
             ->add('skipOnError', CheckboxType::class, [
-                'label'    => 'data_import.preview.skip_on_error_label',
+                'label'    => 'import.preview.skip_on_error_label',
                 'required' => false,
                 'data'     => false,
             ])
             ->add('confirmText', TextType::class, [
-                'label'       => 'data_import.preview.confirm_text_label',
+                'label'       => 'import.preview.confirm_text_label',
                 'required'    => true,
                 'constraints' => [
-                    new NotBlank(message: 'data_import.error.must_equal_commit'),
+                    new NotBlank(message: 'import.error.must_equal_commit'),
                     new MustEqualCommit(),
                 ],
                 'attr' => [

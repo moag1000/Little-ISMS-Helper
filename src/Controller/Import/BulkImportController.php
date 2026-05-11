@@ -364,6 +364,31 @@ final class BulkImportController extends AbstractController
         return $response;
     }
 
+    /**
+     * Stream the sample-XLSX fixture for the current entity-type as a download.
+     * Helps users build their first Excel without guessing column headers.
+     * The fixture-files live in fixtures/sample-imports/ (committed via F2.11).
+     */
+    #[Route('/sample.xlsx', name: 'app_bulk_import_sample', methods: ['GET'])]
+    public function sample(string $entityType): Response
+    {
+        $entityTypeLower = strtolower($entityType);
+        $fileBaseName = match ($entityTypeLower) {
+            'asset' => 'assets-sample.xlsx',
+            'supplier' => 'suppliers-sample.xlsx',
+            'control' => 'controls-sample.xlsx',
+            default => throw $this->createNotFoundException('Unsupported entity-type: ' . $entityType),
+        };
+
+        $samplePath = sprintf('%s/fixtures/sample-imports/%s', $this->projectDir, $fileBaseName);
+
+        if (!is_file($samplePath) || !is_readable($samplePath)) {
+            throw $this->createNotFoundException('Sample fixture missing: ' . $fileBaseName);
+        }
+
+        return $this->file($samplePath, $fileBaseName);
+    }
+
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------

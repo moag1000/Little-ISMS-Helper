@@ -48,9 +48,9 @@ class ColumnMappingType extends AbstractType
         // treats '' as "skip this column".
         $fieldChoices = [];
         foreach ($entityFields as $field) {
-            $fieldChoices['data_import.mapping.field.' . $field] = $field;
+            $fieldChoices['import.mapping.field.' . $field] = $field;
         }
-        $fieldChoices['data_import.mapping.ignore'] = '';
+        $fieldChoices['import.mapping.ignore'] = '';
 
         foreach ($headers as $index => $header) {
             $fieldName = 'column_' . $index;

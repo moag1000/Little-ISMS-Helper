@@ -36,7 +36,7 @@ class UploadStepType extends AbstractType
 
         $entityChoices = array_combine(
             array_map(
-                static fn(string $t): string => 'data_import.entity_type.' . strtolower($t),
+                static fn(string $t): string => 'import.entity_type.' . strtolower($t),
                 $entityTypes,
             ),
             $entityTypes,
@@ -44,23 +44,23 @@ class UploadStepType extends AbstractType
 
         $builder
             ->add('entityType', ChoiceType::class, [
-                'label'        => 'data_import.upload.entity_type_label',
+                'label'        => 'import.upload.entity_type_label',
                 'choices'      => $entityChoices,
                 'required'     => true,
-                'placeholder'  => 'data_import.upload.entity_type_placeholder',
+                'placeholder'  => 'import.upload.entity_type_placeholder',
             ])
             ->add('mode', ChoiceType::class, [
-                'label'    => 'data_import.upload.mode_label',
+                'label'    => 'import.upload.mode_label',
                 'required' => true,
                 'choices'  => [
-                    'data_import.mode.initial'  => 'initial',
-                    'data_import.mode.delta'    => 'delta',
-                    'data_import.mode.dry_run'  => 'dry_run',
+                    'import.mode.initial'  => 'initial',
+                    'import.mode.delta'    => 'delta',
+                    'import.mode.dry_run'  => 'dry_run',
                 ],
                 'data' => 'initial',
             ])
             ->add('file', FileType::class, [
-                'label'    => 'data_import.upload.file_label',
+                'label'    => 'import.upload.file_label',
                 'required' => true,
                 'constraints' => [
                     new File(
@@ -73,8 +73,8 @@ class UploadStepType extends AbstractType
                             'text/plain',
                             'application/vnd.oasis.opendocument.spreadsheet',
                         ],
-                        mimeTypesMessage: 'data_import.upload.invalid_mime_type',
-                        maxSizeMessage: 'data_import.upload.file_too_large',
+                        mimeTypesMessage: 'import.upload.invalid_mime_type',
+                        maxSizeMessage: 'import.upload.file_too_large',
                     ),
                 ],
             ]);
