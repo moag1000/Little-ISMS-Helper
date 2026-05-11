@@ -225,7 +225,7 @@ modules:
 
   marisk:
     name: 'MaRisk (DACH-Banken/Versicherer)'
-    description: 'Mindestanforderungen Risikomanagement BaFin (parallel zu DORA bestehend) — Outsourcing AT 9, Risk-Bearing-Capacity AT 4, Compliance-Funktion AT 4.4'
+    description: 'Mindestanforderungen Risikomanagement BaFin — ICT-Anteil seit Jan 2025 obsolet via DORA + RTS 2024/1773 + ITS 2024/2956 (BAIT/VAIT/KAIT/ZAIT formal von BaFin zurückgezogen). Non-ICT-Stack bleibt relevant: AT 4 Governance, AT 5 Vergütung, AT 9 non-ICT-Outsourcing, BTO/BTR Kredit/Trading/Liquidität (Bank-Treasury-Domäne). Für ICT-Banken-Compliance: nis2_dora-Modul nutzen.'
     required: false
     icon: 'building-columns'
     entities:

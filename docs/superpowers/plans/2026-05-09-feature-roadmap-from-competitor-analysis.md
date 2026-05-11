@@ -1766,3 +1766,256 @@ Cluster** Review:
   Risk-Mgmt-Specialist)
 - Forward-Looking-Cluster vor Sprint 12: UX + Pentester (für MCP-Server-
   Sicherheit) + ISMS
+
+---
+
+# v5-Erweiterung: isms-core-Adaption + DACH-Refocus (2026-05-11)
+
+Dritte Marktbeobachtungs-Iteration nach Scan von `isms-core-project/
+isms-core-platform`. Filterung aggressiv nach DACH-Markt + CM-Tauglichkeit
+("nicht zu technisch"). Plus Bereinigung obsoleter Banken-Frameworks.
+
+## Bereinigungen (v4 → v5)
+
+### `marisk`-Modul-Key **deprecate**
+- ICT-Teil von MaRisk (AT 7.2 IT-Risikomanagement + AT 9 ICT-Outsourcing)
+  ist seit DORA + RTS 2024/1773 + ITS 2024/2956 obsolet.
+- BaFin hat BAIT/VAIT/KAIT/ZAIT formal via Allgemeinverfügungen
+  Jan 2025 zurückgezogen.
+- Non-ICT-Teil von MaRisk (AT 4 Governance, AT 5 Vergütung, AT 9
+  non-ICT-Outsourcing, BTO/BTR Kredit/Trading/Liquidität) ist Bank-
+  Treasury-Domäne — nicht unser Scope.
+- **Action:** `marisk` Modul-Key bleibt in `config/modules.yaml` (kein
+  Breaking-Change für existing Tenants), aber wird in Metadata als
+  `status: deprecated` markiert. Keine weiteren Features dahinter.
+  `nis2_dora`-Modul deckt alle relevanten ICT-Banken-Anforderungen.
+
+### BAIT als Plan-Feature gestrichen
+- v4 hatte BAIT-spezifische Inhalte angedeutet — entfernt.
+- isms-core's "BaFin BAIT (DE) — Assessment-Tool" würden wir NICHT
+  übernehmen (obsoletes Framework).
+
+## Neue Features F38-F40 + Refocus
+
+### F5b finale Liste (revidiert)
+- ✅ **BSI IT-Grundschutz-Kompendium 2024** (Bausteine + Anforderungen)
+- ✅ **TISAX v6.0** (Erweiterung gemerged mit F28)
+- ✅ **Swiss-Stack** (CH-optional Modul):
+  - **Swiss nDSG 2023** (25 Provisions, 6 Chapters) — DSGVO-Pendant CH
+  - **Swiss ISG SR-128 2024** (27 Reqs, 8 Sections, 24h-Cyberattack-Reporting) — NIS-2-Pendant CH
+- ❌ ~~BAIT~~ obsolet
+- ❌ ~~MaRisk Banking-Stack~~ obsolet bzw. außerhalb Scope
+
+**Aufwand revidiert:** F5b von 6 → 3 Frameworks. 1-1.5 Sprints statt 2.
+
+### F39 NEU — ENISA EUVD Daily-Feed-Connector
+- **Scope:** Single-Feed-Connector für ENISA European Vulnerability
+  Database. Cron-Daily-Ingest, `in_euvd`-Flag auf CVE.
+- **Begründung:** EU-Behörden-relevant, DACH-FinSec-Tenants nutzen
+  ENISA als offizielle Quelle. Single-Feed, nicht 13 Threat-Intel-
+  Suites (die wären OPS-technisch, nicht GRC-CM).
+- **Integration:** Erweiterung unseres `vulnerability_intel`-Moduls.
+- **Aufwand:** 1 Sprint.
+
+### F40 NEU — Audit-Workbook-XLSX-Generator
+- **Scope:** Pro Framework-Assessment audit-ready XLSX generieren.
+  "Hand workbook to auditor"-Pattern. Spart CM 2-3 FTE-Tage pro
+  External-Audit.
+- **Pattern-Reuse:** `phpoffice/phpspreadsheet >=5.7` schon Dep.
+- **Exports:** SoA, ControlImplementation-Liste, ComplianceFulfillment-
+  Liste, RiskRegister — jeweils mit Auditor-tauglichem Layout
+  (Scoring/Evidence-Status/Notes-Spalten).
+- **Aufwand:** 1 Sprint.
+
+### F38 NEU — Policy-Pack-Format (Document-Type-Erweiterung)
+- **Scope:** `Document.documentType` erweitert um `policy_pack`. Sub-
+  Sections POL/IMP-UG/IMP-TG/REF/CTX/FORM als linked-Documents oder
+  Markdown-Sub-Sections.
+- **Begründung:** isms-core liefert content-strukturiert. Wir bleiben
+  Tool, aber **Adapter** für ihr Pack-Format → User kann Library
+  importieren statt Closed-Garden.
+- **Aufwand:** 1 Sprint (klein, additive Erweiterung).
+
+### F41 GESTRICHEN
+- AI-Compass-Gap-Analysis spekulativ + LLM-Setup-Aufwand. Parking-Lot.
+  Wenn relevant, später via F22 (Local-LLM für Alva-Hints) integrieren.
+
+## Cross-Cutting NICHT übernommen aus isms-core
+
+| Feature | Begründung Drop |
+|---|---|
+| **44 Cloud-Connectors** (M365/Entra/Defender/Azure-CSPM) | Vanta-Klon-Falle, bestätigt v4 |
+| **12 weitere Threat-Intel-Feeds** (abuse.ch, MISP-CIRCL/Botvrij, OTX, AbuseIPDB, Malpedia, VirusTotal, URLhaus, ThreatFox, SSLBL, MalwareBazaar, Feodo, Stopforumspam, Red-Flag-Domains) | SOC-OPS, nicht GRC-CM |
+| **MITRE ATLAS** (AI-Adversarial) | Niche, nicht DACH-CM |
+| **MITRE ATT&CK v19 Deepening** | Basics reichen, mehr ist OPS-technisch |
+| **376-IMP-Docs × 4-Sprachen Voll-Library** | Wir bleiben Tool, nicht Content-Library |
+| **NIST AI RMF 1.0** | US-Markt |
+| **CSRM Object-Centric** | CH-Niche, paradigm-shift |
+| **EU Cloud Sovereignty (SOV/SEAL)** | Draft-Standard, abwarten |
+| **UK/LU/IT/BE/FR-Frameworks** (NCSC-CAF, CSSF, ACN, CyberFundamentals, ReCyF) | kein DACH |
+| **5 separate Products** | wir bleiben One-Tool-multi-Module |
+
+## Sequenzierung-Update (v5 final)
+
+| Sprint | v4 | v5 |
+|---|---|---|
+| 5 | F3 W2 + F5b (alt: BSI/TISAX) | F3 W2 + **F5b Wave 1** (BSI 2024 + TISAX v6.0) |
+| 8 | F36 EU-Behörden-Hub + F29 NIS-2-BSI-Portal | + **F40 Audit-Workbook-Generator** parallel |
+| 9 | F30 RoI + F27 BSI-Übung + F28 TISAX | F30 + **F5b Wave 2** (Swiss-Stack optional) + F27 |
+| 11 | F13 + F31 + F32 | + **F39 ENISA EUVD Mini** |
+| 12+ | F33 + F34 + F12 + F14 + F17 + F20 + F23 | + **F38 Policy-Pack-Format** |
+
+**Total Aufwand revidiert:** v4-Schätzung 30-35 Sprints, mit v5 Bereinigung
+ca. **28-30 Sprints Solo-Dev** (~6-8 Monate). Weniger Frameworks (BAIT/MaRisk
+gestrichen), gleichzeitig F39+F40 additive → Netto-Reduktion.
+
+## Plan-v5 Sign-Offs
+
+- ✅ Compliance-Manager (DACH-Focus, FTE-Tauglichkeit) — bestätigt durch User
+- ✅ Memory `feedback_dora_replaces_vait_bait` — BAIT/MaRisk-Bereinigung
+  konform
+- ✅ UX-Specialist — Review zurück. Findings unten eingearbeitet.
+
+## UX-Specialist-Review Findings + Plan-Patches
+
+**Headline:** Plan reuses 90% existing DS-Patterns, ABER drei Sprint-0-
+Macros (`_fa_stepper`, `_fa_diff_row`, `_fa_condition_builder`) überlappen
+mit bereits existierenden DS-Einträgen die der Plan nicht referenziert.
+Zwei Features (F3 Notification-Center, F4 Reuse-Drawer) erfinden stillschweigend
+neues Chrome wo DS bereits spec'd. F36 Hub re-implementiert
+`admin-hub-card`.
+
+### Cross-Cutting Drift-Risiken (5)
+
+1. **Sprint-0-Macro-Drift**: Plan führt 3 Macros greenfield ein. DS spec'd
+   bereits `fa-step-header`, `isms-diff__*`, `fa-filter-chip`+`fa-cyber-input`.
+   **Action:** Sprint-0-Macros zu Thin-Wrappers über existing DS-Components
+   positionieren (KEIN Eliminate da bereits committed, aber Doku-Update).
+2. **Zwei Notification-Systeme**: Toast (ephemeral) + In-App-Center
+   (persistent) bereits in `isms-patterns.html#notification-center`
+   spec'd. Plan-v4 schrieb fälschlich "fehlte komplett" — korrigiert.
+3. **Drawer-vs-Modal-Ambiguität**: F4 Reuse-Breakdown, F3 Channel-Test-Log,
+   F2 Error-CSV-Download brauchen Slide-Over. DS zeigt Pattern nur in
+   notification-center. **Action:** Im Plan explizit Drawer-Pattern für
+   alle 3 vorgeben.
+4. **Hub-Card vs Feature-Card-Konfusion**: F11 (KPI-Stat-Tile) vs F36
+   (Hub-Nav-Entry) — Plan-v4 mappt beide auf `_fa_feature_card`. DS
+   trennt: `feature-card` = Stat-Tile, `admin-hub-card` = clickable Nav.
+5. **Bootstrap-Utility-Regression-Risiko F1 Preset-Tiles**: Plan sagt
+   "Tile-Layout via `_fa_feature_card`" — `_CARD_GUIDE.md` Anti-Pattern
+   "bg-primary text-white auf .card" droht. **Action:** Note im Plan.
+
+### Plan-v5-UX-Patches (8 finale Items)
+
+#### Patch 1 — F1 SSO Wizard
+- **Sprint-0 `_fa_stepper`** → wrap existing `fa-step-header` (in
+  `components-extra.html`) + `fa-setup-phase__bars` (in `app-shells.html#setup-wizard`).
+- Full-page Wizard at `/admin/sso/`, **NICHT Modal**.
+- Pattern = Admin-Detail-Seite + Phase-Bar.
+- Preset-Tiles = `_fa_feature_card` mit `role="radiogroup"` (NICHT
+  `bg-primary` auf Wrapper — DS-Anti-Pattern).
+
+#### Patch 2 — F2 Bulk-Import
+- **Sprint-0 `_fa_diff_row`** → reuse `isms-diff__line--add/--del/--ctx`
+  classes aus `isms-patterns.html#diff-viewer`. KEIN paralleler Component-
+  Stack — Sprint-0-Macro als Thin-Wrapper über existing Diff-Viewer-Klassen.
+- Skeleton-Loader (`feedback-systems.html#skeletons`) für Parse-Preview.
+- Toast "Lädt…" für Commit > 2 Sek.
+- Import-CTA = Top-Bar Primary-Action (rechts neben Filter-Chips), **NICHT
+  Drawer**.
+- Optional neuer DS-Entry: Column-Mapping-Confidence-Row-Pattern
+  (3-Color-Confidence-Badges).
+
+#### Patch 3 — F3 Notifications + In-App-Center
+- **In-App-Notification-Center EXISTIERT bereits**:
+  `isms-patterns.html#notification-center` (`isms-notify-panel`,
+  Bell+Counter+Group-Labels "Heute/Diese Woche/Älter"+Severity-Tabs+
+  `isms-notify--unread`). Plan-v4-Wording "fehlte komplett" gestrichen.
+- Toast vs Center = DS-spec'd komplementär.
+- Webhook-Channel CRUD = Admin-Detail-Seite + `fa-api-key`-Pattern (in
+  `admin-panel.html`) für HMAC-Secret-Display.
+- **Sprint-0 `_fa_condition_builder`** = compose `fa-filter-chip` +
+  `fa-cyber-input` (KEIN neuer Stack).
+- Bell in Top-Bar (mega-menu), Panel öffnet rechts (`drawer-pos: right`),
+  z-index < toast.
+- **Neuer DS-Entry**: SLA-Countdown-Badge-Variante (mono-font,
+  color-fade amber→red as deadline closes). Klein.
+- SLA-Toast-Variante: `toast-warning` (4h/12h/24h approaching) →
+  `toast-error` sticky (missed).
+
+#### Patch 4 — F4 Evidence-Versioning
+- Reuse `isms-patterns.html#diff-viewer` komplett (counter + PDF-Export-
+  Button + Inline-Modus-Toggle bereits da).
+- Reuse-Badge `12 controls · 4 frameworks` = `fa-entity-badge` mono-style
+  + `data-tone` modifier (NICHT Custom-Style).
+- Reuse-Breakdown-Drawer = Standard-Right-Drawer (Notification-Center-
+  Präzedenz).
+- 5s-Undo-Toast = `toast-info` + `toast-progress`-Bar.
+- Avg-Reuse-Tile = `_fa_feature_card` mit `variant: 'success'`.
+
+#### Patch 5 — F11 FTE-Tracking-Dashboard
+- FTE-Savings-Tile = `_fa_feature_card` aus `components-layout.html`.
+- **Cross-Framework-Gap-Heatmap = `fa-rag-card`-Grid** (3 Spalten ×
+  N Zeilen, Ampel-cells), NICHT neuer Component.
+- Trend = `components-extra.html#sparkline`.
+- Board-Report-PDF via existing `report-templates.html`.
+- Chart.js-Wrapper aus `analytics.css`.
+
+#### Patch 6 — F36 EU-Behörden-Reporting-Hub
+- **Hub-Tiles = `fa-admin-hub-card`** mit `data-tone`, NICHT
+  `_fa_feature_card`. (Admin-Panel.html spec'd pattern: chip+title+desc+count,
+  clickable als Nav-Entry.)
+- Land-Filter = `_fa_filter_chip`-Gruppe (DE/AT/CH/EU).
+- Pending-Reports-Liste = `_fa_entity_card`.
+- Behörden-Übergabe-PDF via `print-styles.html` + `report-templates.html`
+  (`report-doc__table-wrap`).
+- **Neuer DS-Entry**: Land-Flag-Glyph in hub-card chip (6 Country-Tones).
+
+#### Patch 7 — Alva-Mood-Mapping (NEW)
+- F1-Step3 (Test-Connection) → `scanning`
+- F2 Commit → `working` → `celebrating` on success / `warning` on row-errors
+- F3 SLA-approaching → `warning`
+- F4 Reuse-Tile → `happy`
+- F11 Board-Report-View → `idle`
+- F36 Hub empty → `sleeping`
+- API: `window.alvaBus.emit({mood})` per `app-shells.html#alva-dock-api`.
+
+#### Patch 8 — Power-User-Shortcuts (NEW)
+Zu `power-user.html` ergänzen:
+- **`I`** Bulk-Import-Trigger (List-View Context)
+- **`N`** New-Rule (F3)
+- **`V`** Version-Compare (F4)
+- **`G H`** Goto Hub (F36)
+- **`Shift+B`** Toggle Bell-Center
+- Discoverable via `?`-Overlay (existing Pattern).
+
+### Sprint-0-Macro Re-Documentation Action
+
+Existing Macros bleiben (committed in 5469fcb5). Templates müssen aber
+**Header-Comments aktualisieren** wenn erstmals verwendet:
+
+- `_fa_stepper.html.twig` → "Thin wrapper composing `fa-step-header`
+  (components-extra.html) + `fa-setup-phase__bars` (app-shells.html)"
+- `_fa_diff_row.html.twig` → "Thin wrapper around `isms-diff__line--*`
+  classes from `isms-patterns.html#diff-viewer`"
+- `_fa_condition_builder.html.twig` → "Composes `fa-filter-chip` +
+  `fa-cyber-input`. Stimulus controller serializes to hidden input."
+
+Refactor erfolgt bei erster echter F1/F2/F3-Verwendung — nicht
+preemptiv (keine Use-Cases noch im Repo).
+
+## Plan-v5 finale Module-Keys-Audit
+
+`config/modules.yaml` Updates:
+
+- ✅ `marisk` Modul-Key: `description` ergänzt um "(ICT-Anteil obsolet
+  via DORA + RTS 2024/1773. Non-ICT-Stack (AT 4 Governance, AT 5
+  Vergütung, AT 9 non-ICT-Outsourcing) bleibt für Banken-Spezial-
+  Compliance. Empfehlung: `nis2_dora` für ICT-Anforderungen nutzen.)"
+  KEIN Hard-Deprecation um Tenants nicht zu brechen.
+- 6 neue Keys aus Sprint-0 Task 0.2 (`notifications`, `eu_authority_reporting`,
+  `tisax_isa`, `ai_act`, `cra_sbom`, `procedures`) bleiben.
+
+Total Module-Keys nach v5: **26** (statt v4-Schätzung 28 — `bait`,
+`mcp_server`, `ebios_rm`, `eucs` nicht implementiert; `marisk` bleibt
+deprecated).
