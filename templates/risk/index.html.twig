@@ -429,7 +429,8 @@
 
     {# Bulk Action Bar #}
     {% include '_components/_bulk_action_bar.html.twig' with {
-        actions: ['export', 'assign', 'delete']
+        actions: ['export', 'assign', 'delete'],
+        variant: 'brand'
     } %}
     {% endblock %}
 {% endembed %}

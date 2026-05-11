@@ -4,7 +4,7 @@ import { Controller } from '@hotwired/stimulus';
  * Bulk Actions Controller — canonical Aurora bulk-action-bar (per
  * docs/design_system/sections/feedback-systems.html §175-255).
  *
- * Usage (canonical):
+ * Usage (canonical Aurora v4 BEM — see docs/design_system/sections/generics-extra.html#bulk-action-bar):
  *   <div data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
  *     <table class="table-bulk-selectable">
  *       <thead><tr>
@@ -21,28 +21,32 @@ import { Controller } from '@hotwired/stimulus';
  *       </tr></tbody>
  *     </table>
  *
- *     <div class="bulk-action-bar" hidden role="region" aria-live="polite"
+ *     <div class="fa-bulk-bar" hidden role="region" aria-live="polite"
  *          data-bulk-actions-target="actionBar">
- *       <div class="bulk-selection-info">
- *         <span class="bulk-selection-count" data-bulk-actions-target="count">0</span>
- *         <span class="bulk-selection-label">ausgewählt</span>
+ *       <div class="fa-bulk-bar__count">
+ *         <span class="fa-bulk-bar__count-num" data-bulk-actions-target="count">0</span>
+ *         <span class="fa-bulk-bar__count-label">ausgewählt</span>
  *       </div>
- *       <div class="bulk-action-divider"></div>
- *       <div class="bulk-actions">
- *         <button class="bulk-action-btn">…</button>
- *         <button class="bulk-action-btn bulk-action-btn-success">Approven</button>
- *         <button class="bulk-action-btn bulk-action-btn-danger"
+ *       <div class="fa-bulk-bar__divider"></div>
+ *       <div class="fa-bulk-bar__actions">
+ *         <button class="fa-bulk-btn">…</button>
+ *         <button class="fa-bulk-btn fa-bulk-btn--success">Approven</button>
+ *         <button class="fa-bulk-btn fa-bulk-btn--danger"
  *                 data-action="click->bulk-actions#bulkDelete">Löschen</button>
  *       </div>
- *       <button class="bulk-action-close" aria-label="Auswahl aufheben"
- *               data-action="click->bulk-actions#deselectAll"><i class="bi bi-x"></i></button>
+ *       <div class="fa-bulk-bar__divider"></div>
+ *       <button class="fa-bulk-bar__close" aria-label="Auswahl aufheben"
+ *               data-action="click->bulk-actions#deselectAll"><i class="bi bi-x-lg"></i></button>
  *     </div>
  *   </div>
  *
+ *   Brand variant (hero lists: risk, document): add class `fa-bulk-bar--brand`.
+ *   Loading state: add class `is-loading` to the active button.
+ *
  * Targets:
  *   item                <input type="checkbox"> per row
- *   actionBar / bar     `.bulk-action-bar` element to show/hide (alias for canonical 'bar')
- *   count               <span> showing the selected count
+ *   actionBar / bar     `.fa-bulk-bar` element to show/hide via [hidden] attribute
+ *   count               `.fa-bulk-bar__count-num` — shows selected count
  *   selectAllCheckbox   header `<thead>` master checkbox
  *
  * Public API:

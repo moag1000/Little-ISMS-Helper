@@ -1,45 +1,40 @@
 /* ============================================================================
- * Bulk-Action-Bar — Canonical (per docs/design_system/sections/feedback-systems.html §175-255)
+ * Bulk-Action-Bar — Aurora v4 Canonical (BEM: fa-bulk-bar / fa-bulk-btn)
  *
- * Floating gradient action-bar at the bottom of the viewport, appears as soon
- * as ≥ 1 row in a `.table-bulk-selectable` is checked. Aurora-token only,
- * `:has(input:checked)` highlights selected rows without extra JS.
+ * DS Source of Truth: docs/design_system/sections/generics-extra.html
+ *                     #bulk-action-bar (line 641+) and
+ *                     docs/design_system/previews/bulk-action-bar.html
  *
- * Markup:
- *   <table class="table-bulk-selectable">
- *     <thead><tr>
- *       <th class="bulk-select-column">
- *         <input type="checkbox" data-action="bulk-actions#selectAll">
- *       </th>...
- *     </tr></thead>
- *     <tbody>
- *       <tr><td class="bulk-select-column">
- *         <input type="checkbox" data-bulk-actions-target="item" value="...">
- *       </td>...</tr>
- *     </tbody>
- *   </table>
+ * Canonical class set (BEM):
+ *   .fa-bulk-bar            container — neutral surface default
+ *   .fa-bulk-bar--brand     modifier — primary→accent gradient for hero lists
+ *   .fa-bulk-bar__count / __count-num / __count-label
+ *   .fa-bulk-bar__divider
+ *   .fa-bulk-bar__actions
+ *   .fa-bulk-bar__close
+ *   .fa-bulk-btn            generic action button
+ *   .fa-bulk-btn--primary / --success / --danger
+ *   .fa-bulk-btn.is-loading loading state with centered spinner
  *
- *   <div class="bulk-action-bar" hidden role="region" aria-label="..." aria-live="polite">
- *     <div class="bulk-selection-info">
- *       <span class="bulk-selection-count">0</span>
- *       <span class="bulk-selection-label">ausgewählt</span>
- *     </div>
- *     <div class="bulk-action-divider"></div>
- *     <div class="bulk-actions">
- *       <button class="bulk-action-btn">…</button>
- *       <button class="bulk-action-btn bulk-action-btn-success">Approven</button>
- *       <button class="bulk-action-btn bulk-action-btn-danger">Löschen</button>
- *     </div>
- *     <button class="bulk-action-close" aria-label="Auswahl aufheben"><i class="bi bi-x"></i></button>
- *   </div>
- *
- * Modifiers:
- *   .bulk-action-btn-success    accent border, success-tinted bg
- *   .bulk-action-btn-danger     accent border, danger-tinted bg
- *   .bulk-action-btn.loading    disables button + animated spinner suffix
+ * Stimulus controller: `bulk-actions`. Targets UNCHANGED: actionBar|count|item.
+ * See the DEPRECATED block at the bottom for the legacy .bulk-action-bar* shim.
  * ========================================================================= */
 
-/* Action Bar — Aurora gradient floating bottom-bar */
+/* ============================================================================
+ * DEPRECATED 2026-05-11 — Legacy .bulk-action-bar* class set
+ *
+ * The OLD class set (.bulk-action-bar / .bulk-action-btn* / .bulk-selection-info
+ * / .bulk-action-close / .bulk-action-divider / .bulk-actions) is superseded by
+ * the canonical BEM .fa-bulk-bar* set defined further below.
+ *
+ * All consumers (asset, risk, document, incident, supplier, soa, training,
+ * consent) have been migrated to emit .fa-bulk-bar markup via
+ * _bulk_action_bar.html.twig (generic branch) and _fa_bulk_action_bar.html.twig
+ * (macro BC-bridge).
+ *
+ * This block is kept as a safety net. Remove after next major Aurora version.
+ * ========================================================================= */
+
 .bulk-action-bar {
     position: fixed;
     bottom: var(--space-5);
@@ -375,30 +370,7 @@ input[type="checkbox"]:indeterminate {
 }
 
 /* ============================================================================
- * fa-bulk-bar — Aurora-v4 Canonical Bulk-Action-Bar (DS: previews/bulk-action-bar.html)
- *
- * Surface (neutral) variant is the default — neutral surface + border + soft shadow.
- * Brand (gradient) variant adds .fa-bulk-bar--brand for hero lists (risks, findings).
- *
- * Markup:
- *   <div class="fa-bulk-bar" hidden role="region" aria-label="…">
- *     <div class="fa-bulk-bar__count">
- *       <span class="fa-bulk-bar__count-num">3</span>
- *       <span class="fa-bulk-bar__count-label">ausgewählt</span>
- *     </div>
- *     <div class="fa-bulk-bar__divider"></div>
- *     <div class="fa-bulk-bar__actions">
- *       <button class="fa-bulk-btn">Tag</button>
- *       <button class="fa-bulk-btn fa-bulk-btn--success">Genehmigen</button>
- *       <button class="fa-bulk-btn fa-bulk-btn--danger">Löschen</button>
- *     </div>
- *     <div class="fa-bulk-bar__divider"></div>
- *     <button class="fa-bulk-bar__close"><i class="bi bi-x-lg"></i></button>
- *   </div>
- *
- * Variants:
- *   (none)                = neutral surface (default, general lists)
- *   .fa-bulk-bar--brand   = Primary→Accent gradient (hero lists: risks, findings)
+ * fa-bulk-bar — Aurora v4 Canonical BEM class set
  * ========================================================================= */
 
 .fa-bulk-bar {
@@ -413,7 +385,7 @@ input[type="checkbox"]:indeterminate {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-pill);
-    box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.18), 0 4px 12px -4px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.18), 0 4px 12px -4px rgb(0 0 0 / 0.08);
     padding: 6px;
     min-width: 360px;
     max-width: calc(100vw - 32px);
@@ -422,7 +394,7 @@ input[type="checkbox"]:indeterminate {
 
 html[data-theme="dark"] .fa-bulk-bar {
     background: var(--surface-2);
-    box-shadow: 0 18px 40px -8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
+    box-shadow: 0 18px 40px -8px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.04);
 }
 
 .fa-bulk-bar[hidden] { display: none !important; }
@@ -449,7 +421,7 @@ html[data-theme="dark"] .fa-bulk-bar {
 
 .fa-bulk-bar__count-num {
     background: var(--primary);
-    color: var(--on-primary, #fff);
+    color: var(--on-primary);
     font: 700 12px var(--font-mono);
     min-width: 26px;
     height: 26px;
@@ -498,10 +470,10 @@ html[data-theme="dark"] .fa-bulk-btn:hover { background: var(--surface-3); }
 .fa-bulk-btn i,
 .fa-bulk-btn .fa-icon { font-size: 15px; }
 
-.fa-bulk-btn--primary { background: var(--primary); color: var(--on-primary, #fff); }
+.fa-bulk-btn--primary { background: var(--primary); color: var(--on-primary); }
 .fa-bulk-btn--primary:hover {
     background: var(--primary-strong, var(--primary));
-    color: var(--on-primary, #fff);
+    color: var(--on-primary);
     filter: brightness(1.04);
 }
 
@@ -568,20 +540,20 @@ html[data-theme="dark"] .fa-bulk-btn:hover { background: var(--surface-3); }
 .fa-bulk-bar--brand {
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent, var(--primary-strong, var(--primary))) 100%);
     border: 0;
-    color: #fff;
-    box-shadow: 0 18px 40px -10px color-mix(in oklab, var(--primary) 50%, transparent), 0 4px 12px -4px rgba(0, 0, 0, 0.18);
+    color: var(--on-primary);
+    box-shadow: 0 18px 40px -10px color-mix(in oklab, var(--primary) 50%, transparent), 0 4px 12px -4px rgb(0 0 0 / 0.18);
 }
 
-.fa-bulk-bar--brand .fa-bulk-bar__count    { background: rgba(255, 255, 255, 0.18); color: #fff; }
-.fa-bulk-bar--brand .fa-bulk-bar__count-num { background: rgba(255, 255, 255, 0.95); color: var(--primary); }
-.fa-bulk-bar--brand .fa-bulk-bar__divider  { background: rgba(255, 255, 255, 0.22); }
-.fa-bulk-bar--brand .fa-bulk-btn           { color: rgba(255, 255, 255, 0.92); }
-.fa-bulk-bar--brand .fa-bulk-btn:hover     { background: rgba(255, 255, 255, 0.16); color: #fff; }
-.fa-bulk-bar--brand .fa-bulk-btn--danger   { color: #fff; background: var(--danger); }
-.fa-bulk-bar--brand .fa-bulk-btn--success  { color: #fff; background: var(--success); }
-.fa-bulk-bar--brand .fa-bulk-bar__close    { color: rgba(255, 255, 255, 0.85); }
-.fa-bulk-bar--brand .fa-bulk-bar__close:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
-.fa-bulk-bar--brand .fa-bulk-btn.is-loading::after { border-color: #fff; border-top-color: transparent; }
+.fa-bulk-bar--brand .fa-bulk-bar__count    { background: rgb(255 255 255 / 0.18); color: var(--on-primary); }
+.fa-bulk-bar--brand .fa-bulk-bar__count-num { background: rgb(255 255 255 / 0.95); color: var(--primary); }
+.fa-bulk-bar--brand .fa-bulk-bar__divider  { background: rgb(255 255 255 / 0.22); }
+.fa-bulk-bar--brand .fa-bulk-btn           { color: rgb(255 255 255 / 0.92); }
+.fa-bulk-bar--brand .fa-bulk-btn:hover     { background: rgb(255 255 255 / 0.16); color: var(--on-primary); }
+.fa-bulk-bar--brand .fa-bulk-btn--danger   { color: var(--on-danger, var(--on-primary)); background: var(--danger); }
+.fa-bulk-bar--brand .fa-bulk-btn--success  { color: var(--on-success, var(--on-primary)); background: var(--success); }
+.fa-bulk-bar--brand .fa-bulk-bar__close    { color: rgb(255 255 255 / 0.85); }
+.fa-bulk-bar--brand .fa-bulk-bar__close:hover { background: rgb(255 255 255 / 0.16); color: var(--on-primary); }
+.fa-bulk-bar--brand .fa-bulk-btn.is-loading::after { border-color: var(--on-primary); border-top-color: transparent; }
 
 /* Inline badge — used in the bulk-bar or standalone to show selection count */
 .fa-bulk-badge {
