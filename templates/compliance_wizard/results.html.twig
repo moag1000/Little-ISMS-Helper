@@ -156,7 +156,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 ' ~ (category.score >= 80 ? 'border-success' : (category.score >= 60 ? 'border-warning' : 'border-danger')) } %}
                 {% block card_header %}
                     {% import '_components/_status_pill.html.twig' as pill %}
-                    <div class="card-header d-flex justify-content-between align-items-center {% if category.score >= 80 %}bg-success bg-opacity-10 {% elseif category.score >= 60 %}bg-warning bg-opacity-10 {% else %}{% endif %}" style="background-color: var(--danger-tint); border: 1px solid var(--danger);">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
                             <i class="{{ category.icon|default('fa-icon--status-ok') }} me-2"></i>
                             <span class="fw-semibold">{{ category.name|trans({}, 'wizard') }}</span>
