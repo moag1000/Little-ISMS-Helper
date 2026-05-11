@@ -2019,3 +2019,109 @@ preemptiv (keine Use-Cases noch im Repo).
 Total Module-Keys nach v5: **26** (statt v4-Schätzung 28 — `bait`,
 `mcp_server`, `ebios_rm`, `eucs` nicht implementiert; `marisk` bleibt
 deprecated).
+
+---
+
+# v6-Sequenzierung: CM-Wert-Maximierung (2026-05-11)
+
+Re-Design der Sprint-Reihenfolge nach v5-Konsolidierung. Treiber:
+
+1. **F11 FTE-Counter braucht echte Daten** aus F1+F2+F4 → war Sprint 3,
+   jetzt Sprint 9 nach ~4 Wochen realer Production-Daten.
+2. **F40 Audit-XLSX zu spät** in v5 (Sprint 8) — klein, kein Blocker,
+   massiver CM-Wert (2-3 FTE-Tage/Audit) → in Sprint 1 vorgezogen.
+3. **F25/F26 DACH-Killer zu spät** (v5 Sprint 6/7) → Sprint 2+3 vorgezogen.
+4. **F1 SSO Tech-Komplexität-Peak** (OAuth + 6 Audit-Events + RoleMapping)
+   → Sprint 4 nach 3 erfolgreichen CM-Sprints als "Cushion".
+5. **DACH-Hub-Cluster F25+F26+F29+F30+F36 konsolidiert** in Sprints 2-8.
+
+## Sprint-Sequenz v6 (13 Pflicht-Sprints + Backlog)
+
+| Sprint | Lead | Parallel | Begründung |
+|---|---|---|---|
+| **0** | CC1-CC4 Foundations | — | ✅ done (committed 2026-05-09) |
+| **1** | **F2 W1** (Asset+Supplier+Control + Delta-Mode) | **F40 Audit-XLSX-Generator** | Beide pure CRUD/Excel, sofortige FTE-Win, kein Tech-Stack |
+| **2** | F2 W2 (Risk+BusinessProcess Mapper) | **F25 VVT-BfDI-Export** | F25 nutzt existing ProcessingActivity, klein, DACH-Killer |
+| **3** | **F26 Behörden-Templates Wave 1** (BSI/BfDI/LfDI DE) | F19 Filter-Export + F15 NC-Linking + Auto-Task | DACH-Differenziatoren + kleine UX-Wins |
+| **4** | **F1 SSO Wave 1** (3-Step-Wizard + JIT-Provisioning) | — | Erst jetzt Tech-Sprint, vorher 3 CM-Sprints "Cushion" |
+| **5** | F1 SSO Wave 2 (6 Audit-Events + IdentityProviderRoleMapping) | **F4 Evidence-Cascade + Versioning** | F1+F4 disjunkte Domänen, parallel-safe |
+| **6** | **F3 Notifications Wave 1** (Email+Webhook+InApp+Tier-1-Templates) | — | Foundation für SLA-Timer + F29-Reminder |
+| **7** | F3 Wave 2 (SLA-Timer-Events DORA/NIS-2/GDPR) | **F29 NIS-2-BSI-Portal-Datensatz** | F29 nutzt F3-SLA für jährl. Re-Registration |
+| **8** | **F36 EU-Behörden-Hub** (Klammer über F25/F26/F29/F30) | **F30 DORA-RoI-XBRL-Export** | Hub wickelt 4 Vorgänger in einen View |
+| **9** | **F11 FTE-Dashboard** | F16 Risk-Incident-Link | F1+F2+F4 haben jetzt ~4 Wochen Daten produziert → realistic Numbers |
+| **10** | **F5b Wave 1** (BSI Kompendium 2024 + TISAX v6.0 Library) | **F27 BSI-200-4-Übungs-Logbuch** | Library-only YAML + BCM-Erweiterung, parallel-safe |
+| **11** | **F10 Profile/Maturity** (per-Framework) | **F28 TISAX-ISA-Workflow** | F28 konsumiert F10-Foundation |
+| **12** | **F13 TIA** (Transfer-Impact-Assessment) | **F31 DPIA-National-Templates** + **F32 DPA-Generator** | Privacy-Vertical-Cluster |
+| **13** | **F33 EU-AI-Act-Klassifizierung** | **F34 CRA-SBOM-Inventar** | Forward-Looking-EU-Compliance |
+
+## Backlog (Sprint 14+, strategisch)
+
+Reihenfolge nach Demand × Aufwand-Effizienz:
+
+1. **F26 Wave 2** (DSB-AT + EDÖB-CH + BaFin-MVP-Behörden-Templates)
+2. **F5b Wave 2** (Swiss-Stack: nDSG 2023 + ISG SR-128, CH-optional)
+3. **F39 ENISA EUVD Daily-Feed-Connector**
+4. **F12 OSCAL-Profile-Roundtrip + F5 NIST-Catalog-Importer**
+5. **F38 Policy-Pack-Format-Adapter** (Document-Type-Extension)
+6. **F6 REST-API Bulk-Endpoints + Webhook-Lifecycle**
+7. **F7 Field-Level-RBAC** (Voter-Erweiterung)
+8. **F8 Health-Check + Observability**
+9. **F9 i18n FR/IT/ES/NL/PT-BR**
+10. **F14 Audit-Findings-Inline-Capture + F17 Procedures-Authoring**
+11. **F20 Multi-Format-Document-Export** (MD/DOCX/PDF/HTML)
+12. **F23 Supplier-Questionnaire-Distribution**
+13. **F21 MCP-Server + F22 Local-LLM** (datensicher via Ollama)
+14. **F24 EBIOS-RM-Methodik** (FR-Markt-Erschluss)
+15. **F18 No-Code-Framework-Builder-GUI** (mit Sandbox-Constraints)
+16. **F37 One-Command-Setup-Hardening**
+17. **F35 EUCS-Cloud-Audit-Workflow** (wenn Standard final)
+
+## Strukturelle Änderungen v5 → v6
+
+**Vorne (Sprint 1-3) — 3 CM-Killer-Sprints OHNE Tech-Stack-Risiko:**
+- F2 (10.5 FTE-Tage/Tenant gespart bei Onboarding)
+- F40 (2-3 FTE-Tage/Audit gespart bei External-Audit)
+- F25 (DSGVO Art. 30 Pflicht-Export)
+- F26 Wave 1 (DACH-Differenziator, kein Konkurrent hat alle LfDI-Varianten)
+- F19+F15 (kleine UX-Wins, parallel-Filler)
+
+**Demo-Ready Ende Sprint 3:** "Wir sparen X FTE-Tage, exportieren BfDI-
+konform, geben Auditor XLSX direkt, BSI-Meldestelle-Template steht."
+
+**Mitte (Sprint 4-8) — Tech-Foundation + DACH-Hub:**
+- F1 SSO als Tech-Komplexität-Peak
+- F4 Evidence-Versioning + Re-Verify-Cascade
+- F3 Notifications + SLA-Timer-Events
+- F29/F30/F36 Behörden-Cluster konsolidiert
+
+**Hinten (Sprint 9-13) — Daten-getrieben + Vertical-Cluster:**
+- F11 mit echten FTE-Daten
+- F5b/F10/F28 Maturity-Profile-Stack
+- F13/F31/F32 Privacy-Vertical
+- F33/F34 EU-AI-Act + CRA-SBOM
+
+## Erfolgs-Metriken pro Sprint (Demo-Acceptance)
+
+| Sprint | Demo-Output | Metrik |
+|---|---|---|
+| 1 | Excel-Import 200 Assets + Audit-XLSX-Generator | 200 Assets <5 Min, XLSX-Generator-Output für ISO27001 SoA |
+| 2 | Risk+BP Mapper + VVT-Export | VVT als BfDI-konformes PDF rendert |
+| 3 | BSI-Meldestelle-Template ausgefüllt aus Incident | Incident → BSI-Template <30 Sek |
+| 4 | SSO via Entra-ID-Preset | Time-to-First-Login <90 Sek |
+| 5 | SSO-Audit-Trail mit 6 HMAC-Events + Evidence-Cascade-Demo | Document v2 → 12 Controls re-verify-flagged |
+| 6 | In-App-Bell + Email-Digest + Webhook-Test | Tier-1-Template "DataBreach severity≥high → CISO" One-Click |
+| 7 | SLA-Timer: DataBreach mit 72h-Countdown sichtbar | 24h-Pre-Warning fires |
+| 8 | EU-Behörden-Hub mit "5 Reports fällig" + DORA-RoI-XBRL-Download | XBRL validates gegen ESA-Schema |
+| 9 | FTE-Dashboard zeigt "23 FTE-Tage gespart seit 2026-Q1" | Counter > 0 mit Source-Breakdown |
+| 10 | BSI Kompendium 2024 importiert + TISAX v6.0 verfügbar | Library-Loader-Success |
+| 11 | Per-Framework Maturity-Profil + TISAX-Self-Assessment | TISAX-Maturity-Level berechnet |
+| 12 | TIA-Workflow + nationale DPIA-Templates | TIA für Drittland generiert |
+| 13 | EU-AI-Act Hochrisiko-KI-Klassifizierung + SBOM-Import | Asset als KI-System Annex-III klassifiziert |
+
+## Plan-v6 Sign-Offs
+
+- ✅ Compliance-Manager (CM-Wert-Maximierung) — Vorne-Cushion gestern bestätigt
+- ✅ ISMS-Specialist v2/v3 Findings aufrechterhalten
+- ✅ UX-Specialist v5-Patches eingearbeitet
+- ⏳ Spec-Reviews pro Cluster vor Sprint-Start (Sprint 4 vor F1, Sprint 10
+  vor F5b, Sprint 12 vor Privacy-Cluster) — nicht Mega-Review vorab
