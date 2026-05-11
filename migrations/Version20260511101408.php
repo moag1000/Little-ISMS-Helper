@@ -65,7 +65,7 @@ final class Version20260511101408 extends AbstractMigration
         $this->addSql(<<<'SQL'
             CREATE TABLE bulk_import_row (
               id INT AUTO_INCREMENT NOT NULL,
-              row_number INT NOT NULL,
+              `row_number` INT NOT NULL,
               status VARCHAR(16) NOT NULL,
               action VARCHAR(16) DEFAULT NULL,
               entity_id INT DEFAULT NULL,

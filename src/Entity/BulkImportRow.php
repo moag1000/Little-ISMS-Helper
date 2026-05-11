@@ -45,7 +45,7 @@ class BulkImportRow
     /**
      * 1-based row-number in the source spreadsheet (header = 1).
      */
-    #[ORM\Column]
+    #[ORM\Column(name: '`row_number`')]
     private int $rowNumber;
 
     #[ORM\Column(length: 16)]
