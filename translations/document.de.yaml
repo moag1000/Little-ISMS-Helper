@@ -123,6 +123,7 @@ document:
         requires_acknowledgement: 'Bei Status „freigegeben" fordert der ISMS-Helper automatisch von allen aktiven Mitarbeitenden des Mandanten die Kenntnisnahme an (ISO 27001 A.6.3). Sinnvoll für verbindliche Richtlinien, nicht für Nachweise oder interne Notizen.'
         # V3 W2-LB-8 — Review-cycle
         review_interval_months: 'Kadenz für den planmäßigen Review-Zyklus (Standard 12 Monate, ISO 27001 Cl. 7.5.2). Beim Statuswechsel auf „freigegeben" wird der nächste Review-Termin automatisch gesetzt.'
+        status: 'Lebenszyklus-Status. Kanonischer Workflow: Entwurf → In Prüfung → Freigegeben → Veröffentlicht → Archiviert. „Aktiv (Legacy)" markiert Pre-Wizard-Uploads ohne Freigabe-Spur.'
     tooltip:
         category: 'Wählen Sie den Dokumenttyp, der den inhaltlichen Zweck des Dokuments beschreibt (z. B. Richtlinie, Verfahren, Nachweis). Der Typ steuert die Filterung und Zuordnung zu ISMS-Bereichen.'
         classification: 'Informationsklassifizierung nach TISAX/ISO 27001 A.8.2. Bestimmt, wer das Dokument einsehen darf. "Streng vertraulich" gilt für Dokumente mit besonderem Schutzbedarf (z. B. Schlüsselmaterial, Sicherheitskonzepte).'
