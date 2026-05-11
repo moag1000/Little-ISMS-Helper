@@ -30,3 +30,14 @@ jobs:
           # Pull config + manifest aus Repo-Root.
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+          # Optional: use a fine-grained PAT instead of GITHUB_TOKEN so
+          # the tag push fires downstream workflows (Docker build/push,
+          # release-asset uploads). With GITHUB_TOKEN, GitHub's loop-
+          # prevention silently drops the tag-push trigger on `ci.yml`
+          # `on.push.tags`, leaving Docker Hub stale until a human
+          # re-pushes the tag (see 3.5.0 release post-mortem).
+          # Set up: Settings → Developer settings → Fine-grained tokens
+          # → Repo-scoped, permissions: contents:write + pull-requests:
+          # write. Store as repo secret `RELEASE_PLEASE_PAT`, then
+          # uncomment:
+          # token: ${{ secrets.RELEASE_PLEASE_PAT }}
