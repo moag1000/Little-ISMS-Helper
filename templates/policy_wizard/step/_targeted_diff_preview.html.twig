@@ -41,6 +41,7 @@
 {% else %}
     {% embed '_components/_fa_table.html.twig' with { compact: true } %}
         {% block table_head %}
+            {% trans_default_domain 'policy_wizard' %}
             <tr>
                 <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.diff.column.topic'|trans }}</th>
                 <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.diff.column.setting'|trans }}</th>
@@ -50,6 +51,7 @@
             </tr>
         {% endblock %}
         {% block table_body %}
+            {% trans_default_domain 'policy_wizard' %}
             {% import '_components/_status_pill.html.twig' as pill %}
             {% for row in diff_rows %}
                 <tr class="fa-table__row{{ row.changed ? ' table-warning' : '' }}">

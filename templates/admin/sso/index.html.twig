@@ -32,6 +32,7 @@
         {# V3 W3-UX: migrated to fa-table Aurora pattern #}
         {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
             {% block table_head %}
+                {% trans_default_domain 'sso' %}
                 <tr>
                     <th class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'sso.admin.col.name'|trans }}</th>
                     <th class="fa-table__th">{{ 'sso.admin.col.slug'|trans }}</th>
@@ -43,6 +44,7 @@
                 </tr>
             {% endblock %}
             {% block table_body %}
+                {% trans_default_domain 'sso' %}
                 {% for p in providers %}
                     <tr class="fa-table__row">
                         <td class="fa-table__cell" data-sort-value="{{ p.name }}">

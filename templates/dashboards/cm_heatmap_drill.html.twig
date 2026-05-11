@@ -99,6 +99,7 @@
             {% if covered|length > 0 %}
                 {% embed '_components/_fa_table.html.twig' with { compact: true } %}
                     {% block table_head %}
+                        {% trans_default_domain 'dashboards' %}
                         <tr>
                             <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.req_id'|trans }}</th>
                             <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.title'|trans }}</th>
@@ -108,6 +109,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+                        {% trans_default_domain 'dashboards' %}
                         {% import '_components/_status_pill.html.twig' as pill %}
                         {% for req in covered %}
                             <tr class="fa-table__row">
@@ -161,6 +163,7 @@
             {% if gaps|length > 0 %}
                 {% embed '_components/_fa_table.html.twig' with { compact: true } %}
                     {% block table_head %}
+                        {% trans_default_domain 'dashboards' %}
                         <tr>
                             <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.req_id'|trans }}</th>
                             <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.title'|trans }}</th>
@@ -170,6 +173,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+                        {% trans_default_domain 'dashboards' %}
                         {% import '_components/_status_pill.html.twig' as pill %}
                         {% for req in gaps %}
                             <tr class="fa-table__row">

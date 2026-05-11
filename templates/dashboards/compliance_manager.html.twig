@@ -84,6 +84,7 @@
             {% if dashboard.frameworks|length > 0 %}
             {% embed '_components/_fa_table.html.twig' with { compact: true } %}
                 {% block table_head %}
+                    {% trans_default_domain 'dashboards' %}
                     <tr>
                         <th scope="col" class="fa-table__th">{{ 'compliance_manager.table.framework'|trans }}</th>
                         <th scope="col" class="fa-table__th fa-table__th--num">{{ 'compliance_manager.table.coverage'|trans }}</th>
@@ -93,6 +94,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+                    {% trans_default_domain 'dashboards' %}
                     {% import '_components/_status_pill.html.twig' as pill %}
                     {% for fw in dashboard.frameworks %}
                         {% set coverage = fw.compliance|default(0) %}

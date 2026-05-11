@@ -35,6 +35,7 @@
         <div class="col-12">
             {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ (overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger')) } %}
                 {% block card_body %}
+                    {% trans_default_domain 'dora' %}
                     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="text-center py-4">
                         <h2 class="h4 mb-3">{{ 'dora.dashboard.overall_compliance'|trans }}</h2>
@@ -57,6 +58,7 @@
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-' ~ (score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger')) } %}
                 {% block card_body %}
+                    {% trans_default_domain 'dora' %}
                     <div class="text-center">
                         <div class="h6 text-muted mb-2">
                             {% if pillar == 'ict_risk' %}
@@ -85,6 +87,7 @@
         <div class="col-lg-6">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_header %}
+                    {% trans_default_domain 'dora' %}
                     <div class="card-header">
                         <h3 class="card-title h5 mb-0">
                             <i class="fa-icon fa-icon--nav-shield-alert text-primary me-2" aria-hidden="true"></i>{{ 'dora.pillar.ict_risk'|trans }}
@@ -93,6 +96,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'dora' %}
                     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="row g-3">
                         <div class="col-6">
@@ -145,6 +149,7 @@
         <div class="col-lg-6">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_header %}
+                    {% trans_default_domain 'dora' %}
                     <div class="card-header">
                         <h3 class="card-title h5 mb-0">
                             <i class="fa-icon fa-icon--status-warning text-warning me-2" aria-hidden="true"></i>{{ 'dora.pillar.incidents'|trans }}
@@ -153,6 +158,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'dora' %}
                     {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <div class="row g-3">
                         <div class="col-6">
@@ -197,6 +203,7 @@
         <div class="col-lg-6">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_header %}
+                    {% trans_default_domain 'dora' %}
                     <div class="card-header">
                         <h3 class="card-title h5 mb-0">
                             <i class="fa-icon fa-icon--ui-copy text-info me-2" aria-hidden="true"></i>{{ 'dora.pillar.testing'|trans }}
@@ -205,6 +212,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'dora' %}
                     {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     <div class="row g-3">
                         <div class="col-6">
@@ -245,6 +253,7 @@
         <div class="col-lg-6">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_header %}
+                    {% trans_default_domain 'dora' %}
                     <div class="card-header">
                         <h3 class="card-title h5 mb-0">
                             <i class="fa-icon fa-icon--nav-building text-muted me-2" aria-hidden="true"></i>{{ 'dora.pillar.third_party'|trans }}
@@ -253,6 +262,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'dora' %}
                     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="row g-3">
                         <div class="col-6">
@@ -311,6 +321,7 @@
         <div class="col-12">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
+                    {% trans_default_domain 'dora' %}
                     <div class="card-header">
                         <h3 class="card-title h5 mb-0">
                             <i class="fa-icon me-2 fa-icon--util-external-link text-success" aria-hidden="true"></i>{{ 'dora.pillar.information_sharing'|trans }}
@@ -319,6 +330,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'dora' %}
                     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="row align-items-center">
                         <div class="col-md-4 text-center">
@@ -346,6 +358,7 @@
         <div class="col-12">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
+                    {% trans_default_domain 'dora' %}
                     <div class="card-header">
                         <h3 class="card-title h5 mb-0">
                             <i class="fa-icon me-2 fa-icon--threat" aria-hidden="true"></i>{{ 'dora.quick_actions'|trans }}
@@ -353,6 +366,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'dora' %}
                     <div class="row g-3">
                         <div class="col-md-3">
                             <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
