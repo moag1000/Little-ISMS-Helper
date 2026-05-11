@@ -2,6 +2,7 @@
 {% trans_default_domain 'management_review' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'management_review.title'|trans({}, 'management_review') }} - {{ parent() }}{% endblock %}
 
@@ -32,7 +33,7 @@
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <i class="fa-icon fa-icon--nav-stars text-info" aria-hidden="true"></i>
                             <strong>{{ 'management_review.auto_collect.title'|trans({}, 'management_review') }}</strong>
-                            <span class="badge bg-info-subtle text-info small">Alva-Tipp</span>
+                            {{ pill.render('Alva-Tipp', 'primary', {size: 'sm'}) }}
                         </div>
                         <p class="text-muted mb-0 small">{{ 'management_review.auto_collect.help'|trans({}, 'management_review') }}</p>
                     </div>

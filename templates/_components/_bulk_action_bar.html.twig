@@ -50,6 +50,8 @@
     } only %}
 #}
 
+{% import '_components/_status_pill.html.twig' as pill %}
+
 {% set actions        = actions|default([]) %}
 {% set entity_class   = entity_class|default('') %}
 {% set action_urls    = action_urls|default({}) %}
@@ -155,9 +157,7 @@
                                        aria-label="{{ 'tags.bulk.aria.select_tag'|trans({'%name%': tag.name}, 'tags') }}">
                                 <label class="form-check-label" for="bulk-tag-{{ tag.id }}">
                                     {% set _bapill = (tag.color|default('secondary')) in ['info'] ? 'primary' : ((tag.color|default('secondary')) in ['secondary','light','dark'] ? 'neutral' : (tag.color|default('secondary'))) %}
-                                    <span class="badge bg-{{ tag.color|default('secondary') }} fa-status-pill fa-status-pill--{{ _bapill }}">
-                                        {{ tag.name }}
-                                    </span>
+                                    {{ pill.render(tag.name, _bapill) }}
                                     {% if tag.frameworkCode %}
                                         <small class="text-muted">({{ tag.frameworkCode }})</small>
                                     {% endif %}
