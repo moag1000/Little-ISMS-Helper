@@ -212,6 +212,34 @@
     .bulk-action-btn.loading::after { animation-duration: 1.6s; }
 }
 
+/* Dropdown chevron inside bulk-action-btn — normalize Bootstrap caret size */
+.bulk-action-btn.dropdown-toggle::after {
+    width: 0.5em;
+    height: 0.5em;
+    margin-left: var(--space-2);
+    vertical-align: 0.15em;
+    border-top-color: currentColor;
+    opacity: 0.85;
+}
+
+/* Dropdown menu on gradient bar — use surface tokens so items are readable */
+.bulk-action-bar .dropdown-menu {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    box-shadow: 0 4px 16px var(--shadow-md);
+}
+
+.bulk-action-bar .dropdown-menu .dropdown-item {
+    color: var(--fg);
+}
+
+.bulk-action-bar .dropdown-menu .dropdown-item:hover,
+.bulk-action-bar .dropdown-menu .dropdown-item:focus {
+    background: var(--primary-tint);
+    color: var(--primary-strong);
+}
+
 /* Close button (X right side) */
 .bulk-action-close {
     display: inline-flex;

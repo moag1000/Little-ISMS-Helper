@@ -17,13 +17,15 @@
  #   entity_label   - i18n-key suffix for messages (asset|control|risk)
  #}
 
+{% import '_components/_status_pill.html.twig' as pill %}
+
 {% if impact is defined and impact.total > 0 %}
     <section class="fa-section mb-4" data-test="impact-coverage">
         <div class="fa-section__header">
             <h2 class="fa-section__title">
                 <i class="bi bi-diagram-3" aria-hidden="true"></i>
                 {{ ('coverage.impact.title.' ~ entity_label)|trans({}, 'compliance') }}
-                <span class="badge bg-info ms-2">{{ impact.total }}</span>
+                {{ pill.render(impact.total, 'primary', {class: 'ms-2'}) }}
             </h2>
             <div class="fa-section__tools">
                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
@@ -38,9 +40,7 @@
             <p class="text-muted small mb-2">{{ ('coverage.impact.help.' ~ entity_label)|trans({}, 'compliance') }}</p>
             <div class="d-flex flex-wrap gap-2">
                 {% for code, group in impact.frameworks %}
-                    <span class="badge bg-secondary-subtle text-secondary">
-                        {{ group.framework.code }}: <strong>{{ group.requirements|length }}</strong>
-                    </span>
+                    {{ pill.render(group.framework.code ~ ': ' ~ group.requirements|length, 'neutral') }}
                 {% endfor %}
             </div>
         </div>
@@ -62,7 +62,7 @@
                     {% for code, group in impact.frameworks %}
                         <div class="mb-3">
                             <h3 class="h6 mb-2">
-                                <span class="badge bg-primary">{{ group.framework.code }}</span>
+                                {{ pill.render(group.framework.code, 'primary') }}
                                 {{ group.framework.name }}
                                 <span class="text-muted small">({{ group.requirements|length }})</span>
                             </h3>
