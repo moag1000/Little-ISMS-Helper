@@ -9,6 +9,8 @@ use Exception;
 use App\Entity\Document;
 use App\Form\DocumentType;
 use App\Repository\CommentRepository;
+use App\Repository\ComplianceRequirementRepository;
+use App\Repository\DocumentControlLinkRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\EntityTagRepository;
 use App\Service\DocumentService;
@@ -52,6 +54,8 @@ class DocumentController extends AbstractController
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?EntityTagRepository $entityTagRepository = null,
         private readonly ?CommentRepository $commentRepository = null,
+        private readonly ?DocumentControlLinkRepository $documentControlLinkRepository = null,
+        private readonly ?ComplianceRequirementRepository $complianceRequirementRepository = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index')]
@@ -657,6 +661,34 @@ class DocumentController extends AbstractController
             $comments = $this->commentRepository->findThread($tenant, 'Document', $document->getId());
         }
 
+        // Multi-framework evidence linkage: fetch DocumentControlLink rows +
+        // group ComplianceRequirement evidenceDocuments by framework.
+        $controlLinks = [];
+        if ($this->documentControlLinkRepository !== null && $document->getId() !== null) {
+            $controlLinks = $this->documentControlLinkRepository->findByDocument($document);
+        }
+
+        // Group ComplianceRequirements whose evidenceDocuments contain this doc, by framework.
+        $requirementsByFramework = [];
+        if ($this->complianceRequirementRepository !== null && $document->getId() !== null) {
+            $linkedRequirements = $this->complianceRequirementRepository
+                ->findByEvidenceDocument($document);
+            foreach ($linkedRequirements as $req) {
+                $fw = $req->getFramework();
+                if ($fw === null) {
+                    continue;
+                }
+                $fwCode = (string) $fw->getCode();
+                if (!isset($requirementsByFramework[$fwCode])) {
+                    $requirementsByFramework[$fwCode] = [
+                        'framework' => $fw,
+                        'requirements' => [],
+                    ];
+                }
+                $requirementsByFramework[$fwCode]['requirements'][] = $req;
+            }
+        }
+
         return $this->render('document/show.html.twig', [
             'document' => $document,
             'isInherited' => $isInherited,
@@ -669,6 +701,9 @@ class DocumentController extends AbstractController
             'climateChangeAware' => $climateChangeAware,
             // V3 W2-H3: Comments thread + form action
             'comments' => $comments,
+            // Multi-framework evidence linkage (Phase 1+2)
+            'controlLinks' => $controlLinks,
+            'requirementsByFramework' => $requirementsByFramework,
         ]);
     }
 

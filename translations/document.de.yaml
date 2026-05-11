@@ -217,3 +217,16 @@ document:
         preview:
             heading: 'Richtlinien-Inhalt'
             edit_cta: 'Inhalt bearbeiten'
+    evidence:
+        controls:
+            heading: 'Verknüpfte ISO 27001-Controls'
+        requirements:
+            heading: 'Verknüpfte Anforderungen (andere Frameworks)'
+        source:
+            manual: 'Manuell verknüpft'
+            policy_wizard: 'Policy-Wizard (automatisch bei Genehmigung)'
+            inheritance: 'Vom Eltern-Tenant geerbt'
+        type:
+            policy_document: 'Richtlinie'
+            procedure_document: 'Verfahrensanweisung'
+            record: 'Nachweis'

@@ -312,6 +312,67 @@
                     } %}
                 </div>
             {% endif %}
+
+            {# Phase 1+2 — Linked ISO 27001 Controls (DocumentControlLink rows) #}
+            {% if controlLinks is defined and controlLinks|length > 0 %}
+                <div class="detail-section" data-test="document-control-links">
+                    <h3>
+                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
+                        {{ 'document.evidence.controls.heading'|trans({}, 'document') }}
+                    </h3>
+                    {# Group by source for visual separation #}
+                    {% set linksBySource = {} %}
+                    {% for link in controlLinks %}
+                        {% set src = link.source %}
+                        {% if linksBySource[src] is not defined %}
+                            {% set linksBySource = linksBySource|merge({(src): []}) %}
+                        {% endif %}
+                        {% set linksBySource = linksBySource|merge({(src): linksBySource[src]|merge([link])}) %}
+                    {% endfor %}
+                    {% for source, links in linksBySource %}
+                        <p class="small text-muted mb-1">
+                            <strong>{{ ('document.evidence.source.' ~ source)|trans({}, 'document') }}</strong>
+                        </p>
+                        <ul class="list-unstyled mb-2">
+                            {% for link in links %}
+                                {% set ctrl = link.control %}
+                                <li class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-secondary font-monospace">{{ ctrl.controlId }}</span>
+                                    <span>{{ ctrl.name }}</span>
+                                    <span class="badge bg-light text-dark small">{{ ('document.evidence.type.' ~ link.evidenceType)|trans({}, 'document') }}</span>
+                                    <span class="badge rounded-pill" style="background:var(--state-info-bg,#e0f0ff);color:var(--state-info-fg,#0050a0)">
+                                        {{ ctrl.implementationStatus|replace({'_': ' '})|title }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {# Phase 1+2 — Linked Requirements (other frameworks) #}
+            {% if requirementsByFramework is defined and requirementsByFramework|length > 0 %}
+                <div class="detail-section" data-test="document-requirement-links">
+                    <h3>
+                        <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
+                        {{ 'document.evidence.requirements.heading'|trans({}, 'document') }}
+                    </h3>
+                    {% for fwCode, fwGroup in requirementsByFramework %}
+                        <p class="small text-muted mb-1">
+                            <strong>{{ fwGroup.framework.name }}</strong>
+                            <span class="badge bg-secondary ms-1">{{ fwCode }}</span>
+                        </p>
+                        <ul class="list-unstyled mb-2">
+                            {% for req in fwGroup.requirements %}
+                                <li class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-secondary font-monospace">{{ req.requirementId }}</span>
+                                    <span>{{ req.title }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+                </div>
+            {% endif %}
         {% endblock %}
     {% endembed %}
 

@@ -6,15 +6,19 @@ namespace App\EventListener;
 
 use App\Entity\Document;
 use App\Repository\UserRepository;
+use App\Service\Document\DocumentEvidenceAttachmentInterface;
+use App\Service\Document\DocumentEvidenceAttachmentService;
 use App\Service\EmailNotificationService;
 use DateTime;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Psr\Log\LoggerInterface;
 
 /**
- * V3 W2-LB-8 + WS-9 — Document approval reactions.
+ * V3 W2-LB-8 + WS-9 + multi-framework evidence attachment.
  *
  *  LB-8 (review-cycle auto-set):
  *    On status transition → 'approved' AND nextReviewDate is null,
@@ -25,24 +29,40 @@ use Psr\Log\LoggerInterface;
  *
  *  WS-9 (ICT-Policy → CSIRT notify):
  *    Whenever an approved document carries `category='ict_policy'`,
- *    notify the tenant CSIRT-team (ROLE_CISO + ROLE_DPO; CSIRT does
- *    not have its own role yet, these two are the operational
- *    responders) so they can review the policy before circulation.
- *    Audit-Reaction Acknowledgement-Campaign (existing C3 listener)
- *    already creates the ack-records for normal users.
+ *    notify the tenant CSIRT-team (ROLE_CISO + ROLE_DPO) so they can
+ *    review the policy before circulation.
+ *
+ *  Multi-framework evidence attachment (Phase 1):
+ *    On status → 'approved', collect newly-approved Documents into
+ *    a deferred queue during `preUpdate`. After the outer flush
+ *    completes (postFlush), the queue is drained: DocumentControlLink
+ *    rows are created for ISO 27001 Annex A refs and
+ *    ComplianceRequirement::evidenceDocuments entries are added for all
+ *    other frameworks. A second flush is performed only if any new
+ *    entities were created (ISO 27001 Cl. 7.5.3 audit trail).
  *
  * Idempotency: change-set guard ensures we only act on the first
- * approval (or first transition into approved + ict_policy). Already-
- * populated nextReviewDate is left intact to preserve the intent of
- * the ISB who set a custom date.
+ * approval transition. The DocumentEvidenceAttachmentService is
+ * idempotent (UNIQUE constraint on DCL; contains() check on
+ * requirement evidenceDocuments).
  */
 #[AsEntityListener(event: Events::preUpdate, entity: Document::class)]
+#[AsDoctrineListener(event: Events::postFlush)]
 class DocumentApprovalListener
 {
+    /**
+     * Documents that transitioned to 'approved' during the current flush cycle.
+     * Drained in postFlush; cleared after drain to stay idempotent.
+     *
+     * @var list<Document>
+     */
+    private array $pendingEvidenceAttachment = [];
+
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly ?EmailNotificationService $emailNotifier = null,
         private readonly ?UserRepository $userRepository = null,
+        private readonly ?DocumentEvidenceAttachmentInterface $evidenceAttachmentService = null,
     ) {
     }
 
@@ -59,6 +79,56 @@ class DocumentApprovalListener
 
         $this->setReviewDate($document, $args);
         $this->maybeNotifyCsirt($document);
+
+        // Queue for evidence attachment in postFlush.
+        if ($this->evidenceAttachmentService !== null && $document->getGeneratedFromTemplate() !== null) {
+            $this->pendingEvidenceAttachment[] = $document;
+        }
+    }
+
+    /**
+     * Drain the deferred evidence-attachment queue.
+     *
+     * Runs AFTER the outer flush completes so we can safely call
+     * EntityManager::persist() + flush() without triggering the
+     * "no nested flush" constraint of preUpdate.
+     */
+    public function postFlush(PostFlushEventArgs $args): void
+    {
+        if (empty($this->pendingEvidenceAttachment) || $this->evidenceAttachmentService === null) {
+            return;
+        }
+
+        $pending = $this->pendingEvidenceAttachment;
+        // Clear first to prevent re-entry if the second flush triggers another postFlush.
+        $this->pendingEvidenceAttachment = [];
+
+        $em = $args->getObjectManager();
+        $didPersist = false;
+
+        foreach ($pending as $document) {
+            try {
+                $stats = $this->evidenceAttachmentService->attachOnApproval($document);
+                if ($stats['iso27001_links'] > 0 || $stats['requirement_links'] > 0) {
+                    $didPersist = true;
+                }
+            } catch (\Throwable $e) {
+                $this->logger->warning('DocumentApprovalListener: evidence attachment failed', [
+                    'document_id' => $document->getId(),
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($didPersist) {
+            try {
+                $em->flush();
+            } catch (\Throwable $e) {
+                $this->logger->error('DocumentApprovalListener: postFlush secondary flush failed', [
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 
     /**

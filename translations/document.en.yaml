@@ -214,3 +214,16 @@ document:
         preview:
             heading: 'Policy content'
             edit_cta: 'Edit content'
+    evidence:
+        controls:
+            heading: 'Linked ISO 27001 Controls'
+        requirements:
+            heading: 'Linked Requirements (other frameworks)'
+        source:
+            manual: 'Manually linked'
+            policy_wizard: 'Policy Wizard (auto-attached on approval)'
+            inheritance: 'Inherited from parent'
+        type:
+            policy_document: 'Policy'
+            procedure_document: 'Procedure'
+            record: 'Record'
