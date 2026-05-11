@@ -104,7 +104,8 @@ CLI nur fuer destructive-edge-cases wenn UI-Auto-Recovery scheitert. Doku:
 **Status fields are first-class lifecycle fields.** When an entity has a
 `status` column (e.g. `draft`, `in_review`, `approved`, `published`,
 `archived`), wire bulk-status-change support via the canonical
-`_bulk_action_bar.html.twig` with `actions: ['status_change', 'approve']`.
+`_bulk_action_bar.html.twig` with `actions: ['status_change', 'approve']`
+(emits `.fa-bulk-btn` BEM classes; add `variant: 'brand'` for hero lists).
 The server enforces a 5-transition matrix: `draft→in_review`,
 `in_review→approved`, `in_review→draft`, `approved→published`,
 `published→archived`, `archived→published`. Do not allow arbitrary
@@ -447,26 +448,22 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-table` | Aurora-styled data table (replaces raw `<table class="table">`) — 80+ adopted in v3.5 | `_fa_table.html.twig` |
 | `fa-progress` | Aurora progress-bar (replaces hand-rolled `.progress > .progress-bar`) — 54 adopted in v3.5 | `_fa_progress.html.twig` |
 | `fa-action-bar` | Page-level action bar (sticky bottom, top of detail-views) | `_fa_action_bar.html.twig` |
-| `bulk-action-bar` | Canonical bulk-action bar (selected-count + ops, 7+ lists). Use `{% include '_components/_bulk_action_bar.html.twig' with { actions: ['export', 'delete', 'tag', 'assign', 'approve', 'status_change'] } %}`. `approve` renders a quick-approve button; `status_change` renders a dropdown of valid lifecycle targets (draft→in_review→approved→published→archived). CSS classes: `.bulk-action-bar`, `.bulk-action-btn`, `.bulk-action-btn-success`, `.bulk-action-btn-danger`. **DEPRECATED**: `_fa_bulk_action_bar.html.twig` is kept as a BC-bridge only — new code must not use it. | `_components/_bulk_action_bar.html.twig` (include, not macro) |
+| `fa-bulk-bar` (BEM, canonical) | Canonical Aurora v4 floating bulk-action bar. Use `{% include '_components/_bulk_action_bar.html.twig' with { actions: ['export', 'delete', 'tag', 'assign', 'approve', 'status_change'], variant: 'neutral' } %}`. Props: `actions` array + `variant: 'neutral'\|'brand'` (default `'neutral'`). Use `variant: 'brand'` for hero lists only (risk/document policy workflow). `approve` → quick-approve `.fa-bulk-btn--success` button; `status_change` → dropdown (draft→in_review→approved→published→archived). BEM CSS: `.fa-bulk-bar`, `.fa-bulk-bar--brand`, `.fa-bulk-bar__count`, `.fa-bulk-bar__count-num`, `.fa-bulk-bar__count-label`, `.fa-bulk-bar__divider`, `.fa-bulk-bar__actions`, `.fa-bulk-bar__close`, `.fa-bulk-btn`, `.fa-bulk-btn--success`, `.fa-bulk-btn--danger`, `.fa-bulk-btn.is-loading`. BC-bridge macro `_fa_bulk_action_bar.html.twig` kept for legacy callers — emits new BEM markup. Old `.bulk-action-bar*` class set is a deprecated CSS shim. | `_components/_bulk_action_bar.html.twig` (include, not macro) |
 | `fa-toast` | Aurora toast/flash-message stack (replaces Bootstrap toast-container) — wired in `base.html.twig` | `_fa_toast.html.twig` |
 | `fa-audit-row` | ISMS-Audit-Trail row pattern (compact + full views) | `_fa_audit_row.html.twig` |
 | `fa-cyber-field` | Hand-rolled Aurora-Frame inputs (text/textarea/select) | `_fa_cyber_field.html.twig` |
+| `fa-drawer` | Slide-in side-sheet (right default, `--left`, `--sm`, `--lg`). Use `.fa-drawer-backdrop` + `.is-open`. CSS only — no macro yet. | CSS: `fairy-aurora-components.css` |
+| `fa-menu` | Dropdown / overflow-action menu (`fa-menu-anchor` + `.fa-menu.is-open`). Supports groups, icons, shortcuts, danger items, dividers. CSS only. | CSS: `fairy-aurora-components.css` |
+| `fa-pager` | Aurora pagination pill shell with glow + gradient active page. `fa-pager-bar` wraps pager + info + per-page select. CSS only. | CSS: `fairy-aurora-components.css` |
+| `fa-kbd` / `fa-cheatsheet` | Keyboard key `<kbd class="fa-kbd">` + shortcut cheatsheet overlay content. CSS only. | CSS: `fairy-aurora-components.css` |
 | `isms-comment-thread` | Comment-thread for Show-Pages (10 entities whitelisted by CommentController) | `_isms_comment_thread.html.twig` |
 | `isms-approval-stages` | Multi-stage approval visualization (workflow instances) | `_isms_approval_stages.html.twig` |
 | `.fa-aurora-surface` | Opt-in page-level Aurora atmosphere (CSS utility, not macro) | — |
 
 Import pattern for macros: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
-For the bulk-action bar use `{% include '_components/_bulk_action_bar.html.twig' with { actions: [...] } %}` (it is a plain include, not a macro).
+For the bulk-action bar use `{% include '_components/_bulk_action_bar.html.twig' with { actions: [...], variant: 'neutral' } %}` (it is a plain include, not a macro). `variant: 'brand'` for hero lists (risk, document). The canonical CSS class set is `.fa-bulk-bar*` (BEM); the old `.bulk-action-bar*` is a deprecated shim.
 Legacy `.kpi-card` / `variant:'kpi'` still works for backward-compat but emits
 a dev-env console deprecation warning.
-
-**FORWARD-SPEC warning**: `docs/design_system/sections/generics-extra.html`
-§ "Bulk-Action-Bar" (section id `bulk-action-bar`) uses CSS classes
-`.fa-bulk-bar`, `.fa-bulk-bar--brand`, `.fa-bulk-btn`, `.fa-bulk-bar__count`,
-etc. These classes are a **design-system preview spec and are NOT yet shipped**
-in application CSS. Do not implement against them. The shipped (canonical) CSS
-class set is `.bulk-action-bar` / `.bulk-action-btn*` (in
-`assets/styles/bulk-actions.css`). Implement against the canonical set only.
 
 Stylelint (`npm run stylelint`) bans raw hex in 14 color-valued properties
 app-wide; use Aurora tokens only. Allow-list: `fairy-aurora.css` (SoT),
