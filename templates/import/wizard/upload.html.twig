@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'data_import' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'import.wizard.step.upload.title'|trans({}, 'data_import') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'import.page.title'|trans({}, 'data_import'), url: path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) },
+            { label: 'import.wizard.step.upload.title'|trans({}, 'data_import') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'upload', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
+        title: 'import.wizard.step.upload.title'|trans({}, 'data_import')
+    }) }}
+
+    <main class="fa-aurora-surface mt-4">
+
+        {% include 'import/wizard/_steps_header.html.twig' with {
+            currentStep: 0,
+            entityType: entityType,
+            batchId: null
+        } %}
+
+        <section class="fa-section">
+            <div class="fa-section__body">
+
+                {{ form_start(form, { attr: { enctype: 'multipart/form-data', novalidate: 'novalidate' } }) }}
+                    {{ form_errors(form) }}
+
+                    <div class="mb-3">
+                        {{ form_label(form.entityType) }}
+                        {{ form_widget(form.entityType) }}
+                        {{ form_errors(form.entityType) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.mode) }}
+                        {{ form_widget(form.mode) }}
+                        {{ form_errors(form.mode) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.file) }}
+                        {{ form_widget(form.file) }}
+                        {{ form_errors(form.file) }}
+                        <div class="form-text text-muted">
+                            XLSX, XLS, CSV, ODS — max. 10 MB
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">{{ 'import.action.upload'|trans({}, 'data_import') }}</span>
+                        </button>
+                        <a href="{{ path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+                        </a>
+                    </div>
+                {{ form_end(form) }}
+
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}

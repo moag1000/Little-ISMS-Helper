@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'data_import' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'import.wizard.step.map.title'|trans({}, 'data_import') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'import.page.title'|trans({}, 'data_import'), url: path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) },
+            { label: 'import.wizard.step.upload.title'|trans({}, 'data_import'), url: path('app_bulk_import_upload', { _locale: app.request.locale, entityType: entityType }) },
+            { label: 'import.wizard.step.map.title'|trans({}, 'data_import') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'diagram-3', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
+        title: 'import.wizard.step.map.title'|trans({}, 'data_import')
+    }) }}
+
+    <main class="fa-aurora-surface mt-4">
+
+        {% include 'import/wizard/_steps_header.html.twig' with {
+            currentStep: 1,
+            entityType: entityType,
+            batchId: batch.id
+        } %}
+
+        <section class="fa-section">
+            <div class="fa-section__body">
+
+                {{ form_start(form) }}
+
+                    <div class="table-responsive mb-4">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Spalte (Datei)</th>
+                                    <th>Zuordnung</th>
+                                    <th>Konfidenz</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for index, header in headers %}
+                                    {% set fieldName = 'column_' ~ index %}
+                                    {% set suggestion = autoMappings[header] ?? null %}
+                                    <tr>
+                                        <td class="fw-semibold">{{ header }}</td>
+                                        <td>
+                                            {{ form_widget(form[fieldName]) }}
+                                            {{ form_errors(form[fieldName]) }}
+                                        </td>
+                                        <td>
+                                            {% if suggestion %}
+                                                {% set conf = (suggestion.confidence * 100)|round %}
+                                                <span class="badge bg-{{ conf >= 90 ? 'success' : (conf >= 70 ? 'warning' : 'secondary') }}">
+                                                    {{ conf }}%
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">—</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">{{ 'import.action.preview'|trans({}, 'data_import') }}</span>
+                        </button>
+                        <a href="{{ path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+                        </a>
+                    </div>
+
+                {{ form_end(form) }}
+
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}

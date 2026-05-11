@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'data_import' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block title %}{{ 'import.wizard.step.diff.title'|trans({}, 'data_import') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'import.page.title'|trans({}, 'data_import'), url: path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) },
+            { label: 'import.wizard.step.diff.title'|trans({}, 'data_import') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'clipboard-data', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
+        title: 'import.wizard.step.diff.title'|trans({}, 'data_import'),
+        actions: batch.rowCountError > 0 ? [
+            {
+                label: 'import.action.download_error_csv'|trans({}, 'data_import'),
+                href: path('app_bulk_import_error_csv', { _locale: app.request.locale, entityType: entityType, batchId: batch.id }),
+                variant: 'ghost',
+                icon: 'download'
+            }
+        ] : []
+    }) }}
+
+    <main class="fa-aurora-surface mt-4">
+
+        {% include 'import/wizard/_steps_header.html.twig' with {
+            currentStep: 3,
+            entityType: entityType,
+            batchId: batch.id
+        } %}
+
+        {# ── Auto-refresh banner when still committing ─────────────────── #}
+        {% if isCommitting %}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                {% block alert_body %}
+                    <i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>
+                    {{ 'import.wizard.step.commit.title'|trans({}, 'data_import') }}…
+                {% endblock %}
+            {% endembed %}
+            {# Auto-refresh every 5 seconds while the worker is processing #}
+            <meta http-equiv="refresh" content="5">
+        {% endif %}
+
+        {# ── Status + counters ─────────────────────────────────────────── #}
+        <div class="row mb-4">
+            <div class="col-6 col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.creates'|trans({}, 'data_import'),
+                    value: batch.rowCountSuccess - batch.rowCountUpdated,
+                    variant: 'success',
+                    icon: 'plus-circle'
+                }) }}
+            </div>
+            <div class="col-6 col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.updates'|trans({}, 'data_import'),
+                    value: batch.rowCountUpdated,
+                    variant: 'primary',
+                    icon: 'pencil-square'
+                }) }}
+            </div>
+            <div class="col-6 col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.unchanged'|trans({}, 'data_import'),
+                    value: batch.rowCountSkipped,
+                    variant: 'primary',
+                    icon: 'dash-circle'
+                }) }}
+            </div>
+            <div class="col-6 col-md-3">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.errors'|trans({}, 'data_import'),
+                    value: batch.rowCountError,
+                    variant: batch.rowCountError > 0 ? 'danger' : 'primary',
+                    icon: 'exclamation-triangle'
+                }) }}
+            </div>
+        </div>
+
+        {# ── Error rows table ──────────────────────────────────────────── #}
+        {% if errorRows|length > 0 %}
+        <section class="fa-section">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'import.delta.errors'|trans({}, 'data_import') }} ({{ errorRows|length }})</h2>
+                <div class="fa-section__tools">
+                    <a href="{{ path('app_bulk_import_error_csv', { _locale: app.request.locale, entityType: entityType, batchId: batch.id }) }}"
+                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                        <i class="bi bi-download" aria-hidden="true"></i>
+                        <span class="fa-cyber-btn__label">{{ 'import.action.download_error_csv'|trans({}, 'data_import') }}</span>
+                    </a>
+                </div>
+            </div>
+            <div class="fa-section__body">
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Zeile</th>
+                                <th>Fehler</th>
+                                <th>Daten</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in errorRows %}
+                            <tr class="table-danger">
+                                <td class="fw-semibold">{{ row.rowNumber }}</td>
+                                <td>
+                                    <span class="text-danger">
+                                        <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                                        {{ row.errorMessage }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <code class="small">{{ row.parsedData|json_encode }}</code>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        {# ── Back to index ─────────────────────────────────────────────── #}
+        <div class="mt-4">
+            <a href="{{ path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'import.page.title'|trans({}, 'data_import') }}</span>
+            </a>
+        </div>
+
+    </main>
+</div>
+{% endblock %}

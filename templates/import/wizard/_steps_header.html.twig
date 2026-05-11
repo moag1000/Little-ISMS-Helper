@@ -1,0 +1,42 @@
+{% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+{% trans_default_domain 'data_import' %}
+
+{#
+ # Wizard step-header partial — included in all import-wizard step templates.
+ #
+ # Variables expected from the including template:
+ #   currentStep  — 0-based index of the active step (0=upload, 1=map, 2=preview, 3=diff)
+ #   entityType   — URL slug (asset|supplier|control)
+ #   batchId      — int|null (null for step 1)
+ #}
+
+{% set wizardSteps = [
+    {
+        label: 'import.wizard.step.upload.title'|trans({}, 'data_import'),
+        href: batchId is defined and batchId
+            ? null
+            : path('app_bulk_import_upload', { _locale: app.request.locale, entityType: entityType })
+    },
+    {
+        label: 'import.wizard.step.map.title'|trans({}, 'data_import'),
+        href: (batchId is defined and batchId and currentStep > 1)
+            ? path('app_bulk_import_map', { _locale: app.request.locale, entityType: entityType, batchId: batchId })
+            : null
+    },
+    {
+        label: 'import.wizard.step.preview.title'|trans({}, 'data_import'),
+        href: (batchId is defined and batchId and currentStep > 2)
+            ? path('app_bulk_import_preview', { _locale: app.request.locale, entityType: entityType, batchId: batchId })
+            : null
+    },
+    {
+        label: 'import.wizard.step.diff.title'|trans({}, 'data_import'),
+        href: null
+    }
+] %}
+
+<div class="mb-4">
+    {{ _fa_stepper.render(wizardSteps, currentStep, {
+        ariaLabel: 'import.page.title'|trans({}, 'data_import')
+    }) }}
+</div>

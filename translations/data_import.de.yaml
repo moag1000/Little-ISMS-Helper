@@ -1,0 +1,90 @@
+import:
+    page:
+        title: 'Bulk-Import'
+        subtitle: 'Importieren Sie Assets, Lieferanten oder Controls aus einer Excel-Datei'
+
+    entity:
+        asset: 'Assets'
+        supplier: 'Lieferanten'
+        control: 'Controls'
+
+    entity_type:
+        asset: 'Asset'
+        supplier: 'Lieferant'
+        control: 'Control'
+
+    wizard:
+        step:
+            upload:
+                title: 'Schritt 1: Datei hochladen'
+            map:
+                title: 'Schritt 2: Spalten zuordnen'
+            preview:
+                title: 'Schritt 3: Vorschau & Bestätigung'
+            commit:
+                title: 'Schritt 4: Import läuft'
+            diff:
+                title: 'Import-Ergebnis'
+
+    success:
+        dispatched: 'Der Import wurde gestartet und läuft im Hintergrund.'
+        committed: 'Import erfolgreich abgeschlossen.'
+
+    error:
+        upload_failed: 'Datei-Upload fehlgeschlagen: %message%'
+        parse_failed: 'Datei konnte nicht geparst werden: %message%'
+        unknown_entity: 'Unbekannter Entitätstyp: %type%'
+        batch_not_found: 'Import-Batch nicht gefunden.'
+        must_equal_commit: 'Bitte geben Sie "COMMIT" ein, um den Import zu bestätigen.'
+
+    action:
+        upload: 'Datei hochladen'
+        map: 'Zurück zur Zuordnung'
+        preview: 'Vorschau anzeigen'
+        commit: 'Import starten'
+        download_error_csv: 'Fehler-CSV herunterladen'
+
+    preview:
+        skip_on_error_label: 'Fehlerhafte Zeilen überspringen (anstatt abzubrechen)'
+        confirm_text_label: 'Geben Sie "COMMIT" ein, um den Import zu bestätigen'
+        summary: 'Bitte überprüfen Sie die erkannten Änderungen, bevor Sie den Import starten.'
+
+    delta:
+        creates: 'Neu erstellen'
+        updates: 'Aktualisieren'
+        unchanged: 'Unverändert'
+        deletes: 'Löschen'
+        errors: 'Fehler'
+        total: 'Gesamt'
+
+    upload:
+        entity_type_label: 'Entitätstyp'
+        entity_type_placeholder: '— Bitte wählen —'
+        mode_label: 'Import-Modus'
+        file_label: 'Datei (XLSX, CSV, ODS)'
+        invalid_mime_type: 'Nur XLSX, XLS, CSV und ODS-Dateien sind erlaubt.'
+        file_too_large: 'Die Datei darf maximal 10 MB groß sein.'
+
+    mode:
+        initial: 'Erstimport (alle Zeilen erstellen)'
+        delta: 'Delta-Modus (Update + Create)'
+        dry_run: 'Testlauf (keine Änderungen speichern)'
+
+    mapping:
+        ignore: '— Spalte ignorieren —'
+        field:
+            name: 'Name'
+            assetType: 'Asset-Typ'
+            owner: 'Verantwortlicher'
+            classification: 'Klassifizierung'
+            confidentiality: 'Vertraulichkeit (C)'
+            integrity: 'Integrität (I)'
+            availability: 'Verfügbarkeit (A)'
+            description: 'Beschreibung'
+            contactEmail: 'Kontakt-E-Mail'
+            criticality: 'Kritikalität'
+            isDoraRelevant: 'DORA-relevant'
+            identifier: 'Control-ID'
+            title: 'Titel'
+            applicability: 'Anwendbarkeit'
+            justification: 'Begründung'

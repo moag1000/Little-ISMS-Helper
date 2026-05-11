@@ -1,0 +1,90 @@
+import:
+    page:
+        title: 'Bulk Import'
+        subtitle: 'Import assets, suppliers, or controls from an Excel file'
+
+    entity:
+        asset: 'Assets'
+        supplier: 'Suppliers'
+        control: 'Controls'
+
+    entity_type:
+        asset: 'Asset'
+        supplier: 'Supplier'
+        control: 'Control'
+
+    wizard:
+        step:
+            upload:
+                title: 'Step 1: Upload File'
+            map:
+                title: 'Step 2: Map Columns'
+            preview:
+                title: 'Step 3: Preview & Confirm'
+            commit:
+                title: 'Step 4: Import Running'
+            diff:
+                title: 'Import Result'
+
+    success:
+        dispatched: 'The import has been started and is running in the background.'
+        committed: 'Import completed successfully.'
+
+    error:
+        upload_failed: 'File upload failed: %message%'
+        parse_failed: 'File could not be parsed: %message%'
+        unknown_entity: 'Unknown entity type: %type%'
+        batch_not_found: 'Import batch not found.'
+        must_equal_commit: 'Please type "COMMIT" to confirm the import.'
+
+    action:
+        upload: 'Upload File'
+        map: 'Back to Mapping'
+        preview: 'Show Preview'
+        commit: 'Start Import'
+        download_error_csv: 'Download Error CSV'
+
+    preview:
+        skip_on_error_label: 'Skip rows with errors (instead of aborting)'
+        confirm_text_label: 'Type "COMMIT" to confirm the import'
+        summary: 'Please review the detected changes before starting the import.'
+
+    delta:
+        creates: 'New Records'
+        updates: 'Updates'
+        unchanged: 'Unchanged'
+        deletes: 'Deletes'
+        errors: 'Errors'
+        total: 'Total'
+
+    upload:
+        entity_type_label: 'Entity Type'
+        entity_type_placeholder: '— Please select —'
+        mode_label: 'Import Mode'
+        file_label: 'File (XLSX, CSV, ODS)'
+        invalid_mime_type: 'Only XLSX, XLS, CSV, and ODS files are allowed.'
+        file_too_large: 'The file must not exceed 10 MB.'
+
+    mode:
+        initial: 'Initial Import (create all rows)'
+        delta: 'Delta Mode (update + create)'
+        dry_run: 'Dry Run (no changes saved)'
+
+    mapping:
+        ignore: '— Ignore column —'
+        field:
+            name: 'Name'
+            assetType: 'Asset Type'
+            owner: 'Owner'
+            classification: 'Classification'
+            confidentiality: 'Confidentiality (C)'
+            integrity: 'Integrity (I)'
+            availability: 'Availability (A)'
+            description: 'Description'
+            contactEmail: 'Contact Email'
+            criticality: 'Criticality'
+            isDoraRelevant: 'DORA Relevant'
+            identifier: 'Control ID'
+            title: 'Title'
+            applicability: 'Applicability'
+            justification: 'Justification'

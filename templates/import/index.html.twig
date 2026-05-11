@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'data_import' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ ('import.entity.' ~ entityType)|trans({}, 'data_import') }} — {{ 'import.page.title'|trans({}, 'data_import') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'import.page.title'|trans({}, 'data_import') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'upload', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
+        title: 'import.page.title'|trans({}, 'data_import'),
+        subtitle: 'import.page.subtitle'|trans({}, 'data_import'),
+        actions: [
+            {
+                label: 'import.action.upload'|trans({}, 'data_import'),
+                href: path('app_bulk_import_upload', { _locale: app.request.locale, entityType: entityType }),
+                variant: 'primary',
+                icon: 'upload'
+            }
+        ]
+    }) }}
+
+    <main class="fa-aurora-surface mt-4">
+
+        {# ── KPI stat tiles ─────────────────────────────────────────────── #}
+        {% set totalBatches = recentBatches|length %}
+        {% set successBatches = recentBatches|filter(b => b.status == 'completed')|length %}
+        {% set failedBatches = recentBatches|filter(b => b.status == 'failed')|length %}
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.total'|trans({}, 'data_import'),
+                    value: totalBatches,
+                    variant: 'primary',
+                    icon: 'layers'
+                }) }}
+            </div>
+            <div class="col-md-4">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.creates'|trans({}, 'data_import'),
+                    value: successBatches,
+                    variant: 'success',
+                    icon: 'check-circle'
+                }) }}
+            </div>
+            <div class="col-md-4">
+                {{ _fa_feature_card.render({
+                    label: 'import.delta.errors'|trans({}, 'data_import'),
+                    value: failedBatches,
+                    variant: 'danger',
+                    icon: 'exclamation-triangle'
+                }) }}
+            </div>
+        </div>
+
+        {# ── Recent-batches table ────────────────────────────────────────── #}
+        {% if recentBatches|length > 0 %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'import.page.title'|trans({}, 'data_import') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>{{ 'import.wizard.step.upload.title'|trans({}, 'data_import') }}</th>
+                                    <th>Status</th>
+                                    <th>Modus</th>
+                                    <th>{{ 'import.delta.total'|trans({}, 'data_import') }}</th>
+                                    <th>{{ 'import.delta.creates'|trans({}, 'data_import') }}</th>
+                                    <th>{{ 'import.delta.updates'|trans({}, 'data_import') }}</th>
+                                    <th>{{ 'import.delta.errors'|trans({}, 'data_import') }}</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for batch in recentBatches %}
+                                <tr>
+                                    <td class="text-muted small">{{ batch.id }}</td>
+                                    <td>
+                                        <span class="fw-semibold">{{ batch.sourceFileName }}</span>
+                                        <br>
+                                        <small class="text-muted">{{ batch.createdAt|date('d.m.Y H:i') }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ batch.status == 'completed' ? 'success' : (batch.status == 'failed' ? 'danger' : (batch.status == 'committing' ? 'warning' : 'secondary')) }}">
+                                            {{ batch.status }}
+                                        </span>
+                                    </td>
+                                    <td><span class="badge bg-secondary">{{ batch.mode }}</span></td>
+                                    <td>{{ batch.rowCountTotal }}</td>
+                                    <td class="text-success">{{ batch.rowCountSuccess }}</td>
+                                    <td class="text-info">{{ batch.rowCountUpdated }}</td>
+                                    <td class="text-danger">{{ batch.rowCountError }}</td>
+                                    <td>
+                                        <a href="{{ path('app_bulk_import_diff', { _locale: app.request.locale, entityType: entityType, batchId: batch.id }) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                            <span class="fa-cyber-btn__label">Details</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        {% else %}
+            {{ _fa_empty_state.render({
+                mood: 'working',
+                title: 'import.page.title'|trans({}, 'data_import'),
+                text: 'import.page.subtitle'|trans({}, 'data_import'),
+                actions: [
+                    {
+                        label: 'import.action.upload'|trans({}, 'data_import'),
+                        href: path('app_bulk_import_upload', { _locale: app.request.locale, entityType: entityType }),
+                        variant: 'primary',
+                        icon: 'upload'
+                    }
+                ]
+            }) }}
+        {% endif %}
+
+    </main>
+</div>
+{% endblock %}
