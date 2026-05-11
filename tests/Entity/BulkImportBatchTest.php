@@ -8,9 +8,11 @@ use App\Entity\BulkImportBatch;
 use App\Entity\BulkImportRow;
 use App\Entity\Tenant;
 use App\Entity\User;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class BulkImportBatchTest extends TestCase
 {
     #[Test]
