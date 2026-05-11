@@ -1,5 +1,6 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {# Mode 2 (Targeted re-run) Step 3 — read-only diff preview. Controller
    passes `diff` (computed by TargetedRerunModeHandler::computeDiff) as a
@@ -40,6 +41,7 @@
 {% else %}
     {% embed '_components/_fa_table.html.twig' with { compact: true } %}
         {% block table_head %}
+            {% trans_default_domain 'policy_wizard' %}
             <tr>
                 <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.diff.column.topic'|trans }}</th>
                 <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.diff.column.setting'|trans }}</th>
@@ -49,6 +51,8 @@
             </tr>
         {% endblock %}
         {% block table_body %}
+            {% trans_default_domain 'policy_wizard' %}
+            {% import '_components/_status_pill.html.twig' as pill %}
             {% for row in diff_rows %}
                 <tr class="fa-table__row{{ row.changed ? ' table-warning' : '' }}">
                     <td class="fa-table__cell">
@@ -65,14 +69,9 @@
                     </td>
                     <td class="fa-table__cell fa-table__cell--center">
                         {% if row.changed %}
-                            <span class="badge bg-warning text-dark">
-                                <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
-                                {{ 'policy_wizard.message.changed_yes'|trans }}
-                            </span>
+                            {{ pill.render('policy_wizard.message.changed_yes'|trans, 'warning', {size: 'sm', icon: 'bi-arrow-left-right'}) }}
                         {% else %}
-                            <span class="badge bg-secondary">
-                                {{ 'policy_wizard.message.changed_no'|trans }}
-                            </span>
+                            {{ pill.render('policy_wizard.message.changed_no'|trans, 'neutral', {size: 'sm'}) }}
                         {% endif %}
                     </td>
                 </tr>

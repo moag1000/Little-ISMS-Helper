@@ -95,6 +95,7 @@
                 <p class="text-muted small">{{ 'admin.tenant_settings.global_help'|trans }}</p>
                 {% embed '_components/_fa_table.html.twig' with { compact: true, hover: false } %}
                     {% block table_body %}
+                        {% trans_default_domain 'admin' %}
                         <tr class="fa-table__row">
                             <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.mfa_roles'|trans }}</th>
                             <td class="fa-table__cell"><code>{{ globals.mfa_required_roles }}</code></td>

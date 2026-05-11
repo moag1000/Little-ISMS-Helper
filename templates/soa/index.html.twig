@@ -28,7 +28,7 @@
         { label: 'soa.action.export_html'|trans({}, 'soa'), variant: 'ghost', icon: 'file-earmark-text', href: path('app_soa_export') },
         { label: 'soa.action.export_pdf'|trans({}, 'soa'), variant: 'secondary', icon: 'file-earmark-pdf', href: path('app_soa_export_pdf') },
         { label: 'soa.action.preview_pdf'|trans({}, 'soa'), variant: 'ghost', icon: 'eye', href: path('app_soa_preview_pdf') }
-    ]
+    ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_index') }] : [])
 }) }}
 {% set _global_hints = alva_hints('soa_index') %}
 {% if _global_hints|length > 0 %}
@@ -272,7 +272,7 @@
 
 {# Canonical bulk-action wrapper (per design-system spec): provides row-level
    selection state for the .table-bulk-selectable below + tag-bulk integration. #}
-<div data-controller="bulk-actions" data-bulk-actions-endpoint-value="/soa">
+<div data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/soa">
 {% embed '_components/_table.html.twig' with {
     'stickyHeader': true,
     'theadClass': 'table-light',

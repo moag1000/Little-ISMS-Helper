@@ -8,6 +8,7 @@ use App\Entity\ComplianceRequirementFulfillment;
 use Deprecated;
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceFramework;
+use App\Entity\Document;
 use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,6 +30,24 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ComplianceRequirement::class);
+    }
+
+    /**
+     * Find all ComplianceRequirements that have the given Document in their
+     * evidenceDocuments collection. Used by DocumentController::show() to
+     * build the reverse "linked requirements" panel.
+     *
+     * @return ComplianceRequirement[]
+     */
+    public function findByEvidenceDocument(Document $document): array
+    {
+        return $this->createQueryBuilder('cr')
+            ->innerJoin('cr.evidenceDocuments', 'd')
+            ->where('d = :document')
+            ->setParameter('document', $document)
+            ->orderBy('cr.requirementId', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'workflows' %}
 
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_isms_approval_stages.html.twig' as _isms_approval_stages %}
 {% block title %}{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }} - {{ 'workflow.title.instance_show'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
@@ -138,36 +139,35 @@
 
 {# Warning: No eligible approvers for current step #}
 {% if instance.status == 'in_progress' and not has_eligible_approvers %}
-<div class="alert {% if is_granted('ROLE_ADMIN') %}alert-warning{% else %}alert-danger{% endif %} mb-4">
-    <div class="d-flex align-items-start">
-        <i class="fa-icon fa-icon--status-warning fs-4 me-3" aria-hidden="true"></i>
-        <div class="flex-grow-1">
-            <h2 class="alert-heading mb-2">
-                <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
-                {{ 'workflow.warning.no_eligible_approvers_title'|trans({}, 'workflows') }}
-            </h2>
-            <p class="mb-2">{{ 'workflow.warning.no_eligible_approvers_desc'|trans({}, 'workflows') }}</p>
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: is_granted('ROLE_ADMIN') ? 'warning' : 'danger',
+    icon: 'status-warning',
+    title: 'workflow.warning.no_eligible_approvers_title'|trans({}, 'workflows'),
+    class: 'mb-4'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'workflows' %}
+        <p class="fa-alert__message mb-2">{{ 'workflow.warning.no_eligible_approvers_desc'|trans({}, 'workflows') }}</p>
 
-            {% if is_granted('ROLE_ADMIN') %}
-                {# Admin view: can still approve + configure link #}
-                <p class="mb-3">{{ 'workflow.warning.no_eligible_approvers_admin'|trans({}, 'workflows') }}</p>
-                <div class="d-flex gap-2 flex-wrap">
-                    {% if instance.workflow %}
-                    <a href="{{ path('app_workflow_definition_show', {id: instance.workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--warning">
-                        <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i> {{ 'workflow.warning.configure_step'|trans({}, 'workflows') }}
-                    </a>
-                    {% endif %}
-                </div>
-            {% else %}
-                {# Regular user view: contact admin message #}
-                <p class="mb-0">
-                    <strong>{{ 'workflow.warning.admin_action_required'|trans({}, 'workflows') }}:</strong>
-                    {{ 'workflow.warning.no_eligible_approvers_user'|trans({}, 'workflows') }}
-                </p>
-            {% endif %}
-        </div>
-    </div>
-</div>
+        {% if is_granted('ROLE_ADMIN') %}
+            {# Admin view: can still approve + configure link #}
+            <p class="fa-alert__message mb-3">{{ 'workflow.warning.no_eligible_approvers_admin'|trans({}, 'workflows') }}</p>
+            <div class="d-flex gap-2 flex-wrap">
+                {% if instance.workflow %}
+                <a href="{{ path('app_workflow_definition_show', {id: instance.workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--warning">
+                    <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i> {{ 'workflow.warning.configure_step'|trans({}, 'workflows') }}
+                </a>
+                {% endif %}
+            </div>
+        {% else %}
+            {# Regular user view: contact admin message #}
+            <p class="fa-alert__message mb-0">
+                <strong>{{ 'workflow.warning.admin_action_required'|trans({}, 'workflows') }}:</strong>
+                {{ 'workflow.warning.no_eligible_approvers_user'|trans({}, 'workflows') }}
+            </p>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Workflow Steps — Aurora ISMS-Pattern: isms-approval-stages (V3 C7, V3 W2-M4 macro) #}

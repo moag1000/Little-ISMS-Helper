@@ -5,6 +5,7 @@
 {% block admin_content %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -59,12 +60,13 @@
                 </tr>
             {% endblock %}
             {% block table_body %}
+                {% import '_components/_status_pill.html.twig' as pill %}
                 {% for role in roles %}
                 <tr class="fa-table__row">
                     <td class="fa-table__cell">
                         <strong>{{ role.name }}</strong>
                         {% if role.systemRole %}
-                            <span class="badge bg-info ms-1">{{ 'role_management.badge.system'|trans({}, 'role_management') }}</span>
+                            {{ pill.render('role_management.badge.system'|trans({}, 'role_management'), 'primary', {class: 'ms-1'}) }}
                         {% endif %}
                     </td>
                     <td class="fa-table__cell">
@@ -73,16 +75,16 @@
                         </small>
                     </td>
                     <td class="fa-table__cell fa-table__cell--center">
-                        <span class="badge bg-secondary">{{ role.permissions|length }}</span>
+                        {{ pill.render(role.permissions|length, 'neutral') }}
                     </td>
                     <td class="fa-table__cell fa-table__cell--center">
-                        <span class="badge bg-info">{{ role.users|length }}</span>
+                        {{ pill.render(role.users|length, 'primary') }}
                     </td>
                     <td class="fa-table__cell fa-table__cell--center">
                         {% if role.systemRole %}
-                            <span class="badge bg-info">{{ 'role_management.type.system'|trans({}, 'role_management') }}</span>
+                            {{ pill.render('role_management.type.system'|trans({}, 'role_management'), 'primary') }}
                         {% else %}
-                            <span class="badge bg-secondary">{{ 'role_management.type.custom'|trans({}, 'role_management') }}</span>
+                            {{ pill.render('role_management.type.custom'|trans({}, 'role_management'), 'neutral') }}
                         {% endif %}
                     </td>
                     <td class="fa-table__cell fa-table__cell--actions">

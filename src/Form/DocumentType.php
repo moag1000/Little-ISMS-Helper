@@ -88,6 +88,21 @@ class DocumentType extends AbstractType
                 'choice_translation_domain' => 'document',
                 'help' => 'document.help.data_classification',
             ])
+            ->add('status', ChoiceType::class, [
+                'label' => 'document.field.status',
+                'help' => 'document.help.status',
+                'required' => false,
+                'placeholder' => false,
+                'choices' => [
+                    'document.status.draft'      => 'draft',
+                    'document.status.in_review'  => 'in_review',
+                    'document.status.approved'   => 'approved',
+                    'document.status.published'  => 'published',
+                    'document.status.archived'   => 'archived',
+                    'document.status.active'     => 'active',
+                ],
+                'choice_translation_domain' => 'document',
+            ])
             // V3 W2-Bug2 — version label + acknowledgement-requirement.
             ->add('version', TextType::class, [
                 'label' => 'document.field.version',

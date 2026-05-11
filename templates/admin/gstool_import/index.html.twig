@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'gstool_import' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'gstool_import.title'|trans({}, 'gstool_import') }}{% endblock %}
 
@@ -182,6 +183,7 @@
                             </tr>
                         {% endblock %}
                         {% block table_body %}
+                            {% import '_components/_status_pill.html.twig' as pill %}
                             {% for r in result.bausteine_rows %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell"><code>{{ r.legacy_id }}</code></td>
@@ -197,9 +199,7 @@
                                     <td class="fa-table__cell"><code class="small">{{ r.zielobjekt ?? '–' }}</code></td>
                                     <td class="fa-table__cell">
                                         {% set s = r.status %}
-                                        <span class="badge bg-{{ s == 'direct' ? 'success' : s == 'split' ? 'warning' : s == 'merged' ? 'info' : s == 'removed' ? 'danger' : s == 'bcm' ? 'primary' : 'secondary' }}">
-                                            {{ s }}
-                                        </span>
+                                        {{ pill.render(s, s == 'direct' ? 'success' : (s == 'split' ? 'warning' : (s == 'merged' ? 'primary' : (s == 'removed' ? 'danger' : (s == 'bcm' ? 'primary' : 'neutral')))), {size: 'sm'}) }}
                                         {% if r.note %}<div class="small text-muted">{{ r.note }}</div>{% endif %}
                                     </td>
                                 </tr>
@@ -270,6 +270,7 @@
                             </tr>
                         {% endblock %}
                         {% block table_body %}
+                            {% import '_components/_status_pill.html.twig' as pill %}
                             {% for r in result.risiken_rows %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell"><code>{{ r.legacy_id }}</code></td>
@@ -280,9 +281,7 @@
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ r.inherent_impact ?? '–' }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">
                                         {% if r.inherent_risk_score %}
-                                            <span class="badge bg-{{ r.inherent_risk_score >= 13 ? 'danger' : r.inherent_risk_score >= 7 ? 'warning' : 'success' }}">
-                                                {{ r.inherent_risk_score }}
-                                            </span>
+                                            {{ pill.render(r.inherent_risk_score, r.inherent_risk_score >= 13 ? 'danger' : (r.inherent_risk_score >= 7 ? 'warning' : 'success'), {size: 'sm'}) }}
                                         {% else %}–{% endif %}
                                     </td>
                                     <td class="fa-table__cell">

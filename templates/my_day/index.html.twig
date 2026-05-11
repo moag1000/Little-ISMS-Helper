@@ -6,6 +6,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block body %}
 <main class="fa-aurora-surface my-day">
@@ -200,7 +201,7 @@
         <section class="fa-section mb-4" id="{{ section.id }}">
             <div class="fa-section__header">
                 <h2 class="fa-section__title">{{ section.title }}
-                    <span class="badge bg-secondary ms-2">{{ section.items|length }}</span>
+                    {{ pill.render(section.items|length, 'neutral', {class: 'ms-2'}) }}
                 </h2>
             </div>
             <div class="fa-section__body">
@@ -255,16 +256,16 @@
                             </div>
                             <div class="text-end">
                                 {% if item.badge %}
-                                    {% set badgeClass = item.tone == 'danger' ? 'bg-danger'
-                                        : (item.tone == 'warning' ? 'bg-warning text-dark'
-                                        : (item.tone == 'success' ? 'bg-success'
-                                        : 'bg-info text-dark')) %}
-                                    <span class="badge {{ badgeClass }}">{{ item.badge }}</span>
+                                    {% set pillTone = item.tone == 'danger' ? 'danger'
+                                        : (item.tone == 'warning' ? 'warning'
+                                        : (item.tone == 'success' ? 'success'
+                                        : 'primary')) %}
+                                    {{ pill.render(item.badge, pillTone) }}
                                 {% endif %}
                                 {% if item.priority == 'high' %}
-                                    <span class="badge bg-danger ms-1">{{ 'priority.high'|trans }}</span>
+                                    {{ pill.render('priority.high'|trans, 'danger', {class: 'ms-1'}) }}
                                 {% elseif item.priority == 'medium' %}
-                                    <span class="badge bg-warning text-dark ms-1">{{ 'priority.medium'|trans }}</span>
+                                    {{ pill.render('priority.medium'|trans, 'warning', {class: 'ms-1'}) }}
                                 {% endif %}
                             </div>
                         </a>

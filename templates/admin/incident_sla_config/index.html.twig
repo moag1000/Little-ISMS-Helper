@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'incident_sla.title'|trans({}, 'incident_sla') }}{% endblock %}
 
@@ -35,14 +36,13 @@
                             </tr>
                         {% endblock %}
                         {% block table_body %}
+                            {% import '_components/_status_pill.html.twig' as pill %}
                             {% for config in configs %}
                                 {% set variant = (config.severity == 'breach' or config.severity == 'critical') ? 'danger' : (config.severity == 'high' ? 'warning' : (config.severity == 'medium' ? 'info' : 'secondary')) %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell" data-sort-value="{{ config.severity }}">
-                                        {% set _svpill = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
-                                        <span class="badge bg-{{ variant }} fa-status-pill fa-status-pill--{{ _svpill }}">
-                                            {{ ('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla') }}
-                                        </span>
+                                        {% set _svtone = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
+                                        {{ pill.render(('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla'), _svtone, {size: 'sm'}) }}
                                     </td>
                                     <td class="fa-table__cell fa-table__cell--num" data-sort-value="{{ config.responseHours }}"><strong>{{ config.responseHours }}h</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ config.escalationHours ? config.escalationHours ~ 'h' : '—' }}</td>

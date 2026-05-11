@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}{% endblock %}
 
@@ -83,7 +84,7 @@
                     aria-controls="diff-pane-metadata"
                     aria-selected="true">
                 {{ 'policy_wizard.diff.tab.metadata'|trans({}, 'policy_wizard') }}
-                <span class="badge bg-secondary ms-1">{{ diff.metadataDelta|length }}</span>
+                {{ pill.render(diff.metadataDelta|length, 'neutral', {size: 'sm', class: 'ms-1'}) }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -96,7 +97,7 @@
                     aria-controls="diff-pane-variables"
                     aria-selected="false">
                 {{ 'policy_wizard.diff.tab.variables'|trans({}, 'policy_wizard') }}
-                <span class="badge bg-secondary ms-1">{{ diff.variableChanges|length }}</span>
+                {{ pill.render(diff.variableChanges|length, 'neutral', {size: 'sm', class: 'ms-1'}) }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -109,7 +110,7 @@
                     aria-controls="diff-pane-sections"
                     aria-selected="false">
                 {{ 'policy_wizard.diff.tab.sections'|trans({}, 'policy_wizard') }}
-                <span class="badge bg-secondary ms-1">{{ (diff.sectionsAdded|length) + (diff.sectionsRemoved|length) + (diff.sectionsModified|length) }}</span>
+                {{ pill.render((diff.sectionsAdded|length) + (diff.sectionsRemoved|length) + (diff.sectionsModified|length), 'neutral', {size: 'sm', class: 'ms-1'}) }}
             </button>
         </li>
     </ul>

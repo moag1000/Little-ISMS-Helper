@@ -184,6 +184,60 @@ jobs:
       - name: DQL Field Mismatch Check
         run: php scripts/quality/check-dql-mismatches.php
 
+      # ── Repo Quality Gates ─────────────────────────────────────────────────
+      # 7 static-analysis gates that catch common bug-patterns at PR-time.
+      # Each gate exits 0 (clean) or 1 (violations). Blocking gates fail
+      # the whole job; warn-only gates use continue-on-error: true.
+      #
+      # Gate 1 — Twig macro import-order (BLOCKING)
+      #   Detects macro usage before the first import appears in the file.
+      #   Prevents: 'Variable "_fa_xxx" does not exist' runtime errors.
+      #   Embed-scope isolation is handled by Twig Macro-Scope Check above.
+      - name: "Gate 1: Twig macro import-order"
+        run: python3 scripts/quality/check_twig_macro_imports.py
+
+      # Gate 2 — Embed-block trans_default_domain (WARN-ONLY for now)
+      #   Detects {% embed %} blocks using |trans without their own
+      #   {% trans_default_domain %} directive. 44 pre-existing violations
+      #   in templates/ being resolved separately; becomes blocking once
+      #   legacy violations are cleared.
+      - name: "Gate 2: Embed-block trans_default_domain"
+        run: python3 scripts/quality/check_twig_embed_domain.py
+        continue-on-error: true
+
+      # Gate 3 — MariaDB-11 reserved-words in migrations (BLOCKING)
+      #   Detects unquoted ROW_NUMBER/RANK/WINDOW/OVER/etc. as column names.
+      #   Prevents: ERROR 1064 syntax errors during migration on MariaDB 11.
+      - name: "Gate 3: MariaDB-11 reserved-words in migrations"
+        run: bash scripts/quality/check_migration_reserved_words.sh
+
+      # Gate 4 — DDL-migrations isTransactional()=false (BLOCKING)
+      #   Only enforced for migrations created on/after 2026-05-08.
+      #   83 pre-existing legacy migrations are exempt (cutoff documented in script).
+      #   Prevents: SAVEPOINT errors when running multiple DDL migrations.
+      - name: "Gate 4: DDL-migrations isTransactional()=false"
+        run: bash scripts/quality/check_migration_transactional.sh
+
+      # Gate 5 — Aurora v4 anti-patterns on cards (WARN-ONLY for now)
+      #   Detects Bootstrap bg-*/text-white on .card/.card-header.
+      #   8 pre-existing violations in templates/ being resolved separately.
+      - name: "Gate 5: Aurora anti-patterns on cards"
+        run: python3 scripts/quality/check_aurora_anti_patterns.py
+        continue-on-error: true
+
+      # Gate 6 — Missing translation keys (BLOCKING for high-priority domains)
+      #   Checks 12 high-priority translation domains for missing German keys.
+      #   Full-domain check: ALL_DOMAINS=1 bash check_missing_translations.sh
+      - name: "Gate 6: Missing translation keys"
+        run: bash scripts/quality/check_missing_translations.sh
+
+      # Gate 7 — Competitor-names in source/templates/translations (BLOCKING)
+      #   Detects Vanta/Drata/Probo/Verinice/HiScout/etc. in codebase.
+      #   Per memory feedback_no_competitor_names.
+      - name: "Gate 7: No competitor names"
+        run: bash scripts/quality/check_no_competitor_names.sh
+      # ── End Repo Quality Gates ─────────────────────────────────────────────
+
       # Hadolint — Dockerfile best-practice linting
       # Catches typical smells (apt-get install without --no-install-recommends,
       # missing pinned versions, root-as-default user, etc.)

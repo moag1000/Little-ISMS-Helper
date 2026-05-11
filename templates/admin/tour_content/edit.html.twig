@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block admin_title %}
     <i class="fa-icon fa-icon--nav-stars fairy-icon-sparkle" aria-hidden="true"></i>
@@ -56,7 +57,7 @@
 
             <div class="row g-2 mb-3 pb-3 {% if not loop.last and rows[loop.index] is defined and rows[loop.index].step_id == row.step_id %}border-bottom{% endif %}">
                 <div class="col-lg-1 text-center">
-                    <span class="badge text-bg-secondary">{{ row.locale|upper }}</span>
+                    {{ pill.render(row.locale|upper, 'neutral', {size: 'sm'}) }}
                 </div>
                 <div class="col-lg-5">
                     <label for="title-{{ row.step_id }}-{{ row.locale }}" class="form-label small fw-semibold">

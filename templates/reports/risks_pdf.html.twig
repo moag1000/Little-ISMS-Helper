@@ -1,148 +1,153 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Risks PDF Report — fa-report-doc macro (Tier 2)
+   Audience: auditor
+   Status:   final
+   ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
 <html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'pdf.risk.title'|trans({}, 'reports') }}</title>
     <style>
-        :root {
-            --primary:       #0ea5e9;
-            --surface:       #ffffff;
-            --surface-2:     #f1f5f9;
-            --fg:            #0f172a;
-            --fg-2:          #475569;
-            --fg-3:          #94a3b8;
-            --border:        #cbd5e1;
-            --success:       #166534;
-            --success-tint:  #dcfce7;
-            --danger:        #991b1b;
-            --danger-tint:   #fecaca;
-            --warning:       #92400e;
-            --warning-tint:  #fef3c7;
-        }
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 10pt;
-            margin: 0;
-            padding: 20px;
-            color: var(--fg);
-            background: var(--surface);
-        }
-
-        /* ── Cover ── */
-        .report-cover {
-            text-align: center;
-            margin-bottom: 16px;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 8px;
-        }
-        .report-cover h1 {
-            color: var(--fg);
-            margin: 0;
-            font-size: 18pt;
-            text-transform: uppercase;
-            letter-spacing: 0.5pt;
-        }
-        .report-cover .date { color: var(--fg-2); font-size: 8pt; margin-top: 4px; }
-
-        /* ── Table ── */
-        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
-        th {
-            background: var(--fg);
-            color: var(--surface);
-            padding: 6px 5px;
-            text-align: left;
-            font-size: 8pt;
-            border: 1px solid var(--border);
-            text-transform: uppercase;
-            letter-spacing: 0.3pt;
-        }
-        td { padding: 6px 5px; border: 1px solid var(--border); font-size: 8.5pt; }
-
-        /* ── Row tinting ── */
-        .risk-critical { background: var(--danger-tint); font-weight: bold; }
-        .risk-high     { background: var(--warning-tint); }
-        .risk-medium   { background: #fef9c3; }
-        .risk-low      { background: var(--success-tint); }
-
-        /* ── Score badge ── */
-        .score-badge {
-            display: inline-block;
-            padding: 1px 6px;
-            border-radius: 3px;
-            font-weight: bold;
-            color: var(--surface);
-            font-size: 8pt;
-        }
-        .score-critical { background: var(--danger); }
-        .score-high     { background: var(--warning); }
-        .score-medium   { background: #ca8a04; }
-        .score-low      { background: var(--success); }
-
+        :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--success-glow:rgba(5,150,105,.20);--warning:#d97706;--warning-strong:#b45309;--warning-glow:rgba(217,119,6,.20);--danger:#dc2626;--danger-strong:#b91c1c;--danger-glow:rgba(220,38,38,.20);}
+        @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
+        body{background:#fff;font-family:'DejaVu Sans',sans-serif;margin:0;padding:0;}
+        .report-doc{background:var(--surface);color:var(--fg-1);font-size:10pt;line-height:1.45;max-width:none;margin:0;border:0;border-radius:0;}
+        .report-doc__cover{padding:18pt 14pt 12pt;border-bottom:1px solid var(--border);}
+        .report-doc__cover-top{display:table;width:100%;}
+        .report-doc__brand{display:table-cell;vertical-align:middle;}
+        .report-doc__chips{display:table-cell;text-align:right;vertical-align:middle;}
+        .report-doc__logo{display:inline-block;width:32pt;height:32pt;border-radius:6pt;background:var(--primary);color:#fff;text-align:center;line-height:32pt;font-weight:700;font-size:18pt;vertical-align:middle;margin-right:8pt;}
+        .report-doc__brand-name{font-weight:700;font-size:11pt;color:var(--fg-1);display:inline-block;vertical-align:middle;}
+        .report-doc__brand-meta{font-size:8pt;color:var(--fg-3);}
+        .report-doc__chip{display:inline-block;padding:2pt 7pt;border-radius:8pt;background:var(--surface-2);color:var(--fg-2);font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border);margin-left:4pt;}
+        .report-doc__chip--status-confidential{background:var(--danger-glow);color:var(--danger-strong);border-color:transparent;}
+        .report-doc__chip--audience-vorstand{background:var(--primary-tint);color:var(--primary-strong);border-color:transparent;}
+        .report-doc__chip--audience-auditor{background:var(--accent-tint);color:var(--accent-strong);border-color:transparent;}
+        .report-doc__chip--classification{background:var(--fg-1);color:#fff;border-color:transparent;}
+        .report-doc__cover-center{padding:16pt 0 12pt;}
+        .report-doc__kicker{font-size:8pt;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4pt;}
+        .report-doc__title{font-size:22pt;font-weight:800;color:var(--fg-1);margin:0 0 6pt;line-height:1.05;}
+        .report-doc__sub{font-size:10pt;color:var(--fg-2);margin:0;}
+        .report-doc__cover-grid{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8pt 0;margin:0;}
+        .report-doc__cover-grid>div{display:inline-block;width:31%;margin:0 1% 6pt 0;vertical-align:top;}
+        .report-doc__cover-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 2pt;}
+        .report-doc__cover-value{font-size:9pt;color:var(--fg-1);font-weight:600;margin:0;}
+        .report-doc__exec-summary{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__exec-heading{font-size:13pt;font-weight:800;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__kpi-grid{display:table;width:100%;border-spacing:6pt;}
+        .report-doc__kpi-tile{display:table-cell;padding:10pt;border:1px solid var(--border);border-radius:4pt;vertical-align:top;background:var(--surface);}
+        .report-doc__kpi-tile--success{border-left:3pt solid var(--success);}
+        .report-doc__kpi-tile--warning{border-left:3pt solid var(--warning);}
+        .report-doc__kpi-tile--danger{border-left:3pt solid var(--danger);}
+        .report-doc__kpi-tile--neutral{border-left:3pt solid var(--primary);}
+        .report-doc__kpi-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4pt;}
+        .report-doc__kpi-value{font-size:18pt;font-weight:800;color:var(--fg-1);margin-bottom:2pt;}
+        .report-doc__kpi-trend{font-size:8pt;font-weight:600;}
+        .report-doc__kpi-trend--up{color:var(--success-strong);}
+        .report-doc__kpi-trend--down{color:var(--danger-strong);}
+        .report-doc__tldr{background:var(--surface);border:1px solid var(--border);border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 12pt;}
+        .report-doc__tldr-label{font-size:7pt;color:var(--primary-strong);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 6pt;}
+        .report-doc__tldr-list{list-style:none;margin:0;padding:0;}
+        .report-doc__tldr-item{font-size:9pt;color:var(--fg-1);padding:2pt 0;}
+        .report-doc__tldr-item--ok{border-left:2pt solid var(--success);padding-left:6pt;}
+        .report-doc__tldr-item--warn{border-left:2pt solid var(--warning);padding-left:6pt;}
+        .report-doc__tldr-item--danger{border-left:2pt solid var(--danger);padding-left:6pt;}
+        .report-doc__tldr-dot{display:none;}
+        .report-doc__data-section{padding:12pt 14pt;border-bottom:1px solid var(--border);page-break-inside:avoid;}
+        .report-doc__section-heading{font-size:12pt;font-weight:700;color:var(--fg-1);margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__section-body{font-size:9pt;color:var(--fg-1);margin:6pt 0;}
+        .report-doc__table{width:100%;border-collapse:collapse;font-size:9pt;}
+        .report-doc__table th{background:var(--surface-2);color:var(--fg-2);padding:5pt 6pt;border:.5pt solid var(--border-strong);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:7pt;text-align:left;}
+        .report-doc__table td{padding:5pt 6pt;border:.5pt solid var(--border);color:var(--fg-1);vertical-align:top;}
+        .report-doc__table tbody tr:nth-child(even) td{background:var(--surface-2);}
+        .report-doc__table-wrap{margin:8pt 0;}
+        .report-doc__appendix{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__appendix-heading{font-size:12pt;font-weight:700;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__appendix-subheading{font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:8pt 0 4pt;}
+        .report-doc__appendix-body{font-size:8pt;color:var(--fg-2);}
+        .report-doc__appendix-sources{padding-left:14pt;font-size:8pt;color:var(--fg-2);}
+        .report-doc__footer-disclaimer{padding:12pt 14pt;background:var(--surface);border-top:1px solid var(--border-strong);}
+        .report-doc__distribution-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 4pt;}
+        .report-doc__distribution-list{list-style:none;padding:0;margin:0 0 8pt;font-size:9pt;color:var(--fg-2);}
+        .report-doc__distribution-list li{display:inline-block;border-left:2pt solid var(--border);padding:0 8pt;}
+        .report-doc__disclaimer-text{font-size:8pt;color:var(--fg-3);padding:8pt;background:var(--surface-2);border-radius:4pt;border:1px solid var(--border);margin:0 0 8pt;}
+        .report-doc__footer-meta{font-size:7pt;color:var(--fg-3);}
+        .report-doc__footer-brand{font-weight:700;color:var(--fg-2);}
+        .report-doc__footer-classification{color:var(--danger-strong);font-weight:700;text-transform:uppercase;}
+        .badge{display:inline-block;padding:2pt 5pt;border-radius:3pt;font-size:7pt;font-weight:700;}
+        .badge-success{background:var(--success-tint);color:var(--success-strong);}
+        .badge-warning{background:rgba(217,119,6,.12);color:var(--warning-strong);}
+        .badge-danger{background:rgba(220,38,38,.12);color:var(--danger-strong);}
+        .badge-info{background:var(--primary-tint);color:var(--primary-strong);}
+        /* ── Risks-specific: score badge ── */
+        .score-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-weight:bold;color:#fff;font-size:8pt;}
+        .score-critical{background:var(--danger-strong);}
+        .score-high{background:var(--warning-strong);}
+        .score-medium{background:#ca8a04;}
+        .score-low{background:var(--success-strong);}
         /* ── Legend box ── */
-        .legend-box {
-            margin-top: 24px;
-            padding: 10px 12px;
-            background: var(--warning-tint);
-            border-left: 4px solid #d97706;
-            font-size: 8pt;
-        }
-
-        /* ── Footer ── */
-        .report-footer { position: fixed; bottom: 16px; text-align: center; font-size: 7.5pt; color: var(--fg-3); }
+        .legend-box{margin-top:8pt;padding:10px 12px;background:rgba(217,119,6,.12);border-left:4px solid var(--warning);font-size:8pt;color:var(--fg-1);}
     </style>
 </head>
 <body>
-    <div class="report-cover">
-        <h1>{{ 'pdf.risk.title'|trans({}, 'reports') }}</h1>
-        <div class="date">
-            {{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }}
-            &nbsp;|&nbsp;
-            {{ 'pdf.common.total'|trans({}, 'reports') }}: {{ risks|length }}
-        </div>
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">{{ 'pdf.risk.header.id'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.risk.header.title'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.risk.header.category'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.risk.header.likelihood'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.risk.header.impact'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.risk.header.score'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.risk.header.level'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.risk.header.treatment'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.risk.header.status'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.risk.header.owner'|trans({}, 'reports') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for risk in risks %}
-            {% set riskLevel = risk.riskScore >= 20 ? 'critical' : (risk.riskScore >= 12 ? 'high' : (risk.riskScore >= 6 ? 'medium' : 'low')) %}
-            <tr class="risk-{{ riskLevel }}">
-                <td>{{ risk.id }}</td>
-                <td>{{ risk.title|length > 40 ? risk.title|slice(0, 40) ~ '…' : risk.title }}</td>
-                <td>{{ risk.category }}</td>
-                <td>{{ risk.probability }}</td>
-                <td>{{ risk.impact }}</td>
-                <td><span class="score-badge score-{{ riskLevel }}">{{ risk.riskScore }}</span></td>
-                <td>{{ riskLevel|upper }}</td>
-                <td>{{ risk.treatmentDescription|length > 25 ? risk.treatmentDescription|slice(0, 25) ~ '…' : risk.treatmentDescription|default('-') }}</td>
-                <td>{{ risk.status ? risk.status.value : '' }}</td>
-                <td>{{ (risk.effectiveRiskOwner ?? '-')|slice(0, 20) }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{# ── Build table rows with score badges and level badges ── #}
+{% set _risk_rows = [] %}
+{% for risk in risks %}
+    {% set riskLevel = risk.riskScore >= 20 ? 'critical' : (risk.riskScore >= 12 ? 'high' : (risk.riskScore >= 6 ? 'medium' : 'low')) %}
+    {% set _level_badge_class = riskLevel == 'critical' ? 'badge-danger' : (riskLevel == 'high' ? 'badge-warning' : (riskLevel == 'medium' ? 'badge-info' : 'badge-success')) %}
+    {% set _risk_rows = _risk_rows|merge([[
+        risk.id,
+        risk.title|length > 40 ? risk.title|slice(0, 40) ~ '...' : risk.title,
+        risk.category,
+        risk.probability,
+        risk.impact,
+        '<span class="score-badge score-' ~ riskLevel ~ '">' ~ risk.riskScore ~ '</span>',
+        '<span class="badge ' ~ _level_badge_class ~ '">' ~ riskLevel|upper ~ '</span>',
+        risk.treatmentDescription|length > 25 ? risk.treatmentDescription|slice(0, 25) ~ '...' : risk.treatmentDescription|default('-'),
+        risk.status ? risk.status.value : '',
+        (risk.effectiveRiskOwner ?? '-')|slice(0, 20),
+    ]]) %}
+{% endfor %}
 
-    <div class="legend-box">
-        <strong>{{ 'pdf.risk.legend'|trans({}, 'reports') }}:</strong>
-        {{ 'pdf.risk.legend_text'|trans({}, 'reports') }}
-    </div>
+{# ── Legend HTML for body_html slot ── #}
+{% set _legend_html = '<div class="legend-box"><strong>' ~ ('pdf.risk.legend'|trans({}, 'reports')) ~ ':</strong> ' ~ ('pdf.risk.legend_text'|trans({}, 'reports')) ~ '</div>' %}
 
-    <div class="report-footer">
-        <p>{{ 'pdf.risk.footer'|trans({}, 'reports') }} | {{ 'pdf.common.page'|trans({}, 'reports') }} {PAGE_NUM}</p>
-    </div>
+{{ _fa_report_doc.render({
+    report: {
+        title:        'pdf.risk.title'|trans({}, 'reports'),
+        subtitle:     ('pdf.common.total'|trans({}, 'reports')) ~ ': ' ~ risks|length,
+        kicker:       'ISMS · Risk Register',
+        status:       'final',
+        audience:     'auditor',
+        generated_at: generated_at|date('d.m.Y H:i'),
+    },
+    brand_name: 'Little ISMS Helper',
+    sections: [
+        {
+            heading: 'pdf.risk.title'|trans({}, 'reports'),
+            table: {
+                headers: [
+                    'pdf.risk.header.id'|trans({}, 'reports'),
+                    'pdf.risk.header.title'|trans({}, 'reports'),
+                    'pdf.risk.header.category'|trans({}, 'reports'),
+                    'pdf.risk.header.likelihood'|trans({}, 'reports'),
+                    'pdf.risk.header.impact'|trans({}, 'reports'),
+                    'pdf.risk.header.score'|trans({}, 'reports'),
+                    'pdf.risk.header.level'|trans({}, 'reports'),
+                    'pdf.risk.header.treatment'|trans({}, 'reports'),
+                    'pdf.risk.header.status'|trans({}, 'reports'),
+                    'pdf.risk.header.owner'|trans({}, 'reports'),
+                ],
+                rows: _risk_rows,
+            },
+        },
+        {
+            body_html: _legend_html,
+        },
+    ],
+}) }}
 </body>
 </html>

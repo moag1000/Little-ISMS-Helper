@@ -48,6 +48,9 @@ PR_DESCRIPTION.md
 .claude/scheduled_tasks.lock
 ###< claude-code ###
 
+# F2.5: Bulk-import upload staging area (already covered by /var/, explicit for clarity)
+/var/import-uploads/
+
 # macOS junk
 .DS_Store
 **/.DS_Store

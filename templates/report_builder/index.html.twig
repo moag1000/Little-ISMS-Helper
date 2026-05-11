@@ -30,11 +30,13 @@
         <div class="col-12">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
+                    {% trans_default_domain 'report_builder' %}
                     <div class="card-header">
                         <h2 class="h5 mb-0"><i class="fa-icon fa-icon--threat" aria-hidden="true"></i> {{ 'section.quick_start'|trans }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'report_builder' %}
                     <div class="row g-3">
                         {% for key, template in predefined_templates %}
                         <div class="col-md-4 col-lg-2">
@@ -59,11 +61,13 @@
             {% if favorites|length > 0 %}
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
+                    {% trans_default_domain 'report_builder' %}
                     <div class="card-header">
                         <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-star text-warning" aria-hidden="true"></i> {{ 'section.favorites'|trans }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'report_builder' %}
                     <div class="row g-3">
                         {% for report in favorites %}
                         <div class="col-md-6">
@@ -78,16 +82,19 @@
             {# All Reports #}
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
+                    {% trans_default_domain 'report_builder' %}
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ 'section.my_reports'|trans }}</h2>
                         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: reports|length } %}
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'report_builder' %}
                     {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if reports|length > 0 %}
                     {% embed '_components/_fa_table.html.twig' with { hover: true } %}
                         {% block table_head %}
+                            {% trans_default_domain 'report_builder' %}
                             <tr>
                                 <th scope="col" class="fa-table__th">{{ 'table.name'|trans }}</th>
                                 <th scope="col" class="fa-table__th">{{ 'table.category'|trans }}</th>
@@ -97,6 +104,7 @@
                             </tr>
                         {% endblock %}
                         {% block table_body %}
+                            {% trans_default_domain 'report_builder' %}
                             {% for report in reports %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">
@@ -147,11 +155,13 @@
             {% if recently_used|length > 0 %}
             {% embed '_components/_card.html.twig' with {class: 'mb-4', noPadding: true} %}
                 {% block card_header %}
+                    {% trans_default_domain 'report_builder' %}
                     <div class="card-header">
                         <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'section.recently_used'|trans }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'report_builder' %}
                     <ul class="list-group list-group-flush">
                         {% for report in recently_used %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -170,11 +180,13 @@
             {% if templates|length > 0 %}
             {% embed '_components/_card.html.twig' with {noPadding: true} %}
                 {% block card_header %}
+                    {% trans_default_domain 'report_builder' %}
                     <div class="card-header">
                         <h2 class="h5 mb-0"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'section.shared_templates'|trans }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'report_builder' %}
                     <ul class="list-group list-group-flush">
                         {% for template in templates %}
                         <li class="list-group-item">

@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'soa' %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ control.controlId }} - {{ control.name }} - Little ISMS Helper{% endblock %}
 
@@ -359,6 +360,7 @@
 {% if mapping_suggestions is defined and mapping_suggestions|length > 0 %}
     {% embed '_components/_card.html.twig' with { class: 'mt-4 border-info' } %}
         {% block card_header %}
+            {% import '_components/_status_pill.html.twig' as pill %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2 class="h6 mb-0">
                     <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i>
@@ -367,7 +369,7 @@
                         '%frameworks%': mapping_suggestions|length
                     }, 'control') }}
                 </h2>
-                <span class="badge text-bg-info">{{ mapping_suggestions_total }}</span>
+                {{ pill.render(mapping_suggestions_total, 'primary', {size: 'sm'}) }}
             </div>
         {% endblock %}
         {% block card_body %}
@@ -400,11 +402,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="ms-2 d-flex align-items-center gap-2">
-                                    <span class="badge text-bg-{{ conf_variant }}"
-                                          title="{{ 'control.mapping_suggestions.confidence.tooltip'|trans({'%pct%': conf_pct}, 'control') }}"
-                                          data-bs-toggle="tooltip">
-                                        {{ conf_label }}
-                                    </span>
+                                    {{ pill.render(conf_label, conf_variant == 'secondary' ? 'neutral' : conf_variant, {size: 'sm', title: 'control.mapping_suggestions.confidence.tooltip'|trans({'%pct%': conf_pct}, 'control')}) }}
                                     <form method="post"
                                           action="{{ path('app_soa_accept_suggestion', { id: control.id, requirementId: row.requirement.id }) }}"
                                           class="d-inline">

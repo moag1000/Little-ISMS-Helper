@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block admin_title %}{{ 'admin.tour_content.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -46,7 +47,7 @@
                                     </div>
                                 </div>
                                 {% if count > 0 %}
-                                    <span class="badge text-bg-primary">{{ count }}</span>
+                                    {{ pill.render(count, 'primary', {size: 'sm'}) }}
                                 {% endif %}
                             </div>
                             <p class="small text-body mt-2 mb-0">

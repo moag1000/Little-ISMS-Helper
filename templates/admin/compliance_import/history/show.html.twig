@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'compliance_import.history.detail.title'|trans({ '%filename%': session.originalFilename }, 'compliance_import') }}{% endblock %}
 
@@ -160,6 +161,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+                        {% import '_components/_status_pill.html.twig' as pill %}
                         {% for event in events %}
                             {% set variant = {
                                 'import': 'success',
@@ -171,10 +173,8 @@
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">{{ event.lineNumber }}</td>
                                 <td class="fa-table__cell">
-                                    {% set _dvpill = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
-                                    <span class="badge bg-{{ variant }}{% if variant == 'warning' %} text-dark{% endif %} fa-status-pill fa-status-pill--{{ _dvpill }}">
-                                        {{ ('compliance_import.history.decision.' ~ event.decision)|trans({}, 'compliance_import') }}
-                                    </span>
+                                    {% set _dvtone = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
+                                    {{ pill.render(('compliance_import.history.decision.' ~ event.decision)|trans({}, 'compliance_import'), _dvtone, {size: 'sm'}) }}
                                     {% if event.errorMessage %}
                                         <div class="small text-muted mt-1">{{ event.errorMessage }}</div>
                                     {% endif %}

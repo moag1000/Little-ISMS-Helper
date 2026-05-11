@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'data_import' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+
+{% block title %}{{ 'import.wizard.step.upload.title'|trans({}, 'data_import') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'import.page.title'|trans({}, 'data_import'), url: path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) },
+            { label: 'import.wizard.step.upload.title'|trans({}, 'data_import') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'upload', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
+        title: 'import.wizard.step.upload.title'|trans({}, 'data_import'),
+        subtitle: 'import.page.subtitle'|trans({}, 'data_import')
+    }) }}
+
+    <main class="fa-aurora-surface mt-4">
+
+        {% include 'import/wizard/_steps_header.html.twig' with {
+            currentStep: 0,
+            entityType: entityType,
+            batchId: null
+        } %}
+
+        {# ── Upload form wrapped in fa-section ────────────────────────────── #}
+        <section class="fa-section">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'import.wizard.step.upload.title'|trans({}, 'data_import') }}</h2>
+            </div>
+            <div class="fa-section__body">
+
+                {{ form_start(form, {
+                    attr: {
+                        enctype: 'multipart/form-data',
+                        novalidate: 'novalidate',
+                        'data-controller': 'file-drop',
+                        'data-file-drop-max-size-value': '10485760',
+                        'data-file-drop-allowed-exts-value': 'xlsx,xls,csv,ods'
+                    }
+                }) }}
+                    {{ form_errors(form) }}
+
+                    <div class="mb-3">
+                        {{ form_label(form.entityType) }}
+                        {{ form_widget(form.entityType) }}
+                        {{ form_errors(form.entityType) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.mode) }}
+                        {{ form_widget(form.mode) }}
+                        {{ form_errors(form.mode) }}
+                    </div>
+
+                    {# ── Drag-drop file zone ───────────────────────────────────────── #}
+                    <div class="mb-3">
+                        {{ form_label(form.file) }}
+
+                        <div class="file-drop__zone mt-2 p-4 text-center"
+                             data-file-drop-target="dropzone"
+                             data-action="click->file-drop#openPicker dragover->file-drop#onDragOver dragleave->file-drop#onDragLeave drop->file-drop#onDrop"
+                             role="button"
+                             tabindex="0"
+                             aria-label="{{ 'import.upload.file_label'|trans({}, 'data_import') }}"
+                             style="border: 2px dashed var(--border); border-radius: var(--radius-md); background: var(--surface-2); cursor: pointer; transition: border-color 0.15s, background 0.15s;">
+                            <i class="bi bi-file-earmark-arrow-up"
+                               aria-hidden="true"
+                               style="font-size: 2.5rem; color: var(--color-primary);"></i>
+                            <p class="mt-2 mb-1 fw-semibold" style="color: var(--text);">
+                                {{ 'import.upload.file_label'|trans({}, 'data_import') }}
+                            </p>
+                            <p class="small" style="color: var(--text-muted);">
+                                XLSX, XLS, CSV, ODS — max. 10 MB
+                            </p>
+                        </div>
+
+                        {# Hidden real file input — triggered by the dropzone click or drag #}
+                        <div style="display:none">
+                            {{ form_widget(form.file, { attr: {
+                                'data-file-drop-target': 'input',
+                                'data-action': 'change->file-drop#onSelected'
+                            }}) }}
+                        </div>
+                        {{ form_errors(form.file) }}
+
+                        {# File preview + validation feedback ─────────────────────── #}
+                        <div data-file-drop-target="preview" aria-live="polite"></div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4 flex-wrap">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">{{ 'import.action.upload'|trans({}, 'data_import') }}</span>
+                        </button>
+                        <a href="{{ path('app_bulk_import_sample', { _locale: app.request.locale, entityType: entityType }) }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost"
+                           download
+                           title="{{ 'import.action.download_sample_help'|trans({}, 'data_import') }}">
+                            <i class="bi bi-download" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">{{ 'import.action.download_sample'|trans({}, 'data_import') }}</span>
+                        </a>
+                        <a href="{{ path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+                        </a>
+                    </div>
+                {{ form_end(form) }}
+
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}

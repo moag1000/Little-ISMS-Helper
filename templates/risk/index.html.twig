@@ -24,7 +24,7 @@
         { label: 'risk.action.quick_new'|trans({}, 'risk'), variant: 'ghost', icon: 'lightning', href: path('app_risk_new_quick') },
         { label: 'risk.modern.header.action.new'|trans({}, 'risk'), variant: 'primary', icon: 'plus-lg', href: path('app_risk_new') },
         { label: 'risk.modern.header.action.matrix'|trans({}, 'risk'), variant: 'ghost', icon: 'grid-3x3', href: path('app_risk_matrix') }
-    ]
+    ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_risk_register') }] : [])
 }) }}
 {% set _global_hints = alva_hints('risk_index') %}
 {% if _global_hints|length > 0 %}
@@ -294,7 +294,7 @@
     } %}
 {% else %}
 {% embed '_components/_card.html.twig' %}
-    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/risk"{% endblock %}
+    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/risk"{% endblock %}
     {% block card_header %}
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'risk.index.all_risks'|trans({}, 'risk') }} ({{ risks|length }})</h2>
@@ -429,7 +429,8 @@
 
     {# Bulk Action Bar #}
     {% include '_components/_bulk_action_bar.html.twig' with {
-        actions: ['export', 'assign', 'delete']
+        actions: ['export', 'assign', 'delete'],
+        variant: 'brand'
     } %}
     {% endblock %}
 {% endembed %}

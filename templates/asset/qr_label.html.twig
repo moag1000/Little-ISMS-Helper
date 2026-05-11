@@ -129,7 +129,7 @@
             justify-content: center;
         }
 
-        .btn {
+        .fa-cyber-btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -143,22 +143,22 @@
             transition: all 0.2s;
         }
 
-        .btn-primary {
-            background: #0d6efd;
-            color: white;
+        .fa-cyber-btn--primary {
+            background: var(--primary, #0369a1);
+            color: var(--on-primary, white);
         }
 
-        .btn-primary:hover {
-            background: #0b5ed7;
+        .fa-cyber-btn--primary:hover {
+            background: var(--primary-strong, #075985);
         }
 
-        .btn-secondary {
-            background: var(--fg-3);
-            color: white;
+        .fa-cyber-btn--ghost {
+            background: var(--surface-2, #f0eee9);
+            color: var(--fg, #0f172a);
         }
 
-        .btn-secondary:hover {
-            background: #5c636a;
+        .fa-cyber-btn--ghost:hover {
+            background: var(--surface-3, #e5e3de);
         }
 
         @media print {
@@ -182,11 +182,11 @@
 </head>
 <body>
     <div class="print-actions">
-        <button class="btn btn-primary" data-controller="ui-actions" data-action="click->ui-actions#print">
+        <button class="fa-cyber-btn fa-cyber-btn--primary" data-controller="ui-actions" data-action="click->ui-actions#print">
             <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>
             {% trans from 'asset' %}qr.button.print{% endtrans %}
         </button>
-        <a href="{{ path('app_asset_show', {id: label.asset.id}) }}" class="btn btn-secondary">
+        <a href="{{ path('app_asset_show', {id: label.asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
             <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
             {% trans from 'asset' %}qr.button.back{% endtrans %}
         </a>

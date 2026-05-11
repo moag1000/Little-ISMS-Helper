@@ -1,45 +1,40 @@
 /* ============================================================================
- * Bulk-Action-Bar — Canonical (per docs/design_system/sections/feedback-systems.html §175-255)
+ * Bulk-Action-Bar — Aurora v4 Canonical (BEM: fa-bulk-bar / fa-bulk-btn)
  *
- * Floating gradient action-bar at the bottom of the viewport, appears as soon
- * as ≥ 1 row in a `.table-bulk-selectable` is checked. Aurora-token only,
- * `:has(input:checked)` highlights selected rows without extra JS.
+ * DS Source of Truth: docs/design_system/sections/generics-extra.html
+ *                     #bulk-action-bar (line 641+) and
+ *                     docs/design_system/previews/bulk-action-bar.html
  *
- * Markup:
- *   <table class="table-bulk-selectable">
- *     <thead><tr>
- *       <th class="bulk-select-column">
- *         <input type="checkbox" data-action="bulk-actions#selectAll">
- *       </th>...
- *     </tr></thead>
- *     <tbody>
- *       <tr><td class="bulk-select-column">
- *         <input type="checkbox" data-bulk-actions-target="item" value="...">
- *       </td>...</tr>
- *     </tbody>
- *   </table>
+ * Canonical class set (BEM):
+ *   .fa-bulk-bar            container — neutral surface default
+ *   .fa-bulk-bar--brand     modifier — primary→accent gradient for hero lists
+ *   .fa-bulk-bar__count / __count-num / __count-label
+ *   .fa-bulk-bar__divider
+ *   .fa-bulk-bar__actions
+ *   .fa-bulk-bar__close
+ *   .fa-bulk-btn            generic action button
+ *   .fa-bulk-btn--primary / --success / --danger
+ *   .fa-bulk-btn.is-loading loading state with centered spinner
  *
- *   <div class="bulk-action-bar" hidden role="region" aria-label="..." aria-live="polite">
- *     <div class="bulk-selection-info">
- *       <span class="bulk-selection-count">0</span>
- *       <span class="bulk-selection-label">ausgewählt</span>
- *     </div>
- *     <div class="bulk-action-divider"></div>
- *     <div class="bulk-actions">
- *       <button class="bulk-action-btn">…</button>
- *       <button class="bulk-action-btn bulk-action-btn-success">Approven</button>
- *       <button class="bulk-action-btn bulk-action-btn-danger">Löschen</button>
- *     </div>
- *     <button class="bulk-action-close" aria-label="Auswahl aufheben"><i class="bi bi-x"></i></button>
- *   </div>
- *
- * Modifiers:
- *   .bulk-action-btn-success    accent border, success-tinted bg
- *   .bulk-action-btn-danger     accent border, danger-tinted bg
- *   .bulk-action-btn.loading    disables button + animated spinner suffix
+ * Stimulus controller: `bulk-actions`. Targets UNCHANGED: actionBar|count|item.
+ * See the DEPRECATED block at the bottom for the legacy .bulk-action-bar* shim.
  * ========================================================================= */
 
-/* Action Bar — Aurora gradient floating bottom-bar */
+/* ============================================================================
+ * DEPRECATED 2026-05-11 — Legacy .bulk-action-bar* class set
+ *
+ * The OLD class set (.bulk-action-bar / .bulk-action-btn* / .bulk-selection-info
+ * / .bulk-action-close / .bulk-action-divider / .bulk-actions) is superseded by
+ * the canonical BEM .fa-bulk-bar* set defined further below.
+ *
+ * All consumers (asset, risk, document, incident, supplier, soa, training,
+ * consent) have been migrated to emit .fa-bulk-bar markup via
+ * _bulk_action_bar.html.twig (generic branch) and _fa_bulk_action_bar.html.twig
+ * (macro BC-bridge).
+ *
+ * This block is kept as a safety net. Remove after next major Aurora version.
+ * ========================================================================= */
+
 .bulk-action-bar {
     position: fixed;
     bottom: var(--space-5);
@@ -212,6 +207,34 @@
     .bulk-action-btn.loading::after { animation-duration: 1.6s; }
 }
 
+/* Dropdown chevron inside bulk-action-btn — normalize Bootstrap caret size */
+.bulk-action-btn.dropdown-toggle::after {
+    width: 0.5em;
+    height: 0.5em;
+    margin-left: var(--space-2);
+    vertical-align: 0.15em;
+    border-top-color: currentColor;
+    opacity: 0.85;
+}
+
+/* Dropdown menu on gradient bar — use surface tokens so items are readable */
+.bulk-action-bar .dropdown-menu {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    box-shadow: 0 4px 16px var(--shadow-md);
+}
+
+.bulk-action-bar .dropdown-menu .dropdown-item {
+    color: var(--fg);
+}
+
+.bulk-action-bar .dropdown-menu .dropdown-item:hover,
+.bulk-action-bar .dropdown-menu .dropdown-item:focus {
+    background: var(--primary-tint);
+    color: var(--primary-strong);
+}
+
 /* Close button (X right side) */
 .bulk-action-close {
     display: inline-flex;
@@ -344,4 +367,229 @@ input[type="checkbox"]:indeterminate {
 
 @media (prefers-reduced-motion: reduce) {
     .fairy-bulk-complete { animation: none; }
+}
+
+/* ============================================================================
+ * fa-bulk-bar — Aurora v4 Canonical BEM class set
+ * ========================================================================= */
+
+.fa-bulk-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--z-popover, 1080);
+    display: inline-flex;
+    align-items: stretch;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.18), 0 4px 12px -4px rgb(0 0 0 / 0.08);
+    padding: 6px;
+    min-width: 360px;
+    max-width: calc(100vw - 32px);
+    animation: fa-bulk-bar-in 220ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+html[data-theme="dark"] .fa-bulk-bar {
+    background: var(--surface-2);
+    box-shadow: 0 18px 40px -8px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.04);
+}
+
+.fa-bulk-bar[hidden] { display: none !important; }
+
+@keyframes fa-bulk-bar-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.96); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fa-bulk-bar { animation: none; }
+}
+
+.fa-bulk-bar__count {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px 0 14px;
+    border-radius: var(--r-pill);
+    background: var(--primary-tint);
+    color: var(--primary);
+    font: 700 13px var(--font-sans);
+}
+
+.fa-bulk-bar__count-num {
+    background: var(--primary);
+    color: var(--on-primary);
+    font: 700 12px var(--font-mono);
+    min-width: 26px;
+    height: 26px;
+    border-radius: var(--r-pill);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+}
+
+.fa-bulk-bar__count-label { white-space: nowrap; }
+
+.fa-bulk-bar__divider {
+    width: 1px;
+    align-self: center;
+    height: 24px;
+    margin: 0 4px;
+    background: var(--border);
+}
+
+.fa-bulk-bar__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 4px;
+}
+
+.fa-bulk-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border: 0;
+    background: transparent;
+    border-radius: var(--r-md);
+    color: var(--fg-2);
+    font: 600 13px var(--font-sans);
+    cursor: pointer;
+    transition: background-color var(--t-fast, 120ms), color var(--t-fast, 120ms);
+}
+
+.fa-bulk-btn:hover { background: var(--surface-2); color: var(--fg); }
+html[data-theme="dark"] .fa-bulk-btn:hover { background: var(--surface-3); }
+.fa-bulk-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.fa-bulk-btn i,
+.fa-bulk-btn .fa-icon { font-size: 15px; }
+
+.fa-bulk-btn--primary { background: var(--primary); color: var(--on-primary); }
+.fa-bulk-btn--primary:hover {
+    background: var(--primary-strong, var(--primary));
+    color: var(--on-primary);
+    filter: brightness(1.04);
+}
+
+.fa-bulk-btn--danger  { color: var(--danger); }
+.fa-bulk-btn--danger:hover  {
+    background: color-mix(in oklab, var(--danger) 12%, transparent);
+    color: var(--danger);
+}
+
+.fa-bulk-btn--success { color: var(--success); }
+.fa-bulk-btn--success:hover {
+    background: color-mix(in oklab, var(--success) 12%, transparent);
+    color: var(--success);
+}
+
+.fa-bulk-btn[disabled],
+.fa-bulk-btn.is-loading { opacity: 0.5; pointer-events: none; }
+
+.fa-bulk-btn.is-loading {
+    position: relative;
+    color: transparent;
+}
+
+.fa-bulk-btn.is-loading::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border: 2px solid var(--fg-2);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: fa-bulk-btn-spin 600ms linear infinite;
+}
+
+@keyframes fa-bulk-btn-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .fa-bulk-btn.is-loading::after { animation-duration: 1.6s; }
+}
+
+.fa-bulk-bar__close {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    background: transparent;
+    border-radius: var(--r-md);
+    color: var(--fg-3);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--t-fast, 120ms), color var(--t-fast, 120ms);
+}
+
+.fa-bulk-bar__close:hover { background: var(--surface-2); color: var(--fg); }
+.fa-bulk-bar__close:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.fa-bulk-bar__close i,
+.fa-bulk-bar__close .fa-icon { font-size: 16px; }
+
+/* Brand variant — Primary→Accent gradient for hero lists */
+.fa-bulk-bar--brand {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent, var(--primary-strong, var(--primary))) 100%);
+    border: 0;
+    color: var(--on-primary);
+    box-shadow: 0 18px 40px -10px color-mix(in oklab, var(--primary) 50%, transparent), 0 4px 12px -4px rgb(0 0 0 / 0.18);
+}
+
+.fa-bulk-bar--brand .fa-bulk-bar__count    { background: rgb(255 255 255 / 0.18); color: var(--on-primary); }
+.fa-bulk-bar--brand .fa-bulk-bar__count-num { background: rgb(255 255 255 / 0.95); color: var(--primary); }
+.fa-bulk-bar--brand .fa-bulk-bar__divider  { background: rgb(255 255 255 / 0.22); }
+.fa-bulk-bar--brand .fa-bulk-btn           { color: rgb(255 255 255 / 0.92); }
+.fa-bulk-bar--brand .fa-bulk-btn:hover     { background: rgb(255 255 255 / 0.16); color: var(--on-primary); }
+.fa-bulk-bar--brand .fa-bulk-btn--danger   { color: var(--on-danger, var(--on-primary)); background: var(--danger); }
+.fa-bulk-bar--brand .fa-bulk-btn--success  { color: var(--on-success, var(--on-primary)); background: var(--success); }
+.fa-bulk-bar--brand .fa-bulk-bar__close    { color: rgb(255 255 255 / 0.85); }
+.fa-bulk-bar--brand .fa-bulk-bar__close:hover { background: rgb(255 255 255 / 0.16); color: var(--on-primary); }
+.fa-bulk-bar--brand .fa-bulk-btn.is-loading::after { border-color: var(--on-primary); border-top-color: transparent; }
+
+/* Inline badge — used in the bulk-bar or standalone to show selection count */
+.fa-bulk-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-tint);
+    color: var(--primary);
+    font: 700 11px var(--font-mono);
+    padding: 3px 9px;
+    border-radius: var(--r-pill);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Mobile — full-width bottom-pinned */
+@media (max-width: 600px) {
+    .fa-bulk-bar {
+        bottom: var(--space-3, 12px);
+        left: var(--space-3, 12px);
+        right: var(--space-3, 12px);
+        transform: none;
+        width: auto;
+        max-width: none;
+        min-width: 0;
+        border-radius: var(--r-lg);
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    @keyframes fa-bulk-bar-in {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fa-bulk-bar__count { flex: 0 0 auto; }
+    .fa-bulk-bar__divider:first-of-type { display: none; }
+    .fa-bulk-bar__actions { flex-wrap: wrap; justify-content: center; }
 }

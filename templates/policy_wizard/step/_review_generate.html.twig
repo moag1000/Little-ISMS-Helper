@@ -1,5 +1,6 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
@@ -67,15 +68,14 @@
 {% if consistency_warnings|default([])|length > 0 %}
     <h3 class="h6 mb-2">
         {{ 'policy_wizard.step.review_generate.consistency_heading'|trans }}
-        <span class="badge bg-warning-subtle text-warning-emphasis ms-1">
-            {{ 'policy_wizard.review.severity.non_blocking'|trans }}
-        </span>
+        {{ pill.render('policy_wizard.review.severity.non_blocking'|trans, 'warning', {size: 'sm', class: 'ms-1'}) }}
     </h3>
     {% for w in consistency_warnings %}
         {% set target = w.target_step|default('review_generate') %}
         {% set step_title = ('policy_wizard.step.' ~ target ~ '.title')|trans %}
+        {# TODO: refactor alert-link pattern #}
         <a href="{{ path('app_policy_wizard_step_show', {runId: run.id, step: target}) }}"
-           class="d-block alert alert-warning text-decoration-none mb-2"
+           class="d-block fa-alert fa-alert--warning text-decoration-none mb-2"
            data-target-step="{{ target }}">
             <div class="d-flex align-items-start gap-2">
                 <i class="bi bi-arrow-right-circle mt-1 flex-shrink-0" aria-hidden="true"></i>
@@ -131,7 +131,7 @@
                                         <span class="text-muted">—</span>
                                     {% else %}
                                         {% for v in row.value %}
-                                            <span class="badge bg-secondary me-1">{{ v }}</span>
+                                            {{ pill.render(v, 'neutral', {size: 'sm', class: 'me-1'}) }}
                                         {% endfor %}
                                     {% endif %}
                                 {% elseif row.value_type == 'list' %}
@@ -146,15 +146,9 @@
                                     {% endif %}
                                 {% elseif row.value_type == 'bool' %}
                                     {% if row.value %}
-                                        <span class="badge bg-success-subtle text-success-emphasis">
-                                            <i class="bi bi-check-circle" aria-hidden="true"></i>
-                                            {{ 'policy_wizard.review.value.yes'|trans }}
-                                        </span>
+                                        {{ pill.render('policy_wizard.review.value.yes'|trans, 'success', {size: 'sm', icon: 'bi-check-circle'}) }}
                                     {% else %}
-                                        <span class="badge bg-secondary-subtle text-secondary-emphasis">
-                                            <i class="bi bi-x-circle" aria-hidden="true"></i>
-                                            {{ 'policy_wizard.review.value.no'|trans }}
-                                        </span>
+                                        {{ pill.render('policy_wizard.review.value.no'|trans, 'neutral', {size: 'sm', icon: 'bi-x-circle'}) }}
                                     {% endif %}
                                 {% elseif row.value_type == 'count' %}
                                     {{ 'policy_wizard.review.value.count'|trans({'%count%': row.value}) }}

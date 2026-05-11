@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 {% block title %}{{ 'policy_wizard.result.title'|trans }}{% endblock %}
 
 {% block body %}
@@ -37,7 +38,7 @@
                         {% for doc in sandbox_preview.documents %}
                             <li class="list-group-item px-0">
                                 <strong>{{ doc.title|default(doc.topic|default('—')) }}</strong>
-                                <span class="badge bg-secondary ms-2">{{ doc.standard|default('—') }}</span>
+                                {{ pill.render(doc.standard|default('—'), 'neutral', {size: 'sm', class: 'ms-2'}) }}
                                 {% if doc.body_excerpt is defined %}
                                     <p class="small text-muted mb-0 mt-1">{{ doc.body_excerpt|slice(0, 200) }}…</p>
                                 {% endif %}
@@ -85,7 +86,7 @@
                                             </summary>
                                             <div class="mt-2 d-flex flex-wrap gap-1">
                                                 {% for ref in framework.covered_refs|slice(0, 30) %}
-                                                    <span class="badge bg-secondary-subtle text-body small">{{ ref }}</span>
+                                                    {{ pill.render(ref, 'neutral', {size: 'sm'}) }}
                                                 {% endfor %}
                                                 {% if framework.covered_refs|length > 30 %}
                                                     <span class="small text-muted">+{{ framework.covered_refs|length - 30 }}</span>
@@ -120,19 +121,18 @@
                             <div class="me-auto">
                                 <strong>{{ doc.title|default('Document #' ~ doc.id) }}</strong>
                                 {% if doc.standard %}
-                                    <span class="badge bg-secondary ms-2">{{ ('policy_wizard.standard_badge.' ~ doc.standard)|trans({}, 'policy_wizard') }}</span>
+                                    {{ pill.render(('policy_wizard.standard_badge.' ~ doc.standard)|trans({}, 'policy_wizard'), 'neutral', {size: 'sm', class: 'ms-2'}) }}
                                 {% endif %}
                                 {% if doc.workflow_status is defined and doc.workflow_status is not null %}
-                                    {% set wf_variant = doc.workflow_status == 'approved'
+                                    {% set wf_tone = doc.workflow_status == 'approved'
                                         ? 'success'
                                         : (doc.workflow_status == 'rejected'
                                             ? 'danger'
-                                            : (doc.workflow_status == 'in_progress' ? 'info' : 'warning')) %}
+                                            : (doc.workflow_status == 'in_progress' ? 'primary' : 'warning')) %}
                                     <a href="{{ path('app_workflow_instance_show', {id: doc.workflow_id}) }}"
-                                       class="badge bg-{{ wf_variant }} ms-2 text-decoration-none"
+                                       class="ms-2 text-decoration-none"
                                        target="_blank" rel="noopener">
-                                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                                        {{ ('policy_wizard.result.workflow.status.' ~ doc.workflow_status)|trans }}
+                                        {{ pill.render(('policy_wizard.result.workflow.status.' ~ doc.workflow_status)|trans, wf_tone, {size: 'sm', icon: 'bi-diagram-3'}) }}
                                     </a>
                                 {% endif %}
                             </div>
@@ -169,9 +169,7 @@
                             <div class="mt-2 small">
                                 <span class="text-muted">{{ 'policy_wizard.result.document.coverage_label'|trans }}</span>
                                 {% for fw in cross_coverage.documentToFrameworks[doc.id] %}
-                                    <span class="badge bg-info-subtle text-body ms-1">
-                                        {{ fw.code }} ({{ fw.refs|length }})
-                                    </span>
+                                    {{ pill.render(fw.code ~ ' (' ~ fw.refs|length ~ ')', 'primary', {size: 'sm', class: 'ms-1'}) }}
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -180,12 +178,9 @@
                             <div class="mt-2 small">
                                 <span class="text-muted">{{ 'policy_wizard.result.document.approval_chain'|trans }}:</span>
                                 {% for entry in doc.approval_history|slice(0, 5) %}
-                                    {% set entry_variant = (entry.action|default('') == 'approved') ? 'success'
-                                        : ((entry.action|default('') == 'rejected') ? 'danger' : 'secondary') %}
-                                    <span class="badge bg-{{ entry_variant }}-subtle text-body ms-1">
-                                        {{ entry.role|default(entry.user|default('?')) }}
-                                        {% if entry.action is defined %}· {{ entry.action }}{% endif %}
-                                    </span>
+                                    {% set entry_tone = (entry.action|default('') == 'approved') ? 'success'
+                                        : ((entry.action|default('') == 'rejected') ? 'danger' : 'neutral') %}
+                                    {{ pill.render(entry.role|default(entry.user|default('?')) ~ (entry.action is defined ? ' · ' ~ entry.action : ''), entry_tone, {size: 'sm', class: 'ms-1'}) }}
                                 {% endfor %}
                                 {% if doc.approval_history|length > 5 %}
                                     <span class="text-muted">+{{ doc.approval_history|length - 5 }}</span>
@@ -198,7 +193,7 @@
                     {% for doc_id in document_ids %}
                         <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                             <a href="{{ path('app_document_show', {id: doc_id}) }}" target="_blank" rel="noopener">Document #{{ doc_id }}</a>
-                            <span class="badge bg-secondary">{{ ('policy_wizard.status.' ~ run.status)|trans }}</span>
+                            {{ pill.render(('policy_wizard.status.' ~ run.status)|trans, 'neutral', {size: 'sm'}) }}
                         </li>
                     {% endfor %}
                 {% endfor %}

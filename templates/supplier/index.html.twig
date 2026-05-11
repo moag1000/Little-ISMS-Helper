@@ -196,7 +196,7 @@
     {% endif %}
 
     {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/supplier"{% endblock %}
+        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/supplier"{% endblock %}
         {% block card_header %}
             <div class="card-header">
                 {%- set supplierCount = suppliers|length -%}

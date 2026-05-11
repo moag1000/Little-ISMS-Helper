@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
 {% trans_default_domain 'document' %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ document.originalFilename }}{% endblock %}
 
@@ -63,21 +64,13 @@
     {% if (doraValidityDate is defined and doraValidityDate is not null) or (climateChangeAware is defined and climateChangeAware) %}
         <div class="d-flex flex-wrap gap-2 mb-3" data-test="document-norm-anchor-chips">
             {% if doraValidityDate is defined and doraValidityDate is not null %}
-                <span class="badge text-bg-info d-inline-flex align-items-center gap-1"
-                      data-bs-toggle="tooltip"
-                      title="{{ 'document.dora_validity.tooltip'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document') }}"
-                      data-test="document-dora-validity-badge">
-                    <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                    {{ 'document.dora_validity.badge'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document') }}
+                <span data-test="document-dora-validity-badge">
+                    {{ pill.render('document.dora_validity.badge'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document'), 'primary', {icon: 'bi-calendar-event', title: 'document.dora_validity.tooltip'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document')}) }}
                 </span>
             {% endif %}
             {% if climateChangeAware is defined and climateChangeAware %}
-                <span class="badge text-bg-success d-inline-flex align-items-center gap-1"
-                      data-bs-toggle="tooltip"
-                      title="{{ 'document.climate_change.tooltip'|trans({}, 'document') }}"
-                      data-test="document-climate-change-badge">
-                    <i class="bi bi-globe2" aria-hidden="true"></i>
-                    {{ 'document.climate_change.badge'|trans({}, 'document') }}
+                <span data-test="document-climate-change-badge">
+                    {{ pill.render('document.climate_change.badge'|trans({}, 'document'), 'success', {icon: 'bi-globe2', title: 'document.climate_change.tooltip'|trans({}, 'document')}) }}
                 </span>
             {% endif %}
         </div>
@@ -138,6 +131,7 @@
         {% block card_body %}
             {# embed creates a new scope — re-import macros used inside. #}
             {% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
+            {% import '_components/_status_pill.html.twig' as pill %}
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.type'|trans({}, 'document') }}</span>
@@ -187,12 +181,7 @@
                         <i class="bi bi-file-earmark-richtext" aria-hidden="true"></i>
                         {{ 'document.policy_body.preview.heading'|trans({}, 'document') }}
                         {% if document.hasPostGenerationEdits() %}
-                            <span class="badge bg-warning text-dark ms-2"
-                                  data-bs-toggle="tooltip"
-                                  title="{{ 'document.policy_body.drift_badge.tooltip'|trans({}, 'document') }}">
-                                <i class="bi bi-pencil-square" aria-hidden="true"></i>
-                                {{ 'document.policy_body.drift_badge.label'|trans({}, 'document') }}
-                            </span>
+                            {{ pill.render('document.policy_body.drift_badge.label'|trans({}, 'document'), 'warning', {class: 'ms-2', icon: 'bi-pencil-square', title: 'document.policy_body.drift_badge.tooltip'|trans({}, 'document')}) }}
                         {% endif %}
                     </h3>
                     {% if document.hasPostGenerationEdits() %}
@@ -301,7 +290,7 @@
                             class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                             data-bs-toggle="modal"
                             data-bs-target="#effectivenessReviewModal">
-                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                         {{ 'document.effectiveness.action.record'|trans({}, 'document') }}
                     </button>
                     <p class="small text-muted mt-2 mb-0">
@@ -321,6 +310,67 @@
                         coverage: inverse_coverage,
                         scope_key: 'document'
                     } %}
+                </div>
+            {% endif %}
+
+            {# Phase 1+2 — Linked ISO 27001 Controls (DocumentControlLink rows) #}
+            {% if controlLinks is defined and controlLinks|length > 0 %}
+                <div class="detail-section" data-test="document-control-links">
+                    <h3>
+                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
+                        {{ 'document.evidence.controls.heading'|trans({}, 'document') }}
+                    </h3>
+                    {# Group by source for visual separation #}
+                    {% set linksBySource = {} %}
+                    {% for link in controlLinks %}
+                        {% set src = link.source %}
+                        {% if linksBySource[src] is not defined %}
+                            {% set linksBySource = linksBySource|merge({(src): []}) %}
+                        {% endif %}
+                        {% set linksBySource = linksBySource|merge({(src): linksBySource[src]|merge([link])}) %}
+                    {% endfor %}
+                    {% for source, links in linksBySource %}
+                        <p class="small text-muted mb-1">
+                            <strong>{{ ('document.evidence.source.' ~ source)|trans({}, 'document') }}</strong>
+                        </p>
+                        <ul class="list-unstyled mb-2">
+                            {% for link in links %}
+                                {% set ctrl = link.control %}
+                                <li class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-secondary font-monospace">{{ ctrl.controlId }}</span>
+                                    <span>{{ ctrl.name }}</span>
+                                    <span class="badge bg-light text-dark small">{{ ('document.evidence.type.' ~ link.evidenceType)|trans({}, 'document') }}</span>
+                                    <span class="badge rounded-pill" style="background:var(--state-info-bg,#e0f0ff);color:var(--state-info-fg,#0050a0)">
+                                        {{ ctrl.implementationStatus|replace({'_': ' '})|title }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {# Phase 1+2 — Linked Requirements (other frameworks) #}
+            {% if requirementsByFramework is defined and requirementsByFramework|length > 0 %}
+                <div class="detail-section" data-test="document-requirement-links">
+                    <h3>
+                        <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
+                        {{ 'document.evidence.requirements.heading'|trans({}, 'document') }}
+                    </h3>
+                    {% for fwCode, fwGroup in requirementsByFramework %}
+                        <p class="small text-muted mb-1">
+                            <strong>{{ fwGroup.framework.name }}</strong>
+                            <span class="badge bg-secondary ms-1">{{ fwCode }}</span>
+                        </p>
+                        <ul class="list-unstyled mb-2">
+                            {% for req in fwGroup.requirements %}
+                                <li class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-secondary font-monospace">{{ req.requirementId }}</span>
+                                    <span>{{ req.title }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
                 </div>
             {% endif %}
         {% endblock %}
@@ -360,8 +410,12 @@
                             <label for="effectivenessReviewNotes" class="form-label">
                                 {{ 'document.effectiveness.modal.notes_label'|trans({}, 'document') }}
                             </label>
-                            <textarea class="form-control" id="effectivenessReviewNotes" name="notes" rows="4"
-                                      placeholder="{{ 'document.effectiveness.modal.notes_placeholder'|trans({}, 'document') }}"></textarea>
+                            <div class="fa-cyber-input">
+                                <div class="fa-cyber-input__frame">
+                                    <textarea class="fa-cyber-input__field" id="effectivenessReviewNotes" name="notes" rows="4"
+                                              placeholder="{{ 'document.effectiveness.modal.notes_placeholder'|trans({}, 'document') }}"></textarea>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="effectivenessReviewConfirmed" name="confirmed" value="1">
@@ -375,7 +429,7 @@
                             {{ 'common.cancel'|trans({}, 'messages') }}
                         </button>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                             {{ 'document.effectiveness.modal.submit'|trans({}, 'document') }}
                         </button>
                     </div>

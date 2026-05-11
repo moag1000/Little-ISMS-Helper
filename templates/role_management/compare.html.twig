@@ -65,6 +65,7 @@
             <div class="fa-section__body">
                 {% embed '_components/_fa_table.html.twig' with { hover: true, stickyHead: true } %}
                     {% block table_head %}
+                        {% trans_default_domain 'role_management' %}
                         <tr>
                             <th scope="col" class="fa-table__th" style="width: 30%">{{ 'role.compare.permission_column'|trans }}</th>
                             {% for role in roles %}

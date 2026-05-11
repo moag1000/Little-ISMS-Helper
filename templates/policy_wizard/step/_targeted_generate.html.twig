@@ -1,5 +1,6 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {# Mode 2 (Targeted re-run) Step 4 — final confirmation gate before the
    orchestrator fires DocumentGenerator on the picked topic subset. The
@@ -45,9 +46,7 @@
             <span class="text-muted">—</span>
         {% else %}
             {% for topic_key in picked_topics %}
-                <span class="badge bg-secondary me-1 mb-1">
-                    {{ ('policy_wizard.step.' ~ topic_key ~ '.title')|trans|default(topic_key) }}
-                </span>
+                {{ pill.render(('policy_wizard.step.' ~ topic_key ~ '.title')|trans|default(topic_key), 'neutral', {size: 'sm', class: 'me-1 mb-1'}) }}
             {% endfor %}
         {% endif %}
     </dd>

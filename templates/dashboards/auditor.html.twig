@@ -6,6 +6,7 @@
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_skel.html.twig' as _fa_skel %}
 
 {% block body %}
 <main class="fa-aurora-surface role-dashboard auditor-dashboard">
@@ -30,8 +31,16 @@
 
     {# Phase 8H.1: Skeleton placeholder during first paint. #}
     <div data-controller="skeleton" data-skeleton-duration-value="600">
-        <div data-skeleton-target="skeleton">
-            {% include '_components/_skeleton.html.twig' with { type: 'kpi-grid', count: 6 } %}
+        <div data-skeleton-target="skeleton" aria-busy="true">
+            <div class="row g-3 mb-4">
+                {% for i in 1..6 %}
+                    <div class="col-md-2">{{ _fa_skel.render({ variant: 'card' }) }}</div>
+                {% endfor %}
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-6">{{ _fa_skel.render({ variant: 'row' }) }}</div>
+                <div class="col-lg-6">{{ _fa_skel.render({ variant: 'row' }) }}</div>
+            </div>
         </div>
 
         <div data-skeleton-target="content" class="hidden">

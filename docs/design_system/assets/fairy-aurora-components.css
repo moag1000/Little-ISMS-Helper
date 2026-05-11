@@ -3782,23 +3782,10 @@ html[data-theme="dark"] .wizard-busy-overlay {
     justify-content: space-between;
     gap: 16px;
     padding-block: 20px 16px;
+    border-bottom: 2px solid transparent;
+    border-image: var(--brand-gradient-line) 1;
     margin-bottom: 24px;
     flex-wrap: wrap;
-    position: relative;
-    isolation: isolate;
-}
-/* Brand-gradient bottom-divider via pseudo-element (border-image slice=1 Glitch-fix).
-   z-index: -1 within isolated context keeps divider behind badges/buttons. */
-.fa-page-header::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 2px;
-    background: var(--brand-gradient-line);
-    pointer-events: none;
-    z-index: -1; /* local stacking-context */
 }
 
 .fa-page-header__meta {
@@ -3806,8 +3793,6 @@ html[data-theme="dark"] .wizard-busy-overlay {
     flex-direction: column;
     gap: 6px;
     min-width: 0;
-    position: relative;
-    z-index: 1; /* local stacking-context */
 }
 
 .fa-page-header__badge {
@@ -3857,8 +3842,6 @@ html[data-theme="dark"] .fa-page-header__badge {
     gap: 8px;
     flex-shrink: 0;
     flex-wrap: wrap;
-    position: relative;
-    z-index: 1; /* local stacking-context */
 }
 
 @media (max-width: 600px) {
@@ -3884,19 +3867,8 @@ html[data-theme="dark"] .fa-page-header__badge {
     gap: 12px;
     padding-bottom: 10px;
     margin-bottom: 16px;
-    position: relative;
-    isolation: isolate;
-}
-.fa-section__header::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 1px;
-    background: linear-gradient(90deg, var(--primary-tint), transparent);
-    pointer-events: none;
-    z-index: -1; /* local stacking-context */
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(90deg, var(--primary-tint), transparent) 1;
 }
 
 .fa-section__title {

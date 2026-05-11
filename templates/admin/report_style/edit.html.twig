@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'admin' %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'admin.report_style.title'|trans }} — {{ tenant.name }}{% endblock %}
 
@@ -131,7 +132,7 @@
                     <hr class="my-4">
                     <h3 class="h6 text-muted mb-3">
                         {{ 'admin.report_style.group.advanced'|trans }}
-                        <span class="badge bg-warning-subtle text-warning ms-2">ROLE_ADMIN</span>
+                        {{ pill.render('ROLE_ADMIN', 'warning', {size: 'sm', class: 'ms-2'}) }}
                     </h3>
                     {{ form_row(form.reportDocCustomCss) }}
                 {% endif %}

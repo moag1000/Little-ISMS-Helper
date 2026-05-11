@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as pill %}
 {% trans_default_domain 'audit' %}
 
 {% block title %}{{ audit.title }} - {{ parent() }}{% endblock %}
@@ -159,11 +160,12 @@
                 } %}
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-warning' } %}
                     {% block card_header %}
+                        {% import '_components/_status_pill.html.twig' as pill %}
                         <div class="card-header">
                             <h2 class="mb-0">
                                 <i class="fa-icon fa-icon--status-warning text-warning" aria-hidden="true"></i>
                                 {{ 'audit.section.structured_findings'|trans({}, 'audit') }}
-                                <span class="badge bg-warning ms-2">{{ audit.structuredFindings|length }}</span>
+                                {{ pill.render(audit.structuredFindings|length, 'warning') }}
                             </h2>
                         </div>
                     {% endblock %}
@@ -180,11 +182,13 @@
                                             <div class="d-flex gap-2 align-items-center">
                                                 {% if finding.severity is defined and finding.severity %}
                                                     {% set _sv = _severity_variants[finding.severity]|default('secondary') %}
-                                                    <span class="badge bg-{{ _sv }}">{{ ('audit_finding.severity.' ~ finding.severity)|trans({}, 'audits') }}</span>
+                                                    {% set _sv_pill = _sv == 'secondary' ? 'neutral' : (_sv == 'info' ? 'primary' : _sv) %}
+                                                    {{ pill.render(('audit_finding.severity.' ~ finding.severity)|trans({}, 'audits'), _sv_pill) }}
                                                 {% endif %}
                                                 {% if finding.status is defined and finding.status %}
                                                     {% set _stv = _status_variants[finding.status]|default('secondary') %}
-                                                    <span class="badge bg-{{ _stv }}-subtle text-{{ _stv }}">{{ ('audit_finding.status.' ~ finding.status)|trans({}, 'audits') }}</span>
+                                                    {% set _stv_pill = _stv == 'secondary' ? 'neutral' : (_stv == 'info' ? 'primary' : _stv) %}
+                                                    {{ pill.render(('audit_finding.status.' ~ finding.status)|trans({}, 'audits'), _stv_pill) }}
                                                 {% endif %}
                                             </div>
                                         </div>

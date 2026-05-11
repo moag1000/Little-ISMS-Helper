@@ -1,39 +1,39 @@
 {#
- # @deprecated since 2026-05-07 — use canonical .bulk-action-bar pattern from
- # docs/design_system/sections/feedback-systems.html §175-255 instead.
+ # Bulk-Action-Bar macro — Aurora v4 BC-bridge
  #
- # Migration guide:
- #   OLD: {% import '_components/_fa_bulk_action_bar.html.twig' as _fa_bulk_bar %}
- #        {{ _fa_bulk_bar.render({ actions: [...] }) }}
- #   NEW: {% include '_components/_bulk_action_bar.html.twig' with {
- #            actions: ['export', 'delete', 'approve', 'tag', 'assign']
- #        } %}
+ # DEPRECATED 2026-05-11 — Use the plain include instead:
+ #   {% include '_components/_bulk_action_bar.html.twig' with { actions: [...] } %}
  #
- # This file is kept as a BC-bridge: callers using the legacy fa-bulk-action-bar
- # macro receive the canonical markup so visual + behavioral parity is preserved.
- # The legacy `.fa-bulk-action-bar*` CSS classes are no longer authoritative —
- # canonical CSS lives in `assets/styles/bulk-actions.css`. New code MUST use the
- # canonical macro `_bulk_action_bar.html.twig`.
+ # This macro is kept for unknown callers that import it. It now emits the
+ # canonical BEM markup (.fa-bulk-bar* class set) regardless of the `variant`
+ # prop, so even legacy callers automatically get the new look.
  #
- # Targets emitted (Stimulus-compatible):
- #   data-fa-bulk-select-target="actionBar"   (legacy fa-bulk-select)
- #   data-bulk-actions-target="actionBar"     (canonical bulk-actions)
+ # Props:
+ #   variant         'neutral' | 'brand'   default: 'neutral'
+ #                   'brand' → .fa-bulk-bar.fa-bulk-bar--brand (gradient)
+ #                   'neutral' → .fa-bulk-bar surface default
+ #   actions         Array of action objects: { label, icon?, variant?, dataAction?, ariaLabel? }
+ #   label           Translation-ready string for "N ausgewählt" label
+ #   deselectLabel   Aria/title label for the close button
+ #   initiallyHidden Boolean — whether to add hidden attr (default: true)
+ #
+ # Stimulus targets emitted (both aliases):
+ #   data-fa-bulk-select-target="actionBar"
+ #   data-bulk-actions-target="actionBar"
  #   data-fa-bulk-select-target="count"
  #   data-bulk-actions-target="count"
- #
- # A11y:
- #   - role="region", aria-live="polite", aria-atomic="true"
- #   - close-button has aria-label
  #}
 
 {% macro render(props = {}) %}
+    {% set barVariant    = props.variant|default('neutral') %}
     {% set actions       = props.actions|default([]) %}
     {% set label         = props.label|default('bulk_actions.selected'|trans({}, 'messages')) %}
     {% set deselectLabel = props.deselectLabel|default('bulk_actions.deselect'|trans({}, 'messages')) %}
     {% set initialHidden = props.initiallyHidden is defined ? props.initiallyHidden : true %}
 
-    {# Canonical .bulk-action-bar (BC-bridge for legacy fa-bulk-action-bar callers) #}
-    <div class="bulk-action-bar"
+    {% set barClass = barVariant == 'brand' ? 'fa-bulk-bar fa-bulk-bar--brand' : 'fa-bulk-bar' %}
+
+    <div class="{{ barClass }}"
          data-fa-bulk-select-target="actionBar"
          data-bulk-actions-target="actionBar"
          {% if initialHidden %}hidden{% endif %}
@@ -42,41 +42,44 @@
          aria-atomic="true"
          aria-label="{{ 'bulk_actions.toolbar'|trans({}, 'messages') }}">
 
-        <div class="bulk-selection-info">
-            <span class="bulk-selection-count"
+        <div class="fa-bulk-bar__count">
+            <span class="fa-bulk-bar__count-num"
                   data-fa-bulk-select-target="count"
                   data-bulk-actions-target="count">0</span>
-            <span class="bulk-selection-label">{{ label }}</span>
+            <span class="fa-bulk-bar__count-label">{{ label }}</span>
         </div>
 
         {% if actions|length > 0 %}
-            <div class="bulk-action-divider" aria-hidden="true"></div>
-            <div class="bulk-actions">
+            <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
+            <div class="fa-bulk-bar__actions">
                 {% for action in actions %}
-                    {% set variant = action.variant|default('ghost') %}
-                    {% set btnClass = 'bulk-action-btn' %}
-                    {% if variant == 'success' %}
-                        {% set btnClass = btnClass ~ ' bulk-action-btn-success' %}
-                    {% elseif variant == 'danger' %}
-                        {% set btnClass = btnClass ~ ' bulk-action-btn-danger' %}
+                    {% set btnVariant = action.variant|default('ghost') %}
+                    {% set btnClass = 'fa-bulk-btn' %}
+                    {% if btnVariant == 'success' %}
+                        {% set btnClass = btnClass ~ ' fa-bulk-btn--success' %}
+                    {% elseif btnVariant == 'danger' %}
+                        {% set btnClass = btnClass ~ ' fa-bulk-btn--danger' %}
+                    {% elseif btnVariant == 'primary' %}
+                        {% set btnClass = btnClass ~ ' fa-bulk-btn--primary' %}
                     {% endif %}
                     <button type="button"
                             class="{{ btnClass }}"
                             {% if action.dataAction is defined %}data-action="{{ action.dataAction }}"{% endif %}
                             {% if action.ariaLabel is defined %}aria-label="{{ action.ariaLabel }}"{% endif %}>
-                        {% if action.icon is defined %}<i class="bi {{ action.icon }}" aria-hidden="true"></i> {% endif %}
+                        {% if action.icon is defined %}<i class="bi {{ action.icon }}" aria-hidden="true"></i>{% endif %}
                         {{ action.label }}
                     </button>
                 {% endfor %}
             </div>
         {% endif %}
 
+        <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
         <button type="button"
-                class="bulk-action-close"
+                class="fa-bulk-bar__close"
                 aria-label="{{ deselectLabel }}"
                 title="{{ deselectLabel }}"
                 data-action="click->fa-bulk-select#deselectAll click->bulk-actions#deselectAll">
-            <i class="bi bi-x" aria-hidden="true"></i>
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
         </button>
     </div>
 {% endmacro %}

@@ -2,6 +2,7 @@
 {% trans_default_domain 'risk' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ risk.title }}{% endblock %}
 
@@ -77,6 +78,7 @@
         {% endblock %}
         {% block card_body %}
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+            {% import '_components/_status_pill.html.twig' as pill %}
             {# Phase 8H.1: standardised via _detail_group component #}
             {% include '_components/_detail_group.html.twig' with {
                 items: [
@@ -213,7 +215,7 @@
                     <h3>
                         <i class="fa-icon fa-icon--nav-cpu" aria-hidden="true"></i>
                         {{ 'risk.section.all_linked_assets'|trans({}, 'risk') }}
-                        <span class="badge bg-info ms-2">{{ _all_linked_assets|length }}</span>
+                        {{ pill.render(_all_linked_assets|length, 'primary', {size: 'sm', class: 'ms-2', noDot: true}) }}
                     </h3>
                     <p class="text-muted small mb-3">{{ 'risk.section.all_linked_assets_help'|trans({}, 'risk') }}</p>
                     <div class="row g-2">
@@ -227,9 +229,7 @@
                                             <a href="{{ path('app_asset_show', {id: a.id}) }}" class="text-decoration-none flex-grow-1">
                                                 <strong>{{ a.name }}</strong>
                                             </a>
-                                            <span class="badge bg-{{ _cia_class }}-subtle text-{{ _cia_class }} small">
-                                                CIA {{ _max_cia }}/5
-                                            </span>
+                                            {{ pill.render('CIA ' ~ _max_cia ~ '/5', _cia_class == 'danger' ? 'danger' : (_cia_class == 'warning' ? 'warning' : 'neutral'), {size: 'sm'}) }}
                                         </div>
                                         <small class="text-muted d-block">
                                             {% if a.assetType %}{{ a.assetType }}{% endif %}
@@ -350,7 +350,7 @@
                     <h3>
                         <i class="bi bi-cpu" aria-hidden="true"></i>
                         {{ 'risk.section.ict_dependencies'|trans({}, 'risk') }}
-                        <span class="badge bg-info ms-2">{{ risk.ictAssetDependency|length }}</span>
+                        {{ pill.render(risk.ictAssetDependency|length, 'primary', {size: 'sm', class: 'ms-2', noDot: true}) }}
                     </h3>
                     <p class="text-muted small mb-3">{{ 'risk.section.ict_dependencies_help'|trans({}, 'risk') }}</p>
                     <div class="row g-2">
@@ -363,7 +363,7 @@
                                                 <strong>{{ ictAsset.name }}</strong>
                                             </a>
                                             {% if ictAsset.assetType is defined and ictAsset.assetType %}
-                                                <span class="badge bg-secondary-subtle text-secondary small">{{ ictAsset.assetType }}</span>
+                                                {{ pill.render(ictAsset.assetType, 'neutral', {size: 'sm'}) }}
                                             {% endif %}
                                         </div>
                                         {% if ictAsset.dataClassification is defined and ictAsset.dataClassification %}
@@ -383,7 +383,7 @@
                     <h3>
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i>
                         {{ 'risk.section.treatment_plans'|trans({}, 'risk') }}
-                        <span class="badge bg-primary ms-2">{{ treatmentPlans|length }}</span>
+                        {{ pill.render(treatmentPlans|length, 'primary', {size: 'sm', class: 'ms-2', noDot: true}) }}
                     </h3>
                     <p class="text-muted small mb-3">{{ 'risk.section.treatment_plans_help'|trans({}, 'risk') }}</p>
                     {% set _status_variants = {
@@ -400,9 +400,9 @@
                                         </a>
                                         <div class="d-flex gap-2 align-items-center">
                                             {% set _v = _status_variants[plan.status]|default('secondary') %}
-                                            <span class="badge bg-{{ _v }}">{{ ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') }}</span>
+                                            {{ pill.render(('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan'), _v == 'info' ? 'primary' : (_v == 'secondary' ? 'neutral' : _v)) }}
                                             {% if plan.priority is defined and plan.priority %}
-                                                <span class="badge bg-warning-subtle text-warning small">{{ plan.priority|upper }}</span>
+                                                {{ pill.render(plan.priority|upper, 'warning', {size: 'sm'}) }}
                                             {% endif %}
                                             {% if plan.targetCompletionDate is defined and plan.targetCompletionDate %}
                                                 <small class="text-muted">

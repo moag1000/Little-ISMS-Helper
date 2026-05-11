@@ -23,6 +23,9 @@
     {% if is_granted('ROLE_ADMIN') %}
         {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'accent', icon: 'pencil', href: path('app_compliance_framework_edit', {id: framework.id}) }]) %}
     {% endif %}
+    {% if is_granted('ROLE_AUDITOR') %}
+        {% set _show_actions = _show_actions|merge([{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_compliance', {frameworkId: framework.id}) }]) %}
+    {% endif %}
     {% set _show_actions = _show_actions|merge([{ label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_compliance_framework_index') }]) %}
     {{ _fa_page_header.render({
         badge: { icon: 'shield-check', label: framework.code },

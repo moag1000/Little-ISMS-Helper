@@ -2,6 +2,7 @@
 {% trans_default_domain 'compliance_import' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}{% endblock %}
 
@@ -53,6 +54,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+                        {% import '_components/_status_pill.html.twig' as pill %}
                         {% for session in sessions %}
                             {% set status_variant = {
                                 'committed': 'success',
@@ -88,10 +90,8 @@
                                 <td class="fa-table__cell fa-table__cell--num">{{ session.rowCountSuperseded }}</td>
                                 <td class="fa-table__cell fa-table__cell--num">{{ session.rowCountSkipped }}</td>
                                 <td class="fa-table__cell">
-                                    {% set _spill = status_variant in ['info'] ? 'primary' : (status_variant in ['secondary','light','dark'] ? 'neutral' : status_variant) %}
-                                    <span class="badge bg-{{ status_variant }} fa-status-pill fa-status-pill--{{ _spill }}">
-                                        {{ ('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import') }}
-                                    </span>
+                                    {% set _stone = status_variant in ['info'] ? 'primary' : (status_variant in ['secondary','light','dark'] ? 'neutral' : status_variant) %}
+                                    {{ pill.render(('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import'), _stone, {size: 'sm'}) }}
                                 </td>
                                 <td class="fa-table__cell fa-table__cell--actions">
                                     <a href="{{ path('admin_import_history_show', { id: session.id }) }}"
