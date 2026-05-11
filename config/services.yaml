@@ -520,3 +520,8 @@ services:
     App\Service\Import\EntityMapperRegistry:
         arguments:
             $mappers: !tagged_iterator app.import.mapper
+
+    # ── F2.5: Bulk-Import Orchestrator ───────────────────────────────────────
+    App\Service\Import\BulkImportOrchestrator:
+        arguments:
+            $uploadDir: '%kernel.project_dir%/var/import-uploads'
