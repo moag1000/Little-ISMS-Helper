@@ -7,11 +7,10 @@ namespace App\EventListener;
 use App\Entity\Document;
 use App\Repository\UserRepository;
 use App\Service\EmailNotificationService;
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Event\PostUpdateEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\ORM\UnitOfWork;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -37,7 +36,7 @@ use Psr\Log\LoggerInterface;
  * populated nextReviewDate is left intact to preserve the intent of
  * the ISB who set a custom date.
  */
-#[AsEntityListener(event: Events::postUpdate, entity: Document::class)]
+#[AsEntityListener(event: Events::preUpdate, entity: Document::class)]
 class DocumentApprovalListener
 {
     public function __construct(
@@ -47,26 +46,13 @@ class DocumentApprovalListener
     ) {
     }
 
-    public function postUpdate(Document $document, PostUpdateEventArgs $args): void
+    public function preUpdate(Document $document, PreUpdateEventArgs $args): void
     {
-        if ($document->getStatus() !== 'approved') {
+        if (!$args->hasChangedField('status')) {
             return;
         }
-
-        $uow = $args->getObjectManager()->getUnitOfWork();
-        if (!$uow instanceof UnitOfWork) {
-            return;
-        }
-        $changes = $uow->getEntityChangeSet($document);
-        $statusChanged = isset($changes['status']);
-
-        // We only fire on the actual transition INTO approved; not on
-        // every later metadata edit while the doc is approved.
-        if (!$statusChanged) {
-            return;
-        }
-        $oldStatus = $changes['status'][0] ?? null;
-        $newStatus = $changes['status'][1] ?? null;
+        $oldStatus = $args->getOldValue('status');
+        $newStatus = $args->getNewValue('status');
         if ($newStatus !== 'approved' || $oldStatus === 'approved') {
             return;
         }
@@ -77,19 +63,25 @@ class DocumentApprovalListener
 
     /**
      * V3 W2-LB-8 — populate nextReviewDate when missing.
+     *
+     * Runs in preUpdate so the new value is part of the same flush.
+     * Uses PreUpdateEventArgs::setNewValue() to register the change
+     * inside the active changeset — calling setNextReviewDate() alone
+     * would not propagate to the DB without a (forbidden) nested flush.
      */
-    private function setReviewDate(Document $document, PostUpdateEventArgs $args): void
+    private function setReviewDate(Document $document, PreUpdateEventArgs $args): void
     {
         if ($document->getNextReviewDate() instanceof \DateTimeInterface) {
             return;
         }
         try {
             $months = max(1, $document->getReviewIntervalMonths());
-            $next = new DateTimeImmutable(sprintf('+%d months', $months));
+            $next = new DateTime(sprintf('+%d months', $months));
+            $oldValue = $document->getNextReviewDate();
             $document->setNextReviewDate($next);
             $em = $args->getObjectManager();
-            $em->persist($document);
-            $em->flush();
+            $uow = $em->getUnitOfWork();
+            $uow->propertyChanged($document, 'nextReviewDate', $oldValue, $next);
 
             $this->logger->info('Document review-cycle auto-set on approval', [
                 'document_id' => $document->getId(),

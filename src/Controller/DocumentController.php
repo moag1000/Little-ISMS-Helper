@@ -488,7 +488,7 @@ class DocumentController extends AbstractController
                 continue;
             }
 
-            $validChanges[] = ['document' => $document, 'oldStatus' => $currentStatus];
+            $validChanges[] = ['id' => $id, 'oldStatus' => $currentStatus];
             $perEntityData[] = [
                 'action'     => 'update',
                 'entity_id'  => $id,
@@ -497,11 +497,13 @@ class DocumentController extends AbstractController
             ];
         }
 
-        foreach ($validChanges as $entry) {
-            $entry['document']->setStatus($newStatus);
-        }
-
         if (!empty($validChanges)) {
+            foreach ($validChanges as $entry) {
+                $managed = $this->entityManager->find(Document::class, $entry['id']);
+                if ($managed instanceof Document) {
+                    $managed->setStatus($newStatus);
+                }
+            }
             $this->entityManager->flush();
         }
 
