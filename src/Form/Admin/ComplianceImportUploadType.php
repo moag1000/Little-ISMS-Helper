@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  *
  * Accepts a CSV or BSI-Profile-XML file and the desired format. Currently
  * supported: `csv_generic_v1`, `bsi_profile_xml_v1`. Further formats
- * (Verinice, NIST-CSF) will be added through the same wizard entry point.
+ * (XML-profile-v2, NIST-CSF) will be added through the same wizard entry point.
  */
 final class ComplianceImportUploadType extends AbstractType
 {
