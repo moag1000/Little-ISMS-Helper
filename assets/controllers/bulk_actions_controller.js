@@ -4,7 +4,7 @@ import { Controller } from '@hotwired/stimulus';
  * Bulk Actions Controller — canonical Aurora bulk-action-bar (per
  * docs/design_system/sections/feedback-systems.html §175-255).
  *
- * Usage (canonical):
+ * Usage (canonical Aurora v4 BEM — see docs/design_system/sections/generics-extra.html#bulk-action-bar):
  *   <div data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
  *     <table class="table-bulk-selectable">
  *       <thead><tr>
@@ -21,28 +21,32 @@ import { Controller } from '@hotwired/stimulus';
  *       </tr></tbody>
  *     </table>
  *
- *     <div class="bulk-action-bar" hidden role="region" aria-live="polite"
+ *     <div class="fa-bulk-bar" hidden role="region" aria-live="polite"
  *          data-bulk-actions-target="actionBar">
- *       <div class="bulk-selection-info">
- *         <span class="bulk-selection-count" data-bulk-actions-target="count">0</span>
- *         <span class="bulk-selection-label">ausgewählt</span>
+ *       <div class="fa-bulk-bar__count">
+ *         <span class="fa-bulk-bar__count-num" data-bulk-actions-target="count">0</span>
+ *         <span class="fa-bulk-bar__count-label">ausgewählt</span>
  *       </div>
- *       <div class="bulk-action-divider"></div>
- *       <div class="bulk-actions">
- *         <button class="bulk-action-btn">…</button>
- *         <button class="bulk-action-btn bulk-action-btn-success">Approven</button>
- *         <button class="bulk-action-btn bulk-action-btn-danger"
+ *       <div class="fa-bulk-bar__divider"></div>
+ *       <div class="fa-bulk-bar__actions">
+ *         <button class="fa-bulk-btn">…</button>
+ *         <button class="fa-bulk-btn fa-bulk-btn--success">Approven</button>
+ *         <button class="fa-bulk-btn fa-bulk-btn--danger"
  *                 data-action="click->bulk-actions#bulkDelete">Löschen</button>
  *       </div>
- *       <button class="bulk-action-close" aria-label="Auswahl aufheben"
- *               data-action="click->bulk-actions#deselectAll"><i class="bi bi-x"></i></button>
+ *       <div class="fa-bulk-bar__divider"></div>
+ *       <button class="fa-bulk-bar__close" aria-label="Auswahl aufheben"
+ *               data-action="click->bulk-actions#deselectAll"><i class="bi bi-x-lg"></i></button>
  *     </div>
  *   </div>
  *
+ *   Brand variant (hero lists: risk, document): add class `fa-bulk-bar--brand`.
+ *   Loading state: add class `is-loading` to the active button.
+ *
  * Targets:
  *   item                <input type="checkbox"> per row
- *   actionBar / bar     `.bulk-action-bar` element to show/hide (alias for canonical 'bar')
- *   count               <span> showing the selected count
+ *   actionBar / bar     `.fa-bulk-bar` element to show/hide via [hidden] attribute
+ *   count               `.fa-bulk-bar__count-num` — shows selected count
  *   selectAllCheckbox   header `<thead>` master checkbox
  *
  * Public API:
@@ -62,7 +66,10 @@ export default class extends Controller {
         exportError: { type: String, default: 'Error exporting' },
         tagPrompt: { type: String, default: 'Add tag:' },
         tagSuccess: { type: String, default: 'Tag added' },
-        tagError: { type: String, default: 'Error adding tag' }
+        tagError: { type: String, default: 'Error adding tag' },
+        statusChangeSuccess: { type: String, default: '%count% documents updated' },
+        statusChangePartial: { type: String, default: '%changed% updated, %rejected% rejected' },
+        statusChangeError: { type: String, default: 'Update failed' }
     };
 
     connect() {
@@ -314,6 +321,63 @@ export default class extends Controller {
 
         } catch (error) {
             this.showToast(this.tagErrorValue, 'error');
+        }
+    }
+
+    /**
+     * Bulk status-change action.
+     * Button must carry: data-target-status="approved" (or another valid status).
+     * Wired via: data-action="click->bulk-actions#bulkStatusChange"
+     */
+    async bulkStatusChange(event) {
+        event.preventDefault();
+
+        const ids = this.selectedIds();
+        if (ids.length === 0) {
+            return;
+        }
+
+        const newStatus = event.currentTarget.dataset.targetStatus;
+        if (!newStatus) {
+            this.showToast(this.statusChangeErrorValue, 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch(this.endpointValue + '/bulk-status-change', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ ids, newStatus })
+            });
+
+            const payload = await response.json();
+
+            if (!response.ok && !payload.ok) {
+                throw new Error(payload.error || this.statusChangeErrorValue);
+            }
+
+            const changed = payload.changed ?? 0;
+            const rejected = payload.rejected ?? [];
+
+            if (rejected.length > 0) {
+                // Partial success — surface non-blocking notice
+                const msg = this.statusChangePartialValue
+                    .replace('%changed%', changed)
+                    .replace('%rejected%', rejected.length);
+                this.showToast(msg, 'warning');
+            } else {
+                const msg = this.statusChangeSuccessValue.replace('%count%', changed);
+                this.showToast(msg, 'success');
+            }
+
+            // Reload page so status pills reflect the new state
+            setTimeout(() => window.location.reload(), 800);
+
+        } catch (error) {
+            this.showToast(this.statusChangeErrorValue + ': ' + error.message, 'error');
         }
     }
 

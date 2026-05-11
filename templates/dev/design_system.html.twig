@@ -38,6 +38,10 @@
             <a href="#sec-alva"         class="fa-filter-chip">Alva moods</a>
             <a href="#sec-cyber-btn"    class="fa-filter-chip">fa-cyber-btn</a>
             <a href="#sec-tokens"       class="fa-filter-chip">Aurora tokens</a>
+            <a href="#sec-bulk-bar"     class="fa-filter-chip">fa-bulk-bar</a>
+            <a href="#sec-kbd"          class="fa-filter-chip">fa-kbd / fa-cheatsheet</a>
+            <a href="#sec-pager"        class="fa-filter-chip">fa-pager</a>
+            <a href="#sec-fa-menu"      class="fa-filter-chip">fa-menu</a>
         </nav>
 
         {# ── Page header ───────────────────────────────────────────────── #}
@@ -658,6 +662,145 @@
 {# Text:     --fg, --fg-2, --fg-3 #}
 {# Border:   --border, --border-strong #}{% endverbatim %}</code></pre>
                 </details>
+            </div>
+        </section>
+
+        {# ── fa-bulk-bar (Aurora v4 neutral + brand) ──────────────────── #}
+        <section id="sec-bulk-bar" class="mb-5">
+            <h2 style="font:700 18px var(--font-sans); color:var(--fg); margin:0 0 4px;">fa-bulk-bar</h2>
+            <p style="color:var(--fg-2); font-size:13px; margin:0 0 16px;">
+                Floating pill — neutral surface (default) or <code>.fa-bulk-bar--brand</code> gradient. Use neutral for general lists, brand for hero workflows (risks, findings).
+            </p>
+
+            {# Neutral (surface) variant #}
+            <div class="mb-3 p-4" style="background:var(--surface-2); border:1px dashed var(--border); border-radius:var(--r-md); position:relative; min-height:80px; display:flex; align-items:center; justify-content:center;">
+                <div class="fa-bulk-bar" role="region" aria-label="{{ 'bulk_actions.toolbar'|trans({}, 'messages') }}" style="position:relative; bottom:auto; left:auto; transform:none; animation:none;">
+                    <div class="fa-bulk-bar__count">
+                        <span class="fa-bulk-bar__count-num">3</span>
+                        <span class="fa-bulk-bar__count-label">{{ 'bulk_actions.selected'|trans({}, 'messages') }}</span>
+                    </div>
+                    <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
+                    <div class="fa-bulk-bar__actions">
+                        <button class="fa-bulk-btn"><i class="bi bi-tag" aria-hidden="true"></i> {{ 'bulk_actions.add_tag'|trans({}, 'messages') }}</button>
+                        <button class="fa-bulk-btn fa-bulk-btn--success"><i class="bi bi-check2-circle" aria-hidden="true"></i> {{ 'bulk_actions.approve'|trans({}, 'messages') }}</button>
+                        <button class="fa-bulk-btn fa-bulk-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'bulk_actions.delete'|trans({}, 'messages') }}</button>
+                    </div>
+                    <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
+                    <button class="fa-bulk-bar__close" aria-label="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+                </div>
+            </div>
+
+            {# Brand (gradient) variant #}
+            <div class="p-4" style="background:var(--surface-2); border:1px dashed var(--border); border-radius:var(--r-md); position:relative; min-height:80px; display:flex; align-items:center; justify-content:center;">
+                <div class="fa-bulk-bar fa-bulk-bar--brand" role="region" aria-label="{{ 'bulk_actions.toolbar'|trans({}, 'messages') }}" style="position:relative; bottom:auto; left:auto; transform:none; animation:none;">
+                    <div class="fa-bulk-bar__count">
+                        <span class="fa-bulk-bar__count-num">7</span>
+                        <span class="fa-bulk-bar__count-label">{{ 'bulk_actions.selected'|trans({}, 'messages') }}</span>
+                    </div>
+                    <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
+                    <div class="fa-bulk-bar__actions">
+                        <button class="fa-bulk-btn"><i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'bulk_actions.assign'|trans({}, 'messages') }}</button>
+                        <button class="fa-bulk-btn fa-bulk-btn--success"><i class="bi bi-check2-circle" aria-hidden="true"></i> {{ 'bulk_actions.approve'|trans({}, 'messages') }}</button>
+                        <button class="fa-bulk-btn fa-bulk-btn--danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'bulk_actions.delete'|trans({}, 'messages') }}</button>
+                    </div>
+                    <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
+                    <button class="fa-bulk-bar__close" aria-label="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </section>
+
+        {# ── fa-kbd + fa-cheatsheet ────────────────────────────────────── #}
+        <section id="sec-kbd" class="mb-5">
+            <h2 style="font:700 18px var(--font-sans); color:var(--fg); margin:0 0 4px;">fa-kbd &amp; fa-cheatsheet</h2>
+            <p style="color:var(--fg-2); font-size:13px; margin:0 0 16px;">
+                Keyboard key tokens + shortcut cheatsheet overlay content.
+            </p>
+            <div class="d-flex flex-wrap align-items-center gap-4 mb-3 p-4" style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-md);">
+                <span class="fa-kbd">⌘</span>
+                <div class="fa-kbd-combo"><kbd class="fa-kbd">⌘</kbd><span class="fa-kbd-combo__plus">+</span><kbd class="fa-kbd">K</kbd></div>
+                <div class="fa-kbd-combo"><kbd class="fa-kbd fa-kbd--lg">⌘</kbd><span class="fa-kbd-combo__plus">+</span><kbd class="fa-kbd fa-kbd--lg">S</kbd></div>
+                <kbd class="fa-kbd">Esc</kbd>
+                <kbd class="fa-kbd">?</kbd>
+            </div>
+            <div class="fa-cheatsheet" style="max-width:600px;">
+                <header class="fa-cheatsheet__header">
+                    <div>
+                        <div class="fa-cheatsheet__sub">Tastenkürzel</div>
+                        <h3 class="fa-cheatsheet__title">ISMS-Helper</h3>
+                    </div>
+                    <kbd class="fa-kbd fa-kbd--lg">?</kbd>
+                </header>
+                <div class="fa-cheatsheet__grid">
+                    <div class="fa-cheatsheet__group">
+                        <h4>Navigation</h4>
+                        <div class="fa-cheatsheet__row"><span>Command-Palette</span><div class="fa-kbd-combo"><kbd class="fa-kbd">⌘</kbd><kbd class="fa-kbd">K</kbd></div></div>
+                        <div class="fa-cheatsheet__row"><span>Quick-Search</span><kbd class="fa-kbd">/</kbd></div>
+                    </div>
+                    <div class="fa-cheatsheet__group">
+                        <h4>Aktionen</h4>
+                        <div class="fa-cheatsheet__row"><span>Speichern</span><div class="fa-kbd-combo"><kbd class="fa-kbd">⌘</kbd><kbd class="fa-kbd">S</kbd></div></div>
+                        <div class="fa-cheatsheet__row"><span>Schließen</span><kbd class="fa-kbd">Esc</kbd></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {# ── fa-pager ──────────────────────────────────────────────────── #}
+        <section id="sec-pager" class="mb-5">
+            <h2 style="font:700 18px var(--font-sans); color:var(--fg); margin:0 0 4px;">fa-pager</h2>
+            <p style="color:var(--fg-2); font-size:13px; margin:0 0 16px;">
+                Aurora pagination — pill shell with glow, gradient active page.
+            </p>
+            <div class="fa-pager-bar mb-3">
+                <div class="fa-pager-bar__info"><strong>21–40</strong> von <strong>247</strong></div>
+                <nav class="fa-pager" aria-label="Seitennavigation">
+                    <button class="fa-pager__btn" aria-label="Erste Seite"><i class="bi bi-chevron-double-left"></i></button>
+                    <button class="fa-pager__btn" aria-label="Vorherige"><i class="bi bi-chevron-left"></i></button>
+                    <button class="fa-pager__btn" aria-label="Seite 1">1</button>
+                    <button class="fa-pager__btn" aria-label="Seite 2">2</button>
+                    <button class="fa-pager__btn is-active" aria-current="page" aria-label="Seite 3">3</button>
+                    <span class="fa-pager__ellipsis">…</span>
+                    <button class="fa-pager__btn" aria-label="Seite 13">13</button>
+                    <button class="fa-pager__btn" aria-label="Nächste"><i class="bi bi-chevron-right"></i></button>
+                    <button class="fa-pager__btn" aria-label="Letzte"><i class="bi bi-chevron-double-right"></i></button>
+                </nav>
+                <div class="fa-pager-perpage">
+                    <label for="ds-perpage">Pro Seite</label>
+                    <select id="ds-perpage"><option>20</option><option>50</option><option>100</option></select>
+                </div>
+            </div>
+            {# compact #}
+            <nav class="fa-pager fa-pager--compact" aria-label="Kompakt-Pager">
+                <button class="fa-pager__btn"><i class="bi bi-chevron-left"></i></button>
+                <button class="fa-pager__btn">1</button>
+                <button class="fa-pager__btn is-active" aria-current="page">2</button>
+                <button class="fa-pager__btn">3</button>
+                <button class="fa-pager__btn"><i class="bi bi-chevron-right"></i></button>
+            </nav>
+        </section>
+
+        {# ── fa-menu (dropdown) ────────────────────────────────────────── #}
+        <section id="sec-fa-menu" class="mb-5">
+            <h2 style="font:700 18px var(--font-sans); color:var(--fg); margin:0 0 4px;">fa-menu</h2>
+            <p style="color:var(--fg-2); font-size:13px; margin:0 0 16px;">
+                Dropdown / overflow-action menu. Toggle <code>.is-open</code> on <code>.fa-menu</code>.
+            </p>
+            <div style="min-height:220px; display:flex; align-items:flex-start; padding:24px; background:var(--surface-2); border:1px dashed var(--border); border-radius:var(--r-md);">
+                <div class="fa-menu-anchor">
+                    <button class="btn btn-secondary btn-sm" onclick="this.nextElementSibling.classList.toggle('is-open')" type="button">
+                        <i class="bi bi-three-dots" aria-hidden="true"></i> Aktionen
+                    </button>
+                    <div class="fa-menu is-open">
+                        <div class="fa-menu__group">
+                            <a href="#" class="fa-menu__item"><i class="bi bi-pencil" aria-hidden="true"></i> Bearbeiten</a>
+                            <a href="#" class="fa-menu__item"><i class="bi bi-files" aria-hidden="true"></i> Duplizieren</a>
+                        </div>
+                        <div class="fa-menu__divider"></div>
+                        <div class="fa-menu__group">
+                            <a href="#" class="fa-menu__item fa-menu__item--danger"><i class="bi bi-trash" aria-hidden="true"></i> Löschen</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 

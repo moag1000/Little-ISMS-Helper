@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+{% import '_components/_fa_skel.html.twig' as _fa_skel %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -267,8 +268,12 @@
     <div class="row mb-4">
         <div class="col-12">
             <div data-controller="skeleton" data-skeleton-duration-value="350">
-                <div data-skeleton-target="skeleton">
-                    {% include '_components/_skeleton.html.twig' with { type: 'kpi-grid', count: 6 } %}
+                <div data-skeleton-target="skeleton" aria-busy="true">
+                    <div class="row g-3">
+                        {% for i in 1..6 %}
+                            <div class="col-md-2">{{ _fa_skel.render({ variant: 'card' }) }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
                 <div data-skeleton-target="content" class="hidden">
                     {% include 'home/_management_kpis_widget.html.twig' with {

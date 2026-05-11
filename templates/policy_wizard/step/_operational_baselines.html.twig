@@ -2,6 +2,7 @@
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {# Form-Audit follow-up (May 2026) — REWRITE.
    Template now matches OperationalBaselinesStep::validate() contract
@@ -61,7 +62,7 @@
         <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.operational_baselines.help.example'|trans }}</p>
         {% if has_preset_applied %}
             <p class="mb-0 small">
-                <i class="bi bi-magic" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-stars" aria-hidden="true"></i>
                 {{ 'policy_wizard.step.operational_baselines.help.preset_hint'|trans }}
             </p>
         {% endif %}
@@ -115,10 +116,10 @@
     {% embed '_components/_fa_table.html.twig' with { compact: true } %}
         {% block table_head %}
             <tr>
-                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.algorithm'|trans }}</th>
-                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.purpose'|trans }}</th>
-                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.bsi_status'|trans }}</th>
-                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.optional_when'|trans }}</th>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.algorithm'|trans({}, 'policy_wizard') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.purpose'|trans({}, 'policy_wizard') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.bsi_status'|trans({}, 'policy_wizard') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.optional_when'|trans({}, 'policy_wizard') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}
@@ -343,13 +344,9 @@
                             {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.derived_label'|trans }}
                         </span>
                         {% if derived_significant %}
-                            <span class="badge bg-warning text-dark ms-2">
-                                {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.derived_yes'|trans }}
-                            </span>
+                            {{ pill.render('policy_wizard.step.operational_baselines.dora.significance_self_check.derived_yes'|trans, 'warning', {size: 'sm', class: 'ms-2'}) }}
                         {% else %}
-                            <span class="badge bg-secondary ms-2">
-                                {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.derived_no'|trans }}
-                            </span>
+                            {{ pill.render('policy_wizard.step.operational_baselines.dora.significance_self_check.derived_no'|trans, 'neutral', {size: 'sm', class: 'ms-2'}) }}
                         {% endif %}
                         <i class="bi bi-info-circle text-muted ms-2"
                            data-bs-toggle="tooltip"

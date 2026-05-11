@@ -1,0 +1,57 @@
+audit_workbook:
+    nav:
+        workbooks: 'Audit-Workbooks'
+        title: 'Audit-Workbooks'
+        subtitle: 'XLSX-Exporte für Audit-Übergabe'
+
+    page:
+        title: 'Audit-Workbooks für Auditor-Übergabe'
+        badge: 'Audit'
+
+    index:
+        title: 'Audit-Workbooks für Auditor-Übergabe'
+        subtitle: 'XLSX-Exporte für ISO 27001-konforme Auditor-Übergabe und Chain-of-Custody'
+        section:
+            tenant_wide: 'Mandantenweite Exporte'
+            framework_bound: 'Framework-gebundene Exporte'
+        table:
+            framework: 'Compliance-Framework'
+            version: 'Version'
+            downloads: 'Downloads'
+        no_frameworks:
+            title: 'Keine aktiven Frameworks'
+            description: 'Es sind keine aktiven Compliance-Frameworks hinterlegt. Bitte aktivieren Sie zunächst ein Framework unter Compliance → Frameworks.'
+
+    export_type:
+        soa:
+            title: 'Statement of Applicability'
+            description: 'ISO 27001 Anhang A — Anwendbarkeitserklärung mit Implementierungsstatus je Maßnahme'
+            icon: 'shield-check'
+        control_implementation:
+            title: 'Maßnahmen-Umsetzung'
+            description: 'Vollständiges Maßnahmenregister des Mandanten inkl. Verantwortlicher und Reifegrad'
+            icon: 'list-check'
+        compliance_fulfillment:
+            title: 'Compliance-Erfüllungsnachweis'
+            description: 'Framework-Anforderungen mit Erfüllungsstatus und verknüpften Nachweisdokumenten'
+            icon: 'patch-check'
+        risk_register:
+            title: 'Risikoregister'
+            description: 'Vollständiges Risikoregister des Mandanten inkl. Behandlungsoptionen und Restrisiken'
+            icon: 'exclamation-triangle'
+
+    action:
+        download: 'Herunterladen'
+        export_xlsx: 'Audit-Workbook (.xlsx) exportieren'
+
+    error:
+        no_tenant: 'Kein Mandantenkontext aktiv. Bitte melden Sie sich erneut an.'
+        framework_not_found: 'Das angeforderte Compliance-Framework wurde nicht gefunden oder ist nicht aktiv.'
+        generation_failed: 'Die Workbook-Generierung ist fehlgeschlagen. Bitte versuchen Sie es erneut.'
+
+    audit_log:
+        soa_exported: 'SoA-Workbook heruntergeladen für Framework "%name%" (ID %id%)'
+        control_implementation_exported: 'Maßnahmen-Umsetzungs-Workbook heruntergeladen'
+        compliance_fulfillment_exported: 'Compliance-Erfüllungsnachweis-Workbook heruntergeladen für Framework "%name%" (ID %id%)'
+        risk_register_exported: 'Risikoregister-Workbook heruntergeladen'
+        generation_failed: 'Workbook-Generierung fehlgeschlagen'

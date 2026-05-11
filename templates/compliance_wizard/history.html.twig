@@ -3,6 +3,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'wizard.history.title'|trans({}, 'wizard') }} - {{ config.name }}{% endblock %}
 
@@ -31,7 +32,7 @@
 
     {# V4-EF-3: flash messages (e.g. diff unavailable) #}
     {% for message in app.flashes('warning') %}
-        <div class="alert alert-warning" role="alert">{{ message }}</div>
+        {{ _fa_alert.render({ variant: 'warning', body: message }) }}
     {% endfor %}
 
     {% if sessions|length == 0 %}
@@ -145,6 +146,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+                        {% import '_components/_status_pill.html.twig' as pill %}
                         {% for session in sessions %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">
@@ -159,7 +161,8 @@
                                     </span>
                                 </td>
                                 <td class="fa-table__cell">
-                                    <span class="badge {{ session.statusBadgeClass }}">{{ session.status }}</span>
+                                    {% set _hist_tone = 'bg-success' in session.statusBadgeClass ? 'success' : ('bg-warning' in session.statusBadgeClass ? 'warning' : ('bg-danger' in session.statusBadgeClass ? 'danger' : ('bg-info' in session.statusBadgeClass ? 'primary' : 'neutral'))) %}
+                                    {{ pill.render(session.status, _hist_tone) }}
                                 </td>
                                 <td class="fa-table__cell fa-table__cell--num">{{ session.criticalGaps|length }}</td>
                             </tr>

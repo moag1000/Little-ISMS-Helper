@@ -40,6 +40,7 @@
             {# Wizard scope/categories overview #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_body %}
+                    {% trans_default_domain 'wizard' %}
                     <h2 class="h5 mb-3">{{ 'wizard.assessment_scope'|trans }}</h2>
                     <p class="text-muted">{{ 'wizard.assessment_scope_desc'|trans({'%framework%': config.name}, 'wizard') }}</p>
 
@@ -70,6 +71,7 @@
             {% if inheritance_source_frameworks|default([])|length == 0 and available_mapping_libraries|default([])|length > 0 %}
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
                 {% block alert_body %}
+                    {% trans_default_domain 'wizard' %}
                     <div class="fa-alert__title">{{ 'wizard.mapping_library.fairy_title'|trans({}, 'wizard') }}</div>
                     <p class="mb-2">
                         {{ 'wizard.mapping_library.fairy_desc'|trans({
@@ -104,6 +106,7 @@
             {% if inheritance_source_frameworks|default([])|length > 0 %}
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
                 {% block alert_body %}
+                    {% trans_default_domain 'wizard' %}
                     <div class="fa-alert__title">{{ 'wizard.inheritance.title'|trans({}, 'wizard') }}</div>
                     <p class="mb-2">
                         {{ 'wizard.inheritance.desc'|trans({
@@ -132,6 +135,7 @@
             {% if missing_recommended|length > 0 %}
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
                 {% block alert_body %}
+                    {% trans_default_domain 'wizard' %}
                     <div class="fa-alert__title">{{ 'wizard.missing_recommended_title'|trans }}</div>
                     <p class="mb-2">{{ 'wizard.missing_recommended_desc'|trans }}</p>
                     <ul class="mb-0">
@@ -160,6 +164,7 @@
             {# Active Modules #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
+                    {% trans_default_domain 'wizard' %}
                     <div class="card-header">
                         <h3 class="card-title h6 mb-0">
                             <i class="fa-icon me-2 fa-icon--nav-puzzle" aria-hidden="true"></i>{{ 'wizard.active_modules'|trans }}
@@ -167,6 +172,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'wizard' %}
                     <p class="small text-muted mb-3">{{ 'wizard.data_sources_info'|trans }}</p>
                     {% for mod in active_modules %}
                         {% include '_components/_badge.html.twig' with { variant: 'success', class: 'me-1 mb-1', icon: 'bi-check-circle', content: mod } %}
@@ -177,6 +183,7 @@
             {# What to expect #}
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
+                    {% trans_default_domain 'wizard' %}
                     <div class="card-header">
                         <h3 class="card-title h6 mb-0">
                             <i class="fa-icon fa-icon--ui-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.what_to_expect'|trans }}
@@ -184,6 +191,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% trans_default_domain 'wizard' %}
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2">
                             <i class="fa-icon fa-icon--ui-clock me-2" aria-hidden="true"></i>

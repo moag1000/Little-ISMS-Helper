@@ -3,6 +3,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'privacy.data_breach.show.page_title'|trans({'%ref%': breach.referenceNumber}, 'privacy') }}{% endblock %}
 
@@ -335,6 +336,7 @@
                 <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> {{ 'privacy.data_breach.investigation_followup'|trans({}, 'privacy') }}</h2></div>
             {% endblock %}
             {% block card_body %}
+                {% import '_components/_status_pill.html.twig' as pill %}
                 {% if breach.rootCause %}
                     <h3>{{ 'privacy.data_breach.root_cause'|trans({}, 'privacy') }}:</h3>
                     <p>{{ breach.rootCause|nl2br }}</p>
@@ -353,7 +355,7 @@
                                 <li>
                                     {{ action.action|default('—') }}
                                     {% if action.status|default('') %}
-                                        <span class="badge text-bg-secondary ms-1">{{ action.status }}</span>
+                                        {{ pill.render(action.status, 'neutral', { class: 'ms-1' }) }}
                                     {% endif %}
                                     {% if action.due_date|default('') %}
                                         <small class="text-muted ms-1">({{ action.due_date }})</small>

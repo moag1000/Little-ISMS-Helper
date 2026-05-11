@@ -49,11 +49,11 @@
 {% set faVariant = variant in ['info']                    ? 'primary'
                 : variant in ['secondary','light','dark'] ? 'neutral'
                 : variant %}
-{% set badgeClasses = ['fa-status-pill', 'fa-status-pill--' ~ faVariant, 'badge', 'bg-' ~ variant] %}
+{% set badgeClasses = ['fa-status-pill', 'fa-status-pill--' ~ faVariant] %}
 {% if size == 'sm' %}
-    {% set badgeClasses = badgeClasses|merge(['fa-status-pill--sm', 'badge-sm']) %}
+    {% set badgeClasses = badgeClasses|merge(['fa-status-pill--sm']) %}
 {% elseif size == 'lg' %}
-    {% set badgeClasses = badgeClasses|merge(['fa-status-pill--lg', 'badge-lg']) %}
+    {% set badgeClasses = badgeClasses|merge(['fa-status-pill--lg']) %}
 {% endif %}
 {% if pill %}
     {# DEPRECATED — Aurora pills are always pill-shaped; ignored visually #}

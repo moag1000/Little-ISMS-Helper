@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'admin' %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'industry_preset.preview.badge'|trans }}: {{ config.name|default(preset) }} · {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -45,6 +46,7 @@
                 <div class="fa-section__body">
                     {% embed '_components/_fa_table.html.twig' with { compact: true } %}
                         {% block table_head %}
+                            {% trans_default_domain 'admin' %}
                             <tr>
                                 <th scope="col" class="fa-table__th">{{ 'industry_preset.preview.table.code'|trans }}</th>
                                 <th scope="col" class="fa-table__th">{{ 'industry_preset.preview.table.priority'|trans }}</th>
@@ -52,10 +54,12 @@
                             </tr>
                         {% endblock %}
                         {% block table_body %}
+                            {% trans_default_domain 'admin' %}
+                            {% import '_components/_status_pill.html.twig' as pill %}
                             {% for fw in config.frameworks|default([]) %}
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell"><strong>{{ fw.code }}</strong></td>
-                                    <td class="fa-table__cell"><span class="badge bg-info-subtle text-info">{{ fw.priority|default('—') }}</span></td>
+                                    <td class="fa-table__cell">{{ pill.render(fw.priority|default('—'), 'primary', {size: 'sm'}) }}</td>
                                     <td class="fa-table__cell">{% if fw.activate ?? false %}<i class="bi bi-check-circle text-success"></i>{% else %}<span class="text-muted">{{ 'industry_preset.preview.table.optional'|trans }}</span>{% endif %}</td>
                                 </tr>
                             {% endfor %}
@@ -72,7 +76,7 @@
                         {% for c in config.initial_controls %}
                             <li class="list-group-item d-flex justify-content-between">
                                 <span><strong>{{ c.identifier }}</strong> — {{ c.name }}</span>
-                                <span class="badge bg-secondary">{{ c.implementation_status|default('not_started') }}</span>
+                                {{ pill.render(c.implementation_status|default('not_started'), 'neutral', {size: 'sm'}) }}
                             </li>
                         {% endfor %}
                     </ul>
@@ -88,7 +92,7 @@
                         {% for d in config.initial_documents %}
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>{{ d.title }}</span>
-                                <span class="badge bg-secondary">{{ d.type|default('policy') }}</span>
+                                {{ pill.render(d.type|default('policy'), 'neutral', {size: 'sm'}) }}
                             </li>
                         {% endfor %}
                     </ul>

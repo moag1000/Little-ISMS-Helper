@@ -266,11 +266,14 @@
                         <label for="konzern-as-of-date" class="form-label fw-semibold mb-1">
                             {{ 'certification_bundle.konzern_export.as_of_date'|trans({}, 'certification_bundle') }}
                         </label>
-                        <input type="date"
-                               name="as_of_date"
-                               id="konzern-as-of-date"
-                               class="form-control form-control-sm"
-                               style="max-width: 240px;">
+                        <div class="fa-cyber-input" style="max-width: 240px;">
+                            <div class="fa-cyber-input__frame">
+                                <input type="date"
+                                       name="as_of_date"
+                                       id="konzern-as-of-date"
+                                       class="fa-cyber-input__field">
+                            </div>
+                        </div>
                         <small class="form-text text-muted">
                             {{ 'certification_bundle.konzern_export.as_of_date_help'|trans({}, 'certification_bundle') }}
                         </small>

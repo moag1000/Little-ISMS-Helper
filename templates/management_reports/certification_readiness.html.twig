@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 {% trans_default_domain 'management_reports' %}
 
 {% block title %}{{ 'cert_readiness.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -34,13 +35,12 @@
                 'class': 'h-100 text-center ' ~ (recommendation == 'READY' ? 'border-success' : (recommendation == 'CONDITIONAL' ? 'border-warning' : 'border-danger'))
             } %}
                 {% block card_body %}
+                    {% import '_components/_status_pill.html.twig' as pill %}
                     <h3 class="display-4 fw-bold {% if recommendation == 'READY' %}text-success{% elseif recommendation == 'CONDITIONAL' %}text-warning{% else %}text-danger{% endif %}">
                         {{ overall_score }}%
                     </h3>
                     <p class="text-muted mb-2">{{ 'cert_readiness.overall_score'|trans({}, 'management_reports') }}</p>
-                    <span class="badge fs-6 {% if recommendation == 'READY' %}bg-success{% elseif recommendation == 'CONDITIONAL' %}bg-warning-subtle text-warning{% else %}bg-danger{% endif %}">
-                        {{ ('cert_readiness.recommendation.' ~ recommendation|lower)|trans({}, 'management_reports') }}
-                    </span>
+                    {{ pill.render(('cert_readiness.recommendation.' ~ recommendation|lower)|trans({}, 'management_reports'), recommendation == 'READY' ? 'success' : (recommendation == 'CONDITIONAL' ? 'warning' : 'danger')) }}
                 {% endblock %}
             {% endembed %}
         </div>

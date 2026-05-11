@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 {% set step_title_key = 'policy_wizard.step.' ~ step ~ '.title' %}
 {% set step_subtitle_key = 'policy_wizard.step.' ~ step ~ '.subtitle' %}
 
@@ -179,7 +180,7 @@
             {% if _gc is iterable and _gc.approvers is defined %}
                 <div class="card mb-3 border-primary">
                     <div class="card-header py-2 d-flex align-items-center gap-2">
-                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                         <h4 class="h6 mb-0">{{ 'policy_wizard.step.review_generate.confirm_box.title'|trans }}</h4>
                     </div>
                     <div class="card-body py-3 small">
@@ -200,7 +201,7 @@
                                             <code>{{ ap.template_key }}</code> →
                                             <strong>{{ ap.display }}</strong>
                                             {% if ap.source == 'default' %}
-                                                <span class="badge bg-info-subtle text-info-emphasis ms-1">{{ 'policy_wizard.step.review_generate.confirm_box.default_approver_badge'|trans }}</span>
+                                                {{ pill.render('policy_wizard.step.review_generate.confirm_box.default_approver_badge'|trans, 'primary', {size: 'sm', class: 'ms-1'}) }}
                                             {% endif %}
                                         </li>
                                     {% endfor %}
@@ -268,7 +269,7 @@
                     class="fa-cyber-btn fa-cyber-btn--primary"
                     data-policy-wizard-generate-target="button"
                     {{ hierarchy_conflicts|default([])|length > 0 ? 'disabled' : 'disabled' }}>
-                <i class="bi bi-magic" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-stars" aria-hidden="true"></i>
                 <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.generate'|trans }}</span>
             </button>
         </form>

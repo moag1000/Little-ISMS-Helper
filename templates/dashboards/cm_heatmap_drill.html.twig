@@ -7,6 +7,7 @@
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block body %}
 <main class="fa-aurora-surface compliance-manager-dashboard">
@@ -91,13 +92,14 @@
             <h2 class="fa-section__title">
                 <i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i>
                 {{ 'compliance_manager.heatmap.drill.covered'|trans }}
-                <span class="badge bg-success ms-1">{{ covered|length }}</span>
+                {{ pill.render(covered|length, 'success', {size: 'sm', class: 'ms-1'}) }}
             </h2>
         </div>
         <div class="fa-section__body">
             {% if covered|length > 0 %}
                 {% embed '_components/_fa_table.html.twig' with { compact: true } %}
                     {% block table_head %}
+                        {% trans_default_domain 'dashboards' %}
                         <tr>
                             <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.req_id'|trans }}</th>
                             <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.title'|trans }}</th>
@@ -107,13 +109,15 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+                        {% trans_default_domain 'dashboards' %}
+                        {% import '_components/_status_pill.html.twig' as pill %}
                         {% for req in covered %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell"><code class="small">{{ req.requirementId }}</code></td>
                                 <td class="fa-table__cell">{{ req.title }}</td>
                                 <td class="fa-table__cell">
                                     {% if req.category %}
-                                        <span class="badge bg-body-secondary text-body border">{{ req.category }}</span>
+                                        {{ pill.render(req.category, 'neutral', {size: 'sm'}) }}
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
@@ -121,16 +125,16 @@
                                 <td class="fa-table__cell">
                                     {% for ctrl in req.mappedControls %}
                                         {% set implStatus = ctrl.implementationStatus|default('unknown') %}
-                                        {% set tone = implStatus in ['implemented','operational'] ? 'success' : (implStatus == 'partially_implemented' ? 'warning' : 'secondary') %}
-                                        <span class="badge text-bg-{{ tone }} me-1" title="{{ implStatus }}">{{ ctrl.controlId|default(ctrl.id) }}</span>
+                                        {% set tone = implStatus in ['implemented','operational'] ? 'success' : (implStatus == 'partially_implemented' ? 'warning' : 'neutral') %}
+                                        {{ pill.render(ctrl.controlId|default(ctrl.id), tone, {size: 'sm', class: 'me-1', title: implStatus}) }}
                                     {% else %}
                                         <span class="text-muted small">—</span>
                                     {% endfor %}
                                 </td>
                                 <td class="fa-table__cell">
                                     {% set prio = req.priority|default('medium') %}
-                                    {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
-                                    <span class="badge text-bg-{{ prioTone[prio]|default('secondary') }}">{{ prio }}</span>
+                                    {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'primary', 'low': 'neutral'} %}
+                                    {{ pill.render(prio, prioTone[prio]|default('neutral'), {size: 'sm'}) }}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -152,13 +156,14 @@
             <h2 class="fa-section__title">
                 <i class="bi bi-exclamation-circle-fill text-danger me-1" aria-hidden="true"></i>
                 {{ 'compliance_manager.heatmap.drill.gaps'|trans }}
-                <span class="badge bg-danger ms-1">{{ gaps|length }}</span>
+                {{ pill.render(gaps|length, 'danger', {size: 'sm', class: 'ms-1'}) }}
             </h2>
         </div>
         <div class="fa-section__body">
             {% if gaps|length > 0 %}
                 {% embed '_components/_fa_table.html.twig' with { compact: true } %}
                     {% block table_head %}
+                        {% trans_default_domain 'dashboards' %}
                         <tr>
                             <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.req_id'|trans }}</th>
                             <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.title'|trans }}</th>
@@ -168,21 +173,23 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+                        {% trans_default_domain 'dashboards' %}
+                        {% import '_components/_status_pill.html.twig' as pill %}
                         {% for req in gaps %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell"><code class="small">{{ req.requirementId }}</code></td>
                                 <td class="fa-table__cell">{{ req.title }}</td>
                                 <td class="fa-table__cell">
                                     {% if req.category %}
-                                        <span class="badge bg-body-secondary text-body border">{{ req.category }}</span>
+                                        {{ pill.render(req.category, 'neutral', {size: 'sm'}) }}
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
                                 </td>
                                 <td class="fa-table__cell">
                                     {% set prio = req.priority|default('medium') %}
-                                    {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
-                                    <span class="badge text-bg-{{ prioTone[prio]|default('secondary') }}">{{ prio }}</span>
+                                    {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'primary', 'low': 'neutral'} %}
+                                    {{ pill.render(prio, prioTone[prio]|default('neutral'), {size: 'sm'}) }}
                                 </td>
                                 <td class="fa-table__cell fa-table__cell--actions">
                                     {# Link to the compliance wizard for this framework #}
@@ -215,7 +222,7 @@
             <h2 class="fa-section__title">
                 <i class="bi bi-flag-fill text-warning me-1" aria-hidden="true"></i>
                 {{ 'compliance_manager.heatmap.drill.findings'|trans }}
-                <span class="badge bg-warning text-dark ms-1">{{ open_findings|length }}</span>
+                {{ pill.render(open_findings|length, 'warning', {size: 'sm', class: 'ms-1'}) }}
             </h2>
         </div>
         <div class="fa-section__body">
@@ -223,7 +230,7 @@
                 <div class="list-group">
                     {% for finding in open_findings %}
                         {% set sev = finding.severity|default('medium') %}
-                        {% set sevTone = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
+                        {% set sevTone = {'critical': 'danger', 'high': 'warning', 'medium': 'primary', 'low': 'neutral'} %}
                         <div class="list-group-item d-flex justify-content-between align-items-start gap-2">
                             <div class="flex-grow-1">
                                 <div class="fw-semibold">{{ finding.title|default('#' ~ finding.id) }}</div>
@@ -232,8 +239,8 @@
                                 {% endif %}
                             </div>
                             <div class="d-flex gap-1 align-items-center flex-shrink-0">
-                                <span class="badge text-bg-{{ sevTone[sev]|default('secondary') }}">{{ sev }}</span>
-                                <span class="badge bg-body-secondary text-body border">{{ finding.status }}</span>
+                                {{ pill.render(sev, sevTone[sev]|default('neutral'), {size: 'sm'}) }}
+                                {{ pill.render(finding.status, 'neutral', {size: 'sm'}) }}
                                 {% if finding.audit is defined and finding.audit %}
                                     <a href="{{ path('app_audit_show', {id: finding.audit.id}) }}" class="btn btn-sm btn-outline-secondary py-0 px-1 small">
                                         <i class="bi bi-search" aria-hidden="true"></i>

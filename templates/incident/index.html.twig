@@ -261,7 +261,7 @@
     } %}
 {% else %}
 {% embed '_components/_card.html.twig' %}
-    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/incident"{% endblock %}
+    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/incident"{% endblock %}
     {% block card_header %}
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'incident.list.all_incidents'|trans({'%count%': allIncidents|length}, 'incident') }}</h3>

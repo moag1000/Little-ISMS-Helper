@@ -223,11 +223,16 @@
             {# MFA Status Card #}
             {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
                 {% block card_header %}
-                    <div class="card-header {% if user.hasMfaEnabled %}bg-success{% else %}bg-warning{% endif %} text-white">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="h5 mb-0">
                             <i class="fa-icon {% if user.hasMfaEnabled %}fa-icon--mfa{% else %}fa-icon--status-warning{% endif %}" aria-hidden="true"></i>
                             {{ 'user.profile.section.mfa'|trans({}, 'user') }}
                         </h2>
+                        {% if user.hasMfaEnabled %}
+                            <span class="fa-status-pill fa-status-pill--success">{{ 'user.profile.mfa.enabled'|trans({}, 'user') }}</span>
+                        {% else %}
+                            <span class="fa-status-pill fa-status-pill--warning">{{ 'user.profile.mfa.setup'|trans({}, 'user') }}</span>
+                        {% endif %}
                     </div>
                 {% endblock %}
                 {% block card_body %}

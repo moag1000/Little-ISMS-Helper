@@ -3,6 +3,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'admin.mapping_quality.detail_title'|trans({}, 'admin') }}{% endblock %}
 
@@ -47,10 +48,10 @@
                         <dd class="col-sm-8">{% if mapping.relationship %}<span class="fa-status-pill fa-status-pill--neutral">{{ mapping.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</dd>
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.confidence'|trans({}, 'admin') }}</dt>
-                        <dd class="col-sm-8"><span class="badge bg-{{ mapping.confidence == 'high' ? 'success' : (mapping.confidence == 'medium' ? 'warning' : 'secondary') }}">{{ mapping.confidence }}</span></dd>
+                        <dd class="col-sm-8">{{ pill.render(mapping.confidence, mapping.confidence == 'high' ? 'success' : (mapping.confidence == 'medium' ? 'warning' : 'neutral'), {size: 'sm'}) }}</dd>
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.lifecycle'|trans({}, 'admin') }}</dt>
-                        <dd class="col-sm-8"><span class="badge bg-{{ mapping.lifecycleBadgeClass }}">{{ mapping.lifecycleState }}</span></dd>
+                        <dd class="col-sm-8">{{ pill.render(mapping.lifecycleState, mapping.lifecycleBadgeClass in ['info'] ? 'primary' : (mapping.lifecycleBadgeClass in ['secondary','light','dark'] ? 'neutral' : mapping.lifecycleBadgeClass), {size: 'sm'}) }}</dd>
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.provenance'|trans({}, 'admin') }}</dt>
                         <dd class="col-sm-8">

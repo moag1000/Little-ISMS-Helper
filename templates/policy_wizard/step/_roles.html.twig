@@ -206,10 +206,7 @@
             {{ 'policy_wizard.approver_match.chain_hint'|trans }}
         </div>
         {% if approver_user_pool|length == 0 %}
-            <div class="alert alert-warning border-0 mt-2 small">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                {{ 'policy_wizard.step.roles.field.approval_chain.empty_state'|trans }}
-            </div>
+            {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-triangle', class: 'mt-2 small', body: 'policy_wizard.step.roles.field.approval_chain.empty_state'|trans }) }}
         {% endif %}
     </div>
 </div>

@@ -1,551 +1,378 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Transitive Compliance Report PDF — fa-report-doc 5-slot macro
+   Audience: auditor (Analysis Report)
+   Status:   final
+   ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('en') }}">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="UTF-8">
     <title>Transitive Compliance Analysis</title>
     <style>
-        :root {
-            --primary:       #0ea5e9;
-            --surface:       #ffffff;
-            --surface-2:     #f1f5f9;
-            --fg:            #0f172a;
-            --fg-2:          #475569;
-            --fg-3:          #94a3b8;
-            --border:        #cbd5e1;
-            --success:       #166534;
-            --success-tint:  #dcfce7;
-            --danger:        #991b1b;
-            --danger-tint:   #fecaca;
-            --warning:       #92400e;
-            --warning-tint:  #fef3c7;
-            --info-tint:     #dbeafe;
-            --info-text:     #1e40af;
-        }
-        @page {
-            margin: 2cm 1.5cm;
-        }
-
-        body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 9pt;
-            line-height: 1.4;
-            color: var(--fg);
-        }
-
-        h1 {
-            font-size: 18pt;
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 5pt;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10pt;
-        }
-
-        h2 {
-            font-size: 14pt;
-            color: var(--primary);
-            margin-top: 15pt;
-            margin-bottom: 8pt;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 5pt;
-        }
-
-        h3 {
-            font-size: 11pt;
-            color: var(--fg);
-            margin-top: 12pt;
-            margin-bottom: 6pt;
-            font-weight: bold;
-        }
-
-        .header-info {
-            text-align: center;
-            font-size: 9pt;
-            color: var(--fg-2);
-            margin-bottom: 20pt;
-        }
-
-        .stats-grid {
-            display: table;
-            width: 100%;
-            margin-bottom: 20pt;
-            border: 1px solid var(--border);
-            border-collapse: collapse;
-        }
-
-        .stats-row {
-            display: table-row;
-        }
-
-        .stats-cell {
-            display: table-cell;
-            padding: 10pt;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-
-        .stats-label {
-            font-size: 8pt;
-            color: var(--fg-2);
-            font-weight: bold;
-            margin-bottom: 4pt;
-        }
-
-        .stats-value {
-            font-size: 16pt;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .stats-value-success {
-            color: var(--success);
-        }
-
-        .stats-value-warning {
-            color: var(--warning);
-        }
-
-        .insight-box {
-            background: var(--surface-2);
-            border-left: 4pt solid var(--primary);
-            padding: 10pt;
-            margin: 10pt 0;
-            font-size: 8pt;
-            color: var(--fg-2);
-        }
-
-        .insight-box strong {
-            color: var(--fg);
-        }
-
-        .quick-win-box {
-            background: var(--success-tint);
-            border-left: 4pt solid #10b981;
-            padding: 10pt;
-            margin: 10pt 0;
-            font-size: 8pt;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10pt 0;
-            font-size: 8pt;
-        }
-
-        table th {
-            background-color: var(--primary);
-            color: var(--surface);
-            padding: 6pt;
-            text-align: left;
-            font-weight: bold;
-            border: 1px solid var(--border);
-        }
-
-        table td {
-            padding: 5pt;
-            border: 1px solid var(--border);
-            vertical-align: top;
-        }
-
-        table tr:nth-child(even) {
-            background-color: var(--surface-2);
-        }
-
-        .highlight-row {
-            font-weight: bold;
-            background: var(--info-tint) !important;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 2pt 6pt;
-            border-radius: 3pt;
-            font-size: 7pt;
-            font-weight: bold;
-        }
-
-        .badge-success {
-            background: var(--success-tint); color: var(--success);
-            color: var(--surface);
-        }
-
-        .badge-info {
-            background: #dbeafe; color: var(--info-text);
-            color: var(--surface);
-        }
-
-        .badge-warning {
-            background: var(--warning-tint); color: var(--warning);
-            color: var(--surface);
-        }
-
-        .badge-danger {
-            background: var(--danger-tint); color: var(--danger);
-            color: var(--surface);
-        }
-
-        .badge-critical {
-            background: var(--danger-tint); color: var(--danger);
-            color: var(--surface);
-        }
-
-        .quality-good {
-            color: var(--success);
-            font-weight: bold;
-        }
-
-        .quality-medium {
-            color: var(--warning);
-            font-weight: bold;
-        }
-
-        .quality-weak {
-            color: var(--danger);
-            font-weight: bold;
-        }
-
-        .page-break {
-            page-break-before: always;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .w-10 { width: 10%; }
-        .w-12 { width: 12%; }
-        .w-15 { width: 15%; }
-        .w-16 { width: 16%; }
-        .w-18 { width: 18%; }
-        .w-20 { width: 20%; }
-        .w-25 { width: 25%; }
-        .w-30 { width: 30%; }
-        .w-40 { width: 40%; }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30pt;
-            text-align: center;
-            font-size: 7pt;
-            color: var(--fg-2);
-            border-top: 1px solid var(--border);
-            padding-top: 5pt;
-        }
+        :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--success-glow:rgba(5,150,105,.20);--warning:#d97706;--warning-strong:#b45309;--warning-glow:rgba(217,119,6,.20);--danger:#dc2626;--danger-strong:#b91c1c;--danger-glow:rgba(220,38,38,.20);}
+        @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
+        body{background:#fff;font-family:'DejaVu Sans',sans-serif;margin:0;padding:0;}
+        .report-doc{background:var(--surface);color:var(--fg-1);font-size:10pt;line-height:1.45;max-width:none;margin:0;border:0;border-radius:0;}
+        .report-doc__cover{padding:18pt 14pt 12pt;border-bottom:1px solid var(--border);}
+        .report-doc__cover-top{display:table;width:100%;}
+        .report-doc__brand{display:table-cell;vertical-align:middle;}
+        .report-doc__chips{display:table-cell;text-align:right;vertical-align:middle;}
+        .report-doc__logo{display:inline-block;width:32pt;height:32pt;border-radius:6pt;background:var(--primary);color:#fff;text-align:center;line-height:32pt;font-weight:700;font-size:18pt;vertical-align:middle;margin-right:8pt;}
+        .report-doc__brand-name{font-weight:700;font-size:11pt;color:var(--fg-1);display:inline-block;vertical-align:middle;}
+        .report-doc__brand-meta{font-size:8pt;color:var(--fg-3);}
+        .report-doc__chip{display:inline-block;padding:2pt 7pt;border-radius:8pt;background:var(--surface-2);color:var(--fg-2);font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border);margin-left:4pt;}
+        .report-doc__chip--status-confidential{background:var(--danger-glow);color:var(--danger-strong);border-color:transparent;}
+        .report-doc__chip--audience-vorstand{background:var(--primary-tint);color:var(--primary-strong);border-color:transparent;}
+        .report-doc__chip--classification{background:var(--fg-1);color:#fff;border-color:transparent;}
+        .report-doc__cover-center{padding:16pt 0 12pt;}
+        .report-doc__kicker{font-size:8pt;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4pt;}
+        .report-doc__title{font-size:22pt;font-weight:800;color:var(--fg-1);margin:0 0 6pt;line-height:1.05;}
+        .report-doc__sub{font-size:10pt;color:var(--fg-2);margin:0;}
+        .report-doc__cover-grid{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8pt 0;margin:0;}
+        .report-doc__cover-grid>div{display:inline-block;width:31%;margin:0 1% 6pt 0;vertical-align:top;}
+        .report-doc__cover-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 2pt;}
+        .report-doc__cover-value{font-size:9pt;color:var(--fg-1);font-weight:600;margin:0;}
+        .report-doc__exec-summary{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__exec-heading{font-size:13pt;font-weight:800;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__kpi-grid{display:table;width:100%;border-spacing:6pt;}
+        .report-doc__kpi-tile{display:table-cell;padding:10pt;border:1px solid var(--border);border-radius:4pt;vertical-align:top;background:var(--surface);}
+        .report-doc__kpi-tile--success{border-left:3pt solid var(--success);}
+        .report-doc__kpi-tile--warning{border-left:3pt solid var(--warning);}
+        .report-doc__kpi-tile--danger{border-left:3pt solid var(--danger);}
+        .report-doc__kpi-tile--neutral{border-left:3pt solid var(--primary);}
+        .report-doc__kpi-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4pt;}
+        .report-doc__kpi-value{font-size:18pt;font-weight:800;color:var(--fg-1);margin-bottom:2pt;}
+        .report-doc__kpi-trend{font-size:8pt;font-weight:600;}
+        .report-doc__kpi-trend--up{color:var(--success-strong);}
+        .report-doc__kpi-trend--down{color:var(--danger-strong);}
+        .report-doc__tldr{background:var(--surface);border:1px solid var(--border);border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 12pt;}
+        .report-doc__tldr-label{font-size:7pt;color:var(--primary-strong);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 6pt;}
+        .report-doc__tldr-list{list-style:none;margin:0;padding:0;}
+        .report-doc__tldr-item{font-size:9pt;color:var(--fg-1);padding:2pt 0;}
+        .report-doc__tldr-item--ok{border-left:2pt solid var(--success);padding-left:6pt;}
+        .report-doc__tldr-item--warn{border-left:2pt solid var(--warning);padding-left:6pt;}
+        .report-doc__tldr-item--danger{border-left:2pt solid var(--danger);padding-left:6pt;}
+        .report-doc__tldr-dot{display:none;}
+        .report-doc__data-section{padding:12pt 14pt;border-bottom:1px solid var(--border);page-break-inside:avoid;}
+        .report-doc__section-heading{font-size:12pt;font-weight:700;color:var(--fg-1);margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__section-body{font-size:9pt;color:var(--fg-1);margin:6pt 0;}
+        .report-doc__table{width:100%;border-collapse:collapse;font-size:9pt;}
+        .report-doc__table th{background:var(--surface-2);color:var(--fg-2);padding:5pt 6pt;border:.5pt solid var(--border-strong);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:7pt;text-align:left;}
+        .report-doc__table td{padding:5pt 6pt;border:.5pt solid var(--border);color:var(--fg-1);vertical-align:top;}
+        .report-doc__table tbody tr:nth-child(even) td{background:var(--surface-2);}
+        .report-doc__table-wrap{margin:8pt 0;}
+        .report-doc__appendix{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__appendix-heading{font-size:12pt;font-weight:700;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__appendix-subheading{font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:8pt 0 4pt;}
+        .report-doc__appendix-body{font-size:8pt;color:var(--fg-2);}
+        .report-doc__appendix-sources{padding-left:14pt;font-size:8pt;color:var(--fg-2);}
+        .report-doc__footer-disclaimer{padding:12pt 14pt;background:var(--surface);border-top:1px solid var(--border-strong);}
+        .report-doc__distribution-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 4pt;}
+        .report-doc__distribution-list{list-style:none;padding:0;margin:0 0 8pt;font-size:9pt;color:var(--fg-2);}
+        .report-doc__distribution-list li{display:inline-block;border-left:2pt solid var(--border);padding:0 8pt;}
+        .report-doc__disclaimer-text{font-size:8pt;color:var(--fg-3);padding:8pt;background:var(--surface-2);border-radius:4pt;border:1px solid var(--border);margin:0 0 8pt;}
+        .report-doc__footer-meta{font-size:7pt;color:var(--fg-3);}
+        .report-doc__footer-brand{font-weight:700;color:var(--fg-2);}
+        .report-doc__footer-classification{color:var(--danger-strong);font-weight:700;text-transform:uppercase;}
+        .badge{display:inline-block;padding:2pt 5pt;border-radius:3pt;font-size:7pt;font-weight:700;}
+        .badge-success{background:var(--success-tint);color:var(--success-strong);}
+        .badge-warning{background:rgba(217,119,6,.12);color:var(--warning-strong);}
+        .badge-danger{background:rgba(220,38,38,.12);color:var(--danger-strong);}
+        .badge-info{background:var(--primary-tint);color:var(--primary-strong);}
     </style>
 </head>
 <body>
-    <h1>Transitive Compliance Report</h1>
-    <div class="header-info">
-        Multi-Framework Compliance Leverage Analysis<br>
-        Generated: {{ pdf_generation_date|date('d.m.Y H:i') }}
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {# Executive Summary #}
-    <h2>Executive Summary</h2>
-    <div class="stats-grid">
-        <div class="stats-row">
-            <div class="stats-cell">
-                <div class="stats-label">Active Frameworks</div>
-                <div class="stats-value">{{ total_frameworks }}</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Framework Relationships</div>
-                <div class="stats-value">{{ total_relationships }}</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Quick Wins (High ROI)</div>
-                <div class="stats-value stats-value-success">{{ quick_win_count }}</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Avg. Coverage</div>
-                <div class="stats-value">{{ avg_coverage|round(1) }}%</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Avg. Mapping Quality</div>
-                <div class="stats-value {% if avg_mapping_quality >= 80 %}stats-value-success{% elseif avg_mapping_quality >= 60 %}stats-value-warning{% endif %}">{{ avg_mapping_quality }}%</div>
-            </div>
-            <div class="stats-cell">
-                <div class="stats-label">Avg. Impact Score</div>
-                <div class="stats-value stats-value-warning">{{ avg_impact_score }}</div>
-            </div>
-        </div>
-    </div>
+{# ── Build sections array ─────────────────────────────────────────────── #}
+{% set _sections = [] %}
 
-    {# Mapping Quality Distribution #}
-    {% if total_mappings > 0 %}
-    <h2>Mapping Quality Distribution</h2>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-25">Quality Level</th>
-                <th scope="col" class="text-center w-15">Range</th>
-                <th scope="col" class="text-center w-15">Count</th>
-                <th scope="col" class="text-center w-15">Percentage</th>
-                <th scope="col" class="w-30">Assessment</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><span class="badge badge-success">Excellent</span></td>
-                <td class="text-center">90-100%</td>
-                <td class="text-center"><strong>{{ quality_distribution.excellent }}</strong></td>
-                <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.excellent / total_mappings * 100)|round(1)) : 0 }}%</td>
-                <td>Precise mappings, high reliability</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-info">Good</span></td>
-                <td class="text-center">70-89%</td>
-                <td class="text-center"><strong>{{ quality_distribution.good }}</strong></td>
-                <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.good / total_mappings * 100)|round(1)) : 0 }}%</td>
-                <td>{{ 'pdf.framework_comparison.solid_mappings_minor'|trans({}, 'messages')}}</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-warning">Medium</span></td>
-                <td class="text-center">50-69%</td>
-                <td class="text-center"><strong>{{ quality_distribution.medium }}</strong></td>
-                <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.medium / total_mappings * 100)|round(1)) : 0 }}%</td>
-                <td>Partial alignment, review recommended</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-danger">Weak</span></td>
-                <td class="text-center">&lt;50%</td>
-                <td class="text-center"><strong>{{ quality_distribution.weak }}</strong></td>
-                <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.weak / total_mappings * 100)|round(1)) : 0 }}%</td>
-                <td>Low alignment, optimization needed</td>
-            </tr>
-            <tr class="highlight-row">
-                <td><strong>Average Quality</strong></td>
-                <td colspan="4" class="text-center"><strong>{{ avg_mapping_quality }}%</strong> (across {{ total_mappings }} mappings)</td>
-            </tr>
-        </tbody>
-    </table>
+{# ── Mapping Quality Distribution ─────────────────────────────────────── #}
+{% if total_mappings > 0 %}
+    {% set _mqd_rows = [
+        [
+            '<span class="badge badge-success">Excellent</span>',
+            '90-100%',
+            '<strong>' ~ quality_distribution.excellent ~ '</strong>',
+            (total_mappings > 0 ? ((quality_distribution.excellent / total_mappings * 100)|round(1)) : 0) ~ '%',
+            'Precise mappings, high reliability',
+        ],
+        [
+            '<span class="badge badge-info">Good</span>',
+            '70-89%',
+            '<strong>' ~ quality_distribution.good ~ '</strong>',
+            (total_mappings > 0 ? ((quality_distribution.good / total_mappings * 100)|round(1)) : 0) ~ '%',
+            'pdf.framework_comparison.solid_mappings_minor'|trans({}, 'messages'),
+        ],
+        [
+            '<span class="badge badge-warning">Medium</span>',
+            '50-69%',
+            '<strong>' ~ quality_distribution.medium ~ '</strong>',
+            (total_mappings > 0 ? ((quality_distribution.medium / total_mappings * 100)|round(1)) : 0) ~ '%',
+            'Partial alignment, review recommended',
+        ],
+        [
+            '<span class="badge badge-danger">Weak</span>',
+            '&lt;50%',
+            '<strong>' ~ quality_distribution.weak ~ '</strong>',
+            (total_mappings > 0 ? ((quality_distribution.weak / total_mappings * 100)|round(1)) : 0) ~ '%',
+            'Low alignment, optimization needed',
+        ],
+        [
+            '<strong>Average Quality</strong>',
+            '',
+            '',
+            '<strong>' ~ avg_mapping_quality ~ '%</strong> (across ' ~ total_mappings ~ ' mappings)',
+            '',
+        ],
+    ] %}
 
     {% set excellent_good_percentage = total_mappings > 0 ? (((quality_distribution.excellent + quality_distribution.good) / total_mappings * 100)|round(1)) : 0 %}
-    <div class="insight-box">
-        <strong>Quality Assessment:</strong>
-        {{ excellent_good_percentage }}% of mappings are good or better (≥70%).
-        {% if quality_distribution.weak > 0 %}
-        {{ quality_distribution.weak }} weak mappings identified - review recommended for better transitive compliance effectiveness.
-        {% endif %}
-    </div>
+    {% set _mqd_insight = '<strong>Quality Assessment:</strong> '
+        ~ excellent_good_percentage ~ '% of mappings are good or better (≥70%).' %}
+    {% if quality_distribution.weak > 0 %}
+        {% set _mqd_insight = _mqd_insight
+            ~ ' ' ~ quality_distribution.weak ~ ' weak mappings identified - review recommended for better transitive compliance effectiveness.' %}
     {% endif %}
 
-    {# Quick Wins #}
-    {% if quick_wins is defined and quick_wins|length > 0 %}
-    <div class="page-break"></div>
-    <h2>Quick Wins - High ROI Opportunities</h2>
-    <div class="quick-win-box">
-        <strong>{{ quick_wins|length }} Quick Wins Identified!</strong>
-        These framework relationships offer maximum compliance benefit with minimal effort (ROI ≥ 3.0, Coverage ≥ 60%).
-    </div>
+    {% set _sections = _sections|merge([{
+        heading: 'Mapping Quality Distribution',
+        table: {
+            headers: ['Quality Level', 'Range', 'Count', 'Percentage', 'Assessment'],
+            rows: _mqd_rows,
+        },
+        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">' ~ _mqd_insight ~ '</div>',
+    }]) %}
+{% endif %}
 
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-18">{{ 'pdf.transitive_compliance.from_framework'|trans({}, 'messages')}}</th>
-                <th scope="col" class="w-18">{{ 'pdf.transitive_compliance.to_framework'|trans({}, 'messages')}}</th>
-                <th scope="col" class="text-center w-12">Coverage</th>
-                <th scope="col" class="text-center w-12">Impact Score</th>
-                <th scope="col" class="text-center w-12">ROI</th>
-                <th scope="col" class="text-center w-12">Effort (hrs)</th>
-                <th scope="col" class="w-16">Assessment</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for rel in quick_wins %}
-            <tr>
-                <td><strong>{{ rel.source.code }}</strong></td>
-                <td><strong>{{ rel.target.code }}</strong></td>
-                <td class="text-center">
-                    <span class="quality-good">{{ rel.coverage }}%</span>
-                </td>
-                <td class="text-center"><strong style="color: #2196F3;">{{ rel.impact_score }}</strong></td>
-                <td class="text-center"><strong class="quality-good">{{ rel.roi }}</strong></td>
-                <td class="text-center">{{ rel.effort_estimate }}</td>
-                <td>
-                    {% if rel.roi >= 5 %}Excellent - Top Priority
-                    {% else %}Very Good - Recommended
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="insight-box">
-        <strong>Estimated Total Savings:</strong> {{ quick_wins|reduce((carry, rel) => carry + rel.mapped, 0) }} requirements
-        can be covered with only {{ quick_wins|reduce((carry, rel) => carry + rel.effort_estimate, 0) }} hours of effort.
-    </div>
-    {% endif %}
-
-    {# Framework Relationships Matrix #}
-    <div class="page-break"></div>
-    <h2>Framework Relationships Matrix</h2>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-15">{{ 'pdf.transitive_compliance.from_framework'|trans({}, 'messages')}}</th>
-                <th scope="col" class="w-15">{{ 'pdf.transitive_compliance.to_framework'|trans({}, 'messages')}}</th>
-                <th scope="col" class="text-center w-12">Coverage</th>
-                <th scope="col" class="text-center w-12">Impact Score</th>
-                <th scope="col" class="text-center w-12">ROI</th>
-                <th scope="col" class="text-center w-12">Effort</th>
-                <th scope="col" class="text-center w-12">Priority</th>
-                <th scope="col" class="w-10">Rating</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for rel in framework_relationships %}
-            <tr {% if rel.is_quick_win %}style="background: var(--success-tint);"{% endif %}>
-                <td><strong>{{ rel.source.code }}</strong></td>
-                <td><strong>{{ rel.target.code }}</strong></td>
-                <td class="text-center">
-                    <span class="{% if rel.coverage >= 80 %}quality-good{% elseif rel.coverage >= 50 %}quality-medium{% else %}quality-weak{% endif %}">
-                        {{ rel.coverage }}%
-                    </span>
-                </td>
-                <td class="text-center">
-                    <strong {% if rel.impact_score >= 50 %}style="color: #2196F3;"{% endif %}>
-                        {{ rel.impact_score }}
-                    </strong>
-                </td>
-                <td class="text-center">
-                    <strong {% if rel.roi >= 3 %}class="quality-good"{% endif %}>
-                        {{ rel.roi }}
-                    </strong>
-                </td>
-                <td class="text-center">{{ rel.effort_estimate }}h</td>
-                <td class="text-center">
-                    {% if rel.priority_multiplier >= 2 %}
-                        <span class="badge badge-critical">High</span>
-                    {% elseif rel.priority_multiplier >= 1.5 %}
-                        <span class="badge badge-warning">Medium</span>
-                    {% else %}
-                        <span class="badge badge-info">Normal</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if rel.is_quick_win %}Quick Win
-                    {% elseif rel.impact_score >= 50 %}High Impact
-                    {% elseif rel.roi >= 2 %}Good ROI
-                    {% else %}Standard
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="insight-box">
-        <strong>Impact Score:</strong> Calculated as (Coverage × Avg. Requirements × Priority) ÷ 100. Higher scores = higher business value.
-        <br><strong>ROI:</strong> Impact Score ÷ Effort (hours). ROI ≥ 3.0 = Quick Win!
-    </div>
-
-    {# High Coverage Relationships #}
-    {% set high_coverage = framework_relationships|filter(rel => rel.coverage >= 70) %}
-    {% if high_coverage|length > 0 %}
-    <div class="page-break"></div>
-    <h2>High Coverage Relationships (≥70%)</h2>
-    <div class="insight-box">
-        <strong>{{ high_coverage|length }} High-Coverage Relationships Identified!</strong>
-        These frameworks have strong overlaps and offer significant compliance leverage.
-    </div>
-
-    {% for rel in high_coverage|slice(0, 10) %}
-    <div style="background: #f9fafb; border-left: 3px solid #10b981; padding: 8pt; margin: 5pt 0; font-size: 8pt;">
-        <strong>{{ rel.source.code }} → {{ rel.target.code }}</strong>:
-        Coverage <strong>{{ rel.coverage }}%</strong> ({{ rel.mapped }} of {{ rel.total }} requirements).
-        Estimated time savings: ~{{ (rel.mapped * 1.5)|round }} hours.
-    </div>
+{# ── Quick Wins - High ROI Opportunities ──────────────────────────────── #}
+{% if quick_wins is defined and quick_wins|length > 0 %}
+    {% set _qw_rows = [] %}
+    {% for rel in quick_wins %}
+        {% set _assessment = rel.roi >= 5 ? 'Excellent - Top Priority' : 'Very Good - Recommended' %}
+        {% set _qw_rows = _qw_rows|merge([[
+            '<strong>' ~ rel.source.code ~ '</strong>',
+            '<strong>' ~ rel.target.code ~ '</strong>',
+            '<strong style="color:var(--success-strong);">' ~ rel.coverage ~ '%</strong>',
+            '<strong style="color:var(--primary-strong);">' ~ rel.impact_score ~ '</strong>',
+            '<strong style="color:var(--success-strong);">' ~ rel.roi ~ '</strong>',
+            rel.effort_estimate,
+            _assessment,
+        ]]) %}
     {% endfor %}
+
+    {% set _sections = _sections|merge([{
+        heading: 'Quick Wins - High ROI Opportunities',
+        body_html: '<div style="border-left:3pt solid var(--success);padding:8pt 10pt;margin:0 0 8pt;background:var(--success-tint);font-size:9pt;">'
+            ~ '<strong>' ~ quick_wins|length ~ ' Quick Wins Identified!</strong> '
+            ~ 'These framework relationships offer maximum compliance benefit with minimal effort (ROI ≥ 3.0, Coverage ≥ 60%).</div>',
+        table: {
+            headers: [
+                'pdf.transitive_compliance.from_framework'|trans({}, 'messages'),
+                'pdf.transitive_compliance.to_framework'|trans({}, 'messages'),
+                'Coverage', 'Impact Score', 'ROI', 'Effort (hrs)', 'Assessment',
+            ],
+            rows: _qw_rows,
+        },
+    }]) %}
+
+    {% set _sections = _sections|merge([{
+        heading: '',
+        body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0;background:var(--surface-2);font-size:9pt;">'
+            ~ '<strong>Estimated Total Savings:</strong> ' ~ quick_wins|reduce((carry, rel) => carry + rel.mapped, 0) ~ ' requirements '
+            ~ 'can be covered with only ' ~ quick_wins|reduce((carry, rel) => carry + rel.effort_estimate, 0) ~ ' hours of effort.</div>',
+    }]) %}
+{% endif %}
+
+{# ── Framework Relationships Matrix ───────────────────────────────────── #}
+{% set _rel_rows = [] %}
+{% for rel in framework_relationships %}
+    {% set _cov_color = rel.coverage >= 80 ? 'var(--success-strong)' : (rel.coverage >= 50 ? 'var(--warning-strong)' : 'var(--danger-strong)') %}
+    {% set _prio_badge = '' %}
+    {% if rel.priority_multiplier >= 2 %}
+        {% set _prio_badge = '<span class="badge badge-danger">High</span>' %}
+    {% elseif rel.priority_multiplier >= 1.5 %}
+        {% set _prio_badge = '<span class="badge badge-warning">Medium</span>' %}
+    {% else %}
+        {% set _prio_badge = '<span class="badge badge-info">Normal</span>' %}
     {% endif %}
 
-    {# Strategic Recommendations #}
-    <div class="page-break"></div>
-    <h2>Strategic Recommendations</h2>
+    {% set _rating = 'Standard' %}
+    {% if rel.is_quick_win %}
+        {% set _rating = 'Quick Win' %}
+    {% elseif rel.impact_score >= 50 %}
+        {% set _rating = 'High Impact' %}
+    {% elseif rel.roi >= 2 %}
+        {% set _rating = 'Good ROI' %}
+    {% endif %}
 
-    <h2>1. Immediate Actions - Quick Wins</h2>
-    <div class="quick-win-box insight-box">
-        <strong>Priority: CRITICAL</strong>
-        {% if quick_win_count > 0 %}
-        - Focus on {{ quick_win_count }} Quick Wins with highest ROI (≥3.0).
-        Start with top 3 for immediate compliance improvement.
-        <br><strong>Expected Benefit:</strong> {{ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.mapped, 0) }} requirements
-        with only {{ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }} hours effort.
-        {% else %}
-        - No Quick Wins identified. Focus on High-Impact Relationships (Impact Score ≥ 50).
-        {% endif %}
-    </div>
+    {% set _rel_rows = _rel_rows|merge([[
+        '<strong>' ~ rel.source.code ~ '</strong>',
+        '<strong>' ~ rel.target.code ~ '</strong>',
+        '<strong style="color:' ~ _cov_color ~ ';">' ~ rel.coverage ~ '%</strong>',
+        '<strong' ~ (rel.impact_score >= 50 ? ' style="color:var(--primary-strong);"' : '') ~ '>' ~ rel.impact_score ~ '</strong>',
+        '<strong' ~ (rel.roi >= 3 ? ' style="color:var(--success-strong);"' : '') ~ '>' ~ rel.roi ~ '</strong>',
+        rel.effort_estimate ~ 'h',
+        _prio_badge,
+        _rating,
+    ]]) %}
+{% endfor %}
 
-    <h3>2. High-Impact Relationships</h3>
-    <div class="insight-box">
-        <strong>Priority: Very High</strong>
-        {% if high_impact_count > 0 %}
-        - {{ high_impact_count }} High-Impact Relationships (Impact Score ≥ 50) offer significant business value.
-        Allocate resources for top relationships to maximize framework synergies.
-        {% else %}
-        - Focus on improving existing relationships to increase impact scores.
-        {% endif %}
-    </div>
+{% set _sections = _sections|merge([{
+    heading: 'Framework Relationships Matrix',
+    table: {
+        headers: [
+            'pdf.transitive_compliance.from_framework'|trans({}, 'messages'),
+            'pdf.transitive_compliance.to_framework'|trans({}, 'messages'),
+            'Coverage', 'Impact Score', 'ROI', 'Effort', 'Priority', 'Rating',
+        ],
+        rows: _rel_rows,
+    },
+    body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">'
+        ~ '<strong>Impact Score:</strong> Calculated as (Coverage &times; Avg. Requirements &times; Priority) &divide; 100. Higher scores = higher business value.'
+        ~ '<br><strong>ROI:</strong> Impact Score &divide; Effort (hours). ROI ≥ 3.0 = Quick Win!</div>',
+}]) %}
 
-    <h3>3. Optimization Opportunities</h3>
-    {% set low_roi = framework_relationships|filter(rel => rel.roi < 2 and not rel.is_quick_win) %}
-    <div class="insight-box">
-        <strong>Priority: Medium</strong>
-        - {{ low_roi|length }} framework relationships have low ROI (&lt;2.0).
-        Options: (1) Improve mapping quality, (2) Reduce effort through automation, (3) De-prioritize in favor of high-ROI opportunities.
-    </div>
+{# ── High Coverage Relationships ──────────────────────────────────────── #}
+{% set high_coverage = framework_relationships|filter(rel => rel.coverage >= 70) %}
+{% if high_coverage|length > 0 %}
+    {% set _hc_body = '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 8pt;background:var(--surface-2);font-size:9pt;">'
+        ~ '<strong>' ~ high_coverage|length ~ ' High-Coverage Relationships Identified!</strong> '
+        ~ 'These frameworks have strong overlaps and offer significant compliance leverage.</div>' %}
+    {% for rel in high_coverage|slice(0, 10) %}
+        {% set _hc_body = _hc_body
+            ~ '<div style="border-left:3pt solid var(--success);padding:6pt 10pt;margin:4pt 0;background:var(--success-tint);font-size:9pt;">'
+            ~ '<strong>' ~ rel.source.code ~ ' → ' ~ rel.target.code ~ '</strong>: '
+            ~ 'Coverage <strong>' ~ rel.coverage ~ '%</strong> (' ~ rel.mapped ~ ' of ' ~ rel.total ~ ' requirements). '
+            ~ 'Estimated time savings: ~' ~ (rel.mapped * 1.5)|round ~ ' hours.</div>' %}
+    {% endfor %}
 
-    <h3>ROI-Based Implementation Roadmap</h3>
-    <table>
-        <thead>
-            <tr>
-                <th scope="col" class="w-20">Phase</th>
-                <th scope="col" class="w-40">Activities</th>
-                <th scope="col" class="text-center w-15">Duration</th>
-                <th scope="col" class="text-center w-12">Effort</th>
-                <th scope="col" class="text-center w-13">ROI</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Phase 1 (Week 1-4)</strong></td>
-                <td>Implement Top {{ (quick_wins ?? [])|slice(0, 5)|length }} Quick Wins, start combined audits</td>
-                <td class="text-center">4 weeks</td>
-                <td class="text-center">{% if quick_wins is defined and quick_wins|length > 0 %}{{ quick_wins|slice(0, 5)|reduce((carry, rel) => carry + rel.effort_estimate, 0) }}h{% else %}20-30h{% endif %}</td>
-                <td class="text-center"><span class="badge badge-success">Very High</span></td>
-            </tr>
-            <tr>
-                <td><strong>Phase 2 (Week 5-12)</strong></td>
-                <td>Optimize High-Impact Relationships (Score ≥ 50), improve mapping quality, increase coverage</td>
-                <td class="text-center">8 weeks</td>
-                <td class="text-center">40-60h</td>
-                <td class="text-center"><span class="badge badge-info">High</span></td>
-            </tr>
-            <tr>
-                <td><strong>Phase 3 (Week 13-24)</strong></td>
-                <td>{{ 'pdf.transitive_compliance.establish_hub'|trans({}, 'messages')}}</td>
-                <td class="text-center">12 weeks</td>
-                <td class="text-center">80-120h</td>
-                <td class="text-center"><span class="badge badge-warning">Very High (long-term)</span></td>
-            </tr>
-        </tbody>
-    </table>
+    {% set _sections = _sections|merge([{
+        heading: 'High Coverage Relationships (≥70%)',
+        body_html: _hc_body,
+    }]) %}
+{% endif %}
 
-    <div class="insight-box">
-        <strong>Total Roadmap Benefit:</strong>
-        Phase 1 delivers immediate results with minimal effort.
-        Phase 2 maximizes strategic impact.
-        Phase 3 establishes sustainable processes for long-term ROI optimization.
-        <br><strong>Long-term ROI:</strong> 40-60% reduction in overall compliance effort through optimized prioritization.
-    </div>
+{# ── Strategic Recommendations ────────────────────────────────────────── #}
+{% set _rec_body = '' %}
 
-    <div class="footer">
-        Transitive Compliance Report - Generated on {{ pdf_generation_date|date('d.m.Y H:i:s') }} - Page <span class="pagenum"></span>
-    </div>
+{# Immediate Actions #}
+{% if quick_win_count > 0 %}
+    {% set _rec_body = '<div style="border-left:3pt solid var(--success);padding:8pt 10pt;margin:0 0 8pt;background:var(--success-tint);font-size:9pt;">'
+        ~ '<strong>1. Immediate Actions - Quick Wins (Priority: CRITICAL)</strong><br>'
+        ~ 'Focus on ' ~ quick_win_count ~ ' Quick Wins with highest ROI (≥3.0). '
+        ~ 'Start with top 3 for immediate compliance improvement.<br>'
+        ~ '<strong>Expected Benefit:</strong> ' ~ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.mapped, 0) ~ ' requirements '
+        ~ 'with only ' ~ quick_wins|slice(0, 3)|reduce((carry, rel) => carry + rel.effort_estimate, 0) ~ ' hours effort.</div>' %}
+{% else %}
+    {% set _rec_body = '<div style="border-left:3pt solid var(--success);padding:8pt 10pt;margin:0 0 8pt;background:var(--success-tint);font-size:9pt;">'
+        ~ '<strong>1. Immediate Actions (Priority: CRITICAL)</strong><br>'
+        ~ 'No Quick Wins identified. Focus on High-Impact Relationships (Impact Score ≥ 50).</div>' %}
+{% endif %}
+
+{# High-Impact Relationships #}
+{% if high_impact_count > 0 %}
+    {% set _rec_body = _rec_body
+        ~ '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 8pt;background:var(--surface-2);font-size:9pt;">'
+        ~ '<strong>2. High-Impact Relationships (Priority: Very High)</strong><br>'
+        ~ high_impact_count ~ ' High-Impact Relationships (Impact Score ≥ 50) offer significant business value. '
+        ~ 'Allocate resources for top relationships to maximize framework synergies.</div>' %}
+{% else %}
+    {% set _rec_body = _rec_body
+        ~ '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 8pt;background:var(--surface-2);font-size:9pt;">'
+        ~ '<strong>2. High-Impact Relationships (Priority: Very High)</strong><br>'
+        ~ 'Focus on improving existing relationships to increase impact scores.</div>' %}
+{% endif %}
+
+{# Optimization Opportunities #}
+{% set low_roi = framework_relationships|filter(rel => rel.roi < 2 and not rel.is_quick_win) %}
+{% set _rec_body = _rec_body
+    ~ '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 8pt;background:var(--surface-2);font-size:9pt;">'
+    ~ '<strong>3. Optimization Opportunities (Priority: Medium)</strong><br>'
+    ~ low_roi|length ~ ' framework relationships have low ROI (&lt;2.0). '
+    ~ 'Options: (1) Improve mapping quality, (2) Reduce effort through automation, (3) De-prioritize in favor of high-ROI opportunities.</div>' %}
+
+{% set _sections = _sections|merge([{
+    heading: 'Strategic Recommendations',
+    body_html: _rec_body,
+}]) %}
+
+{# ── ROI-Based Implementation Roadmap ─────────────────────────────────── #}
+{% set _roadmap_rows = [
+    [
+        '<strong>Phase 1 (Week 1-4)</strong>',
+        'Implement Top ' ~ ((quick_wins ?? [])|slice(0, 5)|length) ~ ' Quick Wins, start combined audits',
+        '4 weeks',
+        (quick_wins is defined and quick_wins|length > 0) ? (quick_wins|slice(0, 5)|reduce((carry, rel) => carry + rel.effort_estimate, 0) ~ 'h') : '20-30h',
+        '<span class="badge badge-success">Very High</span>',
+    ],
+    [
+        '<strong>Phase 2 (Week 5-12)</strong>',
+        'Optimize High-Impact Relationships (Score ≥ 50), improve mapping quality, increase coverage',
+        '8 weeks',
+        '40-60h',
+        '<span class="badge badge-info">High</span>',
+    ],
+    [
+        '<strong>Phase 3 (Week 13-24)</strong>',
+        'pdf.transitive_compliance.establish_hub'|trans({}, 'messages'),
+        '12 weeks',
+        '80-120h',
+        '<span class="badge badge-warning">Very High (long-term)</span>',
+    ],
+] %}
+
+{% set _sections = _sections|merge([{
+    heading: 'ROI-Based Implementation Roadmap',
+    table: {
+        headers: ['Phase', 'Activities', 'Duration', 'Effort', 'ROI'],
+        rows: _roadmap_rows,
+    },
+    body_html: '<div style="border-left:3pt solid var(--primary);padding:8pt 10pt;margin:8pt 0;background:var(--surface-2);font-size:9pt;">'
+        ~ '<strong>Total Roadmap Benefit:</strong> '
+        ~ 'Phase 1 delivers immediate results with minimal effort. '
+        ~ 'Phase 2 maximizes strategic impact. '
+        ~ 'Phase 3 establishes sustainable processes for long-term ROI optimization.'
+        ~ '<br><strong>Long-term ROI:</strong> 40-60% reduction in overall compliance effort through optimized prioritization.</div>',
+}]) %}
+
+{{ _fa_report_doc.render({
+    report: {
+        title:        'Transitive Compliance Report',
+        subtitle:     'Multi-Framework Compliance Leverage Analysis',
+        kicker:       'Compliance · Transitive Analysis',
+        status:       'final',
+        audience:     'auditor',
+        generated_at: pdf_generation_date|date('d.m.Y H:i'),
+    },
+    brand_name: 'Little ISMS Helper',
+    key_findings: [
+        { label: 'Active Frameworks: ' ~ total_frameworks, tone: 'ok' },
+        { label: 'Framework Relationships: ' ~ total_relationships, tone: 'ok' },
+        { label: 'Quick Wins: ' ~ quick_win_count,
+          tone: quick_win_count > 0 ? 'ok' : 'warn' },
+        { label: 'Avg. Coverage: ' ~ avg_coverage|round(1) ~ '%',
+          tone: avg_coverage >= 60 ? 'ok' : (avg_coverage >= 40 ? 'warn' : 'danger') },
+        { label: 'Avg. Mapping Quality: ' ~ avg_mapping_quality ~ '%',
+          tone: avg_mapping_quality >= 80 ? 'ok' : (avg_mapping_quality >= 60 ? 'warn' : 'danger') },
+    ],
+    kpis: [
+        { label: 'Active Frameworks',        value: total_frameworks,                     tone: 'neutral' },
+        { label: 'Framework Relationships',   value: total_relationships,                  tone: 'neutral' },
+        { label: 'Quick Wins (High ROI)',     value: quick_win_count,
+          tone: quick_win_count > 0 ? 'success' : 'warning' },
+        { label: 'Avg. Coverage',             value: avg_coverage|round(1) ~ '%',          tone: 'neutral' },
+        { label: 'Avg. Mapping Quality',      value: avg_mapping_quality ~ '%',
+          tone: avg_mapping_quality >= 80 ? 'success' : (avg_mapping_quality >= 60 ? 'warning' : 'danger') },
+        { label: 'Avg. Impact Score',         value: avg_impact_score,                     tone: 'warning' },
+    ],
+    sections: _sections,
+    appendix: {
+        methodology: '<p>Transitive compliance analysis evaluates multi-framework relationships to identify compliance leverage opportunities. Impact Score = (Coverage &times; Avg. Requirements &times; Priority) &divide; 100. ROI = Impact Score &divide; Effort (hours). Quick Wins: ROI ≥ 3.0 and Coverage ≥ 60%. Quality levels: Excellent (90-100%), Good (70-89%), Medium (50-69%), Weak (&lt;50%). Coverage measured as percentage of mapped requirements between framework pairs.</p>',
+        sources: [
+            { label: 'TransitiveComplianceService', detail: 'analyzeTransitiveCompliance() — multi-framework leverage analysis' },
+        ],
+    },
+}) }}
 </body>
 </html>

@@ -1,4 +1,5 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 {#
     WS-6 Gap-Report body partial.
 
@@ -106,6 +107,7 @@
                 </tr>
             {% endblock %}
             {% block table_body %}
+                {% import '_components/_status_pill.html.twig' as pill %}
                 {% for row in effort_table %}
                     <tr class="fa-table__row"
                         data-budget-simulator-target="row"
@@ -122,9 +124,8 @@
                         <td class="fa-table__cell small">{{ row.category|default('—') }}</td>
                         <td class="fa-table__cell fa-table__cell--center">
                             {% if row.priority %}
-                                {% set _pv = row.priority == 'critical' ? 'danger' : (row.priority == 'high' ? 'warning' : (row.priority == 'medium' ? 'info' : 'secondary')) %}
                                 {% set _pp = row.priority == 'critical' ? 'danger' : (row.priority == 'high' ? 'warning' : (row.priority == 'medium' ? 'primary' : 'neutral')) %}
-                                <span class="badge bg-{{ _pv }} fa-status-pill fa-status-pill--{{ _pp }}">{{ row.priority }}</span>
+                                {{ pill.render(row.priority, _pp) }}
                             {% else %}—{% endif %}
                         </td>
                         <td class="fa-table__cell fa-table__cell--num">{{ row.fulfillment_percentage }}%</td>

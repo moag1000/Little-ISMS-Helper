@@ -1,161 +1,145 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Dashboard PDF Report — fa-report-doc macro (Tier 2)
+   Audience: auditor
+   Status:   final
+   ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
 <html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'pdf.dashboard.title'|trans({}, 'reports') }}</title>
     <style>
-        :root {
-            --primary:       #0ea5e9;
-            --surface:       #ffffff;
-            --surface-2:     #f1f5f9;
-            --fg:            #0f172a;
-            --fg-2:          #475569;
-            --fg-3:          #94a3b8;
-            --border:        #cbd5e1;
-            --success:       #166534;
-            --danger:        #991b1b;
-            --warning:       #92400e;
-            --warning-tint:  #fef3c7;
-        }
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 11pt;
-            margin: 0;
-            padding: 20px;
-            color: var(--fg);
-            background: var(--surface);
-        }
-
-        /* ── Cover ── */
-        .report-cover {
-            text-align: center;
-            margin-bottom: 24px;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10px;
-        }
-        .report-cover h1 {
-            color: var(--fg);
-            margin: 0;
-            font-size: 22pt;
-            text-transform: uppercase;
-            letter-spacing: 0.5pt;
-        }
-        .report-cover .date { color: var(--fg-2); font-size: 9pt; margin-top: 4px; }
-
-        /* ── KPI stat boxes (CSS table for dompdf compat) ── */
-        .stats-grid { display: table; width: 100%; margin: 16px 0; border-spacing: 6px; }
-        .stat-box {
-            display: table-cell;
-            width: 33%;
-            padding: 12px 8px;
-            border: 2px solid var(--border);
-            text-align: center;
-            background: var(--surface-2);
-            border-radius: 4px;
-        }
-        .stat-box .number  { font-size: 28pt; font-weight: bold; color: var(--primary); }
-        .stat-box .label   { font-size: 9pt; color: var(--fg); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5pt; }
-
-        /* ── Section ── */
-        .section { margin: 24px 0; page-break-inside: avoid; }
-        .section h2 {
-            background: var(--fg);
-            color: var(--surface);
-            padding: 8px 10px;
-            font-size: 12pt;
-            margin-top: 0;
-            text-transform: uppercase;
-            letter-spacing: 0.3pt;
-        }
-
-        /* ── Table ── */
-        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
-        th {
-            background: var(--fg);
-            color: var(--surface);
-            padding: 7px 8px;
-            text-align: left;
-            font-size: 9pt;
-            text-transform: uppercase;
-            letter-spacing: 0.3pt;
-        }
-        td { padding: 7px 8px; border-bottom: 1px solid var(--border); font-size: 10pt; }
-
-        /* ── Footer ── */
-        .report-footer { position: fixed; bottom: 16px; left: 0; right: 0; text-align: center; font-size: 8pt; color: var(--fg-3); }
+        :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--success-glow:rgba(5,150,105,.20);--warning:#d97706;--warning-strong:#b45309;--warning-glow:rgba(217,119,6,.20);--danger:#dc2626;--danger-strong:#b91c1c;--danger-glow:rgba(220,38,38,.20);}
+        @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
+        body{background:#fff;font-family:'DejaVu Sans',sans-serif;margin:0;padding:0;}
+        .report-doc{background:var(--surface);color:var(--fg-1);font-size:10pt;line-height:1.45;max-width:none;margin:0;border:0;border-radius:0;}
+        .report-doc__cover{padding:18pt 14pt 12pt;border-bottom:1px solid var(--border);}
+        .report-doc__cover-top{display:table;width:100%;}
+        .report-doc__brand{display:table-cell;vertical-align:middle;}
+        .report-doc__chips{display:table-cell;text-align:right;vertical-align:middle;}
+        .report-doc__logo{display:inline-block;width:32pt;height:32pt;border-radius:6pt;background:var(--primary);color:#fff;text-align:center;line-height:32pt;font-weight:700;font-size:18pt;vertical-align:middle;margin-right:8pt;}
+        .report-doc__brand-name{font-weight:700;font-size:11pt;color:var(--fg-1);display:inline-block;vertical-align:middle;}
+        .report-doc__brand-meta{font-size:8pt;color:var(--fg-3);}
+        .report-doc__chip{display:inline-block;padding:2pt 7pt;border-radius:8pt;background:var(--surface-2);color:var(--fg-2);font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border);margin-left:4pt;}
+        .report-doc__chip--status-confidential{background:var(--danger-glow);color:var(--danger-strong);border-color:transparent;}
+        .report-doc__chip--audience-vorstand{background:var(--primary-tint);color:var(--primary-strong);border-color:transparent;}
+        .report-doc__chip--audience-auditor{background:var(--accent-tint);color:var(--accent-strong);border-color:transparent;}
+        .report-doc__chip--classification{background:var(--fg-1);color:#fff;border-color:transparent;}
+        .report-doc__cover-center{padding:16pt 0 12pt;}
+        .report-doc__kicker{font-size:8pt;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4pt;}
+        .report-doc__title{font-size:22pt;font-weight:800;color:var(--fg-1);margin:0 0 6pt;line-height:1.05;}
+        .report-doc__sub{font-size:10pt;color:var(--fg-2);margin:0;}
+        .report-doc__cover-grid{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8pt 0;margin:0;}
+        .report-doc__cover-grid>div{display:inline-block;width:31%;margin:0 1% 6pt 0;vertical-align:top;}
+        .report-doc__cover-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 2pt;}
+        .report-doc__cover-value{font-size:9pt;color:var(--fg-1);font-weight:600;margin:0;}
+        .report-doc__exec-summary{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__exec-heading{font-size:13pt;font-weight:800;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__kpi-grid{display:table;width:100%;border-spacing:6pt;}
+        .report-doc__kpi-tile{display:table-cell;padding:10pt;border:1px solid var(--border);border-radius:4pt;vertical-align:top;background:var(--surface);}
+        .report-doc__kpi-tile--success{border-left:3pt solid var(--success);}
+        .report-doc__kpi-tile--warning{border-left:3pt solid var(--warning);}
+        .report-doc__kpi-tile--danger{border-left:3pt solid var(--danger);}
+        .report-doc__kpi-tile--neutral{border-left:3pt solid var(--primary);}
+        .report-doc__kpi-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4pt;}
+        .report-doc__kpi-value{font-size:18pt;font-weight:800;color:var(--fg-1);margin-bottom:2pt;}
+        .report-doc__kpi-trend{font-size:8pt;font-weight:600;}
+        .report-doc__kpi-trend--up{color:var(--success-strong);}
+        .report-doc__kpi-trend--down{color:var(--danger-strong);}
+        .report-doc__tldr{background:var(--surface);border:1px solid var(--border);border-left:3pt solid var(--primary);padding:8pt 10pt;margin:0 0 12pt;}
+        .report-doc__tldr-label{font-size:7pt;color:var(--primary-strong);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 6pt;}
+        .report-doc__tldr-list{list-style:none;margin:0;padding:0;}
+        .report-doc__tldr-item{font-size:9pt;color:var(--fg-1);padding:2pt 0;}
+        .report-doc__tldr-item--ok{border-left:2pt solid var(--success);padding-left:6pt;}
+        .report-doc__tldr-item--warn{border-left:2pt solid var(--warning);padding-left:6pt;}
+        .report-doc__tldr-item--danger{border-left:2pt solid var(--danger);padding-left:6pt;}
+        .report-doc__tldr-dot{display:none;}
+        .report-doc__data-section{padding:12pt 14pt;border-bottom:1px solid var(--border);page-break-inside:avoid;}
+        .report-doc__section-heading{font-size:12pt;font-weight:700;color:var(--fg-1);margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__section-body{font-size:9pt;color:var(--fg-1);margin:6pt 0;}
+        .report-doc__table{width:100%;border-collapse:collapse;font-size:9pt;}
+        .report-doc__table th{background:var(--surface-2);color:var(--fg-2);padding:5pt 6pt;border:.5pt solid var(--border-strong);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:7pt;text-align:left;}
+        .report-doc__table td{padding:5pt 6pt;border:.5pt solid var(--border);color:var(--fg-1);vertical-align:top;}
+        .report-doc__table tbody tr:nth-child(even) td{background:var(--surface-2);}
+        .report-doc__table-wrap{margin:8pt 0;}
+        .report-doc__appendix{padding:12pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__appendix-heading{font-size:12pt;font-weight:700;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__appendix-subheading{font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:8pt 0 4pt;}
+        .report-doc__appendix-body{font-size:8pt;color:var(--fg-2);}
+        .report-doc__appendix-sources{padding-left:14pt;font-size:8pt;color:var(--fg-2);}
+        .report-doc__footer-disclaimer{padding:12pt 14pt;background:var(--surface);border-top:1px solid var(--border-strong);}
+        .report-doc__distribution-label{font-size:7pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 4pt;}
+        .report-doc__distribution-list{list-style:none;padding:0;margin:0 0 8pt;font-size:9pt;color:var(--fg-2);}
+        .report-doc__distribution-list li{display:inline-block;border-left:2pt solid var(--border);padding:0 8pt;}
+        .report-doc__disclaimer-text{font-size:8pt;color:var(--fg-3);padding:8pt;background:var(--surface-2);border-radius:4pt;border:1px solid var(--border);margin:0 0 8pt;}
+        .report-doc__footer-meta{font-size:7pt;color:var(--fg-3);}
+        .report-doc__footer-brand{font-weight:700;color:var(--fg-2);}
+        .report-doc__footer-classification{color:var(--danger-strong);font-weight:700;text-transform:uppercase;}
+        .badge{display:inline-block;padding:2pt 5pt;border-radius:3pt;font-size:7pt;font-weight:700;}
+        .badge-success{background:var(--success-tint);color:var(--success-strong);}
+        .badge-warning{background:rgba(217,119,6,.12);color:var(--warning-strong);}
+        .badge-danger{background:rgba(220,38,38,.12);color:var(--danger-strong);}
+        .badge-info{background:var(--primary-tint);color:var(--primary-strong);}
     </style>
 </head>
 <body>
-    <div class="report-cover">
-        <h1>{{ 'pdf.dashboard.title'|trans({}, 'reports') }}</h1>
-        <div class="date">{{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }}</div>
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {# Row 1: assets / risks / high-critical #}
-    <div class="stats-grid">
-        <div class="stat-box">
-            <div class="number">{{ data.assets_count }}</div>
-            <div class="label">{{ 'pdf.dashboard.stats.assets'|trans({}, 'reports') }}</div>
-        </div>
-        <div class="stat-box">
-            <div class="number">{{ data.risks_count }}</div>
-            <div class="label">{{ 'pdf.dashboard.stats.total_risks'|trans({}, 'reports') }}</div>
-        </div>
-        <div class="stat-box">
-            <div class="number" style="color: var(--danger);">{{ data.high_risks }}</div>
-            <div class="label">{{ 'pdf.dashboard.stats.high_critical'|trans({}, 'reports') }}</div>
-        </div>
-    </div>
+{# ── Metrics table rows ── #}
+{% set _metrics_rows = [
+    [ 'pdf.dashboard.metrics.open_incidents'|trans({}, 'reports'),
+      data.open_incidents,
+      data.open_incidents > 5
+        ? '<span class="badge badge-warning">' ~ ('pdf.dashboard.status.attention'|trans({}, 'reports')) ~ '</span>'
+        : '<span class="badge badge-success">' ~ ('pdf.dashboard.status.normal'|trans({}, 'reports')) ~ '</span>' ],
+    [ 'pdf.dashboard.metrics.total_trainings'|trans({}, 'reports'),
+      data.total_trainings,
+      '<span class="badge badge-success">' ~ ('pdf.dashboard.status.active'|trans({}, 'reports')) ~ '</span>' ],
+    [ 'pdf.dashboard.metrics.audits_this_year'|trans({}, 'reports'),
+      data.audits_this_year,
+      data.audits_this_year >= 2
+        ? '<span class="badge badge-success">' ~ ('pdf.dashboard.status.compliant'|trans({}, 'reports')) ~ '</span>'
+        : '<span class="badge badge-warning">' ~ ('pdf.dashboard.status.review'|trans({}, 'reports')) ~ '</span>' ],
+] %}
 
-    {# Row 2: controls / implemented / compliance % #}
-    <div class="stats-grid">
-        <div class="stat-box">
-            <div class="number">{{ data.controls_count }}</div>
-            <div class="label">{{ 'pdf.dashboard.stats.controls'|trans({}, 'reports') }}</div>
-        </div>
-        <div class="stat-box">
-            <div class="number" style="color: var(--success);">{{ data.implemented_controls }}</div>
-            <div class="label">{{ 'pdf.dashboard.stats.implemented'|trans({}, 'reports') }}</div>
-        </div>
-        <div class="stat-box">
-            <div class="number">{{ data.compliance_percentage }}%</div>
-            <div class="label">{{ 'pdf.dashboard.stats.compliance'|trans({}, 'reports') }}</div>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>{{ 'pdf.dashboard.metrics.title'|trans({}, 'reports') }}</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'pdf.dashboard.metrics.metric'|trans({}, 'reports') }}</th>
-                    <th scope="col">{{ 'pdf.dashboard.metrics.value'|trans({}, 'reports') }}</th>
-                    <th scope="col">{{ 'pdf.dashboard.metrics.status'|trans({}, 'reports') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ 'pdf.dashboard.metrics.open_incidents'|trans({}, 'reports') }}</td>
-                    <td>{{ data.open_incidents }}</td>
-                    <td>{% if data.open_incidents > 5 %}⚠ {{ 'pdf.dashboard.status.attention'|trans({}, 'reports') }}{% else %}✓ {{ 'pdf.dashboard.status.normal'|trans({}, 'reports') }}{% endif %}</td>
-                </tr>
-                <tr>
-                    <td>{{ 'pdf.dashboard.metrics.total_trainings'|trans({}, 'reports') }}</td>
-                    <td>{{ data.total_trainings }}</td>
-                    <td>✓ {{ 'pdf.dashboard.status.active'|trans({}, 'reports') }}</td>
-                </tr>
-                <tr>
-                    <td>{{ 'pdf.dashboard.metrics.audits_this_year'|trans({}, 'reports') }}</td>
-                    <td>{{ data.audits_this_year }}</td>
-                    <td>{% if data.audits_this_year >= 2 %}✓ {{ 'pdf.dashboard.status.compliant'|trans({}, 'reports') }}{% else %}⚠ {{ 'pdf.dashboard.status.review'|trans({}, 'reports') }}{% endif %}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="report-footer">
-        <p>{{ 'pdf.common.confidential'|trans({}, 'reports') }} — Little ISMS Helper | {{ 'pdf.common.page'|trans({}, 'reports') }} 1</p>
-    </div>
+{{ _fa_report_doc.render({
+    report: {
+        title:        'pdf.dashboard.title'|trans({}, 'reports'),
+        kicker:       'ISMS · Dashboard',
+        status:       'final',
+        audience:     'auditor',
+        generated_at: generated_at|date('d.m.Y H:i'),
+    },
+    brand_name: 'Little ISMS Helper',
+    kpis: [
+        { label: 'pdf.dashboard.stats.assets'|trans({}, 'reports'),
+          value: data.assets_count, tone: 'neutral' },
+        { label: 'pdf.dashboard.stats.total_risks'|trans({}, 'reports'),
+          value: data.risks_count, tone: 'neutral' },
+        { label: 'pdf.dashboard.stats.high_critical'|trans({}, 'reports'),
+          value: data.high_risks,
+          tone: data.high_risks > 0 ? 'danger' : 'success' },
+        { label: 'pdf.dashboard.stats.controls'|trans({}, 'reports'),
+          value: data.controls_count, tone: 'neutral' },
+        { label: 'pdf.dashboard.stats.implemented'|trans({}, 'reports'),
+          value: data.implemented_controls, tone: 'success' },
+        { label: 'pdf.dashboard.stats.compliance'|trans({}, 'reports'),
+          value: data.compliance_percentage ~ '%',
+          tone: data.compliance_percentage >= 80 ? 'success' : (data.compliance_percentage >= 60 ? 'warning' : 'danger') },
+    ],
+    sections: [
+        {
+            heading: 'pdf.dashboard.metrics.title'|trans({}, 'reports'),
+            table: {
+                headers: [
+                    'pdf.dashboard.metrics.metric'|trans({}, 'reports'),
+                    'pdf.dashboard.metrics.value'|trans({}, 'reports'),
+                    'pdf.dashboard.metrics.status'|trans({}, 'reports'),
+                ],
+                rows: _metrics_rows,
+            },
+        },
+    ],
+}) }}
 </body>
 </html>

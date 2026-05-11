@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'compliance.mapping.seed_review.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -65,6 +66,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+                    {% import '_components/_status_pill.html.twig' as pill %}
                     {% for m in mappings %}
                         <tr class="fa-table__row">
                             <td class="fa-table__cell">
@@ -80,7 +82,8 @@
                                 <div class="small text-muted">{{ m.targetRequirement.title|u.truncate(60, '…') }}</div>
                             </td>
                             <td class="fa-table__cell">
-                                <span class="badge text-bg-{{ m.mappingBadgeClass }}">{{ m.mappingType }}</span>
+                                {% set _mr_tone = m.mappingBadgeClass == 'secondary' ? 'neutral' : (m.mappingBadgeClass == 'info' ? 'primary' : m.mappingBadgeClass) %}
+                                {{ pill.render(m.mappingType, _mr_tone) }}
                                 <div class="small text-muted">{{ m.finalPercentage }}%</div>
                             </td>
                             <td class="fa-table__cell">

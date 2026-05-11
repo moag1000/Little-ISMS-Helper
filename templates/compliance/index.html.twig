@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'compliance.page_title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -65,6 +66,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+                        {% import '_components/_status_pill.html.twig' as pill %}
                         {% for code, row in maturity_portfolio %}
                             {% set m = row.maturity %}
                             {% set variant = level_variant[m.level] ?? 'secondary' %}
@@ -74,9 +76,8 @@
                                     <span class="ms-1">{{ row.framework.name }}</span>
                                 </td>
                                 <td class="fa-table__cell">
-                                    <span class="badge text-bg-{{ variant }}">
-                                        L{{ m.level }} — {{ ('compliance.maturity.label.' ~ m.label)|trans({}, 'compliance') }}
-                                    </span>
+                                    {% set _pill_tone = variant == 'secondary' ? 'neutral' : (variant == 'info' ? 'primary' : variant) %}
+                                    {{ pill.render('L' ~ m.level ~ ' — ' ~ ('compliance.maturity.label.' ~ m.label)|trans({}, 'compliance'), _pill_tone) }}
                                 </td>
                                 <td class="fa-table__cell fa-table__cell--num">{{ m.coverage_pct }}%</td>
                                 <td class="fa-table__cell fa-table__cell--num">{{ m.cross_mappings }}</td>

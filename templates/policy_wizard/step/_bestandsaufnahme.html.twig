@@ -1,5 +1,6 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {# W4-C — Step 0 "Bestandsaufnahme" for brownfield tenants.
 
@@ -136,6 +137,7 @@
         {% block table_body %}
                 {% trans_default_domain 'policy_wizard' %}
                 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+                {% import '_components/_status_pill.html.twig' as pill %}
                 {% for row in rows %}
                     {% set doc_id = row.id %}
                     {% set persisted = persisted_decisions[doc_id]|default({}) %}
@@ -208,7 +210,7 @@
                             {% endif %}
                         </td>
                         <td class="fa-table__cell">
-                            <span class="badge bg-light text-body">{{ row.documentType }}</span>
+                            {{ pill.render(row.documentType, 'neutral', {size: 'sm'}) }}
                         </td>
                         <td class="fa-table__cell">
                             {% if row.lastApprovedAt %}

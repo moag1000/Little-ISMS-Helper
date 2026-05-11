@@ -44,10 +44,7 @@
     {% set title = props.title|default(null) %}
     {% set actions = props.actions|default(null) %}
 
-    {# Legacy-kompatible Classes (alert alert-{tone} + flash-{tone}) behalten —
-       bestehende Tests und CSS-Selektoren referenzieren sie. #}
-    {% set legacyTone = tone == 'danger' ? 'danger' : (tone == 'info' ? 'info' : tone) %}
-    <div class="fa-alert fa-alert--{{ tone }} alert alert-{{ legacyTone }} flash-{{ legacyTone }} {% if withAlva %}fa-alert--with-alva{% endif %} {% if dismissible %}fa-alert--dismissible{% endif %}"
+    <div class="fa-alert fa-alert--{{ tone }}{% if withAlva %} fa-alert--with-alva{% endif %}{% if dismissible %} fa-alert--dismissible{% endif %}"
          role="alert"
          {% if dismissible %}data-controller="aurora-alert"{% endif %}>
         {% if withAlva %}

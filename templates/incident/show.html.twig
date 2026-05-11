@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'incident' %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ incident.title }}{% endblock %}
 
@@ -136,17 +137,15 @@
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
+            {% import '_components/_status_pill.html.twig' as pill %}
             <div class="card-header">
                 <h2 class="h5">Incident #{{ incident.incidentNumber }}</h2>
                 <div class="badges">
-                    <span class="{{ badge_severity(incident.severity) }}">{{ incident.severity.value|upper }}</span>
-                    <span class="{{ badge_status(incident.status) }}">{{ incident.status.value|upper|replace({'_': ' '}) }}</span>
+                    {{ pill.render(incident.severity.value|upper, pill_tone_severity(incident.severity)) }}
+                    {{ pill.render(incident.status.value|upper|replace({'_': ' '}), pill_tone_status(incident.status)) }}
                     {% if is_nis2_active() and incident.requiresNis2Reporting %}
                         {% set nis2Status = incident.nis2ComplianceStatus %}
-                        <span class="{{ badge_nis2(nis2Status) }}">
-                            <i class="fa-icon fa-icon--certificate" aria-hidden="true"></i>
-                            {{ ('incident.nis2_compliance.' ~ nis2Status)|trans({}, 'incident') }}
-                        </span>
+                        {{ pill.render(('incident.nis2_compliance.' ~ nis2Status)|trans({}, 'incident'), pill_tone_nis2(nis2Status), { icon: 'bi-award' }) }}
                     {% endif %}
                 </div>
             </div>
@@ -385,9 +384,7 @@
                         {% for log in auditLogs %}
                         <div class="audit-log-entry">
                             <div class="audit-log-header">
-                                <span class="{{ badge_action(log.action) }}">
-                                    {{ log.action|upper }}
-                                </span>
+                                {{ pill.render(log.action|upper, pill_tone_action(log.action)) }}
                                 <span class="text-muted">
                                     {{ log.userName|default('System') }}
                                     &bull; {{ log.createdAt|date('d.m.Y H:i:s') }}

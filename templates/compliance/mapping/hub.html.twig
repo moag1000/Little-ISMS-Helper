@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_status_pill.html.twig' as pill %}
 
 {% block title %}{{ 'compliance.mapping.hub.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -75,10 +76,11 @@
             <a href="{{ path('app_compliance_mapping_wizard') }}" class="text-decoration-none">
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm border-primary' } %}
                     {% block card_body %}
+                        {% import '_components/_status_pill.html.twig' as pill %}
                         <div class="h5 text-primary">
                             <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.wizard.title'|trans({}, 'compliance') }}
-                            <span class="badge text-bg-primary ms-1">{{ 'compliance.mapping.hub.badge.start_here'|trans({}, 'compliance') }}</span>
+                            {{ pill.render('compliance.mapping.hub.badge.start_here'|trans({}, 'compliance'), 'primary') }}
                         </div>
                         <p class="small text-body mb-0">
                             {{ 'compliance.mapping.hub.action.wizard.desc'|trans({}, 'compliance') }}
@@ -108,11 +110,12 @@
             <a href="{{ path('app_mapping_quality_dashboard') }}" class="text-decoration-none">
                 {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' } %}
                     {% block card_body %}
+                        {% import '_components/_status_pill.html.twig' as pill %}
                         <div class="h5">
                             <i class="fa-icon fa-icon--ui-check text-info" aria-hidden="true"></i>
                             {{ 'compliance.mapping.hub.action.quality.title'|trans({}, 'compliance') }}
                             {% if unreviewed_count > 0 %}
-                                <span class="badge text-bg-warning ms-1">{{ unreviewed_count }}</span>
+                                {{ pill.render(unreviewed_count, 'warning') }}
                             {% endif %}
                         </div>
                         <p class="small text-body mb-0">

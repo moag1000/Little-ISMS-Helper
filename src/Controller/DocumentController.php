@@ -9,6 +9,8 @@ use Exception;
 use App\Entity\Document;
 use App\Form\DocumentType;
 use App\Repository\CommentRepository;
+use App\Repository\ComplianceRequirementRepository;
+use App\Repository\DocumentControlLinkRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\EntityTagRepository;
 use App\Service\DocumentService;
@@ -52,6 +54,8 @@ class DocumentController extends AbstractController
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?EntityTagRepository $entityTagRepository = null,
         private readonly ?CommentRepository $commentRepository = null,
+        private readonly ?DocumentControlLinkRepository $documentControlLinkRepository = null,
+        private readonly ?ComplianceRequirementRepository $complianceRequirementRepository = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index')]
@@ -63,6 +67,9 @@ class DocumentController extends AbstractController
 
         // Get view filter parameter
         $view = $request->query->get('view', 'own'); // Default: own documents
+
+        // Status filter — 'archived' lifts the isOperational() exclusion
+        $currentStatus = $request->query->get('status');
 
         // Policy-Wizard W7-C — history toggle. Default OFF: only the
         // current version of each policy is listed (a Document is
@@ -97,35 +104,68 @@ class DocumentController extends AbstractController
             ];
         }
 
-        // Hide soft-deleted/archived documents from the default list. KPI / audit
-        // views can bypass via dedicated endpoints.
-        $documents = array_filter($allDocuments, fn(Document $document): bool => $document->isOperational());
+        // Hide soft-deleted/archived documents from the default list.
+        // When the user explicitly filters by 'archived', lift the
+        // isOperational() exclusion so archived docs become visible.
+        if ($currentStatus === 'archived') {
+            $documents = array_filter(
+                $allDocuments,
+                static fn(Document $document): bool => $document->getStatus() === 'archived',
+            );
+        } else {
+            $documents = array_filter($allDocuments, fn(Document $document): bool => $document->isOperational());
+        }
 
         // Policy-Wizard W7-C — collapse to current versions only (default).
         // A Document is hidden when ANY other Document in the list points
         // back to it via `supersedes`. We compute the "superseded ids" set
         // in PHP rather than via SQL so the inheritance / subsidiary
         // arrays stay the source of truth.
-        if (!$includeHistory) {
-            $supersededIds = [];
-            foreach ($documents as $doc) {
-                $previous = $doc->getSupersedes();
-                if ($previous !== null && $previous->getId() !== null) {
-                    $supersededIds[$previous->getId()] = true;
-                }
+        $supersededIds = [];
+        foreach ($documents as $doc) {
+            $previous = $doc->getSupersedes();
+            if ($previous !== null && $previous->getId() !== null) {
+                $supersededIds[$previous->getId()] = true;
             }
+        }
+        if (!$includeHistory) {
             $documents = array_filter(
                 $documents,
                 static fn (Document $document): bool => !isset($supersededIds[$document->getId() ?? -1]),
             );
         }
 
+        // Apply status filter (when not already handled by archived-branch above).
+        if ($currentStatus !== null && $currentStatus !== 'archived') {
+            $documents = array_filter(
+                $documents,
+                static fn (Document $document): bool => $document->getStatus() === $currentStatus,
+            );
+        }
+
         // Sort by upload date descending
         usort($documents, fn($a, $b): int => $b->getUploadedAt() <=> $a->getUploadedAt());
 
+        // KPI counts: computed from the full operational pool (before status filter)
+        // so the KPI tiles always reflect the real totals regardless of active chip.
+        $allOperational = ($currentStatus === 'archived')
+            ? array_filter($allDocuments, fn(Document $d): bool => $d->isOperational())
+            : $documents;
+
+        // Recompute on unfiltered operational set if a status-filter is active.
+        $kpiPool = ($currentStatus !== null)
+            ? array_filter($allDocuments, fn(Document $d): bool => $d->isOperational())
+            : $documents;
+
+        $kpiDrafts   = count(array_filter($kpiPool, static fn(Document $d): bool => $d->getStatus() === 'draft'));
+        $kpiInReview = count(array_filter($kpiPool, static fn(Document $d): bool => $d->getStatus() === 'in_review'));
+
         // Calculate detailed statistics based on origin
         if ($tenant) {
-            $detailedStats = $this->calculateDetailedStats($documents, $tenant);
+            $detailedStats = $this->calculateDetailedStats(
+                $currentStatus !== null ? array_values($kpiPool) : array_values($documents),
+                $tenant,
+            );
         } else {
             $detailedStats = ['own' => count($documents), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($documents)];
         }
@@ -166,6 +206,10 @@ class DocumentController extends AbstractController
             'includeHistory' => $includeHistory,
             'driftMap' => $driftMap,
             'auditorScores' => $auditorScores,
+            'currentStatus' => $currentStatus,
+            'supersededIds' => $supersededIds,
+            'kpiDrafts' => $kpiDrafts,
+            'kpiInReview' => $kpiInReview,
         ]);
     }
 
@@ -378,6 +422,118 @@ class DocumentController extends AbstractController
         return $response;
     }
 
+    /**
+     * Bulk status-change endpoint for the document list.
+     *
+     * Accepts JSON body: { "ids": [1,2,3], "newStatus": "approved" }
+     * Enforces server-side status-transition rules per the document lifecycle:
+     *   draft      → in_review
+     *   in_review  → approved | draft  (approve or reject back)
+     *   approved   → published
+     *   published  → archived
+     *   archived   → published          (re-activation)
+     *
+     * Returns: { "ok": true, "changed": N, "rejected": [{id, reason}], "batchId": "uuid" }
+     *
+     * ISO 27001 Cl. 7.5.3 — AuditLogger::logBulk() with per-entity old/new status entries.
+     */
+    #[Route('/document/bulk-status-change', name: 'app_document_bulk_status_change', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkStatusChange(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+        $newStatus = $data['newStatus'] ?? '';
+
+        if (empty($ids) || !is_array($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $allowedStatuses = ['draft', 'in_review', 'approved', 'published', 'archived'];
+        if (!in_array($newStatus, $allowedStatuses, true)) {
+            return $this->json(['error' => 'Invalid target status'], 400);
+        }
+
+        // Valid transitions: [from => [allowed targets]]
+        $validTransitions = [
+            'draft'     => ['in_review'],
+            'in_review' => ['approved', 'draft'],
+            'approved'  => ['published'],
+            'published' => ['archived'],
+            'archived'  => ['published'],
+        ];
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        $validChanges = [];
+        $rejected = [];
+        $perEntityData = [];
+
+        foreach ($ids as $rawId) {
+            $id = (int) $rawId;
+            $document = $this->documentRepository->find($id);
+
+            if (!$document instanceof Document) {
+                $rejected[] = ['id' => $id, 'reason' => 'not_found'];
+                continue;
+            }
+
+            if ($tenant !== null && $document->getTenant() !== $tenant) {
+                $rejected[] = ['id' => $id, 'reason' => 'tenant_mismatch'];
+                continue;
+            }
+
+            $currentStatus = $document->getStatus() ?? 'draft';
+            $allowed = $validTransitions[$currentStatus] ?? [];
+
+            if (!in_array($newStatus, $allowed, true)) {
+                $rejected[] = ['id' => $id, 'reason' => 'invalid_transition'];
+                continue;
+            }
+
+            $validChanges[] = ['id' => $id, 'oldStatus' => $currentStatus];
+            $perEntityData[] = [
+                'action'     => 'update',
+                'entity_id'  => $id,
+                'old_values' => ['status' => $currentStatus],
+                'new_values' => ['status' => $newStatus],
+            ];
+        }
+
+        if (!empty($validChanges)) {
+            foreach ($validChanges as $entry) {
+                $managed = $this->entityManager->find(Document::class, $entry['id']);
+                if ($managed instanceof Document) {
+                    $managed->setStatus($newStatus);
+                }
+            }
+            $this->entityManager->flush();
+        }
+
+        $batchId = '';
+        if ($this->auditLogger !== null && !empty($perEntityData)) {
+            $batchId = $this->auditLogger->logBulk(
+                'document.status_change',
+                'Document',
+                [
+                    'new_status'    => $newStatus,
+                    'changed_count' => count($validChanges),
+                    'rejected_count' => count($rejected),
+                ],
+                $perEntityData,
+                sprintf('Bulk status change to "%s": %d changed, %d rejected', $newStatus, count($validChanges), count($rejected)),
+            );
+        }
+
+        return $this->json([
+            'ok'       => true,
+            'changed'  => count($validChanges),
+            'rejected' => $rejected,
+            'batchId'  => $batchId,
+        ]);
+    }
+
     #[Route('/document/bulk-delete', name: 'app_document_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
@@ -505,6 +661,34 @@ class DocumentController extends AbstractController
             $comments = $this->commentRepository->findThread($tenant, 'Document', $document->getId());
         }
 
+        // Multi-framework evidence linkage: fetch DocumentControlLink rows +
+        // group ComplianceRequirement evidenceDocuments by framework.
+        $controlLinks = [];
+        if ($this->documentControlLinkRepository !== null && $document->getId() !== null) {
+            $controlLinks = $this->documentControlLinkRepository->findByDocument($document);
+        }
+
+        // Group ComplianceRequirements whose evidenceDocuments contain this doc, by framework.
+        $requirementsByFramework = [];
+        if ($this->complianceRequirementRepository !== null && $document->getId() !== null) {
+            $linkedRequirements = $this->complianceRequirementRepository
+                ->findByEvidenceDocument($document);
+            foreach ($linkedRequirements as $req) {
+                $fw = $req->getFramework();
+                if ($fw === null) {
+                    continue;
+                }
+                $fwCode = (string) $fw->getCode();
+                if (!isset($requirementsByFramework[$fwCode])) {
+                    $requirementsByFramework[$fwCode] = [
+                        'framework' => $fw,
+                        'requirements' => [],
+                    ];
+                }
+                $requirementsByFramework[$fwCode]['requirements'][] = $req;
+            }
+        }
+
         return $this->render('document/show.html.twig', [
             'document' => $document,
             'isInherited' => $isInherited,
@@ -517,6 +701,9 @@ class DocumentController extends AbstractController
             'climateChangeAware' => $climateChangeAware,
             // V3 W2-H3: Comments thread + form action
             'comments' => $comments,
+            // Multi-framework evidence linkage (Phase 1+2)
+            'controlLinks' => $controlLinks,
+            'requirementsByFramework' => $requirementsByFramework,
         ]);
     }
 
@@ -592,7 +779,7 @@ class DocumentController extends AbstractController
         // detect post-generation edits + emit an audit-trail event.
         $policyBodyBefore = $document->getPolicyBody();
 
-        $form = $this->createForm(DocumentType::class, $document);
+        $form = $this->createForm(DocumentType::class, $document, ['is_new' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

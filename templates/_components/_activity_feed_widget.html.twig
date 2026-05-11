@@ -11,6 +11,8 @@
  #   compact - bool (default false) — compact density
  #}
 
+{% import '_components/_status_pill.html.twig' as pill %}
+
 {% set _items = items|default([]) %}
 {% set _max = max|default(25) %}
 {% set _shown = _items|slice(0, _max) %}
@@ -55,7 +57,7 @@
                     <span class="text-muted ms-2 small">{{ item.subtitle }}</span>
                 {% endif %}
                 {% if item.source %}
-                    <span class="badge bg-secondary ms-2">{{ item.source }}</span>
+                    {{ pill.render(item.source, 'neutral', {class: 'ms-2'}) }}
                 {% endif %}
             </div>
         </article>

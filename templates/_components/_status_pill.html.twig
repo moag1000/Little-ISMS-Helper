@@ -13,14 +13,18 @@
  #   size:  sm | md  (default: md)
  #   icon:  optional bootstrap-icon class (no dot rendered when icon given)
  #   noDot: boolean — drop dot even without icon (for pure-label pills)
+ #   class: extra CSS classes to append (e.g. 'ms-2')
+ #   title: optional title/tooltip attribute
  #}
 
 {% macro render(label, tone = 'neutral', props = {}) %}
     {% set size = props.size|default('md') %}
     {% set icon = props.icon|default(null) %}
     {% set noDot = props.noDot|default(false) %}
+    {% set extraClass = props.class|default('') %}
+    {% set titleAttr = props.title|default(null) %}
 
-    <span class="fa-status-pill fa-status-pill--{{ tone }} fa-status-pill--{{ size }}">
+    <span class="fa-status-pill fa-status-pill--{{ tone }} fa-status-pill--{{ size }}{{ extraClass ? ' ' ~ extraClass : '' }}"{{ titleAttr ? ' title="' ~ titleAttr ~ '"' : '' }}>
         {% if icon %}
             <i class="bi {{ icon }}" aria-hidden="true"></i>
         {% elseif not noDot %}

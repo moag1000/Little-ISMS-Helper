@@ -7,10 +7,21 @@
   Zwei Betriebs-Modi:
 
   1) Generic Actions (Default)
-     Parameter: actions (Array aus 'delete', 'export', 'tag', 'assign')
+     Parameter:
+       actions (Array aus 'delete', 'export', 'tag', 'assign', 'approve', 'status_change')
+       variant  'neutral' | 'brand'   default 'neutral' (DS canonical)
+                'brand'   → .fa-bulk-bar--brand  (gradient; for hero lists: risks, docs)
+                'neutral' → .fa-bulk-bar surface default
      Rendert Buttons für die jeweilige Aktion. Der Controller braucht zusätzlich
      am Parent-Element `data-controller="bulk-actions"` und das
      `data-bulk-actions-endpoint-value="/<entity>"`.
+
+     'approve'       → Quick-Button (fa-bulk-btn--success), ruft bulkStatusChange
+                       mit data-target-status="approved" auf.
+     'status_change' → Dropdown mit allen gültigen Zielstatus (draft, in_review,
+                       approved, published, archived); je ein <button class="dropdown-item">
+                       mit data-action="click->bulk-actions#bulkStatusChange"
+                       data-target-status="<status>".
 
   2) WS-5 Tag-Apply (polymorph, für zentralen Tag-Bulk-Endpoint)
      Parameter:
@@ -20,14 +31,26 @@
      Rendert ein Inline-Tag-Picker-Formular. Host-Element sollte das
      `data-controller="bulk-actions"` UND die WS-5-spezifischen Value-Attribute
      tragen (siehe Caller wie templates/asset/index.html.twig).
+     Tag-mode is always neutral-surface (card wrapper).
 
   A11y:
     - Counter mit aria-live="polite", Buttons mit aria-label.
     - Dropdown-Items sind echte <button>s (keyboard-bedienbar).
 
-  Usage (generic):
+  Usage (generic, neutral surface — default):
     {% include '_components/_bulk_action_bar.html.twig' with {
         actions: ['export', 'delete']
+    } %}
+
+  Usage (brand gradient — hero lists like risk, document):
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['export', 'delete'],
+        variant: 'brand'
+    } %}
+
+  Usage (status-change + quick-approve):
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['status_change', 'approve', 'export', 'delete']
     } %}
 
   Usage (WS-5 tag mode):
@@ -38,7 +61,10 @@
     } only %}
 #}
 
+{% import '_components/_status_pill.html.twig' as pill %}
+
 {% set actions        = actions|default([]) %}
+{% set variant        = variant|default('neutral') %}
 {% set entity_class   = entity_class|default('') %}
 {% set action_urls    = action_urls|default({}) %}
 {% set available_tags = available_tags|default([]) %}
@@ -66,7 +92,7 @@
 
             <div class="dropdown">
                 <button type="button"
-                        class="btn btn-primary dropdown-toggle"
+                        class="fa-bulk-btn dropdown-toggle"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         aria-label="{{ 'tags.bulk.actions_menu'|trans({}, 'tags') }}">
@@ -143,9 +169,7 @@
                                        aria-label="{{ 'tags.bulk.aria.select_tag'|trans({'%name%': tag.name}, 'tags') }}">
                                 <label class="form-check-label" for="bulk-tag-{{ tag.id }}">
                                     {% set _bapill = (tag.color|default('secondary')) in ['info'] ? 'primary' : ((tag.color|default('secondary')) in ['secondary','light','dark'] ? 'neutral' : (tag.color|default('secondary'))) %}
-                                    <span class="badge bg-{{ tag.color|default('secondary') }} fa-status-pill fa-status-pill--{{ _bapill }}">
-                                        {{ tag.name }}
-                                    </span>
+                                    {{ pill.render(tag.name, _bapill) }}
                                     {% if tag.frameworkCode %}
                                         <small class="text-muted">({{ tag.frameworkCode }})</small>
                                     {% endif %}
@@ -173,29 +197,31 @@
     </div>
 {% else %}
     {# Generic-Mode (Default): Floating-Action-Bar mit actions-Array #}
+    {# BEM class set: .fa-bulk-bar (neutral) / .fa-bulk-bar.fa-bulk-bar--brand (gradient) #}
     {% set actions = actions|default(['delete', 'export']) %}
+    {% set barClass = variant == 'brand' ? 'fa-bulk-bar fa-bulk-bar--brand' : 'fa-bulk-bar' %}
 
-    <div class="bulk-action-bar"
+    <div class="{{ barClass }}"
          data-bulk-actions-target="actionBar"
          hidden
          role="region"
          aria-live="polite"
          aria-atomic="true"
          aria-label="{{ 'bulk_actions.toolbar'|trans({}, 'messages') }}">
-        {% import '_components/_alva.html.twig' as faAlva %}
-        <span class="bulk-action-alva" aria-hidden="true">{{ faAlva.render('happy', { size: 20 })|raw }}</span>
-        <div class="bulk-selection-info">
-            <span class="bulk-selection-count" data-bulk-actions-target="count">0</span>
-            <span class="bulk-selection-label">{{ 'bulk_actions.selected'|trans({}, 'messages') }}</span>
+
+        <div class="fa-bulk-bar__count">
+            <span class="fa-bulk-bar__count-num" data-bulk-actions-target="count">0</span>
+            <span class="fa-bulk-bar__count-label">{{ 'bulk_actions.selected'|trans({}, 'messages') }}</span>
         </div>
 
-        <div class="bulk-action-divider" aria-hidden="true"></div>
+        <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
 
-        <div class="bulk-actions">
+        <div class="fa-bulk-bar__actions">
             {% if 'export' in actions %}
                 <button type="button"
-                        class="bulk-action-btn"
-                        data-action="click->bulk-actions#bulkExport">
+                        class="fa-bulk-btn"
+                        data-action="click->bulk-actions#bulkExport"
+                        aria-label="{{ 'bulk_actions.export'|trans({}, 'messages') }}">
                     <i class="bi bi-download" aria-hidden="true"></i>
                     {{ 'bulk_actions.export'|trans({}, 'messages') }}
                 </button>
@@ -203,8 +229,9 @@
 
             {% if 'tag' in actions %}
                 <button type="button"
-                        class="bulk-action-btn"
-                        data-action="click->bulk-actions#bulkTag">
+                        class="fa-bulk-btn"
+                        data-action="click->bulk-actions#bulkTag"
+                        aria-label="{{ 'bulk_actions.add_tag'|trans({}, 'messages') }}">
                     <i class="bi bi-tag" aria-hidden="true"></i>
                     {{ 'bulk_actions.add_tag'|trans({}, 'messages') }}
                 </button>
@@ -212,17 +239,80 @@
 
             {% if 'assign' in actions %}
                 <button type="button"
-                        class="bulk-action-btn"
-                        data-action="click->bulk-actions#bulkAssign">
+                        class="fa-bulk-btn"
+                        data-action="click->bulk-actions#bulkAssign"
+                        aria-label="{{ 'bulk_actions.assign'|trans({}, 'messages') }}">
                     <i class="bi bi-person-plus" aria-hidden="true"></i>
                     {{ 'bulk_actions.assign'|trans({}, 'messages') }}
                 </button>
             {% endif %}
 
+            {% if 'status_change' in actions %}
+                <div class="dropdown">
+                    <button type="button"
+                            class="fa-bulk-btn dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="{{ 'document.bulk.status_change.label'|trans({}, 'document') }}">
+                        <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                        {{ 'document.bulk.status_change.label'|trans({}, 'document') }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="draft">
+                                <i class="bi bi-file-earmark me-1" aria-hidden="true"></i>
+                                {{ 'document.bulk.status_change.target.draft'|trans({}, 'document') }}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="in_review">
+                                <i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>
+                                {{ 'document.bulk.status_change.target.in_review'|trans({}, 'document') }}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="approved">
+                                <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
+                                {{ 'document.bulk.status_change.target.approved'|trans({}, 'document') }}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="published">
+                                <i class="bi bi-send me-1" aria-hidden="true"></i>
+                                {{ 'document.bulk.status_change.target.published'|trans({}, 'document') }}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkStatusChange"
+                                    data-target-status="archived">
+                                <i class="bi bi-archive me-1" aria-hidden="true"></i>
+                                {{ 'document.bulk.status_change.target.archived'|trans({}, 'document') }}
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+
             {% if 'approve' in actions %}
                 <button type="button"
-                        class="bulk-action-btn bulk-action-btn-success"
-                        data-action="click->bulk-actions#bulkApprove">
+                        class="fa-bulk-btn fa-bulk-btn--success"
+                        data-action="click->bulk-actions#bulkStatusChange"
+                        data-target-status="approved"
+                        aria-label="{{ 'bulk_actions.approve'|trans({}, 'messages') }}">
                     <i class="bi bi-check-lg" aria-hidden="true"></i>
                     {{ 'bulk_actions.approve'|trans({}, 'messages') }}
                 </button>
@@ -230,20 +320,23 @@
 
             {% if 'delete' in actions %}
                 <button type="button"
-                        class="bulk-action-btn bulk-action-btn-danger"
-                        data-action="click->bulk-actions#bulkDelete">
+                        class="fa-bulk-btn fa-bulk-btn--danger"
+                        data-action="click->bulk-actions#bulkDelete"
+                        aria-label="{{ 'bulk_actions.delete'|trans({}, 'messages') }}">
                     <i class="bi bi-trash" aria-hidden="true"></i>
                     {{ 'bulk_actions.delete'|trans({}, 'messages') }}
                 </button>
             {% endif %}
         </div>
 
+        <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
+
         <button type="button"
-                class="bulk-action-close"
+                class="fa-bulk-bar__close"
                 data-action="click->bulk-actions#deselectAll"
                 title="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}"
                 aria-label="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}">
-            <i class="bi bi-x" aria-hidden="true"></i>
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
         </button>
     </div>
 {% endif %}

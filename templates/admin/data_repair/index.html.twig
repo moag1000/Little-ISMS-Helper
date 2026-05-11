@@ -2,6 +2,7 @@
 {% trans_default_domain 'admin'%}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as pill %}
 {% block title %}{{ 'admin.data_repair.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_title %}
@@ -812,7 +813,7 @@
                         <td class="fa-table__cell">{{ control.name }}</td>
                         <td class="fa-table__cell">{{ control.category }}</td>
                         <td class="fa-table__cell">
-                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">{{ ('control.status.' ~ control.implementationStatus)|trans({}, 'control') }}</span>
+                            {{ pill.render(('control.status.' ~ control.implementationStatus)|trans({}, 'control'), control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'neutral'), {size: 'sm'}) }}
                         </td>
                         <td class="fa-table__cell">
                             <form method="post" action="{{ path('admin_data_repair_assign_risk', {id: control.id}) }}" class="d-inline">
@@ -871,7 +872,7 @@
                         <td class="fa-table__cell">{{ control.name }}</td>
                         <td class="fa-table__cell">{{ control.category }}</td>
                         <td class="fa-table__cell">
-                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">{{ ('control.status.' ~ control.implementationStatus)|trans({}, 'control') }}</span>
+                            {{ pill.render(('control.status.' ~ control.implementationStatus)|trans({}, 'control'), control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'neutral'), {size: 'sm'}) }}
                         </td>
                         <td class="fa-table__cell">
                             <form method="post" action="{{ path('admin_data_repair_assign_asset_to_control', {id: control.id}) }}" class="d-inline">
@@ -986,7 +987,7 @@
                 <li>
                     <span class="fa-status-pill fa-status-pill--neutral">{{ audit.auditNumber }}</span>
                     {{ audit.title }}
-                    <span class="badge bg-{{ audit.status == 'completed' ? 'success' : 'primary' }}">{{ audit.status }}</span>
+                    {{ pill.render(audit.status, audit.status == 'completed' ? 'success' : 'primary', {size: 'sm'}) }}
                 </li>
             {% endfor %}
             </ul>

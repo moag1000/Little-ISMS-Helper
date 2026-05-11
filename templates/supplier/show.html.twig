@@ -111,11 +111,15 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {% set riskScore = supplier.calculateRiskScore() %}
-            <div class="alert {{ riskScore > 70 ? 'alert-danger' : (riskScore > 50 ? 'alert-warning' : 'alert-info') }}">
-                <strong>{{ 'supplier.risk_score'|trans({}, 'suppliers') }}: {{ riskScore }}</strong>
-                - {{ riskScore > 70 ? ('supplier.risk.message.critical'|trans({}, 'suppliers')) : (riskScore > 50 ? ('supplier.risk.message.high'|trans({}, 'suppliers')) : ('supplier.risk.message.acceptable'|trans({}, 'suppliers'))) }}
-            </div>
+            {% set _risk_variant = riskScore > 70 ? 'danger' : (riskScore > 50 ? 'warning' : 'info') %}
+            {% set _risk_message = riskScore > 70 ? ('supplier.risk.message.critical'|trans({}, 'suppliers')) : (riskScore > 50 ? ('supplier.risk.message.high'|trans({}, 'suppliers')) : ('supplier.risk.message.acceptable'|trans({}, 'suppliers'))) %}
+            {{ _fa_alert.render({
+                variant: _risk_variant,
+                title: 'supplier.risk_score'|trans({}, 'suppliers') ~ ': ' ~ riskScore,
+                body: _risk_message
+            }) }}
 
             {# ── Tab navigation (Bootstrap 5.3 with full a11y) ────────────── #}
             <ul class="nav nav-tabs mb-3" id="supplierTabs" role="tablist">
@@ -412,11 +416,12 @@
                      aria-labelledby="tab-dora"
                      tabindex="0">
 
-                    <div class="alert {{ isCriticalIct ? 'alert-danger' : 'alert-info' }}">
-                        <i class="fa-icon fa-icon--regulator me-1" aria-hidden="true"></i>
-                        <strong>{{ 'supplier.dora.section_heading'|trans({}, 'suppliers') }}</strong>
-                        <p class="mb-0">{{ 'supplier.dora.section_description'|trans({}, 'suppliers') }}</p>
-                    </div>
+                    {{ _fa_alert.render({
+                        variant: isCriticalIct ? 'danger' : 'info',
+                        icon: 'bi-bank',
+                        title: 'supplier.dora.section_heading'|trans({}, 'suppliers'),
+                        body: 'supplier.dora.section_description'|trans({}, 'suppliers')
+                    }) }}
 
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'supplier.dora.field.lei_code'|trans({}, 'suppliers') }}</dt>

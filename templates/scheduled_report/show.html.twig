@@ -146,11 +146,16 @@
             {# Status Card #}
             {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4 ' ~ (report.active ? 'border-success' : 'border-secondary') } %}
                 {% block card_header %}
-                    <div class="card-header {% if report.active %}bg-success text-white{% else %}bg-secondary text-white{% endif %}">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h3 class="h5 mb-0">
                             <i class="bi bi-{% if report.active %}check-circle{% else %}pause-circle{% endif %}" aria-hidden="true"></i>
                             {{ 'scheduled_report.status.label'|trans({}, 'scheduled_reports') }}
                         </h3>
+                        {% if report.active %}
+                            <span class="fa-status-pill fa-status-pill--success">{{ 'scheduled_report.status.active'|trans({}, 'scheduled_reports') }}</span>
+                        {% else %}
+                            <span class="fa-status-pill fa-status-pill--neutral">{{ 'scheduled_report.status.inactive'|trans({}, 'scheduled_reports') }}</span>
+                        {% endif %}
                     </div>
                 {% endblock %}
                 {% block card_body %}

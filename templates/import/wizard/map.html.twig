@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'data_import' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+
+{% block title %}{{ 'import.wizard.step.map.title'|trans({}, 'data_import') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'import.page.title'|trans({}, 'data_import'), url: path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) },
+            { label: 'import.wizard.step.upload.title'|trans({}, 'data_import'), url: path('app_bulk_import_upload', { _locale: app.request.locale, entityType: entityType }) },
+            { label: 'import.wizard.step.map.title'|trans({}, 'data_import') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'diagram-3', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
+        title: 'import.wizard.step.map.title'|trans({}, 'data_import'),
+        subtitle: 'import.mapping.subtitle'|trans({}, 'data_import')
+    }) }}
+
+    <main class="fa-aurora-surface mt-4">
+
+        {% include 'import/wizard/_steps_header.html.twig' with {
+            currentStep: 1,
+            entityType: entityType,
+            batchId: batch.id
+        } %}
+
+        <section class="fa-section"
+                 data-controller="column-mapping"
+                 data-column-mapping-auto-mapping-value="{{ autoMappings|json_encode }}">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'import.wizard.step.map.title'|trans({}, 'data_import') }}</h2>
+                <div class="fa-section__tools">
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                            data-column-mapping-target="resetButton"
+                            data-action="click->column-mapping#resetAll">
+                        <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                        <span class="fa-cyber-btn__label">{{ 'import.mapping.reset'|trans({}, 'data_import') }}</span>
+                    </button>
+                </div>
+            </div>
+            <div class="fa-section__body">
+
+                {{ form_start(form) }}
+
+                    <div class="table-responsive mb-4">
+                        <table class="table align-middle" aria-label="{{ 'import.wizard.step.map.title'|trans({}, 'data_import') }}">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ 'import.mapping.col_source'|trans({}, 'data_import') }}</th>
+                                    <th scope="col">{{ 'import.mapping.col_target'|trans({}, 'data_import') }}</th>
+                                    <th scope="col">{{ 'import.mapping.col_confidence'|trans({}, 'data_import') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for index, header in headers %}
+                                    {% set fieldName = 'column_' ~ index %}
+                                    {% set suggestion = autoMappings[header] ?? null %}
+                                    {% set conf = suggestion ? (suggestion.confidence)|default(0) : 0 %}
+                                    {% set chipVariant = conf >= 0.9 ? 'success' : (conf >= 0.6 ? 'warning' : 'danger') %}
+                                    <tr>
+                                        <td class="fw-semibold">{{ header }}</td>
+                                        <td>
+                                            <div style="min-width: 220px;">
+                                                {{ form_widget(form[fieldName], { attr: {
+                                                    'data-column-mapping-target': 'dropdown',
+                                                    'data-action': 'change->column-mapping#onSelect',
+                                                    'data-source-column': header,
+                                                    'class': 'form-select form-select-sm'
+                                                }}) }}
+                                                {{ form_errors(form[fieldName]) }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if suggestion %}
+                                                <span data-column-mapping-target="confidenceBadge"
+                                                      data-auto-confidence="{{ conf }}">
+                                                    {{ _fa_filter_chip.render(
+                                                        (conf * 100)|round ~ '%',
+                                                        { class: 'fa-filter-chip--' ~ chipVariant }
+                                                    ) }}
+                                                </span>
+                                            {% else %}
+                                                <span data-column-mapping-target="confidenceBadge"
+                                                      data-auto-confidence="0">
+                                                    {{ _fa_filter_chip.render('—', { class: 'fa-filter-chip--neutral' }) }}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            <span class="fa-cyber-btn__label">{{ 'import.action.preview'|trans({}, 'data_import') }}</span>
+                        </button>
+                        <a href="{{ path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+                        </a>
+                    </div>
+
+                {{ form_end(form) }}
+
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}
