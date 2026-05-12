@@ -7,10 +7,6 @@
 
 {% block title %}{{ 'admin.mapping_quality.detail_title'|trans({}, 'admin') }}{% endblock %}
 
-{% block admin_title %}
-    <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'admin.mapping_quality.detail_title'|trans({}, 'admin') }}
-{% endblock %}
-
 {% block admin_content %}
 <div class="container-fluid">
     {% include '_components/_breadcrumb.html.twig' with {
