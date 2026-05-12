@@ -49,6 +49,9 @@ sso:
         jit: 'Enable JIT provisioning'
         auto_approve: 'Auto-approve (skip approval step)'
         default_role: 'Default role'
+        default_fallback_role: 'Default fallback role'
+        mfa_inheritance: 'MFA inheritance'
+        preset_type: 'Provider preset'
     help:
         slug: 'Used in URL: /sso/<slug>/start'
         client_secret_edit: 'Leave empty to keep unchanged. Stored encrypted with kernel.secret.'
@@ -59,6 +62,8 @@ sso:
         domain_bindings: 'e.g. acme.com, acme.de — empty = no binding.'
         auto_approve: 'If off → new users land in the approval queue.'
         scope: 'Empty = global (all tenants see the button).'
+        default_fallback_role: 'Role assigned to new JIT-provisioned users when no role mapping matches.'
+        mfa_inheritance: 'Controls whether users logging in via this IdP must complete MFA independently.'
     type:
         oidc: 'OpenID Connect'
         oauth2: 'OAuth2 (generic)'
@@ -91,13 +96,6 @@ sso:
             requested_at: 'Requested at'
             claims: 'Claims (from IdP)'
             actions: 'Actions'
-    field:
-        default_fallback_role: 'Default fallback role'
-        mfa_inheritance: 'MFA inheritance'
-        preset_type: 'Provider preset'
-    help:
-        default_fallback_role: 'Role assigned to new JIT-provisioned users when no role mapping matches.'
-        mfa_inheritance: 'Controls whether users logging in via this IdP must complete MFA independently.'
     mfa_inheritance:
         required: 'Required (users must complete MFA)'
         optional: 'Optional (respects user setting)'

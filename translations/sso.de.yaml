@@ -49,6 +49,9 @@ sso:
         jit: 'JIT-Provisioning aktivieren'
         auto_approve: 'Auto-Approve (kein Freigabe-Schritt)'
         default_role: 'Standard-Rolle'
+        default_fallback_role: 'Standard-Fallback-Rolle'
+        mfa_inheritance: 'MFA-Vererbung'
+        preset_type: 'Provider-Preset'
     help:
         slug: 'Wird in der URL benutzt: /sso/<slug>/start'
         client_secret_edit: 'Leer lassen = unverändert. Eintrag verschlüsselt mit kernel.secret.'
@@ -59,6 +62,8 @@ sso:
         domain_bindings: 'z. B. acme.com, acme.de — leer = keine Bindung.'
         auto_approve: 'Wenn aus → neue User landen in der Freigabe-Warteschlange.'
         scope: 'Leer = global (alle Mandanten sehen den Button).'
+        default_fallback_role: 'Rolle für neu per JIT provisionierte Benutzer, wenn kein Rollen-Mapping greift.'
+        mfa_inheritance: 'Steuert, ob Benutzer bei diesem IdP-Login zusätzlich eine eigene MFA durchführen müssen.'
     type:
         oidc: 'OpenID Connect'
         oauth2: 'OAuth2 (generisch)'
@@ -91,13 +96,6 @@ sso:
             requested_at: 'Angefragt am'
             claims: 'Claims (vom IdP)'
             actions: 'Aktionen'
-    field:
-        default_fallback_role: 'Standard-Fallback-Rolle'
-        mfa_inheritance: 'MFA-Vererbung'
-        preset_type: 'Provider-Preset'
-    help:
-        default_fallback_role: 'Rolle für neu per JIT provisionierte Benutzer, wenn kein Rollen-Mapping greift.'
-        mfa_inheritance: 'Steuert, ob Benutzer bei diesem IdP-Login zusätzlich eine eigene MFA durchführen müssen.'
     mfa_inheritance:
         required: 'Pflicht (Benutzer müssen MFA selbst abschließen)'
         optional: 'Optional (respektiert Benutzereinstellung)'
