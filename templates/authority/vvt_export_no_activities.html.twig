@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'eu_authorities' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'eu_authorities.vvt.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'eu_authorities.vvt.title'|trans, icon: 'bi-shield-check' },
+            { label: 'eu_authorities.vvt.subtitle'|trans }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge:    { icon: 'file-earmark-text', label: 'eu_authorities.vvt.title'|trans },
+        title:    'eu_authorities.vvt.title'|trans,
+        subtitle: 'eu_authorities.vvt.subtitle'|trans,
+        actions: []
+    }) }}
+
+    <main class="fa-aurora-surface">
+        {{ _fa_empty_state.render({
+            mood:    'warning',
+            title:   'eu_authorities.vvt.error.no_processing_activities'|trans,
+            text:    'Bitte legen Sie mindestens eine Verarbeitungstätigkeit an, bevor Sie das Verfahrensverzeichnis exportieren.',
+            actions: [
+                {
+                    label:   'Verarbeitungstätigkeit anlegen',
+                    variant: 'primary',
+                    icon:    'plus-lg',
+                    href:    path('app_processing_activity_new')
+                },
+                {
+                    label:   'Zum Verfahrensverzeichnis',
+                    variant: 'ghost',
+                    icon:    'arrow-left',
+                    href:    path('app_processing_activity_index')
+                }
+            ]
+        }) }}
+    </main>
+</div>
+{% endblock %}
