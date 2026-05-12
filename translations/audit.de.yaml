@@ -240,3 +240,10 @@ pdf:
         observations: 'Beobachtungen'
         recommendations: 'Empfehlungen'
     footer: 'Vertraulich - Nur für internen Gebrauch'
+
+audit_finding:
+    field:
+        linked_requirements: 'Verknüpfte Norm-Anforderungen'
+    auto_task:
+        preview: 'Automatische Korrektur-Tasks werden für %count% Anforderung(en) erstellt.'
+        created: 'Automatisch %count% Korrektur-Task(s) für verknüpfte Anforderungen erstellt.'
