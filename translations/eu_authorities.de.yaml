@@ -1,16 +1,31 @@
-# Translation skeleton for eu_authorities
-# Sprint 0 Task 0.1 — empty skeleton with standard sections.
-# Keys to be filled during feature implementation.
-
 eu_authorities:
-  nav:
-    title: ''
-  page:
-    title: ''
-    subtitle: ''
-  field: {}
-  error: {}
-  help: {}
-  audit: {}
-  success: {}
-  warning: {}
+    nav:
+        title: 'Behörden-Export'
+    page:
+        title: 'EU-Behörden-Reporting'
+        subtitle: 'Regulatory Reporting für Datenschutzaufsichtsbehörden'
+    field: {}
+    error: {}
+    help: {}
+    audit: {}
+    success: {}
+    warning: {}
+    vvt:
+        title: 'Verfahrensverzeichnis (Art. 30 DSGVO)'
+        subtitle: 'Export im BfDI-Muster für Aufsichtsbehörden'
+        action:
+            export_xlsx: 'BfDI-XLSX exportieren'
+            export_csv: 'BfDI-CSV exportieren'
+            export_pdf: 'BfDI-PDF exportieren'
+        error:
+            no_processing_activities: 'Keine Verarbeitungstätigkeiten erfasst — bitte mindestens eine anlegen.'
+        column:
+            verantwortlicher: 'Verantwortlicher'
+            dpo: 'Datenschutzbeauftragter'
+            zweck: 'Verarbeitungszweck'
+            betroffene: 'Kategorien betroffener Personen'
+            daten: 'Kategorien personenbezogener Daten'
+            empfaenger: 'Empfänger'
+            drittland: 'Drittlandübermittlung'
+            loeschfristen: 'Löschfristen'
+            toms: 'Technische und organisatorische Maßnahmen'
