@@ -46,7 +46,7 @@ final class SsoWizardController extends AbstractController
         private readonly OidcDiscoveryService $discovery,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $audit,
-        private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly ModuleConfigurationService $moduleService,
     ) {
     }
 
