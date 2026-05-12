@@ -160,6 +160,7 @@ final class IdentityProviderType extends AbstractType
             $builder->add('tenant', EntityType::class, [
                 'label' => 'sso.field.scope',
                 'class' => Tenant::class,
+                'choice_label' => 'name',
                 'placeholder' => 'sso.scope.global',
                 'required' => false,
                 'query_builder' => fn (TenantRepository $r) => $r->createQueryBuilder('t')->orderBy('t.name', 'ASC'),

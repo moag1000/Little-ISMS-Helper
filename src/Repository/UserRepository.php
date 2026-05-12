@@ -290,4 +290,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Count active users for a given tenant (used by AlvaHint rules).
+     */
+    public function countActiveByTenant(\App\Entity\Tenant $tenant): int
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->andWhere('u.tenant = :tenant')
+            ->andWhere('u.isActive = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('active', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

@@ -1,0 +1,21 @@
+preset: auth0
+label: Auth0
+icon: bi-lock
+color: '#eb5424'
+type: oidc
+# Replace {auth0_domain} with your Auth0 domain (e.g. your-org.eu.auth0.com)
+discoveryUrlTemplate: 'https://{auth0_domain}/.well-known/openid-configuration'
+issuerTemplate: 'https://{auth0_domain}/'
+scopes:
+    - openid
+    - profile
+    - email
+attributeMap:
+    email: email
+    given_name: firstName
+    family_name: lastName
+buttonLabel: 'Sign in with Auth0'
+help: >
+    In Auth0 Dashboard → Applications → Create Application.
+    Choose Regular Web Application. Add the callback URL to Allowed Callback URLs.
+    Copy Domain, Client ID and Client Secret from the app settings.

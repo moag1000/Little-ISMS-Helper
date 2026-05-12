@@ -118,6 +118,7 @@ admin:
         permissions: Berechtigungen
         sessions: Sitzungen
         mfa: 'MFA Verwaltung'
+        sso: 'SSO Identity-Provider'
         module_management: Modul-Verwaltung
         compliance_management: Compliance-Verwaltung
         compliance_policy: Compliance-Policy-Einstellungen

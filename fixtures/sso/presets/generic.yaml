@@ -1,0 +1,20 @@
+preset: generic
+label: Generic OIDC Provider
+icon: bi-person-badge
+color: '#6c757d'
+type: oidc
+discoveryUrlTemplate: ''
+issuerTemplate: ''
+scopes:
+    - openid
+    - profile
+    - email
+attributeMap:
+    email: email
+    given_name: firstName
+    family_name: lastName
+buttonLabel: 'Sign in with SSO'
+help: >
+    Use this preset for any OIDC-compliant identity provider not listed above.
+    Enter the Discovery URL (/.well-known/openid-configuration endpoint) and the
+    system will automatically populate the issuer, authorization, token and JWKS endpoints.

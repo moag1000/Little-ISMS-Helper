@@ -1,0 +1,22 @@
+preset: okta
+label: Okta
+icon: bi-shield-check
+color: '#007dc1'
+type: oidc
+# Replace {okta_domain} with your Okta domain (e.g. dev-12345.okta.com)
+discoveryUrlTemplate: 'https://{okta_domain}/.well-known/openid-configuration'
+issuerTemplate: 'https://{okta_domain}'
+scopes:
+    - openid
+    - profile
+    - email
+    - groups
+attributeMap:
+    email: email
+    given_name: firstName
+    family_name: lastName
+buttonLabel: 'Sign in with Okta'
+help: >
+    In Okta Admin → Applications → Create App Integration.
+    Choose OIDC, Web Application. Add the callback URL as Sign-in redirect URI.
+    Copy Client ID and Client Secret from the app settings.

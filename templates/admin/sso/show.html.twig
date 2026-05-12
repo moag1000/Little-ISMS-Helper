@@ -1,0 +1,88 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'sso' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% from '_components/_fa_alert.html.twig' import render as fa_alert %}
+
+{% block admin_title %}{{ provider.name }} — {{ 'sso.admin.title'|trans }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_sso_index') }}">{{ 'sso.admin.title'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ provider.name }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: provider.presetType ? ('sso.preset.' ~ provider.presetType)|trans : 'SSO' },
+        title: provider.name,
+        subtitle: provider.discoveryUrl ?: provider.issuer ?: '',
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('admin_sso_edit', {id: provider.id}) }
+        ]
+    }) }}
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'sso.section.identity'|trans }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{{ 'sso.field.slug'|trans }}</dt>
+                        <dd class="col-sm-8"><code>{{ provider.slug }}</code></dd>
+                        <dt class="col-sm-4">{{ 'sso.field.type'|trans }}</dt>
+                        <dd class="col-sm-8">{{ ('sso.type.' ~ provider.type)|trans }}</dd>
+                        {% if provider.presetType %}
+                        <dt class="col-sm-4">{{ 'sso.field.preset_type'|trans }}</dt>
+                        <dd class="col-sm-8">{{ ('sso.preset.' ~ provider.presetType)|trans }}</dd>
+                        {% endif %}
+                        <dt class="col-sm-4">{{ 'common.status'|trans({}, 'messages') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if provider.enabled %}
+                                <span class="fa-status-pill fa-status-pill--success">{{ 'sso.status.enabled'|trans }}</span>
+                            {% else %}
+                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'sso.status.disabled'|trans }}</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-md-6">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'sso.section.provisioning'|trans }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-6">{{ 'sso.field.jit'|trans }}</dt>
+                        <dd class="col-sm-6">{{ provider.jitProvisioning ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}</dd>
+                        <dt class="col-sm-6">{{ 'sso.field.auto_approve'|trans }}</dt>
+                        <dd class="col-sm-6">{{ provider.autoApprove ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}</dd>
+                        <dt class="col-sm-6">{{ 'sso.field.default_fallback_role'|trans }}</dt>
+                        <dd class="col-sm-6">{{ provider.defaultFallbackRole ?: provider.defaultRole }}</dd>
+                        {% if provider.mfaInheritance %}
+                        <dt class="col-sm-6">{{ 'sso.field.mfa_inheritance'|trans }}</dt>
+                        <dd class="col-sm-6">{{ ('sso.mfa_inheritance.' ~ provider.mfaInheritance)|trans }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </section>
+        </div>
+
+        {% if provider.domainBindings|length > 0 %}
+        <div class="col-12">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'sso.section.domain_binding'|trans }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <div>{{ provider.domainBindings|join(', ') }}</div>
+                    <div class="mt-1 text-muted small">{{ ('sso.domain_mode.' ~ provider.domainBindingMode)|trans }}</div>
+                </div>
+            </section>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

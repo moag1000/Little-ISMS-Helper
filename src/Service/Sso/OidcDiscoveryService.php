@@ -17,7 +17,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  * Cache TTL: 1 hour for discovery, 1 hour for JWKS. JWKS may be re-fetched
  * on demand when an unknown kid is encountered during ID-Token verification.
  */
-final class OidcDiscoveryService
+class OidcDiscoveryService
 {
     private const CACHE_TTL = 3600;
 

@@ -123,6 +123,8 @@ class AuthorityNotificationControllerTest extends WebTestCase
         $user->setPassword('$2y$13$fake_hashed_password_string_here_00');
         $user->setRoles([$role]);
         $user->setTenant($tenant);
+        $user->setFirstName('Test');
+        $user->setLastName('User');
 
         $this->em->persist($user);
         $this->em->flush();
