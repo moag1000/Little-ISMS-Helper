@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\IdentityProvider;
 use App\Entity\SsoUserApproval;
 use App\Form\IdentityProviderType;
 use App\Repository\IdentityProviderRepository;
 use App\Repository\SsoUserApprovalRepository;
 use App\Service\AuditLogger;
+use App\Service\ModuleConfigurationService;
 use App\Service\Sso\OidcAuthenticationFlow;
 use App\Service\Sso\OidcDiscoveryService;
 use App\Service\Sso\SsoSecretEncryption;
@@ -26,6 +28,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 final class SsoProviderController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly IdentityProviderRepository $repo,
@@ -35,12 +39,17 @@ final class SsoProviderController extends AbstractController
         private readonly OidcAuthenticationFlow $flow,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $audit,
+        private readonly ModuleConfigurationService $moduleService,
     ) {
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(): Response
     {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+
         $providers = $this->isGranted('ROLE_SUPER_ADMIN')
             ? $this->repo->findBy([], ['tenant' => 'ASC', 'name' => 'ASC'])
             : $this->repo->findEnabledForTenant($this->tenantContext->getCurrentTenant());
@@ -56,6 +65,10 @@ final class SsoProviderController extends AbstractController
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(IdentityProvider $provider): Response
     {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+
         $this->assertCanModify($provider);
         return $this->render('admin/sso/show.html.twig', ['provider' => $provider]);
     }
@@ -63,6 +76,10 @@ final class SsoProviderController extends AbstractController
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+
         $provider = new IdentityProvider();
         if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
             $provider->setTenant($this->tenantContext->getCurrentTenant());
@@ -74,6 +91,10 @@ final class SsoProviderController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(IdentityProvider $provider, Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+
         $this->assertCanModify($provider);
         return $this->handleForm($request, $provider, isNew: false);
     }
@@ -82,6 +103,10 @@ final class SsoProviderController extends AbstractController
     #[IsCsrfTokenValid('sso_provider_delete')]
     public function delete(IdentityProvider $provider): Response
     {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+
         $this->assertCanModify($provider);
         $slug = (string) $provider->getSlug();
         $providerId = $provider->getId();
@@ -97,6 +122,10 @@ final class SsoProviderController extends AbstractController
     #[IsCsrfTokenValid('sso_provider_toggle')]
     public function toggle(IdentityProvider $provider): Response
     {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+
         $this->assertCanModify($provider);
         $provider->setEnabled(!$provider->isEnabled());
         $this->em->flush();
@@ -112,6 +141,10 @@ final class SsoProviderController extends AbstractController
     #[IsCsrfTokenValid('sso_provider_test')]
     public function test(IdentityProvider $provider): Response
     {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+
         $this->assertCanModify($provider);
         try {
             $this->discovery->applyDiscoveryToProvider($provider);
@@ -229,6 +262,10 @@ final class SsoProviderController extends AbstractController
     #[Route('/approvals', name: 'approvals', methods: ['GET'])]
     public function approvals(): Response
     {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+
         $tenant = $this->isGranted('ROLE_SUPER_ADMIN') ? null : $this->tenantContext->getCurrentTenant();
         $approvals = $tenant === null && $this->isGranted('ROLE_SUPER_ADMIN')
             ? $this->approvalRepo->findBy(['status' => SsoUserApproval::STATUS_PENDING], ['requestedAt' => 'DESC'])
@@ -243,6 +280,10 @@ final class SsoProviderController extends AbstractController
     #[IsCsrfTokenValid('sso_approval')]
     public function approve(SsoUserApproval $approval): Response
     {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+
         $this->assertCanReview($approval);
         $user = $this->flow->provisionFromApproval($approval);
         $approval->setStatus(SsoUserApproval::STATUS_APPROVED);
@@ -262,6 +303,10 @@ final class SsoProviderController extends AbstractController
     #[IsCsrfTokenValid('sso_approval')]
     public function reject(SsoUserApproval $approval, Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+
         $this->assertCanReview($approval);
         $reason = trim((string) $request->request->get('reason', ''));
         $approval->setStatus(SsoUserApproval::STATUS_REJECTED);
