@@ -65,7 +65,7 @@ final class Version20260512220000_f1_sso_wave2_role_user_mapping extends Abstrac
             CONSTRAINT fk_ipum_idp FOREIGN KEY (identity_provider_id)
                 REFERENCES identity_provider (id) ON DELETE CASCADE,
             CONSTRAINT fk_ipum_user FOREIGN KEY (user_id)
-                REFERENCES `user` (id) ON DELETE CASCADE,
+                REFERENCES `users` (id) ON DELETE CASCADE,
             CONSTRAINT fk_ipum_tenant FOREIGN KEY (tenant_id)
                 REFERENCES tenant (id) ON DELETE CASCADE
         ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB');
