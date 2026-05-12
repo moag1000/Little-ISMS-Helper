@@ -104,6 +104,7 @@ admin:
         permissions: Permissions
         sessions: Sessions
         mfa: 'MFA Management'
+        sso: 'SSO Identity Providers'
         module_management: 'Module Management'
         compliance_management: 'Compliance Management'
         compliance_policy: 'Compliance Policy Settings'
