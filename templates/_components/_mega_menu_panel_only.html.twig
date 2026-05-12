@@ -907,6 +907,14 @@
                                 <span class="mega-menu-link-title">{{ 'admin.nav.mfa'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
+                        {% if is_module_active('authentication') %}
+                        <li><a href="{{ path('admin_sso_index') }}" class="{% if current_route starts with 'admin_sso_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.sso'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </div>
 
