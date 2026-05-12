@@ -133,7 +133,7 @@ class ReportBuilderController extends AbstractController
     /**
      * Clone an existing report
      */
-    #[Route('/{id}/clone', name: 'report_builder_clone', methods: ['POST'])]
+    #[Route('/{id}/clone', name: 'report_builder_clone', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function clone(CustomReport $report): Response
     {
         $user = $this->getUser();
@@ -154,7 +154,7 @@ class ReportBuilderController extends AbstractController
     /**
      * Visual Report Designer
      */
-    #[Route('/{id}/edit', name: 'report_builder_edit', methods: ['GET'])]
+    #[Route('/{id}/edit', name: 'report_builder_edit', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function edit(CustomReport $report): Response
     {
         $user = $this->getUser();
@@ -176,7 +176,7 @@ class ReportBuilderController extends AbstractController
     /**
      * Save report configuration (AJAX)
      */
-    #[Route('/{id}/save', name: 'report_builder_save', methods: ['POST'])]
+    #[Route('/{id}/save', name: 'report_builder_save', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function save(CustomReport $report, Request $request): JsonResponse
     {
         $user = $this->getUser();
@@ -222,7 +222,7 @@ class ReportBuilderController extends AbstractController
     /**
      * Preview report
      */
-    #[Route('/{id}/preview', name: 'report_builder_preview', methods: ['GET'])]
+    #[Route('/{id}/preview', name: 'report_builder_preview', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function preview(CustomReport $report): Response
     {
         $user = $this->getUser();
@@ -244,7 +244,7 @@ class ReportBuilderController extends AbstractController
     /**
      * Export report as PDF
      */
-    #[Route('/{id}/export/pdf', name: 'report_builder_export_pdf', methods: ['GET'])]
+    #[Route('/{id}/export/pdf', name: 'report_builder_export_pdf', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function exportPdf(CustomReport $report): Response
     {
         $user = $this->getUser();
@@ -305,7 +305,7 @@ class ReportBuilderController extends AbstractController
     /**
      * Toggle favorite status
      */
-    #[Route('/{id}/favorite', name: 'report_builder_toggle_favorite', methods: ['POST'])]
+    #[Route('/{id}/favorite', name: 'report_builder_toggle_favorite', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function toggleFavorite(CustomReport $report): JsonResponse
     {
         $user = $this->getUser();
@@ -326,7 +326,7 @@ class ReportBuilderController extends AbstractController
     /**
      * Share report with users
      */
-    #[Route('/{id}/share', name: 'report_builder_share', methods: ['POST'])]
+    #[Route('/{id}/share', name: 'report_builder_share', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function share(CustomReport $report, Request $request): JsonResponse
     {
         $user = $this->getUser();
@@ -351,7 +351,7 @@ class ReportBuilderController extends AbstractController
     /**
      * Save as template
      */
-    #[Route('/{id}/save-as-template', name: 'report_builder_save_template', methods: ['POST'])]
+    #[Route('/{id}/save-as-template', name: 'report_builder_save_template', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_MANAGER')]
     public function saveAsTemplate(CustomReport $report, Request $request): JsonResponse
     {
@@ -383,7 +383,7 @@ class ReportBuilderController extends AbstractController
      * Settings edit — Symfony-form-based editing of owner Tri-State fields and metadata.
      * The drag-and-drop designer handles widget layout; this route handles ownership.
      */
-    #[Route('/{id}/settings', name: 'report_builder_settings_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/settings', name: 'report_builder_settings_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function settingsEdit(CustomReport $report, Request $request): Response
     {
         /** @var User $currentUser */
@@ -413,7 +413,7 @@ class ReportBuilderController extends AbstractController
     /**
      * Delete report
      */
-    #[Route('/{id}/delete', name: 'report_builder_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'report_builder_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(CustomReport $report): Response
     {
         $user = $this->getUser();
