@@ -62,7 +62,7 @@ final class SsoProviderController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(IdentityProvider $provider): Response
     {
         if ($redirect = $this->checkModuleActive('authentication')) {
@@ -88,7 +88,7 @@ final class SsoProviderController extends AbstractController
         return $this->handleForm($request, $provider, isNew: true);
     }
 
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(IdentityProvider $provider, Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('authentication')) {
@@ -99,7 +99,7 @@ final class SsoProviderController extends AbstractController
         return $this->handleForm($request, $provider, isNew: false);
     }
 
-    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsCsrfTokenValid('sso_provider_delete')]
     public function delete(IdentityProvider $provider): Response
     {
@@ -118,7 +118,7 @@ final class SsoProviderController extends AbstractController
         return $this->redirectToRoute('admin_sso_index');
     }
 
-    #[Route('/{id}/toggle', name: 'toggle', methods: ['POST'])]
+    #[Route('/{id}/toggle', name: 'toggle', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsCsrfTokenValid('sso_provider_toggle')]
     public function toggle(IdentityProvider $provider): Response
     {
@@ -137,7 +137,7 @@ final class SsoProviderController extends AbstractController
         return $this->redirectToRoute('admin_sso_index');
     }
 
-    #[Route('/{id}/test', name: 'test', methods: ['POST'])]
+    #[Route('/{id}/test', name: 'test', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsCsrfTokenValid('sso_provider_test')]
     public function test(IdentityProvider $provider): Response
     {
@@ -276,7 +276,7 @@ final class SsoProviderController extends AbstractController
         ]);
     }
 
-    #[Route('/approvals/{id}/approve', name: 'approval_approve', methods: ['POST'])]
+    #[Route('/approvals/{id}/approve', name: 'approval_approve', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsCsrfTokenValid('sso_approval')]
     public function approve(SsoUserApproval $approval): Response
     {
@@ -299,7 +299,7 @@ final class SsoProviderController extends AbstractController
         return $this->redirectToRoute('admin_sso_approvals');
     }
 
-    #[Route('/approvals/{id}/reject', name: 'approval_reject', methods: ['POST'])]
+    #[Route('/approvals/{id}/reject', name: 'approval_reject', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsCsrfTokenValid('sso_approval')]
     public function reject(SsoUserApproval $approval, Request $request): Response
     {
