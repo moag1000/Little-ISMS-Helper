@@ -1,0 +1,24 @@
+preset: entra_id
+label: Microsoft Entra ID (Azure AD)
+icon: bi-microsoft
+color: '#0078d4'
+type: oidc
+# Replace {tenant_id} with your Entra ID tenant ID (UUID)
+discoveryUrlTemplate: 'https://login.microsoftonline.com/{tenant_id}/v2.0/.well-known/openid-configuration'
+issuerTemplate: 'https://login.microsoftonline.com/{tenant_id}/v2.0'
+scopes:
+    - openid
+    - profile
+    - email
+attributeMap:
+    email: email
+    given_name: firstName
+    family_name: lastName
+    jobTitle: jobTitle
+    department: department
+buttonLabel: 'Sign in with Microsoft'
+help: >
+    Register an App in Microsoft Entra ID (App registrations → New registration).
+    Set redirect URI to the callback URL shown below.
+    Create a Client Secret under "Certificates & secrets".
+    Copy Application (client) ID → Client ID and the secret value → Client Secret.

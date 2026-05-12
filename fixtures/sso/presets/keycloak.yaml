@@ -1,0 +1,22 @@
+preset: keycloak
+label: Keycloak
+icon: bi-shield-lock
+color: '#4d7cbe'
+type: oidc
+# Replace {base_url} with your Keycloak server URL and {realm} with your realm name
+discoveryUrlTemplate: '{base_url}/realms/{realm}/.well-known/openid-configuration'
+issuerTemplate: '{base_url}/realms/{realm}'
+scopes:
+    - openid
+    - profile
+    - email
+    - roles
+attributeMap:
+    email: email
+    given_name: firstName
+    family_name: lastName
+buttonLabel: 'Sign in with Keycloak'
+help: >
+    In Keycloak Admin → your realm → Clients → Create client.
+    Set Client ID, enable Standard flow (Authorization Code), set Valid redirect URIs to the callback URL.
+    Under Credentials, copy the Client Secret.

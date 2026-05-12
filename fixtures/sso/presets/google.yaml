@@ -1,0 +1,20 @@
+preset: google
+label: Google Workspace
+icon: bi-google
+color: '#4285f4'
+type: oidc
+discoveryUrlTemplate: 'https://accounts.google.com/.well-known/openid-configuration'
+issuerTemplate: 'https://accounts.google.com'
+scopes:
+    - openid
+    - profile
+    - email
+attributeMap:
+    email: email
+    given_name: firstName
+    family_name: lastName
+buttonLabel: 'Sign in with Google'
+help: >
+    Create an OAuth 2.0 client in Google Cloud Console → APIs & Services → Credentials.
+    Select "Web application", add the callback URL as Authorized redirect URI.
+    Copy Client ID and Client Secret from the credentials detail view.
