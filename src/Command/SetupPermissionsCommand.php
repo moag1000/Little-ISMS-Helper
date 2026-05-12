@@ -223,6 +223,83 @@ class SetupPermissionsCommand
                     'report.view', 'report.create', 'report.export'
                 ]
             ],
+            'ROLE_CISO' => [
+                'description' => 'Chief Information Security Officer — security strategy, ISMS oversight, risk approvals',
+                'permissions' => [
+                    // ROLE_MANAGER base set
+                    'risk.view', 'risk.create', 'risk.edit', 'risk.approve', 'risk.export',
+                    'asset.view', 'asset.create', 'asset.edit',
+                    'incident.view', 'incident.create', 'incident.edit', 'incident.approve',
+                    'control.view', 'control.create', 'control.edit',
+                    'audit.view', 'audit.create', 'audit.approve',
+                    'compliance.view', 'compliance.edit', 'compliance.export',
+                    'report.view', 'report.create', 'report.export',
+                    // CISO-specific — skipped (not in catalogue): kpi.*, security_event.*, policy.approve
+                ]
+            ],
+            'ROLE_RISK_MANAGER' => [
+                'description' => 'Risk-Manager — risk register, treatment plans, RAR',
+                'permissions' => [
+                    // ROLE_MANAGER base set
+                    'risk.view', 'risk.create', 'risk.edit', 'risk.approve', 'risk.export',
+                    'asset.view', 'asset.create', 'asset.edit',
+                    'incident.view', 'incident.create', 'incident.edit', 'incident.approve',
+                    'control.view', 'control.create', 'control.edit',
+                    'audit.view', 'audit.approve',
+                    'compliance.view', 'compliance.edit',
+                    'report.view', 'report.create', 'report.export',
+                    // RISK_MANAGER-specific — skipped (not in catalogue): risk.treat, risk_treatment_plan.*
+                ]
+            ],
+            'ROLE_DPO' => [
+                'description' => 'Data Protection Officer (Art. 37 GDPR) — DPIA, breaches, processing activities',
+                'permissions' => [
+                    // ROLE_MANAGER base set
+                    'risk.view', 'risk.create', 'risk.edit', 'risk.approve',
+                    'asset.view', 'asset.create', 'asset.edit',
+                    'incident.view', 'incident.create', 'incident.edit', 'incident.approve',
+                    'control.view', 'control.create', 'control.edit',
+                    'audit.view', 'audit.approve',
+                    'compliance.view', 'compliance.edit',
+                    'report.view', 'report.create', 'report.export',
+                    // DPO-specific — skipped (not in catalogue): processing_activity.*, dpia.*, data_breach.*,
+                    // data_subject_request.*, consent.*, privacy.*
+                ]
+            ],
+            'ROLE_COMPLIANCE_MANAGER' => [
+                'description' => 'Compliance-Manager — frameworks, gap analysis, audit oversight',
+                'permissions' => [
+                    // ROLE_MANAGER base set
+                    'risk.view', 'risk.create', 'risk.edit', 'risk.approve',
+                    'asset.view', 'asset.create', 'asset.edit',
+                    'incident.view', 'incident.create', 'incident.edit', 'incident.approve',
+                    'control.view', 'control.create', 'control.edit',
+                    'audit.view', 'audit.approve',
+                    'compliance.view', 'compliance.edit', 'compliance.export',
+                    'report.view', 'report.create', 'report.export',
+                    // COMPLIANCE_MANAGER-specific — skipped (not in catalogue): policy.approve
+                ]
+            ],
+            'ROLE_GROUP_CISO' => [
+                'description' => 'Group-CISO / Konzern-ISB — read-only cross-tenant view',
+                // NOTE: cross-tenant access enforcement is handled by HoldingTreeAccessTrait in Security voters,
+                // not by the permission model. Permission set is ROLE_AUDITOR-equivalent (read-only).
+                'permissions' => [
+                    'risk.view', 'asset.view', 'incident.view', 'control.view',
+                    'audit.view', 'audit.create', 'audit.edit',
+                    'compliance.view', 'report.view', 'report.create'
+                ]
+            ],
+            'ROLE_KONZERN_AUDITOR' => [
+                'description' => 'Konzern-Auditor — read-only cross-tenant audit',
+                // NOTE: cross-tenant access enforcement is handled by HoldingTreeAccessTrait in Security voters,
+                // not by the permission model. Permission set is ROLE_AUDITOR-equivalent (read-only).
+                'permissions' => [
+                    'risk.view', 'asset.view', 'incident.view', 'control.view',
+                    'audit.view', 'audit.create', 'audit.edit',
+                    'compliance.view', 'report.view', 'report.create'
+                ]
+            ],
             'ROLE_ADMIN' => [
                 'description' => 'Administrator - full system access',
                 'permissions' => '*' // Will get all permissions
