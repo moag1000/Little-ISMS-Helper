@@ -185,7 +185,7 @@ jobs:
         run: php scripts/quality/check-dql-mismatches.php
 
       # ── Repo Quality Gates ─────────────────────────────────────────────────
-      # 7 static-analysis gates that catch common bug-patterns at PR-time.
+      # 8 static-analysis gates that catch common bug-patterns at PR-time.
       # Each gate exits 0 (clean) or 1 (violations). Blocking gates fail
       # the whole job; warn-only gates use continue-on-error: true.
       #
@@ -236,6 +236,14 @@ jobs:
       #   Per memory feedback_no_competitor_names.
       - name: "Gate 7: No competitor names"
         run: bash scripts/quality/check_no_competitor_names.sh
+
+      # Gate 8 — Double /{_locale}/ prefix in Controller routes (BLOCKING)
+      #   config/routes.yaml wraps src/Controller/ in prefix /{_locale} globally.
+      #   Adding /{_locale}/ in #[Route(...)] produces /{_locale}/{_locale}/...
+      #   which Symfony refuses to compile — cache:clear fails, app does not boot.
+      #   Per memory feedback_locale_in_links.
+      - name: "Gate 8: No double /{_locale}/ prefix in controllers"
+        run: python3 scripts/quality/check_double_locale_prefix.py
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
