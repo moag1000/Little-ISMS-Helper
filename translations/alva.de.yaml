@@ -181,7 +181,7 @@ global:
     missing_data_breach_procedure:
         title: '%count% Datenpanne(n) ohne Behörden-Meldung'
         body: '%count% Datenpanne(n) ohne Datum der Aufsichtsbehörden-Meldung (authorityNotificationAt). DSGVO Art. 33 verlangt Meldung innerhalb 72h nach Kenntnis.'
-        action: 'Datenpannen prüfen'
+        action: 'Überfällige Datenpannen anzeigen'
     konzern_settings_drift:
         title: 'Abweichung von Konzern-Baseline (%konzern_name%)'
         body: '%count% Compliance-Framework-Differenz(en) zwischen diesem Tenant und dem übergeordneten Konzern (%konzern_name%). ISB-Abstimmung empfohlen vor dem nächsten Audit.'

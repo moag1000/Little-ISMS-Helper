@@ -181,7 +181,7 @@ global:
     missing_data_breach_procedure:
         title: '%count% data breach(es) without authority notification'
         body: '%count% data breach record(s) have no authority notification date (authorityNotificationAt). GDPR Art. 33 requires notification within 72h of awareness.'
-        action: 'Review data breaches'
+        action: 'Show overdue data breaches'
     konzern_settings_drift:
         title: 'Divergence from Konzern baseline (%konzern_name%)'
         body: '%count% compliance framework difference(s) detected between this tenant and the parent Konzern (%konzern_name%). ISB coordination recommended before the next audit.'

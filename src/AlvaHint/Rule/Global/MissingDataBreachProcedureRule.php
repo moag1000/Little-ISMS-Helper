@@ -72,7 +72,7 @@ final class MissingDataBreachProcedureRule extends AbstractGlobalAlvaHintRule
             entityId: $tenant->getId() ?? 0,
             actionLabelTranslationKey: 'global.missing_data_breach_procedure.action',
             actionRoute: 'app_data_breach_index',
-            actionRouteParams: [],
+            actionRouteParams: ['filter' => 'overdue'],
             actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'alert',
