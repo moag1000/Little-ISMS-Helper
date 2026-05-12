@@ -1,6 +1,8 @@
 eu_authorities:
     nav:
         title: 'Behörden-Export'
+        index_title: 'EU-Behörden-Templates'
+        index_subtitle: 'Meldungsvorlagen für Aufsichtsbehörden'
     page:
         title: 'EU-Behörden-Reporting'
         subtitle: 'Regulatory Reporting für Datenschutzaufsichtsbehörden'

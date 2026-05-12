@@ -1,6 +1,8 @@
 eu_authorities:
     nav:
         title: 'Authority Export'
+        index_title: 'EU Authority Templates'
+        index_subtitle: 'Regulatory notification templates for supervisory authorities'
     page:
         title: 'EU Authority Reporting'
         subtitle: 'Regulatory reporting for data protection supervisory authorities'
