@@ -41,7 +41,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   6. diff    — result view with counters + error table
  *   7. errorCsv— streamed CSV of error rows for download
  */
-#[Route('/import/{entityType}', requirements: ['entityType' => 'asset|supplier|control'])]
+#[Route('/import/{entityType}', requirements: ['entityType' => 'asset|supplier|control|risk|business_process'])]
 #[IsGranted('ROLE_MANAGER')]
 final class BulkImportController extends AbstractController
 {
@@ -374,10 +374,12 @@ final class BulkImportController extends AbstractController
     {
         $entityTypeLower = strtolower($entityType);
         $fileBaseName = match ($entityTypeLower) {
-            'asset' => 'assets-sample.xlsx',
-            'supplier' => 'suppliers-sample.xlsx',
-            'control' => 'controls-sample.xlsx',
-            default => throw $this->createNotFoundException('Unsupported entity-type: ' . $entityType),
+            'asset'            => 'assets-sample.xlsx',
+            'supplier'         => 'suppliers-sample.xlsx',
+            'control'          => 'controls-sample.xlsx',
+            'risk'             => 'risks-sample.xlsx',
+            'business_process' => 'business-processes-sample.xlsx',
+            default            => throw $this->createNotFoundException('Unsupported entity-type: ' . $entityType),
         };
 
         $samplePath = sprintf('%s/fixtures/sample-imports/%s', $this->projectDir, $fileBaseName);
@@ -395,11 +397,15 @@ final class BulkImportController extends AbstractController
 
     /**
      * Normalize entity type URL-slug to PascalCase for service calls.
-     * Examples: 'asset' → 'Asset', 'supplier' → 'Supplier'
+     * Examples: 'asset' → 'Asset', 'supplier' → 'Supplier',
+     *           'business_process' → 'BusinessProcess' (snake_case handled)
      */
     private function toPascalCase(string $entityType): string
     {
-        return ucfirst(strtolower($entityType));
+        // Handle snake_case slugs: 'business_process' → 'BusinessProcess'
+        $parts = explode('_', $entityType);
+
+        return implode('', array_map('ucfirst', $parts));
     }
 
     /**
@@ -435,11 +441,15 @@ final class BulkImportController extends AbstractController
         // Known canonical alias terms per entity type — we use lowercase entity type
         // to match HeaderHeuristicMapper's ALIASES keys
         $canonicalTerms = match (strtolower($entityTypePascal)) {
-            'asset'    => ['name', 'designation', 'type', 'assettype', 'owner', 'responsible',
-                           'classification', 'confidentiality', 'integrity', 'availability', 'description'],
-            'supplier' => ['name', 'supplier', 'contactemail', 'email', 'criticality', 'dorarelevant'],
-            'control'  => ['identifier', 'ref', 'title', 'name', 'applicability', 'justification'],
-            default    => [],
+            'asset'           => ['name', 'designation', 'type', 'assettype', 'owner', 'responsible',
+                                  'classification', 'confidentiality', 'integrity', 'availability', 'description'],
+            'supplier'        => ['name', 'supplier', 'contactemail', 'email', 'criticality', 'dorarelevant'],
+            'control'         => ['identifier', 'ref', 'title', 'name', 'applicability', 'justification'],
+            'risk'            => ['name', 'title', 'category', 'threat', 'vulnerability', 'impact',
+                                  'likelihood', 'treatmentstrategy', 'riskowner', 'dpia'],
+            'businessprocess' => ['name', 'criticality', 'rto', 'rpo', 'mtpd', 'processowner', 'description',
+                                  'financialimpact'],
+            default           => [],
         };
 
         // Collect unique field names from auto-mappings + canonical suggestions
