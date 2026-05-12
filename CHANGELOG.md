@@ -3,6 +3,20 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.6.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.5.2...v3.6.0) (2026-05-12)
+
+
+### Added
+
+* 3.6.0 — Sprint 2 — Bulk-Import for Risk + BusinessProcess + VVT-BfDI-Export + Alva-Hints ([cde7842](https://github.com/moag1000/Little-ISMS-Helper/commit/cde7842909cc0d4d0680404011daeb37510b6165))
+
+
+### Fixed
+
+* **alva-hint:** 6 action-routes mismatch with HTTP-method (405 fix) ([4957dc8](https://github.com/moag1000/Little-ISMS-Helper/commit/4957dc8e57fe7d5e92d0ed35b12a2b672f3f8d99))
+* **alva-hint:** register missing Stimulus controller so hint buttons work ([b4bc844](https://github.com/moag1000/Little-ISMS-Helper/commit/b4bc844fb54f07ee44666f776454b64573b756da))
+* **ui:** duplicate-header sweep — admin-templates + inline h1 fixes ([d72ca3d](https://github.com/moag1000/Little-ISMS-Helper/commit/d72ca3dec25d21d8376129dc6c9d81430736e0b8))
+
 ## [3.5.2](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.5.1...v3.5.2) (2026-05-11)
 
 
