@@ -168,7 +168,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Show detailed category results
      */
-    #[Route('/{wizard}/category/{category}', name: 'app_compliance_wizard_category')]
+    #[Route('/{wizard}/category/{category}', name: 'app_compliance_wizard_category', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
     public function category(string $wizard, string $category): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -196,7 +196,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * API endpoint for real-time assessment (AJAX)
      */
-    #[Route('/{wizard}/api/assess', name: 'app_compliance_wizard_api_assess', methods: ['GET'])]
+    #[Route('/{wizard}/api/assess', name: 'app_compliance_wizard_api_assess', methods: ['GET'], requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
     public function apiAssess(string $wizard): JsonResponse
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
