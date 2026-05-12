@@ -41,6 +41,13 @@ final readonly class AlvaHint
         /** @var array<string, mixed> */
         public array $actionRouteParams = [],
         public ?string $actionCsrfIntent = null,
+        /**
+         * HTTP method the action button should use. 'GET' renders an <a href>
+         * link (no form, no CSRF). 'POST' (default) renders a <form method=post>
+         * with optional CSRF token. Use 'GET' for listing/index routes that only
+         * accept GET — otherwise the browser gets a 405 Method-Not-Allowed.
+         */
+        public string $actionMethod = 'POST',
         /** @var array<int, string>  e.g. ['ROLE_MANAGER'] */
         public array $requiredRoles = [],
         public string $mood = 'thinking',

@@ -104,6 +104,7 @@ final class OpenFindingReferenceRule extends AbstractAlvaHintRule
                 'mode' => 'targeted',
                 'finding_ref' => $findingRef,
             ],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_ADMIN', 'ROLE_GROUP_CISO'],
             mood: 'thinking',
             version: self::VERSION,

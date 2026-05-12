@@ -91,6 +91,7 @@ final class SettingsDriftRule extends AbstractAlvaHintRule
                 'mode' => 'targeted',
                 'drift' => implode(',', $driftKeys),
             ],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_CISO'],
             mood: 'thinking',
         );
