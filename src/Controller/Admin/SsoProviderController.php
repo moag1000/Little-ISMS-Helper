@@ -53,6 +53,13 @@ final class SsoProviderController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    public function show(IdentityProvider $provider): Response
+    {
+        $this->assertCanModify($provider);
+        return $this->render('admin/sso/show.html.twig', ['provider' => $provider]);
+    }
+
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
