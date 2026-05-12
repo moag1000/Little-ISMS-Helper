@@ -52,7 +52,7 @@ class IndustryPresetController extends AbstractController
         ]);
     }
 
-    #[Route('/{preset}/preview', name: 'preview', methods: ['GET'])]
+    #[Route('/{preset}/preview', name: 'preview', methods: ['GET'], requirements: ['preset' => '[a-z0-9-]+'])]
     public function preview(string $preset): Response
     {
         $config = $this->loadPreset($preset);
@@ -68,7 +68,7 @@ class IndustryPresetController extends AbstractController
         ]);
     }
 
-    #[Route('/{preset}/apply', name: 'apply', methods: ['POST'])]
+    #[Route('/{preset}/apply', name: 'apply', methods: ['POST'], requirements: ['preset' => '[a-z0-9-]+'])]
     public function apply(string $preset, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('industry_preset_' . $preset, (string) $request->request->get('_token'))) {

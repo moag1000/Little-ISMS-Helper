@@ -133,7 +133,7 @@ class DataBreachController extends AbstractController
     /**
      * Show data breach details
      */
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
@@ -154,7 +154,7 @@ class DataBreachController extends AbstractController
     /**
      * Edit data breach
      */
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function edit(Request $request, DataBreach $dataBreach): Response
     {
@@ -187,7 +187,7 @@ class DataBreachController extends AbstractController
     /**
      * Delete data breach
      */
-    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, DataBreach $dataBreach): Response
     {
@@ -213,7 +213,7 @@ class DataBreachController extends AbstractController
     /**
      * Submit data breach for assessment
      */
-    #[Route('/{id}/submit-for-assessment', name: 'submit_for_assessment', methods: ['POST'])]
+    #[Route('/{id}/submit-for-assessment', name: 'submit_for_assessment', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function submitForAssessment(Request $request, DataBreach $dataBreach): Response
     {
@@ -238,7 +238,7 @@ class DataBreachController extends AbstractController
     /**
      * Notify supervisory authority (Art. 33 GDPR)
      */
-    #[Route('/{id}/notify-authority', name: 'notify_authority', methods: ['POST'])]
+    #[Route('/{id}/notify-authority', name: 'notify_authority', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function notifyAuthority(Request $request, DataBreach $dataBreach): Response
     {
@@ -289,7 +289,7 @@ class DataBreachController extends AbstractController
     /**
      * Notify data subjects (Art. 34 GDPR)
      */
-    #[Route('/{id}/notify-subjects', name: 'notify_subjects', methods: ['POST'])]
+    #[Route('/{id}/notify-subjects', name: 'notify_subjects', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function notifySubjects(Request $request, DataBreach $dataBreach): Response
     {
@@ -322,7 +322,7 @@ class DataBreachController extends AbstractController
     /**
      * Record exemption from data subject notification (Art. 34(3) GDPR)
      */
-    #[Route('/{id}/subject-notification-exemption', name: 'subject_notification_exemption', methods: ['POST'])]
+    #[Route('/{id}/subject-notification-exemption', name: 'subject_notification_exemption', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function subjectNotificationExemption(Request $request, DataBreach $dataBreach): Response
     {
@@ -354,7 +354,7 @@ class DataBreachController extends AbstractController
     /**
      * Close data breach investigation
      */
-    #[Route('/{id}/close', name: 'close', methods: ['POST'])]
+    #[Route('/{id}/close', name: 'close', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function close(Request $request, DataBreach $dataBreach): Response
     {
@@ -379,7 +379,7 @@ class DataBreachController extends AbstractController
     /**
      * Reopen closed data breach
      */
-    #[Route('/{id}/reopen', name: 'reopen', methods: ['POST'])]
+    #[Route('/{id}/reopen', name: 'reopen', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_MANAGER')]
     public function reopen(Request $request, DataBreach $dataBreach): Response
     {
@@ -411,7 +411,7 @@ class DataBreachController extends AbstractController
     /**
      * Export data breach as PDF
      */
-    #[Route('/{id}/export/pdf', name: 'export_pdf', methods: ['GET'])]
+    #[Route('/{id}/export/pdf', name: 'export_pdf', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function exportPdf(DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;

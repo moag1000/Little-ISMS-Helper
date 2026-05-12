@@ -90,3 +90,15 @@ app_routes:
         - '../src/Controller/SecurityController.php'
         - '../src/Controller/HomeController.php'
         - '../src/Controller/QuickFixController.php'
+        - '../src/Controller/SsoController.php'
+
+# SSO public routes WITHOUT locale prefix — must be declared AFTER app_routes so
+# this registration wins over the locale-prefixed duplicate from the directory scan.
+# IdP redirect URIs must be fixed strings; OAuth exact-match at Entra ID / Okta /
+# Google / Auth0 rejects locale-prefixed callback URIs.
+# Note: use string resource (AttributeFileLoader), NOT {path+namespace} array
+# (Psr4DirectoryLoader only handles directories and silently returns an empty
+# RouteCollection for single-file resources).
+sso_routes:
+    resource: ../src/Controller/SsoController.php
+    type: attribute

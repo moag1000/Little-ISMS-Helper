@@ -8,6 +8,7 @@ use App\Entity\IdentityProvider;
 use App\Entity\Tenant;
 use App\Repository\IdentityProviderRepository;
 use App\Service\TenantContext;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Runtime registry for active identity providers.
@@ -113,5 +114,68 @@ final class SsoProviderRegistry
     public function findOneBySlugForTenant(string $slug, ?Tenant $tenant): ?IdentityProvider
     {
         return $this->repo->findOneBySlugForTenant($slug, $tenant);
+    }
+
+    /**
+     * Returns the preset definition for a given preset key, or null if unknown.
+     *
+     * @return array<string,mixed>|null
+     */
+    public function getPreset(string $presetKey): ?array
+    {
+        $file = __DIR__ . '/../../../fixtures/sso/presets/' . $presetKey . '.yaml';
+        if (!file_exists($file)) {
+            return null;
+        }
+        return Yaml::parseFile($file);
+    }
+
+    /**
+     * Returns all available preset definitions, keyed by preset name.
+     *
+     * @return array<string, array<string,mixed>>
+     */
+    public function getAllPresets(): array
+    {
+        $out = [];
+        foreach (IdentityProvider::VALID_PRESETS as $key) {
+            $preset = $this->getPreset($key);
+            if ($preset !== null) {
+                $out[$key] = $preset;
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * Pre-fills an IdentityProvider from the preset definition.
+     * Only sets fields that are still empty so existing overrides survive.
+     */
+    public function applyPresetToProvider(IdentityProvider $provider, string $presetKey): void
+    {
+        $preset = $this->getPreset($presetKey);
+        if ($preset === null) {
+            return;
+        }
+        $provider->setPresetType($presetKey);
+        if ($provider->getButtonLabel() === null || $provider->getButtonLabel() === '') {
+            $provider->setButtonLabel($preset['buttonLabel'] ?? null);
+        }
+        if ($provider->getButtonIcon() === null || $provider->getButtonIcon() === '') {
+            $provider->setButtonIcon($preset['icon'] ?? null);
+        }
+        if ($provider->getButtonColor() === null || $provider->getButtonColor() === '') {
+            $provider->setButtonColor($preset['color'] ?? null);
+        }
+        if ($provider->getScopes() === [] || $provider->getScopes() === ['openid', 'profile', 'email']) {
+            $scopes = $preset['scopes'] ?? ['openid', 'profile', 'email'];
+            $provider->setScopes(is_array($scopes) ? array_values($scopes) : ['openid', 'profile', 'email']);
+        }
+        if ($provider->getAttributeMap() === ['email' => 'email', 'given_name' => 'firstName', 'family_name' => 'lastName']) {
+            $map = $preset['attributeMap'] ?? null;
+            if (is_array($map)) {
+                $provider->setAttributeMap($map);
+            }
+        }
     }
 }

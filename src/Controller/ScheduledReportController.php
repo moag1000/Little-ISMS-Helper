@@ -77,7 +77,7 @@ class ScheduledReportController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_scheduled_report_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_scheduled_report_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(ScheduledReport $report): Response
     {
         $this->checkAccess($report);
@@ -87,7 +87,7 @@ class ScheduledReportController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_scheduled_report_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_scheduled_report_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, ScheduledReport $report): Response
     {
         $this->checkAccess($report);
@@ -112,7 +112,7 @@ class ScheduledReportController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/toggle', name: 'app_scheduled_report_toggle', methods: ['POST'])]
+    #[Route('/{id}/toggle', name: 'app_scheduled_report_toggle', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function toggle(Request $request, ScheduledReport $report): Response
     {
         $this->checkAccess($report);
@@ -134,7 +134,7 @@ class ScheduledReportController extends AbstractController
         return $this->redirectToRoute('app_scheduled_report_show', ['id' => $report->getId()]);
     }
 
-    #[Route('/{id}/trigger', name: 'app_scheduled_report_trigger', methods: ['POST'])]
+    #[Route('/{id}/trigger', name: 'app_scheduled_report_trigger', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function trigger(Request $request, ScheduledReport $report): Response
     {
@@ -152,7 +152,7 @@ class ScheduledReportController extends AbstractController
         return $this->redirectToRoute('app_scheduled_report_show', ['id' => $report->getId()]);
     }
 
-    #[Route('/{id}/preview', name: 'app_scheduled_report_preview', methods: ['GET'])]
+    #[Route('/{id}/preview', name: 'app_scheduled_report_preview', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function preview(ScheduledReport $report): Response
     {
         $this->checkAccess($report);
@@ -174,7 +174,7 @@ class ScheduledReportController extends AbstractController
         }
     }
 
-    #[Route('/{id}/delete', name: 'app_scheduled_report_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_scheduled_report_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, ScheduledReport $report): Response
     {
         $this->checkAccess($report);
