@@ -197,6 +197,12 @@ class Tenant
     #[ORM\Column(type: Types::INTEGER, nullable: true, options: ['default' => 600, 'comment' => 'API requests/minute per tenant (default 600 = 10/sec)'])]
     private ?int $apiRateLimitPerMinute = 600;
 
+    /** When true, all users in this tenant are required to login via SSO (local passwords locked). */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $ssoEnforced = false;
+
+    public function isSsoEnforced(): bool { return $this->ssoEnforced; }
+    public function setSsoEnforced(bool $v): static { $this->ssoEnforced = $v; return $this; }
 
     public function getBsiPhase(): ?string
     {

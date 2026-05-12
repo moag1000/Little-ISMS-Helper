@@ -23,6 +23,27 @@ class IdentityProvider
     public const DOMAIN_MODE_OPTIONAL = 'optional';
     public const DOMAIN_MODE_ENFORCE = 'enforce';
 
+    public const PRESET_ENTRA_ID = 'entra_id';
+    public const PRESET_GOOGLE = 'google';
+    public const PRESET_KEYCLOAK = 'keycloak';
+    public const PRESET_OKTA = 'okta';
+    public const PRESET_AUTH0 = 'auth0';
+    public const PRESET_GENERIC = 'generic';
+
+    public const MFA_REQUIRED = 'required';
+    public const MFA_OPTIONAL = 'optional';
+    public const MFA_DISABLED = 'disabled';
+
+    /** @var list<string> */
+    public const VALID_PRESETS = [
+        self::PRESET_ENTRA_ID,
+        self::PRESET_GOOGLE,
+        self::PRESET_KEYCLOAK,
+        self::PRESET_OKTA,
+        self::PRESET_AUTH0,
+        self::PRESET_GENERIC,
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -114,6 +135,23 @@ class IdentityProvider
 
     #[ORM\Column(length: 32, options: ['default' => 'ROLE_USER'])]
     private string $defaultRole = 'ROLE_USER';
+
+    /** Preset type used by the wizard to pre-fill discovery URL and attribute map. */
+    #[ORM\Column(length: 32, nullable: true)]
+    #[Assert\Choice(choices: self::VALID_PRESETS)]
+    private ?string $presetType = null;
+
+    /** Fallback role assigned to JIT-provisioned users when no role-mapping matches (Wave 2). */
+    #[ORM\Column(length: 64, nullable: true, options: ['default' => 'ROLE_USER'])]
+    private ?string $defaultFallbackRole = 'ROLE_USER';
+
+    /**
+     * MFA inheritance from IdP: required = users cannot skip MFA,
+     * optional = MFA respects user setting, disabled = MFA suppressed.
+     */
+    #[ORM\Column(length: 16, nullable: true, options: ['default' => 'optional'])]
+    #[Assert\Choice(choices: [self::MFA_REQUIRED, self::MFA_OPTIONAL, self::MFA_DISABLED])]
+    private ?string $mfaInheritance = self::MFA_OPTIONAL;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeImmutable $createdAt = null;
@@ -209,6 +247,15 @@ class IdentityProvider
 
     public function getDefaultRole(): string { return $this->defaultRole; }
     public function setDefaultRole(string $v): self { $this->defaultRole = $v; return $this; }
+
+    public function getPresetType(): ?string { return $this->presetType; }
+    public function setPresetType(?string $v): self { $this->presetType = $v; return $this; }
+
+    public function getDefaultFallbackRole(): ?string { return $this->defaultFallbackRole; }
+    public function setDefaultFallbackRole(?string $v): self { $this->defaultFallbackRole = $v; return $this; }
+
+    public function getMfaInheritance(): ?string { return $this->mfaInheritance; }
+    public function setMfaInheritance(?string $v): self { $this->mfaInheritance = $v; return $this; }
 
     public function getCreatedAt(): ?DateTimeImmutable { return $this->createdAt; }
     public function getUpdatedAt(): ?DateTimeImmutable { return $this->updatedAt; }
