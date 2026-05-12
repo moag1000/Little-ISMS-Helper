@@ -217,7 +217,9 @@ class AuditLogSubscriber
             'InterestedParty',
             'BusinessContinuityPlan',
             'BCExercise',
-            'ChangeRequest'
+            'ChangeRequest',
+            // SSO Wave 2 — config changes emit ACTION_SSO_CONFIG_CHANGED via postUpdate
+            'IdentityProvider',
         ];
 
         return in_array($className, $auditedEntities);

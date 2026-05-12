@@ -26,6 +26,14 @@ class AuditLogger
     private const string ACTION_IMPORT = 'import';
     private const string ACTION_BULK = 'bulk';
 
+    // SSO-specific audit events (Wave 2) — used by SsoEventLogger
+    public const string ACTION_SSO_LOGIN_SUCCESS       = 'sso.login.success';
+    public const string ACTION_SSO_LOGIN_FAILURE       = 'sso.login.failure';
+    public const string ACTION_SSO_JIT_PROVISIONED     = 'sso.jit.provisioned';
+    public const string ACTION_SSO_ROLE_CHANGED        = 'sso.role.changed';
+    public const string ACTION_SSO_CONFIG_CHANGED      = 'sso.config.changed';
+    public const string ACTION_SSO_ENFORCEMENT_CHANGED = 'sso.enforcement.changed';
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly RequestStack $requestStack,

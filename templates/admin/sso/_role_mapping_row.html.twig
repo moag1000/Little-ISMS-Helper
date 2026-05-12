@@ -1,0 +1,68 @@
+{#
+ # Role-mapping row partial — used by the sso-role-mapping Stimulus controller
+ # to render existing rows on the IdP show page.
+ #
+ # Variables:
+ #   mapping  — IdentityProviderRoleMapping entity
+ #   loop     — Twig loop variable providing loop.index0
+ #}
+{% trans_default_domain 'sso' %}
+<div class="role-mapping-row border rounded p-3 mb-2 bg-body-secondary">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-2">
+            <input type="text"
+                   name="role_mappings[{{ loop.index0 }}][claimKey]"
+                   value="{{ mapping.claimKey }}"
+                   class="form-control form-control-sm"
+                   placeholder="groups"
+                   aria-label="{{ 'sso.role_mapping.field.claim_key'|trans }}">
+        </div>
+        <div class="col-md-3">
+            <input type="text"
+                   name="role_mappings[{{ loop.index0 }}][claimValueExpression]"
+                   value="{{ mapping.claimValueExpression }}"
+                   class="form-control form-control-sm"
+                   placeholder="isms-admin"
+                   aria-label="{{ 'sso.role_mapping.field.claim_value_expression'|trans }}">
+        </div>
+        <div class="col-md-2">
+            <input type="text"
+                   name="role_mappings[{{ loop.index0 }}][assignedRole]"
+                   value="{{ mapping.assignedRole }}"
+                   class="form-control form-control-sm"
+                   placeholder="ROLE_ADMIN"
+                   aria-label="{{ 'sso.role_mapping.field.assigned_role'|trans }}">
+        </div>
+        <div class="col-md-1">
+            <input type="number"
+                   name="role_mappings[{{ loop.index0 }}][priority]"
+                   value="{{ mapping.priority }}"
+                   class="form-control form-control-sm"
+                   min="0"
+                   aria-label="{{ 'sso.role_mapping.field.priority'|trans }}">
+        </div>
+        <div class="col-md-1 d-flex align-items-center">
+            <input type="checkbox"
+                   name="role_mappings[{{ loop.index0 }}][isActive]"
+                   value="1"
+                   {% if mapping.isActive %}checked{% endif %}
+                   class="form-check-input"
+                   aria-label="{{ 'sso.role_mapping.field.is_active'|trans }}">
+        </div>
+        <div class="col-md-2">
+            <input type="text"
+                   name="role_mappings[{{ loop.index0 }}][auditDescription]"
+                   value="{{ mapping.auditDescription ?? '' }}"
+                   class="form-control form-control-sm"
+                   aria-label="{{ 'sso.role_mapping.field.audit_description'|trans }}">
+        </div>
+        <div class="col-md-1 d-flex align-items-end">
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    data-action="sso-role-mapping#removeRow"
+                    aria-label="{{ 'sso.role_mapping.action.remove'|trans }}">
+                <i class="bi bi-trash" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>

@@ -8,6 +8,9 @@ use App\Entity\IdentityProvider;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
+use App\Service\Sso\ClaimToRoleResolver;
+use App\Service\Sso\ClaimToRoleResolverResult;
+use App\Service\Sso\SsoEventLogger;
 use App\Service\Sso\SsoUserProvisioningService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,6 +32,8 @@ final class SsoUserProvisioningServiceTest extends TestCase
     private UserRepository $userRepo;
     private EntityManagerInterface $em;
     private AuditLogger $audit;
+    private ClaimToRoleResolver $resolver;
+    private SsoEventLogger $ssoLogger;
 
     protected function setUp(): void
     {
@@ -41,9 +46,19 @@ final class SsoUserProvisioningServiceTest extends TestCase
             ->setDefaultFallbackRole('ROLE_USER')
             ->setAttributeMap(['email' => 'email', 'given_name' => 'firstName', 'family_name' => 'lastName']);
 
-        $this->userRepo = $this->createMock(UserRepository::class);
-        $this->em = $this->createMock(EntityManagerInterface::class);
-        $this->audit = $this->createMock(AuditLogger::class);
+        $this->userRepo  = $this->createMock(UserRepository::class);
+        $this->em        = $this->createMock(EntityManagerInterface::class);
+        $this->audit     = $this->createMock(AuditLogger::class);
+        // Default resolver: always return fallback role so existing tests keep passing
+        $this->resolver  = $this->createMock(ClaimToRoleResolver::class);
+        $this->resolver->method('resolve')->willReturnCallback(
+            fn (IdentityProvider $p, array $c) => new ClaimToRoleResolverResult(
+                role: $p->getDefaultFallbackRole() ?: 'ROLE_USER',
+                matched: false,
+                trace: 'fallback',
+            )
+        );
+        $this->ssoLogger = $this->createMock(SsoEventLogger::class);
     }
 
     private function makeService(): SsoUserProvisioningService
@@ -53,7 +68,37 @@ final class SsoUserProvisioningServiceTest extends TestCase
             $this->em,
             $this->audit,
             new NullLogger(),
+            $this->resolver,
+            $this->ssoLogger,
         );
+    }
+
+    #[Test]
+    public function claimToRoleResolverIsConsultedForNewUser(): void
+    {
+        $resolver = $this->createMock(ClaimToRoleResolver::class);
+        $resolver->expects(self::once())
+            ->method('resolve')
+            ->willReturn(new ClaimToRoleResolverResult(role: 'ROLE_MANAGER', matched: true, trace: 'matched'));
+
+        $ssoLogger = $this->createMock(SsoEventLogger::class);
+        $ssoLogger->expects(self::once())->method('logJitProvisioned');
+
+        $svc = new SsoUserProvisioningService(
+            $this->userRepo,
+            $this->em,
+            $this->audit,
+            new NullLogger(),
+            $resolver,
+            $ssoLogger,
+        );
+
+        $this->userRepo->method('findOneBy')->willReturn(null);
+
+        $claims = ['sub' => 'u123', 'email' => 'alice@example.com', 'given_name' => 'Alice', 'family_name' => 'Smith'];
+        $user   = $svc->provision($this->provider, $claims);
+
+        self::assertContains('ROLE_MANAGER', $user->getRoles());
     }
 
     #[Test]
