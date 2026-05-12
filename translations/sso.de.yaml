@@ -114,6 +114,37 @@ sso:
             okta: 'OIDC-Web-App in Okta Admin → Applications erstellen. Callback-URL als Sign-in Redirect URI eintragen.'
             auth0: 'Regular Web Application in Auth0 Dashboard → Applications erstellen. Callback-URL als Allowed Callback URL eintragen.'
             generic: 'OIDC-Discovery-URL eingeben (/.well-known/openid-configuration) — der Wizard befüllt die Endpoints automatisch.'
+    role_mapping:
+        section:
+            title: 'Claim-zu-Rollen-Mapping'
+            help: 'Regeln werden nach Priorität (aufsteigend) geprüft. Erste Übereinstimmung gewinnt. Leer = Fallback-Rolle gilt.'
+        field:
+            claim_key: 'Claim-Schlüssel'
+            claim_value_expression: 'Wert-Ausdruck (Glob möglich)'
+            assigned_role: 'Zugewiesene Rolle'
+            priority: 'Priorität (0 = höchste)'
+            is_active: 'Aktiv'
+            audit_description: 'Beschreibung (Audit)'
+        action:
+            add: 'Mapping hinzufügen'
+            remove: 'Entfernen'
+            save: 'Mappings speichern'
+    audit:
+        section:
+            title: 'SSO Audit-Trail (letzte 50 Ereignisse)'
+        empty: 'Noch keine SSO-Audit-Einträge für diesen Provider.'
+        event:
+            sso_login_success: 'SSO-Login erfolgreich'
+            sso_login_failure: 'SSO-Login fehlgeschlagen'
+            sso_jit_provisioned: 'JIT-Benutzer angelegt'
+            sso_role_changed: 'Rolle geändert'
+            sso_config_changed: 'Konfiguration geändert'
+            sso_enforcement_changed: 'Durchsetzung geändert'
+    voter:
+        error:
+            not_authenticated: 'Sie müssen angemeldet sein, um auf SSO-Provider zuzugreifen.'
+            wrong_tenant: 'Sie haben keinen Zugriff auf diesen SSO-Provider (falscher Mandant).'
+            admin_required: 'Nur Administratoren können SSO-Konfigurationen ändern.'
     wizard:
         title: 'SSO-Einrichtungsassistent'
         aria_label: 'SSO-Einrichtungsassistent'
