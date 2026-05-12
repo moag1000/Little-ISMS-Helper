@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Api;
 
-use App\Entity\IdentityProvider;
+use App\Entity\Tenant;
+use App\Entity\User;
 use App\Service\Sso\OidcDiscoveryService;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -35,7 +37,7 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
     public function returnsErrorForEmptyDiscoveryUrl(): void
     {
         $client = static::createClient();
-        $client->loginUser($this->getAdminUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->request(
             'POST',
             '/de/api/sso/validate-discovery',
@@ -53,7 +55,7 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
     public function returnsErrorForNonHttpsUrl(): void
     {
         $client = static::createClient();
-        $client->loginUser($this->getAdminUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->request(
             'POST',
             '/de/api/sso/validate-discovery',
@@ -74,7 +76,7 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
         $mockDiscovery->method('fetchDiscovery')->willThrowException(new \RuntimeException('Connection refused'));
         $client->getContainer()->set(OidcDiscoveryService::class, $mockDiscovery);
 
-        $client->loginUser($this->getAdminUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->request(
             'POST',
             '/de/api/sso/validate-discovery',
@@ -88,20 +90,49 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
         self::assertStringContainsString('Connection refused', $data['error']);
     }
 
-    private function getAdminUser(mixed $client): \App\Entity\User
+    private function getOrCreateAdminUser(mixed $client): User
     {
-        $em = $client->getContainer()->get('doctrine.orm.entity_manager');
-        $repo = $em->getRepository(\App\Entity\User::class);
+        $em = $client->getContainer()->get(EntityManagerInterface::class);
+        $repo = $em->getRepository(User::class);
+
+        // Try existing admin first
         $users = $repo->findAll();
         foreach ($users as $u) {
             if (in_array('ROLE_ADMIN', $u->getRoles(), true) || in_array('ROLE_SUPER_ADMIN', $u->getRoles(), true)) {
                 return $u;
             }
         }
-        if (!empty($users)) {
-            $users[0]->setRoles(['ROLE_ADMIN']);
-            return $users[0];
+
+        // No fixture users — create a minimal one for this test run
+        $email = 'sso-discovery-test-admin@test.test';
+        $existing = $repo->findOneBy(['email' => $email]);
+        if ($existing !== null) {
+            return $existing;
         }
-        throw new \RuntimeException('No users in test database.');
+
+        $tenant = $em->getRepository(Tenant::class)->findOneBy([]) ?? $this->createTenant($em);
+
+        $user = new User();
+        $user->setEmail($email);
+        $user->setPassword('$2y$13$fake_hashed_password_sso_disco_00');
+        $user->setRoles(['ROLE_ADMIN']);
+        $user->setTenant($tenant);
+        $user->setFirstName('SSO');
+        $user->setLastName('Admin');
+
+        $em->persist($user);
+        $em->flush();
+
+        return $user;
+    }
+
+    private function createTenant(EntityManagerInterface $em): Tenant
+    {
+        $tenant = new Tenant();
+        $tenant->setName('SsoDiscoveryTest');
+        $tenant->setCode('SDT' . substr(uniqid(), -5));
+        $em->persist($tenant);
+        $em->flush();
+        return $tenant;
     }
 }

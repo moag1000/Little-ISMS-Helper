@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Entity\Tenant;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -27,7 +30,7 @@ final class SsoWizardControllerTest extends WebTestCase
     public function step1RendersForAdmin(): void
     {
         $client = static::createClient();
-        $client->loginUser($this->getAdminUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->request('GET', '/de/admin/sso/wizard/step1');
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('form');
@@ -37,7 +40,7 @@ final class SsoWizardControllerTest extends WebTestCase
     public function step2RendersForAdmin(): void
     {
         $client = static::createClient();
-        $client->loginUser($this->getAdminUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->getContainer()->get('session.factory')?->createSession();
         $client->request('GET', '/de/admin/sso/wizard/step2');
         self::assertResponseIsSuccessful();
@@ -47,19 +50,17 @@ final class SsoWizardControllerTest extends WebTestCase
     public function step3RendersForAdmin(): void
     {
         $client = static::createClient();
-        $client->loginUser($this->getAdminUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->request('GET', '/de/admin/sso/wizard/step3');
         self::assertResponseIsSuccessful();
     }
 
-    private function getAdminUser(mixed $client): \App\Entity\User
+    private function getOrCreateAdminUser(mixed $client): User
     {
-        $em = $client->getContainer()->get('doctrine.orm.entity_manager');
-        /** @var \App\Repository\UserRepository $repo */
-        $repo = $em->getRepository(\App\Entity\User::class);
-        $user = $repo->findOneBy(['roles' => null]) ?? $repo->findAll()[0] ?? null;
+        $em = $client->getContainer()->get(EntityManagerInterface::class);
+        $repo = $em->getRepository(User::class);
 
-        // Fall back: find any user with ROLE_ADMIN
+        // Try to find an existing admin in the test DB
         $users = $repo->findAll();
         foreach ($users as $u) {
             if (in_array('ROLE_ADMIN', $u->getRoles(), true) || in_array('ROLE_SUPER_ADMIN', $u->getRoles(), true)) {
@@ -67,12 +68,36 @@ final class SsoWizardControllerTest extends WebTestCase
             }
         }
 
-        // Last resort: use first user and grant role in-memory
-        if (!empty($users)) {
-            $users[0]->setRoles(['ROLE_ADMIN']);
-            return $users[0];
+        // No fixture users — create a minimal one for this test run
+        $email = 'sso-wizard-test-admin@test.test';
+        $existing = $repo->findOneBy(['email' => $email]);
+        if ($existing !== null) {
+            return $existing;
         }
 
-        throw new \RuntimeException('No users in test database — run fixtures first.');
+        $tenant = $em->getRepository(Tenant::class)->findOneBy([]) ?? $this->createTenant($em);
+
+        $user = new User();
+        $user->setEmail($email);
+        $user->setPassword('$2y$13$fake_hashed_password_sso_wizard_00');
+        $user->setRoles(['ROLE_ADMIN']);
+        $user->setTenant($tenant);
+        $user->setFirstName('SSO');
+        $user->setLastName('Admin');
+
+        $em->persist($user);
+        $em->flush();
+
+        return $user;
+    }
+
+    private function createTenant(EntityManagerInterface $em): Tenant
+    {
+        $tenant = new Tenant();
+        $tenant->setName('SsoWizardTest');
+        $tenant->setCode('SWT' . substr(uniqid(), -5));
+        $em->persist($tenant);
+        $em->flush();
+        return $tenant;
     }
 }
