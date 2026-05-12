@@ -26,7 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Access: ROLE_DPO (inherits ROLE_MANAGER)
  * Module: eu_authority_reporting
  */
-#[Route('/{_locale}/authority/notification', name: 'app_authority_notification_', requirements: ['_locale' => 'de|en'])]
+#[Route('/authority/notification', name: 'app_authority_notification_')]
 #[IsGranted('ROLE_MANAGER')]
 final class AuthorityNotificationController extends AbstractController
 {

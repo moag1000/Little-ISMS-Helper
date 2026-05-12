@@ -24,7 +24,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * All exports are logged via AuditLogger for compliance traceability.
  */
-#[Route('/{_locale}/export', name: 'app_filtered_export_', requirements: ['_locale' => 'de|en'])]
+#[Route('/export', name: 'app_filtered_export_')]
 #[IsGranted('ROLE_MANAGER')]
 final class FilteredExportController extends AbstractController
 {
