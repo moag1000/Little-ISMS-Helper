@@ -105,6 +105,7 @@ final class TrainingCoverageGapRule extends AbstractAlvaHintRule
             actionLabelTranslationKey: 'alva_hint.training_coverage_gap.cta_label',
             actionRoute: 'app_policy_ack_inbox',
             actionRouteParams: [],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_ADMIN', 'ROLE_GROUP_CISO'],
             mood: 'thinking',
             version: self::VERSION,

@@ -73,6 +73,7 @@ final class MissingDataBreachProcedureRule extends AbstractGlobalAlvaHintRule
             actionLabelTranslationKey: 'global.missing_data_breach_procedure.action',
             actionRoute: 'app_data_breach_index',
             actionRouteParams: [],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'alert',
         );

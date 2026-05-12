@@ -104,6 +104,7 @@ final class KonzernCisoDriftAlertRule extends AbstractAlvaHintRule
             actionLabelTranslationKey: 'alva_hint.konzern_ciso_drift_alert.cta_label',
             actionRoute: 'app_policy_wizard_konzern_rollup_index',
             actionRouteParams: ['tab' => 'drift'],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_GROUP_CISO'],
             mood: 'thinking',
             version: self::VERSION,

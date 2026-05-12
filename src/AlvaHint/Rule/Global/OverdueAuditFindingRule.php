@@ -73,6 +73,7 @@ final class OverdueAuditFindingRule extends AbstractGlobalAlvaHintRule
             actionLabelTranslationKey: 'global.overdue_audit_finding.action',
             actionRoute: 'app_audit_finding_index',
             actionRouteParams: [],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_AUDITOR'],
             mood: 'warning',
         );

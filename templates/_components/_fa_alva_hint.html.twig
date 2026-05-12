@@ -36,16 +36,24 @@
             <p class="fa-alert__message mb-2">{{ body|raw }}</p>
             <div class="d-flex flex-wrap gap-2 align-items-center">
                 {% if hint.actionRoute is not null and hint.actionLabelTranslationKey is not null %}
-                    <form method="post" action="{{ path(hint.actionRoute, hint.actionRouteParams) }}" class="d-inline">
-                        {% if hint.actionCsrfIntent is not null %}
-                            <input type="hidden" name="_token" value="{{ csrf_token(hint.actionCsrfIntent) }}">
-                        {% endif %}
-                        <input type="hidden" name="alva_hint_key" value="{{ hint.key }}">
-                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ hint.variant }} fa-cyber-btn--sm">
+                    {% if hint.actionMethod == 'GET' %}
+                        <a href="{{ path(hint.actionRoute, hint.actionRouteParams) }}"
+                           class="fa-cyber-btn fa-cyber-btn--{{ hint.variant }} fa-cyber-btn--sm">
                             <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                             {{ hint.actionLabelTranslationKey|trans({}, domain) }}
-                        </button>
-                    </form>
+                        </a>
+                    {% else %}
+                        <form method="post" action="{{ path(hint.actionRoute, hint.actionRouteParams) }}" class="d-inline">
+                            {% if hint.actionCsrfIntent is not null %}
+                                <input type="hidden" name="_token" value="{{ csrf_token(hint.actionCsrfIntent) }}">
+                            {% endif %}
+                            <input type="hidden" name="alva_hint_key" value="{{ hint.key }}">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ hint.variant }} fa-cyber-btn--sm">
+                                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                {{ hint.actionLabelTranslationKey|trans({}, domain) }}
+                            </button>
+                        </form>
+                    {% endif %}
                 {% endif %}
                 {% if hint.dismissible %}
                     <button type="button"
