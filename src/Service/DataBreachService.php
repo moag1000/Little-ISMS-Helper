@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use RuntimeException;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Deprecated;
 use DateTime;
@@ -290,7 +291,7 @@ class DataBreachService
             throw new RuntimeException('Supervisory authority has already been notified');
         }
 
-        $notifiedAt = new DateTime();
+        $notifiedAt = new DateTimeImmutable();
 
         // Capture overdue state BEFORE setting the notification timestamp, because
         // isAuthorityNotificationOverdue() / getHoursUntilAuthorityDeadline() short-circuit
@@ -397,7 +398,7 @@ class DataBreachService
             throw new RuntimeException('Data subjects have already been notified');
         }
 
-        $notifiedAt = new DateTime();
+        $notifiedAt = new DateTimeImmutable();
         $dataBreach->setDataSubjectsNotifiedAt($notifiedAt);
         $dataBreach->setSubjectNotificationMethod($notificationMethod);
         $dataBreach->setSubjectsNotified($subjectsNotified);
