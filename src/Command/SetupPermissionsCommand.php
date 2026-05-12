@@ -166,6 +166,60 @@ class SetupPermissionsCommand
             ['report.view', 'View reports', 'report', 'view'],
             ['report.create', 'Create reports', 'report', 'create'],
             ['report.export', 'Export reports', 'report', 'export'],
+
+            // Processing Activity permissions (GDPR Art. 30 — Record of Processing Activities)
+            ['processing_activity.view', 'View processing activities', 'privacy', 'view'],
+            ['processing_activity.create', 'Create processing activities', 'privacy', 'create'],
+            ['processing_activity.edit', 'Edit processing activities', 'privacy', 'edit'],
+            ['processing_activity.delete', 'Delete processing activities', 'privacy', 'delete'],
+
+            // DPIA permissions (GDPR Art. 35 — Data Protection Impact Assessment)
+            ['dpia.view', 'View DPIAs', 'privacy', 'view'],
+            ['dpia.create', 'Create DPIAs', 'privacy', 'create'],
+            ['dpia.edit', 'Edit DPIAs', 'privacy', 'edit'],
+            ['dpia.approve', 'Approve DPIAs', 'privacy', 'approve'],
+
+            // Data Breach permissions (GDPR Art. 33/34 — Breach Notification)
+            ['data_breach.view', 'View data breaches', 'privacy', 'view'],
+            ['data_breach.create', 'Create data breach records', 'privacy', 'create'],
+            ['data_breach.edit', 'Edit data breach records', 'privacy', 'edit'],
+            ['data_breach.notify_authority', 'Notify supervisory authority of data breach (Art. 33 GDPR)', 'privacy', 'edit'],
+            ['data_breach.notify_subjects', 'Notify affected data subjects of breach (Art. 34 GDPR)', 'privacy', 'edit'],
+            ['data_breach.close', 'Close / resolve a data breach record', 'privacy', 'edit'],
+
+            // Data Subject Request permissions (GDPR Art. 15-22 — DSR handling)
+            ['data_subject_request.view', 'View data subject requests', 'privacy', 'view'],
+            ['data_subject_request.create', 'Create data subject requests', 'privacy', 'create'],
+            ['data_subject_request.edit', 'Edit data subject requests', 'privacy', 'edit'],
+            ['data_subject_request.respond', 'Respond to data subject requests', 'privacy', 'edit'],
+
+            // Consent permissions (GDPR Art. 6/7 — Consent management)
+            ['consent.view', 'View consent records', 'privacy', 'view'],
+            ['consent.create', 'Create consent records', 'privacy', 'create'],
+            ['consent.edit', 'Edit consent records', 'privacy', 'edit'],
+            ['consent.revoke', 'Revoke consent records', 'privacy', 'edit'],
+
+            // Privacy report export
+            ['privacy.report.export', 'Export privacy / DPO reports', 'privacy', 'export'],
+
+            // Risk Treatment permissions
+            ['risk.treat', 'Create and manage risk treatment measures', 'risk', 'edit'],
+            ['risk_treatment_plan.view', 'View risk treatment plans', 'risk', 'view'],
+            ['risk_treatment_plan.create', 'Create risk treatment plans', 'risk', 'create'],
+            ['risk_treatment_plan.edit', 'Edit risk treatment plans', 'risk', 'edit'],
+            ['risk_treatment_plan.approve', 'Approve risk treatment plans', 'risk', 'approve'],
+
+            // KPI permissions
+            ['kpi.view', 'View KPI dashboards and security metrics', 'security', 'view'],
+            ['kpi.export', 'Export KPI and security metric reports', 'security', 'export'],
+
+            // Security Event permissions
+            ['security_event.view', 'View security events', 'security', 'view'],
+            ['security_event.create', 'Create security event records', 'security', 'create'],
+            ['security_event.respond', 'Respond to and manage security events', 'security', 'edit'],
+
+            // Policy permissions
+            ['policy.approve', 'Approve and publish policies', 'policy', 'approve'],
         ];
 
         $count = 0;
@@ -234,7 +288,12 @@ class SetupPermissionsCommand
                     'audit.view', 'audit.create', 'audit.approve',
                     'compliance.view', 'compliance.edit', 'compliance.export',
                     'report.view', 'report.create', 'report.export',
-                    // CISO-specific — skipped (not in catalogue): kpi.*, security_event.*, policy.approve
+                    // CISO-specific security domain
+                    'kpi.view', 'kpi.export',
+                    'security_event.view', 'security_event.create', 'security_event.respond',
+                    'policy.approve',
+                    // Privacy read-access for security oversight
+                    'processing_activity.view', 'dpia.view', 'data_breach.view',
                 ]
             ],
             'ROLE_RISK_MANAGER' => [
@@ -248,7 +307,10 @@ class SetupPermissionsCommand
                     'audit.view', 'audit.approve',
                     'compliance.view', 'compliance.edit',
                     'report.view', 'report.create', 'report.export',
-                    // RISK_MANAGER-specific — skipped (not in catalogue): risk.treat, risk_treatment_plan.*
+                    // RISK_MANAGER-specific treatment domain
+                    'risk.treat',
+                    'risk_treatment_plan.view', 'risk_treatment_plan.create',
+                    'risk_treatment_plan.edit', 'risk_treatment_plan.approve',
                 ]
             ],
             'ROLE_DPO' => [
@@ -262,8 +324,16 @@ class SetupPermissionsCommand
                     'audit.view', 'audit.approve',
                     'compliance.view', 'compliance.edit',
                     'report.view', 'report.create', 'report.export',
-                    // DPO-specific — skipped (not in catalogue): processing_activity.*, dpia.*, data_breach.*,
-                    // data_subject_request.*, consent.*, privacy.*
+                    // DPO privacy domain — full ownership
+                    'processing_activity.view', 'processing_activity.create',
+                    'processing_activity.edit', 'processing_activity.delete',
+                    'dpia.view', 'dpia.create', 'dpia.edit', 'dpia.approve',
+                    'data_breach.view', 'data_breach.create', 'data_breach.edit',
+                    'data_breach.notify_authority', 'data_breach.notify_subjects', 'data_breach.close',
+                    'data_subject_request.view', 'data_subject_request.create',
+                    'data_subject_request.edit', 'data_subject_request.respond',
+                    'consent.view', 'consent.create', 'consent.edit', 'consent.revoke',
+                    'privacy.report.export',
                 ]
             ],
             'ROLE_COMPLIANCE_MANAGER' => [
@@ -277,7 +347,10 @@ class SetupPermissionsCommand
                     'audit.view', 'audit.approve',
                     'compliance.view', 'compliance.edit', 'compliance.export',
                     'report.view', 'report.create', 'report.export',
-                    // COMPLIANCE_MANAGER-specific — skipped (not in catalogue): policy.approve
+                    // Compliance-Manager-specific
+                    'policy.approve',
+                    // Privacy read-access for compliance overview
+                    'processing_activity.view', 'dpia.view', 'data_breach.view', 'consent.view',
                 ]
             ],
             'ROLE_GROUP_CISO' => [
@@ -287,7 +360,9 @@ class SetupPermissionsCommand
                 'permissions' => [
                     'risk.view', 'asset.view', 'incident.view', 'control.view',
                     'audit.view', 'audit.create', 'audit.edit',
-                    'compliance.view', 'report.view', 'report.create'
+                    'compliance.view', 'report.view', 'report.create',
+                    // Privacy read-only for group oversight
+                    'data_breach.view', 'processing_activity.view', 'dpia.view',
                 ]
             ],
             'ROLE_KONZERN_AUDITOR' => [
@@ -297,7 +372,9 @@ class SetupPermissionsCommand
                 'permissions' => [
                     'risk.view', 'asset.view', 'incident.view', 'control.view',
                     'audit.view', 'audit.create', 'audit.edit',
-                    'compliance.view', 'report.view', 'report.create'
+                    'compliance.view', 'report.view', 'report.create',
+                    // Privacy read-only for group audit
+                    'data_breach.view', 'processing_activity.view', 'dpia.view',
                 ]
             ],
             'ROLE_ADMIN' => [
@@ -306,7 +383,8 @@ class SetupPermissionsCommand
             ]
         ];
 
-        $count = 0;
+        $created = 0;
+        $updated = 0;
         foreach ($roles as $roleName => $roleData) {
             $existingRole = $this->roleRepository->findByName($roleName);
             if (!$existingRole instanceof Role) {
@@ -314,31 +392,40 @@ class SetupPermissionsCommand
                 $role->setName($roleName);
                 $role->setDescription($roleData['description']);
                 $role->setIsSystemRole(true);
+                $this->entityManager->persist($role);
+                $created++;
+            } else {
+                $role = $existingRole;
+            }
 
-                // Add permissions
-                if ($roleData['permissions'] === '*') {
-                    // Add all permissions for admin
-                    $allPermissions = $this->permissionRepository->findAll();
-                    foreach ($allPermissions as $allPermission) {
-                        $role->addPermission($allPermission);
+            // Sync permissions — add any missing ones (idempotent upsert)
+            if ($roleData['permissions'] === '*') {
+                // Admin gets all permissions
+                $allPermissions = $this->permissionRepository->findAll();
+                foreach ($allPermissions as $allPermission) {
+                    $role->addPermission($allPermission);
+                }
+            } else {
+                $existingPermNames = array_map(
+                    fn (Permission $p) => $p->getName(),
+                    $role->getPermissions()->toArray()
+                );
+                foreach ($roleData['permissions'] as $permName) {
+                    if (in_array($permName, $existingPermNames, true)) {
+                        continue;
                     }
-                } else {
-                    foreach ($roleData['permissions'] as $permName) {
-                        $permission = $this->permissionRepository->findByName($permName);
-                        if ($permission instanceof Permission) {
-                            $role->addPermission($permission);
-                        }
+                    $permission = $this->permissionRepository->findByName($permName);
+                    if ($permission instanceof Permission) {
+                        $role->addPermission($permission);
+                        $updated++;
                     }
                 }
-
-                $this->entityManager->persist($role);
-                $count++;
             }
         }
 
         try {
             $this->entityManager->flush();
-            $symfonyStyle->success("Created $count roles.");
+            $symfonyStyle->success("Created $created roles, updated $updated role-permission assignments.");
         } catch (Exception $e) {
             $symfonyStyle->error("Failed to create roles: " . $e->getMessage());
             throw $e;

@@ -160,4 +160,191 @@ class SetupPermissionsCommandTest extends KernelTestCase
             }
         }
     }
+
+    /**
+     * Asserts ROLE_DPO carries all privacy-domain permissions (sampling of key entries).
+     */
+    #[Test]
+    public function testDpoRoleHasPrivacyPermissions(): void
+    {
+        $kernel = self::bootKernel();
+        $application = new Application($kernel);
+
+        $command = $application->find('app:setup-permissions');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([]);
+
+        $this->assertSame(0, $commandTester->getStatusCode());
+
+        /** @var RoleRepository $roleRepository */
+        $roleRepository = static::getContainer()->get(RoleRepository::class);
+
+        $role = $roleRepository->findByName('ROLE_DPO');
+        $this->assertNotNull($role, 'ROLE_DPO must exist after app:setup-permissions');
+
+        $permissionNames = array_map(
+            fn ($p) => $p->getName(),
+            $role->getPermissions()->toArray()
+        );
+
+        $requiredPermissions = [
+            'processing_activity.view',
+            'dpia.view',
+            'data_breach.notify_authority',
+            'data_subject_request.respond',
+            'consent.revoke',
+        ];
+
+        foreach ($requiredPermissions as $permName) {
+            $this->assertContains(
+                $permName,
+                $permissionNames,
+                sprintf('ROLE_DPO must have permission "%s"', $permName)
+            );
+        }
+    }
+
+    /**
+     * Asserts ROLE_RISK_MANAGER carries risk-treatment-domain permissions.
+     */
+    #[Test]
+    public function testRiskManagerRoleHasRiskTreatmentPermissions(): void
+    {
+        $kernel = self::bootKernel();
+        $application = new Application($kernel);
+
+        $command = $application->find('app:setup-permissions');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([]);
+
+        $this->assertSame(0, $commandTester->getStatusCode());
+
+        /** @var RoleRepository $roleRepository */
+        $roleRepository = static::getContainer()->get(RoleRepository::class);
+
+        $role = $roleRepository->findByName('ROLE_RISK_MANAGER');
+        $this->assertNotNull($role, 'ROLE_RISK_MANAGER must exist after app:setup-permissions');
+
+        $permissionNames = array_map(
+            fn ($p) => $p->getName(),
+            $role->getPermissions()->toArray()
+        );
+
+        $this->assertContains('risk.treat', $permissionNames, 'ROLE_RISK_MANAGER must have "risk.treat"');
+        $this->assertContains('risk_treatment_plan.approve', $permissionNames, 'ROLE_RISK_MANAGER must have "risk_treatment_plan.approve"');
+    }
+
+    /**
+     * Asserts ROLE_CISO carries KPI and security-event permissions.
+     */
+    #[Test]
+    public function testCisoRoleHasKpiAndSecurityEventPermissions(): void
+    {
+        $kernel = self::bootKernel();
+        $application = new Application($kernel);
+
+        $command = $application->find('app:setup-permissions');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([]);
+
+        $this->assertSame(0, $commandTester->getStatusCode());
+
+        /** @var RoleRepository $roleRepository */
+        $roleRepository = static::getContainer()->get(RoleRepository::class);
+
+        $role = $roleRepository->findByName('ROLE_CISO');
+        $this->assertNotNull($role, 'ROLE_CISO must exist after app:setup-permissions');
+
+        $permissionNames = array_map(
+            fn ($p) => $p->getName(),
+            $role->getPermissions()->toArray()
+        );
+
+        $this->assertContains('kpi.export', $permissionNames, 'ROLE_CISO must have "kpi.export"');
+        $this->assertContains('security_event.respond', $permissionNames, 'ROLE_CISO must have "security_event.respond"');
+    }
+
+    /**
+     * Asserts ROLE_COMPLIANCE_MANAGER carries policy.approve permission.
+     */
+    #[Test]
+    public function testComplianceManagerRoleHasPolicyApprovePermission(): void
+    {
+        $kernel = self::bootKernel();
+        $application = new Application($kernel);
+
+        $command = $application->find('app:setup-permissions');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([]);
+
+        $this->assertSame(0, $commandTester->getStatusCode());
+
+        /** @var RoleRepository $roleRepository */
+        $roleRepository = static::getContainer()->get(RoleRepository::class);
+
+        $role = $roleRepository->findByName('ROLE_COMPLIANCE_MANAGER');
+        $this->assertNotNull($role, 'ROLE_COMPLIANCE_MANAGER must exist after app:setup-permissions');
+
+        $permissionNames = array_map(
+            fn ($p) => $p->getName(),
+            $role->getPermissions()->toArray()
+        );
+
+        $this->assertContains('policy.approve', $permissionNames, 'ROLE_COMPLIANCE_MANAGER must have "policy.approve"');
+    }
+
+    /**
+     * Asserts GROUP_CISO and KONZERN_AUDITOR do not carry write/mutating permissions
+     * from the new privacy, risk-treatment, kpi, and policy domains.
+     *
+     * Carve-outs (AUDITOR base-set, intentional): audit.create, audit.edit, report.create.
+     */
+    #[Test]
+    public function testHoldingRolesDoNotHaveMutatingNewDomainPermissions(): void
+    {
+        $kernel = self::bootKernel();
+        $application = new Application($kernel);
+
+        $command = $application->find('app:setup-permissions');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([]);
+
+        $this->assertSame(0, $commandTester->getStatusCode());
+
+        /** @var RoleRepository $roleRepository */
+        $roleRepository = static::getContainer()->get(RoleRepository::class);
+
+        // These carve-outs are intentional (AUDITOR base-set)
+        $allowedCarveOuts = ['audit.create', 'audit.edit', 'report.create'];
+
+        $forbiddenActions = ['create', 'edit', 'approve', 'delete', 'respond'];
+
+        $holdingRoles = ['ROLE_GROUP_CISO', 'ROLE_KONZERN_AUDITOR'];
+        foreach ($holdingRoles as $roleName) {
+            $role = $roleRepository->findByName($roleName);
+            $this->assertNotNull($role, sprintf('Holding role "%s" must exist', $roleName));
+
+            $permissionNames = array_map(
+                fn ($p) => $p->getName(),
+                $role->getPermissions()->toArray()
+            );
+
+            foreach ($permissionNames as $permName) {
+                if (in_array($permName, $allowedCarveOuts, true)) {
+                    continue;
+                }
+                foreach ($forbiddenActions as $action) {
+                    $this->assertFalse(
+                        str_ends_with($permName, '.' . $action),
+                        sprintf(
+                            'Holding role "%s" must not have mutating permission "%s" (action: %s)',
+                            $roleName,
+                            $permName,
+                            $action
+                        )
+                    );
+                }
+            }
+        }
+    }
 }
