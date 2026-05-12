@@ -6,6 +6,10 @@ nav:
         suppliers_desc: 'Import supplier list from Excel/CSV'
         controls: 'Controls bulk import'
         controls_desc: 'Import controls from Excel/CSV'
+        risks: 'Risk bulk import'
+        risks_desc: 'Import risk register from Excel/CSV'
+        business_processes: 'Business Process bulk import'
+        business_processes_desc: 'Import BIA process list from Excel/CSV'
 
 import:
     page:
@@ -16,11 +20,15 @@ import:
         asset: 'Assets'
         supplier: 'Suppliers'
         control: 'Controls'
+        risk: 'Risk'
+        business_process: 'Business Process'
 
     entity_type:
         asset: 'Asset'
         supplier: 'Supplier'
         control: 'Control'
+        risk: 'Risk'
+        business_process: 'Business Process'
 
     wizard:
         step:
@@ -115,3 +123,18 @@ import:
             title: 'Title'
             applicability: 'Applicability'
             justification: 'Justification'
+            category: 'Category'
+            threatSource: 'Threat Source'
+            vulnerability: 'Vulnerability'
+            inherentImpact: 'Inherent Impact (1-5)'
+            inherentLikelihood: 'Inherent Likelihood (1-5)'
+            treatmentStrategy: 'Treatment Strategy'
+            riskOwner: 'Risk Owner'
+            requiresDpia: 'Requires DPIA'
+            rto: 'RTO (hours)'
+            rpo: 'RPO (hours)'
+            mtpd: 'MTPD (hours)'
+            financialImpactPerHour: 'Financial Impact per Hour'
+            processOwner: 'Process Owner'
+            dependenciesUpstream: 'Upstream Dependencies'
+            dependenciesDownstream: 'Downstream Dependencies'

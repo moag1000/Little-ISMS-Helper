@@ -6,6 +6,10 @@ nav:
         suppliers_desc: 'Lieferantenliste aus Excel/CSV importieren'
         controls: 'Controls-Bulk-Import'
         controls_desc: 'Controls aus Excel/CSV importieren'
+        risks: 'Risiken-Bulk-Import'
+        risks_desc: 'Risikoregister aus Excel/CSV importieren'
+        business_processes: 'Geschäftsprozesse-Bulk-Import'
+        business_processes_desc: 'BIA-Prozessliste aus Excel/CSV importieren'
 
 import:
     page:
@@ -16,11 +20,15 @@ import:
         asset: 'Assets'
         supplier: 'Lieferanten'
         control: 'Controls'
+        risk: 'Risiko'
+        business_process: 'Geschäftsprozess'
 
     entity_type:
         asset: 'Asset'
         supplier: 'Lieferant'
         control: 'Control'
+        risk: 'Risiko'
+        business_process: 'Geschäftsprozess'
 
     wizard:
         step:
@@ -115,3 +123,18 @@ import:
             title: 'Titel'
             applicability: 'Anwendbarkeit'
             justification: 'Begründung'
+            category: 'Kategorie'
+            threatSource: 'Bedrohungsquelle'
+            vulnerability: 'Schwachstelle'
+            inherentImpact: 'Inhärenter Schaden (1-5)'
+            inherentLikelihood: 'Eintrittswahrscheinlichkeit (1-5)'
+            treatmentStrategy: 'Behandlungsstrategie'
+            riskOwner: 'Risikoeigner'
+            requiresDpia: 'DSFA erforderlich'
+            rto: 'RTO (Stunden)'
+            rpo: 'RPO (Stunden)'
+            mtpd: 'MTPD (Stunden)'
+            financialImpactPerHour: 'Finanzielle Auswirkung/Stunde'
+            processOwner: 'Prozesseigner'
+            dependenciesUpstream: 'Abhängigkeiten (vorgelagert)'
+            dependenciesDownstream: 'Abhängigkeiten (nachgelagert)'

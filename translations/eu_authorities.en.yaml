@@ -1,16 +1,31 @@
-# Translation skeleton for eu_authorities
-# Sprint 0 Task 0.1 — empty skeleton with standard sections.
-# Keys to be filled during feature implementation.
-
 eu_authorities:
-  nav:
-    title: ''
-  page:
-    title: ''
-    subtitle: ''
-  field: {}
-  error: {}
-  help: {}
-  audit: {}
-  success: {}
-  warning: {}
+    nav:
+        title: 'Authority Export'
+    page:
+        title: 'EU Authority Reporting'
+        subtitle: 'Regulatory reporting for data protection supervisory authorities'
+    field: {}
+    error: {}
+    help: {}
+    audit: {}
+    success: {}
+    warning: {}
+    vvt:
+        title: 'Record of Processing Activities (Art. 30 GDPR)'
+        subtitle: 'Export in BfDI format for supervisory authorities'
+        action:
+            export_xlsx: 'Export BfDI-XLSX'
+            export_csv: 'Export BfDI-CSV'
+            export_pdf: 'Export BfDI-PDF'
+        error:
+            no_processing_activities: 'No processing activities recorded — please create at least one.'
+        column:
+            verantwortlicher: 'Controller'
+            dpo: 'Data Protection Officer'
+            zweck: 'Processing Purpose'
+            betroffene: 'Categories of Data Subjects'
+            daten: 'Categories of Personal Data'
+            empfaenger: 'Recipients'
+            drittland: 'Third-Country Transfer'
+            loeschfristen: 'Retention Periods'
+            toms: 'Technical and Organisational Measures'

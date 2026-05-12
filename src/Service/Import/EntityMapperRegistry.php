@@ -55,7 +55,7 @@ final class EntityMapperRegistry
         $types = [];
         foreach ($this->mappers as $mapper) {
             // Derive display name from each mapper's support check
-            foreach (['Asset', 'Supplier', 'Control'] as $candidate) {
+            foreach (['Asset', 'Supplier', 'Control', 'Risk', 'BusinessProcess'] as $candidate) {
                 if ($mapper->supportsEntityType($candidate)) {
                     $types[] = $candidate;
                 }

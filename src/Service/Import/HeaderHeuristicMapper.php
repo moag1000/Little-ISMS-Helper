@@ -8,7 +8,7 @@ namespace App\Service\Import;
  * Suggests entity-field mappings for spreadsheet column headers using
  * string-normalisation + Levenshtein-distance heuristics.
  *
- * Supported entity types: asset, supplier, control
+ * Supported entity types: asset, supplier, control, risk, business_process
  *
  * Usage:
  *   $suggestions = $mapper->suggestMappings(['Name', 'Typ', 'Verantwortlich'], 'asset');
@@ -115,7 +115,86 @@ final class HeaderHeuristicMapper
             'begruendung'    => 'justification',
             'begrundung'     => 'justification',
             'reason'         => 'justification',
-            'begruendung'    => 'justification',
+        ],
+        'risk' => [
+            // name (maps to Risk.title)
+            'name'              => 'name',
+            'titel'             => 'name',
+            'title'             => 'name',
+            'risikoname'        => 'name',
+            'risikobezeichnung' => 'name',
+            // category
+            'category'          => 'category',
+            'kategorie'         => 'category',
+            // threatSource (maps to Risk.threat)
+            'threat'            => 'threatSource',
+            'bedrohung'         => 'threatSource',
+            'threatsource'      => 'threatSource',
+            'threat_source'     => 'threatSource',
+            // vulnerability
+            'vulnerability'     => 'vulnerability',
+            'vuln'              => 'vulnerability',
+            'schwachstelle'     => 'vulnerability',
+            // inherentImpact
+            'impact'            => 'inherentImpact',
+            'auswirkung'        => 'inherentImpact',
+            'schaden'           => 'inherentImpact',
+            'inherentimpact'    => 'inherentImpact',
+            // inherentLikelihood
+            'likelihood'        => 'inherentLikelihood',
+            'wahrscheinlichkeit' => 'inherentLikelihood',
+            'haeufigkeit'       => 'inherentLikelihood',
+            'haufigkeit'        => 'inherentLikelihood',
+            'inherentlikelihood' => 'inherentLikelihood',
+            // treatmentStrategy
+            'treatmentstrategy' => 'treatmentStrategy',
+            'treatment'         => 'treatmentStrategy',
+            'behandlung'        => 'treatmentStrategy',
+            'strategie'         => 'treatmentStrategy',
+            // riskOwner
+            'riskowner'         => 'riskOwner',
+            'owner'             => 'riskOwner',
+            'verantwortlich'    => 'riskOwner',
+            'risikoeigner'      => 'riskOwner',
+            // requiresDpia
+            'requiresdpia'      => 'requiresDpia',
+            'dpia'              => 'requiresDpia',
+            'dsfa'              => 'requiresDpia',
+        ],
+        'business_process' => [
+            // name
+            'name'              => 'name',
+            'prozessname'       => 'name',
+            'titel'             => 'name',
+            'title'             => 'name',
+            // criticality
+            'criticality'       => 'criticality',
+            'kritikalitaet'     => 'criticality',
+            'kritikalitat'      => 'criticality',
+            'stufe'             => 'criticality',
+            // rto
+            'rto'               => 'rto',
+            'recoverytime'      => 'rto',
+            'recovery_time'     => 'rto',
+            // rpo
+            'rpo'               => 'rpo',
+            'recoverypoint'     => 'rpo',
+            'recovery_point'    => 'rpo',
+            // mtpd
+            'mtpd'              => 'mtpd',
+            'max_ausfallzeit'   => 'mtpd',
+            'maxausfallzeit'    => 'mtpd',
+            // processOwner
+            'processowner'      => 'processOwner',
+            'prozesseigner'     => 'processOwner',
+            'owner'             => 'processOwner',
+            // description
+            'description'       => 'description',
+            'beschreibung'      => 'description',
+            // financialImpactPerHour
+            'financialimpact'   => 'financialImpactPerHour',
+            'financialimpactperhour' => 'financialImpactPerHour',
+            'finanziell'        => 'financialImpactPerHour',
         ],
     ];
 
@@ -126,13 +205,14 @@ final class HeaderHeuristicMapper
      * Columns whose best match falls below MIN_CONFIDENCE are omitted.
      *
      * @param string[] $headers    Column headers as they appear in the spreadsheet
-     * @param string   $entityType One of 'asset', 'supplier', 'control'
+     * @param string   $entityType One of 'asset', 'supplier', 'control', 'risk', 'business_process'
+     *                             Also accepts PascalCase forms like 'Asset', 'Risk', 'BusinessProcess'
      *
      * @return array<string, array{target: string, confidence: float}>
      */
     public function suggestMappings(array $headers, string $entityType): array
     {
-        $aliases = self::ALIASES[$entityType] ?? [];
+        $aliases = self::ALIASES[$entityType] ?? self::ALIASES[$this->toAliasKey($entityType)] ?? [];
 
         if ($aliases === []) {
             return [];
@@ -158,6 +238,18 @@ final class HeaderHeuristicMapper
         }
 
         return $suggestions;
+    }
+
+    /**
+     * Convert a PascalCase or camelCase entity type name to the snake_case alias key
+     * used in the ALIASES table. Examples: 'Risk' → 'risk', 'BusinessProcess' → 'business_process'.
+     */
+    private function toAliasKey(string $entityType): string
+    {
+        // Insert underscore before uppercase letters that follow a lowercase letter
+        $snake = preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $entityType) ?? $entityType;
+
+        return strtolower($snake);
     }
 
     /**
