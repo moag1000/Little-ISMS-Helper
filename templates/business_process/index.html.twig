@@ -21,7 +21,7 @@
         title: 'business_process.index.page_title'|trans({}, 'business_process'),
         actions: [
             { label: 'business_process.index.new_process'|trans({}, 'business_process'), href: path('app_business_process_new'), variant: 'primary', icon: 'plus-circle' }
-        ]
+        ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'business_process', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
     }) }}
 {% set _global_hints = alva_hints('business_process_index') %}
 {% if _global_hints|length > 0 %}

@@ -365,6 +365,16 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {# F26.4-followup: EU-Behörden-Templates — authority notification index #}
+                        {% if is_granted('ROLE_MANAGER') and is_module_active('eu_authority_reporting') %}
+                        <li><a href="{{ path('app_authority_notification_index') }}" class="{% if current_route starts with 'app_authority_notification_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-shield" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'eu_authorities.nav.index_title'|trans({}, 'eu_authorities') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'eu_authorities.nav.index_subtitle'|trans({}, 'eu_authorities') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

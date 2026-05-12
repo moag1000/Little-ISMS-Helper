@@ -272,6 +272,7 @@ audit_finding:
         reported_by_person: 'Gemeldet von (Person)'
         reported_by_deputy_persons: 'Vertretungen Meldender (Personen)'
         due_date: 'Fällig bis'
+        linked_requirements: 'Verknüpfte Norm-Anforderungen'
     placeholder:
         audit: '-- Audit auswählen --'
         related_control: '-- Control auswählen (optional) --'
@@ -290,6 +291,7 @@ audit_finding:
         assigned_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
         reported_by_person: 'Person ohne System-Login als Meldende. Reihenfolge: User > Person > leer.'
         reported_by_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Meldenden.'
+        linked_requirements: 'Verknüpfung mit ISO/BSI-Anforderungen erstellt automatisch Korrekturmaßnahmen (F15).'
     type:
         major_nc: 'Major Nonconformity'
         minor_nc: 'Minor Nonconformity'
@@ -308,6 +310,7 @@ audit_finding:
         closed: 'Geschlossen'
     section:
         description: 'Beschreibung'
+        linked_requirements: 'Verknüpfte Norm-Anforderungen'
     alert:
         overdue: '%count% überfällige Feststellung(en) benötigen Aufmerksamkeit.'
     message:

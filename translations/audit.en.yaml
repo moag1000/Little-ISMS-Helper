@@ -319,3 +319,10 @@ pdf:
         observations: 'Observations'
         recommendations: 'Recommendations'
     footer: 'Confidential - For Internal Use Only'
+
+audit_finding:
+    field:
+        linked_requirements: 'Linked Compliance Requirements'
+    auto_task:
+        preview: 'Automatic corrective tasks will be created for %count% requirement(s).'
+        created: 'Automatically created %count% corrective task(s) for linked requirements.'

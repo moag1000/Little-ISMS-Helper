@@ -105,6 +105,7 @@ final class KonzernSettingsDriftRule extends AbstractGlobalAlvaHintRule
             actionLabelTranslationKey: 'global.konzern_settings_drift.action',
             actionRoute: 'app_document_index',
             actionRouteParams: [],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_CISO'],
             mood: 'thinking',
         );

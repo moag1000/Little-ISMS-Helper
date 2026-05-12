@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>BSI-Meldestelle — NIS-2-Meldung</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; font-size: 11pt; color: #1a1a2e; }
+        h1 { font-size: 14pt; border-bottom: 2px solid #d62828; padding-bottom: 6px; }
+        h2 { font-size: 12pt; margin-top: 18px; color: #d62828; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+        th { background: #FDECEA; text-align: left; padding: 6px 8px; border: 1px solid #f5c6cb; }
+        td { padding: 5px 8px; border: 1px solid #f5c6cb; vertical-align: top; }
+        .label { font-weight: bold; width: 40%; }
+        .footer { font-size: 8pt; color: #666; border-top: 1px solid #ccc; margin-top: 20px; padding-top: 6px; }
+    </style>
+</head>
+<body>
+<h1>Meldung eines erheblichen Sicherheitsvorfalls — BSI-Meldestelle (NIS-2)</h1>
+<p><em>An: Bundesamt für Sicherheit in der Informationstechnik (BSI) — Meldestelle</em></p>
+{% if submission_contact_email %}<p><strong>Kontakt:</strong> {{ submission_contact_email }}</p>{% endif %}
+{% if submission_url %}<p><strong>Portal:</strong> {{ submission_url }}</p>{% endif %}
+
+{% if header_template %}
+<blockquote>{{ header_template }}</blockquote>
+{% endif %}
+
+<h2>1. Vorfallsbeschreibung</h2>
+<table>
+    <tr><td class="label">Titel</td><td>{{ title }}</td></tr>
+    <tr><td class="label">Schweregrad</td><td>{{ severity }}</td></tr>
+    <tr><td class="label">Entdeckungsdatum</td><td>{{ detected_at ? detected_at|date('d.m.Y H:i') : '—' }}</td></tr>
+    <tr><td class="label">Status</td><td>{{ status }}</td></tr>
+</table>
+
+<h2>2. Beschreibung</h2>
+<table>
+    <tr><td>{{ description ?? 'Keine Beschreibung hinterlegt.' }}</td></tr>
+</table>
+
+<div class="footer">
+    Erstellt am: {{ generated_at|date('d.m.Y H:i') }} — Vertraulich / NIS-2-Meldung
+</div>
+</body>
+</html>

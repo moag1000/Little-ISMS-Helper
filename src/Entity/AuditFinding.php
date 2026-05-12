@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Entity\Person;
 use App\Repository\AuditFindingRepository;
+use App\Entity\ComplianceRequirement;
 use App\Service\OwnerResolver;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -142,11 +143,24 @@ class AuditFinding
     #[ORM\OneToMany(targetEntity: CorrectiveAction::class, mappedBy: 'finding', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $correctiveActions;
 
+    /**
+     * F15 — Linked ComplianceRequirements (M2M).
+     * Linking triggers AutoTaskCreator to create CorrectiveAction tasks per owner.
+     *
+     * @var Collection<int, ComplianceRequirement>
+     */
+    #[ORM\ManyToMany(targetEntity: ComplianceRequirement::class)]
+    #[ORM\JoinTable(name: 'audit_finding_requirement')]
+    #[ORM\JoinColumn(name: 'audit_finding_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'compliance_requirement_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $linkedRequirements;
+
     public function __construct()
     {
         $this->correctiveActions = new ArrayCollection();
         $this->reportedByDeputyPersons = new ArrayCollection();
         $this->assignedDeputyPersons = new ArrayCollection();
+        $this->linkedRequirements = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -451,5 +465,27 @@ class AuditFinding
             return false;
         }
         return $this->dueDate < new DateTimeImmutable();
+    }
+
+    // ── F15: Linked ComplianceRequirements ─────────────────────────────────────
+
+    /** @return Collection<int, ComplianceRequirement> */
+    public function getLinkedRequirements(): Collection
+    {
+        return $this->linkedRequirements;
+    }
+
+    public function addLinkedRequirement(ComplianceRequirement $requirement): static
+    {
+        if (!$this->linkedRequirements->contains($requirement)) {
+            $this->linkedRequirements->add($requirement);
+        }
+        return $this;
+    }
+
+    public function removeLinkedRequirement(ComplianceRequirement $requirement): static
+    {
+        $this->linkedRequirements->removeElement($requirement);
+        return $this;
     }
 }

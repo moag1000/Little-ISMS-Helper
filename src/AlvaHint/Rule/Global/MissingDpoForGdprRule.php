@@ -81,6 +81,7 @@ final class MissingDpoForGdprRule extends AbstractGlobalAlvaHintRule
             actionLabelTranslationKey: 'global.missing_dpo_for_gdpr.action',
             actionRoute: 'user_management_index',
             actionRouteParams: [],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_ADMIN'],
             mood: 'alert',
         );
