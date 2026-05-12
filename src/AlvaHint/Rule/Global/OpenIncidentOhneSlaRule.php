@@ -90,6 +90,7 @@ final class OpenIncidentOhneSlaRule extends AbstractGlobalAlvaHintRule
             actionLabelTranslationKey: 'global.open_incident_ohne_sla.action',
             actionRoute: 'app_incident_index',
             actionRouteParams: [],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'alert',
         );

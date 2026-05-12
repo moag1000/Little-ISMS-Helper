@@ -76,6 +76,7 @@ final class RiskOhneOwnerRule extends AbstractGlobalAlvaHintRule
             actionLabelTranslationKey: 'global.risk_ohne_owner.action',
             actionRoute: 'app_risk_index',
             actionRouteParams: [],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'thinking',
         );

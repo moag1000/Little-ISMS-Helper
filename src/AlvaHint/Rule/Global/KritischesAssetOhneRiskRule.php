@@ -86,6 +86,7 @@ final class KritischesAssetOhneRiskRule extends AbstractGlobalAlvaHintRule
             actionLabelTranslationKey: 'global.asset_ohne_risk.action',
             actionRoute: 'app_risk_new',
             actionRouteParams: [],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'warning',
         );
