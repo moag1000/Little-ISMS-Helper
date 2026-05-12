@@ -10,6 +10,7 @@ use App\Form\AuditFindingType;
 use App\Repository\AuditFindingRepository;
 use App\Repository\CommentRepository;
 use App\Service\AuditLogger;
+use App\Service\Nonconformity\AutoTaskCreator;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,6 +31,7 @@ class AuditFindingController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
+        private readonly AutoTaskCreator $autoTaskCreator,
         private readonly ?CommentRepository $commentRepository = null,
     ) {
     }
@@ -79,6 +81,9 @@ class AuditFindingController extends AbstractController
             $this->entityManager->persist($finding);
             $this->entityManager->flush();
 
+            // F15.3 — auto-create CorrectiveAction tasks for linked requirements.
+            $this->autoTaskCreator->createTasksForLinkedRequirements($finding);
+
             $this->auditLogger->logCreate(
                 'AuditFinding',
                 $finding->getId(),
@@ -122,6 +127,9 @@ class AuditFindingController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
+
+            // F15.3 — auto-create CorrectiveAction tasks for linked requirements (idempotent).
+            $this->autoTaskCreator->createTasksForLinkedRequirements($finding);
 
             $this->auditLogger->logUpdate(
                 'AuditFinding',

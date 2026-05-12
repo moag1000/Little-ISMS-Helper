@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 
 {% block title %}{{ finding.title }}{% endblock %}
 
@@ -46,6 +47,23 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+
+    {# F15.3 — Linked Norm Requirements as filter-chip group #}
+    {% if finding.linkedRequirements|length > 0 %}
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="h5 mb-0">{{ 'audit_finding.section.linked_requirements'|trans({}, 'audits') }} ({{ finding.linkedRequirements|length }})</h2></div>
+        {% endblock %}
+        {% block card_body %}
+            {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+            <div class="d-flex flex-wrap gap-2">
+                {% for req in finding.linkedRequirements %}
+                    {{ _fa_filter_chip.render((req.requirementId ?? '') ~ ' — ' ~ (req.title ?? ''), { active: false }) }}
+                {% endfor %}
+            </div>
+        {% endblock %}
+    {% endembed %}
+    {% endif %}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
