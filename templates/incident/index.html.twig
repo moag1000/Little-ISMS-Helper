@@ -19,7 +19,7 @@
     subtitle: 'incident.header.subtitle'|trans({}, 'incident'),
     actions: [
         { label: 'incident.header.action.report'|trans({}, 'incident'), variant: 'danger', icon: 'exclamation-circle', href: path('app_incident_new') }
-    ]
+    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'incident', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
 }) }}
 {% set _global_hints = alva_hints('incident_index') %}
 {% if _global_hints|length > 0 %}

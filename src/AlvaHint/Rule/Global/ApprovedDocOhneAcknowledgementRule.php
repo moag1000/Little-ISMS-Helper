@@ -82,6 +82,7 @@ final class ApprovedDocOhneAcknowledgementRule extends AbstractGlobalAlvaHintRul
             actionLabelTranslationKey: 'global.approved_doc_ohne_ack.action',
             actionRoute: 'app_document_index',
             actionRouteParams: [],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'thinking',
         );

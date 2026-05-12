@@ -29,6 +29,7 @@
         { label: 'soa.action.export_pdf'|trans({}, 'soa'), variant: 'secondary', icon: 'file-earmark-pdf', href: path('app_soa_export_pdf') },
         { label: 'soa.action.preview_pdf'|trans({}, 'soa'), variant: 'ghost', icon: 'eye', href: path('app_soa_preview_pdf') }
     ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_index') }] : [])
+     |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'control', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
 }) }}
 {% set _global_hints = alva_hints('soa_index') %}
 {% if _global_hints|length > 0 %}

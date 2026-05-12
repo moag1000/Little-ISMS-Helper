@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\AuditFinding;
+use App\Entity\ComplianceRequirement;
 use App\Entity\Control;
 use App\Entity\InternalAudit;
 use App\Entity\Person;
@@ -172,6 +173,19 @@ class AuditFindingType extends AbstractType
                 'input' => 'datetime_immutable',
                 'required' => false,
                 'help' => 'audit_finding.help.due_date',
+            ])
+            ->add('linkedRequirements', EntityType::class, [
+                'label' => 'audit_finding.field.linked_requirements',
+                'class' => ComplianceRequirement::class,
+                'choice_label' => fn(ComplianceRequirement $r): string => ($r->getRequirementId() ?? '') . ' — ' . ($r->getTitle() ?? ''),
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'by_reference' => false,
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'audit_finding.help.linked_requirements',
             ])
         ;
     }

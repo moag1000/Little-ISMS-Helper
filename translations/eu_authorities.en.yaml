@@ -1,6 +1,8 @@
 eu_authorities:
     nav:
         title: 'Authority Export'
+        index_title: 'EU Authority Templates'
+        index_subtitle: 'Regulatory notification templates for supervisory authorities'
     page:
         title: 'EU Authority Reporting'
         subtitle: 'Regulatory reporting for data protection supervisory authorities'
@@ -29,3 +31,61 @@ eu_authorities:
             drittland: 'Third-Country Transfer'
             loeschfristen: 'Retention Periods'
             toms: 'Technical and Organisational Measures'
+authority:
+    bsi_meldestelle:
+        name: 'BSI Reporting Office (NIS-2)'
+        description: 'Federal Office for Information Security — NIS-2 reporting office'
+    bfdi:
+        name: 'BfDI'
+        description: 'Federal Commissioner for Data Protection and Freedom of Information'
+    lfdi:
+        name: 'State DPA'
+        description: 'State Commissioner for Data Protection'
+    bundesland:
+        bw: 'Baden-Württemberg (LfDI BW)'
+        by: 'Bavaria (LDA Bayern)'
+        ber: 'Berlin (BlnBDI)'
+        brb: 'Brandenburg (LDA Brandenburg)'
+        hb: 'Bremen (LfDI Bremen)'
+        hh: 'Hamburg (HmbBfDI)'
+        he: 'Hesse (HBDI)'
+        mv: 'Mecklenburg-Vorpommern (LfDI MV)'
+        ni: 'Lower Saxony (LfDI Nds.)'
+        nrw: 'North Rhine-Westphalia (LfDI NRW)'
+        rlp: 'Rhineland-Palatinate (LfDI RLP)'
+        sl: 'Saarland (ULD Saarland)'
+        sn: 'Saxony (SLfDI)'
+        st: 'Saxony-Anhalt (LfDI LSA)'
+        sh: 'Schleswig-Holstein (ULD SH)'
+        th: 'Thuringia (TLfDI)'
+    action:
+        export_pdf: 'Export PDF'
+        export_json: 'Export JSON'
+    error:
+        module_inactive: 'EU authority reporting is not active.'
+        breach_not_found: 'Data breach not found.'
+        incident_not_found: 'Incident not found.'
+        unknown_authority: 'Unknown authority: %key%'
+    section:
+        data_breaches: 'Data Breach Notifications (GDPR Art. 33)'
+        incidents: 'Incident Notifications (NIS-2 BSI)'
+        lfdi_export: 'State DPA Export'
+    field:
+        incident: 'Incident'
+        severity: 'Severity'
+        detected_at: 'Detected at'
+    empty:
+        no_breaches: 'No data breaches recorded'
+        no_breaches_body: 'Once a data breach is created, you can export the authority notification as PDF or JSON here.'
+    nav:
+        title: 'Authority Notification Templates'
+    alva:
+        authority_overdue:
+            title: 'Authority Notification Pending (GDPR Art. 33)'
+            body: '%count% high/critical breach(es) — over 24h without documented authority export. GDPR Art. 33: notify within 72h.'
+            action: 'Open authority export'
+    global:
+        authority_template_overdue:
+            title: 'Authority Notification Pending (GDPR Art. 33)'
+            body: '%count% high/critical breach(es) without authority export for > 24h. GDPR Art. 33 — 72h deadline.'
+            action: 'Open authority export'

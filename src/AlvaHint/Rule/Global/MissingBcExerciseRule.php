@@ -84,6 +84,7 @@ final class MissingBcExerciseRule extends AbstractGlobalAlvaHintRule
             actionLabelTranslationKey: 'global.missing_bc_exercise.action',
             actionRoute: 'app_bc_exercise_index',
             actionRouteParams: [],
+            actionMethod: 'GET',
             requiredRoles: ['ROLE_MANAGER'],
             mood: 'thinking',
         );

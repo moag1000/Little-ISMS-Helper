@@ -348,6 +348,7 @@ audit_finding:
         reported_by_person: 'Reported by (Person)'
         reported_by_deputy_persons: 'Reporter Deputies (Persons)'
         due_date: 'Due Date'
+        linked_requirements: 'Linked Norm Requirements'
     placeholder:
         audit: '-- Select audit --'
         related_control: '-- Select control (optional) --'
@@ -366,6 +367,7 @@ audit_finding:
         assigned_deputy_persons: 'Additional persons with deputy or shared responsibility.'
         reported_by_person: 'Person without system login as reporter. Order: User > Person > empty.'
         reported_by_deputy_persons: 'Additional persons with deputy role for reporter.'
+        linked_requirements: 'Linking to ISO/BSI requirements auto-creates corrective action tasks (F15).'
     type:
         major_nc: 'Major Nonconformity'
         minor_nc: 'Minor Nonconformity'
@@ -384,6 +386,7 @@ audit_finding:
         closed: 'Closed'
     section:
         description: 'Description'
+        linked_requirements: 'Linked Norm Requirements'
     alert:
         overdue: '%count% overdue finding(s) need attention.'
     message:

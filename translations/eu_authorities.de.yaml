@@ -1,6 +1,8 @@
 eu_authorities:
     nav:
         title: 'Behörden-Export'
+        index_title: 'EU-Behörden-Templates'
+        index_subtitle: 'Meldungsvorlagen für Aufsichtsbehörden'
     page:
         title: 'EU-Behörden-Reporting'
         subtitle: 'Regulatory Reporting für Datenschutzaufsichtsbehörden'
@@ -29,3 +31,61 @@ eu_authorities:
             drittland: 'Drittlandübermittlung'
             loeschfristen: 'Löschfristen'
             toms: 'Technische und organisatorische Maßnahmen'
+authority:
+    bsi_meldestelle:
+        name: 'BSI-Meldestelle (NIS-2)'
+        description: 'Bundesamt für Sicherheit in der Informationstechnik — NIS-2-Meldestelle'
+    bfdi:
+        name: 'BfDI'
+        description: 'Bundesbeauftragte/r für den Datenschutz und die Informationsfreiheit'
+    lfdi:
+        name: 'LfDI'
+        description: 'Landesbeauftragte/r für den Datenschutz und die Informationsfreiheit'
+    bundesland:
+        bw: 'Baden-Württemberg (LfDI BW)'
+        by: 'Bayern (LDA Bayern)'
+        ber: 'Berlin (BlnBDI)'
+        brb: 'Brandenburg (LDA Brandenburg)'
+        hb: 'Bremen (LfDI Bremen)'
+        hh: 'Hamburg (HmbBfDI)'
+        he: 'Hessen (HBDI)'
+        mv: 'Mecklenburg-Vorpommern (LfDI MV)'
+        ni: 'Niedersachsen (LfDI Nds.)'
+        nrw: 'Nordrhein-Westfalen (LfDI NRW)'
+        rlp: 'Rheinland-Pfalz (LfDI RLP)'
+        sl: 'Saarland (ULD Saarland)'
+        sn: 'Sachsen (SLfDI)'
+        st: 'Sachsen-Anhalt (LfDI LSA)'
+        sh: 'Schleswig-Holstein (ULD SH)'
+        th: 'Thüringen (TLfDI)'
+    action:
+        export_pdf: 'PDF exportieren'
+        export_json: 'JSON exportieren'
+    error:
+        module_inactive: 'EU-Behörden-Reporting ist nicht aktiv.'
+        breach_not_found: 'Datenpanne nicht gefunden.'
+        incident_not_found: 'Vorfall nicht gefunden.'
+        unknown_authority: 'Unbekannte Behörde: %key%'
+    section:
+        data_breaches: 'Datenpannen-Meldungen (Art. 33 DSGVO)'
+        incidents: 'Vorfalls-Meldungen (NIS-2 BSI)'
+        lfdi_export: 'LfDI-Export (Bundesland)'
+    field:
+        incident: 'Vorfall'
+        severity: 'Schweregrad'
+        detected_at: 'Entdeckt am'
+    empty:
+        no_breaches: 'Keine Datenpannen erfasst'
+        no_breaches_body: 'Sobald eine Datenpanne angelegt ist, können Sie hier die Behörden-Meldung als PDF oder JSON exportieren.'
+    nav:
+        title: 'Behörden-Notification-Templates'
+    alva:
+        authority_overdue:
+            title: 'Behörden-Meldung ausstehend (DSGVO Art. 33)'
+            body: '%count% Datenpanne(n) kritisch/hoch — über 24h ohne dokumentierten Behörden-Export. DSGVO Art. 33: Meldung binnen 72h.'
+            action: 'Behörden-Export öffnen'
+    global:
+        authority_template_overdue:
+            title: 'Behörden-Meldung ausstehend (DSGVO Art. 33)'
+            body: '%count% schwere Datenpanne(n) ohne Behörden-Export seit > 24h. DSGVO Art. 33 — 72h-Frist.'
+            action: 'Behörden-Export öffnen'

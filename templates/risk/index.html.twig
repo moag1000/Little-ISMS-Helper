@@ -25,6 +25,7 @@
         { label: 'risk.modern.header.action.new'|trans({}, 'risk'), variant: 'primary', icon: 'plus-lg', href: path('app_risk_new') },
         { label: 'risk.modern.header.action.matrix'|trans({}, 'risk'), variant: 'ghost', icon: 'grid-3x3', href: path('app_risk_matrix') }
     ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_risk_register') }] : [])
+     |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'risk', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
 }) }}
 {% set _global_hints = alva_hints('risk_index') %}
 {% if _global_hints|length > 0 %}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>BfDI — Meldung einer Datenschutzverletzung (Art. 33 DSGVO)</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; font-size: 11pt; color: #1a1a2e; }
+        h1 { font-size: 14pt; border-bottom: 2px solid #003478; padding-bottom: 6px; }
+        h2 { font-size: 12pt; margin-top: 18px; color: #003478; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+        th { background: #E8F0FE; text-align: left; padding: 6px 8px; border: 1px solid #b0c4de; }
+        td { padding: 5px 8px; border: 1px solid #b0c4de; vertical-align: top; }
+        .label { font-weight: bold; width: 40%; }
+        .footer { font-size: 8pt; color: #666; border-top: 1px solid #ccc; margin-top: 20px; padding-top: 6px; }
+    </style>
+</head>
+<body>
+<h1>Meldung einer Datenschutzverletzung gemäß Art. 33 DSGVO</h1>
+<p><em>An: Bundesbeauftragte/r für den Datenschutz und die Informationsfreiheit (BfDI)</em></p>
+{% if submission_contact_email %}<p><strong>Kontakt:</strong> {{ submission_contact_email }}</p>{% endif %}
+{% if submission_url %}<p><strong>Portal:</strong> {{ submission_url }}</p>{% endif %}
+
+{% if header_template %}
+<blockquote>{{ header_template }}</blockquote>
+{% endif %}
+
+<h2>1. Grunddaten</h2>
+<table>
+    <tr><td class="label">Aktenzeichen (intern)</td><td>{{ reference_number }}</td></tr>
+    <tr><td class="label">Betreff</td><td>{{ title }}</td></tr>
+    <tr><td class="label">Schweregrad</td><td>{{ severity }}</td></tr>
+    <tr><td class="label">Entdeckungsdatum</td><td>{{ detected_at ? detected_at|date('d.m.Y H:i') : '—' }}</td></tr>
+    <tr><td class="label">Meldestatus</td><td>{{ status }}</td></tr>
+</table>
+
+<h2>2. Art der Verletzung (Art. 33 Abs. 3 lit. a)</h2>
+<table>
+    <tr><td class="label">Beschreibung</td><td>{{ breach_nature }}</td></tr>
+    <tr><td class="label">Betroffene Datenkategorien</td><td>{{ data_categories|join(', ') }}</td></tr>
+    <tr><td class="label">Kategorien betroffener Personen</td><td>{{ data_subject_categories|join(', ') }}</td></tr>
+    <tr><td class="label">Anzahl betroffener Personen (ca.)</td><td>{{ affected_data_subjects ?? '—' }}</td></tr>
+</table>
+
+<h2>3. Mögliche Folgen (Art. 33 Abs. 3 lit. b)</h2>
+<table>
+    <tr><td>{{ likely_consequences }}</td></tr>
+</table>
+
+<h2>4. Maßnahmen (Art. 33 Abs. 3 lit. c/d)</h2>
+<table>
+    <tr><td class="label">Ergriffene Maßnahmen</td><td>{{ measures_taken }}</td></tr>
+</table>
+
+<h2>5. Behörden-Meldung</h2>
+<table>
+    <tr><td class="label">Meldepflicht besteht</td><td>{{ requires_authority_notification ? 'Ja' : 'Nein' }}</td></tr>
+    <tr><td class="label">Meldedatum</td><td>{{ supervisory_authority_notified_at ? supervisory_authority_notified_at|date('d.m.Y H:i') : 'Noch nicht gemeldet' }}</td></tr>
+    <tr><td class="label">Behörde</td><td>{{ supervisory_authority_name ?? 'BfDI' }}</td></tr>
+</table>
+
+<div class="footer">
+    Erstellt am: {{ generated_at|date('d.m.Y H:i') }} — Vertraulich / Datenschutzrechtlich relevantes Dokument
+</div>
+</body>
+</html>

@@ -25,7 +25,7 @@
         actions: [
             { label: 'document.action.policy_wizard'|trans({}, 'document'), variant: 'success', icon: 'magic', href: path('app_policy_wizard_index') },
             { label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'cloud-upload', href: path('app_document_new') }
-        ]
+        ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'document', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
     }) }}
 {% set _global_hints = alva_hints('document_index') %}
 {% if _global_hints|length > 0 %}

@@ -1,0 +1,21 @@
+filtered_export:
+    title: 'Export filtered list'
+    subtitle: 'Exports the current filtered list view as XLSX, CSV, or JSON.'
+    xlsx: 'Export as Excel (XLSX)'
+    csv: 'Export as CSV'
+    json: 'Export as JSON'
+    filter_summary: 'Active filters'
+    button:
+        label: 'Export filtered list'
+    entity:
+        asset: 'Assets'
+        risk: 'Risks'
+        supplier: 'Suppliers'
+        control: 'Controls'
+        business_process: 'Business Processes'
+        document: 'Documents'
+        incident: 'Incidents'
+        audit_finding: 'Audit Findings'
+    error:
+        unsupported_type: 'Unsupported entity type: %type%'
+        unsupported_format: 'Unsupported format: %format%'
