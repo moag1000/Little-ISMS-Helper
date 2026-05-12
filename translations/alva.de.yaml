@@ -122,6 +122,22 @@ policy_wizard:
         action: 'Wizard neu starten'
 
 global:
+    risk_bulk_import_tip:
+        title: 'Risikoregister wächst — Bulk-Import verfügbar'
+        body: 'Risikoregister wächst schön (%count% Einträge) — beim nächsten Update spart der Bulk-Import-Assistent ca. 2 FTE-Stunden für Owner-Pflege oder Inherent-Score-Bulk-Update.'
+        action: 'Bulk-Import-Wizard öffnen'
+    business_process_bulk_import_tip:
+        title: 'BIA-Liste wächst — CSV-Bulk-Import verfügbar'
+        body: 'BIA-Liste wächst (%count% Prozesse) — beim jährlichen Owner-Review spart CSV-Bulk-Import mit Delta-Mode ca. 1,5 FTE-Stunden.'
+        action: 'Bulk-Import-Wizard öffnen'
+    vvt_export_tip:
+        title: 'Verfahrensverzeichnis exportbereit'
+        body: 'Du hast %count% Verarbeitungstätigkeiten erfasst — bereit für die nächste Aufsichtsbehörde-Anfrage? Export im BfDI-Muster (XLSX/CSV/PDF) ist mit einem Klick verfügbar.'
+        action: 'BfDI-XLSX exportieren'
+    vvt_export_overdue:
+        title: 'Verfahrensverzeichnis-Export überfällig'
+        body: 'Letzter BfDI-Verfahrensverzeichnis-Export vor %months% Monaten — Aufsichtsbehörde-Anfrage-Risiko. Aufsichtsbehörden (BfDI / 16 LfDI) können jederzeit anfordern; Compliance-Best-Practice empfiehlt jährliche Auffrischung.'
+        action: 'Jetzt exportieren'
     asset_ohne_risk:
         title: '%count% kritische Assets ohne Risiko-Eintrag'
         body: '%count% Assets mit Schutzbedarf hoch/sehr hoch haben keinen verlinkten Risk-Eintrag. DSGVO Art. 32 + ISO 27001 Cl. 6.1.2 fordern, dass hochsensible Assets das Risikoassessment speisen.'
