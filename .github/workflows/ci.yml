@@ -251,6 +251,18 @@ jobs:
       #   leak raw "%foo%" tokens into the rendered hint card UI.
       - name: "Gate 9: Alva-Hint placeholder consistency"
         run: python3 scripts/quality/check_alva_hint_placeholders.py
+
+      # Gate 10 — Wildcard route collision detection (BLOCKING)
+      #   Detects routes where a /{placeholder} wildcard without a restrictive
+      #   requirement appears BEFORE literal-segment sibling routes in the same
+      #   controller. Symfony matches attribute routes in source-code order, so
+      #   an unrestricted /{id} greedily matches /new or /approvals, passing the
+      #   literal string to EntityValueResolver → NotFoundHttpException (404).
+      #   Fix: add requirements: ['id' => '\d+'] (or enum for slug placeholders)
+      #   to every flagged wildcard route. Root cause of the user-reported
+      #   IdentityProvider-not-found 404 on /admin/sso/new.
+      - name: "Gate 10: No wildcard-vs-literal route collisions"
+        run: python3 scripts/quality/check_route_wildcard_collisions.py
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

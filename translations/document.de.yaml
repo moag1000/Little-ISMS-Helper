@@ -230,3 +230,76 @@ document:
             policy_document: 'Richtlinie'
             procedure_document: 'Verfahrensanweisung'
             record: 'Nachweis'
+
+    # ── F4 Evidence-Versioning ─────────────────────────────────────────────────
+    version:
+        history:
+            title: 'Versionshistorie'
+            empty: 'Noch keine Versionen vorhanden.'
+        label: 'Version'
+        number: 'Nr.'
+        uploaded_at: 'Hochgeladen am'
+        uploaded_by: 'Hochgeladen von'
+        size: 'Größe'
+        hash: 'SHA-256'
+        status: 'Status'
+        current: 'Aktuell'
+        published: 'Veröffentlicht'
+        draft: 'Entwurf'
+        current_label: 'v%n%'
+        hash_label: 'SHA-256: %hash%'
+    undo:
+        title: 'Upload rückgängig machen'
+        body: 'Sie haben %countdown%s, um den Upload zu widerrufen.'
+        action: 'Rückgängig'
+        error:
+            invalid_token: 'Ungültiges CSRF-Token. Bitte aktualisieren Sie die Seite.'
+            window_expired: 'Das Zeitfenster zum Widerrufen ist abgelaufen.'
+            service_unavailable: 'Undo-Service nicht verfügbar.'
+        success: 'Upload erfolgreich rückgängig gemacht.'
+    reuse:
+        used_by: 'Genutzt von'
+evidence_reverification:
+    title: 'Nachweise-Prüf-Queue'
+    badge: 'Nachweise'
+    subtitle: '%count% offene Aufgaben'
+    filter:
+        open: 'Offen'
+        mine: 'Meine Aufgaben'
+        overdue: 'Überfällig'
+        all: 'Alle'
+    empty:
+        title: 'Keine offenen Aufgaben'
+        body: 'Alle Nachweise wurden geprüft — ausgezeichnet!'
+    status:
+        pending: 'Ausstehend'
+        in_progress: 'In Bearbeitung'
+        completed: 'Abgeschlossen'
+        skipped: 'Übersprungen'
+    overdue: 'Überfällig'
+    linked:
+        control: 'Control %id%'
+        fulfillment: 'Anforderung #%id%'
+    due: 'Fällig'
+    assigned_to: 'Zugewiesen an'
+    show:
+        title: 'Aufgabendetails'
+        details: 'Details'
+        document: 'Dokument'
+        status: 'Status'
+        linked_control: 'Verknüpftes Control'
+        linked_fulfillment: 'Verknüpfte Anforderung'
+        assigned_to: 'Zugewiesen an'
+        due_date: 'Fälligkeitsdatum'
+        notes: 'Notizen'
+        completed_at: 'Abgeschlossen am'
+        notes_label: 'Notizen zur Prüfung (optional)'
+        skip_reason: 'Begründung für Überspringen'
+    action:
+        complete: 'Als geprüft markieren'
+        skip: 'Überspringen'
+    success:
+        completed: 'Aufgabe erfolgreich abgeschlossen.'
+        skipped: 'Aufgabe übersprungen.'
+    error:
+        invalid_token: 'Ungültiges CSRF-Token.'
