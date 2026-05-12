@@ -42,7 +42,6 @@ class EvidenceVersioningService
         private readonly ContentHashCalculator $contentHashCalculator,
         private readonly RequestStack $requestStack,
         private readonly AuditLogger $auditLogger,
-        private readonly string $projectDir,
     ) {}
 
     /**
