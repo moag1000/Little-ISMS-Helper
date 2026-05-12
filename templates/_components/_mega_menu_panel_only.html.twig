@@ -221,6 +221,15 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {% if is_module_active('risks') and is_granted('ROLE_MANAGER') %}
+                        <li><a href="{{ path('app_bulk_import_index', {entityType: 'risk'}) }}" class="{% if current_route starts with 'app_bulk_import_' and app.request.attributes.get('entityType') == 'risk' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.bulk_import.risks'|trans({}, 'data_import') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.bulk_import.risks_desc'|trans({}, 'data_import') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                         {% endif %}
                     </ul>
                 </div>
@@ -242,6 +251,15 @@
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.business_processes'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.business_processes'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {% if is_module_active('bcm') and is_granted('ROLE_MANAGER') %}
+                        <li><a href="{{ path('app_bulk_import_index', {entityType: 'business_process'}) }}" class="{% if current_route starts with 'app_bulk_import_' and app.request.attributes.get('entityType') == 'business_process' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.bulk_import.business_processes'|trans({}, 'data_import') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.bulk_import.business_processes_desc'|trans({}, 'data_import') }}</span>
                             </div>
                         </a></li>
                         {% endif %}
@@ -334,6 +352,16 @@
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.data_subject_request'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.data_subject_request'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {# F25: Verfahrensverzeichnis-Export (Art. 30 DSGVO) — BfDI-Muster #}
+                        {% if is_module_active('privacy') and is_granted('ROLE_DPO') %}
+                        <li><a href="{{ path('app_vvt_export_xlsx') }}" class="{% if current_route starts with 'app_vvt_export_' %}active{% endif %}" data-turbo="false">
+                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'eu_authorities.vvt.title'|trans({}, 'eu_authorities') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'eu_authorities.vvt.subtitle'|trans({}, 'eu_authorities') }}</span>
                             </div>
                         </a></li>
                         {% endif %}
