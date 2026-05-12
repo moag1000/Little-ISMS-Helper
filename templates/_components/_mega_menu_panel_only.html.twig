@@ -681,6 +681,24 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {# F4 — Evidence Reviewer Queue — core feature (no module gate) #}
+                        <li>
+                            <a href="{{ path('app_evidence_reverification_index') }}"
+                               class="{% if current_route starts with 'app_evidence_reverification_' %}active{% endif %}"
+                               data-turbo-action="advance">
+                                <i class="fa-icon fa-icon--shield-check" aria-hidden="true"></i>
+                                <div class="mega-menu-link-content">
+                                    <span class="mega-menu-link-title">
+                                        {{ 'nav.evidence_reviewer_queue'|trans({}, 'nav') }}
+                                        {# Open-task badge — injected by base.html.twig twig global if available #}
+                                        {% if evidence_open_task_count is defined and evidence_open_task_count > 0 %}
+                                            <span class="badge bg-warning text-dark ms-1">{{ evidence_open_task_count }}</span>
+                                        {% endif %}
+                                    </span>
+                                    <span class="mega-menu-link-desc">{{ 'nav.mega.desc.evidence_reviewer_queue'|trans({}, 'nav') }}</span>
+                                </div>
+                            </a>
+                        </li>
                     </ul>
                 </div>
 

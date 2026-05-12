@@ -85,6 +85,28 @@
         {% endif %}
     {% endif %}
 
+    {# F4 — Evidence Reuse Badge + Version History link #}
+    {% if document.currentVersion is not null or document.versions is not empty %}
+        <div class="d-flex align-items-center gap-3 mb-3 flex-wrap" data-controller="reuse-drawer">
+            <a href="{{ path('app_document_versions', {id: document.id}) }}"
+               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+               data-turbo-frame="version-drawer"
+               aria-label="{{ 'document.version.history.title'|trans({}, 'document') }}">
+                <i class="fa-icon fa-icon--document-history me-1" aria-hidden="true"></i>
+                {{ 'document.version.history.title'|trans({}, 'document') }}
+                {% if document.versions|length > 0 %}
+                    <span class="badge bg-secondary ms-1">{{ document.versions|length }}</span>
+                {% endif %}
+            </a>
+            {% if document.currentVersion is not null %}
+                <span class="text-muted small">
+                    {{ 'document.version.current_label'|trans({'%n%': document.currentVersion.versionNumber}, 'document') }}
+                    · {{ 'document.version.hash_label'|trans({'%hash%': document.currentVersion.contentHash|slice(0, 8) ~ '…'}, 'document') }}
+                </span>
+            {% endif %}
+        </div>
+    {% endif %}
+
     {# Junior-ISB Wish #5 — Auditor-Score detail section. Only for
        Wizard-generated docs; controller injects the auditorScore DTO. #}
     {% if document.generatedFromTemplate is not null and auditorScore is defined and auditorScore is not null %}

@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'document' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_status_pill.html.twig' as pill %}
+
+{% block title %}{{ 'evidence_reverification.show.title'|trans({}, 'document') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'common.dashboard'|trans({}, 'messages'), url: path('app_dashboard') },
+            { label: 'evidence_reverification.title'|trans({}, 'document'), url: path('app_evidence_reverification_index') },
+            { label: 'evidence_reverification.show.title'|trans({}, 'document') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-check', label: 'evidence_reverification.badge'|trans({}, 'document') },
+        title: 'evidence_reverification.show.title'|trans({}, 'document'),
+        actions: [
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_evidence_reverification_index') }
+        ]
+    }) }}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            {# Task details card #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>{{ 'evidence_reverification.show.details'|trans({}, 'document') }}</strong>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{{ 'evidence_reverification.show.document'|trans({}, 'document') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if task.documentVersion.document is not null %}
+                                <a href="{{ path('app_document_show', {id: task.documentVersion.document.id}) }}">
+                                    {{ task.documentVersion.document.originalFilename }}
+                                </a>
+                            {% endif %}
+                            <small class="text-muted d-block">
+                                {{ 'document.version.label'|trans({}, 'document') }} {{ task.documentVersion.versionNumber }}
+                                · {{ task.documentVersion.uploadedAt|date('Y-m-d H:i') }}
+                            </small>
+                        </dd>
+
+                        <dt class="col-sm-4">{{ 'evidence_reverification.show.status'|trans({}, 'document') }}</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-{{ task.status == 'completed' ? 'success' : (task.status == 'skipped' ? 'secondary' : 'warning') }}">
+                                {{ ('evidence_reverification.status.' ~ task.status)|trans({}, 'document') }}
+                            </span>
+                        </dd>
+
+                        {% if task.control is not null %}
+                        <dt class="col-sm-4">{{ 'evidence_reverification.show.linked_control'|trans({}, 'document') }}</dt>
+                        <dd class="col-sm-8">
+                            <a href="{{ path('app_control_show', {id: task.control.id}) }}">
+                                {{ task.control.controlId }} — {{ task.control.controlName }}
+                            </a>
+                        </dd>
+                        {% endif %}
+
+                        {% if task.complianceFulfillment is not null %}
+                        <dt class="col-sm-4">{{ 'evidence_reverification.show.linked_fulfillment'|trans({}, 'document') }}</dt>
+                        <dd class="col-sm-8">#{{ task.complianceFulfillment.id }}</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-4">{{ 'evidence_reverification.show.assigned_to'|trans({}, 'document') }}</dt>
+                        <dd class="col-sm-8">
+                            {{ task.assignedTo ? (task.assignedTo.fullName ?? task.assignedTo.email) : '—' }}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ 'evidence_reverification.show.due_date'|trans({}, 'document') }}</dt>
+                        <dd class="col-sm-8">
+                            {{ task.dueDate ? task.dueDate|date('Y-m-d') : '—' }}
+                            {% if task.isOverdue %}
+                                <span class="badge bg-danger ms-1">{{ 'evidence_reverification.overdue'|trans({}, 'document') }}</span>
+                            {% endif %}
+                        </dd>
+
+                        {% if task.notes is not null %}
+                        <dt class="col-sm-4">{{ 'evidence_reverification.show.notes'|trans({}, 'document') }}</dt>
+                        <dd class="col-sm-8">{{ task.notes }}</dd>
+                        {% endif %}
+
+                        {% if task.completedAt is not null %}
+                        <dt class="col-sm-4">{{ 'evidence_reverification.show.completed_at'|trans({}, 'document') }}</dt>
+                        <dd class="col-sm-8">{{ task.completedAt|date('Y-m-d H:i') }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        {% if task.isOpen() and is_granted('complete', task) %}
+        <div class="col-lg-4">
+            {# Complete action #}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>{{ 'evidence_reverification.action.complete'|trans({}, 'document') }}</strong>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('app_evidence_reverification_complete', {id: task.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('revtask_complete_' ~ task.id) }}">
+                        <div class="mb-3">
+                            <label for="notes_complete" class="form-label">
+                                {{ 'evidence_reverification.show.notes_label'|trans({}, 'document') }}
+                            </label>
+                            <textarea id="notes_complete" name="notes" class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--success w-100">
+                            <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                            {{ 'evidence_reverification.action.complete'|trans({}, 'document') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {# Skip action #}
+            <div class="card">
+                <div class="card-header">
+                    <strong>{{ 'evidence_reverification.action.skip'|trans({}, 'document') }}</strong>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('app_evidence_reverification_skip', {id: task.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('revtask_skip_' ~ task.id) }}">
+                        <div class="mb-3">
+                            <label for="notes_skip" class="form-label">
+                                {{ 'evidence_reverification.show.skip_reason'|trans({}, 'document') }}
+                            </label>
+                            <textarea id="notes_skip" name="notes" class="form-control" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost w-100">
+                            {{ 'evidence_reverification.action.skip'|trans({}, 'document') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

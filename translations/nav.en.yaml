@@ -222,6 +222,9 @@ nav:
             dora_compliance: 'EU-DORA overview for ICT risk and third-party management'
             scheduled_reports: 'Schedule recurring report dispatch (PDF/CSV)'
             report_builder: 'Compose custom reports from the widget library'
+            evidence_reviewer_queue: 'Review evidence documents and mark as re-verified (ISO 27001 Cl. 7.5.3)'
+
+    evidence_reviewer_queue: 'Evidence Reviewer Queue'
 
     section:
         isms_core: 'ISMS Core'

@@ -326,4 +326,21 @@ class ControlRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * F4 — all controls for the given tenant where evidenceOutdated=true.
+     * Used by EvidenceCascadeInvalidationService and the OutdatedEvidence Alva-Hint.
+     *
+     * @return Control[]
+     */
+    public function findEvidenceOutdated(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.tenant = :tenant')
+            ->andWhere('c.evidenceOutdated = true')
+            ->setParameter('tenant', $tenant)
+            ->orderBy('c.controlId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
