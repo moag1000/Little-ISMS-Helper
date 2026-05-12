@@ -20,7 +20,7 @@
     subtitle: 'audit_finding.page.subtitle'|trans({}, 'audits'),
     actions: [
         { label: 'audit_finding.action.new'|trans({}, 'audits'), href: path('app_audit_finding_new'), variant: 'primary', icon: 'plus-lg' }
-    ]
+    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'audit_finding', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
 }) }}
 {% set _global_hints = alva_hints('audit_finding_index') %}
 {% if _global_hints|length > 0 %}

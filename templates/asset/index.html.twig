@@ -24,7 +24,7 @@
         { label: 'asset.action.print_all_labels'|trans({}, 'asset'), href: path('app_asset_qr_labels_bulk'), variant: 'ghost', icon: 'qr-code' },
         { label: 'asset.action.quick_new'|trans({}, 'asset'), href: path('app_asset_new_quick'), variant: 'ghost', icon: 'lightning' },
         { label: 'asset.action.create'|trans({}, 'asset'), href: path('app_asset_new'), variant: 'primary', icon: 'plus-lg' }
-    ]
+    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'asset', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
 }) }}
 {% set _global_hints = alva_hints('asset_index') %}
 {% if _global_hints|length > 0 %}
