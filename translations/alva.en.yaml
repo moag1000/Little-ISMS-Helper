@@ -242,3 +242,7 @@ alva_hint:
         body: 'Planned BCM exercise "%exercise_name%" (%exercise_type%) has been overdue for %days% days yet remains in status "planned". ISO 22301 Cl. 8.6 mandates a documented exercise cadence — reschedule with justification or move to "cancelled", otherwise the audit will flag it.'
         cta_label: 'Open exercise'
         dismiss_label: 'Not now'
+    outdated_evidence:
+        title: 'Evidence outdated — review required'
+        body: '%count% controls are flagged with outdated evidence because linked documents were updated. Please process the reviewer queue to maintain ISO 27001 Cl. 7.5.3 compliance.'
+        action: 'Open reviewer queue'
