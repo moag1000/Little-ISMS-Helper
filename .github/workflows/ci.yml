@@ -244,6 +244,13 @@ jobs:
       #   Per memory feedback_locale_in_links.
       - name: "Gate 8: No double /{_locale}/ prefix in controllers"
         run: python3 scripts/quality/check_double_locale_prefix.py
+
+      # Gate 9 — Alva-Hint translation placeholder consistency (BLOCKING)
+      #   Verifies every %placeholder% in alva.de/en.yaml title/body strings
+      #   is declared in the rule's bodyTranslationParams. Missing params would
+      #   leak raw "%foo%" tokens into the rendered hint card UI.
+      - name: "Gate 9: Alva-Hint placeholder consistency"
+        run: python3 scripts/quality/check_alva_hint_placeholders.py
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
