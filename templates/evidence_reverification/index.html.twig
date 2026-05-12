@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'document' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
+{% import '_components/_status_pill.html.twig' as pill %}
+
+{% block title %}{{ 'evidence_reverification.title'|trans({}, 'document') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'common.dashboard'|trans({}, 'messages'), url: path('app_dashboard') },
+            { label: 'nav.documents'|trans({}, 'nav'), url: path('app_document_index') },
+            { label: 'evidence_reverification.title'|trans({}, 'document') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-check', label: 'evidence_reverification.badge'|trans({}, 'document') },
+        title: 'evidence_reverification.title'|trans({}, 'document'),
+        subtitle: 'evidence_reverification.subtitle'|trans({'%count%': open_count}, 'document')
+    }) }}
+
+    {# Filter chips #}
+    <div class="d-flex gap-2 mb-4 flex-wrap">
+        {% for key, label in {
+            'open': 'evidence_reverification.filter.open',
+            'mine': 'evidence_reverification.filter.mine',
+            'overdue': 'evidence_reverification.filter.overdue',
+            'all': 'evidence_reverification.filter.all'
+        } %}
+            <a href="{{ path('app_evidence_reverification_index', {filter: key}) }}"
+               class="fa-filter-chip{% if filter == key %} fa-filter-chip--active{% endif %}">
+                {{ label|trans({}, 'document') }}
+            </a>
+        {% endfor %}
+    </div>
+
+    {% if tasks is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'happy',
+            title: 'evidence_reverification.empty.title'|trans({}, 'document'),
+            body: 'evidence_reverification.empty.body'|trans({}, 'document')
+        }) }}
+    {% else %}
+        <div class="fa-section">
+            {% for task in tasks %}
+                {% set status_variant = task.status == 'completed' ? 'success' : (task.status == 'skipped' ? 'secondary' : (task.isOverdue ? 'danger' : 'warning')) %}
+                <div class="d-flex align-items-start gap-3 py-3 border-bottom">
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <a href="{{ path('app_evidence_reverification_show', {id: task.id}) }}"
+                               class="fw-semibold text-body text-decoration-none">
+                                {{ task.documentVersion.fileName }}
+                            </a>
+                            <span class="badge bg-{{ status_variant }}">
+                                {{ ('evidence_reverification.status.' ~ task.status)|trans({}, 'document') }}
+                            </span>
+                            {% if task.isOverdue %}
+                                <span class="badge bg-danger">{{ 'evidence_reverification.overdue'|trans({}, 'document') }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="text-muted small">
+                            {% if task.control is not null %}
+                                <i class="fa-icon fa-icon--control-shield me-1" aria-hidden="true"></i>
+                                {{ 'evidence_reverification.linked.control'|trans({'%id%': task.control.controlId}, 'document') }}
+                            {% endif %}
+                            {% if task.complianceFulfillment is not null %}
+                                <i class="fa-icon fa-icon--compliance-shield me-1" aria-hidden="true"></i>
+                                {{ 'evidence_reverification.linked.fulfillment'|trans({'%id%': task.complianceFulfillment.id}, 'document') }}
+                            {% endif %}
+                            {% if task.dueDate is not null %}
+                                · {{ 'evidence_reverification.due'|trans({}, 'document') }}: {{ task.dueDate|date('Y-m-d') }}
+                            {% endif %}
+                            {% if task.assignedTo is not null %}
+                                · {{ 'evidence_reverification.assigned_to'|trans({}, 'document') }}: {{ task.assignedTo.fullName ?? task.assignedTo.email }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if task.isOpen() %}
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('app_evidence_reverification_show', {id: task.id}) }}"
+                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                {{ 'common.view'|trans({}, 'messages') }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
