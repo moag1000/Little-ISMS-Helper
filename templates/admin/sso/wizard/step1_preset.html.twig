@@ -1,0 +1,68 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'sso' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% block admin_title %}{{ 'sso.wizard.title'|trans }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_sso_index') }}">{{ 'sso.admin.title'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'sso.wizard.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: 'SSO' },
+        title: 'sso.wizard.title'|trans,
+        subtitle: 'sso.wizard.step1.subtitle'|trans,
+    }) }}
+
+    {{ _fa_stepper.render([
+        { label: 'sso.wizard.step1.label'|trans },
+        { label: 'sso.wizard.step2.label'|trans },
+        { label: 'sso.wizard.step3.label'|trans },
+    ], 0, { ariaLabel: 'sso.wizard.aria_label'|trans }) }}
+
+    <div class="mt-4" data-controller="sso-wizard">
+        <h2 class="h5 mb-3">{{ 'sso.wizard.step1.choose_preset'|trans }}</h2>
+
+        {# Preset tiles — one card per IdP, with radio under the hood #}
+        {{ form_start(form) }}
+        <div class="row g-3 mb-4">
+            {% for preset_key, preset in presets %}
+                <div class="col-md-4 col-lg-3">
+                    <label class="d-block h-100">
+                        <input type="radio" name="{{ form.presetType.vars.full_name }}"
+                               value="{{ preset_key }}"
+                               class="visually-hidden"
+                               data-action="change->sso-wizard#selectPreset"
+                               {% if form.presetType.vars.value == preset_key %}checked{% endif %}>
+                        <div class="fa-feature-card fa-feature-card--selectable h-100"
+                             data-sso-wizard-target="presetCard"
+                             data-preset="{{ preset_key }}">
+                            <div class="fa-feature-card__icon">
+                                <i class="{{ preset.icon|default('bi-shield-lock') }}" aria-hidden="true"
+                                   style="color: {{ preset.color|default('var(--color-brand)') }}; font-size: 2rem;"></i>
+                            </div>
+                            <div class="fa-feature-card__title">{{ ('sso.preset.' ~ preset_key)|trans }}</div>
+                            <div class="fa-feature-card__desc small text-muted">{{ preset.label }}</div>
+                        </div>
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="{{ path('admin_sso_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
+                {{ 'common.cancel'|trans({}, 'messages') }}
+            </a>
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                {{ 'sso.wizard.step1.next'|trans }}
+                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

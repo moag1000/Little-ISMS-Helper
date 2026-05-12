@@ -1,0 +1,97 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'sso' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+{% from '_components/_fa_alert.html.twig' import render as fa_alert %}
+
+{% block admin_title %}{{ 'sso.wizard.title'|trans }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_sso_index') }}">{{ 'sso.admin.title'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'sso.wizard.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: 'SSO' },
+        title: 'sso.wizard.title'|trans,
+        subtitle: 'sso.wizard.step3.subtitle'|trans,
+    }) }}
+
+    {{ _fa_stepper.render([
+        { label: 'sso.wizard.step1.label'|trans, href: path('admin_sso_wizard_step1') },
+        { label: 'sso.wizard.step2.label'|trans, href: path('admin_sso_wizard_step2') },
+        { label: 'sso.wizard.step3.label'|trans },
+    ], 2, { ariaLabel: 'sso.wizard.aria_label'|trans }) }}
+
+    <div class="mt-4">
+        {# Discovery status badge #}
+        {% if discoveryStatus == 'ok' %}
+            {{ fa_alert({ variant: 'success', body: 'sso.wizard.step3.discovery_ok'|trans, class: 'mb-3' }) }}
+        {% elseif discoveryStatus != null %}
+            {{ fa_alert({ variant: 'warning', body: 'sso.wizard.step3.discovery_failed'|trans({'%error%': discoveryStatus}), class: 'mb-3' }) }}
+        {% else %}
+            {{ fa_alert({ variant: 'info', body: 'sso.wizard.step3.no_discovery_url'|trans, class: 'mb-3' }) }}
+        {% endif %}
+
+        {# Callback URL box #}
+        <div class="fa-section mb-4">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'sso.wizard.step2.callback_url'|trans }}</h2>
+            </div>
+            <div class="fa-section__body">
+                <input type="text" class="form-control font-monospace small" readonly
+                       value="{{ callbackUrl }}"
+                       aria-label="{{ 'sso.wizard.step2.callback_url'|trans }}">
+                <div class="form-text">{{ 'sso.wizard.step2.callback_help'|trans }}</div>
+            </div>
+        </div>
+
+        {# Summary table #}
+        <div class="fa-section mb-4">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'sso.wizard.step3.summary'|trans }}</h2>
+            </div>
+            <div class="fa-section__body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">{{ 'sso.field.name'|trans }}</dt>
+                    <dd class="col-sm-9">{{ provider.name ?: '—' }}</dd>
+                    <dt class="col-sm-3">{{ 'sso.field.slug'|trans }}</dt>
+                    <dd class="col-sm-9"><code>{{ provider.slug ?: '—' }}</code></dd>
+                    <dt class="col-sm-3">{{ 'sso.field.discovery_url'|trans }}</dt>
+                    <dd class="col-sm-9"><code>{{ provider.discoveryUrl ?: '—' }}</code></dd>
+                    {% if provider.presetType %}
+                        <dt class="col-sm-3">{{ 'sso.wizard.step3.preset'|trans }}</dt>
+                        <dd class="col-sm-9">{{ ('sso.preset.' ~ provider.presetType)|trans }}</dd>
+                    {% endif %}
+                    <dt class="col-sm-3">{{ 'sso.field.default_fallback_role'|trans }}</dt>
+                    <dd class="col-sm-9">{{ provider.defaultFallbackRole ?: 'ROLE_USER' }}</dd>
+                </dl>
+            </div>
+        </div>
+
+        {{ form_start(form) }}
+        <section class="fa-section mb-4">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'sso.section.domain_binding'|trans }}</h2>
+            </div>
+            <div class="fa-section__body">
+                {{ form_row(form.domainBindingsCsv) }}
+                {{ form_row(form.buttonLabel) }}
+                {{ form_row(form.enabled) }}
+            </div>
+        </section>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ path('admin_sso_wizard_step2') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
+                {{ 'common.back'|trans({}, 'messages') }}
+            </a>
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                {{ 'sso.wizard.step3.save'|trans }}
+            </button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

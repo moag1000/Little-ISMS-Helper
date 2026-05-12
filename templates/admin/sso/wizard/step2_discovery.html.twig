@@ -1,0 +1,125 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'sso' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+{% from '_components/_fa_alert.html.twig' import render as fa_alert %}
+
+{% block admin_title %}{{ 'sso.wizard.title'|trans }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_sso_index') }}">{{ 'sso.admin.title'|trans }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'sso.wizard.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: 'SSO' },
+        title: 'sso.wizard.title'|trans,
+        subtitle: 'sso.wizard.step2.subtitle'|trans,
+    }) }}
+
+    {{ _fa_stepper.render([
+        { label: 'sso.wizard.step1.label'|trans, href: path('admin_sso_wizard_step1') },
+        { label: 'sso.wizard.step2.label'|trans },
+        { label: 'sso.wizard.step3.label'|trans },
+    ], 1, { ariaLabel: 'sso.wizard.aria_label'|trans }) }}
+
+    <div class="mt-4" data-controller="sso-wizard"
+         data-sso-wizard-validate-url-value="{{ path('api_sso_validate_discovery') }}">
+
+        {% if preset %}
+            {{ fa_alert({ variant: 'info', body: ('sso.preset.help.' ~ provider.presetType)|trans({}, 'sso'), class: 'mb-3' }) }}
+        {% endif %}
+
+        {# Callback URL copy box #}
+        <div class="fa-section mb-4">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'sso.wizard.step2.callback_url'|trans }}</h2>
+            </div>
+            <div class="fa-section__body">
+                <div class="input-group">
+                    <input type="text" class="form-control font-monospace small" readonly
+                           value="{{ callbackUrl }}"
+                           data-sso-wizard-target="callbackUrl"
+                           aria-label="{{ 'sso.wizard.step2.callback_url'|trans }}">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost"
+                            data-action="click->sso-wizard#copyCallback">
+                        <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
+                        {{ 'sso.wizard.step2.copy'|trans }}
+                    </button>
+                </div>
+                <div class="form-text">{{ 'sso.wizard.step2.callback_help'|trans }}</div>
+            </div>
+        </div>
+
+        {{ form_start(form) }}
+        <div class="row g-3">
+            <div class="col-md-6">
+                <section class="fa-section">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">{{ 'sso.section.identity'|trans }}</h2>
+                    </div>
+                    <div class="fa-section__body">
+                        {{ form_row(form.name) }}
+                        {{ form_row(form.slug) }}
+                        {% if form.tenant is defined %}
+                            {{ form_row(form.tenant) }}
+                        {% endif %}
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-md-6">
+                <section class="fa-section">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">{{ 'sso.section.credentials'|trans }}</h2>
+                    </div>
+                    <div class="fa-section__body">
+                        {{ form_row(form.clientId) }}
+                        {{ form_row(form.clientSecretPlain) }}
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-12">
+                <section class="fa-section">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">{{ 'sso.section.endpoints'|trans }}</h2>
+                    </div>
+                    <div class="fa-section__body">
+                        <div class="position-relative">
+                            {{ form_row(form.discoveryUrl) }}
+                            <div data-sso-wizard-target="discoveryResult" class="mt-1 small" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-md-6">
+                <section class="fa-section">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">{{ 'sso.section.provisioning'|trans }}</h2>
+                    </div>
+                    <div class="fa-section__body">
+                        {{ form_row(form.defaultFallbackRole) }}
+                        {{ form_row(form.mfaInheritance) }}
+                        {{ form_row(form.jitProvisioning) }}
+                        {{ form_row(form.autoApprove) }}
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ path('admin_sso_wizard_step1') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
+                {{ 'common.back'|trans({}, 'messages') }}
+            </a>
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                {{ 'sso.wizard.step2.next'|trans }}
+                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
