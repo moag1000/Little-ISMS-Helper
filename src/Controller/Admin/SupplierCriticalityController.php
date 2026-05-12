@@ -80,7 +80,7 @@ class SupplierCriticalityController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_admin_supplier_criticality_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_admin_supplier_criticality_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, SupplierCriticalityLevel $level): Response
     {
         $this->requireTenantOwnership($level);
@@ -127,7 +127,7 @@ class SupplierCriticalityController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_admin_supplier_criticality_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_admin_supplier_criticality_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, SupplierCriticalityLevel $level): Response
     {
         $this->requireTenantOwnership($level);
