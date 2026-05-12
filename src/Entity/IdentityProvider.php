@@ -6,6 +6,8 @@ namespace App\Entity;
 
 use App\Repository\IdentityProviderRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -159,6 +161,16 @@ class IdentityProvider
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
 
+    /** @var Collection<int, IdentityProviderRoleMapping> */
+    #[ORM\OneToMany(targetEntity: IdentityProviderRoleMapping::class, mappedBy: 'identityProvider', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['priority' => 'ASC'])]
+    private Collection $roleMappings;
+
+    public function __construct()
+    {
+        $this->roleMappings = new ArrayCollection();
+    }
+
     #[ORM\PrePersist]
     public function onPrePersist(): void
     {
@@ -259,6 +271,28 @@ class IdentityProvider
 
     public function getCreatedAt(): ?DateTimeImmutable { return $this->createdAt; }
     public function getUpdatedAt(): ?DateTimeImmutable { return $this->updatedAt; }
+
+    /** @return Collection<int, IdentityProviderRoleMapping> */
+    public function getRoleMappings(): Collection { return $this->roleMappings; }
+
+    public function addRoleMapping(IdentityProviderRoleMapping $m): self
+    {
+        if (!$this->roleMappings->contains($m)) {
+            $this->roleMappings->add($m);
+            $m->setIdentityProvider($this);
+        }
+        return $this;
+    }
+
+    public function removeRoleMapping(IdentityProviderRoleMapping $m): self
+    {
+        if ($this->roleMappings->removeElement($m)) {
+            if ($m->getIdentityProvider() === $this) {
+                $m->setIdentityProvider(null);
+            }
+        }
+        return $this;
+    }
 
     /** Check whether $email matches one of the configured domain bindings. */
     public function matchesEmailDomain(?string $email): bool

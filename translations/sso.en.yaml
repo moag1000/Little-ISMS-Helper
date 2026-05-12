@@ -114,6 +114,37 @@ sso:
             okta: 'Create an OIDC Web Application in Okta Admin → Applications. Add the callback URL as Sign-in Redirect URI.'
             auth0: 'Create a Regular Web Application in Auth0 Dashboard → Applications. Add the callback URL to Allowed Callback URLs.'
             generic: 'Enter the OIDC discovery URL (/.well-known/openid-configuration) and the wizard will populate the endpoints automatically.'
+    role_mapping:
+        section:
+            title: 'Claim-to-role mapping'
+            help: 'Rules are checked in priority order (ascending). First match wins. Empty = fallback role applies.'
+        field:
+            claim_key: 'Claim key'
+            claim_value_expression: 'Value expression (glob supported)'
+            assigned_role: 'Assigned role'
+            priority: 'Priority (0 = highest)'
+            is_active: 'Active'
+            audit_description: 'Description (audit)'
+        action:
+            add: 'Add mapping'
+            remove: 'Remove'
+            save: 'Save mappings'
+    audit:
+        section:
+            title: 'SSO audit trail (last 50 events)'
+        empty: 'No SSO audit entries for this provider yet.'
+        event:
+            sso_login_success: 'SSO login success'
+            sso_login_failure: 'SSO login failure'
+            sso_jit_provisioned: 'JIT user provisioned'
+            sso_role_changed: 'Role changed'
+            sso_config_changed: 'Configuration changed'
+            sso_enforcement_changed: 'Enforcement changed'
+    voter:
+        error:
+            not_authenticated: 'You must be logged in to access SSO providers.'
+            wrong_tenant: 'You do not have access to this SSO provider (wrong tenant).'
+            admin_required: 'Only administrators can change SSO configuration.'
     wizard:
         title: 'SSO Setup Wizard'
         aria_label: 'SSO Setup Wizard'

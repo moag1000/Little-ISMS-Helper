@@ -6,10 +6,15 @@ namespace App\Controller\Admin;
 
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\IdentityProvider;
+use App\Entity\IdentityProviderRoleMapping;
 use App\Entity\SsoUserApproval;
 use App\Form\IdentityProviderType;
+use App\Repository\AuditLogRepository;
 use App\Repository\IdentityProviderRepository;
+use App\Repository\IdentityProviderRoleMappingRepository;
 use App\Repository\SsoUserApprovalRepository;
+use App\Security\Voter\IdentityProviderVoter;
+use App\Security\Voter\SsoConfigVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\Sso\OidcAuthenticationFlow;
@@ -40,6 +45,8 @@ final class SsoProviderController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $audit,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly IdentityProviderRoleMappingRepository $roleMappingRepo,
+        private readonly AuditLogRepository $auditLogRepo,
     ) {
     }
 
@@ -60,17 +67,6 @@ final class SsoProviderController extends AbstractController
             'providers' => $providers,
             'pending_count' => $pendingCount,
         ]);
-    }
-
-    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(IdentityProvider $provider): Response
-    {
-        if ($redirect = $this->checkModuleActive('authentication')) {
-            return $redirect;
-        }
-
-        $this->assertCanModify($provider);
-        return $this->render('admin/sso/show.html.twig', ['provider' => $provider]);
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
@@ -226,6 +222,75 @@ final class SsoProviderController extends AbstractController
             'provider' => $provider,
             'is_new' => $isNew,
         ]);
+    }
+
+    #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(IdentityProvider $provider): Response
+    {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+        $this->denyAccessUnlessGranted(IdentityProviderVoter::VIEW, $provider);
+
+        $mappings   = $this->roleMappingRepo->findActiveByProvider($provider);
+        $auditTrail = $this->auditLogRepo->findByEntity('IdentityProvider', (int) $provider->getId());
+        $last50     = array_slice(array_reverse($auditTrail), 0, 50);
+
+        return $this->render('admin/sso/show.html.twig', [
+            'provider'    => $provider,
+            'mappings'    => $mappings,
+            'audit_trail' => $last50,
+        ]);
+    }
+
+    #[Route('/{id}/role-mappings', name: 'role_mappings_save', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsCsrfTokenValid('sso_role_mappings')]
+    public function roleMappingsSave(IdentityProvider $provider, Request $request): Response
+    {
+        if ($redirect = $this->checkModuleActive('authentication')) {
+            return $redirect;
+        }
+        $this->denyAccessUnlessGranted(SsoConfigVoter::CONFIGURE, $provider);
+
+        // Remove all existing mappings, re-persist from submitted form data
+        foreach ($provider->getRoleMappings() as $m) {
+            $this->em->remove($m);
+        }
+        $this->em->flush();
+
+        $data   = $request->request->all('role_mappings') ?: [];
+        $tenant = $provider->getTenant();
+
+        foreach ($data as $row) {
+            $claimKey = trim((string) ($row['claimKey'] ?? ''));
+            $role     = trim((string) ($row['assignedRole'] ?? ''));
+            if ($claimKey === '' || $role === '') {
+                continue;
+            }
+            $mapping = new IdentityProviderRoleMapping();
+            $mapping->setIdentityProvider($provider);
+            $mapping->setTenant($tenant);
+            $mapping->setClaimKey($claimKey);
+            $mapping->setClaimValueExpression(trim((string) ($row['claimValueExpression'] ?? '')));
+            $mapping->setAssignedRole($role);
+            $mapping->setPriority((int) ($row['priority'] ?? 0));
+            $mapping->setIsActive(isset($row['isActive']) && $row['isActive'] !== '');
+            $mapping->setAuditDescription(($row['auditDescription'] ?? '') !== '' ? (string) $row['auditDescription'] : null);
+            $this->em->persist($mapping);
+        }
+        $this->em->flush();
+
+        $this->audit->logCustom(
+            AuditLogger::ACTION_SSO_CONFIG_CHANGED,
+            'IdentityProvider',
+            $provider->getId(),
+            null,
+            ['action' => 'role_mappings_saved', 'count' => count($data)],
+        );
+
+        $this->addFlash('success', 'Role mappings saved.');
+
+        return $this->redirectToRoute('admin_sso_show', ['id' => $provider->getId()]);
     }
 
     /** @return list<string> */

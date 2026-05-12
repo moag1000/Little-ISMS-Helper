@@ -16,18 +16,19 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 /**
  * JIT (Just-In-Time) user provisioning for SSO logins.
  *
- * Wave 1: creates/links a User from IdP claims using the IdP's defaultFallbackRole.
- * Wave 2: ClaimToRoleResolver will be injected here to apply IdentityProviderRoleMapping rules.
- *
- * Audit event: ACTION_SSO_JIT_PROVISIONED (logged via AuditLogger::logCustom).
+ * Wave 2: ClaimToRoleResolver is consulted first to apply IdentityProviderRoleMapping rules.
+ * Falls back to defaultFallbackRole when no mapping matches.
+ * Emits ACTION_SSO_JIT_PROVISIONED via SsoEventLogger on new user creation.
  */
-final class SsoUserProvisioningService
+class SsoUserProvisioningService
 {
     public function __construct(
         private readonly UserRepository $userRepo,
         private readonly EntityManagerInterface $em,
         private readonly AuditLogger $audit,
         private readonly LoggerInterface $logger,
+        private readonly ClaimToRoleResolver $claimResolver,
+        private readonly SsoEventLogger $ssoEventLogger,
     ) {
     }
 
@@ -80,13 +81,7 @@ final class SsoUserProvisioningService
         $this->em->persist($user);
         $this->em->flush();
 
-        $this->audit->logCustom(
-            'sso.jit.user_provisioned',
-            'User',
-            $user->getId(),
-            null,
-            ['email' => $email, 'provider' => $provider->getSlug()],
-        );
+        $this->ssoEventLogger->logJitProvisioned($provider, $user, $email);
         $this->logger->info('SSO JIT: provisioned new user', ['email' => $email, 'provider' => $provider->getSlug()]);
 
         return $user;
@@ -94,7 +89,8 @@ final class SsoUserProvisioningService
 
     private function createUser(IdentityProvider $provider, string $email, string $externalId, array $claims): User
     {
-        $role = $provider->getDefaultFallbackRole() ?: $provider->getDefaultRole() ?: 'ROLE_USER';
+        $resolverResult = $this->claimResolver->resolve($provider, $claims);
+        $role           = $resolverResult->role;
 
         $user = new User();
         $user->setEmail($email);
