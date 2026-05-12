@@ -67,7 +67,7 @@ final class Version20260512105000_f4_document_versioning extends AbstractMigrati
                 CONSTRAINT fk_docver_document
                     FOREIGN KEY (document_id)  REFERENCES document (id)  ON DELETE CASCADE,
                 CONSTRAINT fk_docver_uploaded_by
-                    FOREIGN KEY (uploaded_by_id) REFERENCES user (id)    ON DELETE SET NULL,
+                    FOREIGN KEY (uploaded_by_id) REFERENCES users (id)   ON DELETE SET NULL,
                 CONSTRAINT fk_docver_replaced_by
                     FOREIGN KEY (replaced_by_id) REFERENCES document_version (id) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
@@ -100,7 +100,7 @@ final class Version20260512105000_f4_document_versioning extends AbstractMigrati
                 CONSTRAINT fk_revtask_fulfillment
                     FOREIGN KEY (compliance_fulfillment_id) REFERENCES compliance_requirement_fulfillment (id) ON DELETE SET NULL,
                 CONSTRAINT fk_revtask_assigned
-                    FOREIGN KEY (assigned_to_id) REFERENCES user (id) ON DELETE SET NULL
+                    FOREIGN KEY (assigned_to_id) REFERENCES users (id) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         SQL);
 
