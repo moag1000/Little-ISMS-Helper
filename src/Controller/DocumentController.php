@@ -8,10 +8,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
 use App\Entity\Document;
 use App\Form\DocumentType;
+use App\Entity\DocumentVersion;
 use App\Repository\CommentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentControlLinkRepository;
 use App\Repository\DocumentRepository;
+use App\Repository\DocumentVersionRepository;
+use App\Service\Evidence\EvidenceCascadeInvalidationService;
+use App\Service\Evidence\DocumentReuseAnalyticsService;
+use App\Service\Evidence\EvidenceVersioningService;
 use App\Repository\EntityTagRepository;
 use App\Service\DocumentService;
 use App\Service\FileUploadSecurityService;
@@ -56,6 +61,10 @@ class DocumentController extends AbstractController
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?DocumentControlLinkRepository $documentControlLinkRepository = null,
         private readonly ?ComplianceRequirementRepository $complianceRequirementRepository = null,
+        private readonly ?DocumentVersionRepository $documentVersionRepository = null,
+        private readonly ?EvidenceVersioningService $evidenceVersioningService = null,
+        private readonly ?EvidenceCascadeInvalidationService $evidenceCascadeInvalidationService = null,
+        private readonly ?DocumentReuseAnalyticsService $documentReuseAnalyticsService = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index')]
@@ -1004,5 +1013,101 @@ class DocumentController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
+    }
+
+    // ── F4 Evidence-Versioning endpoints ──────────────────────────────────────
+
+    /**
+     * Version history drawer for a document.
+     *
+     * GET /document/{id}/versions
+     */
+    #[Route('/document/{id}/versions', name: 'app_document_versions', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function versions(Document $document): Response
+    {
+        $this->denyAccessUnlessGranted('view', $document);
+
+        $versions = $this->documentVersionRepository?->findByDocument($document) ?? [];
+
+        $reuseData = $this->documentReuseAnalyticsService?->getReuseFactorForDocument($document) ?? [
+            'control_count' => 0,
+            'framework_count' => 0,
+            'label' => '',
+        ];
+
+        return $this->render('document/_version_list.html.twig', [
+            'document' => $document,
+            'versions' => $versions,
+            'reuse' => $reuseData,
+        ]);
+    }
+
+    /**
+     * Download a specific version file.
+     *
+     * GET /document/{id}/version/{vid}/download
+     */
+    #[Route('/document/{id}/version/{vid}/download', name: 'app_document_version_download', requirements: ['id' => '\d+', 'vid' => '\d+'], methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function versionDownload(Document $document, int $vid): Response
+    {
+        $this->denyAccessUnlessGranted('view', $document);
+
+        $version = $this->documentVersionRepository?->find($vid);
+        if ($version === null || $version->getDocument()?->getId() !== $document->getId()) {
+            throw $this->createNotFoundException('Version not found.');
+        }
+
+        $this->denyAccessUnlessGranted('download', $version);
+
+        $fullPath = $this->projectDir . '/public' . $version->getFilePath();
+        if (!file_exists($fullPath)) {
+            $fullPath = $version->getFilePath();
+        }
+
+        if (!file_exists($fullPath)) {
+            throw $this->createNotFoundException('Version file not found on disk.');
+        }
+
+        $response = new BinaryFileResponse($fullPath);
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $version->getFileName(),
+        );
+        $response->headers->set('Content-Type', $version->getMimeType());
+        return $response;
+    }
+
+    /**
+     * Undo the last version upload (5-second window).
+     *
+     * POST /document/{id}/version/{vid}/undo
+     */
+    #[Route('/document/{id}/version/{vid}/undo', name: 'app_document_version_undo', requirements: ['id' => '\d+', 'vid' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function versionUndo(Document $document, int $vid, Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('edit', $document);
+
+        if (!$this->isCsrfTokenValid('version_undo_' . $vid, (string) $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('document.undo.error.invalid_token', [], 'document'));
+            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+        }
+
+        if ($this->evidenceVersioningService === null) {
+            $this->addFlash('error', $this->translator->trans('document.undo.error.service_unavailable', [], 'document'));
+            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+        }
+
+        $success = $this->evidenceVersioningService->undo($vid);
+
+        if ($success) {
+            $this->addFlash('success', $this->translator->trans('document.undo.success', [], 'document'));
+        } else {
+            $this->addFlash('warning', $this->translator->trans('document.undo.error.window_expired', [], 'document'));
+        }
+
+        return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
     }
 }
