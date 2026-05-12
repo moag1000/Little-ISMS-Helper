@@ -26,7 +26,7 @@ use Doctrine\Migrations\AbstractMigration;
  * per-migration SAVEPOINT. Without this override the second DDL in a
  * migrate-run fails with "SAVEPOINT DOCTRINE_X does not exist".
  */
-final class Version20260512100000_f4_document_versioning extends AbstractMigration
+final class Version20260512105000_f4_document_versioning extends AbstractMigration
 {
     public function isTransactional(): bool
     {
