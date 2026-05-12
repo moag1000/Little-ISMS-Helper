@@ -122,6 +122,22 @@ policy_wizard:
         action: 'Re-run wizard'
 
 global:
+    risk_bulk_import_tip:
+        title: 'Risk register growing — bulk import available'
+        body: 'Your risk register is growing nicely (%count% entries) — the next time you do an owner review or inherent-score update, the bulk-import wizard saves approximately 2 FTE-hours of manual editing.'
+        action: 'Open bulk-import wizard'
+    business_process_bulk_import_tip:
+        title: 'BIA list growing — CSV bulk import available'
+        body: 'Your BIA list is growing (%count% processes) — during the annual owner review, CSV bulk import with delta mode saves approximately 1.5 FTE-hours compared to record-by-record editing.'
+        action: 'Open bulk-import wizard'
+    vvt_export_tip:
+        title: 'Record of processing activities ready to export'
+        body: 'You have %count% processing activities on file — ready for the next supervisory authority request? Export in BfDI format (XLSX/CSV/PDF) is available in one click.'
+        action: 'Export BfDI XLSX'
+    vvt_export_overdue:
+        title: 'Record of processing activities export overdue'
+        body: 'Last BfDI record-of-processing-activities export was %months% months ago — supervisory authority request risk. Authorities (BfDI / 16 state DPAs) may request this at any time; compliance best practice recommends an annual refresh.'
+        action: 'Export now'
     asset_ohne_risk:
         title: '%count% high-CIA assets without a risk entry'
         body: '%count% assets with high/very-high protection need have no linked risk record. GDPR Art. 32 + ISO 27001 Cl. 6.1.2 require high-CIA assets to feed into the risk assessment.'
