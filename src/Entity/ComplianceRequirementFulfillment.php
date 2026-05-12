@@ -499,4 +499,24 @@ class ComplianceRequirementFulfillment
         }
         return $this->requirement?->getBaseEffortDays();
     }
+
+    // ── F4 Evidence-Versioning ────────────────────────────────────────────────
+
+    /**
+     * F4 — set to true by EvidenceCascadeInvalidationService when a linked
+     * DocumentVersion is superseded. Reset when the reverification task is completed.
+     */
+    #[ORM\Column(name: 'evidence_outdated', type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $evidenceOutdated = false;
+
+    public function isEvidenceOutdated(): bool
+    {
+        return $this->evidenceOutdated;
+    }
+
+    public function setEvidenceOutdated(bool $evidenceOutdated): self
+    {
+        $this->evidenceOutdated = $evidenceOutdated;
+        return $this;
+    }
 }

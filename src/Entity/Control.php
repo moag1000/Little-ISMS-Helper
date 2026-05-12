@@ -1072,4 +1072,27 @@ class Control
         return $this;
     }
 
+    // ── F4 Evidence-Versioning ────────────────────────────────────────────────
+
+    /**
+     * F4 — set to true by EvidenceCascadeInvalidationService when a linked
+     * DocumentVersion is superseded by a newer upload. Signals the reviewer
+     * queue that this control's evidence needs re-verification.
+     * Reset to false when the reviewer marks the reverification task as completed.
+     */
+    #[ORM\Column(name: 'evidence_outdated', type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['control:read'])]
+    private bool $evidenceOutdated = false;
+
+    public function isEvidenceOutdated(): bool
+    {
+        return $this->evidenceOutdated;
+    }
+
+    public function setEvidenceOutdated(bool $evidenceOutdated): static
+    {
+        $this->evidenceOutdated = $evidenceOutdated;
+        return $this;
+    }
+
 }

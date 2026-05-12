@@ -242,3 +242,7 @@ alva_hint:
         body: 'Geplante BCM-Übung "%exercise_name%" (%exercise_type%) ist seit %days% Tagen überfällig und steht weiterhin auf "planned". ISO 22301 Cl. 8.6 verlangt dokumentierte Übungs-Kadenz — verschieben mit Begründung oder Status auf "cancelled" setzen, andernfalls Audit-Risiko.'
         cta_label: 'Übung öffnen'
         dismiss_label: 'Nicht jetzt'
+    outdated_evidence:
+        title: 'Nachweise sind veraltet — Überprüfung erforderlich'
+        body: '%count% Controls sind als Nachweis-veraltet markiert, weil verknüpfte Dokumente aktualisiert wurden. Bitte die Prüf-Queue bearbeiten, um ISO 27001 Kl. 7.5.3 Compliance zu erhalten.'
+        action: 'Prüf-Queue öffnen'
