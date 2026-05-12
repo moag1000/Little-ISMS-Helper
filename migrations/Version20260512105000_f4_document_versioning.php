@@ -104,12 +104,23 @@ final class Version20260512105000_f4_document_versioning extends AbstractMigrati
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         SQL);
 
-        // ── 3. ALTER TABLE document — add content_hash, current_version_id ───
+        // ── 3a. ALTER TABLE document — add content_hash column ───────────────
         $this->addSql(<<<'SQL'
             ALTER TABLE document
-                ADD COLUMN IF NOT EXISTS content_hash       VARCHAR(64)  NULL     AFTER sha256_hash,
-                ADD COLUMN IF NOT EXISTS current_version_id INT UNSIGNED NULL     AFTER content_hash,
-                ADD CONSTRAINT IF NOT EXISTS fk_doc_current_version
+                ADD COLUMN IF NOT EXISTS content_hash VARCHAR(64) NULL AFTER sha256_hash
+        SQL);
+
+        // ── 3b. ALTER TABLE document — add current_version_id column ─────────
+        $this->addSql(<<<'SQL'
+            ALTER TABLE document
+                ADD COLUMN IF NOT EXISTS current_version_id INT UNSIGNED NULL AFTER content_hash
+        SQL);
+
+        // ── 3c. ALTER TABLE document — add FK to document_version ────────────
+        // Only add the FK if the column exists and the constraint does not yet exist.
+        $this->addSql(<<<'SQL'
+            ALTER TABLE document
+                ADD CONSTRAINT fk_doc_current_version
                     FOREIGN KEY (current_version_id) REFERENCES document_version (id) ON DELETE SET NULL
         SQL);
 
