@@ -7,6 +7,8 @@ namespace App\Entity;
 use DateTimeInterface;
 use DateTimeImmutable;
 use App\Repository\DocumentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -286,9 +288,39 @@ class Document
     #[ORM\Column(name: 'requires_acknowledgement', type: Types::BOOLEAN, options: ['default' => false])]
     private bool $requiresAcknowledgement = false;
 
+    // ── F4 Evidence-Versioning fields ─────────────────────────────────────────
+
+    /**
+     * F4 — SHA-256 hex digest of the current file on disk.
+     * Kept in sync with the currentVersion.contentHash by EvidenceVersioningService.
+     * 64-char hex string; NULL for documents uploaded before F4 was deployed.
+     */
+    #[ORM\Column(name: 'content_hash', length: 64, nullable: true)]
+    private ?string $contentHash = null;
+
+    /**
+     * F4 — FK to the currently active DocumentVersion.
+     * NULL for legacy documents that pre-date the versioning feature.
+     */
+    #[ORM\ManyToOne(targetEntity: DocumentVersion::class)]
+    #[ORM\JoinColumn(name: 'current_version_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?DocumentVersion $currentVersion = null;
+
+    /**
+     * F4 — all DocumentVersion rows for this document (ordered by version_number).
+     *
+     * @var Collection<int, DocumentVersion>
+     */
+    #[ORM\OneToMany(targetEntity: DocumentVersion::class, mappedBy: 'document', cascade: ['persist'], orphanRemoval: false)]
+    #[ORM\OrderBy(['versionNumber' => 'ASC'])]
+    private Collection $versions;
+
+    // ── End F4 fields ─────────────────────────────────────────────────────────
+
     public function __construct()
     {
         $this->uploadedAt = new DateTimeImmutable();
+        $this->versions = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -727,5 +759,52 @@ class Document
             }
         }
         return false;
+    }
+
+    // ── F4 Evidence-Versioning getters/setters ─────────────────────────────
+
+    public function getContentHash(): ?string
+    {
+        return $this->contentHash;
+    }
+
+    public function setContentHash(?string $contentHash): static
+    {
+        $this->contentHash = $contentHash;
+        return $this;
+    }
+
+    public function getCurrentVersion(): ?DocumentVersion
+    {
+        return $this->currentVersion;
+    }
+
+    public function setCurrentVersion(?DocumentVersion $currentVersion): static
+    {
+        $this->currentVersion = $currentVersion;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DocumentVersion>
+     */
+    public function getVersions(): Collection
+    {
+        return $this->versions;
+    }
+
+    public function addVersion(DocumentVersion $version): static
+    {
+        if (!$this->versions->contains($version)) {
+            $this->versions->add($version);
+            $version->setDocument($this);
+        }
+        return $this;
+    }
+
+    public function removeVersion(DocumentVersion $version): static
+    {
+        $this->versions->removeElement($version);
+        return $this;
     }
 }
