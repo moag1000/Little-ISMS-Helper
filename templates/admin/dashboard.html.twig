@@ -1,12 +1,13 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
-
-{% block admin_title %}{{ 'admin.dashboard.title'|trans({}, 'admin') }}{% endblock %}
-{% block admin_subtitle %}
-    <p class="text-muted">{{ 'admin.dashboard.subtitle'|trans({}, 'admin') }}</p>
-{% endblock %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'speedometer2', label: 'admin.dashboard.title'|trans({}, 'admin') },
+        title: 'admin.dashboard.title'|trans({}, 'admin'),
+        subtitle: 'admin.dashboard.subtitle'|trans({}, 'admin'),
+    }) }}
     {# Hub-Promo-Banner — Sprint 1 des Admin-Panel-Refactors. Hub bleibt
        opt-in via /admin/hub bis Mega-Menu-Switch in Sprint 4. #}
     <div class="fa-alert fa-alert--info mb-4" role="status">

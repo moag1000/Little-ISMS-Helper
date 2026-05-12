@@ -30,7 +30,7 @@
         <div class="col-lg-8">
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header d-flex justify-content-between"><h1 class="mb-0 h2">{{ objective.title }}</h1>
+                    <div class="card-header d-flex justify-content-between"><h2 class="mb-0">{{ objective.title }}</h2>
                         {% include '_components/_badge.html.twig' with { variant: objective.status == 'achieved' ? 'success' : 'info', class: 'fs-6', content: ('objective.status.' ~ objective.status)|trans({}, 'objective') } %}
                     </div>
                 {% endblock %}

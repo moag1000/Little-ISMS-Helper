@@ -1,13 +1,14 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'admin' %}
 {% import '_components/_fa_admin_hub_card.html.twig' as _fa_admin_hub_card %}
-
-{% block admin_title %}{{ 'admin.hub.title'|trans({}, 'admin') }}{% endblock %}
-{% block admin_subtitle %}
-    <p class="text-muted">{{ 'admin.hub.subtitle'|trans({'%count%': total_modules}, 'admin') }}</p>
-{% endblock %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'grid', label: 'admin.hub.title'|trans({}, 'admin') },
+        title: 'admin.hub.title'|trans({}, 'admin'),
+        subtitle: 'admin.hub.subtitle'|trans({'%count%': total_modules}, 'admin'),
+    }) }}
 <div class="fa-admin-hub" data-controller="admin-hub-search">
     <div class="fa-admin-hub__search">
         <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>

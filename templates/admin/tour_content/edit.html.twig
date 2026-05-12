@@ -1,11 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_status_pill.html.twig' as pill %}
-
-{% block admin_title %}
-    <i class="fa-icon fa-icon--nav-stars fairy-icon-sparkle" aria-hidden="true"></i>
-    {{ ('guided_tour.' ~ tour_id ~ '.meta.label')|trans({}, 'guided_tour') }}
-{% endblock %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{{ path('admin_tour_content_index') }}">{{ 'admin.tour_content.title'|trans({}, 'admin') }}</a></li>
@@ -13,6 +9,11 @@
 {% endblock %}
 
 {% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'stars', label: 'admin.tour_content.title'|trans({}, 'admin') },
+        title: ('guided_tour.' ~ tour_id ~ '.meta.label')|trans({}, 'guided_tour'),
+        subtitle: tour_id,
+    }) }}
 <div class="container-fluid">
     <p class="text-muted mb-3">
         {{ 'admin.tour_content.edit_description'|trans({}, 'admin') }}

@@ -124,13 +124,13 @@
                 {% endfor %}
             {% endfor %}
 
-            {# Page Header #}
-            {% block admin_header %}
-                <div class="admin-header">
-                    <h1>{% block admin_title %}{{ 'admin.title'|trans({}, 'admin') }}{% endblock %}</h1>
-                    {% block admin_subtitle %}{% endblock %}
-                </div>
-            {% endblock %}
+            {# Page Header — children must render via _fa_page_header.render()
+               in admin_content. Legacy admin_title/admin_subtitle blocks
+               kept empty here for backward-compat; the duplicate H1 used
+               to collide with the Aurora page-header. #}
+            {% block admin_header %}{% endblock %}
+            {% block admin_title %}{% endblock %}
+            {% block admin_subtitle %}{% endblock %}
 
     {# Main Content #}
     {% block admin_content %}
