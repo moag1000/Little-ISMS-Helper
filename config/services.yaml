@@ -517,6 +517,12 @@ services:
     App\Service\Import\Mapper\ControlMapper:
         tags: ['app.import.mapper']
 
+    App\Service\Import\Mapper\RiskMapper:
+        tags: ['app.import.mapper']
+
+    App\Service\Import\Mapper\BusinessProcessMapper:
+        tags: ['app.import.mapper']
+
     App\Service\Import\EntityMapperRegistry:
         arguments:
             $mappers: !tagged_iterator app.import.mapper
