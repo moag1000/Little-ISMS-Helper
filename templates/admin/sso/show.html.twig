@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'sso' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_audit_row.html.twig' as _fa_audit_row %}
 {% from '_components/_fa_alert.html.twig' import render as fa_alert %}
 
 {% block admin_title %}{{ provider.name }} — {{ 'sso.admin.title'|trans }}{% endblock %}
@@ -85,4 +86,66 @@
         </div>
         {% endif %}
     </div>
+
+    {# ── Role Mappings (Wave 2) ────────────────────────────────────────── #}
+    <section class="fa-section mb-4 mt-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'sso.role_mapping.section.title'|trans }}</h2>
+        </div>
+        <div class="fa-section__body">
+            <p class="text-muted small mb-3">{{ 'sso.role_mapping.section.help'|trans }}</p>
+
+            <form method="post"
+                  action="{{ path('admin_sso_role_mappings_save', {id: provider.id}) }}"
+                  data-controller="sso-role-mapping">
+                <input type="hidden" name="_token" value="{{ csrf_token('sso_role_mappings') }}">
+
+                <div class="row g-1 fw-semibold small text-muted px-1 mb-1 d-none d-md-flex">
+                    <div class="col-md-2">{{ 'sso.role_mapping.field.claim_key'|trans }}</div>
+                    <div class="col-md-3">{{ 'sso.role_mapping.field.claim_value_expression'|trans }}</div>
+                    <div class="col-md-2">{{ 'sso.role_mapping.field.assigned_role'|trans }}</div>
+                    <div class="col-md-1">{{ 'sso.role_mapping.field.priority'|trans }}</div>
+                    <div class="col-md-1">{{ 'sso.role_mapping.field.is_active'|trans }}</div>
+                    <div class="col-md-2">{{ 'sso.role_mapping.field.audit_description'|trans }}</div>
+                </div>
+
+                <div data-sso-role-mapping-target="collection">
+                    {% for mapping in mappings %}
+                        {% include 'admin/sso/_role_mapping_row.html.twig' %}
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                    <button type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            data-action="sso-role-mapping#addRow">
+                        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                        {{ 'sso.role_mapping.action.add'|trans }}
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="bi bi-floppy" aria-hidden="true"></i>
+                        {{ 'sso.role_mapping.action.save'|trans }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    {# ── Audit Trail (Wave 2) ──────────────────────────────────────────── #}
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'sso.audit.section.title'|trans }}</h2>
+        </div>
+        <div class="fa-section__body">
+            {% if audit_trail is empty %}
+                <p class="text-muted">{{ 'sso.audit.empty'|trans }}</p>
+            {% else %}
+                <div class="list-group list-group-flush">
+                    {% for entry in audit_trail %}
+                        {{ _fa_audit_row.render({ log: entry, compact: true }) }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}
