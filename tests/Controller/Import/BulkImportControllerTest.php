@@ -444,6 +444,50 @@ class BulkImportControllerTest extends WebTestCase
         ]);
     }
 
+    // ── F2.W2 — Risk Bulk-Import Wizard Smoke Tests ───────────────────────────
+
+    #[Test]
+    public function testRiskBulkImportWizardIndexRenders(): void
+    {
+        $this->client->loginUser($this->managerUser);
+        $this->client->request('GET', '/en/import/risk/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('main');
+    }
+
+    #[Test]
+    public function testRiskBulkImportWizardUploadRenders(): void
+    {
+        $this->client->loginUser($this->managerUser);
+        $this->client->request('GET', '/en/import/risk/upload');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+    }
+
+    // ── F2.W2 — BusinessProcess Bulk-Import Wizard Smoke Tests ────────────────
+
+    #[Test]
+    public function testBusinessProcessBulkImportWizardIndexRenders(): void
+    {
+        $this->client->loginUser($this->managerUser);
+        $this->client->request('GET', '/en/import/business_process/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('main');
+    }
+
+    #[Test]
+    public function testBusinessProcessBulkImportWizardUploadRenders(): void
+    {
+        $this->client->loginUser($this->managerUser);
+        $this->client->request('GET', '/en/import/business_process/upload');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     /**
