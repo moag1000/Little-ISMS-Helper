@@ -170,6 +170,14 @@ global:
         title: '%count% critical CVEs without a patch record (> %days% days)'
         body: '%count% open vulnerabilities with CVSS >= 7.0 have been unpatched for more than %days% days without a linked patch entry. OPS.1.1.3 / NIS2 Art. 21(2)(e) require documented patch SLA compliance.'
         action: 'Review vulnerabilities'
+    filter_export_tip:
+        title: 'Large list? Export saves time'
+        body: 'Your register has %count% entries — export the filtered list as Excel/CSV/JSON instead of copying manually. Sprint-3 F19.'
+        action: 'Export filtered list'
+    nonconformity_auto_task_tip:
+        title: 'Findings without norm reference (%count% open)'
+        body: '%count% audit findings without a linked ISO/BSI requirement. Linking triggers automatic corrective-action tasks — ISO 27001 Cl. 10.1.'
+        action: 'Link findings to requirements'
     missing_data_breach_procedure:
         title: '%count% data breach(es) without authority notification'
         body: '%count% data breach record(s) have no authority notification date (authorityNotificationAt). GDPR Art. 33 requires notification within 72h of awareness.'

@@ -170,6 +170,14 @@ global:
         title: '%count% kritische CVEs ohne Patch-Eintrag (> %days% Tage)'
         body: '%count% offene Schwachstellen mit CVSS ≥ 7,0 sind seit mehr als %days% Tagen ohne verlinkten Patch. OPS.1.1.3 / NIS2 Art. 21 Abs. 2 lit. e verlangen dokumentierte Patch-SLA-Einhaltung.'
         action: 'Schwachstellen prüfen'
+    filter_export_tip:
+        title: 'Gefilterte Liste? Export spart Zeit'
+        body: 'Dein Register hat %count% Einträge — gefilterte Liste als Excel/CSV/JSON exportieren spart manuelles Kopieren. Sprint-3 F19.'
+        action: 'Gefilterte Liste exportieren'
+    nonconformity_auto_task_tip:
+        title: 'Findings ohne Norm-Bezug (%count% offen)'
+        body: '%count% Audit-Findings ohne verknüpfte ISO/BSI-Anforderung. Verknüpfung löst automatische Korrektur-Tasks aus — ISO 27001 Cl. 10.1.'
+        action: 'Findings mit Norm verknüpfen'
     missing_data_breach_procedure:
         title: '%count% Datenpanne(n) ohne Behörden-Meldung'
         body: '%count% Datenpanne(n) ohne Datum der Aufsichtsbehörden-Meldung (authorityNotificationAt). DSGVO Art. 33 verlangt Meldung innerhalb 72h nach Kenntnis.'
