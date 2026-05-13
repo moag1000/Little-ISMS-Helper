@@ -243,7 +243,7 @@ class PersonRepository extends ServiceEntityRepository
 
         $qb->select('u')
             ->from(User::class, 'u')
-            ->leftJoin(Person::class, 'p', 'WITH', 'p.linkedUser = u')
+            ->leftJoin(Person::class, 'p', 'ON', 'p.linkedUser = u')
             ->where('u.tenant = :tenant')
             ->andWhere('u.isActive = :active')
             ->andWhere('p.id IS NULL')

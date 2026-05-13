@@ -276,7 +276,7 @@
             <div class="field-value">
                 <ul style="margin: 0; padding-left: 15px;">
                     {% for vuln in incident.relatedVulnerabilities %}
-                        <li>{{ vuln.title ?? vuln.cveId ?? 'Vulnerability #' ~ vuln.id }}</li>
+                        <li>{{ vuln.title ?? vuln.cveId ?? ('Vulnerability #' ~ vuln.id) }}</li>
                     {% endfor %}
                 </ul>
             </div>
