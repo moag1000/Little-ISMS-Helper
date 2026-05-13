@@ -329,4 +329,35 @@ class ComplianceFramework
     {
         return in_array($moduleKey, $this->requiredModules ?? []);
     }
+
+    /**
+     * Compute an in-memory compliance percentage from already-loaded requirements.
+     *
+     * Each ComplianceRequirement is considered "fulfilled" when its status equals
+     * 'fulfilled' or 'compliant'. This avoids extra DB queries — the framework
+     * index controller eager-loads requirements via LEFT JOIN.
+     *
+     * TODO: replace with a dedicated service query for large frameworks once
+     *       performance benchmarks flag this (N requirements × M tenants).
+     *
+     * @phpstan-ignore-next-line
+     */
+    public function getCompliancePercentage(): float
+    {
+        $total = $this->requirements->count();
+        if ($total === 0) {
+            return 0.0;
+        }
+
+        $fulfilled = 0;
+        foreach ($this->requirements as $req) {
+            /** @var \App\Entity\ComplianceRequirement $req */
+            $status = method_exists($req, 'getStatus') ? $req->getStatus() : null;
+            if (in_array($status, ['fulfilled', 'compliant'], true)) {
+                $fulfilled++;
+            }
+        }
+
+        return round(($fulfilled / $total) * 100, 1);
+    }
 }

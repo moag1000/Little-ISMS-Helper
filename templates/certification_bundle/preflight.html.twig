@@ -113,8 +113,8 @@
                     <li class="list-group-item d-flex align-items-start gap-2">
                         <i class="bi bi-x-circle-fill text-danger flex-shrink-0 mt-1" aria-hidden="true"></i>
                         <div>
-                            <div class="fw-semibold">{{ ('cert_bundle.preflight.blocker.' ~ blocker.type)|trans({'%count%': blocker.count|default(0)}) }}</div>
-                            <small class="text-muted">{{ ('cert_bundle.preflight.blocker.' ~ blocker.type ~ '_hint')|trans({}, 'cert_bundle', null, '') }}</small>
+                            <div class="fw-semibold">{{ ('cert_bundle.preflight.blocker.' ~ blocker.type)|trans({'%count%': blocker.count|default(0)|number_format(0, '.', '')}) }}</div>
+                            <small class="text-muted">{{ ('cert_bundle.preflight.blocker.' ~ blocker.type ~ '_hint')|trans({}, 'cert_bundle') }}</small>
                         </div>
                         <span class="ms-auto badge text-bg-danger flex-shrink-0">{{ blocker.severity }}</span>
                     </li>
