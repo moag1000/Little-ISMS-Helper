@@ -26,6 +26,19 @@ class AuditLogger
     private const string ACTION_IMPORT = 'import';
     private const string ACTION_BULK = 'bulk';
 
+    // Notification audit events (Sprint 6a — F3)
+    public const string ACTION_NOTIFICATION_RULE_CREATED    = 'notification.rule.created';
+    public const string ACTION_NOTIFICATION_RULE_UPDATED    = 'notification.rule.updated';
+    public const string ACTION_NOTIFICATION_RULE_DELETED    = 'notification.rule.deleted';
+    public const string ACTION_NOTIFICATION_RULE_ENABLED    = 'notification.rule.enabled';
+    public const string ACTION_NOTIFICATION_RULE_DISABLED   = 'notification.rule.disabled';
+    public const string ACTION_NOTIFICATION_CHANNEL_CREATED  = 'notification.channel.created';
+    public const string ACTION_NOTIFICATION_CHANNEL_UPDATED  = 'notification.channel.updated';
+    public const string ACTION_NOTIFICATION_CHANNEL_VERIFIED = 'notification.channel.verified';
+    public const string ACTION_NOTIFICATION_DELIVERY_SUCCEEDED = 'notification.delivery.succeeded';
+    public const string ACTION_NOTIFICATION_DELIVERY_FAILED    = 'notification.delivery.failed';
+    public const string ACTION_NOTIFICATION_DELIVERY_RETRIED   = 'notification.delivery.retried';
+
     // SSO-specific audit events (Wave 2) — used by SsoEventLogger
     public const string ACTION_SSO_LOGIN_SUCCESS       = 'sso.login.success';
     public const string ACTION_SSO_LOGIN_FAILURE       = 'sso.login.failure';
