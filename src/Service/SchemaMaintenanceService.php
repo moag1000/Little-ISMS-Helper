@@ -188,6 +188,45 @@ class SchemaMaintenanceService
     }
 
     /**
+     * Compares Doctrine entity metadata to the live DB schema and returns the
+     * SQL statements needed to bring the DB in sync — bypassing the Doctrine
+     * migrations table entirely.
+     *
+     * This is the canonical fallback for the phantom-diff-state case (CLAUDE.md
+     * Pitfall #6): migrations are MARKED executed in doctrine_migration_versions
+     * but the actual DDL never ran (e.g. legacy PREPARE/EXECUTE pattern). In
+     * that state getMaintenanceStatus() reports pending=0 and drift=0 while the
+     * live DB is genuinely missing columns or tables.
+     *
+     * Filters to additive-only statements (ALTER TABLE … ADD / CREATE TABLE);
+     * DROP statements are excluded so the caller never accidentally destroys
+     * data without explicit operator confirmation.
+     *
+     * @return list<string> SQL statements that would bring the DB in sync
+     */
+    public function getEntityVsDbDrift(): array
+    {
+        $validation = $this->schemaHealthService->validate();
+        $statements = $validation['pending_sql'];
+
+        // Exclude error-marker lines and destructive statements.
+        return array_values(array_filter(
+            $statements,
+            static function (string $sql): bool {
+                if (str_starts_with($sql, '-- ERROR:')) {
+                    return false;
+                }
+                foreach (self::DESTRUCTIVE_PATTERNS as $pattern) {
+                    if (preg_match($pattern, $sql) === 1) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+        ));
+    }
+
+    /**
      * Returns file-system-discovered pending-migration list (same source
      * SchemaHealthService::applyUpdate() gates on). Surfaces the count to
      * the QuickFix UI even when the Doctrine MigrationPlanCalculator
