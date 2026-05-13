@@ -264,6 +264,45 @@ admin:
         info_text: 'Changes take effect immediately and affect all tenants'
         info: Information
         help: Help
+        sso:
+            title: 'SSO Identity Providers'
+            description: 'OIDC/SAML providers, auto-provisioning, domain bindings and approval queue'
+        email_branding:
+            title: 'Email Branding'
+            description: 'Per-tenant email logo, sender name and footer for all outgoing messages'
+        report_style:
+            title: 'Report Appearance'
+            description: 'Cover pattern, audience default, watermark and chart colours'
+        policy_style:
+            title: 'Policy Appearance'
+            description: 'Layout, watermark and typography for policy documents'
+        audit_retention:
+            title: 'Audit-Log Retention'
+            description: 'Retention windows per event category (ISO 27001 Annex A 8.15)'
+        compliance_policy:
+            title: 'Compliance Policy'
+            description: 'Inheritance rules, review obligations and escalation defaults'
+        tenant_compliance:
+            title: 'Tenant Compliance Settings'
+            description: 'Locale, TLP classification, DPO contact, risk methodology and JSON defaults per tenant'
+        risk_approval:
+            title: 'Risk Approval Thresholds'
+            description: 'Escalation tiers and acceptance thresholds for risk governance (ISO 27001 Clause 6.1.3)'
+        incident_sla:
+            title: 'Incident SLAs'
+            description: 'Response-time targets per severity level (ISO 27001 Annex A 5.26)'
+        kpi_thresholds:
+            title: 'KPI Thresholds'
+            description: 'Traffic-light limits for dashboard KPIs (red / amber / green)'
+        supplier_criticality:
+            title: 'Supplier Criticality Levels'
+            description: 'Custom criticality tiers for supplier classification (ISO 27001 Annex A 5.19)'
+        tags:
+            title: 'Tags'
+            description: 'Global tag taxonomy and bulk-apply actions across ISMS entities'
+        quick_fix:
+            title: 'Quick-Fix Settings'
+            description: 'Auto-fallback behaviour and schema-reconcile configuration for the operator UI'
     compliance:
         framework: Framework
         total_requirements: 'Total Requirements'
