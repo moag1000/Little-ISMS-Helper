@@ -1,0 +1,58 @@
+{% trans_default_domain 'notification' %}
+{#
+ # Partial: last 10 NotificationDelivery rows for a rule.
+ # Variables: rule (NotificationRule), recentDeliveries (NotificationDelivery[])
+ #}
+<section class="fa-section">
+    <div class="fa-section__header">
+        <h2 class="fa-section__title">{{ 'notification.rule.show.evaluation_log'|trans }}</h2>
+    </div>
+    <div class="fa-section__body">
+        {% if recentDeliveries is empty %}
+            <p class="text-muted fst-italic small">{{ 'notification.rule.show.no_deliveries'|trans }}</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="fa-table fa-table--compact" aria-label="{{ 'notification.rule.show.evaluation_log'|trans }}">
+                    <thead>
+                        <tr>
+                            <th>{{ 'notification.delivery.field.channel'|trans }}</th>
+                            <th>{{ 'notification.delivery.field.status'|trans }}</th>
+                            <th>{{ 'notification.delivery.field.attempted_at'|trans }}</th>
+                            <th>{{ 'notification.delivery.field.retries'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for delivery in recentDeliveries %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-secondary">{{ delivery.channel.type }}</span>
+                                {{ delivery.channel.name }}
+                            </td>
+                            <td>
+                                {% set statusClass = {
+                                    'sent': 'bg-success',
+                                    'failed': 'bg-danger',
+                                    'pending': 'bg-warning text-dark',
+                                    'retrying': 'bg-info text-dark'
+                                } %}
+                                <span class="badge {{ statusClass[delivery.status] ?? 'bg-secondary' }}">
+                                    {{ delivery.status }}
+                                </span>
+                                {% if delivery.errorMessage %}
+                                    <span class="text-danger small ms-1" title="{{ delivery.errorMessage }}">
+                                        <i class="fa-icon fa-icon--warning" aria-hidden="true"></i>
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted small">
+                                {{ delivery.attemptedAt ? delivery.attemptedAt|date('Y-m-d H:i') : '—' }}
+                            </td>
+                            <td class="text-end">{{ delivery.retries }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</section>

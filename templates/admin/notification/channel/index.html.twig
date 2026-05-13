@@ -1,0 +1,123 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'notification' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'notification.channel.index.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'notification.channel.index.title'|trans }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'notification.channel.index.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'send', label: 'Channels' },
+        title: 'notification.channel.index.title'|trans,
+        subtitle: 'notification.channel.index.subtitle'|trans,
+        actions: [
+            {
+                label: 'notification.channel.action.new'|trans,
+                variant: 'primary',
+                icon: 'plus',
+                href: path('admin_notification_channel_new')
+            }
+        ]
+    }) }}
+
+    {% if channels is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'notification.channel.empty.title'|trans,
+            body: 'notification.channel.empty.body'|trans,
+            actions: [
+                {
+                    label: 'notification.channel.action.new'|trans,
+                    href: path('admin_notification_channel_new'),
+                    variant: 'primary'
+                }
+            ]
+        }) }}
+    {% else %}
+        <section class="fa-section">
+            <div class="fa-section__body">
+                <div class="table-responsive">
+                    <table class="fa-table" aria-label="{{ 'notification.channel.index.title'|trans }}">
+                        <thead>
+                            <tr>
+                                <th>{{ 'notification.channel.field.name'|trans }}</th>
+                                <th>{{ 'notification.channel.field.type'|trans }}</th>
+                                <th>{{ 'notification.channel.field.is_active'|trans }}</th>
+                                <th>{{ 'notification.channel.field.verified_at'|trans }}</th>
+                                <th>{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for channel in channels %}
+                            <tr>
+                                <td class="fw-semibold">{{ channel.name }}</td>
+                                <td>
+                                    {% set typeClass = {
+                                        'email': 'bg-primary',
+                                        'webhook': 'bg-info text-dark',
+                                        'in_app': 'bg-success'
+                                    } %}
+                                    <span class="badge {{ typeClass[channel.type] ?? 'bg-secondary' }}">
+                                        {{ ('notification.channel.type.' ~ channel.type)|trans }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if channel.isActive %}
+                                        <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-muted small">
+                                    {% if channel.verifiedAt %}
+                                        <i class="fa-icon fa-icon--check text-success" aria-hidden="true"></i>
+                                        {{ channel.verifiedAt|date('Y-m-d') }}
+                                    {% else %}
+                                        <span class="text-warning">{{ 'notification.channel.show.not_verified'|trans }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ path('admin_notification_channel_edit', { id: channel.id }) }}"
+                                           class="btn btn-sm btn-outline-secondary"
+                                           title="{{ 'common.edit'|trans({}, 'messages') }}">
+                                            <i class="fa-icon fa-icon--edit" aria-hidden="true"></i>
+                                        </a>
+                                        <form method="post"
+                                              action="{{ path('admin_notification_channel_verify', { id: channel.id }) }}"
+                                              class="d-inline">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('notification_channel_verify_' ~ channel.id) }}">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-info"
+                                                    title="{{ 'notification.channel.action.verify'|trans }}">
+                                                <i class="fa-icon fa-icon--shield-check" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                        <form method="post"
+                                              action="{{ path('admin_notification_channel_delete', { id: channel.id }) }}"
+                                              class="d-inline"
+                                              onsubmit="return confirm('{{ 'notification.channel.confirm.delete'|trans|e('js') }}')">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('notification_channel_delete_' ~ channel.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    title="{{ 'common.delete'|trans({}, 'messages') }}">
+                                                <i class="fa-icon fa-icon--trash" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

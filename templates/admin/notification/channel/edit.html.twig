@@ -1,0 +1,82 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'notification' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'notification.channel.edit.title'|trans({'%name%': channel.name}) }}{% endblock %}
+{% block admin_title %}{{ 'notification.channel.edit.title'|trans({'%name%': channel.name}) }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('admin_notification_channel_index') }}">{{ 'notification.channel.index.title'|trans }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ channel.name }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'send', label: 'Channel' },
+        title: 'notification.channel.edit.title'|trans({'%name%': channel.name}),
+        subtitle: ('notification.channel.type.' ~ channel.type)|trans,
+        actions: [
+            {
+                label: 'common.back'|trans({}, 'messages'),
+                variant: 'ghost',
+                icon: 'arrow-left',
+                href: path('admin_notification_channel_index')
+            }
+        ]
+    }) }}
+
+    {% if channel.verifiedAt %}
+        <div class="alert alert-success mb-3">
+            <i class="fa-icon fa-icon--shield-check" aria-hidden="true"></i>
+            {{ 'notification.channel.show.verified_at'|trans({'%date%': channel.verifiedAt|date('Y-m-d H:i')}) }}
+        </div>
+    {% else %}
+        <div class="alert alert-warning mb-3">
+            <i class="fa-icon fa-icon--warning" aria-hidden="true"></i>
+            {{ 'notification.channel.show.not_verified_hint'|trans }}
+        </div>
+    {% endif %}
+
+    <section class="fa-section">
+        <div class="fa-section__body">
+            {{ form_start(form, { attr: { class: 'needs-validation', novalidate: 'novalidate' } }) }}
+                {{ form_errors(form) }}
+
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        {{ form_row(form.name) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.type) }}
+                    </div>
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <strong>{{ 'notification.channel.help.config_examples'|trans }}</strong><br>
+                            <code>{{ 'notification.channel.help.config_email_example'|trans }}</code>
+                        </div>
+                        {{ form_row(form.configJson) }}
+                    </div>
+                    <div class="col-md-8">
+                        {{ form_row(form.secretPlain) }}
+                        <p class="text-muted small">{{ 'notification.channel.help.secret_edit_hint'|trans }}</p>
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.isActive) }}
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-icon fa-icon--save" aria-hidden="true"></i>
+                        {{ 'common.save'|trans({}, 'messages') }}
+                    </button>
+                    <a href="{{ path('admin_notification_channel_index') }}" class="btn btn-outline-secondary">
+                        {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </section>
+{% endblock %}
