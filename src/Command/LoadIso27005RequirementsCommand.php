@@ -9,6 +9,8 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -20,14 +22,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-iso27005-requirements',
     description: 'Load ISO/IEC 27005:2022 Information Security Risk Management clauses'
 )]
-final class LoadIso27005RequirementsCommand
+final class LoadIso27005RequirementsCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
+        parent::__construct();
     }
 
-    public function __invoke(SymfonyStyle $io): int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO27005']);
         $isNew = !$framework instanceof ComplianceFramework;
