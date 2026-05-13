@@ -100,12 +100,12 @@
                     <div class="col-md-8">
                         <label for="{{ form.reportDocWatermarkOpacity.vars.id }}" class="form-label">
                             {{ 'admin.report_style.field.watermark_opacity'|trans }}
-                            (<span data-report-style-preview-target="opacityLabel">{{ (form.reportDocWatermarkOpacity.vars.value * 100)|round }}%</span>)
+                            (<span data-report-style-preview-target="opacityLabel">{{ ((form.reportDocWatermarkOpacity.vars.value ?? 0.0)|number_format(2, '.', '') * 100)|round }}%</span>)
                         </label>
                         <input type="range"
                                class="form-range"
                                min="0" max="100" step="1"
-                               value="{{ (form.reportDocWatermarkOpacity.vars.value * 100)|round }}"
+                               value="{{ ((form.reportDocWatermarkOpacity.vars.value ?? 0.0)|number_format(2, '.', '') * 100)|round }}"
                                data-report-style-preview-target="opacitySlider"
                                data-action="input->report-style-preview#syncOpacity"
                                aria-label="{{ 'admin.report_style.field.watermark_opacity'|trans }}">
