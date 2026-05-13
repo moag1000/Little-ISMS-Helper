@@ -136,6 +136,7 @@ nav:
             risk_manager: 'Risk Manager Dashboard'
             auditor: 'Auditor Dashboard'
             board: 'Board Dashboard'
+            dpo: 'DPO Dashboard'
 
         help:
             iso9001_bridge: 'ISO 9001 → 27001 Bridge'
@@ -180,6 +181,7 @@ nav:
             risk_manager_dashboard: 'Top risks, treatments, acceptances, KRI trends'
             auditor_dashboard: 'Findings, evidence, audit plan, sample tracking'
             board_dashboard: 'Strategic risks, ROI, compliance status for executives'
+            dpo_dashboard: 'Data breaches (Art. 33), DPIA status (Art. 35), processing register'
             compliance_frameworks: 'Multi-framework management'
             framework_dashboard: 'Cross-framework overview'
             mapping_hub: 'Central entry: wizard, seeds, quality, transitive coverage'

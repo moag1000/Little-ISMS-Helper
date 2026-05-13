@@ -142,6 +142,7 @@ nav:
             risk_manager: 'Risk-Manager-Dashboard'
             auditor: 'Auditor-Dashboard'
             board: 'Board-Dashboard'
+            dpo: 'DSB-Dashboard'
 
         desc:
             home: 'Übersicht und Schnellzugriff'
@@ -180,6 +181,7 @@ nav:
             risk_manager_dashboard: 'Top-Risiken, Treatments, Akzeptanzen, KRI-Trends'
             auditor_dashboard: 'Findings, Nachweise, Audit-Plan, Stichprobenverfolgung'
             board_dashboard: 'Strategische Risiken, ROI, Compliance-Status für Geschäftsführung'
+            dpo_dashboard: 'Datenpannen (Art. 33), DSFA-Status (Art. 35), Verfahrensverzeichnis'
             compliance_frameworks: 'Multi-Framework-Management'
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_hub: 'Zentraler Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'

@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dashboards' %}
+
+{% block title %}{{ 'dpo.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_status_pill.html.twig' as pill %}
+
+{% block body %}
+<main class="fa-aurora-surface role-dashboard dpo-dashboard">
+    {{ _fa_page_header.render({
+        badge:    { icon: 'shield-lock', label: 'dpo.badge'|trans },
+        title:    'dpo.title'|trans,
+        subtitle: 'dpo.subtitle'|trans,
+        actions: [
+            { label: 'action.standard_dashboard'|trans, variant: 'ghost',   icon: 'house',        href: path('app_dashboard') },
+            { label: 'dpo.action.vvt_export'|trans,    variant: 'ghost',   icon: 'file-earmark-arrow-down', href: path('app_vvt_export_xlsx') },
+            { label: 'dpo.action.dpia_list'|trans,     variant: 'primary', icon: 'clipboard2-check', href: path('app_dpia_index') }
+        ]
+    }) }}
+
+    {# Top-line KPIs #}
+    <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
+        {{ _fa_feature_card.render({
+            icon:    'exclamation-triangle-fill',
+            label:   'dpo.kpi.open_breaches'|trans,
+            value:   dashboard.open_breaches_count,
+            variant: dashboard.open_breaches_count > 0 ? 'danger' : 'success',
+            href:    path('app_data_breach_index')
+        }) }}
+        {{ _fa_feature_card.render({
+            icon:    'clock-fill',
+            label:   'dpo.kpi.ticking_72h'|trans,
+            value:   dashboard.ticking_72h_count,
+            variant: dashboard.ticking_72h_count > 0 ? 'danger' : 'success',
+            href:    path('app_data_breach_index')
+        }) }}
+        {{ _fa_feature_card.render({
+            icon:    'file-earmark-text',
+            label:   'dpo.kpi.dpias_in_progress'|trans,
+            value:   dashboard.dpias_in_progress_count,
+            variant: dashboard.dpias_in_progress_count > 0 ? 'warning' : 'success',
+            href:    path('app_dpia_index')
+        }) }}
+        {{ _fa_feature_card.render({
+            icon:    'exclamation-circle',
+            label:   'dpo.kpi.activities_needing_dpia'|trans,
+            value:   dashboard.activities_needing_dpia|length,
+            variant: dashboard.activities_needing_dpia|length > 0 ? 'warning' : 'success',
+            href:    path('app_processing_activity_index')
+        }) }}
+        {{ _fa_feature_card.render({
+            icon:    'arrow-repeat',
+            label:   'dpo.kpi.activities_due_review'|trans,
+            value:   dashboard.activities_due_review|length,
+            variant: dashboard.activities_due_review|length > 0 ? 'warning' : 'success',
+            href:    path('app_processing_activity_index')
+        }) }}
+        {{ _fa_feature_card.render({
+            icon:    'globe',
+            label:   'dpo.kpi.third_country_transfers'|trans,
+            value:   dashboard.third_country_transfers|length,
+            variant: dashboard.third_country_transfers|length > 0 ? 'info' : 'success',
+            href:    path('app_processing_activity_index')
+        }) }}
+    </div>
+
+    {# Open Data Breaches #}
+    <section class="fa-section mb-4" id="open-breaches">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'dpo.section.open_breaches'|trans }}</h2>
+        </div>
+        <div class="fa-section__body">
+            {% if dashboard.open_breaches|length > 0 %}
+                <div class="list-group">
+                    {% for breach in dashboard.open_breaches %}
+                        <a href="{{ path('app_data_breach_show', {id: breach.id}) }}"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ breach.title|default('Breach #' ~ breach.id) }}</strong>
+                                <small class="d-block text-muted">
+                                    {{ breach.detectedAt|date('d.m.Y H:i') }}
+                                </small>
+                            </div>
+                            {{ pill.render(breach.status|default('open'), breach.severity|default('medium') == 'high' ? 'danger' : 'warning', {size: 'sm'}) }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ _fa_empty_state.render({
+                    mood: 'happy',
+                    title: 'dpo.empty.no_breaches_title'|trans,
+                    text:  'dpo.empty.no_breaches_text'|trans
+                }) }}
+            {% endif %}
+        </div>
+    </section>
+
+    {# DPIAs in Progress #}
+    <section class="fa-section mb-4" id="dpias">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'dpo.section.dpias_in_progress'|trans }}</h2>
+        </div>
+        <div class="fa-section__body">
+            {% if dashboard.dpias_in_progress|length > 0 %}
+                <div class="list-group">
+                    {% for dpia in dashboard.dpias_in_progress %}
+                        <a href="{{ path('app_dpia_show', {id: dpia.id}) }}"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ dpia.title|default('DPIA #' ~ dpia.id) }}</strong>
+                                <small class="d-block text-muted">{{ dpia.status|default('draft') }}</small>
+                            </div>
+                            {{ pill.render(dpia.riskLevel|default('medium'), dpia.riskLevel|default('medium') == 'high' ? 'danger' : 'warning', {size: 'sm'}) }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ _fa_empty_state.render({
+                    mood: 'idle',
+                    title: 'dpo.empty.no_dpias_title'|trans,
+                    text:  'dpo.empty.no_dpias_text'|trans
+                }) }}
+            {% endif %}
+        </div>
+    </section>
+
+    {# Processing Activities Needing DPIA #}
+    {% if dashboard.activities_needing_dpia|length > 0 %}
+    <section class="fa-section mb-4" id="activities-needing-dpia">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'dpo.section.activities_needing_dpia'|trans }}</h2>
+        </div>
+        <div class="fa-section__body">
+            <ol class="list-group list-group-numbered">
+                {% for activity in dashboard.activities_needing_dpia %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">{{ activity.name|default('Activity #' ~ activity.id) }}</div>
+                            <small class="text-muted">{{ 'dpo.activity.no_dpia_hint'|trans }}</small>
+                        </div>
+                        <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                           href="{{ path('app_dpia_new') }}">
+                            <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                            {{ 'dpo.action.create_dpia'|trans }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </section>
+    {% endif %}
+
+    {# Quick Actions #}
+    <section class="fa-section mb-4" id="quick-actions">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'dpo.section.quick_actions'|trans }}</h2>
+        </div>
+        <div class="fa-section__body">
+            <div class="d-flex flex-wrap gap-2">
+                <a class="fa-cyber-btn fa-cyber-btn--primary" href="{{ path('app_dpia_new') }}">
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    {{ 'dpo.quick.new_dpia'|trans }}
+                </a>
+                <a class="fa-cyber-btn fa-cyber-btn--ghost" href="{{ path('app_data_breach_new') }}">
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                    {{ 'dpo.quick.report_breach'|trans }}
+                </a>
+                <a class="fa-cyber-btn fa-cyber-btn--ghost" href="{{ path('app_processing_activity_new') }}">
+                    <i class="bi bi-file-earmark-plus" aria-hidden="true"></i>
+                    {{ 'dpo.quick.new_activity'|trans }}
+                </a>
+                <a class="fa-cyber-btn fa-cyber-btn--ghost" href="{{ path('app_vvt_export_xlsx') }}" data-turbo="false">
+                    <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i>
+                    {{ 'dpo.quick.vvt_export'|trans }}
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

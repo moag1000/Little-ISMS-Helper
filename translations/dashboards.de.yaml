@@ -264,3 +264,37 @@ board:
         metric: 'Metrik'
         change: 'Änderung'
         target: 'Ziel'
+
+# DPO (Datenschutzbeauftragter) Dashboard — Art. 39 DSGVO
+dpo:
+    badge: 'Datenschutz'
+    title: 'DSB-Dashboard'
+    subtitle: 'Operative DSGVO-Übersicht: Datenpannen, DSFA und Verzeichnis'
+    action:
+        vvt_export: 'VVT exportieren'
+        dpia_list: 'DSFA-Liste'
+        create_dpia: 'DSFA anlegen'
+    kpi:
+        open_breaches: 'Offene Datenpannen'
+        ticking_72h: '72h-Frist läuft'
+        dpias_in_progress: 'DSFAs in Bearbeitung'
+        activities_needing_dpia: 'Verfahren ohne DSFA'
+        activities_due_review: 'Verfahren zur Überprüfung'
+        third_country_transfers: 'Drittlandsübermittlungen'
+    section:
+        open_breaches: 'Offene Datenpannen (Art. 33 DSGVO)'
+        dpias_in_progress: 'Datenschutz-Folgenabschätzungen in Bearbeitung (Art. 35 DSGVO)'
+        activities_needing_dpia: 'Verarbeitungsverfahren ohne DSFA'
+        quick_actions: 'Schnellzugriff'
+    empty:
+        no_breaches_title: 'Keine offenen Datenpannen'
+        no_breaches_text: 'Aktuell sind keine offenen Datenpannen zu bearbeiten.'
+        no_dpias_title: 'Keine DSFAs in Bearbeitung'
+        no_dpias_text: 'Alle Datenschutz-Folgenabschätzungen sind abgeschlossen oder noch nicht gestartet.'
+    activity:
+        no_dpia_hint: 'Verfahren mit erhöhtem Risiko — DSFA erforderlich (Art. 35 DSGVO)'
+    quick:
+        new_dpia: 'Neue DSFA'
+        report_breach: 'Datenpanne melden'
+        new_activity: 'Verfahren anlegen'
+        vvt_export: 'VVT exportieren (XLSX)'
