@@ -90,6 +90,7 @@ admin:
         monitoring: 'Überwachung & Logs'
         navigation: Navigation
         data_management: Daten-Verwaltung
+        integration_operations: 'Integration & Betrieb'
         licensing: Lizenzierung
         platform:
             users_access: 'Platform · Benutzer & Zugriff'
@@ -1100,3 +1101,162 @@ industry_preset:
             priority: 'Priorität'
             activate: 'Aktivieren'
             optional: 'optional'
+
+# ── Notification Preferences ─────────────────────────────────────────────────
+notification_preferences:
+    title: 'Benachrichtigungseinstellungen'
+    subtitle: 'Mandantenweite Benachrichtigungsstandards und Zustellungseinstellungen konfigurieren.'
+    saved: 'Benachrichtigungseinstellungen erfolgreich gespeichert.'
+    csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
+    help_text: 'Diese Einstellungen legen fest, wie und wann Benachrichtigungen an Benutzer in diesem Mandanten zugestellt werden. Einzelne Benutzer können ihre eigenen Präferenzen in ihrem Profil anpassen.'
+    digest_enabled:
+        label: 'Benachrichtigungs-Digest aktivieren'
+        help: 'Mehrere Benachrichtigungen zu periodischen Zusammenfassungen bündeln, statt jede einzeln zu senden.'
+    digest_frequency:
+        label: 'Digest-Häufigkeit'
+        instant: 'Sofort (unmittelbar senden)'
+        hourly: 'Stündlicher Digest'
+        daily: 'Täglicher Digest'
+    webhook_timeout:
+        label: 'Webhook-Timeout (Sekunden)'
+        help: 'Maximale Wartezeit auf eine Webhook-Antwort, bevor die Zustellung als fehlgeschlagen gilt (1-120 Sekunden).'
+    email_from_name:
+        label: 'E-Mail-Absendername'
+        placeholder: 'z. B. ISMS-Team'
+        help: 'Der Anzeigename im "Von"-Feld ausgehender Benachrichtigungs-E-Mails. Leer lassen, um den Systemstandard zu verwenden.'
+
+# ── API Rate Limits ───────────────────────────────────────────────────────────
+api_rate_limits:
+    title: 'API-Ratenbegrenzung'
+    subtitle: 'Maximale API-Anfragen pro Minute für diesen Mandanten steuern.'
+    saved: 'API-Ratenbegrenzung erfolgreich gespeichert.'
+    csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
+    help_text: 'Ratenbegrenzungen schützen die Plattform vor Missbrauch und sichern faire Ressourcenteilung. 0 = unbegrenzt (in der Produktion nicht empfohlen).'
+    rate_limit_per_minute:
+        label: 'Anfragen pro Minute'
+        help: '0 = unbegrenzt. 600 = 10 Anfragen/Sekunde. Standard für fairen Mehrmandantenbetrieb.'
+    burst_limit:
+        label: 'Burst-Limit'
+        help: 'Erlaubt diese Anzahl Anfragen unmittelbar, bevor die Drosselung einsetzt. Nützlich für Clients, die beim Start Anfragen bündeln.'
+    exclude_routes_regex:
+        label: 'Routen ausschließen (Regex)'
+        help: 'Regulärer Ausdruck für Routen-Pfade, die von der Ratenbegrenzung ausgenommen sind (z. B. Health-Check, Metriken). Leer lassen, um Limits global anzuwenden.'
+
+# ── Backup Settings ───────────────────────────────────────────────────────────
+backups:
+    title: 'Backup-Einstellungen'
+    subtitle: 'Automatisierten Backup-Zeitplan und Datenhaltungsdauer konfigurieren.'
+    saved: 'Backup-Einstellungen erfolgreich gespeichert.'
+    csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
+    help_text: 'Diese Einstellungen steuern, wie lange Backup-Dateien aufbewahrt werden und ob automatisierte Backups nach einem Zeitplan laufen. Die Jetzt-Ausführen-Funktion und der Messenger-Dispatch kommen in Welle 2.'
+    settings_title: 'Backup-Konfiguration'
+    wave2_note:
+        title: 'Welle-2-Hinweis'
+        body: 'Der Jetzt-sichern-Button und die automatisierte Messenger-basierte Ausführung werden in Welle 2 verfügbar. Diese Einstellungen werden gespeichert und beim Aktivieren des Schedulers übernommen.'
+    retention_days:
+        label: 'Aufbewahrungszeitraum (Tage)'
+        help: 'Backup-Dateien, die älter als diese Anzahl Tage sind, werden automatisch entfernt. Minimum 1, Maximum 10 Jahre (3650 Tage).'
+    schedule:
+        label: 'Backup-Zeitplan'
+        off: 'Deaktiviert (nur manuell)'
+        daily: 'Täglich'
+        weekly: 'Wöchentlich'
+        help: 'Sobald der Messenger-Scheduler aktiv ist (Welle 2), werden Backups nach diesem Zeitplan ausgeführt.'
+    storage_path:
+        label: 'Speicherpfad (nur lesbar)'
+        help: 'Wird über die Umgebungsvariable BACKUP_STORAGE_PATH konfiguriert. Wenden Sie sich an Ihren Systemadministrator, um diesen Wert zu ändern.'
+
+# ── Fiscal Year ───────────────────────────────────────────────────────────────
+fiscal_year:
+    title: 'Geschäftsjahrs-Konfiguration'
+    subtitle: 'Startmonat des Geschäftsjahres und Berichts-Rhythmus für diesen Mandanten festlegen.'
+    saved: 'Geschäftsjahrs-Konfiguration erfolgreich gespeichert.'
+    csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
+    help_text: 'Der Startmonat des Geschäftsjahres steuert, wie KPI-Dashboards, Management-Berichte und Compliance-Reviews gruppiert werden. Änderungen wirken sich bei der nächsten Berichtsgenerierung aus.'
+    start_month:
+        label: 'Startmonat des Geschäftsjahres'
+        help: 'Den ersten Monat Ihres Geschäfts-/Haushaltsjahres auswählen. Januar (1) ist der Kalenderstandard.'
+    quarterly_grouping:
+        label: 'Quartalsgruppierung aktivieren'
+        help: 'Wenn aktiviert, gruppieren Dashboards und Berichte Daten in Fiskalquartale, die am Startmonat ausgerichtet sind.'
+    reporting_cadence:
+        label: 'Standard-Berichtsrhythmus'
+        help: 'Legt fest, wie häufig Management-Berichte standardmäßig erstellt werden.'
+        monthly: 'Monatlich'
+        quarterly: 'Quartalsweise'
+        yearly: 'Jährlich'
+    month:
+        january: 'Januar'
+        february: 'Februar'
+        march: 'März'
+        april: 'April'
+        may: 'Mai'
+        june: 'Juni'
+        july: 'Juli'
+        august: 'August'
+        september: 'September'
+        october: 'Oktober'
+        november: 'November'
+        december: 'Dezember'
+
+# ── Data Retention ────────────────────────────────────────────────────────────
+data_retention:
+    title: 'Datenhaltungsrichtlinien'
+    subtitle: 'Aufbewahrungsfristen und automatische Löschregeln je Entitätstyp konfigurieren.'
+    saved: 'Datenhaltungsrichtlinien erfolgreich gespeichert.'
+    csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
+    gdpr_cap_applied: 'Einer oder mehrere Aufbewahrungswerte überschritten das DSGVO-Maximum und wurden automatisch begrenzt.'
+    warning:
+        title: 'Änderungen betreffen tatsächliche Datenlöschung'
+        body: 'Das Aktivieren der automatischen Löschung führt dazu, dass Datensätze, die älter als der angegebene Zeitraum sind, durch den täglichen Cron-Job (Welle 2) dauerhaft entfernt werden. Prüfen Sie jede Einstellung sorgfältig vor dem Speichern. DSGVO-relevante Datenkategorien sind auf ihr gesetzliches Maximum begrenzt.'
+    policies_title: 'Aufbewahrungsrichtlinien nach Entitätstyp'
+    col:
+        entity_type: 'Entitätstyp'
+        retention_days: 'Aufbewahrung (Tage)'
+        auto_delete: 'Automatisch löschen'
+        gdpr_cap: 'DSGVO-Max.'
+    entity:
+        asset: 'Assets'
+        risk: 'Risiken'
+        incident: 'Vorfälle'
+        document: 'Dokumente'
+        processing_activity: 'Verarbeitungstätigkeiten'
+        audit_finding: 'Audit-Feststellungen'
+        workflow_instance: 'Workflow-Instanzen'
+    gdpr_cap: 'Max. %days% Tage'
+
+# ── Workflow SLA Defaults ─────────────────────────────────────────────────────
+workflow_slas:
+    title: 'Workflow-SLA-Standards'
+    subtitle: 'Standard-SLA-Dauern (Stunden) für jeden Workflow-Ereignistyp festlegen.'
+    saved: 'Workflow-SLA-Standards erfolgreich gespeichert.'
+    csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
+    regulatory_minimum_enforced: 'Einer oder mehrere SLA-Werte lagen unter dem regulatorischen Minimum und wurden automatisch angepasst.'
+    help_text: 'Diese SLA-Standards werden vom Sprint-6b SlaDeadlineMonitor (Welle 2) genutzt, um Fristenwarnungen und Eskalationen zu erzeugen. Regulatorische Minima (DSGVO Art. 33, ISO 27035) können nicht unterschritten werden.'
+    defaults_title: 'SLA-Standards nach Ereignistyp'
+    regulatory_badge: 'Regulatorisch'
+    wave2_note:
+        title: 'Welle-2-Hinweis'
+        body: 'Der SlaDeadlineMonitor, der diese Werte auswertet, ist für Welle 2 geplant. Speichern Sie jetzt Ihre Einstellungen — sie werden automatisch aktiviert, sobald der Monitor verfügbar ist.'
+    col:
+        event_type: 'Workflow-Ereignis'
+        sla_hours: 'SLA (Stunden)'
+        regulatory_basis: 'Regulatorische Grundlage'
+    event:
+        data_breach: 'Datenpanne-Meldung'
+        incident_high: 'Vorfall (Hoch/Kritisch)'
+        incident_medium: 'Vorfall (Mittel)'
+        incident_low: 'Vorfall (Niedrig)'
+        risk_approval: 'Risikobehandlungs-Freigabe'
+        policy_approval: 'Richtlinien-Freigabe'
+        dpia_review: 'DSFA-Prüfung'
+        audit_finding: 'Audit-Feststellung abschliessen'
+    basis:
+        data_breach: 'DSGVO Art. 33 — 72-h-Meldung an Aufsichtsbehörde'
+        incident_high: 'ISO 27035 — CISO-Reaktion innerhalb von 4 h'
+        incident_medium: 'ISO 27035 — CISO-Reaktion innerhalb von 72 h'
+        incident_low: 'ISO 27035 — Standardbearbeitung'
+        risk_approval: 'ISO 27001 Abschnitt 6.1.3 — Freigabe Behandlungsplan'
+        policy_approval: 'ISO 27001 Abschnitt 5.2 — Management-Review'
+        dpia_review: 'DSGVO Art. 35/36 — Konsultation Aufsichtsbehörde'
+        audit_finding: 'ISO 27001 Abschnitt 10.1 — Abschluss Nichtkonformität'
