@@ -7,7 +7,7 @@
 <div class="container-fluid">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'admin.title'|trans({}, 'admin'), url: path('admin_dashboard') },
+            { label: 'admin.hub.title'|trans({}, 'admin'), url: path('admin_hub_index') },
             { label: 'admin.nav.loader_fixer'|trans({}, 'admin') }
         ]
     } %}

@@ -5,6 +5,12 @@
 
 {% block body %}
 <div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'admin.hub.title'|trans({}, 'admin'), url: path('admin_hub_index') },
+            { label: 'admin.nav.import'|trans({}, 'admin') }
+        ]
+    } %}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="fa-icon fa-icon--import" aria-hidden="true"></i> Data Import</h1>
     </div>
