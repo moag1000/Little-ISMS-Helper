@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\Notification\NotificationTemplate;
 use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -250,5 +251,82 @@ class QuickFixControllerTest extends WebTestCase
 
         $statusCode = $this->client->getResponse()->getStatusCode();
         $this->assertContains($statusCode, [Response::HTTP_FOUND, 419]);
+    }
+
+    // =========================================================================
+    // Regression: global-catalogue NotificationTemplate exemption
+    // Verifies that repair-all does NOT assign a tenant_id to seeded global
+    // NotificationTemplate rows (tenant_id=NULL by design). Before the fix,
+    // this triggered UniqueConstraintViolationException on the second row
+    // because (template_key + NULL) and (template_key + 1) share the same
+    // unique key uniq_template_key_tenant.
+    // =========================================================================
+
+    #[Test]
+    public function testRepairAllDoesNotMutateGlobalNotificationTemplates(): void
+    {
+        $this->client->loginUser($this->testUser);
+
+        // Seed two global NotificationTemplates (tenant_id=NULL) with different keys.
+        // Before the fix, repair-all would assign tenant_id=<first-tenant> to both,
+        // causing a UniqueConstraintViolationException on the second flush.
+        $templateA = new NotificationTemplate();
+        $templateA->setTemplateKey('test.global.template.a');
+        $templateA->setName('Global Template A');
+        $templateA->setDefaultEventType('test.event');
+        $templateA->setCategory(NotificationTemplate::CATEGORY_INCIDENT);
+        // tenant intentionally null (global)
+
+        $templateB = new NotificationTemplate();
+        $templateB->setTemplateKey('test.global.template.b');
+        $templateB->setName('Global Template B');
+        $templateB->setDefaultEventType('test.event');
+        $templateB->setCategory(NotificationTemplate::CATEGORY_INCIDENT);
+        // tenant intentionally null (global)
+
+        $this->entityManager->persist($templateA);
+        $this->entityManager->persist($templateB);
+        $this->entityManager->flush();
+
+        $templateAId = $templateA->getId();
+        $templateBId = $templateB->getId();
+
+        try {
+            $token = $this->generateCsrfToken('quick_fix_repair_all');
+
+            // This must NOT throw a UniqueConstraintViolationException.
+            $this->client->request('POST', '/quick-fix/repair/all', [
+                '_token' => $token,
+            ]);
+
+            $this->assertResponseRedirects('/quick-fix?fixed=1');
+
+            // Reload and verify tenant_id is still NULL on both templates.
+            $this->entityManager->clear();
+
+            $reloadedA = $this->entityManager->find(NotificationTemplate::class, $templateAId);
+            $reloadedB = $this->entityManager->find(NotificationTemplate::class, $templateBId);
+
+            $this->assertNotNull($reloadedA, 'Template A must still exist after repair-all.');
+            $this->assertNotNull($reloadedB, 'Template B must still exist after repair-all.');
+
+            $this->assertNull(
+                $reloadedA->getTenant(),
+                'repair-all must not assign a tenant_id to global NotificationTemplate A.',
+            );
+            $this->assertNull(
+                $reloadedB->getTenant(),
+                'repair-all must not assign a tenant_id to global NotificationTemplate B.',
+            );
+        } finally {
+            // Clean up seeded templates regardless of test outcome.
+            foreach ([$templateAId, $templateBId] as $id) {
+                $tpl = $this->entityManager->find(NotificationTemplate::class, $id);
+                if ($tpl !== null) {
+                    $this->entityManager->remove($tpl);
+                }
+            }
+            $this->entityManager->flush();
+        }
     }
 }

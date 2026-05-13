@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Notification\NotificationTemplate;
 use App\Entity\Tenant;
 use App\Enum\IncidentStatus;
 use App\Enum\TreatmentStrategy;
@@ -44,6 +45,20 @@ use App\Repository\RiskTreatmentPlanRepository;
  */
 class DataIntegrityService
 {
+    /**
+     * Entity classes that are INTENTIONALLY globally scoped (tenant_id = NULL by design).
+     *
+     * These entities are shared across all tenants as catalogue data. The orphan-repair
+     * logic MUST NOT reassign a tenant_id to them — doing so triggers a
+     * UniqueConstraintViolationException when multiple seeded rows share the same
+     * unique key (e.g. NotificationTemplate.uniq_template_key_tenant).
+     *
+     * Add to this list when a new globally-scoped entity type is introduced.
+     * Each entry must be an FQCN of a Doctrine-mapped entity class.
+     */
+    private const GLOBAL_CATALOGUE_ENTITIES = [
+        NotificationTemplate::class, // Sprint-6a: global notification templates, tenant_id=NULL by design
+    ];
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AssetRepository $assetRepository,
@@ -70,6 +85,17 @@ class DataIntegrityService
         private readonly ?WorkflowInstanceRepository $workflowInstanceRepository = null,
         private readonly ?RiskTreatmentPlanRepository $riskTreatmentPlanRepository = null
     ) {
+    }
+
+    /**
+     * Returns the list of entity FQCN that are globally scoped (tenant_id=NULL by design).
+     * The repair-orphan logic skips these to prevent UniqueConstraintViolationException.
+     *
+     * @return list<class-string>
+     */
+    public function getGlobalCatalogueEntityClasses(): array
+    {
+        return self::GLOBAL_CATALOGUE_ENTITIES;
     }
 
     /**
@@ -123,7 +149,11 @@ class DataIntegrityService
         $metadataFactory = $this->entityManager->getMetadataFactory();
 
         // User wird ausgeschlossen — Super-Admins dürfen legitim tenant-los sein.
-        $excludedClasses = [Tenant::class, \App\Entity\User::class];
+        // GLOBAL_CATALOGUE_ENTITIES are excluded: their tenant_id=NULL is intentional.
+        $excludedClasses = array_merge(
+            [Tenant::class, \App\Entity\User::class],
+            self::GLOBAL_CATALOGUE_ENTITIES,
+        );
 
         foreach ($metadataFactory->getAllMetadata() as $metadata) {
             $className = $metadata->getName();
