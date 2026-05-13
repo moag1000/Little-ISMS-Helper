@@ -71,12 +71,12 @@
                     <div class="col-md-8">
                         <label for="{{ form.policyDocWatermarkOpacity.vars.id }}" class="form-label">
                             {{ 'admin.policy_style.field.watermark_opacity'|trans }}
-                            (<span data-policy-style-preview-target="opacityLabel">{{ (form.policyDocWatermarkOpacity.vars.value * 100)|round }}%</span>)
+                            (<span data-policy-style-preview-target="opacityLabel">{{ ((form.policyDocWatermarkOpacity.vars.value ?? 0.0)|number_format(2, '.', '') * 100)|round }}%</span>)
                         </label>
                         <input type="range"
                                class="form-range"
                                min="0" max="100" step="1"
-                               value="{{ (form.policyDocWatermarkOpacity.vars.value * 100)|round }}"
+                               value="{{ ((form.policyDocWatermarkOpacity.vars.value ?? 0.0)|number_format(2, '.', '') * 100)|round }}"
                                data-policy-style-preview-target="opacitySlider"
                                data-action="input->policy-style-preview#syncOpacity"
                                aria-label="{{ 'admin.policy_style.field.watermark_opacity'|trans }}">
