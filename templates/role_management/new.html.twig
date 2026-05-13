@@ -39,14 +39,21 @@
                         'basic_info': {
                             'label': 'role_management.section.basic_info'|trans({}, 'role_management'),
                             'fields': ['name', 'description', 'isSystemRole']
-                        },
-                        'permissions': {
-                            'label': 'role_management.section.permissions'|trans({}, 'role_management'),
-                            'fields': ['permissions']
                         }
                     },
+                    'exclude': ['permissions'],
                     'translation_domain': 'role_management'
                 } %}
+
+                {# Rich permissions table — replaces flat checkbox list #}
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'role_management.section.permissions'|trans({}, 'role_management') }}</legend>
+                    <p class="text-muted small mb-3">{{ 'role_management.help.permissions'|trans({}, 'role_management') }}</p>
+                    {% include 'role_management/_permissions_rich_table.html.twig' with {
+                        form_field: form.permissions
+                    } %}
+                    {{ form_errors(form.permissions) }}
+                </fieldset>
 
                 <div class="d-flex gap-2 mt-4">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">

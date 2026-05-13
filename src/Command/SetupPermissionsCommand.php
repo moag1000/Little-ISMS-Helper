@@ -106,120 +106,122 @@ class SetupPermissionsCommand
 
     private function createPermissions(SymfonyStyle $symfonyStyle): void
     {
+        // Each entry: [name, description, category, action, module, frameworkReference]
+        // module must match a key from config/modules.yaml; frameworkReference is free-form.
         $permissions = [
             // User permissions
-            ['user.view', 'View users', 'user', 'view'],
-            ['user.view_all', 'View all users', 'user', 'view'],
-            ['user.create', 'Create users', 'user', 'create'],
-            ['user.edit', 'Edit users', 'user', 'edit'],
-            ['user.delete', 'Delete users', 'user', 'delete'],
-            ['user.manage_roles', 'Manage user roles', 'user', 'edit'],
-            ['user.manage_permissions', 'Manage user permissions', 'user', 'edit'],
+            ['user.view', 'View users', 'user', 'view', 'authentication', 'ISO 27001 A.5.18'],
+            ['user.view_all', 'View all users', 'user', 'view', 'authentication', 'ISO 27001 A.5.18'],
+            ['user.create', 'Create users', 'user', 'create', 'authentication', 'ISO 27001 A.5.18'],
+            ['user.edit', 'Edit users', 'user', 'edit', 'authentication', 'ISO 27001 A.5.18'],
+            ['user.delete', 'Delete users', 'user', 'delete', 'authentication', 'ISO 27001 A.5.18'],
+            ['user.manage_roles', 'Manage user roles', 'user', 'edit', 'authentication', 'ISO 27001 A.5.15; A.5.18'],
+            ['user.manage_permissions', 'Manage user permissions', 'user', 'edit', 'authentication', 'ISO 27001 A.5.15; A.5.18'],
 
             // Role permissions
-            ['role.view', 'View roles', 'role', 'view'],
-            ['role.create', 'Create roles', 'role', 'create'],
-            ['role.edit', 'Edit roles', 'role', 'edit'],
-            ['role.delete', 'Delete roles', 'role', 'delete'],
+            ['role.view', 'View roles', 'role', 'view', 'authentication', 'ISO 27001 A.5.15'],
+            ['role.create', 'Create roles', 'role', 'create', 'authentication', 'ISO 27001 A.5.15'],
+            ['role.edit', 'Edit roles', 'role', 'edit', 'authentication', 'ISO 27001 A.5.15'],
+            ['role.delete', 'Delete roles', 'role', 'delete', 'authentication', 'ISO 27001 A.5.15'],
 
             // Risk permissions
-            ['risk.view', 'View risks', 'risk', 'view'],
-            ['risk.create', 'Create risks', 'risk', 'create'],
-            ['risk.edit', 'Edit risks', 'risk', 'edit'],
-            ['risk.delete', 'Delete risks', 'risk', 'delete'],
-            ['risk.approve', 'Approve risk assessments', 'risk', 'approve'],
-            ['risk.export', 'Export risk data', 'risk', 'export'],
+            ['risk.view', 'View risks', 'risk', 'view', 'risks', 'ISO 27001 Cl. 6.1.2'],
+            ['risk.create', 'Create risks', 'risk', 'create', 'risks', 'ISO 27001 Cl. 6.1.2'],
+            ['risk.edit', 'Edit risks', 'risk', 'edit', 'risks', 'ISO 27001 Cl. 6.1.2'],
+            ['risk.delete', 'Delete risks', 'risk', 'delete', 'risks', 'ISO 27001 Cl. 6.1.2'],
+            ['risk.approve', 'Approve risk assessments', 'risk', 'approve', 'risks', 'ISO 27001 Cl. 6.1.3'],
+            ['risk.export', 'Export risk data', 'risk', 'export', 'risks', 'ISO 27001 Cl. 6.1.2'],
 
             // Asset permissions
-            ['asset.view', 'View assets', 'asset', 'view'],
-            ['asset.create', 'Create assets', 'asset', 'create'],
-            ['asset.edit', 'Edit assets', 'asset', 'edit'],
-            ['asset.delete', 'Delete assets', 'asset', 'delete'],
-            ['asset.export', 'Export asset data', 'asset', 'export'],
+            ['asset.view', 'View assets', 'asset', 'view', 'assets', 'ISO 27001 A.5.9; A.8.1'],
+            ['asset.create', 'Create assets', 'asset', 'create', 'assets', 'ISO 27001 A.5.9; A.8.1'],
+            ['asset.edit', 'Edit assets', 'asset', 'edit', 'assets', 'ISO 27001 A.5.9; A.8.1'],
+            ['asset.delete', 'Delete assets', 'asset', 'delete', 'assets', 'ISO 27001 A.5.9; A.8.1'],
+            ['asset.export', 'Export asset data', 'asset', 'export', 'assets', 'ISO 27001 A.5.9; A.8.1'],
 
             // Incident permissions
-            ['incident.view', 'View incidents', 'incident', 'view'],
-            ['incident.create', 'Create incidents', 'incident', 'create'],
-            ['incident.edit', 'Edit incidents', 'incident', 'edit'],
-            ['incident.delete', 'Delete incidents', 'incident', 'delete'],
-            ['incident.approve', 'Approve incident resolutions', 'incident', 'approve'],
+            ['incident.view', 'View incidents', 'incident', 'view', 'incidents', 'ISO 27001 A.5.24; A.5.25'],
+            ['incident.create', 'Create incidents', 'incident', 'create', 'incidents', 'ISO 27001 A.5.24; A.5.25'],
+            ['incident.edit', 'Edit incidents', 'incident', 'edit', 'incidents', 'ISO 27001 A.5.26; A.5.27'],
+            ['incident.delete', 'Delete incidents', 'incident', 'delete', 'incidents', 'ISO 27001 A.5.24'],
+            ['incident.approve', 'Approve incident resolutions', 'incident', 'approve', 'incidents', 'ISO 27001 A.5.26; A.5.27'],
 
             // Control permissions
-            ['control.view', 'View controls', 'control', 'view'],
-            ['control.create', 'Create controls', 'control', 'create'],
-            ['control.edit', 'Edit controls', 'control', 'edit'],
-            ['control.delete', 'Delete controls', 'control', 'delete'],
+            ['control.view', 'View controls', 'control', 'view', 'controls', 'ISO 27001 Annex A'],
+            ['control.create', 'Create controls', 'control', 'create', 'controls', 'ISO 27001 Annex A'],
+            ['control.edit', 'Edit controls', 'control', 'edit', 'controls', 'ISO 27001 Annex A'],
+            ['control.delete', 'Delete controls', 'control', 'delete', 'controls', 'ISO 27001 Annex A'],
 
             // Audit permissions
-            ['audit.view', 'View audits', 'audit', 'view'],
-            ['audit.create', 'Create audits', 'audit', 'create'],
-            ['audit.edit', 'Edit audits', 'audit', 'edit'],
-            ['audit.delete', 'Delete audits', 'audit', 'delete'],
-            ['audit.approve', 'Approve audit findings', 'audit', 'approve'],
+            ['audit.view', 'View audits', 'audit', 'view', 'audits', 'ISO 27001 Cl. 9.2'],
+            ['audit.create', 'Create audits', 'audit', 'create', 'audits', 'ISO 27001 Cl. 9.2'],
+            ['audit.edit', 'Edit audits', 'audit', 'edit', 'audits', 'ISO 27001 Cl. 9.2'],
+            ['audit.delete', 'Delete audits', 'audit', 'delete', 'audits', 'ISO 27001 Cl. 9.2'],
+            ['audit.approve', 'Approve audit findings', 'audit', 'approve', 'audits', 'ISO 27001 Cl. 9.2'],
 
             // Compliance permissions
-            ['compliance.view', 'View compliance data', 'compliance', 'view'],
-            ['compliance.edit', 'Edit compliance data', 'compliance', 'edit'],
-            ['compliance.export', 'Export compliance reports', 'compliance', 'export'],
+            ['compliance.view', 'View compliance data', 'compliance', 'view', 'compliance', 'ISO 27001 Cl. 9.1.2'],
+            ['compliance.edit', 'Edit compliance data', 'compliance', 'edit', 'compliance', 'ISO 27001 Cl. 9.1.2'],
+            ['compliance.export', 'Export compliance reports', 'compliance', 'export', 'compliance', 'ISO 27001 Cl. 9.1.2'],
 
             // Report permissions
-            ['report.view', 'View reports', 'report', 'view'],
-            ['report.create', 'Create reports', 'report', 'create'],
-            ['report.export', 'Export reports', 'report', 'export'],
+            ['report.view', 'View reports', 'report', 'view', 'report_builder', 'ISO 27001 Cl. 9.3'],
+            ['report.create', 'Create reports', 'report', 'create', 'report_builder', 'ISO 27001 Cl. 9.3'],
+            ['report.export', 'Export reports', 'report', 'export', 'report_builder', 'ISO 27001 Cl. 9.3'],
 
             // Processing Activity permissions (GDPR Art. 30 — Record of Processing Activities)
-            ['processing_activity.view', 'View processing activities', 'privacy', 'view'],
-            ['processing_activity.create', 'Create processing activities', 'privacy', 'create'],
-            ['processing_activity.edit', 'Edit processing activities', 'privacy', 'edit'],
-            ['processing_activity.delete', 'Delete processing activities', 'privacy', 'delete'],
+            ['processing_activity.view', 'View processing activities', 'privacy', 'view', 'privacy', 'GDPR Art. 30'],
+            ['processing_activity.create', 'Create processing activities', 'privacy', 'create', 'privacy', 'GDPR Art. 30'],
+            ['processing_activity.edit', 'Edit processing activities', 'privacy', 'edit', 'privacy', 'GDPR Art. 30'],
+            ['processing_activity.delete', 'Delete processing activities', 'privacy', 'delete', 'privacy', 'GDPR Art. 30'],
 
             // DPIA permissions (GDPR Art. 35 — Data Protection Impact Assessment)
-            ['dpia.view', 'View DPIAs', 'privacy', 'view'],
-            ['dpia.create', 'Create DPIAs', 'privacy', 'create'],
-            ['dpia.edit', 'Edit DPIAs', 'privacy', 'edit'],
-            ['dpia.approve', 'Approve DPIAs', 'privacy', 'approve'],
+            ['dpia.view', 'View DPIAs', 'privacy', 'view', 'privacy', 'GDPR Art. 35'],
+            ['dpia.create', 'Create DPIAs', 'privacy', 'create', 'privacy', 'GDPR Art. 35'],
+            ['dpia.edit', 'Edit DPIAs', 'privacy', 'edit', 'privacy', 'GDPR Art. 35'],
+            ['dpia.approve', 'Approve DPIAs', 'privacy', 'approve', 'privacy', 'GDPR Art. 35; Art. 36'],
 
             // Data Breach permissions (GDPR Art. 33/34 — Breach Notification)
-            ['data_breach.view', 'View data breaches', 'privacy', 'view'],
-            ['data_breach.create', 'Create data breach records', 'privacy', 'create'],
-            ['data_breach.edit', 'Edit data breach records', 'privacy', 'edit'],
-            ['data_breach.notify_authority', 'Notify supervisory authority of data breach (Art. 33 GDPR)', 'privacy', 'edit'],
-            ['data_breach.notify_subjects', 'Notify affected data subjects of breach (Art. 34 GDPR)', 'privacy', 'edit'],
-            ['data_breach.close', 'Close / resolve a data breach record', 'privacy', 'edit'],
+            ['data_breach.view', 'View data breaches', 'privacy', 'view', 'privacy', 'GDPR Art. 33 + 34'],
+            ['data_breach.create', 'Create data breach records', 'privacy', 'create', 'privacy', 'GDPR Art. 33 + 34'],
+            ['data_breach.edit', 'Edit data breach records', 'privacy', 'edit', 'privacy', 'GDPR Art. 33 + 34'],
+            ['data_breach.notify_authority', 'Notify supervisory authority of data breach (Art. 33 GDPR)', 'privacy', 'edit', 'privacy', 'GDPR Art. 33'],
+            ['data_breach.notify_subjects', 'Notify affected data subjects of breach (Art. 34 GDPR)', 'privacy', 'edit', 'privacy', 'GDPR Art. 34'],
+            ['data_breach.close', 'Close / resolve a data breach record', 'privacy', 'edit', 'privacy', 'GDPR Art. 33 + 34'],
 
             // Data Subject Request permissions (GDPR Art. 15-22 — DSR handling)
-            ['data_subject_request.view', 'View data subject requests', 'privacy', 'view'],
-            ['data_subject_request.create', 'Create data subject requests', 'privacy', 'create'],
-            ['data_subject_request.edit', 'Edit data subject requests', 'privacy', 'edit'],
-            ['data_subject_request.respond', 'Respond to data subject requests', 'privacy', 'edit'],
+            ['data_subject_request.view', 'View data subject requests', 'privacy', 'view', 'privacy', 'GDPR Art. 15-22'],
+            ['data_subject_request.create', 'Create data subject requests', 'privacy', 'create', 'privacy', 'GDPR Art. 15-22'],
+            ['data_subject_request.edit', 'Edit data subject requests', 'privacy', 'edit', 'privacy', 'GDPR Art. 15-22'],
+            ['data_subject_request.respond', 'Respond to data subject requests', 'privacy', 'edit', 'privacy', 'GDPR Art. 15-22'],
 
             // Consent permissions (GDPR Art. 6/7 — Consent management)
-            ['consent.view', 'View consent records', 'privacy', 'view'],
-            ['consent.create', 'Create consent records', 'privacy', 'create'],
-            ['consent.edit', 'Edit consent records', 'privacy', 'edit'],
-            ['consent.revoke', 'Revoke consent records', 'privacy', 'edit'],
+            ['consent.view', 'View consent records', 'privacy', 'view', 'privacy', 'GDPR Art. 7'],
+            ['consent.create', 'Create consent records', 'privacy', 'create', 'privacy', 'GDPR Art. 7'],
+            ['consent.edit', 'Edit consent records', 'privacy', 'edit', 'privacy', 'GDPR Art. 7'],
+            ['consent.revoke', 'Revoke consent records', 'privacy', 'edit', 'privacy', 'GDPR Art. 7'],
 
             // Privacy report export
-            ['privacy.report.export', 'Export privacy / DPO reports', 'privacy', 'export'],
+            ['privacy.report.export', 'Export privacy / DPO reports', 'privacy', 'export', 'privacy', 'GDPR Art. 5(2) — accountability'],
 
             // Risk Treatment permissions
-            ['risk.treat', 'Create and manage risk treatment measures', 'risk', 'edit'],
-            ['risk_treatment_plan.view', 'View risk treatment plans', 'risk', 'view'],
-            ['risk_treatment_plan.create', 'Create risk treatment plans', 'risk', 'create'],
-            ['risk_treatment_plan.edit', 'Edit risk treatment plans', 'risk', 'edit'],
-            ['risk_treatment_plan.approve', 'Approve risk treatment plans', 'risk', 'approve'],
+            ['risk.treat', 'Create and manage risk treatment measures', 'risk', 'edit', 'risk_treatment_plans', 'ISO 27001 Cl. 6.1.3'],
+            ['risk_treatment_plan.view', 'View risk treatment plans', 'risk', 'view', 'risk_treatment_plans', 'ISO 27001 Cl. 6.1.3'],
+            ['risk_treatment_plan.create', 'Create risk treatment plans', 'risk', 'create', 'risk_treatment_plans', 'ISO 27001 Cl. 6.1.3'],
+            ['risk_treatment_plan.edit', 'Edit risk treatment plans', 'risk', 'edit', 'risk_treatment_plans', 'ISO 27001 Cl. 6.1.3'],
+            ['risk_treatment_plan.approve', 'Approve risk treatment plans', 'risk', 'approve', 'risk_treatment_plans', 'ISO 27001 Cl. 6.1.3'],
 
             // KPI permissions
-            ['kpi.view', 'View KPI dashboards and security metrics', 'security', 'view'],
-            ['kpi.export', 'Export KPI and security metric reports', 'security', 'export'],
+            ['kpi.view', 'View KPI dashboards and security metrics', 'security', 'view', 'analytics', 'ISO 27001 Cl. 9.1.1'],
+            ['kpi.export', 'Export KPI and security metric reports', 'security', 'export', 'analytics', 'ISO 27001 Cl. 9.1.1'],
 
             // Security Event permissions
-            ['security_event.view', 'View security events', 'security', 'view'],
-            ['security_event.create', 'Create security event records', 'security', 'create'],
-            ['security_event.respond', 'Respond to and manage security events', 'security', 'edit'],
+            ['security_event.view', 'View security events', 'security', 'view', 'incidents', 'ISO 27001 A.5.24; NIS-2 Art. 23'],
+            ['security_event.create', 'Create security event records', 'security', 'create', 'incidents', 'ISO 27001 A.5.24; NIS-2 Art. 23'],
+            ['security_event.respond', 'Respond to and manage security events', 'security', 'edit', 'incidents', 'ISO 27001 A.5.26; NIS-2 Art. 23'],
 
             // Policy permissions
-            ['policy.approve', 'Approve and publish policies', 'policy', 'approve'],
+            ['policy.approve', 'Approve and publish policies', 'policy', 'approve', 'documents', 'ISO 27001 A.5.1'],
         ];
 
         $count = 0;
@@ -231,10 +233,20 @@ class SetupPermissionsCommand
                 $permission->setDescription($permData[1]);
                 $permission->setCategory($permData[2]);
                 $permission->setAction($permData[3]);
+                $permission->setModule($permData[4] ?? null);
+                $permission->setFrameworkReference($permData[5] ?? null);
                 $permission->setIsSystemPermission(true);
 
                 $this->entityManager->persist($permission);
                 $count++;
+            } else {
+                // Backfill module + frameworkReference for existing permissions (idempotent)
+                if ($existingPerm->getModule() === null && isset($permData[4])) {
+                    $existingPerm->setModule($permData[4]);
+                }
+                if ($existingPerm->getFrameworkReference() === null && isset($permData[5])) {
+                    $existingPerm->setFrameworkReference($permData[5]);
+                }
             }
         }
 
