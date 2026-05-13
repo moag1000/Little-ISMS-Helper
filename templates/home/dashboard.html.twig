@@ -87,7 +87,7 @@
 
     {# Urgent Tasks Alert Banner (ported from Welcome page) #}
     {% if total_urgent_count|default(0) > 0 %}
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-4' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-4 mt-3' } } %}
         {% block alert_body %}
             <div class="d-flex align-items-center">
                 <strong>{{ total_urgent_count }} {{ 'dashboard.urgent_items'|trans({}, 'dashboard') }}</strong>
