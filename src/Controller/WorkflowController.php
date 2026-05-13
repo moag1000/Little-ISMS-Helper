@@ -96,7 +96,7 @@ class WorkflowController extends AbstractController
     }
 
     #[Route('/workflow/definitions', name: 'app_workflow_definitions')]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_MANAGER')]
     public function definitions(): Response
     {
         $workflows = $this->workflowRepository->findAll();
@@ -393,7 +393,7 @@ class WorkflowController extends AbstractController
     // ===========================================
 
     #[Route('/workflow/definition/{id}', name: 'app_workflow_definition_show', requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_MANAGER')]
     public function showDefinition(Workflow $workflow): Response
     {
         $instances = $this->workflowInstanceRepository->findBy(
@@ -409,7 +409,7 @@ class WorkflowController extends AbstractController
     }
 
     #[Route('/workflow/definition/{id}/builder', name: 'app_workflow_definition_builder', requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_MANAGER')]
     public function builder(Workflow $workflow): Response
     {
         return $this->render('workflow/builder.html.twig', [
@@ -419,7 +419,7 @@ class WorkflowController extends AbstractController
     }
 
     #[Route('/workflow/definition/new', name: 'app_workflow_definition_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_MANAGER')]
     public function newDefinition(Request $request): Response
     {
         $workflow = new Workflow();
@@ -434,7 +434,7 @@ class WorkflowController extends AbstractController
 
             $this->addFlash('success', $this->translator->trans('workflow.success.definition_created'));
 
-            return $this->redirectToRoute('app_workflow_definition_show', ['id' => $workflow->getId()]);
+            return $this->redirectToRoute('app_workflow_definition_builder', ['id' => $workflow->getId()]);
         }
 
         return $this->render('workflow/definition_form.html.twig', [
@@ -445,7 +445,7 @@ class WorkflowController extends AbstractController
     }
 
     #[Route('/workflow/definition/{id}/edit', name: 'app_workflow_definition_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_MANAGER')]
     public function editDefinition(Request $request, Workflow $workflow): Response
     {
         $form = $this->createForm(WorkflowType::class, $workflow);
@@ -457,7 +457,7 @@ class WorkflowController extends AbstractController
 
             $this->addFlash('success', $this->translator->trans('workflow.success.definition_updated'));
 
-            return $this->redirectToRoute('app_workflow_definition_show', ['id' => $workflow->getId()]);
+            return $this->redirectToRoute('app_workflow_definition_builder', ['id' => $workflow->getId()]);
         }
 
         return $this->render('workflow/definition_form.html.twig', [
@@ -467,6 +467,11 @@ class WorkflowController extends AbstractController
         ]);
     }
 
+    /**
+     * Intentionally restricted to ROLE_ADMIN: deleting a workflow definition is
+     * irreversible and cascades to all historical step records. ISB personas
+     * (ROLE_MANAGER) can deactivate/archive definitions via toggleDefinition instead.
+     */
     #[Route('/workflow/definition/{id}/delete', name: 'app_workflow_definition_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function deleteDefinition(Request $request, Workflow $workflow): Response
@@ -496,7 +501,7 @@ class WorkflowController extends AbstractController
     }
 
     #[Route('/workflow/definition/{id}/toggle', name: 'app_workflow_definition_toggle', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_MANAGER')]
     public function toggleDefinition(Request $request, Workflow $workflow): Response
     {
         if (!$this->isCsrfTokenValid('toggle'.$workflow->getId(), $request->request->get('_token'))) {
