@@ -1,0 +1,24 @@
+# Notification domain — DE
+# Sprint 6a: Backend error + audit-event labels.
+# UI keys (rule CRUD, channel forms, bell center) are added in Sprint-6b.
+
+notification:
+    audit:
+        rule:
+            created: 'Benachrichtigungsregel erstellt'
+            updated: 'Benachrichtigungsregel aktualisiert'
+            deleted: 'Benachrichtigungsregel gelöscht'
+            enabled: 'Benachrichtigungsregel aktiviert'
+            disabled: 'Benachrichtigungsregel deaktiviert'
+        channel:
+            created: 'Benachrichtigungskanal erstellt'
+            updated: 'Benachrichtigungskanal aktualisiert'
+            verified: 'Benachrichtigungskanal verifiziert'
+        delivery:
+            succeeded: 'Benachrichtigung erfolgreich zugestellt'
+            failed: 'Benachrichtigung fehlgeschlagen'
+            retried: 'Benachrichtigungszustellung wiederholt'
+    error:
+        webhook_internal_ip: 'Webhook-URL zeigt auf eine interne oder reservierte IP-Adresse (SSRF-Schutz aktiv).'
+        invalid_event_type: 'Der angegebene Ereignistyp ist ungültig oder nicht unterstützt.'
+        template_not_found: 'Die angegebene Benachrichtigungsvorlage wurde nicht gefunden.'
