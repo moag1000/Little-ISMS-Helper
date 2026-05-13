@@ -48,7 +48,9 @@
 
                     {{ form_rest(form) }}
 
-                    {{ _fa_alert.render({ variant: 'info', title: 'workflow.info.steps_note_title'|trans({}, 'workflows'), body: 'workflow.info.steps_note_text'|trans({}, 'workflows') }) }}
+                    {% if not is_edit %}
+                        {{ _fa_alert.render({ variant: 'info', title: 'workflow.info.steps_note_title'|trans({}, 'workflows'), body: 'workflow.info.steps_note_text'|trans({}, 'workflows') }) }}
+                    {% endif %}
 
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ is_edit ? path('app_workflow_definition_show', {id: workflow.id}) : path('app_workflow_definitions') }}"
@@ -64,9 +66,28 @@
                     {{ form_end(form) }}
                 {% endblock %}
             {% endembed %}
+        </div>
+    </div>{# /col-lg-8 row — basic-info form closed here #}
 
-            {% if is_edit %}
-                {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+    {# ------------------------------------------------------------------ #}
+    {# Step builder — edit mode only, rendered AFTER the form is closed.   #}
+    {# No HTML form nesting: the add-step <form> inside the partial is a   #}
+    {# sibling of the basic-info <form>, not nested inside it.             #}
+    {# ------------------------------------------------------------------ #}
+    {% if is_edit %}
+        <div class="mt-4">
+            <h2 class="mb-1">
+                <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i>
+                {{ 'workflow.section.steps_builder'|trans({}, 'workflows') }}
+            </h2>
+            <p class="text-muted mb-0">{{ 'workflow.help.steps_builder_intro'|trans({}, 'workflows') }}</p>
+        </div>
+
+        {{ include('workflow/_steps_builder.html.twig', { workflow: workflow }) }}
+
+        <div class="row mt-4">
+            <div class="col-lg-8 offset-lg-2">
+                {% embed '_components/_card.html.twig' with { 'class': 'mt-2' } %}
                     {% block card_header %}
                         <div class="card-header">
                             <h2 class="mb-0">
@@ -87,8 +108,8 @@
                         </form>
                     {% endblock %}
                 {% endembed %}
-            {% endif %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -514,6 +514,33 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertSelectorExists('form');
     }
 
+    #[Test]
+    public function testEditDefinitionRendersStepsBuilder(): void
+    {
+        // Edit view must embed the workflow-builder Stimulus controller (step-builder partial)
+        $this->loginAsUser($this->adminUser);
+
+        $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId() . '/edit');
+
+        $this->assertResponseIsSuccessful();
+        $content = $this->client->getResponse()->getContent();
+        $this->assertStringContainsString('data-controller="workflow-builder"', $content);
+        $this->assertStringContainsString($this->testWorkflow->getName(), $content);
+    }
+
+    #[Test]
+    public function testNewDefinitionDoesNotRenderStepsBuilder(): void
+    {
+        // New-workflow form must NOT render the step builder (no ID yet)
+        $this->loginAsUser($this->adminUser);
+
+        $this->client->request('GET', '/en/workflow/definition/new');
+
+        $this->assertResponseIsSuccessful();
+        $content = $this->client->getResponse()->getContent();
+        $this->assertStringNotContainsString('data-controller="workflow-builder"', $content);
+    }
+
     // ========== DEFINITION DELETE TESTS ==========
 
     #[Test]

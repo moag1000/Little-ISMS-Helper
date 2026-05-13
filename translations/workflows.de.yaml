@@ -65,6 +65,7 @@ workflow:
         recent_instances: 'Letzte Instanzen'
         basic_information: Grundinformationen
         danger_zone: Gefahrenbereich
+        steps_builder: Workflow-Schritte
         information: Informationen
         actions: Aktionen
         statistics: Statistiken
@@ -162,6 +163,7 @@ workflow:
         entity_type: 'Wählen Sie den Entitätstyp, für den dieser Workflow verwendet wird'
         is_active: 'Deaktivierte Workflows können nicht gestartet werden'
         delete_warning: 'Warnung: Das Löschen einer Definition betrifft alle zugehörigen Workflow-Instanzen'
+        steps_builder_intro: 'Definieren Sie hier die einzelnen Schritte des Workflows: Verantwortlicher, Zeitvorgabe und Aktionstyp.'
     info:
         steps_note_title: Workflow-Schritte
         steps_note_text: 'Definieren Sie die Schritte, die in diesem Workflow durchlaufen werden müssen'
