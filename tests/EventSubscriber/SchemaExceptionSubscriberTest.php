@@ -8,12 +8,14 @@ use App\EventSubscriber\SchemaExceptionSubscriber;
 use App\Service\QuickFixGuard;
 use App\Service\SchemaMaintenanceService;
 use Doctrine\DBAL\Driver\Exception as DriverExceptionInterface;
+use Doctrine\DBAL\Exception\InvalidFieldNameException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\Mapping\MappingException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\AbstractLogger;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -339,6 +341,157 @@ class SchemaExceptionSubscriberTest extends TestCase
         $response = $event->getResponse();
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/quick-fix', $response->getTargetUrl());
+    }
+
+    // -----------------------------------------------------------------------
+    // Phantom-diff-state tests (Pitfall #6 — migration marked executed but
+    // DDL never ran). Both pending and drift counters report 0, yet the live
+    // DB is missing a column.
+    // -----------------------------------------------------------------------
+
+    #[Test]
+    public function redirectsOnInvalidFieldNameExceptionWhenPendingAndDriftAreZero(): void
+    {
+        // Simulate the exact production scenario: migrations table says "all
+        // done" (pending=0), SchemaTool sees no drift (drift=0), but the DB
+        // is missing a column because the PREPARE/EXECUTE migration never
+        // materialised the DDL.
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 0, 'names' => []],
+            'schema_drift' => ['count' => 0, 'statements' => [], 'destructive' => []],
+        ]);
+        // getEntityVsDbDrift() returns 1 additive statement found via entity
+        // metadata — this unblocks the auto-fix path.
+        $maintenance->method('getEntityVsDbDrift')
+            ->willReturn(['ALTER TABLE user ADD in_app_notifications_enabled TINYINT(1) DEFAULT 0']);
+        $maintenance->method('executePendingMigrations')
+            ->willReturn(['success' => true, 'executed' => 0, 'error' => null]);
+        $maintenance->method('reconcileSchema')
+            ->willReturn(['success' => true, 'executed' => 1, 'error' => null, 'blocked' => null]);
+
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance);
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        $exception = new InvalidFieldNameException(
+            $this->driverException("Unknown column 't0.in_app_notifications_enabled' in 'field list'"),
+            null,
+        );
+        $event = $this->makeEvent('/de/admin/users', $exception);
+
+        $subscriber->onKernelException($event);
+
+        $response = $event->getResponse();
+        $this->assertInstanceOf(RedirectResponse::class, $response, 'Must redirect even when pending=0 and drift=0');
+    }
+
+    #[Test]
+    public function redirectsOnUnknownColumnDriverExceptionWhenPendingAndDriftAreZero(): void
+    {
+        // DriverException (not InvalidFieldNameException specifically) wrapping
+        // "Unknown column" text — same phantom-diff scenario via a plain
+        // DriverException rather than the typed subclass.
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 0, 'names' => []],
+            'schema_drift' => ['count' => 0, 'statements' => [], 'destructive' => []],
+        ]);
+        $maintenance->method('getEntityVsDbDrift')
+            ->willReturn(['ALTER TABLE tenant ADD some_new_column VARCHAR(255) DEFAULT NULL']);
+        $maintenance->method('executePendingMigrations')
+            ->willReturn(['success' => true, 'executed' => 0, 'error' => null]);
+        $maintenance->method('reconcileSchema')
+            ->willReturn(['success' => true, 'executed' => 1, 'error' => null, 'blocked' => null]);
+
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance);
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        // Wrap in a plain RuntimeException to exercise the exception-chain walk.
+        $driver = $this->driverException("Unknown column 't0.some_new_column' in 'SELECT'");
+        $inner = new \Doctrine\DBAL\Exception\DriverException($driver, null);
+        $outer = new \RuntimeException('DB failure', 0, $inner);
+        $event = $this->makeEvent('/de/admin/settings', $outer);
+
+        $subscriber->onKernelException($event);
+
+        $this->assertInstanceOf(
+            RedirectResponse::class,
+            $event->getResponse(),
+            'Must redirect even when pending=0 and drift=0 for Unknown column DriverException',
+        );
+    }
+
+    #[Test]
+    public function tableNotFoundWithZeroPendingAndZeroDriftDoesNotRedirect(): void
+    {
+        // TableNotFoundException that is NOT an "Unknown column" error (e.g. a
+        // typo in raw DQL) must NOT redirect when pending=0 and drift=0.
+        // This test ensures the phantom-diff bypass only fires for the exact
+        // unknown-column signal, not for every schema exception.
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 0, 'names' => []],
+            'schema_drift' => ['count' => 0, 'statements' => [], 'destructive' => []],
+        ]);
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance);
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        $event = $this->makeEvent('/some-page', new TableNotFoundException(
+            $this->driverException("Table 'mydb.typo_table' doesn't exist"),
+            null,
+        ));
+
+        $subscriber->onKernelException($event);
+
+        $this->assertNull($event->getResponse(), 'Non-unknown-column TableNotFoundException must NOT redirect when clean status');
+    }
+
+    #[Test]
+    public function phantomDiffStateLogsWarningWithColumnName(): void
+    {
+        // Verify that the phantom_diff_state warning is logged and includes the
+        // missing column name extracted from the exception message.
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 0, 'names' => []],
+            'schema_drift' => ['count' => 0, 'statements' => [], 'destructive' => []],
+        ]);
+        $maintenance->method('getEntityVsDbDrift')->willReturn([]);
+        $maintenance->method('executePendingMigrations')
+            ->willReturn(['success' => true, 'executed' => 0, 'error' => null]);
+
+        $logCapture = new class extends AbstractLogger {
+            /** @var list<array{level: string, message: string, context: array<string, mixed>}> */
+            public array $records = [];
+
+            public function log(mixed $level, string|\Stringable $message, array $context = []): void
+            {
+                $this->records[] = ['level' => (string) $level, 'message' => (string) $message, 'context' => $context];
+            }
+        };
+
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance, $logCapture);
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        $exception = new InvalidFieldNameException(
+            $this->driverException("Unknown column 't0.in_app_notifications_enabled' in 'field list'"),
+            null,
+        );
+        $event = $this->makeEvent('/de/admin/users', $exception);
+
+        $subscriber->onKernelException($event);
+
+        // Find the phantom_diff_state log entry.
+        $phantomRecords = array_filter(
+            $logCapture->records,
+            static fn (array $r): bool => str_contains($r['message'], 'phantom_diff_state'),
+        );
+        $this->assertNotEmpty($phantomRecords, 'Expected a phantom_diff_state warning log entry');
+
+        $record = array_values($phantomRecords)[0];
+        $this->assertSame('warning', $record['level']);
+        $this->assertArrayHasKey('missing_column', $record['context']);
+        $this->assertStringContainsString('in_app_notifications_enabled', (string) $record['context']['missing_column']);
     }
 
     private function makeEvent(string $path, \Throwable $throwable): ExceptionEvent

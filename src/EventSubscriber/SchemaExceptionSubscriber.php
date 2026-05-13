@@ -7,6 +7,7 @@ namespace App\EventSubscriber;
 use App\Service\QuickFixGuard;
 use App\Service\SchemaMaintenanceService;
 use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\Exception\InvalidFieldNameException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\Mapping\MappingException as ORMMappingException;
 use Doctrine\Persistence\Mapping\MappingException as PersistenceMappingException;
@@ -67,10 +68,14 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $throwable = $event->getThrowable();
+        $isUnknownColumn = $this->isUnknownColumnException($throwable);
+
         $this->logger->warning('SchemaExceptionSubscriber: schema exception caught', [
             'path' => $path,
-            'exception' => $event->getThrowable()::class,
-            'message' => $event->getThrowable()->getMessage(),
+            'exception' => $throwable::class,
+            'message' => $throwable->getMessage(),
+            'is_unknown_column' => $isUnknownColumn,
         ]);
 
         // Guard against false-positives: only act when there are actually
@@ -79,6 +84,14 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
         // from a typo in raw SQL, which has nothing to do with an out-of-date
         // schema — those should bubble up as a normal 500 with the original
         // stack trace, not a misleading "apply migrations" page.
+        //
+        // EXCEPTION (Pitfall #6): When the exception is an "Unknown column" /
+        // InvalidFieldNameException, the migration may have been MARKED as
+        // executed in doctrine_migration_versions while the actual DDL never
+        // ran (legacy PREPARE/EXECUTE pattern). In that case both pending and
+        // drift counters report 0 despite the live DB missing columns. We MUST
+        // NOT gate on those counters for this class of error — always proceed
+        // to auto-fix and redirect.
         try {
             $status = $this->maintenance->getMaintenanceStatus();
             $pending = (int) ($status['migration_status']['pending'] ?? 0);
@@ -91,8 +104,41 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
             $drift = 0;
             $destructive = [];
         }
+
         if ($pending === 0 && $drift === 0) {
-            return;
+            if (!$isUnknownColumn) {
+                // No known drift in either direction and not an unknown-column
+                // hit — the exception is most likely a bug in raw SQL, not a
+                // schema-sync problem. Let it bubble as a normal 500.
+                return;
+            }
+
+            // phantom_diff_state: migration marked executed but DDL never ran.
+            // Extract the offending column name for the log.
+            $columnName = $this->extractUnknownColumnName($throwable);
+            $this->logger->warning('SchemaExceptionSubscriber: phantom_diff_state — column missing despite migration marked executed', [
+                'path' => $path,
+                'missing_column' => $columnName,
+                'exception' => $throwable::class,
+                'hint' => 'Migration likely used PREPARE/EXECUTE pattern (CLAUDE.md Pitfall #6) or was marked executed without running DDL.',
+            ]);
+
+            // Attempt a direct entity-metadata vs. live-DB reconcile, bypassing
+            // the migrations table (the reconcile path reads information_schema,
+            // not doctrine_migration_versions).
+            try {
+                $entityDrift = $this->maintenance->getEntityVsDbDrift();
+                $drift = count($entityDrift);
+                // Treat all entity-drift as additive for auto-fix purposes;
+                // destructive stays empty so auto-fix runs reconcile below.
+            } catch (\Throwable $e) {
+                $this->logger->warning('SchemaExceptionSubscriber: getEntityVsDbDrift threw', [
+                    'exception' => $e::class,
+                    'message' => $e->getMessage(),
+                ]);
+                // Force drift > 0 so we proceed to auto-fix attempt.
+                $drift = 1;
+            }
         }
 
         // Auto-fix additive-only drift transparently when the failing request
@@ -157,9 +203,14 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
         }
 
         // Auto-fix exhausted (destructive drift, already retried, or reconcile
-        // failed). Bubble the exception when we're already on /quick-fix so
-        // Symfony renders the standard error page instead of redirecting in
-        // a loop. Otherwise hand off to the Quick-Fix UI for manual review.
+        // failed). Always redirect to /quick-fix when the exception is a
+        // schema-drift signal — regardless of what the migrations table says.
+        // This prevents phantom-diff-state (Pitfall #6) from silently rendering
+        // a bare 500 when pending=0 and drift=0 but DDL never actually ran.
+        //
+        // Exception: already on /quick-fix — bubble the exception so Symfony
+        // renders the error page instead of looping. For unknown-column hits
+        // on /quick-fix itself, the operator will see the error in context.
         if (str_starts_with($path, '/quick-fix')) {
             return;
         }
@@ -177,6 +228,7 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
                 $current instanceof TableNotFoundException
                 || $current instanceof ORMMappingException
                 || $current instanceof PersistenceMappingException
+                || $current instanceof InvalidFieldNameException
             ) {
                 return true;
             }
@@ -197,5 +249,58 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
             $current = $current->getPrevious();
         }
         return false;
+    }
+
+    /**
+     * Returns true when the exception chain contains an "Unknown column" /
+     * InvalidFieldNameException hit — the phantom-diff-state indicator.
+     * SQLSTATE 1054 (HY000 / 42S22) is the MySQL error code for this.
+     */
+    private function isUnknownColumnException(\Throwable $throwable): bool
+    {
+        $current = $throwable;
+        while ($current !== null) {
+            if ($current instanceof InvalidFieldNameException) {
+                return true;
+            }
+            if ($current instanceof DriverException) {
+                $message = $current->getMessage();
+                if (
+                    str_contains($message, 'Unknown column')
+                    || str_contains($message, 'no such column')
+                ) {
+                    return true;
+                }
+            }
+            $current = $current->getPrevious();
+        }
+        return false;
+    }
+
+    /**
+     * Extracts the offending column name from an "Unknown column" exception
+     * message using regex. Returns null when the pattern does not match.
+     *
+     * Matches both MySQL format:
+     *   Unknown column 't0.in_app_notifications_enabled' in 'SELECT'
+     * and SQLite format:
+     *   no such column: t0.in_app_notifications_enabled
+     */
+    private function extractUnknownColumnName(\Throwable $throwable): ?string
+    {
+        $current = $throwable;
+        while ($current !== null) {
+            $message = $current->getMessage();
+            // MySQL / MariaDB: Unknown column 'table.col' in '...'
+            if (preg_match("/Unknown column ['\"]([^'\"]+)['\"]/i", $message, $m)) {
+                return $m[1];
+            }
+            // SQLite: no such column: table.col
+            if (preg_match('/no such column:\s*(\S+)/i', $message, $m)) {
+                return $m[1];
+            }
+            $current = $current->getPrevious();
+        }
+        return null;
     }
 }
