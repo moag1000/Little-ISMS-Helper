@@ -15,7 +15,7 @@
     {{ _fa_page_header.render({
         badge:    { icon: 'wrench-adjustable', label: 'corrective_action.page.title'|trans({}, 'audits') },
         title:    action.title,
-        subtitle: action.finding ? 'corrective_action.message.for_finding'|trans({}, 'audits') ~ ': ' ~ (action.finding.findingNumber ?? '#' ~ action.finding.id) ~ ' — ' ~ action.finding.title : null,
+        subtitle: action.finding ? 'corrective_action.message.for_finding'|trans({}, 'audits') ~ ': ' ~ (action.finding.findingNumber ?? ('#' ~ action.finding.id)) ~ ' — ' ~ action.finding.title : null,
         actions: [
             { label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'pencil', href: path('app_corrective_action_edit', {id: action.id}) }
         ]
