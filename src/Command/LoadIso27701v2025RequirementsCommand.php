@@ -11,20 +11,24 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-iso27701v2025-requirements',
     description: 'Load ISO 27701:2025 Privacy Information Management System - Standalone privacy standard with AI governance'
 )]
-class LoadIso27701v2025RequirementsCommand
+class LoadIso27701v2025RequirementsCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
+        parent::__construct();
     }
 
-    public function __invoke(SymfonyStyle $symfonyStyle): int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $symfonyStyle = new SymfonyStyle($input, $output);
         // Create or get ISO 27701:2025 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO27701_2025']);

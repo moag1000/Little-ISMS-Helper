@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\E2e;
 
-use App\Command\LoadIso27001RequirementsCommand;
-use App\Command\LoadNis2RequirementsCommand;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
@@ -24,10 +22,9 @@ use App\Service\PortfolioReportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Tester\CommandTester;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -385,10 +382,10 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
 
     private function loadIsoFramework(): ComplianceFramework
     {
-        /** @var LoadIso27001RequirementsCommand $cmd */
-        $cmd = self::getContainer()->get(LoadIso27001RequirementsCommand::class);
-        $io = new SymfonyStyle(new ArrayInput([]), new BufferedOutput());
-        $cmd->__invoke(false, $io);
+        $application = new Application(self::$kernel);
+        $command = $application->find('app:load-iso27001-requirements');
+        $tester = new CommandTester($command);
+        $tester->execute([]);
 
         $framework = $this->em->getRepository(ComplianceFramework::class)->findOneBy(['code' => 'ISO27001']);
         self::assertInstanceOf(ComplianceFramework::class, $framework, 'ISO27001 framework must exist after loader.');
@@ -398,10 +395,10 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
 
     private function loadNis2Framework(): ComplianceFramework
     {
-        /** @var LoadNis2RequirementsCommand $cmd */
-        $cmd = self::getContainer()->get(LoadNis2RequirementsCommand::class);
-        $io = new SymfonyStyle(new ArrayInput([]), new BufferedOutput());
-        $cmd->__invoke(false, $io);
+        $application = new Application(self::$kernel);
+        $command = $application->find('app:load-nis2-requirements');
+        $tester = new CommandTester($command);
+        $tester->execute([]);
 
         $framework = $this->em->getRepository(ComplianceFramework::class)->findOneBy(['code' => 'NIS2']);
         self::assertInstanceOf(ComplianceFramework::class, $framework, 'NIS2 framework must exist after loader.');

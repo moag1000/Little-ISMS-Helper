@@ -4,27 +4,36 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use Symfony\Component\Console\Attribute\Option;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-dora-requirements',
     description: 'Load EU-DORA (Digital Operational Resilience Act) requirements with ISMS data mappings'
 )]
-class LoadDoraRequirementsCommand
+class LoadDoraRequirementsCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
+        parent::__construct();
     }
 
-    public function __invoke(#[Option(name: 'update', shortcut: 'u', description: 'Update existing requirements instead of skipping them')]
-    bool $update = false, ?SymfonyStyle $symfonyStyle = null): int
+    protected function configure(): void
     {
+        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $update = (bool) $input->getOption('update');
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $symfonyStyle?->title('Loading EU-DORA Requirements');
         $symfonyStyle?->text(sprintf('Mode: %s', $update ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
