@@ -155,9 +155,7 @@ class UserType extends AbstractType
                 'ROLE_COMPLIANCE_MANAGER' => $this->translator->trans('user.role_description.compliance_manager', [], 'user'),
             ];
 
-            $builder
-                // Roles & Permissions
-                ->add('roles', ChoiceType::class, [
+            $rolesOptions = [
                 'label' => 'user.field.system_roles',
                 'choices' => [
                     'user.role.user' => 'ROLE_USER',
@@ -174,7 +172,6 @@ class UserType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
-                'data' => $isEdit ? null : ['ROLE_USER'], // Default only for new users
                 'choice_translation_domain' => 'user',
                 'help' => 'user.roles_info.system_note',
                 'help_translation_parameters' => [],
@@ -186,7 +183,17 @@ class UserType extends AbstractType
                         'class' => 'form-check-input role-checkbox',
                     ];
                 },
-            ])
+            ];
+            // Only set default for new users — omitting 'data' in edit mode lets
+            // Symfony read the value from the mapped entity property instead of
+            // overriding it with an explicit null, which would blank every checkbox.
+            if (!$isEdit) {
+                $rolesOptions['data'] = ['ROLE_USER'];
+            }
+
+            $builder
+                // Roles & Permissions
+                ->add('roles', ChoiceType::class, $rolesOptions)
             ->add('customRoles', EntityType::class, [
                 'label' => 'user.field.custom_roles',
                 'class' => Role::class,
@@ -211,11 +218,17 @@ class UserType extends AbstractType
                     ->orderBy('t.name', 'ASC'),
             ])
 
-            // Status
-            ->add('isActive', CheckboxType::class, [
+            // Status — omit 'data' in edit mode so Symfony reads the entity value;
+            // setting 'data' => null explicitly overrides the mapped property to null.
+            ->add('isActive', CheckboxType::class, $isEdit ? [
                 'label' => 'user.field.active',
                 'required' => false,
-                'data' => $isEdit ? null : true, // Default only for new users
+                'help' => 'Nur aktive Benutzer können sich anmelden',
+                'attr' => ['class' => 'form-check-input'],
+            ] : [
+                'label' => 'user.field.active',
+                'required' => false,
+                'data' => true,
                 'help' => 'Nur aktive Benutzer können sich anmelden',
                 'attr' => ['class' => 'form-check-input'],
             ])

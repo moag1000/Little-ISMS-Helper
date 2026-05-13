@@ -14,9 +14,20 @@
         badge: { icon: 'shield-lock', label: 'role_management.title.create'|trans({}, 'role_management') },
         title: 'role_management.title.create'|trans({}, 'role_management'),
         actions: [
+            { label: 'role_management.action.compare'|trans({}, 'role_management'), variant: 'ghost', icon: 'arrow-left-right', href: path('role_management_compare') },
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('role_management_index') }
         ]
     }) }}
+
+    <div class="fa-alert fa-alert--info mb-3" role="alert">
+        <i class="fa-alert__icon bi bi-info-circle" aria-hidden="true"></i>
+        <div class="fa-alert__body">
+            <span class="fa-alert__message">
+                {{ 'role_management.help.compare_before_create'|trans({}, 'role_management') }}
+                <a href="{{ path('role_management_compare') }}" class="alert-link">{{ 'role_management.action.compare'|trans({}, 'role_management') }}</a>
+            </span>
+        </div>
+    </div>
 
     <section class="fa-section">
         <div class="fa-section__body">

@@ -8,6 +8,7 @@ role_management:
         overview: 'Verwalten Sie Benutzerrollen und deren Berechtigungen für die Zugriffskontrolle'
     action:
         create: 'Neue Rolle erstellen'
+        compare: 'Rollen vergleichen'
     section:
         basic_info: Grundinformationen
         permissions: Berechtigungen
@@ -27,6 +28,7 @@ role_management:
         active: 'Aktive Rollen können Benutzern zugewiesen werden'
         permissions: 'Wählen Sie die Berechtigungen aus, die diese Rolle haben soll'
         system_role: 'Systemrollen können nicht gelöscht werden und haben eingeschränkte Änderungsoptionen'
+        compare_before_create: 'Bestehende Rollen vergleichen, bevor eine neue erstellt wird — verhindert Duplikate.'
     permission:
         name: Berechtigung
         resource: Ressource
