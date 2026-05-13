@@ -15,8 +15,13 @@
         subtitle: 'admin.settings.subtitle'|trans({}, 'admin'),
     }) }}
 
-    <div class="row g-4">
-        {# Application Settings Card #}
+    {# ── Category: Platform ──────────────────────────────────────────── #}
+    <h2 class="h6 text-muted text-uppercase fw-semibold mb-3 mt-2">
+        <i class="fa-icon fa-icon--ui-settings me-1" aria-hidden="true"></i>
+        {{ 'admin.section.system_config'|trans({}, 'admin') }}
+    </h2>
+    <div class="row g-4 mb-5">
+        {# Application Settings #}
         <div class="col-md-6 col-lg-4">
             <section class="fa-section h-100">
                 <div class="fa-section__body">
@@ -25,7 +30,7 @@
                             <i class="fa-icon fa-icon--ui-settings text-primary fs-2" aria-hidden="true"></i>
                         </div>
                         <div class="flex-grow-1">
-                            <h2 class="card-title h5">{{ 'admin.settings.application.title'|trans({}, 'admin') }}</h2>
+                            <h3 class="card-title h5">{{ 'admin.settings.application.title'|trans({}, 'admin') }}</h3>
                             <p class="card-text text-muted small">
                                 {{ 'admin.settings.application.description'|trans({}, 'admin') }}
                             </p>
@@ -47,7 +52,7 @@
             </section>
         </div>
 
-        {# Security Settings Card #}
+        {# Security Settings #}
         <div class="col-md-6 col-lg-4">
             <section class="fa-section h-100">
                 <div class="fa-section__body">
@@ -56,7 +61,7 @@
                             <i class="fa-icon fa-icon--mfa text-danger fs-2" aria-hidden="true"></i>
                         </div>
                         <div class="flex-grow-1">
-                            <h2 class="card-title h5">{{ 'admin.settings.security.title'|trans({}, 'admin') }}</h2>
+                            <h3 class="card-title h5">{{ 'admin.settings.security.title'|trans({}, 'admin') }}</h3>
                             <p class="card-text text-muted small">
                                 {{ 'admin.settings.security.description'|trans({}, 'admin') }}
                             </p>
@@ -91,7 +96,7 @@
             </section>
         </div>
 
-        {# Feature Flags Card #}
+        {# Feature Flags #}
         <div class="col-md-6 col-lg-4">
             <section class="fa-section h-100">
                 <div class="fa-section__body">
@@ -100,7 +105,7 @@
                             <i class="fa-icon text-success fs-2 fa-icon--nav-sliders" aria-hidden="true"></i>
                         </div>
                         <div class="flex-grow-1">
-                            <h2 class="card-title h5">{{ 'admin.settings.features.title'|trans({}, 'admin') }}</h2>
+                            <h3 class="card-title h5">{{ 'admin.settings.features.title'|trans({}, 'admin') }}</h3>
                             <p class="card-text text-muted small">
                                 {{ 'admin.settings.features.description'|trans({}, 'admin') }}
                             </p>
@@ -142,8 +147,348 @@
                 </div>
             </section>
         </div>
+
+        {# Quick-Fix Settings #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--warning-tint); border: 1px solid var(--warning);">
+                            <i class="fa-icon fa-icon--nav-wrench text-warning fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.quick_fix.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.quick_fix.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('app_admin_quick_fix_settings') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    {# ── Category: Identity & Access ──────────────────────────────────── #}
+    <h2 class="h6 text-muted text-uppercase fw-semibold mb-3">
+        <i class="fa-icon fa-icon--mfa me-1" aria-hidden="true"></i>
+        {{ 'admin.section.user_access'|trans({}, 'admin') }}
+    </h2>
+    <div class="row g-4 mb-5">
+        {# SSO #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--info-tint); border: 1px solid var(--info);">
+                            <i class="fa-icon fa-icon--nav-link text-info fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.sso.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.sso.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_sso_index') }}" class="fa-cyber-btn fa-cyber-btn--info fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    {# ── Category: Branding & Communication ───────────────────────────── #}
+    <h2 class="h6 text-muted text-uppercase fw-semibold mb-3">
+        <i class="fa-icon fa-icon--nav-palette me-1" aria-hidden="true"></i>
+        {{ 'admin.section.platform.configuration'|trans({}, 'admin') }}
+    </h2>
+    <div class="row g-4 mb-5">
+        {# Email Branding #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--primary-tint); border: 1px solid var(--primary);">
+                            <i class="fa-icon fa-icon--nav-envelope text-primary fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.email_branding.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.email_branding.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('app_admin_tenant_email_branding') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Report Style #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--primary-tint); border: 1px solid var(--primary);">
+                            <i class="fa-icon fa-icon--nav-file-earmark-text text-primary fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.report_style.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.report_style.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('app_admin_report_style_edit') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Policy Style #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--primary-tint); border: 1px solid var(--primary);">
+                            <i class="fa-icon fa-icon--nav-journal-text text-primary fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.policy_style.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.policy_style.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('app_admin_policy_style_edit') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Tenant Compliance Settings #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--info-tint); border: 1px solid var(--info);">
+                            <i class="fa-icon fa-icon--nav-building text-info fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.tenant_compliance.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.tenant_compliance.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_tenant_compliance_settings_current') }}" class="fa-cyber-btn fa-cyber-btn--info fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    {# ── Category: Compliance & Governance ───────────────────────────── #}
+    <h2 class="h6 text-muted text-uppercase fw-semibold mb-3">
+        <i class="fa-icon fa-icon--nav-shield-check me-1" aria-hidden="true"></i>
+        {{ 'admin.section.compliance.frameworks'|trans({}, 'admin') }}
+    </h2>
+    <div class="row g-4 mb-5">
+        {# Compliance Policy #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--success-tint); border: 1px solid var(--success);">
+                            <i class="fa-icon fa-icon--nav-shield-check text-success fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.compliance_policy.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.compliance_policy.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_compliance_policy_index') }}" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Risk Approval Thresholds #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--danger-tint); border: 1px solid var(--danger);">
+                            <i class="fa-icon fa-icon--nav-exclamation-triangle text-danger fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.risk_approval.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.risk_approval.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('app_admin_risk_approval_config') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Incident SLAs #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--warning-tint); border: 1px solid var(--warning);">
+                            <i class="fa-icon fa-icon--nav-clock text-warning fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.incident_sla.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.incident_sla.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('app_admin_incident_sla_config') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Audit-Log Retention #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--danger-tint); border: 1px solid var(--danger);">
+                            <i class="fa-icon fa-icon--nav-archive text-danger fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.audit_retention.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.audit_retention.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('app_admin_audit_retention') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    {# ── Category: Operations & Data ─────────────────────────────────── #}
+    <h2 class="h6 text-muted text-uppercase fw-semibold mb-3">
+        <i class="fa-icon fa-icon--nav-database me-1" aria-hidden="true"></i>
+        {{ 'admin.section.data_management'|trans({}, 'admin') }}
+    </h2>
+    <div class="row g-4 mb-5">
+        {# KPI Thresholds #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--success-tint); border: 1px solid var(--success);">
+                            <i class="fa-icon fa-icon--nav-rulers text-success fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.kpi_thresholds.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.kpi_thresholds.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_kpi_threshold_index') }}" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Supplier Criticality Levels #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--info-tint); border: 1px solid var(--info);">
+                            <i class="fa-icon fa-icon--nav-truck text-info fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.supplier_criticality.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.supplier_criticality.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('app_admin_supplier_criticality_index') }}" class="fa-cyber-btn fa-cyber-btn--info fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Tags #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--primary-tint); border: 1px solid var(--primary);">
+                            <i class="fa-icon fa-icon--nav-tags text-primary fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="card-title h5">{{ 'admin.settings.tags.title'|trans({}, 'admin') }}</h3>
+                            <p class="card-text text-muted small">
+                                {{ 'admin.settings.tags.description'|trans({}, 'admin') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_tag_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
     </div>
 
     {# Info Alert #}
-    {{ _fa_alert.render({ variant: 'info', class: 'mt-4', title: 'admin.settings.info_title'|trans({}, 'admin'), body: 'admin.settings.info_text'|trans({}, 'admin') }) }}
+    {{ _fa_alert.render({ variant: 'info', class: 'mt-2', title: 'admin.settings.info_title'|trans({}, 'admin'), body: 'admin.settings.info_text'|trans({}, 'admin') }) }}
 {% endblock %}
