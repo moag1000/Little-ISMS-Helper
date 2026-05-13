@@ -119,7 +119,7 @@ final class VvtExportOverdueRule extends AbstractGlobalAlvaHintRule
         $result = $this->entityManager->createQueryBuilder()
             ->select('MAX(a.createdAt)')
             ->from(AuditLog::class, 'a')
-            ->innerJoin(User::class, 'u', 'WITH', 'u.email = a.userName')
+            ->innerJoin(User::class, 'u', 'ON', 'u.email = a.userName')
             ->andWhere('u.tenant = :tenant')
             ->andWhere('a.entityType = :entityType')
             ->andWhere('a.action = :action')

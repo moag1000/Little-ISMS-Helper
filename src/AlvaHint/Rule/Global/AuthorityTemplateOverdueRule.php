@@ -128,7 +128,7 @@ final class AuthorityTemplateOverdueRule extends AbstractGlobalAlvaHintRule
         $result = $this->entityManager->createQueryBuilder()
             ->select('COUNT(a.id)')
             ->from(AuditLog::class, 'a')
-            ->innerJoin(User::class, 'u', 'WITH', 'u.email = a.userName')
+            ->innerJoin(User::class, 'u', 'ON', 'u.email = a.userName')
             ->andWhere('u.tenant = :tenant')
             ->andWhere('a.action = :action')
             ->andWhere('a.entityId = :breachId OR a.entityId IS NULL')

@@ -80,7 +80,7 @@ final class GdprSectionCoverageCheck implements PolicyWizardCheckInterface
             $count = (int) $this->documentRepository->createQueryBuilder('d')
                 ->select('COUNT(s.id)')
                 ->innerJoin('d.generatedFromTemplate', 't')
-                ->innerJoin(DocumentSection::class, 's', 'WITH', 's.document = d')
+                ->innerJoin(DocumentSection::class, 's', 'ON', 's.document = d')
                 ->where('d.tenant = :tenant')
                 ->andWhere('d.isArchived = false')
                 ->andWhere('t.topic = :isoTopic')
