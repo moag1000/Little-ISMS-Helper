@@ -292,6 +292,8 @@ class QuickFixController extends AbstractController
         }
 
         $fixed = 0;
+        $skippedGlobal = 0;
+        $perEntityErrors = [];
         try {
             // Pick the first tenant as target — in single-tenant deployments
             // this is always the correct one. In multi-tenant we still assign
@@ -302,30 +304,56 @@ class QuickFixController extends AbstractController
             $targetTenant = $tenantRepo->findOneBy([]);
 
             if ($targetTenant !== null) {
+                // GLOBAL_CATALOGUE_ENTITIES have tenant_id=NULL by design (e.g.
+                // NotificationTemplate). findAllOrphanedEntities() already
+                // excludes them, but we also count any that slip through so we
+                // can surface a "skipped: N global catalogue rows" message.
+                $globalClasses = $dataIntegrity->getGlobalCatalogueEntityClasses();
+
                 $orphaned = $dataIntegrity->findAllOrphanedEntities();
                 foreach ($orphaned as $type => $entities) {
                     foreach ($entities as $entity) {
                         if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
                             continue;
                         }
-                        $entity->setTenant($targetTenant);
-                        $auditLogger->logCustom(
-                            'quick_fix.repair.orphan_assigned',
-                            (new \ReflectionClass($entity))->getShortName(),
-                            (int) $entity->getId(),
-                            ['tenant_id' => null],
-                            ['tenant_id' => $targetTenant->getId(), 'tenant_name' => $targetTenant->getName()],
-                            sprintf(
-                                'QuickFix: orphan %s#%d assigned to tenant %s',
+
+                        // Safety guard: skip any globally-scoped entity.
+                        if (in_array($entity::class, $globalClasses, true)) {
+                            $skippedGlobal++;
+                            continue;
+                        }
+
+                        try {
+                            $entity->setTenant($targetTenant);
+                            $auditLogger->logCustom(
+                                'quick_fix.repair.orphan_assigned',
                                 (new \ReflectionClass($entity))->getShortName(),
                                 (int) $entity->getId(),
-                                $targetTenant->getName(),
-                            ),
-                        );
-                        $fixed++;
+                                ['tenant_id' => null],
+                                ['tenant_id' => $targetTenant->getId(), 'tenant_name' => $targetTenant->getName()],
+                                sprintf(
+                                    'QuickFix: orphan %s#%d assigned to tenant %s',
+                                    (new \ReflectionClass($entity))->getShortName(),
+                                    (int) $entity->getId(),
+                                    $targetTenant->getName(),
+                                ),
+                            );
+                            $fixed++;
+                        } catch (\Throwable $e) {
+                            // Roll back this entity's change so the EM stays clean.
+                            $em->refresh($entity);
+                            $perEntityErrors[] = sprintf(
+                                '%s#%d: %s',
+                                (new \ReflectionClass($entity))->getShortName(),
+                                (int) $entity->getId(),
+                                $e->getMessage(),
+                            );
+                        }
                     }
                 }
-                $em->flush();
+                if ($fixed > 0) {
+                    $em->flush();
+                }
             }
         } finally {
             if ($wasEnabled) {
@@ -334,9 +362,14 @@ class QuickFixController extends AbstractController
         }
 
         $this->addFlash('success', sprintf(
-            '%d verwaiste Entität(en) dem Standard-Mandanten zugewiesen.',
+            '%d verwaiste Entität(en) dem Standard-Mandanten zugewiesen%s.',
             $fixed,
+            $skippedGlobal > 0 ? sprintf(' (%d globale Katalog-Einträge übersprungen)', $skippedGlobal) : '',
         ));
+
+        foreach ($perEntityErrors as $errMsg) {
+            $this->addFlash('warning', 'Orphan-Repair übersprungen: ' . $errMsg);
+        }
         return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
     }
 
@@ -491,6 +524,8 @@ class QuickFixController extends AbstractController
         $totalOrphans = 0;
         $totalMismatches = 0;
         $totalDuplicates = 0;
+        $totalSkippedGlobal = 0;
+        $allEntityErrors = [];
 
         try {
             // Step 1 — Orphans
@@ -498,25 +533,49 @@ class QuickFixController extends AbstractController
             /** @var \App\Entity\Tenant|null $targetTenant */
             $targetTenant = $tenantRepo->findOneBy([]);
             if ($targetTenant !== null) {
+                // Entities with tenant_id=NULL by design (global catalogues) must
+                // never be reassigned — doing so causes UniqueConstraintViolationException
+                // when multiple seeded rows share the same unique key.
+                $globalClasses = $dataIntegrity->getGlobalCatalogueEntityClasses();
+
                 $orphaned = $dataIntegrity->findAllOrphanedEntities();
                 foreach ($orphaned as $type => $entities) {
                     foreach ($entities as $entity) {
                         if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
                             continue;
                         }
-                        $entity->setTenant($targetTenant);
-                        $auditLogger->logCustom(
-                            'quick_fix.repair.orphan_assigned',
-                            (new \ReflectionClass($entity))->getShortName(),
-                            (int) $entity->getId(),
-                            ['tenant_id' => null],
-                            ['tenant_id' => $targetTenant->getId()],
-                            sprintf('QuickFix/all: orphan %s#%d → tenant %d', (new \ReflectionClass($entity))->getShortName(), (int) $entity->getId(), (int) $targetTenant->getId()),
-                        );
-                        $totalOrphans++;
+
+                        // Safety guard: skip globally-scoped catalogue entities.
+                        if (in_array($entity::class, $globalClasses, true)) {
+                            $totalSkippedGlobal++;
+                            continue;
+                        }
+
+                        try {
+                            $entity->setTenant($targetTenant);
+                            $auditLogger->logCustom(
+                                'quick_fix.repair.orphan_assigned',
+                                (new \ReflectionClass($entity))->getShortName(),
+                                (int) $entity->getId(),
+                                ['tenant_id' => null],
+                                ['tenant_id' => $targetTenant->getId()],
+                                sprintf('QuickFix/all: orphan %s#%d → tenant %d', (new \ReflectionClass($entity))->getShortName(), (int) $entity->getId(), (int) $targetTenant->getId()),
+                            );
+                            $totalOrphans++;
+                        } catch (\Throwable $e) {
+                            $em->refresh($entity);
+                            $allEntityErrors[] = sprintf(
+                                '%s#%d: %s',
+                                (new \ReflectionClass($entity))->getShortName(),
+                                (int) $entity->getId(),
+                                $e->getMessage(),
+                            );
+                        }
                     }
                 }
-                $em->flush();
+                if ($totalOrphans > 0) {
+                    $em->flush();
+                }
             }
 
             // Step 2 — Tenant mismatches
@@ -567,12 +626,22 @@ class QuickFixController extends AbstractController
             }
         }
 
+        $globalNote = $totalSkippedGlobal > 0
+            ? sprintf(', %d globale Katalog-Einträge übersprungen', $totalSkippedGlobal)
+            : '';
+
         $this->addFlash('success', sprintf(
-            'Alle Repairs abgeschlossen: %d Orphan(s) zugewiesen, %d Mismatch(es) behoben, %d Duplikat(e) bereinigt.',
+            'Alle Repairs abgeschlossen: %d Orphan(s) zugewiesen, %d Mismatch(es) behoben, %d Duplikat(e) bereinigt%s.',
             $totalOrphans,
             $totalMismatches,
             $totalDuplicates,
+            $globalNote,
         ));
+
+        foreach ($allEntityErrors as $errMsg) {
+            $this->addFlash('warning', 'Orphan-Repair übersprungen: ' . $errMsg);
+        }
+
         return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
     }
 }
