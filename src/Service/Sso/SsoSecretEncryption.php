@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * The encryption key MUST remain stable across deployments — rotating
  * %kernel.secret% would render existing secrets unreadable.
  */
-final class SsoSecretEncryption
+final class SsoSecretEncryption implements SecretEncryptionInterface
 {
     private const CTX = 'lismsh-sso-v1';
 
