@@ -1,0 +1,89 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+
+{% block admin_title %}{{ 'admin.api_rate_limits.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_settings_index') }}">{{ 'admin.settings.title'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.api_rate_limits.title'|trans({}, 'admin') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'speedometer2', label: 'API' },
+        title: 'admin.api_rate_limits.title'|trans({}, 'admin'),
+        subtitle: 'admin.api_rate_limits.subtitle'|trans({}, 'admin'),
+    }) }}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-speedometer text-warning" aria-hidden="true"></i>
+                        {{ 'admin.api_rate_limits.title'|trans({}, 'admin') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    <form method="post" action="{{ path('admin_settings_api_rate_limits') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_api_rate_limits') }}">
+
+                        <div class="mb-4">
+                            {{ _fa_cyber.text('rate_limit_per_minute', {
+                                id: 'rate_limit_per_minute',
+                                label: 'admin.api_rate_limits.rate_limit_per_minute.label'|trans({}, 'admin'),
+                                value: current.rate_limit_per_minute,
+                                type: 'number',
+                                help: 'admin.api_rate_limits.rate_limit_per_minute.help'|trans({}, 'admin'),
+                                attrs: 'min="0" max="100000"'
+                            }) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ _fa_cyber.text('burst_limit', {
+                                id: 'burst_limit',
+                                label: 'admin.api_rate_limits.burst_limit.label'|trans({}, 'admin'),
+                                value: current.burst_limit,
+                                type: 'number',
+                                help: 'admin.api_rate_limits.burst_limit.help'|trans({}, 'admin'),
+                                attrs: 'min="0" max="10000"'
+                            }) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ _fa_cyber.text('exclude_routes_regex', {
+                                id: 'exclude_routes_regex',
+                                label: 'admin.api_rate_limits.exclude_routes_regex.label'|trans({}, 'admin'),
+                                value: current.exclude_routes_regex,
+                                placeholder: '^/api/health|^/api/metrics',
+                                help: 'admin.api_rate_limits.exclude_routes_regex.help'|trans({}, 'admin')
+                            }) }}
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('admin_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                            </a>
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'admin.settings.help'|trans({}, 'admin') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <p class="small mb-0">{{ 'admin.api_rate_limits.help_text'|trans({}, 'admin') }}</p>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
