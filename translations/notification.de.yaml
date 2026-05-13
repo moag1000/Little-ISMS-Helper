@@ -1,6 +1,6 @@
 # Notification domain — DE
 # Sprint 6a: Backend error + audit-event labels.
-# UI keys (rule CRUD, channel forms, bell center) are added in Sprint-6b.
+# Sprint 6b: UI keys (rule CRUD, channel forms, bell center).
 
 notification:
     audit:
@@ -22,3 +22,193 @@ notification:
         webhook_internal_ip: 'Webhook-URL zeigt auf eine interne oder reservierte IP-Adresse (SSRF-Schutz aktiv).'
         invalid_event_type: 'Der angegebene Ereignistyp ist ungültig oder nicht unterstützt.'
         template_not_found: 'Die angegebene Benachrichtigungsvorlage wurde nicht gefunden.'
+
+    # Sprint 6b: Rule CRUD
+    rule:
+        index:
+            title: 'Benachrichtigungsregeln'
+            subtitle: 'Regeln definieren, welche Ereignisse eine Benachrichtigung auslösen und über welche Kanäle.'
+        show:
+            title: 'Regel anzeigen'
+            details: 'Regeldetails'
+            evaluation_log: 'Ausführungsprotokoll (letzte 10)'
+            no_channels: 'Keine Kanäle zugewiesen'
+            no_deliveries: 'Noch keine Zustellungen für diese Regel.'
+        new:
+            title: 'Neue Benachrichtigungsregel'
+            subtitle: 'Legen Sie fest, welches Ereignis eine Benachrichtigung auslöst und über welche Kanäle.'
+        edit:
+            title: 'Regel bearbeiten: %name%'
+        empty:
+            title: 'Noch keine Regeln vorhanden'
+            body: 'Erstellen Sie Ihre erste Benachrichtigungsregel, um über wichtige Ereignisse informiert zu werden.'
+        field:
+            name: 'Name'
+            name_placeholder: 'z. B. Kritischer Vorfall – sofortige Benachrichtigung'
+            event_type: 'Ereignistyp'
+            event_type_placeholder: 'Ereignistyp auswählen…'
+            severity_filter: 'Schweregrad-Filter'
+            channels: 'Benachrichtigungskanäle'
+            conditions: 'Zusatzbedingungen'
+            is_active: 'Regel aktiv'
+            evaluation_count: 'Auswertungen'
+            created_at: 'Erstellt am'
+            last_evaluated: 'Zuletzt ausgewertet'
+        help:
+            name: 'Ein eindeutiger Name für diese Regel (max. 120 Zeichen).'
+            event_type: 'Das Ereignis, das die Auswertung dieser Regel auslöst.'
+            severity_filter: 'Optional: Regel nur für einen bestimmten Schweregrad aktivieren.'
+            channels: 'Mindestens einen aktiven Kanal auswählen.'
+            conditions: 'Optionale Zusatzbedingungen (Feld / Operator / Wert). Leer = immer auslösen.'
+            is_active: 'Deaktivierte Regeln werden vom Evaluator übersprungen.'
+        action:
+            new: 'Neue Regel'
+            create: 'Regel erstellen'
+            enable: 'Aktivieren'
+            disable: 'Deaktivieren'
+        flash:
+            created: 'Regel „%name%" wurde erstellt.'
+            updated: 'Regel „%name%" wurde aktualisiert.'
+            deleted: 'Regel „%name%" wurde gelöscht.'
+            enabled: 'Regel „%name%" wurde aktiviert.'
+            disabled: 'Regel „%name%" wurde deaktiviert.'
+        confirm:
+            delete: 'Regel wirklich unwiderruflich löschen?'
+
+    # Sprint 6b: Channel CRUD
+    channel:
+        index:
+            title: 'Benachrichtigungskanäle'
+            subtitle: 'Konfigurieren Sie E-Mail-, Webhook- und In-App-Kanäle für ausgehende Benachrichtigungen.'
+        new:
+            title: 'Neuer Benachrichtigungskanal'
+            subtitle: 'Kanal einrichten und anschliessend verifizieren.'
+        edit:
+            title: 'Kanal bearbeiten: %name%'
+        show:
+            not_verified: 'Nicht verifiziert'
+            not_verified_hint: 'Dieser Kanal wurde noch nicht verifiziert. Klicken Sie auf „Verifizieren", um die Erreichbarkeit zu testen.'
+            verified_at: 'Zuletzt verifiziert: %date%'
+        empty:
+            title: 'Noch keine Kanäle vorhanden'
+            body: 'Legen Sie einen Kanal an, bevor Sie Regeln konfigurieren.'
+        field:
+            name: 'Kanalname'
+            name_placeholder: 'z. B. IT-Security E-Mail'
+            type: 'Kanaltyp'
+            config: 'Konfiguration (JSON)'
+            secret: 'HMAC-Signatur-Geheimnis'
+            secret_placeholder: 'Nur ausfüllen, um Geheimnis zu setzen oder zu ändern'
+            is_active: 'Kanal aktiv'
+            verified_at: 'Verifiziert'
+        type:
+            email: 'E-Mail'
+            webhook: 'Webhook'
+            in_app: 'In-App'
+        help:
+            name: 'Ein eindeutiger Name für diesen Kanal.'
+            type: 'Kanaltyp bestimmt die Zustellmethode.'
+            config: 'JSON-Konfiguration z. B. {"recipients": ["admin@firma.de"]} für E-Mail oder {"url": "https://hooks.example.com/…"} für Webhook.'
+            config_examples: 'Beispiele'
+            config_email_example: '{"recipients": ["admin@example.com"], "from": "noreply@example.com"}'
+            secret: 'Optionaler HMAC-SHA256-Schlüssel für Webhook-Signaturen. Wird verschlüsselt gespeichert.'
+            secret_edit_hint: 'Leer lassen, um das bestehende Geheimnis beizubehalten.'
+            is_active: 'Inaktive Kanäle werden bei der Zustellung übersprungen.'
+        action:
+            new: 'Neuer Kanal'
+            create: 'Kanal anlegen'
+            verify: 'Verifizieren'
+        flash:
+            created: 'Kanal „%name%" wurde erstellt.'
+            updated: 'Kanal „%name%" wurde aktualisiert.'
+            deleted: 'Kanal „%name%" wurde gelöscht.'
+            verified: 'Kanal „%name%" wurde als verifiziert markiert.'
+        confirm:
+            delete: 'Kanal wirklich löschen? Zugehörige Regeln verlieren diesen Kanal.'
+
+    # Sprint 6b: Delivery log fields
+    delivery:
+        field:
+            channel: 'Kanal'
+            status: 'Status'
+            attempted_at: 'Zeitpunkt'
+            retries: 'Wiederholungen'
+
+    # Sprint 6b: Template gallery
+    template:
+        index:
+            title: 'Tier-1 Vorlagen'
+            subtitle: 'Vorkonfigurierte Benachrichtigungsregeln für häufige Compliance-Szenarien. Einfach anwenden und anpassen.'
+        category:
+            incident: 'Vorfälle'
+            compliance: 'Compliance'
+            sla: 'SLA-Überwachung'
+            privacy: 'Datenschutz'
+        empty:
+            title: 'Keine Vorlagen verfügbar'
+            body: 'Momentan sind keine globalen Vorlagen vorhanden. Bitte einen Administrator kontaktieren.'
+        action:
+            apply: 'Anwenden'
+            gallery: 'Vorlagen-Galerie'
+        flash:
+            applied: 'Vorlage „%template%" wurde als neue Regel übernommen. Bitte prüfen und aktivieren.'
+            no_tenant: 'Kein Mandant zugeordnet – Vorlage kann nicht übernommen werden.'
+        desc:
+            incident_high_severity: 'Löst bei Vorfällen mit Schweregrad Hoch oder Kritisch sofort eine Benachrichtigung aus.'
+            data_breach_72h: 'Gemäss Art. 33 DSGVO innerhalb von 72 Stunden nach Entdeckung einer Datenpanne benachrichtigen.'
+            risk_critical: 'Benachrichtigt, sobald ein Risiko den Kritisch-Schwellwert überschreitet.'
+            control_overdue: 'Erinnert an überfällige Massnahmen-Nachweise.'
+            document_approval: 'Informiert Genehmiger über ausstehende Dokument-Freigaben.'
+            audit_finding: 'Meldet neue Audit-Feststellungen an Verantwortliche.'
+
+    # Sprint 6b: Bell
+    bell:
+        label: 'Benachrichtigungen'
+        mark_all_read: 'Alle als gelesen markieren'
+        view_all: 'Alle anzeigen'
+        no_new: 'Keine neuen Benachrichtigungen'
+        marked_all_read: 'Alle Benachrichtigungen als gelesen markiert.'
+
+    # Sprint 6b: Notification center
+    center:
+        title: 'Benachrichtigungs-Center'
+        subtitle: 'Alle eingegangenen In-App-Benachrichtigungen im Überblick.'
+        tab:
+            all: 'Alle'
+        empty:
+            title: 'Keine Benachrichtigungen'
+            body: 'Aktuell sind keine Benachrichtigungen vorhanden.'
+            severity: 'Keine Benachrichtigungen mit Schweregrad „%severity%".'
+        badge:
+            new: 'Neu'
+
+    # Sprint 6b: Severity labels
+    severity:
+        all: 'Alle Schweregrade'
+        low: 'Niedrig'
+        medium: 'Mittel'
+        high: 'Hoch'
+        critical: 'Kritisch'
+
+    # Sprint 6b: Event type labels
+    event_type:
+        data_breach_created: 'Datenpanne: erstellt'
+        data_breach_severity_changed: 'Datenpanne: Schweregrad geändert'
+        incident_created: 'Vorfall: erstellt'
+        incident_severity_high: 'Vorfall: Schweregrad Hoch/Kritisch'
+        risk_created: 'Risiko: erstellt'
+        risk_score_critical: 'Risiko: kritischer Score'
+        control_overdue: 'Massnahme: überfällig'
+        control_evidence_expired: 'Massnahme: Nachweis abgelaufen'
+        audit_finding_created: 'Audit-Feststellung: erstellt'
+        document_approval_required: 'Dokument: Genehmigung erforderlich'
+
+    # Sprint 6b: Condition builder
+    condition:
+        field: 'Feld'
+        field_placeholder: 'z. B. severity'
+        operator: 'Operator'
+        value: 'Wert'
+        value_placeholder: 'z. B. high'
+        action:
+            add: 'Bedingung hinzufügen'

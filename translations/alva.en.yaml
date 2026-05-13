@@ -246,3 +246,7 @@ alva_hint:
         title: 'Evidence outdated — review required'
         body: '%count% controls are flagged with outdated evidence because linked documents were updated. Please process the reviewer queue to maintain ISO 27001 Cl. 7.5.3 compliance.'
         action: 'Open reviewer queue'
+    no_notification_channel:
+        title: 'No active notification channels configured'
+        body: 'The notifications module is active but no active channels (email / webhook / in-app) are configured for this tenant. Without a channel, all notification rules run silently — no alert reaches recipients. ISO 27001 Cl. 9.1 requires monitorable processes.'
+        action: 'Create channel'

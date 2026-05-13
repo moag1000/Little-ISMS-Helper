@@ -1,6 +1,6 @@
 # Notification domain — EN
 # Sprint 6a: Backend error + audit-event labels.
-# UI keys (rule CRUD, channel forms, bell center) are added in Sprint-6b.
+# Sprint 6b: UI keys (rule CRUD, channel forms, bell center).
 
 notification:
     audit:
@@ -22,3 +22,193 @@ notification:
         webhook_internal_ip: 'Webhook URL resolves to an internal or reserved IP address (SSRF protection active).'
         invalid_event_type: 'The specified event type is invalid or not supported.'
         template_not_found: 'The specified notification template was not found.'
+
+    # Sprint 6b: Rule CRUD
+    rule:
+        index:
+            title: 'Notification Rules'
+            subtitle: 'Rules define which events trigger a notification and over which channels.'
+        show:
+            title: 'View Rule'
+            details: 'Rule Details'
+            evaluation_log: 'Evaluation Log (last 10)'
+            no_channels: 'No channels assigned'
+            no_deliveries: 'No deliveries recorded for this rule yet.'
+        new:
+            title: 'New Notification Rule'
+            subtitle: 'Define which event triggers a notification and choose the delivery channels.'
+        edit:
+            title: 'Edit Rule: %name%'
+        empty:
+            title: 'No rules yet'
+            body: 'Create your first notification rule to get alerted about important events.'
+        field:
+            name: 'Name'
+            name_placeholder: 'e.g. Critical incident — immediate alert'
+            event_type: 'Event type'
+            event_type_placeholder: 'Select an event type…'
+            severity_filter: 'Severity filter'
+            channels: 'Notification channels'
+            conditions: 'Additional conditions'
+            is_active: 'Rule active'
+            evaluation_count: 'Evaluations'
+            created_at: 'Created'
+            last_evaluated: 'Last evaluated'
+        help:
+            name: 'A unique name for this rule (max 120 characters).'
+            event_type: 'The event that triggers evaluation of this rule.'
+            severity_filter: 'Optional: restrict this rule to a specific severity level.'
+            channels: 'Select at least one active channel.'
+            conditions: 'Optional extra conditions (field / operator / value). Empty = always fire.'
+            is_active: 'Disabled rules are skipped by the evaluator.'
+        action:
+            new: 'New Rule'
+            create: 'Create Rule'
+            enable: 'Enable'
+            disable: 'Disable'
+        flash:
+            created: 'Rule "%name%" has been created.'
+            updated: 'Rule "%name%" has been updated.'
+            deleted: 'Rule "%name%" has been deleted.'
+            enabled: 'Rule "%name%" has been enabled.'
+            disabled: 'Rule "%name%" has been disabled.'
+        confirm:
+            delete: 'Permanently delete this rule?'
+
+    # Sprint 6b: Channel CRUD
+    channel:
+        index:
+            title: 'Notification Channels'
+            subtitle: 'Configure email, webhook, and in-app channels for outbound notifications.'
+        new:
+            title: 'New Notification Channel'
+            subtitle: 'Set up a channel and verify its connectivity afterwards.'
+        edit:
+            title: 'Edit Channel: %name%'
+        show:
+            not_verified: 'Not verified'
+            not_verified_hint: 'This channel has not been verified yet. Click "Verify" to test connectivity.'
+            verified_at: 'Last verified: %date%'
+        empty:
+            title: 'No channels yet'
+            body: 'Create a channel before configuring rules.'
+        field:
+            name: 'Channel name'
+            name_placeholder: 'e.g. IT Security Email'
+            type: 'Channel type'
+            config: 'Configuration (JSON)'
+            secret: 'HMAC signature secret'
+            secret_placeholder: 'Fill in only to set or change the secret'
+            is_active: 'Channel active'
+            verified_at: 'Verified'
+        type:
+            email: 'Email'
+            webhook: 'Webhook'
+            in_app: 'In-App'
+        help:
+            name: 'A unique name for this channel.'
+            type: 'The channel type determines the delivery method.'
+            config: 'JSON configuration e.g. {"recipients": ["admin@company.com"]} for email or {"url": "https://hooks.example.com/…"} for webhook.'
+            config_examples: 'Examples'
+            config_email_example: '{"recipients": ["admin@example.com"], "from": "noreply@example.com"}'
+            secret: 'Optional HMAC-SHA256 key for webhook signatures. Stored encrypted.'
+            secret_edit_hint: 'Leave blank to keep the existing secret.'
+            is_active: 'Inactive channels are skipped during delivery.'
+        action:
+            new: 'New Channel'
+            create: 'Create Channel'
+            verify: 'Verify'
+        flash:
+            created: 'Channel "%name%" has been created.'
+            updated: 'Channel "%name%" has been updated.'
+            deleted: 'Channel "%name%" has been deleted.'
+            verified: 'Channel "%name%" has been marked as verified.'
+        confirm:
+            delete: 'Delete this channel? Associated rules will lose this channel.'
+
+    # Sprint 6b: Delivery log fields
+    delivery:
+        field:
+            channel: 'Channel'
+            status: 'Status'
+            attempted_at: 'Timestamp'
+            retries: 'Retries'
+
+    # Sprint 6b: Template gallery
+    template:
+        index:
+            title: 'Tier-1 Templates'
+            subtitle: 'Pre-configured notification rules for common compliance scenarios. Apply and customise.'
+        category:
+            incident: 'Incidents'
+            compliance: 'Compliance'
+            sla: 'SLA Monitoring'
+            privacy: 'Privacy'
+        empty:
+            title: 'No templates available'
+            body: 'No global templates are available at the moment. Please contact an administrator.'
+        action:
+            apply: 'Apply'
+            gallery: 'Template Gallery'
+        flash:
+            applied: 'Template "%template%" has been applied as a new rule. Please review and enable it.'
+            no_tenant: 'No tenant assigned — template cannot be applied.'
+        desc:
+            incident_high_severity: 'Fires immediately for incidents with High or Critical severity.'
+            data_breach_72h: 'Notifies within 72 hours of a data breach discovery per GDPR Art. 33.'
+            risk_critical: 'Alerts when a risk crosses the critical score threshold.'
+            control_overdue: 'Reminds about overdue control evidence submissions.'
+            document_approval: 'Informs approvers about pending document approvals.'
+            audit_finding: 'Reports new audit findings to responsible parties.'
+
+    # Sprint 6b: Bell
+    bell:
+        label: 'Notifications'
+        mark_all_read: 'Mark all as read'
+        view_all: 'View all'
+        no_new: 'No new notifications'
+        marked_all_read: 'All notifications marked as read.'
+
+    # Sprint 6b: Notification center
+    center:
+        title: 'Notification Center'
+        subtitle: 'All received in-app notifications at a glance.'
+        tab:
+            all: 'All'
+        empty:
+            title: 'No notifications'
+            body: 'No notifications at the moment.'
+            severity: 'No notifications with severity "%severity%".'
+        badge:
+            new: 'New'
+
+    # Sprint 6b: Severity labels
+    severity:
+        all: 'All severities'
+        low: 'Low'
+        medium: 'Medium'
+        high: 'High'
+        critical: 'Critical'
+
+    # Sprint 6b: Event type labels
+    event_type:
+        data_breach_created: 'Data breach: created'
+        data_breach_severity_changed: 'Data breach: severity changed'
+        incident_created: 'Incident: created'
+        incident_severity_high: 'Incident: high/critical severity'
+        risk_created: 'Risk: created'
+        risk_score_critical: 'Risk: critical score'
+        control_overdue: 'Control: overdue'
+        control_evidence_expired: 'Control: evidence expired'
+        audit_finding_created: 'Audit finding: created'
+        document_approval_required: 'Document: approval required'
+
+    # Sprint 6b: Condition builder
+    condition:
+        field: 'Field'
+        field_placeholder: 'e.g. severity'
+        operator: 'Operator'
+        value: 'Value'
+        value_placeholder: 'e.g. high'
+        action:
+            add: 'Add condition'
