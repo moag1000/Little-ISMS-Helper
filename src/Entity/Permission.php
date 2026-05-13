@@ -35,6 +35,12 @@ class Permission implements Stringable
     #[ORM\Column(length: 50)]
     private ?string $action = null; // e.g., 'view', 'create', 'edit', 'delete', 'approve', 'export'
 
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $module = null; // matches config/modules.yaml key, e.g. 'risks', 'privacy', 'audits'
+
+    #[ORM\Column(length: 120, nullable: true)]
+    private ?string $frameworkReference = null; // e.g. 'ISO 27001 Cl. 6.1.2', 'GDPR Art. 33 + 34'
+
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isSystemPermission = false;
 
@@ -130,6 +136,28 @@ class Permission implements Stringable
     public function getRoles(): Collection
     {
         return $this->roles;
+    }
+
+    public function getModule(): ?string
+    {
+        return $this->module;
+    }
+
+    public function setModule(?string $module): static
+    {
+        $this->module = $module;
+        return $this;
+    }
+
+    public function getFrameworkReference(): ?string
+    {
+        return $this->frameworkReference;
+    }
+
+    public function setFrameworkReference(?string $frameworkReference): static
+    {
+        $this->frameworkReference = $frameworkReference;
+        return $this;
     }
 
     public function addRole(Role $role): static
