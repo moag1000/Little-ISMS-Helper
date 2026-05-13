@@ -867,17 +867,18 @@
         </div>
         {% endif %}
 
-        {# V3 W2-H6: Admin Mega-Menu IA-restructure.
-         #
-         # The 29-item / 7-section structure duplicated AdminHubCatalog.
-         # New IA: prominent Hub-card on top + 4 max-4-item quick-jump
-         # sub-sections (User-Mgmt, Tenant-Mgmt, Module-Config, Settings).
-         # Anything not in the quick-jump list is reachable via the Hub. #}
+        {# Admin Panel — slimmed to 2 entries only (feature/admin-mega-menu-slim-plus-backlinks).
+         # All 36 sub-pages are reachable via Admin Hub; the Hub card directory is the
+         # source of truth (AdminHubCatalog.php). Quick-jump sub-sections for User-Mgmt,
+         # Tenant-Mgmt, Module-Config and Settings were removed to avoid redundancy and
+         # keep the mega-menu lean. The Dashboard retains its own Quick-Actions column
+         # for power-user shortcuts. Do NOT re-add section groups here — update
+         # AdminHubCatalog.php instead. ROLE_ADMIN gate preserved. #}
         {% if is_granted('ROLE_ADMIN') %}
         <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="admin" role="menu" aria-label="{{ 'nav.mega.category.admin'|trans({}, 'nav') }}">
             <div class="mega-menu-panel-content">
                 {# Top-level Hub-card — primary admin entry-point.
-                   AdminHubCatalog renders the full 29-item directory. #}
+                   AdminHubCatalog renders the full 36-item directory. #}
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'admin.section.overview'|trans({}, 'admin') }}</h3>
                     <ul class="mega-menu-links">
@@ -894,142 +895,6 @@
                                 <span class="mega-menu-link-title">{{ 'admin.nav.dashboard'|trans({}, 'admin') }}</span>
                             </div>
                         </a></li>
-                    </ul>
-                </div>
-
-                {# User-Mgmt (max 4) #}
-                <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'admin.section.quick.user_mgmt'|trans({}, 'admin') }}</h3>
-                    <ul class="mega-menu-links">
-                        <li><a href="{{ path('user_management_index') }}" class="{% if current_route starts with 'user_management_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.users'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('role_management_index') }}" class="{% if current_route starts with 'role_management_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--control" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.roles'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('permission_index') }}" class="{% if current_route starts with 'permission_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-key" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.permissions'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('admin_mfa_index') }}" class="{% if current_route starts with 'admin_mfa_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.mfa'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        {% if is_module_active('authentication') %}
-                        <li><a href="{{ path('admin_sso_index') }}" class="{% if current_route starts with 'admin_sso_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.sso'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-
-                {# Tenant-Mgmt (max 4) #}
-                <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'admin.section.quick.tenant_mgmt'|trans({}, 'admin') }}</h3>
-                    <ul class="mega-menu-links">
-                        <li><a href="{{ path('tenant_management_index') }}" class="{% if current_route starts with 'tenant_management_' and current_route != 'tenant_management_corporate_structure' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.tenants'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        {% if is_multi_tenant_environment %}
-                        <li><a href="{{ path('tenant_management_corporate_structure') }}" class="{% if current_route == 'tenant_management_corporate_structure' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.corporate_structure'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        {% endif %}
-                        <li><a href="{{ path('data_backup_index') }}" class="{% if current_route starts with 'data_backup' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-hdd" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.backup'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('admin_licensing_index') }}" class="{% if current_route starts with 'admin_licensing_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-stars" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.licensing'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                    </ul>
-                </div>
-
-                {# Module-Config (max 4) #}
-                <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'admin.section.quick.module_config'|trans({}, 'admin') }}</h3>
-                    <ul class="mega-menu-links">
-                        <li><a href="{{ path('admin_modules_index') }}" class="{% if current_route starts with 'admin_modules_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-puzzle" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.module_management'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('admin_compliance_index') }}" class="{% if current_route == 'admin_compliance_index' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.compliance_management'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('admin_compliance_import_upload') }}" class="{% if current_route starts with 'admin_compliance_import_' and current_route != 'admin_compliance_import_cancel' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.compliance_import'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('admin_tag_index') }}" class="{% if current_route starts with 'admin_tag' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-tags" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.tags'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                    </ul>
-                </div>
-
-                {# Settings (max 4) #}
-                <div class="mega-menu-section">
-                    <h3 class="mega-menu-section-title">{{ 'admin.section.quick.settings'|trans({}, 'admin') }}</h3>
-                    <ul class="mega-menu-links">
-                        <li><a href="{{ path('admin_settings_index') }}" class="{% if current_route starts with 'admin_settings_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-gear" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.settings'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('admin_kpi_threshold_index') }}" class="{% if current_route starts with 'admin_kpi_threshold' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-rulers" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.kpi_thresholds'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        <li><a href="{{ path('monitoring_health') }}" class="{% if current_route starts with 'monitoring_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-heart-pulse" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.system_health'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        {% if is_module_active('audits') %}
-                        <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i>
-                            <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'admin.nav.audit_log'|trans({}, 'admin') }}</span>
-                            </div>
-                        </a></li>
-                        {% endif %}
                     </ul>
                 </div>
             </div>
