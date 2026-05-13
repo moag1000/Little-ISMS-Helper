@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Command;
 
+use App\Repository\PermissionRepository;
 use App\Repository\RoleRepository;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -262,6 +263,103 @@ class SetupPermissionsCommandTest extends KernelTestCase
 
         $this->assertContains('kpi.export', $permissionNames, 'ROLE_CISO must have "kpi.export"');
         $this->assertContains('security_event.respond', $permissionNames, 'ROLE_CISO must have "security_event.respond"');
+    }
+
+    /**
+     * Asserts well-known permissions have non-null module AND frameworkReference after setup.
+     * Covers the backfill added in the feat(rbac) permission-rich-table sprint.
+     */
+    #[Test]
+    public function testWellKnownPermissionsHaveModuleAndFrameworkReference(): void
+    {
+        $kernel = self::bootKernel();
+        $application = new Application($kernel);
+
+        $command = $application->find('app:setup-permissions');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([]);
+
+        $this->assertSame(0, $commandTester->getStatusCode());
+
+        /** @var PermissionRepository $permissionRepository */
+        $permissionRepository = static::getContainer()->get(PermissionRepository::class);
+
+        $wellKnownKeys = [
+            'risk.view',
+            'risk.approve',
+            'risk_treatment_plan.approve',
+            'data_breach.notify_authority',
+            'dpia.approve',
+            'processing_activity.view',
+            'asset.view',
+            'audit.view',
+            'compliance.view',
+            'kpi.view',
+            'security_event.respond',
+            'policy.approve',
+        ];
+
+        foreach ($wellKnownKeys as $permName) {
+            $perm = $permissionRepository->findByName($permName);
+            $this->assertNotNull($perm, sprintf('Permission "%s" must exist after app:setup-permissions', $permName));
+            $this->assertNotNull(
+                $perm->getModule(),
+                sprintf('Permission "%s" must have a non-null module after backfill', $permName)
+            );
+            $this->assertNotNull(
+                $perm->getFrameworkReference(),
+                sprintf('Permission "%s" must have a non-null frameworkReference after backfill', $permName)
+            );
+        }
+    }
+
+    /**
+     * Asserts module slugs used in permissions match known config/modules.yaml keys.
+     */
+    #[Test]
+    public function testPermissionModuleSlugsAreValid(): void
+    {
+        $kernel = self::bootKernel();
+        $application = new Application($kernel);
+
+        $command = $application->find('app:setup-permissions');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([]);
+
+        $this->assertSame(0, $commandTester->getStatusCode());
+
+        /** @var PermissionRepository $permissionRepository */
+        $permissionRepository = static::getContainer()->get(PermissionRepository::class);
+
+        // Known valid module slugs from config/modules.yaml
+        $validModules = [
+            'core', 'assets', 'risks', 'controls', 'incidents', 'audits',
+            'training', 'reviews', 'bcm', 'compliance', 'authentication',
+            'audit_logging', 'privacy', 'nis2_dora', 'ai_governance',
+            'cloud_security', 'vulnerability_intel', 'marisk', 'tisax',
+            'quantitative_risk', 'notifications', 'eu_authority_reporting',
+            'tisax_isa', 'ai_act', 'cra_sbom', 'procedures', 'documents',
+            'suppliers', 'locations', 'persons', 'interested_parties',
+            'objectives', 'change_requests', 'patches', 'corrective_actions',
+            'evidence', 'workflows', 'risk_appetite', 'risk_treatment_plans',
+            'analytics', 'report_builder', 'scheduled_reports', 'portfolio_reports',
+        ];
+
+        $allPermissions = $permissionRepository->findAll();
+        foreach ($allPermissions as $perm) {
+            $module = $perm->getModule();
+            if ($module !== null) {
+                $this->assertContains(
+                    $module,
+                    $validModules,
+                    sprintf(
+                        'Permission "%s" has module "%s" which is not a valid config/modules.yaml key',
+                        $perm->getName(),
+                        $module
+                    )
+                );
+            }
+        }
     }
 
     /**

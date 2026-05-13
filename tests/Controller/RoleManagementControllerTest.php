@@ -274,6 +274,44 @@ class RoleManagementControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    // ========== RICH PERMISSIONS TABLE TESTS ==========
+
+    /**
+     * Asserts /en/admin/roles/new renders the rich permissions table with module + framework columns.
+     */
+    #[Test]
+    public function testNewFormRendersRichPermissionsTable(): void
+    {
+        $this->loginAsUser($this->adminUser);
+        $crawler = $this->client->request('GET', '/en/admin/roles/new');
+        $this->assertResponseIsSuccessful();
+
+        // The rich table must be present
+        $this->assertSelectorExists('#permissions-rich-table', 'Rich permissions table must be rendered on role-new page');
+
+        // Module column header must be present (English label from translations)
+        $this->assertSelectorTextContains('#permissions-rich-table thead', 'Module');
+
+        // Framework column header must be present
+        $this->assertSelectorTextContains('#permissions-rich-table thead', 'Framework');
+
+        // Action column header must be present
+        $this->assertSelectorTextContains('#permissions-rich-table thead', 'Action');
+    }
+
+    /**
+     * Asserts /en/admin/roles/{id}/edit renders the rich permissions table.
+     */
+    #[Test]
+    public function testEditFormRendersRichPermissionsTable(): void
+    {
+        $this->loginAsUser($this->adminUser);
+        $crawler = $this->client->request('GET', '/en/admin/roles/' . $this->testRole->getId() . '/edit');
+        $this->assertResponseIsSuccessful();
+
+        $this->assertSelectorExists('#permissions-rich-table', 'Rich permissions table must be rendered on role-edit page');
+    }
+
     // ========== EMPTY STATE TESTS ==========
 
     #[Test]
