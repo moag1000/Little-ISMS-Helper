@@ -76,6 +76,7 @@ admin:
         monitoring: 'Monitoring & Logs'
         navigation: Navigation
         data_management: 'Data Management'
+        integration_operations: 'Integration & Operations'
         licensing: Licensing
         platform:
             users_access: 'Platform · Users & Access'
@@ -1126,3 +1127,162 @@ industry_preset:
             priority: 'Priority'
             activate: 'Activate'
             optional: 'optional'
+
+# ── Notification Preferences ─────────────────────────────────────────────────
+notification_preferences:
+    title: 'Notification Preferences'
+    subtitle: 'Configure tenant-level notification defaults and delivery settings.'
+    saved: 'Notification preferences saved successfully.'
+    csrf_invalid: 'Invalid security token. Please try again.'
+    help_text: 'These settings define how and when notifications are delivered to users in this tenant. Individual users can override their own preferences in their profile.'
+    digest_enabled:
+        label: 'Enable notification digest'
+        help: 'Bundle multiple notifications into periodic digests instead of sending each one immediately.'
+    digest_frequency:
+        label: 'Digest frequency'
+        instant: 'Instant (send immediately)'
+        hourly: 'Hourly digest'
+        daily: 'Daily digest'
+    webhook_timeout:
+        label: 'Webhook timeout (seconds)'
+        help: 'Maximum time to wait for a webhook response before marking the delivery as failed (1-120 seconds).'
+    email_from_name:
+        label: 'Email sender name'
+        placeholder: 'e.g. ISMS Team'
+        help: 'The display name shown in the "From" field of outgoing notification emails. Leave empty to use the system default.'
+
+# ── API Rate Limits ───────────────────────────────────────────────────────────
+api_rate_limits:
+    title: 'API Rate Limits'
+    subtitle: 'Control the maximum number of API requests allowed per minute for this tenant.'
+    saved: 'API rate limit settings saved successfully.'
+    csrf_invalid: 'Invalid security token. Please try again.'
+    help_text: 'Rate limits protect the platform against abuse and ensure fair resource sharing. Set to 0 to disable rate limiting (not recommended in production).'
+    rate_limit_per_minute:
+        label: 'Requests per minute'
+        help: '0 = unlimited. 600 = 10 requests/second. Default for fair multi-tenant operation.'
+    burst_limit:
+        label: 'Burst limit'
+        help: 'Allow this many requests immediately before throttling begins. Useful for clients that batch requests at startup.'
+    exclude_routes_regex:
+        label: 'Exclude routes (regex)'
+        help: 'Regular expression matching route paths that are exempt from rate limiting (e.g. health-check, metrics). Leave empty to apply limits globally.'
+
+# ── Backup Settings ───────────────────────────────────────────────────────────
+backups:
+    title: 'Backup Settings'
+    subtitle: 'Configure automated backup schedule and data retention.'
+    saved: 'Backup settings saved successfully.'
+    csrf_invalid: 'Invalid security token. Please try again.'
+    help_text: 'These settings control how long backup files are kept and whether automated backups run on a schedule. The "Run now" trigger and Messenger dispatch are coming in Wave 2.'
+    settings_title: 'Backup Configuration'
+    wave2_note:
+        title: 'Wave 2 note'
+        body: 'The "Run backup now" button and automated Messenger-based execution will be available in Wave 2. These settings are saved and will be picked up once the scheduler is active.'
+    retention_days:
+        label: 'Retention period (days)'
+        help: 'Backup files older than this number of days will be automatically removed. Minimum 1, maximum 10 years (3650 days).'
+    schedule:
+        label: 'Backup schedule'
+        off: 'Off (manual only)'
+        daily: 'Daily'
+        weekly: 'Weekly'
+        help: 'When the Messenger scheduler is active (Wave 2), backups will run according to this schedule.'
+    storage_path:
+        label: 'Storage path (read-only)'
+        help: 'Configured via the BACKUP_STORAGE_PATH environment variable. Contact your system administrator to change this value.'
+
+# ── Fiscal Year ───────────────────────────────────────────────────────────────
+fiscal_year:
+    title: 'Fiscal Year Configuration'
+    subtitle: 'Set the financial year start month and reporting cadence for this tenant.'
+    saved: 'Fiscal year configuration saved successfully.'
+    csrf_invalid: 'Invalid security token. Please try again.'
+    help_text: 'The fiscal year start month controls how KPI dashboards, management reports, and compliance reviews are grouped. Changes take effect on the next report generation.'
+    start_month:
+        label: 'Fiscal year start month'
+        help: 'Select the first month of your financial/fiscal year. January (1) is the calendar default.'
+    quarterly_grouping:
+        label: 'Enable quarterly grouping'
+        help: 'When enabled, dashboards and reports group data into fiscal quarters aligned to your start month.'
+    reporting_cadence:
+        label: 'Default reporting cadence'
+        help: 'Determines how frequently management reports are generated by default.'
+        monthly: 'Monthly'
+        quarterly: 'Quarterly'
+        yearly: 'Yearly'
+    month:
+        january: 'January'
+        february: 'February'
+        march: 'March'
+        april: 'April'
+        may: 'May'
+        june: 'June'
+        july: 'July'
+        august: 'August'
+        september: 'September'
+        october: 'October'
+        november: 'November'
+        december: 'December'
+
+# ── Data Retention ────────────────────────────────────────────────────────────
+data_retention:
+    title: 'Data Retention Policies'
+    subtitle: 'Configure per-entity data retention periods and automatic deletion rules.'
+    saved: 'Data retention policies saved successfully.'
+    csrf_invalid: 'Invalid security token. Please try again.'
+    gdpr_cap_applied: 'One or more retention values exceeded the GDPR maximum and were automatically capped.'
+    warning:
+        title: 'Changes affect actual data deletion'
+        body: 'Enabling auto-delete will cause records older than the specified period to be permanently removed by the daily cron job (Wave 2). Review each setting carefully before saving. GDPR-relevant data categories are capped at their legal maximum.'
+    policies_title: 'Retention Policies by Entity Type'
+    col:
+        entity_type: 'Entity type'
+        retention_days: 'Retention (days)'
+        auto_delete: 'Auto-delete'
+        gdpr_cap: 'GDPR max'
+    entity:
+        asset: 'Assets'
+        risk: 'Risks'
+        incident: 'Incidents'
+        document: 'Documents'
+        processing_activity: 'Processing Activities'
+        audit_finding: 'Audit Findings'
+        workflow_instance: 'Workflow Instances'
+    gdpr_cap: 'Max %days% days'
+
+# ── Workflow SLA Defaults ─────────────────────────────────────────────────────
+workflow_slas:
+    title: 'Workflow SLA Defaults'
+    subtitle: 'Set default SLA durations (hours) for each workflow event type.'
+    saved: 'Workflow SLA defaults saved successfully.'
+    csrf_invalid: 'Invalid security token. Please try again.'
+    regulatory_minimum_enforced: 'One or more SLA values were below the regulatory minimum and were automatically adjusted.'
+    help_text: 'These SLA defaults will be used by the Sprint-6b SlaDeadlineMonitor (Wave 2) to generate deadline warnings and escalations. Regulatory minimums (GDPR Art. 33, ISO 27035) cannot be undercut.'
+    defaults_title: 'SLA Defaults by Event Type'
+    regulatory_badge: 'Regulatory'
+    wave2_note:
+        title: 'Wave 2 note'
+        body: 'The SlaDeadlineMonitor that evaluates these values is planned for Wave 2. Save your settings now — they will be activated automatically once the monitor is deployed.'
+    col:
+        event_type: 'Workflow event'
+        sla_hours: 'SLA (hours)'
+        regulatory_basis: 'Regulatory basis'
+    event:
+        data_breach: 'Data Breach Notification'
+        incident_high: 'Incident (High/Critical)'
+        incident_medium: 'Incident (Medium)'
+        incident_low: 'Incident (Low)'
+        risk_approval: 'Risk Treatment Approval'
+        policy_approval: 'Policy Approval'
+        dpia_review: 'DPIA Review'
+        audit_finding: 'Audit Finding Resolution'
+    basis:
+        data_breach: 'GDPR Art. 33 — 72 h supervisory authority notification'
+        incident_high: 'ISO 27035 — CISO response within 4 h'
+        incident_medium: 'ISO 27035 — CISO response within 72 h'
+        incident_low: 'ISO 27035 — standard handling'
+        risk_approval: 'ISO 27001 Clause 6.1.3 — treatment plan approval'
+        policy_approval: 'ISO 27001 Clause 5.2 — management review'
+        dpia_review: 'GDPR Art. 35/36 — DPA consultation'
+        audit_finding: 'ISO 27001 Clause 10.1 — nonconformity closure'
