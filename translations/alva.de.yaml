@@ -246,3 +246,7 @@ alva_hint:
         title: 'Nachweise sind veraltet — Überprüfung erforderlich'
         body: '%count% Controls sind als Nachweis-veraltet markiert, weil verknüpfte Dokumente aktualisiert wurden. Bitte die Prüf-Queue bearbeiten, um ISO 27001 Kl. 7.5.3 Compliance zu erhalten.'
         action: 'Prüf-Queue öffnen'
+    no_notification_channel:
+        title: 'Keine aktiven Benachrichtigungskanäle konfiguriert'
+        body: 'Das Benachrichtigungsmodul ist aktiv, aber für diesen Mandanten sind keine aktiven Kanäle (E-Mail / Webhook / In-App) eingerichtet. Ohne Kanal werden alle Benachrichtigungsregeln lautlos ausgeführt — kein Alert erreicht die Empfänger. ISO 27001 Kl. 9.1 erfordert überwachungsfähige Prozesse.'
+        action: 'Kanal anlegen'

@@ -1,0 +1,60 @@
+{% trans_default_domain 'notification' %}
+{#
+ # Sprint-6b Navbar Bell — shown only when notifications module is active.
+ # Managed by notification_bell_controller.js (polls /notifications/bell every 30s).
+ # Included in base.html.twig header (gated by is_module_active('notifications')).
+ #
+ # Note: The legacy _notification_bell.html.twig + notifications_controller.js remain
+ # active for in-memory notifications. This component provides the Sprint-6b backend
+ # polling for server-persisted NotificationDelivery rows.
+ #}
+{% if is_module_active('notifications') and is_granted('ROLE_USER') %}
+<div class="notification-bell"
+     data-controller="notification-bell"
+     data-notification-bell-poll-url-value="{{ path('app_notification_bell') }}"
+     data-notification-bell-center-url-value="{{ path('app_notification_center') }}"
+     data-notification-bell-mark-read-url-value="{{ path('app_notification_mark_read') }}"
+     data-notification-bell-interval-value="30000"
+     aria-label="{{ 'notification.bell.label'|trans }}">
+    <button type="button"
+            class="notification-bell-btn-header position-relative"
+            data-action="click->notification-bell#toggleDropdown"
+            data-notification-bell-target="button"
+            aria-label="{{ 'notification.bell.label'|trans }}"
+            aria-expanded="false"
+            aria-haspopup="true">
+        <i class="fa-icon fa-icon--ui-bell" aria-hidden="true"></i>
+        <span class="notification-badge d-none position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              data-notification-bell-target="badge"
+              aria-live="polite"
+              aria-atomic="true">
+            0
+        </span>
+    </button>
+
+    <div class="notification-bell-dropdown d-none"
+         data-notification-bell-target="dropdown"
+         role="menu"
+         aria-label="{{ 'notification.bell.label'|trans }}">
+        <div class="notification-bell-dropdown-header d-flex align-items-center justify-content-between p-2 border-bottom">
+            <span class="fw-semibold small">{{ 'notification.bell.label'|trans }}</span>
+            <a href="{{ path('app_notification_center') }}" class="btn btn-link btn-sm p-0">
+                {{ 'notification.bell.view_all'|trans }}
+            </a>
+        </div>
+        <div data-notification-bell-target="list" class="notification-bell-dropdown-body">
+            <p class="text-muted fst-italic small p-2 mb-0">{{ 'notification.bell.no_new'|trans }}</p>
+        </div>
+        <div class="notification-bell-dropdown-footer border-top p-2 text-center">
+            <form method="post"
+                  action="{{ path('app_notification_mark_read') }}"
+                  data-notification-bell-target="markReadForm">
+                <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_read') }}">
+                <button type="submit" class="btn btn-link btn-sm p-0">
+                    {{ 'notification.bell.mark_all_read'|trans }}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}

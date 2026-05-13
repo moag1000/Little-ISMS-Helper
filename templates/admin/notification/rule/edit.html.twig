@@ -1,0 +1,84 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'notification' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'notification.rule.edit.title'|trans({'%name%': rule.name}) }}{% endblock %}
+{% block admin_title %}{{ 'notification.rule.edit.title'|trans({'%name%': rule.name}) }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('admin_notification_rule_index') }}">{{ 'notification.rule.index.title'|trans }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ path('admin_notification_rule_show', { id: rule.id }) }}">{{ rule.name }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'common.edit'|trans({}, 'messages') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'bell', label: 'Rule' },
+        title: 'notification.rule.edit.title'|trans({'%name%': rule.name}),
+        subtitle: rule.eventType,
+        actions: [
+            {
+                label: 'common.cancel'|trans({}, 'messages'),
+                variant: 'ghost',
+                icon: 'arrow-left',
+                href: path('admin_notification_rule_show', { id: rule.id })
+            }
+        ]
+    }) }}
+
+    <section class="fa-section">
+        <div class="fa-section__body">
+            {{ form_start(form, { attr: { class: 'needs-validation', novalidate: 'novalidate' } }) }}
+                {{ form_errors(form) }}
+
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        {{ form_row(form.name) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.eventType) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.severityFilter) }}
+                    </div>
+                    <div class="col-12">
+                        {{ form_row(form.channels) }}
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">{{ 'notification.rule.field.conditions'|trans }}</label>
+                        <p class="text-muted small">{{ 'notification.rule.help.conditions'|trans }}</p>
+                        <div data-controller="notification-condition-builder"
+                             data-notification-condition-builder-prototype-value="__condition_index__">
+                            {{ form_widget(form.conditions) }}
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary mt-2"
+                                    data-action="click->notification-condition-builder#addRow">
+                                <i class="fa-icon fa-icon--plus" aria-hidden="true"></i>
+                                {{ 'notification.condition.action.add'|trans }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        {{ form_row(form.isActive) }}
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-icon fa-icon--save" aria-hidden="true"></i>
+                        {{ 'common.save'|trans({}, 'messages') }}
+                    </button>
+                    <a href="{{ path('admin_notification_rule_show', { id: rule.id }) }}" class="btn btn-outline-secondary">
+                        {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'notification' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% block title %}{{ 'notification.template.index.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'notification.template.index.title'|trans }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('admin_notification_rule_index') }}">{{ 'notification.rule.index.title'|trans }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'notification.template.index.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'grid', label: 'Templates' },
+        title: 'notification.template.index.title'|trans,
+        subtitle: 'notification.template.index.subtitle'|trans,
+        actions: [
+            {
+                label: 'notification.rule.index.title'|trans,
+                variant: 'ghost',
+                icon: 'arrow-left',
+                href: path('admin_notification_rule_index')
+            }
+        ]
+    }) }}
+
+    {% if templates is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'notification.template.empty.title'|trans,
+            body: 'notification.template.empty.body'|trans
+        }) }}
+    {% else %}
+        {% set categoryLabels = {
+            'incident':   'notification.template.category.incident'|trans,
+            'compliance': 'notification.template.category.compliance'|trans,
+            'sla':        'notification.template.category.sla'|trans,
+            'privacy':    'notification.template.category.privacy'|trans
+        } %}
+        {% set currentCategory = null %}
+
+        {% for template in templates %}
+            {% if template.category != currentCategory %}
+                {% if currentCategory is not null %}
+                    </div>{# close row #}
+                    </section>
+                {% endif %}
+                {% set currentCategory = template.category %}
+                <section class="fa-section mb-4">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">{{ categoryLabels[template.category] ?? template.category }}</h2>
+                    </div>
+                    <div class="fa-section__body">
+                    <div class="row g-3">
+            {% endif %}
+
+            <div class="col-md-4">
+                <article class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex align-items-start gap-2 mb-2">
+                            <i class="fa-icon fa-icon--bell text-primary mt-1" aria-hidden="true"></i>
+                            <h3 class="h6 mb-0">{{ template.name }}</h3>
+                        </div>
+                        <p class="text-muted small flex-grow-1">
+                            {{ ('notification.template.desc.' ~ template.templateKey)|trans({}, 'notification', null, template.name) }}
+                        </p>
+                        <div class="d-flex align-items-center justify-content-between mt-3">
+                            <span class="badge bg-secondary">{{ template.defaultEventType }}</span>
+                            <form method="post"
+                                  action="{{ path('admin_notification_template_apply', { id: template.id }) }}"
+                                  data-controller="notification-template-picker">
+                                <input type="hidden" name="_token"
+                                       value="{{ csrf_token('notification_template_apply_' ~ template.id) }}">
+                                <button type="submit"
+                                        class="btn btn-sm btn-primary"
+                                        data-notification-template-picker-target="button">
+                                    <i class="fa-icon fa-icon--plus" aria-hidden="true"></i>
+                                    {{ 'notification.template.action.apply'|trans }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        {% endfor %}
+
+        {% if templates is not empty %}
+            </div>{# close row #}
+            </div>{# close fa-section__body #}
+            </section>
+        {% endif %}
+    {% endif %}
+{% endblock %}

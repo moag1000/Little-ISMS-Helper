@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'notification' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'notification.center.title'|trans }}{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        {{ _fa_page_header.render({
+            badge: { icon: 'bell', label: 'Notifications' },
+            title: 'notification.center.title'|trans,
+            subtitle: 'notification.center.subtitle'|trans,
+            actions: [
+                {
+                    label: 'notification.bell.mark_all_read'|trans,
+                    variant: 'ghost',
+                    icon: 'check-all',
+                    href: '#',
+                    attr: {
+                        'data-turbo': 'false',
+                        onclick: "document.getElementById('mark-read-form').submit(); return false;"
+                    }
+                }
+            ]
+        }) }}
+
+        <form id="mark-read-form" method="post" action="{{ path('app_notification_mark_read') }}" class="d-none">
+            <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_read') }}">
+        </form>
+
+        {# Severity tabs #}
+        {% set tabs = [
+            { label: 'notification.center.tab.all'|trans, key: 'all' },
+            { label: 'notification.severity.critical'|trans, key: 'critical' },
+            { label: 'notification.severity.high'|trans, key: 'high' },
+            { label: 'notification.severity.medium'|trans, key: 'medium' },
+            { label: 'notification.severity.low'|trans, key: 'low' }
+        ] %}
+
+        <div class="d-flex flex-wrap gap-2 mb-4" role="tablist">
+            {% for i, tab in tabs %}
+                {{ _fa_filter_chip.render(tab.label, {
+                    active: i == 0,
+                    type: 'button',
+                    attr: {
+                        'data-tab': tab.key,
+                        role: 'tab',
+                        onclick: "showTab('" ~ tab.key ~ "')"
+                    }
+                }) }}
+            {% endfor %}
+        </div>
+
+        {# All deliveries tab #}
+        <div id="tab-all">
+            {% if deliveries is empty %}
+                {{ _fa_empty_state.render({
+                    mood: 'happy',
+                    title: 'notification.center.empty.title'|trans,
+                    body: 'notification.center.empty.body'|trans
+                }) }}
+            {% else %}
+                {% for delivery in deliveries %}
+                    {% set payload = delivery.responsePayload ?? {} %}
+                    {% set isUnread = lastSeen is null or (delivery.attemptedAt is not null and delivery.attemptedAt > lastSeen) %}
+                    <div class="card mb-2 {{ isUnread ? 'border-primary' : '' }}" data-severity="{{ payload.severity ?? 'other' }}">
+                        <div class="card-body py-2">
+                            <div class="d-flex align-items-start gap-3">
+                                {% if isUnread %}
+                                    <span class="badge bg-primary mt-1">{{ 'notification.center.badge.new'|trans }}</span>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold">{{ payload.rule_name ?? delivery.rule.name ?? '—' }}</div>
+                                    <div class="text-muted small">{{ payload.event_type ?? '—' }}</div>
+                                </div>
+                                <div class="text-muted small text-end">
+                                    {{ delivery.attemptedAt ? delivery.attemptedAt|date('Y-m-d H:i') : '—' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {# Severity-grouped tabs (hidden initially) #}
+        {% for severity, items in grouped %}
+            {% if severity != 'other' %}
+                <div id="tab-{{ severity }}" class="d-none">
+                    {% if items is empty %}
+                        <p class="text-muted fst-italic">{{ 'notification.center.empty.severity'|trans({'%severity%': ('notification.severity.' ~ severity)|trans}) }}</p>
+                    {% else %}
+                        {% for delivery in items %}
+                            {% set payload = delivery.responsePayload ?? {} %}
+                            <div class="card mb-2">
+                                <div class="card-body py-2">
+                                    <div class="fw-semibold">{{ payload.rule_name ?? '—' }}</div>
+                                    <div class="text-muted small">{{ delivery.attemptedAt ? delivery.attemptedAt|date('Y-m-d H:i') : '—' }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <script>
+    function showTab(key) {
+        ['all', 'critical', 'high', 'medium', 'low'].forEach(function(t) {
+            var el = document.getElementById('tab-' + t);
+            if (el) el.classList.toggle('d-none', t !== key);
+        });
+        document.querySelectorAll('[data-tab]').forEach(function(btn) {
+            btn.classList.toggle('fa-filter-chip--active', btn.dataset.tab === key);
+        });
+    }
+    </script>
+{% endblock %}

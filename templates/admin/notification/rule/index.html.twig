@@ -1,0 +1,127 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'notification' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'notification.rule.index.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'notification.rule.index.title'|trans }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'notification.rule.index.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'bell', label: 'Notifications' },
+        title: 'notification.rule.index.title'|trans,
+        subtitle: 'notification.rule.index.subtitle'|trans,
+        actions: [
+            {
+                label: 'notification.rule.action.new'|trans,
+                variant: 'primary',
+                icon: 'plus',
+                href: path('admin_notification_rule_new')
+            },
+            {
+                label: 'notification.template.action.gallery'|trans,
+                variant: 'ghost',
+                icon: 'grid',
+                href: path('admin_notification_template_index')
+            }
+        ]
+    }) }}
+
+    {% if rules is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'notification.rule.empty.title'|trans,
+            body: 'notification.rule.empty.body'|trans,
+            actions: [
+                {
+                    label: 'notification.rule.action.new'|trans,
+                    href: path('admin_notification_rule_new'),
+                    variant: 'primary'
+                }
+            ]
+        }) }}
+    {% else %}
+        <section class="fa-section">
+            <div class="fa-section__body">
+                <div class="table-responsive">
+                    <table class="fa-table" aria-label="{{ 'notification.rule.index.title'|trans }}">
+                        <thead>
+                            <tr>
+                                <th>{{ 'notification.rule.field.name'|trans }}</th>
+                                <th>{{ 'notification.rule.field.event_type'|trans }}</th>
+                                <th>{{ 'notification.rule.field.severity_filter'|trans }}</th>
+                                <th>{{ 'notification.rule.field.is_active'|trans }}</th>
+                                <th class="text-end">{{ 'notification.rule.field.evaluation_count'|trans }}</th>
+                                <th>{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for rule in rules %}
+                            <tr>
+                                <td>
+                                    <a href="{{ path('admin_notification_rule_show', { id: rule.id }) }}" class="fw-semibold">
+                                        {{ rule.name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ rule.eventType }}</span>
+                                </td>
+                                <td>
+                                    {% if rule.severityFilter %}
+                                        <span class="badge bg-warning text-dark">{{ ('notification.severity.' ~ rule.severityFilter)|trans }}</span>
+                                    {% else %}
+                                        <span class="text-muted fst-italic">{{ 'notification.severity.all'|trans }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if rule.isActive %}
+                                        <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">{{ rule.evaluationCount }}</td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ path('admin_notification_rule_edit', { id: rule.id }) }}"
+                                           class="btn btn-sm btn-outline-secondary"
+                                           title="{{ 'common.edit'|trans({}, 'messages') }}">
+                                            <i class="fa-icon fa-icon--edit" aria-hidden="true"></i>
+                                        </a>
+                                        <form method="post"
+                                              action="{{ path('admin_notification_rule_toggle', { id: rule.id }) }}"
+                                              class="d-inline">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('notification_rule_toggle_' ~ rule.id) }}">
+                                            <button type="submit"
+                                                    class="btn btn-sm {{ rule.isActive ? 'btn-outline-warning' : 'btn-outline-success' }}"
+                                                    title="{{ (rule.isActive ? 'notification.rule.action.disable' : 'notification.rule.action.enable')|trans }}">
+                                                <i class="fa-icon {{ rule.isActive ? 'fa-icon--pause' : 'fa-icon--play' }}" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                        <form method="post"
+                                              action="{{ path('admin_notification_rule_delete', { id: rule.id }) }}"
+                                              class="d-inline"
+                                              onsubmit="return confirm('{{ 'notification.rule.confirm.delete'|trans|e('js') }}')">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('notification_rule_delete_' ~ rule.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    title="{{ 'common.delete'|trans({}, 'messages') }}">
+                                                <i class="fa-icon fa-icon--trash" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}
