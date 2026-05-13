@@ -11,6 +11,8 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -22,14 +24,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:load-bsi-grundschutz-requirements',
     description: '[DEPRECATED — use app:load-bsi-grundschutz-catalogue] Legacy BSI ISMS Grundschutz loader (Compat-Layer).'
 )]
-class LoadBsiItGrundschutzRequirementsCommand
+class LoadBsiItGrundschutzRequirementsCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
+        parent::__construct();
     }
 
-    public function __invoke(SymfonyStyle $symfonyStyle): int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $symfonyStyle = new SymfonyStyle($input, $output);
         // Create or get BSI IT-Grundschutz framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);

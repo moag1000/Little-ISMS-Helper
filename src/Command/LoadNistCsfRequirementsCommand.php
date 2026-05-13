@@ -4,27 +4,36 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use Symfony\Component\Console\Attribute\Option;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-nist-csf-requirements',
     description: 'Load NIST Cybersecurity Framework 2.0 with ISO 27001 control mappings'
 )]
-class LoadNistCsfRequirementsCommand
+class LoadNistCsfRequirementsCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
+        parent::__construct();
     }
 
-    public function __invoke(#[Option(name: 'update', shortcut: 'u', description: 'Update existing requirements instead of skipping them')]
-    bool $update = false, ?SymfonyStyle $symfonyStyle = null): int
+    protected function configure(): void
     {
+        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $update = (bool) $input->getOption('update');
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $updateMode = $update;
 
         $symfonyStyle->title('Loading NIST CSF 2.0 Requirements');

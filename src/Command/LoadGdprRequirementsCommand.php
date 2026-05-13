@@ -11,20 +11,24 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-gdpr-requirements',
     description: 'Load GDPR (General Data Protection Regulation) requirements with ISMS data mappings'
 )]
-class LoadGdprRequirementsCommand
+class LoadGdprRequirementsCommand extends Command
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
+        parent::__construct();
     }
 
-    public function __invoke(SymfonyStyle $symfonyStyle): int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $symfonyStyle = new SymfonyStyle($input, $output);
         // Create or get GDPR framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'GDPR']);

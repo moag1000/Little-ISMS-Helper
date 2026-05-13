@@ -9,6 +9,8 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Yaml\Yaml;
@@ -37,8 +39,9 @@ final class LoadMrisRequirementsCommand extends Command
         parent::__construct();
     }
 
-    public function __invoke(SymfonyStyle $io): int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
         $path = $this->projectDir . '/fixtures/frameworks/mris-v1.5.yaml';
         if (!is_file($path)) {
             $io->error(sprintf('MRIS fixture not found: %s', $path));
