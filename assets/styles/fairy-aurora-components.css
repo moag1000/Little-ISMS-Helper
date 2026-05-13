@@ -1126,8 +1126,8 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 }
 
 @keyframes fa-alert-enter {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 .fa-alert.is-dismissing {
     animation: fa-alert-exit var(--t-base) var(--ease-in-out) forwards;
