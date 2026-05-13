@@ -785,7 +785,7 @@ class WorkflowControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/en/workflow/definition/new');
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('workflow.action.create')->form([
+        $form = $crawler->selectButton('Create workflow')->form([
             'workflow[name]'        => 'Builder-Redirect Test ' . uniqid(),
             'workflow[description]' => 'Created by automated test',
             'workflow[entityType]'  => 'Risk',
@@ -819,7 +819,7 @@ class WorkflowControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId() . '/edit');
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('workflow.action.update')->form([
+        $form = $crawler->selectButton('Update Workflow')->form([
             'workflow[name]'        => $this->testWorkflow->getName() . ' (edited)',
             'workflow[description]' => 'Edited by automated test',
             'workflow[entityType]'  => 'Risk',
