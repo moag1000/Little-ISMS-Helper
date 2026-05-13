@@ -220,6 +220,8 @@
                 {# Notification Bell (moved to header) #}
                 {% if not is_setup_route %}
                     {% include '_components/_notification_bell.html.twig' %}
+                    {# Sprint-6b F3: Backend-polled notification bell (notifications module) #}
+                    {% include '_components/_navbar_notification_bell.html.twig' %}
                 {% endif %}
 
                 {# V3 W2-H7: header-alva removed.

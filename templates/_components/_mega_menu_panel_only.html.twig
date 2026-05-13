@@ -500,6 +500,41 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.alva_inbox'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {% if is_module_active('notifications') %}
+                        <li><a href="{{ path('app_notification_center') }}" class="{% if current_route starts with 'app_notification_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--ui-bell" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'notification.center.title'|trans({}, 'notification') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'notification.center.subtitle'|trans({}, 'notification') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+                {# Sprint-6b F3: Notification admin links (ROLE_MANAGER + notifications module) #}
+                {% if is_granted('ROLE_MANAGER') and is_module_active('notifications') %}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'notification.rule.index.title'|trans({}, 'notification') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('admin_notification_rule_index') }}" class="{% if current_route starts with 'admin_notification_rule_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--bell" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'notification.rule.index.title'|trans({}, 'notification') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('admin_notification_channel_index') }}" class="{% if current_route starts with 'admin_notification_channel_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--send" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'notification.channel.index.title'|trans({}, 'notification') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('admin_notification_template_index') }}" class="{% if current_route starts with 'admin_notification_template_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--grid" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'notification.template.index.title'|trans({}, 'notification') }}</span>
+                            </div>
+                        </a></li>
                     </ul>
                 </div>
                 {% endif %}
