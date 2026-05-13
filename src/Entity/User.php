@@ -177,6 +177,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $competencies = null;
 
+    // -------------------------------------------------------------------------
+    // Sprint 6a — F3 Notification preferences
+    // -------------------------------------------------------------------------
+
+    #[ORM\Column(name: 'in_app_notifications_enabled')]
+    private bool $inAppNotificationsEnabled = true;
+
+    #[ORM\Column(name: 'last_seen_notifications', nullable: true)]
+    private ?DateTimeImmutable $lastSeenNotifications = null;
+
     #[ORM\ManyToOne(targetEntity: Tenant::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Tenant $tenant = null;
@@ -758,6 +768,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCompetencies(?array $competencies): static
     {
         $this->competencies = $competencies;
+        return $this;
+    }
+
+    // -------------------------------------------------------------------------
+    // Sprint 6a — F3 Notification preferences
+    // -------------------------------------------------------------------------
+
+    public function isInAppNotificationsEnabled(): bool
+    {
+        return $this->inAppNotificationsEnabled;
+    }
+
+    public function setInAppNotificationsEnabled(bool $inAppNotificationsEnabled): static
+    {
+        $this->inAppNotificationsEnabled = $inAppNotificationsEnabled;
+        return $this;
+    }
+
+    public function getLastSeenNotifications(): ?DateTimeImmutable
+    {
+        return $this->lastSeenNotifications;
+    }
+
+    public function setLastSeenNotifications(?DateTimeImmutable $lastSeenNotifications): static
+    {
+        $this->lastSeenNotifications = $lastSeenNotifications;
         return $this;
     }
 }
