@@ -64,6 +64,7 @@ workflow:
         recent_instances: 'Recent Instances'
         basic_information: 'Basic Information'
         danger_zone: 'Danger Zone'
+        steps_builder: 'Workflow Steps'
         information: Information
         actions: Actions
         statistics: Statistics
@@ -154,9 +155,10 @@ workflow:
         entity_type: 'Select the entity type for which this workflow will be used'
         is_active: 'Deactivated workflows cannot be started'
         delete_warning: 'Warning: Deleting this definition will also delete all associated workflow instances'
+        steps_builder_intro: 'Define each step''s approver, deadline, and action type. Drag to reorder.'
     info:
-        steps_note_title: 'About Workflow Steps'
-        steps_note_text: 'Define the sequential steps that must be completed for this workflow. Each step can have assignees, due dates, and completion criteria.'
+        steps_note_title: 'Next: Define Workflow Steps'
+        steps_note_text: 'In the next step, you will define the workflow''s individual steps (approvers, deadlines, actions). You will be taken directly to the step builder once you save this definition.'
     confirm:
         delete: 'Are you sure you want to delete this workflow? This action cannot be undone.'
         cancel: 'Are you sure you want to cancel this workflow instance?'

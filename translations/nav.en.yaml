@@ -65,6 +65,7 @@ nav:
     risk_treatment_plans: 'Treatment Plans'
     crisis_team: 'Crisis Team'
     workflows: Workflows
+    workflow_definitions: 'Workflow Definitions'
     training: Training
     management_review: 'Management Review'
     admin_portal: 'Admin Portal'
@@ -169,6 +170,7 @@ nav:
             documents: 'Policies, procedures, and documentation'
             change_requests: 'Change management workflow'
             workflows: 'Automated business workflows'
+            workflow_definitions: 'Manage workflow templates and steps'
             incidents: 'Security incident management'
             vulnerabilities: 'Vulnerability tracking'
             patches: 'Patch management system'
