@@ -144,6 +144,145 @@
         </div>
     </div>
 
+    {# ── Integration & Operations ─────────────────────────────────────── #}
+    <h2 class="h6 text-muted text-uppercase fw-semibold mb-3 mt-4">
+        <i class="fa-icon fa-icon--nav-gear me-1" aria-hidden="true"></i>
+        {{ 'admin.section.integration_operations'|trans({}, 'admin') }}
+    </h2>
+    <div class="row g-4 mb-4">
+        {# Notification Preferences #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--info-tint); border: 1px solid var(--info);">
+                            <i class="fa-icon fa-icon--nav-bell text-info fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h2 class="card-title h5">{{ 'admin.notification_preferences.title'|trans({}, 'admin') }}</h2>
+                            <p class="card-text text-muted small">{{ 'admin.notification_preferences.subtitle'|trans({}, 'admin') }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_settings_notifications') }}" class="fa-cyber-btn fa-cyber-btn--info fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# API Rate Limits #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--warning-tint); border: 1px solid var(--warning);">
+                            <i class="fa-icon fa-icon--nav-speedometer text-warning fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h2 class="card-title h5">{{ 'admin.api_rate_limits.title'|trans({}, 'admin') }}</h2>
+                            <p class="card-text text-muted small">{{ 'admin.api_rate_limits.subtitle'|trans({}, 'admin') }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_settings_api_rate_limits') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Backup Settings #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--primary-tint); border: 1px solid var(--primary);">
+                            <i class="fa-icon fa-icon--nav-database text-primary fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h2 class="card-title h5">{{ 'admin.backups.title'|trans({}, 'admin') }}</h2>
+                            <p class="card-text text-muted small">{{ 'admin.backups.subtitle'|trans({}, 'admin') }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_settings_backups') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Fiscal Year #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--success-tint); border: 1px solid var(--success);">
+                            <i class="fa-icon fa-icon--nav-calendar text-success fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h2 class="card-title h5">{{ 'admin.fiscal_year.title'|trans({}, 'admin') }}</h2>
+                            <p class="card-text text-muted small">{{ 'admin.fiscal_year.subtitle'|trans({}, 'admin') }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_settings_fiscal_year') }}" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Data Retention #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--danger-tint); border: 1px solid var(--danger);">
+                            <i class="fa-icon fa-icon--nav-archive text-danger fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h2 class="card-title h5">{{ 'admin.data_retention.title'|trans({}, 'admin') }}</h2>
+                            <p class="card-text text-muted small">{{ 'admin.data_retention.subtitle'|trans({}, 'admin') }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_settings_data_retention') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        {# Workflow SLA Defaults #}
+        <div class="col-md-6 col-lg-4">
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="p-3 rounded me-3" style="background-color: var(--warning-tint); border: 1px solid var(--warning);">
+                            <i class="fa-icon fa-icon--nav-clock text-warning fs-2" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h2 class="card-title h5">{{ 'admin.workflow_slas.title'|trans({}, 'admin') }}</h2>
+                            <p class="card-text text-muted small">{{ 'admin.workflow_slas.subtitle'|trans({}, 'admin') }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_settings_workflow_slas') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
     {# Info Alert #}
     {{ _fa_alert.render({ variant: 'info', class: 'mt-4', title: 'admin.settings.info_title'|trans({}, 'admin'), body: 'admin.settings.info_text'|trans({}, 'admin') }) }}
 {% endblock %}
