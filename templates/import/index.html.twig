@@ -68,15 +68,15 @@
         {% if recentBatches|length > 0 %}
             <section class="fa-section">
                 <div class="fa-section__header">
-                    <h2 class="fa-section__title">{{ 'import.page.title'|trans({}, 'data_import') }}</h2>
+                    <h2 class="fa-section__title">{{ 'import.index.recent_batches'|trans({}, 'data_import') }}</h2>
                 </div>
                 <div class="fa-section__body">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle" aria-label="{{ 'import.page.title'|trans({}, 'data_import') }}">
+                        <table class="table table-hover align-middle" aria-label="{{ 'import.index.recent_batches'|trans({}, 'data_import') }}">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">{{ 'import.wizard.step.upload.title'|trans({}, 'data_import') }}</th>
+                                    <th scope="col">{{ 'import.index.col_file'|trans({}, 'data_import') }}</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">{{ 'import.index.col_mode'|trans({}, 'data_import') }}</th>
                                     <th scope="col">{{ 'import.delta.total'|trans({}, 'data_import') }}</th>

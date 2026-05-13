@@ -93,7 +93,9 @@ import:
 
     index:
         col_mode: 'Modus'
+        col_file: 'Datei'
         action_details: 'Details'
+        recent_batches: 'Letzte Imports'
 
     diff:
         col_row: 'Zeile'
