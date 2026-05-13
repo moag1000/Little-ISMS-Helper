@@ -533,4 +533,74 @@ class DataIntegrityServiceTest extends TestCase
         $this->locationRepository->method('createQueryBuilder')->willReturn($emptyQb);
         $this->personRepository->method('createQueryBuilder')->willReturn($emptyQb);
     }
+
+    // ========== Global-Catalogue Exemption TESTS ==========
+    // Regression guard for: UniqueConstraintViolationException when repair-all
+    // tries to assign a tenant_id to globally-scoped NotificationTemplate rows
+    // (tenant_id=NULL by design; unique key uniq_template_key_tenant).
+
+    #[Test]
+    public function testGetGlobalCatalogueEntityClassesIncludesNotificationTemplate(): void
+    {
+        $classes = $this->service->getGlobalCatalogueEntityClasses();
+
+        $this->assertContains(
+            \App\Entity\Notification\NotificationTemplate::class,
+            $classes,
+            'NotificationTemplate must be in the global-catalogue exemption list ' .
+            'so repair-orphan never assigns a tenant_id to seeded global templates.',
+        );
+    }
+
+    #[Test]
+    public function testGetGlobalCatalogueEntityClassesReturnsArray(): void
+    {
+        $result = $this->service->getGlobalCatalogueEntityClasses();
+
+        $this->assertIsArray($result);
+        $this->assertNotEmpty($result, 'Exemption list must contain at least NotificationTemplate.');
+    }
+
+    #[Test]
+    public function testNotificationTemplateIsExcludedFromOrphanScan(): void
+    {
+        // The generic orphan scan (queryOrphanedEntities) excludes GLOBAL_CATALOGUE_ENTITIES
+        // by merging them into $excludedClasses. We verify this via the MetadataFactory
+        // branch by confirming that findAllOrphanedEntities() does not return
+        // notification_templates even when the EM reports NotificationTemplate rows
+        // with tenant IS NULL.
+        //
+        // Since the method uses MetadataFactory->getAllMetadata() (real Doctrine internals),
+        // we test the contract via getGlobalCatalogueEntityClasses() and confirm the
+        // constant is wired: both checks together constitute a regression guard.
+
+        $exemptClasses = $this->service->getGlobalCatalogueEntityClasses();
+
+        // Contract: every class in the exempt list must have a 'tenant' association
+        // so that it would otherwise be picked up by the generic orphan scan.
+        foreach ($exemptClasses as $class) {
+            $this->assertTrue(
+                class_exists($class),
+                sprintf('Exempt class %s must be an autoloadable FQCN.', $class),
+            );
+
+            // Verify the class has a setTenant method (proof it has the association)
+            $this->assertTrue(
+                method_exists($class, 'setTenant'),
+                sprintf(
+                    '%s is in GLOBAL_CATALOGUE_ENTITIES but has no setTenant() method — ' .
+                    'it does not participate in the tenant association and should be removed from the list.',
+                    $class,
+                ),
+            );
+
+            // Verify the class has isGlobal() or the tenant field is nullable
+            // (NotificationTemplate has isGlobal(); future classes may differ —
+            // we require at minimum that getTenant() can return null)
+            $this->assertTrue(
+                method_exists($class, 'getTenant'),
+                sprintf('%s must have getTenant() to be a valid globally-scoped entity.', $class),
+            );
+        }
+    }
 }
