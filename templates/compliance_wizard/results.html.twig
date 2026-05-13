@@ -166,6 +166,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {# Progress Bar #}
                     {{ _fa_progress.render({ value: category.score, tone: category.score >= 80 ? 'success' : (category.score >= 60 ? 'warning' : 'danger'), class: 'mb-3' }) }}
 
