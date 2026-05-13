@@ -74,6 +74,7 @@ compliance_import:
         back_to_admin: "Back to compliance admin"
     history:
         title: "Import history"
+        sessions_list: "All import sessions"
         empty: "No import sessions recorded yet."
         table_aria: "List of import sessions"
         uploaded: "uploaded"
@@ -102,6 +103,7 @@ compliance_import:
             error: "Error"
         detail:
             title: "Import detail — %filename%"
+            file_info: "File details"
             format: "Format"
             size: "File size"
             uploaded_at: "Uploaded at"
