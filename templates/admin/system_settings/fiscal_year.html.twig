@@ -1,0 +1,113 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block admin_title %}{{ 'admin.fiscal_year.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_settings_index') }}">{{ 'admin.settings.title'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.fiscal_year.title'|trans({}, 'admin') }}</li>
+{% endblock %}
+
+{% set month_names = {
+    1: 'admin.fiscal_year.month.january'|trans({}, 'admin'),
+    2: 'admin.fiscal_year.month.february'|trans({}, 'admin'),
+    3: 'admin.fiscal_year.month.march'|trans({}, 'admin'),
+    4: 'admin.fiscal_year.month.april'|trans({}, 'admin'),
+    5: 'admin.fiscal_year.month.may'|trans({}, 'admin'),
+    6: 'admin.fiscal_year.month.june'|trans({}, 'admin'),
+    7: 'admin.fiscal_year.month.july'|trans({}, 'admin'),
+    8: 'admin.fiscal_year.month.august'|trans({}, 'admin'),
+    9: 'admin.fiscal_year.month.september'|trans({}, 'admin'),
+    10: 'admin.fiscal_year.month.october'|trans({}, 'admin'),
+    11: 'admin.fiscal_year.month.november'|trans({}, 'admin'),
+    12: 'admin.fiscal_year.month.december'|trans({}, 'admin')
+} %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'calendar3', label: 'Finance' },
+        title: 'admin.fiscal_year.title'|trans({}, 'admin'),
+        subtitle: 'admin.fiscal_year.subtitle'|trans({}, 'admin'),
+    }) }}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-calendar text-primary" aria-hidden="true"></i>
+                        {{ 'admin.fiscal_year.title'|trans({}, 'admin') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    <form method="post" action="{{ path('admin_settings_fiscal_year') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_fiscal_year') }}">
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold" for="financial_year_start_month">
+                                {{ 'admin.fiscal_year.start_month.label'|trans({}, 'admin') }}
+                            </label>
+                            <select class="form-select" id="financial_year_start_month" name="financial_year_start_month">
+                                {% for month_num, month_name in month_names %}
+                                    <option value="{{ month_num }}" {% if current.financial_year_start_month == month_num %}selected{% endif %}>
+                                        {{ month_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">{{ 'admin.fiscal_year.start_month.help'|trans({}, 'admin') }}</div>
+                        </div>
+
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   id="quarterly_grouping" name="quarterly_grouping" value="1"
+                                   {% if current.quarterly_grouping %}checked{% endif %}>
+                            <label class="form-check-label fw-semibold" for="quarterly_grouping">
+                                {{ 'admin.fiscal_year.quarterly_grouping.label'|trans({}, 'admin') }}
+                            </label>
+                            <div class="form-text">{{ 'admin.fiscal_year.quarterly_grouping.help'|trans({}, 'admin') }}</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold" for="reporting_cadence">
+                                {{ 'admin.fiscal_year.reporting_cadence.label'|trans({}, 'admin') }}
+                            </label>
+                            <select class="form-select" id="reporting_cadence" name="reporting_cadence">
+                                <option value="monthly" {% if current.reporting_cadence == 'monthly' %}selected{% endif %}>
+                                    {{ 'admin.fiscal_year.reporting_cadence.monthly'|trans({}, 'admin') }}
+                                </option>
+                                <option value="quarterly" {% if current.reporting_cadence == 'quarterly' %}selected{% endif %}>
+                                    {{ 'admin.fiscal_year.reporting_cadence.quarterly'|trans({}, 'admin') }}
+                                </option>
+                                <option value="yearly" {% if current.reporting_cadence == 'yearly' %}selected{% endif %}>
+                                    {{ 'admin.fiscal_year.reporting_cadence.yearly'|trans({}, 'admin') }}
+                                </option>
+                            </select>
+                            <div class="form-text">{{ 'admin.fiscal_year.reporting_cadence.help'|trans({}, 'admin') }}</div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('admin_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                            </a>
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'admin.settings.help'|trans({}, 'admin') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <p class="small mb-0">{{ 'admin.fiscal_year.help_text'|trans({}, 'admin') }}</p>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
