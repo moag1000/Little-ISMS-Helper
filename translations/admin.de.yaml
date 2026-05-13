@@ -278,6 +278,45 @@ admin:
         info_text: 'Änderungen werden sofort wirksam und betreffen alle Mandanten'
         info: Information
         help: Hilfe
+        sso:
+            title: 'SSO-Identity-Provider'
+            description: 'OIDC/SAML-Provider, Auto-Provisionierung, Domain-Bindungen und Freigabe-Queue'
+        email_branding:
+            title: 'E-Mail-Branding'
+            description: 'Mandanten-Logo, Absendername und Fußzeile für alle ausgehenden E-Mails'
+        report_style:
+            title: 'Berichtsdarstellung'
+            description: 'Deckblatt-Muster, Standard-Zielgruppe, Wasserzeichen und Diagrammfarben'
+        policy_style:
+            title: 'Richtliniendarstellung'
+            description: 'Layout, Wasserzeichen und Typografie für Richtliniendokumente'
+        audit_retention:
+            title: 'Audit-Log-Aufbewahrung'
+            description: 'Aufbewahrungsfristen je Ereigniskategorie (ISO 27001 Anhang A 8.15)'
+        compliance_policy:
+            title: 'Compliance-Richtlinie'
+            description: 'Vererbungsregeln, Prüfungspflichten und Eskalationsstandards'
+        tenant_compliance:
+            title: 'Mandanten-Compliance-Einstellungen'
+            description: 'Locale, TLP-Einstufung, DSB-Kontakt, Risiko-Methodik und JSON-Standardwerte je Mandant'
+        risk_approval:
+            title: 'Risikogenehmigungsschwellen'
+            description: 'Eskalationsstufen und Akzeptanzschwellen für Risk-Governance (ISO 27001 Kap. 6.1.3)'
+        incident_sla:
+            title: 'Incident-SLAs'
+            description: 'Reaktionszeitenziele je Schweregrad (ISO 27001 Anhang A 5.26)'
+        kpi_thresholds:
+            title: 'KPI-Schwellenwerte'
+            description: 'Ampelgrenzen für Dashboard-KPIs (Rot / Gelb / Grün)'
+        supplier_criticality:
+            title: 'Lieferanten-Kritikalitätsstufen'
+            description: 'Eigene Kritikalitätsstufen für die Lieferantenklassifizierung (ISO 27001 Anhang A 5.19)'
+        tags:
+            title: 'Tags'
+            description: 'Globale Tag-Taxonomie und Massen-Zuweisung über ISMS-Entitäten'
+        quick_fix:
+            title: 'Quick-Fix-Einstellungen'
+            description: 'Auto-Fallback-Verhalten und Schema-Abgleichskonfiguration für die Operator-UI'
     compliance:
         framework: Framework
         total_requirements: Gesamtanforderungen
