@@ -373,6 +373,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {% import '_components/_status_pill.html.twig' as pill %}
             <p class="small text-muted">{{ 'control.mapping_suggestions.description'|trans({}, 'control') }}</p>
 
             {% for code, rows in mapping_suggestions %}
