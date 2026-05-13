@@ -1,0 +1,102 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block admin_title %}{{ 'admin.workflow_slas.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_settings_index') }}">{{ 'admin.settings.title'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.workflow_slas.title'|trans({}, 'admin') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'clock-history', label: 'Workflow SLAs' },
+        title: 'admin.workflow_slas.title'|trans({}, 'admin'),
+        subtitle: 'admin.workflow_slas.subtitle'|trans({}, 'admin'),
+    }) }}
+
+    {{ _fa_alert.render({
+        variant: 'info',
+        title: 'admin.workflow_slas.wave2_note.title'|trans({}, 'admin'),
+        body: 'admin.workflow_slas.wave2_note.body'|trans({}, 'admin')
+    }) }}
+
+    <div class="row g-4 mt-2">
+        <div class="col-lg-9">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-clock text-warning" aria-hidden="true"></i>
+                        {{ 'admin.workflow_slas.defaults_title'|trans({}, 'admin') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    <form method="post" action="{{ path('admin_settings_workflow_slas') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_workflow_slas') }}">
+
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'admin.workflow_slas.col.event_type'|trans({}, 'admin') }}</th>
+                                        <th style="width: 180px;">{{ 'admin.workflow_slas.col.sla_hours'|trans({}, 'admin') }}</th>
+                                        <th class="text-muted small">{{ 'admin.workflow_slas.col.regulatory_basis'|trans({}, 'admin') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for event_type in event_types %}
+                                    {% set hours = current[event_type] %}
+                                    {% set min_hours = regulatory_minimums[event_type] is defined ? regulatory_minimums[event_type] : 1 %}
+                                    <tr>
+                                        <td>
+                                            <span class="fw-semibold">{{ ('admin.workflow_slas.event.' ~ event_type)|trans({}, 'admin') }}</span>
+                                            {% if regulatory_minimums[event_type] is defined %}
+                                                <span class="badge bg-warning text-dark ms-1 small">{{ 'admin.workflow_slas.regulatory_badge'|trans({}, 'admin') }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="input-group input-group-sm">
+                                                <input type="number" class="form-control form-control-sm"
+                                                       name="sla_{{ event_type }}"
+                                                       value="{{ hours }}"
+                                                       min="{{ min_hours }}"
+                                                       aria-label="{{ ('admin.workflow_slas.event.' ~ event_type)|trans({}, 'admin') }} SLA hours">
+                                                <span class="input-group-text">h</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted small">
+                                            {{ ('admin.workflow_slas.basis.' ~ event_type)|trans({}, 'admin') }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <a href="{{ path('admin_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                            </a>
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-3">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'admin.settings.help'|trans({}, 'admin') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <p class="small mb-0">{{ 'admin.workflow_slas.help_text'|trans({}, 'admin') }}</p>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
