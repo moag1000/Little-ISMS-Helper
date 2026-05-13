@@ -100,7 +100,7 @@ class FulfillmentInheritanceLogRepository extends ServiceEntityRepository
             ->innerJoin(
                 ComplianceRequirementFulfillment::class,
                 'sf',
-                'WITH',
+                'ON',
                 'sf.requirement = sr AND sf.tenant = l.tenant'
             )
             ->where('sf = :source')

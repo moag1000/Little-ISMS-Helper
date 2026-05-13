@@ -70,7 +70,7 @@ class AuditLogRepository extends ServiceEntityRepository
     public function findAllOrderedForTenant(Tenant $tenant, int $limit = 100, int $offset = 0): array
     {
         return $this->createQueryBuilder('a')
-            ->innerJoin(User::class, 'u', 'WITH', 'u.email = a.userName')
+            ->innerJoin(User::class, 'u', 'ON', 'u.email = a.userName')
             ->andWhere('u.tenant = :tenant')
             ->setParameter('tenant', $tenant)
             ->orderBy('a.createdAt', 'DESC')
