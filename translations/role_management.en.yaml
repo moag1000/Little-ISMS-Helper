@@ -8,6 +8,7 @@ role_management:
         overview: 'Manage user roles and their permissions for access control'
     action:
         create: 'Create New Role'
+        compare: 'Compare Roles'
     section:
         basic_info: 'Basic Information'
         permissions: Permissions
@@ -27,6 +28,7 @@ role_management:
         active: 'Active roles can be assigned to users'
         permissions: 'Select the permissions this role should have'
         system_role: 'System roles cannot be deleted and have restricted modification options'
+        compare_before_create: 'Compare existing roles before creating a new one — prevents duplicates.'
     permission:
         name: Permission
         resource: Resource
