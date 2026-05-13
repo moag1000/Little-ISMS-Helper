@@ -1,0 +1,105 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+
+{% block admin_title %}{{ 'admin.notification_preferences.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_settings_index') }}">{{ 'admin.settings.title'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.notification_preferences.title'|trans({}, 'admin') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'bell', label: 'Notifications' },
+        title: 'admin.notification_preferences.title'|trans({}, 'admin'),
+        subtitle: 'admin.notification_preferences.subtitle'|trans({}, 'admin'),
+    }) }}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-bell text-primary" aria-hidden="true"></i>
+                        {{ 'admin.notification_preferences.title'|trans({}, 'admin') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    <form method="post" action="{{ path('admin_settings_notifications') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_notifications') }}">
+
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   id="digest_enabled" name="digest_enabled" value="1"
+                                   {% if current.digest_enabled %}checked{% endif %}>
+                            <label class="form-check-label fw-semibold" for="digest_enabled">
+                                {{ 'admin.notification_preferences.digest_enabled.label'|trans({}, 'admin') }}
+                            </label>
+                            <div class="form-text">{{ 'admin.notification_preferences.digest_enabled.help'|trans({}, 'admin') }}</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold" for="digest_frequency">
+                                {{ 'admin.notification_preferences.digest_frequency.label'|trans({}, 'admin') }}
+                            </label>
+                            <select class="form-select" id="digest_frequency" name="digest_frequency">
+                                <option value="instant" {% if current.digest_frequency == 'instant' %}selected{% endif %}>
+                                    {{ 'admin.notification_preferences.digest_frequency.instant'|trans({}, 'admin') }}
+                                </option>
+                                <option value="hourly" {% if current.digest_frequency == 'hourly' %}selected{% endif %}>
+                                    {{ 'admin.notification_preferences.digest_frequency.hourly'|trans({}, 'admin') }}
+                                </option>
+                                <option value="daily" {% if current.digest_frequency == 'daily' %}selected{% endif %}>
+                                    {{ 'admin.notification_preferences.digest_frequency.daily'|trans({}, 'admin') }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            {{ _fa_cyber.text('webhook_timeout', {
+                                id: 'webhook_timeout',
+                                label: 'admin.notification_preferences.webhook_timeout.label'|trans({}, 'admin'),
+                                value: current.webhook_timeout,
+                                type: 'number',
+                                help: 'admin.notification_preferences.webhook_timeout.help'|trans({}, 'admin'),
+                                attrs: 'min="1" max="120"'
+                            }) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ _fa_cyber.text('email_from_name', {
+                                id: 'email_from_name',
+                                label: 'admin.notification_preferences.email_from_name.label'|trans({}, 'admin'),
+                                value: current.email_from_name,
+                                placeholder: 'admin.notification_preferences.email_from_name.placeholder'|trans({}, 'admin'),
+                                help: 'admin.notification_preferences.email_from_name.help'|trans({}, 'admin')
+                            }) }}
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('admin_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                            </a>
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'admin.settings.help'|trans({}, 'admin') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <p class="small mb-0">{{ 'admin.notification_preferences.help_text'|trans({}, 'admin') }}</p>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
