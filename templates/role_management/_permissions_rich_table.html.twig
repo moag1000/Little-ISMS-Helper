@@ -1,0 +1,226 @@
+{% trans_default_domain 'role_management' %}
+{#
+  _permissions_rich_table.html.twig
+  Renders a rich Aurora table for the permissions field in role new/edit forms.
+
+  Variables expected:
+    - form_field: the form field widget (form.permissions), an iterable of child form views
+      each child.vars.data is the Permission entity
+
+  Permissions are grouped by category using Twig's groupBy-equivalent: we build
+  a grouped structure first, then iterate over it.
+#}
+
+{#
+  Build groups: {category: [ {child, perm}, … ], … }
+  Guard against non-entity children (e.g. empty-value sentinel in expanded EntityType).
+#}
+{% set groups = {} %}
+{% for child in form_field %}
+    {% set perm = child.vars.data %}
+    {# Skip non-entity entries (booleans, empty strings, null) #}
+    {% if perm is not null and perm is not same as false and perm is not same as '' %}
+        {% set cat = perm.category %}
+        {% if cat is not null %}
+            {% if groups[cat] is not defined %}
+                {% set groups = groups|merge({(cat): []}) %}
+            {% endif %}
+            {% set groups = groups|merge({(cat): groups[cat]|merge([{child: child, perm: perm}])}) %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+<div class="fa-table-wrapper" id="permissions-rich-table-wrapper">
+    {# Search / filter bar #}
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <div class="input-group input-group-sm" style="max-width: 320px;">
+            <span class="input-group-text">
+                <i class="bi bi-search" aria-hidden="true"></i>
+            </span>
+            <input
+                type="text"
+                id="perm-search"
+                class="form-control form-control-sm"
+                placeholder="{{ 'role_management.permissions.search_placeholder'|trans({}, 'role_management') }}"
+                aria-label="{{ 'role_management.permissions.search_placeholder'|trans({}, 'role_management') }}"
+                autocomplete="off"
+            >
+        </div>
+        <span class="text-muted small ms-auto" id="perm-count-label">
+            <span id="perm-checked-count">0</span>&nbsp;{{ 'role_management.permissions.selected_count_label'|trans({}, 'role_management') }}
+        </span>
+    </div>
+
+    <table class="fa-table fa-table--compact fa-table--striped" id="permissions-rich-table" aria-label="{{ 'role_management.permissions.table_aria'|trans({}, 'role_management') }}">
+        <thead class="fa-table__head fa-table__head--sticky">
+            <tr>
+                <th class="fa-table__th fa-table__th--checkbox" style="width:2.5rem;" scope="col">
+                    <input
+                        type="checkbox"
+                        id="perm-select-all"
+                        class="form-check-input"
+                        title="{{ 'role_management.permissions.select_all'|trans({}, 'role_management') }}"
+                        aria-label="{{ 'role_management.permissions.select_all'|trans({}, 'role_management') }}"
+                    >
+                </th>
+                <th class="fa-table__th" scope="col">{{ 'role_management.permissions.col.name'|trans({}, 'role_management') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'role_management.permissions.col.module'|trans({}, 'role_management') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'role_management.permissions.col.framework'|trans({}, 'role_management') }}</th>
+                <th class="fa-table__th" scope="col" style="width:7rem;">{{ 'role_management.permissions.col.action'|trans({}, 'role_management') }}</th>
+                <th class="fa-table__th" scope="col">{{ 'role_management.permissions.col.description'|trans({}, 'role_management') }}</th>
+            </tr>
+        </thead>
+        <tbody class="fa-table__body" id="permissions-table-body">
+            {% for category, entries in groups %}
+                {# Category header row #}
+                <tr class="fa-table__row fa-table__row--group-header perm-category-row" data-category="{{ category }}">
+                    <td colspan="6" class="fa-table__td fw-semibold py-2 px-3" style="background: var(--surface-2); border-left: 3px solid var(--primary);">
+                        <i class="bi bi-folder2 me-1 text-muted" aria-hidden="true"></i>
+                        {{ ('role_management.permissions.category.' ~ category)|trans({}, 'role_management') }}
+                    </td>
+                </tr>
+
+                {% for entry in entries %}
+                    {% set child = entry.child %}
+                    {% set perm = entry.perm %}
+
+                    {# Resolve module display label #}
+                    {% set module_key = perm.module %}
+                    {% set module_label = module_key ? ('role_management.permissions.module.' ~ module_key)|trans({}, 'role_management') : '—' %}
+
+                    {# Resolve action display label #}
+                    {% set action_key = perm.action %}
+                    {% set action_label = action_key ? ('role_management.permissions.action.' ~ action_key)|trans({}, 'role_management') : action_key %}
+
+                    <tr class="fa-table__row perm-row"
+                        data-name="{{ perm.name|lower }}"
+                        data-category="{{ category }}"
+                        data-module="{{ module_key|default('') }}"
+                    >
+                        <td class="fa-table__td fa-table__td--checkbox">
+                            {{ form_widget(child, {
+                                'attr': {
+                                    'class': 'form-check-input perm-checkbox',
+                                    'data-perm-name': perm.name,
+                                }
+                            }) }}
+                        </td>
+                        <td class="fa-table__td">
+                            <code class="text-body-secondary small">{{ perm.name }}</code>
+                        </td>
+                        <td class="fa-table__td">
+                            {% if module_key %}
+                                <span class="badge rounded-pill text-bg-secondary fw-normal">{{ module_label }}</span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__td small text-muted">
+                            {{ perm.frameworkReference ?? '—' }}
+                        </td>
+                        <td class="fa-table__td">
+                            <span class="badge rounded-pill
+                                {% if action_key == 'view' %}text-bg-info
+                                {% elseif action_key == 'create' %}text-bg-success
+                                {% elseif action_key == 'edit' %}text-bg-warning
+                                {% elseif action_key == 'delete' %}text-bg-danger
+                                {% elseif action_key == 'approve' %}text-bg-primary
+                                {% elseif action_key == 'export' %}text-bg-secondary
+                                {% else %}text-bg-secondary
+                                {% endif %}
+                                fw-normal text-uppercase" style="font-size:.65em;letter-spacing:.04em;">
+                                {{ action_label }}
+                            </span>
+                        </td>
+                        <td class="fa-table__td text-muted small">{{ perm.description ?? '' }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-2 text-muted small" id="perm-no-results" style="display:none;">
+        <i class="bi bi-search me-1" aria-hidden="true"></i>
+        {{ 'role_management.permissions.no_results'|trans({}, 'role_management') }}
+    </div>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    function initPermissionsTable() {
+        var wrapper = document.getElementById('permissions-rich-table-wrapper');
+        if (!wrapper) { return; }
+
+        var searchInput = document.getElementById('perm-search');
+        var selectAll   = document.getElementById('perm-select-all');
+        var checkboxes  = wrapper.querySelectorAll('.perm-checkbox');
+        var rows        = wrapper.querySelectorAll('.perm-row');
+        var noResults   = document.getElementById('perm-no-results');
+        var countEl     = document.getElementById('perm-checked-count');
+
+        function updateCount() {
+            var checked = wrapper.querySelectorAll('.perm-checkbox:checked').length;
+            if (countEl) { countEl.textContent = checked; }
+        }
+
+        function filterRows(term) {
+            term = term.toLowerCase().trim();
+            var visible = 0;
+
+            rows.forEach(function (row) {
+                var name  = (row.dataset.name     || '').toLowerCase();
+                var cat   = (row.dataset.category || '').toLowerCase();
+                var mod   = (row.dataset.module   || '').toLowerCase();
+                var match = !term || name.indexOf(term) > -1 || cat.indexOf(term) > -1 || mod.indexOf(term) > -1;
+                row.style.display = match ? '' : 'none';
+                if (match) { visible++; }
+            });
+
+            // Show/hide category headers
+            var catRows = wrapper.querySelectorAll('.perm-category-row');
+            catRows.forEach(function (catRow) {
+                var cat = catRow.dataset.category;
+                var hasSibling = Array.prototype.some.call(rows, function (r) {
+                    return r.dataset.category === cat && r.style.display !== 'none';
+                });
+                catRow.style.display = hasSibling ? '' : 'none';
+            });
+
+            if (noResults) {
+                noResults.style.display = (visible === 0 && term) ? '' : 'none';
+            }
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function () { filterRows(this.value); });
+        }
+
+        if (selectAll) {
+            selectAll.addEventListener('change', function () {
+                rows.forEach(function (row) {
+                    if (row.style.display !== 'none') {
+                        var cb = row.querySelector('.perm-checkbox');
+                        if (cb) { cb.checked = selectAll.checked; }
+                    }
+                });
+                updateCount();
+            });
+        }
+
+        checkboxes.forEach(function (cb) {
+            cb.addEventListener('change', updateCount);
+        });
+
+        updateCount();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPermissionsTable);
+    } else {
+        initPermissionsTable();
+    }
+    document.addEventListener('turbo:load', initPermissionsTable);
+}());
+</script>
