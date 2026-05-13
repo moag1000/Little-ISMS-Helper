@@ -264,3 +264,37 @@ board:
         metric: 'Metric'
         change: 'Change'
         target: 'Target'
+
+# DPO (Data Protection Officer) Dashboard — Art. 39 GDPR
+dpo:
+    badge: 'Data Protection'
+    title: 'DPO Dashboard'
+    subtitle: 'Operational GDPR overview: data breaches, DPIAs, and processing register'
+    action:
+        vvt_export: 'Export VVT'
+        dpia_list: 'DPIA List'
+        create_dpia: 'Create DPIA'
+    kpi:
+        open_breaches: 'Open Data Breaches'
+        ticking_72h: '72 h Clock Ticking'
+        dpias_in_progress: 'DPIAs in Progress'
+        activities_needing_dpia: 'Activities Without DPIA'
+        activities_due_review: 'Activities Due Review'
+        third_country_transfers: 'Third-Country Transfers'
+    section:
+        open_breaches: 'Open Data Breaches (Art. 33 GDPR)'
+        dpias_in_progress: 'Data Protection Impact Assessments in Progress (Art. 35 GDPR)'
+        activities_needing_dpia: 'Processing Activities Without DPIA'
+        quick_actions: 'Quick Actions'
+    empty:
+        no_breaches_title: 'No Open Data Breaches'
+        no_breaches_text: 'There are currently no open data breaches to handle.'
+        no_dpias_title: 'No DPIAs in Progress'
+        no_dpias_text: 'All data protection impact assessments are completed or not yet started.'
+    activity:
+        no_dpia_hint: 'High-risk processing activity — DPIA required (Art. 35 GDPR)'
+    quick:
+        new_dpia: 'New DPIA'
+        report_breach: 'Report Breach'
+        new_activity: 'New Processing Activity'
+        vvt_export: 'Export VVT (XLSX)'

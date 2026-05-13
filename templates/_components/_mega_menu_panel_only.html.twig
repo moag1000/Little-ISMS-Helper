@@ -563,6 +563,15 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {% if is_granted('ROLE_DPO') and is_module_active('privacy') %}
+                        <li><a href="{{ path('app_dashboard_dpo') }}" class="{% if current_route == 'app_dashboard_dpo' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-shield" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mega.dashboard.dpo'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.dpo_dashboard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </div>
                 {% endif %}
