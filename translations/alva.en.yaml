@@ -262,3 +262,11 @@ alva_hint:
         title: 'No active notification channels configured'
         body: 'The notifications module is active but no active channels (email / webhook / in-app) are configured for this tenant. Without a channel, all notification rules run silently — no alert reaches recipients. ISO 27001 Cl. 9.1 requires monitorable processes.'
         action: 'Create channel'
+    overdue_authority_report:
+        title: 'EU Authority Report Overdue'
+        body: '%count% EU authority reporting obligation(s) are overdue. Immediate action required — regulatory deadlines (GDPR Art. 33 / NIS-2 BSIG § 33 / DORA Art. 28).'
+        action: 'Open Authority Hub'
+    dora_roi_export_due:
+        title: 'DORA RoI Not Yet Submitted'
+        body: 'The DORA Register of Information for %year% has not yet been submitted to the supervisory authority (DORA Art. 28). Deadline: 31 Dec %year%.'
+        action: 'Open DORA RoI'

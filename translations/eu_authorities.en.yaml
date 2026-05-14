@@ -194,3 +194,96 @@ authority:
         category:
             essential: 'Essential Entity'
             important: 'Important Entity'
+hub:
+    page:
+        title: 'EU Authority Reporting Hub'
+        subtitle: 'Overview of all EU authority reporting obligations for your tenant'
+    summary:
+        current: 'Current / Available'
+        due_soon: 'Due Soon'
+        overdue: 'Overdue'
+        not_configured: 'Not Configured'
+    filter:
+        country: 'Filter by country'
+    field:
+        type: 'Type'
+        next_due: 'Next Due Date'
+        last_submitted: 'Last Submitted'
+        country: 'Country'
+    status:
+        current: 'Current'
+        due_soon: 'Due Soon'
+        overdue: 'Overdue'
+        available: 'Available'
+        not_configured: 'Not Configured'
+    type:
+        on_demand: 'On Demand'
+        yearly: 'Yearly'
+        triggered: 'Event-triggered'
+    obligation:
+        vvt_bfdi: 'RoPA / BfDI Export (GDPR Art. 30)'
+        bfdi_templates: 'Authority Notification Templates (BfDI / State DPA)'
+        bsi_nis2: 'NIS-2 BSI Portal Registration'
+        dora_roi: 'DORA Register of Information (RoI XBRL)'
+    action:
+        open: 'Open'
+    empty:
+        no_obligations: 'No authority reporting obligations configured.'
+dora_roi:
+    page:
+        title: 'DORA Register of Information (RoI)'
+        subtitle: 'XBRL export for ESA RoI submission obligation (DORA Art. 28)'
+    section:
+        history: 'Submission History'
+    field:
+        reporting_date: 'Reporting Date'
+        scope: 'Scope'
+        payload_hash: 'Payload Hash (SHA-256)'
+        submitted_at: 'Submitted At'
+        submitted_by: 'Submitted By'
+        confirmation_number: 'Confirmation Number'
+    placeholder:
+        confirmation_number: 'e.g. EBA-2026-DORA-ROI-XXXX'
+    scope:
+        yearly_full: 'Full Yearly Submission'
+        significant_changes: 'Significant Changes'
+    status:
+        submitted: 'Submitted'
+        submitted_body: 'Submitted on %date% — Confirmation number: %number%'
+        generated_not_submitted: 'Generated — not yet submitted'
+        generated_body: 'The XBRL file has been generated. Please submit to your supervisory authority and record the confirmation number.'
+        not_yet_generated: 'RoI for %year% not yet generated'
+        not_yet_generated_body: 'Click "Generate XBRL" to export the register for ESA submission.'
+        pending: 'Pending'
+    action:
+        generate: 'Generate XBRL for %year%'
+        generate_help: 'Exports top-10 mandatory ESA fields (DORA Art. 28, full taxonomy Sprint 9+)'
+        mark_submitted: 'Mark as Submitted'
+        confirm_submission: 'Confirm Submission'
+    modal:
+        mark_submitted_title: 'Mark DORA RoI as Submitted'
+    empty:
+        title: 'No RoI Submissions Yet'
+        body: 'Generate the first XBRL export for your DORA Register of Information.'
+    error:
+        confirmation_required: 'Confirmation number is required.'
+    success:
+        submitted: 'DORA RoI marked as submitted. Confirmation number: %number%'
+    alva:
+        overdue_authority_report:
+            title: 'EU Authority Report Overdue'
+            body: 'At least one EU authority reporting obligation is overdue. Immediate action required.'
+            action: 'Open Authority Hub'
+        dora_roi_due:
+            title: 'DORA RoI Not Yet Submitted This Year'
+            body: 'The DORA Register of Information (RoI) for the current year has not yet been submitted to the supervisory authority.'
+            action: 'Open DORA RoI'
+    global:
+        overdue_authority_report:
+            title: 'EU Authority Report Overdue'
+            body: 'At least one EU authority reporting obligation is overdue. Immediate action required.'
+            action: 'Open Authority Hub'
+        dora_roi_export_due:
+            title: 'DORA RoI Not Yet Submitted'
+            body: 'The DORA Register of Information for the current financial year has not yet been submitted to the supervisory authority (DORA Art. 28).'
+            action: 'Open DORA RoI'

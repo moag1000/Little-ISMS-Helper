@@ -194,3 +194,96 @@ authority:
         category:
             essential: 'Wesentliche Einrichtung'
             important: 'Wichtige Einrichtung'
+hub:
+    page:
+        title: 'EU-Behörden-Reporting-Hub'
+        subtitle: 'Übersicht aller EU-Behörden-Meldepflichten für Ihren Mandanten'
+    summary:
+        current: 'Aktuell / Verfügbar'
+        due_soon: 'Bald fällig'
+        overdue: 'Überfällig'
+        not_configured: 'Nicht konfiguriert'
+    filter:
+        country: 'Land filtern'
+    field:
+        type: 'Typ'
+        next_due: 'Nächste Fälligkeit'
+        last_submitted: 'Zuletzt eingereicht'
+        country: 'Land'
+    status:
+        current: 'Aktuell'
+        due_soon: 'Bald fällig'
+        overdue: 'Überfällig'
+        available: 'Verfügbar'
+        not_configured: 'Nicht konfiguriert'
+    type:
+        on_demand: 'Auf Anfrage'
+        yearly: 'Jährlich'
+        triggered: 'Ereignisbasiert'
+    obligation:
+        vvt_bfdi: 'VVT / BfDI-Export (DSGVO Art. 30)'
+        bfdi_templates: 'Behörden-Meldung-Templates (BfDI / LfDI)'
+        bsi_nis2: 'NIS-2 BSI-Portal-Registrierung'
+        dora_roi: 'DORA Register of Information (RoI XBRL)'
+    action:
+        open: 'Öffnen'
+    empty:
+        no_obligations: 'Keine Behörden-Meldepflichten konfiguriert.'
+dora_roi:
+    page:
+        title: 'DORA Register of Information (RoI)'
+        subtitle: 'XBRL-Export für ESA-RoI-Einreichungspflicht (DORA Art. 28)'
+    section:
+        history: 'Einreichungshistorie'
+    field:
+        reporting_date: 'Berichtsdatum'
+        scope: 'Umfang'
+        payload_hash: 'Payload-Hash (SHA-256)'
+        submitted_at: 'Eingereicht am'
+        submitted_by: 'Eingereicht von'
+        confirmation_number: 'Bestätigungsnummer'
+    placeholder:
+        confirmation_number: 'z.B. EBA-2026-DORA-ROI-XXXX'
+    scope:
+        yearly_full: 'Vollständige Jahreseinreichung'
+        significant_changes: 'Wesentliche Änderungen'
+    status:
+        submitted: 'Eingereicht'
+        submitted_body: 'Eingereicht am %date% — Bestätigungsnummer: %number%'
+        generated_not_submitted: 'Generiert — noch nicht eingereicht'
+        generated_body: 'Die XBRL-Datei wurde generiert. Bitte beim Aufseher einreichen und Bestätigungsnummer erfassen.'
+        not_yet_generated: 'RoI für %year% noch nicht generiert'
+        not_yet_generated_body: 'Klicken Sie auf "XBRL generieren" um das Register für die ESA-Einreichung zu exportieren.'
+        pending: 'Ausstehend'
+    action:
+        generate: 'XBRL für %year% generieren'
+        generate_help: 'Exportiert Top-10 ESA-Pflichtfelder (DORA Art. 28, Taxonomy Sprint 9+)'
+        mark_submitted: 'Als eingereicht markieren'
+        confirm_submission: 'Einreichung bestätigen'
+    modal:
+        mark_submitted_title: 'DORA RoI als eingereicht markieren'
+    empty:
+        title: 'Noch keine RoI-Einreichungen'
+        body: 'Generieren Sie den ersten XBRL-Export für Ihren DORA-RoI.'
+    error:
+        confirmation_required: 'Bestätigungsnummer ist Pflichtfeld.'
+    success:
+        submitted: 'DORA RoI als eingereicht markiert. Bestätigungsnummer: %number%'
+    alva:
+        overdue_authority_report:
+            title: 'EU-Behörden-Meldung überfällig'
+            body: 'Mindestens eine EU-Behörden-Meldepflicht ist überfällig. Sofortiger Handlungsbedarf.'
+            action: 'Behörden-Hub öffnen'
+        dora_roi_due:
+            title: 'DORA RoI noch nicht für dieses Jahr eingereicht'
+            body: 'Der DORA Register of Information (RoI) für das aktuelle Jahr wurde noch nicht beim Aufseher eingereicht.'
+            action: 'DORA RoI öffnen'
+    global:
+        overdue_authority_report:
+            title: 'EU-Behörden-Meldung überfällig'
+            body: 'Mindestens eine EU-Behörden-Meldepflicht ist überfällig. Sofortiger Handlungsbedarf.'
+            action: 'Behörden-Hub öffnen'
+        dora_roi_export_due:
+            title: 'DORA RoI noch nicht eingereicht'
+            body: 'Der DORA Register of Information für das aktuelle Geschäftsjahr wurde noch nicht beim zuständigen Aufseher eingereicht (DORA Art. 28).'
+            action: 'DORA RoI öffnen'
