@@ -64,6 +64,40 @@ final class Nis2RegistrationControllerTest extends KernelTestCase
         self::assertArrayHasKey('organizationLegalName', $errors);
     }
 
+    /**
+     * Regression guard for E2E round-2 BLOCKER: getOrCreateProfile() triggered a
+     * SQLSTATE[23000] 1048 "Column cannot be null" when auto-creating a fresh
+     * Nis2RegistrationProfile for a tenant without designated contacts, because the
+     * original migration had incident_reporting_contact_id / security_responsible_contact_id
+     * as NOT NULL at DB level.
+     *
+     * This test verifies that a freshly created profile with NULL contacts passes
+     * PHP-level nullability (entity ORM mapping is nullable: true) and that validate()
+     * returns field-level errors instead of crashing on DB write.
+     */
+    #[Test]
+    public function profileWithNullContactsPassesEntityNullabilityAndValidationReturnsErrors(): void
+    {
+        self::bootKernel();
+        $container = static::getContainer();
+
+        /** @var Nis2BsiRegistrationService $service */
+        $service = $container->get(Nis2BsiRegistrationService::class);
+
+        $profile = new Nis2RegistrationProfile();
+        // Contacts intentionally left null — must not throw TypeError or DB NOT NULL error
+        self::assertNull($profile->getIncidentReportingContact());
+        self::assertNull($profile->getSecurityResponsibleContact());
+
+        $errors = $service->validate($profile);
+
+        // Profile is incomplete, errors expected — but no crash
+        self::assertNotEmpty($errors, 'validate() must return field errors, not throw an exception');
+        // Contact fields should be flagged as missing
+        self::assertArrayHasKey('incidentReportingContact', $errors);
+        self::assertArrayHasKey('securityResponsibleContact', $errors);
+    }
+
     #[Test]
     public function serviceExportToJsonProducesValidJson(): void
     {
