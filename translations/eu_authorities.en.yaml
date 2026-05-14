@@ -163,6 +163,8 @@ authority:
             category_invalid: 'Invalid entity category'
             headcount_required: 'Headcount must be greater than 0'
             ict_description_required: 'ICT dependency description is required'
+            incident_contact_required: 'Incident reporting contact is required'
+            security_contact_required: 'IT security officer contact is required'
             profile_incomplete: 'Profile incomplete — please fill in all required fields first.'
             confirmation_number_required: 'BSI confirmation number is required'
         success:

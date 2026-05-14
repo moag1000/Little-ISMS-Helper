@@ -130,12 +130,12 @@ class Nis2RegistrationProfile
     private string $ictDependencyDescription = '';
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'incident_reporting_contact_id', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
-    private User $incidentReportingContact;
+    #[ORM\JoinColumn(name: 'incident_reporting_contact_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $incidentReportingContact = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'security_responsible_contact_id', referencedColumnName: 'id', nullable: false, onDelete: 'RESTRICT')]
-    private User $securityResponsibleContact;
+    #[ORM\JoinColumn(name: 'security_responsible_contact_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $securityResponsibleContact = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'backup_security_contact_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
@@ -307,23 +307,23 @@ class Nis2RegistrationProfile
         return $this;
     }
 
-    public function getIncidentReportingContact(): User
+    public function getIncidentReportingContact(): ?User
     {
         return $this->incidentReportingContact;
     }
 
-    public function setIncidentReportingContact(User $incidentReportingContact): static
+    public function setIncidentReportingContact(?User $incidentReportingContact): static
     {
         $this->incidentReportingContact = $incidentReportingContact;
         return $this;
     }
 
-    public function getSecurityResponsibleContact(): User
+    public function getSecurityResponsibleContact(): ?User
     {
         return $this->securityResponsibleContact;
     }
 
-    public function setSecurityResponsibleContact(User $securityResponsibleContact): static
+    public function setSecurityResponsibleContact(?User $securityResponsibleContact): static
     {
         $this->securityResponsibleContact = $securityResponsibleContact;
         return $this;
