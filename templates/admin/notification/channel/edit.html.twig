@@ -2,8 +2,8 @@
 {% trans_default_domain 'notification' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'notification.channel.edit.title'|trans({'%name%': channel.name}) }}{% endblock %}
-{% block admin_title %}{{ 'notification.channel.edit.title'|trans({'%name%': channel.name}) }}{% endblock %}
+{% block title %}{{ 'notification.channel.edit.title'|trans({'%name%': channel.name}, 'notification') }}{% endblock %}
+{% block admin_title %}{{ 'notification.channel.edit.title'|trans({'%name%': channel.name}, 'notification') }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item">
@@ -15,7 +15,7 @@
 {% block admin_content %}
     {{ _fa_page_header.render({
         badge: { icon: 'send', label: 'Channel' },
-        title: 'notification.channel.edit.title'|trans({'%name%': channel.name}),
+        title: 'notification.channel.edit.title'|trans({'%name%': channel.name}, 'notification'),
         subtitle: ('notification.channel.type.' ~ channel.type)|trans,
         actions: [
             {
