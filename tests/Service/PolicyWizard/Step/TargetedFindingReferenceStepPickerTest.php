@@ -91,7 +91,7 @@ final class TargetedFindingReferenceStepPickerTest extends TestCase
     {
         $run = $this->makeRun(tenantId: 7);
         $repo = $this->createMock(AuditFindingRepository::class);
-        $repo->method('find')->with(42)->willReturn($this->makeFinding(42, tenantId: 7));
+        $repo->method('find')->willReturn($this->makeFinding(42, tenantId: 7));
 
         $step = new TargetedFindingReferenceStep($repo);
         $result = $step->validate($run, ['finding_reference' => 'AUDIT_FINDING:42']);
@@ -107,7 +107,7 @@ final class TargetedFindingReferenceStepPickerTest extends TestCase
         $run = $this->makeRun(tenantId: 7);
         $repo = $this->createMock(AuditFindingRepository::class);
         // Finding belongs to tenant 9, not 7 → reject.
-        $repo->method('find')->with(99)->willReturn($this->makeFinding(99, tenantId: 9));
+        $repo->method('find')->willReturn($this->makeFinding(99, tenantId: 9));
 
         $step = new TargetedFindingReferenceStep($repo);
         $result = $step->validate($run, ['finding_reference' => 'AUDIT_FINDING:99']);

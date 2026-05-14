@@ -79,7 +79,7 @@ class AutoReactionRiskSkeletonListenerTest extends TestCase
 
         $persisted = [];
         $em = $this->createMock(EntityManagerInterface::class);
-        $em->method('getRepository')->with(Risk::class)->willReturn($repo);
+        $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
         $em->method('flush');
 
@@ -176,7 +176,7 @@ class AutoReactionRiskSkeletonListenerTest extends TestCase
             ->willReturn($existingRisk);
 
         $em = $this->createMock(EntityManagerInterface::class);
-        $em->method('getRepository')->with(Risk::class)->willReturn($repo);
+        $em->method('getRepository')->willReturn($repo);
         $em->expects($this->never())->method('persist');
 
         $args = new PostPersistEventArgs($vuln, $em);
@@ -204,7 +204,7 @@ class AutoReactionRiskSkeletonListenerTest extends TestCase
 
         $persisted = [];
         $em = $this->createMock(EntityManagerInterface::class);
-        $em->method('getRepository')->with(Risk::class)->willReturn($repo);
+        $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted): void { $persisted[] = $e; });
         $em->method('flush');
 

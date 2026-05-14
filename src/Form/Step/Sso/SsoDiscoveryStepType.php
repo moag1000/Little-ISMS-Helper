@@ -46,7 +46,7 @@ final class SsoDiscoveryStepType extends AbstractType
                     'data-sso-wizard-target' => 'discoveryUrl',
                 ],
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: false),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])

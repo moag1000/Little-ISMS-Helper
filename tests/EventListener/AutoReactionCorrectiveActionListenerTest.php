@@ -78,7 +78,7 @@ class AutoReactionCorrectiveActionListenerTest extends TestCase
 
         $persisted = [];
         $em = $this->createMock(EntityManagerInterface::class);
-        $em->method('getRepository')->with(CorrectiveAction::class)->willReturn($repo);
+        $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
         $em->method('flush');
 

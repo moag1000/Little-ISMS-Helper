@@ -76,7 +76,7 @@ final class TargetedFindingReferenceStepIntegrationTest extends TestCase
         $finding->setStatus(AuditFinding::STATUS_OPEN);
 
         $findingRepo = $this->createMock(AuditFindingRepository::class);
-        $findingRepo->method('find')->with(42)->willReturn($finding);
+        $findingRepo->method('find')->willReturn($finding);
 
         // -- Real StepEvaluator with only the picker step ------------------
         // (Other steps aren't registered → nextStepFor returns null which

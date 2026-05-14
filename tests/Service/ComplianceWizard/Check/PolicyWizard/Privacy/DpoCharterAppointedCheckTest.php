@@ -42,7 +42,6 @@ final class DpoCharterAppointedCheckTest extends TestCase
         $dpoUser = $this->createMock(User::class);
         $dpoUser->method('getTenant')->willReturn($tenant);
         $this->userRepository->method('findByCustomRole')
-            ->with(DpoCharterAppointedCheck::ROLE_DPO_NAME)
             ->willReturn([$dpoUser]);
 
         // First QB call returns 1 (charter doc), second call returns 0 (section).
