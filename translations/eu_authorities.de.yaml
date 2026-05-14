@@ -163,6 +163,8 @@ authority:
             category_invalid: 'Ungültige Einrichtungskategorie'
             headcount_required: 'Beschäftigtenzahl muss größer als 0 sein'
             ict_description_required: 'IKT-Abhängigkeitsbeschreibung ist Pflichtfeld'
+            incident_contact_required: 'Kontakt für Vorfallsmeldungen ist Pflichtfeld'
+            security_contact_required: 'Verantwortliche/r IT-Sicherheit ist Pflichtfeld'
             profile_incomplete: 'Profil unvollständig — bitte zuerst alle Pflichtfelder ausfüllen.'
             confirmation_number_required: 'BSI-Bestätigungsnummer ist Pflichtfeld'
         success:
