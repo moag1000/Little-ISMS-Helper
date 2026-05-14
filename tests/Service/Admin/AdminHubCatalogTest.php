@@ -18,13 +18,13 @@ class AdminHubCatalogTest extends TestCase
     }
 
     #[Test]
-    public function returnsSevenIaGroups(): void
+    public function returnsExpectedGroups(): void
     {
         $groups = $this->catalog->getGroups();
 
-        $this->assertCount(7, $groups);
+        $this->assertCount(8, $groups);
         $this->assertSame(
-            ['organisation', 'identity', 'isms_data', 'audit_compliance', 'integrations', 'system', 'branding_ux'],
+            ['organisation', 'identity', 'isms_data', 'audit_compliance', 'notifications', 'integrations', 'system', 'branding_ux'],
             array_map(static fn(array $group): string => $group['key'], $groups),
         );
     }
@@ -77,9 +77,10 @@ class AdminHubCatalogTest extends TestCase
         foreach ($this->catalog->getGroups() as $group) {
             $count += count($group['modules']);
         }
-        // Documented intent: ~36 modules across 7 groups (raised to 50 after
-        // policy-style + report-style admin tiles landed in May 2026).
+        // Documented intent: ~36 modules across 7 groups (raised to 75 after
+        // notifications group + Sprint 6 deferred settings + Sprint 8 EU-Authority
+        // tiles landed in May 2026 — 8 groups, ~59 modules).
         $this->assertGreaterThanOrEqual(30, $count);
-        $this->assertLessThanOrEqual(50, $count);
+        $this->assertLessThanOrEqual(75, $count);
     }
 }
