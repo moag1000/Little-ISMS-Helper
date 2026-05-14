@@ -50,7 +50,7 @@ final class Version20260516100000_f30_dora_register_of_information extends Abstr
                 KEY idx_dora_roi_tenant (tenant_id),
                 KEY idx_dora_roi_reporting_date (reporting_date),
                 CONSTRAINT fk_dora_roi_tenant
-                    FOREIGN KEY (tenant_id) REFERENCES tenants (id) ON DELETE CASCADE,
+                    FOREIGN KEY (tenant_id) REFERENCES tenant (id) ON DELETE CASCADE,
                 CONSTRAINT fk_dora_roi_submitted_by
                     FOREIGN KEY (submitted_by_id) REFERENCES users (id) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
