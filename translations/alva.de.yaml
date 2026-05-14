@@ -262,3 +262,11 @@ alva_hint:
         title: 'Keine aktiven Benachrichtigungskanäle konfiguriert'
         body: 'Das Benachrichtigungsmodul ist aktiv, aber für diesen Mandanten sind keine aktiven Kanäle (E-Mail / Webhook / In-App) eingerichtet. Ohne Kanal werden alle Benachrichtigungsregeln lautlos ausgeführt — kein Alert erreicht die Empfänger. ISO 27001 Kl. 9.1 erfordert überwachungsfähige Prozesse.'
         action: 'Kanal anlegen'
+    overdue_authority_report:
+        title: 'EU-Behörden-Meldung überfällig'
+        body: '%count% EU-Behörden-Meldepflicht(en) ist/sind überfällig. Sofortiger Handlungsbedarf — regulatorische Fristen (DSGVO Art. 33 / NIS-2 BSIG § 33 / DORA Art. 28).'
+        action: 'Behörden-Hub öffnen'
+    dora_roi_export_due:
+        title: 'DORA RoI noch nicht eingereicht'
+        body: 'Der DORA Register of Information für %year% wurde noch nicht beim zuständigen Aufseher eingereicht (DORA Art. 28). Frist: 31.12.%year%.'
+        action: 'DORA RoI öffnen'
