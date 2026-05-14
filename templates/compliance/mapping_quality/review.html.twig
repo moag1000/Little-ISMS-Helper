@@ -138,6 +138,7 @@
                     <div class="card-header"><h4 class="mb-0 h5"><i class="fa-icon fa-icon--nav-activity" aria-hidden="true"></i> {{ 'mapping_review.section.similarity_scores'|trans({}, 'compliance') }}</h4></div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% if mapping.textualSimilarity is not null %}
                     <div class="mb-2">
                         <small>{{ 'mapping_review.field.textual_similarity'|trans({}, 'compliance') }}</small>

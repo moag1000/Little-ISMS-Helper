@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Repository\Authority\Nis2RegistrationProfileRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 
 /**
  * F29 — Business logic for NIS-2 BSI-Portal Yearly Re-Registration.
@@ -119,6 +120,14 @@ class Nis2BsiRegistrationService
             $errors['ictDependencyDescription'] = 'eu_authorities.nis2_registration.error.ict_description_required';
         }
 
+        if ($profile->getIncidentReportingContact() === null) {
+            $errors['incidentReportingContact'] = 'eu_authorities.nis2_registration.error.incident_contact_required';
+        }
+
+        if ($profile->getSecurityResponsibleContact() === null) {
+            $errors['securityResponsibleContact'] = 'eu_authorities.nis2_registration.error.security_contact_required';
+        }
+
         return $errors;
     }
 
@@ -127,9 +136,19 @@ class Nis2BsiRegistrationService
      *
      * The JSON schema follows the BSI Meldung-Portal API (BSIG § 33),
      * published by BSI in January 2026 for essential and important facilities.
+     *
+     * @throws LogicException if required contacts are not set (validate() must pass first)
      */
     public function exportToJson(Nis2RegistrationProfile $profile): string
     {
+        if ($profile->getIncidentReportingContact() === null) {
+            throw new LogicException('Cannot export profile: incidentReportingContact is required but not set.');
+        }
+
+        if ($profile->getSecurityResponsibleContact() === null) {
+            throw new LogicException('Cannot export profile: securityResponsibleContact is required but not set.');
+        }
+
         $data = [
             'schemaVersion' => '1.0',
             'exportedAt' => (new DateTimeImmutable())->format(DateTimeImmutable::ATOM),
