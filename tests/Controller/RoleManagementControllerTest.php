@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\Permission;
 use App\Entity\Role;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -30,6 +31,8 @@ class RoleManagementControllerTest extends WebTestCase
     private ?User $testUser = null;
     private ?User $adminUser = null;
     private ?Role $testRole = null;
+    /** @var Permission[] */
+    private array $testPermissions = [];
 
     protected function setUp(): void
     {
@@ -52,6 +55,18 @@ class RoleManagementControllerTest extends WebTestCase
                 // Ignore
             }
         }
+
+        foreach ($this->testPermissions as $perm) {
+            try {
+                $p = $this->entityManager->find(Permission::class, $perm->getId());
+                if ($p) {
+                    $this->entityManager->remove($p);
+                }
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+        $this->testPermissions = [];
 
         if ($this->testUser) {
             try {
@@ -128,6 +143,24 @@ class RoleManagementControllerTest extends WebTestCase
         $this->testRole->setName('Test Role ' . $uniqueId);
         $this->testRole->setDescription('Test role description');
         $this->entityManager->persist($this->testRole);
+
+        // Seed a minimal set of permissions so the rich table has rows to render.
+        $permDefs = [
+            ['risk.view.' . $uniqueId, 'risk', 'view'],
+            ['risk.create.' . $uniqueId, 'risk', 'create'],
+            ['risk.edit.' . $uniqueId, 'risk', 'edit'],
+            ['asset.view.' . $uniqueId, 'asset', 'view'],
+            ['user.view.' . $uniqueId, 'user', 'view'],
+            ['user.create.' . $uniqueId, 'user', 'create'],
+        ];
+        foreach ($permDefs as [$name, $category, $action]) {
+            $perm = new Permission();
+            $perm->setName($name);
+            $perm->setCategory($category);
+            $perm->setAction($action);
+            $this->entityManager->persist($perm);
+            $this->testPermissions[] = $perm;
+        }
 
         $this->entityManager->flush();
     }
@@ -277,7 +310,8 @@ class RoleManagementControllerTest extends WebTestCase
     // ========== RICH PERMISSIONS TABLE TESTS ==========
 
     /**
-     * Asserts /en/admin/roles/new renders the rich permissions table with module + framework columns.
+     * Asserts /en/admin/roles/new renders the rich permissions table with column headers and rows,
+     * and that the legacy flat checkbox list does NOT appear below the table (no double-rendering).
      */
     #[Test]
     public function testNewFormRendersRichPermissionsTable(): void
@@ -289,18 +323,33 @@ class RoleManagementControllerTest extends WebTestCase
         // The rich table must be present
         $this->assertSelectorExists('#permissions-rich-table', 'Rich permissions table must be rendered on role-new page');
 
-        // Module column header must be present (English label from translations)
+        // Column headers must be present (English labels from translations)
         $this->assertSelectorTextContains('#permissions-rich-table thead', 'Module');
-
-        // Framework column header must be present
         $this->assertSelectorTextContains('#permissions-rich-table thead', 'Framework');
-
-        // Action column header must be present
         $this->assertSelectorTextContains('#permissions-rich-table thead', 'Action');
+
+        // Rich table must have rendered rows (permissions seeded in setUp)
+        $rows = $crawler->filter('#permissions-table-body tr.perm-row');
+        $this->assertGreaterThanOrEqual(5, $rows->count(), 'Rich permissions table must have at least 5 permission rows');
+
+        // Each checkbox must be scoped to role[permissions] so server-side binding works
+        $checkboxes = $crawler->filter('#permissions-table-body input[type="checkbox"]');
+        $this->assertGreaterThanOrEqual(5, $checkboxes->count(), 'Rich table must have at least 5 checkbox inputs');
+        $firstName = $checkboxes->first()->attr('name');
+        $this->assertStringContainsString('permissions', (string) $firstName, 'Checkbox name must contain "permissions" for server-side form binding');
+
+        // The rich table must appear exactly once — form_end(render_rest:false) must suppress the
+        // legacy expanded-EntityType flat list that would otherwise duplicate below.
+        $content = $this->client->getResponse()->getContent();
+        $this->assertSame(
+            1,
+            substr_count((string) $content, 'id="permissions-rich-table"'),
+            'Rich permissions table must appear exactly once — no duplicate legacy rendering'
+        );
     }
 
     /**
-     * Asserts /en/admin/roles/{id}/edit renders the rich permissions table.
+     * Asserts /en/admin/roles/{id}/edit renders the rich permissions table with rows (no duplicate).
      */
     #[Test]
     public function testEditFormRendersRichPermissionsTable(): void
@@ -310,6 +359,42 @@ class RoleManagementControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         $this->assertSelectorExists('#permissions-rich-table', 'Rich permissions table must be rendered on role-edit page');
+
+        // Rows must be present
+        $rows = $crawler->filter('#permissions-table-body tr.perm-row');
+        $this->assertGreaterThanOrEqual(5, $rows->count(), 'Rich permissions table must have at least 5 rows on edit page');
+
+        // Table must appear exactly once (no legacy flat list duplicate below)
+        $content = $this->client->getResponse()->getContent();
+        $this->assertSame(
+            1,
+            substr_count((string) $content, 'id="permissions-rich-table"'),
+            'Rich permissions table must appear exactly once on edit page'
+        );
+    }
+
+    /**
+     * Asserts that the edit form pre-checks permissions already assigned to the role.
+     */
+    #[Test]
+    public function testEditFormPrechecksAssignedPermissions(): void
+    {
+        if (empty($this->testPermissions)) {
+            $this->markTestSkipped('No test permissions seeded');
+        }
+
+        // Assign one seeded permission to the test role
+        $assignedPerm = $this->testPermissions[0];
+        $this->testRole->addPermission($assignedPerm);
+        $this->entityManager->flush();
+
+        $this->loginAsUser($this->adminUser);
+        $crawler = $this->client->request('GET', '/en/admin/roles/' . $this->testRole->getId() . '/edit');
+        $this->assertResponseIsSuccessful();
+
+        // The assigned permission's checkbox must be pre-checked
+        $checkedBoxes = $crawler->filter('#permissions-table-body input[type="checkbox"]:checked');
+        $this->assertGreaterThanOrEqual(1, $checkedBoxes->count(), 'Edit form must pre-check at least one already-assigned permission');
     }
 
     // ========== EMPTY STATE TESTS ==========

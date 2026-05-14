@@ -4,29 +4,37 @@
   Renders a rich Aurora table for the permissions field in role new/edit forms.
 
   Variables expected:
-    - form_field: the form field widget (form.permissions), an iterable of child form views
-      each child.vars.data is the Permission entity
+    - form_field: the Symfony form field for permissions (form.permissions), an
+      expanded EntityType field.
 
-  Permissions are grouped by category using Twig's groupBy-equivalent: we build
-  a grouped structure first, then iterate over it.
+  For an expanded EntityType with group_by, form_field.vars.choices is a dict
+  where keys are category names and values are arrays of ChoiceView objects.
+  Each ChoiceView has:
+    - .value   = string representation of entity ID (used to look up child widget)
+    - .label   = entity __toString()
+    - .data    = the Permission entity object
+  The matching child form widget (checkbox) is accessed via form_field[choice.value].
+  This is the correct way to pair entity data with the renderable form widget.
 #}
 
 {#
-  Build groups: {category: [ {child, perm}, … ], … }
-  Guard against non-entity children (e.g. empty-value sentinel in expanded EntityType).
+  Build groups from form_field.vars.choices which is already grouped by category
+  via the EntityType group_by:'category' option.
+  Structure: { category_name: [ ChoiceView, … ], … }
+  We map this to: { category: [ {child: formView, perm: Permission}, … ], … }
 #}
 {% set groups = {} %}
-{% for child in form_field %}
-    {% set perm = child.vars.data %}
-    {# Skip non-entity entries (booleans, empty strings, null) #}
-    {% if perm is not null and perm is not same as false and perm is not same as '' %}
-        {% set cat = perm.category %}
-        {% if cat is not null %}
-            {% if groups[cat] is not defined %}
-                {% set groups = groups|merge({(cat): []}) %}
-            {% endif %}
-            {% set groups = groups|merge({(cat): groups[cat]|merge([{child: child, perm: perm}])}) %}
+{% for category, choice_views in form_field.vars.choices %}
+    {% set entries = [] %}
+    {% for choice in choice_views %}
+        {% set perm = choice.data %}
+        {% if perm is not null and perm.category is defined %}
+            {% set child = form_field[choice.value] %}
+            {% set entries = entries|merge([{child: child, perm: perm}]) %}
         {% endif %}
+    {% endfor %}
+    {% if entries|length > 0 %}
+        {% set groups = groups|merge({(category): entries}) %}
     {% endif %}
 {% endfor %}
 
