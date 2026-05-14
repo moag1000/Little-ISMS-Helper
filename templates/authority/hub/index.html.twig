@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'eu_authorities' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+
+{% block title %}{{ 'eu_authorities.hub.page.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'eu_authorities.page.title'|trans({}, 'eu_authorities'), icon: 'bi-building-shield' },
+            { label: 'eu_authorities.hub.page.title'|trans }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge:    { icon: 'shield-lock', label: 'EU' },
+        title:    'eu_authorities.hub.page.title'|trans,
+        subtitle: 'eu_authorities.hub.page.subtitle'|trans,
+        actions:  []
+    }) }}
+
+    <main class="fa-aurora-surface">
+
+        {# ── Aggregate status banner ───────────────────────────────────────────── #}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex flex-wrap gap-3 align-items-center p-3 bg-body-secondary rounded-3 border">
+                    <i class="bi bi-clipboard2-pulse fs-3 text-primary" aria-hidden="true"></i>
+                    <div class="d-flex flex-wrap gap-4 ms-2">
+                        <span class="d-flex align-items-center gap-1">
+                            <span class="badge bg-success rounded-pill fs-6">{{ summary.current + summary.available }}</span>
+                            <span class="text-body-secondary small">{{ 'eu_authorities.hub.summary.current'|trans }}</span>
+                        </span>
+                        <span class="d-flex align-items-center gap-1">
+                            <span class="badge bg-warning text-dark rounded-pill fs-6">{{ summary.due_soon }}</span>
+                            <span class="text-body-secondary small">{{ 'eu_authorities.hub.summary.due_soon'|trans }}</span>
+                        </span>
+                        <span class="d-flex align-items-center gap-1">
+                            <span class="badge bg-danger rounded-pill fs-6">{{ summary.overdue }}</span>
+                            <span class="text-body-secondary small">{{ 'eu_authorities.hub.summary.overdue'|trans }}</span>
+                        </span>
+                        <span class="d-flex align-items-center gap-1">
+                            <span class="badge bg-secondary rounded-pill fs-6">{{ summary.not_configured }}</span>
+                            <span class="text-body-secondary small">{{ 'eu_authorities.hub.summary.not_configured'|trans }}</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── Country filter chips ──────────────────────────────────────────────── #}
+        <div class="mb-4">
+            {{ _fa_filter_chip.render({
+                id: 'country-filter',
+                label: 'eu_authorities.hub.filter.country'|trans,
+                chips: [
+                    { label: 'Alle', value: '', active: true },
+                    { label: 'DE',   value: 'DE' },
+                    { label: 'EU',   value: 'EU' },
+                    { label: 'AT',   value: 'AT' },
+                    { label: 'CH',   value: 'CH' }
+                ]
+            }) }}
+        </div>
+
+        {# ── Obligation cards grid ─────────────────────────────────────────────── #}
+        <div class="row g-4">
+            {% for obligation in obligations %}
+            <div class="col-md-6 col-xl-4" data-country="{{ obligation.country }}">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header d-flex align-items-center justify-content-between gap-2 py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-building-shield text-primary" aria-hidden="true"></i>
+                            <strong>{{ obligation.label|trans({}, 'eu_authorities') }}</strong>
+                        </div>
+                        <span class="badge rounded-pill
+                            {% if obligation.status == 'overdue' %}bg-danger
+                            {% elseif obligation.status == 'due_soon' %}bg-warning text-dark
+                            {% elseif obligation.status == 'current' %}bg-success
+                            {% elseif obligation.status == 'available' %}bg-info text-dark
+                            {% else %}bg-secondary{% endif %}">
+                            {{ ('eu_authorities.hub.status.' ~ obligation.status)|trans }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0 small">
+                            <dt class="col-5 text-body-secondary">{{ 'eu_authorities.hub.field.type'|trans }}</dt>
+                            <dd class="col-7">{{ ('eu_authorities.hub.type.' ~ obligation.type)|trans }}</dd>
+
+                            {% if obligation.nextDueAt %}
+                            <dt class="col-5 text-body-secondary">{{ 'eu_authorities.hub.field.next_due'|trans }}</dt>
+                            <dd class="col-7">
+                                <span class="{% if obligation.status == 'overdue' %}text-danger fw-bold{% elseif obligation.status == 'due_soon' %}text-warning fw-semibold{% endif %}">
+                                    {{ obligation.nextDueAt|date('d.m.Y') }}
+                                </span>
+                            </dd>
+                            {% endif %}
+
+                            {% if obligation.lastSubmittedAt %}
+                            <dt class="col-5 text-body-secondary">{{ 'eu_authorities.hub.field.last_submitted'|trans }}</dt>
+                            <dd class="col-7">{{ obligation.lastSubmittedAt|date('d.m.Y') }}</dd>
+                            {% endif %}
+
+                            <dt class="col-5 text-body-secondary">{{ 'eu_authorities.hub.field.country'|trans }}</dt>
+                            <dd class="col-7">
+                                <span class="badge bg-light text-dark border">{{ obligation.country }}</span>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0 pt-0 pb-3 px-3">
+                        <a href="{{ path(obligation.exportUrl, obligation.exportUrlParams) }}"
+                           class="btn btn-sm {% if obligation.status == 'overdue' %}btn-danger{% elseif obligation.status == 'due_soon' %}btn-warning{% else %}btn-outline-primary{% endif %} w-100">
+                            <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>
+                            {{ 'eu_authorities.hub.action.open'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    {{ 'eu_authorities.hub.empty.no_obligations'|trans }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </main>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('turbo:load', function () {
+    // Country filter chip interaction
+    const chips = document.querySelectorAll('[data-country-filter-chip]');
+    const cards = document.querySelectorAll('[data-country]');
+
+    chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+            const country = chip.dataset.value;
+            chips.forEach(function (c) { c.classList.remove('active'); });
+            chip.classList.add('active');
+
+            cards.forEach(function (card) {
+                if (!country || card.dataset.country === country) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
