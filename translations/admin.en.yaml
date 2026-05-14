@@ -20,6 +20,7 @@ admin:
             integrations: { label: 'Integrations', desc: 'Compliance imports, GSTool, sample data, import history' }
             system: { label: 'System', desc: 'Health, modules, quick-fix settings, KPI thresholds, licensing' }
             branding_ux: { label: 'Branding & UX', desc: 'Supplier criticality, tour content, Alva-hint statistics' }
+            notifications: { label: 'Notifications', desc: 'Rules, channels, templates and preferences for outgoing notifications' }
         module:
             tenants: { label: 'Tenants', desc: 'Manage customer organisations' }
             corporate_structure: { label: 'Corporate structure', desc: 'Parent / subsidiary hierarchy' }
@@ -68,6 +69,17 @@ admin:
             tour_content: { label: 'Guided-tour content', desc: 'Edit step texts and order' }
             tour_completion: { label: 'Tour completion', desc: 'Completion rates + reset tools' }
             alva_hint_stats: { label: 'Alva-hint statistics', desc: 'Render / dismiss / dismiss rate per hint' }
+            # Sprint 6b — Notifications
+            notification_rules: { label: 'Notification rules', desc: 'Define event rules and assign delivery channels' }
+            notification_channels: { label: 'Notification channels', desc: 'Configure email, webhook, and in-app channels' }
+            notification_templates: { label: 'Template gallery', desc: 'Apply tier-1 templates for common compliance scenarios' }
+            notification_preferences: { label: 'Notification preferences', desc: 'Global delivery preferences and thresholds' }
+            # Sprint 6 deferred system-settings sub-pages
+            api_rate_limits: { label: 'API rate limits', desc: 'Request limits per route and token class' }
+            backup_settings: { label: 'Backup settings', desc: 'Retention windows and automated backup scheduling' }
+            fiscal_year: { label: 'Fiscal year', desc: 'Start month and fiscal year for reports and KPIs' }
+            data_retention_settings: { label: 'Retention periods', desc: 'GDPR deletion schedules per data category' }
+            workflow_sla_defaults: { label: 'Workflow SLA defaults', desc: 'Default deadlines for approval steps' }
     section:
         overview: Overview
         user_access: 'Users & Access'

@@ -34,6 +34,9 @@ admin:
             branding_ux:
                 label: 'Branding & UX'
                 desc: 'Lieferanten-Kritikalität, Tour-Inhalte, Alva-Hint-Statistik'
+            notifications:
+                label: 'Benachrichtigungen'
+                desc: 'Regeln, Kanäle, Vorlagen und Präferenzen für ausgehende Benachrichtigungen'
         module:
             tenants: { label: 'Mandanten', desc: 'Kunden-Organisationen verwalten' }
             corporate_structure: { label: 'Konzernstruktur', desc: 'Hierarchie aus Mutter- und Tochtergesellschaften' }
@@ -82,6 +85,17 @@ admin:
             tour_content: { label: 'Guided-Tour-Inhalte', desc: 'Schritt-Texte und Reihenfolge bearbeiten' }
             tour_completion: { label: 'Tour-Completion', desc: 'Abschluss-Quoten + Reset-Werkzeuge' }
             alva_hint_stats: { label: 'Alva-Hint-Statistik', desc: 'Render / Dismiss / Dismiss-Rate pro Hint' }
+            # Sprint 6b — Notifications
+            notification_rules: { label: 'Benachrichtigungsregeln', desc: 'Ereignis-Regeln definieren und Kanäle zuweisen' }
+            notification_channels: { label: 'Benachrichtigungskanäle', desc: 'E-Mail-, Webhook- und In-App-Kanäle konfigurieren' }
+            notification_templates: { label: 'Vorlagen-Galerie', desc: 'Tier-1-Vorlagen für häufige Compliance-Szenarien übernehmen' }
+            notification_preferences: { label: 'Benachrichtigungs-Einstellungen', desc: 'Globale Zustellpräferenzen und Schwellenwerte' }
+            # Sprint 6 System-Settings Folgeseiten
+            api_rate_limits: { label: 'API-Rate-Limits', desc: 'Request-Limits pro Route und Token-Klasse' }
+            backup_settings: { label: 'Backup-Einstellungen', desc: 'Aufbewahrungsdauer und automatische Backup-Planung' }
+            fiscal_year: { label: 'Geschäftsjahr', desc: 'Startmonat und Steuerjahr für Reports und KPIs' }
+            data_retention_settings: { label: 'Aufbewahrungsfristen', desc: 'DSGVO-Löschfristen pro Datenkategorie' }
+            workflow_sla_defaults: { label: 'Workflow-SLA-Defaults', desc: 'Standardfristen für Genehmigungsschritte' }
     section:
         overview: Übersicht
         user_access: 'Benutzer & Zugriff'

@@ -91,6 +91,8 @@ class AdminHubCatalog
                         'label' => 'admin.hub.module.policy_style.label',
                         'description' => 'admin.hub.module.policy_style.desc',
                         'route' => 'app_admin_policy_style_edit',
+                    ],
+                    [
                         'key' => 'report_style',
                         'icon' => 'file-earmark-bar-graph',
                         'label' => 'admin.hub.module.report_style.label',
@@ -259,6 +261,44 @@ class AdminHubCatalog
                     ],
                 ],
             ],
+            // Sprint 6b — Notifications: Rules, Channels, Templates, Preferences
+            [
+                'key' => 'notifications',
+                'tone' => 'pink',
+                'icon' => 'bell',
+                'label' => 'admin.hub.group.notifications.label',
+                'description' => 'admin.hub.group.notifications.desc',
+                'modules' => [
+                    [
+                        'key' => 'notification_rules',
+                        'icon' => 'filter',
+                        'label' => 'admin.hub.module.notification_rules.label',
+                        'description' => 'admin.hub.module.notification_rules.desc',
+                        'route' => 'admin_notification_rule_index',
+                    ],
+                    [
+                        'key' => 'notification_channels',
+                        'icon' => 'send',
+                        'label' => 'admin.hub.module.notification_channels.label',
+                        'description' => 'admin.hub.module.notification_channels.desc',
+                        'route' => 'admin_notification_channel_index',
+                    ],
+                    [
+                        'key' => 'notification_templates',
+                        'icon' => 'collection',
+                        'label' => 'admin.hub.module.notification_templates.label',
+                        'description' => 'admin.hub.module.notification_templates.desc',
+                        'route' => 'admin_notification_template_index',
+                    ],
+                    [
+                        'key' => 'notification_preferences',
+                        'icon' => 'sliders2',
+                        'label' => 'admin.hub.module.notification_preferences.label',
+                        'description' => 'admin.hub.module.notification_preferences.desc',
+                        'route' => 'admin_settings_notifications',
+                    ],
+                ],
+            ],
             [
                 'key' => 'integrations',
                 'tone' => 'cyan',
@@ -365,6 +405,42 @@ class AdminHubCatalog
                         'label' => 'admin.hub.module.application_settings.label',
                         'description' => 'admin.hub.module.application_settings.desc',
                         'route' => 'admin_settings_index',
+                    ],
+                    // Sprint 6 deferred system-settings sub-pages
+                    [
+                        'key' => 'api_rate_limits',
+                        'icon' => 'speedometer2',
+                        'label' => 'admin.hub.module.api_rate_limits.label',
+                        'description' => 'admin.hub.module.api_rate_limits.desc',
+                        'route' => 'admin_settings_api_rate_limits',
+                    ],
+                    [
+                        'key' => 'backup_settings',
+                        'icon' => 'database-fill-down',
+                        'label' => 'admin.hub.module.backup_settings.label',
+                        'description' => 'admin.hub.module.backup_settings.desc',
+                        'route' => 'admin_settings_backups',
+                    ],
+                    [
+                        'key' => 'fiscal_year',
+                        'icon' => 'calendar2-range',
+                        'label' => 'admin.hub.module.fiscal_year.label',
+                        'description' => 'admin.hub.module.fiscal_year.desc',
+                        'route' => 'admin_settings_fiscal_year',
+                    ],
+                    [
+                        'key' => 'data_retention_settings',
+                        'icon' => 'archive',
+                        'label' => 'admin.hub.module.data_retention_settings.label',
+                        'description' => 'admin.hub.module.data_retention_settings.desc',
+                        'route' => 'admin_settings_data_retention',
+                    ],
+                    [
+                        'key' => 'workflow_sla_defaults',
+                        'icon' => 'hourglass',
+                        'label' => 'admin.hub.module.workflow_sla_defaults.label',
+                        'description' => 'admin.hub.module.workflow_sla_defaults.desc',
+                        'route' => 'admin_settings_workflow_slas',
                     ],
                     [
                         'key' => 'data_backup',
