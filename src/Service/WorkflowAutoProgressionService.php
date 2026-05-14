@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\AuditFinding;
+use App\Entity\DataBreach;
+use App\Entity\Incident;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
 use App\Entity\RiskAppetite;
 use App\Repository\RiskAppetiteRepository;
+use App\Service\Notification\SlaDeadlineFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -48,7 +52,8 @@ class WorkflowAutoProgressionService
         private readonly PropertyAccessorInterface $propertyAccessor,
         private readonly WorkflowService $workflowService,
         private readonly LoggerInterface $logger,
-        private readonly RiskAppetiteRepository $riskAppetiteRepository
+        private readonly RiskAppetiteRepository $riskAppetiteRepository,
+        private readonly ?SlaDeadlineFactory $slaDeadlineFactory = null,
     ) {}
 
     /**
@@ -89,6 +94,9 @@ class WorkflowAutoProgressionService
 
         // Auto-approve the step
         $this->autoApproveStep($workflowInstance, $currentStep, $user, $entity);
+
+        // Spawn SLA deadline monitor when an entity transitions into an SLA-governed step
+        $this->maybeSpawnSlaMonitor($entity, $currentStep);
 
         $this->logger->info('Workflow auto-progressed', [
             'workflow_instance_id' => $workflowInstance->getId(),
@@ -533,6 +541,59 @@ class WorkflowAutoProgressionService
         } catch (Exception $e) {
             $this->logger->error('Error triggering incident→risk feedback', [
                 'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Spawn an SLA deadline monitor when a workflow step transition is SLA-governed.
+     *
+     * A workflow step declares SLA spawning via its metadata:
+     * { "slaDeadline": { "type": "gdpr_72h" } }
+     *
+     * If no such metadata is set, or if the SlaDeadlineFactory is not wired,
+     * this method is a no-op.
+     */
+    private function maybeSpawnSlaMonitor(object $entity, WorkflowStep $step): void
+    {
+        if ($this->slaDeadlineFactory === null) {
+            return;
+        }
+
+        $metadata = $step->getMetadata();
+        if (!isset($metadata['slaDeadline'])) {
+            return; // No SLA spawning configured for this step
+        }
+
+        try {
+            $entityType = $this->getEntityShortName($entity);
+
+            match ($entityType) {
+                'DataBreach' => $entity instanceof DataBreach
+                    ? $this->slaDeadlineFactory->createForDataBreach($entity)
+                    : null,
+                'Incident'   => $entity instanceof Incident
+                    ? $this->slaDeadlineFactory->createForIncident(
+                        $entity,
+                        $entity->getSeverity()?->value ?? 'low',
+                    )
+                    : null,
+                'AuditFinding' => $entity instanceof AuditFinding
+                    ? $this->slaDeadlineFactory->createForCorrectiveAction($entity)
+                    : null,
+                default      => null,
+            };
+
+            $this->logger->info('SLA deadline monitor spawned on workflow step transition', [
+                'entity_type' => $entityType,
+                'step'        => $step->getName(),
+            ]);
+        } catch (Exception $e) {
+            // Never block workflow progression due to SLA monitor failure
+            $this->logger->error('Failed to spawn SLA deadline monitor', [
+                'error'       => $e->getMessage(),
+                'entity_type' => $this->getEntityShortName($entity),
+                'step'        => $step->getName(),
             ]);
         }
     }
