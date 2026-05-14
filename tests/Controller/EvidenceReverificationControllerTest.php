@@ -12,6 +12,7 @@ use App\Repository\EvidenceReverificationTaskRepository;
 use App\Service\AuditLogger;
 use App\Service\Evidence\EvidenceCascadeInvalidationService;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -31,6 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Uses unit test approach (no WebTestCase / live DB) to avoid
  * test-environment schema drift issues.
  */
+#[AllowMockObjectsWithoutExpectations]
 class EvidenceReverificationControllerTest extends TestCase
 {
     private EvidenceReverificationController $controller;

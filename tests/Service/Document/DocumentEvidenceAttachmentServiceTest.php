@@ -18,6 +18,7 @@ use App\Repository\DocumentControlLinkRepository;
 use App\Service\Document\DocumentEvidenceAttachmentService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -36,6 +37,7 @@ use Psr\Log\NullLogger;
  *  - ISO 27701 refs resolved via iso27701Clauses2025, fallback to ISO27701 code.
  *  - resolveFrameworkCodeFromLabel tolerance for casing / aliases.
  */
+#[AllowMockObjectsWithoutExpectations]
 class DocumentEvidenceAttachmentServiceTest extends TestCase
 {
     private MockObject $em;

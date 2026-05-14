@@ -8,9 +8,11 @@ use App\AlvaHint\Rule\Risk\HighRiskWithoutTreatmentRule;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Repository\RiskTreatmentPlanRepository;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class HighRiskWithoutTreatmentRuleTest extends TestCase
 {
     private User $user;

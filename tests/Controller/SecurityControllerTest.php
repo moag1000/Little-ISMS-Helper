@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -40,6 +41,7 @@ use PHPUnit\Framework\Attributes\Test;
  * - Error handling for SAML and OAuth flows
  * - Form field presence validation
  */
+#[AllowMockObjectsWithoutExpectations]
 class SecurityControllerTest extends WebTestCase
 {
     private KernelBrowser $client;

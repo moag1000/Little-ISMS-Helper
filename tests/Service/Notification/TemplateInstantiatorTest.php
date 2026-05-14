@@ -11,10 +11,12 @@ use App\Entity\Tenant;
 use App\Repository\Notification\NotificationChannelRepository;
 use App\Service\Notification\TemplateInstantiator;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 final class TemplateInstantiatorTest extends TestCase
 {
     private EntityManagerInterface&MockObject $em;

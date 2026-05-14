@@ -6,6 +6,7 @@ namespace App\Tests\Form\Admin;
 
 use App\Entity\TenantBranding;
 use App\Form\Admin\TenantReportStyleType;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
@@ -20,6 +21,7 @@ use Symfony\Component\Validator\Validation;
  * custom-CSS field, and that valid form submissions populate the
  * entity correctly.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class TenantReportStyleTypeTest extends TypeTestCase
 {
     private bool $isAdmin = true;

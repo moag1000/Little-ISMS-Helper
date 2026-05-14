@@ -8,9 +8,11 @@ use App\AlvaHint\Rule\BusinessProcess\CriticalProcessWithoutBcpRule;
 use App\Entity\BusinessProcess;
 use App\Entity\User;
 use App\Repository\BusinessContinuityPlanRepository;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class CriticalProcessWithoutBcpRuleTest extends TestCase
 {
     private User $user;

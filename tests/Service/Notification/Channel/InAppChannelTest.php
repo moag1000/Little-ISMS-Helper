@@ -10,10 +10,12 @@ use App\Entity\Notification\NotificationRule;
 use App\Service\Notification\Channel\InAppChannel;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 final class InAppChannelTest extends TestCase
 {
     private EntityManagerInterface&MockObject $em;

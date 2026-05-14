@@ -8,10 +8,12 @@ use App\Entity\IdentityProvider;
 use App\Entity\User;
 use App\Service\AuditLogger;
 use App\Service\Sso\SsoEventLogger;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 final class SsoEventLoggerTest extends TestCase
 {
     private AuditLogger&MockObject $audit;

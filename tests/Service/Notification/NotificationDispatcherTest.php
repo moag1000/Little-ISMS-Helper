@@ -12,12 +12,14 @@ use App\Message\Notification\DispatchNotificationMessage;
 use App\Service\Notification\NotificationDispatcher;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 final class NotificationDispatcherTest extends TestCase
 {
     private EntityManagerInterface&MockObject $em;

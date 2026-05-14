@@ -7,9 +7,11 @@ namespace App\Tests\AlvaHint\Rule;
 use App\AlvaHint\Rule\CrisisTeam\TrainingOverdueRule;
 use App\Entity\CrisisTeam;
 use App\Entity\User;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class TrainingOverdueRuleTest extends TestCase
 {
     private TrainingOverdueRule $rule;

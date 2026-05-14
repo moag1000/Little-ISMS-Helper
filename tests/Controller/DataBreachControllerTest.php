@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -25,6 +26,7 @@ use PHPUnit\Framework\Attributes\Test;
  * - PDF export
  * - Role-based access control
  */
+#[AllowMockObjectsWithoutExpectations]
 class DataBreachControllerTest extends WebTestCase
 {
     private KernelBrowser $client;

@@ -13,6 +13,7 @@ use App\Service\TenantSettingResolver\OverrideMode;
 use App\Service\TenantSettingResolver\SettingProviderInterface;
 use App\Service\TenantSettingResolver\TenantSettingResolver;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -25,6 +26,7 @@ use PHPUnit\Framework\TestCase;
  * approved baseline, and mirrors the finding-reference onto the
  * run.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class TargetedRerunModeHandlerTest extends TestCase
 {
     private function makeTenantStub(int $id, array $ancestors = []): Tenant
