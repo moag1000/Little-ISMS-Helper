@@ -11,6 +11,7 @@ use App\Repository\Authority\Nis2RegistrationProfileRepository;
 use App\Service\Authority\Nis2BsiRegistrationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -18,9 +19,11 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for Nis2BsiRegistrationService.
  *
- * Covers: validate() returns errors for missing fields,
- * validate() passes for complete profile, exportToJson() produces
- * correct BSI-spec schema, markReported() advances nextDueAt by 1 year.
+ * Covers: getOrCreateProfile() persists without crash even when no contacts are
+ * set, validate() flags missing contacts as errors, validate() passes for a
+ * complete profile, exportToJson() throws when contacts are missing,
+ * exportToJson() produces correct BSI-spec schema when complete,
+ * markReported() advances nextDueAt by 1 year.
  */
 #[AllowMockObjectsWithoutExpectations]
 final class Nis2BsiRegistrationServiceTest extends TestCase
@@ -36,95 +39,7 @@ final class Nis2BsiRegistrationServiceTest extends TestCase
         $this->service = new Nis2BsiRegistrationService($this->profileRepo, $this->em);
     }
 
-    #[Test]
-    public function validateReturnsErrorsForEmptyProfile(): void
-    {
-        $profile = new Nis2RegistrationProfile();
-        $profile->setNis2EntityCategory('invalid_category');
-
-        $errors = $this->service->validate($profile);
-
-        self::assertArrayHasKey('organizationLegalName', $errors);
-        self::assertArrayHasKey('organizationLegalForm', $errors);
-        self::assertArrayHasKey('commercialRegisterCity', $errors);
-        self::assertArrayHasKey('commercialRegisterNumber', $errors);
-        self::assertArrayHasKey('naceCodes', $errors);
-        self::assertArrayHasKey('nis2Sector', $errors);
-        self::assertArrayHasKey('nis2EntityCategory', $errors);
-        self::assertArrayHasKey('affectedHeadcount', $errors);
-        self::assertArrayHasKey('ictDependencyDescription', $errors);
-    }
-
-    #[Test]
-    public function validatePassesForCompleteProfile(): void
-    {
-        $profile = $this->buildCompleteProfile();
-
-        $errors = $this->service->validate($profile);
-
-        self::assertSame([], $errors, 'Expected no validation errors for a complete profile');
-    }
-
-    #[Test]
-    public function exportToJsonProducesValidBsiSpecSchema(): void
-    {
-        $profile = $this->buildCompleteProfile();
-
-        $json = $this->service->exportToJson($profile);
-        $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-
-        self::assertSame('1.0', $data['schemaVersion']);
-        self::assertSame('nis2_yearly_reregistration', $data['registrationType']);
-        self::assertSame('ACME GmbH', $data['organization']['legalName']);
-        self::assertSame('GmbH', $data['organization']['legalForm']);
-        self::assertSame('Berlin', $data['organization']['commercialRegister']['city']);
-        self::assertSame('HRB 99999', $data['organization']['commercialRegister']['number']);
-        self::assertSame(['J62.01'], $data['organization']['naceCodes']);
-        self::assertSame(250, $data['organization']['affectedHeadcount']);
-        self::assertSame(Nis2RegistrationProfile::SECTOR_DIGITAL_INFRASTRUCTURE, $data['nis2Classification']['sector']);
-        self::assertSame(Nis2RegistrationProfile::CATEGORY_ESSENTIAL, $data['nis2Classification']['entityCategory']);
-        self::assertSame('test@example.com', $data['contacts']['incidentReporting']['email']);
-        self::assertNull($data['contacts']['backupSecurity']);
-    }
-
-    #[Test]
-    public function exportToJsonIsValidJson(): void
-    {
-        $profile = $this->buildCompleteProfile();
-        $json = $this->service->exportToJson($profile);
-
-        self::assertJson($json);
-    }
-
-    #[Test]
-    public function markReportedSetsLastReportedAtAndAdvancesNextDueAtByOneYear(): void
-    {
-        $profile = $this->buildCompleteProfile();
-        $originalNextDueAt = $profile->getNextDueAt();
-
-        $this->em->expects(self::once())->method('flush');
-
-        $this->service->markReported($profile, 'BSI-2026-TEST-9999');
-
-        self::assertNotNull($profile->getLastReportedAt());
-        self::assertSame('BSI-2026-TEST-9999', $profile->getPortalConfirmationNumber());
-
-        // nextDueAt should be ~1 year after the new lastReportedAt
-        $expectedNextDue = $profile->getLastReportedAt()->modify('+1 year');
-        $diff = abs($profile->getNextDueAt()->getTimestamp() - $expectedNextDue->getTimestamp());
-        self::assertLessThan(5, $diff, 'nextDueAt should be within 5 seconds of +1 year from now');
-    }
-
-    #[Test]
-    public function markReportedStoresConfirmationNumber(): void
-    {
-        $profile = $this->buildCompleteProfile();
-        $this->em->method('flush');
-
-        $this->service->markReported($profile, 'CONFIRM-XYZ');
-
-        self::assertSame('CONFIRM-XYZ', $profile->getPortalConfirmationNumber());
-    }
+    // ── getOrCreateProfile ───────────────────────────────────────────────────
 
     #[Test]
     public function getOrCreateProfileReturnsExistingProfile(): void
@@ -161,13 +76,206 @@ final class Nis2BsiRegistrationServiceTest extends TestCase
         self::assertSame($tenant, $profile->getTenant());
     }
 
-    // ── Helper ────────────────────────────────────────────────────────────────
+    #[Test]
+    public function getOrCreateProfileSucceedsWithoutContactsSet(): void
+    {
+        // Regression test: the auto-create path must NOT crash when no contacts
+        // are assigned (contacts are now nullable at DB level; validated at form-submit).
+        $tenant = new Tenant();
+        $tenant->setLegalName('Empty Tenant GmbH');
+
+        $this->profileRepo->method('findForTenant')->willReturn(null);
+        $this->em->expects(self::once())->method('persist');
+        $this->em->expects(self::once())->method('flush');
+
+        $profile = $this->service->getOrCreateProfile($tenant);
+
+        self::assertNull($profile->getIncidentReportingContact());
+        self::assertNull($profile->getSecurityResponsibleContact());
+        self::assertNull($profile->getBackupSecurityContact());
+    }
+
+    // ── validate ─────────────────────────────────────────────────────────────
+
+    #[Test]
+    public function validateReturnsErrorsForEmptyProfile(): void
+    {
+        $profile = new Nis2RegistrationProfile();
+        $profile->setNis2EntityCategory('invalid_category');
+
+        $errors = $this->service->validate($profile);
+
+        self::assertArrayHasKey('organizationLegalName', $errors);
+        self::assertArrayHasKey('organizationLegalForm', $errors);
+        self::assertArrayHasKey('commercialRegisterCity', $errors);
+        self::assertArrayHasKey('commercialRegisterNumber', $errors);
+        self::assertArrayHasKey('naceCodes', $errors);
+        self::assertArrayHasKey('nis2Sector', $errors);
+        self::assertArrayHasKey('nis2EntityCategory', $errors);
+        self::assertArrayHasKey('affectedHeadcount', $errors);
+        self::assertArrayHasKey('ictDependencyDescription', $errors);
+    }
+
+    #[Test]
+    public function validateFlagsMissingIncidentReportingContact(): void
+    {
+        $profile = $this->buildCompleteProfile();
+        $profile->setIncidentReportingContact(null);
+
+        $errors = $this->service->validate($profile);
+
+        self::assertArrayHasKey('incidentReportingContact', $errors);
+        self::assertSame(
+            'eu_authorities.nis2_registration.error.incident_contact_required',
+            $errors['incidentReportingContact']
+        );
+    }
+
+    #[Test]
+    public function validateFlagsMissingSecurityResponsibleContact(): void
+    {
+        $profile = $this->buildCompleteProfile();
+        $profile->setSecurityResponsibleContact(null);
+
+        $errors = $this->service->validate($profile);
+
+        self::assertArrayHasKey('securityResponsibleContact', $errors);
+        self::assertSame(
+            'eu_authorities.nis2_registration.error.security_contact_required',
+            $errors['securityResponsibleContact']
+        );
+    }
+
+    #[Test]
+    public function validateFlagsBothMissingContacts(): void
+    {
+        $profile = $this->buildProfileWithoutContacts();
+
+        $errors = $this->service->validate($profile);
+
+        self::assertArrayHasKey('incidentReportingContact', $errors);
+        self::assertArrayHasKey('securityResponsibleContact', $errors);
+    }
+
+    #[Test]
+    public function validatePassesForCompleteProfile(): void
+    {
+        $profile = $this->buildCompleteProfile();
+
+        $errors = $this->service->validate($profile);
+
+        self::assertSame([], $errors, 'Expected no validation errors for a complete profile');
+    }
+
+    // ── exportToJson ─────────────────────────────────────────────────────────
+
+    #[Test]
+    public function exportToJsonThrowsWhenIncidentContactMissing(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessageMatches('/incidentReportingContact/');
+
+        $profile = $this->buildCompleteProfile();
+        $profile->setIncidentReportingContact(null);
+
+        $this->service->exportToJson($profile);
+    }
+
+    #[Test]
+    public function exportToJsonThrowsWhenSecurityContactMissing(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessageMatches('/securityResponsibleContact/');
+
+        $profile = $this->buildCompleteProfile();
+        $profile->setSecurityResponsibleContact(null);
+
+        $this->service->exportToJson($profile);
+    }
+
+    #[Test]
+    public function exportToJsonProducesValidBsiSpecSchema(): void
+    {
+        $profile = $this->buildCompleteProfile();
+
+        $json = $this->service->exportToJson($profile);
+        $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertSame('1.0', $data['schemaVersion']);
+        self::assertSame('nis2_yearly_reregistration', $data['registrationType']);
+        self::assertSame('ACME GmbH', $data['organization']['legalName']);
+        self::assertSame('GmbH', $data['organization']['legalForm']);
+        self::assertSame('Berlin', $data['organization']['commercialRegister']['city']);
+        self::assertSame('HRB 99999', $data['organization']['commercialRegister']['number']);
+        self::assertSame(['J62.01'], $data['organization']['naceCodes']);
+        self::assertSame(250, $data['organization']['affectedHeadcount']);
+        self::assertSame(Nis2RegistrationProfile::SECTOR_DIGITAL_INFRASTRUCTURE, $data['nis2Classification']['sector']);
+        self::assertSame(Nis2RegistrationProfile::CATEGORY_ESSENTIAL, $data['nis2Classification']['entityCategory']);
+        self::assertSame('test@example.com', $data['contacts']['incidentReporting']['email']);
+        self::assertNull($data['contacts']['backupSecurity']);
+    }
+
+    #[Test]
+    public function exportToJsonIsValidJson(): void
+    {
+        $profile = $this->buildCompleteProfile();
+        $json = $this->service->exportToJson($profile);
+
+        self::assertJson($json);
+    }
+
+    // ── markReported ─────────────────────────────────────────────────────────
+
+    #[Test]
+    public function markReportedSetsLastReportedAtAndAdvancesNextDueAtByOneYear(): void
+    {
+        $profile = $this->buildCompleteProfile();
+        $originalNextDueAt = $profile->getNextDueAt();
+
+        $this->em->expects(self::once())->method('flush');
+
+        $this->service->markReported($profile, 'BSI-2026-TEST-9999');
+
+        self::assertNotNull($profile->getLastReportedAt());
+        self::assertSame('BSI-2026-TEST-9999', $profile->getPortalConfirmationNumber());
+
+        // nextDueAt should be ~1 year after the new lastReportedAt
+        $expectedNextDue = $profile->getLastReportedAt()->modify('+1 year');
+        $diff = abs($profile->getNextDueAt()->getTimestamp() - $expectedNextDue->getTimestamp());
+        self::assertLessThan(5, $diff, 'nextDueAt should be within 5 seconds of +1 year from now');
+    }
+
+    #[Test]
+    public function markReportedStoresConfirmationNumber(): void
+    {
+        $profile = $this->buildCompleteProfile();
+        $this->em->method('flush');
+
+        $this->service->markReported($profile, 'CONFIRM-XYZ');
+
+        self::assertSame('CONFIRM-XYZ', $profile->getPortalConfirmationNumber());
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
 
     private function buildCompleteProfile(): Nis2RegistrationProfile
     {
         $user = new User();
         $user->setEmail('test@example.com');
 
+        $profile = $this->buildProfileWithoutContacts();
+        $profile->setIncidentReportingContact($user);
+        $profile->setSecurityResponsibleContact($user);
+
+        return $profile;
+    }
+
+    /**
+     * Returns a profile with all non-contact fields filled but contacts left null.
+     * Useful for testing contact-specific validation and export guards.
+     */
+    private function buildProfileWithoutContacts(): Nis2RegistrationProfile
+    {
         $profile = new Nis2RegistrationProfile();
         $profile->setOrganizationLegalName('ACME GmbH');
         $profile->setOrganizationLegalForm('GmbH');
@@ -178,8 +286,6 @@ final class Nis2BsiRegistrationServiceTest extends TestCase
         $profile->setNis2EntityCategory(Nis2RegistrationProfile::CATEGORY_ESSENTIAL);
         $profile->setAffectedHeadcount(250);
         $profile->setIctDependencyDescription('Kritische Cloud-ERP-Abhängigkeit.');
-        $profile->setIncidentReportingContact($user);
-        $profile->setSecurityResponsibleContact($user);
 
         return $profile;
     }
