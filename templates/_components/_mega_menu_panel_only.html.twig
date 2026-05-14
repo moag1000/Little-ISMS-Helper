@@ -385,6 +385,26 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {# F36: EU-Behörden-Reporting-Hub — aggregiert F25/F26/F29/F30 #}
+                        {% if is_module_active('eu_authority_reporting') and is_granted('ROLE_MANAGER') %}
+                        <li><a href="{{ path('authority_hub_index') }}" class="{% if current_route starts with 'authority_hub_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-building-shield" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'eu_authorities.hub.page.title'|trans({}, 'eu_authorities') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'eu_authorities.hub.page.subtitle'|trans({}, 'eu_authorities') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {# F30: DORA Register of Information (RoI) XBRL Export #}
+                        {% if is_module_active('nis2_dora') and is_granted('ROLE_MANAGER') %}
+                        <li><a href="{{ path('dora_roi_index') }}" class="{% if current_route starts with 'dora_roi_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-file-earmark-spreadsheet" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'eu_authorities.dora_roi.page.title'|trans({}, 'eu_authorities') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'eu_authorities.dora_roi.page.subtitle'|trans({}, 'eu_authorities') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

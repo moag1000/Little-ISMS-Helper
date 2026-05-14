@@ -47,6 +47,10 @@ class AuditLogger
     public const string ACTION_NIS2_REGISTRATION_EXPORTED = 'nis2.registration.exported';
     public const string ACTION_NIS2_REGISTRATION_UPDATED  = 'nis2.registration.updated';
 
+    // DORA Register of Information audit events (Sprint 8 — F30)
+    public const string ACTION_DORA_ROI_EXPORTED  = 'dora.roi.exported';
+    public const string ACTION_DORA_ROI_SUBMITTED = 'dora.roi.submitted';
+
     // SSO-specific audit events (Wave 2) — used by SsoEventLogger
     public const string ACTION_SSO_LOGIN_SUCCESS       = 'sso.login.success';
     public const string ACTION_SSO_LOGIN_FAILURE       = 'sso.login.failure';
