@@ -7,7 +7,7 @@ namespace App\Service\Admin;
 /**
  * IA-Definition für das Admin-Panel-Hub-Layout.
  *
- * Sieben Gruppen × ~36 Module gemäß
+ * Acht Gruppen × ~59 Module gemäß
  * docs/design_system/sections/admin-panel.html. Jede Gruppe hat eine
  * Tone-Farbe (cyan / pink / purple) für die linke Akzent-Bar der
  * Hub-Cards. Module verweisen auf existierende Routes; fehlende
@@ -91,6 +91,8 @@ class AdminHubCatalog
                         'label' => 'admin.hub.module.policy_style.label',
                         'description' => 'admin.hub.module.policy_style.desc',
                         'route' => 'app_admin_policy_style_edit',
+                    ],
+                    [
                         'key' => 'report_style',
                         'icon' => 'file-earmark-bar-graph',
                         'label' => 'admin.hub.module.report_style.label',
@@ -257,6 +259,69 @@ class AdminHubCatalog
                         'description' => 'admin.hub.module.scheduled_reports.desc',
                         'route' => 'app_scheduled_report_index',
                     ],
+                    // Sprint 8 — EU Authority reporting
+                    [
+                        'key' => 'authority_hub',
+                        'icon' => 'bank',
+                        'label' => 'admin.hub.module.authority_hub.label',
+                        'description' => 'admin.hub.module.authority_hub.desc',
+                        'route' => 'authority_hub_index',
+                        'requiredModule' => 'eu_authority_reporting',
+                    ],
+                    [
+                        'key' => 'nis2_registration',
+                        'icon' => 'shield-exclamation',
+                        'label' => 'admin.hub.module.nis2_registration.label',
+                        'description' => 'admin.hub.module.nis2_registration.desc',
+                        'route' => 'nis2_registration_index',
+                        'requiredModule' => 'nis2_dora',
+                    ],
+                    [
+                        'key' => 'dora_roi',
+                        'icon' => 'file-earmark-spreadsheet',
+                        'label' => 'admin.hub.module.dora_roi.label',
+                        'description' => 'admin.hub.module.dora_roi.desc',
+                        'route' => 'dora_roi_index',
+                        'requiredModule' => 'nis2_dora',
+                    ],
+                ],
+            ],
+            // Sprint 6b — Notifications: Rules, Channels, Templates, Preferences
+            [
+                'key' => 'notifications',
+                'tone' => 'pink',
+                'icon' => 'bell',
+                'label' => 'admin.hub.group.notifications.label',
+                'description' => 'admin.hub.group.notifications.desc',
+                'modules' => [
+                    [
+                        'key' => 'notification_rules',
+                        'icon' => 'filter',
+                        'label' => 'admin.hub.module.notification_rules.label',
+                        'description' => 'admin.hub.module.notification_rules.desc',
+                        'route' => 'admin_notification_rule_index',
+                    ],
+                    [
+                        'key' => 'notification_channels',
+                        'icon' => 'send',
+                        'label' => 'admin.hub.module.notification_channels.label',
+                        'description' => 'admin.hub.module.notification_channels.desc',
+                        'route' => 'admin_notification_channel_index',
+                    ],
+                    [
+                        'key' => 'notification_templates',
+                        'icon' => 'collection',
+                        'label' => 'admin.hub.module.notification_templates.label',
+                        'description' => 'admin.hub.module.notification_templates.desc',
+                        'route' => 'admin_notification_template_index',
+                    ],
+                    [
+                        'key' => 'notification_preferences',
+                        'icon' => 'sliders2',
+                        'label' => 'admin.hub.module.notification_preferences.label',
+                        'description' => 'admin.hub.module.notification_preferences.desc',
+                        'route' => 'admin_settings_notifications',
+                    ],
                 ],
             ],
             [
@@ -365,6 +430,42 @@ class AdminHubCatalog
                         'label' => 'admin.hub.module.application_settings.label',
                         'description' => 'admin.hub.module.application_settings.desc',
                         'route' => 'admin_settings_index',
+                    ],
+                    // Sprint 6 deferred system-settings sub-pages
+                    [
+                        'key' => 'api_rate_limits',
+                        'icon' => 'speedometer2',
+                        'label' => 'admin.hub.module.api_rate_limits.label',
+                        'description' => 'admin.hub.module.api_rate_limits.desc',
+                        'route' => 'admin_settings_api_rate_limits',
+                    ],
+                    [
+                        'key' => 'backup_settings',
+                        'icon' => 'database-fill-down',
+                        'label' => 'admin.hub.module.backup_settings.label',
+                        'description' => 'admin.hub.module.backup_settings.desc',
+                        'route' => 'admin_settings_backups',
+                    ],
+                    [
+                        'key' => 'fiscal_year',
+                        'icon' => 'calendar2-range',
+                        'label' => 'admin.hub.module.fiscal_year.label',
+                        'description' => 'admin.hub.module.fiscal_year.desc',
+                        'route' => 'admin_settings_fiscal_year',
+                    ],
+                    [
+                        'key' => 'data_retention_settings',
+                        'icon' => 'archive',
+                        'label' => 'admin.hub.module.data_retention_settings.label',
+                        'description' => 'admin.hub.module.data_retention_settings.desc',
+                        'route' => 'admin_settings_data_retention',
+                    ],
+                    [
+                        'key' => 'workflow_sla_defaults',
+                        'icon' => 'hourglass',
+                        'label' => 'admin.hub.module.workflow_sla_defaults.label',
+                        'description' => 'admin.hub.module.workflow_sla_defaults.desc',
+                        'route' => 'admin_settings_workflow_slas',
                     ],
                     [
                         'key' => 'data_backup',

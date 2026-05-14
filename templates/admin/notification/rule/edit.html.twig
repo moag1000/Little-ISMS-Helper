@@ -2,8 +2,8 @@
 {% trans_default_domain 'notification' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'notification.rule.edit.title'|trans({'%name%': rule.name}) }}{% endblock %}
-{% block admin_title %}{{ 'notification.rule.edit.title'|trans({'%name%': rule.name}) }}{% endblock %}
+{% block title %}{{ 'notification.rule.edit.title'|trans({'%name%': rule.name}, 'notification') }}{% endblock %}
+{% block admin_title %}{{ 'notification.rule.edit.title'|trans({'%name%': rule.name}, 'notification') }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item">
@@ -18,7 +18,7 @@
 {% block admin_content %}
     {{ _fa_page_header.render({
         badge: { icon: 'bell', label: 'Rule' },
-        title: 'notification.rule.edit.title'|trans({'%name%': rule.name}),
+        title: 'notification.rule.edit.title'|trans({'%name%': rule.name}, 'notification'),
         subtitle: rule.eventType,
         actions: [
             {
