@@ -883,6 +883,10 @@ class ComplianceController extends AbstractController
     public function transitiveCompliance(): Response
     {
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
+
+        // perf: single bulk query replaces O(N²) per-pair queries (was >10 s with many frameworks)
+        $allMappingsBulk = $this->complianceMappingRepository->findAllCrossFrameworkMappingsBulk($frameworks);
+
         $transitiveAnalysis = [];
         $mappingMatrix = [];
         $crossMappings = [];
@@ -890,75 +894,102 @@ class ComplianceController extends AbstractController
         $frameworkRelationships = [];
         $frameworksLeveragedSet = [];
 
-        // Build mapping coverage matrix for template
         foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
                 if ($framework->id === $targetFramework->id) {
                     continue;
                 }
 
-                // Calculate coverage for matrix
-                $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage(
-                    $framework,
-                    $targetFramework
-                );
+                // Use pre-loaded bulk data — no per-pair DB query
+                $pairMappings = $allMappingsBulk[$framework->getId()][$targetFramework->getId()] ?? [];
 
-                $mappingMatrix[$framework->id][$targetFramework->id] = [
-                    'coverage' => $coverage['coverage_percentage'] ?? 0,
-                    'has_mapping' => ($coverage['coverage_percentage'] ?? 0) > 0
+                // Inline coverage calculation (was calculateFrameworkCoverage — now uses cached data)
+                $targetRequirements = $targetFramework->requirements->count();
+                $coveredRequirements = [];
+                foreach ($pairMappings as $mapping) {
+                    $targetReqId = $mapping->getTargetRequirement()->getId();
+                    $pct = $mapping->getMappingPercentage();
+                    if (!isset($coveredRequirements[$targetReqId]) || $coveredRequirements[$targetReqId] < $pct) {
+                        $coveredRequirements[$targetReqId] = $pct;
+                    }
+                }
+                $totalCoveragePct = array_sum(array_map(static fn(int $c): int => min(100, $c), $coveredRequirements));
+                $avgCoverage = $targetRequirements > 0 ? round($totalCoveragePct / $targetRequirements, 2) : 0;
+
+                $coverage = [
+                    'source_framework'       => $framework->getName(),
+                    'target_framework'       => $targetFramework->getName(),
+                    'total_target_requirements' => $targetRequirements,
+                    'covered_requirements'   => count($coveredRequirements),
+                    'coverage_percentage'    => $avgCoverage,
+                    'strong_mappings'        => count(array_filter($coveredRequirements, fn(int $c): bool => $c >= 100)),
+                    'partial_mappings'       => count(array_filter($coveredRequirements, fn(int $c): bool => $c >= 50 && $c < 100)),
+                    'weak_mappings'          => count(array_filter($coveredRequirements, fn(int $c): bool => $c < 50)),
                 ];
 
-                // Build coverage matrix for cross-framework display
+                $mappingMatrix[$framework->id][$targetFramework->id] = [
+                    'coverage' => $avgCoverage,
+                    'has_mapping' => $avgCoverage > 0,
+                ];
+
                 $coverageMatrix[$framework->getCode()][$targetFramework->getCode()] = $coverage;
 
-                // Transitive analysis
-                $transitive = $this->complianceMappingRepository->getTransitiveCompliance(
-                    $framework,
-                    $targetFramework
-                );
+                // Inline transitive calculation (was getTransitiveCompliance — now uses cached data)
+                $targetRequirementsHelped = [];
+                foreach ($pairMappings as $mapping) {
+                    $transitiveFulfillment = $mapping->calculateTransitiveFulfillment();
+                    if ($transitiveFulfillment > 0) {
+                        $targetReqId = $mapping->getTargetRequirement()->getRequirementId();
+                        if (!isset($targetRequirementsHelped[$targetReqId])
+                            || $targetRequirementsHelped[$targetReqId] < $transitiveFulfillment) {
+                            $targetRequirementsHelped[$targetReqId] = $transitiveFulfillment;
+                        }
+                    }
+                }
+                $totalBenefit = array_sum($targetRequirementsHelped);
+                $targetReqCount = $targetFramework->requirements->count();
+                $avgBenefit = $targetReqCount > 0 ? round($totalBenefit / $targetReqCount, 2) : 0;
 
-                if (($transitive['requirements_helped'] ?? 0) > 0) {
-                    $transitiveAnalysis[] = $transitive;
+                if (count($targetRequirementsHelped) > 0) {
+                    $transitiveAnalysis[] = [
+                        'source_framework'          => $framework->getName(),
+                        'target_framework'          => $targetFramework->getName(),
+                        'requirements_helped'       => count($targetRequirementsHelped),
+                        'average_transitive_benefit' => $avgBenefit,
+                        'total_benefit'             => round($totalBenefit, 2),
+                    ];
                 }
 
-                // Get detailed cross-framework mappings
-                $mappings = $this->complianceMappingRepository->findCrossFrameworkMappings(
-                    $framework,
-                    $targetFramework
-                );
-
-                if ($mappings !== [] && ($coverage['coverage_percentage'] ?? 0) > 0) {
+                if ($pairMappings !== [] && $avgCoverage > 0) {
                     $crossMappings[] = [
-                        'source' => $framework,
-                        'target' => $targetFramework,
-                        'mappings' => $mappings,
+                        'source'   => $framework,
+                        'target'   => $targetFramework,
+                        'mappings' => $pairMappings,
                         'coverage' => $coverage,
                     ];
 
-                    // Build framework relationships for KPI cards
                     $frameworkRelationships[] = (object)[
-                        'id' => $framework->id . '_' . $targetFramework->id,
-                        'sourceFramework' => $framework,
-                        'targetFramework' => $targetFramework,
-                        'mappedRequirements' => $coverage['covered_requirements'] ?? 0,
-                        'coveragePercentage' => round($coverage['coverage_percentage'] ?? 0),
+                        'id'                  => $framework->id . '_' . $targetFramework->id,
+                        'sourceFramework'     => $framework,
+                        'targetFramework'     => $targetFramework,
+                        'mappedRequirements'  => $coverage['covered_requirements'],
+                        'coveragePercentage'  => round($avgCoverage),
                     ];
 
-                    // Track frameworks being leveraged
                     $frameworksLeveragedSet[$targetFramework->id] = true;
                 }
             }
         }
 
         return $this->render('compliance/transitive_compliance.html.twig', [
-            'frameworks' => $frameworks,
-            'transitive_analysis' => $transitiveAnalysis,
-            'mapping_matrix' => $mappingMatrix,
-            'total_relationships' => count($frameworkRelationships),
+            'frameworks'           => $frameworks,
+            'transitive_analysis'  => $transitiveAnalysis,
+            'mapping_matrix'       => $mappingMatrix,
+            'total_relationships'  => count($frameworkRelationships),
             'transitive_compliance' => array_sum(array_column($transitiveAnalysis, 'requirements_helped')),
             'leverage_opportunities' => [],
-            'cross_mappings' => $crossMappings,
-            'coverage_matrix' => $coverageMatrix,
+            'cross_mappings'       => $crossMappings,
+            'coverage_matrix'      => $coverageMatrix,
             'framework_relationships' => $frameworkRelationships,
             'frameworks_leveraged' => count($frameworksLeveragedSet),
         ]);

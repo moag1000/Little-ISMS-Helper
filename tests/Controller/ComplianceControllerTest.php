@@ -367,15 +367,15 @@ class ComplianceControllerTest extends TestCase
     {
         $frameworks = [
             $this->createFramework(1, 'ISO 27001', 'ISO27001'),
-            $this->createFramework(2, 'NIST CSF', 'NIST_CSF')
+            $this->createFramework(2, 'NIST CSF', 'NIST_CSF'),
         ];
-        $coverage = ['coverage_percentage' => 80];
 
         $this->complianceFrameworkRepository->method('findActiveFrameworks')
             ->willReturn($frameworks);
 
-        $this->complianceMappingRepository->method('calculateFrameworkCoverage')
-            ->willReturn($coverage);
+        // New bulk-load method replaces per-pair calculateFrameworkCoverage / findCrossFrameworkMappings
+        $this->complianceMappingRepository->method('findAllCrossFrameworkMappingsBulk')
+            ->willReturn([]);
 
         $response = $this->controller->transitiveCompliance();
 
@@ -686,10 +686,13 @@ class ComplianceControllerTest extends TestCase
         $framework = $this->createPartialMock(ComplianceFramework::class, ['getName', 'getCode']);
         $framework->method('getName')->willReturn($name);
         $framework->method('getCode')->willReturn($code);
-        // Set id directly on the object (bypasses property hooks)
         $reflection = new \ReflectionClass($framework);
+        // Set id
         $property = $reflection->getProperty('id');
         $property->setValue($framework, $id);
+        // Initialize the requirements collection so ->count() doesn't throw on uninitialized typed property
+        $reqProperty = $reflection->getProperty('requirements');
+        $reqProperty->setValue($framework, new \Doctrine\Common\Collections\ArrayCollection());
 
         return $framework;
     }
