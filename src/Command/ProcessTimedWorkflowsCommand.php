@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Repository\WorkflowInstanceRepository;
+use App\Service\Notification\SlaDeadlineWatcher;
 use App\Service\WorkflowAutoProgressionService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,7 +45,8 @@ class ProcessTimedWorkflowsCommand extends Command
     public function __construct(
         private readonly WorkflowInstanceRepository $workflowInstanceRepository,
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly SlaDeadlineWatcher $slaDeadlineWatcher,
     ) {
         parent::__construct();
     }
@@ -54,7 +56,7 @@ class ProcessTimedWorkflowsCommand extends Command
         $this
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Show what would be processed without making changes')
             ->setHelp(<<<'HELP'
-This command processes time-based workflow auto-progression.
+This command processes time-based workflow auto-progression AND SLA deadline monitoring.
 
 <info>Time-Based Auto-Progression:</info>
 Workflow steps can be configured to auto-progress after a time delay.
@@ -63,11 +65,19 @@ This is useful for:
   • Review steps with automatic escalation after timeout
   • Compliance steps with mandatory waiting periods
 
+<info>SLA Deadline Monitoring (Sprint 7A — F3 Wave 2):</info>
+In addition to workflow progression, this command ticks the SlaDeadlineWatcher
+for every active tenant. The watcher:
+  • Fires approaching-deadline notifications at configured checkpoints (hours before deadline)
+  • Marks overdue SlaDeadlineMonitor records as 'missed' and emits critical notifications
+  • Covers GDPR Art. 33 (72h), DORA Art. 19 (4h/24h/1mo), NIS2 Art. 23 (24h/72h/1mo),
+    and ISO 27001 Cl. 10.1 corrective-action 30d deadlines
+
 <info>Examples:</info>
-  # Process time-based workflows
+  # Process time-based workflows + tick SLA watcher
   <comment>php bin/console app:process-timed-workflows</comment>
 
-  # Dry run (see what would be processed)
+  # Dry run (see what would be processed; SLA watcher skipped in dry-run)
   <comment>php bin/console app:process-timed-workflows --dry-run</comment>
 
 <info>Cron Setup:</info>
@@ -223,6 +233,36 @@ HELP
             $io->success(sprintf('Successfully auto-progressed %d workflow(s)', $processed));
         } else {
             $io->success('No workflows needed time-based auto-progression');
+        }
+
+        // --- SLA Deadline Watcher (Sprint 7A — F3 Wave 2) --------------------------------
+        if ($dryRun) {
+            $io->note('SLA Deadline Watcher: skipped in dry-run mode');
+        } else {
+            $io->section('SLA Deadline Monitor');
+
+            try {
+                $slaResult = $this->slaDeadlineWatcher->tickAll();
+
+                $io->horizontalTable(
+                    ['Metric', 'Count'],
+                    [
+                        ['Approaching checkpoint notifications', $slaResult['approached']],
+                        ['Deadlines marked missed',              $slaResult['missed']],
+                        ['Tenant errors',                        count($slaResult['errors'])],
+                    ],
+                );
+
+                if (!empty($slaResult['errors'])) {
+                    $io->warning('SLA watcher encountered errors:');
+                    $io->listing($slaResult['errors']);
+                } else {
+                    $io->success('SLA deadline watcher completed without errors');
+                }
+            } catch (\Throwable $e) {
+                $io->error(sprintf('SLA deadline watcher failed: %s', $e->getMessage()));
+                return Command::FAILURE;
+            }
         }
 
         return Command::SUCCESS;
