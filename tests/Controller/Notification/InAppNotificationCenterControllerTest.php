@@ -20,6 +20,36 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 final class InAppNotificationCenterControllerTest extends WebTestCase
 {
+    /**
+     * Regression guard for E2E round-2 HIGH: /de/notifications/center returned 404.
+     * A permanent redirect alias was added. For unauthenticated users the security
+     * firewall fires first (302 to login); for authenticated users the alias returns
+     * 301 to /de/notifications. Either way the route is FOUND (not 404).
+     */
+    #[Test]
+    public function centerAliasRouteIsFoundNotReturning404(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/de/notifications/center');
+        // 302 = security redirect to login (unauthenticated); both are acceptable —
+        // the critical assertion is that the route EXISTS (no 404/500).
+        $statusCode = $client->getResponse()->getStatusCode();
+        self::assertNotSame(404, $statusCode, '/de/notifications/center must not return 404 — route alias is missing');
+        self::assertNotSame(500, $statusCode, '/de/notifications/center must not return 500 — route alias is broken');
+        self::assertContains($statusCode, [301, 302]);
+    }
+
+    #[Test]
+    public function centerAliasRouteRedirectsToCanonicalCenterWhenAuthenticated(): void
+    {
+        $client = static::createClient();
+        $client->loginUser($this->getOrCreateUser($client));
+        $client->followRedirects(false);
+        $client->request('GET', '/de/notifications/center');
+        self::assertResponseStatusCodeSame(301);
+        self::assertResponseRedirects('/de/notifications');
+    }
+
     #[Test]
     public function centerRedirectsForUnauthenticated(): void
     {
