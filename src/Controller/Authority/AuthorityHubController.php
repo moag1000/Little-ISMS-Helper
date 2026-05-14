@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * F36 — EU-Behörden-Reporting-Hub Controller.
@@ -38,6 +39,7 @@ class AuthorityHubController extends AbstractController
         private readonly AuthorityHubService $hubService,
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
