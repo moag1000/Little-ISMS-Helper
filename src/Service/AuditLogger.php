@@ -39,6 +39,14 @@ class AuditLogger
     public const string ACTION_NOTIFICATION_DELIVERY_FAILED    = 'notification.delivery.failed';
     public const string ACTION_NOTIFICATION_DELIVERY_RETRIED   = 'notification.delivery.retried';
 
+    // SLA Deadline audit events (Sprint 7A — F3 Wave 2)
+    public const string ACTION_SLA_DEADLINE_APPROACHING = 'notification.sla.deadline_approaching';
+    public const string ACTION_SLA_DEADLINE_MISSED      = 'notification.sla.deadline_missed';
+
+    // NIS-2 BSI-Portal registration audit events (Sprint 7B — F29)
+    public const string ACTION_NIS2_REGISTRATION_EXPORTED = 'nis2.registration.exported';
+    public const string ACTION_NIS2_REGISTRATION_UPDATED  = 'nis2.registration.updated';
+
     // SSO-specific audit events (Wave 2) — used by SsoEventLogger
     public const string ACTION_SSO_LOGIN_SUCCESS       = 'sso.login.success';
     public const string ACTION_SSO_LOGIN_FAILURE       = 'sso.login.failure';

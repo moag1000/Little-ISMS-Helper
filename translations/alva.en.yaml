@@ -190,6 +190,18 @@ global:
         title: 'No SSO configured for %count% users — authentication gap'
         body: 'Your tenant has %count% active users but no SSO Identity Provider is configured. ISO 27001:2022 A.5.17 and A.8.5 recommend centralised authentication for larger teams to enforce strong passwords, MFA, and account lifecycle control.'
         action: 'Set up SSO'
+    missed_sla_deadline:
+        title: '%count% SLA deadline(s) missed — regulatory exposure'
+        body: '%count% regulatory reporting deadline(s) have passed without fulfilment (GDPR Art. 33 72h / DORA Art. 19 / NIS2 Art. 23). Missed notification obligations can trigger fines of up to €10M / 2% group turnover. Immediate action required.'
+        action: 'Review notification rules'
+    nis2_registration_overdue:
+        title: 'NIS-2 BSI Portal Registration Overdue'
+        body: 'The yearly NIS-2 registration with the BSI portal is overdue (deadline was %date%). BSIG § 33 mandates yearly re-registration for essential and important entities.'
+        action: 'Open NIS-2 registration'
+    nis2_registration_due_soon:
+        title: 'NIS-2 BSI Portal Registration Due Soon'
+        body: 'The yearly NIS-2 registration with the BSI portal is due on %date%. Please export now and submit via the BSI reporting portal.'
+        action: 'Open NIS-2 registration'
 
 inbox:
     title: 'Alva Inbox'
