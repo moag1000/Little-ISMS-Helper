@@ -9,9 +9,11 @@ use App\Entity\Control;
 use App\Entity\User;
 use App\Repository\ComplianceRequirementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class OrphanControlRuleTest extends TestCase
 {
     private User $user;

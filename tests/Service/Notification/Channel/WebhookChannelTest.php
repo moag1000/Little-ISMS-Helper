@@ -10,6 +10,7 @@ use App\Entity\Notification\NotificationRule;
 use App\Service\Notification\Channel\WebhookChannel;
 use App\Service\Sso\SecretEncryptionInterface;
 use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +19,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 final class WebhookChannelTest extends TestCase
 {
     private HttpClientInterface&MockObject $httpClient;

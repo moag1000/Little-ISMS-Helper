@@ -9,6 +9,7 @@ use App\Controller\AlvaHintController;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\AuditLogger;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -16,6 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 class AlvaHintControllerTest extends TestCase
 {
     private MockObject $alvaHintService;

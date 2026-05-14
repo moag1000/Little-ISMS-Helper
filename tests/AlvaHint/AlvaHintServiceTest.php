@@ -13,10 +13,12 @@ use App\Repository\AlvaHintDismissalRepository;
 use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 
+#[AllowMockObjectsWithoutExpectations]
 class AlvaHintServiceTest extends TestCase
 {
     #[Test]

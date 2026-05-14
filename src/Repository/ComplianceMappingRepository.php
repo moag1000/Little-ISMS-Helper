@@ -153,6 +153,50 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
+     * Bulk-load ALL cross-framework mappings for a given set of frameworks in ONE query.
+     *
+     * Returns a two-level map: [sourceFrameworkId][targetFrameworkId] => ComplianceMapping[].
+     * This eliminates the N×N per-pair queries that make the transitive-compliance
+     * page take >10 s with many active frameworks.
+     *
+     * Usage:
+     *   $allMappings = $repo->findAllCrossFrameworkMappingsBulk($frameworks);
+     *   $pairMappings = $allMappings[$source->getId()][$target->getId()] ?? [];
+     *
+     * @param ComplianceFramework[] $frameworks
+     * @return array<int, array<int, ComplianceMapping[]>>
+     */
+    public function findAllCrossFrameworkMappingsBulk(array $frameworks): array
+    {
+        if ($frameworks === []) {
+            return [];
+        }
+
+        $mappings = $this->createQueryBuilder('cm')
+            ->addSelect('sr', 'tr', 'sf', 'tf')
+            ->join('cm.sourceRequirement', 'sr')
+            ->join('cm.targetRequirement', 'tr')
+            ->join('sr.framework', 'sf')
+            ->join('tr.framework', 'tf')
+            ->where('sf IN (:frameworks)')
+            ->andWhere('tf IN (:frameworks)')
+            ->andWhere('sf != tf')
+            ->setParameter('frameworks', $frameworks)
+            ->orderBy('cm.mappingPercentage', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $result = [];
+        foreach ($mappings as $mapping) {
+            $sfId = $mapping->getSourceRequirement()->getFramework()->getId();
+            $tfId = $mapping->getTargetRequirement()->getFramework()->getId();
+            $result[$sfId][$tfId][] = $mapping;
+        }
+
+        return $result;
+    }
+
+    /**
      * Find strong mappings (100%+ coverage) between frameworks for compliance reuse analysis.
      *
      * @param ComplianceFramework $sourceFramework Source framework

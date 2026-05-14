@@ -11,11 +11,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Functional tests for CrisisTeamController
  */
+#[AllowMockObjectsWithoutExpectations]
 class CrisisTeamControllerTest extends WebTestCase
 {
     private KernelBrowser $client;

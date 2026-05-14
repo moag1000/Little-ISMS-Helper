@@ -8,10 +8,12 @@ use App\Entity\IdentityProvider;
 use App\Entity\IdentityProviderRoleMapping;
 use App\Repository\IdentityProviderRoleMappingRepository;
 use App\Service\Sso\ClaimToRoleResolver;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 final class ClaimToRoleResolverTest extends TestCase
 {
     private IdentityProviderRoleMappingRepository&MockObject $repo;

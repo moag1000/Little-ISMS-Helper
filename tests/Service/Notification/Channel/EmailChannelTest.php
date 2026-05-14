@@ -9,12 +9,14 @@ use App\Entity\Notification\NotificationDelivery;
 use App\Entity\Notification\NotificationRule;
 use App\Service\Notification\Channel\EmailChannel;
 use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Mailer\MailerInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 final class EmailChannelTest extends TestCase
 {
     private MailerInterface&MockObject $mailer;

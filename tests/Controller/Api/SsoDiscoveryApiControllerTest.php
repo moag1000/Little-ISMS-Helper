@@ -8,6 +8,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Service\Sso\OidcDiscoveryService;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -16,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  *
  * Validates request handling, auth guard, and response format.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class SsoDiscoveryApiControllerTest extends WebTestCase
 {
     #[Test]

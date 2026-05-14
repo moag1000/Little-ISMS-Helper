@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Twig;
 
 use App\Twig\WorkflowStepLabelExtension;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -17,6 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * + GenerateRegulatoryWorkflowsCommand into the German plain-language labels
  * shown in the approval UI and approver emails.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class WorkflowStepLabelExtensionTest extends TestCase
 {
     #[Test]
