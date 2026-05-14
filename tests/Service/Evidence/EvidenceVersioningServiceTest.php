@@ -14,6 +14,7 @@ use App\Service\Evidence\ContentHashCalculator;
 use App\Service\Evidence\EvidenceVersioningService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -23,6 +24,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 /**
  * F4 — EvidenceVersioningService unit tests.
  */
+#[AllowMockObjectsWithoutExpectations]
 class EvidenceVersioningServiceTest extends TestCase
 {
     private EvidenceVersioningService $service;

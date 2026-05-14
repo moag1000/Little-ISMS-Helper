@@ -12,6 +12,7 @@ use App\Repository\EvidenceReverificationTaskRepository;
 use App\Service\AuditLogger;
 use App\Service\Evidence\EvidenceCascadeInvalidationService;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -22,6 +23,7 @@ use PHPUnit\Framework\TestCase;
  * for a document that is evidence on one or more controls, those controls must have
  * evidenceOutdated set to true and reverification tasks must be created.
  */
+#[AllowMockObjectsWithoutExpectations]
 class EvidenceCascadeInvalidationServiceTest extends TestCase
 {
     private EvidenceCascadeInvalidationService $service;

@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 
 /**
@@ -24,6 +25,7 @@ use PHPUnit\Framework\Attributes\Test;
  * - Role-based access control
  * - Multi-tenant isolation
  */
+#[AllowMockObjectsWithoutExpectations]
 class BusinessContinuityPlanControllerTest extends WebTestCase
 {
     private KernelBrowser $client;

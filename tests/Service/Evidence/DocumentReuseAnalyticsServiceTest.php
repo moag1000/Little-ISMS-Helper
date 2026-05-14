@@ -10,12 +10,14 @@ use App\Repository\ControlRepository;
 use App\Service\Evidence\DocumentReuseAnalyticsService;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
  * F4 — DocumentReuseAnalyticsService unit tests.
  */
+#[AllowMockObjectsWithoutExpectations]
 class DocumentReuseAnalyticsServiceTest extends TestCase
 {
     private DocumentReuseAnalyticsService $service;

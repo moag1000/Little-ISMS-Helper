@@ -8,9 +8,11 @@ use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Repository\SupplierRepository;
 use App\Service\Export\LksgAnnualReportExporter;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class LksgAnnualReportExporterTest extends TestCase
 {
     #[Test]

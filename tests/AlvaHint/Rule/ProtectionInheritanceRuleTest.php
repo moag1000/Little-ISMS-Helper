@@ -9,9 +9,11 @@ use App\Entity\Asset;
 use App\Entity\User;
 use App\Service\AssetDependencyService;
 use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class ProtectionInheritanceRuleTest extends TestCase
 {
     private User $user;

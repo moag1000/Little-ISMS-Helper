@@ -8,6 +8,7 @@ use App\Entity\Notification\NotificationRule;
 use App\Entity\Tenant;
 use App\Form\Notification\NotificationRuleType;
 use App\Service\ModuleConfigurationService;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -18,6 +19,7 @@ use PHPUnit\Framework\TestCase;
  * (channels) since that requires a full Doctrine registry. The EntityType
  * integration is covered by the controller smoke test.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class NotificationRuleTypeTest extends TestCase
 {
     #[Test]

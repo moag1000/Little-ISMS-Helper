@@ -6,6 +6,7 @@ namespace App\Tests\Form\Admin;
 
 use App\Entity\TenantBranding;
 use App\Form\Admin\TenantPolicyStyleType;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -15,6 +16,7 @@ use Symfony\Component\Form\FormFactoryInterface;
  * Sprint policy-style-admin — exercise the TenantPolicyStyleType form
  * happy-paths, validation, defaults, and ROLE-gated custom-CSS field.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class TenantPolicyStyleTypeTest extends KernelTestCase
 {
     private FormFactoryInterface $factory;

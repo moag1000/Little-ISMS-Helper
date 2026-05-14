@@ -10,6 +10,7 @@ use App\Entity\WizardRun;
 use App\Repository\PersonRepository;
 use App\Service\PolicyWizard\Step\RolesStep;
 use App\Service\PolicyWizard\WizardStepKeys;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -26,6 +27,7 @@ use PHPUnit\Framework\TestCase;
  *   - approval-chain still rejects self-approval and requires a User
  *     pool (unchanged from W2-A behaviour)
  */
+#[AllowMockObjectsWithoutExpectations]
 final class RolesStepPersonHolderTest extends TestCase
 {
     private function makeRun(int $authorId = 99, array $standards = ['iso27001']): WizardRun
