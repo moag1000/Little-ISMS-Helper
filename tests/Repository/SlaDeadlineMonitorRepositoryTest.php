@@ -39,12 +39,18 @@ final class SlaDeadlineMonitorRepositoryTest extends TestCase
     #[Test]
     public function repositoryExtendsServiceEntityRepository(): void
     {
-        self::assertTrue(
-            is_a(
-                SlaDeadlineMonitorRepository::class,
-                \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository::class,
-                true,
-            ),
+        $r       = new \ReflectionClass(SlaDeadlineMonitorRepository::class);
+        $parents = [];
+        $current = $r->getParentClass();
+        while ($current !== false) {
+            $parents[] = $current->getName();
+            $current   = $current->getParentClass();
+        }
+
+        self::assertContains(
+            \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository::class,
+            $parents,
+            'SlaDeadlineMonitorRepository must extend ServiceEntityRepository',
         );
     }
 
