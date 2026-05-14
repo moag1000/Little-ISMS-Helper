@@ -7,7 +7,7 @@ admin:
         home: 'Admin Dashboard'
     hub:
         title: 'Admin Panel'
-        subtitle: '%count% Module in 7 Bereichen — gefiltert via Suche, geöffnet als fokussierte Detail-Seiten.'
+        subtitle: '%count% Module in 8 Bereichen — gefiltert via Suche, geöffnet als fokussierte Detail-Seiten.'
         search_placeholder: 'Modul suchen … (z. B. Mandanten, Audit-Log, SSO)'
         search_label: 'Module durchsuchen'
         no_results: 'Keine Module gefunden — Suchbegriff anpassen.'
@@ -90,6 +90,10 @@ admin:
             notification_channels: { label: 'Benachrichtigungskanäle', desc: 'E-Mail-, Webhook- und In-App-Kanäle konfigurieren' }
             notification_templates: { label: 'Vorlagen-Galerie', desc: 'Tier-1-Vorlagen für häufige Compliance-Szenarien übernehmen' }
             notification_preferences: { label: 'Benachrichtigungs-Einstellungen', desc: 'Globale Zustellpräferenzen und Schwellenwerte' }
+            # Sprint 8 — EU-Behörden-Meldungen
+            authority_hub: { label: 'EU-Behörden-Hub', desc: 'Meldepflichten und Exportvorlagen für EU-Aufsichtsbehörden' }
+            nis2_registration: { label: 'NIS-2-BSI-Registrierung', desc: 'Jährliche Stammdaten-Registrierung beim BSI-Meldeportal' }
+            dora_roi: { label: 'DORA RoI XBRL-Export', desc: 'Register-of-Information XBRL/CSV-Export für die BaFin-Meldung' }
             # Sprint 6 System-Settings Folgeseiten
             api_rate_limits: { label: 'API-Rate-Limits', desc: 'Request-Limits pro Route und Token-Klasse' }
             backup_settings: { label: 'Backup-Einstellungen', desc: 'Aufbewahrungsdauer und automatische Backup-Planung' }

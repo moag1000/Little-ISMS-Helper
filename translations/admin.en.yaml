@@ -7,7 +7,7 @@ admin:
         home: 'Admin Dashboard'
     hub:
         title: 'Admin Panel'
-        subtitle: '%count% modules in 7 areas — filtered via search, opened as focused detail pages.'
+        subtitle: '%count% modules in 8 areas — filtered via search, opened as focused detail pages.'
         search_placeholder: 'Search modules… (e.g. tenants, audit log, SSO)'
         search_label: 'Search modules'
         no_results: 'No modules found — adjust the search term.'
@@ -74,6 +74,10 @@ admin:
             notification_channels: { label: 'Notification channels', desc: 'Configure email, webhook, and in-app channels' }
             notification_templates: { label: 'Template gallery', desc: 'Apply tier-1 templates for common compliance scenarios' }
             notification_preferences: { label: 'Notification preferences', desc: 'Global delivery preferences and thresholds' }
+            # Sprint 8 — EU Authority reporting
+            authority_hub: { label: 'EU Authority Hub', desc: 'Reporting obligations and export templates for EU supervisory authorities' }
+            nis2_registration: { label: 'NIS-2 BSI Registration', desc: 'Annual mandatory registration in the BSI notification portal' }
+            dora_roi: { label: 'DORA RoI XBRL export', desc: 'Register of Information XBRL/CSV export for BaFin reporting' }
             # Sprint 6 deferred system-settings sub-pages
             api_rate_limits: { label: 'API rate limits', desc: 'Request limits per route and token class' }
             backup_settings: { label: 'Backup settings', desc: 'Retention windows and automated backup scheduling' }

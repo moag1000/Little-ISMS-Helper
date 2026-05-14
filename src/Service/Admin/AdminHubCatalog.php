@@ -7,7 +7,7 @@ namespace App\Service\Admin;
 /**
  * IA-Definition für das Admin-Panel-Hub-Layout.
  *
- * Sieben Gruppen × ~36 Module gemäß
+ * Acht Gruppen × ~59 Module gemäß
  * docs/design_system/sections/admin-panel.html. Jede Gruppe hat eine
  * Tone-Farbe (cyan / pink / purple) für die linke Akzent-Bar der
  * Hub-Cards. Module verweisen auf existierende Routes; fehlende
@@ -258,6 +258,31 @@ class AdminHubCatalog
                         'label' => 'admin.hub.module.scheduled_reports.label',
                         'description' => 'admin.hub.module.scheduled_reports.desc',
                         'route' => 'app_scheduled_report_index',
+                    ],
+                    // Sprint 8 — EU Authority reporting
+                    [
+                        'key' => 'authority_hub',
+                        'icon' => 'bank',
+                        'label' => 'admin.hub.module.authority_hub.label',
+                        'description' => 'admin.hub.module.authority_hub.desc',
+                        'route' => 'authority_hub_index',
+                        'requiredModule' => 'eu_authority_reporting',
+                    ],
+                    [
+                        'key' => 'nis2_registration',
+                        'icon' => 'shield-exclamation',
+                        'label' => 'admin.hub.module.nis2_registration.label',
+                        'description' => 'admin.hub.module.nis2_registration.desc',
+                        'route' => 'nis2_registration_index',
+                        'requiredModule' => 'nis2_dora',
+                    ],
+                    [
+                        'key' => 'dora_roi',
+                        'icon' => 'file-earmark-spreadsheet',
+                        'label' => 'admin.hub.module.dora_roi.label',
+                        'description' => 'admin.hub.module.dora_roi.desc',
+                        'route' => 'dora_roi_index',
+                        'requiredModule' => 'nis2_dora',
                     ],
                 ],
             ],
