@@ -1,0 +1,277 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'eu_authorities' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+
+{% block title %}{{ 'eu_authorities.nis2_registration.page.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'eu_authorities.page.title'|trans({}, 'eu_authorities'), icon: 'bi-building-check' },
+            { label: 'eu_authorities.nis2_registration.page.title'|trans }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge:    { icon: 'shield-lock', label: 'NIS-2' },
+        title:    'eu_authorities.nis2_registration.page.title'|trans,
+        subtitle: 'eu_authorities.nis2_registration.page.subtitle'|trans,
+        actions: [
+            {
+                label: 'eu_authorities.nis2_registration.action.edit'|trans,
+                href:  path('nis2_registration_edit'),
+                icon:  'pencil',
+                variant: 'outline-primary'
+            }
+        ]
+    }) }}
+
+    <main class="fa-aurora-surface">
+
+        {# ── Status Banner ─────────────────────────────────────────────────────── #}
+        <div class="row mb-4">
+            <div class="col-12">
+                {% if profile.isOverdue %}
+                    <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill fs-4" aria-hidden="true"></i>
+                        <div>
+                            <strong>{{ 'eu_authorities.nis2_registration.status.overdue'|trans }}</strong>
+                            — {{ 'eu_authorities.nis2_registration.status.overdue_body'|trans({
+                                '%date%': profile.nextDueAt|date('d.m.Y')
+                            }) }}
+                        </div>
+                    </div>
+                {% elseif profile.isDueSoon(30) %}
+                    <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
+                        <i class="bi bi-clock-history fs-4" aria-hidden="true"></i>
+                        <div>
+                            <strong>{{ 'eu_authorities.nis2_registration.status.due_soon'|trans }}</strong>
+                            — {{ 'eu_authorities.nis2_registration.status.due_soon_body'|trans({
+                                '%date%': profile.nextDueAt|date('d.m.Y')
+                            }) }}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+                        <i class="bi bi-check-circle-fill fs-4" aria-hidden="true"></i>
+                        <div>
+                            <strong>{{ 'eu_authorities.nis2_registration.status.current'|trans }}</strong>
+                            — {{ 'eu_authorities.nis2_registration.status.current_body'|trans({
+                                '%date%': profile.nextDueAt|date('d.m.Y')
+                            }) }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ── Completeness Check ────────────────────────────────────────────────── #}
+        {% if not isComplete %}
+        <div class="card border-warning mb-4">
+            <div class="card-header text-warning fw-semibold">
+                <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                {{ 'eu_authorities.nis2_registration.warning.incomplete_title'|trans }}
+            </div>
+            <div class="card-body">
+                <p class="mb-2 text-muted">{{ 'eu_authorities.nis2_registration.warning.incomplete_body'|trans }}</p>
+                <ul class="mb-0">
+                    {% for field, errorKey in validationErrors %}
+                        <li><small class="text-danger">{{ errorKey|trans({}, 'eu_authorities') }}</small></li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ path('nis2_registration_edit') }}" class="btn btn-sm btn-warning mt-3">
+                    <i class="bi bi-pencil me-1" aria-hidden="true"></i>
+                    {{ 'eu_authorities.nis2_registration.action.fill_profile'|trans }}
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── Profile Summary ───────────────────────────────────────────────────── #}
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header fw-semibold">
+                        <i class="bi bi-building me-1" aria-hidden="true"></i>
+                        {{ 'eu_authorities.nis2_registration.section.organization'|trans }}
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.legal_name'|trans }}</dt>
+                            <dd class="col-sm-7">{{ profile.organizationLegalName ?: '—' }}</dd>
+
+                            <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.legal_form'|trans }}</dt>
+                            <dd class="col-sm-7">{{ profile.organizationLegalForm ?: '—' }}</dd>
+
+                            <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.register_city'|trans }}</dt>
+                            <dd class="col-sm-7">{{ profile.commercialRegisterCity ?: '—' }}</dd>
+
+                            <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.register_number'|trans }}</dt>
+                            <dd class="col-sm-7">{{ profile.commercialRegisterNumber ?: '—' }}</dd>
+
+                            <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.vat_id'|trans }}</dt>
+                            <dd class="col-sm-7">{{ profile.vatId ?: '—' }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header fw-semibold">
+                        <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
+                        {{ 'eu_authorities.nis2_registration.section.nis2'|trans }}
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.sector'|trans }}</dt>
+                            <dd class="col-sm-7">
+                                {% if profile.nis2Sector %}
+                                    <span class="badge bg-secondary">{{ ('eu_authorities.nis2_registration.sector.' ~ profile.nis2Sector)|trans }}</span>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.category'|trans }}</dt>
+                            <dd class="col-sm-7">
+                                {% if profile.nis2EntityCategory == 'essential' %}
+                                    <span class="badge bg-danger">{{ 'eu_authorities.nis2_registration.category.essential'|trans }}</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">{{ 'eu_authorities.nis2_registration.category.important'|trans }}</span>
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.headcount'|trans }}</dt>
+                            <dd class="col-sm-7">{{ profile.affectedHeadcount > 0 ? profile.affectedHeadcount : '—' }}</dd>
+
+                            <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.nace_codes'|trans }}</dt>
+                            <dd class="col-sm-7">
+                                {% if profile.naceCodes|length > 0 %}
+                                    {{ profile.naceCodes|join(', ') }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── Contact Information ───────────────────────────────────────────────── #}
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">
+                <i class="bi bi-people me-1" aria-hidden="true"></i>
+                {{ 'eu_authorities.nis2_registration.section.contacts'|trans }}
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <small class="text-muted d-block mb-1">{{ 'eu_authorities.nis2_registration.field.incident_contact'|trans }}</small>
+                        {% if profile.incidentReportingContact is defined %}
+                            <strong>{{ profile.incidentReportingContact.fullName }}</strong>
+                            <br><small class="text-muted">{{ profile.incidentReportingContact.email }}</small>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block mb-1">{{ 'eu_authorities.nis2_registration.field.security_contact'|trans }}</small>
+                        {% if profile.securityResponsibleContact is defined %}
+                            <strong>{{ profile.securityResponsibleContact.fullName }}</strong>
+                            <br><small class="text-muted">{{ profile.securityResponsibleContact.email }}</small>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted d-block mb-1">{{ 'eu_authorities.nis2_registration.field.backup_contact'|trans }}</small>
+                        {% if profile.backupSecurityContact is not null %}
+                            <strong>{{ profile.backupSecurityContact.fullName }}</strong>
+                            <br><small class="text-muted">{{ profile.backupSecurityContact.email }}</small>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ── Export + Mark-Reported ────────────────────────────────────────────── #}
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">
+                <i class="bi bi-send me-1" aria-hidden="true"></i>
+                {{ 'eu_authorities.nis2_registration.section.submission'|trans }}
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>{{ 'eu_authorities.nis2_registration.field.last_reported'|trans }}:</strong>
+                            {% if profile.lastReportedAt %}
+                                {{ profile.lastReportedAt|date('d.m.Y H:i') }}
+                                {% if profile.portalConfirmationNumber %}
+                                    <span class="badge bg-success ms-2">{{ profile.portalConfirmationNumber }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">{{ 'eu_authorities.nis2_registration.status.never_reported'|trans }}</span>
+                            {% endif %}
+                        </p>
+                        <p class="mb-0"><strong>{{ 'eu_authorities.nis2_registration.field.next_due'|trans }}:</strong>
+                            {{ profile.nextDueAt|date('d.m.Y') }}
+                        </p>
+                    </div>
+                    <div class="col-md-6 d-flex gap-2 flex-wrap">
+                        {% if isComplete %}
+                        <a href="{{ path('nis2_registration_export_json') }}"
+                           class="btn btn-primary"
+                           aria-label="{{ 'eu_authorities.nis2_registration.action.export_json'|trans }}">
+                            <i class="bi bi-download me-1" aria-hidden="true"></i>
+                            {{ 'eu_authorities.nis2_registration.action.export_json'|trans }}
+                        </a>
+                        {% else %}
+                        <button type="button" class="btn btn-primary" disabled title="{{ 'eu_authorities.nis2_registration.warning.incomplete_title'|trans }}">
+                            <i class="bi bi-download me-1" aria-hidden="true"></i>
+                            {{ 'eu_authorities.nis2_registration.action.export_json'|trans }}
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# Mark Reported Form — ROLE_ADMIN only #}
+                {% if is_granted('ROLE_ADMIN') %}
+                <hr class="my-3">
+                <form method="post"
+                      action="{{ path('nis2_registration_mark_reported') }}"
+                      class="row g-2 align-items-end"
+                      aria-label="{{ 'eu_authorities.nis2_registration.action.mark_reported'|trans }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('nis2_mark_reported') }}">
+                    <div class="col-md-6">
+                        <label for="confirmation_number" class="form-label small fw-semibold">
+                            {{ 'eu_authorities.nis2_registration.field.confirmation_number'|trans }}
+                            <span class="text-danger" aria-hidden="true">*</span>
+                        </label>
+                        <input type="text"
+                               id="confirmation_number"
+                               name="confirmation_number"
+                               class="form-control form-control-sm"
+                               maxlength="80"
+                               placeholder="{{ 'eu_authorities.nis2_registration.placeholder.confirmation_number'|trans }}"
+                               required
+                               aria-required="true">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <i class="bi bi-check2-circle me-1" aria-hidden="true"></i>
+                            {{ 'eu_authorities.nis2_registration.action.mark_reported'|trans }}
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+    </main>
+</div>
+{% endblock %}

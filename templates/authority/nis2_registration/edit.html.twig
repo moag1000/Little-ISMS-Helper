@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'eu_authorities' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'eu_authorities.nis2_registration.page.edit_title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'eu_authorities.page.title'|trans({}, 'eu_authorities'), icon: 'bi-building-check' },
+            { label: 'eu_authorities.nis2_registration.page.title'|trans, url: path('nis2_registration_index') },
+            { label: 'eu_authorities.nis2_registration.page.edit_title'|trans }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge:    { icon: 'pencil-square', label: 'NIS-2' },
+        title:    'eu_authorities.nis2_registration.page.edit_title'|trans,
+        subtitle: 'eu_authorities.nis2_registration.page.edit_subtitle'|trans,
+        actions: [
+            {
+                label: 'common.cancel'|trans({}, 'messages'),
+                href:  path('nis2_registration_index'),
+                icon:  'x-circle',
+                variant: 'outline-secondary'
+            }
+        ]
+    }) }}
+
+    <main class="fa-aurora-surface">
+        {{ form_start(form, { attr: { novalidate: 'novalidate', 'aria-label': 'eu_authorities.nis2_registration.page.edit_title'|trans } }) }}
+
+        {# ── Organization ─────────────────────────────────────────────────────── #}
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">
+                <i class="bi bi-building me-1" aria-hidden="true"></i>
+                {{ 'eu_authorities.nis2_registration.section.organization'|trans }}
+            </div>
+            <div class="card-body row g-3">
+                <div class="col-md-6">
+                    {{ form_row(form.organizationLegalName) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.organizationLegalForm) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.vatId) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.commercialRegisterCity) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.commercialRegisterNumber) }}
+                </div>
+            </div>
+        </div>
+
+        {# ── NIS-2 Classification ─────────────────────────────────────────────── #}
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">
+                <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
+                {{ 'eu_authorities.nis2_registration.section.nis2'|trans }}
+            </div>
+            <div class="card-body row g-3">
+                <div class="col-md-6">
+                    {{ form_row(form.nis2Sector) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.nis2EntityCategory) }}
+                </div>
+                <div class="col-md-3">
+                    {{ form_row(form.affectedHeadcount) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.affectedAnnualTurnoverEur) }}
+                </div>
+                <div class="col-12">
+                    {{ form_row(form.ictDependencyDescription) }}
+                </div>
+            </div>
+        </div>
+
+        {# ── NACE Codes (plain text helper, stored as JSON array via JS) ───────── #}
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">
+                <i class="bi bi-tags me-1" aria-hidden="true"></i>
+                {{ 'eu_authorities.nis2_registration.field.nace_codes'|trans }}
+                <small class="text-muted ms-2 fw-normal">{{ 'eu_authorities.nis2_registration.help.nace_codes'|trans }}</small>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">
+                    {{ 'eu_authorities.nis2_registration.help.nace_codes_detail'|trans }}
+                </p>
+                {# The form does not expose naceCodes directly — managed via service defaults #}
+                <p class="mb-0">
+                    <strong>{{ 'eu_authorities.nis2_registration.field.current_nace_codes'|trans }}:</strong>
+                    {% if profile.naceCodes|length > 0 %}
+                        {{ profile.naceCodes|join(', ') }}
+                    {% else %}
+                        <span class="text-muted">—</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        {# ── Contacts ─────────────────────────────────────────────────────────── #}
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">
+                <i class="bi bi-people me-1" aria-hidden="true"></i>
+                {{ 'eu_authorities.nis2_registration.section.contacts'|trans }}
+            </div>
+            <div class="card-body row g-3">
+                <div class="col-md-4">
+                    {{ form_row(form.incidentReportingContact) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.securityResponsibleContact) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.backupSecurityContact) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 justify-content-end mb-5">
+            <a href="{{ path('nis2_registration_index') }}" class="btn btn-outline-secondary">
+                {{ 'common.cancel'|trans({}, 'messages') }}
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-floppy me-1" aria-hidden="true"></i>
+                {{ 'common.save'|trans({}, 'messages') }}
+            </button>
+        </div>
+
+        {{ form_end(form) }}
+    </main>
+</div>
+{% endblock %}

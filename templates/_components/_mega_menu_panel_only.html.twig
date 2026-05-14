@@ -375,6 +375,16 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {# F29: NIS-2 BSI-Portal Yearly Re-Registration #}
+                        {% if is_module_active('nis2_dora') and is_granted('ROLE_MANAGER') %}
+                        <li><a href="{{ path('nis2_registration_index') }}" class="{% if current_route starts with 'nis2_registration_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-shield-lock" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'eu_authorities.nis2_registration.page.title'|trans({}, 'eu_authorities') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'eu_authorities.nis2_registration.page.subtitle'|trans({}, 'eu_authorities') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
