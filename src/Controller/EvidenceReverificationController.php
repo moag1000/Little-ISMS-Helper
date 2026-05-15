@@ -23,7 +23,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * F4 Evidence-Versioning — Reviewer Queue controller.
  *
  * Routes (no /{_locale}/ prefix — added by config/routes.yaml wrapper):
- *   GET  /evidence-reverification/          — queue index
+ *   GET  /evidence-reverification             — queue index
  *   GET  /evidence-reverification/{id}      — task show
  *   POST /evidence-reverification/{id}/complete — mark completed
  *   POST /evidence-reverification/{id}/skip     — mark skipped
@@ -45,7 +45,7 @@ class EvidenceReverificationController extends AbstractController
     /**
      * Reviewer queue — all open tasks for the current tenant.
      */
-    #[Route('/evidence-reverification/', name: 'app_evidence_reverification_index', methods: ['GET'])]
+    #[Route('/evidence-reverification', name: 'app_evidence_reverification_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
