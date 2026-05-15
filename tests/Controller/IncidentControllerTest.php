@@ -16,6 +16,7 @@ use App\Form\IncidentType;
 use App\Repository\AuditLogRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\IncidentRepository;
+use App\Repository\RiskIncidentLinkRepository;
 use App\Repository\RiskRepository;
 use App\Repository\UserRepository;
 use App\Service\EmailNotificationService;
@@ -24,6 +25,7 @@ use App\Service\IncidentBCMImpactService;
 use App\Service\IncidentEscalationWorkflowService;
 use App\Service\IncidentRiskFeedbackService;
 use App\Service\PdfExportService;
+use App\Service\Risk\RiskIncidentLinkService;
 use App\Service\TenantContext;
 use App\Service\WorkflowAutoProgressionService;
 use App\Service\WorkflowService;
@@ -79,6 +81,8 @@ class IncidentControllerTest extends TestCase
     private MockObject $workflowAutoProgressionService;
     private MockObject $incidentRiskFeedbackService;
     private MockObject $riskRepository;
+    private MockObject $riskIncidentLinkService;
+    private MockObject $riskIncidentLinkRepository;
     private MockObject $container;
     private MockObject $twig;
     private MockObject $formFactory;
@@ -107,6 +111,8 @@ class IncidentControllerTest extends TestCase
         $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
         $this->incidentRiskFeedbackService = $this->createMock(IncidentRiskFeedbackService::class);
         $this->riskRepository = $this->createMock(RiskRepository::class);
+        $this->riskIncidentLinkService = $this->createMock(RiskIncidentLinkService::class);
+        $this->riskIncidentLinkRepository = $this->createMock(RiskIncidentLinkRepository::class);
         $this->container = $this->createMock(ContainerInterface::class);
         $this->twig = $this->createMock(Environment::class);
         $this->formFactory = $this->createMock(FormFactoryInterface::class);
@@ -167,7 +173,9 @@ class IncidentControllerTest extends TestCase
             $this->workflowService,
             $this->workflowAutoProgressionService,
             $this->incidentRiskFeedbackService,
-            $this->riskRepository
+            $this->riskRepository,
+            $this->riskIncidentLinkService,
+            $this->riskIncidentLinkRepository
         );
         $this->controller->setContainer($this->container);
     }
