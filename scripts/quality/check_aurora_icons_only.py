@@ -47,7 +47,7 @@ SIZE_CLASSES_RE = re.compile(r"^fa-icon--\d+$")
 # The regex must not match these because after the dash the content is a Twig variable.
 # We match only if the class ends at a word boundary (not followed by { or }.
 BI_PATTERN = re.compile(r"\bbi bi-[a-z0-9][a-z0-9-]*")
-FA_ICON_PATTERN = re.compile(r"fa-icon--([a-z0-9][a-z0-9-]*)(?=[^{]|$)")
+FA_ICON_PATTERN = re.compile(r"fa-icon--([a-z0-9][a-z0-9-]*?)(?![a-z0-9-])")
 
 # Dynamic prefix fragments that are valid base classes (used with Twig variable suffix)
 DYNAMIC_CLASS_PREFIXES = {
