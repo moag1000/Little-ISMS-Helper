@@ -411,7 +411,7 @@
     {% if is_granted('ROLE_AUDITOR') and (canEdit is not defined or canEdit) %}
         {# Effectiveness-Review Modal — Bootstrap modal (lazy-loaded
            via the existing modal-pattern documented in CLAUDE.md). #}
-        <div class="modal fade" id="effectivenessReviewModal" tabindex="-1"
+        <div  class="modal fade"  id="effectivenessReviewModal" tabindex="-1"
              aria-labelledby="effectivenessReviewModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form method="post" action="{{ path('app_document_mark_effectiveness_reviewed', {id: document.id}) }}"

@@ -319,11 +319,11 @@
 
 {# Delete Confirmation Modal #}
 {% if user.id != app.user.id %}
-<div class="modal fade" id="deleteModal" tabindex="-1">
+<div  class="modal fade" aria-labelledby="deleteModalLabel"  id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">{{ 'user.modal.delete_user'|trans({}, 'user') }}</h2>
+                <h2  id="deleteModalLabel" class="modal-title">{{ 'user.modal.delete_user'|trans({}, 'user') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
             </div>
             <div class="modal-body">

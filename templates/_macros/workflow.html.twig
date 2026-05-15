@@ -247,7 +247,7 @@
 
         {# Approve Modal #}
         {% if canApprove and workflowInstance.status in ['pending', 'in_progress'] %}
-            <div class="modal fade" id="approveWorkflow{{ workflowInstance.id }}" tabindex="-1" aria-labelledby="approveWorkflowLabel{{ workflowInstance.id }}" aria-hidden="true">
+            <div  class="modal fade"  id="approveWorkflow{{ workflowInstance.id }}" tabindex="-1" aria-labelledby="approveWorkflowLabel{{ workflowInstance.id }}" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <form method="post" action="{{ path('app_workflow_instance_approve', {id: workflowInstance.id}) }}">
@@ -301,7 +301,7 @@
             </div>
 
             {# Reject Modal #}
-            <div class="modal fade" id="rejectWorkflow{{ workflowInstance.id }}" tabindex="-1" aria-labelledby="rejectWorkflowLabel{{ workflowInstance.id }}" aria-hidden="true">
+            <div  class="modal fade"  id="rejectWorkflow{{ workflowInstance.id }}" tabindex="-1" aria-labelledby="rejectWorkflowLabel{{ workflowInstance.id }}" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <form method="post" action="{{ path('app_workflow_instance_reject', {id: workflowInstance.id}) }}">

@@ -221,11 +221,11 @@
 </div>
 
 {# Share Modal #}
-<div class="modal fade" id="shareModal" tabindex="-1">
+<div  class="modal fade" aria-labelledby="shareModalLabel"  id="shareModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ 'modal.share.title'|trans({}, 'report_builder') }}</h5>
+                <h5  id="shareModalLabel" class="modal-title">{{ 'modal.share.title'|trans({}, 'report_builder') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
             <div class="modal-body">
@@ -247,11 +247,11 @@
 </div>
 
 {# Widget Config Modal #}
-<div class="modal fade" id="widgetConfigModal" tabindex="-1">
+<div  class="modal fade" aria-labelledby="widgetConfigModalLabel"  id="widgetConfigModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ 'modal.widget_config.title'|trans({}, 'report_builder') }}</h5>
+                <h5  id="widgetConfigModalLabel" class="modal-title">{{ 'modal.widget_config.title'|trans({}, 'report_builder') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
             <div class="modal-body" id="widget-config-form">

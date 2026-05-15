@@ -82,7 +82,7 @@
                                     <div class="{{ section.col_class }}">
                                         {% if section.key == 'core' %}
                                         {# Core section uses the richer card style with progress bars #}
-                                        <div class="kpi-card p-2 rounded border-start border-4 border-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'info')) }}">
+                                        <div class="p-2 rounded border-start border-4 border-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'info')) }} bg-body">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <span class="small text-muted">{{ ('dashboard.kpi.' ~ key)|trans({}, 'dashboard') }}</span>
                                                 <span>

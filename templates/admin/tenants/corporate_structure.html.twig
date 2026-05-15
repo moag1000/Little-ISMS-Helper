@@ -133,11 +133,11 @@
     {{ _fa_alert.render({ variant: 'info', title: 'corporate.info.title'|trans({}, 'tenant'), body: 'corporate.info.text'|trans({}, 'tenant') }) }}
 
     {# Set Parent Modal #}
-    <div class="modal fade" id="setParentModal" tabindex="-1">
+    <div  class="modal fade" aria-labelledby="setParentModalLabel"  id="setParentModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title h5">{{ 'corporate.modal.set_parent.title'|trans({}, 'tenant') }}</h3>
+                    <h3  id="setParentModalLabel" class="modal-title h5">{{ 'corporate.modal.set_parent.title'|trans({}, 'tenant') }}</h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <form method="post" id="setParentForm">
@@ -187,11 +187,11 @@
     </div>
 
     {# Update Governance Modal #}
-    <div class="modal fade" id="updateGovernanceModal" tabindex="-1">
+    <div  class="modal fade" aria-labelledby="updateGovernanceModalLabel"  id="updateGovernanceModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title h5">{{ 'corporate.modal.update_governance.title'|trans({}, 'tenant') }}</h4>
+                    <h4  id="updateGovernanceModalLabel" class="modal-title h5">{{ 'corporate.modal.update_governance.title'|trans({}, 'tenant') }}</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <form method="post" id="updateGovernanceForm">

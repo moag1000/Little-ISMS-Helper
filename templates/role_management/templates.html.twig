@@ -80,13 +80,13 @@
             </div>
 
             {# Modal for template application #}
-            <div class="modal fade" id="templateModal{{ key }}" tabindex="-1">
+            <div  class="modal fade" aria-labelledby="templateModal{{ key }}Label"  id="templateModal{{ key }}" tabindex="-1">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <form method="post">
                             <input type="hidden" name="_token" value="{{ csrf_token('role_template_apply') }}">
                             <div class="modal-header">
-                                <h4 class="modal-title h5">{{ template.name }} erstellen</h4>
+                                <h4  id="templateModal{{ key }}Label" class="modal-title h5">{{ template.name }} erstellen</h4>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                             <div class="modal-body">

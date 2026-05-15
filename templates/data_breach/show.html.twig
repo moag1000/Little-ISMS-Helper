@@ -383,13 +383,13 @@
 </div>
 
 {# Notify Supervisory Authority Modal #}
-<div class="modal fade" id="authorityModal" tabindex="-1">
+<div  class="modal fade" aria-labelledby="authorityModalLabel"  id="authorityModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="{{ path('app_data_breach_notify_authority', {id: breach.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('notify_authority' ~ breach.id) }}">
                 <div class="modal-header">
-                    <h2 class="modal-title">{{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }} (Art. 33 GDPR)</h2>
+                    <h2  id="authorityModalLabel" class="modal-title">{{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }} (Art. 33 GDPR)</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
@@ -447,13 +447,13 @@
 </div>
 
 {# Notify Data Subjects Modal #}
-<div class="modal fade" id="subjectsModal" tabindex="-1">
+<div  class="modal fade" aria-labelledby="subjectsModalLabel"  id="subjectsModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="{{ path('app_data_breach_notify_subjects', {id: breach.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('notify_subjects' ~ breach.id) }}">
                 <div class="modal-header">
-                    <h2 class="modal-title">{{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }} (Art. 34 GDPR)</h2>
+                    <h2  id="subjectsModalLabel" class="modal-title">{{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }} (Art. 34 GDPR)</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
@@ -486,13 +486,13 @@
 </div>
 
 {# Exemption Modal #}
-<div class="modal fade" id="exemptionModal" tabindex="-1">
+<div  class="modal fade" aria-labelledby="exemptionModalLabel"  id="exemptionModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="{{ path('app_data_breach_subject_notification_exemption', {id: breach.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('exemption' ~ breach.id) }}">
                 <div class="modal-header">
-                    <h2 class="modal-title">{{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}</h2>
+                    <h2  id="exemptionModalLabel" class="modal-title">{{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
@@ -516,13 +516,13 @@
 </div>
 
 {# Reopen Modal #}
-<div class="modal fade" id="reopenModal" tabindex="-1">
+<div  class="modal fade" aria-labelledby="reopenModalLabel"  id="reopenModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="{{ path('app_data_breach_reopen', {id: breach.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('reopen' ~ breach.id) }}">
                 <div class="modal-header">
-                    <h2 class="modal-title">{{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}</h2>
+                    <h2  id="reopenModalLabel" class="modal-title">{{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">

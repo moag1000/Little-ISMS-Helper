@@ -47,11 +47,11 @@
     </section>
 
     {# Modal with detailed list #}
-    <div class="modal fade" id="impactCoverageModal-{{ entity_label }}" tabindex="-1" aria-hidden="true">
+    <div  class="modal fade" aria-labelledby="impactCoverageModal-{{ entity_label }}Label"  id="impactCoverageModal-{{ entity_label }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title h5">
+                    <h2  id="impactCoverageModal-{{ entity_label }}Label" class="modal-title h5">
                         <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
                         {{ ('coverage.impact.title.' ~ entity_label)|trans({}, 'compliance') }}
                     </h2>

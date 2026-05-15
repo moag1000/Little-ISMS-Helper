@@ -287,13 +287,13 @@
 </div>
 
 {# Approve Modal #}
-<div class="modal fade" id="approveModal" tabindex="-1">
+<div  class="modal fade" aria-labelledby="approveModalLabel"  id="approveModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="{{ path('app_dpia_approve', {id: dpia.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ dpia.id) }}">
                 <div class="modal-header">
-                    <h4 class="modal-title h5">{{ 'dpia.modal.approve_title'|trans({}, 'privacy') }}</h4>
+                    <h4  id="approveModalLabel" class="modal-title h5">{{ 'dpia.modal.approve_title'|trans({}, 'privacy') }}</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
@@ -312,13 +312,13 @@
 </div>
 
 {# Reject Modal #}
-<div class="modal fade" id="rejectModal" tabindex="-1">
+<div  class="modal fade" aria-labelledby="rejectModalLabel"  id="rejectModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="{{ path('app_dpia_reject', {id: dpia.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ dpia.id) }}">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ 'dpia.modal.reject_title'|trans({}, 'privacy') }}</h5>
+                    <h5  id="rejectModalLabel" class="modal-title">{{ 'dpia.modal.reject_title'|trans({}, 'privacy') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
@@ -337,13 +337,13 @@
 </div>
 
 {# Request Revision Modal #}
-<div class="modal fade" id="revisionModal" tabindex="-1">
+<div  class="modal fade" aria-labelledby="revisionModalLabel"  id="revisionModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="{{ path('app_dpia_request_revision', {id: dpia.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('revision' ~ dpia.id) }}">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ 'dpia.modal.revision_title'|trans({}, 'privacy') }}</h5>
+                    <h5  id="revisionModalLabel" class="modal-title">{{ 'dpia.modal.revision_title'|trans({}, 'privacy') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
