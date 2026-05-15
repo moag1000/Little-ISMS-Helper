@@ -318,6 +318,42 @@
                 </button>
             {% endif %}
 
+            {% if 'applicable_change' in actions %}
+                <div class="dropdown">
+                    <button type="button"
+                            class="fa-bulk-btn dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="{{ 'bulk_actions.applicable_change.label'|trans({}, 'messages') }}">
+                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                        {{ 'bulk_actions.applicable_change.label'|trans({}, 'messages') }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkApplicabilityChange"
+                                    data-applicable-value="1"
+                                    aria-label="{{ 'bulk_actions.applicable_change.set_applicable'|trans({}, 'messages') }}">
+                                <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
+                                {{ 'bulk_actions.applicable_change.set_applicable'|trans({}, 'messages') }}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button"
+                                    class="dropdown-item"
+                                    data-action="click->bulk-actions#bulkApplicabilityChange"
+                                    data-applicable-value="0"
+                                    data-applicable-reason="{{ 'bulk_actions.applicable_change.default_reason'|trans({}, 'messages') }}"
+                                    aria-label="{{ 'bulk_actions.applicable_change.set_not_applicable'|trans({}, 'messages') }}">
+                                <i class="fa-icon fa-icon--ui-close me-1" aria-hidden="true"></i>
+                                {{ 'bulk_actions.applicable_change.set_not_applicable'|trans({}, 'messages') }}
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+
             {% if 'delete' in actions %}
                 <button type="button"
                         class="fa-bulk-btn fa-bulk-btn--danger"
