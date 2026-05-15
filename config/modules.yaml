@@ -236,6 +236,17 @@ modules:
       - risks
       - compliance
 
+  lksg:
+    name: 'LkSG (Lieferkettensorgfaltspflichten)'
+    description: 'Deutsches Lieferkettensorgfaltspflichtengesetz — Menschenrechts- und Umwelt-Risiken in der Lieferkette, Risikoanalyse, Beschwerdemechanismus, Präventionsmaßnahmen. Pflicht für Unternehmen >1000 MA (seit 2024).'
+    required: false
+    icon: 'people-arrows'
+    entities:
+      - Supplier
+    routes: []
+    dependencies:
+      - suppliers
+
   tisax:
     name: 'TISAX (Auto-Industrie)'
     description: 'TISAX VDA-ISA Information Security Assessment + Prototype Protection für Tier-1/Tier-2 Auto-Industrie-Lieferanten'
