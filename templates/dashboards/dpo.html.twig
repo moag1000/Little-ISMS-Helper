@@ -179,5 +179,27 @@
             </div>
         </div>
     </section>
+
+    {# DORA Obligation status — only for DORA-obligated tenants (CTPP/financial entity) #}
+    {% if is_module_active('nis2_dora') and is_dora_obligated() %}
+    <section class="mt-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="fa-icon fa-icon--regulator text-warning" aria-hidden="true"></i>
+            <h2 class="h6 mb-0">{{ 'dpo.section.dora_status'|trans }}</h2>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                {{ _fa_feature_card.render({
+                    label:    'dpo.kpi.dora_obligation'|trans,
+                    value:    'dpo.kpi.dora_obligated'|trans,
+                    icon:     'bank',
+                    variant:  'info',
+                    link:     path('dora_roi_index'),
+                    linkLabel: 'dpo.kpi.dora_roi_link'|trans,
+                }) }}
+            </div>
+        </div>
+    </section>
+    {% endif %}
 </main>
 {% endblock %}

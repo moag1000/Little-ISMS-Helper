@@ -23,6 +23,7 @@ management_review:
     field:
         basic_info: 'Basic Information'
         tenant: 'Organization'
+        dora_obligation: 'DORA obligation status'
         generated_at: 'Generated at'
         title: Title
         review_date: 'Review Date'
@@ -180,3 +181,7 @@ management_review:
         help: 'Saves 30 min of aggregation work: risks, audit findings, KPIs, treatment plans and improvement opportunities are pre-filled — you edit and finalize.'
         cta: 'Pre-fill and create'
         success: 'Management Review pre-filled from §9.3 data sources. Please review and complete.'
+    dora_category:
+        none: 'Not DORA-obligated'
+        financial_entity: 'Financial entity (DORA Art. 2(2))'
+        critical_ict_third_party: 'Critical ICT third-party provider (CTPP, DORA Art. 31)'
