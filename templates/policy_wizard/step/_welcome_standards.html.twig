@@ -4,7 +4,14 @@
 {% set finding_default = defaults.finding_reference|default(run.findingReference) %}
 {% set selected_mode = defaults.mode|default(run.mode) %}
 {% set bundles = industry_preset_bundles|default([]) %}
-{% set selected_bundle_key = defaults.industry_preset_bundle_key|default(inputs_so_far.welcome.industry_preset_bundle_key|default('')) %}
+{# Multi-key (canonical): prefer industry_preset_bundle_keys[], fall back to
+   the legacy single-key field so old wizard-runs pre-populate correctly. #}
+{% set _legacy_key = defaults.industry_preset_bundle_key|default(inputs_so_far.welcome.industry_preset_bundle_key|default('')) %}
+{% set selected_bundle_keys = defaults.industry_preset_bundle_keys|default(
+    inputs_so_far.welcome.industry_preset_bundle_keys|default(
+        (_legacy_key != '' ? [_legacy_key] : [])
+    )
+) %}
 
 {# Junior-ISB-friendly help-card. Plain-language framing of the step
  # so first-time users understand what they pick here and why.
@@ -71,24 +78,65 @@
      data-policy-wizard-preset-picker-preview-url-value="{{ path('app_policy_wizard_preset_preview', { key: '__KEY__' }) }}">
     {% if bundles|length > 0 %}
         <div class="col-12">
-            {% set bundle_options = [] %}
-            {% for bundle in bundles %}
-                {% set bundle_options = bundle_options|merge([{
-                    value: bundle.key,
-                    label: ('policy_wizard.preset.' ~ bundle.key ~ '.label')|trans({}, 'policy_wizard')
-                }]) %}
-            {% endfor %}
-            {{ _fa_cyber.select('industry_preset_bundle_key', bundle_options, {
-                id: 'industry-preset-bundle-key',
-                label: 'policy_wizard.preset.label'|trans,
-                help: 'policy_wizard.preset.help'|trans,
-                placeholder: 'policy_wizard.preset.placeholder'|trans,
-                value: selected_bundle_key,
-                extra_attrs: {
-                    'data-policy-wizard-preset-picker-target': 'select',
-                    'data-action': 'change->policy-wizard-preset-picker#onChange'
-                }
-            }) }}
+            {# Multi-select: user may combine several sector presets
+               (e.g. "Bank" + "Cloud-SaaS" + "GDPR"). Later-wins applies
+               for scalar fields; standards are unioned.
+               TomSelect drives keyboard-friendly multi-select (same
+               pattern as crypto_allowlist in Step 5). #}
+            <div class="fa-form-row mb-2">
+                <label class="form-label" for="industry-preset-bundle-keys">
+                    {{ 'policy_wizard.preset.label'|trans }}
+                </label>
+                <select id="industry-preset-bundle-keys"
+                        name="industry_preset_bundle_keys[]"
+                        multiple
+                        class="form-select fa-cyber-input__field"
+                        data-controller="tom-select"
+                        data-policy-wizard-preset-picker-target="select"
+                        data-action="change->policy-wizard-preset-picker#onMultiChange"
+                        aria-describedby="industry-preset-help">
+                    {% for bundle in bundles %}
+                        <option value="{{ bundle.key }}"
+                                {% if bundle.key in selected_bundle_keys %}selected{% endif %}>
+                            {{ ('policy_wizard.preset.' ~ bundle.key ~ '.label')|trans({}, 'policy_wizard') }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div id="industry-preset-help" class="form-text">
+                    {{ 'policy_wizard.preset.help_multi'|trans }}
+                </div>
+            </div>
+
+            {# Conflict notice — shown when two selected bundles disagree on
+               a scalar field. Server populates _preset_flags.bundle_conflicts
+               in the inputs bag after the welcome step is submitted. #}
+            {% set _conflicts = inputs_so_far.welcome is defined
+                ? (inputs_so_far._preset_flags.bundle_conflicts|default({}))
+                : {} %}
+            {% if _conflicts|length > 0 %}
+                {% embed '_components/_fa_alert.html.twig' with { props: {
+                    variant: 'warning',
+                    icon: 'bi-exclamation-triangle',
+                    class: 'mt-2 mb-0'
+                } } %}
+                    {% block alert_body %}
+                        {% trans_default_domain 'policy_wizard' %}
+                        <div class="fa-alert__title">{{ 'policy_wizard.preset.conflict.title'|trans }}</div>
+                        <ul class="fa-alert__message mb-0 small ps-3">
+                            {% for field, values in _conflicts %}
+                                <li>
+                                    <strong>{{ ('policy_wizard.preset.conflict.field.' ~ field)|trans }}</strong>:
+                                    {% for bundle_key, value in values %}
+                                        {{ ('policy_wizard.preset.' ~ bundle_key ~ '.label')|trans({}, 'policy_wizard') }} = {{ value }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                    — {{ 'policy_wizard.preset.conflict.later_wins'|trans }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
             <div class="form-text mt-2 d-none"
                  data-policy-wizard-preset-picker-target="preview"
                  role="status"

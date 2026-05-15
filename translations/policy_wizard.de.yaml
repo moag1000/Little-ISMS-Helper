@@ -743,9 +743,10 @@ policy_wizard:
             dpo_user_help: 'Pflicht bei DSGVO/DORA-Geltungsbereich. Verantwortlich für Privacy-Sektionen und Art. 38 DSGVO.'
             bcm_officer_label: 'BCM-Officer'
             bcm_officer_help: 'Verantwortlich für die operativen Continuity-Vorgaben (RTO/RPO/Übungsprogramm).'
-            preset_section_title: 'Industrie-Preset (optional)'
-            preset_bundle_label: 'Industrie-Preset anwenden'
+            preset_section_title: 'Industrie-Preset(s) (optional)'
+            preset_bundle_label: 'Industrie-Preset(s) anwenden'
             preset_bundle_help: 'Ein-Klick-Vorbefüllung sektor-spezifischer Defaults. Bestehende Eingaben bleiben erhalten.'
+            preset_bundle_help_multi: 'Mehrere Presets wählbar. Konflikte bei Skalar-Feldern: zuletzt gewähltes Preset gewinnt, manuell anpassbar.'
             help:
                 title: 'Was sind Operative Baselines?'
                 body: 'Konkrete Mess- und Mindestwerte für Ihren operativen Betrieb: Welche Krypto-Algorithmen sind erlaubt, wie schnell muss bei einem Patch reagiert werden, wie viel Datenverlust ist tolerierbar. Diese Werte landen direkt in den generierten Richtlinien.'
@@ -1168,6 +1169,7 @@ policy_wizard:
             mode: 'Lauf-Modus'
             finding_reference: 'Audit-Finding-Referenz'
             preset_bundle: 'Branchen-Preset'
+            preset_bundles: 'Branchen-Presets'
         org:
             legal_name: 'Juristischer Name'
             scope_statement: 'Scope-Statement'
@@ -1276,11 +1278,19 @@ policy_wizard:
             placeholder: 'Platzhalter-Text wie „lorem ipsum", „TBD", „TODO" oder „n/a" ist nicht erlaubt. Bitte tragen Sie die tenant-spezifische Information ein.'
             custom: 'Der Eintrag entspricht nicht dem für dieses Feld konfigurierten Format. Bitte prüfen Sie die Vorgabe in der Vorlage.'
 
-    # W4-B — IndustryPresetBundle picker (Step 1).
+    # W4-B — IndustryPresetBundle picker (Step 1, multi-select since v3.6).
     preset:
-        label: 'Industrie-Preset (optional)'
+        label: 'Industrie-Preset(s) (optional)'
         placeholder: 'Optional: Industrie-Preset wählen'
         help: 'Vorbefüllt sektor-spezifische Defaults. Sie können jeden Wert anschließend anpassen.'
+        help_multi: 'Mehrere Presets kombinierbar (z. B. „Bank" + „Cloud-SaaS"). Bei Konflikten gewinnt das zuletzt gewählte Preset.'
+        conflict:
+            title: 'Preset-Konflikt erkannt'
+            later_wins: 'zuletzt ausgewähltes Preset gewinnt — manuell anpassbar im nächsten Schritt'
+            field:
+                risk_appetite_tier: 'Risikoappetit-Stufe'
+                data_classification_levels: 'Datenklassifizierungsstufen'
+                backup_rpo_hours: 'Backup-RPO (Stunden)'
         preview:
             documents_count: '%count% Dokumente werden für das Preset „%bundle%" erzeugt.'
         healthcare:
