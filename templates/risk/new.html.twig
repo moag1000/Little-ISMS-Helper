@@ -3,6 +3,13 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'risk' %}
 
+{#
+    TODO: SOLUTIONS_P0 P0-11 — re-populate sections when RiskType is extended:
+      * inherent_risk: re-add 'likelihoodJustification', 'impactJustification'
+      * acceptance:    re-add 'decisionApprovedByUser', 'decisionApprovalDate', 'decisionRationale'
+    Translation keys + col_widths intentionally kept as forward-compat anchors.
+#}
+
 {% block title %}{{ 'risk.new'|trans({}, 'risk')}} - {{ parent() }}{% endblock %}
 
 {% block body %}
@@ -40,7 +47,7 @@
                 },
                 'inherent_risk': {
                     'label': 'risk.section.inherent_risk'|trans({}, 'risk'),
-                    'fields': ['probability', 'likelihoodJustification', 'impact', 'impactJustification']
+                    'fields': ['probability', 'impact']
                 },
                 'residual_risk': {
                     'label': 'risk.section.residual_risk'|trans({}, 'risk'),
@@ -52,7 +59,7 @@
                 },
                 'acceptance': {
                     'label': 'risk.section.acceptance'|trans({}, 'risk'),
-                    'fields': ['decisionApprovedByUser', 'decisionApprovalDate', 'decisionRationale', 'acceptanceApprovedByUser', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
+                    'fields': ['acceptanceApprovedByUser', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
                 }
             },
             'col_widths': {
@@ -72,9 +79,7 @@
                 'requiresDPIA': 6,
                 'dataSubjectImpact': 12,
                 'probability': 6,
-                'likelihoodJustification': 6,
                 'impact': 6,
-                'impactJustification': 6,
                 'residualProbability': 6,
                 'residualImpact': 6,
                 'treatmentStrategy': 6,
@@ -82,9 +87,6 @@
                 'riskOwnerPerson': 6,
                 'riskOwnerDeputyPersons': 12,
                 'treatmentDescription': 12,
-                'decisionApprovedByUser': 6,
-                'decisionApprovalDate': 6,
-                'decisionRationale': 12,
                 'acceptanceApprovedByUser': 6,
                 'acceptanceApprovedAt': 6,
                 'acceptanceJustification': 12,
