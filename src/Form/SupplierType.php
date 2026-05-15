@@ -213,6 +213,11 @@ class SupplierType extends AbstractType
             ])
 
             // ── WS-3: DORA ROI (Register of Information) ─────────────────────
+            ->add('isDoraRelevant', CheckboxType::class, [
+                'label'    => 'supplier.field.is_dora_relevant',
+                'help'     => 'supplier.help.is_dora_relevant',
+                'required' => false,
+            ])
             ->add('leiCode', TextType::class, [
                 'label' => 'supplier.field.lei_code',
                 'help' => 'supplier.help.lei_code',
