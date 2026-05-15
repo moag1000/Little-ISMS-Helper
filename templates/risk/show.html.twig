@@ -481,6 +481,12 @@
         entity_label: 'risk'
     } %}
 
+    {# F16: Risk-Incident cross-links #}
+    {% include 'risk/_linked_incidents.html.twig' with {
+        risk: risk,
+        riskIncidentLinks: riskIncidentLinks|default([])
+    } only %}
+
     {# V3 W2-H3: Comment-Thread adoption (C7 macro). #}
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),
