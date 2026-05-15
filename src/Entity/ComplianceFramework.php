@@ -341,7 +341,6 @@ class ComplianceFramework
      *       performance benchmarks flag this (N requirements × M tenants).
      *       Track: open GitHub issue for ComplianceFramework N+1 optimisation.
      *
-     * @phpstan-ignore-next-line
      */
     public function getCompliancePercentage(): float
     {
