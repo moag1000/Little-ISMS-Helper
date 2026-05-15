@@ -21,7 +21,7 @@ final class LibraryImporterControllerTest extends WebTestCase
     public function indexRequiresAuthentication(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/admin/library');
+        $client->request('GET', '/de/admin/library');
 
         // Without auth → redirect to login
         self::assertResponseRedirects();
@@ -42,7 +42,7 @@ final class LibraryImporterControllerTest extends WebTestCase
         }
 
         $client->loginUser($adminUser);
-        $client->request('GET', '/admin/library');
+        $client->request('GET', '/de/admin/library');
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', 'Library');
@@ -52,7 +52,7 @@ final class LibraryImporterControllerTest extends WebTestCase
     public function importPostRequiresAuthentication(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/admin/library/import');
+        $client->request('POST', '/de/admin/library/import');
 
         self::assertResponseRedirects();
     }
@@ -71,7 +71,7 @@ final class LibraryImporterControllerTest extends WebTestCase
         }
 
         $client->loginUser($adminUser);
-        $client->request('POST', '/admin/library/import?type=bsi');
+        $client->request('POST', '/de/admin/library/import?type=bsi');
 
         // Import may succeed or show partial result — both are 200
         self::assertTrue(
@@ -94,7 +94,7 @@ final class LibraryImporterControllerTest extends WebTestCase
         }
 
         $client->loginUser($adminUser);
-        $client->request('GET', '/admin/library/export/999999/yaml');
+        $client->request('GET', '/de/admin/library/export/999999/yaml');
 
         self::assertResponseStatusCodeSame(404);
     }
@@ -113,7 +113,7 @@ final class LibraryImporterControllerTest extends WebTestCase
         }
 
         $client->loginUser($adminUser);
-        $client->request('GET', '/admin/library/export/999999/csv');
+        $client->request('GET', '/de/admin/library/export/999999/csv');
 
         self::assertResponseStatusCodeSame(404);
     }
