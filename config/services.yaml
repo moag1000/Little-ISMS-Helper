@@ -545,6 +545,3 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
-    App\AlvaHint\Rule\Global\LibraryUpdatedRule:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
