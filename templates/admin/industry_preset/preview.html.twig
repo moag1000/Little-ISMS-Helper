@@ -114,7 +114,7 @@
                           data-ui-actions-message-param="{{ 'industry_preset.confirm.apply_short'|trans }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('industry_preset_' ~ preset) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100">
-                            <i class="bi bi-rocket-takeoff {# TODO: design Aurora fa-icon--ui-launch #} {# TODO: design Aurora fa-icon--rocket-takeoff #}"></i> {{ 'industry_preset.action.apply_button'|trans }}
+                            <i class="fa-icon fa-icon--ui-launch" aria-hidden="true"></i> {{ 'industry_preset.action.apply_button'|trans }}
                         </button>
                     </form>
                 </div>
