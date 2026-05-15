@@ -28,6 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/sso', name: 'admin_sso_')]
 #[IsGranted('ROLE_ADMIN')]
@@ -47,6 +48,7 @@ final class SsoProviderController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
         private readonly IdentityProviderRoleMappingRepository $roleMappingRepo,
         private readonly AuditLogRepository $auditLogRepo,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 

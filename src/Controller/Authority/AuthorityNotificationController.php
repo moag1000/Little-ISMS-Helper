@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * F26.3 — Authority Notification Export Controller
@@ -38,6 +39,7 @@ final class AuthorityNotificationController extends AbstractController
         private readonly DataBreachRepository $dataBreachRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
