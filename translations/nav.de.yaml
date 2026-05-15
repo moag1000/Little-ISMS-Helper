@@ -228,6 +228,7 @@ nav:
             scheduled_reports: 'Wiederkehrende Berichte (PDF/CSV) planen und versenden'
             report_builder: 'Eigene Reports aus Widget-Bibliothek zusammenstellen'
             evidence_reviewer_queue: 'Nachweisdokumente prüfen und als verifiziert markieren (ISO 27001 Kl. 7.5.3)'
+            workflow_definitions: 'Workflow-Vorlagen und Schritte verwalten'
 
     evidence_reviewer_queue: 'Nachweise-Prüf-Queue'
 
