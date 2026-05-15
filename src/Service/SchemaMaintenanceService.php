@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Doctrine\DBAL\Schema\Schema as DbalSchema;
 use Doctrine\Migrations\DependencyFactory;
 use Doctrine\Migrations\Metadata\MigrationPlan;
 use Doctrine\Migrations\Metadata\MigrationPlanList;
@@ -335,17 +337,25 @@ class SchemaMaintenanceService
     }
 
     /**
-     * Iterates over all pending migrations and marks each one as executed
-     * WITHOUT running its DDL, stopping only when either no phantom-diff
-     * error is returned (i.e. a real error or clean success) or the cap
-     * is reached. Designed for the "click 127 times" recovery scenario.
+     * Scans every pending migration independently via schema-introspection
+     * (Approach A) and marks ONLY those whose DDL targets ALREADY exist in
+     * the live database — without attempting to execute any migration.
      *
-     * Algorithm (Approach B from spec):
-     *  1. Attempt executePendingMigrations() — if success → done.
-     *  2. If diagnosis.category === phantom_diff_migration → markMigrationAsExecuted()
-     *     on the offending version, then loop.
-     *  3. If any other error → break and report partial progress.
-     *  4. Cap iterations at 200 to prevent runaway loops.
+     * Algorithm:
+     *  1. Collect all pending versions from the file system.
+     *  2. For each version:
+     *     a. Instantiate the migration and call up() on a dummy Schema to
+     *        collect the planned SQL via getSql() — no DDL is executed.
+     *     b. Parse each SQL statement for CREATE TABLE, ADD COLUMN, CREATE INDEX.
+     *     c. A migration is phantom-diff if ALL its DDL targets already exist
+     *        in the live schema. Any unknown/non-phantom statement (DROP, INSERT,
+     *        UPDATE, etc.) → skip conservatively.
+     *     d. If phantom-diff → markMigrationAsExecuted().
+     *  3. Return same shape as before so the controller needs no changes.
+     *
+     * This replaces the previous Approach B (execute-and-detect loop), which
+     * broke on the FIRST non-phantom error and left all subsequent phantom-diff
+     * migrations unmarked.
      *
      * @return array{
      *     success: bool,
@@ -356,70 +366,86 @@ class SchemaMaintenanceService
      */
     public function markAllPhantomDiffMigrationsAsExecuted(string $actor = 'system'): array
     {
-        $maxIterations = 200;
         $marked = [];
         $stoppedAtError = null;
 
-        for ($i = 0; $i < $maxIterations; $i++) {
-            // Re-check pending count each iteration (the list shrinks as we mark).
+        try {
             $pending = $this->listPendingMigrationVersionsFromFileSystem();
+
             if ($pending === []) {
-                break;
+                return [
+                    'success' => true,
+                    'marked' => [],
+                    'remaining_pending' => 0,
+                    'stopped_at_error' => null,
+                ];
             }
 
-            $result = $this->executePendingMigrations($actor);
+            $df = $this->migrationsDependencyFactory;
+            $df->getMetadataStorage()->ensureInitialized();
+            $conn = $df->getConnection();
+            $sm = $conn->createSchemaManager();
+            $dummySchema = new DbalSchema();
 
-            if ($result['success']) {
-                // All remaining migrations executed cleanly — done.
-                break;
-            }
+            foreach ($pending as $idx => $version) {
+                try {
+                    $available = $df->getMigrationRepository()->getMigration(new Version($version));
+                } catch (\Throwable $e) {
+                    // Version not found in repository — skip conservatively.
+                    continue;
+                }
 
-            $diagnosis = $result['diagnosis'] ?? null;
-            if (!is_array($diagnosis) || ($diagnosis['category'] ?? 'unknown') !== 'phantom_diff_migration') {
-                // Non-phantom error — cannot auto-recover, report and stop.
-                $stoppedAtError = is_array($diagnosis)
-                    ? sprintf('[%s] %s', $diagnosis['category'], $diagnosis['suggested_action'] ?? $diagnosis['message'] ?? $result['error'] ?? 'unknown')
-                    : ($result['error'] ?? 'unknown error');
-                break;
-            }
+                $migration = $available->getMigration();
 
-            $offendingVersion = $diagnosis['offending_version'] ?? null;
-            if ($offendingVersion === null || $offendingVersion === '') {
-                // Phantom-diff diagnosed but no version identified — cannot mark.
-                $stoppedAtError = 'phantom_diff_migration detected but no offending_version in diagnosis.';
-                break;
-            }
+                // Invoke up() to collect the planned SQL via addSql() calls.
+                // We catch any abort/skip/DB exceptions — if up() fails to run
+                // completely we cannot safely inspect the SQL, so skip.
+                try {
+                    $migration->up($dummySchema);
+                } catch (\Throwable) {
+                    // up() threw — cannot determine SQL, skip this migration.
+                    continue;
+                }
 
-            $markResult = $this->markMigrationAsExecuted($offendingVersion);
-            if (!$markResult['success']) {
-                $stoppedAtError = sprintf(
-                    'force-mark failed for %s: %s',
-                    $offendingVersion,
-                    $markResult['error'] ?? 'unknown',
+                $queries = $migration->getSql();
+
+                if ($queries === []) {
+                    // No SQL at all — nothing to check, skip.
+                    continue;
+                }
+
+                if (!$this->isPhantomDiffMigration($queries, $sm)) {
+                    continue;
+                }
+
+                $markResult = $this->markMigrationAsExecuted($version);
+                if (!$markResult['success']) {
+                    // Non-fatal: record the error but continue with remaining.
+                    $stoppedAtError = sprintf(
+                        'force-mark failed for %s: %s',
+                        $version,
+                        $markResult['error'] ?? 'unknown',
+                    );
+                    continue;
+                }
+
+                $marked[] = $version;
+
+                $this->auditLogger->logCustom(
+                    'quick_fix.force_mark_migration_executed',
+                    'Migration',
+                    null,
+                    null,
+                    ['version' => $version, 'batch' => 'mark_all_phantom_diff', 'index' => $idx + 1],
+                    sprintf(
+                        'QuickFix/mark-all: schema-introspection marked phantom-diff migration %d: %s',
+                        $idx + 1,
+                        $version,
+                    ),
                 );
-                break;
             }
-
-            $marked[] = $offendingVersion;
-
-            $this->auditLogger->logCustom(
-                'quick_fix.force_mark_migration_executed',
-                'Migration',
-                null,
-                null,
-                ['version' => $offendingVersion, 'batch' => 'mark_all_phantom_diff', 'index' => $i + 1],
-                sprintf(
-                    'QuickFix/mark-all: force-marked phantom-diff migration %d/%d: %s',
-                    $i + 1,
-                    $maxIterations,
-                    $offendingVersion,
-                ),
-            );
-        }
-
-        // If we exhausted iterations without finishing, record partial progress.
-        if ($i === $maxIterations && $stoppedAtError === null) {
-            $stoppedAtError = sprintf('Iteration cap (%d) reached — partial progress only.', $maxIterations);
+        } catch (\Throwable $e) {
+            $stoppedAtError = sprintf('mark-all introspection failed: %s', $e->getMessage());
         }
 
         $remainingPending = count($this->listPendingMigrationVersionsFromFileSystem());
@@ -430,6 +456,128 @@ class SchemaMaintenanceService
             'remaining_pending' => $remainingPending,
             'stopped_at_error' => $stoppedAtError,
         ];
+    }
+
+    /**
+     * Returns true if every DDL statement in $queries targets an object that
+     * ALREADY exists in the live schema (i.e. the migration is a phantom-diff).
+     *
+     * Conservative rules:
+     * - CREATE TABLE → table must exist.
+     * - ALTER TABLE … ADD [COLUMN] → column must exist in table.
+     * - CREATE [UNIQUE] INDEX → index must exist on table.
+     * - Any other statement (DROP, RENAME, INSERT, UPDATE, unknown) → NOT phantom.
+     * - If $queries is empty → NOT phantom.
+     *
+     * @param \Doctrine\Migrations\Query\Query[] $queries
+     * @param AbstractSchemaManager<\Doctrine\DBAL\Platforms\AbstractPlatform> $sm
+     */
+    private function isPhantomDiffMigration(array $queries, AbstractSchemaManager $sm): bool
+    {
+        if ($queries === []) {
+            return false;
+        }
+
+        foreach ($queries as $query) {
+            $sql = $query->getStatement();
+            $targets = $this->extractDdlTargets($sql);
+
+            foreach ($targets as $target) {
+                $type = $target['type'];
+
+                if ($type === 'unknown') {
+                    // Non-phantom statement — conservative: entire migration is not phantom.
+                    return false;
+                }
+
+                if ($type === 'create_table') {
+                    try {
+                        if (!$sm->tablesExist([$target['table']])) {
+                            return false;
+                        }
+                    } catch (\Throwable) {
+                        return false;
+                    }
+                }
+
+                if ($type === 'add_column') {
+                    try {
+                        $columns = $sm->listTableColumns($target['table']);
+                        $columnNames = array_map(
+                            static fn ($col): string => strtolower($col->getName()),
+                            $columns,
+                        );
+                        if (!in_array(strtolower($target['column']), $columnNames, true)) {
+                            return false;
+                        }
+                    } catch (\Throwable) {
+                        return false;
+                    }
+                }
+
+                if ($type === 'create_index') {
+                    try {
+                        $indexes = $sm->listTableIndexes($target['table']);
+                        $indexNames = array_map(
+                            static fn ($idx): string => strtolower($idx->getName()),
+                            $indexes,
+                        );
+                        if (!in_array(strtolower($target['index']), $indexNames, true)) {
+                            return false;
+                        }
+                    } catch (\Throwable) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Extracts DDL targets from a single SQL statement using simple regex.
+     * Returns an array of target descriptors. If no known DDL pattern matches,
+     * returns [['type' => 'unknown']] so the caller can conservatively skip.
+     *
+     * @return list<array{type: string, table?: string, column?: string, index?: string}>
+     */
+    private function extractDdlTargets(string $sql): array
+    {
+        $targets = [];
+
+        // CREATE TABLE [IF NOT EXISTS] `table_name`
+        if (preg_match('/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?[`"]?(\w+)[`"]?/i', $sql, $m)) {
+            $targets[] = ['type' => 'create_table', 'table' => $m[1]];
+        }
+
+        // ALTER TABLE `table` ADD [COLUMN] `col_name`
+        if (preg_match_all(
+            '/ALTER\s+TABLE\s+[`"]?(\w+)[`"]?\s+ADD\s+(?:COLUMN\s+)?[`"]?(\w+)[`"]?/i',
+            $sql,
+            $matches,
+            PREG_SET_ORDER,
+        )) {
+            foreach ($matches as $match) {
+                $targets[] = ['type' => 'add_column', 'table' => $match[1], 'column' => $match[2]];
+            }
+        }
+
+        // CREATE [UNIQUE] INDEX `idx_name` ON `table_name`
+        if (preg_match(
+            '/CREATE\s+(?:UNIQUE\s+)?INDEX\s+[`"]?(\w+)[`"]?\s+ON\s+[`"]?(\w+)[`"]?/i',
+            $sql,
+            $m,
+        )) {
+            $targets[] = ['type' => 'create_index', 'index' => $m[1], 'table' => $m[2]];
+        }
+
+        if ($targets === []) {
+            // No recognisable DDL pattern — treat as non-phantom conservatively.
+            $targets[] = ['type' => 'unknown'];
+        }
+
+        return $targets;
     }
 
     /**
