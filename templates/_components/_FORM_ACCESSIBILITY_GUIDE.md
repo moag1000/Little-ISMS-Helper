@@ -1,6 +1,6 @@
 # Form Accessibility Guide
 
-This guide explains how to create WCAG 2.1 AA compliant forms in Little ISMS Helper.
+This guide explains how to create WCAG 2.2 AA compliant forms in Little ISMS Helper.
 
 ## 📚 Table of Contents
 
@@ -8,8 +8,30 @@ This guide explains how to create WCAG 2.1 AA compliant forms in Little ISMS Hel
 - [Using the Form Field Component](#using-the-form-field-component)
 - [ARIA Attributes Reference](#aria-attributes-reference)
 - [Manual Form Implementation](#manual-form-implementation)
+- [WCAG 2.2 New Criteria](#wcag-22-new-criteria)
 - [Testing Accessibility](#testing-accessibility)
 - [Common Pitfalls](#common-pitfalls)
+
+## WCAG 2.2 New Criteria
+
+Aurora targets **WCAG 2.2 AA**. The five new criteria added in 2.2 that affect form design:
+
+| SC | Title | Form Impact |
+|---|---|---|
+| **2.4.11** | Focus Not Obscured (Minimum) | Sticky headers / Alva-Dock / Toasts must not fully cover focused input |
+| **2.4.12** | Focus Not Obscured (Enhanced) | AAA — no part of focus indicator hidden |
+| **2.4.13** | Focus Appearance | Outline ≥2px solid, ≥3:1 contrast, encloses the field. Aurora `--target-min`/`.fa-cyber-btn:focus-visible` provide this |
+| **2.5.7** | Dragging Movements | Drag-to-reorder lists need single-pointer alternative (e.g., up/down buttons) |
+| **2.5.8** | Target Size Minimum (24×24) | All viewports — global floor via `--target-min: 24px` token in `fairy-aurora.css` |
+| **3.3.7** | Redundant Entry | Don't ask the same info twice in a session; pre-fill or remember |
+| **3.3.8** | Accessible Authentication (Minimum) | No cognitive function tests — allow password managers, magic links, MFA TOTP/WebAuthn |
+
+**Implementation checklist:**
+- [ ] All `<button>`, `<input>`, `<a>`, `.nav-link`, `.form-check`, `.page-link` → `min-height: var(--target-min)` (24px desktop, 44px mobile)
+- [ ] Focus-ring: 3px solid `var(--primary)` outline + 2px offset (already in `.fa-cyber-btn` + `.btn`)
+- [ ] Sticky header z-index never overlaps `:focus-visible` field — use `scroll-padding-top: 80px;` on `html`
+- [ ] Drag-reorder UI: include keyboard-arrow shortcuts + visible up/down arrow buttons
+- [ ] Authentication: support browser password autofill, WebAuthn, magic-link as alternatives to memorized passwords
 
 ---
 
@@ -377,7 +399,7 @@ user:
 
 ## 📚 Resources
 
-- [WCAG 2.1 Form Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/labels-or-instructions)
+- [WCAG 2.2 Form Guidelines](https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions)
 - [ARIA Authoring Practices - Forms](https://www.w3.org/WAI/ARIA/apg/patterns/)
 - [WebAIM Form Accessibility](https://webaim.org/techniques/forms/)
 - [MDN ARIA Best Practices](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/forms)
