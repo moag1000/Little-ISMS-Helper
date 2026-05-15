@@ -61,8 +61,10 @@ class DoraRoiXbrlExporter
     public function generate(Tenant $tenant): string
     {
         $reportingDate = new DateTimeImmutable();
-        $suppliers = $this->supplierRepository->findByTenant($tenant);
-        $assets = $this->assetRepository->findByTenant($tenant);
+        // DORA Phase 1: filter to isDoraRelevant=true only (Art. 28 RoI scope).
+        // Operators flag entities explicitly; untagged entries are NOT exported.
+        $suppliers = $this->supplierRepository->findByTenantAndDoraRelevant($tenant);
+        $assets = $this->assetRepository->findByTenantAndDoraRelevant($tenant);
 
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
