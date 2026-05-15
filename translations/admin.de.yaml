@@ -68,6 +68,7 @@ admin:
             gstool_import: { label: 'GSTool-Import', desc: 'BSI-IT-Grundschutz aus GSTool-Export' }
             sample_data: { label: 'Sample-Data', desc: 'Demo-Datensätze laden / entfernen' }
             import_history: { label: 'Import-Historie', desc: 'Letzte Importe + Rollback' }
+            library_importer: { label: 'BSI / TISAX Library', desc: 'Frameworks aus YAML-Fixtures importieren und exportieren (BSI Kompendium 2024, TISAX ISA 6.0)' }
             system_health: { label: 'System-Health', desc: 'Service-Status, Disk, Cache, Logs' }
             modules: { label: 'Module', desc: 'Aktive ISMS-Module verwalten' }
             data_repair: { label: 'Daten-Reparatur', desc: 'Orphans, Tenant-Mismatches, Schema-Reconcile' }

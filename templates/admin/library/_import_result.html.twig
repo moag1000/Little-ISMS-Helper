@@ -1,0 +1,80 @@
+{% trans_default_domain 'library' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{#
+  Partial: import result stats panel.
+  Rendered after a successful or partially-successful library import.
+
+  Variables:
+    stats   — array: frameworks_created, frameworks_updated, requirements_created,
+                     requirements_updated, errors[] from the importer
+    type    — string: 'bsi' | 'tisax'
+    has_errors — bool
+#}
+
+<div class="card mt-3">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <span>
+            <i class="fa-icon fa-icon--nav-upload me-1" aria-hidden="true"></i>
+            {{ 'library.import_result.title'|trans({ '%type%': type|upper }, 'library') }}
+        </span>
+        <a href="{{ path('admin_library_index') }}" class="btn btn-sm btn-ghost">
+            <i class="fa-icon fa-icon--arrow-left" aria-hidden="true"></i>
+            {{ 'library.action.back'|trans({}, 'library') }}
+        </a>
+    </div>
+    <div class="card-body">
+        {% if has_errors %}
+            {{ _fa_alert.render({
+                variant: 'warning',
+                title: 'library.import_result.partial_success'|trans({}, 'library'),
+                body: 'library.import_result.errors_occurred'|trans({ '%count%': stats.errors|length }, 'library'),
+            }) }}
+        {% else %}
+            {{ _fa_alert.render({
+                variant: 'success',
+                title: 'library.import_result.success'|trans({}, 'library'),
+            }) }}
+        {% endif %}
+
+        <div class="row g-3 mt-2">
+            <div class="col-6 col-md-3">
+                <div class="text-center border rounded p-2">
+                    <div class="fs-3 fw-bold text-success">{{ stats.frameworks_created }}</div>
+                    <div class="small text-muted">{{ 'library.import_result.frameworks_created'|trans({}, 'library') }}</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="text-center border rounded p-2">
+                    <div class="fs-3 fw-bold text-info">{{ stats.frameworks_updated }}</div>
+                    <div class="small text-muted">{{ 'library.import_result.frameworks_updated'|trans({}, 'library') }}</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="text-center border rounded p-2">
+                    <div class="fs-3 fw-bold text-success">{{ stats.requirements_created }}</div>
+                    <div class="small text-muted">{{ 'library.import_result.requirements_created'|trans({}, 'library') }}</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="text-center border rounded p-2">
+                    <div class="fs-3 fw-bold text-info">{{ stats.requirements_updated }}</div>
+                    <div class="small text-muted">{{ 'library.import_result.requirements_updated'|trans({}, 'library') }}</div>
+                </div>
+            </div>
+        </div>
+
+        {% if has_errors %}
+            <details class="mt-3">
+                <summary class="text-warning fw-semibold">
+                    {{ 'library.import_result.show_errors'|trans({ '%count%': stats.errors|length }, 'library') }}
+                </summary>
+                <ul class="mt-2 small text-muted">
+                    {% for error in stats.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </details>
+        {% endif %}
+    </div>
+</div>

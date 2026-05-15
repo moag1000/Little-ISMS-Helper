@@ -531,3 +531,20 @@ services:
     App\Service\Import\BulkImportOrchestrator:
         arguments:
             $uploadDir: '%kernel.project_dir%/var/import-uploads'
+
+    # ── Sprint 10A — F5b Library importers + roundtrip ───────────────────────
+    App\Service\Library\BsiKompendiumImporter:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    App\Service\Library\VdaIsaImporter:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    App\Controller\Admin\Library\LibraryImporterController:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    App\AlvaHint\Rule\Global\LibraryUpdatedRule:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
