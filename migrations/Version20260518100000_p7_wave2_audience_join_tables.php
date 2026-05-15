@@ -72,7 +72,7 @@ final class Version20260518100000_p7_wave2_audience_join_tables extends Abstract
                 CONSTRAINT FK_doc_ack_aud_doc FOREIGN KEY (document_id)
                     REFERENCES document (id) ON DELETE CASCADE,
                 CONSTRAINT FK_doc_ack_aud_usr FOREIGN KEY (user_id)
-                    REFERENCES user (id) ON DELETE CASCADE
+                    REFERENCES users (id) ON DELETE CASCADE
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
     }
