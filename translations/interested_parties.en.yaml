@@ -1,5 +1,9 @@
 interested_party:
     title: 'Interested Parties'
+    success:
+        created: 'Interested party has been created.'
+        updated: 'Interested party has been updated.'
+        deleted: 'Interested party has been deleted.'
     page:
         title: 'Manage Interested Parties'
         new_title: 'New Interested Party'

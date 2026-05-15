@@ -1,6 +1,10 @@
 business_process:
   edit: Edit Business Process
   new: New Business Process
+  success:
+    created: 'Business process has been created.'
+    updated: 'Business process has been updated.'
+    deleted: 'Business process has been deleted.'
   bia:
     title: Business Impact Analysis
     section:

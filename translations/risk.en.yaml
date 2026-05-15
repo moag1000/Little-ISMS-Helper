@@ -1,5 +1,9 @@
 risk:
   not_found: 'Risk not found.'
+  success:
+    created: 'Risk has been created.'
+    updated: 'Risk has been updated.'
+    deleted: 'Risk has been deleted.'
   prefill:
     title_from_vulnerability: 'Risk derived from vulnerability: %title%'
     title_from_incident: 'Risk derived from incident: %title%'
@@ -392,6 +396,16 @@ risk:
       automatic: Automatic Approval
       manager: Manager Approval Required
       executive: Executive Approval Required
+    error:
+      wrong_strategy: 'Risk acceptance is only available for risks with the "Accept" treatment strategy.'
+      already_accepted: 'This risk has already been formally accepted.'
+      justification_required: 'Justification is required (ISO 27005:2022 Cl. 8.4.4).'
+      reason_required: 'A rejection reason is required.'
+    success:
+      auto_accepted: 'Risk has been auto-accepted (below the approval threshold).'
+      approval_requested: 'Acceptance request submitted. Approval required from %approver% (level: %level%).'
+      approved: 'Risk acceptance has been approved.'
+      rejected: 'Risk acceptance has been rejected.'
   residual_assessment: Residual Assessment
   status:
     open: Open

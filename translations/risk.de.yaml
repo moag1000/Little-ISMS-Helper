@@ -1,5 +1,9 @@
 risk:
   not_found: 'Risiko nicht gefunden.'
+  success:
+    created: 'Risiko wurde angelegt.'
+    updated: 'Risiko wurde aktualisiert.'
+    deleted: 'Risiko wurde gelöscht.'
   prefill:
     title_from_vulnerability: 'Risiko aus Schwachstelle: %title%'
     title_from_incident: 'Risiko aus Vorfall: %title%'
@@ -403,6 +407,16 @@ risk:
       automatic: Automatische Genehmigung
       manager: Manager-Genehmigung erforderlich
       executive: Geschäftsführungs-Genehmigung erforderlich
+    error:
+      wrong_strategy: 'Risikoakzeptanz ist nur für Risiken mit Behandlungsstrategie „Akzeptieren" möglich.'
+      already_accepted: 'Dieses Risiko wurde bereits formal akzeptiert.'
+      justification_required: 'Begründung ist erforderlich (ISO 27005:2022 Kl. 8.4.4).'
+      reason_required: 'Ablehnungsgrund ist erforderlich.'
+    success:
+      auto_accepted: 'Risiko wurde automatisch akzeptiert (unterhalb des Genehmigungs-Schwellwerts).'
+      approval_requested: 'Akzeptanzantrag eingereicht. Genehmigung erforderlich durch %approver% (Stufe: %level%).'
+      approved: 'Risikoakzeptanz wurde genehmigt.'
+      rejected: 'Risikoakzeptanz wurde abgelehnt.'
   residual_assessment: Restrisiko-Bewertung
   status:
     open: Offen

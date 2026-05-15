@@ -1,5 +1,9 @@
 interested_party:
     title: 'Interessierte Parteien'
+    success:
+        created: 'Interessierte Partei wurde angelegt.'
+        updated: 'Interessierte Partei wurde aktualisiert.'
+        deleted: 'Interessierte Partei wurde gelöscht.'
     page:
         title: 'Interessierte Parteien verwalten'
         new_title: 'Neue interessierte Partei'

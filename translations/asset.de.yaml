@@ -1,5 +1,9 @@
 asset:
   title: Titel
+  success:
+    created: 'Asset wurde angelegt.'
+    updated: 'Asset wurde aktualisiert.'
+    deleted: 'Asset wurde gelöscht.'
   preview:
     title: Asset-Informationen
   action:

@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Traversable;
 use Exception;
 use DomainException;
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\Vulnerability;
@@ -44,6 +45,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RiskController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly RiskRepository $riskRepository,
         private readonly RiskService $riskService,
@@ -65,6 +68,16 @@ class RiskController extends AbstractController
         private readonly ?RiskIncidentLinkService $riskIncidentLinkService = null,
         private readonly ?RiskIncidentLinkRepository $riskIncidentLinkRepository = null,
     ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'risk';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
     #[Route('/risk/', name: 'app_risk_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
@@ -808,7 +821,7 @@ class RiskController extends AbstractController
                 $this->workflowAutoProgressionService->checkAndProgressWorkflow($risk, $currentUser);
             }
 
-            $this->addFlash('success', $this->translator->trans('risk.success.created'));
+            $this->flashSuccess('risk.success.created');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -842,7 +855,7 @@ class RiskController extends AbstractController
                 $this->workflowAutoProgressionService->checkAndProgressWorkflow($risk, $currentUser);
             }
 
-            $this->addFlash('success', $this->translator->trans('risk.success.created'));
+            $this->flashSuccess('risk.success.created');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -1010,7 +1023,7 @@ class RiskController extends AbstractController
     public function linkIncident(Request $request, Risk $risk): Response
     {
         if (!$this->isCsrfTokenValid('link_incident_' . $risk->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('risk.link_incident.csrf_invalid', [], 'risk'));
+            $this->flashError('risk.link_incident.csrf_invalid');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -1020,7 +1033,7 @@ class RiskController extends AbstractController
 
         $incident = $this->incidentRepository->find($incidentId);
         if ($incident === null) {
-            $this->addFlash('error', $this->translator->trans('risk.link_incident.incident_not_found', [], 'risk'));
+            $this->flashError('risk.link_incident.incident_not_found');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -1034,7 +1047,7 @@ class RiskController extends AbstractController
             is_string($notes) ? $notes : null,
         );
 
-        $this->addFlash('success', $this->translator->trans('risk.link_incident.linked', [], 'risk'));
+        $this->flashSuccess('risk.link_incident.linked');
         return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
     }
 
@@ -1046,13 +1059,13 @@ class RiskController extends AbstractController
     public function unlinkIncident(Request $request, Risk $risk, int $linkId): Response
     {
         if (!$this->isCsrfTokenValid('unlink_incident_' . $linkId, $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('risk.link_incident.csrf_invalid', [], 'risk'));
+            $this->flashError('risk.link_incident.csrf_invalid');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
         $link = $this->riskIncidentLinkRepository?->find($linkId);
         if ($link === null || $link->getRisk()?->getId() !== $risk->getId()) {
-            $this->addFlash('error', $this->translator->trans('risk.link_incident.link_not_found', [], 'risk'));
+            $this->flashError('risk.link_incident.link_not_found');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -1061,7 +1074,7 @@ class RiskController extends AbstractController
             $this->riskIncidentLinkService?->unlink($risk, $incident);
         }
 
-        $this->addFlash('success', $this->translator->trans('risk.link_incident.unlinked', [], 'risk'));
+        $this->flashSuccess('risk.link_incident.unlinked');
         return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
     }
 
@@ -1091,7 +1104,7 @@ class RiskController extends AbstractController
                 $this->workflowAutoProgressionService->checkAndProgressWorkflow($risk, $currentUser);
             }
 
-            $this->addFlash('success', $this->translator->trans('risk.success.updated'));
+            $this->flashSuccess('risk.success.updated');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -1118,7 +1131,7 @@ class RiskController extends AbstractController
             $this->entityManager->remove($risk);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('risk.success.deleted'));
+            $this->flashSuccess('risk.success.deleted');
         }
 
         return $this->redirectToRoute('app_risk_index');
@@ -1135,13 +1148,13 @@ class RiskController extends AbstractController
 
         // Check if risk has "accept" treatment strategy
         if ($risk->getTreatmentStrategy() !== TreatmentStrategy::Accept) {
-            $this->addFlash('error', $this->translator->trans('risk.acceptance.error.wrong_strategy'));
+            $this->flashError('risk.acceptance.error.wrong_strategy');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
         // Check if already formally accepted
         if ($risk->isFormallyAccepted()) {
-            $this->addFlash('warning', $this->translator->trans('risk.acceptance.error.already_accepted'));
+            $this->flashWarning('risk.acceptance.error.already_accepted');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
@@ -1156,7 +1169,7 @@ class RiskController extends AbstractController
             $justification = $request->request->get('justification');
 
             if (empty($justification)) {
-                $this->addFlash('error', $this->translator->trans('risk.acceptance.error.justification_required'));
+                $this->flashError('risk.acceptance.error.justification_required');
             } else {
                 try {
                     $result = $this->riskAcceptanceWorkflowService->requestAcceptance(
@@ -1167,13 +1180,13 @@ class RiskController extends AbstractController
 
                     if ($result['status'] === 'accepted') {
                         // Automatic acceptance
-                        $this->addFlash('success', $this->translator->trans('risk.acceptance.success.auto_accepted'));
+                        $this->flashSuccess('risk.acceptance.success.auto_accepted');
                     } else {
                         // Pending approval
-                        $this->addFlash('success', $this->translator->trans(
+                        $this->flashSuccess(
                             'risk.acceptance.success.approval_requested',
                             ['%approver%' => $result['approver'], '%level%' => $result['approval_level']]
-                        ));
+                        );
                     }
 
                     return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
@@ -1211,7 +1224,7 @@ class RiskController extends AbstractController
 
         try {
             $result = $this->riskAcceptanceWorkflowService->approveAcceptance($risk, $user, $comments);
-            $this->addFlash('success', $this->translator->trans('risk.acceptance.success.approved'));
+            $this->flashSuccess('risk.acceptance.success.approved');
         } catch (Exception $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -1235,13 +1248,13 @@ class RiskController extends AbstractController
         $reason = $request->request->get('reason');
 
         if (empty($reason)) {
-            $this->addFlash('error', $this->translator->trans('risk.acceptance.error.reason_required'));
+            $this->flashError('risk.acceptance.error.reason_required');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
 
         try {
             $result = $this->riskAcceptanceWorkflowService->rejectAcceptance($risk, $user, $reason);
-            $this->addFlash('warning', $this->translator->trans('risk.acceptance.success.rejected'));
+            $this->flashWarning('risk.acceptance.success.rejected');
         } catch (Exception $e) {
             $this->addFlash('error', $e->getMessage());
         }

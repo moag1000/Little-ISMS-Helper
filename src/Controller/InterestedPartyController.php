@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use App\Entity\InterestedParty;
 use App\Form\InterestedPartyType;
 use App\Repository\InterestedPartyRepository;
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,12 +20,24 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InterestedPartyController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly InterestedPartyRepository $interestedPartyRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext
     ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'interested_parties';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
     #[Route('/interested-party/', name: 'app_interested_party_index')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
@@ -53,7 +66,7 @@ class InterestedPartyController extends AbstractController
             $this->entityManager->persist($interestedParty);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('interested_party.success.created'));
+            $this->flashSuccess('interested_party.success.created');
             return $this->redirectToRoute('app_interested_party_show', ['id' => $interestedParty->getId()]);
         }
 
@@ -81,7 +94,7 @@ class InterestedPartyController extends AbstractController
             $interestedParty->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('interested_party.success.updated'));
+            $this->flashSuccess('interested_party.success.updated');
             return $this->redirectToRoute('app_interested_party_show', ['id' => $interestedParty->getId()]);
         }
 
@@ -98,7 +111,7 @@ class InterestedPartyController extends AbstractController
             $this->entityManager->remove($interestedParty);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('interested_party.success.deleted'));
+            $this->flashSuccess('interested_party.success.deleted');
         }
 
         return $this->redirectToRoute('app_interested_party_index');
