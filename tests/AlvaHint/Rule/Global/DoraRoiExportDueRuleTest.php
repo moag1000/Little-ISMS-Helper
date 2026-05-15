@@ -18,7 +18,8 @@ use PHPUnit\Framework\TestCase;
  * Unit tests for DoraRoiExportDueRule.
  *
  * Covers: fires when no record exists, fires when record not submitted,
- * suppressed when record is submitted, tier-2 dismissible, module gating.
+ * suppressed when record is submitted, tier-2 dismissible, module gating,
+ * suppressed for non-DORA-obligated tenants (doraEntityCategory = 'none').
  */
 #[AllowMockObjectsWithoutExpectations]
 final class DoraRoiExportDueRuleTest extends TestCase
@@ -29,7 +30,9 @@ final class DoraRoiExportDueRuleTest extends TestCase
     protected function setUp(): void
     {
         $this->tenant = new Tenant();
-        $this->user   = new User();
+        // Satisfy the isDoraObligated() precondition: tenant must not be 'none'.
+        $this->tenant->setDoraEntityCategory(Tenant::DORA_FINANCIAL_ENTITY);
+        $this->user = new User();
     }
 
     #[Test]
@@ -71,6 +74,23 @@ final class DoraRoiExportDueRuleTest extends TestCase
 
         $rule = new DoraRoiExportDueRule($repo);
         self::assertNull($rule->evaluate($this->tenant, $this->user));
+    }
+
+    #[Test]
+    public function noHintWhenTenantNotDoraObligated(): void
+    {
+        // Tenant with doraEntityCategory = 'none' must never see DORA hints.
+        $tenant = new Tenant();
+        // default doraEntityCategory is DORA_NONE — no explicit set needed,
+        // but we set it explicitly here to make the intent clear.
+        $tenant->setDoraEntityCategory(Tenant::DORA_NONE);
+
+        $repo = $this->createMock(DoraRegisterOfInformationRepository::class);
+        // Repository must NOT be called at all when precondition fails.
+        $repo->expects(self::never())->method('findCurrentYearForTenant');
+
+        $rule = new DoraRoiExportDueRule($repo);
+        self::assertNull($rule->evaluate($tenant, $this->user), 'Non-DORA tenant must not receive a DORA RoI hint');
     }
 
     #[Test]
