@@ -270,6 +270,10 @@ alva_hint:
         title: 'DORA RoI noch nicht eingereicht'
         body: 'Der DORA Register of Information für %year% wurde noch nicht beim zuständigen Aufseher eingereicht (DORA Art. 28). Frist: 31.12.%year%.'
         action: 'DORA RoI öffnen'
+    dora_category_unset:
+        title: 'DORA-Verpflichtungsstatus nicht gesetzt — Widerspruch erkannt'
+        body: '%count% Lieferant(en)/Asset(s) sind als DORA-relevant markiert, aber der Mandant ist nicht als DORA-pflichtig eingestuft. Bitte DORA-Verpflichtungsstatus in den Mandanten-Einstellungen prüfen.'
+        action: 'Mandanten-Einstellungen öffnen'
     fte_savings_milestone:
         title: 'Meilenstein erreicht — %hours% FTE-Stunden eingespart!'
         body: 'Das System hat für diesen Mandanten bereits %minutes% Minuten (%hours% Stunden) manuellen Aufwand eingespart — durch SSO-JIT-Provisioning, Bulk-Import und Evidence-Wiederverwendung. Weiter so!'
