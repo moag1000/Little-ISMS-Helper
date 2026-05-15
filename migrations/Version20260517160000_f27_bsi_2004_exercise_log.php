@@ -34,7 +34,7 @@ final class Version20260517160000_f27_bsi_2004_exercise_log extends AbstractMigr
                 tenant_id               INT NOT NULL,
                 bc_exercise_id          INT NOT NULL,
                 exercise_type           VARCHAR(50) NOT NULL DEFAULT 'tabletop',
-                bsi_2004_template       VARCHAR(30) NOT NULL DEFAULT 'standard',
+                bsi2004_template        VARCHAR(30) NOT NULL DEFAULT 'standard',
                 participants            JSON NOT NULL,
                 scenario_summary        LONGTEXT NOT NULL,
                 objectives              JSON NOT NULL,
