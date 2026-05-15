@@ -68,6 +68,12 @@ class AuditLogger
     public const string ACTION_RISK_INCIDENT_UNLINKED                = 'risk_incident.unlinked';
     public const string ACTION_RISK_REVIEW_SUGGESTED_FROM_INCIDENT   = 'risk_incident.review_suggested';
 
+    // Library Import/Export events (Sprint 10A — F5b)
+    public const string ACTION_LIBRARY_FRAMEWORK_IMPORTED       = 'library.framework.imported';
+    public const string ACTION_LIBRARY_FRAMEWORK_EXPORTED_YAML  = 'library.framework.exported_yaml';
+    public const string ACTION_LIBRARY_FRAMEWORK_EXPORTED_CSV   = 'library.framework.exported_csv';
+    public const string ACTION_LIBRARY_MAPPING_IMPORTED         = 'library.mapping.imported';
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly RequestStack $requestStack,
