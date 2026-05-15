@@ -170,7 +170,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <small class="text-muted d-block mb-1">{{ 'eu_authorities.nis2_registration.field.incident_contact'|trans }}</small>
-                        {% if profile.incidentReportingContact is defined %}
+                        {% if profile.incidentReportingContact is not null %}
                             <strong>{{ profile.incidentReportingContact.fullName }}</strong>
                             <br><small class="text-muted">{{ profile.incidentReportingContact.email }}</small>
                         {% else %}
@@ -179,7 +179,7 @@
                     </div>
                     <div class="col-md-4">
                         <small class="text-muted d-block mb-1">{{ 'eu_authorities.nis2_registration.field.security_contact'|trans }}</small>
-                        {% if profile.securityResponsibleContact is defined %}
+                        {% if profile.securityResponsibleContact is not null %}
                             <strong>{{ profile.securityResponsibleContact.fullName }}</strong>
                             <br><small class="text-muted">{{ profile.securityResponsibleContact.email }}</small>
                         {% else %}
