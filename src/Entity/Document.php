@@ -293,6 +293,27 @@ class Document
     #[ORM\Column(name: 'requires_acknowledgement', type: Types::BOOLEAN, options: ['default' => false])]
     private bool $requiresAcknowledgement = false;
 
+    /**
+     * Sprint-2 P-7 Wave-2 — explicit acknowledgement audience (ISO 27001 A.6.3).
+     *
+     * When `requiresAcknowledgement = true` and this collection is empty,
+     * {@see App\EventListener\AutoReactionAcknowledgementCampaignListener}
+     * defaults to fan-out across ALL active tenant users (legacy behaviour).
+     * When this collection is non-empty, the campaign listener should
+     * restrict the fan-out to listed users (smaller targeted audience).
+     *
+     * Owning side; no inverse on User (users are referenced from many
+     * sides — adding inverse collections per usage would explode the
+     * entity surface).
+     *
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'document_acknowledgement_audience')]
+    #[ORM\JoinColumn(name: 'document_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $acknowledgementAudience;
+
     // ── F4 Evidence-Versioning fields ─────────────────────────────────────────
 
     /**
@@ -326,6 +347,7 @@ class Document
     {
         $this->uploadedAt = new DateTimeImmutable();
         $this->versions = new ArrayCollection();
+        $this->acknowledgementAudience = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -631,6 +653,30 @@ class Document
     public function setRequiresAcknowledgement(bool $requiresAcknowledgement): static
     {
         $this->requiresAcknowledgement = $requiresAcknowledgement;
+        return $this;
+    }
+
+    /**
+     * Sprint-2 P-7 Wave-2 — explicit acknowledgement audience.
+     *
+     * @return Collection<int, User>
+     */
+    public function getAcknowledgementAudience(): Collection
+    {
+        return $this->acknowledgementAudience;
+    }
+
+    public function addAcknowledgementAudience(User $user): static
+    {
+        if (!$this->acknowledgementAudience->contains($user)) {
+            $this->acknowledgementAudience->add($user);
+        }
+        return $this;
+    }
+
+    public function removeAcknowledgementAudience(User $user): static
+    {
+        $this->acknowledgementAudience->removeElement($user);
         return $this;
     }
 

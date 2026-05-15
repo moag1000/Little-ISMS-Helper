@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'alva' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'processing_activity.avv_required.picker_title'|trans({}, 'alva') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.processing_activities'|trans({}, 'nav'), url: path('app_processing_activity_index') },
+            { label: (processing_activity.name ?? ('#' ~ processing_activity.id)), url: path('app_processing_activity_show', {id: processing_activity.id}) },
+            { label: 'processing_activity.avv_required.picker_breadcrumb'|trans({}, 'alva') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        title: 'processing_activity.avv_required.picker_title'|trans({}, 'alva'),
+        subtitle: 'processing_activity.avv_required.picker_subtitle'|trans({}, 'alva'),
+        actions: [
+            { label: 'action.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_processing_activity_show', {id: processing_activity.id}) }
+        ]
+    }) }}
+
+    <form method="post" action="{{ path('app_processing_activity_avv_picker', {id: processing_activity.id}) }}">
+        <section class="fa-section">
+            <header class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'processing_activity.avv_required.picker_section_title'|trans({}, 'alva') }}</h2>
+            </header>
+            <div class="fa-section__body">
+                {% if candidates is empty %}
+                    <p class="text-muted">{{ 'processing_activity.avv_required.no_candidates'|trans({}, 'alva') }}</p>
+                    <a class="fa-cyber-btn fa-cyber-btn--primary" href="{{ path('app_supplier_new') }}">
+                        {{ 'processing_activity.avv_required.create_supplier'|trans({}, 'alva') }}
+                    </a>
+                {% else %}
+                    <div class="d-flex flex-column gap-2">
+                    {% for supplier in candidates %}
+                        <label class="d-flex align-items-start gap-2">
+                            <input type="checkbox" name="supplier_ids[]" value="{{ supplier.id }}"
+                                   {% if already_selected is defined and supplier in already_selected %}checked{% endif %}>
+                            <span>
+                                <strong>{{ supplier.name }}</strong>
+                                {% if supplier.criticality is defined and supplier.criticality %}
+                                    <span class="badge bg-secondary ms-2">{{ supplier.criticality }}</span>
+                                {% endif %}
+                                {% if supplier.description %}
+                                    <br><small class="text-muted">{{ supplier.description|u.truncate(120, '…') }}</small>
+                                {% endif %}
+                            </span>
+                        </label>
+                    {% endfor %}
+                    </div>
+                    <div class="mt-3">
+                        <button class="fa-cyber-btn fa-cyber-btn--primary" type="submit">
+                            {{ 'processing_activity.avv_required.save'|trans({}, 'alva') }}
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </form>
+</div>
+{% endblock %}

@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\Vulnerability;
 use App\Repository\RiskRepository;
+use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -34,6 +35,8 @@ class RiskControllerLinkMatrixTest extends WebTestCase
     {
         $this->client = static::createClient();
         $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        // S2 P-6 module-gating: linkedVulnerability field is gated under vulnerability_intel
+        static::getContainer()->get(ModuleConfigurationService::class)->activateModule('vulnerability_intel');
         $this->createFixtures();
     }
 

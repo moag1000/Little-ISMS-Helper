@@ -8,8 +8,10 @@ use RuntimeException;
 use DateTime;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\DataBreach;
+use App\Entity\Incident;
 use App\Form\DataBreachType;
 use App\Repository\CommentRepository;
+use App\Repository\IncidentRepository;
 use App\Service\DataBreachService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
@@ -34,6 +36,7 @@ class DataBreachController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly ModuleConfigurationService $moduleService,
         private readonly ?CommentRepository $commentRepository = null,
+        private readonly ?IncidentRepository $incidentRepository = null,
     ) {
     }
 
@@ -96,7 +99,12 @@ class DataBreachController extends AbstractController
 
     /**
      * Create new data breach
-     * Supports both standalone breaches and incident-linked breaches
+     * Supports both standalone breaches and incident-linked breaches.
+     *
+     * Sprint-2 Foundation P-7: accepts `?from_incident=ID` to hydrate the
+     * skeleton from the source Incident (data-reuse for GDPR Art. 33 72h
+     * follow-up). Tenant-scoped lookup, silently falls back to a blank
+     * breach if the id is missing or mismatched.
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_AUDITOR')]
@@ -106,6 +114,33 @@ class DataBreachController extends AbstractController
 
         // Create a new breach with tenant and reference number pre-set
         $breach = $this->dataBreachService->prepareNewBreach();
+
+        // Sprint-2 P-7 — pre-fill from linked Incident (GDPR Art. 33 trigger)
+        $fromIncidentId = $request->query->getInt('from_incident', 0);
+        if ($fromIncidentId > 0 && $this->incidentRepository !== null) {
+            $incident = $this->incidentRepository->find($fromIncidentId);
+            $currentTenant = $this->tenantContext->getCurrentTenant();
+            if ($incident instanceof Incident
+                && $currentTenant !== null
+                && $incident->getTenant()?->getId() === $currentTenant->getId()
+            ) {
+                $breach->setIncident($incident);
+                if ($incident->getTitle() !== null) {
+                    $breach->setTitle(sprintf('Data Breach: %s', $incident->getTitle()));
+                }
+                if ($incident->getDescription() !== null
+                    && method_exists($breach, 'setDescription')
+                ) {
+                    $breach->setDescription($incident->getDescription());
+                }
+                if ($incident->getDetectedAt() !== null) {
+                    $breach->setDetectedAt($incident->getDetectedAt());
+                }
+                if ($incident->getSeverity() !== null) {
+                    $breach->setSeverity($incident->getSeverity()->value);
+                }
+            }
+        }
 
         $form = $this->createForm(DataBreachType::class, $breach, [
             'tenant' => $this->tenantContext->getCurrentTenant(),

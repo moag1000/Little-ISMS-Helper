@@ -3,13 +3,6 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'risk' %}
 
-{#
-    TODO: SOLUTIONS_P0 P0-11 — re-populate sections when RiskType is extended:
-      * inherent_risk: re-add 'likelihoodJustification', 'impactJustification'
-      * acceptance:    re-add 'decisionApprovedByUser', 'decisionApprovalDate', 'decisionRationale'
-    Translation keys + col_widths intentionally kept as forward-compat anchors.
-#}
-
 {% block title %}{{ 'risk.new'|trans({}, 'risk')}} - {{ parent() }}{% endblock %}
 
 {% block body %}
@@ -34,34 +27,42 @@
     {% block card_body %}
         {{ form_start(form) }}
 
-        {% include '_components/_auto_form.html.twig' with {
-            'form': form,
-            'sections': {
-                'basic_info': {
-                    'label': 'risk.section.basic_info'|trans({}, 'risk'),
-                    'fields': ['title', 'asset', 'description', 'threat', 'vulnerability', 'category', 'person', 'location', 'supplier']
-                },
+        {# Build sections map dynamically — GDPR section only when 'privacy' module is active (T31/S2-P6). #}
+        {% set form_sections = {
+            'basic_info': {
+                'label': 'risk.section.basic_info'|trans({}, 'risk'),
+                'fields': ['title', 'asset', 'description', 'threat', 'vulnerability', 'category', 'person', 'location', 'supplier']
+            }
+        } %}
+        {% if is_module_active('privacy') %}
+            {% set form_sections = form_sections|merge({
                 'gdpr_assessment': {
                     'label': 'risk.section.gdpr_assessment'|trans({}, 'risk'),
                     'fields': ['involvesPersonalData', 'involvesSpecialCategoryData', 'legalBasis', 'processingScale', 'requiresDPIA', 'dataSubjectImpact']
-                },
-                'inherent_risk': {
-                    'label': 'risk.section.inherent_risk'|trans({}, 'risk'),
-                    'fields': ['probability', 'impact']
-                },
-                'residual_risk': {
-                    'label': 'risk.section.residual_risk'|trans({}, 'risk'),
-                    'fields': ['residualProbability', 'residualImpact']
-                },
-                'treatment': {
-                    'label': 'risk.section.treatment'|trans({}, 'risk') ~ '<a href="' ~ path('app_help_glossary') ~ '#glossary-treatment-strategy" class="text-muted ms-1" title="' ~ 'common.glossary_link'|trans({}, 'messages') ~ '" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i></a>',
-                    'fields': ['treatmentStrategy', 'riskOwner', 'riskOwnerPerson', 'riskOwnerDeputyPersons', 'treatmentDescription']
-                },
-                'acceptance': {
-                    'label': 'risk.section.acceptance'|trans({}, 'risk'),
-                    'fields': ['acceptanceApprovedByUser', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
                 }
+            }) %}
+        {% endif %}
+        {% set form_sections = form_sections|merge({
+            'inherent_risk': {
+                'label': 'risk.section.inherent_risk'|trans({}, 'risk'),
+                'fields': ['probability', 'impact']
             },
+            'residual_risk': {
+                'label': 'risk.section.residual_risk'|trans({}, 'risk'),
+                'fields': ['residualProbability', 'residualImpact']
+            },
+            'treatment': {
+                'label': 'risk.section.treatment'|trans({}, 'risk') ~ '<a href="' ~ path('app_help_glossary') ~ '#glossary-treatment-strategy" class="text-muted ms-1" title="' ~ 'common.glossary_link'|trans({}, 'messages') ~ '" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i></a>',
+                'fields': ['treatmentStrategy', 'riskOwner', 'riskOwnerPerson', 'riskOwnerDeputyPersons', 'treatmentDescription']
+            },
+            'acceptance': {
+                'label': 'risk.section.acceptance'|trans({}, 'risk'),
+                'fields': ['acceptanceApprovedByUser', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
+            }
+        }) %}
+        {% include '_components/_auto_form.html.twig' with {
+            'form': form,
+            'sections': form_sections,
             'col_widths': {
                 'title': 6,
                 'asset': 6,

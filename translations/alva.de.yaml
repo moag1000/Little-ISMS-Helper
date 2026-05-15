@@ -28,6 +28,18 @@ processing_activity:
         title: 'DPIA erforderlich (Art. 35 DSGVO)'
         body: 'Verarbeitung deutet auf Pflicht-DPIA: automatisierte Entscheidungsfindung, besondere Kategorien im großen Umfang oder selbstklassifiziert als hohes Risiko. Bisher keine DPIA dokumentiert.'
         action: 'DPIA anlegen'
+    avv_required:
+        title: 'AVV-Lieferant fehlt — DSGVO Art. 28'
+        body: 'Diese Verarbeitungstätigkeit bezieht Auftragsverarbeiter ein, aber kein strukturierter Lieferanten-FK ist gesetzt. DSGVO Art. 28 fordert einen schriftlichen AVV mit benanntem Auftragsverarbeiter. Bitte den Lieferanten aus dem Lieferantenregister auswählen.'
+        action: 'Auftragsverarbeiter auswählen'
+        picker_title: 'Auftragsverarbeiter auswählen (DSGVO Art. 28)'
+        picker_subtitle: 'Wähle die Lieferanten aus dem Lieferantenregister, die als Auftragsverarbeiter für diese Verarbeitungstätigkeit fungieren.'
+        picker_breadcrumb: 'AVV-Auswahl'
+        picker_section_title: 'Verfügbare Lieferanten'
+        no_candidates: 'Es sind noch keine Lieferanten in diesem Mandanten erfasst. Bitte zunächst einen Lieferanten anlegen.'
+        create_supplier: 'Lieferant anlegen'
+        save: 'Auswahl speichern'
+        flash_saved: 'AVV-Lieferanten gespeichert.'
 
 vulnerability:
     critical_unpatched:
@@ -91,11 +103,47 @@ crisis_team:
         body_never: 'Bisher kein Training dokumentiert. BSI 200-4 Kap. 4.2 / ISO 22301 Cl. 7.2 fordern regelmäßige Übungen.'
         action: 'Tabletop-Übung planen'
 
+document:
+    acknowledgement_audience:
+        title: 'Wer muss diese Dokumenten-Kenntnisnahme bestätigen?'
+        body: 'Dieses Dokument fordert eine Mitarbeiter-Bestätigung (ISO 27001 A.6.3), aber keine explizite Audience ist hinterlegt. Standardmäßig wird an alle aktiven Mandanten-Nutzer gestreut — eine gezielte Audience macht die Awareness-Evidenz Audit-fit.'
+        action: 'Audience festlegen'
+        picker_title: 'Acknowledgement-Audience festlegen'
+        picker_subtitle: 'Wähle die Mitarbeitenden, die dieses Dokument bestätigen müssen. Bei leerer Auswahl wird wie bisher an alle aktiven Nutzer gestreut.'
+        picker_breadcrumb: 'Audience festlegen'
+        picker_section_title: 'Verfügbare Nutzer im Mandanten'
+        no_candidates: 'Keine aktiven Nutzer in diesem Mandanten gefunden.'
+        filter_placeholder: 'Nach E-Mail oder Name suchen…'
+        save: 'Audience speichern'
+        empty_means_all: 'Hinweis: leere Auswahl behält das Standard-Verhalten "alle aktiven Mandanten-Nutzer".'
+        flash_saved: 'Acknowledgement-Audience gespeichert.'
+        flash_not_required: 'Dokument fordert keine Bestätigung — Audience-Picker übersprungen.'
+
+training:
+    mandatory_audience:
+        title: 'Pflichttraining ohne Teilnehmer-Liste'
+        body: 'Dieses Training ist als Pflicht markiert (ISO 27001 A.6.3 Awareness), aber bisher sind keine Pflichtteilnehmer ausgewählt. Damit der Awareness-Nachweis im Audit greift, sollte die Audience explizit zugewiesen werden.'
+        action: 'Pflichtteilnehmer auswählen'
+        picker_title: 'Pflichtteilnehmer auswählen'
+        picker_subtitle: 'Wähle die Mitarbeitenden, die dieses Pflichttraining absolvieren müssen. Schon zugewiesene Personen sind grau hinterlegt.'
+        picker_breadcrumb: 'Audience-Auswahl'
+        picker_section_title: 'Verfügbare Nutzer im Mandanten'
+        no_candidates: 'Keine aktiven Nutzer in diesem Mandanten gefunden.'
+        filter_placeholder: 'Nach E-Mail oder Name suchen…'
+        already_assigned: 'Bereits zugewiesen'
+        save: 'Audience speichern'
+        flash_saved: '%count% neue Pflichtteilnehmer zugewiesen.'
+        flash_not_mandatory: 'Training ist nicht als Pflicht markiert — Audience-Picker übersprungen.'
+
 risk:
     no_treatment:
         title: 'Hohes Risiko ohne Treatment-Plan'
         body: 'Inherentes Risiko-Niveau %level% — ISO 27001 Cl. 6.1.3 fordert dokumentierte Behandlungsentscheidung.'
         action: 'Treatment-Plan anlegen'
+    requires_dpia:
+        title: 'DSFA-Pflicht erkannt — Datenschutz-Folgenabschätzung fehlt'
+        body: 'Risiko ist als DSFA-pflichtig markiert (DSGVO Art. 35), aber bisher keine DSFA verlinkt. Vorbefüllung aus Risiko-Daten verfügbar — Beschreibung, verknüpftes Asset und Betroffenen-Auswirkungen werden übernommen.'
+        action: 'DSFA mit Vorbefüllung anlegen'
 
 control:
     orphan:
@@ -114,6 +162,10 @@ incident:
         title: 'Vorfall ohne Risk-Treatment-Plan'
         body: 'Hochkritischer Vorfall mit betroffenem hochsensiblen Asset, aber kein Treatment-Plan dokumentiert. ISO 27001 A.5.27 — Lessons Learned.'
         action: 'Treatment-Plan anlegen'
+    requires_data_breach:
+        title: 'DSGVO Art. 33 — Datenpanne dokumentieren (72h-Frist)'
+        body: 'Dieser Vorfall ist als Datenpanne markiert, aber es liegt noch keine verknüpfte Datenpanne-Akte vor. DSGVO Art. 33 verlangt Meldung an die Aufsichtsbehörde binnen 72h nach Kenntnisnahme. Versäumte Frist = Bußgeld bis 10 Mio. € / 2 % Konzernumsatz (Art. 83 Abs. 4 lit. a).'
+        action: 'Datenpanne mit Vorbefüllung anlegen'
 
 policy_wizard:
     settings_drift:

@@ -14,6 +14,8 @@ use App\Entity\User;
 use App\Entity\Vulnerability;
 use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
+use App\Form\Trait\ModuleAwareFormTrait;
+use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -30,6 +32,13 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class RiskType extends AbstractType
 {
+    use ModuleAwareFormTrait;
+
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -56,58 +65,6 @@ class RiskType extends AbstractType
                 'help' => 'risk.help.category',
                                     'choice_translation_domain' => 'risk',
             ])
-            // DSGVO Risk Assessment Extension (Priority 2.2)
-            ->add('involvesPersonalData', CheckboxType::class, [
-                'label' => 'risk.field.involves_personal_data',
-                'required' => false,
-                'help' => 'risk.help.involves_personal_data',
-            ])
-            ->add('involvesSpecialCategoryData', CheckboxType::class, [
-                'label' => 'risk.field.involves_special_category_data',
-                'required' => false,
-                'help' => 'risk.help.involves_special_category_data',
-            ])
-            ->add('legalBasis', ChoiceType::class, [
-                'label' => 'risk.field.legal_basis',
-                'choices' => [
-                    'risk.legal_basis.consent' => 'consent',
-                    'risk.legal_basis.contract' => 'contract',
-                    'risk.legal_basis.legal_obligation' => 'legal_obligation',
-                    'risk.legal_basis.vital_interests' => 'vital_interests',
-                    'risk.legal_basis.public_task' => 'public_task',
-                    'risk.legal_basis.legitimate_interests' => 'legitimate_interests',
-                ],
-                'placeholder' => 'risk.placeholder.legal_basis',
-                'required' => false,
-                'help' => 'risk.help.legal_basis',
-                                    'choice_translation_domain' => 'risk',
-            ])
-            ->add('processingScale', ChoiceType::class, [
-                'label' => 'risk.field.processing_scale',
-                'choices' => [
-                    'risk.processing_scale.small' => 'small',
-                    'risk.processing_scale.medium' => 'medium',
-                    'risk.processing_scale.large_scale' => 'large_scale',
-                ],
-                'placeholder' => 'risk.placeholder.processing_scale',
-                'required' => false,
-                'help' => 'risk.help.processing_scale',
-                                    'choice_translation_domain' => 'risk',
-            ])
-            ->add('requiresDPIA', CheckboxType::class, [
-                'label' => 'risk.field.requires_dpia',
-                'required' => false,
-                'help' => 'risk.help.requires_dpia',
-            ])
-            ->add('dataSubjectImpact', TextareaType::class, [
-                'label' => 'risk.field.data_subject_impact',
-                'required' => false,
-                'attr' => [
-                    'rows' => 3,
-                    'placeholder' => 'risk.placeholder.data_subject_impact',
-                ],
-                'help' => 'risk.help.data_subject_impact',
-            ])
             ->add('description', TextareaType::class, [
                 'label' => 'risk.field.description',
                 'required' => true,
@@ -126,14 +83,6 @@ class RiskType extends AbstractType
                 ],
                 'help' => 'risk.help.threat',
             ])
-            ->add('threatIntelligence', EntityType::class, [
-                'label' => 'risk.field.threat_intelligence',
-                'class' => ThreatIntelligence::class,
-                'choice_label' => fn(ThreatIntelligence $t): string => (string) ($t->getTitle() ?? ''),
-                'required' => false,
-                'placeholder' => 'risk.placeholder.threat_intelligence',
-                'help' => 'risk.help.threat_intelligence',
-            ])
             ->add('vulnerability', TextareaType::class, [
                 'label' => 'risk.field.vulnerability',
                 'required' => false,
@@ -142,14 +91,6 @@ class RiskType extends AbstractType
                     'placeholder' => 'risk.placeholder.vulnerability',
                 ],
                 'help' => 'risk.help.vulnerability',
-            ])
-            ->add('linkedVulnerability', EntityType::class, [
-                'label' => 'risk.field.linked_vulnerability',
-                'class' => Vulnerability::class,
-                'choice_label' => fn(Vulnerability $v): string => ($v->getCveId() ?? '') . ' — ' . ($v->getTitle() ?? ''),
-                'required' => false,
-                'placeholder' => 'risk.placeholder.linked_vulnerability',
-                'help' => 'risk.help.linked_vulnerability',
             ])
             // Risk Subject - At least one must be selected (Asset, Person, Location, or Supplier)
             ->add('asset', EntityType::class, [
@@ -319,6 +260,107 @@ class RiskType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
                 'help' => 'risk.help.review_date',
+            ])
+        ;
+
+        // ── DSGVO/GDPR Risk Assessment Extension — only when 'privacy' module active.
+        // DSGVO Art. 24 + Art. 32 + Art. 35 — risk-of-rights-and-freedoms-of-natural-persons
+        // assessment. Without privacy-module these fields would be noise.
+        if ($this->isModuleActive('privacy')) {
+            $this->addGdprFields($builder);
+        }
+
+        // ── Vulnerability & Threat-Intel cross-link — only when 'vulnerability_intel'
+        // module is active. CVE/CVSS pivoting + threat-intel correlation is a
+        // niche capability (NIS2 Art. 21.2(e) + DORA Art. 22 use-case).
+        if ($this->isModuleActive('vulnerability_intel')) {
+            $this->addVulnerabilityIntelFields($builder);
+        }
+    }
+
+    /**
+     * DSGVO Art. 35 (DPIA) / Art. 32 (Risk-of-Processing) fields.
+     * Only added when 'privacy' module is active.
+     */
+    private function addGdprFields(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('involvesPersonalData', CheckboxType::class, [
+                'label' => 'risk.field.involves_personal_data',
+                'required' => false,
+                'help' => 'risk.help.involves_personal_data',
+            ])
+            ->add('involvesSpecialCategoryData', CheckboxType::class, [
+                'label' => 'risk.field.involves_special_category_data',
+                'required' => false,
+                'help' => 'risk.help.involves_special_category_data',
+            ])
+            ->add('legalBasis', ChoiceType::class, [
+                'label' => 'risk.field.legal_basis',
+                'choices' => [
+                    'risk.legal_basis.consent' => 'consent',
+                    'risk.legal_basis.contract' => 'contract',
+                    'risk.legal_basis.legal_obligation' => 'legal_obligation',
+                    'risk.legal_basis.vital_interests' => 'vital_interests',
+                    'risk.legal_basis.public_task' => 'public_task',
+                    'risk.legal_basis.legitimate_interests' => 'legitimate_interests',
+                ],
+                'placeholder' => 'risk.placeholder.legal_basis',
+                'required' => false,
+                'help' => 'risk.help.legal_basis',
+                'choice_translation_domain' => 'risk',
+            ])
+            ->add('processingScale', ChoiceType::class, [
+                'label' => 'risk.field.processing_scale',
+                'choices' => [
+                    'risk.processing_scale.small' => 'small',
+                    'risk.processing_scale.medium' => 'medium',
+                    'risk.processing_scale.large_scale' => 'large_scale',
+                ],
+                'placeholder' => 'risk.placeholder.processing_scale',
+                'required' => false,
+                'help' => 'risk.help.processing_scale',
+                'choice_translation_domain' => 'risk',
+            ])
+            ->add('requiresDPIA', CheckboxType::class, [
+                'label' => 'risk.field.requires_dpia',
+                'required' => false,
+                'help' => 'risk.help.requires_dpia',
+            ])
+            ->add('dataSubjectImpact', TextareaType::class, [
+                'label' => 'risk.field.data_subject_impact',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'risk.placeholder.data_subject_impact',
+                ],
+                'help' => 'risk.help.data_subject_impact',
+            ])
+        ;
+    }
+
+    /**
+     * CVE/CVSS Vulnerability + MITRE/STIX Threat-Intelligence cross-links.
+     * Only added when 'vulnerability_intel' module is active.
+     */
+    private function addVulnerabilityIntelFields(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('threatIntelligence', EntityType::class, [
+                'label' => 'risk.field.threat_intelligence',
+                'class' => ThreatIntelligence::class,
+                'choice_label' => fn(ThreatIntelligence $t): string => (string) ($t->getTitle() ?? ''),
+                'required' => false,
+                'placeholder' => 'risk.placeholder.threat_intelligence',
+                'help' => 'risk.help.threat_intelligence',
+            ])
+            ->add('linkedVulnerability', EntityType::class, [
+                'label' => 'risk.field.linked_vulnerability',
+                'class' => Vulnerability::class,
+                'choice_label' => fn(Vulnerability $v): string => ($v->getCveId() ?? '') . ' — ' . ($v->getTitle() ?? ''),
+                'required' => false,
+                'placeholder' => 'risk.placeholder.linked_vulnerability',
+                'help' => 'risk.help.linked_vulnerability',
             ])
         ;
     }

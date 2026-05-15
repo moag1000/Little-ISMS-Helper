@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Document;
+use App\Form\Trait\ModuleAwareFormTrait;
 use App\Repository\SystemSettingsRepository;
+use App\Service\ModuleConfigurationService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -21,8 +23,11 @@ use Symfony\Component\Validator\Constraints\File;
 
 class DocumentType extends AbstractType
 {
+    use ModuleAwareFormTrait;
+
     public function __construct(
         private readonly SystemSettingsRepository $systemSettingsRepository,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
     }
 
@@ -74,20 +79,6 @@ class DocumentType extends AbstractType
                 'required' => true,
                     'choice_translation_domain' => 'document',
             ])
-            ->add('tisaxInformationClassification', ChoiceType::class, [
-                'label' => 'document.field.data_classification',
-                'required' => false,
-                'placeholder' => 'document.placeholder.data_classification',
-                'data' => $classificationDefault,
-                'choices' => [
-                    'document.classification.public' => 'public',
-                    'document.classification.internal' => 'internal',
-                    'document.classification.confidential' => 'confidential',
-                    'document.classification.strictly_confidential' => 'strictly_confidential',
-                ],
-                'choice_translation_domain' => 'document',
-                'help' => 'document.help.data_classification',
-            ])
             ->add('status', ChoiceType::class, [
                 'label' => 'document.field.status',
                 'help' => 'document.help.status',
@@ -134,6 +125,15 @@ class DocumentType extends AbstractType
             // Phase 9.P2.1 — holding policy inheritance flags. Only
             // meaningful on a holding tenant; standalone tenants can
             // leave both at default.
+            //
+            // TODO(S2-P6 module-key): no dedicated 'holding' module exists in
+            // config/modules.yaml today — the Holding-CISO concept is wired
+            // through tenant.parentTenantId + ROLE_GROUP_CISO rather than a
+            // feature-module toggle. Once a 'holding' module is registered
+            // (S2-A scope), wrap these two fields in
+            // $this->isModuleActive('holding') alongside tisaxInformationClassification
+            // below. Until then they stay visible on every tenant — harmless
+            // because standalone tenants just leave the defaults.
             ->add('inheritable', CheckboxType::class, [
                 'label' => 'document.field.inheritable',
                 'help' => 'document.help.inheritable',
@@ -174,6 +174,28 @@ class DocumentType extends AbstractType
                 'help' => 'document.help.file',
             ])
         ;
+
+        // ── TISAX VDA-ISA 6.0 information classification — only when 'tisax'
+        // module is active (T31/S2-P6). The TISAX label vocabulary (public /
+        // internal / confidential / strictly_confidential) on documents is
+        // automotive-supplier specific. Non-TISAX tenants keep documents
+        // unclassified or use the generic category field.
+        if ($this->isModuleActive('tisax')) {
+            $builder->add('tisaxInformationClassification', ChoiceType::class, [
+                'label' => 'document.field.data_classification',
+                'required' => false,
+                'placeholder' => 'document.placeholder.data_classification',
+                'data' => $classificationDefault,
+                'choices' => [
+                    'document.classification.public' => 'public',
+                    'document.classification.internal' => 'internal',
+                    'document.classification.confidential' => 'confidential',
+                    'document.classification.strictly_confidential' => 'strictly_confidential',
+                ],
+                'choice_translation_domain' => 'document',
+                'help' => 'document.help.data_classification',
+            ]);
+        }
 
         // Editable policy body — only for wizard-generated documents.
         // The field is added conditionally via PRE_SET_DATA so it

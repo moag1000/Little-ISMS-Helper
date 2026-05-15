@@ -8,6 +8,16 @@ incident:
   prefill:
     title_from_risk: 'Vorfall zu Risiko: %title%'
     note_from_risk: '(Diese Erfassung wurde aus Risiko ID=%id% abgeleitet.)'
+  deadline:
+    gdpr_art33: 'DSGVO Art. 33 SLA'
+  deadline_counter:
+    remaining: '%hours%h verbleibend'
+    overdue: '%hours%h überfällig'
+  follow_up:
+    data_breach_required:
+      title: 'DSGVO Art. 33 — Datenpanne melden (72h-Frist)'
+      body: 'Diese Maßnahme erstellt eine vorbefüllte Datenpanne basierend auf dem Vorfall. Frist: 72h ab Detection.'
+      cta: 'Datenpanne jetzt anlegen'
   preview:
     title: Vorfalls-Informationen
     affected_assets: Betroffene Assets (%count%)

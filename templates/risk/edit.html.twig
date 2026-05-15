@@ -28,34 +28,42 @@
     {% block card_body %}
         {{ form_start(form) }}
 
-        {% include '_components/_auto_form.html.twig' with {
-            'form': form,
-            'sections': {
-                'basic_info': {
-                    'label': 'risk.section.basic_info'|trans({}, 'risk'),
-                    'fields': ['title', 'asset', 'description', 'threat', 'vulnerability', 'category', 'person', 'location', 'supplier']
-                },
+        {# Build sections map dynamically — GDPR section only when 'privacy' module is active (T31/S2-P6). #}
+        {% set form_sections = {
+            'basic_info': {
+                'label': 'risk.section.basic_info'|trans({}, 'risk'),
+                'fields': ['title', 'asset', 'description', 'threat', 'vulnerability', 'category', 'person', 'location', 'supplier']
+            }
+        } %}
+        {% if is_module_active('privacy') %}
+            {% set form_sections = form_sections|merge({
                 'gdpr_assessment': {
                     'label': 'risk.section.gdpr_assessment'|trans({}, 'risk'),
                     'fields': ['involvesPersonalData', 'involvesSpecialCategoryData', 'legalBasis', 'processingScale', 'requiresDPIA', 'dataSubjectImpact']
-                },
-                'inherent_risk': {
-                    'label': 'risk.section.inherent_risk'|trans({}, 'risk'),
-                    'fields': ['probability', 'likelihoodJustification', 'impact', 'impactJustification']
-                },
-                'residual_risk': {
-                    'label': 'risk.section.residual_risk'|trans({}, 'risk'),
-                    'fields': ['residualProbability', 'residualImpact']
-                },
-                'treatment': {
-                    'label': 'risk.section.treatment'|trans({}, 'risk'),
-                    'fields': ['treatmentStrategy', 'riskOwner', 'riskOwnerPerson', 'riskOwnerDeputyPersons', 'treatmentDescription']
-                },
-                'acceptance': {
-                    'label': 'risk.section.acceptance'|trans({}, 'risk'),
-                    'fields': ['decisionApprovedByUser', 'decisionApprovalDate', 'decisionRationale', 'acceptanceApprovedByUser', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
                 }
+            }) %}
+        {% endif %}
+        {% set form_sections = form_sections|merge({
+            'inherent_risk': {
+                'label': 'risk.section.inherent_risk'|trans({}, 'risk'),
+                'fields': ['probability', 'impact']
             },
+            'residual_risk': {
+                'label': 'risk.section.residual_risk'|trans({}, 'risk'),
+                'fields': ['residualProbability', 'residualImpact']
+            },
+            'treatment': {
+                'label': 'risk.section.treatment'|trans({}, 'risk'),
+                'fields': ['treatmentStrategy', 'riskOwner', 'riskOwnerPerson', 'riskOwnerDeputyPersons', 'treatmentDescription']
+            },
+            'acceptance': {
+                'label': 'risk.section.acceptance'|trans({}, 'risk'),
+                'fields': ['acceptanceApprovedByUser', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
+            }
+        }) %}
+        {% include '_components/_auto_form.html.twig' with {
+            'form': form,
+            'sections': form_sections,
             'col_widths': {
                 'title': 6,
                 'asset': 6,
@@ -73,9 +81,7 @@
                 'requiresDPIA': 6,
                 'dataSubjectImpact': 12,
                 'probability': 6,
-                'likelihoodJustification': 6,
                 'impact': 6,
-                'impactJustification': 6,
                 'residualProbability': 6,
                 'residualImpact': 6,
                 'treatmentStrategy': 6,
@@ -83,9 +89,6 @@
                 'riskOwnerPerson': 6,
                 'riskOwnerDeputyPersons': 12,
                 'treatmentDescription': 12,
-                'decisionApprovedByUser': 6,
-                'decisionApprovalDate': 6,
-                'decisionRationale': 12,
                 'acceptanceApprovedByUser': 6,
                 'acceptanceApprovedAt': 6,
                 'acceptanceJustification': 12,

@@ -7,6 +7,16 @@ incident:
   prefill:
     title_from_risk: 'Incident for risk: %title%'
     note_from_risk: '(Derived from risk ID=%id%.)'
+  deadline:
+    gdpr_art33: 'GDPR Art. 33 SLA'
+  deadline_counter:
+    remaining: '%hours%h remaining'
+    overdue: '%hours%h overdue'
+  follow_up:
+    data_breach_required:
+      title: 'GDPR Art. 33 — report data breach (72h deadline)'
+      body: 'This action creates a prefilled data breach based on the incident. Deadline: 72h from detection.'
+      cta: 'Create data breach now'
   preview:
     title: Incident Information
     affected_assets: Affected Assets (%count%)

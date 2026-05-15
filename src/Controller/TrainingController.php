@@ -6,9 +6,14 @@ namespace App\Controller;
 
 use Exception;
 use App\Entity\Training;
+use App\Entity\TrainingParticipation;
+use App\Entity\User;
 use App\Form\TrainingType;
+use App\Repository\TrainingParticipationRepository;
 use App\Repository\TrainingRepository;
+use App\Repository\UserRepository;
 use App\Service\TenantContext;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -25,7 +30,9 @@ class TrainingController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly ?TrainingParticipationRepository $participationRepository = null,
+        private readonly ?UserRepository $userRepository = null,
     ) {}
     #[Route('/training/', name: 'app_training_index')]
     public function index(Request $request): Response
@@ -193,6 +200,93 @@ class TrainingController extends AbstractController
 
         return $this->redirectToRoute('app_training_index');
     }
+    /**
+     * Sprint-2 P-7 Wave-2 Trigger-3: Mandatory-Training audience picker.
+     *
+     * GET shows a User-multi-select pre-filled with the current tenant's
+     * active users (optionally filtered by department / role hint); POST
+     * persists TrainingParticipation rows (status=pending) for each
+     * selected user (ISO 27001 A.6.3 Awareness).
+     * Tenant-isolated; only Users in the same tenant as the Training are
+     * offered.
+     */
+    #[Route('/training/{id}/audience-picker', name: 'app_training_audience_picker', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function audiencePicker(Request $request, Training $training): Response
+    {
+        $tenant = $training->getTenant();
+        $currentTenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null || $tenant !== $currentTenant) {
+            throw $this->createNotFoundException();
+        }
+        if (!$training->isMandatory()) {
+            $this->addFlash('warning', $this->translator->trans('training.mandatory_audience.flash_not_mandatory', [], 'alva'));
+            return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
+        }
+
+        if ($request->isMethod('POST') && $this->participationRepository !== null && $this->userRepository !== null) {
+            $userIds = array_filter(
+                (array) $request->request->all('user_ids'),
+                static fn($id): bool => is_string($id) && ctype_digit($id),
+            );
+
+            $created = 0;
+            foreach ($userIds as $id) {
+                $u = $this->userRepository->find((int) $id);
+                if (!$u instanceof User || $u->getTenant() !== $tenant) {
+                    continue;
+                }
+                // Idempotent: skip if a participation row already exists.
+                $existing = $this->participationRepository->findOneBy([
+                    'training' => $training,
+                    'user' => $u,
+                ]);
+                if ($existing instanceof TrainingParticipation) {
+                    continue;
+                }
+                $row = new TrainingParticipation();
+                $row->setTenant($tenant);
+                $row->setTraining($training);
+                $row->setUser($u);
+                $row->setStatus(TrainingParticipation::STATUS_PENDING);
+                $row->setAssignmentSource('manual:audience_picker');
+                $this->entityManager->persist($row);
+                $created++;
+            }
+            if ($created > 0) {
+                $this->entityManager->flush();
+            }
+
+            $this->addFlash('success', $this->translator->trans(
+                'training.mandatory_audience.flash_saved',
+                ['%count%' => $created],
+                'alva',
+            ));
+
+            return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
+        }
+
+        // Tenant-scoped active users
+        $candidates = $this->userRepository !== null
+            ? $this->userRepository->findBy(['tenant' => $tenant, 'isActive' => true], ['email' => 'ASC'])
+            : [];
+        $alreadyAssignedIds = [];
+        if ($this->participationRepository !== null) {
+            foreach ($this->participationRepository->findBy(['training' => $training]) as $p) {
+                $u = $p->getUser();
+                if ($u !== null && $u->getId() !== null) {
+                    $alreadyAssignedIds[] = $u->getId();
+                }
+            }
+        }
+
+        return $this->render('training/audience_picker.html.twig', [
+            'training' => $training,
+            'candidates' => $candidates,
+            'already_assigned_ids' => $alreadyAssignedIds,
+        ]);
+    }
+
     /**
      * Calculate detailed statistics showing breakdown by origin
      */

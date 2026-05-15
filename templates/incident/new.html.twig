@@ -26,7 +26,8 @@
     ]
 }) }}
 
-            {# NIS2 Reporting Alert Banner #}
+            {# NIS2 Reporting Alert Banner — module-gated on nis2_dora (T31/S2-P6) #}
+            {% if is_module_active('nis2_dora') %}
             <div id="nis2-alert" class="fa-alert fa-alert--warning d-none mb-4" role="alert"
                  data-incident-nis2-target="alertBanner">
                 <div class="fa-alert__title">
@@ -39,6 +40,7 @@
                     <li>{{ 'incident.nis2_alert.final_report'|trans({}, 'incident') }}</li>
                 </ul>
             </div>
+            {% endif %}
 
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
@@ -198,7 +200,10 @@
                         </div>
                     </fieldset>
 
-                    {# NIS2 Reporting Section - Conditionally Displayed #}
+                    {# NIS2 Reporting Section — module-gated (T31/S2-P6) on nis2_dora.
+                       Stimulus-controller still hides the fieldset until severity / affected-users
+                       threshold trips, but the WHOLE section only renders when the module is on. #}
+                    {% if is_module_active('nis2_dora') %}
                     <fieldset id="nis2-section" class="mb-4 d-none nis2-fieldset"
                               data-incident-nis2-target="nis2Section">
                         <legend class="h5 mb-3 bg-warning-subtle text-warning nis2-legend">
@@ -277,6 +282,7 @@
                             <i class="fa-icon fa-icon--incident" aria-hidden="true"></i> {{ 'incident.nis2_toggle.show'|trans({}, 'incident') }}
                         </button>
                     </div>
+                    {% endif %}{# end is_module_active('nis2_dora') #}
 
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
