@@ -77,7 +77,10 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/"
-        }
+        },
+        "exclude-from-classmap": [
+            ".claude/worktrees/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
