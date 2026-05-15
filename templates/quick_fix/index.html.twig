@@ -134,6 +134,26 @@
                     {{ 'quick_fix.phantom_diff.button'|trans({}, 'quick_fix') }}
                 </button>
             </form>
+
+            {# Bulk recovery — collapses by default so it doesn't dominate the UI #}
+            <details style="margin-top: 24px;">
+                <summary style="cursor: pointer; color: var(--muted); font-size: 13px;">
+                    {{ 'quick_fix.phantom_diff.mark_all_show'|trans({}, 'quick_fix') }}
+                </summary>
+                <div style="margin-top: 12px;">
+                    <p style="font-size: 13px; color: var(--muted);">{{ 'quick_fix.phantom_diff.mark_all_body'|trans({}, 'quick_fix') }}</p>
+                    <form method="POST" action="{{ path('app_quick_fix_mark_all_phantom_diff') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_mark_all_phantom_diff') }}">
+                        <label style="display: flex; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 13px; cursor: pointer; padding: 8px 0;">
+                            <input type="checkbox" name="confirm_all_already_exist" value="1" required style="margin-top: 3px;">
+                            <span>{{ 'quick_fix.phantom_diff.mark_all_confirm_label'|trans({}, 'quick_fix') }}</span>
+                        </label>
+                        <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                            {{ 'quick_fix.phantom_diff.mark_all_button'|trans({}, 'quick_fix') }}
+                        </button>
+                    </form>
+                </div>
+            </details>
         {% elseif error_message %}
             <div class="icon">⚠️</div>
             <h1>{{ 'quick_fix.error.title'|trans({}, 'quick_fix') }}</h1>
