@@ -77,34 +77,62 @@ final class WelcomeStandardsStep extends AbstractStep
     {
         $errors = [];
 
-        // Industry-Preset bundle (W4-B) — apply BEFORE other validation
-        // so the bundle's preselectedStandards becomes the default for
-        // an empty `standards` submission. The applier is no-op when
-        // the user already picked their own standards.
-        $bundleKeyRaw = $input['industry_preset_bundle_key'] ?? null;
-        $bundleKey = is_string($bundleKeyRaw) ? trim($bundleKeyRaw) : null;
-        if ($bundleKey === '') {
-            $bundleKey = null;
+        // Industry-Preset bundles (W4-B multi-select) — apply BEFORE other
+        // validation so preselectedStandards become the default for an empty
+        // `standards` submission. Accepts both:
+        //   - `industry_preset_bundle_keys[]` (multi-select, canonical)
+        //   - `industry_preset_bundle_key`     (single-select, backwards-compat)
+        // Later entries in the keys array win for scalar fields (later-wins).
+        $rawMultiKeys = $input['industry_preset_bundle_keys'] ?? null;
+        if (is_array($rawMultiKeys) && $rawMultiKeys !== []) {
+            $bundleKeys = array_values(array_filter(array_map(
+                static fn ($v): string => is_string($v) ? trim($v) : '',
+                $rawMultiKeys,
+            ), static fn (string $k): bool => $k !== ''));
+        } else {
+            // Backwards-compat: single key field (old wizard-runs in DB).
+            $singleRaw = $input['industry_preset_bundle_key'] ?? null;
+            $singleKey = is_string($singleRaw) ? trim($singleRaw) : '';
+            $bundleKeys = $singleKey !== '' ? [$singleKey] : [];
         }
-        $appliedBundle = null;
-        if ($bundleKey !== null
+
+        $appliedBundles = [];
+        if ($bundleKeys !== []
             && $this->presetBundleRepository !== null
             && $this->presetBundleApplier !== null
         ) {
-            $bundle = $this->presetBundleRepository->findByKey($bundleKey);
-            if ($bundle instanceof IndustryPresetBundle && $bundle->isActive()) {
-                $this->presetBundleApplier->applyTo($run, $bundle);
-                $appliedBundle = $bundle;
+            $loadedBundles = [];
+            foreach ($bundleKeys as $bundleKey) {
+                $bundle = $this->presetBundleRepository->findByKey($bundleKey);
+                if ($bundle instanceof IndustryPresetBundle && $bundle->isActive()) {
+                    $loadedBundles[] = $bundle;
+                } else {
+                    $errors['industry_preset_bundle_keys'][] = 'policy_wizard.error.preset_bundle_unknown';
+                }
+            }
+            if ($loadedBundles !== []) {
+                $result = $this->presetBundleApplier->applyAll($run, $loadedBundles);
+                $appliedBundles = $loadedBundles;
+                // Store detected conflicts in the run's _preset_flags for
+                // later retrieval by the template conflict-notice system.
+                if ($result['conflicts'] !== []) {
+                    $bag = $run->getInputs() ?? [];
+                    $bag['_preset_flags'] = is_array($bag['_preset_flags'] ?? null) ? $bag['_preset_flags'] : [];
+                    $bag['_preset_flags']['bundle_conflicts'] = $result['conflicts'];
+                    $run->setInputs($bag);
+                }
                 // If the user did not submit any standards, inherit the
-                // bundle's preselectedStandards so validation does not
-                // bounce them with `standards_required`.
+                // union of all bundles' preselectedStandards.
                 $rawStandards = $input['standards'] ?? [];
                 if (!is_array($rawStandards) || $rawStandards === []) {
-                    $input['standards'] = $bundle->getPreselectedStandards();
+                    $bag = $run->getInputs() ?? [];
+                    $welcomeSlot = is_array($bag[WizardStepKeys::STEP_WELCOME] ?? null)
+                        ? $bag[WizardStepKeys::STEP_WELCOME]
+                        : [];
+                    $input['standards'] = is_array($welcomeSlot['standards'] ?? null)
+                        ? $welcomeSlot['standards']
+                        : [];
                 }
-            } else {
-                $errors['industry_preset_bundle_key'][] = 'policy_wizard.error.preset_bundle_unknown';
-                $bundleKey = null;
             }
         }
 
@@ -153,12 +181,20 @@ final class WelcomeStandardsStep extends AbstractStep
             }
         }
 
+        // Build canonical applied-keys list (multi-select).
+        $appliedBundleKeys = array_map(
+            static fn (IndustryPresetBundle $b): string => $b->getKey(),
+            $appliedBundles,
+        );
         $normalised = [
             'standards' => $standards,
             'mode' => $mode,
             'finding_reference' => $findingRef,
-            'industry_preset_bundle_key' => $appliedBundle instanceof IndustryPresetBundle
-                ? $appliedBundle->getKey()
+            // Multi-key (canonical, new runs).
+            'industry_preset_bundle_keys' => $appliedBundleKeys,
+            // Single-key (backwards-compat: last applied wins, or null).
+            'industry_preset_bundle_key' => $appliedBundles !== []
+                ? end($appliedBundles)->getKey()
                 : null,
         ];
 
