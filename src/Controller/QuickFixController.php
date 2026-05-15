@@ -97,13 +97,14 @@ class QuickFixController extends AbstractController
         }
 
         // Read phantom-diff recovery payload stored by apply() on failure.
-        // Cleared after first read so it does not persist across refreshes.
+        // Sticky across refreshes — cleared on successful force-mark (or
+        // when pending migrations reach zero in apply()) so the operator
+        // can refresh the page without losing the recovery affordance.
         $errorDiagnosis = null;
         $session = $request->getSession();
         if ($session->has('quick_fix.last_phantom_diff')) {
             /** @var array{version: string, message: string}|null $phantomData */
             $phantomData = $session->get('quick_fix.last_phantom_diff');
-            $session->remove('quick_fix.last_phantom_diff');
             if (is_array($phantomData) && isset($phantomData['version'])) {
                 $errorDiagnosis = [
                     'category' => 'phantom_diff_migration',
@@ -156,6 +157,10 @@ class QuickFixController extends AbstractController
         }
 
         $migrationResult = $maintenance->executePendingMigrations('quick-fix');
+
+        if ($migrationResult['success']) {
+            $request->getSession()->remove('quick_fix.last_phantom_diff');
+        }
 
         if (!$migrationResult['success']) {
             $diagnosis = $migrationResult['diagnosis'] ?? null;
@@ -333,6 +338,7 @@ class QuickFixController extends AbstractController
         $result = $maintenance->markMigrationAsExecuted($version);
 
         if ($result['success']) {
+            $request->getSession()->remove('quick_fix.last_phantom_diff');
             $auditLogger->logCustom(
                 'quick_fix.force_mark_migration_executed',
                 'Migration',
