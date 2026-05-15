@@ -43,6 +43,11 @@
                             <small class="text-muted ms-2">{{ doc.uploadedAt|date('d.m.Y') }}</small>
                         </div>
                         <div class="d-flex gap-1">
+                            <a href="{{ path('app_document_show', {id: doc.id}) }}"
+                               class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                               title="{{ 'common.preview'|trans({}, 'messages') }}">
+                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                            </a>
                             <a href="{{ path('app_document_download', {id: doc.id}) }}"
                                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                data-turbo="false"
