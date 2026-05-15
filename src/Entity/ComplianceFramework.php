@@ -337,8 +337,9 @@ class ComplianceFramework
      * 'fulfilled' or 'compliant'. This avoids extra DB queries — the framework
      * index controller eager-loads requirements via LEFT JOIN.
      *
-     * TODO: replace with a dedicated service query for large frameworks once
+     * @todo 2026-05-14 replace with a dedicated service query for large frameworks once
      *       performance benchmarks flag this (N requirements × M tenants).
+     *       Track: open GitHub issue for ComplianceFramework N+1 optimisation.
      *
      * @phpstan-ignore-next-line
      */

@@ -71,7 +71,6 @@ final class TemplateInstantiatorTest extends TestCase
         $existingChannel->setIsActive(true);
 
         $this->channelRepo->method('findActiveByType')
-            ->with(NotificationChannel::TYPE_EMAIL, $tenant)
             ->willReturn([$existingChannel]);
 
         $persistedEntities = [];

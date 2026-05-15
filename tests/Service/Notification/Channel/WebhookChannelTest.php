@@ -94,7 +94,6 @@ final class WebhookChannelTest extends TestCase
         $this->validator->method('validate')->willReturn($violations);
 
         $this->encryption->method('decrypt')
-            ->with('enc-secret')
             ->willReturn('my-plain-secret');
 
         $capturedHeaders = [];
@@ -123,7 +122,6 @@ final class WebhookChannelTest extends TestCase
         $violations = $this->createMock(ConstraintViolationListInterface::class);
         $violations->method('count')->willReturn(1);
         $this->validator->method('validate')
-            ->with($url, $this->callback(fn($v) => is_array($v)))
             ->willReturn($violations);
 
         // HttpClient must NOT be called

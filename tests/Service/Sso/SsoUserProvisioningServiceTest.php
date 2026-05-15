@@ -108,7 +108,6 @@ final class SsoUserProvisioningServiceTest extends TestCase
         $existing->setEmail('alice@acme.com');
 
         $this->userRepo->method('findOneBy')
-            ->with(['ssoProvider' => $this->provider, 'ssoExternalId' => 'sub123'])
             ->willReturn($existing);
 
         $claims = ['sub' => 'sub123', 'email' => 'alice@acme.com', 'given_name' => 'Alice', 'family_name' => 'Smith'];

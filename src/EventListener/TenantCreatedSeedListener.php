@@ -27,8 +27,9 @@ use Doctrine\ORM\Events;
  *     lazy auf, persistieren sich selbst + flushen.
  *   - RiskApprovalConfig: wird beim ersten Admin-UI-Aufruf angelegt.
  *
- * Für eine saubere Lösung siehe TODO(9A/9B): Post-Commit-Hook oder
+ * @todo 2026-05-14 (9A/9B) Saubere Lösung: Post-Commit-Hook oder
  * dedizierter TenantProvisioningService in CorporateStructureService.
+ * Blocked by: TenantPolicySetting + RiskMatrixConfig entities (Sprint 9+).
  */
 #[AsEntityListener(event: Events::postPersist, entity: Tenant::class)]
 class TenantCreatedSeedListener

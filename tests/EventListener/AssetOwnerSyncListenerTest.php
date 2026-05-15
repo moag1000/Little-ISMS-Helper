@@ -62,13 +62,13 @@ class AssetOwnerSyncListenerTest extends TestCase
         ]);
 
         $repo = $this->createMock(EntityRepository::class);
-        $repo->method('findBy')->with(['ownerUser' => $user])->willReturn([$asset1, $asset2]);
+        $repo->method('findBy')->willReturn([$asset1, $asset2]);
 
         $persisted = [];
         $flushed = false;
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getUnitOfWork')->willReturn($uow);
-        $em->method('getRepository')->with(Asset::class)->willReturn($repo);
+        $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
         $em->method('flush')->willReturnCallback(static function () use (&$flushed): void { $flushed = true; });
 

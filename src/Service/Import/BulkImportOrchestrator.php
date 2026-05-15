@@ -60,8 +60,9 @@ class BulkImportOrchestrator
      *
      * The source-file evidence document linkage (Document entity with
      * documentType='import_evidence') is intentionally deferred:
-     * TODO F2.6 — create Document entity and set $batch->setSourceDocument()
+     * @todo 2026-05-14 (F2.6) Create Document entity and set $batch->setSourceDocument()
      * once the Document CRUD service is wired to the import pipeline.
+     * Blocked by: BulkImport ↔ Document linkage service (Sprint F2.6).
      *
      * @param string $mode One of BulkImportBatch::MODE_* constants
      */

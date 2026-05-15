@@ -37,7 +37,7 @@ class TenantEmailBrandingType extends AbstractType
                 'attr' => ['maxlength' => 500, 'placeholder' => 'https://...'],
                 'default_protocol' => 'https',
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: true),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])
