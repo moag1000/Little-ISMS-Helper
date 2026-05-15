@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * reports. Provides idempotent link/unlink and a helper for suggesting risk
  * reviews when an incident is closed.
  */
-final class RiskIncidentLinkService
+class RiskIncidentLinkService
 {
     public const array VALID_LINK_TYPES = [
         'materialized',
