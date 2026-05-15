@@ -53,6 +53,11 @@ quick_fix:
             tenant_mismatches: '%count% tenant mismatch(es) fixed.'
             duplicates: '%count% duplicate(s) merged for "%type%".'
             all: 'All repairs done: %orphans% orphan(s), %mismatches% mismatch(es), %duplicates% duplicate(s).'
+    phantom_diff:
+        title: 'Schema already current — mark migration as executed'
+        warning: 'Only click if the schema ALREADY contains the table/column. This action skips the DDL and only records the migration in the version table.'
+        confirm_label: 'I confirm that the schema already contains this change and the migration can safely be marked as executed.'
+        button: 'Mark migration as executed (no DDL)'
     settings:
         title: 'Quick Fix'
         description: 'Controls the public fallback page shown on schema mismatch instead of a 500 error.'

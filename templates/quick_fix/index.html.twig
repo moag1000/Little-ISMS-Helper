@@ -120,6 +120,27 @@
             <h1>{{ 'quick_fix.error.title'|trans({}, 'quick_fix') }}</h1>
             <p>{{ 'quick_fix.error.body'|trans({}, 'quick_fix') }}</p>
             <p style="font-family: monospace; font-size: 12px; word-break: break-word;">{{ error_message }}</p>
+
+            {% if error_diagnosis is not null and error_diagnosis.category == 'phantom_diff_migration' and error_diagnosis.offending_version is not null %}
+                <div style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 20px;">
+                    <h2 style="font-size: 16px; font-weight: 600; margin: 0 0 12px;">{{ 'quick_fix.phantom_diff.title'|trans({}, 'quick_fix') }}</h2>
+                    <p style="font-size: 13px;">{{ error_diagnosis.message }}</p>
+                    <div class="flash error" style="margin-top: 12px; font-size: 13px;">
+                        ⚠️ {{ 'quick_fix.phantom_diff.warning'|trans({}, 'quick_fix') }}
+                    </div>
+                    <form method="POST" action="{{ path('app_quick_fix_force_mark_executed') }}" style="margin-top: 16px;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_force_mark_executed') }}">
+                        <input type="hidden" name="version" value="{{ error_diagnosis.offending_version }}">
+                        <label style="display: flex; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 13px; cursor: pointer; padding: 8px 0;">
+                            <input type="checkbox" name="confirm_already_exists" value="1" required style="margin-top: 3px;">
+                            <span>{{ 'quick_fix.phantom_diff.confirm_label'|trans({}, 'quick_fix') }}</span>
+                        </label>
+                        <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                            {{ 'quick_fix.phantom_diff.button'|trans({}, 'quick_fix') }}
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
         {% elseif pending_count > 0 %}
             <div class="icon">🔧</div>
             <h1>{{ 'quick_fix.pending.title'|trans({}, 'quick_fix') }}</h1>

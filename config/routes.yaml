@@ -42,6 +42,11 @@ app_quick_fix_repair_all:
     controller: App\Controller\QuickFixController::repairAll
     methods: [POST]
 
+app_quick_fix_force_mark_executed:
+    path: /quick-fix/force-mark-executed
+    controller: App\Controller\QuickFixController::forceMarkExecuted
+    methods: [POST]
+
 # Root redirect - smart locale detection (without locale)
 app_home:
     path: /
