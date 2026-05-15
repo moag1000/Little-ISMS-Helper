@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'bsi_200_4_exercise' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% import '_components/_fa_table.html.twig' as _fa_table %}
+
+{% block title %}{{ 'page.index_title'|trans({}, 'bsi_200_4_exercise') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
+            { label: 'nav.bc_exercises'|trans({}, 'nav'), url: path('app_bc_exercise_index') },
+            { label: 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'clipboard-check', label: 'BSI 200-4' },
+        title: 'page.index_title'|trans({}, 'bsi_200_4_exercise'),
+        subtitle: 'page.index_subtitle'|trans({}, 'bsi_200_4_exercise'),
+        actions: [
+            { label: 'nav.exercise_log_calendar'|trans({}, 'bsi_200_4_exercise'), href: path('bcm_exercise_log_calendar'), variant: 'secondary', icon: 'calendar3' }
+        ]
+    }) }}
+
+    {# Alva hints #}
+    {% set _hints = alva_hints('bcm_exercise_log_index') %}
+    {% for _h in _hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+
+    {# Overdue warning #}
+    {% if overdueCount > 0 %}
+    <div class="alert alert-warning d-flex align-items-center gap-2 mb-4" role="alert">
+        <i class="fa-icon fa-icon--status-warn" aria-hidden="true"></i>
+        <span>{{ 'alva.improvement_action_overdue.body'|trans({'%count%': overdueCount, '%log_count%': logs|length}, 'bsi_200_4_exercise') }}</span>
+    </div>
+    {% endif %}
+
+    {% if logs|length == 0 %}
+        {{ _fa_empty_state.render({
+            icon: 'clipboard-x',
+            title: 'empty_state.title'|trans({}, 'bsi_200_4_exercise'),
+            body: 'empty_state.body'|trans({}, 'bsi_200_4_exercise'),
+            action: {
+                label: 'empty_state.action'|trans({}, 'bsi_200_4_exercise'),
+                href: path('app_bc_exercise_index')
+            }
+        }) }}
+    {% else %}
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>{{ 'table.header_exercise'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th>{{ 'table.header_type'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th>{{ 'table.header_template'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th>{{ 'table.header_status'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th>{{ 'table.header_rating'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th>{{ 'table.header_submitted'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th>{{ 'table.header_actions'|trans({}, 'bsi_200_4_exercise') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for log in logs %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="fw-semibold text-decoration-none">
+                                    {{ log.bcExercise.name ?? '—' }}
+                                </a>
+                                {% if log.hasOverdueImprovementActions %}
+                                    <span class="badge bg-warning text-dark ms-1" title="{{ 'alva.improvement_action_overdue.title'|trans({}, 'bsi_200_4_exercise') }}">
+                                        <i class="fa-icon fa-icon--status-warn" aria-hidden="true"></i>
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ ('exercise_type.' ~ log.exerciseType)|trans({}, 'bsi_200_4_exercise') }}</span>
+                            </td>
+                            <td>{{ ('template.' ~ log.bsi2004Template)|trans({}, 'bsi_200_4_exercise') }}</td>
+                            <td>
+                                {% if log.isConfirmed %}
+                                    <span class="badge bg-success">{{ 'status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
+                                {% elseif log.isSubmitted %}
+                                    <span class="badge bg-info text-dark">{{ 'status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
+                                {% else %}
+                                    <span class="badge bg-light text-muted border">{{ 'status.draft'|trans({}, 'bsi_200_4_exercise') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if log.overallRating %}
+                                    {{ ('rating.' ~ log.overallRating)|trans({}, 'bsi_200_4_exercise') }}
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>{{ log.submittedAt ? log.submittedAt|date('d.m.Y') : '—' }}</td>
+                            <td>
+                                <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fa-icon fa-icon--action-view" aria-hidden="true"></i>
+                                </a>
+                                {% if not log.isSubmitted %}
+                                <a href="{{ path('bcm_exercise_log_edit', {id: log.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa-icon fa-icon--action-edit" aria-hidden="true"></i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
