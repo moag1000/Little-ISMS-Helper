@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════
    Fairy Aurora — Icon System (v4)
    ═══════════════════════════════════════════════════════════════════
-   77 ISMS-Domain-Icons als CSS-Mask. Einfärbbar via currentColor.
+   200+ ISMS-Domain-Icons als CSS-Mask. Einfärbbar via currentColor.
    Default-Größe: 1em. Inline mit Text per vertical-align: -0.125em.
 
    Verwendung:
@@ -109,6 +109,8 @@
 .fa-icon--soa { --fa-icon: url("../icons/soa.svg"); }
 .fa-icon--gap-analysis { --fa-icon: url("../icons/gap-analysis.svg"); }
 .fa-icon--control { --fa-icon: url("../icons/control.svg"); }
+.fa-icon--control-shield { --fa-icon: url("../icons/control-shield.svg"); }
+.fa-icon--document-history { --fa-icon: url("../icons/document-history.svg"); }
 .fa-icon--audit-trail { --fa-icon: url("../icons/audit-trail.svg"); }
 .fa-icon--finding { --fa-icon: url("../icons/finding.svg"); }
 .fa-icon--evidence { --fa-icon: url("../icons/evidence.svg"); }
@@ -170,6 +172,8 @@
 .fa-icon--status-info { --fa-icon: url("../icons/status-info.svg"); }
 .fa-icon--status-pending { --fa-icon: url("../icons/status-pending.svg"); }
 .fa-icon--status-archived { --fa-icon: url("../icons/status-archived.svg"); }
+.fa-icon--status-error { --fa-icon: url("../icons/status-error.svg"); }
+.fa-icon--status-fire { --fa-icon: url("../icons/status-fire.svg"); }
 .fa-icon--approve { --fa-icon: url("../icons/approve.svg"); }
 .fa-icon--reject { --fa-icon: url("../icons/reject.svg"); }
 .fa-icon--assign { --fa-icon: url("../icons/assign.svg"); }
@@ -178,6 +182,8 @@
 .fa-icon--import { --fa-icon: url("../icons/import.svg"); }
 .fa-icon--schedule { --fa-icon: url("../icons/schedule.svg"); }
 .fa-icon--filter { --fa-icon: url("../icons/filter.svg"); }
+.fa-icon--pause { --fa-icon: url("../icons/pause.svg"); }
+.fa-icon--play { --fa-icon: url("../icons/play.svg"); }
 
 /* ── Navigation / Module ───────────────────────────────────────── */
 .fa-icon--nav-home { --fa-icon: url("../icons/nav-home.svg"); }
@@ -241,6 +247,18 @@
 .fa-icon--nav-list-ordered { --fa-icon: url("../icons/nav-list-ordered.svg"); }
 .fa-icon--nav-cpu { --fa-icon: url("../icons/nav-cpu.svg"); }
 .fa-icon--nav-pie-chart { --fa-icon: url("../icons/nav-pie-chart.svg"); }
+.fa-icon--nav-archive { --fa-icon: url("../icons/nav-archive.svg"); }
+.fa-icon--nav-building-shield { --fa-icon: url("../icons/nav-building-shield.svg"); }
+.fa-icon--nav-calendar { --fa-icon: url("../icons/nav-calendar.svg"); }
+.fa-icon--nav-database { --fa-icon: url("../icons/nav-database.svg"); }
+.fa-icon--nav-envelope { --fa-icon: url("../icons/nav-envelope.svg"); }
+.fa-icon--nav-file-earmark-spreadsheet { --fa-icon: url("../icons/nav-file-earmark-spreadsheet.svg"); }
+.fa-icon--nav-file-earmark-text { --fa-icon: url("../icons/nav-file-earmark-text.svg"); }
+.fa-icon--nav-palette { --fa-icon: url("../icons/nav-palette.svg"); }
+.fa-icon--nav-shield-check { --fa-icon: url("../icons/nav-shield-check.svg"); }
+.fa-icon--nav-shield-lock { --fa-icon: url("../icons/nav-shield-lock.svg"); }
+.fa-icon--nav-speedometer { --fa-icon: url("../icons/nav-speedometer.svg"); }
+.fa-icon--nav-truck { --fa-icon: url("../icons/nav-truck.svg"); }
 
 /* ── UI Chrome ─────────────────────────────────────────────────── */
 .fa-icon--ui-search { --fa-icon: url("../icons/ui-search.svg"); }
@@ -282,6 +300,19 @@
 .fa-icon--ui-send { --fa-icon: url("../icons/ui-send.svg"); }
 .fa-icon--ui-star { --fa-icon: url("../icons/ui-star.svg"); }
 .fa-icon--ui-tag { --fa-icon: url("../icons/ui-tag.svg"); }
+.fa-icon--ui-camera { --fa-icon: url("../icons/ui-camera.svg"); }
+.fa-icon--ui-chat { --fa-icon: url("../icons/ui-chat.svg"); }
+.fa-icon--ui-checklist { --fa-icon: url("../icons/ui-checklist.svg"); }
+.fa-icon--ui-checklist-multi { --fa-icon: url("../icons/ui-checklist-multi.svg"); }
+.fa-icon--ui-circle { --fa-icon: url("../icons/ui-circle.svg"); }
+.fa-icon--ui-exclamation-triangle { --fa-icon: url("../icons/ui-exclamation-triangle.svg"); }
+.fa-icon--ui-file-person { --fa-icon: url("../icons/ui-file-person.svg"); }
+.fa-icon--ui-files { --fa-icon: url("../icons/ui-files.svg"); }
+.fa-icon--ui-key { --fa-icon: url("../icons/ui-key.svg"); }
+.fa-icon--ui-launch { --fa-icon: url("../icons/ui-launch.svg"); }
+.fa-icon--ui-phone { --fa-icon: url("../icons/ui-phone.svg"); }
+.fa-icon--ui-undo { --fa-icon: url("../icons/ui-undo.svg"); }
+.fa-icon--ui-upload { --fa-icon: url("../icons/ui-upload.svg"); }
 
 /* ── Utility / Status ──────────────────────────────────────────── */
 .fa-icon--util-chevron-up { --fa-icon: url("../icons/util-chevron-up.svg"); }
@@ -297,3 +328,75 @@
 .fa-icon--util-spinner { --fa-icon: url("../icons/util-spinner.svg"); }
 .fa-icon--util-zoom-in { --fa-icon: url("../icons/util-zoom-in.svg"); }
 .fa-icon--util-zoom-out { --fa-icon: url("../icons/util-zoom-out.svg"); }
+.fa-icon--util-1-circle { --fa-icon: url("../icons/util-1-circle.svg"); }
+.fa-icon--util-2-circle { --fa-icon: url("../icons/util-2-circle.svg"); }
+.fa-icon--util-3-circle { --fa-icon: url("../icons/util-3-circle.svg"); }
+.fa-icon--util-4-circle { --fa-icon: url("../icons/util-4-circle.svg"); }
+.fa-icon--util-bug { --fa-icon: url("../icons/util-bug.svg"); }
+.fa-icon--util-filetype-csv { --fa-icon: url("../icons/util-filetype-csv.svg"); }
+.fa-icon--util-filetype-json { --fa-icon: url("../icons/util-filetype-json.svg"); }
+.fa-icon--util-geo { --fa-icon: url("../icons/util-geo.svg"); }
+
+/* ── Aliases (Bootstrap-name → Aurora-name, for template migration) ── */
+/* These alias the Bootstrap icon name to the correct Aurora canonical SVG.   */
+/* Use the Aurora name in new code; these exist for backward-compat only.     */
+
+/* Bootstrap icon name aliases */
+.fa-icon--1-circle { --fa-icon: url("../icons/util-1-circle.svg"); }
+.fa-icon--2-circle { --fa-icon: url("../icons/util-2-circle.svg"); }
+.fa-icon--3-circle { --fa-icon: url("../icons/util-3-circle.svg"); }
+.fa-icon--4-circle { --fa-icon: url("../icons/util-4-circle.svg"); }
+.fa-icon--bell { --fa-icon: url("../icons/ui-bell.svg"); }
+.fa-icon--bug { --fa-icon: url("../icons/util-bug.svg"); }
+.fa-icon--camera { --fa-icon: url("../icons/ui-camera.svg"); }
+.fa-icon--check { --fa-icon: url("../icons/ui-check.svg"); }
+.fa-icon--clock { --fa-icon: url("../icons/ui-clock.svg"); }
+.fa-icon--download { --fa-icon: url("../icons/nav-download.svg"); }
+.fa-icon--edit { --fa-icon: url("../icons/ui-edit.svg"); }
+.fa-icon--file-person { --fa-icon: url("../icons/ui-file-person.svg"); }
+.fa-icon--files { --fa-icon: url("../icons/ui-files.svg"); }
+.fa-icon--filetype-csv { --fa-icon: url("../icons/util-filetype-csv.svg"); }
+.fa-icon--filetype-json { --fa-icon: url("../icons/util-filetype-json.svg"); }
+.fa-icon--fire { --fa-icon: url("../icons/status-fire.svg"); }
+.fa-icon--geo-alt { --fa-icon: url("../icons/util-geo.svg"); }
+.fa-icon--grid { --fa-icon: url("../icons/nav-grid.svg"); }
+.fa-icon--link { --fa-icon: url("../icons/ui-link.svg"); }
+.fa-icon--phone { --fa-icon: url("../icons/ui-phone.svg"); }
+.fa-icon--plus { --fa-icon: url("../icons/ui-plus.svg"); }
+.fa-icon--question-circle { --fa-icon: url("../icons/ui-help.svg"); }
+.fa-icon--rocket-takeoff { --fa-icon: url("../icons/ui-launch.svg"); }
+.fa-icon--save { --fa-icon: url("../icons/ui-save.svg"); }
+.fa-icon--send { --fa-icon: url("../icons/ui-send.svg"); }
+.fa-icon--shield-check { --fa-icon: url("../icons/nav-shield-check.svg"); }
+.fa-icon--three-dots { --fa-icon: url("../icons/ui-more.svg"); }
+.fa-icon--trash { --fa-icon: url("../icons/ui-trash.svg"); }
+.fa-icon--truck { --fa-icon: url("../icons/nav-truck.svg"); }
+
+/* Template-only icon aliases (map to nearest Aurora equivalent) */
+.fa-icon--assets { --fa-icon: url("../icons/nav-assets.svg"); }
+.fa-icon--cpu { --fa-icon: url("../icons/nav-cpu.svg"); }
+.fa-icon--documents { --fa-icon: url("../icons/nav-document.svg"); }
+.fa-icon--nav-bell { --fa-icon: url("../icons/ui-bell.svg"); }
+.fa-icon--nav-clock { --fa-icon: url("../icons/ui-clock.svg"); }
+.fa-icon--nav-clock-history { --fa-icon: url("../icons/document-history.svg"); }
+.fa-icon--nav-exclamation-triangle { --fa-icon: url("../icons/ui-exclamation-triangle.svg"); }
+.fa-icon--nav-info-circle { --fa-icon: url("../icons/ui-info.svg"); }
+.fa-icon--nav-journal-text { --fa-icon: url("../icons/nav-journal.svg"); }
+.fa-icon--nav-link { --fa-icon: url("../icons/ui-link.svg"); }
+.fa-icon--nav-users { --fa-icon: url("../icons/nav-people.svg"); }
+.fa-icon--nav-wrench { --fa-icon: url("../icons/nav-tools.svg"); }
+.fa-icon--risk { --fa-icon: url("../icons/risk-register.svg"); }
+.fa-icon--ui-arrow-right { --fa-icon: url("../icons/util-arrow-right.svg"); }
+.fa-icon--ui-checks { --fa-icon: url("../icons/ui-checklist-multi.svg"); }
+.fa-icon--ui-delete { --fa-icon: url("../icons/ui-trash.svg"); }
+.fa-icon--ui-document { --fa-icon: url("../icons/nav-document.svg"); }
+.fa-icon--ui-external-link { --fa-icon: url("../icons/util-external-link.svg"); }
+.fa-icon--ui-help-circle { --fa-icon: url("../icons/ui-help.svg"); }
+.fa-icon--ui-info-circle { --fa-icon: url("../icons/ui-info.svg"); }
+.fa-icon--ui-magic { --fa-icon: url("../icons/nav-magic.svg"); }
+.fa-icon--ui-view { --fa-icon: url("../icons/ui-eye.svg"); }
+.fa-icon--ui-x { --fa-icon: url("../icons/ui-close.svg"); }
+.fa-icon--util-clock { --fa-icon: url("../icons/ui-clock.svg"); }
+.fa-icon--util-download { --fa-icon: url("../icons/nav-download.svg"); }
+.fa-icon--util-refresh { --fa-icon: url("../icons/ui-refresh.svg"); }
+.fa-icon--util-trash { --fa-icon: url("../icons/ui-trash.svg"); }
