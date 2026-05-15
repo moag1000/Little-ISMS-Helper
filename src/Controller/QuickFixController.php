@@ -397,25 +397,51 @@ class QuickFixController extends AbstractController
 
         $markedCount = count($result['marked']);
 
-        if ($result['success']) {
-            $auditLogger->logCustom(
-                'quick_fix.force_mark_migration_executed',
-                'Migration',
-                null,
-                null,
-                ['marked_count' => $markedCount, 'remaining_pending' => $result['remaining_pending'], 'batch' => 'mark_all_phantom_diff'],
-                sprintf('QuickFix: mark-all-phantom-diff completed — %d migration(s) marked, %d still pending', $markedCount, $result['remaining_pending']),
-            );
-            $this->addFlash('success', sprintf(
-                '%d Migration(en) als ausgeführt markiert (ohne DDL). Noch ausstehend: %d.',
+        $skippedCount = count($result['skipped'] ?? []);
+
+        $auditLogger->logCustom(
+            'quick_fix.force_mark_migration_executed',
+            'Migration',
+            null,
+            null,
+            [
+                'marked_count' => $markedCount,
+                'skipped_count' => $skippedCount,
+                'remaining_pending' => $result['remaining_pending'],
+                'batch' => 'mark_all_phantom_diff',
+            ],
+            sprintf(
+                'QuickFix: mark-all-phantom-diff completed — %d marked, %d skipped, %d still pending',
                 $markedCount,
+                $skippedCount,
                 $result['remaining_pending'],
-            ));
-        } else {
-            $this->addFlash('warning', sprintf(
-                '%d Migration(en) markiert, dann gestoppt: %s Noch ausstehend: %d.',
+            ),
+        );
+
+        if ($markedCount > 0) {
+            $this->addFlash('success', sprintf(
+                '%d Migration(en) als ausgeführt markiert.',
                 $markedCount,
-                $result['stopped_at_error'] ?? 'unbekannter Fehler',
+            ));
+        }
+
+        if ($skippedCount > 0) {
+            $this->addFlash('warning', sprintf(
+                '%d Migration(en) konnten nicht automatisch behandelt werden (real errors). Manuelle Prüfung erforderlich.',
+                $skippedCount,
+            ));
+            foreach (($result['skipped'] ?? []) as $version => $reason) {
+                $this->addFlash('warning', sprintf(
+                    '%s: %s',
+                    $version,
+                    substr($reason, 0, 200),
+                ));
+            }
+        }
+
+        if ($markedCount === 0 && $skippedCount === 0) {
+            $this->addFlash('info', sprintf(
+                'Keine phantom-diff Migrationen gefunden. Noch ausstehend: %d.',
                 $result['remaining_pending'],
             ));
         }
