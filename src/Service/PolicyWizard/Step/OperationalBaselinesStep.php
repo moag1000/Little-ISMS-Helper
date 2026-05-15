@@ -131,17 +131,26 @@ final class OperationalBaselinesStep extends AbstractStep
         $standards = $run->getStandardsAdopted() ?? [];
         if (in_array('dora', $standards, true)) {
             $welcomeSlot = $this->readSlot($run, WizardStepKeys::STEP_WELCOME);
-            $bundleKey = is_string($welcomeSlot['industry_preset_bundle_key'] ?? null)
-                ? $welcomeSlot['industry_preset_bundle_key']
-                : null;
+            // Support multi-key (canonical) and single-key (backwards-compat).
+            $bundleKeys = is_array($welcomeSlot['industry_preset_bundle_keys'] ?? null)
+                ? $welcomeSlot['industry_preset_bundle_keys']
+                : (is_string($welcomeSlot['industry_preset_bundle_key'] ?? null)
+                    && $welcomeSlot['industry_preset_bundle_key'] !== ''
+                    ? [$welcomeSlot['industry_preset_bundle_key']]
+                    : []);
             $doraSlot = is_array($existing['dora'] ?? null) ? $existing['dora'] : [];
             $entityType = is_string($doraSlot['entity_type'] ?? null) && $doraSlot['entity_type'] !== ''
                 ? $doraSlot['entity_type']
                 : null;
 
-            $existing['_dora_not_applicable_hint'] = $bundleKey !== null
-                && in_array($bundleKey, self::NON_FINANCIAL_BUNDLE_KEYS, true)
-                && $entityType === null;
+            // Hint fires only when ALL selected bundles are non-financial
+            // (if the user added even one financial bundle, DORA likely applies).
+            $allNonFinancial = $bundleKeys !== [] && count(array_filter(
+                $bundleKeys,
+                static fn (string $k): bool => !in_array($k, self::NON_FINANCIAL_BUNDLE_KEYS, true),
+            )) === 0;
+
+            $existing['_dora_not_applicable_hint'] = $allNonFinancial && $entityType === null;
         } else {
             $existing['_dora_not_applicable_hint'] = false;
         }
@@ -302,9 +311,21 @@ final class OperationalBaselinesStep extends AbstractStep
             : null;
 
         // IndustryPresetBundle picker — optional one-shot apply hint.
-        $industryPresetBundleKey = $input['industry_preset_bundle_key'] ?? null;
-        $industryPresetBundleKey = is_string($industryPresetBundleKey) && $industryPresetBundleKey !== ''
-            ? $industryPresetBundleKey
+        // Accept multi-key (canonical) or single-key (backwards-compat).
+        $rawMultiKeys = $input['industry_preset_bundle_keys'] ?? null;
+        if (is_array($rawMultiKeys) && $rawMultiKeys !== []) {
+            $industryPresetBundleKeys = array_values(array_filter(array_map(
+                static fn ($v): string => is_string($v) ? trim($v) : '',
+                $rawMultiKeys,
+            ), static fn (string $k): bool => $k !== ''));
+        } else {
+            $singleRaw = $input['industry_preset_bundle_key'] ?? null;
+            $singleKey = is_string($singleRaw) && $singleRaw !== '' ? trim($singleRaw) : null;
+            $industryPresetBundleKeys = $singleKey !== null ? [$singleKey] : [];
+        }
+        // Backwards-compat: last key is the single-key value.
+        $industryPresetBundleKey = $industryPresetBundleKeys !== []
+            ? end($industryPresetBundleKeys)
             : null;
 
         $normalised = [
@@ -315,6 +336,9 @@ final class OperationalBaselinesStep extends AbstractStep
             'dora' => $doraBlock,
             'dpo_user_id' => $dpoUserId,
             'bcm_officer_user_id' => $bcmOfficerUserId,
+            // Multi-key (canonical, new runs).
+            'industry_preset_bundle_keys' => $industryPresetBundleKeys,
+            // Single-key (backwards-compat).
             'industry_preset_bundle_key' => $industryPresetBundleKey,
         ];
 

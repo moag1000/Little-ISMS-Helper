@@ -41,11 +41,14 @@
 {% set dora_default = defaults.dora|default({}) %}
 {% set dpo_default = defaults.dpo_user_id|default(null) %}
 {% set bcm_default = defaults.bcm_officer_user_id|default(null) %}
-{% set preset_default = defaults.industry_preset_bundle_key|default(null) %}
+{% set _legacy_preset = defaults.industry_preset_bundle_key|default(null) %}
+{% set preset_default_keys = defaults.industry_preset_bundle_keys|default(
+    (_legacy_preset is not null and _legacy_preset != '' ? [_legacy_preset] : [])
+) %}
+{% set has_preset_applied = preset_default_keys|length > 0 %}
 {% set bcm_in_scope = 'bcm' in standards %}
 {% set dora_in_scope = 'dora' in standards %}
 {% set gdpr_in_scope = 'gdpr' in standards %}
-{% set has_preset_applied = preset_default is not null and preset_default != '' %}
 {% set bsi_in_scope = 'bsi' in standards %}
 {% set dora_not_applicable_hint = defaults._dora_not_applicable_hint|default(false) %}
 
@@ -462,20 +465,30 @@
     }) }}
 {% endif %}
 
-{# ── Industry preset bundle (one-shot apply) ─────────────────────── #}
+{# ── Industry preset bundles (multi-select, one-shot apply) ────────── #}
 {% if preset_bundles_for_step|default([])|length > 0 %}
     {% set preset_body %}
-        {% set preset_options = [{value: '', label: '—'}] %}
-        {% for bundle in preset_bundles_for_step %}
-            {% set preset_options = preset_options|merge([{value: bundle.key, label: bundle.label}]) %}
-        {% endfor %}
-        {{ _fa_cyber.select('industry_preset_bundle_key', preset_options, {
-            id: 'op-preset-bundle',
-            label: 'policy_wizard.step.operational_baselines.preset_bundle_label'|trans,
-            help: 'policy_wizard.step.operational_baselines.preset_bundle_help'|trans,
-            value: preset_default,
-            extra_attrs: {'data-controller': 'tom-select'}
-        }) }}
+        <div class="fa-form-row mb-2">
+            <label class="form-label" for="op-preset-bundles">
+                {{ 'policy_wizard.step.operational_baselines.preset_bundle_label'|trans }}
+            </label>
+            <select id="op-preset-bundles"
+                    name="industry_preset_bundle_keys[]"
+                    multiple
+                    class="form-select fa-cyber-input__field"
+                    data-controller="tom-select"
+                    aria-describedby="op-preset-bundles-help">
+                {% for bundle in preset_bundles_for_step %}
+                    <option value="{{ bundle.key }}"
+                            {% if bundle.key in preset_default_keys %}selected{% endif %}>
+                        {{ bundle.label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <div id="op-preset-bundles-help" class="form-text">
+                {{ 'policy_wizard.step.operational_baselines.preset_bundle_help_multi'|trans }}
+            </div>
+        </div>
     {% endset %}
     {{ _fa_section.render({
         title: 'policy_wizard.step.operational_baselines.preset_section_title'|trans,
