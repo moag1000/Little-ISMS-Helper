@@ -358,10 +358,14 @@
             </td>
             <td>
                 {% if control.applicable %}
-                    {% if control.implementationStatus == 'implemented' %}
+                    {% if control.implementationStatus == 'verified' %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-patch-check', content: 'soa.status.verified'|trans({}, 'soa') } %}
+                    {% elseif control.implementationStatus == 'implemented' %}
                         {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'soa.status.implemented'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'in_progress' %}
                         {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-arrow-clockwise', content: 'soa.status.in_progress'|trans({}, 'soa') } %}
+                    {% elseif control.implementationStatus == 'planned' %}
+                        {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-calendar-event', content: 'soa.status.planned'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'not_started' %}
                         {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-pause-circle', content: 'soa.status.not_started'|trans({}, 'soa') } %}
                     {% else %}

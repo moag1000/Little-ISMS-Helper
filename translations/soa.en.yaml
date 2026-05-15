@@ -88,6 +88,7 @@ soa:
         not_started: 'Not started'
         not_applicable: 'Not applicable'
         approved: Approved
+        verified: Verified
     value:
         'yes': 'Yes'
         'no': 'No'
