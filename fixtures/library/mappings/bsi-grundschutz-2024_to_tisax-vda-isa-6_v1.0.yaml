@@ -1,0 +1,199 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'bsi-grundschutz-2024_to_tisax-vda-isa-6_v1.0'
+  source_framework: 'BSI-GRUNDSCHUTZ-2024'
+  target_framework: 'TISAX-VDA-ISA-6'
+  version: 1
+  effective_from: '2024-04-01'
+  effective_until: null
+
+  provenance:
+    primary_source: 'VDA ISA v6.0 — ISO-27001-Mapping-Anhang (inverse Ableitung fuer BSI-Grundschutz)'
+    primary_source_url: 'https://www.enx.com/en-us/tisax/'
+    secondary_sources:
+      - 'BSI IT-Grundschutz-Kompendium 2024 — Kreuzreferenztabelle'
+      - 'Transitive Ableitung via ISO 27001:2022 als Brueckenstandard'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'expert_derived'
+    description: |
+      Transitive Ableitung: BSI-Baustein → ISO 27001:2022 (via bsi-grundschutz-2024_to_iso27001-2022)
+      → TISAX ISA (via iso27001-2022_to_tisax-vda-isa-6). Keine direkte offizielle
+      BSI ↔ TISAX-Kreuzreferenztabelle verfuegbar. Alle Eintraege sind 'expert_derived';
+      Confidence max. 'medium' sofern kein offizielles Sekundaerdokument vorliegt.
+
+      Fuer automotive-Organisationen, die sowohl BSI-Grundschutz-Basisschutz als
+      auch TISAX-Zertifizierung anstreben, ermoeglicht dieses Mapping die
+      Gap-Analyse zwischen bereits erstellten Grundschutz-Bausteindokumentationen
+      und noch offenen TISAX-ISA-Nachweisen.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2024-05-01', actor: 'maintainer' }
+      - { state: 'review',    date: '2024-06-15', actor: 'maintainer' }
+      - { state: 'approved',  date: '2024-07-01', actor: 'reviewer-2' }
+      - { state: 'published', date: '2024-07-10', actor: 'ciso-signoff' }
+
+mappings:
+  # --- ISMS-Schicht → TISAX Kapitel 1 ---
+  - source: 'ISMS.1.A3'
+    target: 'ISA 1.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISMS.1.A3 (Basis: Leitlinie zur Informationssicherheit) und ISA 1.1.1
+      (TISAX: Informationssicherheits-Leitlinie) sind direkte Entsprechungen.
+      Beide fordern eine durch Top-Management verabschiedete, kommunizierte
+      und ueberprueft IS-Leitlinie. Ein ISMS.1.A3-Nachweis kann als
+      TISAX-Auditnachweis fuer ISA 1.1.1 verwendet werden.
+    audit_evidence_hint: 'IS-Leitlinie mit Management-Unterschrift, Kommunikationsnachweis, Review-Protokoll.'
+
+  - source: 'ISMS.1.A4'
+    target: 'ISA 1.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISMS.1.A4 (Basis: Benennung eines ISB) und ISA 1.2.1 (TISAX: Rollen
+      und Verantwortlichkeiten fuer Informationssicherheit) adressieren beide
+      die formelle Benennung verantwortlicher Personen fuer Informationssicherheit.
+    audit_evidence_hint: 'Bestellungsschreiben ISB, Organigramm mit IS-Verantwortungsstruktur.'
+
+  - source: 'ISMS.1.A2'
+    target: 'ISA 1.3.1'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      ISMS.1.A2 (Sicherheitsziele und -strategie) deckt den strategischen
+      Rahmen von ISA 1.3.1 (Risikomanagement) ab. BSI-Standard 200-3 ergaenzt
+      den methodischen Risikoanalyse-Aspekt, der TISAX ISA 1.3.1 vollstaendig abdeckt.
+    audit_evidence_hint: 'Sicherheitsstrategie-Dokument, Risikoanalyse nach BSI 200-3, Risikoregister.'
+
+  # --- ORP-Schicht → TISAX Kapitel 2 ---
+  - source: 'ORP.2.A1'
+    target: 'ISA 2.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ORP.2.A1 (Geregelte Einarbeitung inkl. Sicherheitsanweisung) und
+      ISA 2.1.1 (Sicherheitsueberprueifung von Mitarbeitenden) adressieren
+      beide Pre-employment-Sicherheitsmassnahmen.
+    audit_evidence_hint: 'Einarbeitungsprotokoll, Fuehrungs- und Strafregister-Abfrage-Nachweis, Verpflichtungserklaerung.'
+
+  - source: 'ORP.3.A3'
+    target: 'ISA 2.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ORP.3.A3 (Sensibilisierungs- und Schulungsprogramm) und ISA 2.2.1
+      (Schulung und Sensibilisierung) sind direkte Entsprechungen. Beide
+      fordern ein systematisches, regelmaessiges Schulungsprogramm.
+    audit_evidence_hint: 'Schulungsplan, Teilnehmerlisten, Phishing-Simulationsergebnisse.'
+
+  - source: 'ORP.3.A1'
+    target: 'ISA 2.2.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ORP.3.A1 (Sensibilisierung Leitungsebene) ist ein Teilaspekt von
+      ISA 2.2.1 (alle Mitarbeitenden). TISAX fordert Schulungen fuer alle,
+      BSI-Basis nur fuer Fuehrungskraefte.
+    audit_evidence_hint: 'Management-Awareness-Schulungs-Nachweis, Top-Management-Briefing-Protokolle.'
+
+  # --- INF-Schicht → TISAX Kapitel 3 ---
+  - source: 'INF.1.A1'
+    target: 'ISA 3.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      INF.1.A1 (Planung der Gebaeudesicherheit) und ISA 3.1.1 (Physischer
+      Zugangsschutz zu IT-Einrichtungen) adressieren beide die physische
+      Perimeter-Sicherheit von IT-Bereichen.
+    audit_evidence_hint: 'Zutrittskonzept, Gebaeude-Sicherheitsplan, Zutrittslog-Auswertung.'
+
+  - source: 'INF.1.A2'
+    target: 'ISA 3.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      INF.1.A2 (Geeignete Aufstellung von IT-Geraeten) verstaerkt ISA 3.1.1
+      durch spezifische Aufstellungsanforderungen fuer IT-Systeme in
+      Sicherheitsbereichen.
+    audit_evidence_hint: 'Raumplan mit IT-Stellplaenen, Sicherheitszonenkarte.'
+
+  # --- OPS-Schicht → TISAX Kapitel 5 ---
+  - source: 'OPS.1.1.3.A1'
+    target: 'ISA 5.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      OPS.1.1.3.A1 (Patch-Management-Konzept) und ISA 5.1.1 (Patch-Management)
+      sind direkte funktionale Entsprechungen. Beide fordern systematisches
+      Patch-Management mit definierten Prozessen.
+    audit_evidence_hint: 'Patch-Konzept, Vulnerability-Scan-Berichte, Patch-Rollout-Statistik.'
+
+  - source: 'CON.1.A1'
+    target: 'ISA 5.1.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CON.1.A1 (Kryptografische Verfahren) und ISA 5.1.1 (IT-Sicherheit)
+      ueberlappen sich bei der Absicherung von Systemen durch Kryptografie
+      als Bestandteil des IT-Sicherheits-Gesamtkonzepts.
+    audit_evidence_hint: 'Kryptokonzept, Verschluesselungsrichtlinie, TLS-Konfiguration.'
+
+  # --- ORP.1 → TISAX Kapitel 4 ---
+  - source: 'ORP.1.A4'
+    target: 'ISA 4.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ORP.1.A4 (Funktionstrennung zwischen unvereinbaren Aufgaben) und
+      ISA 4.2.1 (Berechtigungsmanagement nach Least Privilege) adressieren
+      beide das SoD-Prinzip im Zugriffsmanagement.
+    audit_evidence_hint: 'SoD-Matrix, IAM-Richtlinie, Berechtigungsreview-Protokolle.'
+
+  # --- OPS.2.2 → TISAX Kapitel 6 ---
+  - source: 'OPS.2.2.A3'
+    target: 'ISA 6.1.1'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      OPS.2.2.A3 (Sorgfaeltige Auswahl eines Cloud-Diensteanbieters) und
+      ISA 6.1.1 (Sicherheitsanforderungen an Lieferanten/Dienstleister)
+      adressieren beide die Sicherheitsbewertung von Drittparteien.
+      Cloud-Provider fallen unter TISAX-Lieferantenmanagement.
+    audit_evidence_hint: 'Cloud-Provider-Bewertung, ISO-27001-Zertifikat des Providers, SLA mit Sicherheitsklauseln.'
+
+  - source: 'ORP.1.A3'
+    target: 'ISA 6.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ORP.1.A3 (Beaufsichtigung Fremdpersonen) ist ein spezifischer
+      Aspekt von ISA 6.1.1 (Lieferantenmanagement). TISAX verlangt
+      umfassenderes Vertragsmanagement.
+    audit_evidence_hint: 'Besucherprotokoll, Begleitregelungen fuer externe Personen.'
+
+  # --- DER-Schicht → TISAX (allg. Detektion) ---
+  - source: 'DER.2.1.A2'
+    target: 'ISA 1.3.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      DER.2.1.A2 (Ablaufplan Vorfallbehandlung) und ISA 1.3.1 (Risikomanagement)
+      ueberlappen sich im Bereich der Behandlung von Risikoereignissen (Incidents
+      als realisierte Risiken).
+    audit_evidence_hint: 'Incident-Response-Plan, Eskalationsmatrix, Vorfallregister.'
+
+  - source: 'DER.1.A3'
+    target: 'ISA 4.2.1'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      DER.1.A3 (SIEM) und ISA 4.2.1 (Berechtigungsmanagement) haben
+      eine schwache Verbindung: SIEM-Systeme ueberwachen auch
+      Zugriffsanomalien und erkennen Berechtigungs-Missbrauch.
+    audit_evidence_hint: 'SIEM-Use-Cases fuer Zugriffsanomalien, UBA-Konfiguration.'
