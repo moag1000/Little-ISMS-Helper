@@ -323,7 +323,9 @@ class DoraComplianceController extends AbstractController
 
         // Critical processes with BC plans
         $criticalProcesses = array_filter($this->businessProcessRepository->findAll(), fn($p) => $p->getCriticality() === 'critical');
-        $processesWithBcPlan = array_filter($criticalProcesses, fn($p) => $p->getBusinessContinuityPlan() !== null);
+        // BusinessProcess has no getBusinessContinuityPlan() — the relation is owned by
+        // BusinessContinuityPlan (ManyToOne → BusinessProcess). Query the BC plan repo instead.
+        $processesWithBcPlan = array_filter($criticalProcesses, fn($p) => $this->bcPlanRepository->findOneBy(['businessProcess' => $p]) !== null);
         $bcPlanCoverage = count($criticalProcesses) > 0 ? round((count($processesWithBcPlan) / count($criticalProcesses)) * 100) : 100;
 
         // Training / awareness for resilience
