@@ -297,7 +297,7 @@
 
 {# Approve Modal — optional comment field for audit-trail completeness #}
 {% if can_approve %}
-<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+<div  class="modal fade"  id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" action="{{ path('app_workflow_instance_approve', {id: instance.id}) }}">
@@ -325,7 +325,7 @@
 </div>
 
 {# Reject Modal #}
-<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+<div  class="modal fade"  id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" action="{{ path('app_workflow_instance_reject', {id: instance.id}) }}">
@@ -351,7 +351,7 @@
 
 {# Clarify Modal — sends a question to the wizard initiator without rejecting/approving.
    Audit-event: workflow_clarification_requested (logged in WorkflowController::clarifyInstance). #}
-<div class="modal fade" id="clarifyModal" tabindex="-1" aria-labelledby="clarifyModalLabel" aria-hidden="true">
+<div  class="modal fade"  id="clarifyModal" tabindex="-1" aria-labelledby="clarifyModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" action="{{ path('app_workflow_instance_clarify', {id: instance.id}) }}">

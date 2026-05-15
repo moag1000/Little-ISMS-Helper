@@ -1,8 +1,17 @@
-# Table Accessibility Guide (WCAG 2.1 AA)
+# Table Accessibility Guide (WCAG 2.2 AA)
 
 ## Warum Table Scope Attributes?
 
-**WCAG 2.1 Success Criterion 1.3.1 (Level A):** Information, structure, and relationships conveyed through presentation can be programmatically determined.
+**WCAG 2.2 Success Criterion 1.3.1 (Level A):** Information, structure, and relationships conveyed through presentation can be programmatically determined.
+
+## WCAG 2.2 Neuerungen für Tabellen
+
+| SC | Title | Tabellen-Impact |
+|---|---|---|
+| **2.4.11** | Focus Not Obscured | Sticky-Table-Header darf den fokussierten Zellen-Button nicht überdecken (`scroll-padding-top` setzen) |
+| **2.4.13** | Focus Appearance | Action-Buttons in Tabellen-Zellen: 3px solid outline + 2px offset (Aurora `.fa-cyber-btn` Pattern) |
+| **2.5.7** | Dragging Movements | Reorder-Drag-Handle in Tabellen-Reihen braucht Up/Down-Buttons als Alternative |
+| **2.5.8** | Target Size (24×24) | Icon-only Action-Buttons in `.table .btn` → `min-height: var(--target-min)` (24px global) |
 
 Table scope attributes helfen Screen Readern, die Beziehung zwischen Header-Zellen und Daten-Zellen zu verstehen.
 
@@ -293,6 +302,6 @@ grep -r "<table" templates/ | grep -v "caption" | wc -l
 
 ## Weitere Ressourcen
 
-- [WCAG 2.1 Tables](https://www.w3.org/WAI/tutorials/tables/)
+- [WCAG 2.2 Tables](https://www.w3.org/WAI/tutorials/tables/)
 - [MDN: scope attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th#attr-scope)
 - [WebAIM: Creating Accessible Tables](https://webaim.org/techniques/tables/data)

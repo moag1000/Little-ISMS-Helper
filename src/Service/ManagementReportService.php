@@ -633,7 +633,7 @@ class ManagementReportService
                 'key' => 'executive',
                 'name' => 'Executive Summary',
                 'name_de' => 'Executive Summary',
-                'icon' => 'speedometer2',
+                'icon' => 'nav-speedometer',
                 'color' => 'primary',
                 'reports' => [
                     ['key' => 'executive_summary', 'name' => 'Executive Dashboard', 'name_de' => 'Executive Dashboard'],
@@ -645,7 +645,7 @@ class ManagementReportService
                 'key' => 'risk',
                 'name' => 'Risk Management',
                 'name_de' => 'Risikomanagement',
-                'icon' => 'exclamation-triangle',
+                'icon' => 'nav-exclamation-triangle',
                 'color' => 'danger',
                 'reports' => [
                     ['key' => 'risk_register', 'name' => 'Risk Register', 'name_de' => 'Risikoregister'],
@@ -657,7 +657,7 @@ class ManagementReportService
                 'key' => 'bcm',
                 'name' => 'Business Continuity',
                 'name_de' => 'Business Continuity',
-                'icon' => 'shield-check',
+                'icon' => 'nav-shield-check',
                 'color' => 'success',
                 'reports' => [
                     ['key' => 'bc_plans', 'name' => 'BC Plans Overview', 'name_de' => 'BC-Pläne Übersicht'],
@@ -669,7 +669,7 @@ class ManagementReportService
                 'key' => 'compliance',
                 'name' => 'Compliance',
                 'name_de' => 'Compliance',
-                'icon' => 'clipboard-check',
+                'icon' => 'nav-clipboard-check',
                 'color' => 'info',
                 'reports' => [
                     ['key' => 'compliance_status', 'name' => 'Compliance Status', 'name_de' => 'Compliance-Status'],
@@ -680,7 +680,7 @@ class ManagementReportService
                 'key' => 'audit',
                 'name' => 'Audit Management',
                 'name_de' => 'Audit-Management',
-                'icon' => 'search',
+                'icon' => 'ui-search',
                 'color' => 'warning',
                 'reports' => [
                     ['key' => 'audit_summary', 'name' => 'Audit Summary', 'name_de' => 'Audit-Zusammenfassung'],
@@ -691,7 +691,7 @@ class ManagementReportService
                 'key' => 'assets',
                 'name' => 'Asset Management',
                 'name_de' => 'Asset-Management',
-                'icon' => 'server',
+                'icon' => 'asset-server',
                 'color' => 'secondary',
                 'reports' => [
                     ['key' => 'asset_inventory', 'name' => 'Asset Inventory', 'name_de' => 'Asset-Inventar'],
@@ -701,7 +701,7 @@ class ManagementReportService
                 'key' => 'gdpr',
                 'name' => 'Data Protection (GDPR)',
                 'name_de' => 'Datenschutz (DSGVO)',
-                'icon' => 'shield-lock',
+                'icon' => 'nav-shield-lock',
                 'color' => 'dark',
                 'reports' => [
                     ['key' => 'data_breach_summary', 'name' => 'Data Breach Summary', 'name_de' => 'Datenpannen-Übersicht'],

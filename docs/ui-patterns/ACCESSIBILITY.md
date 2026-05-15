@@ -2,16 +2,16 @@
 
 **Version:** 1.0
 **Date:** 2025-11-24
-**Standard:** WCAG 2.1 AA Compliance
+**Standard:** WCAG 2.2 AA Compliance
 **Purpose:** Ensure accessible UI for all users
 
 ---
 
 ## Overview
 
-Little ISMS Helper strives for WCAG 2.1 Level AA compliance to ensure the application is accessible to users with disabilities.
+Little ISMS Helper strives for WCAG 2.2 Level AA compliance to ensure the application is accessible to users with disabilities.
 
-### WCAG 2.1 Principles (POUR)
+### WCAG 2.2 Principles (POUR)
 
 1. **Perceivable**: Information must be presentable to users in ways they can perceive
 2. **Operable**: UI components and navigation must be operable
@@ -78,7 +78,7 @@ Icons that are purely decorative MUST be marked with `aria-hidden="true"`:
 
 ### Using the Form Field Component
 
-The `_form_field.html.twig` component provides automatic WCAG 2.1 AA compliance:
+The `_form_field.html.twig` component provides automatic WCAG 2.2 AA compliance:
 
 ```twig
 {% include '_components/_form_field.html.twig' with {
@@ -497,10 +497,10 @@ SVG icons MUST have proper labels:
 
 ## Resources
 
-### WCAG 2.1 Guidelines
+### WCAG 2.2 Guidelines
 
-- [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
-- [Understanding WCAG 2.1](https://www.w3.org/WAI/WCAG21/Understanding/)
+- [WCAG 2.2 Quick Reference](https://www.w3.org/WAI/WCAG22/quickref/)
+- [Understanding WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/)
 - [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 
 ### Testing Tools

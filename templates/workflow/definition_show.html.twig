@@ -32,7 +32,7 @@
             <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ workflow.isActive ? 'warning' : 'success' }}">
-                    <i class="bi bi-{{ workflow.isActive ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--{{ workflow.isActive ? 'pause' : 'play' }}" aria-hidden="true"></i>
                     {{ workflow.isActive ? 'workflow.action.deactivate'|trans({}, 'workflows') : 'workflow.action.activate'|trans({}, 'workflows') }}
                 </button>
             </form>
@@ -212,7 +212,7 @@
                         <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ workflow.isActive ? 'warning' : 'success' }} w-100">
-                                <i class="bi bi-{{ workflow.isActive ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--{{ workflow.isActive ? 'pause' : 'play' }}" aria-hidden="true"></i>
                                 {{ workflow.isActive ? 'workflow.action.deactivate'|trans({}, 'workflows') : 'workflow.action.activate'|trans({}, 'workflows') }}
                             </button>
                         </form>

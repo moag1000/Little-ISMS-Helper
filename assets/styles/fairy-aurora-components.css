@@ -4330,15 +4330,16 @@ button.fa-filter-chip.fa-filter-chip--active {
     line-height: 1;
 }
 
+/* WCAG 2.2 SC 1.4.11 / 2.4.13 — 3px solid outline ensures ≥3:1 non-text
+   contrast and visible focus indicator; aligns with .fa-cyber-btn pattern. */
 .btn.btn:focus-visible,
-.btn.btn:focus {
-    outline: 1px solid var(--primary);
+.btn.btn:focus-within {
+    outline: 3px solid var(--primary);
     outline-offset: 2px;
     box-shadow: 0 0 0 3px var(--primary-glow);
 }
-/* Legacy .btn:focus (non-visible keyboard) keeps glow only */
-.btn:focus-visible,
-.btn:focus {
+/* Mouse focus keeps only glow — no noisy outline */
+.btn:focus:not(:focus-visible) {
     outline: none;
     box-shadow: 0 0 0 3px var(--primary-glow);
 }

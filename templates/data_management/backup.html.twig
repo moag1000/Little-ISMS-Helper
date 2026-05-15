@@ -640,10 +640,10 @@
                         const result = await response.json();
 
                         let alertClass = result.valid ? 'fa-alert--success' : 'fa-alert--danger';
-                        let icon = result.valid ? 'check-circle' : 'x-circle';
+                        let icon = result.valid ? 'ui-check' : 'ui-x';
 
                         let message = `<div class="fa-alert ${alertClass} mt-2" role="alert"><div class="fa-alert__body">`;
-                        message += `<i class="bi bi-${icon}" aria-hidden="true"></i> `;
+                        message += `<i class="fa-icon fa-icon--${icon}" aria-hidden="true"></i> `;
                         message += result.valid ? '<strong>{{ 'data_management.backup.validation.valid'|trans({}, 'admin') }}</strong>' : '<strong>{{ 'data_management.backup.validation.invalid'|trans({}, 'admin') }}</strong>';
 
                         if (result.metadata) {
