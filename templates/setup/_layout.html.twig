@@ -50,6 +50,7 @@
 
     {# Bootstrap zuerst — Aurora (via importmap) kommt danach und überschreibt. #}
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    {# Bootstrap Icons — kept for fallback until all TODO Aurora icons are designed (Gate 11) #}
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
     {{ importmap(['app', 'styles']) }}
     <meta name="turbo-cache-control" content="no-cache">

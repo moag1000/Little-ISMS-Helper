@@ -279,7 +279,7 @@ export default class extends Controller {
         const originalHTML = button.innerHTML;
         const originalClasses = [...button.classList];
 
-        button.innerHTML = `<i class="bi bi-check" aria-hidden="true"></i> ${text}`;
+        button.innerHTML = `<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${text}`;
         button.classList.remove('btn-primary', 'btn-outline-primary', 'btn-outline-secondary');
         button.classList.add('btn-success');
 

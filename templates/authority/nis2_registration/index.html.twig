@@ -35,7 +35,7 @@
             <div class="col-12">
                 {% if profile.isOverdue %}
                     <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill fs-4" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning fs-4" aria-hidden="true"></i>
                         <div>
                             <strong>{{ 'eu_authorities.nis2_registration.status.overdue'|trans }}</strong>
                             — {{ 'eu_authorities.nis2_registration.status.overdue_body'|trans({
@@ -45,7 +45,7 @@
                     </div>
                 {% elseif profile.isDueSoon(30) %}
                     <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
-                        <i class="bi bi-clock-history fs-4" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-clock fs-4" aria-hidden="true"></i>
                         <div>
                             <strong>{{ 'eu_authorities.nis2_registration.status.due_soon'|trans }}</strong>
                             — {{ 'eu_authorities.nis2_registration.status.due_soon_body'|trans({
@@ -55,7 +55,7 @@
                     </div>
                 {% else %}
                     <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
-                        <i class="bi bi-check-circle-fill fs-4" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-check fs-4" aria-hidden="true"></i>
                         <div>
                             <strong>{{ 'eu_authorities.nis2_registration.status.current'|trans }}</strong>
                             — {{ 'eu_authorities.nis2_registration.status.current_body'|trans({
@@ -71,7 +71,7 @@
         {% if not isComplete %}
         <div class="card border-warning mb-4">
             <div class="card-header text-warning fw-semibold">
-                <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i>
                 {{ 'eu_authorities.nis2_registration.warning.incomplete_title'|trans }}
             </div>
             <div class="card-body">
@@ -82,7 +82,7 @@
                     {% endfor %}
                 </ul>
                 <a href="{{ path('nis2_registration_edit') }}" class="btn btn-sm btn-warning mt-3">
-                    <i class="bi bi-pencil me-1" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-edit me-1" aria-hidden="true"></i>
                     {{ 'eu_authorities.nis2_registration.action.fill_profile'|trans }}
                 </a>
             </div>
@@ -94,7 +94,7 @@
             <div class="col-md-6">
                 <div class="card h-100">
                     <div class="card-header fw-semibold">
-                        <i class="bi bi-building me-1" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-building me-1" aria-hidden="true"></i>
                         {{ 'eu_authorities.nis2_registration.section.organization'|trans }}
                     </div>
                     <div class="card-body">
@@ -120,7 +120,7 @@
             <div class="col-md-6">
                 <div class="card h-100">
                     <div class="card-header fw-semibold">
-                        <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--compliance-shield me-1" aria-hidden="true"></i>
                         {{ 'eu_authorities.nis2_registration.section.nis2'|trans }}
                     </div>
                     <div class="card-body">
@@ -163,7 +163,7 @@
         {# ── Contact Information ───────────────────────────────────────────────── #}
         <div class="card mb-4">
             <div class="card-header fw-semibold">
-                <i class="bi bi-people me-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-people me-1" aria-hidden="true"></i>
                 {{ 'eu_authorities.nis2_registration.section.contacts'|trans }}
             </div>
             <div class="card-body">
@@ -202,7 +202,7 @@
         {# ── Export + Mark-Reported ────────────────────────────────────────────── #}
         <div class="card mb-4">
             <div class="card-header fw-semibold">
-                <i class="bi bi-send me-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-send me-1" aria-hidden="true"></i>
                 {{ 'eu_authorities.nis2_registration.section.submission'|trans }}
             </div>
             <div class="card-body">
@@ -227,12 +227,12 @@
                         <a href="{{ path('nis2_registration_export_json') }}"
                            class="btn btn-primary"
                            aria-label="{{ 'eu_authorities.nis2_registration.action.export_json'|trans }}">
-                            <i class="bi bi-download me-1" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>
                             {{ 'eu_authorities.nis2_registration.action.export_json'|trans }}
                         </a>
                         {% else %}
                         <button type="button" class="btn btn-primary" disabled title="{{ 'eu_authorities.nis2_registration.warning.incomplete_title'|trans }}">
-                            <i class="bi bi-download me-1" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>
                             {{ 'eu_authorities.nis2_registration.action.export_json'|trans }}
                         </button>
                         {% endif %}
@@ -263,7 +263,7 @@
                     </div>
                     <div class="col-auto">
                         <button type="submit" class="btn btn-sm btn-success">
-                            <i class="bi bi-check2-circle me-1" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
                             {{ 'eu_authorities.nis2_registration.action.mark_reported'|trans }}
                         </button>
                     </div>

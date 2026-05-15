@@ -148,7 +148,7 @@ export default class extends Controller {
         if (spinner) {
             spinner.classList.remove('spinner-border');
             spinner.classList.add('text-danger');
-            spinner.innerHTML = '<i class="bi bi-x-octagon-fill"></i>';
+            spinner.innerHTML = '<i class="fa-icon fa-icon--status-critical"></i>';
         }
     }
 

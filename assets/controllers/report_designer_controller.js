@@ -120,7 +120,7 @@ export default class extends Controller {
                                data.status === 'amber' ? 'warning' : 'danger';
             container.innerHTML = `
                 <div class="text-center py-3">
-                    <i class="bi bi-circle-fill fs-1 text-${statusClass}"></i>
+                    <i class="fa-icon fa-icon--status-ok fs-1 text-${statusClass}"></i>
                     <div class="mt-2 fw-bold">${data.label}</div>
                 </div>
             `;
@@ -156,7 +156,7 @@ export default class extends Controller {
         if (widgetType.startsWith('chart_')) {
             container.innerHTML = `
                 <div class="text-center py-4 bg-light rounded">
-                    <i class="bi bi-bar-chart-fill fs-1 text-primary opacity-50"></i>
+                    <i class="fa-icon fa-icon--nav-bar-chart fs-1 text-primary opacity-50"></i>
                     <div class="small text-muted mt-2">${widgetType.replace('chart_', '').replace(/_/g, ' ')}</div>
                 </div>
             `;
@@ -254,17 +254,17 @@ export default class extends Controller {
                 <div class="widget-actions">
                     <button type="button" class="btn btn-sm btn-link p-0 text-muted"
                             data-action="click->report-designer#configureWidget">
-                        <i class="bi bi-gear"></i>
+                        <i class="fa-icon fa-icon--ui-settings"></i>
                     </button>
                     <button type="button" class="btn btn-sm btn-link p-0 text-danger"
                             data-action="click->report-designer#removeWidget">
-                        <i class="bi bi-trash"></i>
+                        <i class="fa-icon fa-icon--ui-trash"></i>
                     </button>
                 </div>
             </div>
             <div class="widget-content">
                 <div class="text-center py-4 text-muted">
-                    <i class="bi bi-hourglass-split"></i> Loading...
+                    <i class="fa-icon fa-icon--ui-hourglass"></i> Loading...
                 </div>
             </div>
         `;
@@ -289,7 +289,7 @@ export default class extends Controller {
                 placeholder.className = 'drop-placeholder text-center py-5';
                 placeholder.dataset.reportDesignerTarget = 'placeholder';
                 placeholder.innerHTML = `
-                    <i class="bi bi-plus-circle display-4 text-muted"></i>
+                    <i class="fa-icon fa-icon--ui-plus display-4 text-muted"></i>
                     <p class="mt-3 text-muted">Drag widgets here to build your report</p>
                 `;
                 this.canvasTarget.appendChild(placeholder);

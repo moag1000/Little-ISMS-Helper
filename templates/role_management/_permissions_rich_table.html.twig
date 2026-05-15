@@ -43,7 +43,7 @@
     <div class="d-flex align-items-center gap-2 mb-3">
         <div class="input-group input-group-sm" style="max-width: 320px;">
             <span class="input-group-text">
-                <i class="bi bi-search" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
             </span>
             <input
                 type="text"
@@ -83,7 +83,7 @@
                 {# Category header row #}
                 <tr class="fa-table__row fa-table__row--group-header perm-category-row" data-category="{{ category }}">
                     <td colspan="6" class="fa-table__td fw-semibold py-2 px-3" style="background: var(--surface-2); border-left: 3px solid var(--primary);">
-                        <i class="bi bi-folder2 me-1 text-muted" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-document me-1 text-muted" aria-hidden="true"></i>
                         {{ ('role_management.permissions.category.' ~ category)|trans({}, 'role_management') }}
                     </td>
                 </tr>
@@ -148,7 +148,7 @@
     </table>
 
     <div class="mt-2 text-muted small" id="perm-no-results" style="display:none;">
-        <i class="bi bi-search me-1" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--ui-search me-1" aria-hidden="true"></i>
         {{ 'role_management.permissions.no_results'|trans({}, 'role_management') }}
     </div>
 </div>

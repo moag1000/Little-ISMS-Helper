@@ -39,7 +39,7 @@
                             class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                             data-column-mapping-target="resetButton"
                             data-action="click->column-mapping#resetAll">
-                        <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                         <span class="fa-cyber-btn__label">{{ 'import.mapping.reset'|trans({}, 'data_import') }}</span>
                     </button>
                 </div>
@@ -100,7 +100,7 @@
 
                     <div class="d-flex gap-2 mt-4">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                             <span class="fa-cyber-btn__label">{{ 'import.action.preview'|trans({}, 'data_import') }}</span>
                         </button>
                         <a href="{{ path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) }}"

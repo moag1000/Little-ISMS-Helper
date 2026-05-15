@@ -433,7 +433,7 @@ export default class extends Controller {
         const successTitle = this.translations.success_title || 'GDPR Assessment Complete!';
         const successText = this.translations.success_text || 'Incident form has been pre-filled with assessment results.';
         message.innerHTML = `
-            <i class="bi bi-stars fairy-icon-sparkle me-2" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-stars fairy-icon-sparkle me-2" aria-hidden="true"></i>
             <strong>${successTitle}</strong> ${successText}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         `;

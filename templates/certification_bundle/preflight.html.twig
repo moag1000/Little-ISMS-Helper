@@ -74,7 +74,7 @@
     {# Checks Overview #}
     <div class="card mb-4">
         <div class="card-header fw-semibold">
-            <i class="bi bi-list-check me-1" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-list-check me-1" aria-hidden="true"></i>
             {{ 'cert_bundle.preflight.checks.title'|trans }}
         </div>
         <ul class="list-group list-group-flush">
@@ -88,9 +88,9 @@
             {% for checkKey, passed in readiness.checks %}
                 <li class="list-group-item d-flex align-items-center gap-2">
                     {% if passed %}
-                        <i class="bi bi-check-circle-fill text-success flex-shrink-0" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-check text-success flex-shrink-0" aria-hidden="true"></i>
                     {% else %}
-                        <i class="bi bi-x-circle-fill text-danger flex-shrink-0" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-close text-danger flex-shrink-0" aria-hidden="true"></i>
                     {% endif %}
                     <span>{{ (checkLabels[checkKey])|default(checkKey)|trans }}</span>
                     <span class="ms-auto badge {% if passed %}text-bg-success{% else %}text-bg-danger{% endif %}">
@@ -105,13 +105,13 @@
     {% if readiness.blockers|length > 0 %}
         <div class="card mb-4 border-danger">
             <div class="card-header fw-semibold">
-                <i class="bi bi-shield-x text-danger me-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-critical text-danger me-1" aria-hidden="true"></i>
                 {{ 'cert_bundle.preflight.blockers.title'|trans }}
             </div>
             <ul class="list-group list-group-flush">
                 {% for blocker in readiness.blockers %}
                     <li class="list-group-item d-flex align-items-start gap-2">
-                        <i class="bi bi-x-circle-fill text-danger flex-shrink-0 mt-1" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-close text-danger flex-shrink-0 mt-1" aria-hidden="true"></i>
                         <div>
                             <div class="fw-semibold">{{ ('cert_bundle.preflight.blocker.' ~ blocker.type)|trans({'%count%': blocker.count|default(0)|number_format(0, '.', '')}) }}</div>
                             <small class="text-muted">{{ ('cert_bundle.preflight.blocker.' ~ blocker.type ~ '_hint')|trans({}, 'cert_bundle') }}</small>
@@ -127,13 +127,13 @@
     {% if readiness.warnings|length > 0 %}
         <div class="card mb-4 border-warning">
             <div class="card-header fw-semibold">
-                <i class="bi bi-exclamation-triangle-fill text-warning me-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning text-warning me-1" aria-hidden="true"></i>
                 {{ 'cert_bundle.preflight.warnings.title'|trans }}
             </div>
             <ul class="list-group list-group-flush">
                 {% for warning in readiness.warnings %}
                     <li class="list-group-item d-flex align-items-start gap-2">
-                        <i class="bi bi-exclamation-triangle-fill text-warning flex-shrink-0 mt-1" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning text-warning flex-shrink-0 mt-1" aria-hidden="true"></i>
                         <div>
                             <div class="fw-semibold">{{ ('cert_bundle.preflight.warning.' ~ warning.type)|trans({'%count%': warning.count|default(0)}) }}</div>
                             <small class="text-muted">{{ ('cert_bundle.preflight.warning.' ~ warning.type ~ '_hint')|trans({}, 'cert_bundle', null, '') }}</small>
@@ -159,7 +159,7 @@
         {# Fix blockers first #}
         {% if readiness.blockers|length > 0 %}
             <a class="fa-cyber-btn fa-cyber-btn--primary" href="{{ path('app_certification_bundle_index') }}">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
                 {{ 'cert_bundle.preflight.action.fix'|trans }}
             </a>
         {% else %}
@@ -168,7 +168,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export') }}">
                 <input type="hidden" name="framework" value="{{ selected_framework_code|default('ISO27001') }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="bi bi-download" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                     {{ 'cert_bundle.preflight.action.export'|trans }}
                 </button>
             </form>
@@ -187,7 +187,7 @@
                     <input type="hidden" name="framework" value="{{ selected_framework_code|default('ISO27001') }}">
                     <input type="hidden" name="bypass_preflight" value="1">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
-                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'cert_bundle.preflight.action.export_anyway'|trans }}
                     </button>
                 </form>

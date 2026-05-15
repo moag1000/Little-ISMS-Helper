@@ -140,7 +140,7 @@ export default class extends Controller {
             <div class="card border-warning">
                 <div class="card-header bg-warning text-dark">
                     <h3 class="h6 mb-0">
-                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                         ${this.escapeHtml(this.t('title', 'Escalation Preview'))}
                     </h3>
                 </div>
@@ -152,14 +152,14 @@ export default class extends Controller {
             html += `
                 <div class="mb-3">
                     <h4 class="h6 mb-2">
-                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
                         ${this.escapeHtml(this.t('workflow_name', 'Workflow'))}
                     </h4>
                     <div class="d-flex align-items-center gap-2">
                         <strong>${this.escapeHtml(preview.workflow_name)}</strong>
                         <span class="badge ${levelBadgeClass}">${this.escapeHtml(levelText)}</span>
                         <span class="badge bg-primary">
-                            <i class="bi bi-lightning-fill" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                             ${this.escapeHtml(this.t('automatic', 'Automatic'))}
                         </span>
                     </div>
@@ -172,7 +172,7 @@ export default class extends Controller {
             html += `
                 <div class="mb-3">
                     <h4 class="h6 mb-2">
-                        <i class="bi bi-people" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
                         ${this.escapeHtml(this.t('notified_users', 'Who will be notified:'))}
                     </h4>
                     <ul class="list-unstyled mb-0">
@@ -182,7 +182,7 @@ export default class extends Controller {
                 html += `
                     <li class="mb-2">
                         <div class="d-flex align-items-center gap-2">
-                            ${user.avatar ? `<img src="${user.avatar}" alt="${this.escapeHtml(user.name)}" class="rounded-circle" width="32" height="32">` : '<i class="bi bi-person-circle" style="font-size: 32px;" aria-hidden="true"></i>'}
+                            ${user.avatar ? `<img src="${user.avatar}" alt="${this.escapeHtml(user.name)}" class="rounded-circle" width="32" height="32">` : '<i class="fa-icon fa-icon--ui-person" style="font-size: 32px;" aria-hidden="true"></i>'}
                             <div>
                                 <strong>${this.escapeHtml(user.name)}</strong>
                                 <br>
@@ -208,7 +208,7 @@ export default class extends Controller {
         html += `
             <div class="mb-3">
                 <h4 class="h6 mb-2">
-                    <i class="bi bi-clock-history" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
                     ${this.escapeHtml(this.t('sla_requirement', 'SLA Requirement'))}
                 </h4>
                 <div class="alert alert-info mb-0" role="alert">
@@ -223,7 +223,7 @@ export default class extends Controller {
                 <div class="mb-3">
                     <div class="alert alert-danger" role="alert">
                         <h4 class="alert-heading h6">
-                            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                             ${this.escapeHtml(this.t('gdpr_warning', 'GDPR Data Breach - 72h Deadline'))}
                         </h4>
                         <p class="mb-2">
@@ -243,7 +243,7 @@ export default class extends Controller {
             html += `
                 <div class="mb-3">
                     <h4 class="h6 mb-2">
-                        <i class="bi bi-shield-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                         ${this.escapeHtml(this.t('approval_required', 'Approval Required'))}
                     </h4>
                     <ol class="mb-2">
@@ -275,26 +275,26 @@ export default class extends Controller {
         html += `
                     <div class="border-top pt-3">
                         <h4 class="h6 mb-2">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                             ${this.escapeHtml(this.t('summary_title', 'What will happen:'))}
                         </h4>
                         <ul class="mb-0">
                             <li>
-                                <i class="bi bi-check text-success" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
                                 ${this.escapeHtml(this.t('action_workflow_started', 'Workflow will start automatically'))}
                             </li>
                             <li>
-                                <i class="bi bi-check text-success" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
                                 ${this.escapeHtml(this.t('action_notifications_sent', 'Email notifications will be sent to stakeholders'))}
                             </li>
                             ${preview.requires_approval ? `
                             <li>
-                                <i class="bi bi-check text-success" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
                                 ${this.escapeHtml(this.t('action_approval_required', 'Approval steps will be initiated'))}
                             </li>
                             ` : ''}
                             <li>
-                                <i class="bi bi-check text-success" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
                                 ${this.escapeHtml(this.t('action_sla_tracked', 'SLA tracking will begin'))} (${preview.sla_hours}h)
                             </li>
                         </ul>
@@ -334,7 +334,7 @@ export default class extends Controller {
         this.isLoading = false;
         this.previewContentTarget.innerHTML = `
             <div class="alert alert-danger" role="alert">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                 ${this.escapeHtml(this.t('error', 'Failed to load escalation preview. Please try again.'))}
             </div>
         `;

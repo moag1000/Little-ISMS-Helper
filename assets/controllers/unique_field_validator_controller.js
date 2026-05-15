@@ -145,7 +145,7 @@ export default class extends Controller {
         if (!spinner) {
             spinner = document.createElement('span');
             spinner.className = 'unique-check-spinner position-absolute';
-            spinner.innerHTML = '<i class="bi bi-arrow-repeat spinner-icon"></i>';
+            spinner.innerHTML = '<i class="fa-icon fa-icon--ui-refresh spinner-icon"></i>';
             spinner.style.cssText = 'right: 10px; top: 50%; transform: translateY(-50%);';
             wrapper.classList.add('position-relative');
             wrapper.appendChild(spinner);
@@ -221,7 +221,7 @@ export default class extends Controller {
             wrapper.parentNode.insertBefore(errorDiv, wrapper.nextSibling);
         }
 
-        errorDiv.innerHTML = `<i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i> ${message}`;
+        errorDiv.innerHTML = `<i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> ${message}`;
         errorDiv.style.display = 'block';
 
         // Update aria-describedby
@@ -249,7 +249,7 @@ export default class extends Controller {
             wrapper.parentNode.insertBefore(successDiv, wrapper.nextSibling);
         }
 
-        successDiv.innerHTML = `<i class="bi bi-check-circle-fill" aria-hidden="true"></i> ${message}`;
+        successDiv.innerHTML = `<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${message}`;
         successDiv.style.display = 'block';
     }
 

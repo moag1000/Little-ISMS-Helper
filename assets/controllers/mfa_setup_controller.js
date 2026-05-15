@@ -79,7 +79,7 @@ export default class extends Controller {
             if (data.success) {
                 this.feedbackTarget.innerHTML = `
                     <div class="alert alert-success">
-                        <i class="bi bi-check-circle" aria-hidden="true"></i> ${data.message}
+                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${data.message}
                     </div>
                 `;
 
@@ -127,7 +127,7 @@ export default class extends Controller {
 
             // Show feedback
             const originalHTML = button.innerHTML;
-            button.innerHTML = `<i class="bi bi-check" aria-hidden="true"></i> ${this.copiedTextValue}`;
+            button.innerHTML = `<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${this.copiedTextValue}`;
             button.classList.add('btn-success');
             button.classList.remove('btn-outline-secondary');
 
@@ -147,7 +147,7 @@ export default class extends Controller {
         if (this.hasFeedbackTarget) {
             this.feedbackTarget.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> ${message}
+                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> ${message}
                 </div>
             `;
         }

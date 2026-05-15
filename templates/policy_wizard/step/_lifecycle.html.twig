@@ -31,7 +31,7 @@
         <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.lifecycle.help.body'|trans }}</p>
         <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.lifecycle.help.example'|trans }}</p>
         <p class="mb-0 small">
-            <i class="bi bi-archive" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--archive" aria-hidden="true"></i>
             {{ 'policy_wizard.step.lifecycle.help.reversibility'|trans }}
         </p>
     {% endblock %}
@@ -76,7 +76,7 @@
            never blocking — just nudging towards 6-12 months for HOCH/SEHR HOCH. #}
         {% if review_default == 24 %}
             <div class="form-text small text-warning mt-1" data-bsi-interval-hint="1">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                 {{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.inline_hint'|trans }}
             </div>
         {% endif %}
@@ -101,11 +101,11 @@
     </div>
     <div class="col-md-12">
         <p class="small text-muted mb-2">
-            <i class="bi bi-person-plus" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
             {{ 'policy_wizard.step.lifecycle.help.missing_user_link'|trans }}
             <a href="{{ path('user_management_index') }}" target="_blank" rel="noopener">
                 {{ 'policy_wizard.step.lifecycle.help.missing_user_link_cta'|trans }}
-                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-external-link" aria-hidden="true"></i>
             </a>
         </p>
         <div class="form-check">
@@ -118,7 +118,7 @@
                    {% if alva_default %}checked{% endif %}>
             <label class="form-check-label" for="lifecycle-alva-hint">
                 {{ 'policy_wizard.step.lifecycle.alva_hint_label'|trans }}
-                <i class="bi bi-info-circle text-muted ms-1"
+                <i class="fa-icon fa-icon--ui-info text-muted ms-1"
                    data-bs-toggle="tooltip"
                    title="{{ 'policy_wizard.step.lifecycle.tooltip.alva_hint'|trans }}"
                    aria-label="{{ 'policy_wizard.step.lifecycle.tooltip.alva_hint'|trans }}"></i>
@@ -179,7 +179,7 @@
                                        {% if is_bsi %}data-bs-toggle="tooltip"
                                        title="{{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.body'|trans }}"{% endif %}>
                                 {% if is_bsi and hits_max %}
-                                    <i class="bi bi-exclamation-triangle text-warning small"
+                                    <i class="fa-icon fa-icon--status-warning text-warning small"
                                        aria-label="{{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.inline_hint'|trans }}"
                                        data-bs-toggle="tooltip"
                                        title="{{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.inline_hint'|trans }}"></i>
@@ -209,7 +209,7 @@
                                         {% endif %}
                                     {% else %}
                                         <span class="form-text small text-muted mt-1">
-                                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                                             {{ 'policy_wizard.approver_match.recommended_roles_hint'|trans({'%roles%': recommended_roles|join(', ')}) }}
                                         </span>
                                     {% endif %}

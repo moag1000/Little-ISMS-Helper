@@ -64,7 +64,7 @@
         <ul class="list-unstyled small mb-0">
             <li>
                 <strong>R</strong>
-                <i class="bi bi-info-circle text-muted"
+                <i class="fa-icon fa-icon--ui-info text-muted"
                    data-bs-toggle="tooltip"
                    title="{{ 'policy_wizard.step.roles.tooltip.raci_r'|trans }}"
                    aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_r'|trans }}"></i>
@@ -72,7 +72,7 @@
             </li>
             <li>
                 <strong>A</strong>
-                <i class="bi bi-info-circle text-muted"
+                <i class="fa-icon fa-icon--ui-info text-muted"
                    data-bs-toggle="tooltip"
                    title="{{ 'policy_wizard.step.roles.tooltip.raci_a'|trans }}"
                    aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_a'|trans }}"></i>
@@ -80,7 +80,7 @@
             </li>
             <li>
                 <strong>C</strong>
-                <i class="bi bi-info-circle text-muted"
+                <i class="fa-icon fa-icon--ui-info text-muted"
                    data-bs-toggle="tooltip"
                    title="{{ 'policy_wizard.step.roles.tooltip.raci_c'|trans }}"
                    aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_c'|trans }}"></i>
@@ -88,7 +88,7 @@
             </li>
             <li>
                 <strong>I</strong>
-                <i class="bi bi-info-circle text-muted"
+                <i class="fa-icon fa-icon--ui-info text-muted"
                    data-bs-toggle="tooltip"
                    title="{{ 'policy_wizard.step.roles.tooltip.raci_i'|trans }}"
                    aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_i'|trans }}"></i>
@@ -108,7 +108,7 @@
         <div class="col-md-6">
             <label class="form-label" for="role-{{ role_key }}">
                 {{ label_key|trans }}
-                <i class="bi bi-info-circle text-muted ms-1"
+                <i class="fa-icon fa-icon--ui-info text-muted ms-1"
                    data-bs-toggle="tooltip"
                    data-bs-placement="right"
                    title="{{ ('policy_wizard.step.roles.tooltip.' ~ role_key)|trans }}"
@@ -128,11 +128,11 @@
 
     <div class="col-12">
         <p class="small text-muted mb-0">
-            <i class="bi bi-person-plus" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
             {{ 'policy_wizard.step.roles.help.missing_user_link'|trans }}
             <a href="{{ path('app_person_index') }}" target="_blank" rel="noopener">
                 {{ 'policy_wizard.step.roles.help.missing_user_link_cta'|trans }}
-                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-external-link" aria-hidden="true"></i>
             </a>
         </p>
     </div>
@@ -177,7 +177,7 @@
     <div class="col-12 mt-3">
         <label class="form-label" for="approval-chain">
             {{ 'policy_wizard.step.roles.field.approval_chain.label'|trans }}
-            <i class="bi bi-info-circle text-muted ms-1"
+            <i class="fa-icon fa-icon--ui-info text-muted ms-1"
                data-bs-toggle="tooltip"
                data-bs-placement="right"
                title="{{ 'policy_wizard.step.roles.field.approval_chain.tooltip'|trans }}"
@@ -202,7 +202,7 @@
          # walkthrough showed users expect to see WHY a particular
          # approver was picked — this card answers it upfront. #}
         <div class="form-text small mt-2">
-            <i class="bi bi-shield-check text-muted" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--compliance-shield text-muted" aria-hidden="true"></i>
             {{ 'policy_wizard.approver_match.chain_hint'|trans }}
         </div>
         {% if approver_user_pool|length == 0 %}

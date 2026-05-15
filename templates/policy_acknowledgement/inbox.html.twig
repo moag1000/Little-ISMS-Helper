@@ -34,11 +34,11 @@
         {# W7-E — mobile swipe-affordance hint, only visible <768px via CSS. #}
         <div class="fa-bulk-mobile-hint" aria-hidden="true">
             <span class="fa-bulk-mobile-hint__chip fa-bulk-mobile-hint__chip--right">
-                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                 {{ 'policy_wizard.bulk_inbox_mobile.swipe_right_to_approve'|trans }}
             </span>
             <span class="fa-bulk-mobile-hint__chip fa-bulk-mobile-hint__chip--left">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
                 {{ 'policy_wizard.bulk_inbox_mobile.swipe_left_to_reject'|trans }}
             </span>
         </div>
@@ -62,7 +62,7 @@
                                 </small>
                             {% endif %}
                             <small class="text-muted">
-                                <i class="bi bi-tag" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-tag" aria-hidden="true"></i>
                                 {{ document.category }}
                                 {% if document.uploadedAt %}
                                     &middot; {{ document.uploadedAt|date('Y-m-d') }}
@@ -76,7 +76,7 @@
                             <a href="{{ path('app_policy_ack_view', { documentId: document.id }) }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-bulk-mobile-btn"
                                data-bulk-approval-mobile-target="rejectBtn">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                 <span class="fa-cyber-btn__label">{{ 'policy_ack.view.title'|trans }}</span>
                             </a>
                             <form method="post"
@@ -86,7 +86,7 @@
                                 <button type="submit"
                                         class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm fa-bulk-mobile-btn"
                                         data-bulk-approval-mobile-target="approveBtn">
-                                    <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                     <span class="fa-cyber-btn__label">{{ 'policy_ack.view.action.acknowledge'|trans }}</span>
                                 </button>
                             </form>

@@ -358,7 +358,7 @@ export default class extends Controller {
         toast.style.right = '20px';
         toast.style.zIndex = '9999';
         toast.innerHTML = `
-            <i class="bi bi-stars me-2" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-stars me-2" aria-hidden="true"></i>
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;

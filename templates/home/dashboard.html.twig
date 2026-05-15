@@ -150,7 +150,7 @@
                 'bg-primary',
                 'dashboard.stats.registered_assets'|trans({}, 'dashboard'),
                 stats.assets_total|default(0),
-                'bi bi-arrow-up',
+                'fa-icon fa-icon--util-arrow-up',
                 stats.assets_critical|default(0) ~ ' ' ~ 'dashboard.stats.critical'|trans({}, 'dashboard'),
                 'positive'
             ) }}
@@ -172,7 +172,7 @@
                 'bg-warning',
                 'dashboard.stats.identified_risks'|trans({}, 'dashboard'),
                 stats.risks_total|default(0),
-                'bi bi-arrow-up',
+                'fa-icon fa-icon--util-arrow-up',
                 stats.risks_high|default(0) ~ ' ' ~ 'dashboard.stats.high'|trans({}, 'dashboard'),
                 'negative'
             ) }}
@@ -212,11 +212,11 @@
         <div class="col-lg-3 col-md-6">
             <a href="{{ path('app_incident_index') }}" class="text-decoration-none">
             {{ cards.stat_card(
-                'bi bi-exclamation-circle',
+                'fa-icon fa-icon--status-warning',
                 'bg-danger',
                 'dashboard.stats.open_incidents'|trans({}, 'dashboard'),
                 stats.incidents_open|default(0),
-                'bi bi-clock-history',
+                'fa-icon fa-icon--ui-clock',
                 'dashboard.stats.in_progress'|trans({}, 'dashboard'),
                 ''
             ) }}
