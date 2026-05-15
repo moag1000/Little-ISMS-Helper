@@ -57,6 +57,7 @@ final class WizardOrchestrator
         private readonly ?BcExerciseAutoSeeder $bcExerciseAutoSeeder = null,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?CrossStepConsistencyValidator $consistencyValidator = null,
+        private readonly ?AnnexAApplicabilityApplierInterface $annexAApplicabilityApplier = null,
     ) {
     }
 
@@ -224,6 +225,20 @@ final class WizardOrchestrator
         }
 
         $step->persist($run, $result['normalised_input']);
+
+        // Early-apply Annex-A applicability (Sprint-2 fix): when the user
+        // submits STEP_RISK_CLASSIFICATION we immediately flip Control.applicable
+        // so the SoA reflects their intent without waiting for wizard-complete.
+        // Wizard's explicit submit IS authoritative — see AnnexAApplicabilityApplier.
+        if ($stepKey === WizardStepKeys::STEP_RISK_CLASSIFICATION
+            && $this->annexAApplicabilityApplier !== null
+            && $run->getTenant() !== null
+        ) {
+            $annexMap = $result['normalised_input']['annex_a_applicability'] ?? [];
+            if (is_array($annexMap) && $annexMap !== []) {
+                $this->annexAApplicabilityApplier->applyToTenant($run->getTenant(), $annexMap);
+            }
+        }
 
         // Form-Audit (May 2026): when the user picked an existing
         // AuditFinding via the TomSelect picker on STEP_TARGETED_FINDING,
