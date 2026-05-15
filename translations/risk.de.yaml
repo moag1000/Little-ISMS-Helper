@@ -16,10 +16,10 @@ risk:
     owner_placeholder: Suche nach Owner...
     level_label: Risikolevel
     all_risks: Alle Risiken
-    level_critical: Kritisch (15-25)
-    level_high: Hoch (8-14)
-    level_medium: Mittel (4-7)
-    level_low: Niedrig (1-3)
+    level_critical: Kritisch
+    level_high: Hoch
+    level_medium: Mittel
+    level_low: Niedrig
     status_label: Status
     all_status: Alle Status
     status_identified: Identifiziert
@@ -37,10 +37,10 @@ risk:
     at_risk: Gefährdete Assets
   index:
     risk_level:
-      critical: Kritisch (20-25)
-      high: Hoch (12-19)
-      medium: Mittel (6-11)
-      low: Niedrig (1-5)
+      critical: Kritisch
+      high: Hoch
+      medium: Mittel
+      low: Niedrig
     treatment_status: Behandlungsstatus
     treatment:
       mitigate: Mindern
@@ -375,10 +375,10 @@ risk:
     probability: Eintrittswahrscheinlichkeit ↑
     legend_title: Risikostufen
     level:
-      critical: Kritisch (20-25)
-      high: Hoch (10-19)
-      medium: Mittel (5-9)
-      low: Niedrig (1-4)
+      critical: Kritisch
+      high: Hoch
+      medium: Mittel
+      low: Niedrig
       minor: Geringfügig
     risks_total: 'Risiken gesamt'
     cell_title: 'Wahrscheinlichkeit: %probability% | Auswirkung: %impact%'

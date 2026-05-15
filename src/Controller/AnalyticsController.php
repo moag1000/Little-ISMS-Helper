@@ -13,6 +13,7 @@ use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
+use App\Risk\RiskMatrixThresholds;
 use App\Service\AssetCriticalityService;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\ControlEffectivenessService;
@@ -268,15 +269,13 @@ class AnalyticsController extends AbstractController
     // Helper methods
     private function getRiskColor(int $score): string
     {
-        if ($score >= 15) {
-            return '#fecaca'; // Critical (15-25) - Light Red
-        } elseif ($score >= 8) {
-            return '#fed7aa'; // High (8-14) - Light Orange
-        } elseif ($score >= 4) {
-            return '#fef3c7'; // Medium (4-7) - Light Yellow
-        } else {
-            return '#d1fae5'; // Low (1-3) - Light Green
-        }
+        // Score-bands owned by App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b SSoT).
+        return match (RiskMatrixThresholds::classify($score)) {
+            'critical' => '#fecaca', // Light Red
+            'high'     => '#fed7aa', // Light Orange
+            'medium'   => '#fef3c7', // Light Yellow
+            default    => '#d1fae5', // Light Green (low)
+        };
     }
     private function extractAnnex(string $controlId): string
     {

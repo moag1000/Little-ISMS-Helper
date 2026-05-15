@@ -24,6 +24,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\VulnerabilityRepository;
+use App\Risk\RiskMatrixThresholds;
 use App\Service\InverseCoverageService;
 use App\Service\RiskMatrixService;
 use App\Service\RiskService;
@@ -143,14 +144,8 @@ class RiskController extends AbstractController
         // Apply filters
         if ($level) {
             $risks = array_filter($risks, function(Risk $risk) use ($level): bool {
-                $score = $risk->getRiskScore();
-                return match($level) {
-                    'critical' => $score >= 15,
-                    'high' => $score >= 8 && $score < 15,
-                    'medium' => $score >= 4 && $score < 8,
-                    'low' => $score < 4,
-                    default => true
-                };
+                // SSoT — App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
+                return RiskMatrixThresholds::classify($risk->getRiskScore()) === $level;
             });
         }
 
@@ -232,14 +227,8 @@ class RiskController extends AbstractController
         // Apply filters (same logic as index)
         if ($level) {
             $risks = array_filter($risks, function(Risk $risk) use ($level): bool {
-                $score = $risk->getRiskScore();
-                return match($level) {
-                    'critical' => $score >= 15,
-                    'high' => $score >= 8 && $score < 15,
-                    'medium' => $score >= 4 && $score < 8,
-                    'low' => $score < 4,
-                    default => true
-                };
+                // SSoT — App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
+                return RiskMatrixThresholds::classify($risk->getRiskScore()) === $level;
             });
         }
 
@@ -399,14 +388,8 @@ class RiskController extends AbstractController
         // Apply filters (same logic as index)
         if ($level) {
             $risks = array_filter($risks, function(Risk $risk) use ($level): bool {
-                $score = $risk->getRiskScore();
-                return match($level) {
-                    'critical' => $score >= 15,
-                    'high' => $score >= 8 && $score < 15,
-                    'medium' => $score >= 4 && $score < 8,
-                    'low' => $score < 4,
-                    default => true
-                };
+                // SSoT — App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
+                return RiskMatrixThresholds::classify($risk->getRiskScore()) === $level;
             });
         }
 
@@ -662,14 +645,8 @@ class RiskController extends AbstractController
         // Apply filters (same logic as index)
         if ($level) {
             $risks = array_filter($risks, function(Risk $risk) use ($level): bool {
-                $score = $risk->getRiskScore();
-                return match($level) {
-                    'critical' => $score >= 15,
-                    'high' => $score >= 8 && $score < 15,
-                    'medium' => $score >= 4 && $score < 8,
-                    'low' => $score < 4,
-                    default => true
-                };
+                // SSoT — App\Risk\RiskMatrixThresholds (ISO 27001 Cl. 6.1.2 b).
+                return RiskMatrixThresholds::classify($risk->getRiskScore()) === $level;
             });
         }
 
