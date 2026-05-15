@@ -53,7 +53,7 @@ class DoraRoiController extends AbstractController
     // ─── Index ────────────────────────────────────────────────────────────────
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('nis2_dora')) {
             return $redirect;
@@ -71,7 +71,7 @@ class DoraRoiController extends AbstractController
                 [],
                 'eu_authorities'
             ));
-            return $this->redirectToRoute('app_dashboard');
+            return $this->redirectToRoute('app_dashboard', ['_locale' => $request->getLocale()]);
         }
 
         $submissions = $this->roiRepository->findAllForTenant($tenant);
@@ -88,7 +88,7 @@ class DoraRoiController extends AbstractController
 
     #[Route('/generate', name: 'generate', methods: ['POST'])]
     #[IsCsrfTokenValid('dora_roi_generate')]
-    public function generate(): Response
+    public function generate(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('nis2_dora')) {
             return $redirect;
@@ -105,7 +105,7 @@ class DoraRoiController extends AbstractController
                 [],
                 'eu_authorities'
             ));
-            return $this->redirectToRoute('app_dashboard');
+            return $this->redirectToRoute('app_dashboard', ['_locale' => $request->getLocale()]);
         }
 
         // Create a dummy record for voter check (tenant-isolated, not yet persisted)
@@ -181,7 +181,7 @@ class DoraRoiController extends AbstractController
                 [],
                 'eu_authorities'
             ));
-            return $this->redirectToRoute('app_dashboard');
+            return $this->redirectToRoute('app_dashboard', ['_locale' => $request->getLocale()]);
         }
 
         $record = $this->roiRepository->find($id);
