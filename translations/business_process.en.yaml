@@ -83,6 +83,7 @@ business_process:
     process_owner_user: Process owner from user management.
     process_owner_person: 'Pick a Person without system login as process owner. List display order&#58; User &gt; Person &gt; legacy free-text.'
     process_owner_deputies: 'Additional Persons with deputy or shared responsibility. Multi-select.'
+    empty_link: /en/help/glossary#glossary-bia
   tooltip:
     criticality: <strong>Business Criticality (ISO 22301)</strong><br><table class="table
       table-sm table-borderless mb-0 mt-1"><tr><td><strong>Low</strong></td><td>Outage
@@ -128,8 +129,6 @@ business_process:
   action:
     create: Create process
     create_first: Create first business process
-  help:
-    empty_link: /en/help/glossary#glossary-bia
   impact_level:
     very_low: Very low
     low: Low

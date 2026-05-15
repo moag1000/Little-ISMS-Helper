@@ -368,6 +368,7 @@ audit_finding:
         reported_by_person: 'Person without system login as reporter. Order: User > Person > empty.'
         reported_by_deputy_persons: 'Additional persons with deputy role for reporter.'
         linked_requirements: 'Linking to ISO/BSI requirements auto-creates corrective action tasks (F15).'
+        empty_link: '/en/help/glossary#glossary-audit-finding'
     type:
         major_nc: 'Major Nonconformity'
         minor_nc: 'Minor Nonconformity'
@@ -393,8 +394,6 @@ audit_finding:
         no_findings: 'No findings yet.'
     empty:
         body: 'No open findings — your ISMS is currently compliance-clean. From the audit module you can document new findings from internal or external audits at any time.'
-    help:
-        empty_link: '/en/help/glossary#glossary-audit-finding'
     confirm:
         delete: 'Delete this finding?'
     flash:
