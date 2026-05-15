@@ -96,6 +96,23 @@ class QuickFixController extends AbstractController
             // non-fatal — display zeros, do not override $errorMessage from above
         }
 
+        // Read phantom-diff recovery payload stored by apply() on failure.
+        // Cleared after first read so it does not persist across refreshes.
+        $errorDiagnosis = null;
+        $session = $request->getSession();
+        if ($session->has('quick_fix.last_phantom_diff')) {
+            /** @var array{version: string, message: string}|null $phantomData */
+            $phantomData = $session->get('quick_fix.last_phantom_diff');
+            $session->remove('quick_fix.last_phantom_diff');
+            if (is_array($phantomData) && isset($phantomData['version'])) {
+                $errorDiagnosis = [
+                    'category' => 'phantom_diff_migration',
+                    'offending_version' => $phantomData['version'],
+                    'message' => $phantomData['message'] ?? '',
+                ];
+            }
+        }
+
         $response = $this->render('quick_fix/index.html.twig', [
             'pending_count' => $pendingCount,
             'pending_names' => $pendingNames,
@@ -105,6 +122,7 @@ class QuickFixController extends AbstractController
             'drift_statements' => $driftStatements,
             'drift_destructive' => $driftDestructive,
             'error_message' => $errorMessage,
+            'error_diagnosis' => $errorDiagnosis,
             // Data integrity
             'orphan_count' => $orphanCount,
             'orphans_by_type' => $orphansByType,
@@ -148,6 +166,18 @@ class QuickFixController extends AbstractController
                     $diagnosis['message'] ?? '',
                     $diagnosis['suggested_action'] ?? '',
                 ));
+                // When the error is a phantom-diff migration, store the offending version
+                // in the session so the index page can offer the one-click recovery button.
+                if (
+                    ($diagnosis['category'] ?? '') === 'phantom_diff_migration'
+                    && isset($diagnosis['offending_version'])
+                    && $diagnosis['offending_version'] !== null
+                ) {
+                    $request->getSession()->set('quick_fix.last_phantom_diff', [
+                        'version' => $diagnosis['offending_version'],
+                        'message' => $diagnosis['message'] ?? '',
+                    ]);
+                }
             } else {
                 $this->addFlash('error', sprintf('Migration failed: %s', $migrationResult['error'] ?? 'unknown error'));
             }
@@ -258,6 +288,65 @@ class QuickFixController extends AbstractController
 
         $this->addFlash('success', sprintf('%d Schema-Statement(s) erfolgreich angewendet.', $result['executed']));
         return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
+    }
+
+    // =========================================================================
+    // Phantom-diff recovery — force-mark a migration as executed without DDL.
+    // Safety gate: CSRF + explicit "already exists" checkbox.
+    // =========================================================================
+
+    /**
+     * Marks a migration version as executed in the metadata storage WITHOUT
+     * running its DDL. Only safe when the operator has verified that the
+     * schema change (column/table) already exists in the live database.
+     *
+     * Protected by:
+     * - QuickFixGuard (IP/token/dev-only constraints)
+     * - CSRF token 'quick_fix_force_mark_executed'
+     * - Mandatory confirm_already_exists checkbox
+     */
+    #[IsCsrfTokenValid('quick_fix_force_mark_executed')]
+    public function forceMarkExecuted(
+        Request $request,
+        QuickFixGuard $guard,
+        SchemaMaintenanceService $maintenance,
+        AuditLogger $auditLogger,
+    ): Response {
+        if (!$guard->mayAccess($request)) {
+            return $this->render('quick_fix/locked.html.twig', [
+                'token_required' => $guard->isTokenRequired(),
+            ], new Response('', Response::HTTP_FORBIDDEN));
+        }
+
+        $confirmAlreadyExists = (bool) $request->request->get('confirm_already_exists', false);
+        if (!$confirmAlreadyExists) {
+            $this->addFlash('error', 'Sicherheitscheck: Bitte bestätigen dass das Schema die Tabelle/Spalte WIRKLICH bereits enthält.');
+            return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
+        }
+
+        $version = trim((string) $request->request->get('version', ''));
+        if ($version === '') {
+            $this->addFlash('error', 'Keine Migrations-Version angegeben.');
+            return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
+        }
+
+        $result = $maintenance->markMigrationAsExecuted($version);
+
+        if ($result['success']) {
+            $auditLogger->logCustom(
+                'quick_fix.force_mark_migration_executed',
+                'Migration',
+                null,
+                null,
+                ['version' => $version],
+                sprintf('QuickFix: operator force-marked migration as executed (no DDL): %s', $version),
+            );
+            $this->addFlash('success', sprintf('Migration "%s" als ausgeführt markiert (ohne DDL).', $version));
+        } else {
+            $this->addFlash('error', sprintf('Fehler beim Markieren: %s', $result['error'] ?? 'unbekannter Fehler'));
+        }
+
+        return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
     }
 
     // =========================================================================
