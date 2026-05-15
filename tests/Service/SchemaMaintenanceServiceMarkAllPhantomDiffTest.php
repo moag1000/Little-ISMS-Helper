@@ -8,38 +8,45 @@ use App\Service\AuditLogger;
 use App\Service\SchemaHealthService;
 use App\Service\SchemaMaintenanceService;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Schema\Index;
-use Doctrine\DBAL\Types\StringType;
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\DependencyFactory;
 use Doctrine\Migrations\Metadata\AvailableMigration;
 use Doctrine\Migrations\Metadata\AvailableMigrationsSet;
 use Doctrine\Migrations\Metadata\ExecutedMigration;
 use Doctrine\Migrations\Metadata\ExecutedMigrationsList;
+use Doctrine\Migrations\Metadata\MigrationPlan;
+use Doctrine\Migrations\Metadata\MigrationPlanList;
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
+use Doctrine\Migrations\Migrator;
+use Doctrine\Migrations\MigratorConfiguration;
 use Doctrine\Migrations\MigrationsRepository;
-use Doctrine\Migrations\Query\Query;
-use Doctrine\Migrations\Version\AliasResolver;
+use Doctrine\Migrations\Version\Direction;
 use Doctrine\Migrations\Version\MigrationPlanCalculator;
 use Doctrine\Migrations\Version\Version;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for SchemaMaintenanceService::markAllPhantomDiffMigrationsAsExecuted()
- * using Approach A (schema-introspection per migration).
+ * using Approach C (per-version isolated execution loop).
  *
- * Each migration's SQL is inspected independently against the live schema:
- * - CREATE TABLE → table must already exist
- * - ADD COLUMN   → column must already exist in table
- * - CREATE INDEX → index must already exist on table
- * - Any unknown/DROP/INSERT/UPDATE → migration is NOT a phantom-diff candidate
+ * Each pending migration version is executed INDEPENDENTLY via a single-version
+ * MigrationPlanCalculator::getPlanForVersions() call. A failure in version N
+ * does NOT abort the loop.
+ *
+ * Per-version outcomes tested:
+ *  - Migration executes cleanly → recorded naturally (pending count drops)
+ *  - Migration throws phantom-diff error → force-marked via markMigrationAsExecuted()
+ *  - Migration throws real error → added to skipped[], loop continues
+ *  - Empty pending list → early success return
  *
  * Tests are pure unit tests using PHPUnit mocks — no database required.
+ * MigrationPlan is final and cannot be mocked; it is constructed directly with
+ * an anonymous AbstractMigration subclass.
  */
+#[AllowMockObjectsWithoutExpectations]
 class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
 {
     private const V1 = 'DoctrineMigrations\\Version20991231000001';
@@ -48,30 +55,38 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
     private const V4 = 'DoctrineMigrations\\Version20991231000004';
     private const V5 = 'DoctrineMigrations\\Version20991231000005';
 
+    // All test-doubles declared as MockObject so we can call ->method() on them.
+    // Per-test, only those that actually participate in a call flow are configured.
+    // The #[AllowMockObjectsWithoutExpectations] attribute silences PHPUnit 13
+    // notices for mocks that are legitimately wired up in setUp but not invoked
+    // in every test.
     private MockObject&SchemaHealthService $schemaHealthService;
     private MockObject&DependencyFactory $dependencyFactory;
     private MockObject&AuditLogger $auditLogger;
-    private MockObject&MigrationsRepository $migrationRepository;
     private MockObject&MetadataStorage $metadataStorage;
+    private MockObject&MigrationPlanCalculator $planCalculator;
+    private MockObject&Migrator $migrator;
     private MockObject&Connection $connection;
-    /** @var MockObject&AbstractSchemaManager<\Doctrine\DBAL\Platforms\AbstractPlatform> */
-    private MockObject&AbstractSchemaManager $schemaManager;
+    private MockObject&MigrationsRepository $migrationRepository;
 
     protected function setUp(): void
     {
-        $this->schemaHealthService = $this->createMock(SchemaHealthService::class);
-        $this->dependencyFactory = $this->createMock(DependencyFactory::class);
-        $this->auditLogger = $this->createMock(AuditLogger::class);
-        $this->migrationRepository = $this->createMock(MigrationsRepository::class);
-        $this->metadataStorage = $this->createMock(MetadataStorage::class);
-        $this->connection = $this->createMock(Connection::class);
-        $this->schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $this->schemaHealthService  = $this->createMock(SchemaHealthService::class);
+        $this->dependencyFactory    = $this->createMock(DependencyFactory::class);
+        $this->auditLogger          = $this->createMock(AuditLogger::class);
+        $this->metadataStorage      = $this->createMock(MetadataStorage::class);
+        $this->planCalculator       = $this->createMock(MigrationPlanCalculator::class);
+        $this->migrator             = $this->createMock(Migrator::class);
+        $this->connection           = $this->createMock(Connection::class);
+        $this->migrationRepository  = $this->createMock(MigrationsRepository::class);
 
-        $this->dependencyFactory->method('getMigrationRepository')->willReturn($this->migrationRepository);
         $this->dependencyFactory->method('getMetadataStorage')->willReturn($this->metadataStorage);
+        $this->dependencyFactory->method('getMigrationPlanCalculator')->willReturn($this->planCalculator);
+        $this->dependencyFactory->method('getMigrator')->willReturn($this->migrator);
         $this->dependencyFactory->method('getConnection')->willReturn($this->connection);
+        $this->dependencyFactory->method('getMigrationRepository')->willReturn($this->migrationRepository);
         $this->metadataStorage->method('ensureInitialized');
-        $this->connection->method('createSchemaManager')->willReturn($this->schemaManager);
+        $this->auditLogger->method('logCustom');
     }
 
     // -------------------------------------------------------------------------
@@ -88,71 +103,50 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
     }
 
     /**
-     * Create a mock AbstractMigration that returns the given SQL strings from getSql().
-     *
-     * @param string[] $sqlStatements
+     * Build a real MigrationPlanList for a single version.
+     * MigrationPlan is final, so we cannot mock it — we construct it directly
+     * using an anonymous AbstractMigration subclass as a no-op stub.
+     * AbstractMigration::__construct() takes (Connection, LoggerInterface).
      */
-    private function makeMigrationWithSql(array $sqlStatements): AbstractMigration
+    private function makePlanList(string $version): MigrationPlanList
     {
-        $migration = $this->getMockBuilder(AbstractMigration::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['up', 'getSql'])
-            ->getMock();
+        $migrationStub = new class($this->connection, $this->createMock(\Psr\Log\LoggerInterface::class)) extends AbstractMigration {
+            public function up(\Doctrine\DBAL\Schema\Schema $schema): void {}
+            public function down(\Doctrine\DBAL\Schema\Schema $schema): void {}
+        };
 
-        $queries = array_map(static fn (string $sql): Query => new Query($sql), $sqlStatements);
-        $migration->method('getSql')->willReturn($queries);
-        $migration->method('up'); // no-op — getSql() returns pre-loaded queries
+        $plan = new MigrationPlan(new Version($version), $migrationStub, Direction::UP);
 
-        return $migration;
+        return new MigrationPlanList([$plan], Direction::UP);
     }
 
-    private function makeAvailableMigration(string $version, AbstractMigration $migration): AvailableMigration
+    private function makeEmptyExecutedList(): ExecutedMigrationsList
     {
-        return new AvailableMigration(new Version($version), $migration);
-    }
-
-    private function makeExecutedList(string ...$versionStrings): ExecutedMigrationsList
-    {
-        $items = [];
-        foreach ($versionStrings as $vs) {
-            $items[] = new ExecutedMigration(new Version($vs));
-        }
-        return new ExecutedMigrationsList($items);
-    }
-
-    private function makeAvailableSet(string ...$versions): AvailableMigrationsSet
-    {
-        // We won't use this directly in Approach A (we use getMigration per-version)
-        // but it's needed by markMigrationAsExecuted's validation.
-        $items = [];
-        foreach ($versions as $vs) {
-            $items[] = new AvailableMigration(new Version($vs), $this->makeMigrationWithSql([]));
-        }
-        return new AvailableMigrationsSet($items);
-    }
-
-    private function stubColumn(string $name): Column
-    {
-        return new Column($name, new StringType());
-    }
-
-    private function stubIndex(string $name): Index
-    {
-        return new Index($name, []);
+        return new ExecutedMigrationsList([]);
     }
 
     /**
-     * Wire up markMigrationAsExecuted() prerequisites for a version:
-     * the migration repository knows the version AND it is not yet executed.
+     * Wire markMigrationAsExecuted() prerequisites so force-marking succeeds:
+     * - getMigrationRepository()->getMigrations() returns the given versions
+     * - getExecutedMigrations() returns empty (not yet executed)
+     * - connection->insert() is available (no-op)
+     *
+     * @param string[] $versions
      */
     private function stubMarkAsExecutedSuccess(string ...$versions): void
     {
-        $this->migrationRepository
-            ->method('getMigrations')
-            ->willReturn($this->makeAvailableSet(...$versions));
-        $this->metadataStorage
-            ->method('getExecutedMigrations')
-            ->willReturn($this->makeExecutedList());
+        $items = [];
+        foreach ($versions as $v) {
+            $migStub = new class($this->connection, $this->createMock(\Psr\Log\LoggerInterface::class)) extends AbstractMigration {
+                public function up(\Doctrine\DBAL\Schema\Schema $schema): void {}
+                public function down(\Doctrine\DBAL\Schema\Schema $schema): void {}
+            };
+            $items[] = new AvailableMigration(new Version($v), $migStub);
+        }
+
+        $availableSet = new AvailableMigrationsSet($items);
+        $this->migrationRepository->method('getMigrations')->willReturn($availableSet);
+        $this->metadataStorage->method('getExecutedMigrations')->willReturn($this->makeEmptyExecutedList());
         $this->connection->method('insert');
     }
 
@@ -171,252 +165,46 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
 
         self::assertTrue($result['success']);
         self::assertSame([], $result['marked']);
+        self::assertSame([], $result['skipped']);
         self::assertSame(0, $result['remaining_pending']);
         self::assertNull($result['stopped_at_error']);
     }
 
     // -------------------------------------------------------------------------
-    // Test 2: CREATE TABLE targeting an EXISTING table → marked as phantom-diff
+    // Test 2: Migration executes cleanly → not force-marked, pending drops naturally
     // -------------------------------------------------------------------------
 
     #[Test]
-    public function markAll_createTableTargetingExistingTable_markedAsPhantomDiff(): void
+    public function markAll_migrationRunsCleanly_notMarkedAndPendingDrops(): void
     {
         $this->schemaHealthService
             ->method('listPendingMigrationVersions')
             ->willReturnOnConsecutiveCalls(
                 [self::V1],  // initial pending scan
-                [],          // remaining_pending final check
+                [],          // remaining_pending after clean execution
             );
 
-        $migration = $this->makeMigrationWithSql([
-            'CREATE TABLE IF NOT EXISTS `my_table` (id INT NOT NULL)',
-        ]);
+        $this->planCalculator
+            ->method('getPlanForVersions')
+            ->willReturn($this->makePlanList(self::V1));
 
-        $this->migrationRepository
-            ->method('getMigration')
-            ->with(new Version(self::V1))
-            ->willReturn($this->makeAvailableMigration(self::V1, $migration));
-
-        // Table ALREADY exists in live schema → phantom-diff
-        $this->schemaManager->method('tablesExist')->with(['my_table'])->willReturn(true);
-
-        $this->stubMarkAsExecutedSuccess(self::V1);
-        $this->auditLogger->method('logCustom');
+        // Migrator does NOT throw → clean execution
+        $this->migrator->method('migrate')->willReturn([]);
 
         $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
 
         self::assertTrue($result['success']);
-        self::assertSame([self::V1], $result['marked']);
+        self::assertSame([], $result['marked']);   // nothing force-marked
+        self::assertSame([], $result['skipped']);
         self::assertSame(0, $result['remaining_pending']);
-        self::assertNull($result['stopped_at_error']);
     }
 
     // -------------------------------------------------------------------------
-    // Test 3: CREATE TABLE targeting a NON-EXISTING table → NOT marked
+    // Test 3: Phantom-diff — "Duplicate column name" (SQLSTATE 42S21) → force-marked
     // -------------------------------------------------------------------------
 
     #[Test]
-    public function markAll_createTableTargetingNonExistingTable_notMarked(): void
-    {
-        $this->schemaHealthService
-            ->method('listPendingMigrationVersions')
-            ->willReturnOnConsecutiveCalls(
-                [self::V1],  // pending scan
-                [self::V1],  // remaining_pending — still there
-            );
-
-        $migration = $this->makeMigrationWithSql([
-            'CREATE TABLE `new_table` (id INT NOT NULL)',
-        ]);
-
-        $this->migrationRepository
-            ->method('getMigration')
-            ->with(new Version(self::V1))
-            ->willReturn($this->makeAvailableMigration(self::V1, $migration));
-
-        // Table does NOT exist yet → real pending DDL
-        $this->schemaManager->method('tablesExist')->with(['new_table'])->willReturn(false);
-
-        $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
-
-        self::assertTrue($result['success']);
-        self::assertSame([], $result['marked']);
-        self::assertSame(1, $result['remaining_pending']);
-    }
-
-    // -------------------------------------------------------------------------
-    // Test 4: ADD COLUMN targeting an existing column → marked
-    // -------------------------------------------------------------------------
-
-    #[Test]
-    public function markAll_addColumnTargetingExistingColumn_markedAsPhantomDiff(): void
-    {
-        $this->schemaHealthService
-            ->method('listPendingMigrationVersions')
-            ->willReturnOnConsecutiveCalls(
-                [self::V2],
-                [],
-            );
-
-        $migration = $this->makeMigrationWithSql([
-            'ALTER TABLE `user` ADD COLUMN `phone` VARCHAR(50) DEFAULT NULL',
-        ]);
-
-        $this->migrationRepository
-            ->method('getMigration')
-            ->with(new Version(self::V2))
-            ->willReturn($this->makeAvailableMigration(self::V2, $migration));
-
-        // Column 'phone' already exists
-        $this->schemaManager
-            ->method('listTableColumns')
-            ->with('user')
-            ->willReturn(['phone' => $this->stubColumn('phone')]);
-
-        $this->stubMarkAsExecutedSuccess(self::V2);
-        $this->auditLogger->method('logCustom');
-
-        $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
-
-        self::assertTrue($result['success']);
-        self::assertSame([self::V2], $result['marked']);
-        self::assertNull($result['stopped_at_error']);
-    }
-
-    // -------------------------------------------------------------------------
-    // Test 5: Mixed migration (phantom CREATE TABLE + DROP table) → NOT marked
-    // -------------------------------------------------------------------------
-
-    #[Test]
-    public function markAll_migrationWithDropStatement_notMarked(): void
-    {
-        $this->schemaHealthService
-            ->method('listPendingMigrationVersions')
-            ->willReturnOnConsecutiveCalls(
-                [self::V3],
-                [self::V3],
-            );
-
-        // CREATE TABLE exists (phantom) BUT also has a DROP → conservative skip
-        $migration = $this->makeMigrationWithSql([
-            'CREATE TABLE IF NOT EXISTS `my_table` (id INT NOT NULL)',
-            'DROP TABLE `old_table`',
-        ]);
-
-        $this->migrationRepository
-            ->method('getMigration')
-            ->with(new Version(self::V3))
-            ->willReturn($this->makeAvailableMigration(self::V3, $migration));
-
-        $this->schemaManager->method('tablesExist')->willReturn(true);
-
-        $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
-
-        self::assertTrue($result['success']);
-        self::assertSame([], $result['marked']); // DROP caused conservative skip
-        self::assertSame(1, $result['remaining_pending']);
-    }
-
-    // -------------------------------------------------------------------------
-    // Test 6: Mixed scenario — 3 phantom, 2 non-phantom, 1 mixed → marks exactly 3
-    // -------------------------------------------------------------------------
-
-    #[Test]
-    public function markAll_mixedScenario_marksOnlyPhantomDiffMigrations(): void
-    {
-        // V1, V2, V3 → phantom (CREATE TABLE targeting existing table)
-        // V4          → non-phantom (CREATE TABLE targeting non-existing table)
-        // V5          → mixed (has a DROP → conservative skip)
-        // V_extra     → ADD COLUMN targeting missing column → not marked
-
-        $vExtra = 'DoctrineMigrations\\Version20991231000006';
-
-        $allPending = [self::V1, self::V2, self::V3, self::V4, self::V5, $vExtra];
-
-        $this->schemaHealthService
-            ->method('listPendingMigrationVersions')
-            ->willReturnOnConsecutiveCalls(
-                $allPending,        // initial scan
-                [self::V4, self::V5, $vExtra],  // remaining after marking 3
-            );
-
-        // Phantom migrations — table already exists
-        $phantomMigration = $this->makeMigrationWithSql([
-            'CREATE TABLE IF NOT EXISTS `existing_table` (id INT NOT NULL)',
-        ]);
-
-        // Non-phantom — table does NOT exist
-        $nonPhantomMigration = $this->makeMigrationWithSql([
-            'CREATE TABLE `brand_new_table` (id INT NOT NULL)',
-        ]);
-
-        // Mixed — has DROP
-        $mixedMigration = $this->makeMigrationWithSql([
-            'CREATE TABLE IF NOT EXISTS `existing_table` (id INT NOT NULL)',
-            'DROP TABLE `old_table`',
-        ]);
-
-        // Extra — ADD COLUMN where column does NOT exist
-        $addColumnMissingMigration = $this->makeMigrationWithSql([
-            'ALTER TABLE `user` ADD COLUMN `missing_col` VARCHAR(50)',
-        ]);
-
-        $this->migrationRepository
-            ->method('getMigration')
-            ->willReturnCallback(function (Version $v) use (
-                $phantomMigration,
-                $nonPhantomMigration,
-                $mixedMigration,
-                $addColumnMissingMigration,
-                $vExtra,
-            ): AvailableMigration {
-                $vs = (string) $v;
-                if (in_array($vs, [self::V1, self::V2, self::V3], true)) {
-                    return $this->makeAvailableMigration($vs, $phantomMigration);
-                }
-                if ($vs === self::V4) {
-                    return $this->makeAvailableMigration($vs, $nonPhantomMigration);
-                }
-                if ($vs === self::V5) {
-                    return $this->makeAvailableMigration($vs, $mixedMigration);
-                }
-                return $this->makeAvailableMigration($vs, $addColumnMissingMigration);
-            });
-
-        $this->schemaManager
-            ->method('tablesExist')
-            ->willReturnCallback(static function (array $tables): bool {
-                return $tables === ['existing_table'];
-            });
-
-        $this->schemaManager
-            ->method('listTableColumns')
-            ->willReturn([]); // 'missing_col' absent
-
-        $this->stubMarkAsExecutedSuccess(self::V1, self::V2, self::V3, self::V4, self::V5, $vExtra);
-        $this->auditLogger->method('logCustom');
-
-        $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
-
-        self::assertTrue($result['success']);
-        self::assertCount(3, $result['marked']);
-        self::assertContains(self::V1, $result['marked']);
-        self::assertContains(self::V2, $result['marked']);
-        self::assertContains(self::V3, $result['marked']);
-        self::assertNotContains(self::V4, $result['marked']);
-        self::assertNotContains(self::V5, $result['marked']);
-        self::assertNotContains($vExtra, $result['marked']);
-        self::assertSame(3, $result['remaining_pending']);
-        self::assertNull($result['stopped_at_error']);
-    }
-
-    // -------------------------------------------------------------------------
-    // Test 7: CREATE INDEX targeting an existing index → marked
-    // -------------------------------------------------------------------------
-
-    #[Test]
-    public function markAll_createIndexTargetingExistingIndex_markedAsPhantomDiff(): void
+    public function markAll_phantomDiffDuplicateColumnError_forcedMarked(): void
     {
         $this->schemaHealthService
             ->method('listPendingMigrationVersions')
@@ -425,26 +213,178 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
                 [],
             );
 
-        $migration = $this->makeMigrationWithSql([
-            'CREATE INDEX idx_user_email ON `user` (email)',
-        ]);
+        $this->planCalculator
+            ->method('getPlanForVersions')
+            ->willReturn($this->makePlanList(self::V1));
 
-        $this->migrationRepository
-            ->method('getMigration')
-            ->willReturn($this->makeAvailableMigration(self::V1, $migration));
-
-        $this->schemaManager
-            ->method('listTableIndexes')
-            ->with('user')
-            ->willReturn(['idx_user_email' => $this->stubIndex('idx_user_email')]);
+        $this->migrator
+            ->method('migrate')
+            ->willThrowException(new \RuntimeException("SQLSTATE[42S21]: Column already exists: 1060 Duplicate column name 'status'"));
 
         $this->stubMarkAsExecutedSuccess(self::V1);
-        $this->auditLogger->method('logCustom');
 
         $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
 
         self::assertTrue($result['success']);
         self::assertSame([self::V1], $result['marked']);
+        self::assertSame([], $result['skipped']);
+        self::assertSame(0, $result['remaining_pending']);
+        self::assertNull($result['stopped_at_error']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Test 4: Phantom-diff — "Table already exists" SQLSTATE[42S01] → force-marked
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function markAll_phantomDiffTableAlreadyExistsError_forcedMarked(): void
+    {
+        $this->schemaHealthService
+            ->method('listPendingMigrationVersions')
+            ->willReturnOnConsecutiveCalls(
+                [self::V2],
+                [],
+            );
+
+        $this->planCalculator
+            ->method('getPlanForVersions')
+            ->willReturn($this->makePlanList(self::V2));
+
+        $this->migrator
+            ->method('migrate')
+            ->willThrowException(new \RuntimeException("SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'assets' already exists"));
+
+        $this->stubMarkAsExecutedSuccess(self::V2);
+
+        $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
+
+        self::assertTrue($result['success']);
+        self::assertSame([self::V2], $result['marked']);
+        self::assertSame([], $result['skipped']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Test 5: Real error (FK constraint) → skipped with category, loop continues
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function markAll_realFkError_versionSkippedLoopContinues(): void
+    {
+        $this->schemaHealthService
+            ->method('listPendingMigrationVersions')
+            ->willReturnOnConsecutiveCalls(
+                [self::V3],
+                [self::V3],  // still pending after skip
+            );
+
+        $this->planCalculator
+            ->method('getPlanForVersions')
+            ->willReturn($this->makePlanList(self::V3));
+
+        $this->migrator
+            ->method('migrate')
+            ->willThrowException(new \RuntimeException('SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails'));
+
+        $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
+
+        self::assertFalse($result['success']);
+        self::assertSame([], $result['marked']);
+        self::assertArrayHasKey(self::V3, $result['skipped']);
+        self::assertStringContainsString('foreign_key_constraint', $result['skipped'][self::V3]);
+        self::assertSame(1, $result['remaining_pending']);
+        self::assertNull($result['stopped_at_error']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Test 6: Mixed — phantom + clean success + real error
+    // V1 phantom → force-marked, V2 runs cleanly, V3 real error → skipped
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function markAll_mixedPhantomCleanAndRealError_markedAndSkippedCorrectly(): void
+    {
+        $this->schemaHealthService
+            ->method('listPendingMigrationVersions')
+            ->willReturnOnConsecutiveCalls(
+                [self::V1, self::V2, self::V3],
+                [self::V3],  // only real-error version remains
+            );
+
+        $planV1 = $this->makePlanList(self::V1);
+        $planV2 = $this->makePlanList(self::V2);
+        $planV3 = $this->makePlanList(self::V3);
+
+        $this->planCalculator
+            ->method('getPlanForVersions')
+            ->willReturnCallback(static function (array $versions) use ($planV1, $planV2, $planV3): MigrationPlanList {
+                $v = (string) $versions[0];
+                return match ($v) {
+                    self::V1 => $planV1,
+                    self::V2 => $planV2,
+                    default  => $planV3,
+                };
+            });
+
+        $this->migrator
+            ->method('migrate')
+            ->willReturnCallback(function (MigrationPlanList $plan, MigratorConfiguration $cfg): array {
+                $items = $plan->getItems();
+                $v = (string) $items[0]->getVersion();
+                if ($v === self::V1) {
+                    throw new \RuntimeException("SQLSTATE[42S21]: Duplicate column name 'tenant_id'");
+                }
+                if ($v === self::V3) {
+                    throw new \RuntimeException('SQLSTATE[23000]: Integrity constraint violation: foreign key constraint fails');
+                }
+                return []; // V2 runs cleanly
+            });
+
+        $this->stubMarkAsExecutedSuccess(self::V1, self::V2, self::V3);
+
+        $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
+
+        self::assertFalse($result['success']);  // V3 skipped → partial
+        self::assertSame([self::V1], $result['marked']);
+        self::assertArrayHasKey(self::V3, $result['skipped']);
+        self::assertStringContainsString('foreign_key_constraint', $result['skipped'][self::V3]);
+        self::assertCount(1, $result['skipped']);
+        self::assertSame(1, $result['remaining_pending']);
+        self::assertNull($result['stopped_at_error']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Test 7: All phantom-diff → all force-marked, success=true, skipped=[]
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function markAll_allPhantomDiff_allMarkedSuccessTrue(): void
+    {
+        $allVersions = [self::V1, self::V2, self::V3];
+
+        $this->schemaHealthService
+            ->method('listPendingMigrationVersions')
+            ->willReturnOnConsecutiveCalls(
+                $allVersions,
+                [],
+            );
+
+        $this->planCalculator
+            ->method('getPlanForVersions')
+            ->willReturnCallback(fn (array $versions): MigrationPlanList => $this->makePlanList((string) $versions[0]));
+
+        $this->migrator
+            ->method('migrate')
+            ->willThrowException(new \RuntimeException("SQLSTATE[42S21]: Duplicate column name 'x'"));
+
+        $this->stubMarkAsExecutedSuccess(...$allVersions);
+
+        $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
+
+        self::assertTrue($result['success']);
+        self::assertCount(3, $result['marked']);
+        self::assertSame($allVersions, $result['marked']);
+        self::assertSame([], $result['skipped']);
+        self::assertSame(0, $result['remaining_pending']);
     }
 
     // -------------------------------------------------------------------------
@@ -460,9 +400,42 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
 
         self::assertArrayHasKey('success', $result);
         self::assertArrayHasKey('marked', $result);
+        self::assertArrayHasKey('skipped', $result);
         self::assertArrayHasKey('remaining_pending', $result);
         self::assertArrayHasKey('stopped_at_error', $result);
         self::assertIsArray($result['marked']);
+        self::assertIsArray($result['skipped']);
         self::assertIsInt($result['remaining_pending']);
+        self::assertNull($result['stopped_at_error']); // always null in Approach C
+    }
+
+    // -------------------------------------------------------------------------
+    // Test 9: stopped_at_error is always null even on real errors (backward-compat)
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function markAll_stoppedAtErrorAlwaysNullEvenOnRealError(): void
+    {
+        $this->schemaHealthService
+            ->method('listPendingMigrationVersions')
+            ->willReturnOnConsecutiveCalls(
+                [self::V1],
+                [self::V1],
+            );
+
+        $this->planCalculator
+            ->method('getPlanForVersions')
+            ->willReturn($this->makePlanList(self::V1));
+
+        $this->migrator
+            ->method('migrate')
+            ->willThrowException(new \RuntimeException('some real unexpected error without known pattern'));
+
+        $result = $this->makeService()->markAllPhantomDiffMigrationsAsExecuted();
+
+        // Real error → skipped, but stopped_at_error must remain null (Approach C guarantee)
+        self::assertNull($result['stopped_at_error']);
+        self::assertArrayHasKey(self::V1, $result['skipped']);
+        self::assertFalse($result['success']);
     }
 }
