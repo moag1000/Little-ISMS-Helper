@@ -53,6 +53,11 @@ quick_fix:
             tenant_mismatches: '%count% Mandant-Fehlzuordnung(en) behoben.'
             duplicates: '%count% Duplikat(e) aus "%type%" bereinigt.'
             all: 'Alle Repairs abgeschlossen: %orphans% Orphan(s), %mismatches% Mismatch(es), %duplicates% Duplikat(e).'
+    phantom_diff:
+        title: 'Schema bereits aktuell — Migration als erledigt markieren'
+        warning: 'Nur klicken wenn das Schema die Tabelle/Spalte WIRKLICH bereits enthält. Diese Aktion überspringt die DDL-Ausführung und markiert die Migration nur in der Versionstabelle.'
+        confirm_label: 'Ich bestätige, dass das Schema diese Änderung bereits enthält und die Migration sicher als ausgeführt markiert werden kann.'
+        button: 'Migration als ausgeführt markieren (ohne DDL)'
     settings:
         title: 'Quick-Fix'
         description: 'Steuert die öffentliche Fallback-Seite, die bei Schema-Mismatch statt eines 500er erscheint.'
