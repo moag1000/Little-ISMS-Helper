@@ -103,6 +103,22 @@ crisis_team:
         body_never: 'Bisher kein Training dokumentiert. BSI 200-4 Kap. 4.2 / ISO 22301 Cl. 7.2 fordern regelmäßige Übungen.'
         action: 'Tabletop-Übung planen'
 
+document:
+    acknowledgement_audience:
+        title: 'Wer muss diese Dokumenten-Kenntnisnahme bestätigen?'
+        body: 'Dieses Dokument fordert eine Mitarbeiter-Bestätigung (ISO 27001 A.6.3), aber keine explizite Audience ist hinterlegt. Standardmäßig wird an alle aktiven Mandanten-Nutzer gestreut — eine gezielte Audience macht die Awareness-Evidenz Audit-fit.'
+        action: 'Audience festlegen'
+        picker_title: 'Acknowledgement-Audience festlegen'
+        picker_subtitle: 'Wähle die Mitarbeitenden, die dieses Dokument bestätigen müssen. Bei leerer Auswahl wird wie bisher an alle aktiven Nutzer gestreut.'
+        picker_breadcrumb: 'Audience festlegen'
+        picker_section_title: 'Verfügbare Nutzer im Mandanten'
+        no_candidates: 'Keine aktiven Nutzer in diesem Mandanten gefunden.'
+        filter_placeholder: 'Nach E-Mail oder Name suchen…'
+        save: 'Audience speichern'
+        empty_means_all: 'Hinweis: leere Auswahl behält das Standard-Verhalten "alle aktiven Mandanten-Nutzer".'
+        flash_saved: 'Acknowledgement-Audience gespeichert.'
+        flash_not_required: 'Dokument fordert keine Bestätigung — Audience-Picker übersprungen.'
+
 training:
     mandatory_audience:
         title: 'Pflichttraining ohne Teilnehmer-Liste'

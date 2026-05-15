@@ -103,6 +103,22 @@ crisis_team:
         body_never: 'No training documented yet. BSI 200-4 §4.2 / ISO 22301 Cl. 7.2 require recurring exercises.'
         action: 'Schedule tabletop'
 
+document:
+    acknowledgement_audience:
+        title: 'Who needs to acknowledge this document?'
+        body: 'This document requires user acknowledgement (ISO 27001 A.6.3) but no explicit audience is set. By default the campaign broadcasts to all active tenant users — a targeted audience makes the awareness evidence audit-ready.'
+        action: 'Set audience'
+        picker_title: 'Set acknowledgement audience'
+        picker_subtitle: 'Pick the employees who must acknowledge this document. Leaving the selection empty keeps the legacy broadcast-to-all behaviour.'
+        picker_breadcrumb: 'Set audience'
+        picker_section_title: 'Available users in tenant'
+        no_candidates: 'No active users in this tenant.'
+        filter_placeholder: 'Search by e-mail or name…'
+        save: 'Save audience'
+        empty_means_all: 'Note: empty selection keeps the default "all active tenant users".'
+        flash_saved: 'Acknowledgement audience saved.'
+        flash_not_required: 'Document does not require acknowledgement — audience picker skipped.'
+
 training:
     mandatory_audience:
         title: 'Mandatory training without audience'

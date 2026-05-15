@@ -21,6 +21,8 @@ use App\Repository\EntityTagRepository;
 use App\Service\DocumentService;
 use App\Service\FileUploadSecurityService;
 use App\Service\InverseCoverageService;
+use App\Service\TenantContext;
+use App\Repository\UserRepository;
 use App\Entity\User;
 use App\Service\AuditLogger;
 use App\Service\PolicyWizard\AuditorScoreCalculator;
@@ -65,6 +67,8 @@ class DocumentController extends AbstractController
         private readonly ?EvidenceVersioningService $evidenceVersioningService = null,
         private readonly ?EvidenceCascadeInvalidationService $evidenceCascadeInvalidationService = null,
         private readonly ?DocumentReuseAnalyticsService $documentReuseAnalyticsService = null,
+        private readonly ?UserRepository $userRepository = null,
+        private readonly ?TenantContext $tenantContext = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index')]
@@ -1109,5 +1113,61 @@ class DocumentController extends AbstractController
         }
 
         return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+    }
+
+    /**
+     * Sprint-2 P-7 Wave-2 Trigger-4: Document acknowledgement audience picker.
+     *
+     * ISO 27001 A.6.3 — explicit audience selection for policy
+     * acknowledgement, replacing the broadcast-to-all default. GET shows
+     * a User multi-select scoped to the document's tenant; POST persists
+     * the selection into Document::$acknowledgementAudience.
+     */
+    #[Route('/document/{id}/acknowledgement-audience', name: 'app_document_acknowledgement_audience_picker', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function acknowledgementAudiencePicker(Request $request, Document $document): Response
+    {
+        $tenant = $document->getTenant();
+        $currentTenant = $this->tenantContext?->getCurrentTenant();
+        if ($tenant === null || $tenant !== $currentTenant) {
+            throw $this->createNotFoundException();
+        }
+        if (!$document->getRequiresAcknowledgement()) {
+            $this->addFlash('warning', $this->translator->trans('document.acknowledgement_audience.flash_not_required', [], 'alva'));
+            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+        }
+
+        if ($request->isMethod('POST') && $this->userRepository !== null) {
+            $userIds = array_filter(
+                (array) $request->request->all('user_ids'),
+                static fn($id): bool => is_string($id) && ctype_digit($id),
+            );
+
+            // Reset + re-attach (idempotent)
+            foreach ($document->getAcknowledgementAudience() as $existing) {
+                $document->removeAcknowledgementAudience($existing);
+            }
+            foreach ($userIds as $id) {
+                $u = $this->userRepository->find((int) $id);
+                if ($u instanceof User && $u->getTenant() === $tenant) {
+                    $document->addAcknowledgementAudience($u);
+                }
+            }
+            $this->entityManager->flush();
+
+            $this->addFlash('success', $this->translator->trans('document.acknowledgement_audience.flash_saved', [], 'alva'));
+
+            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+        }
+
+        $candidates = $this->userRepository !== null
+            ? $this->userRepository->findBy(['tenant' => $tenant, 'isActive' => true], ['email' => 'ASC'])
+            : [];
+
+        return $this->render('document/acknowledgement_audience_picker.html.twig', [
+            'document' => $document,
+            'candidates' => $candidates,
+            'already_selected' => $document->getAcknowledgementAudience(),
+        ]);
     }
 }
