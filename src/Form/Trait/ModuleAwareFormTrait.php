@@ -37,6 +37,32 @@ use Symfony\Component\Form\FormBuilderInterface;
 trait ModuleAwareFormTrait
 {
     /**
+     * Convenience: gate a SINGLE field on a module-key. Equivalent to:
+     *     if ($this->isModuleActive($moduleKey)) {
+     *         $builder->add($name, $type, $options);
+     *     }
+     *
+     * Use for per-field gating (T31 / S2-P6). For multi-field sections prefer
+     * an explicit if-block + private addXxxFields() helper for readability.
+     *
+     * @param array<string, mixed> $options
+     */
+    protected function addModuleGatedField(
+        FormBuilderInterface $builder,
+        string $moduleKey,
+        string $name,
+        ?string $type = null,
+        array $options = [],
+    ): FormBuilderInterface {
+        if ($this->isModuleActive($moduleKey)) {
+            $builder->add($name, $type, $options);
+        }
+
+        return $builder;
+    }
+
+
+    /**
      * Returns true when the given module key is active in config/active_modules.yaml.
      * Requires the using class to have a $moduleConfiguration property of type
      * ModuleConfigurationService.
