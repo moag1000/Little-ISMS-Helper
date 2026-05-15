@@ -335,6 +335,104 @@ class SchemaMaintenanceService
     }
 
     /**
+     * Iterates over all pending migrations and marks each one as executed
+     * WITHOUT running its DDL, stopping only when either no phantom-diff
+     * error is returned (i.e. a real error or clean success) or the cap
+     * is reached. Designed for the "click 127 times" recovery scenario.
+     *
+     * Algorithm (Approach B from spec):
+     *  1. Attempt executePendingMigrations() — if success → done.
+     *  2. If diagnosis.category === phantom_diff_migration → markMigrationAsExecuted()
+     *     on the offending version, then loop.
+     *  3. If any other error → break and report partial progress.
+     *  4. Cap iterations at 200 to prevent runaway loops.
+     *
+     * @return array{
+     *     success: bool,
+     *     marked: list<string>,
+     *     remaining_pending: int,
+     *     stopped_at_error: ?string,
+     * }
+     */
+    public function markAllPhantomDiffMigrationsAsExecuted(string $actor = 'system'): array
+    {
+        $maxIterations = 200;
+        $marked = [];
+        $stoppedAtError = null;
+
+        for ($i = 0; $i < $maxIterations; $i++) {
+            // Re-check pending count each iteration (the list shrinks as we mark).
+            $pending = $this->listPendingMigrationVersionsFromFileSystem();
+            if ($pending === []) {
+                break;
+            }
+
+            $result = $this->executePendingMigrations($actor);
+
+            if ($result['success']) {
+                // All remaining migrations executed cleanly — done.
+                break;
+            }
+
+            $diagnosis = $result['diagnosis'] ?? null;
+            if (!is_array($diagnosis) || ($diagnosis['category'] ?? 'unknown') !== 'phantom_diff_migration') {
+                // Non-phantom error — cannot auto-recover, report and stop.
+                $stoppedAtError = is_array($diagnosis)
+                    ? sprintf('[%s] %s', $diagnosis['category'], $diagnosis['suggested_action'] ?? $diagnosis['message'] ?? $result['error'] ?? 'unknown')
+                    : ($result['error'] ?? 'unknown error');
+                break;
+            }
+
+            $offendingVersion = $diagnosis['offending_version'] ?? null;
+            if ($offendingVersion === null || $offendingVersion === '') {
+                // Phantom-diff diagnosed but no version identified — cannot mark.
+                $stoppedAtError = 'phantom_diff_migration detected but no offending_version in diagnosis.';
+                break;
+            }
+
+            $markResult = $this->markMigrationAsExecuted($offendingVersion);
+            if (!$markResult['success']) {
+                $stoppedAtError = sprintf(
+                    'force-mark failed for %s: %s',
+                    $offendingVersion,
+                    $markResult['error'] ?? 'unknown',
+                );
+                break;
+            }
+
+            $marked[] = $offendingVersion;
+
+            $this->auditLogger->logCustom(
+                'quick_fix.force_mark_migration_executed',
+                'Migration',
+                null,
+                null,
+                ['version' => $offendingVersion, 'batch' => 'mark_all_phantom_diff', 'index' => $i + 1],
+                sprintf(
+                    'QuickFix/mark-all: force-marked phantom-diff migration %d/%d: %s',
+                    $i + 1,
+                    $maxIterations,
+                    $offendingVersion,
+                ),
+            );
+        }
+
+        // If we exhausted iterations without finishing, record partial progress.
+        if ($i === $maxIterations && $stoppedAtError === null) {
+            $stoppedAtError = sprintf('Iteration cap (%d) reached — partial progress only.', $maxIterations);
+        }
+
+        $remainingPending = count($this->listPendingMigrationVersionsFromFileSystem());
+
+        return [
+            'success' => $stoppedAtError === null,
+            'marked' => $marked,
+            'remaining_pending' => $remainingPending,
+            'stopped_at_error' => $stoppedAtError,
+        ];
+    }
+
+    /**
      * Returns pending migration class names sorted by version. Tolerates a
      * Categorise a Doctrine-Migrations error and emit a human-readable
      * suggestion the operator can act on. Patterns observed in production:

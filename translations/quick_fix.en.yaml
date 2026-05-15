@@ -58,6 +58,10 @@ quick_fix:
         warning: 'Only click if the schema ALREADY contains the table/column. This action skips the DDL and only records the migration in the version table.'
         confirm_label: 'I confirm that the schema already contains this change and the migration can safely be marked as executed.'
         button: 'Mark migration as executed (no DDL)'
+        mark_all_show: 'Mark all phantom-diff migrations at once...'
+        mark_all_body: 'Marks ALL pending migrations as executed that produce a phantom-diff error (table/column already exists). Stops at the first migration that does not produce a phantom-diff error. Only use when you are certain ALL pending migrations are already reflected in the live schema.'
+        mark_all_confirm_label: 'I confirm that ALL pending migrations are already applied at the schema level and can safely be marked as executed without running their DDL.'
+        mark_all_button: 'Mark all phantom-diff migrations as executed (no DDL)'
     settings:
         title: 'Quick Fix'
         description: 'Controls the public fallback page shown on schema mismatch instead of a 500 error.'
