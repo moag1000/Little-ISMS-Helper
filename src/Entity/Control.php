@@ -85,8 +85,8 @@ class Control
     #[Assert\NotBlank(message: 'Control ID is required')]
     #[Assert\Length(max: 20, maxMessage: 'Control ID cannot exceed { limit } characters')]
     #[Assert\Regex(
-        pattern: '/^\d+\.\d+(\.\d+)?$/',
-        message: 'Control ID must follow ISO 27001 format (e.g., 5.1, 8.3)'
+        pattern: '/^[A-Z]{0,3}\.?\d+\.\d+(\.\d+){0,2}$/',
+        message: 'Control ID must follow ISO 27001/27701/27017/27018 format (e.g., 5.1, A.5.1, B.8.2, 7.2.1, CLD.6.3)'
     )]
     private ?string $controlId = null;
 
