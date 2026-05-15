@@ -1,0 +1,126 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'library' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block admin_title %}{{ 'library.title'|trans({}, 'library') }}{% endblock %}
+
+{% block title %}{{ 'library.title'|trans({}, 'library') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_hub_index') }}">{{ 'admin.nav.admin'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'library.title'|trans({}, 'library') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'collection', label: 'library.badge'|trans({}, 'library') },
+        title: 'library.title'|trans({}, 'library'),
+        subtitle: 'library.subtitle'|trans({}, 'library'),
+    }) }}
+
+    {# Available Library YAMLs #}
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                {{ 'library.section.available'|trans({}, 'library') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            {% if available_libraries|length == 0 %}
+                {{ _fa_empty_state.render({
+                    mood: 'thinking',
+                    title: 'library.empty.no_yamls'|trans({}, 'library'),
+                    body: 'library.empty.no_yamls_desc'|trans({}, 'library'),
+                }) }}
+            {% else %}
+                <div class="row g-3">
+                    {% for lib in available_libraries %}
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fa-icon fa-icon--nav-file-earmark-text me-2" aria-hidden="true"></i>
+                                        <strong>{{ lib.label }}</strong>
+                                    </div>
+                                    <p class="text-muted small mb-3">
+                                        {{ 'library.action.file'|trans({}, 'library') }}:
+                                        <code>{{ lib.filename }}.yaml</code>
+                                    </p>
+                                    <form method="post" action="{{ path('admin_library_import', { type: lib.type }) }}">
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                                            {{ 'library.action.import'|trans({}, 'library') }}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    {# Imported Frameworks #}
+    <section class="fa-section">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
+                {{ 'library.section.imported'|trans({}, 'library') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            {% if imported_frameworks|length == 0 %}
+                {{ _fa_empty_state.render({
+                    mood: 'neutral',
+                    title: 'library.empty.no_imports'|trans({}, 'library'),
+                    body: 'library.empty.no_imports_desc'|trans({}, 'library'),
+                }) }}
+            {% else %}
+                <div class="table-responsive">
+                    <table class="fa-table fa-table--striped">
+                        <thead>
+                            <tr>
+                                <th class="fa-table__th">{{ 'library.table.code'|trans({}, 'library') }}</th>
+                                <th class="fa-table__th">{{ 'library.table.name'|trans({}, 'library') }}</th>
+                                <th class="fa-table__th">{{ 'library.table.version'|trans({}, 'library') }}</th>
+                                <th class="fa-table__th">{{ 'library.table.body'|trans({}, 'library') }}</th>
+                                <th class="fa-table__th">{{ 'library.table.status'|trans({}, 'library') }}</th>
+                                <th class="fa-table__th">{{ 'library.table.actions'|trans({}, 'library') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for framework in imported_frameworks %}
+                                <tr>
+                                    <td><code>{{ framework.code }}</code></td>
+                                    <td>{{ framework.name }}</td>
+                                    <td>{{ framework.version }}</td>
+                                    <td>{{ framework.regulatoryBody }}</td>
+                                    <td>
+                                        <span class="fa-status-pill fa-status-pill--success">{{ framework.lifecycleState }}</span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('admin_library_export_yaml', { id: framework.id }) }}"
+                                           class="btn btn-xs btn-outline-secondary me-1"
+                                           title="{{ 'library.action.export_yaml'|trans({}, 'library') }}">
+                                            <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                                            YAML
+                                        </a>
+                                        <a href="{{ path('admin_library_export_csv', { id: framework.id }) }}"
+                                           class="btn btn-xs btn-outline-secondary"
+                                           title="{{ 'library.action.export_csv'|trans({}, 'library') }}">
+                                            <i class="fa-icon fa-icon--nav-file-earmark-spreadsheet" aria-hidden="true"></i>
+                                            CSV
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

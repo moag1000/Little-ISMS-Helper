@@ -362,6 +362,13 @@ class AdminHubCatalog
                         'description' => 'admin.hub.module.import_history.desc',
                         'route' => 'admin_import_history_index',
                     ],
+                    [
+                        'key' => 'library_importer',
+                        'icon' => 'fa-icon--nav-book',
+                        'label' => 'admin.hub.module.library_importer.label',
+                        'description' => 'admin.hub.module.library_importer.desc',
+                        'route' => 'admin_library_index',
+                    ],
                 ],
             ],
             [

@@ -52,6 +52,7 @@ admin:
             gstool_import: { label: 'GSTool import', desc: 'BSI IT-Grundschutz from GSTool export' }
             sample_data: { label: 'Sample data', desc: 'Load / remove demo records' }
             import_history: { label: 'Import history', desc: 'Recent imports + rollback' }
+            library_importer: { label: 'BSI / TISAX Library', desc: 'Import and export framework fixtures (BSI Kompendium 2024, TISAX ISA 6.0)' }
             system_health: { label: 'System health', desc: 'Service status, disk, cache, logs' }
             modules: { label: 'Modules', desc: 'Manage active ISMS modules' }
             data_repair: { label: 'Data repair', desc: 'Orphans, tenant mismatches, schema reconcile' }
