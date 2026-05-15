@@ -4,6 +4,7 @@ nav:
     my_profile: 'My Profile'
     context: 'ISMS Context'
     analytics: Analytics
+    fte_tracking: 'FTE Tracking'
     interested_parties: 'Interested Parties'
     soa: SoA
     assets: Assets
@@ -149,6 +150,7 @@ nav:
             home: 'Overview and quick access'
             dashboard: 'Key metrics and insights'
             analytics: 'Reports and analytics'
+            fte_tracking: 'FTE savings from SSO JIT, Bulk-Import, and Evidence reuse'
             context: 'Organization context and scope'
             interested_parties: 'Stakeholders and requirements'
             soa: 'Statement of Applicability (ISO 27001 Annex A)'

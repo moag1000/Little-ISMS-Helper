@@ -403,6 +403,15 @@ class AdminHubCatalog
                         'description' => 'admin.hub.module.kpi_threshold.desc',
                         'route' => 'admin_kpi_threshold_index',
                     ],
+                    // Sprint 9A — F11 FTE-Tracking
+                    [
+                        'key' => 'fte_tracking',
+                        'icon' => 'clock-history',
+                        'label' => 'admin.hub.module.fte_tracking.label',
+                        'description' => 'admin.hub.module.fte_tracking.desc',
+                        'route' => 'analytics_fte_index',
+                        'requiredModule' => 'analytics',
+                    ],
                     [
                         'key' => 'loader_fixer',
                         'icon' => 'tools',
