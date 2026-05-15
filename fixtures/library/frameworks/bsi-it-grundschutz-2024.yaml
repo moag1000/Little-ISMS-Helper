@@ -1,0 +1,543 @@
+# BSI IT-Grundschutz-Kompendium 2024 — Framework-Skeleton
+# Quelle: Bundesamt fuer Sicherheit in der Informationstechnik (BSI)
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+#
+# HINWEIS: Dieses File enthaelt 15 representative Bausteine als ausgearbeitete
+# Beispiele (Sprint 10A). Vollstaendige 111-Baustein-Erfassung ist eine
+# separate operative Aufgabe. TODO-Marker zeigen fehlende Schicht-Abschnitte.
+#
+# Struktur: framework-Metadaten + bausteine[] nach Schichten
+# Levels: basis | standard | erhoeht (BSI 200-2)
+
+metadata:
+  code: 'BSI-GRUNDSCHUTZ-2024'
+  name: 'BSI IT-Grundschutz-Kompendium 2024'
+  version: '2024.1'
+  releaseDate: '2024-02-01'
+  body: 'Bundesamt fuer Sicherheit in der Informationstechnik (BSI)'
+  language: 'de'
+  applicableTo:
+    - 'Behoerden und Behoerden aehnliche Institutionen'
+    - 'Unternehmen jeder Groesse'
+    - 'KRITIS-Betreiber'
+  normativeRefs:
+    - 'BSI-Standard 200-1 (ISMS)'
+    - 'BSI-Standard 200-2 (IT-Grundschutz-Methodik)'
+    - 'BSI-Standard 200-3 (Risikoanalyse)'
+    - 'BSI-Standard 200-4 (BCM)'
+  sourceUrl: 'https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/IT-Grundschutz-Kompendium/it-grundschutz-kompendium_node.html'
+
+schichten:
+  - id: ISMS
+    name: 'Sicherheitsmanagement'
+    description: 'Uebergeordneter Aufbau und Betrieb eines ISMS.'
+  - id: ORP
+    name: 'Organisation und Personal'
+    description: 'Organisatorische und personelle Sicherheitsaspekte.'
+  - id: CON
+    name: 'Konzepte und Vorgehensweisen'
+    description: 'Sicherheitskonzepte fuer spezifische Themenfelder.'
+  - id: OPS
+    name: 'Betrieb'
+    description: 'Sicherer IT-Betrieb und Servicemanagement.'
+  - id: DER
+    name: 'Detektion und Reaktion'
+    description: 'Erkennung und Behandlung von Sicherheitsvorfaellen.'
+  - id: APP
+    name: 'Anwendungen'
+    description: 'Sichere Entwicklung und Nutzung von Anwendungen.'
+  - id: SYS
+    name: 'IT-Systeme'
+    description: 'Absicherung spezifischer IT-Systemtypen.'
+  - id: IND
+    name: 'Industrielle IT'
+    description: 'Sicherheit von Industrie- und Prozessleittechnik.'
+  - id: NET
+    name: 'Netze und Kommunikation'
+    description: 'Sichere Netzinfrastruktur und Kommunikation.'
+  - id: INF
+    name: 'Infrastruktur'
+    description: 'Physische und infrastrukturelle Sicherheit.'
+
+bausteine:
+
+  # ============================================================
+  # Schicht ISMS — Sicherheitsmanagement
+  # ============================================================
+
+  - id: ISMS.1
+    name: 'Sicherheitsmanagement'
+    schicht: ISMS
+    description: >
+      Anforderungen an Aufbau, Betrieb und kontinuierliche Verbesserung eines
+      Informationssicherheits-Managementsystems (ISMS) in der Institution.
+    gefaehrdungen:
+      - id: G 0.18
+        title: 'Fehlplanung oder fehlende Anpassung'
+      - id: G 0.27
+        title: 'Ressourcenmangel'
+      - id: G 0.29
+        title: 'Verstoss gegen Gesetze oder Regelungen'
+    anforderungen:
+      - id: ISMS.1.A1
+        level: basis
+        title: 'Uebernahme der Gesamtverantwortung fuer Informationssicherheit durch die Leitungsebene'
+        text: >
+          Die Leitungsebene MUSS die Gesamtverantwortung fuer Informationssicherheit uebernehmen.
+          Dies beinhaltet, dass die notwendigen Ressourcen bereitgestellt werden.
+      - id: ISMS.1.A2
+        level: basis
+        title: 'Festlegung der Sicherheitsziele und -strategie'
+        text: >
+          Es MUESSEN angemessene Sicherheitsziele sowie eine Strategie fuer Informationssicherheit
+          festgelegt und dokumentiert werden.
+      - id: ISMS.1.A3
+        level: basis
+        title: 'Erstellung einer Leitlinie zur Informationssicherheit'
+        text: >
+          Die Leitungsebene MUSS eine Leitlinie zur Informationssicherheit verabschieden,
+          die die wesentlichen Sicherheitsziele beschreibt und nach innen und aussen kommuniziert wird.
+      - id: ISMS.1.A4
+        level: basis
+        title: 'Benennung eines Informationssicherheitsbeauftragten'
+        text: >
+          Die Leitungsebene MUSS einen Informationssicherheitsbeauftragten (ISB) benennen,
+          der die Sicherheitsaufgaben koordiniert und ueberwacht.
+      - id: ISMS.1.A5
+        level: basis
+        title: 'Vertragsgestaltung bei Bestellung eines externen ISB'
+        text: >
+          Bei Beauftragung eines externen ISB MUESSEN Verantwortlichkeiten, Kompetenzen
+          und Vertraulichkeitspflichten schriftlich geregelt werden.
+      - id: ISMS.1.A6
+        level: standard
+        title: 'Aufbau einer geeigneten Organisationsstruktur fuer Informationssicherheit'
+        text: >
+          Es SOLLTE eine Organisationsstruktur fuer Informationssicherheit aufgebaut werden,
+          die eine klare Aufgaben- und Verantwortungsverteilung ermoeglicht.
+      - id: ISMS.1.A7
+        level: standard
+        title: 'Festlegung von Sicherheitsmassnahmen'
+        text: >
+          Basierend auf dem Sicherheitskonzept SOLLTEN die notwendigen Sicherheitsmassnahmen
+          geplant und priorisiert umgesetzt werden.
+      - id: ISMS.1.A8
+        level: erhoeht
+        title: 'Erstellung von zielgruppengerechten Sicherheitsrichtlinien'
+        text: >
+          Es SOLLTEN zielgruppengerechte Sicherheitsrichtlinien erstellt werden, die
+          speziell auf die Beduerfrisse verschiedener Gruppen (z.B. Fuehrungskraefte,
+          Mitarbeitende, IT-Betrieb) zugeschnitten sind.
+
+  # ============================================================
+  # Schicht ORP — Organisation und Personal
+  # ============================================================
+
+  - id: ORP.1
+    name: 'Organisation'
+    schicht: ORP
+    description: >
+      Anforderungen an organisatorische Strukturen und Prozesse fuer Informationssicherheit.
+    gefaehrdungen:
+      - id: G 0.18
+        title: 'Fehlplanung oder fehlende Anpassung'
+      - id: G 0.29
+        title: 'Verstoss gegen Gesetze oder Regelungen'
+    anforderungen:
+      - id: ORP.1.A1
+        level: basis
+        title: 'Festlegung von Verantwortlichkeiten und Regelungen'
+        text: >
+          In der Institution MUESSEN klare Regelungen fuer die Informationssicherheit und
+          eindeutige Verantwortlichkeiten fuer Sicherheitsaufgaben festgelegt sein.
+      - id: ORP.1.A2
+        level: basis
+        title: 'Zuweisung der Verantwortung fuer Informationen, Anwendungen und IT-Komponenten'
+        text: >
+          Fuer alle wesentlichen Informationen, Anwendungen und IT-Komponenten MUESSEN
+          Verantwortliche benannt werden.
+      - id: ORP.1.A3
+        level: standard
+        title: 'Beaufsichtigung oder Begleitung von Fremdpersonen'
+        text: >
+          Betriebsfremde Personen SOLLTEN in sicherheitsrelevanten Bereichen beaufsichtigt
+          oder begleitet werden.
+      - id: ORP.1.A4
+        level: standard
+        title: 'Funktionstrennung zwischen unvereinbaren Aufgaben'
+        text: >
+          Unvereinbare Aufgaben (z.B. Entwicklung und Produktionsbetrieb) SOLLTEN durch
+          geeignete organisatorische Massnahmen getrennt werden.
+
+  - id: ORP.2
+    name: 'Personal'
+    schicht: ORP
+    description: >
+      Anforderungen zur sicherheitsbewussten Personalfuehrung, Einarbeitung und Sensibilisierung.
+    gefaehrdungen:
+      - id: G 0.14
+        title: 'Ausspaeung von Informationen (Spionage)'
+      - id: G 0.42
+        title: 'Social Engineering'
+    anforderungen:
+      - id: ORP.2.A1
+        level: basis
+        title: 'Geregelte Einarbeitung neuer Mitarbeitender'
+        text: >
+          Neue Mitarbeitende MUESSEN in ihre Aufgaben und die fuer sie geltenden
+          Sicherheitsregelungen eingewiesen werden.
+      - id: ORP.2.A2
+        level: basis
+        title: 'Geregelte Verfahrensweise beim Weggang von Mitarbeitenden'
+        text: >
+          Beim Ausscheiden von Mitarbeitenden MUESSEN alle Zugriffsberechtigungen
+          entzogen, Schluessel zurueckgegeben und Wissen gesichert werden.
+      - id: ORP.2.A3
+        level: standard
+        title: 'Festlegung von Vertretungsregelungen'
+        text: >
+          Fuer alle wesentlichen Taetigkeiten SOLLTEN Vertretungsregelungen existieren
+          und den Vertretern die erforderlichen Kenntnisse vermittelt werden.
+
+  - id: ORP.3
+    name: 'Sensibilisierung und Schulung zur Informationssicherheit'
+    schicht: ORP
+    description: >
+      Anforderungen zum Aufbau eines Awareness- und Schulungsprogramms.
+    gefaehrdungen:
+      - id: G 0.31
+        title: 'Fehlerhafte Nutzung oder Administration von Geraeten und Systemen'
+      - id: G 0.42
+        title: 'Social Engineering'
+    anforderungen:
+      - id: ORP.3.A1
+        level: basis
+        title: 'Sensibilisierung der Leitungsebene fuer Informationssicherheit'
+        text: >
+          Die Leitungsebene MUSS fuer Informationssicherheit sensibilisiert werden.
+          Entsprechende Fortbildungsmassnahmen MUESSEN durchgefuehrt werden.
+      - id: ORP.3.A2
+        level: basis
+        title: 'Ansprechpartner zu Sicherheitsfragen'
+        text: >
+          In der Institution MUSS es Ansprechpartner fuer Sicherheitsfragen geben,
+          die bei Bedarf von den Mitarbeitenden kontaktiert werden koennen.
+      - id: ORP.3.A3
+        level: standard
+        title: 'Konzeption und Planung eines Sensibilisierungs- und Schulungsprogramms'
+        text: >
+          Sensibilisierungs- und Schulungsmassnahmen SOLLTEN geplant und in einem
+          Konzept zusammengefasst werden, das Ziele, Inhalte und Zielgruppen beschreibt.
+      - id: ORP.3.A4
+        level: erhoeht
+        title: 'Metriken und Indikatoren fuer Schulungsprogramme'
+        text: >
+          Es SOLLTEN Metriken und Indikatoren definiert werden, anhand derer der Erfolg
+          der Sensibilisierungs- und Schulungsmassnahmen gemessen werden kann.
+
+  # ============================================================
+  # Schicht CON — Konzepte und Vorgehensweisen
+  # ============================================================
+
+  - id: CON.1
+    name: 'Kryptokonzept'
+    schicht: CON
+    description: >
+      Anforderungen zur Planung und Umsetzung des Einsatzes kryptografischer Verfahren.
+    gefaehrdungen:
+      - id: G 0.13
+        title: 'Abhoeren von Kommunikationsverbindungen'
+      - id: G 0.46
+        title: 'Integritaetsverlust schutzbeduerftiger Informationen'
+    anforderungen:
+      - id: CON.1.A1
+        level: basis
+        title: 'Auswahl geeigneter kryptografischer Verfahren'
+        text: >
+          Die einzusetzenden kryptografischen Verfahren MUESSEN nach dem Stand der Technik
+          ausgewaehlt und dokumentiert werden.
+      - id: CON.1.A2
+        level: standard
+        title: 'Datensicherung bei Einsatz kryptografischer Verfahren'
+        text: >
+          Bei Einsatz kryptografischer Verfahren SOLLTE sichergestellt sein, dass
+          verschluesselte Daten bei Schluesselverlust oder Schluesselbeschraedigung
+          noch verfuegbar bleiben.
+      - id: CON.1.A3
+        level: erhoeht
+        title: 'Anforderungen an Schluesselmanagement'
+        text: >
+          Fuer die eingesetzten kryptografischen Schluesselmaterialien SOLLTEN Prozesse
+          zum Erstellen, Verwalten, Schuetzen und Loeschen von Schluesseln definiert werden.
+
+  - id: CON.3
+    name: 'Datensicherungskonzept'
+    schicht: CON
+    description: >
+      Anforderungen zur Erstellung und Umsetzung eines Datensicherungskonzepts.
+    gefaehrdungen:
+      - id: G 0.45
+        title: 'Datenverlust'
+      - id: G 0.46
+        title: 'Integritaetsverlust schutzbeduerftiger Informationen'
+    anforderungen:
+      - id: CON.3.A1
+        level: basis
+        title: 'Erhebung der Einflussfaktoren der Datensicherung'
+        text: >
+          Die wesentlichen Einflussfaktoren fuer die Datensicherung MUESSEN erhoben und
+          in einem Datensicherungskonzept dokumentiert werden.
+      - id: CON.3.A2
+        level: basis
+        title: 'Festlegung der Verfahrensweise fuer die Datensicherung'
+        text: >
+          Fuer alle Systeme und Daten MUESSEN Datensicherungsverfahren und
+          Wiederherstellungsverfahren festgelegt und geregelt werden.
+      - id: CON.3.A3
+        level: standard
+        title: 'Erstellen eines Datensicherungskonzepts'
+        text: >
+          Ein Datensicherungskonzept SOLLTE erstellt werden, das alle relevanten
+          Informationen zu Datensicherungsmassnahmen enthaelt.
+
+  # ============================================================
+  # Schicht OPS — Betrieb
+  # ============================================================
+
+  - id: OPS.1.1.3
+    name: 'Patch- und Aenderungsmanagement'
+    schicht: OPS
+    description: >
+      Anforderungen zur geregelten Durchfuehrung von Aenderungen an IT-Systemen,
+      Software und Konfigurationen sowie zur zeitnahen Einspilung von Sicherheitspatches.
+    gefaehrdungen:
+      - id: G 0.23
+        title: 'Unbefugtes Eindringen in IT-Systeme'
+      - id: G 0.28
+        title: 'Software-Schwachstellen oder -Fehler'
+    anforderungen:
+      - id: OPS.1.1.3.A1
+        level: basis
+        title: 'Konzept fuer das Patch- und Aenderungsmanagement'
+        text: >
+          Es MUSS ein Konzept fuer das Patch- und Aenderungsmanagement erstellt werden,
+          in dem Zustaendigkeiten, Verfahrensweisen und Dokumentationspflichten geregelt sind.
+      - id: OPS.1.1.3.A2
+        level: basis
+        title: 'Festlegung der Zustaendigkeiten fuer das Patch- und Aenderungsmanagement'
+        text: >
+          Es MUESSEN klare Zustaendigkeiten fuer die Planung, Freigabe und Umsetzung
+          von Patches und Aenderungen festgelegt werden.
+      - id: OPS.1.1.3.A3
+        level: standard
+        title: 'Konfiguration von Autoupdate-Mechanismen'
+        text: >
+          Die Konfiguration von Autoupdate-Mechanismen SOLLTE so festgelegt werden,
+          dass sicherheitsrelevante Patches zeitnah eingespielt werden.
+
+  - id: OPS.2.2
+    name: 'Cloud-Nutzung'
+    schicht: OPS
+    description: >
+      Anforderungen zur sicheren Nutzung von Cloud-Diensten.
+    gefaehrdungen:
+      - id: G 0.10
+        title: 'Ausfall oder Stoerung von Versorgungsnetzen'
+      - id: G 0.19
+        title: 'Offenbarung schutzbeduerftiger Informationen'
+    anforderungen:
+      - id: OPS.2.2.A1
+        level: basis
+        title: 'Erstellung einer Cloud-Nutzungs-Strategie'
+        text: >
+          Vor der Nutzung von Cloud-Diensten MUSS eine Cloud-Nutzungs-Strategie
+          erstellt werden, die Art und Umfang des Cloud-Einsatzes regelt.
+      - id: OPS.2.2.A2
+        level: basis
+        title: 'Erstellung einer Sicherheitsrichtlinie fuer die Cloud-Nutzung'
+        text: >
+          Fuer die Nutzung von Cloud-Diensten MUSS eine Sicherheitsrichtlinie
+          erstellt werden.
+      - id: OPS.2.2.A3
+        level: standard
+        title: 'Sorgfaeltige Auswahl eines Cloud-Diensteanbieters'
+        text: >
+          Cloud-Diensteanbieter SOLLTEN anhand sicherheitsrelevanter Kriterien
+          sorgfaeltig ausgewaehlt werden.
+
+  # ============================================================
+  # Schicht DER — Detektion und Reaktion
+  # ============================================================
+
+  - id: DER.1
+    name: 'Detektion von sicherheitsrelevanten Ereignissen'
+    schicht: DER
+    description: >
+      Anforderungen zur systematischen Erkennung von Sicherheitsvorfaellen und
+      sicherheitsrelevanten Ereignissen.
+    gefaehrdungen:
+      - id: G 0.22
+        title: 'Manipulation von Informationen'
+      - id: G 0.23
+        title: 'Unbefugtes Eindringen in IT-Systeme'
+    anforderungen:
+      - id: DER.1.A1
+        level: basis
+        title: 'Erstellung einer Sicherheitsrichtlinie fuer die Protokollierung'
+        text: >
+          Eine Sicherheitsrichtlinie fuer die Protokollierung MUSS erstellt werden,
+          die die Anforderungen an Protokollierung, Aufbewahrung und Auswertung beschreibt.
+      - id: DER.1.A2
+        level: basis
+        title: 'Einhaltung rechtlicher Rahmenbedingungen bei der Protokollierung'
+        text: >
+          Bei der Protokollierung MUESSEN die einschlaegigen rechtlichen Rahmenbedingungen
+          eingehalten werden (Datenschutz, Betriebsverfassung).
+      - id: DER.1.A3
+        level: standard
+        title: 'Einsatz eines SIEM'
+        text: >
+          Es SOLLTE ein Security Information and Event Management (SIEM) eingesetzt werden,
+          das Protokollierungsdaten zentral erfasst und auswertet.
+
+  - id: DER.2.1
+    name: 'Behandlung von Sicherheitsvorfaellen'
+    schicht: DER
+    description: >
+      Anforderungen zur systematischen Behandlung und Nachverfolgung von Sicherheitsvorfaellen.
+    gefaehrdungen:
+      - id: G 0.23
+        title: 'Unbefugtes Eindringen in IT-Systeme'
+      - id: G 0.27
+        title: 'Ressourcenmangel'
+    anforderungen:
+      - id: DER.2.1.A1
+        level: basis
+        title: 'Definition eines Sicherheitsvorfalls'
+        text: >
+          Es MUSS festgelegt werden, welche Ereignisse als Sicherheitsvorfall eingestuft
+          werden und wie die Einstufung erfolgt.
+      - id: DER.2.1.A2
+        level: basis
+        title: 'Erstellung eines Ablaufplans zur Behandlung von Sicherheitsvorfaellen'
+        text: >
+          Fuer die Behandlung von Sicherheitsvorfaellen MUSS ein Ablaufplan erstellt
+          und kommuniziert werden.
+      - id: DER.2.1.A3
+        level: standard
+        title: 'Einrichtung einer zentralen Kontaktstelle fuer die Behandlung von Sicherheitsvorfaellen'
+        text: >
+          Es SOLLTE eine zentrale Anlaufstelle eingerichtet werden, an die Sicherheitsvorfaelle
+          gemeldet werden koennen.
+
+  # ============================================================
+  # Schicht APP — Anwendungen
+  # ============================================================
+
+  - id: APP.1.1
+    name: 'Office-Produkte'
+    schicht: APP
+    description: >
+      Anforderungen zum sicheren Einsatz von Office-Produkten.
+    gefaehrdungen:
+      - id: G 0.22
+        title: 'Manipulation von Informationen'
+      - id: G 0.39
+        title: 'Schadprogramme'
+    anforderungen:
+      - id: APP.1.1.A1
+        level: basis
+        title: 'Sicherstellung der Integritaet und Verfuegbarkeit von Office-Produkten'
+        text: >
+          Es MUSS sichergestellt sein, dass Office-Produkte nur aus vertrauenswuerdigen
+          Quellen bezogen und auf dem aktuellen Stand gehalten werden.
+      - id: APP.1.1.A2
+        level: standard
+        title: 'Einschraenkung von Cloud-Funktionen in Office-Produkten'
+        text: >
+          Cloud-Funktionen von Office-Produkten SOLLTEN nur in dem Umfang genutzt werden,
+          der fuer den Betrieb notwendig ist.
+
+  # ============================================================
+  # Schicht NET — Netze und Kommunikation
+  # ============================================================
+
+  - id: NET.1.1
+    name: 'Netzarchitektur und -design'
+    schicht: NET
+    description: >
+      Anforderungen zur sicheren Architektur und Gestaltung von Netzinfrastrukturen.
+    gefaehrdungen:
+      - id: G 0.22
+        title: 'Manipulation von Informationen'
+      - id: G 0.23
+        title: 'Unbefugtes Eindringen in IT-Systeme'
+    anforderungen:
+      - id: NET.1.1.A1
+        level: basis
+        title: 'Sicherheitsrichtlinie fuer das Netz'
+        text: >
+          Es MUSS eine Sicherheitsrichtlinie fuer das Netz der Institution erstellt
+          und regelmaessig aktualisiert werden.
+      - id: NET.1.1.A2
+        level: basis
+        title: 'Dokumentation des Netzes'
+        text: >
+          Die Netzinfrastruktur MUSS vollstaendig dokumentiert werden.
+      - id: NET.1.1.A3
+        level: standard
+        title: 'Trennung in Zonen'
+        text: >
+          Das Netz SOLLTE in geeignete Zonen aufgeteilt werden, die anhand des
+          Schutzbedarfs und der Vertrauensstufen getrennt werden.
+
+  # ============================================================
+  # Schicht INF — Infrastruktur
+  # ============================================================
+
+  - id: INF.1
+    name: 'Allgemeines Gebaeude'
+    schicht: INF
+    description: >
+      Anforderungen zum Schutz von Gebaeuden und Raeumen mit IT-relevanten Bereichen.
+    gefaehrdungen:
+      - id: G 0.1
+        title: 'Feuer'
+      - id: G 0.8
+        title: 'Ausfall oder Stoerung der Stromversorgung'
+    anforderungen:
+      - id: INF.1.A1
+        level: basis
+        title: 'Planung der Gebaeude-Sicherheit'
+        text: >
+          Sicherheitsrelevante Aspekte MUESSEN bereits bei der Planung oder
+          Nutzungsaenderung von Gebaeuden beruecksichtigt werden.
+      - id: INF.1.A2
+        level: basis
+        title: 'Geeignete Aufstellung von IT-Geraeten'
+        text: >
+          IT-Geraete und Datentraeger MUESSEN so aufgestellt werden, dass
+          Unbefugte keinen Zugriff darauf haben.
+      - id: INF.1.A3
+        level: standard
+        title: 'Schutz vor Feuer und Rauch'
+        text: >
+          Geeignete Massnahmen SOLLTEN ergriffen werden, um IT-Systeme vor
+          Schaeden durch Feuer und Rauch zu schuetzen.
+
+  # ============================================================
+  # TODO: Vollstaendige Bausteinliste (111 Bausteine gesamt)
+  # Folgende Schichten/Bausteine sind noch nicht erfasst:
+  #
+  # Schicht SYS (IT-Systeme): SYS.1.1 bis SYS.4.5
+  # Schicht IND (Industrielle IT): IND.1 bis IND.3.2
+  # OPS: OPS.1.1.1, OPS.1.1.2, OPS.1.2.2, OPS.1.2.4, OPS.1.2.5,
+  #       OPS.1.2.6, OPS.3.x, OPS.4.x
+  # CON: CON.2, CON.4-CON.11
+  # ORP: ORP.4, ORP.5
+  # DER: DER.2.2, DER.2.3, DER.3.1, DER.3.2, DER.4
+  # APP: APP.1.2, APP.1.4, APP.2.x, APP.3.x, APP.4.x, APP.5.x,
+  #       APP.6, APP.7
+  # NET: NET.1.2, NET.2.x, NET.3.x, NET.4.x
+  # INF: INF.2 bis INF.14
+  # ============================================================
