@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'bsi_200_4_exercise' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+
+{% block title %}{{ 'page.show_title'|trans({}, 'bsi_200_4_exercise') }} — {{ log.bcExercise.name ?? '' }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
+            { label: 'nav.bc_exercises'|trans({}, 'nav'), url: path('app_bc_exercise_index') },
+            { label: 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), url: path('bcm_exercise_log_index') },
+            { label: log.bcExercise.name ?? 'Log' }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'clipboard-check', label: 'BSI 200-4' },
+        title: log.bcExercise.name ?? 'page.show_title'|trans({}, 'bsi_200_4_exercise'),
+        subtitle: ('exercise_type.' ~ log.exerciseType)|trans({}, 'bsi_200_4_exercise') ~ ' · ' ~ ('template.' ~ log.bsi2004Template)|trans({}, 'bsi_200_4_exercise'),
+        actions: [
+            not log.isSubmitted ? {
+                label: 'action.saved'|trans({}, 'bsi_200_4_exercise'),
+                href: path('bcm_exercise_log_edit', {id: log.id}),
+                variant: 'primary',
+                icon: 'pencil'
+            } : null
+        ]|filter(a => a is not null)
+    }) }}
+
+    {# Alva hints #}
+    {% set _hints = alva_hints('bcm_exercise_log_show') %}
+    {% for _h in _hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+
+    {# Status bar #}
+    <div class="d-flex align-items-center gap-3 mb-4">
+        {% if log.isConfirmed %}
+            <span class="badge bg-success fs-6">{{ 'status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
+            <span class="text-muted small">{{ 'table.header_confirmed'|trans({}, 'bsi_200_4_exercise') }}: {{ log.confirmedAt|date('d.m.Y H:i') }}</span>
+        {% elseif log.isSubmitted %}
+            <span class="badge bg-info text-dark fs-6">{{ 'status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
+            <span class="text-muted small">{{ 'table.header_submitted'|trans({}, 'bsi_200_4_exercise') }}: {{ log.submittedAt|date('d.m.Y H:i') }}</span>
+            {% if is_granted('ROLE_AUDITOR') and not log.isConfirmed %}
+            <form method="post" action="{{ path('bcm_exercise_log_confirm', {id: log.id}) }}" class="ms-auto">
+                <input type="hidden" name="_token" value="{{ csrf_token('bsi_log_confirm_' ~ log.id) }}">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                    {{ 'action.confirmed'|trans({}, 'bsi_200_4_exercise') }}
+                </button>
+            </form>
+            {% endif %}
+        {% else %}
+            <span class="badge bg-light text-muted border fs-6">{{ 'status.draft'|trans({}, 'bsi_200_4_exercise') }}</span>
+            {% if is_granted('ROLE_MANAGER') %}
+            <form method="post" action="{{ path('bcm_exercise_log_submit', {id: log.id}) }}" class="ms-auto">
+                <input type="hidden" name="_token" value="{{ csrf_token('bsi_log_submit_' ~ log.id) }}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-icon fa-icon--action-send" aria-hidden="true"></i>
+                    {{ 'action.submitted'|trans({}, 'bsi_200_4_exercise') }}
+                </button>
+            </form>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {% include 'bcm/exercise_log/_log_details.html.twig' with { log: log } %}
+</div>
+{% endblock %}

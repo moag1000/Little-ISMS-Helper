@@ -68,6 +68,12 @@ class AuditLogger
     public const string ACTION_RISK_INCIDENT_UNLINKED                = 'risk_incident.unlinked';
     public const string ACTION_RISK_REVIEW_SUGGESTED_FROM_INCIDENT   = 'risk_incident.review_suggested';
 
+    // BSI-200-4 Übungs-Logbuch events (Sprint 10B — F27)
+    public const string ACTION_BSI_2004_LOG_CREATED                  = 'bsi_2004_log.created';
+    public const string ACTION_BSI_2004_LOG_SUBMITTED                = 'bsi_2004_log.submitted';
+    public const string ACTION_BSI_2004_LOG_CONFIRMED                = 'bsi_2004_log.confirmed';
+    public const string ACTION_BSI_2004_IMPROVEMENT_ACTION_OVERDUE   = 'bsi_2004_log.improvement_action_overdue';
+
     // Library Import/Export events (Sprint 10A — F5b)
     public const string ACTION_LIBRARY_FRAMEWORK_IMPORTED       = 'library.framework.imported';
     public const string ACTION_LIBRARY_FRAMEWORK_EXPORTED_YAML  = 'library.framework.exported_yaml';

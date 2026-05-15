@@ -305,6 +305,13 @@ class BCExercise
     #[Groups(['bc_exercise:read'])]
     private ?DateTimeInterface $updatedAt = null;
 
+    /**
+     * BSI-Standard 200-4 Übungs-Logbuch — F27
+     * Nullable: a BCExercise can exist without a log entry yet.
+     */
+    #[ORM\OneToOne(targetEntity: Bsi2004ExerciseLog::class, mappedBy: 'bcExercise', cascade: ['persist', 'remove'])]
+    private ?Bsi2004ExerciseLog $exerciseLog = null;
+
     public function __construct()
     {
         $this->testedPlans = new ArrayCollection();
@@ -801,5 +808,25 @@ class BCExercise
             'component_test' => 'Component Test (Specific component)',
             default => 'Unknown'
         };
+    }
+
+    public function getExerciseLog(): ?Bsi2004ExerciseLog
+    {
+        return $this->exerciseLog;
+    }
+
+    public function setExerciseLog(?Bsi2004ExerciseLog $exerciseLog): static
+    {
+        // Sync the owning side
+        if ($exerciseLog !== null && $exerciseLog->getBcExercise() !== $this) {
+            $exerciseLog->setBcExercise($this);
+        }
+        $this->exerciseLog = $exerciseLog;
+        return $this;
+    }
+
+    public function hasExerciseLog(): bool
+    {
+        return $this->exerciseLog !== null;
     }
 }
