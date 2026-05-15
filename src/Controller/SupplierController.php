@@ -101,6 +101,14 @@ class SupplierController extends AbstractController
             ));
         }
 
+        // DORA Phase 1: filter-chip "Nur DORA-relevant" via ?dora_relevant=1
+        if ($request->query->get('dora_relevant') === '1') {
+            $suppliers = array_values(array_filter(
+                $suppliers,
+                fn(Supplier $s): bool => $s->isDoraRelevant(),
+            ));
+        }
+
         // MINOR-6: DORA Register-of-Information export only when framework is active.
         $doraFramework = $this->complianceFrameworkRepository->findOneBy(['code' => 'DORA']);
         $doraActive = $doraFramework !== null && $doraFramework->isActive();

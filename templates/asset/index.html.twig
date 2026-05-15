@@ -173,7 +173,7 @@
    All state lives in URL query params (UXC-11 / UXC-12). #}
 {% embed '_components/_search_filter_form.html.twig' with {
     action: path('app_asset_index'),
-    filter_keys: ['type', 'classification', 'owner', 'status', 'view', 'tag'],
+    filter_keys: ['type', 'classification', 'owner', 'status', 'dora_relevant', 'view', 'tag'],
     form_id: 'asset-filter-form'
 } %}
     {% block filters %}
@@ -225,6 +225,15 @@
                 all_label: 'common.all'|trans({}, 'messages')
             }) }}
         </div>
+        {% if is_module_active('nis2_dora') %}
+        <div class="col-md-3">
+            <label for="filter-dora-relevant" class="form-label">DORA</label>
+            <select class="form-select fa-cyber-input__field" id="filter-dora-relevant" name="dora_relevant">
+                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                <option value="1" {{ app.request.query.get('dora_relevant') == '1' ? 'selected' : '' }}>{{ 'asset.field.is_dora_relevant'|trans({}, 'asset') }}</option>
+            </select>
+        </div>
+        {% endif %}
     {% endblock %}
 {% endembed %}
 
@@ -300,6 +309,9 @@
                 <td>
                     <strong>{{ asset.name }}</strong>
                     {{ inheritance.small_badge(asset, currentTenant) }}
+                    {% if asset.isDoraRelevant %}
+                        {% include '_components/_badge.html.twig' with { variant: 'info', content: 'DORA', title: 'asset.field.is_dora_relevant'|trans({}, 'asset') } %}
+                    {% endif %}
                     {% if asset.description %}
                         <br><small class="text-muted">{{ asset.description|length > 60 ? asset.description|slice(0, 60) ~ '...' : asset.description }}</small>
                     {% endif %}
