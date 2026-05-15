@@ -2579,32 +2579,52 @@
 }
 
 /* ====================
-   Touch Target Improvements (44x44px minimum)
+   Touch Target — Global Floor (WCAG 2.2 SC 2.5.8)
+   24x24 desktop minimum, 44x44 mobile/touch.
+   Tokens: --target-min / --target-touch (fairy-aurora.css).
    ==================== */
+.btn,
+.btn-sm,
+.nav-link,
+.dropdown-item,
+.form-check,
+.page-link,
+.fa-cyber-btn,
+.fa-cyber-btn--sm {
+    min-height: var(--target-min);
+    min-width:  var(--target-min);
+}
+.btn-group .btn,
+.table .btn,
+.action-buttons .btn {
+    min-width:  var(--target-min);
+    min-height: var(--target-min);
+}
+
 @media (max-width: 767px) {
     /* Buttons - ensure minimum touch target */
     .btn {
-        min-height: 44px;
+        min-height: var(--target-touch);
         padding-top: 0.625rem;
         padding-bottom: 0.625rem;
     }
 
     .btn-sm {
-        min-height: 44px;
+        min-height: var(--target-touch);
         padding: 0.5rem 0.75rem;
     }
 
     /* Navigation links */
     .nav-link,
     .dropdown-item {
-        min-height: 44px;
+        min-height: var(--target-touch);
         display: flex;
         align-items: center;
     }
 
     /* Sidebar navigation */
     .app-sidebar .nav-link {
-        min-height: 44px;
+        min-height: var(--target-touch);
         padding: 0.75rem 1rem;
     }
 
@@ -2612,20 +2632,20 @@
     .btn-group .btn,
     .table .btn,
     .action-buttons .btn {
-        min-width: 44px;
-        min-height: 44px;
+        min-width: var(--target-touch);
+        min-height: var(--target-touch);
         padding: 0.5rem;
     }
 
     /* Form controls */
     .form-control,
     .form-select {
-        min-height: 44px;
+        min-height: var(--target-touch);
     }
 
     /* Checkbox and radio - larger clickable area */
     .form-check {
-        min-height: 44px;
+        min-height: var(--target-touch);
         display: flex;
         align-items: center;
     }
@@ -2637,8 +2657,8 @@
 
     /* Pagination */
     .page-link {
-        min-width: 44px;
-        min-height: 44px;
+        min-width: var(--target-touch);
+        min-height: var(--target-touch);
         display: flex;
         align-items: center;
         justify-content: center;
