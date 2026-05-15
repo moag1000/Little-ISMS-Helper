@@ -91,7 +91,7 @@ class AssetSchutzbedarfDpiaListenerTest extends TestCase
 
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getUnitOfWork')->willReturn($uow);
-        $em->method('getRepository')->with(DataProtectionImpactAssessment::class)->willReturn($repo);
+        $em->method('getRepository')->willReturn($repo);
 
         $logged = [];
         $this->logger->method('info')->willReturnCallback(static function ($msg) use (&$logged): void {

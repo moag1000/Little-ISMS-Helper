@@ -53,6 +53,26 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Find all users with their customRoles eagerly loaded via LEFT JOIN.
+     *
+     * Replaces bare findAll() on the admin user list, eliminating the N+1
+     * pattern where each user.customRoles access triggered an individual
+     * SELECT (one per user). Before: 1 + N queries. After: 2 queries.
+     *
+     * @return User[]
+     */
+    public function findAllWithRoles(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.customRoles', 'cr')
+            ->addSelect('cr')
+            ->orderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find user by Azure Object ID
      */
     public function findByAzureObjectId(string $azureObjectId): ?User

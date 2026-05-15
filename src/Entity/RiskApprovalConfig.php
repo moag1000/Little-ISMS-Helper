@@ -23,9 +23,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * späterer Ceiling-Resolver kann parent+child-Configs mergen (min-Regel:
  * child darf nicht lascher sein als holding).
  *
- * TODO(9B): Bei dynamischer Matrix-Größe (RiskMatrixConfig) muss
+ * @todo 2026-05-14 (9B) Bei dynamischer Matrix-Größe (RiskMatrixConfig) muss
  * threshold_executive gegen matrix.getMaxScore() validiert werden statt
- * hardcoded 25.
+ * hardcoded 25. Blocked by: RiskMatrixConfig entity (Sprint 9+).
  */
 #[ORM\Entity(repositoryClass: RiskApprovalConfigRepository::class)]
 #[ORM\Table(name: 'risk_approval_config')]

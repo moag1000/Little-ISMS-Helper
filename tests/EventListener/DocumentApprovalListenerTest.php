@@ -61,7 +61,7 @@ class DocumentApprovalListenerTest extends TestCase
 
         $uow = $this->createMock(UnitOfWork::class);
         // propertyChanged may be called to register the date change.
-        $uow->expects($this->any())->method('propertyChanged');
+        $uow->method('propertyChanged');
 
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getUnitOfWork')->willReturn($uow);
@@ -130,7 +130,7 @@ class DocumentApprovalListenerTest extends TestCase
         $listener = new DocumentApprovalListener($this->logger, null, null, $svc);
 
         $uow = $this->createMock(UnitOfWork::class);
-        $uow->expects($this->any())->method('propertyChanged');
+        $uow->method('propertyChanged');
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getUnitOfWork')->willReturn($uow);
 
@@ -163,7 +163,7 @@ class DocumentApprovalListenerTest extends TestCase
         $listener = new DocumentApprovalListener($this->logger, null, null, $svc);
 
         $uow = $this->createMock(UnitOfWork::class);
-        $uow->expects($this->any())->method('propertyChanged');
+        $uow->method('propertyChanged');
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getUnitOfWork')->willReturn($uow);
 

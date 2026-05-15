@@ -85,6 +85,11 @@ class Document
     #[ORM\Column(length: 64, nullable: true)]
     private ?string $sha256Hash = null;
 
+    /**
+     * @deprecated since 2026-05-14 — no renderer, form, or query references this field.
+     *             Column preserved (data-safe); remove in next major (v4.0).
+     *             TODO: drop column in migration when confirmed unused post-v4.
+     */
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isPublic = false;
 
@@ -397,7 +402,9 @@ class Document
     public function setUpdatedAt(?DateTimeInterface $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
     public function getSha256Hash(): ?string { return $this->sha256Hash; }
     public function setSha256Hash(?string $sha256Hash): static { $this->sha256Hash = $sha256Hash; return $this; }
+    /** @deprecated since 2026-05-14 — see field docblock */
     public function isPublic(): bool { return $this->isPublic; }
+    /** @deprecated since 2026-05-14 — see field docblock */
     public function setIsPublic(bool $isPublic): static { $this->isPublic = $isPublic; return $this; }
     public function isArchived(): bool { return $this->isArchived; }
     public function setIsArchived(bool $isArchived): static { $this->isArchived = $isArchived; return $this; }

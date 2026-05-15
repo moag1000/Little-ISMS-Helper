@@ -48,7 +48,9 @@ class UserManagementController extends AbstractController
     public function index(UserRepository $userRepository): Response
     {
 
-        $users = $userRepository->findAll();
+        // findAllWithRoles() eager-loads customRoles via LEFT JOIN, eliminating
+        // the N+1 pattern (before: 1+N queries, after: 2 queries).
+        $users = $userRepository->findAllWithRoles();
         $statistics = $userRepository->getUserStatistics();
 
         // Identify the initial admin for UI display
