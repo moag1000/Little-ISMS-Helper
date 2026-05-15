@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'fte_tracking' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+
+{% block title %}{{ 'fte_tracking.dashboard.title'|trans({}, 'fte_tracking') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="fa-aurora-surface" data-controller="fte-chart"
+     data-fte-chart-labels-value="{{ monthly_labels_json }}"
+     data-fte-chart-data-value="{{ monthly_trend_json }}">
+
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dashboard'|trans({}, 'nav'), url: path('app_dashboard', {_locale: app.request.locale}) },
+            { label: 'fte_tracking.dashboard.title'|trans({}, 'fte_tracking') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'clock-history', label: 'fte_tracking.badge'|trans({}, 'fte_tracking') },
+        title: 'fte_tracking.dashboard.title'|trans({}, 'fte_tracking'),
+        subtitle: 'fte_tracking.dashboard.subtitle'|trans({}, 'fte_tracking'),
+        actions: [
+            { label: 'fte_tracking.action.board_report'|trans({}, 'fte_tracking'), variant: 'ghost', icon: 'file-earmark-pdf', href: path('analytics_fte_board_report', {_locale: app.request.locale}) ~ '?format=pdf' },
+            { label: 'fte_tracking.action.calibrate'|trans({}, 'fte_tracking'), variant: 'secondary', icon: 'sliders', href: path('analytics_fte_calibration', {_locale: app.request.locale}) }
+        ]
+    }) }}
+
+    {# KPI Cards #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            {{ _fa_feature_card.render({
+                icon: 'stopwatch',
+                label: 'fte_tracking.kpi.savings_90d'|trans({}, 'fte_tracking'),
+                value: total_savings_hours ~ ' h',
+                description: 'fte_tracking.kpi.savings_90d_desc'|trans({}, 'fte_tracking'),
+                variant: 'primary'
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ _fa_feature_card.render({
+                icon: 'graph-up-arrow',
+                label: 'fte_tracking.kpi.all_time'|trans({}, 'fte_tracking'),
+                value: all_time_savings_hours ~ ' h',
+                description: 'fte_tracking.kpi.all_time_desc'|trans({}, 'fte_tracking'),
+                variant: 'success'
+            }) }}
+        </div>
+        <div class="col-md-4">
+            {{ _fa_feature_card.render({
+                icon: 'lightning-charge',
+                label: 'fte_tracking.kpi.top_source'|trans({}, 'fte_tracking'),
+                value: by_source|length > 0 ? (by_source|keys|first) : '—',
+                description: 'fte_tracking.kpi.top_source_desc'|trans({}, 'fte_tracking'),
+                variant: 'info'
+            }) }}
+        </div>
+    </div>
+
+    {# Monthly Trend Chart #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>
+                {{ 'fte_tracking.chart.monthly_trend'|trans({}, 'fte_tracking') }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="d-flex gap-2 mb-3">
+                <button class="btn btn-sm btn-outline-secondary" data-action="click->fte-chart#show12m">
+                    {{ 'fte_tracking.chart.period_12m'|trans({}, 'fte_tracking') }}
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" data-action="click->fte-chart#show6m">
+                    {{ 'fte_tracking.chart.period_6m'|trans({}, 'fte_tracking') }}
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" data-action="click->fte-chart#show3m">
+                    {{ 'fte_tracking.chart.period_3m'|trans({}, 'fte_tracking') }}
+                </button>
+            </div>
+            <canvas id="fte-trend-chart" data-fte-chart-target="canvas" height="100" aria-label="{{ 'fte_tracking.chart.monthly_trend'|trans({}, 'fte_tracking') }}" role="img"></canvas>
+        </div>
+    </div>
+
+    {# Source Breakdown #}
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-pie-chart me-2" aria-hidden="true"></i>
+                {{ 'fte_tracking.table.by_source_title'|trans({}, 'fte_tracking') }}
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            {% if by_source|length > 0 %}
+            <table class="table table-hover mb-0" aria-label="{{ 'fte_tracking.table.by_source_title'|trans({}, 'fte_tracking') }}">
+                <thead>
+                    <tr>
+                        <th>{{ 'fte_tracking.table.source'|trans({}, 'fte_tracking') }}</th>
+                        <th class="text-end">{{ 'fte_tracking.table.savings_minutes'|trans({}, 'fte_tracking') }}</th>
+                        <th class="text-end">{{ 'fte_tracking.table.savings_hours'|trans({}, 'fte_tracking') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for source, minutes in by_source %}
+                    <tr>
+                        <td>
+                            <span class="badge bg-secondary me-2">{{ source }}</span>
+                            {{ ('fte_tracking.source.' ~ source)|trans({}, 'fte_tracking') }}
+                        </td>
+                        <td class="text-end">{{ minutes }}</td>
+                        <td class="text-end">{{ (minutes / 60)|number_format(1) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="p-4 text-center text-muted">
+                <i class="bi bi-inbox fs-3 d-block mb-2" aria-hidden="true"></i>
+                {{ 'fte_tracking.empty.no_data'|trans({}, 'fte_tracking') }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
