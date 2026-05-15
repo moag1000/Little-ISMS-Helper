@@ -922,11 +922,17 @@ final class PolicyWizardController extends AbstractController
                     'value_type' => 'text',
                 ];
             }
-            if (!empty($welcome['industry_preset_bundle_key'])) {
+            // Multi-key (canonical) or single-key (backwards-compat).
+            $presetKeys = is_array($welcome['industry_preset_bundle_keys'] ?? null)
+                ? $welcome['industry_preset_bundle_keys']
+                : (isset($welcome['industry_preset_bundle_key']) && $welcome['industry_preset_bundle_key'] !== ''
+                    ? [$welcome['industry_preset_bundle_key']]
+                    : []);
+            if ($presetKeys !== []) {
                 $rows[] = [
-                    'label_key' => 'policy_wizard.review.welcome.preset_bundle',
-                    'value' => (string) $welcome['industry_preset_bundle_key'],
-                    'value_type' => 'text',
+                    'label_key' => 'policy_wizard.review.welcome.preset_bundles',
+                    'value' => array_values(array_filter(array_map('strval', $presetKeys))),
+                    'value_type' => 'badges',
                 ];
             }
             $sections[] = [

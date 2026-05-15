@@ -740,9 +740,10 @@ policy_wizard:
             dpo_user_help: 'Mandatory when GDPR/DORA is in scope. Responsible for privacy sections and GDPR Art. 38.'
             bcm_officer_label: 'BCM Officer'
             bcm_officer_help: 'Responsible for the operational continuity baselines (RTO/RPO/exercise programme).'
-            preset_section_title: 'Industry preset (optional)'
-            preset_bundle_label: 'Apply industry preset'
+            preset_section_title: 'Industry preset(s) (optional)'
+            preset_bundle_label: 'Apply industry preset(s)'
             preset_bundle_help: 'One-click pre-fill of sector-specific defaults. Existing inputs are preserved.'
+            preset_bundle_help_multi: 'Multiple presets allowed. Scalar-field conflicts: last selected preset wins, adjustable afterwards.'
             help:
                 title: 'What are operational baselines?'
                 body: 'Concrete measurable thresholds for your operations: which crypto algorithms are allowed, how fast a patch must land, how much data loss is tolerable. These values flow directly into the generated policies.'
@@ -1165,6 +1166,7 @@ policy_wizard:
             mode: 'Run mode'
             finding_reference: 'Audit-finding reference'
             preset_bundle: 'Industry preset'
+            preset_bundles: 'Industry presets'
         org:
             legal_name: 'Legal name'
             scope_statement: 'Scope statement'
@@ -1273,11 +1275,19 @@ policy_wizard:
             title: 'DPO Charter cannot be bulk-approved'
             detail: 'GDPR Art. 38(3) requires the DPO Charter to be approved standalone. Please submit it separately for top-management sign-off.'
 
-    # W4-B — IndustryPresetBundle picker (Step 1).
+    # W4-B — IndustryPresetBundle picker (Step 1, multi-select since v3.6).
     preset:
-        label: 'Industry preset (optional)'
+        label: 'Industry preset(s) (optional)'
         placeholder: 'Optional: pick an industry preset'
         help: 'Pre-fills sector-specific defaults. You can still tweak every value afterwards.'
+        help_multi: 'Combine multiple presets (e.g. "Bank" + "Cloud-SaaS"). When presets conflict on a scalar field, the last selected preset wins.'
+        conflict:
+            title: 'Preset conflict detected'
+            later_wins: 'last selected preset wins — adjustable in the next step'
+            field:
+                risk_appetite_tier: 'Risk appetite tier'
+                data_classification_levels: 'Data classification levels'
+                backup_rpo_hours: 'Backup RPO (hours)'
         preview:
             documents_count: '%count% documents will be generated for the "%bundle%" preset.'
         healthcare:
