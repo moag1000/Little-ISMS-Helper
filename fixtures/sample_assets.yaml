@@ -1,6 +1,6 @@
 assets:
   - name: 'Datenbankserver DB-PROD-01'
-    type: 'Server'
+    type: 'Hardware'
     description: 'Primärer Produktions-Datenbankserver (PostgreSQL)'
     owner: 'IT-Abteilung'
     location: 'Rechenzentrum Frankfurt'
@@ -11,7 +11,7 @@ assets:
     monetaryValue: '50000.00'
 
   - name: 'Webserver WEB-PROD-01'
-    type: 'Server'
+    type: 'Hardware'
     description: 'Produktions-Webserver für Unternehmenswebsite'
     owner: 'IT-Abteilung'
     location: 'Rechenzentrum Frankfurt'
@@ -22,7 +22,7 @@ assets:
     monetaryValue: '15000.00'
 
   - name: 'CRM-System'
-    type: 'Application'
+    type: 'Software'
     description: 'Salesforce CRM für Kundenverwaltung'
     owner: 'Vertriebsleitung'
     location: 'Cloud (Salesforce)'
@@ -33,7 +33,7 @@ assets:
     monetaryValue: '100000.00'
 
   - name: 'Personalakten-System'
-    type: 'Application'
+    type: 'Software'
     description: 'Digitale Personalakten und HR-Management'
     owner: 'Personalabteilung'
     location: 'Interner Server'
@@ -44,7 +44,7 @@ assets:
     monetaryValue: '25000.00'
 
   - name: 'Backup-Server BACKUP-01'
-    type: 'Server'
+    type: 'Hardware'
     description: 'Backup-Server für tägliche Datensicherungen'
     owner: 'IT-Abteilung'
     location: 'Rechenzentrum München'
@@ -55,7 +55,7 @@ assets:
     monetaryValue: '20000.00'
 
   - name: 'Email-Server MAIL-01'
-    type: 'Server'
+    type: 'Hardware'
     description: 'Microsoft Exchange E-Mail-Server'
     owner: 'IT-Abteilung'
     location: 'Rechenzentrum Frankfurt'
@@ -66,7 +66,7 @@ assets:
     monetaryValue: '30000.00'
 
   - name: 'Firewall FW-MAIN-01'
-    type: 'Network Device'
+    type: 'Hardware'
     description: 'Haupt-Firewall für Perimeter-Schutz'
     owner: 'IT-Security'
     location: 'Rechenzentrum Frankfurt'
@@ -77,7 +77,7 @@ assets:
     monetaryValue: '40000.00'
 
   - name: 'Active Directory Server AD-01'
-    type: 'Server'
+    type: 'Hardware'
     description: 'Windows Active Directory Domain Controller'
     owner: 'IT-Abteilung'
     location: 'Rechenzentrum Frankfurt'
@@ -88,7 +88,7 @@ assets:
     monetaryValue: '35000.00'
 
   - name: 'Kundendatenbank'
-    type: 'Data'
+    type: 'Information'
     description: 'Zentrale Kundendatenbank mit Kontaktdaten und Verträgen'
     owner: 'Geschäftsführung'
     location: 'DB-PROD-01'
@@ -99,7 +99,7 @@ assets:
     monetaryValue: '500000.00'
 
   - name: 'Mitarbeiter-Laptops (50 Stück)'
-    type: 'Endpoint'
+    type: 'Hardware'
     description: 'Windows-Laptops für Mitarbeiter'
     owner: 'IT-Abteilung'
     location: 'Verschiedene Standorte'

@@ -2,6 +2,12 @@
 {% trans_default_domain 'training' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
+{#
+    Field renamed: 'duration' -> 'durationMinutes' to match TrainingType.
+    TODO: SOLUTIONS_P0 P0-11 — re-add 'location' to schedule-section once the
+    field is added to TrainingType. Translation keys retained as anchors.
+#}
+
 {% block title %}{{ 'training.new'|trans({}, 'training')}}{% endblock %}
 
 {% block body %}
@@ -33,7 +39,7 @@
                         },
                         'schedule': {
                             'label': 'training.section.schedule'|trans({}, 'training'),
-                            'fields': ['scheduledDate', 'duration', 'location']
+                            'fields': ['scheduledDate', 'durationMinutes']
                         },
                         'people': {
                             'label': 'training.section.people'|trans({}, 'training'),
@@ -58,8 +64,7 @@
                         'trainingType': 6,
                         'deliveryMethod': 6,
                         'scheduledDate': 6,
-                        'duration': 6,
-                        'location': 12,
+                        'durationMinutes': 6,
                         'trainer': 6,
                         'trainerUser': 6,
                         'trainerPerson': 6,
@@ -74,7 +79,7 @@
                         'feedback': 12
                     },
                     'help_texts': {
-                        'duration': 'training.help.duration'|trans({}, 'training'),
+                        'durationMinutes': 'training.help.duration'|trans({}, 'training'),
                         'participants': 'training.help.participants'|trans({}, 'training'),
                         'coveredControls': 'training.help.covered_controls'|trans({}, 'training'),
                         'complianceRequirements': 'training.help.compliance_requirements'|trans({}, 'training'),

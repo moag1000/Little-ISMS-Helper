@@ -1,6 +1,10 @@
 business_process:
   edit: Edit Business Process
   new: New Business Process
+  success:
+    created: 'Business process has been created.'
+    updated: 'Business process has been updated.'
+    deleted: 'Business process has been deleted.'
   bia:
     title: Business Impact Analysis
     section:
@@ -79,6 +83,7 @@ business_process:
     process_owner_user: Process owner from user management.
     process_owner_person: 'Pick a Person without system login as process owner. List display order&#58; User &gt; Person &gt; legacy free-text.'
     process_owner_deputies: 'Additional Persons with deputy or shared responsibility. Multi-select.'
+    empty_link: /en/help/glossary#glossary-bia
   tooltip:
     criticality: <strong>Business Criticality (ISO 22301)</strong><br><table class="table
       table-sm table-borderless mb-0 mt-1"><tr><td><strong>Low</strong></td><td>Outage
@@ -120,8 +125,10 @@ business_process:
     title: No business processes yet
     description: Create your first business process to start with the business impact
       analysis.
+    body: 'Business processes form the backbone of the BIA (Business Impact Analysis) and the BC plans. Capture all value-adding processes here with RTO, RPO, MTPD and criticality — a prerequisite for ISO 22301 §8.2.2.'
   action:
     create: Create process
+    create_first: Create first business process
   impact_level:
     very_low: Very low
     low: Low

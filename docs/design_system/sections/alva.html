@@ -3,6 +3,41 @@
      Mood-Liste = exakt die 9 Moods der Komponente.
      ═══════════════════════════════════════════════════════════════════ -->
 
+<!-- ═══════════════════════════════════════════════════════════════════
+     MOOD-WHITELIST · Top-Banner — Single-Source-of-Truth
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="alva-mood-whitelist" class="ds-section" style="margin-bottom:16px;">
+    <div style="padding:14px 18px; background:var(--accent-tint); border-left:4px solid var(--accent); border-radius:var(--r-md);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <i class="bi bi-stars" style="color:var(--accent-strong); font-size:18px;"></i>
+            <strong style="font-size:15px; color:var(--accent-strong);">Mood-Whitelist (Single-Source-of-Truth)</strong>
+        </div>
+        <p style="margin:0 0 8px; font-size:13px; color:var(--fg-2);">
+            Alva-Mood-Werte sind <strong>geschlossen</strong>. Nur die folgenden <strong>9 Moods</strong>
+            werden vom Renderer (<code>assets/components/AlvaCharacter.jsx</code>,
+            <code>AlvaMoodExtension</code>) unterstützt:
+        </p>
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
+            <code class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm">idle</code>
+            <code class="fa-status-pill fa-status-pill--accent fa-status-pill--sm">thinking</code>
+            <code class="fa-status-pill fa-status-pill--primary fa-status-pill--sm">working</code>
+            <code class="fa-status-pill fa-status-pill--success fa-status-pill--sm">happy</code>
+            <code class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm">sleeping</code>
+            <code class="fa-status-pill fa-status-pill--warning fa-status-pill--sm">warning</code>
+            <code class="fa-status-pill fa-status-pill--primary fa-status-pill--sm">focused</code>
+            <code class="fa-status-pill fa-status-pill--accent fa-status-pill--sm">scanning</code>
+            <code class="fa-status-pill fa-status-pill--success fa-status-pill--sm">celebrating</code>
+        </div>
+        <p style="margin:0; font-size:12px; color:var(--fg-3);">
+            <strong>Fallback-Verhalten:</strong> Nicht-gelistete Mood-Werte (z.B. <code>pointing</code>,
+            <code>curious</code>, <code>excited</code>) werden <strong>silently auf <code>idle</code> degradiert</strong> —
+            keine Konsolen-Warnung, kein Render-Fehler. Folge: ein Tippfehler ist ein lautloser Regression-Bug.
+            Bei jedem neuen Hint/EmptyState/Hero: <strong>aus dieser Liste auswählen</strong>, sonst läuft Alva
+            mit dem falschen Mood. Anti-Pattern siehe DESIGN_SYSTEM_CONFORMANCE.md Issue 4 + A4.
+        </p>
+    </div>
+</section>
+
 <!-- Companion -->
 <section id="alva" class="ds-section">
     <div class="ds-eyebrow">Alva</div>
@@ -116,6 +151,112 @@ const tokens = {
     <div class="ds-callout ds-callout--dont">
         <i class="bi bi-x-lg"></i>
         <div><strong>Nie:</strong> Alva als reine Deko in Footer, Marketing-Banner oder Login-Hintergrund. Wenn sie da ist, ist sie <em>aktiv</em> — der Mood passt zum Screen-Kontext.</div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ALVAHINT-DTO · Tier + Variant Klarstellung
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="alva-hint-dto" class="ds-section">
+    <div class="ds-eyebrow">Alva · Hint-DTO</div>
+    <h2 class="ds-h2">AlvaHint — <code>priorityTier</code> vs. <code>variant</code></h2>
+    <p class="ds-lede">
+        Im <code>AlvaHint</code>-DTO (<code>src/AlvaHint/AlvaHint.php</code>) sind <strong>Tier</strong>
+        und <strong>Variant</strong> zwei <em>separate</em> Properties — kein Schreib-Alias füreinander.
+        Sie haben unterschiedliche Bedeutung und werden parallel gesetzt.
+    </p>
+
+    <h3 class="ds-h3">Property-Definition</h3>
+    <ul class="ds-speclist">
+        <li><code>priorityTier: int</code><span>Erlaubte Werte: <code>1</code> · <code>2</code> · <code>3</code>. Constructor wirft <code>InvalidArgumentException</code> bei anderen Werten.</span></li>
+        <li><code>variant: string</code><span>Erlaubte Werte: <code>'info'</code> · <code>'warning'</code> · <code>'danger'</code> · <code>'success'</code>. Steuert Aurora-Tone (siehe <code>_fa_alert</code>).</span></li>
+        <li><code>dismissible: bool</code><span><strong>Tier 1 erzwingt <code>dismissible: false</code></strong> — Constructor blockt sonst. Eine 72h-DSGVO-Frist darf nicht weggeklickt werden.</span></li>
+        <li><code>mood: string</code><span>Alva-Mood aus der Whitelist oben (default <code>'thinking'</code>).</span></li>
+    </ul>
+
+    <h3 class="ds-h3">Tier ↔ Variant Mapping (Konvention)</h3>
+    <table style="width:100%; max-width:760px; border-collapse:collapse; background:var(--surface); border-radius:var(--r-md); overflow:hidden;">
+        <thead>
+            <tr style="background:var(--surface-2);">
+                <th style="text-align:left; padding:10px 12px; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--fg-3);">Tier</th>
+                <th style="text-align:left; padding:10px 12px; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--fg-3);">Bedeutung</th>
+                <th style="text-align:left; padding:10px 12px; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--fg-3);">Default-Variant</th>
+                <th style="text-align:left; padding:10px 12px; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--fg-3);">Dismissible</th>
+                <th style="text-align:left; padding:10px 12px; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--fg-3);">Aurora-Frame</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="border-top:1px solid var(--border);">
+                <td style="padding:10px 12px;"><strong>1</strong> · Pflicht (regulatory)</td>
+                <td style="padding:10px 12px;">blocking · high-prio · z.B. DSGVO 72h-Frist, abgelaufene CAPA</td>
+                <td style="padding:10px 12px;"><code>danger</code> (oder <code>warning</code>)</td>
+                <td style="padding:10px 12px;"><span class="fa-status-pill fa-status-pill--danger fa-status-pill--sm">erzwungen nein</span></td>
+                <td style="padding:10px 12px;">roter Aurora-Frame · <code>--danger</code></td>
+            </tr>
+            <tr style="border-top:1px solid var(--border);">
+                <td style="padding:10px 12px;"><strong>2</strong> · Audit-Gap (warn)</td>
+                <td style="padding:10px 12px;">warn · z.B. fehlende Owner, fehlende Severity-Definition</td>
+                <td style="padding:10px 12px;"><code>warning</code></td>
+                <td style="padding:10px 12px;"><span class="fa-status-pill fa-status-pill--warning fa-status-pill--sm">erlaubt</span></td>
+                <td style="padding:10px 12px;">orange Aurora-Frame · <code>--warning</code></td>
+            </tr>
+            <tr style="border-top:1px solid var(--border);">
+                <td style="padding:10px 12px;"><strong>3</strong> · Efficiency (info)</td>
+                <td style="padding:10px 12px;">info · Tipp · z.B. Bulk-Import-Suggestion, Workflow-Optimierung</td>
+                <td style="padding:10px 12px;"><code>info</code> (oder <code>success</code>)</td>
+                <td style="padding:10px 12px;"><span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm">erlaubt</span></td>
+                <td style="padding:10px 12px;">neutral · <code>--primary</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="ds-example" style="margin-top:18px;">
+        <pre class="ds-example__code">// ✅ Tier 1 · Regulatory · zwingt dismissible=false
+return new AlvaHint(
+    key:                       'data_breach.deadline_72h',
+    titleTranslationKey:       'alva.hint.data_breach.title',
+    bodyTranslationKey:        'alva.hint.data_breach.body',
+    translationDomain:         'alva',
+    variant:                   'danger',       // ← Aurora-Tone
+    priorityTier:              1,              // ← Schweregrad
+    dismissible:               false,          // ← Tier 1 erzwingt false
+    mood:                      'warning',      // ← aus Mood-Whitelist
+    entityType:                'DataBreach',
+);
+
+// ✅ Tier 2 · Audit-Gap
+return new AlvaHint(
+    key:                       'risk.missing_owner',
+    titleTranslationKey:       'alva.hint.risk.no_owner.title',
+    bodyTranslationKey:        'alva.hint.risk.no_owner.body',
+    variant:                   'warning',
+    priorityTier:              2,
+    dismissible:               true,
+    mood:                      'thinking',
+);
+
+// ✅ Tier 3 · Efficiency-Tipp
+return new AlvaHint(
+    key:                       'risk.bulk_import_tip',
+    titleTranslationKey:       'alva.hint.risk.bulk_tip.title',
+    bodyTranslationKey:        'alva.hint.risk.bulk_tip.body',
+    variant:                   'info',
+    priorityTier:              3,
+    dismissible:               true,
+    mood:                      'happy',
+);
+
+// ❌ Anti-Pattern · Tier als String
+new AlvaHint(... priorityTier: 'high' ...);   // TypeError
+new AlvaHint(... priorityTier: 1, dismissible: true ...);   // InvalidArgumentException</pre>
+    </div>
+
+    <div class="ds-callout ds-callout--dont">
+        <i class="bi bi-x-lg"></i>
+        <div><strong>Anti-Pattern (A10):</strong> Tier-Wert als String (<code>'high'</code>, <code>'medium'</code>) übergeben
+        oder Variant über Tier abgeleitet rendern (<code>variant ≡ tierToColor(tier)</code>). Solutions-Dokumente
+        haben das mehrfach so gezeigt — nicht ausführen. <strong>Tier und Variant sind unabhängig</strong> und werden
+        beide explizit gesetzt.</div>
     </div>
 </section>
 

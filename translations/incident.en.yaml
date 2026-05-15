@@ -227,8 +227,8 @@ incident:
     visible_to_holding: 'Default on: holding / group CISO can see this incident to coordinate group-level response. Disable only for confidential cases (e.g. HR).'
     severity: Assess severity based on impact and scope (ISO 27001 A.16.1.4)
     affected_systems: List all affected systems, applications and infrastructure
-    affected_assets: Select assets affected by the incident (hold CTRL for multiple
-      selection)
+    affected_assets: Select assets affected by the incident (type to search,
+      multi-select supported)
     nis2_category: Category according to NIS2 Directive Article 23
     early_warning_24h: Early warning must be submitted within 24 hours of detection
       (NIS2 Art. 23)

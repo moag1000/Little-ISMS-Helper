@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'interested_party.title'|trans({}, 'interested_parties') }}{% endblock %}
 
@@ -93,8 +94,14 @@
                     {% for party in interested_parties %}
                     <tr>
                         <td><a href="{{ path('app_interested_party_show', {id: party.id}) }}">{{ party.name }}</a></td>
-                        <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: party.partyType } %}</td>
-                        <td>{% include '_components/_badge.html.twig' with { variant: party.importance == 'high' ? 'warning' : (party.importance == 'low' ? 'success' : 'info'), content: party.importance|upper } %}</td>
+                        {% set importance_variant = {
+                            critical: 'danger',
+                            high: 'warning',
+                            medium: 'primary',
+                            low: 'success'
+                        }[party.importance]|default('neutral') %}
+                        <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('interested_party.party_type.' ~ party.partyType)|trans({}, 'interested_parties') } %}</td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: importance_variant, content: ('interested_party.importance.' ~ party.importance)|trans({}, 'interested_parties') } %}</td>
                         <td>{{ party.getEngagementScore() }}</td>
                         <td>{{ party.lastCommunication ? party.lastCommunication|date('Y-m-d') : ('interested_party.never'|trans({}, 'interested_parties')) }}</td>
                         <td>
@@ -106,7 +113,17 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-            <p>{{ 'interested_party.empty.message'|trans({}, 'interested_parties') }} <a href="{{ path('app_interested_party_new') }}">{{ 'interested_party.empty.add_first'|trans({}, 'interested_parties') }}</a>.</p>
+            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+            {{ _fa_empty_state.render({
+                mood: 'thinking',
+                title: 'interested_party.empty.title'|trans({}, 'interested_parties'),
+                text: 'interested_party.empty.body'|trans({}, 'interested_parties'),
+                norm_ref: 'ISO 27001 Klausel 4.2 · ISO 9001 Klausel 4.2',
+                actions: [
+                    { label: 'interested_party.action.create_first'|trans({}, 'interested_parties'), variant: 'primary', icon: 'plus-lg', href: path('app_interested_party_new') }
+                ],
+                help_link: 'interested_party.help.empty_link'|trans({}, 'interested_parties')
+            }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

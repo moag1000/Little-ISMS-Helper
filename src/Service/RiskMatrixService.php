@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Risk;
 use App\Repository\RiskRepository;
+use App\Risk\RiskMatrixThresholds;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -22,11 +23,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * - Localized likelihood and impact labels (via TranslatorInterface + risk domain)
  * - CSS class and color mappings for visualization
  *
- * Risk Scoring:
- * - Critical: Score >= 20 (Red)
- * - High: Score >= 12 (Orange)
- * - Medium: Score >= 6 (Yellow)
- * - Low: Score < 6 (Green)
+ * Risk-band thresholds are owned by {@see RiskMatrixThresholds} (single source
+ * of truth, ISO 27001 Cl. 6.1.2 b). Do NOT re-introduce inline thresholds.
  */
 class RiskMatrixService
 {
@@ -35,9 +33,6 @@ class RiskMatrixService
     public function __construct(
         private readonly RiskRepository $riskRepository,
         private readonly TranslatorInterface $translator,
-        private readonly int $criticalThreshold = 20,
-        private readonly int $highThreshold = 12,
-        private readonly int $mediumThreshold = 6
     ) {}
 
     /** @return array<int, string> */
@@ -104,17 +99,9 @@ class RiskMatrixService
             $matrix[$likelihood][$impact][] = $risk;
             $statistics['total']++;
 
-            // Calculate risk level
-            $riskScore = $likelihood * $impact;
-            if ($riskScore >= $this->criticalThreshold) {
-                $statistics['critical']++;
-            } elseif ($riskScore >= $this->highThreshold) {
-                $statistics['high']++;
-            } elseif ($riskScore >= $this->mediumThreshold) {
-                $statistics['medium']++;
-            } else {
-                $statistics['low']++;
-            }
+            // Calculate risk level via SSoT
+            $level = RiskMatrixThresholds::classify($likelihood * $impact);
+            $statistics[$level]++;
         }
 
         // Generate risk level colors for each cell
@@ -137,33 +124,25 @@ class RiskMatrixService
     }
 
     /**
-     * Berechnet das Risikolevel basierend auf Likelihood und Impact
+     * Berechnet das Risikolevel basierend auf Likelihood und Impact.
+     * Delegiert an die SSoT {@see RiskMatrixThresholds::classify()}.
      */
     public function calculateRiskLevel(int $likelihood, int $impact): string
     {
-        $score = $likelihood * $impact;
-
-        if ($score >= $this->criticalThreshold) {
-            return 'critical'; // Red
-        } elseif ($score >= $this->highThreshold) {
-            return 'high';     // Orange
-        } elseif ($score >= $this->mediumThreshold) {
-            return 'medium';   // Yellow
-        } else {
-            return 'low';      // Green
-        }
+        return RiskMatrixThresholds::classify($likelihood * $impact);
     }
 
     /**
-     * Get configured thresholds for use in templates and services
+     * Get configured thresholds for use in templates and services.
+     *
      * @return array{critical: int, high: int, medium: int}
      */
     public function getThresholds(): array
     {
         return [
-            'critical' => $this->criticalThreshold,
-            'high' => $this->highThreshold,
-            'medium' => $this->mediumThreshold,
+            'critical' => RiskMatrixThresholds::CRITICAL_MIN,
+            'high' => RiskMatrixThresholds::HIGH_MIN,
+            'medium' => RiskMatrixThresholds::MEDIUM_MIN,
         ];
     }
 

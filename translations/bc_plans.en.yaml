@@ -5,6 +5,10 @@ bc_plans:
     subtitle: ISO 22301:2019 Business Continuity Management
   action:
     add_new: Add New BC Plan
+    create_first: Create first BC plan
+  empty:
+    title: No business continuity plans yet
+    body: 'BC plans secure the recovery of critical business processes. For each process, document activation criteria, recovery procedures, team, and communication plan — required by ISO 22301 §8.4.'
   alert:
     overdue_tests: ⚠️ Overdue BC Plan Tests
     overdue_reviews: ⚠️ Overdue BC Plan Reviews
@@ -80,6 +84,7 @@ bc_plans:
     create_first: Create your first BC plan
     readiness_score: 'Readiness Score: %score%%'
   help:
+    empty_link: /en/help/glossary#glossary-bc-plan
     name: Unique name of the BC plan
     business_process: Business process protected by this plan (ISO 22301)
     description: Detailed description of the plan and its scope
