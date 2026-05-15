@@ -154,11 +154,11 @@
 
                             {# Modal for log details #}
                             {% if log.description or log.newValues %}
-                                <div class="modal fade" id="logModal{{ log.id }}" tabindex="-1">
+                                <div  class="modal fade" aria-labelledby="logModal{{ log.id }}Label"  id="logModal{{ log.id }}" tabindex="-1">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title h5">{{ 'audit_log.modal.title'|trans({}, 'audit_log') }}</h3>
+                                                <h3  id="logModal{{ log.id }}Label" class="modal-title h5">{{ 'audit_log.modal.title'|trans({}, 'audit_log') }}</h3>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                             </div>
                                             <div class="modal-body">

@@ -36,7 +36,7 @@
                         <dt class="col-sm-4">{{ 'mfa.field.device_name'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {# TODO(aurora-migration): dynamic MFA token type icon — keep bi-* #}
-                            <i class="bi bi-{{ mfa_token.tokenType == 'totp' ? 'phone' : 'key' }}" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--{{ mfa_token.tokenType == 'totp' ? 'phone' : 'ui-key' }}" aria-hidden="true"></i>
                             {{ mfa_token.deviceName ?? 'N/A' }}
                         </dd>
 

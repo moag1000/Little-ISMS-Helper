@@ -1,0 +1,326 @@
+# VDA ISA TISAX v6.0 — Framework-Skeleton
+# Quelle: Verband der Automobilindustrie (VDA) / ENX Association
+# https://www.enx.com/en-us/tisax/
+#
+# HINWEIS: VDA ISA v6.0 wurde im Maerz 2024 eingefuehrt. Dieses File enthaelt
+# 10 representative ISA-Kontrollen als ausgearbeitete Beispiele (Sprint 10A).
+# Vollstaendige Kontrollenerfassung ist eine separate operative Aufgabe.
+#
+# Bei Nutzung der offiziellen VDA-ISA-Excel-Datei bitte Kapitel 1-6 vollstaendig
+# eintragen. VDA ISA kann nicht oeffentlich verteilt werden — Bezug ueber
+# die ENX-Mitgliederplattform.
+#
+# Reifegradmodell:
+#   0 = Inkomplett: Kein Prozess oder keine vollstaendige Planung
+#   1 = Durchgefuehrt: Prozess vorhanden, aber nicht dokumentiert
+#   2 = Gesteuert: Dokumentiert, abgenommen, geplant
+#   3 = Etabliert: Standardisiert, effektiv, standardisiert
+#   4 = Vorhersehbar: Statistisch gesteuert und gemessen
+#   5 = Optimierend: Kontinuierlich verbessert
+
+metadata:
+  code: 'TISAX-VDA-ISA-6'
+  name: 'TISAX VDA ISA v6.0'
+  version: '6.0'
+  releaseDate: '2024-03-01'
+  body: 'Verband der Automobilindustrie (VDA) / ENX Association'
+  language: 'de'
+  note: >
+    VDA ISA v6.0 (offizieller Stand Maerz 2024). Das vollstaendige
+    Excel-Dokument ist ueber ENX fuer TISAX-Teilnehmer verfuegbar.
+    Alle Kontrollen sind nach Reifegrad 0-5 zu bewerten.
+  applicableTo:
+    - 'Automobilzulieferer'
+    - 'OEM-Partner (Tier-1, Tier-2)'
+    - 'IT-Dienstleister fuer die Automobilindustrie'
+    - 'Prototype-Schutz-Pflichtige Organisationen'
+  assessmentLabels:
+    - id: 'Info'
+      description: 'Umgang mit Informationen — Grundschutzlevel Informationssicherheit'
+    - id: 'Proto'
+      description: 'Prototype-Schutz — Erweiterter Schutz fuer physische Prototypen'
+    - id: 'DataPro'
+      description: 'Datenschutz — Verarbeitung personenbezogener Daten'
+  sourceUrl: 'https://www.enx.com/en-us/tisax/'
+
+kapitel:
+  - id: '1'
+    title: 'Informationssicherheits-Management'
+  - id: '2'
+    title: 'Human Resources Security'
+  - id: '3'
+    title: 'Physische und umgebungsbezogene Sicherheit'
+  - id: '4'
+    title: 'Identitaets- und Zugriffsmanagement'
+  - id: '5'
+    title: 'IT-Sicherheit und Kryptografie'
+  - id: '6'
+    title: 'Lieferanten- und Dienstleistermanagement'
+
+kontrollen:
+
+  # ============================================================
+  # Kapitel 1 — Informationssicherheits-Management
+  # ============================================================
+
+  - id: 'ISA 1.1.1'
+    kapitel: '1'
+    title: 'Informationssicherheits-Leitlinie'
+    description: >
+      Eine durch das Top-Management genehmigte Leitlinie zur Informationssicherheit
+      existiert und wird regelmaessig ueberprueft.
+    assessmentLabels: ['Info']
+    minReifegradFuerBasis: 3
+    anforderungen:
+      reifegradNormal:
+        text: >
+          Eine Informationssicherheits-Leitlinie MUSS durch das Top-Management
+          genehmigt, kommuniziert und regelmaessig ueberprueft werden.
+        reifegradSoll: 3
+      reifegradHoch:
+        text: >
+          Die Informationssicherheits-Leitlinie SOLL mindestens jaehrlich
+          formell ueberprueft und bei Bedarf aktualisiert werden.
+        reifegradSoll: 4
+    iso27001Ref:
+      - 'A.5.1'
+    prueffragen:
+      - 'Existiert eine schriftliche Informationssicherheits-Leitlinie?'
+      - 'Wurde die Leitlinie durch das Top-Management unterzeichnet?'
+      - 'Wird die Leitlinie kommuniziert (Intranet, Schulungen)?'
+      - 'Wann erfolgte die letzte formelle Ueberprueufung?'
+
+  - id: 'ISA 1.2.1'
+    kapitel: '1'
+    title: 'Rollen und Verantwortlichkeiten fuer Informationssicherheit'
+    description: >
+      Rollen und Verantwortlichkeiten fuer Informationssicherheit sind klar
+      definiert und einer Person oder Funktion zugewiesen.
+    assessmentLabels: ['Info']
+    minReifegradFuerBasis: 3
+    anforderungen:
+      reifegradNormal:
+        text: >
+          Die Verantwortlichkeiten fuer Informationssicherheit MUESSEN klar
+          dokumentiert und zugewiesen sein.
+        reifegradSoll: 3
+      reifegradHoch:
+        text: >
+          Es SOLL einen dedizierten Informationssicherheitsbeauftragten geben,
+          der direkt an das Top-Management berichtet.
+        reifegradSoll: 4
+    iso27001Ref:
+      - 'A.5.2'
+    prueffragen:
+      - 'Sind Rollen und Verantwortlichkeiten fuer Informationssicherheit dokumentiert?'
+      - 'Gibt es einen benannten Informationssicherheitsbeauftragten?'
+
+  - id: 'ISA 1.3.1'
+    kapitel: '1'
+    title: 'Informationssicherheits-Risikomanagement'
+    description: >
+      Ein Risikomanagementprozess fuer Informationssicherheit ist etabliert,
+      der die Identifikation, Bewertung und Behandlung von Risiken umfasst.
+    assessmentLabels: ['Info']
+    minReifegradFuerBasis: 3
+    anforderungen:
+      reifegradNormal:
+        text: >
+          Risiken fuer Informationssicherheit MUESSEN systematisch identifiziert,
+          bewertet und behandelt werden.
+        reifegradSoll: 3
+    iso27001Ref:
+      - 'A.5.7'
+      - 'A.5.8'
+    prueffragen:
+      - 'Ist ein formeller Risikomanagementprozess dokumentiert?'
+      - 'Werden Risiken regelmaessig (mindestens jaehrlich) bewertet?'
+      - 'Gibt es einen Risikobehandlungsplan?'
+
+  # ============================================================
+  # Kapitel 2 — Human Resources Security
+  # ============================================================
+
+  - id: 'ISA 2.1.1'
+    kapitel: '2'
+    title: 'Sicherheitsueberprueifung von Mitarbeitenden'
+    description: >
+      Sicherheitsueberprueifungen von Mitarbeitenden werden entsprechend
+      ihrer Taetigkeiten und Zugriffe durchgefuehrt.
+    assessmentLabels: ['Info']
+    minReifegradFuerBasis: 3
+    anforderungen:
+      reifegradNormal:
+        text: >
+          Mitarbeitende in sicherheitsrelevanten Positionen MUESSEN einer
+          angemessenen Sicherheitsueberprueifung unterzogen werden.
+        reifegradSoll: 3
+    iso27001Ref:
+      - 'A.6.1'
+    prueffragen:
+      - 'Wird fuer neue Mitarbeitende eine Sicherheitsueberprueifung durchgefuehrt?'
+      - 'Sind die Kriterien fuer Sicherheitsueberprueifungen dokumentiert?'
+
+  - id: 'ISA 2.2.1'
+    kapitel: '2'
+    title: 'Schulung und Sensibilisierung fuer Informationssicherheit'
+    description: >
+      Alle Mitarbeitenden werden regelmaessig zu Informationssicherheit
+      geschult und sensibilisiert.
+    assessmentLabels: ['Info']
+    minReifegradFuerBasis: 3
+    anforderungen:
+      reifegradNormal:
+        text: >
+          Alle Mitarbeitenden MUESSEN mindestens jaehrlich Schulungen zur
+          Informationssicherheit erhalten.
+        reifegradSoll: 3
+      reifegradHoch:
+        text: >
+          Zielgruppenspezifische Schulungen SOLLTEN fuer kritische Rollen
+          (z.B. Administratoren, Entwickler) angeboten werden.
+        reifegradSoll: 4
+    iso27001Ref:
+      - 'A.6.3'
+    prueffragen:
+      - 'Werden regelmaessige Sicherheitsschulungen durchgefuehrt?'
+      - 'Sind Schulungsnachweise dokumentiert?'
+
+  # ============================================================
+  # Kapitel 3 — Physische und umgebungsbezogene Sicherheit
+  # ============================================================
+
+  - id: 'ISA 3.1.1'
+    kapitel: '3'
+    title: 'Physischer Zugangsschutz zu Informationsverarbeitungseinrichtungen'
+    description: >
+      Bereiche mit Informationsverarbeitungseinrichtungen sind physisch
+      gegen unbefugten Zugang gesichert.
+    assessmentLabels: ['Info', 'Proto']
+    minReifegradFuerBasis: 3
+    anforderungen:
+      reifegradNormal:
+        text: >
+          Bereiche mit schutzbeduerftigen Informationsverarbeitungseinrichtungen
+          MUESSEN gegen unbefugten physischen Zugang gesichert sein.
+        reifegradSoll: 3
+    iso27001Ref:
+      - 'A.7.1'
+      - 'A.7.2'
+    prueffragen:
+      - 'Sind Serverraeume und Rechenzentren gegen unbefugten Zutritt gesichert?'
+      - 'Werden Zutrittsrechte regelmaessig ueberprueft?'
+
+  # ============================================================
+  # Kapitel 4 — Identitaets- und Zugriffsmanagement
+  # ============================================================
+
+  - id: 'ISA 4.1.1'
+    kapitel: '4'
+    title: 'Benutzer-Identitaetsmanagement und Authentifizierung'
+    description: >
+      Jeder Benutzer hat eine eindeutige Identitaet; Authentifizierung
+      erfolgt angemessen zum Schutzbedarf der Systeme.
+    assessmentLabels: ['Info']
+    minReifegradFuerBasis: 3
+    anforderungen:
+      reifegradNormal:
+        text: >
+          Jeder Benutzer MUSS eine individuelle, eindeutige Kennung haben.
+          Passwortanforderungen MUESSEN den aktuellen Sicherheitsstandards entsprechen.
+        reifegradSoll: 3
+      reifegradHoch:
+        text: >
+          Fuer den Zugriff auf kritische Systeme SOLLTE eine Mehrfaktor-Authentifizierung
+          implementiert sein.
+        reifegradSoll: 4
+    iso27001Ref:
+      - 'A.8.2'
+      - 'A.8.5'
+    prueffragen:
+      - 'Hat jeder Benutzer eine eindeutige Kennung?'
+      - 'Sind Passwortrichtlinien dokumentiert und durchgesetzt?'
+      - 'Wird MFA fuer privilegierte Zugaenge eingesetzt?'
+
+  - id: 'ISA 4.2.1'
+    kapitel: '4'
+    title: 'Berechtigungsmanagement'
+    description: >
+      Zugriffsrechte werden nach dem Prinzip der minimalen Berechtigungen
+      vergeben und regelmaessig ueberprueft.
+    assessmentLabels: ['Info']
+    minReifegradFuerBasis: 3
+    anforderungen:
+      reifegradNormal:
+        text: >
+          Zugriffsrechte MUESSEN nach dem Prinzip der geringsten Berechtigungen
+          (Least Privilege) vergeben und dokumentiert werden.
+        reifegradSoll: 3
+    iso27001Ref:
+      - 'A.8.2'
+      - 'A.8.3'
+    prueffragen:
+      - 'Werden Zugriffsrechte nach Need-to-Know/Least-Privilege vergeben?'
+      - 'Werden Zugriffsrechte regelmaessig (mindestens jaehrlich) ueberprueft?'
+
+  # ============================================================
+  # Kapitel 5 — IT-Sicherheit und Kryptografie
+  # ============================================================
+
+  - id: 'ISA 5.1.1'
+    kapitel: '5'
+    title: 'Patch-Management'
+    description: >
+      Softwarepatches werden zeitnah und systematisch eingespielt.
+      Bekannte Schwachstellen werden priorisiert behandelt.
+    assessmentLabels: ['Info']
+    minReifegradFuerBasis: 3
+    anforderungen:
+      reifegradNormal:
+        text: >
+          Sicherheitsrelevante Patches MUESSEN innerhalb eines definierten
+          Zeitrahmens (kritische Schwachstellen: 72h) eingespielt werden.
+        reifegradSoll: 3
+    iso27001Ref:
+      - 'A.8.8'
+    prueffragen:
+      - 'Existiert ein dokumentierter Patch-Management-Prozess?'
+      - 'Werden Patches nach Kritikalitaet priorisiert?'
+      - 'Wie lange dauert es durchschnittlich, kritische Patches einzuspielen?'
+
+  # ============================================================
+  # Kapitel 6 — Lieferanten- und Dienstleistermanagement
+  # ============================================================
+
+  - id: 'ISA 6.1.1'
+    kapitel: '6'
+    title: 'Sicherheitsanforderungen an Lieferanten und Dienstleister'
+    description: >
+      Sicherheitsanforderungen werden bei der Auswahl und Steuerung
+      von Lieferanten und Dienstleistern beruecksichtigt.
+    assessmentLabels: ['Info']
+    minReifegradFuerBasis: 3
+    anforderungen:
+      reifegradNormal:
+        text: >
+          Sicherheitsanforderungen MUESSEN in Vertraegen mit Lieferanten und
+          Dienstleistern, die Zugang zu schutzbeduerftigen Informationen haben,
+          festgelegt werden.
+        reifegradSoll: 3
+    iso27001Ref:
+      - 'A.5.19'
+      - 'A.5.20'
+    prueffragen:
+      - 'Werden Sicherheitsanforderungen in Lieferantenvertraege aufgenommen?'
+      - 'Werden Lieferanten regelmaessig auf Sicherheitskonformitaet ueberprueft?'
+
+  # ============================================================
+  # TODO: Vollstaendige VDA ISA v6.0 Kontrollen
+  # Kapitel 1: 1.1.1 bis 1.3.x (ca. 15 Kontrollen)
+  # Kapitel 2: 2.1.1 bis 2.3.x (ca. 10 Kontrollen)
+  # Kapitel 3: 3.1.1 bis 3.3.x inkl. Prototype-Schutz (ca. 12 Kontrollen)
+  # Kapitel 4: 4.1.1 bis 4.4.x (ca. 18 Kontrollen)
+  # Kapitel 5: 5.1.1 bis 5.4.x (ca. 20 Kontrollen)
+  # Kapitel 6: 6.1.1 bis 6.2.x (ca. 8 Kontrollen)
+  # Bitte VDA ISA v6.0 Excel-Datei (ENX-Mitgliederbereich) als Quelle verwenden.
+  # ============================================================

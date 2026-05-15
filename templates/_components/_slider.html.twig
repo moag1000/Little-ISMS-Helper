@@ -280,7 +280,7 @@
     <div class="d-flex justify-content-between align-items-center mb-2">
         <label for="{{ id }}" class="form-label fw-semibold mb-0">
             {% if label_icon is defined and label_icon %}
-                <i class="bi bi-{{ label_icon }} me-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--{{ label_icon }} me-1" aria-hidden="true"></i>
             {% endif %}
             {{ label }}
         </label>
@@ -417,7 +417,7 @@
                     data-{{ controller }}-value-param="{{ preset.value }}"
                     title="{{ preset.description|default('') }}">
                 {% if preset.icon is defined %}
-                <i class="bi bi-{{ preset.icon }} me-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--{{ preset.icon }} me-1" aria-hidden="true"></i>
                 {% endif %}
                 {{ preset.label }}
             </button>

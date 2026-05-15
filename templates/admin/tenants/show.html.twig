@@ -60,7 +60,7 @@
                   data-ui-actions-message-param="{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}">
                 <button type="submit"
                         class="fa-cyber-btn fa-cyber-btn--{% if tenant.isActive %}warning{% else %}primary{% endif %}">
-                    <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--{% if tenant.isActive %}pause{% else %}play{% endif %}" aria-hidden="true"></i>
                     {{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans({}, 'tenant') }}
                 </button>
             </form>
@@ -309,11 +309,11 @@
                                     {% endif %}
                                     {# Governance Rule Modal - inside controller for Stimulus access #}
                                     {% if tenant.parent %}
-                                    <div class="modal fade" id="governanceRuleModal" tabindex="-1" data-tenant-governance-target="ruleModal">
+                                    <div   class="modal fade" aria-labelledby="governanceRuleModalLabel" aria-labelledby="governanceRuleModalLabel"   id="governanceRuleModal" tabindex="-1" data-tenant-governance-target="ruleModal">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h2 class="modal-title h5">{{ 'corporate.granular.modal.title'|trans({}, 'tenant') }}</h2>
+                                                    <h2  id="governanceRuleModalLabel"  class="modal-title h5">{{ 'corporate.granular.modal.title'|trans({}, 'tenant') }}</h2>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -476,11 +476,11 @@
     {% endif %}
 
     {# Manage Users Modal #}
-    <div class="modal fade" id="manageUsersModal" tabindex="-1">
+    <div   class="modal fade" aria-labelledby="manageUsersModalLabel" aria-labelledby="manageUsersModalLabel"   id="manageUsersModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title h5">
+                    <h2  id="manageUsersModalLabel"  class="modal-title h5">
                         <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i> {{ 'tenant.users.manage_title'|trans({}, 'tenant') }}
                     </h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
@@ -735,7 +735,7 @@
                                     <div class="card fa-section h-100">
                                         <div class="card-body">
                                             <div class="text-muted mb-2 small fw-semibold">
-                                                <i class="bi bi-${escapeHtml(field.icon)}" aria-hidden="true"></i> ${escapeHtml(field.label)}
+                                                <i class="fa-icon fa-icon--${escapeHtml(field.icon)}" aria-hidden="true"></i> ${escapeHtml(field.label)}
                                             </div>
                                             <p class="mb-0">${nl2br(displayValue)}</p>
                                         </div>
