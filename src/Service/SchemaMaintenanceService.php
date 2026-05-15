@@ -335,101 +335,163 @@ class SchemaMaintenanceService
     }
 
     /**
-     * Iterates over all pending migrations and marks each one as executed
-     * WITHOUT running its DDL, stopping only when either no phantom-diff
-     * error is returned (i.e. a real error or clean success) or the cap
-     * is reached. Designed for the "click 127 times" recovery scenario.
+     * Runs each pending migration in an INDEPENDENT single-version plan
+     * (Approach C). A failure in version N does NOT abort the loop — all
+     * remaining versions are attempted.
      *
-     * Algorithm (Approach B from spec):
-     *  1. Attempt executePendingMigrations() — if success → done.
-     *  2. If diagnosis.category === phantom_diff_migration → markMigrationAsExecuted()
-     *     on the offending version, then loop.
-     *  3. If any other error → break and report partial progress.
-     *  4. Cap iterations at 200 to prevent runaway loops.
+     * Per-version outcome:
+     *  - Migration executes cleanly → it is now recorded as executed naturally;
+     *    pending count drops without any force-marking.
+     *  - Migration throws a phantom-diff error (table/column already exists) →
+     *    force-marked as executed via markMigrationAsExecuted().
+     *  - Migration throws any other error → added to $skipped[version => reason];
+     *    loop continues with next version.
+     *
+     * This replaces Approach A (schema-introspection), which was too conservative:
+     * migrations using conditional logic or non-CREATE-TABLE patterns were missed,
+     * so the pending count did not drop even for genuine phantom-diff versions.
      *
      * @return array{
      *     success: bool,
      *     marked: list<string>,
+     *     skipped: array<string, string>,
      *     remaining_pending: int,
-     *     stopped_at_error: ?string,
+     *     stopped_at_error: null,
      * }
      */
     public function markAllPhantomDiffMigrationsAsExecuted(string $actor = 'system'): array
     {
-        $maxIterations = 200;
+        /** @var list<string> $marked */
         $marked = [];
-        $stoppedAtError = null;
+        /** @var array<string, string> $skipped */
+        $skipped = [];
+        $cap = 200;
+        $iter = 0;
 
-        for ($i = 0; $i < $maxIterations; $i++) {
-            // Re-check pending count each iteration (the list shrinks as we mark).
+        try {
             $pending = $this->listPendingMigrationVersionsFromFileSystem();
+
             if ($pending === []) {
-                break;
+                return [
+                    'success' => true,
+                    'marked' => [],
+                    'skipped' => [],
+                    'remaining_pending' => 0,
+                    'stopped_at_error' => null,
+                ];
             }
 
-            $result = $this->executePendingMigrations($actor);
+            $df = $this->migrationsDependencyFactory;
+            $df->getMetadataStorage()->ensureInitialized();
+            $planCalc = $df->getMigrationPlanCalculator();
+            $migrator = $df->getMigrator();
 
-            if ($result['success']) {
-                // All remaining migrations executed cleanly — done.
-                break;
+            foreach ($pending as $version) {
+                if (++$iter > $cap) {
+                    break;
+                }
+
+                try {
+                    // Build a single-version UP plan and execute it.
+                    $plan = $planCalc->getPlanForVersions(
+                        [new Version($version)],
+                        Direction::UP,
+                    );
+
+                    $config = (new MigratorConfiguration())
+                        ->setDryRun(false)
+                        ->setAllOrNothing(false)
+                        ->setNoMigrationException(true)
+                        ->setTimeAllQueries(true);
+
+                    $migrator->migrate($plan, $config);
+                    // Migration ran cleanly → already recorded; nothing extra to do.
+                } catch (\Throwable $e) {
+                    $msg = $e->getMessage();
+
+                    if ($this->isPhantomDiffError($msg)) {
+                        // Schema already has the object → force-mark.
+                        $markResult = $this->markMigrationAsExecuted($version);
+                        if ($markResult['success']) {
+                            $marked[] = $version;
+                            $this->auditLogger->logCustom(
+                                'quick_fix.force_mark_migration_executed',
+                                'Migration',
+                                null,
+                                null,
+                                ['version' => $version, 'batch' => 'mark_all_phantom_diff'],
+                                sprintf(
+                                    'QuickFix/mark-all: phantom-diff force-marked migration: %s',
+                                    $version,
+                                ),
+                            );
+                        } else {
+                            $skipped[$version] = sprintf('[force-mark-failed] %s', $markResult['error'] ?? 'unknown');
+                        }
+                    } else {
+                        // Real error — skip and continue with next version.
+                        $category = $this->categorizeMigrationError($msg);
+                        $skipped[$version] = sprintf('[%s] %s', $category, $msg);
+                    }
+                }
             }
-
-            $diagnosis = $result['diagnosis'] ?? null;
-            if (!is_array($diagnosis) || ($diagnosis['category'] ?? 'unknown') !== 'phantom_diff_migration') {
-                // Non-phantom error — cannot auto-recover, report and stop.
-                $stoppedAtError = is_array($diagnosis)
-                    ? sprintf('[%s] %s', $diagnosis['category'], $diagnosis['suggested_action'] ?? $diagnosis['message'] ?? $result['error'] ?? 'unknown')
-                    : ($result['error'] ?? 'unknown error');
-                break;
-            }
-
-            $offendingVersion = $diagnosis['offending_version'] ?? null;
-            if ($offendingVersion === null || $offendingVersion === '') {
-                // Phantom-diff diagnosed but no version identified — cannot mark.
-                $stoppedAtError = 'phantom_diff_migration detected but no offending_version in diagnosis.';
-                break;
-            }
-
-            $markResult = $this->markMigrationAsExecuted($offendingVersion);
-            if (!$markResult['success']) {
-                $stoppedAtError = sprintf(
-                    'force-mark failed for %s: %s',
-                    $offendingVersion,
-                    $markResult['error'] ?? 'unknown',
-                );
-                break;
-            }
-
-            $marked[] = $offendingVersion;
-
-            $this->auditLogger->logCustom(
-                'quick_fix.force_mark_migration_executed',
-                'Migration',
-                null,
-                null,
-                ['version' => $offendingVersion, 'batch' => 'mark_all_phantom_diff', 'index' => $i + 1],
-                sprintf(
-                    'QuickFix/mark-all: force-marked phantom-diff migration %d/%d: %s',
-                    $i + 1,
-                    $maxIterations,
-                    $offendingVersion,
-                ),
-            );
-        }
-
-        // If we exhausted iterations without finishing, record partial progress.
-        if ($i === $maxIterations && $stoppedAtError === null) {
-            $stoppedAtError = sprintf('Iteration cap (%d) reached — partial progress only.', $maxIterations);
+        } catch (\Throwable $e) {
+            // Outer-loop setup failure (e.g. DependencyFactory not available).
+            $skipped['__setup__'] = sprintf('[setup-failure] %s', $e->getMessage());
         }
 
         $remainingPending = count($this->listPendingMigrationVersionsFromFileSystem());
 
         return [
-            'success' => $stoppedAtError === null,
+            'success' => $skipped === [],
             'marked' => $marked,
+            'skipped' => $skipped,
             'remaining_pending' => $remainingPending,
-            'stopped_at_error' => $stoppedAtError,
+            'stopped_at_error' => null, // kept for backward-compat; always null in Approach C
         ];
+    }
+
+    /**
+     * Returns true when the Doctrine/DBAL error message indicates the migration
+     * is a phantom-diff: the target column or table already exists in the live
+     * schema, so the migration's DDL is redundant and safe to skip.
+     */
+    private function isPhantomDiffError(string $msg): bool
+    {
+        return (bool) (
+            preg_match('/Duplicate column name/i', $msg)
+            || preg_match("/Table '[^']+' already exists/i", $msg)
+            || preg_match('/SQLSTATE\[42S01\]/', $msg)
+            || preg_match('/SQLSTATE\[42S21\]/', $msg)
+        );
+    }
+
+    /**
+     * Categorizes a migration error message into a short token for the skipped
+     * map so the operator gets actionable context in the flash messages.
+     */
+    private function categorizeMigrationError(string $msg): string
+    {
+        if (
+            preg_match('/SAVEPOINT [A-Z_0-9]+ does not exist/', $msg)
+            || preg_match('/There is no active transaction/i', $msg)
+        ) {
+            return 'savepoint_collapse';
+        }
+
+        if (preg_match('/SQLSTATE\[23000\].*foreign key/i', $msg)) {
+            return 'foreign_key_constraint';
+        }
+
+        if (preg_match("/Field '([^']+)' doesn't have a default value/i", $msg)) {
+            return 'missing_default_value';
+        }
+
+        if (preg_match("/Unknown column '([^']+)'/i", $msg)) {
+            return 'unknown_column';
+        }
+
+        return 'unknown';
     }
 
     /**
