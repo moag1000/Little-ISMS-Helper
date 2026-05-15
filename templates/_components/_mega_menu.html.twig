@@ -81,7 +81,7 @@
             {# BCM Category #}
             {% if is_module_active('bcm') %}
             <li class="mega-menu-category" role="none">
-                <button class="mega-menu-trigger {% if current_route starts with 'app_business_process_' or current_route starts with 'app_bc_plan_' or current_route starts with 'app_bc_exercise_' or current_route starts with 'app_crisis_team_' %}active{% endif %}"
+                <button class="mega-menu-trigger {% if current_route starts with 'app_business_process_' or current_route starts with 'app_bc_plan_' or current_route starts with 'app_bc_exercise_' or current_route starts with 'app_crisis_team_' or current_route starts with 'bcm_exercise_log_' %}active{% endif %}"
                         data-mega-menu-target="trigger"
                         data-category="bcm"
                         data-action="click->mega-menu#toggle"

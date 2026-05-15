@@ -1,0 +1,164 @@
+{% trans_default_domain 'bsi_200_4_exercise' %}
+{#
+  Printable/reusable log details partial.
+  Expects: log (Bsi2004ExerciseLog)
+#}
+<div class="row g-4">
+    {# --- Scenario --- #}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header fw-semibold">
+                <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
+                {{ 'field.scenario_summary'|trans({}, 'bsi_200_4_exercise') }}
+            </div>
+            <div class="card-body">
+                <p class="mb-0">{{ log.scenarioSummary|nl2br }}</p>
+            </div>
+        </div>
+    </div>
+
+    {# --- Objectives --- #}
+    {% if log.objectives|length > 0 %}
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">
+                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                {{ 'field.objectives'|trans({}, 'bsi_200_4_exercise') }}
+            </div>
+            <div class="card-body">
+                <ul class="mb-0 ps-3">
+                    {% for obj in log.objectives %}
+                        <li>{{ obj }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# --- Participants --- #}
+    {% if log.participants|length > 0 %}
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">
+                <i class="fa-icon fa-icon--nav-team" aria-hidden="true"></i>
+                {{ 'field.participants'|trans({}, 'bsi_200_4_exercise') }}
+            </div>
+            <div class="card-body">
+                <ul class="mb-0 ps-3">
+                    {% for p in log.participants %}
+                        <li>{{ p.name ?? '?' }}{% if p.role is defined %} <span class="text-muted">({{ p.role }})</span>{% endif %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# --- Actions Before/During/After --- #}
+    {% if log.actionsBefore or log.actionsDuring or log.actionsAfter %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header fw-semibold">
+                <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
+                {{ 'section.actions_before'|trans({}, 'bsi_200_4_exercise') }} / {{ 'section.actions_during'|trans({}, 'bsi_200_4_exercise') }} / {{ 'section.actions_after'|trans({}, 'bsi_200_4_exercise') }}
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    {% if log.actionsBefore %}
+                    <div class="col-md-4">
+                        <h6 class="text-muted small text-uppercase">{{ 'section.actions_before'|trans({}, 'bsi_200_4_exercise') }}</h6>
+                        <p>{{ log.actionsBefore|nl2br }}</p>
+                    </div>
+                    {% endif %}
+                    {% if log.actionsDuring %}
+                    <div class="col-md-4">
+                        <h6 class="text-muted small text-uppercase">{{ 'section.actions_during'|trans({}, 'bsi_200_4_exercise') }}</h6>
+                        <p>{{ log.actionsDuring|nl2br }}</p>
+                    </div>
+                    {% endif %}
+                    {% if log.actionsAfter %}
+                    <div class="col-md-4">
+                        <h6 class="text-muted small text-uppercase">{{ 'section.actions_after'|trans({}, 'bsi_200_4_exercise') }}</h6>
+                        <p>{{ log.actionsAfter|nl2br }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# --- Lessons Learned --- #}
+    {% if log.lessonsLearned %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header fw-semibold">
+                <i class="fa-icon fa-icon--nav-book" aria-hidden="true"></i>
+                {{ 'field.lessons_learned'|trans({}, 'bsi_200_4_exercise') }}
+            </div>
+            <div class="card-body">
+                <p class="mb-0">{{ log.lessonsLearned|nl2br }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# --- Improvement Actions --- #}
+    {% if log.improvementActions and log.improvementActions|length > 0 %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                <span>
+                    <i class="fa-icon fa-icon--status-warn" aria-hidden="true"></i>
+                    {{ 'section.improvement_actions'|trans({}, 'bsi_200_4_exercise') }}
+                </span>
+                {% if log.hasOverdueImprovementActions %}
+                    <span class="badge bg-warning text-dark">{{ log.overdueImprovementActions|length }} {{ 'calendar.log_missing'|trans({}, 'bsi_200_4_exercise') }}</span>
+                {% endif %}
+            </div>
+            <div class="card-body p-0">
+                {% embed '_components/_fa_table.html.twig' with {
+                    id: 'improvement-actions-table',
+                    class: 'mb-0'
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'field.improvement_action_description'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'field.improvement_action_due_date'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'field.improvement_action_completed'|trans({}, 'bsi_200_4_exercise') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for action in log.improvementActions %}
+                        <tr class="fa-table__row{% if not action.completed|default(false) and action.due_date|default('') and action.due_date < 'now'|date('Y-m-d') %} table-warning{% endif %}">
+                            <td class="fa-table__cell">{{ action.description ?? '—' }}</td>
+                            <td class="fa-table__cell">{{ action.due_date ?? '—' }}</td>
+                            <td class="fa-table__cell">
+                                {% if action.completed|default(false) %}
+                                    <i class="fa-icon fa-icon--status-ok text-success" aria-hidden="true"></i>
+                                {% else %}
+                                    <i class="fa-icon fa-icon--status-pending text-muted" aria-hidden="true"></i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# --- Overall Rating --- #}
+    {% if log.overallRating %}
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body py-3">
+                <h6 class="text-muted small text-uppercase mb-1">{{ 'field.overall_rating'|trans({}, 'bsi_200_4_exercise') }}</h6>
+                <span class="fs-4 fw-bold">{{ ('rating.' ~ log.overallRating)|trans({}, 'bsi_200_4_exercise') }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>

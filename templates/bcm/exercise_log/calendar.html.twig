@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'bsi_200_4_exercise' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'page.calendar_title'|trans({}, 'bsi_200_4_exercise') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
+            { label: 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), url: path('bcm_exercise_log_index') },
+            { label: 'page.calendar_title'|trans({}, 'bsi_200_4_exercise') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'calendar3', label: 'BSI 200-4' },
+        title: 'page.calendar_title'|trans({}, 'bsi_200_4_exercise'),
+        subtitle: 'page.calendar_subtitle'|trans({}, 'bsi_200_4_exercise'),
+        actions: [
+            { label: 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), href: path('bcm_exercise_log_index'), variant: 'secondary', icon: 'list-ul' }
+        ]
+    }) }}
+
+    {% if byMonth|length == 0 %}
+        {{ _fa_empty_state.render({
+            icon: 'calendar-x',
+            title: 'calendar.no_exercises'|trans({}, 'bsi_200_4_exercise'),
+            body: 'calendar.no_exercises'|trans({}, 'bsi_200_4_exercise'),
+            action: {
+                label: 'nav.bc_exercises'|trans({}, 'nav'),
+                href: path('app_bc_exercise_index')
+            }
+        }) }}
+    {% else %}
+        <div class="row g-4">
+            {% for monthKey, exercises in byMonth %}
+                {% set monthDate = (monthKey ~ '-01')|date('Y-m-d') %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
+                                {{ monthKey|date('F Y') }}
+                            </span>
+                            <span class="badge bg-primary">
+                                {{ 'calendar.exercises_planned'|trans({'%count%': exercises|length}, 'bsi_200_4_exercise') }}
+                            </span>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            {% for exercise in exercises %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="fw-semibold">{{ exercise.name }}</div>
+                                    <small class="text-muted">
+                                        {{ exercise.exerciseDate ? exercise.exerciseDate|date('d.m.Y') : '—' }}
+                                        · <span class="badge bg-secondary">{{ exercise.exerciseType }}</span>
+                                    </small>
+                                </div>
+                                <div class="d-flex flex-column align-items-end gap-1">
+                                    {% if exercise.hasExerciseLog %}
+                                        <a href="{{ path('bcm_exercise_log_show', {id: exercise.exerciseLog.id}) }}"
+                                           class="badge bg-success text-decoration-none">
+                                            {{ 'calendar.log_exists'|trans({}, 'bsi_200_4_exercise') }}
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ path('bcm_exercise_log_new', {exerciseId: exercise.id}) }}"
+                                           class="badge bg-warning text-dark text-decoration-none">
+                                            {{ 'calendar.log_missing'|trans({}, 'bsi_200_4_exercise') }}
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

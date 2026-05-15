@@ -1,16 +1,105 @@
-# Translation skeleton for bsi_200_4_exercise
-# Sprint 0 Task 0.1 — empty skeleton with standard sections.
-# Keys to be filled during feature implementation.
+# BSI-Standard 200-4 Exercise Log — EN
+# Domain: bsi_200_4_exercise
+# Sprint 10B — F27
 
-bsi_200_4_exercise:
-  nav:
-    title: ''
-  page:
-    title: ''
-    subtitle: ''
-  field: {}
-  error: {}
-  help: {}
-  audit: {}
-  success: {}
-  warning: {}
+exercise_type:
+    tabletop: Tabletop Discussion Exercise
+    walkthrough: Step-by-step Walkthrough
+    simulation: Simulation Exercise
+    full_scale: Full-Scale Exercise
+    crisis_team_call: Crisis Team Call
+    technical_recovery: Technical Recovery Exercise
+
+template:
+    simple: Simple (BSI Basic Template)
+    standard: Standard (BSI Standard Template)
+    comprehensive: Comprehensive (BSI Full Template)
+
+rating:
+    poor: Poor
+    fair: Fair
+    good: Good
+    excellent: Excellent
+
+field:
+    exercise_type: Exercise Type
+    template: BSI-200-4 Template
+    scenario_summary: Scenario Summary
+    objectives: Exercise Objectives
+    objectives_placeholder: 'Enter each objective on a new line'
+    objectives_help: 'One objective per line. Example: "Achieve RTO of 4 hours"'
+    participants: Participants
+    participants_placeholder: 'Separate names by comma'
+    lessons_learned: Lessons Learned
+    overall_rating: Overall Rating
+    rating_placeholder: '— Select rating —'
+    improvement_action_description: Action Description
+    improvement_action_owner: Owner (User ID)
+    improvement_action_due_date: Due Date
+    improvement_action_completed: Completed
+    owner_user_id_placeholder: 'User ID (optional)'
+
+section:
+    actions_before: Actions Before Exercise
+    actions_during: Actions During Exercise
+    actions_after: Actions After Exercise
+    improvement_actions: Improvement Actions
+
+action:
+    created: 'BSI-200-4 exercise log successfully created.'
+    saved: 'Exercise log saved.'
+    submitted: 'Exercise log submitted successfully.'
+    confirmed: 'Exercise log confirmed by auditor.'
+
+error:
+    log_already_exists: 'A log already exists for this exercise.'
+    invalid_token: 'Invalid CSRF token. Please reload the page.'
+    not_submitted: 'The log must be submitted before it can be confirmed.'
+    already_confirmed: 'The log has already been confirmed.'
+
+nav:
+    exercise_log: BSI-200-4 Exercise Log
+    exercise_log_calendar: Exercise Plan Calendar
+    exercise_log_desc: 'Structured log per BSI-Standard 200-4 §9.4'
+    calendar_desc: '12-month forward view of planned BCM exercises'
+
+page:
+    index_title: BSI-200-4 Exercise Log
+    index_subtitle: 'All exercise logs per BSI-Standard 200-4'
+    new_title: 'Create New Exercise Log'
+    edit_title: 'Edit Exercise Log'
+    show_title: 'Exercise Log'
+    calendar_title: 'BCM Exercise Plan Calendar'
+    calendar_subtitle: '12-Month Forward View'
+
+status:
+    draft: Draft
+    submitted: Submitted
+    confirmed: Confirmed
+
+table:
+    header_exercise: Exercise
+    header_type: Type
+    header_template: Template
+    header_status: Status
+    header_submitted: Submitted At
+    header_confirmed: Confirmed At
+    header_rating: Rating
+    header_actions: Actions
+
+empty_state:
+    title: 'No exercise logs yet'
+    body: 'Create the first BSI-200-4 exercise log for a completed exercise.'
+    action: 'Select exercise'
+
+calendar:
+    no_exercises: 'No exercises planned in the next 12 months.'
+    exercises_planned: '%count% exercise(s) planned'
+    log_exists: Log exists
+    log_missing: Log missing
+
+alva:
+    improvement_action_overdue:
+        title: 'BSI-200-4: Improvement actions overdue'
+        body: '%count% improvement action(s) from %log_count% exercise log(s) are past due. BSI 200-4 §9.4 requires timely completion.'
+        action: 'View exercise logs'
