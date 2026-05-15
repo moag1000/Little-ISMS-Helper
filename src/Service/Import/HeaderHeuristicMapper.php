@@ -67,6 +67,12 @@ final class HeaderHeuristicMapper
             'verfuegbarkeit'   => 'availability',
             'verfugbarkeit'    => 'availability',
             'a'                => 'availability',
+            // isDoraRelevant — DORA Art. 28 scope flag
+            'dorarelevant'     => 'isDoraRelevant',
+            'dora'             => 'isDoraRelevant',
+            'dora_relevant'    => 'isDoraRelevant',
+            'isadorarelevant'  => 'isDoraRelevant',
+            'isdorarelevant'   => 'isDoraRelevant',
         ],
         'supplier' => [
             // name
