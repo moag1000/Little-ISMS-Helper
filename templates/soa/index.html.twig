@@ -273,7 +273,10 @@
 
 {# Canonical bulk-action wrapper (per design-system spec): provides row-level
    selection state for the .table-bulk-selectable below + tag-bulk integration. #}
-<div data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/soa">
+<div data-controller="bulk-actions"
+     data-bulk-actions-endpoint-value="/{{ app.request.locale }}/soa"
+     data-bulk-actions-applicability-url-value="{{ path('app_soa_bulk_applicability') }}"
+     data-bulk-actions-applicability-csrf-token-value="{{ csrf_token('soa_bulk_applicability') }}">
 {% embed '_components/_table.html.twig' with {
     'stickyHeader': true,
     'theadClass': 'table-light',
@@ -390,7 +393,7 @@
        polymorphic tag-bar above (entity_class: Control). #}
     {% if controls|length > 0 %}
         {% include '_components/_bulk_action_bar.html.twig' with {
-            actions: ['export']
+            actions: ['applicable_change', 'export']
         } %}
     {% endif %}
 </div>
