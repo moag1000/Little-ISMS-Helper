@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_deadline_counter.html.twig' as _fa_deadline_counter %}
 {% trans_default_domain 'incident' %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 {% import '_components/_status_pill.html.twig' as pill %}
@@ -28,6 +29,22 @@
         title: incident.title,
         actions: _show_actions
     }) }}
+
+    {# Sprint-2 P-7 — DSGVO Art. 33 72h-deadline counter surfaced prominently #}
+    {% if incident.dataBreachOccurred and incident.detectedAt %}
+        {% set sla72h = incident.detectedAt|date_modify('+72 hours') %}
+        <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
+            {{ _fa_deadline_counter.render({
+                deadline_at: sla72h,
+                label: 'incident.deadline.gdpr_art33'|trans({}, 'incident')
+            }) }}
+        </div>
+        {% set _hint = alva_hint(incident) %}
+        {% if _hint %}
+            {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+            {{ _fa_alva_hint.render(_hint) }}
+        {% endif %}
+    {% endif %}
 
     {# NIS2 MUS-export dropdown + POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if (is_nis2_active() and incident.requiresNis2Reporting) or is_granted('ROLE_ADMIN') %}
