@@ -51,7 +51,7 @@
                 <form method="post" action="{{ path('app_compliance_framework_toggle', {id: framework.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ framework.id) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ framework.active ? 'ghost' : 'success' }}">
-                        <i class="bi bi-{{ framework.active ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--{{ framework.active ? 'pause' : 'play' }}" aria-hidden="true"></i>
                         {{ framework.active ? 'common.deactivate'|trans({}, 'messages') : 'common.activate'|trans({}, 'messages') }}
                     </button>
                 </form>

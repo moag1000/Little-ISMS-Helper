@@ -27,7 +27,7 @@
     <section class="fa-section fa-section--bordered fa-section--{{ border_color|default('neutral') }} h-100">
         <div class="fa-section__header">
             <h3 class="fa-section__title">
-                <i class="bi bi-{{ icon }}" aria-hidden="true"></i> {{ title }}
+                <i class="fa-icon fa-icon--{{ icon }}" aria-hidden="true"></i> {{ title }}
             </h3>
         </div>
         <div class="fa-section__body">
@@ -173,7 +173,7 @@
     <section class="fa-section h-100">
         <div class="fa-section__header">
             <h3 class="fa-section__title">
-                <i class="bi bi-{{ icon }}" aria-hidden="true"></i> {{ title }}
+                <i class="fa-icon fa-icon--{{ icon }}" aria-hidden="true"></i> {{ title }}
             </h3>
         </div>
         <div class="fa-section__body">
@@ -221,7 +221,7 @@
         <div class="fa-section__header">
             <h3 class="fa-section__title">
                 {% if icon %}
-                    <i class="bi bi-{{ icon }}" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--{{ icon }}" aria-hidden="true"></i>
                 {% endif %}
                 {{ title }}
             </h3>

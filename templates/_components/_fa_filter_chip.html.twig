@@ -48,14 +48,14 @@
     {% if props.href is defined and props.href %}
         <a href="{{ props.href }}" class="{{ chipClass }}">
             {% if props.icon is defined and props.icon %}
-                <i class="bi bi-{{ props.icon }}" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--{{ props.icon }}" aria-hidden="true"></i>
             {% endif %}
             {{ label }}
         </a>
     {% else %}
         <button type="{{ props.type|default('button') }}" class="{{ chipClass }}">
             {% if props.icon is defined and props.icon %}
-                <i class="bi bi-{{ props.icon }}" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--{{ props.icon }}" aria-hidden="true"></i>
             {% endif %}
             {{ label }}
         </button>

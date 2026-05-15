@@ -53,7 +53,7 @@
             {% if props.meta is defined and props.meta|length > 0 %}
                 <div class="fa-api-key__meta">
                     {% for item in props.meta %}
-                        <span><i class="bi bi-{{ item.icon }}" aria-hidden="true"></i> {{ item.label }}</span>
+                        <span><i class="fa-icon fa-icon--{{ item.icon }}" aria-hidden="true"></i> {{ item.label }}</span>
                     {% endfor %}
                 </div>
             {% endif %}

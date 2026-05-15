@@ -10,6 +10,27 @@
     {% import '_components/_status_pill.html.twig' as pill %}
     {% import '_components/_cyber_button.html.twig' as btn %}
 
+{% set _module_icon_map = {
+    'shield-check': 'nav-shield-check', 'database': 'nav-database',
+    'exclamation-triangle': 'nav-exclamation-triangle', 'list-check': 'nav-list-check',
+    'bell': 'ui-bell', 'clipboard-check': 'nav-clipboard-check',
+    'graduation-cap': 'nav-mortarboard', 'users': 'nav-users',
+    'rotate': 'ui-refresh', 'scale-balanced': 'compliance-shield',
+    'user-shield': 'nav-shield', 'file-lines': 'audit-trail',
+    'shield-lock': 'nav-shield-lock', 'building-shield': 'nav-building-shield',
+    'cpu': 'nav-cpu', 'cloud': 'asset-cloud', 'bug': 'util-bug',
+    'building-columns': 'nav-building', 'car-front': 'nav-patch-check',
+    'chart-line': 'nav-bar-chart', 'robot': 'nav-robot', 'package': 'nav-hdd',
+    'list-ordered': 'nav-list-ordered', 'file-earmark-text': 'nav-file-earmark-text',
+    'truck': 'nav-truck', 'geo-alt': 'geo-alt', 'person-badge': 'file-person',
+    'people': 'nav-people', 'bullseye': 'nav-bullseye', 'arrow-left-right': 'nav-change',
+    'bandaid': 'nav-patch', 'wrench': 'nav-wrench', 'paperclip': 'attachment',
+    'diagram-3': 'nav-workflow', 'speedometer': 'nav-speedometer',
+    'journal-check': 'risk-register', 'bar-chart-line': 'nav-bar-chart',
+    'layout-text-sidebar': 'nav-reports', 'calendar-check': 'nav-calendar-check',
+    'collection': 'nav-collection'
+} %}
+
     {{ step_header.render(8, 12, step.kind, 'setup.step7.header'|trans({}, 'setup'), 'setup.step7.intro'|trans({}, 'setup'))|raw }}
 
     {% if recommended_modules is defined and recommended_modules|length > 0 %}
@@ -46,7 +67,7 @@
                         </span>
                         <div class="fa-toggle-card__body">
                             <div class="fa-toggle-card__title">
-                                <i class="bi bi-{{ module.icon }}" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--{{ _module_icon_map[module.icon] ?? 'nav-shield' }}" aria-hidden="true"></i>
                                 {{ module.name }}
                                 <span class="fa-toggle-card__badge">{{ 'setup.step7.badge.required'|trans({}, 'setup') }}</span>
                             </div>
@@ -82,7 +103,7 @@
                     </span>
                     <div class="fa-toggle-card__body">
                         <div class="fa-toggle-card__title">
-                            <i class="bi bi-{{ module.icon }}" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--{{ _module_icon_map[module.icon] ?? 'nav-shield' }}" aria-hidden="true"></i>
                             {{ module.name }}
                             {% if isRecommended %}
                                 <span class="fa-toggle-card__badge">{{ 'setup.step7.badge.recommended'|trans({}, 'setup') }}</span>

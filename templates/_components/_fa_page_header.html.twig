@@ -29,7 +29,7 @@
             {% if props.badge is defined and props.badge %}
                 <span class="fa-page-header__badge" aria-hidden="true">
                     {% if props.badge.icon is defined and props.badge.icon %}
-                        <i class="bi bi-{{ props.badge.icon }}" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--{{ props.badge.icon }}" aria-hidden="true"></i>
                     {% endif %}
                     {{ props.badge.label|default('') }}
                 </span>
@@ -56,7 +56,7 @@
                        class="fa-cyber-btn fa-cyber-btn--{{ variant }} fa-cyber-btn--sm"
                        {% for attr, val in extraAttrs %}{{ attr }}="{{ val }}"{% endfor %}>
                         {% if action.icon is defined and action.icon %}
-                            <i class="bi bi-{{ action.icon }}" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--{{ action.icon }}" aria-hidden="true"></i>
                         {% endif %}
                         <span class="fa-cyber-btn__label">{{ action.label }}</span>
                     </a>
