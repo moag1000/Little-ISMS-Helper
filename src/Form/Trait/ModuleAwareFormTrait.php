@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form\Trait;
 
 use App\Service\ModuleConfigurationService;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * ModuleAwareFormTrait
@@ -71,5 +72,33 @@ trait ModuleAwareFormTrait
             }
         }
         return true;
+    }
+
+    /**
+     * Add a field to the form builder only when the given module is active.
+     *
+     * Returns the trait-using instance (for fluent chaining inside buildForm()).
+     * Use this for single-field gates inside otherwise core sections; prefer
+     * dedicated `if ($this->isModuleActive('X')) { $this->addXFields($b); }`
+     * helper-method blocks when many fields share the same gate.
+     *
+     * Example:
+     *   $this
+     *       ->addModuleGatedField($builder, 'privacy', 'hasDPA', CheckboxType::class, [...])
+     *       ->addModuleGatedField($builder, 'privacy', 'dpaSignedDate', DateType::class, [...]);
+     *
+     * @param array<string, mixed> $options
+     */
+    protected function addModuleGatedField(
+        FormBuilderInterface $builder,
+        string $moduleKey,
+        string $field,
+        string $type,
+        array $options = [],
+    ): self {
+        if ($this->isModuleActive($moduleKey)) {
+            $builder->add($field, $type, $options);
+        }
+        return $this;
     }
 }
