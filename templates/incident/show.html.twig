@@ -589,6 +589,12 @@
         {% endblock %}
     {% endembed %}
 
+    {# F16: Incident-Risk cross-links #}
+    {% include 'incident/_linked_risks.html.twig' with {
+        incident: incident,
+        riskIncidentLinks: riskIncidentLinks|default([])
+    } only %}
+
     {# V3 W3-Aurora: Comment-Thread adoption (C7 macro). #}
     {% include '_components/_isms_comment_thread.html.twig' with {
         comments: comments|default([]),

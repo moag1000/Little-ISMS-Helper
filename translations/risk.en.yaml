@@ -539,6 +539,31 @@ fair:
     vulnerability_probability: 'FAIR: Probability (0.0–1.0) that a threat event results in a loss event.'
     plm: 'FAIR: Primary Loss Magnitude — direct financial impact in € (min/max/mode).'
     slm: 'FAIR: Secondary Loss Magnitude — indirect impact in € including reputational damage and regulatory fines (min/max/mode).'
+  link_incident:
+    section_title: 'Linked Incidents'
+    add_link: 'Link Incident'
+    submit: 'Link'
+    empty: 'No incidents are linked to this risk yet.'
+    linked: 'Incident linked successfully.'
+    unlinked: 'Incident link removed.'
+    csrf_invalid: 'Security token invalid — please reload the page and try again.'
+    incident_not_found: 'Incident not found.'
+    link_not_found: 'Link not found or does not belong to this risk.'
+    unlink: 'Remove link'
+    unlink_confirm: 'Remove this incident link?'
+    field:
+      incident: 'Incident'
+      link_type: 'Link Type'
+      notes: 'Notes'
+    placeholder:
+      incident: 'Select an incident…'
+      notes: 'Optional context or observation…'
+    link_type:
+      materialized: 'Materialized'
+      suspected: 'Suspected'
+      related: 'Related'
+      mitigation_failed: 'Mitigation Failed'
+
 risk_management:
   title: Title
   description: Description

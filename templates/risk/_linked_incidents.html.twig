@@ -1,0 +1,134 @@
+{% trans_default_domain 'risk' %}
+{% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
+
+{#
+ # F16 Risk-Incident-Link — partial for risk/show.html.twig
+ # Shows structured cross-links to incidents and an "Add link" form.
+ # Variables expected:
+ #   risk              — Risk entity
+ #   riskIncidentLinks — RiskIncidentLink[] from RiskIncidentLinkRepository::findByRisk()
+ #}
+
+<section class="card mb-4" id="risk-incident-links">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="h6 mb-0">
+            <i class="fa-icon fa-icon--risk me-2" aria-hidden="true"></i>
+            {{ 'risk.link_incident.section_title'|trans }}
+            {% if riskIncidentLinks is defined and riskIncidentLinks|length > 0 %}
+                <span class="badge bg-secondary ms-1">{{ riskIncidentLinks|length }}</span>
+            {% endif %}
+        </h3>
+        {% if is_granted('ROLE_MANAGER') %}
+            <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#add-incident-link-form"
+                    aria-expanded="false"
+                    aria-controls="add-incident-link-form">
+                <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                {{ 'risk.link_incident.add_link'|trans }}
+            </button>
+        {% endif %}
+    </div>
+
+    {% if is_granted('ROLE_MANAGER') %}
+        <div class="collapse" id="add-incident-link-form">
+            <div class="card-body border-bottom pb-3">
+                <form method="post"
+                      action="{{ path('app_risk_link_incident', {id: risk.id}) }}"
+                      class="row g-3 align-items-end">
+                    <input type="hidden" name="_token" value="{{ csrf_token('link_incident_' ~ risk.id) }}">
+
+                    <div class="col-md-5">
+                        <label for="incident_id" class="form-label small fw-semibold">
+                            {{ 'risk.link_incident.field.incident'|trans }}
+                        </label>
+                        <select id="incident_id" name="incident_id"
+                                class="form-select form-select-sm"
+                                required
+                                data-controller="tom-select">
+                            <option value="">{{ 'risk.link_incident.placeholder.incident'|trans }}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="link_type" class="form-label small fw-semibold">
+                            {{ 'risk.link_incident.field.link_type'|trans }}
+                        </label>
+                        <select id="link_type" name="link_type" class="form-select form-select-sm" required>
+                            <option value="materialized">{{ 'risk.link_incident.link_type.materialized'|trans }}</option>
+                            <option value="suspected">{{ 'risk.link_incident.link_type.suspected'|trans }}</option>
+                            <option value="related" selected>{{ 'risk.link_incident.link_type.related'|trans }}</option>
+                            <option value="mitigation_failed">{{ 'risk.link_incident.link_type.mitigation_failed'|trans }}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="notes" class="form-label small fw-semibold">
+                            {{ 'risk.link_incident.field.notes'|trans }}
+                        </label>
+                        <input type="text" id="notes" name="notes"
+                               class="form-control form-control-sm"
+                               placeholder="{{ 'risk.link_incident.placeholder.notes'|trans }}"
+                               maxlength="255">
+                    </div>
+
+                    <div class="col-md-1">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
+                            {{ 'risk.link_incident.submit'|trans }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card-body p-0">
+        {% if riskIncidentLinks is defined and riskIncidentLinks|length > 0 %}
+            <ul class="list-unstyled mb-0">
+                {% for link in riskIncidentLinks %}
+                    {% set incident = link.incident %}
+                    <li class="border-bottom px-3 py-2 d-flex align-items-start gap-3">
+                        <div class="flex-grow-1">
+                            {{ _fa_entity_card.render({
+                                type:    'incident',
+                                icon:    'incident',
+                                title:   '#' ~ (incident.incidentNumber ?? '?') ~ ' — ' ~ (incident.title ?? 'N/A'),
+                                meta:    [
+                                    ('risk.link_incident.link_type.' ~ link.linkType)|trans,
+                                    link.linkedAt|date('d.m.Y'),
+                                    link.linkedBy ? link.linkedBy.displayName ?? link.linkedBy.email : null
+                                ]|filter(v => v is not null),
+                                href:    path('app_incident_show', {id: incident.id}),
+                                status:  { variant: incident.status.value == 'closed' ? 'neutral' : 'warning', label: incident.status.value|upper|replace({'_': ' '}) },
+                                compact: true
+                            }) }}
+                            {% if link.notes %}
+                                <p class="text-muted small mb-0 mt-1 ps-5">{{ link.notes }}</p>
+                            {% endif %}
+                        </div>
+                        {% if is_granted('ROLE_MANAGER') %}
+                            <form method="post"
+                                  action="{{ path('app_risk_unlink_incident', {id: risk.id, linkId: link.id}) }}"
+                                  class="flex-shrink-0"
+                                  data-controller="ui-actions"
+                                  data-action="submit->ui-actions#confirm"
+                                  data-ui-actions-message-param="{{ 'risk.link_incident.unlink_confirm'|trans }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('unlink_incident_' ~ link.id) }}">
+                                <button type="submit"
+                                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm text-danger"
+                                        title="{{ 'risk.link_incident.unlink'|trans }}">
+                                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="p-3 text-muted text-center small">
+                {{ 'risk.link_incident.empty'|trans }}
+            </div>
+        {% endif %}
+    </div>
+</section>

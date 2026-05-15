@@ -350,3 +350,23 @@ incident:
     reassess_button: Update risk assessment
     reassess_help: Re-evaluate this risk based on the actual incident.
     last_reassessed: 'Last incident-driven reassessment on %date%'
+  link:
+    section_title: 'Linked Risks'
+    add_link: 'Link Risk'
+    submit: 'Link'
+    empty: 'No risks are linked to this incident yet.'
+    risk_linked: 'Risk linked successfully.'
+    risk_unlinked: 'Risk link removed.'
+    csrf_invalid: 'Security token invalid — please reload the page and try again.'
+    risk_not_found: 'Risk not found.'
+    link_not_found: 'Link not found or does not belong to this incident.'
+    unlink: 'Remove link'
+    unlink_confirm: 'Remove this risk link?'
+    risk_review_suggested: '%count% linked risk(s) should be reviewed after this incident was closed.'
+    field:
+      risk: 'Risk'
+      link_type: 'Link Type'
+      notes: 'Notes'
+    placeholder:
+      risk: 'Select a risk…'
+      notes: 'Optional context or observation…'

@@ -27,6 +27,8 @@ use App\Service\TenantContext;
 use App\Service\WorkflowService;
 use App\Service\WorkflowAutoProgressionService;
 use App\Service\IncidentRiskFeedbackService;
+use App\Service\Risk\RiskIncidentLinkService;
+use App\Repository\RiskIncidentLinkRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -57,6 +59,8 @@ class IncidentController extends AbstractController
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly IncidentRiskFeedbackService $incidentRiskFeedbackService,
         private readonly RiskRepository $riskRepository,
+        private readonly RiskIncidentLinkService $riskIncidentLinkService,
+        private readonly RiskIncidentLinkRepository $riskIncidentLinkRepository,
         private readonly ?CommentRepository $commentRepository = null,
     ) {}
     #[Route('/incident/', name: 'app_incident_index')]
@@ -382,6 +386,9 @@ class IncidentController extends AbstractController
             $comments = $this->commentRepository->findThread($tenant, 'Incident', $incident->getId());
         }
 
+        // F16: structured risk cross-links
+        $riskIncidentLinks = $this->riskIncidentLinkRepository->findByIncident($incident);
+
         return $this->render('incident/show.html.twig', [
             'incident' => $incident,
             'auditLogs' => $recentAuditLogs,
@@ -391,6 +398,8 @@ class IncidentController extends AbstractController
             // Data-Reuse: one-click link matrix
             'linkedRisks' => $incident->getRealizedRisks(),
             'linkedVulnerabilities' => $incident->getRelatedVulnerabilities(),
+            // F16: structured risk cross-links
+            'riskIncidentLinks' => $riskIncidentLinks,
             // V3 W3-Aurora: Comments thread
             'comments' => $comments,
         ]);
@@ -428,6 +437,16 @@ class IncidentController extends AbstractController
                             'incident'
                         ) ?: sprintf('%d related risk(s) triggered for re-evaluation', $triggeredCount));
                     }
+
+                    // F16: suggest risk review for cross-linked risks
+                    $linkedRisksToReview = $this->riskIncidentLinkService->suggestRiskUpdateOnIncidentClose($incident);
+                    if (!empty($linkedRisksToReview)) {
+                        $this->addFlash('info', $this->translator->trans(
+                            'incident.link.risk_review_suggested',
+                            ['%count%' => count($linkedRisksToReview)],
+                            'incident'
+                        ));
+                    }
                 }
             }
 
@@ -440,6 +459,69 @@ class IncidentController extends AbstractController
             'form' => $form,
         ]);
     }
+    /**
+     * F16: Link a Risk to this Incident.
+     */
+    #[Route('/incident/{id}/link-risk', name: 'app_incident_link_risk', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function linkRisk(Request $request, Incident $incident): Response
+    {
+        if (!$this->isCsrfTokenValid('link_risk_' . $incident->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('incident.link.csrf_invalid', [], 'incident'));
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        $riskId   = (int) $request->request->get('risk_id');
+        $linkType = (string) $request->request->get('link_type', 'related');
+        $notes    = $request->request->get('notes');
+
+        $risk = $this->riskRepository->find($riskId);
+        if ($risk === null) {
+            $this->addFlash('error', $this->translator->trans('incident.link.risk_not_found', [], 'incident'));
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        /** @var \App\Entity\User|null $currentUser */
+        $currentUser = $this->security->getUser();
+        $this->riskIncidentLinkService->link(
+            $risk,
+            $incident,
+            $linkType,
+            $currentUser instanceof \App\Entity\User ? $currentUser : null,
+            is_string($notes) ? $notes : null,
+        );
+
+        $this->addFlash('success', $this->translator->trans('incident.link.risk_linked', [], 'incident'));
+        return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+    }
+
+    /**
+     * F16: Unlink a Risk from this Incident by link ID.
+     */
+    #[Route('/incident/{id}/unlink-risk/{linkId}', name: 'app_incident_unlink_risk', requirements: ['id' => '\d+', 'linkId' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function unlinkRisk(Request $request, Incident $incident, int $linkId): Response
+    {
+        if (!$this->isCsrfTokenValid('unlink_risk_' . $linkId, $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('incident.link.csrf_invalid', [], 'incident'));
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        $link = $this->riskIncidentLinkRepository->find($linkId);
+        if ($link === null || $link->getIncident()?->getId() !== $incident->getId()) {
+            $this->addFlash('error', $this->translator->trans('incident.link.link_not_found', [], 'incident'));
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        $risk = $link->getRisk();
+        if ($risk !== null) {
+            $this->riskIncidentLinkService->unlink($risk, $incident);
+        }
+
+        $this->addFlash('success', $this->translator->trans('incident.link.risk_unlinked', [], 'incident'));
+        return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+    }
+
     #[Route('/incident/{id}/delete', name: 'app_incident_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Incident $incident): Response

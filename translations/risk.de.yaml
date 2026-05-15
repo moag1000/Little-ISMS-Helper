@@ -552,6 +552,30 @@ fair:
     vulnerability_probability: 'FAIR: Wahrscheinlichkeit (0,0–1,0), dass ein Bedrohungsereignis zu einem Schadensereignis führt.'
     plm: 'FAIR: Primärer Schadensbetrag — direkter finanzieller Schaden in € (Min/Max/Modus).'
     slm: 'FAIR: Sekundärer Schadensbetrag — indirekter Schaden in € inkl. Reputationsschaden und Bußgelder (Min/Max/Modus).'
+  link_incident:
+    section_title: 'Verknüpfte Vorfälle'
+    add_link: 'Vorfall verknüpfen'
+    submit: 'Verknüpfen'
+    empty: 'Bisher sind keine Vorfälle mit diesem Risiko verknüpft.'
+    linked: 'Vorfall erfolgreich verknüpft.'
+    unlinked: 'Verknüpfung zum Vorfall entfernt.'
+    csrf_invalid: 'Sicherheitstoken ungültig — bitte Seite neu laden und erneut versuchen.'
+    incident_not_found: 'Vorfall nicht gefunden.'
+    link_not_found: 'Verknüpfung nicht gefunden oder gehört nicht zu diesem Risiko.'
+    unlink: 'Verknüpfung entfernen'
+    unlink_confirm: 'Diese Verknüpfung zum Vorfall entfernen?'
+    field:
+      incident: 'Vorfall'
+      link_type: 'Verknüpfungstyp'
+      notes: 'Notizen'
+    placeholder:
+      incident: 'Vorfall auswählen…'
+      notes: 'Optionaler Kontext oder Beobachtung…'
+    link_type:
+      materialized: 'Eingetreten'
+      suspected: 'Vermutet'
+      related: 'Verwandt'
+      mitigation_failed: 'Maßnahme versagt'
 risk_management:
   title: Titel
   description: Beschreibung
