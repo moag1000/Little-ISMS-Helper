@@ -315,6 +315,10 @@ audit_finding:
         overdue: '%count% überfällige Feststellung(en) benötigen Aufmerksamkeit.'
     message:
         no_findings: 'Keine Feststellungen vorhanden.'
+    empty:
+        body: 'Keine offenen Feststellungen — Ihr ISMS arbeitet aktuell konformitätsfest. Im Audit-Modul können Sie jederzeit neue Feststellungen aus internen oder externen Audits dokumentieren.'
+    help:
+        empty_link: '/de/help/glossary#glossary-audit-finding'
     confirm:
         delete: 'Möchten Sie diese Feststellung wirklich löschen?'
     flash:

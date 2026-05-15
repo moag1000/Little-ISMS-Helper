@@ -124,8 +124,12 @@ business_process:
     title: No business processes yet
     description: Create your first business process to start with the business impact
       analysis.
+    body: 'Business processes form the backbone of the BIA (Business Impact Analysis) and the BC plans. Capture all value-adding processes here with RTO, RPO, MTPD and criticality — a prerequisite for ISO 22301 §8.2.2.'
   action:
     create: Create process
+    create_first: Create first business process
+  help:
+    empty_link: /en/help/glossary#glossary-bia
   impact_level:
     very_low: Very low
     low: Low

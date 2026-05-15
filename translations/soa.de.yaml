@@ -115,6 +115,11 @@ soa:
         related_incidents_count: 'Vorfälle betrafen diese Maßnahme.'
         review_required: 'Aufgrund der Vorfälle sollte die Wirksamkeit dieser Maßnahme überprüft werden.'
     empty:
+        title: 'Keine Controls im aktuellen Filter'
+        body: 'Lockern Sie die aktiven Filter oder laden Sie die ISO 27001 Annex-A-Controls, um Ihre SoA zu pflegen. Pro Control entscheiden Sie über Anwendbarkeit, Begründung und Umsetzungsstatus.'
+        help_link: '/de/help/glossary#glossary-soa'
+        create_first: 'Erstes Control anlegen'
+        reset_filter: 'Filter zurücksetzen'
         no_controls_for_tenant:
             title: 'Noch keine ISO 27001 Annex A Controls für diesen Tenant'
             iso_active: 'Das Controls-Modul ist aktiv, aber es wurden noch keine 93 Annex-A-Controls für diesen Tenant geladen. Ohne die Controls kann keine Anwendbarkeitserklärung gepflegt werden.'

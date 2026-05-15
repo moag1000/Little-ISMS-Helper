@@ -12,6 +12,7 @@ interested_party:
     action:
         add_new: 'Neue Partei hinzufügen'
         create: 'Partei anlegen'
+        create_first: 'Erste interessierte Partei anlegen'
         update: 'Änderungen speichern'
         delete: Löschen
         view: Anzeigen
@@ -66,6 +67,10 @@ interested_party:
     empty:
         message: 'Keine interessierten Parteien vorhanden.'
         add_first: 'Erste Partei hinzufügen'
+        title: 'Noch keine interessierten Parteien erfasst'
+        body: 'Erfassen Sie Kunden, Aufsichtsbehörden, Lieferanten und andere Stakeholder, deren Anforderungen Sie im ISMS berücksichtigen müssen. Pro Partei dokumentieren Sie Anforderungen, Kommunikationsfrequenz und Engagement-Score.'
+    help:
+        empty_link: '/de/help/glossary#glossary-interested-parties'
     confirm:
         delete: 'Möchten Sie diese interessierte Partei wirklich löschen?'
     party_type:

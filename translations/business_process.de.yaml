@@ -129,8 +129,12 @@ business_process:
     title: Noch keine Geschäftsprozesse vorhanden
     description: Erstellen Sie Ihren ersten Geschäftsprozess, um mit der Business-Impact-Analyse
       zu beginnen.
+    body: 'Geschäftsprozesse bilden das Rückgrat der BIA (Business-Impact-Analyse) und der BC-Pläne. Erfassen Sie hier alle wertschöpfenden Prozesse mit RTO, RPO, MTPD und Kritikalität — Voraussetzung für ISO 22301 §8.2.2.'
   action:
     create: Prozess erstellen
+    create_first: Ersten Geschäftsprozess anlegen
+  help:
+    empty_link: /de/help/glossary#glossary-bia
   impact_level:
     very_low: Sehr niedrig
     low: Niedrig
