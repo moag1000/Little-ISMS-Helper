@@ -42,6 +42,7 @@
     {% block stylesheets %}
         {# Bootstrap zuerst — Aurora-Styles kommen via importmap danach und überschreiben. #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        {# Bootstrap Icons — kept for fallback until all TODO Aurora icons are designed (Gate 11) #}
         <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
         {{ importmap(['app', 'styles']) }}
     {% endblock %}

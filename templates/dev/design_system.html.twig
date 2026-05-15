@@ -681,12 +681,12 @@
                     </div>
                     <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
                     <div class="fa-bulk-bar__actions">
-                        <button class="fa-bulk-btn"><i class="bi bi-tag" aria-hidden="true"></i> {{ 'bulk_actions.add_tag'|trans({}, 'messages') }}</button>
-                        <button class="fa-bulk-btn fa-bulk-btn--success"><i class="bi bi-check2-circle" aria-hidden="true"></i> {{ 'bulk_actions.approve'|trans({}, 'messages') }}</button>
-                        <button class="fa-bulk-btn fa-bulk-btn--danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'bulk_actions.delete'|trans({}, 'messages') }}</button>
+                        <button class="fa-bulk-btn"><i class="fa-icon fa-icon--ui-tag" aria-hidden="true"></i> {{ 'bulk_actions.add_tag'|trans({}, 'messages') }}</button>
+                        <button class="fa-bulk-btn fa-bulk-btn--success"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'bulk_actions.approve'|trans({}, 'messages') }}</button>
+                        <button class="fa-bulk-btn fa-bulk-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'bulk_actions.delete'|trans({}, 'messages') }}</button>
                     </div>
                     <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
-                    <button class="fa-bulk-bar__close" aria-label="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+                    <button class="fa-bulk-bar__close" aria-label="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
                 </div>
             </div>
 
@@ -699,12 +699,12 @@
                     </div>
                     <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
                     <div class="fa-bulk-bar__actions">
-                        <button class="fa-bulk-btn"><i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'bulk_actions.assign'|trans({}, 'messages') }}</button>
-                        <button class="fa-bulk-btn fa-bulk-btn--success"><i class="bi bi-check2-circle" aria-hidden="true"></i> {{ 'bulk_actions.approve'|trans({}, 'messages') }}</button>
-                        <button class="fa-bulk-btn fa-bulk-btn--danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'bulk_actions.delete'|trans({}, 'messages') }}</button>
+                        <button class="fa-bulk-btn"><i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i> {{ 'bulk_actions.assign'|trans({}, 'messages') }}</button>
+                        <button class="fa-bulk-btn fa-bulk-btn--success"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'bulk_actions.approve'|trans({}, 'messages') }}</button>
+                        <button class="fa-bulk-btn fa-bulk-btn--danger"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'bulk_actions.delete'|trans({}, 'messages') }}</button>
                     </div>
                     <div class="fa-bulk-bar__divider" aria-hidden="true"></div>
-                    <button class="fa-bulk-bar__close" aria-label="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+                    <button class="fa-bulk-bar__close" aria-label="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
                 </div>
             </div>
         </section>
@@ -754,15 +754,15 @@
             <div class="fa-pager-bar mb-3">
                 <div class="fa-pager-bar__info"><strong>21–40</strong> von <strong>247</strong></div>
                 <nav class="fa-pager" aria-label="Seitennavigation">
-                    <button class="fa-pager__btn" aria-label="Erste Seite"><i class="bi bi-chevron-double-left"></i></button>
-                    <button class="fa-pager__btn" aria-label="Vorherige"><i class="bi bi-chevron-left"></i></button>
+                    <button class="fa-pager__btn" aria-label="Erste Seite"><i class="fa-icon fa-icon--util-chevron-left"></i></button>
+                    <button class="fa-pager__btn" aria-label="Vorherige"><i class="fa-icon fa-icon--util-chevron-left"></i></button>
                     <button class="fa-pager__btn" aria-label="Seite 1">1</button>
                     <button class="fa-pager__btn" aria-label="Seite 2">2</button>
                     <button class="fa-pager__btn is-active" aria-current="page" aria-label="Seite 3">3</button>
                     <span class="fa-pager__ellipsis">…</span>
                     <button class="fa-pager__btn" aria-label="Seite 13">13</button>
-                    <button class="fa-pager__btn" aria-label="Nächste"><i class="bi bi-chevron-right"></i></button>
-                    <button class="fa-pager__btn" aria-label="Letzte"><i class="bi bi-chevron-double-right"></i></button>
+                    <button class="fa-pager__btn" aria-label="Nächste"><i class="fa-icon fa-icon--util-chevron-right"></i></button>
+                    <button class="fa-pager__btn" aria-label="Letzte"><i class="fa-icon fa-icon--util-chevron-right"></i></button>
                 </nav>
                 <div class="fa-pager-perpage">
                     <label for="ds-perpage">Pro Seite</label>
@@ -771,11 +771,11 @@
             </div>
             {# compact #}
             <nav class="fa-pager fa-pager--compact" aria-label="Kompakt-Pager">
-                <button class="fa-pager__btn"><i class="bi bi-chevron-left"></i></button>
+                <button class="fa-pager__btn"><i class="fa-icon fa-icon--util-chevron-left"></i></button>
                 <button class="fa-pager__btn">1</button>
                 <button class="fa-pager__btn is-active" aria-current="page">2</button>
                 <button class="fa-pager__btn">3</button>
-                <button class="fa-pager__btn"><i class="bi bi-chevron-right"></i></button>
+                <button class="fa-pager__btn"><i class="fa-icon fa-icon--util-chevron-right"></i></button>
             </nav>
         </section>
 
@@ -788,16 +788,16 @@
             <div style="min-height:220px; display:flex; align-items:flex-start; padding:24px; background:var(--surface-2); border:1px dashed var(--border); border-radius:var(--r-md);">
                 <div class="fa-menu-anchor">
                     <button class="btn btn-secondary btn-sm" onclick="this.nextElementSibling.classList.toggle('is-open')" type="button">
-                        <i class="bi bi-three-dots" aria-hidden="true"></i> Aktionen
+                        <i class="bi bi-three-dots {# TODO: design Aurora fa-icon--ui-more #} {# TODO: design Aurora fa-icon--three-dots #}" aria-hidden="true"></i> Aktionen
                     </button>
                     <div class="fa-menu is-open">
                         <div class="fa-menu__group">
-                            <a href="#" class="fa-menu__item"><i class="bi bi-pencil" aria-hidden="true"></i> Bearbeiten</a>
-                            <a href="#" class="fa-menu__item"><i class="bi bi-files" aria-hidden="true"></i> Duplizieren</a>
+                            <a href="#" class="fa-menu__item"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> Bearbeiten</a>
+                            <a href="#" class="fa-menu__item"><i class="bi bi-files {# TODO: design Aurora fa-icon--ui-files #} {# TODO: design Aurora fa-icon--files #}" aria-hidden="true"></i> Duplizieren</a>
                         </div>
                         <div class="fa-menu__divider"></div>
                         <div class="fa-menu__group">
-                            <a href="#" class="fa-menu__item fa-menu__item--danger"><i class="bi bi-trash" aria-hidden="true"></i> Löschen</a>
+                            <a href="#" class="fa-menu__item fa-menu__item--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> Löschen</a>
                         </div>
                     </div>
                 </div>

@@ -211,41 +211,41 @@
                             <div class="ms-2 me-auto">
                                 <div class="fw-bold">
                                     {% if item.entity_type == 'workflow' %}
-                                        <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'four_eyes' %}
-                                        <i class="bi bi-people" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'acknowledgement' %}
-                                        <i class="bi bi-check2-square" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'audit_finding' %}
-                                        <i class="bi bi-search" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'dsr' %}
-                                        <i class="bi bi-file-person" aria-hidden="true"></i>
+                                        <i class="bi bi-file-person {# TODO: design Aurora fa-icon--ui-file-person #} {# TODO: design Aurora fa-icon--file-person #}" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'corrective_action' %}
-                                        <i class="bi bi-hourglass-bottom" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-hourglass" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'risk_acceptance' %}
-                                        <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-shield-alert" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'document_review' %}
-                                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'training' %}
-                                        <i class="bi bi-mortarboard" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-mortarboard" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'incident' %}
-                                        <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'data_breach' %}
-                                        <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-shield-alert" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'vulnerability' %}
-                                        <i class="bi bi-bug" aria-hidden="true"></i>
+                                        <i class="bi bi-bug {# TODO: design Aurora fa-icon--util-bug #} {# TODO: design Aurora fa-icon--bug #}" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'audit_checklist' %}
-                                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'change_request' %}
-                                        <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'management_review' %}
-                                        <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-clipboard-data" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'document_pending_approval' %}
-                                        <i class="bi bi-file-earmark-check" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'wizard_overdue' %}
-                                        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-hourglass" aria-hidden="true"></i>
                                     {% elseif item.entity_type == 'framework_gap' %}
-                                        <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                     {% endif %}
                                     {{ item.title }}
                                 </div>

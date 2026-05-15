@@ -34,7 +34,7 @@
             <header class="mb-3">
                 <h2 class="h4 mb-1">{{ document.originalFilename ?? document.filename }}</h2>
                 <small class="text-muted">
-                    <i class="bi bi-tag" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-tag" aria-hidden="true"></i>
                     {{ document.category }}
                     {% if document.uploadedAt %}
                         &middot; {{ document.uploadedAt|date('Y-m-d') }}
@@ -71,7 +71,7 @@
                   action="{{ path('app_policy_ack_acknowledge', { documentId: document.id }) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('policy_ack') }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                     <span class="fa-cyber-btn__label">{{ 'policy_ack.view.action.acknowledge'|trans }}</span>
                 </button>
             </form>

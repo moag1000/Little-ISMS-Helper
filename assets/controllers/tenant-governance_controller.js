@@ -49,7 +49,7 @@ export default class extends Controller {
                 if (data.error) {
                     this.effectiveContextContainerTarget.innerHTML = `
                         <div class="alert alert-warning small mb-0">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                             ${this.escapeHtml(this.noContextTextValue)}
                         </div>`;
                     return;
@@ -61,13 +61,13 @@ export default class extends Controller {
 
                 if (data.context.isInherited) {
                     html += '<div class="alert alert-info small mb-0">';
-                    html += '<i class="bi bi-arrow-up-right" aria-hidden="true"></i> ';
+                    html += '<i class="fa-icon fa-icon--util-arrow-up" aria-hidden="true"></i> ';
                     html += `${this.escapeHtml(this.inheritedFromTextValue)}: `;
                     html += `<a href="/admin/tenants/${data.context.inheritedFrom.id}" class="alert-link">${this.escapeHtml(data.context.inheritedFrom.name)}</a>`;
                     html += '</div>';
                 } else {
                     html += '<div class="alert alert-success small mb-0">';
-                    html += `<i class="bi bi-check-circle" aria-hidden="true"></i> ${this.escapeHtml(this.ownContextTextValue)}`;
+                    html += `<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${this.escapeHtml(this.ownContextTextValue)}`;
                     html += '</div>';
                 }
 
@@ -138,7 +138,7 @@ export default class extends Controller {
                                     data-rule-id="${rule.id}"
                                     data-rule-scope="${this.escapeHtml(rule.scope)}"
                                     data-rule-scope-id="${rule.scopeId ? this.escapeHtml(rule.scopeId) : ''}">
-                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                             </button>
                         </div>`;
                 });

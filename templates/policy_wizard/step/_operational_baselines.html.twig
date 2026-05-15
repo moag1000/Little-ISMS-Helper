@@ -78,7 +78,7 @@
 <div class="fa-form-row mb-2">
     <label class="form-label" for="op-crypto-allowlist">
         {{ 'policy_wizard.step.operational_baselines.crypto_allowlist_label'|trans }}
-        <i class="bi bi-info-circle text-muted ms-1"
+        <i class="fa-icon fa-icon--ui-info text-muted ms-1"
            data-bs-toggle="tooltip"
            title="{{ (bsi_in_scope
                 ? 'policy_wizard.step.operational_baselines.tooltip.crypto_allowlist_bsi'
@@ -107,7 +107,7 @@
    so a Junior cannot miss it. #}
 <details class="mb-4 border rounded p-2 bg-body-tertiary" open>
     <summary class="small fw-semibold">
-        <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--nav-mortarboard me-1" aria-hidden="true"></i>
         {{ 'policy_wizard.step.operational_baselines.crypto_decision_aid_title'|trans }}
     </summary>
     <p class="small text-muted mt-2 mb-2">
@@ -234,7 +234,7 @@
                 {% if run is defined and run is not null and run.id is defined %}
                     <p class="mb-0 small">
                         <a href="{{ path('app_policy_wizard_step_show', {runId: run.id, step: 'welcome'}) }}">
-                            <i class="bi bi-arrow-left-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
                             {{ 'policy_wizard.step.operational_baselines.dora.not_applicable_hint.link_label'|trans }}
                         </a>
                     </p>
@@ -279,7 +279,7 @@
             <div class="col-12">
                 <div class="border rounded p-3 bg-body-tertiary">
                     <h6 class="mb-2">
-                        <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-clipboard-check me-1" aria-hidden="true"></i>
                         {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.title'|trans }}
                     </h6>
                     <p class="small text-muted mb-3">
@@ -324,11 +324,11 @@
                                so users see the consequence before they choose, not after. #}
                             <div class="small text-muted">
                                 <div>
-                                    <i class="bi bi-check-circle text-success me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-check text-success me-1" aria-hidden="true"></i>
                                     {{ ('policy_wizard.step.operational_baselines.dora.significance_self_check.' ~ q ~ '_yes_implication')|trans }}
                                 </div>
                                 <div>
-                                    <i class="bi bi-dash-circle text-secondary me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-close text-secondary me-1" aria-hidden="true"></i>
                                     {{ ('policy_wizard.step.operational_baselines.dora.significance_self_check.' ~ q ~ '_no_implication')|trans }}
                                 </div>
                             </div>
@@ -340,7 +340,7 @@
                     {% set derived_significant = dora_default.is_significant|default(false) %}
                     <div class="mt-3 pt-3 border-top">
                         <span class="small fw-semibold">
-                            <i class="bi bi-arrow-return-right" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                             {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.derived_label'|trans }}
                         </span>
                         {% if derived_significant %}
@@ -348,7 +348,7 @@
                         {% else %}
                             {{ pill.render('policy_wizard.step.operational_baselines.dora.significance_self_check.derived_no'|trans, 'neutral', {size: 'sm', class: 'ms-2'}) }}
                         {% endif %}
-                        <i class="bi bi-info-circle text-muted ms-2"
+                        <i class="fa-icon fa-icon--ui-info text-muted ms-2"
                            data-bs-toggle="tooltip"
                            title="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_significant'|trans }}"
                            aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_significant'|trans }}"></i>
@@ -387,7 +387,7 @@
                            {% if dora_default.is_ctpp_self_assessment|default(false) %}checked{% endif %}>
                     <label class="form-check-label" for="op-dora-ctpp">
                         {{ 'policy_wizard.step.operational_baselines.dora_ctpp_label'|trans }}
-                        <i class="bi bi-info-circle text-muted ms-1"
+                        <i class="fa-icon fa-icon--ui-info text-muted ms-1"
                            data-bs-toggle="tooltip"
                            title="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_ctpp'|trans }}"
                            aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_ctpp'|trans }}"></i>
@@ -445,11 +445,11 @@
             {% endif %}
             <div class="col-12">
                 <p class="small text-muted mb-0">
-                    <i class="bi bi-person-plus" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
                     {{ 'policy_wizard.step.roles.help.missing_user_link'|trans }}
                     <a href="{{ path('user_management_index') }}" target="_blank" rel="noopener">
                         {{ 'policy_wizard.step.roles.help.missing_user_link_cta'|trans }}
-                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--util-external-link" aria-hidden="true"></i>
                     </a>
                 </p>
             </div>

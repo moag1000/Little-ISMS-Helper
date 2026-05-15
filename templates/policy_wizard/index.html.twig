@@ -51,7 +51,7 @@
                             <div class="d-flex gap-2 flex-wrap">
                                 <a href="{{ path('app_policy_wizard_step_show', { runId: run.id, step: run.step }) }}"
                                    class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
-                                    <i class="bi bi-play-fill" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                                     <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.resume'|trans }}</span>
                                 </a>
                                 <form method="post"
@@ -62,7 +62,7 @@
                                       class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_cancel') }}">
                                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                         <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.cancel'|trans }}</span>
                                     </button>
                                 </form>

@@ -26,13 +26,13 @@
         {# ── DataBreach exports ─────────────────────────────────────────────── #}
         {% if breaches|length > 0 %}
         <section class="mb-5">
-            <h5 class="mb-3"><i class="bi bi-shield-exclamation me-1 text-danger"></i> {{ 'authority.section.data_breaches'|trans({}, 'eu_authorities') }}</h5>
+            <h5 class="mb-3"><i class="fa-icon fa-icon--nav-shield-alert me-1 text-danger"></i> {{ 'authority.section.data_breaches'|trans({}, 'eu_authorities') }}</h5>
             <div class="row g-3">
                 {% for breach in breaches %}
                 <div class="col-12 col-md-6 col-xl-4">
                     <div class="card h-100">
                         <div class="card-header d-flex align-items-center gap-2">
-                            <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                            <i class="fa-icon fa-icon--status-warning text-danger"></i>
                             <span class="fw-semibold">{{ breach.referenceNumber }}</span>
                             <span class="badge bg-secondary ms-auto">{{ breach.severity }}</span>
                         </div>
@@ -41,17 +41,17 @@
                             <div class="d-flex flex-column gap-2">
                                 <a href="{{ path('app_authority_notification_breach_pdf', {_locale: app.request.locale, breachId: breach.id, authorityKey: 'bfdi'}) }}"
                                    class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-file-pdf me-1"></i>
+                                    <i class="fa-icon fa-icon--nav-file-pdf me-1"></i>
                                     {{ 'authority.action.export_pdf'|trans({}, 'eu_authorities') }} (BfDI)
                                 </a>
                                 <a href="{{ path('app_authority_notification_breach_json', {_locale: app.request.locale, breachId: breach.id, authorityKey: 'bfdi'}) }}"
                                    class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-filetype-json me-1"></i>
+                                    <i class="bi bi-filetype-json {# TODO: design Aurora fa-icon--util-filetype-json #} {# TODO: design Aurora fa-icon--filetype-json #} me-1"></i>
                                     {{ 'authority.action.export_json'|trans({}, 'eu_authorities') }}
                                 </a>
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-geo-alt me-1"></i>
+                                        <i class="bi bi-geo-alt {# TODO: design Aurora fa-icon--util-geo #} {# TODO: design Aurora fa-icon--geo-alt #} me-1"></i>
                                         {{ 'authority.section.lfdi_export'|trans({}, 'eu_authorities') }}
                                     </button>
                                     <ul class="dropdown-menu">
@@ -83,7 +83,7 @@
         {# ── Incident (BSI-Meldestelle) exports ─────────────────────────────── #}
         {% if incidents|length > 0 %}
         <section class="mb-5">
-            <h5 class="mb-3"><i class="bi bi-fire me-1 text-warning"></i> {{ 'authority.section.incidents'|trans({}, 'eu_authorities') }}</h5>
+            <h5 class="mb-3"><i class="bi bi-fire {# TODO: design Aurora fa-icon--status-fire #} {# TODO: design Aurora fa-icon--fire #} me-1 text-warning"></i> {{ 'authority.section.incidents'|trans({}, 'eu_authorities') }}</h5>
             <div class="table-responsive">
                 <table class="table table-sm table-hover align-middle">
                     <thead>
@@ -103,7 +103,7 @@
                             <td>
                                 <a href="{{ path('app_authority_notification_incident_pdf', {_locale: app.request.locale, incidentId: incident.id, authorityKey: 'bsi_meldestelle'}) }}"
                                    class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-file-pdf me-1"></i>
+                                    <i class="fa-icon fa-icon--nav-file-pdf me-1"></i>
                                     {{ 'authority.action.export_pdf'|trans({}, 'eu_authorities') }} (BSI)
                                 </a>
                             </td>

@@ -5661,7 +5661,7 @@ html[data-theme="dark"] .framework-card {
  * Markup (created by fa_toast_controller.js or _fa_toast macro):
  *   <div class="fa-toast-stack" data-controller="fa-toast" data-fa-toast-target="stack">
  *     <div class="fa-toast fa-toast--success" role="status" aria-live="polite">
- *       <i class="fa-toast__icon bi bi-check-circle-fill" aria-hidden="true"></i>
+ *       <i class="fa-toast__icon fa-icon fa-icon--ui-check" aria-hidden="true"></i>
  *       <div class="fa-toast__body">
  *         <div class="fa-toast__title">Saved.</div>
  *         <div class="fa-toast__message">Control A.5.1 updated.</div>

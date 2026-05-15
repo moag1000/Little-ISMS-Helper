@@ -90,7 +90,7 @@
     <section class="fa-section mb-4" id="covered-requirements">
         <div class="fa-section__header">
             <h2 class="fa-section__title">
-                <i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-check text-success me-1" aria-hidden="true"></i>
                 {{ 'compliance_manager.heatmap.drill.covered'|trans }}
                 {{ pill.render(covered|length, 'success', {size: 'sm', class: 'ms-1'}) }}
             </h2>
@@ -154,7 +154,7 @@
     <section class="fa-section mb-4" id="gap-requirements">
         <div class="fa-section__header">
             <h2 class="fa-section__title">
-                <i class="bi bi-exclamation-circle-fill text-danger me-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-critical text-danger me-1" aria-hidden="true"></i>
                 {{ 'compliance_manager.heatmap.drill.gaps'|trans }}
                 {{ pill.render(gaps|length, 'danger', {size: 'sm', class: 'ms-1'}) }}
             </h2>
@@ -197,7 +197,7 @@
                                     {% if framework_code is not empty and (framework_code|lower) in _knownWizards %}
                                         <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                            href="{{ path('app_compliance_wizard_start', {wizard: framework_code|lower}) }}">
-                                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                             {{ 'compliance_manager.heatmap.drill.fix'|trans }}
                                         </a>
                                     {% endif %}
@@ -220,7 +220,7 @@
     <section class="fa-section mb-4" id="open-findings">
         <div class="fa-section__header">
             <h2 class="fa-section__title">
-                <i class="bi bi-flag-fill text-warning me-1" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-flag text-warning me-1" aria-hidden="true"></i>
                 {{ 'compliance_manager.heatmap.drill.findings'|trans }}
                 {{ pill.render(open_findings|length, 'warning', {size: 'sm', class: 'ms-1'}) }}
             </h2>
@@ -243,7 +243,7 @@
                                 {{ pill.render(finding.status, 'neutral', {size: 'sm'}) }}
                                 {% if finding.audit is defined and finding.audit %}
                                     <a href="{{ path('app_audit_show', {id: finding.audit.id}) }}" class="btn btn-sm btn-outline-secondary py-0 px-1 small">
-                                        <i class="bi bi-search" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
                                     </a>
                                 {% endif %}
                             </div>

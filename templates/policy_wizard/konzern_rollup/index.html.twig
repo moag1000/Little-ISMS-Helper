@@ -32,7 +32,7 @@
     {% if not not_a_konzern and report is not null and not report.isEmpty %}
         <form method="get" action="{{ path('app_policy_wizard_konzern_rollup_one_pager_pdf') }}" class="d-flex align-items-center gap-2 mb-3">
             <label for="as_of_input" class="form-label mb-0 small">
-                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                 {{ 'policy_wizard.konzern_rollup.one_pager.as_of_label'|trans }}
             </label>
             <div class="fa-cyber-input" style="max-width: 180px;">
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-sm btn-primary">
-                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                 {{ 'policy_wizard.konzern_rollup.one_pager.cta_short'|trans }}
             </button>
         </form>
@@ -77,13 +77,13 @@
             <ul class="nav nav-tabs" role="tablist" id="rollupTabs">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="tab-coverage-btn" data-bs-toggle="tab" data-bs-target="#tab-coverage" type="button" role="tab" aria-controls="tab-coverage" aria-selected="true">
-                        <i class="bi bi-shield-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                         {{ 'policy_wizard.konzern_rollup.tab.coverage'|trans }}
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="tab-actions-btn" data-bs-toggle="tab" data-bs-target="#tab-actions" type="button" role="tab" aria-controls="tab-actions" aria-selected="false">
-                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                         {{ 'policy_wizard.konzern_rollup.tab.actions'|trans }}
                         {% if report.outstandingActions|length > 0 %}
                             {{ pill.render(report.outstandingActions|length, 'warning', {size: 'sm', class: 'ms-1'}) }}
@@ -93,19 +93,19 @@
                 {# CISO Task #130 — Severity heatmap (Subsidiary x severity bucket). #}
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="tab-heatmap-btn" data-bs-toggle="tab" data-bs-target="#tab-heatmap" type="button" role="tab" aria-controls="tab-heatmap" aria-selected="false">
-                        <i class="bi bi-grid-3x3-gap-fill" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i>
                         {{ 'policy_wizard.konzern_rollup.tab.heatmap'|trans }}
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="tab-compliance-btn" data-bs-toggle="tab" data-bs-target="#tab-compliance" type="button" role="tab" aria-controls="tab-compliance" aria-selected="false">
-                        <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                         {{ 'policy_wizard.konzern_rollup.tab.compliance'|trans }}
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="tab-drift-btn" data-bs-toggle="tab" data-bs-target="#tab-drift" type="button" role="tab" aria-controls="tab-drift" aria-selected="false">
-                        <i class="bi bi-arrows-collapse-vertical" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-collapse" aria-hidden="true"></i>
                         {{ 'policy_wizard.konzern_rollup.tab.drift'|trans }}
                         {% if report.settingsDriftRows|length > 0 %}
                             {{ pill.render(report.settingsDriftRows|length, 'danger', {size: 'sm', class: 'ms-1'}) }}
@@ -114,7 +114,7 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="tab-ack-btn" data-bs-toggle="tab" data-bs-target="#tab-ack" type="button" role="tab" aria-controls="tab-ack" aria-selected="false">
-                        <i class="bi bi-person-check-fill" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--attestation" aria-hidden="true"></i>
                         {{ 'policy_wizard.konzern_rollup.tab.acknowledgement'|trans }}
                     </button>
                 </li>
@@ -134,7 +134,7 @@
                     {% else %}
                         {% for tenantRow in report.policyCoverageMatrix %}
                             <h3 class="h6 mt-4 mb-2 fw-semibold">
-                                <i class="bi bi-building" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i>
                                 {{ tenantRow.tenant_name }} <small class="text-muted">({{ tenantRow.tenant_code }})</small>
                             </h3>
                             <div class="row g-3" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
@@ -304,7 +304,7 @@
                         {# CISO Task #130 — Per-Subsidiary trend table (sparkline + delta + direction). #}
                         {% if trend is not null and not trend.isEmpty %}
                             <h3 class="h6 mt-4 mb-2 fw-semibold">
-                                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-analytics" aria-hidden="true"></i>
                                 {{ 'policy_wizard.konzern_rollup.trend.heading'|trans }}
                             </h3>
                             <p class="text-muted small mb-2">
@@ -348,13 +348,13 @@
                                                 </td>
                                                 <td class="fa-table__cell">
                                                     {% if row.direction == 'up' %}
-                                                        <i class="bi bi-arrow-up-circle-fill text-success" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--util-arrow-up text-success" aria-hidden="true"></i>
                                                         <span class="text-success fw-bold">+{{ row.delta_percentage_points }} pp</span>
                                                     {% elseif row.direction == 'down' %}
-                                                        <i class="bi bi-arrow-down-circle-fill text-danger" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--util-arrow-down text-danger" aria-hidden="true"></i>
                                                         <span class="text-danger fw-bold">{{ row.delta_percentage_points }} pp</span>
                                                     {% else %}
-                                                        <i class="bi bi-dash-circle text-muted" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--ui-close text-muted" aria-hidden="true"></i>
                                                         <span class="text-muted">{{ row.delta_percentage_points }} pp</span>
                                                     {% endif %}
                                                 </td>

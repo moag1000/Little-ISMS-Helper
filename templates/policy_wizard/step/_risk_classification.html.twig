@@ -31,7 +31,7 @@
         <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.risk_classification.help.body'|trans }}</p>
         <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.risk_classification.help.example'|trans }}</p>
         <p class="mb-0 small">
-            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
             {{ 'policy_wizard.step.risk_classification.help.annex_reversibility'|trans }}
         </p>
     {% endblock %}
@@ -172,7 +172,7 @@
     {# Counter — live-updated by Stimulus controller. #}
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
         <div>
-            <i class="bi bi-list-check me-1" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-list-check me-1" aria-hidden="true"></i>
             <strong>
                 <span data-annex-a-filter-target="counter">{{ selected_count }}</span>
             </strong>
@@ -185,7 +185,7 @@
         <button type="button"
                 class="btn btn-sm btn-outline-secondary"
                 data-action="annex-a-filter#clear">
-            <i class="bi bi-x-circle me-1" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-close me-1" aria-hidden="true"></i>
             {{ 'policy_wizard.step.risk_classification.annex_filter.clear'|trans }}
         </button>
     </div>
@@ -221,7 +221,7 @@
         </div>
     </div>
     <div class="small text-muted mt-2 d-none" data-annex-a-filter-target="empty">
-        <i class="bi bi-search me-1" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--ui-search me-1" aria-hidden="true"></i>
         {{ 'policy_wizard.step.risk_classification.annex_filter.empty_match'|trans }}
     </div>
 </div>
@@ -230,7 +230,7 @@
 {% for group_key, group in annex_groups %}
     {% set group_body %}
         <p class="form-text small">
-            <i class="bi bi-info-circle text-muted"
+            <i class="fa-icon fa-icon--ui-info text-muted"
                data-bs-toggle="tooltip"
                title="{{ 'policy_wizard.step.risk_classification.tooltip.annex_a'|trans }}"
                aria-label="{{ 'policy_wizard.step.risk_classification.tooltip.annex_a'|trans }}"></i>
@@ -286,7 +286,7 @@
                                     </div>
                                     {% if is_optional %}
                                         <div class="small text-warning-emphasis mt-1">
-                                            <i class="bi bi-toggle-off me-1" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-settings me-1" aria-hidden="true"></i>
                                             <em>{{ 'policy_wizard.step.risk_classification.annex_not_applicable'|trans }}</em>
                                             — {{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.default_note'|trans }}
                                         </div>

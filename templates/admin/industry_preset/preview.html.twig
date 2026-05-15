@@ -34,7 +34,7 @@
                         {% for module in config.modules|default([]) %}
                             {% set isActive = module in active_modules %}
                             <span class="badge {{ isActive ? 'bg-success' : 'bg-secondary' }}">
-                                {{ module }}{% if isActive %} <i class="bi bi-check-circle ms-1"></i>{% endif %}
+                                {{ module }}{% if isActive %} <i class="fa-icon fa-icon--ui-check ms-1"></i>{% endif %}
                             </span>
                         {% endfor %}
                     </div>
@@ -60,7 +60,7 @@
                                 <tr class="fa-table__row">
                                     <td class="fa-table__cell"><strong>{{ fw.code }}</strong></td>
                                     <td class="fa-table__cell">{{ pill.render(fw.priority|default('—'), 'primary', {size: 'sm'}) }}</td>
-                                    <td class="fa-table__cell">{% if fw.activate ?? false %}<i class="bi bi-check-circle text-success"></i>{% else %}<span class="text-muted">{{ 'industry_preset.preview.table.optional'|trans }}</span>{% endif %}</td>
+                                    <td class="fa-table__cell">{% if fw.activate ?? false %}<i class="fa-icon fa-icon--ui-check text-success"></i>{% else %}<span class="text-muted">{{ 'industry_preset.preview.table.optional'|trans }}</span>{% endif %}</td>
                                 </tr>
                             {% endfor %}
                         {% endblock %}
@@ -114,7 +114,7 @@
                           data-ui-actions-message-param="{{ 'industry_preset.confirm.apply_short'|trans }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('industry_preset_' ~ preset) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100">
-                            <i class="bi bi-rocket-takeoff"></i> {{ 'industry_preset.action.apply_button'|trans }}
+                            <i class="bi bi-rocket-takeoff {# TODO: design Aurora fa-icon--ui-launch #} {# TODO: design Aurora fa-icon--rocket-takeoff #}"></i> {{ 'industry_preset.action.apply_button'|trans }}
                         </button>
                     </form>
                 </div>

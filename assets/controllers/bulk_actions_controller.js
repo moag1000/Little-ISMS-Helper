@@ -36,7 +36,7 @@ import { Controller } from '@hotwired/stimulus';
  *       </div>
  *       <div class="fa-bulk-bar__divider"></div>
  *       <button class="fa-bulk-bar__close" aria-label="Auswahl aufheben"
- *               data-action="click->bulk-actions#deselectAll"><i class="bi bi-x-lg"></i></button>
+ *               data-action="click->bulk-actions#deselectAll"><i class="fa-icon fa-icon--ui-close"></i></button>
  *     </div>
  *   </div>
  *

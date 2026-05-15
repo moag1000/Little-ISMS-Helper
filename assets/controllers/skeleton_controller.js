@@ -91,7 +91,7 @@ export default class extends Controller {
         if (this.hasSkeletonTarget) {
             this.skeletonTarget.innerHTML = `
                 <div class="skeleton-error">
-                    <i class="bi bi-exclamation-circle"></i>
+                    <i class="fa-icon fa-icon--status-warning"></i>
                     <p>Fehler beim Laden der Inhalte</p>
                     <button class="btn btn-sm btn-primary" data-action="click->skeleton#retry">
                         Erneut versuchen

@@ -31,7 +31,7 @@
             <div class="col-12">
                 {% if currentYear and currentYear.isSubmitted %}
                     <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
-                        <i class="bi bi-check-circle-fill fs-4" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-check fs-4" aria-hidden="true"></i>
                         <div>
                             <strong>{{ 'eu_authorities.dora_roi.status.submitted'|trans }}</strong>
                             — {{ 'eu_authorities.dora_roi.status.submitted_body'|trans({
@@ -42,7 +42,7 @@
                     </div>
                 {% elseif currentYear %}
                     <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
-                        <i class="bi bi-clock-history fs-4" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-clock fs-4" aria-hidden="true"></i>
                         <div>
                             <strong>{{ 'eu_authorities.dora_roi.status.generated_not_submitted'|trans }}</strong>
                             — {{ 'eu_authorities.dora_roi.status.generated_body'|trans }}
@@ -50,7 +50,7 @@
                     </div>
                 {% else %}
                     <div class="alert alert-info d-flex align-items-center gap-2" role="alert">
-                        <i class="bi bi-info-circle-fill fs-4" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-info fs-4" aria-hidden="true"></i>
                         <div>
                             <strong>{{ 'eu_authorities.dora_roi.status.not_yet_generated'|trans({
                                 '%year%': reportingYear
@@ -68,7 +68,7 @@
                 <form method="POST" action="{{ path('dora_roi_generate') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('dora_roi_generate') }}">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-download me-1" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>
                         {{ 'eu_authorities.dora_roi.action.generate'|trans({
                             '%year%': reportingYear
                         }) }}
@@ -113,7 +113,7 @@
                         <td>
                             {% if record.isSubmitted %}
                                 <span class="text-success">
-                                    <i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
                                     {{ record.submittedAt|date('d.m.Y') }}
                                 </span>
                             {% else %}
@@ -128,7 +128,7 @@
                                     class="btn btn-sm btn-outline-success"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modal-mark-submitted-{{ record.id }}">
-                                <i class="bi bi-check2-circle me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
                                 {{ 'eu_authorities.dora_roi.action.mark_submitted'|trans }}
                             </button>
 
@@ -163,7 +163,7 @@
                                                     {{ 'common.cancel'|trans({}, 'messages') }}
                                                 </button>
                                                 <button type="submit" class="btn btn-success">
-                                                    <i class="bi bi-check2-circle me-1" aria-hidden="true"></i>
+                                                    <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
                                                     {{ 'eu_authorities.dora_roi.action.confirm_submission'|trans }}
                                                 </button>
                                             </div>

@@ -26,7 +26,7 @@ export default class extends Controller {
 
         // Disable button and show loading state
         button.disabled = true;
-        button.innerHTML = `<i class="bi bi-arrow-clockwise spinner-border spinner-border-sm me-1" aria-hidden="true"></i>${this.loadingTextValue}`;
+        button.innerHTML = `<i class="fa-icon fa-icon--ui-refresh spinner-border spinner-border-sm me-1" aria-hidden="true"></i>${this.loadingTextValue}`;
 
         try {
             const response = await fetch(this.urlValue, {
@@ -40,7 +40,7 @@ export default class extends Controller {
             const data = await response.json();
 
             if (data.success) {
-                button.innerHTML = `<i class="bi bi-check-circle me-1"></i>${this.successTextValue}`;
+                button.innerHTML = `<i class="fa-icon fa-icon--ui-check me-1"></i>${this.successTextValue}`;
                 button.classList.remove('btn-outline-warning');
                 button.classList.add('btn-success');
 
@@ -57,7 +57,7 @@ export default class extends Controller {
     }
 
     showError(button, originalHtml, message) {
-        button.innerHTML = `<i class="bi bi-exclamation-triangle me-1"></i>${message}`;
+        button.innerHTML = `<i class="fa-icon fa-icon--status-warning me-1"></i>${message}`;
         button.classList.remove('btn-outline-warning');
         button.classList.add('btn-danger');
 

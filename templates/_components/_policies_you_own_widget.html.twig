@@ -54,14 +54,14 @@
                         </div>
                         <small class="text-muted d-block">
                             {% if document.updatedAt %}
-                                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
                                 {{ document.updatedAt|date('Y-m-d') }}
                             {% elseif document.uploadedAt %}
-                                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
                                 {{ document.uploadedAt|date('Y-m-d') }}
                             {% endif %}
                             &middot;
-                            <i class="bi bi-tag" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-tag" aria-hidden="true"></i>
                             {{ document.category }}
                         </small>
                     </div>
@@ -75,7 +75,7 @@
 
     {% set footer %}
         <a href="{{ path('app_document_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
             <span class="fa-cyber-btn__label">{{ 'policy_wizard.widget.policies_you_own.see_all'|trans }}</span>
         </a>
     {% endset %}

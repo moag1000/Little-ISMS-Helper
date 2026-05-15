@@ -99,11 +99,11 @@ export default class extends Controller {
         const url = editUrl || this.editUrlValue;
         this.containerTarget.innerHTML = `
             <div class="alert alert-info">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                 <strong>${this.notConfiguredTitleValue}</strong><br>
                 <p class="mb-0 mt-2">${this.notConfiguredTextValue}</p>
                 <a href="${this.escapeHtml(url)}" class="btn btn-primary mt-3">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> ${this.configureNowTextValue}
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> ${this.configureNowTextValue}
                 </a>
             </div>
         `;
@@ -120,11 +120,11 @@ export default class extends Controller {
 
         this.containerTarget.innerHTML = `
             <div class="alert alert-danger">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                 ${errorHtml}
                 <br><br>
                 <button class="btn btn-sm btn-outline-danger" data-action="tenant-isms-context#load">
-                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> ${this.retryTextValue}
+                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> ${this.retryTextValue}
                 </button>
             </div>
         `;
@@ -148,7 +148,7 @@ export default class extends Controller {
             html += `
                 <div class="alert alert-warning mb-4">
                     <div class="d-flex align-items-start">
-                        <i class="bi bi-diagram-3 me-2 mt-1" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-workflow me-2 mt-1" aria-hidden="true"></i>
                         <div>
                             <strong>${this.inheritedAlertTitleValue}</strong><br>
                             <span class="small">
@@ -177,10 +177,10 @@ export default class extends Controller {
                         <div>
                             ${canEdit ?
                                 `<a href="${this.escapeHtml(data.editUrl || this.editUrlValue)}" class="btn btn-primary">
-                                    <i class="bi bi-pencil" aria-hidden="true"></i> ${this.editTextValue}
+                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> ${this.editTextValue}
                                 </a>` :
                                 `<button class="btn btn-secondary" disabled title="${this.cannotEditTextValue}">
-                                    <i class="bi bi-lock" aria-hidden="true"></i> ${this.editTextValue}
+                                    <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i> ${this.editTextValue}
                                 </button>`
                             }
                         </div>
@@ -232,7 +232,7 @@ export default class extends Controller {
         html += `
             <div class="text-center mt-4">
                 <a href="${this.contextViewUrlValue}" class="btn btn-outline-primary">
-                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> ${this.viewFullTextValue}
+                    <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> ${this.viewFullTextValue}
                 </a>
             </div>
         `;
