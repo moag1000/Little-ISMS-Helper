@@ -360,3 +360,23 @@ incident:
     reassess_button: Risiko-Bewertung aktualisieren
     reassess_help: Bewertung dieses Risikos anhand des realen Vorfalls neu prüfen.
     last_reassessed: 'Letzte Vorfall-Neubewertung am %date%'
+  link:
+    section_title: 'Verknüpfte Risiken'
+    add_link: 'Risiko verknüpfen'
+    submit: 'Verknüpfen'
+    empty: 'Bisher sind keine Risiken mit diesem Vorfall verknüpft.'
+    risk_linked: 'Risiko erfolgreich verknüpft.'
+    risk_unlinked: 'Verknüpfung zum Risiko entfernt.'
+    csrf_invalid: 'Sicherheitstoken ungültig — bitte Seite neu laden und erneut versuchen.'
+    risk_not_found: 'Risiko nicht gefunden.'
+    link_not_found: 'Verknüpfung nicht gefunden oder gehört nicht zu diesem Vorfall.'
+    unlink: 'Verknüpfung entfernen'
+    unlink_confirm: 'Diese Verknüpfung zum Risiko entfernen?'
+    risk_review_suggested: '%count% verknüpfte(s) Risiko(en) sollte(n) nach Schließung dieses Vorfalls geprüft werden.'
+    field:
+      risk: 'Risiko'
+      link_type: 'Verknüpfungstyp'
+      notes: 'Notizen'
+    placeholder:
+      risk: 'Risiko auswählen…'
+      notes: 'Optionaler Kontext oder Beobachtung…'
