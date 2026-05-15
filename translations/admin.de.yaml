@@ -73,6 +73,7 @@ admin:
             data_repair: { label: 'Daten-Reparatur', desc: 'Orphans, Tenant-Mismatches, Schema-Reconcile' }
             quick_fix_settings: { label: 'Quick-Fix-Settings', desc: 'Auto-Fallback-UI Konfiguration' }
             kpi_threshold: { label: 'KPI-Schwellen', desc: 'Ampel-Grenzen für Dashboard-KPIs' }
+            fte_tracking: { label: 'FTE-Tracking', desc: 'Aufwands-Einsparungen durch Automatisierung messen und berichten' }
             loader_fixer: { label: 'Loader-Fixer', desc: 'Compliance-Loader-Diff-Repair' }
             monitoring_performance: { label: 'Performance-Monitor', desc: 'Request-Times, Slow-Query-Log' }
             licensing: { label: 'Lizenz', desc: 'Plan, Limits, Lizenz-Report' }

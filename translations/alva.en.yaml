@@ -270,3 +270,11 @@ alva_hint:
         title: 'DORA RoI Not Yet Submitted'
         body: 'The DORA Register of Information for %year% has not yet been submitted to the supervisory authority (DORA Art. 28). Deadline: 31 Dec %year%.'
         action: 'Open DORA RoI'
+    risks_linked_to_open_incidents:
+        title: 'Open Incidents Hold Risk Pressure — Review Recommended'
+        body: '%count% risk(s) have been linked to open incidents for more than 30 days. Resolving these incidents reduces the actual risk exposure and keeps your risk register accurate.'
+        action: 'Open Risk Register'
+    fte_savings_milestone:
+        title: 'Milestone reached — %hours% FTE hours saved!'
+        body: 'The system has already saved %minutes% minutes (%hours% hours) of manual effort for this tenant — through SSO JIT provisioning, Bulk-Import, and Evidence reuse. Keep up the great work!'
+        action: 'Open FTE Dashboard'

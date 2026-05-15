@@ -57,6 +57,7 @@ admin:
             data_repair: { label: 'Data repair', desc: 'Orphans, tenant mismatches, schema reconcile' }
             quick_fix_settings: { label: 'Quick-fix settings', desc: 'Auto-fallback UI configuration' }
             kpi_threshold: { label: 'KPI thresholds', desc: 'Traffic-light limits for dashboard KPIs' }
+            fte_tracking: { label: 'FTE Tracking', desc: 'Measure and report effort savings through automation' }
             loader_fixer: { label: 'Loader fixer', desc: 'Compliance-loader diff repair' }
             monitoring_performance: { label: 'Performance monitor', desc: 'Request times, slow query log' }
             licensing: { label: 'Licensing', desc: 'Plan, limits, license report' }

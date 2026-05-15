@@ -10,6 +10,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Message\BulkImportMessage;
 use App\Service\AuditLogger;
+use App\Service\Fte\FteRecorderService;
 use App\Service\Import\Dto\DeltaConfig;
 use App\Service\Import\Dto\DeltaResult;
 use DateTimeImmutable;
@@ -48,6 +49,7 @@ class BulkImportOrchestrator
         private readonly EntityManagerInterface $em,
         private readonly MessageBusInterface $bus,
         private readonly string $uploadDir,
+        private readonly ?FteRecorderService $fteRecorder = null,
     ) {}
 
     // -------------------------------------------------------------------------
@@ -389,6 +391,14 @@ class BulkImportOrchestrator
             ],
             perEntityData: $perEntityForAudit,
         );
+
+        // ── F11 FTE-Tracking ───────────────────────────────────────────────────
+        if ($this->fteRecorder !== null && $rowCountSuccess > 0) {
+            $tenant = $batch->getTenant();
+            if ($tenant instanceof Tenant) {
+                $this->fteRecorder->recordBulkImport($rowCountSuccess, $batch->getEntityType(), $tenant);
+            }
+        }
 
         // ── Finalise batch ─────────────────────────────────────────────────────
         $batch->setBatchId($batchId);

@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\Sso\ClaimToRoleResolver;
 use App\Service\Sso\ClaimToRoleResolverResult;
+use App\Service\Fte\FteRecorderService;
 use App\Service\Sso\SsoEventLogger;
 use App\Service\Sso\SsoUserProvisioningService;
 use DateTimeImmutable;
@@ -34,6 +35,7 @@ final class SsoUserProvisioningServiceTest extends TestCase
     private AuditLogger $audit;
     private ClaimToRoleResolver $resolver;
     private SsoEventLogger $ssoLogger;
+    private FteRecorderService $fteRecorder;
 
     protected function setUp(): void
     {
@@ -58,7 +60,8 @@ final class SsoUserProvisioningServiceTest extends TestCase
                 trace: 'fallback',
             )
         );
-        $this->ssoLogger = $this->createMock(SsoEventLogger::class);
+        $this->ssoLogger    = $this->createMock(SsoEventLogger::class);
+        $this->fteRecorder  = $this->createMock(FteRecorderService::class);
     }
 
     private function makeService(): SsoUserProvisioningService
@@ -70,6 +73,7 @@ final class SsoUserProvisioningServiceTest extends TestCase
             new NullLogger(),
             $this->resolver,
             $this->ssoLogger,
+            $this->fteRecorder,
         );
     }
 
@@ -91,6 +95,7 @@ final class SsoUserProvisioningServiceTest extends TestCase
             new NullLogger(),
             $resolver,
             $ssoLogger,
+            $this->fteRecorder,
         );
 
         $this->userRepo->method('findOneBy')->willReturn(null);
