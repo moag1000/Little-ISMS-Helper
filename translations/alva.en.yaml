@@ -28,6 +28,18 @@ processing_activity:
         title: 'DPIA required (GDPR Art. 35)'
         body: 'Activity indicates a mandatory DPIA: automated decision-making, large-scale special categories, or self-flagged high risk. No DPIA on file yet.'
         action: 'Create DPIA'
+    avv_required:
+        title: 'AVV supplier missing — GDPR Art. 28'
+        body: 'This processing activity involves processors, but no structured supplier FK is set. GDPR Art. 28 requires a written DPA naming the processor. Please select the supplier from the supplier register.'
+        action: 'Select processor (GDPR Art. 28)'
+        picker_title: 'Select processors (GDPR Art. 28)'
+        picker_subtitle: 'Pick the suppliers from the supplier register who act as processors for this processing activity.'
+        picker_breadcrumb: 'AVV picker'
+        picker_section_title: 'Available suppliers'
+        no_candidates: 'No suppliers in this tenant yet. Please create a supplier first.'
+        create_supplier: 'Create supplier'
+        save: 'Save selection'
+        flash_saved: 'AVV suppliers saved.'
 
 vulnerability:
     critical_unpatched:

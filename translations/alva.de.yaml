@@ -28,6 +28,18 @@ processing_activity:
         title: 'DPIA erforderlich (Art. 35 DSGVO)'
         body: 'Verarbeitung deutet auf Pflicht-DPIA: automatisierte Entscheidungsfindung, besondere Kategorien im großen Umfang oder selbstklassifiziert als hohes Risiko. Bisher keine DPIA dokumentiert.'
         action: 'DPIA anlegen'
+    avv_required:
+        title: 'AVV-Lieferant fehlt — DSGVO Art. 28'
+        body: 'Diese Verarbeitungstätigkeit bezieht Auftragsverarbeiter ein, aber kein strukturierter Lieferanten-FK ist gesetzt. DSGVO Art. 28 fordert einen schriftlichen AVV mit benanntem Auftragsverarbeiter. Bitte den Lieferanten aus dem Lieferantenregister auswählen.'
+        action: 'Auftragsverarbeiter auswählen'
+        picker_title: 'Auftragsverarbeiter auswählen (DSGVO Art. 28)'
+        picker_subtitle: 'Wähle die Lieferanten aus dem Lieferantenregister, die als Auftragsverarbeiter für diese Verarbeitungstätigkeit fungieren.'
+        picker_breadcrumb: 'AVV-Auswahl'
+        picker_section_title: 'Verfügbare Lieferanten'
+        no_candidates: 'Es sind noch keine Lieferanten in diesem Mandanten erfasst. Bitte zunächst einen Lieferanten anlegen.'
+        create_supplier: 'Lieferant anlegen'
+        save: 'Auswahl speichern'
+        flash_saved: 'AVV-Lieferanten gespeichert.'
 
 vulnerability:
     critical_unpatched:
