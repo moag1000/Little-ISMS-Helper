@@ -31,72 +31,6 @@ eu_authorities:
             drittland: 'Third-Country Transfer'
             loeschfristen: 'Retention Periods'
             toms: 'Technical and Organisational Measures'
-authority:
-    bsi_meldestelle:
-        name: 'BSI Reporting Office (NIS-2)'
-        description: 'Federal Office for Information Security — NIS-2 reporting office'
-    bfdi:
-        name: 'BfDI'
-        description: 'Federal Commissioner for Data Protection and Freedom of Information'
-    lfdi:
-        name: 'State DPA'
-        description: 'State Commissioner for Data Protection'
-    bundesland:
-        bw: 'Baden-Württemberg (LfDI BW)'
-        by: 'Bavaria (LDA Bayern)'
-        ber: 'Berlin (BlnBDI)'
-        brb: 'Brandenburg (LDA Brandenburg)'
-        hb: 'Bremen (LfDI Bremen)'
-        hh: 'Hamburg (HmbBfDI)'
-        he: 'Hesse (HBDI)'
-        mv: 'Mecklenburg-Vorpommern (LfDI MV)'
-        ni: 'Lower Saxony (LfDI Nds.)'
-        nrw: 'North Rhine-Westphalia (LfDI NRW)'
-        rlp: 'Rhineland-Palatinate (LfDI RLP)'
-        sl: 'Saarland (ULD Saarland)'
-        sn: 'Saxony (SLfDI)'
-        st: 'Saxony-Anhalt (LfDI LSA)'
-        sh: 'Schleswig-Holstein (ULD SH)'
-        th: 'Thuringia (TLfDI)'
-    action:
-        export_pdf: 'Export PDF'
-        export_json: 'Export JSON'
-    error:
-        module_inactive: 'EU authority reporting is not active.'
-        breach_not_found: 'Data breach not found.'
-        incident_not_found: 'Incident not found.'
-        unknown_authority: 'Unknown authority: %key%'
-    section:
-        data_breaches: 'Data Breach Notifications (GDPR Art. 33)'
-        incidents: 'Incident Notifications (NIS-2 BSI)'
-        lfdi_export: 'State DPA Export'
-    field:
-        incident: 'Incident'
-        severity: 'Severity'
-        detected_at: 'Detected at'
-    empty:
-        no_breaches: 'No data breaches recorded'
-        no_breaches_body: 'Once a data breach is created, you can export the authority notification as PDF or JSON here.'
-    nav:
-        title: 'Authority Notification Templates'
-    alva:
-        authority_overdue:
-            title: 'Authority Notification Pending (GDPR Art. 33)'
-            body: '%count% high/critical breach(es) — over 24h without documented authority export. GDPR Art. 33: notify within 72h.'
-            action: 'Open authority export'
-    global:
-        authority_template_overdue:
-            title: 'Authority Notification Pending (GDPR Art. 33)'
-            body: '%count% high/critical breach(es) without authority export for > 24h. GDPR Art. 33 — 72h deadline.'
-            action: 'Open authority export'
-        nis2_registration_overdue:
-            title: 'NIS-2 BSI Portal Registration Overdue'
-            body: 'The yearly NIS-2 registration with the BSI portal is overdue. Deadline was %date%.'
-            action: 'Open NIS-2 registration'
-        nis2_registration_due_soon:
-            title: 'NIS-2 BSI Portal Registration Due Soon'
-            body: 'The yearly NIS-2 registration with the BSI portal is due on %date% — please renew in time.'
-            action: 'Open NIS-2 registration'
     nis2_registration:
         page:
             title: 'NIS-2 BSI Portal Registration'
@@ -196,96 +130,162 @@ authority:
         category:
             essential: 'Essential Entity'
             important: 'Important Entity'
-hub:
-    page:
-        title: 'EU Authority Reporting Hub'
-        subtitle: 'Overview of all EU authority reporting obligations for your tenant'
-    summary:
-        current: 'Current / Available'
-        due_soon: 'Due Soon'
-        overdue: 'Overdue'
-        not_configured: 'Not Configured'
-    filter:
-        country: 'Filter by country'
-    field:
-        type: 'Type'
-        next_due: 'Next Due Date'
-        last_submitted: 'Last Submitted'
-        country: 'Country'
-    status:
-        current: 'Current'
-        due_soon: 'Due Soon'
-        overdue: 'Overdue'
-        available: 'Available'
-        not_configured: 'Not Configured'
-    type:
-        on_demand: 'On Demand'
-        yearly: 'Yearly'
-        triggered: 'Event-triggered'
-    obligation:
-        vvt_bfdi: 'RoPA / BfDI Export (GDPR Art. 30)'
-        bfdi_templates: 'Authority Notification Templates (BfDI / State DPA)'
-        bsi_nis2: 'NIS-2 BSI Portal Registration'
-        dora_roi: 'DORA Register of Information (RoI XBRL)'
+    hub:
+        page:
+            title: 'EU Authority Reporting Hub'
+            subtitle: 'Overview of all EU authority reporting obligations for your tenant'
+        summary:
+            current: 'Current / Available'
+            due_soon: 'Due Soon'
+            overdue: 'Overdue'
+            not_configured: 'Not Configured'
+        filter:
+            country: 'Filter by country'
+        field:
+            type: 'Type'
+            next_due: 'Next Due Date'
+            last_submitted: 'Last Submitted'
+            country: 'Country'
+        status:
+            current: 'Current'
+            due_soon: 'Due Soon'
+            overdue: 'Overdue'
+            available: 'Available'
+            not_configured: 'Not Configured'
+        type:
+            on_demand: 'On Demand'
+            yearly: 'Yearly'
+            triggered: 'Event-triggered'
+        obligation:
+            vvt_bfdi: 'RoPA / BfDI Export (GDPR Art. 30)'
+            bfdi_templates: 'Authority Notification Templates (BfDI / State DPA)'
+            bsi_nis2: 'NIS-2 BSI Portal Registration'
+            dora_roi: 'DORA Register of Information (RoI XBRL)'
+        action:
+            open: 'Open'
+        empty:
+            no_obligations: 'No authority reporting obligations configured.'
+    dora_roi:
+        page:
+            title: 'DORA Register of Information (RoI)'
+            subtitle: 'XBRL export for ESA RoI submission obligation (DORA Art. 28)'
+        section:
+            history: 'Submission History'
+        field:
+            reporting_date: 'Reporting Date'
+            scope: 'Scope'
+            payload_hash: 'Payload Hash (SHA-256)'
+            submitted_at: 'Submitted At'
+            submitted_by: 'Submitted By'
+            confirmation_number: 'Confirmation Number'
+        placeholder:
+            confirmation_number: 'e.g. EBA-2026-DORA-ROI-XXXX'
+        scope:
+            yearly_full: 'Full Yearly Submission'
+            significant_changes: 'Significant Changes'
+        status:
+            submitted: 'Submitted'
+            submitted_body: 'Submitted on %date% — Confirmation number: %number%'
+            generated_not_submitted: 'Generated — not yet submitted'
+            generated_body: 'The XBRL file has been generated. Please submit to your supervisory authority and record the confirmation number.'
+            not_yet_generated: 'RoI for %year% not yet generated'
+            not_yet_generated_body: 'Click "Generate XBRL" to export the register for ESA submission.'
+            pending: 'Pending'
+        action:
+            generate: 'Generate XBRL for %year%'
+            generate_help: 'Exports top-10 mandatory ESA fields (DORA Art. 28, full taxonomy Sprint 9+)'
+            mark_submitted: 'Mark as Submitted'
+            confirm_submission: 'Confirm Submission'
+        modal:
+            mark_submitted_title: 'Mark DORA RoI as Submitted'
+        empty:
+            title: 'No RoI Submissions Yet'
+            body: 'Generate the first XBRL export for your DORA Register of Information.'
+        error:
+            confirmation_required: 'Confirmation number is required.'
+        success:
+            submitted: 'DORA RoI marked as submitted. Confirmation number: %number%'
+        alva:
+            overdue_authority_report:
+                title: 'EU Authority Report Overdue'
+                body: 'At least one EU authority reporting obligation is overdue. Immediate action required.'
+                action: 'Open Authority Hub'
+            dora_roi_due:
+                title: 'DORA RoI Not Yet Submitted This Year'
+                body: 'The DORA Register of Information (RoI) for the current year has not yet been submitted to the supervisory authority.'
+                action: 'Open DORA RoI'
+        global:
+            overdue_authority_report:
+                title: 'EU Authority Report Overdue'
+                body: 'At least one EU authority reporting obligation is overdue. Immediate action required.'
+                action: 'Open Authority Hub'
+            dora_roi_export_due:
+                title: 'DORA RoI Not Yet Submitted'
+                body: 'The DORA Register of Information for the current financial year has not yet been submitted to the supervisory authority (DORA Art. 28).'
+                action: 'Open DORA RoI'
+authority:
+    bsi_meldestelle:
+        name: 'BSI Reporting Office (NIS-2)'
+        description: 'Federal Office for Information Security — NIS-2 reporting office'
+    bfdi:
+        name: 'BfDI'
+        description: 'Federal Commissioner for Data Protection and Freedom of Information'
+    lfdi:
+        name: 'State DPA'
+        description: 'State Commissioner for Data Protection'
+    bundesland:
+        bw: 'Baden-Württemberg (LfDI BW)'
+        by: 'Bavaria (LDA Bayern)'
+        ber: 'Berlin (BlnBDI)'
+        brb: 'Brandenburg (LDA Brandenburg)'
+        hb: 'Bremen (LfDI Bremen)'
+        hh: 'Hamburg (HmbBfDI)'
+        he: 'Hesse (HBDI)'
+        mv: 'Mecklenburg-Vorpommern (LfDI MV)'
+        ni: 'Lower Saxony (LfDI Nds.)'
+        nrw: 'North Rhine-Westphalia (LfDI NRW)'
+        rlp: 'Rhineland-Palatinate (LfDI RLP)'
+        sl: 'Saarland (ULD Saarland)'
+        sn: 'Saxony (SLfDI)'
+        st: 'Saxony-Anhalt (LfDI LSA)'
+        sh: 'Schleswig-Holstein (ULD SH)'
+        th: 'Thuringia (TLfDI)'
     action:
-        open: 'Open'
-    empty:
-        no_obligations: 'No authority reporting obligations configured.'
-dora_roi:
-    page:
-        title: 'DORA Register of Information (RoI)'
-        subtitle: 'XBRL export for ESA RoI submission obligation (DORA Art. 28)'
-    section:
-        history: 'Submission History'
-    field:
-        reporting_date: 'Reporting Date'
-        scope: 'Scope'
-        payload_hash: 'Payload Hash (SHA-256)'
-        submitted_at: 'Submitted At'
-        submitted_by: 'Submitted By'
-        confirmation_number: 'Confirmation Number'
-    placeholder:
-        confirmation_number: 'e.g. EBA-2026-DORA-ROI-XXXX'
-    scope:
-        yearly_full: 'Full Yearly Submission'
-        significant_changes: 'Significant Changes'
-    status:
-        submitted: 'Submitted'
-        submitted_body: 'Submitted on %date% — Confirmation number: %number%'
-        generated_not_submitted: 'Generated — not yet submitted'
-        generated_body: 'The XBRL file has been generated. Please submit to your supervisory authority and record the confirmation number.'
-        not_yet_generated: 'RoI for %year% not yet generated'
-        not_yet_generated_body: 'Click "Generate XBRL" to export the register for ESA submission.'
-        pending: 'Pending'
-    action:
-        generate: 'Generate XBRL for %year%'
-        generate_help: 'Exports top-10 mandatory ESA fields (DORA Art. 28, full taxonomy Sprint 9+)'
-        mark_submitted: 'Mark as Submitted'
-        confirm_submission: 'Confirm Submission'
-    modal:
-        mark_submitted_title: 'Mark DORA RoI as Submitted'
-    empty:
-        title: 'No RoI Submissions Yet'
-        body: 'Generate the first XBRL export for your DORA Register of Information.'
+        export_pdf: 'Export PDF'
+        export_json: 'Export JSON'
     error:
-        confirmation_required: 'Confirmation number is required.'
-    success:
-        submitted: 'DORA RoI marked as submitted. Confirmation number: %number%'
+        module_inactive: 'EU authority reporting is not active.'
+        breach_not_found: 'Data breach not found.'
+        incident_not_found: 'Incident not found.'
+        unknown_authority: 'Unknown authority: %key%'
+    section:
+        data_breaches: 'Data Breach Notifications (GDPR Art. 33)'
+        incidents: 'Incident Notifications (NIS-2 BSI)'
+        lfdi_export: 'State DPA Export'
+    field:
+        incident: 'Incident'
+        severity: 'Severity'
+        detected_at: 'Detected at'
+    empty:
+        no_breaches: 'No data breaches recorded'
+        no_breaches_body: 'Once a data breach is created, you can export the authority notification as PDF or JSON here.'
+    nav:
+        title: 'Authority Notification Templates'
     alva:
-        overdue_authority_report:
-            title: 'EU Authority Report Overdue'
-            body: 'At least one EU authority reporting obligation is overdue. Immediate action required.'
-            action: 'Open Authority Hub'
-        dora_roi_due:
-            title: 'DORA RoI Not Yet Submitted This Year'
-            body: 'The DORA Register of Information (RoI) for the current year has not yet been submitted to the supervisory authority.'
-            action: 'Open DORA RoI'
+        authority_overdue:
+            title: 'Authority Notification Pending (GDPR Art. 33)'
+            body: '%count% high/critical breach(es) — over 24h without documented authority export. GDPR Art. 33: notify within 72h.'
+            action: 'Open authority export'
     global:
-        overdue_authority_report:
-            title: 'EU Authority Report Overdue'
-            body: 'At least one EU authority reporting obligation is overdue. Immediate action required.'
-            action: 'Open Authority Hub'
-        dora_roi_export_due:
-            title: 'DORA RoI Not Yet Submitted'
-            body: 'The DORA Register of Information for the current financial year has not yet been submitted to the supervisory authority (DORA Art. 28).'
-            action: 'Open DORA RoI'
+        authority_template_overdue:
+            title: 'Authority Notification Pending (GDPR Art. 33)'
+            body: '%count% high/critical breach(es) without authority export for > 24h. GDPR Art. 33 — 72h deadline.'
+            action: 'Open authority export'
+        nis2_registration_overdue:
+            title: 'NIS-2 BSI Portal Registration Overdue'
+            body: 'The yearly NIS-2 registration with the BSI portal is overdue. Deadline was %date%.'
+            action: 'Open NIS-2 registration'
+        nis2_registration_due_soon:
+            title: 'NIS-2 BSI Portal Registration Due Soon'
+            body: 'The yearly NIS-2 registration with the BSI portal is due on %date% — please renew in time.'
+            action: 'Open NIS-2 registration'
