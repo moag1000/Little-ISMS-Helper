@@ -170,6 +170,40 @@ final class AssetMapperTest extends TestCase
         self::assertArrayNotHasKey('dataClassification', $data);
     }
 
+    // ── isDoraRelevant mapping (DORA Art. 28) ────────────────────────────────
+
+    #[Test]
+    public function toEntityDataEmitsIsDoraRelevantTrueWhenFlagSet(): void
+    {
+        $data = $this->mapper->toEntityData([
+            'name'           => 'Payment API',
+            'assetType'      => 'software',
+            'isDoraRelevant' => 'yes',
+        ]);
+        self::assertTrue($data['isDoraRelevant']);
+    }
+
+    #[Test]
+    public function toEntityDataEmitsIsDoraRelevantFalseWhenFlagCleared(): void
+    {
+        $data = $this->mapper->toEntityData([
+            'name'           => 'Coffee Machine',
+            'assetType'      => 'hardware',
+            'isDoraRelevant' => '0',
+        ]);
+        self::assertFalse($data['isDoraRelevant']);
+    }
+
+    #[Test]
+    public function toEntityDataOmitsIsDoraRelevantWhenAbsent(): void
+    {
+        $data = $this->mapper->toEntityData([
+            'name'      => 'Office Laptop',
+            'assetType' => 'hardware',
+        ]);
+        self::assertArrayNotHasKey('isDoraRelevant', $data);
+    }
+
     #[Test]
     public function resolveOwnerUserReturnNullWhenOwnerMissing(): void
     {
