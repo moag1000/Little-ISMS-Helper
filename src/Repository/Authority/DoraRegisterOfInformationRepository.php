@@ -41,13 +41,17 @@ class DoraRegisterOfInformationRepository extends ServiceEntityRepository
      */
     public function findCurrentYearForTenant(Tenant $tenant): ?DoraRegisterOfInformation
     {
-        $year = (int) (new DateTimeImmutable())->format('Y');
+        $now = new DateTimeImmutable();
+        $yearStart = $now->setDate((int) $now->format('Y'), 1, 1)->setTime(0, 0, 0);
+        $yearEnd = $yearStart->modify('+1 year');
 
         return $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
-            ->andWhere('YEAR(r.reportingDate) = :year')
+            ->andWhere('r.reportingDate >= :year_start')
+            ->andWhere('r.reportingDate < :year_end')
             ->setParameter('tenant', $tenant)
-            ->setParameter('year', $year)
+            ->setParameter('year_start', $yearStart)
+            ->setParameter('year_end', $yearEnd)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
