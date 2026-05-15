@@ -69,7 +69,10 @@ export default class extends Controller {
         tagError: { type: String, default: 'Error adding tag' },
         statusChangeSuccess: { type: String, default: '%count% documents updated' },
         statusChangePartial: { type: String, default: '%changed% updated, %rejected% rejected' },
-        statusChangeError: { type: String, default: 'Update failed' }
+        statusChangeError: { type: String, default: 'Update failed' },
+        // Applicability change (SoA)
+        applicabilityUrl: { type: String, default: '' },
+        applicabilityCsrfToken: { type: String, default: '' }
     };
 
     connect() {
@@ -379,6 +382,75 @@ export default class extends Controller {
         } catch (error) {
             this.showToast(this.statusChangeErrorValue + ': ' + error.message, 'error');
         }
+    }
+
+    /**
+     * Bulk applicability change (SoA only).
+     * Button must carry: data-applicable-value="1" (applicable) or "0" (N/A).
+     * Wired via: data-action="click->bulk-actions#bulkApplicabilityChange"
+     * Requires data-bulk-actions-applicability-url-value and
+     *           data-bulk-actions-applicability-csrf-token-value on the controller element.
+     * Submits a hidden form POST to preserve server-side CSRF validation.
+     */
+    bulkApplicabilityChange(event) {
+        event.preventDefault();
+
+        const ids = this.selectedIds();
+        if (ids.length === 0) {
+            return;
+        }
+
+        const applicableValue = event.currentTarget.dataset.applicableValue;
+        if (applicableValue === undefined) {
+            return;
+        }
+
+        const actionUrl = this.applicabilityUrlValue;
+        const csrfToken = this.applicabilityCsrfTokenValue;
+
+        if (!actionUrl) {
+            console.error('bulk-actions: applicabilityUrl value is not set');
+            return;
+        }
+
+        // Build a transient hidden form and submit it (server expects form POST + CSRF)
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = actionUrl;
+
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = '_token';
+        tokenInput.value = csrfToken;
+        form.appendChild(tokenInput);
+
+        const applicableInput = document.createElement('input');
+        applicableInput.type = 'hidden';
+        applicableInput.name = 'applicable';
+        applicableInput.value = applicableValue;
+        form.appendChild(applicableInput);
+
+        // The server requires a non-empty reason when applicable=0 (N/A).
+        // For the quick-bar we use the caller-supplied default reason from
+        // data-applicable-reason or fall back to a generic placeholder so the
+        // bulk-operation proceeds without an extra prompt.
+        const defaultReason = event.currentTarget.dataset.applicableReason || '';
+        const reasonInput = document.createElement('input');
+        reasonInput.type = 'hidden';
+        reasonInput.name = 'reason';
+        reasonInput.value = defaultReason;
+        form.appendChild(reasonInput);
+
+        ids.forEach(id => {
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'control_ids[]';
+            idInput.value = id;
+            form.appendChild(idInput);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
     }
 
     deselectAll() {

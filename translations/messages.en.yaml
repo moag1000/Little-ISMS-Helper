@@ -1696,6 +1696,11 @@ bulk_actions:
     deselect: 'Clear selection'
     close: 'Clear selection'
     toolbar: 'Bulk actions'
+    applicable_change:
+        label: 'Set applicability'
+        set_applicable: 'Applicable (yes)'
+        set_not_applicable: 'N/A (not applicable)'
+        default_reason: 'Bulk action via SoA table'
 
 aria:
     notifications: 'Notifications'

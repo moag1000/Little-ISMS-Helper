@@ -1230,6 +1230,11 @@ bulk_actions:
     deselect: 'Auswahl aufheben'
     close: 'Auswahl aufheben'
     toolbar: 'Bulk-Aktionen'
+    applicable_change:
+        label: 'Anwendbarkeit setzen'
+        set_applicable: 'Applicable (ja)'
+        set_not_applicable: 'N/A (nicht anwendbar)'
+        default_reason: 'Bulk-Aktion via SoA-Tabelle'
 
 aria:
     notifications: 'Benachrichtigungen'
