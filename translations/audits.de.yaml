@@ -292,6 +292,7 @@ audit_finding:
         reported_by_person: 'Person ohne System-Login als Meldende. Reihenfolge: User > Person > leer.'
         reported_by_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Meldenden.'
         linked_requirements: 'Verknüpfung mit ISO/BSI-Anforderungen erstellt automatisch Korrekturmaßnahmen (F15).'
+        empty_link: '/de/help/glossary#glossary-audit-finding'
     type:
         major_nc: 'Major Nonconformity'
         minor_nc: 'Minor Nonconformity'
@@ -315,6 +316,8 @@ audit_finding:
         overdue: '%count% überfällige Feststellung(en) benötigen Aufmerksamkeit.'
     message:
         no_findings: 'Keine Feststellungen vorhanden.'
+    empty:
+        body: 'Keine offenen Feststellungen — Ihr ISMS arbeitet aktuell konformitätsfest. Im Audit-Modul können Sie jederzeit neue Feststellungen aus internen oder externen Audits dokumentieren.'
     confirm:
         delete: 'Möchten Sie diese Feststellung wirklich löschen?'
     flash:

@@ -1,5 +1,9 @@
 interested_party:
     title: 'Interested Parties'
+    success:
+        created: 'Interested party has been created.'
+        updated: 'Interested party has been updated.'
+        deleted: 'Interested party has been deleted.'
     page:
         title: 'Manage Interested Parties'
         new_title: 'New Interested Party'
@@ -8,6 +12,7 @@ interested_party:
     action:
         add_new: 'Add New Party'
         create: 'Create Interested Party'
+        create_first: 'Add first interested party'
         update: 'Save Changes'
         delete: Delete
         view: View
@@ -62,6 +67,10 @@ interested_party:
     empty:
         message: 'No interested parties found.'
         add_first: 'Add first party'
+        title: 'No interested parties recorded yet'
+        body: 'Capture customers, regulators, suppliers, and other stakeholders whose requirements you must account for in your ISMS. Each party documents requirements, communication frequency, and an engagement score.'
+    help:
+        empty_link: '/en/help/glossary#glossary-interested-parties'
     confirm:
         delete: 'Are you sure you want to delete this interested party?'
     hint:

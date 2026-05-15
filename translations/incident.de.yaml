@@ -232,8 +232,8 @@ incident:
       27001 A.16.1.4)
     affected_systems: Listen Sie alle betroffenen Systeme, Anwendungen und Infrastruktur
       auf
-    affected_assets: Wählen Sie die vom Vorfall betroffenen Assets aus (STRG gedrückt
-      halten für Mehrfachauswahl)
+    affected_assets: Wählen Sie die vom Vorfall betroffenen Assets aus (Tippen
+      zum Suchen, Mehrfachauswahl möglich)
     nis2_category: Kategorie gemäß NIS2-Richtlinie Artikel 23
     early_warning_24h: Frühwarnung muss innerhalb von 24 Stunden nach Erkennung erfolgen
       (NIS2 Art. 23)

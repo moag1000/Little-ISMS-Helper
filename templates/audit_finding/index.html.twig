@@ -76,7 +76,13 @@
     {% if findings is empty %}
         {{ _fa_empty_state.render({
             mood: 'celebrating',
-            title: 'audit_finding.message.no_findings'|trans({}, 'audits')
+            title: 'audit_finding.message.no_findings'|trans({}, 'audits'),
+            text: 'audit_finding.empty.body'|trans({}, 'audits'),
+            norm_ref: 'ISO 27001 Klausel 9.2 · ISO 19011',
+            actions: [
+                { label: 'audit_finding.action.new'|trans({}, 'audits'), variant: 'primary', icon: 'plus-lg', href: path('app_audit_finding_new') }
+            ],
+            help_link: 'audit_finding.help.empty_link'|trans({}, 'audits')
         }) }}
     {% else %}
         <div class="d-flex flex-column gap-2">

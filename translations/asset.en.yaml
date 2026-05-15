@@ -1,5 +1,9 @@
 asset:
   title: Title
+  success:
+    created: 'Asset has been created.'
+    updated: 'Asset has been updated.'
+    deleted: 'Asset has been deleted.'
   preview:
     title: Asset Information
   action:

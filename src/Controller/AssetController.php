@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Exception;
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Asset;
 use App\Form\AssetQuickType;
 use App\Form\AssetType;
@@ -34,6 +35,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AssetController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly AssetRepository $assetRepository,
         private readonly AssetService $assetService,
@@ -53,6 +56,16 @@ class AssetController extends AbstractController
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?CommentRepository $commentRepository = null,
     ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'asset';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
     #[Route('/asset/', name: 'app_asset_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
@@ -220,7 +233,7 @@ class AssetController extends AbstractController
                 $this->workflowAutoProgressionService->checkAndProgressWorkflow($asset, $currentUser);
             }
 
-            $this->addFlash('success', $this->translator->trans('asset.success.created'));
+            $this->flashSuccess('asset.success.created');
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
@@ -249,7 +262,7 @@ class AssetController extends AbstractController
                 $this->workflowAutoProgressionService->checkAndProgressWorkflow($asset, $currentUser);
             }
 
-            $this->addFlash('success', $this->translator->trans('asset.success.created'));
+            $this->flashSuccess('asset.success.created');
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
@@ -409,7 +422,7 @@ class AssetController extends AbstractController
                 $this->workflowAutoProgressionService->checkAndProgressWorkflow($asset, $currentUser);
             }
 
-            $this->addFlash('success', $this->translator->trans('asset.success.updated'));
+            $this->flashSuccess('asset.success.updated');
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
@@ -455,7 +468,7 @@ class AssetController extends AbstractController
             $this->entityManager->remove($asset);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('asset.success.deleted'));
+            $this->flashSuccess('asset.success.deleted');
         }
 
         return $this->redirectToRoute('app_asset_index');

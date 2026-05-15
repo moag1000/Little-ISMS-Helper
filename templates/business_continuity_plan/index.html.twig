@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bc_plans' %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'bc_plans.page.title'|trans({}, 'bc_plans') }}{% endblock %}
 
@@ -121,12 +122,17 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-            {% include '_components/_empty_state.html.twig' with {
-                icon: 'bi-shield-check',
-                title: 'bc_plans.message.no_plans'|trans({}, 'bc_plans'),
-                description: 'bc_plans.message.create_first'|trans({}, 'bc_plans'),
-                action: { label: 'bc_plans.action.add_new'|trans({}, 'bc_plans'), url: path('app_bc_plan_new'), icon: 'bi-plus-circle' }
-            } %}
+            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+            {{ _fa_empty_state.render({
+                mood: 'thinking',
+                title: 'bc_plans.empty.title'|trans({}, 'bc_plans'),
+                text: 'bc_plans.empty.body'|trans({}, 'bc_plans'),
+                norm_ref: 'ISO 22301 Klausel 8.4 · ISO 27001 A.5.30',
+                actions: [
+                    { label: 'bc_plans.action.create_first'|trans({}, 'bc_plans'), variant: 'primary', icon: 'plus-circle', href: path('app_bc_plan_new') }
+                ],
+                help_link: 'bc_plans.help.empty_link'|trans({}, 'bc_plans')
+            }) }}
             {% endif %}
         {% endblock %}
     {% endembed %}

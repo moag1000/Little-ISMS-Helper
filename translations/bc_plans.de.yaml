@@ -5,6 +5,10 @@ bc_plans:
     subtitle: ISO 22301:2019 Business Continuity Management
   action:
     add_new: Neuen BC‑Plan anlegen
+    create_first: Ersten BC‑Plan anlegen
+  empty:
+    title: Noch keine Business-Continuity-Pläne hinterlegt
+    body: 'BC-Pläne sichern die Wiederanlauffähigkeit kritischer Geschäftsprozesse. Pro Prozess dokumentieren Sie Aktivierungskriterien, Wiederanlaufverfahren, Team und Kommunikationsplan — Voraussetzung für ISO 22301 §8.4.'
   alert:
     overdue_tests: ⚠️ Überfällige BC‑Plan‑Tests
     overdue_reviews: ⚠️ Überfällige BC‑Plan‑Reviews
@@ -80,6 +84,7 @@ bc_plans:
     create_first: Erstellen Sie Ihren ersten BC‑Plan
     readiness_score: 'Bereitschafts‑Score: %score%%'
   help:
+    empty_link: /de/help/glossary#glossary-bc-plan
     name: Eindeutige Bezeichnung des BC-Plans
     business_process: Geschäftsprozess, der durch diesen Plan geschützt wird (ISO
       22301)

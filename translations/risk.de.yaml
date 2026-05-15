@@ -1,5 +1,9 @@
 risk:
   not_found: 'Risiko nicht gefunden.'
+  success:
+    created: 'Risiko wurde angelegt.'
+    updated: 'Risiko wurde aktualisiert.'
+    deleted: 'Risiko wurde gelöscht.'
   prefill:
     title_from_vulnerability: 'Risiko aus Schwachstelle: %title%'
     title_from_incident: 'Risiko aus Vorfall: %title%'
@@ -12,10 +16,10 @@ risk:
     owner_placeholder: Suche nach Owner...
     level_label: Risikolevel
     all_risks: Alle Risiken
-    level_critical: Kritisch (15-25)
-    level_high: Hoch (8-14)
-    level_medium: Mittel (4-7)
-    level_low: Niedrig (1-3)
+    level_critical: Kritisch
+    level_high: Hoch
+    level_medium: Mittel
+    level_low: Niedrig
     status_label: Status
     all_status: Alle Status
     status_identified: Identifiziert
@@ -33,10 +37,10 @@ risk:
     at_risk: Gefährdete Assets
   index:
     risk_level:
-      critical: Kritisch (20-25)
-      high: Hoch (12-19)
-      medium: Mittel (6-11)
-      low: Niedrig (1-5)
+      critical: Kritisch
+      high: Hoch
+      medium: Mittel
+      low: Niedrig
     treatment_status: Behandlungsstatus
     treatment:
       mitigate: Mindern
@@ -371,10 +375,10 @@ risk:
     probability: Eintrittswahrscheinlichkeit ↑
     legend_title: Risikostufen
     level:
-      critical: Kritisch (20-25)
-      high: Hoch (10-19)
-      medium: Mittel (5-9)
-      low: Niedrig (1-4)
+      critical: Kritisch
+      high: Hoch
+      medium: Mittel
+      low: Niedrig
       minor: Geringfügig
     risks_total: 'Risiken gesamt'
     cell_title: 'Wahrscheinlichkeit: %probability% | Auswirkung: %impact%'
@@ -403,6 +407,16 @@ risk:
       automatic: Automatische Genehmigung
       manager: Manager-Genehmigung erforderlich
       executive: Geschäftsführungs-Genehmigung erforderlich
+    error:
+      wrong_strategy: 'Risikoakzeptanz ist nur für Risiken mit Behandlungsstrategie „Akzeptieren" möglich.'
+      already_accepted: 'Dieses Risiko wurde bereits formal akzeptiert.'
+      justification_required: 'Begründung ist erforderlich (ISO 27005:2022 Kl. 8.4.4).'
+      reason_required: 'Ablehnungsgrund ist erforderlich.'
+    success:
+      auto_accepted: 'Risiko wurde automatisch akzeptiert (unterhalb des Genehmigungs-Schwellwerts).'
+      approval_requested: 'Akzeptanzantrag eingereicht. Genehmigung erforderlich durch %approver% (Stufe: %level%).'
+      approved: 'Risikoakzeptanz wurde genehmigt.'
+      rejected: 'Risikoakzeptanz wurde abgelehnt.'
   residual_assessment: Restrisiko-Bewertung
   status:
     open: Offen

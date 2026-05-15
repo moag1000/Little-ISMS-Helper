@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\BusinessProcess;
 use App\Form\BusinessProcessType;
 use App\Repository\BusinessProcessRepository;
+use App\Controller\Trait\LocalizedFlashTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -18,12 +19,24 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BusinessProcessController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly BusinessProcessRepository $businessProcessRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security
     ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'business_process';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
     #[Route('/bcm/business-process/', name: 'app_business_process_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
@@ -131,7 +144,7 @@ class BusinessProcessController extends AbstractController
             $this->entityManager->persist($businessProcess);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('business_process.success.created'));
+            $this->flashSuccess('business_process.success.created');
             return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -210,7 +223,7 @@ class BusinessProcessController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            $this->addFlash('success', $translator->trans('business_process.success.updated'));
+            $this->flashSuccess('business_process.success.updated');
             return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -226,7 +239,7 @@ class BusinessProcessController extends AbstractController
             $entityManager->remove($businessProcess);
             $entityManager->flush();
 
-            $this->addFlash('success', $translator->trans('business_process.success.deleted'));
+            $this->flashSuccess('business_process.success.deleted');
         }
 
         return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);

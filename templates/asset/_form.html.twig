@@ -82,10 +82,11 @@
         </div>
 
         <div class="col-md-6">
+            {# Field renamed from 'location' to 'physicalLocation' in AssetType — template synced to FormType. #}
             {% include '_components/_form_field.html.twig' with {
-                'field': form.location,
+                'field': form.physicalLocation,
                 'label_key': 'asset.field.location',
-                'help_key': 'asset.help.location',
+                'help_key': 'asset.help.physical_location',
                 'translation_domain': 'assets'
             } %}
         </div>
@@ -100,7 +101,7 @@
     </legend>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.acquisitionValue,
                 'label_key': 'asset.field.acquisition_value',
@@ -110,7 +111,7 @@
             } %}
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.currentValue,
                 'label_key': 'asset.field.current_value',
@@ -120,15 +121,7 @@
             } %}
         </div>
 
-        <div class="col-md-4">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.monetaryValue,
-                'label_key': 'asset.field.monetary_value',
-                'help_key': 'asset.help.monetary_value',
-                'tooltip_key': 'asset.tooltip.monetary_value',
-                'translation_domain': 'asset'
-            } %}
-        </div>
+        {# monetaryValue removed from AssetType form (Junior-Finding #9) — redundant to acquisitionValue + currentValue. DB column preserved for BC. #}
     </div>
 </fieldset>
 

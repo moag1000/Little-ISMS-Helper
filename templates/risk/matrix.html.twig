@@ -40,8 +40,9 @@
                             <div class="isms-risk-matrix__hd-y">{{ impact }}</div>
                             {% for probability in 1..5 %}
                                 {% set score = probability * impact %}
-                                {# 5-Tier Mapping: Cell-Level 1..5 entsprechend Score-Bändern (5*5=25 max) #}
-                                {% set level = score >= 20 ? 5 : (score >= 12 ? 4 : (score >= 8 ? 3 : (score >= 4 ? 2 : 1))) %}
+                                {# 4-Tier Mapping aligned with App\Risk\RiskMatrixThresholds (SSoT, ISO 27001 Cl. 6.1.2 b).
+                                   data-level 2..5 retained for CSS heat-map coloring continuity (low/medium/high/critical). #}
+                                {% set level = score >= 20 ? 5 : (score >= 12 ? 4 : (score >= 6 ? 3 : 2)) %}
                                 <div class="isms-risk-cell"
                                      data-level="{{ level }}"
                                      data-probability="{{ probability }}"
@@ -58,11 +59,10 @@
                     <div class="isms-risk-matrix__x-label">{{ 'risk.matrix.probability'|trans({}, 'risk') }}</div>
 
                     <div class="isms-risk-legend">
-                        <span class="isms-risk-legend__chip" data-level="1">{{ 'risk.matrix.level.low'|trans({}, 'risk') }}</span>
-                        <span class="isms-risk-legend__chip" data-level="2">{{ 'risk.matrix.level.minor'|trans({'%fallback%': 'Gering'}, 'risk') }}</span>
-                        <span class="isms-risk-legend__chip" data-level="3">{{ 'risk.matrix.level.medium'|trans({}, 'risk') }}</span>
-                        <span class="isms-risk-legend__chip" data-level="4">{{ 'risk.matrix.level.high'|trans({}, 'risk') }}</span>
-                        <span class="isms-risk-legend__chip" data-level="5">{{ 'risk.matrix.level.critical'|trans({}, 'risk') }}</span>
+                        <span class="isms-risk-legend__chip" data-level="2">{{ 'risk.matrix.level.low'|trans({}, 'risk') }} ({{ risk_threshold('low') }})</span>
+                        <span class="isms-risk-legend__chip" data-level="3">{{ 'risk.matrix.level.medium'|trans({}, 'risk') }} ({{ risk_threshold('medium') }})</span>
+                        <span class="isms-risk-legend__chip" data-level="4">{{ 'risk.matrix.level.high'|trans({}, 'risk') }} ({{ risk_threshold('high') }})</span>
+                        <span class="isms-risk-legend__chip" data-level="5">{{ 'risk.matrix.level.critical'|trans({}, 'risk') }} ({{ risk_threshold('critical') }})</span>
                         <span class="ms-auto fa-mono fa-text-muted small">{{ risks|length }} {{ 'risk.matrix.risks_total'|trans({}, 'risk') }}</span>
                     </div>
                 </div>

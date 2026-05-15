@@ -87,6 +87,7 @@ business_process:
     process_owner_user: Prozesseigentümer aus der Benutzerverwaltung.
     process_owner_person: 'Person ohne System-Login als Prozessverantwortlichen wählen. Reihenfolge der Anzeige in Listen&#58; User &gt; Person &gt; Legacy-Freitext.'
     process_owner_deputies: 'Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.'
+    empty_link: /de/help/glossary#glossary-bia
   tooltip:
     criticality: <strong>Geschäftskritikalität (ISO 22301)</strong><br><table class="table
       table-sm table-borderless mb-0 mt-1"><tr><td><strong>Niedrig</strong></td><td>Ausfall
@@ -129,8 +130,10 @@ business_process:
     title: Noch keine Geschäftsprozesse vorhanden
     description: Erstellen Sie Ihren ersten Geschäftsprozess, um mit der Business-Impact-Analyse
       zu beginnen.
+    body: 'Geschäftsprozesse bilden das Rückgrat der BIA (Business-Impact-Analyse) und der BC-Pläne. Erfassen Sie hier alle wertschöpfenden Prozesse mit RTO, RPO, MTPD und Kritikalität — Voraussetzung für ISO 22301 §8.2.2.'
   action:
     create: Prozess erstellen
+    create_first: Ersten Geschäftsprozess anlegen
   impact_level:
     very_low: Sehr niedrig
     low: Niedrig
