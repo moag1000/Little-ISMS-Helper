@@ -93,8 +93,14 @@
                     {% for party in interested_parties %}
                     <tr>
                         <td><a href="{{ path('app_interested_party_show', {id: party.id}) }}">{{ party.name }}</a></td>
-                        <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: party.partyType } %}</td>
-                        <td>{% include '_components/_badge.html.twig' with { variant: party.importance == 'high' ? 'warning' : (party.importance == 'low' ? 'success' : 'info'), content: party.importance|upper } %}</td>
+                        {% set importance_variant = {
+                            critical: 'danger',
+                            high: 'warning',
+                            medium: 'primary',
+                            low: 'success'
+                        }[party.importance]|default('neutral') %}
+                        <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('interested_party.party_type.' ~ party.partyType)|trans({}, 'interested_parties') } %}</td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: importance_variant, content: ('interested_party.importance.' ~ party.importance)|trans({}, 'interested_parties') } %}</td>
                         <td>{{ party.getEngagementScore() }}</td>
                         <td>{{ party.lastCommunication ? party.lastCommunication|date('Y-m-d') : ('interested_party.never'|trans({}, 'interested_parties')) }}</td>
                         <td>
