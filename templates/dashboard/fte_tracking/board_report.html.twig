@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'fte_tracking' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'fte_tracking.report.title'|trans({}, 'fte_tracking') }} {{ month_label }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="fa-aurora-surface">
+
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dashboard'|trans({}, 'nav'), url: path('app_dashboard', {_locale: app.request.locale}) },
+            { label: 'fte_tracking.dashboard.title'|trans({}, 'fte_tracking'), url: path('analytics_fte_index', {_locale: app.request.locale}) },
+            { label: 'fte_tracking.report.breadcrumb'|trans({}, 'fte_tracking') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'file-earmark-bar-graph', label: 'fte_tracking.report.badge'|trans({}, 'fte_tracking') },
+        title: 'fte_tracking.report.title'|trans({}, 'fte_tracking') ~ ' — ' ~ month_label,
+        subtitle: 'fte_tracking.report.subtitle'|trans({}, 'fte_tracking'),
+        actions: [
+            { label: 'fte_tracking.action.download_pdf'|trans({}, 'fte_tracking'), variant: 'primary', icon: 'file-pdf', href: app.request.uri ~ '&format=pdf' },
+            { label: 'fte_tracking.action.download_csv'|trans({}, 'fte_tracking'), variant: 'ghost', icon: 'filetype-csv', href: app.request.uri ~ '&format=csv' }
+        ]
+    }) }}
+
+    {# Summary #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <div class="display-4 fw-bold text-success">{{ totals.savings_hours }} h</div>
+                    <div class="text-muted">{{ 'fte_tracking.report.total_saved_hours'|trans({}, 'fte_tracking') }}</div>
+                    <div class="text-muted small mt-1">({{ totals.savings_minutes }} {{ 'fte_tracking.report.minutes'|trans({}, 'fte_tracking') }})</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">{{ 'fte_tracking.report.generated_info'|trans({}, 'fte_tracking') }}</h6>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{{ 'fte_tracking.report.tenant'|trans({}, 'fte_tracking') }}</dt>
+                        <dd class="col-sm-8">{{ tenant.name ?? '—' }}</dd>
+                        <dt class="col-sm-4">{{ 'fte_tracking.report.period'|trans({}, 'fte_tracking') }}</dt>
+                        <dd class="col-sm-8">{{ month_label }}</dd>
+                        <dt class="col-sm-4">{{ 'fte_tracking.report.generated_at'|trans({}, 'fte_tracking') }}</dt>
+                        <dd class="col-sm-8">{{ generated_at|date('Y-m-d H:i') }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# By Source Breakdown #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">{{ 'fte_tracking.report.by_source'|trans({}, 'fte_tracking') }}</h5>
+        </div>
+        <div class="card-body p-0">
+            {% if by_source|length > 0 %}
+            <table class="table mb-0" aria-label="{{ 'fte_tracking.report.by_source'|trans({}, 'fte_tracking') }}">
+                <thead>
+                    <tr>
+                        <th>{{ 'fte_tracking.table.source'|trans({}, 'fte_tracking') }}</th>
+                        <th class="text-end">{{ 'fte_tracking.table.savings_minutes'|trans({}, 'fte_tracking') }}</th>
+                        <th class="text-end">{{ 'fte_tracking.table.savings_hours'|trans({}, 'fte_tracking') }}</th>
+                        <th class="text-end">%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set total = totals.savings_minutes %}
+                    {% for source, minutes in by_source %}
+                    <tr>
+                        <td>{{ ('fte_tracking.source.' ~ source)|trans({}, 'fte_tracking') }}</td>
+                        <td class="text-end">{{ minutes }}</td>
+                        <td class="text-end">{{ (minutes / 60)|number_format(1) }}</td>
+                        <td class="text-end">
+                            {% if total > 0 %}
+                                {{ ((minutes / total) * 100)|number_format(1) }}%
+                            {% else %}—{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="p-4 text-center text-muted">{{ 'fte_tracking.empty.no_data'|trans({}, 'fte_tracking') }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Monthly Trend #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">{{ 'fte_tracking.report.trend_12m'|trans({}, 'fte_tracking') }}</h5>
+        </div>
+        <div class="card-body p-0">
+            {% if monthly_trend|length > 0 %}
+            <table class="table mb-0" aria-label="{{ 'fte_tracking.report.trend_12m'|trans({}, 'fte_tracking') }}">
+                <thead>
+                    <tr>
+                        <th>{{ 'fte_tracking.table.month'|trans({}, 'fte_tracking') }}</th>
+                        <th class="text-end">{{ 'fte_tracking.table.savings_minutes'|trans({}, 'fte_tracking') }}</th>
+                        <th class="text-end">{{ 'fte_tracking.table.savings_hours'|trans({}, 'fte_tracking') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for monthKey, minutes in monthly_trend %}
+                    <tr>
+                        <td>{{ monthKey }}</td>
+                        <td class="text-end">{{ minutes }}</td>
+                        <td class="text-end">{{ (minutes / 60)|number_format(1) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="p-4 text-center text-muted">{{ 'fte_tracking.empty.no_data'|trans({}, 'fte_tracking') }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="text-muted small text-center mt-4">
+        {{ 'fte_tracking.report.disclaimer'|trans({}, 'fte_tracking') }}
+    </div>
+
+</div>
+{% endblock %}

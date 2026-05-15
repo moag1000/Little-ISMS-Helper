@@ -51,6 +51,10 @@ class AuditLogger
     public const string ACTION_DORA_ROI_EXPORTED  = 'dora.roi.exported';
     public const string ACTION_DORA_ROI_SUBMITTED = 'dora.roi.submitted';
 
+    // F11 FTE-Tracking audit events (Sprint 9A)
+    public const string ACTION_FTE_METRIC_RECORDED     = 'fte.metric.recorded';     // low-priority telemetry
+    public const string ACTION_FTE_CALIBRATION_CHANGED = 'fte.calibration.changed'; // high-priority admin action
+
     // SSO-specific audit events (Wave 2) — used by SsoEventLogger
     public const string ACTION_SSO_LOGIN_SUCCESS       = 'sso.login.success';
     public const string ACTION_SSO_LOGIN_FAILURE       = 'sso.login.failure';
@@ -58,6 +62,11 @@ class AuditLogger
     public const string ACTION_SSO_ROLE_CHANGED        = 'sso.role.changed';
     public const string ACTION_SSO_CONFIG_CHANGED      = 'sso.config.changed';
     public const string ACTION_SSO_ENFORCEMENT_CHANGED = 'sso.enforcement.changed';
+
+    // Risk-Incident cross-link audit events (Sprint 9B — F16)
+    public const string ACTION_RISK_INCIDENT_LINKED                  = 'risk_incident.linked';
+    public const string ACTION_RISK_INCIDENT_UNLINKED                = 'risk_incident.unlinked';
+    public const string ACTION_RISK_REVIEW_SUGGESTED_FROM_INCIDENT   = 'risk_incident.review_suggested';
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

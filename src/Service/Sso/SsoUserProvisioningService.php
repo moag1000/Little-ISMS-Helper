@@ -8,6 +8,7 @@ use App\Entity\IdentityProvider;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
+use App\Service\Fte\FteRecorderService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -29,6 +30,7 @@ class SsoUserProvisioningService
         private readonly LoggerInterface $logger,
         private readonly ClaimToRoleResolver $claimResolver,
         private readonly SsoEventLogger $ssoEventLogger,
+        private readonly FteRecorderService $fteRecorder,
     ) {
     }
 
@@ -82,6 +84,7 @@ class SsoUserProvisioningService
         $this->em->flush();
 
         $this->ssoEventLogger->logJitProvisioned($provider, $user, $email);
+        $this->fteRecorder->recordSsoJit($user); // F11 FTE-Tracking
         $this->logger->info('SSO JIT: provisioned new user', ['email' => $email, 'provider' => $provider->getSlug()]);
 
         return $user;

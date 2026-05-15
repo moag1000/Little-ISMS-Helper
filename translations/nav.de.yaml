@@ -4,6 +4,7 @@ nav:
     my_profile: 'Mein Profil'
     context: 'ISMS Kontext'
     analytics: Analytics
+    fte_tracking: 'FTE-Tracking'
     interested_parties: 'Interessierte Parteien'
     soa: SoA
     assets: Assets
@@ -149,6 +150,7 @@ nav:
             home: 'Übersicht und Schnellzugriff'
             dashboard: 'Wichtige Kennzahlen und Einblicke'
             analytics: 'Berichte und Analysen'
+            fte_tracking: 'FTE-Einsparungen durch SSO-JIT, Bulk-Import und Evidence-Wiederverwendung'
             context: 'Organisationskontext und Anwendungsbereich'
             interested_parties: 'Stakeholder und Anforderungen'
             soa: 'Anwendbarkeitserklärung (ISO 27001 Anhang A)'

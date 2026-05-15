@@ -7,6 +7,7 @@ namespace App\Service\Evidence;
 use App\Entity\Document;
 use App\Entity\Tenant;
 use App\Repository\ControlRepository;
+use App\Service\Fte\FteRecorderService;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -23,6 +24,7 @@ class DocumentReuseAnalyticsService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ControlRepository $controlRepository,
+        private readonly ?FteRecorderService $fteRecorder = null,
     ) {}
 
     /**
@@ -45,6 +47,11 @@ class DocumentReuseAnalyticsService
         }
         if ($frameworkCount > 0) {
             $parts[] = $frameworkCount . ' framework' . ($frameworkCount !== 1 ? 's' : '');
+        }
+
+        // F11 FTE-Tracking: record reuse savings when document spans ≥ 2 frameworks
+        if ($frameworkCount >= 2 && $this->fteRecorder !== null) {
+            $this->fteRecorder->recordEvidenceReuse($document, $frameworkCount);
         }
 
         return [

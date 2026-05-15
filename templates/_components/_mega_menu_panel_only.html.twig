@@ -36,6 +36,15 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {% if is_module_active('analytics') and is_granted('ROLE_MANAGER') %}
+                        <li><a href="{{ path('analytics_fte_index', {_locale: app.request.locale}) }}" class="{% if current_route starts with 'analytics_fte_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-clock-history" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.fte_tracking'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.fte_tracking'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                         {% if is_granted('ROLE_AUDITOR') %}
                         <li><a href="{{ path('app_management_reports') }}" class="{% if current_route starts with 'app_management_reports' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i>
