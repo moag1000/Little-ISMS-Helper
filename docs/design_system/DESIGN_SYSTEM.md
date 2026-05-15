@@ -27,22 +27,28 @@ Reihenfolge zählt: **Bootstrap zuerst**, Aurora-Tokens danach (überschreiben `
 
 | Token | Light | Dark | Verwendung |
 |---|---|---|---|
-| `--bg` | `#f6f4ef` | `#0a0e1a` | Page-Background |
-| `--surface` | `#ffffff` | `#131826` | Cards, Modals |
-| `--surface-2` | `#f0eee9` | `#1a2030` | Hover, Sub-Panels |
-| `--fg` | `#0f172a` | `#e2e8f0` | Body-Text |
-| `--fg-2` | `#475569` | `#94a3b8` | Secondary-Text |
-| `--fg-3` | `#94a3b8` | `#64748b` | Muted, Hints |
-| `--border` | `#e5e7eb` | `#1f2937` | Borders |
-| `--primary` | `#0369a1` | `#22d3ee` | Links, CTAs, Info |
-| `--primary-strong` | `#075985` | `#67e8f9` | Hover-State |
-| `--accent` | `#a855f7` | `#a78bfa` | Alva, Highlights |
-| `--success` | `#10b981` | `#34d399` | Compliant, OK |
-| `--warning` | `#f59e0b` | `#fbbf24` | Review, Pending |
-| `--danger` | `#ef4444` | `#f87171` | Critical, Failed |
+| `--bg` | `#f5f6fa` | `#0a0e1a` | Page-Background |
+| `--surface` | `#ffffff` | `#141829` | Cards, Modals |
+| `--surface-2` | `#eef0f9` | `#1e2139` | Hover, Sub-Panels |
+| `--surface-3` | `#e5e8f4` | `#282d48` | Tertiary-Surfaces |
+| `--fg` | `#1e1b4b` | `#e9eaf5` | Body-Text |
+| `--fg-2` | `#4c4a73` | `#b9bad4` | Secondary-Text |
+| `--fg-3` | `#6d6b92` | `#6d6f99` | Muted, Hints |
+| `--border` | `#dfe3f0` | `#232845` | Borders |
+| `--border-strong` | `#b9bfd6` | `#3d4270` | Strong Borders, Outlines |
+| `--primary` | `#0284c7` | `#38bdf8` | Links, CTAs, Info, Brand |
+| `--primary-strong` | `#0369a1` | `#38bdf8` | Hover-State, Body-Text auf Surface |
+| `--accent` | `#7c3aed` | `#a78bfa` | Alva, ✦-Signal, Highlights |
+| `--accent-strong` | `#6d28d9` | `#a78bfa` | Accent-Hover, Button-BG |
+| `--success` | `#059669` | `#34d399` | Compliant, OK |
+| `--warning` | `#d97706` | `#fbbf24` | Review, Pending |
+| `--danger` | `#dc2626` | `#f87171` | Critical, Failed |
 
 Tints (`--*-tint`), Glows (`--*-glow`) und On-Colors (`--on-*`) sind je Token definiert.
 **Niemals** Hex direkt schreiben — immer Token nutzen.
+
+> **D01 / D02 / D03:** Marke ist **Sky + Violett**. Pink ist gestrichen — das ✦-Signal (Automation, Auto-Fill, Suggestion) trägt jetzt `var(--accent)`.
+> Legacy-Aliase (`--cyber-cyan`, `--cyber-pink`, `--bg-1/2/3`) leben in `colors_and_type.css` und lösen auf Aurora-Tokens auf (D08).
 
 ---
 
@@ -57,7 +63,17 @@ Tints (`--*-tint`), Glows (`--*-glow`) und On-Colors (`--on-*`) sind je Token de
 | Body | 15 / 1.55 | 400 | Default |
 | `.fa-mono` / `code` | 13 / 1.5 | 500 | Code, Tokens, IDs |
 
-Stack: `--font-sans: "Inter", system-ui` · `--font-mono: "JetBrains Mono", ui-monospace`.
+**Stack** (D07 — Inter primär, Space Grotesk als Geometric-Sans-Fallback gegen Form-Reflow):
+
+```
+--font-sans: "Inter", "Space Grotesk", system-ui,
+             -apple-system, BlinkMacSystemFont, "Segoe UI",
+             Roboto, "Helvetica Neue", Arial, sans-serif;
+--font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular,
+             Menlo, Consolas, monospace;
+```
+
+Inter und JetBrains Mono werden self-hosted unter `/fonts/`. Space Grotesk: Google Fonts über HTML-`<link>` (Self-Host als nächster Schritt).
 
 ---
 
@@ -71,19 +87,41 @@ Stack: `--font-sans: "Inter", system-ui` · `--font-mono: "JetBrains Mono", ui-m
 Bootstrap-Utilities funktionieren analog: `m-2 = 8px`, `p-3 = 16px`, `gap-3 = 16px`.
 **Nichts dazwischen.** Wenn 12px nötig sind, frag dich, ob 8px oder 16px reichen.
 
+> **D05:** `--spacing-*` ist Canon (in `fairy-aurora.css`). `--space-*` aus `colors_and_type.css` bleibt als `@deprecated`-Alias erhalten.
+
 ---
 
 ## 5. Radius & Shadow
 
 ```
---r-sm: 6px    --r-md: 10px    --r-lg: 14px    --r-xl: 20px    --r-pill: 999px
+--r-xs: 3px    --r-sm: 5px    --r-md: 6px
+--r-lg: 8px    --r-xl: 12px   --r-2xl: 16px   --r-pill: 999px
 
---shadow-sm: 0 1px 3px rgba(0,0,0,0.05)
---shadow-md: 0 4px 12px rgba(0,0,0,0.08)
---shadow-lg: 0 8px 24px rgba(0,0,0,0.10)
+--shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.08)
+--shadow-md: 0 4px 8px rgba(15, 23, 42, 0.12)
+--shadow-lg: 0 8px 16px rgba(15, 23, 42, 0.16)
 ```
 
-Dark-Mode-Shadows haben zusätzlichen Cyan-Glow (`+ 0 0 12px rgba(56,189,248,0.15)`).
+Default-Card-Radius = `--r-lg` (8px). Dark-Mode-Shadows bekommen einen subtilen Cyan-Glow on top.
+
+> **D04:** 7 Stufen, enger gestaffelt als die alte 4/8/12er-Skala. Legacy `--radius-sm/--radius/--radius-lg/--radius-pill` sind Aliase auf `--r-sm/--r-lg/--r-xl/--r-pill`.
+
+---
+
+## 5.1 Motion / Timing
+
+```
+--t-instant: 80ms     /* Hover-Tints, Focus-Rings */
+--t-fast:    120ms    /* Button-Press, Tabs */
+--t-base:    240ms    /* Standard — Default-Transition */
+--t-slow:    360ms    /* Modals, Drawer-Slide */
+--t-magic:   600ms    /* Aurora-Loops, ✦-Sparkle, Fairy-Animationen */
+
+--ease-out:    cubic-bezier(0.16, 1, 0.3, 1)
+--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1)
+```
+
+> **D06:** 5 Stufen statt 3. `--t-normal` lebt als `@deprecated`-Alias auf `--t-base` weiter.
 
 ---
 
@@ -358,9 +396,11 @@ Alle Templates wrappen `<DetailTemplate id title eyebrow actions toolbar>` mit B
 
 ## 7. Iconography — `.fa-icon`
 
-**77 ISMS-Domain-Icons** als CSS-Mask, einfärbbar via `currentColor`. Stil: Outline 1.4, monochrom.
+**116 ISMS-/UI-Icons** als CSS-Mask, einfärbbar via `currentColor`. Stil: Outline 1.4, monochrom.
 
-> Aktualisiert: **190 Icons** (77 Domain + 113 weitere — Compliance, Frameworks, Entities, Status, Persona-Dashboards, Alva-Inbox). Vollständige Gallery: [`design-system.html#icons-gallery`](design-system.html#icons-gallery).
+> **Update Mai 2026:** Gate&nbsp;11 hat 64 fehlende Icons aus den Templates aufgedeckt —
+> 39 davon als neue SVGs ergänzt (Quick-Wins, Stepper-Digits, ISMS-Kompositionen), 46 als Aliase
+> auf bestehende Geometrien gemappt. Vollständige Galerie: [`design-system.html#icons-gallery`](design-system.html#icons-gallery) · Phase-Reviews: [`/decisions/icons-inventory.html`](../decisions/icons-inventory.html).
 
 ```html
 <i class="fa-icon fa-icon--audit-trail"></i>                       <!-- 1em (Default) -->
@@ -371,20 +411,26 @@ Alle Templates wrappen `<DetailTemplate id title eyebrow actions toolbar>` mit B
 **Größen:** `--16` `--20` `--24` `--32` `--48` (sonst `1em`).
 **Farben:** `--success` `--warning` `--danger` `--info` `--muted` `--primary` (Status-Icons haben RAG-Defaults).
 
-**9 Kategorien · 77 Icons:**
+**13 Kategorien:**
 
 | Kategorie | Icons |
 |---|---|
-| Compliance | `compliance-shield` `regulator` `certificate` `attestation` `scope-statement` `soa` `gap-analysis` `control` |
+| Compliance | `compliance-shield` `regulator` `certificate` `attestation` `scope-statement` `soa` `gap-analysis` `control` `control-shield` |
 | Audit | `audit-trail` `finding` `evidence` `sign-off` `review` `sample` `nonconformity` `corrective-action` `audit-internal` `audit-external` |
 | Risk | `risk-score` `threat` `vulnerability` `mitigation` `likelihood` `impact` `residual-risk` `risk-register` `heatmap` `risk-accept` |
 | Assets | `asset-server` `asset-database` `asset-cloud` `asset-endpoint` `asset-network` `asset-iot` `asset-ot` `asset-application` `data-personal` `data-confidential` |
-| Identity | `user` `role` `mfa` `privileged` `sso` `group` `permission` |
-| Policies | `policy` `sop` `contract` `nda` `version` `approval` `attachment` `archive` |
-| Incident | `incident` `breach` `escalation` `recovery` `forensics` `root-cause` |
+| Identity | `user` `role` `mfa` `privileged` `sso` `group` `permission` `ui-key` |
+| Policies | `policy` `sop` `contract` `nda` `version` `approval` `attachment` `archive` `document-history` |
+| Incident | `incident` `breach` `escalation` `recovery` `forensics` `root-cause` `status-fire` |
 | Awareness | `training` `phishing-test` `learning-path` `awareness-stat` |
-| Status | `status-ok` `status-warning` `status-critical` `status-info` `status-pending` `status-archived` |
-| Actions | `approve` `reject` `assign` `delegate` `export` `import` `schedule` `filter` |
+| Status | `status-ok` `status-warning` `status-critical` `status-error` `status-info` `status-pending` `status-archived` `status-fire` |
+| **UI · Actions** | `ui-launch` `ui-camera` `ui-upload` `ui-undo` `ui-checklist` `ui-checklist-multi` `ui-files` `ui-chat` `ui-phone` `ui-file-person` `ui-circle` `ui-key` |
+| **Nav · Module** | `nav-database` `nav-speedometer` `nav-shield-check` `nav-shield-lock` `nav-palette` `nav-envelope` `nav-archive` `nav-calendar` `nav-truck` `nav-building-shield` `nav-file-earmark-text` `nav-file-earmark-spreadsheet` |
+| **Util · Stepper & Files** | `util-1-circle` `util-2-circle` `util-3-circle` `util-4-circle` `util-filetype-json` `util-filetype-csv` `util-bug` `util-geo` |
+| Actions | `approve` `reject` `assign` `delegate` `export` `import` `schedule` `filter` `play` `pause` |
+
+**Flat-Namespace-Aliase** (kurze Klassen für häufige Standalone-Icons):
+`bell` · `send` · `grid` · `link` · `download` · `documents` · `assets` · `clock` · `trash` · `save` · `edit` · `plus` · `check` · `shield-check` · `cpu` · `fire` — alle als <code>fa-icon--&lt;name&gt;</code>.
 
 **Framework-Lockup** (Hybrid Schild + Mono-Kürzel):
 ```html
@@ -470,10 +516,15 @@ Drei Modi: `light` · `dark` · `system`. Jedes Token hat Light- und Dark-Werte 
 |---|---|
 | `.fairy-*` | `.fa-*` |
 | `--pink` / `--cyan` | `--accent` / `--primary` |
+| `--cyber-cyan` / `--cyber-pink` | `--primary` / `--accent` (Aliase, @deprecated) |
+| `--space-md` | `--spacing-md` (Alias, @deprecated) |
+| `--radius` | `--r-lg` (Alias, @deprecated) |
+| `--t-normal` | `--t-base` (Alias, @deprecated) |
 | `.fairy-helper` (4 Moods) | `.fa-alva` (9 Moods) |
 | `data-theme="auto"` | `data-theme="system"` |
 
 Vollständig: [`FAIRY_AURORA_MIGRATION.md`](FAIRY_AURORA_MIGRATION.md).
+12 Token-Layer-Entscheidungen aus Mai 2026: [`/decisions/index.html`](../decisions/index.html).
 
 ---
 
@@ -481,20 +532,22 @@ Vollständig: [`FAIRY_AURORA_MIGRATION.md`](FAIRY_AURORA_MIGRATION.md).
 
 | Pfad | Zweck |
 |---|---|
-| `assets/styles/fairy-aurora.css` | Tokens-Source-of-Truth |
+| `assets/styles/fairy-aurora.css` | **Tokens-Canon** — Source-of-Truth |
 | `assets/styles/fairy-aurora-components.css` | Alle `.fa-*`-Komponenten |
 | `assets/styles/fairy-aurora-edge.css` | Edge-Components (filter-state-chip, stepper, dropdown-panel, banner, …) |
 | `assets/styles/fairy-aurora-icons.css` | 190 Icon-Mask-Klassen + Framework-Lockup |
-| `assets/icons/*.svg` | 77 Icon-Source-Files (24×24 Outline 1.4) |
+| `colors_and_type.css` | Deprecation-Bridge — Legacy-Aliase auf Aurora |
+| `assets/tokens.jsx` | JS-Tokens (D12) — `useTokens()`-Hook + Legacy `window.T` |
+| `assets/icons/*.svg` | 116 Icon-Source-Files (24×24 Outline 1.4) |
 | `templates/form/fa_cyber_input.html.twig` | Symfony Form-Theme |
 | `states/FairyCharacter.jsx` | React-Companion (9 Moods, Tokens-Props) |
 | `docs/design-system.html` | Interaktive Doku (mit Icon-Gallery + Admin-Panel) |
-| `docs/admin-panel.css` | `.fa-admin-*` Components (Hub-Card, Perm-Matrix, Audit-Row, API-Key, Svc-Tile) |
-| `docs/sections/admin-panel.html` | Admin-Panel-Section-Partial (in DS-Loader) |
+| `admin/aurora-canon.css` | Admin-spezifische Tokens (gescoped auf `.admin-panel`, D10) |
 | `admin/Admin Panel.html` | Live-Prototype (Hub + Detail-Templates) |
 | `docs/FAIRY_AURORA_MIGRATION.md` | Migration v3 → v4 |
 | `docs/FAIRY_AURORA_v4_ROADMAP.md` | Roadmap |
 | `docs/DESIGN_SYSTEM.md` | Diese Datei |
+| `decisions/index.html` | Token-Layer-Decisions (Mai 2026, alle approved) |
 
 ---
 
