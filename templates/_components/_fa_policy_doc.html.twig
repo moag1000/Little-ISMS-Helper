@@ -60,9 +60,15 @@
         'retired':  'Archiviert',
     }[_status_class]|default('') %}
 
+    {# data-theme="light" forces the Aurora light-palette tokens inside the
+       preview wrapper so it always renders as a white-paper document
+       regardless of the active app theme. Policy documents are print
+       artifacts (WYSIWYG preview); dark-mode is intentionally suppressed
+       here. The PDF export is unaffected (dompdf ignores data-theme). #}
     <article class="policy-doc policy-doc--{{ _status_class }}"
              data-policy-id="{{ document is defined and document is not null ? document.id : '' }}"
              data-policy-status="{{ _status_class }}"
+             data-theme="light"
              {% if _watermark %}data-watermark="{{ _watermark }}"{% endif %}>
 
         {# ── Slot 1 · Cover ──────────────────────────────────────── #}

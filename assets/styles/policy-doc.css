@@ -16,6 +16,45 @@
    draft/in-review/retired.
    ═══════════════════════════════════════════════════════════════════ */
 
+/* ── Light-theme pin — WYSIWYG print preview ─────────────────────── */
+/*
+ * Policy documents are print artifacts designed for white paper.
+ * The preview ALWAYS shows the light-paper appearance regardless of
+ * the active app theme (dark / system) so What-You-See matches the
+ * printed PDF output.
+ *
+ * Aurora token overrides are scoped to .policy-doc so nothing outside
+ * the preview element is affected. The [data-theme="light"] attribute
+ * on the <article> element also prevents future Aurora component rules
+ * targeting [data-theme="dark"] descendants from bleeding in.
+ *
+ * --fg-1 is intentionally defined here because Aurora's token layer
+ * does not declare --fg-1 — policy-doc.css was the sole consumer of
+ * that alias. In dark-mode --surface resolves to #141829 (near-black)
+ * while the hardcoded #0e0a1f fallback for --fg-1 is also near-black,
+ * producing invisible text. Pinning both tokens here fixes the bug for
+ * all colour-scheme modes without touching the shared Aurora palette.
+ */
+.policy-doc {
+    /* Light-paper token pin — always active, overrides dark-mode cascade */
+    --surface:     #ffffff;
+    --surface-2:   #f6f6fa;
+    --border:      #dfe3f0;
+    --border-strong: #b9bfd6;
+    --fg-1:        #0e0a1f;
+    --fg-2:        #2a2540;
+    --fg-3:        #5e5878;
+    --primary:     #0284c7;
+    --primary-tint: rgba(2, 132, 199, 0.08);
+    --success:     #059669;
+    --success-tint: rgba(5, 150, 105, 0.10);
+    --warning:     #d97706;
+    --warning-tint: rgba(217, 119, 6, 0.10);
+    --danger:      #dc2626;
+    --danger-tint:  rgba(220, 38, 38, 0.10);
+    color-scheme:  light;
+}
+
 /* ── Article shell ────────────────────────────────────────────────── */
 .policy-doc {
     background: var(--surface, #fff);
