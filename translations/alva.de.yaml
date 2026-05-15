@@ -103,6 +103,22 @@ crisis_team:
         body_never: 'Bisher kein Training dokumentiert. BSI 200-4 Kap. 4.2 / ISO 22301 Cl. 7.2 fordern regelmäßige Übungen.'
         action: 'Tabletop-Übung planen'
 
+training:
+    mandatory_audience:
+        title: 'Pflichttraining ohne Teilnehmer-Liste'
+        body: 'Dieses Training ist als Pflicht markiert (ISO 27001 A.6.3 Awareness), aber bisher sind keine Pflichtteilnehmer ausgewählt. Damit der Awareness-Nachweis im Audit greift, sollte die Audience explizit zugewiesen werden.'
+        action: 'Pflichtteilnehmer auswählen'
+        picker_title: 'Pflichtteilnehmer auswählen'
+        picker_subtitle: 'Wähle die Mitarbeitenden, die dieses Pflichttraining absolvieren müssen. Schon zugewiesene Personen sind grau hinterlegt.'
+        picker_breadcrumb: 'Audience-Auswahl'
+        picker_section_title: 'Verfügbare Nutzer im Mandanten'
+        no_candidates: 'Keine aktiven Nutzer in diesem Mandanten gefunden.'
+        filter_placeholder: 'Nach E-Mail oder Name suchen…'
+        already_assigned: 'Bereits zugewiesen'
+        save: 'Audience speichern'
+        flash_saved: '%count% neue Pflichtteilnehmer zugewiesen.'
+        flash_not_mandatory: 'Training ist nicht als Pflicht markiert — Audience-Picker übersprungen.'
+
 risk:
     no_treatment:
         title: 'Hohes Risiko ohne Treatment-Plan'
