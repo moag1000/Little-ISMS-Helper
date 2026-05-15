@@ -114,6 +114,10 @@ incident:
         title: 'Incident without risk-treatment plan'
         body: 'High-severity incident on a high-CIA asset without a documented treatment plan. ISO 27001 A.5.27 — lessons learned.'
         action: 'Create treatment plan'
+    requires_data_breach:
+        title: 'GDPR Art. 33 — document data breach (72h deadline)'
+        body: 'This incident is flagged as a data breach, but no linked data-breach record exists. GDPR Art. 33 requires notification to the supervisory authority within 72h of becoming aware. Missing the deadline = fines up to 10 M€ / 2% group turnover (Art. 83(4)(a)).'
+        action: 'Create data breach (prefilled)'
 
 policy_wizard:
     settings_drift:
