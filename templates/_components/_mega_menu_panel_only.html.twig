@@ -304,6 +304,22 @@
                             </div>
                         </a></li>
                         {% endif %}
+                        {% if is_module_active('bcm') and is_granted('ROLE_MANAGER') %}
+                        <li><a href="{{ path('bcm_exercise_log_index') }}" class="{% if current_route starts with 'bcm_exercise_log_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--clipboard-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.exercise_log_desc'|trans({}, 'bsi_200_4_exercise') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('bcm_exercise_log_calendar') }}" class="{% if current_route == 'bcm_exercise_log_calendar' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.exercise_log_calendar'|trans({}, 'bsi_200_4_exercise') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.calendar_desc'|trans({}, 'bsi_200_4_exercise') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

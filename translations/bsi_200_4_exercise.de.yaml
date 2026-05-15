@@ -1,16 +1,105 @@
-# Translation skeleton for bsi_200_4_exercise
-# Sprint 0 Task 0.1 — empty skeleton with standard sections.
-# Keys to be filled during feature implementation.
+# BSI-Standard 200-4 Übungs-Logbuch — DE
+# Domain: bsi_200_4_exercise
+# Sprint 10B — F27
 
-bsi_200_4_exercise:
-  nav:
-    title: ''
-  page:
-    title: ''
-    subtitle: ''
-  field: {}
-  error: {}
-  help: {}
-  audit: {}
-  success: {}
-  warning: {}
+exercise_type:
+    tabletop: Planspielbesprechung (Tabletop)
+    walkthrough: Schritt-für-Schritt-Durchlauf (Walkthrough)
+    simulation: Simulation
+    full_scale: Vollübung (Full-Scale)
+    crisis_team_call: Krisenteamgespräch
+    technical_recovery: Technische Wiederherstellungsübung
+
+template:
+    simple: Einfach (BSI-Basistemplate)
+    standard: Standard (BSI-Standardtemplate)
+    comprehensive: Umfassend (BSI-Volltemplate)
+
+rating:
+    poor: Mangelhaft
+    fair: Ausreichend
+    good: Gut
+    excellent: Sehr gut
+
+field:
+    exercise_type: Übungstyp
+    template: BSI-200-4-Vorlage
+    scenario_summary: Szenario-Zusammenfassung
+    objectives: Übungsziele
+    objectives_placeholder: 'Jedes Ziel in eine neue Zeile'
+    objectives_help: 'Ein Ziel pro Zeile. Beispiel: "RTO von 4 Stunden einhalten"'
+    participants: Teilnehmer
+    participants_placeholder: 'Namen durch Komma trennen'
+    lessons_learned: Lessons Learned
+    overall_rating: Gesamtbewertung
+    rating_placeholder: '— Bewertung wählen —'
+    improvement_action_description: Maßnahmenbeschreibung
+    improvement_action_owner: Verantwortlicher (Benutzer-ID)
+    improvement_action_due_date: Fälligkeitsdatum
+    improvement_action_completed: Abgeschlossen
+    owner_user_id_placeholder: 'Benutzer-ID (optional)'
+
+section:
+    actions_before: Maßnahmen vor der Übung
+    actions_during: Maßnahmen während der Übung
+    actions_after: Maßnahmen nach der Übung
+    improvement_actions: Verbesserungsmaßnahmen
+
+action:
+    created: 'BSI-200-4 Übungs-Logbuch erfolgreich erstellt.'
+    saved: 'Übungs-Logbuch gespeichert.'
+    submitted: 'Übungs-Logbuch erfolgreich eingereicht.'
+    confirmed: 'Übungs-Logbuch durch Auditor bestätigt.'
+
+error:
+    log_already_exists: 'Für diese Übung existiert bereits ein Logbuch.'
+    invalid_token: 'Ungültiges CSRF-Token. Bitte Seite neu laden.'
+    not_submitted: 'Das Logbuch muss zuerst eingereicht werden.'
+    already_confirmed: 'Das Logbuch wurde bereits bestätigt.'
+
+nav:
+    exercise_log: BSI-200-4 Übungs-Logbuch
+    exercise_log_calendar: Übungsplan-Kalender
+    exercise_log_desc: 'Strukturiertes Logbuch gemäß BSI-Standard 200-4 §9.4'
+    calendar_desc: '12-Monats-Vorausblick auf geplante BCM-Übungen'
+
+page:
+    index_title: BSI-200-4 Übungs-Logbuch
+    index_subtitle: 'Alle Übungslogbücher nach BSI-Standard 200-4'
+    new_title: 'Neues Übungs-Logbuch erstellen'
+    edit_title: 'Übungs-Logbuch bearbeiten'
+    show_title: 'Übungs-Logbuch'
+    calendar_title: 'BCM-Übungsplan-Kalender'
+    calendar_subtitle: '12-Monats-Vorausblick'
+
+status:
+    draft: Entwurf
+    submitted: Eingereicht
+    confirmed: Bestätigt
+
+table:
+    header_exercise: Übung
+    header_type: Typ
+    header_template: Vorlage
+    header_status: Status
+    header_submitted: Eingereicht am
+    header_confirmed: Bestätigt am
+    header_rating: Bewertung
+    header_actions: Aktionen
+
+empty_state:
+    title: 'Noch keine Logbücher vorhanden'
+    body: 'Erstellen Sie das erste BSI-200-4-Übungslogbuch für eine abgeschlossene Übung.'
+    action: 'Übung auswählen'
+
+calendar:
+    no_exercises: 'Keine Übungen in den nächsten 12 Monaten geplant.'
+    exercises_planned: '%count% Übung(en) geplant'
+    log_exists: Logbuch vorhanden
+    log_missing: Logbuch fehlt
+
+alva:
+    improvement_action_overdue:
+        title: 'BSI-200-4: Verbesserungsmaßnahmen überfällig'
+        body: '%count% Verbesserungsmaßnahme(n) aus %log_count% Übungslogbuch/-büchern sind überfällig. BSI 200-4 §9.4 erfordert termingerechte Umsetzung.'
+        action: 'Logbücher anzeigen'
