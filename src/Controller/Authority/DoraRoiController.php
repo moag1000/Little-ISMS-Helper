@@ -64,6 +64,16 @@ class DoraRoiController extends AbstractController
             throw $this->createNotFoundException('No tenant context available.');
         }
 
+        // Tenant-level DORA gate: non-DORA-obligated tenants cannot access DORA RoI.
+        if (!$tenant->isDoraObligated()) {
+            $this->addFlash('info', $this->translator->trans(
+                'dora.not_applicable_to_tenant',
+                [],
+                'eu_authorities'
+            ));
+            return $this->redirectToRoute('app_dashboard');
+        }
+
         $submissions = $this->roiRepository->findAllForTenant($tenant);
         $currentYear = $this->roiRepository->findCurrentYearForTenant($tenant);
 
@@ -87,6 +97,15 @@ class DoraRoiController extends AbstractController
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
             throw $this->createNotFoundException('No tenant context available.');
+        }
+
+        if (!$tenant->isDoraObligated()) {
+            $this->addFlash('info', $this->translator->trans(
+                'dora.not_applicable_to_tenant',
+                [],
+                'eu_authorities'
+            ));
+            return $this->redirectToRoute('app_dashboard');
         }
 
         // Create a dummy record for voter check (tenant-isolated, not yet persisted)
@@ -154,6 +173,15 @@ class DoraRoiController extends AbstractController
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
             throw $this->createNotFoundException('No tenant context available.');
+        }
+
+        if (!$tenant->isDoraObligated()) {
+            $this->addFlash('info', $this->translator->trans(
+                'dora.not_applicable_to_tenant',
+                [],
+                'eu_authorities'
+            ));
+            return $this->redirectToRoute('app_dashboard');
         }
 
         $record = $this->roiRepository->find($id);

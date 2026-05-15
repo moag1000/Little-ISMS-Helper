@@ -151,6 +151,9 @@ compliance_manager:
         open_findings: 'Open Findings'
         upcoming_audits: 'Audits 90d'
         approval_queue: 'Doc Approval Queue'
+        dora_roi_status: 'DORA RoI status'
+        dora_roi_status_open: 'Pending'
+        dora_roi_open: 'Open RoI'
     section:
         coverage_heatmap: 'Coverage heatmap by framework'
         lowest_coverage: 'Top 3 frameworks with lowest coverage'
@@ -158,6 +161,7 @@ compliance_manager:
         audit_schedule: 'Audit schedule (next 90 days)'
         approval_queue: 'Document approval queue'
         quick_actions: 'Quick actions'
+        dora_status: 'DORA obligation status'
     table:
         framework: 'Framework'
         coverage: 'Coverage'
@@ -281,11 +285,15 @@ dpo:
         activities_needing_dpia: 'Activities Without DPIA'
         activities_due_review: 'Activities Due Review'
         third_country_transfers: 'Third-Country Transfers'
+        dora_obligation: 'DORA obligation'
+        dora_obligated: 'Obligated'
+        dora_roi_link: 'Open RoI'
     section:
         open_breaches: 'Open Data Breaches (Art. 33 GDPR)'
         dpias_in_progress: 'Data Protection Impact Assessments in Progress (Art. 35 GDPR)'
         activities_needing_dpia: 'Processing Activities Without DPIA'
         quick_actions: 'Quick Actions'
+        dora_status: 'DORA obligation status'
     empty:
         no_breaches_title: 'No Open Data Breaches'
         no_breaches_text: 'There are currently no open data breaches to handle.'

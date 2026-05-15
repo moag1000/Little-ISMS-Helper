@@ -47,6 +47,7 @@ management_review:
     field:
         basic_info: 'Basisinformationen'
         tenant: 'Organisation'
+        dora_obligation: 'DORA-Verpflichtungsstatus'
         generated_at: 'Erstellt am'
         title: Titel
         review_date: Bewertungsdatum
@@ -181,3 +182,7 @@ management_review:
         help: 'Spart 30 Min Aggregations-Arbeit: Risiken, Audit-Findings, KPIs, Treatment-Plans und Verbesserungspotenziale werden vorbefüllt — Sie editieren und finalisieren.'
         cta: 'Vorbefüllt erstellen'
         success: 'Management-Review wurde aus §9.3-Datenquellen vorbefüllt. Bitte prüfen und ergänzen.'
+    dora_category:
+        none: 'Nicht DORA-pflichtig'
+        financial_entity: 'Finanzunternehmen (DORA Art. 2 Abs. 2)'
+        critical_ict_third_party: 'Kritischer IKT-Drittanbieter (CTPP, DORA Art. 31)'

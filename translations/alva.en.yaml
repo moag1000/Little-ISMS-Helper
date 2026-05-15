@@ -270,6 +270,10 @@ alva_hint:
         title: 'DORA RoI Not Yet Submitted'
         body: 'The DORA Register of Information for %year% has not yet been submitted to the supervisory authority (DORA Art. 28). Deadline: 31 Dec %year%.'
         action: 'Open DORA RoI'
+    dora_category_unset:
+        title: 'DORA Obligation Status Not Set — Contradiction Detected'
+        body: '%count% supplier(s)/asset(s) are marked as DORA-relevant, but this tenant is not classified as DORA-obligated. Please review the DORA obligation status in Tenant Settings.'
+        action: 'Open Tenant Settings'
     risks_linked_to_open_incidents:
         title: 'Open Incidents Hold Risk Pressure — Review Recommended'
         body: '%count% risk(s) have been linked to open incidents for more than 30 days. Resolving these incidents reduces the actual risk exposure and keeps your risk register accurate.'

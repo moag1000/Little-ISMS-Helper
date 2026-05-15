@@ -5,6 +5,7 @@ dora:
     # General
     not_installed: "DORA-Framework ist nicht installiert. Falls Ihre Organisation DORA unterliegt, laden Sie bitte das Framework von der Compliance-Frameworks-Seite."
     not_active: "DORA-Framework ist deaktiviert. Dies bedeutet, dass DORA für Ihre Organisation nicht relevant ist. Aktivieren Sie es bei Bedarf in den Compliance-Frameworks."
+    not_applicable_to_tenant: "DORA ist für diesen Mandanten nicht einschlägig. Setzen Sie den DORA-Verpflichtungsstatus unter Mandanten-Einstellungen, wenn Ihre Organisation DORA-pflichtig ist."
 
     # Dashboard
     dashboard:

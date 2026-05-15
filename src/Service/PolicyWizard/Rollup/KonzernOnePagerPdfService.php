@@ -213,8 +213,7 @@ SVG;
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $output = $dompdf->output();
-        return $output ?? '';
+        return $dompdf->output();
     }
 
     private function resolveAppVersion(): string

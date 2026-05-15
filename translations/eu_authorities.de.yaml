@@ -205,6 +205,8 @@ eu_authorities:
             confirmation_required: 'Bestätigungsnummer ist Pflichtfeld.'
         success:
             submitted: 'DORA RoI als eingereicht markiert. Bestätigungsnummer: %number%'
+        info:
+            not_applicable_to_tenant: 'DORA ist für diesen Mandanten nicht einschlägig. Setzen Sie den DORA-Verpflichtungsstatus unter Mandanten-Einstellungen.'
         alva:
             overdue_authority_report:
                 title: 'EU-Behörden-Meldung überfällig'

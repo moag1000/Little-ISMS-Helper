@@ -414,7 +414,7 @@ class MyDayAggregator
                 'entity_type' => 'audit_finding',
                 'tone'        => $tone,
                 'title'       => (string) $finding->getTitle(),
-                'subtitle'    => sprintf('%s · %s', $finding->getType() ?? '—', $severity ?? '—'),
+                'subtitle'    => sprintf('%s · %s', $finding->getType() ?? '—', $severity),
                 'badge'       => $finding->getStatus(),
             ];
         }

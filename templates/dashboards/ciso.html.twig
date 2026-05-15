@@ -252,8 +252,8 @@
         </div>
     </div>
 
-    {# DORA Compliance Section (conditionally shown) #}
-    {% if dashboard.dora_kpis is defined and dashboard.dora_kpis is not empty %}
+    {# DORA Compliance Section — only for DORA-obligated tenants #}
+    {% if is_dora_obligated() and dashboard.dora_kpis is defined and dashboard.dora_kpis is not empty %}
     <div class="row g-4 mt-2">
         <div class="col-12">
             {% embed '_components/_card.html.twig' %}

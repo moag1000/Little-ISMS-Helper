@@ -5,6 +5,7 @@ dora:
     # General
     not_installed: "DORA framework is not installed. If your organization is subject to DORA, please load the framework from the compliance frameworks page."
     not_active: "DORA framework is deactivated. This indicates that DORA is not relevant for your organization. Activate it in compliance frameworks if needed."
+    not_applicable_to_tenant: "DORA does not apply to this tenant. Set the DORA obligation status under Tenant Settings if your organisation is subject to DORA."
 
     # Dashboard
     dashboard:
