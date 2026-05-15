@@ -46,12 +46,12 @@
                                 </a>
                                 <a href="{{ path('app_authority_notification_breach_json', {_locale: app.request.locale, breachId: breach.id, authorityKey: 'bfdi'}) }}"
                                    class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-filetype-json {# TODO: design Aurora fa-icon--util-filetype-json #} {# TODO: design Aurora fa-icon--filetype-json #} me-1"></i>
+                                    <i class="fa-icon fa-icon--util-filetype-json me-1" aria-hidden="true"></i>
                                     {{ 'authority.action.export_json'|trans({}, 'eu_authorities') }}
                                 </a>
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-geo-alt {# TODO: design Aurora fa-icon--util-geo #} {# TODO: design Aurora fa-icon--geo-alt #} me-1"></i>
+                                        <i class="fa-icon fa-icon--util-geo me-1" aria-hidden="true"></i>
                                         {{ 'authority.section.lfdi_export'|trans({}, 'eu_authorities') }}
                                     </button>
                                     <ul class="dropdown-menu">
@@ -83,7 +83,7 @@
         {# ── Incident (BSI-Meldestelle) exports ─────────────────────────────── #}
         {% if incidents|length > 0 %}
         <section class="mb-5">
-            <h5 class="mb-3"><i class="bi bi-fire {# TODO: design Aurora fa-icon--status-fire #} {# TODO: design Aurora fa-icon--fire #} me-1 text-warning"></i> {{ 'authority.section.incidents'|trans({}, 'eu_authorities') }}</h5>
+            <h5 class="mb-3"><i class="fa-icon fa-icon--status-fire fa-icon--warning me-1" aria-hidden="true"></i> {{ 'authority.section.incidents'|trans({}, 'eu_authorities') }}</h5>
             <div class="table-responsive">
                 <table class="table table-sm table-hover align-middle">
                     <thead>

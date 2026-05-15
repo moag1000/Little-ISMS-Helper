@@ -51,11 +51,11 @@
                         title="{{ framework.name }}: {{ cluster.label }} — {{ cell.rate is not null ? (cell.rate * 100)|number_format(0) ~ '%' : 'N/A' }}"
                         aria-label="{{ framework.name }}, {{ cluster.label }}: {{ cell.status }}">
                         {% if cell.status == 'green' %}
-                            <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-ok fa-icon--success" aria-hidden="true"></i>
                         {% elseif cell.status == 'amber' %}
-                            <i class="bi bi-exclamation-circle-fill text-warning" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning fa-icon--warning" aria-hidden="true"></i>
                         {% elseif cell.status == 'red' %}
-                            <i class="bi bi-x-circle-fill text-danger" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-critical fa-icon--danger" aria-hidden="true"></i>
                         {% else %}
                             <span class="text-muted" aria-hidden="true">—</span>
                         {% endif %}
