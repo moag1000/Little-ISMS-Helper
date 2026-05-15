@@ -330,6 +330,27 @@ Erstes Item ist immer "Alle" (leerer Wert). Nutzt Enum-Klasse oder Werte-Liste a
 ### Mode-Switch · Toggle-Card · Step-Header · Check-Row · Sparkline · Flash · Aurora-Surface · Typewriter
 Vollständige Live-Beispiele und HTML-Templates: [`design-system.html`](design-system.html#mode-switch). Alle nutzen `.fa-*`-Klassen aus `fairy-aurora-components.css`.
 
+### Geplante Macros (Macro-Roadmap · 11 + 1 Erweiterung)
+
+Die folgende Tabelle listet alle Macros aus den `SOLUTIONS_FOUNDATION.md`-Sprints, die **noch nicht in `templates/_components/`** existieren. Sektion-Anker in `docs/design_system/sections/*.html` sind bereits vorhanden — Solutions-Sprints implementieren als nächstes die Twig-Macros.
+
+| Macro | Use-Case | DS-Sektion-Anker | Status |
+|---|---|---|---|
+| `_fa_owner_picker` (R1) | Compound-Type-Wrapper User + Person + Deputies; Stimulus-Combobox; baut über `_fa_person_picker` | `components.html#fa-cyber-input` (nahe Person-Picker) | 🚧 geplant |
+| `_fa_status_chip` (R2) | Lifecycle-aware Status-Pill mit Transition-Tooltip aus `LifecycleRegistry` | `entity-patterns.html#status-chip` | 🚧 geplant |
+| `_fa_deadline_counter` (R3) | Live-SLA-Counter mit Aurora-Tone-Wechsel nach Restzeit-Schwellen | `isms-patterns.html#deadline-counter` | 🚧 geplant |
+| `_fa_norm_bridge` (R4) | 9001/14001-Brücke-Tooltip-Akzent unter Field-Label | `components.html#norm-bridge` | 🚧 geplant |
+| `_fa_severity_choice` (R5) | ChoiceType-Wrapper mit Hover-Tooltip pro Severity-Stufe | `components.html#severity-choice` | 🚧 geplant |
+| `_fa_team_role_builder` (R6) | JSON-Repeater · 5 ISO-22301-Rollen × Person × Notiz | `isms-patterns.html#bc-team-patterns` | 🚧 geplant |
+| `_fa_resource_list` (R7) | Personnel/Equipment/Supplies-Tabs mit Add-Chips | `isms-patterns.html#resource-list` | 🚧 geplant |
+| `_fa_escalation_chain` (R8) | Eskalations-Stepper mit Trigger / Responder / EscalateAfter | `isms-patterns.html#bc-team-patterns` | 🚧 geplant |
+| `_fa_success_criteria` (R9) | BC-Exercise-Erfolgs-Tabelle (Kriterium/Soll/Ist/Erfüllt) mit RTO-Prefill | `isms-patterns.html#success-criteria` | 🚧 geplant |
+| `_fa_entity_picker` (R10) | TomSelect-Wrapper mit Empty-State + Quick-Create-CTA | `components.html#entity-picker` | 🚧 geplant |
+| `_fa_subcontractor_chain` (R11) | DORA-Tree-Builder für Supplier-Subkontraktoren-Hierarchie | `isms-patterns.html#subcontractor-chain` | 🚧 geplant |
+| `_bulk_action_bar` · `custom_actions`-Prop | Entity-spezifische Bulk-Operationen (z.B. SoA `mark_applicable`) additiv zur Standard-Action-Liste | `feedback-systems.html#bulk-actions-custom` | 🚧 geplant (Macro-Erweiterung) |
+
+Status-Legende: 🚧 geplant · 🟡 in Arbeit (PR open) · 🟢 verfügbar in `templates/_components/`.
+
 ---
 
 ## 6.1 Admin Panel
@@ -463,6 +484,54 @@ Frameworks: ISO 27001/27002/9001/22301 · BSI IT-Grundschutz · BAIT · VAIT · 
 | `celebrating` | ISO-Cert · Milestone | 110 |
 
 **Always `aria-hidden="true"`.** Alvas Aussage steht parallel im Alert-Text oder Empty-State-Title.
+
+**Mood-Whitelist (geschlossen).** Nur die 9 oben gelisteten Moods werden vom Renderer
+unterstützt. Nicht-gelistete Werte (`pointing`, `curious`, `excited`, …) fallen silently auf
+`idle` zurück — keine Konsolen-Warnung. Bei jedem Hint / Empty-State / Hero: explizit aus der
+Whitelist auswählen.
+
+---
+
+## 8.5 AlvaHint — DTO mit Tier + Variant (separat!)
+
+Die `App\AlvaHint\AlvaHint`-Klasse (`src/AlvaHint/AlvaHint.php`) ist die Single-Source-of-Truth für jeden Alva-Hint, der im UI als Aurora-Card erscheint. Wichtigste Klarstellung: **`priorityTier` und `variant` sind zwei separate Properties.** Tier beschreibt den Schweregrad, Variant den Aurora-Tone.
+
+| Property | Typ | Werte | Bedeutung |
+|---|---|---|---|
+| `priorityTier` | `int` | `1` · `2` · `3` | Constructor wirft bei anderen Werten `InvalidArgumentException`. |
+| `variant` | `string` | `info` · `warning` · `danger` · `success` | Aurora-Tone für das Card-Rendering (analog `_fa_alert`). |
+| `dismissible` | `bool` | `true` / `false` | **Tier 1 erzwingt `false`** — Constructor blockt sonst. |
+| `mood` | `string` | aus der 9-Mood-Whitelist | Default `'thinking'`. Werte außerhalb der Whitelist fallen auf `idle` zurück. |
+
+### Tier ↔ Variant-Mapping (Default-Konvention)
+
+| Tier | Bedeutung | Default-Variant | Dismissible | Aurora-Frame |
+|---|---|---|---|---|
+| **1** | Pflicht · regulatory (DSGVO 72h, abgelaufene CAPA) | `danger` (oder `warning`) | **erzwungen `false`** | roter Aurora-Frame · `--danger` |
+| **2** | Audit-Gap · warn (fehlender Owner, fehlende Severity-Definition) | `warning` | erlaubt | orange Aurora-Frame · `--warning` |
+| **3** | Efficiency-Tipp · info (Bulk-Import-Suggestion, Workflow-Hinweis) | `info` (oder `success`) | erlaubt | neutral · `--primary` |
+
+### Beispiel
+
+```php
+// Tier 1 · Regulatory · zwingt dismissible=false
+new AlvaHint(
+    key:                  'data_breach.deadline_72h',
+    titleTranslationKey:  'alva.hint.data_breach.title',
+    bodyTranslationKey:   'alva.hint.data_breach.body',
+    variant:              'danger',     // Aurora-Tone
+    priorityTier:         1,             // Schweregrad
+    dismissible:          false,         // Tier-1 erzwingt false
+    mood:                 'warning',     // aus Whitelist
+    entityType:           'DataBreach',
+);
+```
+
+**Anti-Pattern (A10):** Tier als String (`'high'`, `'medium'`) übergeben oder Variant aus Tier ableiten. Beide bleiben **explizit und unabhängig**.
+
+Renderer: `templates/_components/_fa_alva_hint.html.twig`. Telemetrie: render+dismiss-Events via `AlvaHintTelemetry`-Service.
+
+Vollständige Doku in `docs/design_system/sections/alva.html#alva-hint-dto`.
 
 ---
 
