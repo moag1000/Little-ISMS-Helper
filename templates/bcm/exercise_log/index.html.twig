@@ -53,22 +53,25 @@
     {% else %}
         <div class="card">
             <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
+                {% embed '_components/_fa_table.html.twig' with {
+                    id: 'exercise-log-list-table',
+                    class: 'mb-0'
+                } %}
+                    {% block table_head %}
                         <tr>
-                            <th>{{ 'table.header_exercise'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th>{{ 'table.header_type'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th>{{ 'table.header_template'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th>{{ 'table.header_status'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th>{{ 'table.header_rating'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th>{{ 'table.header_submitted'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th>{{ 'table.header_actions'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'table.header_exercise'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'table.header_type'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'table.header_template'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'table.header_status'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'table.header_rating'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'table.header_submitted'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'table.header_actions'|trans({}, 'bsi_200_4_exercise') }}</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                    {% for log in logs %}
-                        <tr>
-                            <td>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for log in logs %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell">
                                 <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="fw-semibold text-decoration-none">
                                     {{ log.bcExercise.name ?? '—' }}
                                 </a>
@@ -78,11 +81,11 @@
                                     </span>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td class="fa-table__cell">
                                 <span class="badge bg-secondary">{{ ('exercise_type.' ~ log.exerciseType)|trans({}, 'bsi_200_4_exercise') }}</span>
                             </td>
-                            <td>{{ ('template.' ~ log.bsi2004Template)|trans({}, 'bsi_200_4_exercise') }}</td>
-                            <td>
+                            <td class="fa-table__cell">{{ ('template.' ~ log.bsi2004Template)|trans({}, 'bsi_200_4_exercise') }}</td>
+                            <td class="fa-table__cell">
                                 {% if log.isConfirmed %}
                                     <span class="badge bg-success">{{ 'status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
                                 {% elseif log.isSubmitted %}
@@ -91,13 +94,13 @@
                                     <span class="badge bg-light text-muted border">{{ 'status.draft'|trans({}, 'bsi_200_4_exercise') }}</span>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td class="fa-table__cell">
                                 {% if log.overallRating %}
                                     {{ ('rating.' ~ log.overallRating)|trans({}, 'bsi_200_4_exercise') }}
                                 {% else %}—{% endif %}
                             </td>
-                            <td>{{ log.submittedAt ? log.submittedAt|date('d.m.Y') : '—' }}</td>
-                            <td>
+                            <td class="fa-table__cell">{{ log.submittedAt ? log.submittedAt|date('d.m.Y') : '—' }}</td>
+                            <td class="fa-table__cell fa-table__cell--actions">
                                 <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="btn btn-sm btn-outline-secondary">
                                     <i class="fa-icon fa-icon--action-view" aria-hidden="true"></i>
                                 </a>
@@ -108,9 +111,9 @@
                                 {% endif %}
                             </td>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     {% endif %}

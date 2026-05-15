@@ -118,20 +118,23 @@
                 {% endif %}
             </div>
             <div class="card-body p-0">
-                <table class="table mb-0">
-                    <thead class="table-light">
+                {% embed '_components/_fa_table.html.twig' with {
+                    id: 'improvement-actions-table',
+                    class: 'mb-0'
+                } %}
+                    {% block table_head %}
                         <tr>
-                            <th>{{ 'field.improvement_action_description'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th>{{ 'field.improvement_action_due_date'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th>{{ 'field.improvement_action_completed'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'field.improvement_action_description'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'field.improvement_action_due_date'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'field.improvement_action_completed'|trans({}, 'bsi_200_4_exercise') }}</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                    {% for action in log.improvementActions %}
-                        <tr class="{% if not action.completed|default(false) and action.due_date|default('') and action.due_date < 'now'|date('Y-m-d') %}table-warning{% endif %}">
-                            <td>{{ action.description ?? '—' }}</td>
-                            <td>{{ action.due_date ?? '—' }}</td>
-                            <td>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for action in log.improvementActions %}
+                        <tr class="fa-table__row{% if not action.completed|default(false) and action.due_date|default('') and action.due_date < 'now'|date('Y-m-d') %} table-warning{% endif %}">
+                            <td class="fa-table__cell">{{ action.description ?? '—' }}</td>
+                            <td class="fa-table__cell">{{ action.due_date ?? '—' }}</td>
+                            <td class="fa-table__cell">
                                 {% if action.completed|default(false) %}
                                     <i class="fa-icon fa-icon--status-ok text-success" aria-hidden="true"></i>
                                 {% else %}
@@ -139,9 +142,9 @@
                                 {% endif %}
                             </td>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     </div>
