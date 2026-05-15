@@ -133,9 +133,9 @@ class ScheduledTaskServiceTest extends TestCase
 
         $this->entityManager->expects($this->once())->method('flush');
 
-        $result = $this->service->updateTask($task, cronExpression: '0 12 * * *'); // Noon — avoids midnight collision near 23:45–00:00
+        $result = $this->service->updateTask($task, cronExpression: '0 3 * * *'); // 3am — avoids midnight and noon CI-time collisions
 
-        $this->assertSame('0 12 * * *', $result->getCronExpression());
+        $this->assertSame('0 3 * * *', $result->getCronExpression());
         // Next run should be recalculated
         $this->assertNotEquals($originalNextRun, $result->getNextRunAt());
     }

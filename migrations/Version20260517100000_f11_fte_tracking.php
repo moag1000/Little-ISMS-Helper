@@ -49,7 +49,7 @@ final class Version20260517100000_f11_fte_tracking extends AbstractMigration
                 metadata                 JSON DEFAULT NULL,
                 PRIMARY KEY (id),
                 INDEX idx_fte_tenant_recorded (tenant_id, recorded_at),
-                CONSTRAINT fk_fte_metric_tenant FOREIGN KEY (tenant_id) REFERENCES tenants (id) ON DELETE CASCADE
+                CONSTRAINT fk_fte_metric_tenant FOREIGN KEY (tenant_id) REFERENCES tenant (id) ON DELETE CASCADE
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB
         SQL);
 
@@ -64,7 +64,7 @@ final class Version20260517100000_f11_fte_tracking extends AbstractMigration
                 last_updated_at       DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)',
                 PRIMARY KEY (id),
                 UNIQUE KEY uniq_fte_tenant_op (tenant_id, operation_type),
-                CONSTRAINT fk_fte_calib_tenant FOREIGN KEY (tenant_id) REFERENCES tenants (id) ON DELETE CASCADE,
+                CONSTRAINT fk_fte_calib_tenant FOREIGN KEY (tenant_id) REFERENCES tenant (id) ON DELETE CASCADE,
                 CONSTRAINT fk_fte_calib_user   FOREIGN KEY (last_updated_by_id) REFERENCES users (id) ON DELETE SET NULL
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB
         SQL);
