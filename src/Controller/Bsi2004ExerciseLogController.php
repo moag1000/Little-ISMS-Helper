@@ -53,7 +53,7 @@ class Bsi2004ExerciseLogController extends AbstractController
             return $redirect;
         }
 
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
         $logs = $tenant !== null
             ? $this->logRepository->findByTenant($tenant)
             : [];
@@ -263,7 +263,7 @@ class Bsi2004ExerciseLogController extends AbstractController
             return $redirect;
         }
 
-        $tenant = $this->tenantContext->getTenant();
+        $tenant = $this->tenantContext->getCurrentTenant();
 
         // Load BCExercises scheduled within the next 12 months
         $now  = new \DateTime();

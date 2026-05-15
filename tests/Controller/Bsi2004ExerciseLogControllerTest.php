@@ -88,7 +88,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     #[Test]
     public function indexRequiresAuth(): void
     {
-        $this->client->request('GET', '/bcm/exercise-log');
+        $this->client->request('GET', '/de/bcm/exercise-log');
         $this->assertResponseRedirects();
     }
 
@@ -96,7 +96,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     public function indexRendersForManager(): void
     {
         $this->loginAs($this->manager);
-        $this->client->request('GET', '/bcm/exercise-log');
+        $this->client->request('GET', '/de/bcm/exercise-log');
         $this->assertResponseIsSuccessful();
     }
 
@@ -104,7 +104,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     public function newPageRendersForManager(): void
     {
         $this->loginAs($this->manager);
-        $this->client->request('GET', '/bcm/exercise-log/new/' . $this->exercise->getId());
+        $this->client->request('GET', '/de/bcm/exercise-log/new/' . $this->exercise->getId());
         $this->assertResponseIsSuccessful();
     }
 
@@ -112,7 +112,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     public function newPageReturns404ForUnknownExercise(): void
     {
         $this->loginAs($this->manager);
-        $this->client->request('GET', '/bcm/exercise-log/new/999999');
+        $this->client->request('GET', '/de/bcm/exercise-log/new/999999');
         $this->assertResponseStatusCodeSame(404);
     }
 
@@ -120,7 +120,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     public function showRendersForManager(): void
     {
         $this->loginAs($this->manager);
-        $this->client->request('GET', '/bcm/exercise-log/' . $this->log->getId());
+        $this->client->request('GET', '/de/bcm/exercise-log/' . $this->log->getId());
         $this->assertResponseIsSuccessful();
     }
 
@@ -128,7 +128,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     public function editRendersForManager(): void
     {
         $this->loginAs($this->manager);
-        $this->client->request('GET', '/bcm/exercise-log/' . $this->log->getId() . '/edit');
+        $this->client->request('GET', '/de/bcm/exercise-log/' . $this->log->getId() . '/edit');
         $this->assertResponseIsSuccessful();
     }
 
@@ -136,7 +136,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     public function calendarRendersForManager(): void
     {
         $this->loginAs($this->manager);
-        $this->client->request('GET', '/bcm/exercise-log/calendar');
+        $this->client->request('GET', '/de/bcm/exercise-log/calendar');
         $this->assertResponseIsSuccessful();
     }
 
@@ -146,6 +146,7 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
     {
         $this->tenant = new Tenant();
         $this->tenant->setName('BSI Log Test Tenant ' . uniqid());
+        $this->tenant->setCode('TST-' . uniqid());
         $this->em->persist($this->tenant);
 
         $this->manager = $this->makeUser('bsi_manager_' . uniqid(), ['ROLE_MANAGER']);
@@ -181,6 +182,8 @@ class Bsi2004ExerciseLogControllerTest extends WebTestCase
         $user = new User();
         $user->setEmail($email . '@test.com');
         $user->setPassword('$2y$13$' . str_repeat('a', 53));
+        $user->setFirstName('Test');
+        $user->setLastName('User');
         $user->setRoles($roles);
         $user->setTenant($this->tenant);
         $this->em->persist($user);
