@@ -356,6 +356,74 @@ class QuickFixController extends AbstractController
     }
 
     // =========================================================================
+    // Bulk phantom-diff recovery — mark ALL phantom-diff migrations at once.
+    // Safety gate: CSRF + explicit "all already exist" checkbox.
+    // =========================================================================
+
+    /**
+     * Iterates over pending migrations and marks each phantom-diff version as
+     * executed without running its DDL. Stops on the first non-phantom error
+     * or when all phantom-diff migrations are cleared.
+     *
+     * Protected by:
+     * - QuickFixGuard (IP/token/dev-only constraints)
+     * - CSRF token 'quick_fix_mark_all_phantom_diff'
+     * - Mandatory confirm_all_already_exist checkbox
+     */
+    #[IsCsrfTokenValid('quick_fix_mark_all_phantom_diff')]
+    public function markAllPhantomDiff(
+        Request $request,
+        QuickFixGuard $guard,
+        SchemaMaintenanceService $maintenance,
+        AuditLogger $auditLogger,
+    ): Response {
+        if (!$guard->mayAccess($request)) {
+            return $this->render('quick_fix/locked.html.twig', [
+                'token_required' => $guard->isTokenRequired(),
+            ], new Response('', Response::HTTP_FORBIDDEN));
+        }
+
+        $confirmAllAlreadyExist = (bool) $request->request->get('confirm_all_already_exist', false);
+        if (!$confirmAllAlreadyExist) {
+            $this->addFlash('error', 'Sicherheitscheck: Bitte bestätigen dass ALLE Tabellen/Spalten der ausstehenden Migrationen im Schema bereits vorhanden sind.');
+            return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
+        }
+
+        $result = $maintenance->markAllPhantomDiffMigrationsAsExecuted('quick-fix');
+
+        // Clear the single-version phantom-diff session payload — the bulk
+        // action supersedes it.
+        $request->getSession()->remove('quick_fix.last_phantom_diff');
+
+        $markedCount = count($result['marked']);
+
+        if ($result['success']) {
+            $auditLogger->logCustom(
+                'quick_fix.force_mark_migration_executed',
+                'Migration',
+                null,
+                null,
+                ['marked_count' => $markedCount, 'remaining_pending' => $result['remaining_pending'], 'batch' => 'mark_all_phantom_diff'],
+                sprintf('QuickFix: mark-all-phantom-diff completed — %d migration(s) marked, %d still pending', $markedCount, $result['remaining_pending']),
+            );
+            $this->addFlash('success', sprintf(
+                '%d Migration(en) als ausgeführt markiert (ohne DDL). Noch ausstehend: %d.',
+                $markedCount,
+                $result['remaining_pending'],
+            ));
+        } else {
+            $this->addFlash('warning', sprintf(
+                '%d Migration(en) markiert, dann gestoppt: %s Noch ausstehend: %d.',
+                $markedCount,
+                $result['stopped_at_error'] ?? 'unbekannter Fehler',
+                $result['remaining_pending'],
+            ));
+        }
+
+        return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
+    }
+
+    // =========================================================================
     // Data-Repair routes — operator emergency UI
     // All guarded by QuickFixGuard + IsCsrfTokenValid. All operations are
     // idempotent (safe to click multiple times).
