@@ -33,8 +33,8 @@ final class DoraRoiXbrlExporterTest extends TestCase
 
         $this->supplierRepo = $this->createMock(SupplierRepository::class);
         $this->assetRepo = $this->createMock(AssetRepository::class);
-        $this->supplierRepo->method('findByTenant')->willReturn([]);
-        $this->assetRepo->method('findByTenant')->willReturn([]);
+        $this->supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+        $this->assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
 
         $this->exporter = new DoraRoiXbrlExporter($this->supplierRepo, $this->assetRepo);
     }
@@ -149,11 +149,12 @@ final class DoraRoiXbrlExporterTest extends TestCase
     {
         $supplier = new Supplier();
         $supplier->setName('Acme ICT GmbH');
+        $supplier->setIsDoraRelevant(true);
 
         $supplierRepo = $this->createMock(SupplierRepository::class);
-        $supplierRepo->method('findByTenant')->willReturn([$supplier]);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$supplier]);
         $assetRepo = $this->createMock(AssetRepository::class);
-        $assetRepo->method('findByTenant')->willReturn([]);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
 
         $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo);
         $xml = $exporter->generate($this->tenant);
@@ -165,16 +166,52 @@ final class DoraRoiXbrlExporterTest extends TestCase
     #[Test]
     public function providerCountReflectsNumberOfSuppliers(): void
     {
-        $suppliers = [new Supplier(), new Supplier(), new Supplier()];
+        $s1 = new Supplier();
+        $s1->setIsDoraRelevant(true);
+        $s2 = new Supplier();
+        $s2->setIsDoraRelevant(true);
+        $s3 = new Supplier();
+        $s3->setIsDoraRelevant(true);
+        $suppliers = [$s1, $s2, $s3];
+
         $supplierRepo = $this->createMock(SupplierRepository::class);
-        $supplierRepo->method('findByTenant')->willReturn($suppliers);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn($suppliers);
         $assetRepo = $this->createMock(AssetRepository::class);
-        $assetRepo->method('findByTenant')->willReturn([]);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
 
         $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo);
         $xml = $exporter->generate($this->tenant);
 
         // The B_02.01.0010 element should contain "3"
         self::assertMatchesRegularExpression('/<roi:B_02\.01\.0010[^>]*>3</', $xml);
+    }
+
+    #[Test]
+    public function exporterFiltersToDoraRelevantSuppliersOnly(): void
+    {
+        // 3 suppliers total: 2 DORA-relevant, 1 not
+        $s1 = new Supplier();
+        $s1->setName('DORA Supplier Alpha');
+        $s1->setIsDoraRelevant(true);
+
+        $s2 = new Supplier();
+        $s2->setName('DORA Supplier Beta');
+        $s2->setIsDoraRelevant(true);
+
+        // s3 is NOT DORA-relevant and must NOT appear in the export
+        // The repository mock returns only the relevant ones (as the real
+        // findByTenantAndDoraRelevant WHERE clause would do).
+        $supplierRepo = $this->createMock(SupplierRepository::class);
+        $supplierRepo->method('findByTenantAndDoraRelevant')->willReturn([$s1, $s2]);
+        $assetRepo = $this->createMock(AssetRepository::class);
+        $assetRepo->method('findByTenantAndDoraRelevant')->willReturn([]);
+
+        $exporter = new DoraRoiXbrlExporter($supplierRepo, $assetRepo);
+        $xml = $exporter->generate($this->tenant);
+
+        // Exactly 2 providers must appear in the export
+        self::assertMatchesRegularExpression('/<roi:B_02\.01\.0010[^>]*>2</', $xml);
+        self::assertStringContainsString('DORA Supplier Alpha', $xml);
+        self::assertStringContainsString('DORA Supplier Beta', $xml);
     }
 }

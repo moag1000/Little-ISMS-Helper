@@ -17,6 +17,7 @@ use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -251,6 +252,17 @@ class AssetType extends AbstractType
                 'choice_translation_domain' => 'asset',
             ])
         ;
+
+        // ── DORA scope flag — only when nis2_dora module is active ──────────
+        // DORA Art. 28 — Register of Information. Flag marks this asset as
+        // in-scope for the ICT-risk monitoring obligation.
+        if ($this->isModuleActive('nis2_dora')) {
+            $builder->add('isDoraRelevant', CheckboxType::class, [
+                'label'    => 'asset.field.is_dora_relevant',
+                'help'     => 'asset.help.is_dora_relevant',
+                'required' => false,
+            ]);
+        }
 
         // ── AI-Agent fields: only added when 'ai_governance' module is active ──
         // Erfüllt EU AI Act Art. 6/9-16, ISO 42001 Annex A, MRIS MHC-13.

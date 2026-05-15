@@ -80,6 +80,17 @@
                 ]
             } only %}
 
+            {% if is_module_active('nis2_dora') and asset.isDoraRelevant %}
+                <div class="detail-section">
+                    {% include '_components/_badge.html.twig' with {
+                        variant: 'warning',
+                        icon: 'bi-bank',
+                        content: 'DORA Art. 28'
+                    } %}
+                    <small class="text-muted ms-2">{{ 'asset.help.is_dora_relevant'|trans({}, 'asset') }}</small>
+                </div>
+            {% endif %}
+
             {% if asset.description %}
                 <div class="detail-section">
                     <h3>{{ 'common.description'|trans({}, 'messages') }}</h3>

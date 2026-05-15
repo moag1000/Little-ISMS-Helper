@@ -148,6 +148,13 @@ final class AssetMapper extends AbstractEntityMapper
             }
         }
 
+        // DORA Art. 28 scope flag — accepted column aliases handled by HeaderHeuristicMapper:
+        //   dora, dora_relevant, dorarelevant, is_dora_relevant, isadorarelevant
+        $doraRaw = $get('isDoraRelevant') ?? $get('is_dora_relevant') ?? $get('doraRelevant');
+        if ($doraRaw !== null && $doraRaw !== '') {
+            $data['isDoraRelevant'] = $this->castBool($doraRaw);
+        }
+
         return $data;
     }
 

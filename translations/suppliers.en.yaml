@@ -82,6 +82,7 @@ supplier:
         nace_code: 'NACE Code (Rev.2)'
         country_of_head_office: 'Country of Head Office (ISO-3166)'
         # DORA (Digital Operational Resilience Act) — Art. 28 Register of Information
+        is_dora_relevant: 'DORA-relevant (Art. 28 ICT third-party)'
         lei_code: 'LEI Code (ISO 17442)'
         ict_criticality: 'ICT Criticality (DORA)'
         ict_function_type: 'ICT Function Type'
@@ -147,6 +148,7 @@ supplier:
         certifications: 'Additional certifications held by the supplier (e.g. SOC 2, TISAX).'
         has_dpa: 'Is a Data Processing Agreement (DPA) per GDPR Art. 28 in place?'
         dpa_signed: 'Date on which the DPA was signed.'
+        is_dora_relevant: 'This supplier qualifies as an ICT third-party service provider under DORA Art. 28 and must be included in the Register of Information. Only flagged suppliers are included in the XBRL export.'
         lei_code: 'Legal Entity Identifier (20 chars, ISO 17442) — mandatory for DORA ICT third-party providers.'
         nace_code: 'EU NACE Rev.2 industry code of the ICT third-party provider (e.g. 62.01).'
         country_of_head_office: 'ISO-3166 alpha-2 country code of the provider''s head office (e.g. DE, IE, US).'

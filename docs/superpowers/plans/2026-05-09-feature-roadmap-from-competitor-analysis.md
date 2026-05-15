@@ -46,6 +46,7 @@ bricht. Norm-konform für ISO 27001:2022 + BSI 200-x + EU DORA + EU NIS-2.
 | F6 | REST-API Bulk + Webhooks | P3 | 8+ | + Single-Audit-Entry |
 | F8 | Health-Check + Observability | P3 | 9+ | + Tenant-Disclosure-Constraints |
 | F9 | i18n FR/IT/ES/NL/PT-BR | P3 | 10+ | unverändert |
+| F-NEU-ICT-PROVIDER | ICT-Service-Provider Asset-Library + Multi-Tenant Distribution | Backlog | 14+ | **[NEU]** DORA Art. 28 Shared-Provider-Pattern |
 
 ---
 
@@ -2075,6 +2076,50 @@ Reihenfolge nach Demand × Aufwand-Effizienz:
 15. **F18 No-Code-Framework-Builder-GUI** (mit Sandbox-Constraints)
 16. **F37 One-Command-Setup-Hardening**
 17. **F35 EUCS-Cloud-Audit-Workflow** (wenn Standard final)
+18. **F-NEU-ICT-PROVIDER ICT-Service-Provider Asset-Library + Multi-Tenant Distribution** (nach F33+F34, Sprint 14+)
+
+---
+
+## F-NEU-ICT-PROVIDER — ICT-Service-Provider Asset-Library + Multi-Tenant Distribution
+
+### Use case
+Provider XYZ runs a shared SaaS for 5 regulated banks. Each bank must list XYZ
+as a critical ICT-third-party in their DORA RoI. Currently the only path is
+manual 5× duplication.
+
+### Design
+
+- New `Tenant.tenantType` enum: regulated | ict_provider
+- Provider-tenant = parent-tenant with `tenantType=ict_provider`
+- Each bank-client = child-tenant under provider (existing holding-tree structure)
+- New entity `IctServiceLibraryAsset` — master-definitions at parent-tenant level
+- Child-tenants get `linkedLibraryAssetId` field on Asset
+- On master-update → emit AlvaHint "Linked-Library-Asset X changed, review your override" in each child-tenant
+- DORA RoI export at child-tenant level pulls master-definition + child-override fields
+
+### Differentiation from existing Holding pattern
+- Holding = same legal entity with multiple business-units (group-CISO role)
+- ICT-Provider = different legal entity providing services to N customers
+- Both can coexist — child-tenant can be `ict_provider_client + holding_subsidiary`
+
+### Effort estimate
+- 1 migration (Tenant.tenantType + IctServiceLibraryAsset + Asset.linkedLibraryAssetId)
+- 2 services (LibraryDistributionService, OverrideMergeService)
+- 1 AlvaHint
+- 1 admin-page (Provider-Library-Editor)
+- Tests
+- Probably 2 weeks
+
+### DORA-compliance note
+DORA Art. 28 explicitly allows redundant reporting. Each client's RoI is
+its own contract — data-duplication across tenants is correct, not a
+violation. Daten-Isolation between tenants stays intact.
+
+### When to ship
+After F33 (EU-AI-Act) + F34 (CRA-SBOM) in Sprint 13. Or pull forward if a
+key customer is an ICT-provider needing this for their first DORA report.
+
+---
 
 ## Strukturelle Änderungen v5 → v6
 

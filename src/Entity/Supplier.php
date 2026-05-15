@@ -195,6 +195,15 @@ class Supplier
     private ?string $certifications = null;
 
     /**
+     * DORA Art. 28 — Register of Information scope flag.
+     * When true, this supplier is included in the DORA RoI XBRL export
+     * as an ICT third-party service provider (Art. 28 ICT-Drittdienstleister).
+     */
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private bool $isDoraRelevant = false;
+
+    /**
      * Data processing agreement (GDPR)
      */
     #[ORM\Column(type: Types::BOOLEAN)]
@@ -511,6 +520,17 @@ class Supplier
     public function setCertifications(?string $certifications): static
     {
         $this->certifications = $certifications;
+        return $this;
+    }
+
+    public function isDoraRelevant(): bool
+    {
+        return $this->isDoraRelevant;
+    }
+
+    public function setIsDoraRelevant(bool $isDoraRelevant): static
+    {
+        $this->isDoraRelevant = $isDoraRelevant;
         return $this;
     }
 

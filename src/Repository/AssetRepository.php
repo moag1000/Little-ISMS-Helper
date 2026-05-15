@@ -80,6 +80,29 @@ class AssetRepository extends ServiceEntityRepository
     }
 
     /**
+     * DORA Phase 1 — RoI scope filter.
+     *
+     * Returns only assets flagged as DORA-relevant (isDoraRelevant = true)
+     * for the given tenant. Used by DoraRoiXbrlExporter::generate() to
+     * restrict the XBRL export to Art. 28 ICT assets explicitly scoped
+     * by the operator.
+     *
+     * @param Tenant $tenant The tenant to find assets for
+     * @return Asset[] Array of DORA-scoped Asset entities
+     */
+    public function findByTenantAndDoraRelevant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.tenant = :tenant')
+            ->andWhere('a.isDoraRelevant = :dora')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('dora', true)
+            ->orderBy('a.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find assets by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited assets from parent companies, grandparents, etc.
      *
