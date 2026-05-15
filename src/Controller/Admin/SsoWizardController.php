@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * 3-step SSO Identity Provider wizard.
@@ -47,6 +48,7 @@ final class SsoWizardController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $audit,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 

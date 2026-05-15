@@ -44,6 +44,16 @@ class InAppNotificationCenterController extends AbstractController
         private readonly TranslatorInterface $translator,
     ) {}
 
+    /**
+     * Route alias: /notifications/center → /notifications (permanent 301).
+     * Some E2E suites and bookmarks use the /center suffix — redirect gracefully.
+     */
+    #[Route('/center', name: 'center_alias', methods: ['GET'])]
+    public function centerAlias(): Response
+    {
+        return $this->redirectToRoute('app_notification_center', [], Response::HTTP_MOVED_PERMANENTLY);
+    }
+
     #[Route('', name: 'center', methods: ['GET'])]
     public function center(): Response
     {
