@@ -96,6 +96,10 @@ risk:
         title: 'Hohes Risiko ohne Treatment-Plan'
         body: 'Inherentes Risiko-Niveau %level% — ISO 27001 Cl. 6.1.3 fordert dokumentierte Behandlungsentscheidung.'
         action: 'Treatment-Plan anlegen'
+    requires_dpia:
+        title: 'DSFA-Pflicht erkannt — Datenschutz-Folgenabschätzung fehlt'
+        body: 'Risiko ist als DSFA-pflichtig markiert (DSGVO Art. 35), aber bisher keine DSFA verlinkt. Vorbefüllung aus Risiko-Daten verfügbar — Beschreibung, verknüpftes Asset und Betroffenen-Auswirkungen werden übernommen.'
+        action: 'DSFA mit Vorbefüllung anlegen'
 
 control:
     orphan:
