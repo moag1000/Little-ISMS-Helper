@@ -156,6 +156,14 @@ class AssetController extends AbstractController
             $assets = $this->tagFilterService->filterByTagName($assets, Asset::class, $tagFilter);
         }
 
+        // DORA Phase 1: filter-chip "Nur DORA-relevant / DORA only" via ?dora_relevant=1
+        if ($request->query->get('dora_relevant') === '1') {
+            $assets = array_values(array_filter(
+                $assets,
+                fn(Asset $a): bool => $a->isDoraRelevant(),
+            ));
+        }
+
         $typeStats = $tenant
             ? $this->assetRepository->countByType($tenant)
             : [];

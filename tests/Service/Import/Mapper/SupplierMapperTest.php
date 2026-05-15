@@ -173,6 +173,35 @@ final class SupplierMapperTest extends TestCase
         self::assertSame('critical', $data['ictCriticality']);
     }
 
+    // ── isDoraRelevant bool emission (DORA Art. 28) ──────────────────────────
+
+    #[Test]
+    public function toEntityDataEmitsIsDoraRelevantTrueWhenFlagSet(): void
+    {
+        $data = $this->mapper->toEntityData([
+            'name'           => 'Cloud SaaS',
+            'isDoraRelevant' => 'yes',
+        ]);
+        self::assertTrue($data['isDoraRelevant']);
+    }
+
+    #[Test]
+    public function toEntityDataEmitsIsDoraRelevantFalseWhenFlagCleared(): void
+    {
+        $data = $this->mapper->toEntityData([
+            'name'           => 'Local Vendor',
+            'isDoraRelevant' => '0',
+        ]);
+        self::assertFalse($data['isDoraRelevant']);
+    }
+
+    #[Test]
+    public function toEntityDataOmitsIsDoraRelevantWhenAbsent(): void
+    {
+        $data = $this->mapper->toEntityData(['name' => 'Vendor X']);
+        self::assertArrayNotHasKey('isDoraRelevant', $data);
+    }
+
     #[Test]
     public function findExistingReturnNullWhenNameMissing(): void
     {

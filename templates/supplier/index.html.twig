@@ -134,7 +134,7 @@
     {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
     {% embed '_components/_search_filter_form.html.twig' with {
         action: path('app_supplier_index'),
-        filter_keys: ['criticality', 'status', 'iso27001', 'lksg_risk', 'view', 'tag'],
+        filter_keys: ['criticality', 'status', 'iso27001', 'lksg_risk', 'dora_relevant', 'view', 'tag'],
         form_id: 'supplier-filter-form'
     } %}
         {% block filters %}
@@ -182,6 +182,15 @@
                     all_label: 'common.all'|trans({}, 'messages')
                 }) }}
             </div>
+            {% if is_module_active('nis2_dora') %}
+            <div class="col-md-4">
+                <label for="filter-dora-relevant" class="form-label">DORA</label>
+                <select class="form-select fa-cyber-input__field" id="filter-dora-relevant" name="dora_relevant">
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="1" {{ app.request.query.get('dora_relevant') == '1' ? 'selected' : '' }}>{{ 'supplier.field.is_dora_relevant'|trans({}, 'suppliers') }}</option>
+                </select>
+            </div>
+            {% endif %}
         {% endblock %}
     {% endembed %}
 
@@ -245,6 +254,9 @@
                         <td>
                             <a href="{{ path('app_supplier_show', {id: supplier.id}) }}">{{ supplier.name }}</a>
                             {{ inheritance.small_badge(supplier, currentTenant) }}
+                            {% if supplier.isDoraRelevant %}
+                                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'DORA', title: 'supplier.field.is_dora_relevant'|trans({}, 'suppliers') } %}
+                            {% endif %}
                         </td>
                         <td>{{ supplier.serviceProvided|slice(0, 50) }}...</td>
                         <td>{% include '_components/_badge.html.twig' with { variant: supplier.criticality == 'critical' ? 'danger' : (supplier.criticality == 'high' ? 'warning' : (supplier.criticality == 'medium' ? 'info' : 'secondary')), content: supplier.criticality|upper } %}</td>

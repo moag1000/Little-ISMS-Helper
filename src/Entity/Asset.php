@@ -239,6 +239,15 @@ class Asset
     #[Groups(['asset:read', 'asset:write'])]
     private ?DateTimeInterface $returnDate = null;
 
+    /**
+     * DORA Art. 28 — Register of Information scope flag.
+     * When true, this ICT asset is included in the DORA RoI XBRL export
+     * as a DORA-scoped ICT asset (Art. 28 ICT-Asset).
+     */
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['asset:read', 'asset:write'])]
+    private bool $isDoraRelevant = false;
+
     #[ORM\Column(length: 50)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotBlank(message: 'Status is required')]
@@ -501,6 +510,17 @@ class Asset
     public function setAvailabilityValue(int $availabilityValue): static
     {
         $this->availabilityValue = $availabilityValue;
+        return $this;
+    }
+
+    public function isDoraRelevant(): bool
+    {
+        return $this->isDoraRelevant;
+    }
+
+    public function setIsDoraRelevant(bool $isDoraRelevant): static
+    {
+        $this->isDoraRelevant = $isDoraRelevant;
         return $this;
     }
 

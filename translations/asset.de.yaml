@@ -74,6 +74,7 @@ asset:
     owner_deputies: Vertretungen (Personen)
     depends_on: Abhängigkeiten (Upstream)
     processing_activities: Verknüpfte Verarbeitungstätigkeiten (VVT)
+    is_dora_relevant: 'DORA-relevant (Art. 28 IKT-Asset)'
   help:
     name: Eindeutiger Name des Assets
     type: Kategorie des Assets (Hardware, Software, Daten, etc.)
@@ -106,6 +107,9 @@ asset:
     processing_activities: 'Verarbeitungstätigkeiten (Art. 30 GDPR / VVT), die dieses
       Asset nutzen. Bei Datenklassifizierung „vertraulich"/„restricted" löst die
       Verknüpfung automatisch eine DPIA-Empfehlung aus (Art. 35 GDPR).'
+    is_dora_relevant: 'Dieses Asset gilt als IKT-Asset gemäß DORA Art. 28 und wird im
+      Informationsregister (Register of Information / RoI) im XBRL-Export berücksichtigt.
+      Nur markierte Assets erscheinen im RoI-Export.'
   protection:
     recommended: Empfohlen
     overall_level: Gesamtschutzbedarf

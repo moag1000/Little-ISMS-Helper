@@ -120,18 +120,23 @@ final class SupplierMapper extends AbstractEntityMapper
         $criticality = $this->castEnum($get('criticality'), self::CRITICALITY_VALUES, 'medium');
         $data['criticality'] = $criticality ?? 'medium';
 
-        // DORA: ictCriticality takes priority over isDoraRelevant boolean shortcut
+        // DORA Art. 28 scope flag — set isDoraRelevant bool directly on entity
+        $isDoraRelevantRaw = $get('isDoraRelevant') ?? $get('is_dora_relevant') ?? $get('doraRelevant');
+        if ($isDoraRelevantRaw !== null && $isDoraRelevantRaw !== '') {
+            $doraFlag = $this->castBool($isDoraRelevantRaw);
+            $data['isDoraRelevant'] = $doraFlag;
+        }
+
+        // ictCriticality takes priority; when absent, use isDoraRelevant as conservative default
         $ictCriticality = $get('ictCriticality') ?? $get('ict_criticality');
         if (!empty($ictCriticality)) {
             $normalised = strtolower(trim((string) $ictCriticality));
             if (in_array($normalised, self::ICT_CRITICALITY_VALUES, strict: true)) {
                 $data['ictCriticality'] = $normalised;
             }
-        } else {
-            $isDoraRelevant = $get('isDoraRelevant') ?? $get('is_dora_relevant') ?? $get('doraRelevant');
-            if ($isDoraRelevant !== null && $isDoraRelevant !== '') {
-                $data['ictCriticality'] = $this->castBool($isDoraRelevant) ? 'important' : 'non_ict';
-            }
+        } elseif ($isDoraRelevantRaw !== null && $isDoraRelevantRaw !== '') {
+            // Conservative default: true → 'important', false → 'non_ict'
+            $data['ictCriticality'] = ($data['isDoraRelevant'] ?? false) ? 'important' : 'non_ict';
         }
 
         return $data;

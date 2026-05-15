@@ -143,6 +143,29 @@ class SupplierRepository extends ServiceEntityRepository
     }
 
     /**
+     * DORA Phase 1 — RoI scope filter.
+     *
+     * Returns only suppliers flagged as DORA-relevant (isDoraRelevant = true)
+     * for the given tenant. Used by DoraRoiXbrlExporter::generate() to
+     * restrict the XBRL export to Art. 28 ICT third-party service providers
+     * explicitly scoped by the operator.
+     *
+     * @param Tenant $tenant The tenant to find suppliers for
+     * @return Supplier[] Array of DORA-scoped Supplier entities
+     */
+    public function findByTenantAndDoraRelevant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.tenant = :tenant')
+            ->andWhere('s.isDoraRelevant = :dora')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('dora', true)
+            ->orderBy('s.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Phase 9.P2.5 — Cross-tenant supplier roll-up.
      *
      * Collapses supplier rows from the given tenant subtree into a

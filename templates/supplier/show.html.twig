@@ -424,6 +424,15 @@
                     }) }}
 
                     <dl class="row">
+                        <dt class="col-sm-4">{{ 'supplier.field.is_dora_relevant'|trans({}, 'suppliers') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if supplier.isDoraRelevant %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-bank', content: 'DORA Art. 28' } %}
+                            {% else %}
+                                <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
+                            {% endif %}
+                        </dd>
+
                         <dt class="col-sm-4">{{ 'supplier.dora.field.lei_code'|trans({}, 'suppliers') }}</dt>
                         <dd class="col-sm-8">
                             {% if supplier.leiCode %}
