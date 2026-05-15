@@ -240,6 +240,101 @@ class SchemaMaintenanceService
     }
 
     /**
+     * Marks a migration version as executed in the metadata storage WITHOUT
+     * running its up() method. This is the safe recovery path for
+     * phantom_diff_migration errors: the schema already has the column/table,
+     * so the migration's DDL would fail with "already exists" — marking it
+     * executed unblocks the migrations chain.
+     *
+     * Safety gates applied here:
+     * - The version must exist on the file system (i.e. in the migration list)
+     * - If the version is already executed, the call is a no-op (idempotent)
+     *
+     * @return array{success: bool, version: string, error: ?string}
+     */
+    public function markMigrationAsExecuted(string $version): array
+    {
+        $df = $this->migrationsDependencyFactory;
+
+        try {
+            $df->getMetadataStorage()->ensureInitialized();
+
+            // 1. Verify the version exists in the file-system migration list.
+            // getMigrations() returns AvailableMigrationsSet; getItems() returns
+            // AvailableMigration[] each with getVersion(): Version.
+            $rawKnown = [];
+            foreach ($df->getMigrationRepository()->getMigrations()->getItems() as $available) {
+                $rawKnown[] = (string) $available->getVersion();
+            }
+
+            if (!in_array($version, $rawKnown, true)) {
+                return [
+                    'success' => false,
+                    'version' => $version,
+                    'error' => sprintf(
+                        'Version "%s" not found in migration list. Known: %s',
+                        $version,
+                        implode(', ', array_slice($rawKnown, 0, 5)),
+                    ),
+                ];
+            }
+
+            // 2. Check it is not already executed (idempotent guard).
+            // getExecutedMigrations() returns ExecutedMigrationsList; getItems()
+            // returns ExecutedMigration[] each with getVersion(): Version.
+            $executedVersions = $df->getMetadataStorage()->getExecutedMigrations();
+            $executedStrings = array_map(
+                static fn (\Doctrine\Migrations\Metadata\ExecutedMigration $m): string => (string) $m->getVersion(),
+                $executedVersions->getItems(),
+            );
+
+            if (in_array($version, $executedStrings, true)) {
+                $this->auditLogger->logCustom(
+                    'admin.schema.force_mark_executed.skipped',
+                    'Doctrine',
+                    null,
+                    null,
+                    ['version' => $version],
+                    sprintf('force-mark-executed skipped — version already recorded: %s', $version),
+                );
+                return ['success' => true, 'version' => $version, 'error' => null];
+            }
+
+            // 3. Insert directly into doctrine_migration_versions.
+            // TableMetadataStorage::complete() requires a running MigrationResult
+            // object, only constructible during an actual migration run. Direct
+            // INSERT via the platform connection is equivalent to what the CLI
+            // `doctrine:migrations:execute --up` does internally.
+            $df->getConnection()->insert('doctrine_migration_versions', [
+                'version' => $version,
+                'executed_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+                'execution_time' => 0,
+            ]);
+
+            $this->auditLogger->logCustom(
+                'admin.schema.force_mark_executed',
+                'Doctrine',
+                null,
+                null,
+                ['version' => $version],
+                sprintf('QuickFix: force-mark-executed — version recorded without DDL run: %s', $version),
+            );
+
+            return ['success' => true, 'version' => $version, 'error' => null];
+        } catch (\Throwable $e) {
+            $this->auditLogger->logCustom(
+                'admin.schema.force_mark_executed.failed',
+                'Doctrine',
+                null,
+                null,
+                ['version' => $version, 'error' => $e->getMessage()],
+                sprintf('QuickFix: force-mark-executed FAILED for %s: %s', $version, $e->getMessage()),
+            );
+            return ['success' => false, 'version' => $version, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
      * Returns pending migration class names sorted by version. Tolerates a
      * Categorise a Doctrine-Migrations error and emit a human-readable
      * suggestion the operator can act on. Patterns observed in production:
