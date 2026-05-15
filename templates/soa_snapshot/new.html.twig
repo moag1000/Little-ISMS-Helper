@@ -57,7 +57,7 @@
 
                 <div class="d-flex gap-2">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="bi bi-camera" aria-hidden="true"></i>
+                        <i class="bi bi-camera {# TODO: design Aurora fa-icon--ui-camera #} {# TODO: design Aurora fa-icon--camera #}" aria-hidden="true"></i>
                         <span class="fa-cyber-btn__label">{{ 'soa.snapshot.action.create'|trans({}, 'soa') }}</span>
                     </button>
                     <a href="{{ path('app_soa_snapshot_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
@@ -68,7 +68,7 @@
         </div>
         <div class="col-md-4">
             <div class="fa-alert fa-alert--info p-3">
-                <h3 class="h6 mb-2"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'soa.snapshot.new.help_title'|trans({}, 'soa') }}</h3>
+                <h3 class="h6 mb-2"><i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'soa.snapshot.new.help_title'|trans({}, 'soa') }}</h3>
                 <p class="small mb-0">{{ 'soa.snapshot.new.help_text'|trans({}, 'soa') }}</p>
             </div>
         </div>

@@ -227,9 +227,9 @@ export default class extends Controller {
         icon.setAttribute('aria-hidden', 'true');
 
         if (state === 'valid') {
-            icon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+            icon.innerHTML = '<i class="fa-icon fa-icon--ui-check text-success"></i>';
         } else if (state === 'invalid') {
-            icon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+            icon.innerHTML = '<i class="fa-icon fa-icon--ui-close text-danger"></i>';
         }
 
         wrapper.appendChild(icon);

@@ -222,7 +222,7 @@
                         class="fa-bulk-btn"
                         data-action="click->bulk-actions#bulkExport"
                         aria-label="{{ 'bulk_actions.export'|trans({}, 'messages') }}">
-                    <i class="bi bi-download" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                     {{ 'bulk_actions.export'|trans({}, 'messages') }}
                 </button>
             {% endif %}
@@ -232,7 +232,7 @@
                         class="fa-bulk-btn"
                         data-action="click->bulk-actions#bulkTag"
                         aria-label="{{ 'bulk_actions.add_tag'|trans({}, 'messages') }}">
-                    <i class="bi bi-tag" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-tag" aria-hidden="true"></i>
                     {{ 'bulk_actions.add_tag'|trans({}, 'messages') }}
                 </button>
             {% endif %}
@@ -242,7 +242,7 @@
                         class="fa-bulk-btn"
                         data-action="click->bulk-actions#bulkAssign"
                         aria-label="{{ 'bulk_actions.assign'|trans({}, 'messages') }}">
-                    <i class="bi bi-person-plus" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
                     {{ 'bulk_actions.assign'|trans({}, 'messages') }}
                 </button>
             {% endif %}
@@ -254,7 +254,7 @@
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                             aria-label="{{ 'document.bulk.status_change.label'|trans({}, 'document') }}">
-                        <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
                         {{ 'document.bulk.status_change.label'|trans({}, 'document') }}
                     </button>
                     <ul class="dropdown-menu">
@@ -263,7 +263,7 @@
                                     class="dropdown-item"
                                     data-action="click->bulk-actions#bulkStatusChange"
                                     data-target-status="draft">
-                                <i class="bi bi-file-earmark me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-document me-1" aria-hidden="true"></i>
                                 {{ 'document.bulk.status_change.target.draft'|trans({}, 'document') }}
                             </button>
                         </li>
@@ -272,7 +272,7 @@
                                     class="dropdown-item"
                                     data-action="click->bulk-actions#bulkStatusChange"
                                     data-target-status="in_review">
-                                <i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-hourglass me-1" aria-hidden="true"></i>
                                 {{ 'document.bulk.status_change.target.in_review'|trans({}, 'document') }}
                             </button>
                         </li>
@@ -281,7 +281,7 @@
                                     class="dropdown-item"
                                     data-action="click->bulk-actions#bulkStatusChange"
                                     data-target-status="approved">
-                                <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
                                 {{ 'document.bulk.status_change.target.approved'|trans({}, 'document') }}
                             </button>
                         </li>
@@ -290,7 +290,7 @@
                                     class="dropdown-item"
                                     data-action="click->bulk-actions#bulkStatusChange"
                                     data-target-status="published">
-                                <i class="bi bi-send me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-send me-1" aria-hidden="true"></i>
                                 {{ 'document.bulk.status_change.target.published'|trans({}, 'document') }}
                             </button>
                         </li>
@@ -299,7 +299,7 @@
                                     class="dropdown-item"
                                     data-action="click->bulk-actions#bulkStatusChange"
                                     data-target-status="archived">
-                                <i class="bi bi-archive me-1" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--archive me-1" aria-hidden="true"></i>
                                 {{ 'document.bulk.status_change.target.archived'|trans({}, 'document') }}
                             </button>
                         </li>
@@ -313,7 +313,7 @@
                         data-action="click->bulk-actions#bulkStatusChange"
                         data-target-status="approved"
                         aria-label="{{ 'bulk_actions.approve'|trans({}, 'messages') }}">
-                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                     {{ 'bulk_actions.approve'|trans({}, 'messages') }}
                 </button>
             {% endif %}
@@ -323,7 +323,7 @@
                         class="fa-bulk-btn fa-bulk-btn--danger"
                         data-action="click->bulk-actions#bulkDelete"
                         aria-label="{{ 'bulk_actions.delete'|trans({}, 'messages') }}">
-                    <i class="bi bi-trash" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                     {{ 'bulk_actions.delete'|trans({}, 'messages') }}
                 </button>
             {% endif %}
@@ -336,7 +336,7 @@
                 data-action="click->bulk-actions#deselectAll"
                 title="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}"
                 aria-label="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}">
-            <i class="bi bi-x-lg" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
         </button>
     </div>
 {% endif %}

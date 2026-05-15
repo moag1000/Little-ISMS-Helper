@@ -54,7 +54,7 @@
        implementer that the run state is auto-saved and that
        Cancel only discards the current run (resumable later). #}
     <p class="small text-muted mb-3">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
         {{ 'policy_wizard.cancel_hint.label'|trans }}
     </p>
 
@@ -143,14 +143,14 @@
 
         <div class="mt-4 d-flex flex-wrap gap-2 align-items-center">
             <a href="{{ path('app_policy_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
                 <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.back'|trans }}</span>
             </a>
             {% if is_terminal %}
                 {# Submit handled by separate complete-form on review_generate template #}
             {% else %}
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                     <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.continue'|trans }}</span>
                 </button>
             {% endif %}
@@ -191,7 +191,7 @@
                             <strong class="d-block mb-1">{{ 'policy_wizard.step.review_generate.confirm_box.approvers_heading'|trans }}</strong>
                             {% if _gc.approvers|length == 0 %}
                                 <span class="text-danger">
-                                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                     {{ 'policy_wizard.step.review_generate.confirm_box.no_approvers'|trans }}
                                 </span>
                             {% else %}

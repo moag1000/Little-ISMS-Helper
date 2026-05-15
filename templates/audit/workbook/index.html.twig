@@ -74,7 +74,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="d-flex align-items-center gap-3 p-3 border rounded">
-                            <i class="bi bi-list-check fs-3 text-success" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-list-check fs-3 text-success" aria-hidden="true"></i>
                             <div class="flex-grow-1">
                                 <div class="fw-semibold">{{ 'audit_workbook.export_type.control_implementation.title'|trans({}, 'audit_workbook') }}</div>
                                 <div class="small text-muted">{{ 'audit_workbook.export_type.control_implementation.description'|trans({}, 'audit_workbook') }}</div>
@@ -82,14 +82,14 @@
                             <a href="{{ path('app_audit_workbook_control_implementation') }}"
                                class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                                aria-label="{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}">
-                                <i class="bi bi-download" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                                 <span class="fa-cyber-btn__label">{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}</span>
                             </a>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="d-flex align-items-center gap-3 p-3 border rounded">
-                            <i class="bi bi-exclamation-triangle fs-3 text-warning" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning fs-3 text-warning" aria-hidden="true"></i>
                             <div class="flex-grow-1">
                                 <div class="fw-semibold">{{ 'audit_workbook.export_type.risk_register.title'|trans({}, 'audit_workbook') }}</div>
                                 <div class="small text-muted">{{ 'audit_workbook.export_type.risk_register.description'|trans({}, 'audit_workbook') }}</div>
@@ -97,7 +97,7 @@
                             <a href="{{ path('app_audit_workbook_risk_register') }}"
                                class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                                aria-label="{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}">
-                                <i class="bi bi-download" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                                 <span class="fa-cyber-btn__label">{{ 'audit_workbook.action.download'|trans({}, 'audit_workbook') }}</span>
                             </a>
                         </div>
@@ -133,7 +133,7 @@
                                 {% for framework in frameworks %}
                                 <tr>
                                     <td>
-                                        <i class="bi bi-shield-lock me-1 text-primary" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--compliance-shield me-1 text-primary" aria-hidden="true"></i>
                                         <strong>{{ framework.name }}</strong>
                                         {% if framework.code %}
                                             {{ pill.render(framework.code, 'neutral') }}
@@ -147,13 +147,13 @@
                                             <a href="{{ path('app_audit_workbook_soa', { frameworkId: framework.id }) }}"
                                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                                aria-label="{{ 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook') }}">
-                                                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
                                                 <span class="fa-cyber-btn__label">{{ 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook') }}</span>
                                             </a>
                                             <a href="{{ path('app_audit_workbook_compliance', { frameworkId: framework.id }) }}"
                                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                                aria-label="{{ 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook') }}">
-                                                <i class="bi bi-patch-check" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--nav-patch-check" aria-hidden="true"></i>
                                                 <span class="fa-cyber-btn__label">{{ 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook') }}</span>
                                             </a>
                                         </div>

@@ -42,7 +42,7 @@
                         data-bs-toggle="modal"
                         data-bs-target="#bestandsaufnahme-topic-help-modal"
                         title="{{ 'policy_wizard.step.bestandsaufnahme.topic_help.button_label'|trans }}">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                     {{ 'policy_wizard.step.bestandsaufnahme.topic_help.button_label'|trans }}
                 </button>
             </div>
@@ -74,14 +74,14 @@
                         class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm"
                         data-action="bestandsaufnahme-bulk#replaceAllOutdated"
                         title="{{ 'policy_wizard.step.bestandsaufnahme.bulk.replace_all_outdated_help'|trans }}">
-                    <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                     {{ 'policy_wizard.step.bestandsaufnahme.bulk.replace_all_outdated'|trans }}
                 </button>
                 <button type="button"
                         class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                         data-action="bestandsaufnahme-bulk#keepAllWizardTagged"
                         title="{{ 'policy_wizard.step.bestandsaufnahme.bulk.keep_all_wizard_tagged_help'|trans }}">
-                    <i class="bi bi-skip-forward" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                     {{ 'policy_wizard.step.bestandsaufnahme.bulk.keep_all_wizard_tagged'|trans }}
                 </button>
             </div>
@@ -102,7 +102,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="bestandsaufnahme-bulk-confirm-title">
-                            <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning text-warning" aria-hidden="true"></i>
                             {{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_title'|trans }}
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_cancel'|trans }}"></button>
@@ -191,13 +191,13 @@
                                         data-bestandsaufnahme-drawer-show-url-param="{{ path('app_document_show', {id: doc_id}) }}"
                                         data-bestandsaufnahme-drawer-mime-param="{{ row.mimeType|default('') }}"
                                         title="{{ 'policy_wizard.step.bestandsaufnahme.preview.open'|trans }}">
-                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                     {{ row.title }}
                                 </button>
                             </div>
                             {% if suggested_topic_list|length > 0 %}
                                 <small class="text-muted d-block mt-1">
-                                    <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
                                     {{ 'policy_wizard.step.bestandsaufnahme.suggested_topic_help'|trans }}:
                                     {% for sug in suggested_topic_list|slice(0, 3) %}
                                         {% if sug.topic != 'sammelpolitik' %}
@@ -225,7 +225,7 @@
                         <td class="fa-table__cell">
                             {% set suggestion_key = 'policy_wizard.step.bestandsaufnahme.suggestion.' ~ row.suggestedAction %}
                             <span class="fa-filter-chip fa-filter-chip--active mb-2 d-inline-block">
-                                <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
                                 {{ 'policy_wizard.step.bestandsaufnahme.suggestion_label'|trans }}: {{ suggestion_key|trans|default(row.suggestedAction) }}
                             </span>
 
@@ -272,7 +272,7 @@
                                  role="alert"
                                  data-bestandsaufnahme-row-target="replaceReminder"
                                  {% if chosen_action != 'replace' %}hidden{% endif %}>
-                                <i class="bi bi-archive fa-alert__icon" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--archive fa-alert__icon" aria-hidden="true"></i>
                                 <div class="fa-alert__body">
                                     <p class="fa-alert__message mb-0">{{ 'policy_wizard.step.bestandsaufnahme.replace_archived_hint'|trans|raw }}</p>
                                 </div>
@@ -346,7 +346,7 @@
     {% endembed %}
 
     <p class="small text-muted mt-2 mb-0">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
         {{ 'policy_wizard.step.bestandsaufnahme.continue_hint'|trans }}
     </p>
 
@@ -360,7 +360,7 @@
          data-bestandsaufnahme-drawer-target="offcanvas">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="bestandsaufnahme-preview-title">
-                <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
                 <span data-bestandsaufnahme-drawer-target="title">{{ 'policy_wizard.step.bestandsaufnahme.preview.drawer_title'|trans }}</span>
             </h5>
             <button type="button"
@@ -388,14 +388,14 @@
                    target="_blank"
                    rel="noopener"
                    data-bestandsaufnahme-drawer-target="downloadLink">
-                    <i class="bi bi-download" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                     {{ 'policy_wizard.step.bestandsaufnahme.preview.download'|trans }}
                 </a>
                 <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                    target="_blank"
                    rel="noopener"
                    data-bestandsaufnahme-drawer-target="showLink">
-                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--util-external-link" aria-hidden="true"></i>
                     {{ 'policy_wizard.step.bestandsaufnahme.preview.show_full'|trans }}
                 </a>
             </div>
@@ -412,7 +412,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="bestandsaufnahme-topic-help-title">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                         {{ 'policy_wizard.step.bestandsaufnahme.topic_help.modal_title'|trans }}
                     </h5>
                     <button type="button"

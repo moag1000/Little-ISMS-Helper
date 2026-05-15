@@ -51,10 +51,10 @@ export default class extends Controller {
             if (data.ok) {
                 const issuer = data.issuer ? `<code>${this._escHtml(data.issuer)}</code>` : '';
                 this.discoveryResultTarget.innerHTML =
-                    `<span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> Discovery OK${issuer ? ' — Issuer: ' + issuer : ''}</span>`;
+                    `<span class="text-success"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> Discovery OK${issuer ? ' — Issuer: ' + issuer : ''}</span>`;
             } else {
                 this.discoveryResultTarget.innerHTML =
-                    `<span class="text-danger"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ${this._escHtml(data.error || 'Validation failed')}</span>`;
+                    `<span class="text-danger"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ${this._escHtml(data.error || 'Validation failed')}</span>`;
             }
         } catch {
             this.discoveryResultTarget.innerHTML =
@@ -71,7 +71,7 @@ export default class extends Controller {
             const btn = this.element.querySelector('[data-action*="copyCallback"]');
             if (btn) {
                 const original = btn.innerHTML;
-                btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> Copied!';
+                btn.innerHTML = '<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> Copied!';
                 setTimeout(() => { btn.innerHTML = original; }, 2000);
             }
         } catch {

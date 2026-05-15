@@ -433,7 +433,7 @@ export default class extends Controller {
         hint.className = 'guided-tour-mobile-hint alert alert-info alert-dismissible fade show';
         hint.setAttribute('role', 'status');
         hint.innerHTML = `
-            <i class="bi bi-phone" aria-hidden="true"></i>
+            <i class="bi bi-phone /* TODO: design Aurora fa-icon--ui-phone */ /* TODO: design Aurora fa-icon--phone */" aria-hidden="true"></i>
             <strong>${this.escapeHtml(this.translations('mobile_title'))}</strong>
             ${this.escapeHtml(this.translations('mobile_body'))}
             <button type="button" class="btn-close" aria-label="Close"

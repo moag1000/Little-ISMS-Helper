@@ -86,7 +86,7 @@ export default class extends Controller {
         if (steps.length === 0) {
             this.stepsListTarget.innerHTML = `
                 <div class="text-center py-5 text-muted">
-                    <i class="bi bi-diagram-3 fs-1 d-block mb-3"></i>
+                    <i class="fa-icon fa-icon--nav-workflow fs-1 d-block mb-3"></i>
                     <p>No steps defined yet. Add steps using the form below or apply a template.</p>
                 </div>
             `;
@@ -116,7 +116,7 @@ export default class extends Controller {
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="drag-handle me-3 cursor-grab text-muted">
-                            <i class="bi bi-grip-vertical fs-4"></i>
+                            <i class="fa-icon fa-icon--util-drag-handle fs-4"></i>
                         </div>
                         <div class="step-number me-3">
                             <span class="badge bg-primary rounded-pill fs-6">${index + 1}</span>
@@ -129,7 +129,7 @@ export default class extends Controller {
                             <div class="d-flex flex-wrap gap-2 mb-2">
                                 ${stepTypeBadge}
                                 ${step.isRequired ? '<span class="badge bg-warning text-dark">Required</span>' : '<span class="badge bg-secondary">Optional</span>'}
-                                ${daysToComplete && !isNaN(daysToComplete) ? `<span class="badge bg-info"><i class="bi bi-clock me-1"></i>${daysToComplete} days SLA</span>` : ''}
+                                ${daysToComplete && !isNaN(daysToComplete) ? `<span class="badge bg-info"><i class="fa-icon fa-icon--ui-clock me-1"></i>${daysToComplete} days SLA</span>` : ''}
                             </div>
                             ${approverInfo}
                             ${step.description ? `<p class="card-text text-muted small mt-2">${this.escapeHtml(step.description)}</p>` : ''}
@@ -140,19 +140,19 @@ export default class extends Controller {
                                         data-action="click->workflow-builder#editStep"
                                         data-step-id="${stepId}"
                                         title="${this.editTitleValue}">
-                                    <i class="bi bi-pencil"></i>
+                                    <i class="fa-icon fa-icon--ui-edit"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-secondary"
                                         data-action="click->workflow-builder#duplicateStep"
                                         data-step-id="${stepId}"
                                         title="${this.duplicateTitleValue}">
-                                    <i class="bi bi-copy"></i>
+                                    <i class="fa-icon fa-icon--ui-copy"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger"
                                         data-action="click->workflow-builder#deleteStep"
                                         data-step-id="${stepId}"
                                         title="${this.deleteTitleValue}">
-                                    <i class="bi bi-trash"></i>
+                                    <i class="fa-icon fa-icon--ui-trash"></i>
                                 </button>
                             </div>
                         </div>
@@ -202,14 +202,14 @@ export default class extends Controller {
                 .replace(/_/g, ' ')
                 .replace(/[^a-zA-Z0-9\s]/g, ''); // Remove any non-alphanumeric characters
             const escapedRoleName = this.escapeHtml(roleName);
-            info.push(`<span class="badge bg-light text-dark"><i class="bi bi-person-badge me-1"></i>${escapedRoleName}</span>`);
+            info.push(`<span class="badge bg-light text-dark"><i class="fa-icon fa-icon--role me-1"></i>${escapedRoleName}</span>`);
         }
 
         if (step.approverUsers && Array.isArray(step.approverUsers) && step.approverUsers.length > 0) {
             // Number is safe, but ensure it's actually a number
             const userCount = parseInt(step.approverUsers.length, 10);
             if (!isNaN(userCount)) {
-                info.push(`<span class="badge bg-light text-dark"><i class="bi bi-people me-1"></i>${userCount} users</span>`);
+                info.push(`<span class="badge bg-light text-dark"><i class="fa-icon fa-icon--nav-people me-1"></i>${userCount} users</span>`);
             }
         }
 

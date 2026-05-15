@@ -20,7 +20,7 @@
         <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.welcome.help.body'|trans }}</p>
         <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.welcome.help.example'|trans }}</p>
         <p class="mb-2 small">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
             <strong>DORA:</strong> {{ 'policy_wizard.step.welcome.help.dora_replaces_vait'|trans }}
         </p>
 
@@ -114,7 +114,7 @@
                            {% if code in selected_standards %}checked{% endif %}>
                     <label class="form-check-label" for="standard-{{ code }}">
                         {{ ('policy_wizard.step.welcome.standard.' ~ code)|trans }}
-                        <i class="bi bi-info-circle text-muted ms-1"
+                        <i class="fa-icon fa-icon--ui-info text-muted ms-1"
                            data-bs-toggle="tooltip"
                            data-bs-placement="right"
                            title="{{ ('policy_wizard.step.welcome.tooltip.' ~ code)|trans }}"

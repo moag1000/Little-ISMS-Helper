@@ -23,7 +23,7 @@
     <section class="fa-section mb-4" data-test="impact-coverage">
         <div class="fa-section__header">
             <h2 class="fa-section__title">
-                <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
                 {{ ('coverage.impact.title.' ~ entity_label)|trans({}, 'compliance') }}
                 {{ pill.render(impact.total, 'primary', {class: 'ms-2'}) }}
             </h2>
@@ -31,7 +31,7 @@
                 <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                         data-bs-toggle="modal"
                         data-bs-target="#impactCoverageModal-{{ entity_label }}">
-                    <i class="bi bi-eye" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                     {{ 'coverage.impact.view_modal'|trans({}, 'compliance') }}
                 </button>
             </div>
@@ -52,7 +52,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title h5">
-                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
                         {{ ('coverage.impact.title.' ~ entity_label)|trans({}, 'compliance') }}
                     </h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

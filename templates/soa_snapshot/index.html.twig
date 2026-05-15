@@ -57,11 +57,11 @@
                         <td class="fa-table__cell"><code class="small">{{ snapshot.checksumSha256|slice(0, 16) }}…</code></td>
                         <td class="fa-table__cell fa-table__cell--actions">
                             <a href="{{ path('app_soa_snapshot_show', { id: snapshot.id }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                 <span class="fa-cyber-btn__label">{{ 'common.view'|trans({}, 'messages') }}</span>
                             </a>
                             <a href="{{ path('app_soa_snapshot_export_csv', { id: snapshot.id }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-turbo="false">
-                                <i class="bi bi-download" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                                 <span class="fa-cyber-btn__label">{{ 'soa.snapshot.action.export_csv'|trans({}, 'soa') }}</span>
                             </a>
                         </td>

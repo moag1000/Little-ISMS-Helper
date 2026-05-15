@@ -69,7 +69,7 @@
                              tabindex="0"
                              aria-label="{{ 'import.upload.file_label'|trans({}, 'data_import') }}"
                              style="border: 2px dashed var(--border); border-radius: var(--radius-md); background: var(--surface-2); cursor: pointer; transition: border-color 0.15s, background 0.15s;">
-                            <i class="bi bi-file-earmark-arrow-up"
+                            <i class="fa-icon fa-icon--nav-upload"
                                aria-hidden="true"
                                style="font-size: 2.5rem; color: var(--color-primary);"></i>
                             <p class="mt-2 mb-1 fw-semibold" style="color: var(--text);">
@@ -95,14 +95,14 @@
 
                     <div class="d-flex gap-2 mt-4 flex-wrap">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                             <span class="fa-cyber-btn__label">{{ 'import.action.upload'|trans({}, 'data_import') }}</span>
                         </button>
                         <a href="{{ path('app_bulk_import_sample', { _locale: app.request.locale, entityType: entityType }) }}"
                            class="fa-cyber-btn fa-cyber-btn--ghost"
                            download
                            title="{{ 'import.action.download_sample_help'|trans({}, 'data_import') }}">
-                            <i class="bi bi-download" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                             <span class="fa-cyber-btn__label">{{ 'import.action.download_sample'|trans({}, 'data_import') }}</span>
                         </a>
                         <a href="{{ path('app_bulk_import_index', { _locale: app.request.locale, entityType: entityType }) }}"

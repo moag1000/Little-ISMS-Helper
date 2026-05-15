@@ -77,7 +77,7 @@ export default class extends Controller {
                             class="btn btn-sm btn-outline-danger"
                             data-action="sso-role-mapping#removeRow"
                             aria-label="Remove mapping">
-                        <i class="bi bi-trash" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>`;
