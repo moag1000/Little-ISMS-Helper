@@ -357,7 +357,7 @@
                         {% endif %}
                         {# F25: Verfahrensverzeichnis-Export (Art. 30 DSGVO) — BfDI-Muster #}
                         {% if is_module_active('privacy') and is_granted('ROLE_DPO') %}
-                        <li><a href="{{ path('app_vvt_export_xlsx') }}" class="{% if current_route starts with 'app_vvt_export_' %}active{% endif %}" data-turbo="false">
+                        <li><a href="{{ path('app_vvt_export_xlsx') }}" class="{% if current_route starts with 'app_vvt_export_' %}active{% endif %}" data-turbo="false" data-turbo-prefetch="false">
                             <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'eu_authorities.vvt.title'|trans({}, 'eu_authorities') }}</span>
@@ -870,7 +870,7 @@
                         </a></li>
                         {% endif %}
                         {% if is_granted('ROLE_AUDITOR') %}
-                        <li><a href="{{ path('app_mris_audit_report') }}" class="{% if current_route == 'app_mris_audit_report' %}active{% endif %}">
+                        <li><a href="{{ path('app_mris_audit_report') }}" class="{% if current_route == 'app_mris_audit_report' %}active{% endif %}" data-turbo="false" data-turbo-prefetch="false">
                             <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.mris_audit_report'|trans({}, 'nav') }}</span>
