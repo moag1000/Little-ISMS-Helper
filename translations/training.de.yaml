@@ -84,7 +84,7 @@ training:
     program_type: '-- Programm-Typ wählen --'
   help:
     duration: Dauer in Minuten (15-480)
-    participants: STRG gedrückt halten um mehrere Teilnehmer auszuwählen
+    participants: Namen der Teilnehmer (ein Name pro Zeile oder kommasepariert)
     covered_controls: Welche ISO 27001 Controls werden durch diese Schulung adressiert?
     compliance_requirements: Welche Compliance-Anforderungen werden durch diese Schulung
       erfüllt? (z.B. DORA, TISAX, NIS2)
