@@ -83,4 +83,28 @@ class AdminHubCatalogTest extends TestCase
         $this->assertGreaterThanOrEqual(30, $count);
         $this->assertLessThanOrEqual(75, $count);
     }
+
+    #[Test]
+    public function everyIconValueIsAuroraPrefixed(): void
+    {
+        foreach ($this->catalog->getGroups() as $group) {
+            $this->assertStringStartsWith(
+                'fa-icon--',
+                $group['icon'],
+                sprintf('Group "%s" icon "%s" must be an Aurora class (fa-icon--*)', $group['key'], $group['icon']),
+            );
+            foreach ($group['modules'] as $module) {
+                $this->assertStringStartsWith(
+                    'fa-icon--',
+                    $module['icon'],
+                    sprintf(
+                        'Module "%s" (group "%s") icon "%s" must be an Aurora class (fa-icon--*)',
+                        $module['key'],
+                        $group['key'],
+                        $module['icon'],
+                    ),
+                );
+            }
+        }
+    }
 }
