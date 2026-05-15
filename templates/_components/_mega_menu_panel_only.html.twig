@@ -404,8 +404,8 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        {# F30: DORA Register of Information (RoI) XBRL Export #}
-                        {% if is_module_active('nis2_dora') and is_granted('ROLE_MANAGER') %}
+                        {# F30: DORA Register of Information (RoI) XBRL Export — only for DORA-obligated tenants #}
+                        {% if is_module_active('nis2_dora') and is_granted('ROLE_MANAGER') and is_dora_obligated() %}
                         <li><a href="{{ path('dora_roi_index') }}" class="{% if current_route starts with 'dora_roi_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-file-earmark-spreadsheet" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -837,7 +837,8 @@
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.specialized_tools'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
-                        {% if is_module_active('nis2_dora') or is_module_active('compliance') %}
+                        {# DORA Compliance Dashboard — requires module + DORA-obligated tenant #}
+                        {% if (is_module_active('nis2_dora') or is_module_active('compliance')) and is_dora_obligated() %}
                         <li><a href="{{ path('app_dora_compliance_dashboard') }}" class="{% if current_route starts with 'app_dora_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-building-check" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">

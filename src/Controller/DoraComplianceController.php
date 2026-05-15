@@ -21,6 +21,7 @@ use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
 use App\Service\PdfExportService;
+use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,13 +61,25 @@ class DoraComplianceController extends AbstractController
         private readonly TrainingRepository $trainingRepository,
         private readonly PdfExportService $pdfExportService,
         private readonly Security $security,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
     #[Route('/dora-compliance', name: 'app_dora_compliance_dashboard')]
     public function dashboard(): Response
     {
+        // Tenant-level DORA gate: redirect non-DORA-obligated tenants away.
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant !== null && !$tenant->isDoraObligated()) {
+            $this->addFlash('info', $this->translator->trans(
+                'dora.not_applicable_to_tenant',
+                [],
+                'dora'
+            ));
+            return $this->redirectToRoute('app_dashboard');
+        }
+
         // Check if DORA framework exists and is active
         $doraFramework = $this->complianceFrameworkRepository->findOneBy(['code' => 'DORA']);
 

@@ -249,6 +249,29 @@ class AssetRepository extends ServiceEntityRepository
     }
 
     /**
+     * Count assets for a tenant that are flagged as DORA-relevant.
+     *
+     * Returns 0 gracefully when the isDoraRelevant field is not yet present
+     * (e.g. when the entity-level DORA flag migration has not yet run).
+     * Once feat/dora-roi-scope-entity-flag is merged this returns a real count.
+     */
+    public function countByTenantAndDoraRelevant(Tenant $tenant): int
+    {
+        try {
+            return (int) $this->createQueryBuilder('a')
+                ->select('COUNT(a.id)')
+                ->where('a.tenant = :tenant')
+                ->andWhere('a.isDoraRelevant = true')
+                ->setParameter('tenant', $tenant)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (\Throwable) {
+            // isDoraRelevant column not yet available — safe default
+            return 0;
+        }
+    }
+
+    /**
      * Run a callback with the Doctrine TenantFilter temporarily disabled.
      */
     private function withoutTenantFilter(callable $fn): mixed

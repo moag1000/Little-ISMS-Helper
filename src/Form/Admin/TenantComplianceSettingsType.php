@@ -125,6 +125,17 @@ final class TenantComplianceSettingsType extends AbstractType
                 'translation_domain' => 'admin',
                 'attr' => ['min' => 0, 'max' => 100000],
             ])
+            ->add('doraEntityCategory', ChoiceType::class, [
+                'label'              => 'admin.tenant_settings.dora_entity_category',
+                'help'               => 'admin.tenant_settings.dora_entity_category_help',
+                'choices'            => [
+                    'admin.tenant_settings.dora_entity_category.none'                     => \App\Entity\Tenant::DORA_NONE,
+                    'admin.tenant_settings.dora_entity_category.financial_entity'         => \App\Entity\Tenant::DORA_FINANCIAL_ENTITY,
+                    'admin.tenant_settings.dora_entity_category.critical_ict_third_party' => \App\Entity\Tenant::DORA_CRITICAL_ICT_THIRD_PARTY,
+                ],
+                'required'           => true,
+                'translation_domain' => 'admin',
+            ])
         ;
 
         // JSON-fields with prettty-print transformer.

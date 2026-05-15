@@ -61,6 +61,12 @@ final class DoraRoiExportDueRule extends AbstractGlobalAlvaHintRule
 
     public function evaluate(Tenant $tenant, ?User $user): ?AlvaHint
     {
+        // Precondition: tenant must be DORA-obligated at the organisation level.
+        // Non-DORA tenants (doraEntityCategory === 'none') never see DORA hints.
+        if (!$tenant->isDoraObligated()) {
+            return null;
+        }
+
         $record = $this->roiRepository->findCurrentYearForTenant($tenant);
 
         // No record at all OR record exists but not submitted → fire hint

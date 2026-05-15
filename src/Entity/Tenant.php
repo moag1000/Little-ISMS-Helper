@@ -145,6 +145,24 @@ class Tenant
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $nis2RegisteredAt = null;
 
+    /**
+     * DORA Art. 2 entity classification — determines whether this tenant is subject to DORA:
+     * - none:                    Not subject to DORA (default — most tenants)
+     * - financial_entity:        Bank / Versicherer / Investmentfirm per DORA Art. 2(2)
+     * - critical_ict_third_party: Designated CTPP by ESAs per DORA Art. 31
+     *
+     * When 'none', all DORA-specific UI, routes, and AlvaHint rules are suppressed.
+     * This flag is tenant-level (is this organisation DORA-obligated at all?).
+     * Entity-level DORA relevance (which assets/suppliers are RoI-relevant) is
+     * managed via Supplier.isDoraRelevant and Asset.isDoraRelevant.
+     */
+    public const DORA_NONE                     = 'none';
+    public const DORA_FINANCIAL_ENTITY         = 'financial_entity';
+    public const DORA_CRITICAL_ICT_THIRD_PARTY = 'critical_ict_third_party';
+
+    #[ORM\Column(length: 40, nullable: false, options: ['default' => 'none'])]
+    private string $doraEntityCategory = self::DORA_NONE;
+
     // Tier-1 Compliance Settings (locale + audit-window + DPO + TLP + supervisory authorities + retention policies).
     #[ORM\Column(length: 10, nullable: true, options: ['default' => 'de_DE'])]
     private ?string $locale = 'de_DE';
@@ -295,6 +313,25 @@ class Tenant
     public function isNis2Regulated(): bool
     {
         return in_array($this->nis2Classification, [self::NIS2_ESSENTIAL, self::NIS2_IMPORTANT], true);
+    }
+
+    public function getDoraEntityCategory(): string
+    {
+        return $this->doraEntityCategory;
+    }
+
+    public function setDoraEntityCategory(string $doraEntityCategory): static
+    {
+        $this->doraEntityCategory = $doraEntityCategory;
+        return $this;
+    }
+
+    /**
+     * Returns true when this tenant is subject to DORA (any category other than 'none').
+     */
+    public function isDoraObligated(): bool
+    {
+        return $this->doraEntityCategory !== self::DORA_NONE;
     }
 
     public function __construct()

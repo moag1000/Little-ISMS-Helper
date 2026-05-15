@@ -307,5 +307,29 @@
             </div>
         </div>
     </section>
+
+    {# DORA Obligation KPI tile — only for DORA-obligated tenants #}
+    {% if is_module_active('nis2_dora') and is_dora_obligated() %}
+    <section class="mt-4">
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <i class="fa-icon fa-icon--regulator text-warning" aria-hidden="true"></i>
+                    <h2 class="h6 mb-0">{{ 'compliance_manager.section.dora_status'|trans }}</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                {{ _fa_feature_card.render({
+                    label:   'compliance_manager.kpi.dora_roi_status'|trans,
+                    value:   'compliance_manager.kpi.dora_roi_status_open'|trans,
+                    icon:    'file-earmark-spreadsheet',
+                    variant: 'warning',
+                    link:    path('dora_roi_index'),
+                    linkLabel: 'compliance_manager.kpi.dora_roi_open'|trans,
+                }) }}
+            </div>
+        </div>
+    </section>
+    {% endif %}
 </main>
 {% endblock %}

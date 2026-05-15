@@ -205,6 +205,8 @@ eu_authorities:
             confirmation_required: 'Confirmation number is required.'
         success:
             submitted: 'DORA RoI marked as submitted. Confirmation number: %number%'
+        info:
+            not_applicable_to_tenant: 'DORA does not apply to this tenant. Set the DORA obligation status under Tenant Settings.'
         alva:
             overdue_authority_report:
                 title: 'EU Authority Report Overdue'

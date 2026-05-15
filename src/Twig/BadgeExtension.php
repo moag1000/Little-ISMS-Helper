@@ -57,7 +57,6 @@ class BadgeExtension
         'investigating' => 'info',
 
         // Generic statuses
-        'active' => 'success',
         'inactive' => 'secondary',
         'pending' => 'warning',
         'approved' => 'success',
@@ -97,10 +96,8 @@ class BadgeExtension
         'obsolete' => 'danger',
         'in_review' => 'info',
         'archived' => 'secondary',
-        // 'active' legacy document state — neutral pill so auditors
+        // 'active' document state — neutral pill so auditors
         // can distinguish pre-wizard hand-uploads from approved docs.
-        // Overrides the generic 'active' => 'success' entry above.
-        // Note: PHP const arrays with duplicate keys take the last value.
         'active' => 'secondary',
     ];
 

@@ -163,13 +163,12 @@ class CrisisTeamType extends AbstractType
                 'label' => 'crisis_team.field.virtual_meeting_url',
                 'required' => false,
                 'default_protocol' => null,
-                'constraints' => [new Url(requireTld: false)],
                 'attr' => [
                     'placeholder' => 'crisis_team.placeholder.virtual_meeting_url',
                 ],
                 'help' => 'crisis_team.help.virtual_meeting_url',
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: false),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])

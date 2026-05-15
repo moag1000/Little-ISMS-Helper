@@ -189,7 +189,7 @@ final class AuthorityNotificationController extends AbstractController
             if ($value instanceof \DateTimeInterface) {
                 $value = $value->format(\DateTimeInterface::ATOM);
             } elseif (is_object($value)) {
-                $value = (string) ($value->getId() ?? class_basename($value));
+                $value = (string) ($value->getId() ?? (new \ReflectionClass($value))->getShortName());
             }
         });
 

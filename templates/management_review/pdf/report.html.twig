@@ -113,6 +113,15 @@
             <th>{{ 'management_review.field.tenant'|trans({}, 'management_review') }}</th>
             <td>{{ review.tenant ? review.tenant.name : '—' }}</td>
         </tr>
+        {% if review.tenant is not null %}
+        <tr>
+            <th>{{ 'management_review.field.dora_obligation'|trans({}, 'management_review') }}</th>
+            <td>
+                {% set _doraCategory = review.tenant.doraEntityCategory %}
+                {{ ('management_review.dora_category.' ~ _doraCategory)|trans({}, 'management_review') }}
+            </td>
+        </tr>
+        {% endif %}
         <tr>
             <th>{{ 'management_review.field.reviewed_by'|trans({}, 'management_review') }}</th>
             <td>{{ review.reviewedBy ? review.reviewedBy.fullName|default(review.reviewedBy.email) : '—' }}</td>

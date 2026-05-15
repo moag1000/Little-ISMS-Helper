@@ -370,8 +370,7 @@ class PolicyPdfExporter
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $output = $dompdf->output();
-        return $output ?? '';
+        return $dompdf->output();
     }
 
     private function stringOrNull(mixed $value): ?string

@@ -151,6 +151,9 @@ compliance_manager:
         open_findings: 'Open Findings'
         upcoming_audits: 'Audits 90d'
         approval_queue: 'Doc-Approval-Queue'
+        dora_roi_status: 'DORA RoI-Status'
+        dora_roi_status_open: 'Ausstehend'
+        dora_roi_open: 'RoI öffnen'
     section:
         coverage_heatmap: 'Coverage-Heatmap pro Framework'
         lowest_coverage: 'Top-3 Frameworks mit niedrigster Coverage'
@@ -158,6 +161,7 @@ compliance_manager:
         audit_schedule: 'Audit-Schedule (nächste 90 Tage)'
         approval_queue: 'Dokument-Approval-Queue'
         quick_actions: 'Quick-Actions'
+        dora_status: 'DORA-Verpflichtungsstatus'
     table:
         framework: 'Framework'
         coverage: 'Coverage'
@@ -281,11 +285,15 @@ dpo:
         activities_needing_dpia: 'Verfahren ohne DSFA'
         activities_due_review: 'Verfahren zur Überprüfung'
         third_country_transfers: 'Drittlandsübermittlungen'
+        dora_obligation: 'DORA-Verpflichtung'
+        dora_obligated: 'Verpflichtet'
+        dora_roi_link: 'RoI öffnen'
     section:
         open_breaches: 'Offene Datenpannen (Art. 33 DSGVO)'
         dpias_in_progress: 'Datenschutz-Folgenabschätzungen in Bearbeitung (Art. 35 DSGVO)'
         activities_needing_dpia: 'Verarbeitungsverfahren ohne DSFA'
         quick_actions: 'Schnellzugriff'
+        dora_status: 'DORA-Verpflichtungsstatus'
     empty:
         no_breaches_title: 'Keine offenen Datenpannen'
         no_breaches_text: 'Aktuell sind keine offenen Datenpannen zu bearbeiten.'

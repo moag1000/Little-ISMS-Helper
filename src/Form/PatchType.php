@@ -222,12 +222,11 @@ class PatchType extends AbstractType
                 'label' => 'patch.field.download_url',
                 'required' => false,
                 'default_protocol' => null,
-                'constraints' => [new Url(requireTld: false)],
                 'attr' => [
                     'placeholder' => 'https://vendor.com/patches/...',
                 ],
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: false),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])
@@ -235,12 +234,11 @@ class PatchType extends AbstractType
                 'label' => 'patch.field.documentation_url',
                 'required' => false,
                 'default_protocol' => null,
-                'constraints' => [new Url(requireTld: false)],
                 'attr' => [
                     'placeholder' => 'https://vendor.com/docs/...',
                 ],
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https'], requireTld: false),
                     new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])
