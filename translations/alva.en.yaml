@@ -28,6 +28,18 @@ processing_activity:
         title: 'DPIA required (GDPR Art. 35)'
         body: 'Activity indicates a mandatory DPIA: automated decision-making, large-scale special categories, or self-flagged high risk. No DPIA on file yet.'
         action: 'Create DPIA'
+    avv_required:
+        title: 'AVV supplier missing — GDPR Art. 28'
+        body: 'This processing activity involves processors, but no structured supplier FK is set. GDPR Art. 28 requires a written DPA naming the processor. Please select the supplier from the supplier register.'
+        action: 'Select processor (GDPR Art. 28)'
+        picker_title: 'Select processors (GDPR Art. 28)'
+        picker_subtitle: 'Pick the suppliers from the supplier register who act as processors for this processing activity.'
+        picker_breadcrumb: 'AVV picker'
+        picker_section_title: 'Available suppliers'
+        no_candidates: 'No suppliers in this tenant yet. Please create a supplier first.'
+        create_supplier: 'Create supplier'
+        save: 'Save selection'
+        flash_saved: 'AVV suppliers saved.'
 
 vulnerability:
     critical_unpatched:
@@ -91,11 +103,47 @@ crisis_team:
         body_never: 'No training documented yet. BSI 200-4 §4.2 / ISO 22301 Cl. 7.2 require recurring exercises.'
         action: 'Schedule tabletop'
 
+document:
+    acknowledgement_audience:
+        title: 'Who needs to acknowledge this document?'
+        body: 'This document requires user acknowledgement (ISO 27001 A.6.3) but no explicit audience is set. By default the campaign broadcasts to all active tenant users — a targeted audience makes the awareness evidence audit-ready.'
+        action: 'Set audience'
+        picker_title: 'Set acknowledgement audience'
+        picker_subtitle: 'Pick the employees who must acknowledge this document. Leaving the selection empty keeps the legacy broadcast-to-all behaviour.'
+        picker_breadcrumb: 'Set audience'
+        picker_section_title: 'Available users in tenant'
+        no_candidates: 'No active users in this tenant.'
+        filter_placeholder: 'Search by e-mail or name…'
+        save: 'Save audience'
+        empty_means_all: 'Note: empty selection keeps the default "all active tenant users".'
+        flash_saved: 'Acknowledgement audience saved.'
+        flash_not_required: 'Document does not require acknowledgement — audience picker skipped.'
+
+training:
+    mandatory_audience:
+        title: 'Mandatory training without audience'
+        body: 'This training is flagged mandatory (ISO 27001 A.6.3 Awareness), but no required participants are selected yet. Assigning the audience explicitly makes the awareness evidence audit-ready.'
+        action: 'Select required participants'
+        picker_title: 'Select required participants'
+        picker_subtitle: 'Pick the employees who must take this mandatory training. Already-assigned users are greyed out.'
+        picker_breadcrumb: 'Audience picker'
+        picker_section_title: 'Available users in tenant'
+        no_candidates: 'No active users in this tenant.'
+        filter_placeholder: 'Search by e-mail or name…'
+        already_assigned: 'Already assigned'
+        save: 'Save audience'
+        flash_saved: '%count% new required participants assigned.'
+        flash_not_mandatory: 'Training is not flagged mandatory — audience picker skipped.'
+
 risk:
     no_treatment:
         title: 'High risk without treatment plan'
         body: 'Inherent risk level %level% — ISO 27001 Cl. 6.1.3 requires a documented treatment decision.'
         action: 'Create treatment plan'
+    requires_dpia:
+        title: 'DPIA required — Data Protection Impact Assessment missing'
+        body: 'Risk is flagged as DPIA-required (GDPR Art. 35) but no DPIA is linked yet. Pre-fill from risk data is available — description, linked asset and data-subject impact are carried over.'
+        action: 'Create DPIA with pre-fill'
 
 control:
     orphan:
@@ -114,6 +162,10 @@ incident:
         title: 'Incident without risk-treatment plan'
         body: 'High-severity incident on a high-CIA asset without a documented treatment plan. ISO 27001 A.5.27 — lessons learned.'
         action: 'Create treatment plan'
+    requires_data_breach:
+        title: 'GDPR Art. 33 — document data breach (72h deadline)'
+        body: 'This incident is flagged as a data breach, but no linked data-breach record exists. GDPR Art. 33 requires notification to the supervisory authority within 72h of becoming aware. Missing the deadline = fines up to 10 M€ / 2% group turnover (Art. 83(4)(a)).'
+        action: 'Create data breach (prefilled)'
 
 policy_wizard:
     settings_drift:

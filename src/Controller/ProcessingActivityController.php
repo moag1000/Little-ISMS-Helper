@@ -9,8 +9,10 @@ use DateTime;
 use Exception;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\ProcessingActivity;
+use App\Entity\Supplier;
 use App\Form\ProcessingActivityType;
 use App\Service\ModuleConfigurationService;
+use App\Service\PreFiller\AvvPickerPreFiller;
 use App\Service\ProcessingActivityService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
@@ -34,6 +36,7 @@ class ProcessingActivityController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly ?AvvPickerPreFiller $avvPickerPreFiller = null,
     ) {}
 
     /**
@@ -484,6 +487,60 @@ class ProcessingActivityController extends AbstractController
             'is_compliant' => $isCompliant,
             'errors' => $errors,
             'completeness_percentage' => $processingActivity->getCompletenessPercentage(),
+        ]);
+    }
+
+    /**
+     * Sprint-2 P-7 Wave-2 Trigger-2: AVV (Auftragsverarbeitungs-Vertrag) supplier picker.
+     *
+     * GET shows a Supplier-multi-select pre-filled with legacy `processors`-JSON
+     * name matches; POST persists the selected suppliers onto
+     * ProcessingActivity::$processorSuppliers (GDPR Art. 28(1)/(3)).
+     * Tenant-isolated; only Suppliers of the current tenant are offered.
+     */
+    #[Route('/processing-activity/{id}/avv-picker', name: 'app_processing_activity_avv_picker', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function avvPicker(Request $request, ProcessingActivity $processingActivity): Response
+    {
+        if ($redirect = $this->checkModuleActive('privacy')) {
+            return $redirect;
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null || $processingActivity->getTenant() !== $tenant) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($request->isMethod('POST')) {
+            $supplierIds = array_filter(
+                (array) $request->request->all('supplier_ids'),
+                static fn($id): bool => is_string($id) && ctype_digit($id),
+            );
+
+            // Reset + re-attach (idempotent)
+            foreach ($processingActivity->getProcessorSuppliers() as $existing) {
+                $processingActivity->removeProcessorSupplier($existing);
+            }
+            foreach ($supplierIds as $id) {
+                $supplier = $this->entityManager->getRepository(Supplier::class)->find((int) $id);
+                if ($supplier instanceof Supplier && $supplier->getTenant() === $tenant) {
+                    $processingActivity->addProcessorSupplier($supplier);
+                }
+            }
+            $this->entityManager->flush();
+
+            $this->addFlash('success', $this->translator->trans('processing_activity.avv_required.flash_saved', [], 'alva'));
+
+            return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
+        }
+
+        $candidates = $this->avvPickerPreFiller !== null
+            ? $this->avvPickerPreFiller->candidatesFor($processingActivity, $tenant)
+            : [];
+
+        return $this->render('processing_activity/avv_picker.html.twig', [
+            'processing_activity' => $processingActivity,
+            'candidates' => $candidates,
+            'already_selected' => $processingActivity->getProcessorSuppliers(),
         ]);
     }
 

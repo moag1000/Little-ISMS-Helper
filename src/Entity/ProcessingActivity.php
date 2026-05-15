@@ -364,9 +364,30 @@ class ProcessingActivity
     /**
      * List of processors involved (name, contact, description)
      * JSON array of objects: [{"name": "...", "contact": "...", "description": "...", "contract_date": "..."}]
+     *
+     * Sprint-2 P-7 Wave-2: kept for legacy / free-text capture, but the
+     * canonical AVV link is via {@see ProcessingActivity::$processorSuppliers}.
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $processors = null;
+
+    /**
+     * Sprint-2 P-7 Wave-2 / P0-15 — structured ProcessingActivity ↔ Supplier
+     * link for Auftragsverarbeiter (Art. 28 GDPR). Replaces the JSON
+     * `processors` blob with a real FK so the supplier register and the
+     * AVV register stay in sync.
+     *
+     * Owning side; no inverse on Supplier (Suppliers are referenced from
+     * many sides — adding inverse collections per usage would explode the
+     * entity surface).
+     *
+     * @var Collection<int, Supplier>
+     */
+    #[ORM\ManyToMany(targetEntity: Supplier::class)]
+    #[ORM\JoinTable(name: 'processing_activity_processor_supplier')]
+    #[ORM\JoinColumn(name: 'processing_activity_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'supplier_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $processorSuppliers;
 
     // ============================================================================
     // Joint Controllers (Art. 26 GDPR)
@@ -492,6 +513,7 @@ class ProcessingActivity
         $this->consents = new ArrayCollection();
         $this->contactDeputyPersons = new ArrayCollection();
         $this->dataProtectionOfficerDeputyPersons = new ArrayCollection();
+        $this->processorSuppliers = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
     }
@@ -1032,6 +1054,28 @@ class ProcessingActivity
     public function setProcessors(?array $processors): static
     {
         $this->processors = $processors;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Supplier>
+     */
+    public function getProcessorSuppliers(): Collection
+    {
+        return $this->processorSuppliers;
+    }
+
+    public function addProcessorSupplier(Supplier $supplier): static
+    {
+        if (!$this->processorSuppliers->contains($supplier)) {
+            $this->processorSuppliers->add($supplier);
+        }
+        return $this;
+    }
+
+    public function removeProcessorSupplier(Supplier $supplier): static
+    {
+        $this->processorSuppliers->removeElement($supplier);
         return $this;
     }
 

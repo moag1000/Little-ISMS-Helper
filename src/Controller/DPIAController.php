@@ -9,11 +9,13 @@ use DateTime;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Asset;
 use App\Entity\DataProtectionImpactAssessment;
+use App\Entity\Risk;
 use App\Form\DataProtectionImpactAssessmentType;
 use App\Repository\CommentRepository;
 use App\Service\DataProtectionImpactAssessmentService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
+use App\Service\PreFiller\DpiaPreFiller;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,6 +38,7 @@ class DPIAController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
         private readonly ?CommentRepository $commentRepository = null,
+        private readonly ?DpiaPreFiller $dpiaPreFiller = null,
     ) {}
 
     /**
@@ -93,6 +96,19 @@ class DPIAController extends AbstractController
             // Tenant-Isolation: nur Assets des aktuellen Mandanten verlinken
             if ($relatedAsset !== null && $tenant !== null && $relatedAsset->getTenant() === $tenant) {
                 $dataProtectionImpactAssessment->setRelatedAsset($relatedAsset);
+            }
+        }
+
+        // Sprint-2 P-7 Wave-2 Trigger-1: pre-fill from Risk via AlvaHint
+        // action "DPIA anlegen mit Vorbefüllung" — copies title, description,
+        // necessity placeholder, and linked Asset from the Risk so the DPO
+        // does not retype context. Tenant-isolated.
+        $fromRiskId = $request->query->get('from_risk');
+        if ($fromRiskId !== null && ctype_digit((string) $fromRiskId) && $this->dpiaPreFiller !== null) {
+            $risk = $this->entityManager->getRepository(Risk::class)->find((int) $fromRiskId);
+            $tenant = $this->tenantContext->getCurrentTenant();
+            if ($risk instanceof Risk && $tenant !== null && $risk->getTenant() === $tenant) {
+                $this->dpiaPreFiller->fromRisk($risk, $dataProtectionImpactAssessment);
             }
         }
 

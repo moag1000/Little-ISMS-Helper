@@ -1,0 +1,72 @@
+{# Aurora v4 — Regulatory deadline counter pill.
+ #
+ # Renders a status pill that surfaces the remaining time until a hard
+ # regulatory deadline (GDPR Art. 33 72h, NIS2 Art. 23 24h/72h, DORA Art.
+ # 19, ...). The pill auto-tones based on the remaining window:
+ #   < 24h          → danger
+ #   < 7 days       → warning
+ #   else           → success
+ # Past the deadline the pill flips to a stable "overdue"-danger state.
+ #
+ # The Stimulus controller `deadline-counter` updates the visible label
+ # every minute so the operator sees the countdown tick without a page
+ # reload — critical for the last hour of the 72h GDPR window.
+ #
+ # Args (props):
+ #   deadline_at  : DateTime|DateTimeImmutable|null  Required.
+ #   label        : string                            Optional aria-label.
+ #   compact      : bool                              Default false. If true,
+ #                                                    drop the icon for inline
+ #                                                    use in tables.
+ #
+ # Usage:
+ #   {% import '_components/_fa_deadline_counter.html.twig' as _fa_deadline_counter %}
+ #   {{ _fa_deadline_counter.render({deadline_at: incident.detectedAt|date_modify('+72 hours'), label: 'DSGVO Art. 33 SLA'}) }}
+ #}
+{% macro render(props = {}) %}
+    {% set deadline = props.deadline_at|default(null) %}
+    {% set label = props.label|default('') %}
+    {% set compact = props.compact|default(false) %}
+
+    {% if deadline is null %}
+        {# No deadline → render nothing rather than a broken pill. #}
+    {% else %}
+        {% set deadlineTs = deadline|date('U')|number_format(0, '.', '') %}
+        {% set nowTs = 'now'|date('U')|number_format(0, '.', '') %}
+        {% set remainingSeconds = deadlineTs - nowTs %}
+        {% set overdue = remainingSeconds <= 0 %}
+
+        {% if overdue %}
+            {% set tone = 'danger' %}
+        {% elseif remainingSeconds < 86400 %}
+            {% set tone = 'danger' %}
+        {% elseif remainingSeconds < 604800 %}
+            {% set tone = 'warning' %}
+        {% else %}
+            {% set tone = 'success' %}
+        {% endif %}
+
+        {% set hours = (remainingSeconds / 3600)|round(0, 'floor')|abs %}
+        {% set displayText = overdue
+            ? ('deadline_counter.overdue'|trans({'%hours%': hours}, 'incident'))
+            : ('deadline_counter.remaining'|trans({'%hours%': hours}, 'incident')) %}
+
+        <span class="fa-status-pill fa-status-pill--{{ tone }} fa-deadline-counter{% if compact %} fa-deadline-counter--compact{% endif %}"
+              role="status"
+              {% if label %}aria-label="{{ label }}: {{ displayText }}"{% endif %}
+              data-controller="deadline-counter"
+              data-deadline-counter-deadline-value="{{ deadline|date('c') }}"
+              data-deadline-counter-overdue-template-value="{{ 'deadline_counter.overdue'|trans({'%hours%': '%hours%'}, 'incident') }}"
+              data-deadline-counter-remaining-template-value="{{ 'deadline_counter.remaining'|trans({'%hours%': '%hours%'}, 'incident') }}">
+            {% if not compact %}
+                <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
+            {% endif %}
+            {% if label %}
+                <span class="fa-deadline-counter__label">{{ label }}:</span>
+            {% endif %}
+            <span class="fa-deadline-counter__display" data-deadline-counter-target="display">
+                {{ displayText }}
+            </span>
+        </span>
+    {% endif %}
+{% endmacro %}

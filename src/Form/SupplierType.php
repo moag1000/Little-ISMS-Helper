@@ -200,185 +200,28 @@ class SupplierType extends AbstractType
                     'placeholder' => 'supplier.placeholder.certifications',
                 ],
             ])
-            ->add('hasDPA', CheckboxType::class, [
-                'label' => 'supplier.field.has_dpa',
-                'help' => 'supplier.help.has_dpa',
-                'required' => false,
-            ])
-            ->add('dpaSignedDate', DateType::class, [
-                'label' => 'supplier.field.dpa_signed_date',
-                'help' => 'supplier.help.dpa_signed',
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-
-            // ── WS-3: DORA ROI (Register of Information) ─────────────────────
-            ->add('isDoraRelevant', CheckboxType::class, [
-                'label'    => 'supplier.field.is_dora_relevant',
-                'help'     => 'supplier.help.is_dora_relevant',
-                'required' => false,
-            ])
-            ->add('leiCode', TextType::class, [
-                'label' => 'supplier.field.lei_code',
-                'help' => 'supplier.help.lei_code',
-                'required' => false,
-                'attr' => ['maxlength' => 20, 'placeholder' => 'LEI (20 chars)'],
-            ])
-            ->add('naceCode', TextType::class, [
-                'label' => 'supplier.field.nace_code',
-                'help' => 'supplier.help.nace_code',
-                'required' => false,
-                'attr' => ['maxlength' => 10, 'placeholder' => 'z.B. 62.01'],
-            ])
-            ->add('countryOfHeadOffice', TextType::class, [
-                'label' => 'supplier.field.country_of_head_office',
-                'help' => 'supplier.help.country_of_head_office',
-                'required' => false,
-                'attr' => ['maxlength' => 2, 'placeholder' => 'DE'],
-            ])
-            ->add('ictCriticality', ChoiceType::class, [
-                'label' => 'supplier.field.ict_criticality',
-                'help' => 'supplier.help.ict_criticality',
-                'required' => false,
-                'placeholder' => 'supplier.value.na',
-                'choices' => [
-                    'supplier.ict_criticality.non_ict' => 'non_ict',
-                    'supplier.ict_criticality.important' => 'important',
-                    'supplier.ict_criticality.critical' => 'critical',
-                ],
-                'choice_translation_domain' => 'suppliers',
-            ])
-            ->add('ictFunctionType', TextType::class, [
-                'label' => 'supplier.field.ict_function_type',
-                'help' => 'supplier.help.ict_function_type',
-                'required' => false,
-                'attr' => ['maxlength' => 100, 'placeholder' => 'Cloud / SaaS / Managed Service'],
-            ])
-            ->add('substitutability', ChoiceType::class, [
-                'label' => 'supplier.field.substitutability',
-                'help' => 'supplier.help.substitutability',
-                'required' => false,
-                'placeholder' => 'supplier.value.na',
-                'choices' => [
-                    'supplier.substitutability.easy' => 'easy',
-                    'supplier.substitutability.medium' => 'medium',
-                    'supplier.substitutability.hard' => 'hard',
-                ],
-                'choice_translation_domain' => 'suppliers',
-            ])
-            ->add('hasSubcontractors', CheckboxType::class, [
-                'label' => 'supplier.field.has_subcontractors',
-                'help' => 'supplier.help.has_subcontractors',
-                'required' => false,
-            ])
-            ->add('subcontractorChain', TextareaType::class, [
-                'label' => 'supplier.field.subcontractor_chain',
-                'help' => 'supplier.help.subcontractor_chain',
-                'required' => false,
-                'mapped' => false,
-                'attr' => ['rows' => 3, 'placeholder' => 'Provider A' . "\n" . 'Provider B' . "\n" . 'Provider C'],
-            ])
-            ->add('processingLocations', TextareaType::class, [
-                'label' => 'supplier.field.processing_locations',
-                'help' => 'supplier.help.processing_locations',
-                'required' => false,
-                'mapped' => false,
-                'attr' => ['rows' => 2, 'placeholder' => 'DE, IE, US'],
-            ])
-            ->add('lastDoraAuditDate', DateType::class, [
-                'label' => 'supplier.field.last_dora_audit_date',
-                'help' => 'supplier.help.last_dora_audit_date',
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-            ->add('hasExitStrategy', CheckboxType::class, [
-                'label' => 'supplier.field.has_exit_strategy',
-                'help' => 'supplier.help.has_exit_strategy',
-                'required' => false,
-            ])
-
-            // ── WS-3: DSGVO Art. 28 processor fields ─────────────────────────
-            ->add('gdprProcessorStatus', ChoiceType::class, [
-                'label' => 'supplier.field.gdpr_processor_status',
-                'help' => 'supplier.help.gdpr_processor_status',
-                'required' => false,
-                'placeholder' => 'supplier.value.na',
-                'choices' => [
-                    'supplier.gdpr_processor_status.controller' => 'controller',
-                    'supplier.gdpr_processor_status.processor' => 'processor',
-                    'supplier.gdpr_processor_status.joint_controller' => 'joint_controller',
-                    'supplier.gdpr_processor_status.none' => 'none',
-                ],
-                'choice_translation_domain' => 'suppliers',
-            ])
-            ->add('gdprTransferMechanism', TextType::class, [
-                'label' => 'supplier.field.gdpr_transfer_mechanism',
-                'help' => 'supplier.help.gdpr_transfer_mechanism',
-                'required' => false,
-                'attr' => ['maxlength' => 50, 'placeholder' => 'SCC / Adequacy Decision / BCR'],
-            ])
-            ->add('gdprAvContractSigned', CheckboxType::class, [
-                'label' => 'supplier.field.gdpr_av_contract_signed',
-                'help' => 'supplier.help.gdpr_av_contract_signed',
-                'required' => false,
-            ])
-            ->add('gdprAvContractDate', DateType::class, [
-                'label' => 'supplier.field.gdpr_av_contract_date',
-                'help' => 'supplier.help.gdpr_av_contract_date',
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-            ->add('lksgReportingObligation', CheckboxType::class, [
-                'label' => 'supplier.field.lksg_reporting_obligation',
-                'help' => 'supplier.help.lksg_reporting_obligation',
-                'required' => false,
-            ])
-            ->add('lksgRiskCategory', ChoiceType::class, [
-                'label' => 'supplier.field.lksg_risk_category',
-                'help' => 'supplier.help.lksg_risk_category',
-                'required' => false,
-                'placeholder' => 'supplier.placeholder.lksg_risk_category',
-                'choices' => [
-                    'supplier.lksg_risk.low' => 'low',
-                    'supplier.lksg_risk.medium' => 'medium',
-                    'supplier.lksg_risk.high' => 'high',
-                    'supplier.lksg_risk.critical' => 'critical',
-                ],
-                'choice_translation_domain' => 'suppliers',
-            ])
-            ->add('lksgHumanRightsRiskScore', IntegerType::class, [
-                'label' => 'supplier.field.lksg_human_rights_risk_score',
-                'help' => 'supplier.help.lksg_human_rights_risk_score',
-                'required' => false,
-                'attr' => ['min' => 0, 'max' => 100],
-            ])
-            ->add('lksgEnvironmentalRiskScore', IntegerType::class, [
-                'label' => 'supplier.field.lksg_environmental_risk_score',
-                'help' => 'supplier.help.lksg_environmental_risk_score',
-                'required' => false,
-                'attr' => ['min' => 0, 'max' => 100],
-            ])
-            ->add('lksgRiskAnalysisDate', DateType::class, [
-                'label' => 'supplier.field.lksg_risk_analysis_date',
-                'help' => 'supplier.help.lksg_risk_analysis_date',
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-            ->add('lksgComplaintMechanism', TextareaType::class, [
-                'label' => 'supplier.field.lksg_complaint_mechanism',
-                'help' => 'supplier.help.lksg_complaint_mechanism',
-                'required' => false,
-                'attr' => ['rows' => 3],
-            ])
-            ->add('lksgPreventionMeasures', TextareaType::class, [
-                'label' => 'supplier.field.lksg_prevention_measures',
-                'help' => 'supplier.help.lksg_prevention_measures',
-                'required' => false,
-                'attr' => ['rows' => 3],
-            ])
         ;
 
-        // ── MaRisk outsourcing fields — only shown when 'marisk' module is active ─
+        // ── DSGVO / GDPR processor fields (Art. 28) — privacy module gate ──
+        // GDPR Art. 28 (Auftragsverarbeitung / DPA), Art. 44-49 (Drittland-Transfer)
+        if ($this->isModuleActive('privacy')) {
+            $this->addPrivacyFields($builder);
+        }
+
+        // ── DORA ROI (Register of Information) — nis2_dora module gate ─────
+        // DORA Art. 28 (Third-Party-Risk), Art. 30 (Sub-Contracting), RTS 2024/1773
+        if ($this->isModuleActive('nis2_dora')) {
+            $this->addDoraFields($builder);
+        }
+
+        // ── LkSG fields — lksg module gate (Lieferkettensorgfaltspflicht) ──
+        // German Supply Chain Due Diligence Act (LkSG §§ 4-10)
+        if ($this->isModuleActive('lksg')) {
+            $this->addLksgFields($builder);
+        }
+
+        // ── MaRisk outsourcing fields — marisk module gate ────────────────
+        // BaFin MaRisk AT 9 (Auslagerungen), non-ICT-Banken-Compliance
         if ($this->isModuleActive('marisk')) {
             $this->addMariskFields($builder);
         }
@@ -474,6 +317,211 @@ class SupplierType extends AbstractType
                 $view['processingLocations']->vars['value'] = implode(', ', array_map('strval', $flat));
             }
         }
+    }
+
+    /**
+     * DSGVO / GDPR fields (Art. 28 processor, Art. 44-49 transfer).
+     * Gated by 'privacy' module. Includes the classic DPA fields plus
+     * the WS-3 Art. 28 processor-status / transfer-mechanism fields.
+     */
+    private function addPrivacyFields(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('hasDPA', CheckboxType::class, [
+                'label' => 'supplier.field.has_dpa',
+                'help' => 'supplier.help.has_dpa',
+                'required' => false,
+            ])
+            ->add('dpaSignedDate', DateType::class, [
+                'label' => 'supplier.field.dpa_signed_date',
+                'help' => 'supplier.help.dpa_signed',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
+            ->add('gdprProcessorStatus', ChoiceType::class, [
+                'label' => 'supplier.field.gdpr_processor_status',
+                'help' => 'supplier.help.gdpr_processor_status',
+                'required' => false,
+                'placeholder' => 'supplier.value.na',
+                'choices' => [
+                    'supplier.gdpr_processor_status.controller' => 'controller',
+                    'supplier.gdpr_processor_status.processor' => 'processor',
+                    'supplier.gdpr_processor_status.joint_controller' => 'joint_controller',
+                    'supplier.gdpr_processor_status.none' => 'none',
+                ],
+                'choice_translation_domain' => 'suppliers',
+            ])
+            ->add('gdprTransferMechanism', TextType::class, [
+                'label' => 'supplier.field.gdpr_transfer_mechanism',
+                'help' => 'supplier.help.gdpr_transfer_mechanism',
+                'required' => false,
+                'attr' => ['maxlength' => 50, 'placeholder' => 'SCC / Adequacy Decision / BCR'],
+            ])
+            ->add('gdprAvContractSigned', CheckboxType::class, [
+                'label' => 'supplier.field.gdpr_av_contract_signed',
+                'help' => 'supplier.help.gdpr_av_contract_signed',
+                'required' => false,
+            ])
+            ->add('gdprAvContractDate', DateType::class, [
+                'label' => 'supplier.field.gdpr_av_contract_date',
+                'help' => 'supplier.help.gdpr_av_contract_date',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
+        ;
+    }
+
+    /**
+     * DORA Register-of-Information (RoI) fields per RTS 2024/1773.
+     * Gated by 'nis2_dora' module. Covers DORA Art. 28 third-party-risk
+     * + Art. 30 sub-contracting + exit-strategy reporting.
+     */
+    private function addDoraFields(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('isDoraRelevant', CheckboxType::class, [
+                'label'    => 'supplier.field.is_dora_relevant',
+                'help'     => 'supplier.help.is_dora_relevant',
+                'required' => false,
+            ])
+            ->add('leiCode', TextType::class, [
+                'label' => 'supplier.field.lei_code',
+                'help' => 'supplier.help.lei_code',
+                'required' => false,
+                'attr' => ['maxlength' => 20, 'placeholder' => 'LEI (20 chars)'],
+            ])
+            ->add('naceCode', TextType::class, [
+                'label' => 'supplier.field.nace_code',
+                'help' => 'supplier.help.nace_code',
+                'required' => false,
+                'attr' => ['maxlength' => 10, 'placeholder' => 'z.B. 62.01'],
+            ])
+            ->add('countryOfHeadOffice', TextType::class, [
+                'label' => 'supplier.field.country_of_head_office',
+                'help' => 'supplier.help.country_of_head_office',
+                'required' => false,
+                'attr' => ['maxlength' => 2, 'placeholder' => 'DE'],
+            ])
+            ->add('ictCriticality', ChoiceType::class, [
+                'label' => 'supplier.field.ict_criticality',
+                'help' => 'supplier.help.ict_criticality',
+                'required' => false,
+                'placeholder' => 'supplier.value.na',
+                'choices' => [
+                    'supplier.ict_criticality.non_ict' => 'non_ict',
+                    'supplier.ict_criticality.important' => 'important',
+                    'supplier.ict_criticality.critical' => 'critical',
+                ],
+                'choice_translation_domain' => 'suppliers',
+            ])
+            ->add('ictFunctionType', TextType::class, [
+                'label' => 'supplier.field.ict_function_type',
+                'help' => 'supplier.help.ict_function_type',
+                'required' => false,
+                'attr' => ['maxlength' => 100, 'placeholder' => 'Cloud / SaaS / Managed Service'],
+            ])
+            ->add('substitutability', ChoiceType::class, [
+                'label' => 'supplier.field.substitutability',
+                'help' => 'supplier.help.substitutability',
+                'required' => false,
+                'placeholder' => 'supplier.value.na',
+                'choices' => [
+                    'supplier.substitutability.easy' => 'easy',
+                    'supplier.substitutability.medium' => 'medium',
+                    'supplier.substitutability.hard' => 'hard',
+                ],
+                'choice_translation_domain' => 'suppliers',
+            ])
+            ->add('hasSubcontractors', CheckboxType::class, [
+                'label' => 'supplier.field.has_subcontractors',
+                'help' => 'supplier.help.has_subcontractors',
+                'required' => false,
+            ])
+            ->add('subcontractorChain', TextareaType::class, [
+                'label' => 'supplier.field.subcontractor_chain',
+                'help' => 'supplier.help.subcontractor_chain',
+                'required' => false,
+                'mapped' => false,
+                'attr' => ['rows' => 3, 'placeholder' => 'Provider A' . "\n" . 'Provider B' . "\n" . 'Provider C'],
+            ])
+            ->add('processingLocations', TextareaType::class, [
+                'label' => 'supplier.field.processing_locations',
+                'help' => 'supplier.help.processing_locations',
+                'required' => false,
+                'mapped' => false,
+                'attr' => ['rows' => 2, 'placeholder' => 'DE, IE, US'],
+            ])
+            ->add('lastDoraAuditDate', DateType::class, [
+                'label' => 'supplier.field.last_dora_audit_date',
+                'help' => 'supplier.help.last_dora_audit_date',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
+            ->add('hasExitStrategy', CheckboxType::class, [
+                'label' => 'supplier.field.has_exit_strategy',
+                'help' => 'supplier.help.has_exit_strategy',
+                'required' => false,
+            ])
+        ;
+    }
+
+    /**
+     * LkSG (Lieferkettensorgfaltspflichtengesetz) fields.
+     * Gated by 'lksg' module. Covers German Supply Chain Due Diligence Act
+     * §§ 4-10 (risk analysis, complaint mechanism, prevention measures).
+     */
+    private function addLksgFields(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('lksgReportingObligation', CheckboxType::class, [
+                'label' => 'supplier.field.lksg_reporting_obligation',
+                'help' => 'supplier.help.lksg_reporting_obligation',
+                'required' => false,
+            ])
+            ->add('lksgRiskCategory', ChoiceType::class, [
+                'label' => 'supplier.field.lksg_risk_category',
+                'help' => 'supplier.help.lksg_risk_category',
+                'required' => false,
+                'placeholder' => 'supplier.placeholder.lksg_risk_category',
+                'choices' => [
+                    'supplier.lksg_risk.low' => 'low',
+                    'supplier.lksg_risk.medium' => 'medium',
+                    'supplier.lksg_risk.high' => 'high',
+                    'supplier.lksg_risk.critical' => 'critical',
+                ],
+                'choice_translation_domain' => 'suppliers',
+            ])
+            ->add('lksgHumanRightsRiskScore', IntegerType::class, [
+                'label' => 'supplier.field.lksg_human_rights_risk_score',
+                'help' => 'supplier.help.lksg_human_rights_risk_score',
+                'required' => false,
+                'attr' => ['min' => 0, 'max' => 100],
+            ])
+            ->add('lksgEnvironmentalRiskScore', IntegerType::class, [
+                'label' => 'supplier.field.lksg_environmental_risk_score',
+                'help' => 'supplier.help.lksg_environmental_risk_score',
+                'required' => false,
+                'attr' => ['min' => 0, 'max' => 100],
+            ])
+            ->add('lksgRiskAnalysisDate', DateType::class, [
+                'label' => 'supplier.field.lksg_risk_analysis_date',
+                'help' => 'supplier.help.lksg_risk_analysis_date',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
+            ->add('lksgComplaintMechanism', TextareaType::class, [
+                'label' => 'supplier.field.lksg_complaint_mechanism',
+                'help' => 'supplier.help.lksg_complaint_mechanism',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+            ->add('lksgPreventionMeasures', TextareaType::class, [
+                'label' => 'supplier.field.lksg_prevention_measures',
+                'help' => 'supplier.help.lksg_prevention_measures',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+        ;
     }
 
     private function addMariskFields(FormBuilderInterface $builder): void

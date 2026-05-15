@@ -264,6 +264,28 @@ class AssetType extends AbstractType
             ]);
         }
 
+        // ── TISAX VDA-ISA 6.0 information-classification overlay — only when
+        // 'tisax' module is active. Sits orthogonal to the generic
+        // dataClassification field so the TISAX label vocabulary
+        // (public/internal/confidential/strictly_confidential/prototype) does
+        // not clutter non-automotive tenants. (T31/S2-P6)
+        if ($this->isModuleActive('tisax')) {
+            $builder->add('tisaxInformationClassification', ChoiceType::class, [
+                'label' => 'asset.field.tisax_information_classification',
+                'choices' => [
+                    'asset.tisax_classification.public' => 'public',
+                    'asset.tisax_classification.internal' => 'internal',
+                    'asset.tisax_classification.confidential' => 'confidential',
+                    'asset.tisax_classification.strictly_confidential' => 'strictly_confidential',
+                    'asset.tisax_classification.prototype' => 'prototype',
+                ],
+                'required' => false,
+                'placeholder' => 'asset.placeholder.tisax_information_classification',
+                'help' => 'asset.help.tisax_information_classification',
+                'choice_translation_domain' => 'asset',
+            ]);
+        }
+
         // ── AI-Agent fields: only added when 'ai_governance' module is active ──
         // Erfüllt EU AI Act Art. 6/9-16, ISO 42001 Annex A, MRIS MHC-13.
         // Stimulus show/hide via data-depends-on (assetType=ai_agent) is kept
