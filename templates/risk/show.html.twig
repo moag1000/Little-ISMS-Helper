@@ -321,7 +321,7 @@
                     {% if risk.supplier %}
                         <div class="subject-info card fa-section mb-3">
                             <div class="card-header">
-                                <i class="bi bi-truck {# TODO: design Aurora fa-icon--nav-truck #} {# TODO: design Aurora fa-icon--truck #} text-success" aria-hidden="true"></i> {{ 'supplier.title'|trans({}, 'suppliers') }}
+                                <i class="fa-icon fa-icon--nav-truck fa-icon--success" aria-hidden="true"></i> {{ 'supplier.title'|trans({}, 'suppliers') }}
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.supplier.name }}</div>
@@ -348,7 +348,7 @@
             {% if risk.ictAssetDependency is defined and risk.ictAssetDependency|length > 0 %}
                 <div class="detail-section">
                     <h3>
-                        <i class="bi bi-cpu {# TODO: design Aurora fa-icon--nav-cpu #} {# TODO: design Aurora fa-icon--cpu #}" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--cpu" aria-hidden="true"></i>
                         {{ 'risk.section.ict_dependencies'|trans({}, 'risk') }}
                         {{ pill.render(risk.ictAssetDependency|length, 'primary', {size: 'sm', class: 'ms-2', noDot: true}) }}
                     </h3>

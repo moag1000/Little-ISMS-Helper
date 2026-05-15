@@ -78,15 +78,6 @@
         {# Bootstrap zuerst — Aurora (via importmap unten) kommt danach und überschreibt. #}
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
-        {#
-            Bootstrap Icons — kept ONLY for the ~20 icons that have no Aurora equivalent yet.
-            Each remaining bi bi-* usage in templates has a "{# TODO: design Aurora fa-icon--X #}"
-            comment marking it for removal. Remove this link once all TODO icons are designed
-            and the Aurora CSS is updated. Tracked in Gate 11 output.
-            See: scripts/quality/check_aurora_icons_only.py
-        #}
-        <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
-
         {# Custom styles #}
         <style>
             /* Turbo Progress Bar - Cyberpunk Style */

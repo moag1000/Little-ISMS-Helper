@@ -61,7 +61,7 @@
                                   class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('industry_preset_' ~ preset.id) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
-                                    <i class="bi bi-rocket-takeoff {# TODO: design Aurora fa-icon--ui-launch #} {# TODO: design Aurora fa-icon--rocket-takeoff #}"></i> {{ 'industry_preset.action.apply'|trans }}
+                                    <i class="fa-icon fa-icon--ui-launch" aria-hidden="true"></i> {{ 'industry_preset.action.apply'|trans }}
                                 </button>
                             </form>
                         </div>
