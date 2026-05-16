@@ -60,6 +60,15 @@ quick_fix:
             tenant_mismatches: '%count% tenant mismatch(es) fixed.'
             duplicates: '%count% duplicate(s) merged for "%type%".'
             all: 'All repairs done: %orphans% orphan(s), %mismatches% mismatch(es), %duplicates% duplicate(s).'
+    apply_failure:
+        title: 'Migration failed — Recovery'
+        warning: 'WARNING: Only use these options if you understand what the migration does. An incorrect skip can lead to data inconsistency.'
+        skip_single_confirm: 'I confirm that I understand the failing migration and can safely skip it (e.g. because the change is already present in the schema or the migration should be rolled back).'
+        skip_single_button: 'Skip this migration (mark as executed, no DDL)'
+        skip_all_show: 'Skip all pending migrations (expert option)...'
+        skip_all_body: 'Marks ALL pending migrations as executed without running their DDL. Only use if you are certain the schema already reflects the desired state. This action cannot be undone.'
+        skip_all_confirm: 'I confirm that ALL pending migrations can safely be skipped and I understand the consequences.'
+        skip_all_button: 'Skip all pending migrations (no DDL)'
     phantom_diff:
         title: 'Schema already current — mark migration as executed'
         warning: 'Only click if the schema ALREADY contains the table/column. This action skips the DDL and only records the migration in the version table.'
