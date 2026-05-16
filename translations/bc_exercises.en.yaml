@@ -129,6 +129,31 @@ bc_exercises:
         exercise_type: 'Select the exercise type per ISO 22301:2019 Cl. 8.5. Tabletop exercises are theoretical; full tests fully simulate a real emergency and require more planning effort.'
         success_criteria: 'Define measurable criteria by which the success of the exercise is evaluated (e.g. RTO met, all communication channels working, no data loss).'
         success_rating: 'Overall rating of the exercise on a scale of 1 (failed) to 5 (excellent). Serves as a KPI for BC exercise history and audit evidence per ISO 22301.'
+    success_criteria:
+        aria: 'Success criteria — structured editor'
+        add: 'Add criterion'
+        remove: 'Remove criterion'
+        apply_prefill: 'Apply suggestions'
+        prefill_applied: 'RTO/RPO suggestions from tested BC plans applied. Fields can be overridden.'
+        empty: 'No success criteria defined yet. Define measurable criteria (e.g. RTO met, communication functional).'
+        col:
+            criterion: 'Criterion'
+            target: 'Target'
+            actual: 'Actual'
+            met: 'Met'
+            actions: 'Actions'
+        met:
+            unknown: '— Open —'
+            'yes': 'Met'
+            'no': 'Not met'
+        placeholder:
+            criterion: 'e.g. RTO met'
+            target: 'e.g. 4h'
+            actual: 'e.g. 3h 12min'
+    json_builder:
+        raw_toggle: 'Edit as JSON'
+        raw_label: 'Raw JSON (power-user)'
+        raw_help: 'Warning: raw editing can corrupt data. Schema must match entity definition.'
 bc_plans:
     message:
         readiness_score: 'Readiness Score'

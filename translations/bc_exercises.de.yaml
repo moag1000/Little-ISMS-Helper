@@ -129,6 +129,31 @@ bc_exercises:
         exercise_type: 'Wählen Sie den Übungstyp gemäß ISO 22301:2019 Kl. 8.5. Tabletop-Übungen sind theoretisch; Volltests simulieren einen realen Notfall vollständig und erfordern höheren Planungsaufwand.'
         success_criteria: 'Definieren Sie messbare Kriterien, anhand derer der Erfolg der Übung bewertet wird (z. B. RTO eingehalten, alle Kommunikationswege funktionieren, kein Datenverlust).'
         success_rating: 'Gesamtbewertung der Übungsdurchführung auf einer Skala von 1 (nicht bestanden) bis 5 (hervorragend). Dient als KPI für die BC-Übungshistorie und Audit-Nachweise gemäß ISO 22301.'
+    success_criteria:
+        aria: 'Erfolgskriterien — strukturierter Editor'
+        add: 'Kriterium hinzufügen'
+        remove: 'Kriterium entfernen'
+        apply_prefill: 'Vorschläge übernehmen'
+        prefill_applied: 'RTO/RPO-Vorschläge aus getesteten BC-Plänen übernommen. Felder können überschrieben werden.'
+        empty: 'Noch keine Erfolgskriterien definiert. Definieren Sie messbare Kriterien (z. B. RTO eingehalten, Kommunikation funktional).'
+        col:
+            criterion: 'Kriterium'
+            target: 'Soll'
+            actual: 'Ist'
+            met: 'Erfüllt'
+            actions: 'Aktionen'
+        met:
+            unknown: '— Offen —'
+            'yes': 'Erfüllt'
+            'no': 'Nicht erfüllt'
+        placeholder:
+            criterion: 'z. B. RTO eingehalten'
+            target: 'z. B. 4h'
+            actual: 'z. B. 3h 12min'
+    json_builder:
+        raw_toggle: 'Als JSON bearbeiten'
+        raw_label: 'Roh-JSON (Power-User)'
+        raw_help: 'Achtung: Roh-Editing kann Daten beschädigen. Schema muss zur Entity-Definition passen.'
 bc_plans:
     message:
         readiness_score: 'Readiness Score'
