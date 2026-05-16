@@ -38,7 +38,22 @@ class SchemaMaintenanceService
         private readonly SchemaHealthService $schemaHealthService,
         private readonly DependencyFactory $migrationsDependencyFactory,
         private readonly AuditLogger $auditLogger,
+        private readonly \Doctrine\Persistence\ManagerRegistry $managerRegistry,
     ) {
+    }
+
+    /**
+     * Reset the default ORM EntityManager if it was closed by a prior
+     * exception. Used by mark-all-phantom-diff between isolated migration
+     * iterations so subsequent persist/flush calls (including audit-log)
+     * do not throw EntityManagerClosed.
+     */
+    private function resetEntityManagerIfClosed(): void
+    {
+        $em = $this->managerRegistry->getManager();
+        if ($em instanceof \Doctrine\ORM\EntityManagerInterface && !$em->isOpen()) {
+            $this->managerRegistry->resetManager();
+        }
     }
 
     /**
@@ -173,15 +188,31 @@ class SchemaMaintenanceService
      * so the audit trail + migration-gate stay consistent with the
      * monitoring-page action.
      *
-     * @return array{success: bool, executed: int, error: ?string, blocked: ?string}
+     * @return array{success: bool, executed: int, auto_marked: list<string>, error: ?string, blocked: ?string}
      */
     public function reconcileSchema(string $actor = 'system', bool $bypassMigrationGate = false): array
     {
         $result = $this->schemaHealthService->applyUpdate($actor, $bypassMigrationGate);
 
+        // After a successful reconcile, the live schema matches entity metadata.
+        // Any remaining file-system-pending migrations would phantom-diff on
+        // their next run (their target state is already applied). Auto-mark
+        // them as executed so the operator does not have to click through
+        // each one. Idempotent: markMigrationAsExecuted() skips already-executed.
+        $autoMarked = [];
+        if ($result['success']) {
+            foreach ($this->listPendingMigrationVersionsFromFileSystem() as $version) {
+                $r = $this->markMigrationAsExecuted($version);
+                if ($r['success']) {
+                    $autoMarked[] = $version;
+                }
+            }
+        }
+
         return [
             'success' => $result['success'],
             'executed' => count($result['executed_sql']),
+            'auto_marked' => $autoMarked,
             'error' => $result['error'],
             'blocked' => $result['blocked'],
         ];
@@ -409,6 +440,12 @@ class SchemaMaintenanceService
                 } catch (\Throwable $e) {
                     $msg = $e->getMessage();
 
+                    // A failed migration may have closed the default ORM EM
+                    // (constraint violation, integrity errors). Reset before
+                    // continuing so subsequent iterations + audit-log writes
+                    // do not throw EntityManagerClosed.
+                    $this->resetEntityManagerIfClosed();
+
                     if ($this->isPhantomDiffError($msg)) {
                         // Schema already has the object → force-mark.
                         $markResult = $this->markMigrationAsExecuted($version);
@@ -459,10 +496,20 @@ class SchemaMaintenanceService
     private function isPhantomDiffError(string $msg): bool
     {
         return (bool) (
+            // Forward phantom-diff: adds something that already exists
             preg_match('/Duplicate column name/i', $msg)
             || preg_match("/Table '[^']+' already exists/i", $msg)
             || preg_match('/SQLSTATE\[42S01\]/', $msg)
             || preg_match('/SQLSTATE\[42S21\]/', $msg)
+            // Reverse phantom-diff: drops something that does NOT exist
+            // 1091=column, 1051=table, 1086=constraint, 1176=index/key,
+            // 3940=check constraint missing.
+            || preg_match("/Can't DROP COLUMN/i", $msg)
+            || preg_match("/Can't DROP '[^']+'/i", $msg)
+            || preg_match("/Key '[^']+' doesn't exist in table/i", $msg)
+            || preg_match('/Unknown column .* in/i', $msg)
+            || preg_match('/Unknown table/i', $msg)
+            || preg_match('/1091|1051|1086|1176|3940/', $msg)
         );
     }
 
@@ -521,13 +568,11 @@ class SchemaMaintenanceService
             $offending = (string) end($items)->getVersion();
         }
 
-        // Pattern 1: phantom diff-migration retries DDL that's already there
-        if (
-            preg_match('/Duplicate column name/i', $errorMessage)
-            || preg_match("/Table '[^']+' already exists/i", $errorMessage)
-            || preg_match('/SQLSTATE\[42S01\]/', $errorMessage)
-            || preg_match('/SQLSTATE\[42S21\]/', $errorMessage)
-        ) {
+        // Pattern 1: phantom diff-migration retries DDL that's already
+        // applied — covers both forward (ADD-existing) and reverse
+        // (DROP-non-existing) since both indicate the schema already
+        // matches the migration's intended end-state.
+        if ($this->isPhantomDiffError($errorMessage)) {
             return [
                 'category' => 'phantom_diff_migration',
                 'message' => 'Migration tries to add a column or table that already exists in the database.',

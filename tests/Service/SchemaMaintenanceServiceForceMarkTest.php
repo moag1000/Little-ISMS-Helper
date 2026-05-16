@@ -17,6 +17,7 @@ use Doctrine\Migrations\Metadata\ExecutedMigrationsList;
 use Doctrine\Migrations\Metadata\Storage\MetadataStorage;
 use Doctrine\Migrations\MigrationsRepository;
 use Doctrine\Migrations\Version\Version;
+use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -44,6 +45,7 @@ class SchemaMaintenanceServiceForceMarkTest extends TestCase
     private MockObject&MigrationsRepository $migrationRepository;
     private MockObject&MetadataStorage $metadataStorage;
     private MockObject&Connection $connection;
+    private MockObject&ManagerRegistry $managerRegistry;
     private SchemaMaintenanceService $service;
 
     protected function setUp(): void
@@ -65,10 +67,13 @@ class SchemaMaintenanceServiceForceMarkTest extends TestCase
             ->method('getConnection')
             ->willReturn($this->connection);
 
+        $this->managerRegistry = $this->createMock(ManagerRegistry::class);
+
         $this->service = new SchemaMaintenanceService(
             $this->schemaHealthService,
             $this->dependencyFactory,
             $this->auditLogger,
+            $this->managerRegistry,
         );
     }
 

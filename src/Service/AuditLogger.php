@@ -287,8 +287,25 @@ class AuditLogger
         // AUD-02: sign before persist (no-op if hmac secret not configured)
         $this->integrityService?->sign($auditLog);
 
-        $this->entityManager->persist($auditLog);
-        $this->entityManager->flush();
+        // EM may be closed after a prior persistence error (e.g. constraint
+        // violation in an isolated mark-all loop iteration). Persisting on a
+        // closed EM throws EntityManagerClosed. Skip silently if so — the
+        // audit log is best-effort in this recovery context.
+        if (!$this->entityManager->isOpen()) {
+            return;
+        }
+
+        // After a DDL migration that implicitly commits in MySQL, the
+        // connection's SAVEPOINT context is gone. flush() then throws
+        // "SAVEPOINT DOCTRINE_N does not exist". Audit log is best-effort
+        // here — swallow rather than crash the operator UI.
+        try {
+            $this->entityManager->persist($auditLog);
+            $this->entityManager->flush();
+        } catch (\Throwable) {
+            // Silent skip — audit log will be missing this row but the
+            // calling operation (mark-all-phantom-diff, etc.) must not abort.
+        }
     }
 
     /**
