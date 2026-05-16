@@ -10,6 +10,7 @@ use App\Service\SchemaMaintenanceService;
 use Doctrine\DBAL\Connection;
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Migrations\Metadata\AvailableMigration;
 use Doctrine\Migrations\Metadata\AvailableMigrationsSet;
 use Doctrine\Migrations\Metadata\ExecutedMigration;
@@ -68,6 +69,7 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
     private MockObject&Migrator $migrator;
     private MockObject&Connection $connection;
     private MockObject&MigrationsRepository $migrationRepository;
+    private MockObject&ManagerRegistry $managerRegistry;
 
     protected function setUp(): void
     {
@@ -87,6 +89,8 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
         $this->dependencyFactory->method('getMigrationRepository')->willReturn($this->migrationRepository);
         $this->metadataStorage->method('ensureInitialized');
         $this->auditLogger->method('logCustom');
+
+        $this->managerRegistry = $this->createMock(ManagerRegistry::class);
     }
 
     // -------------------------------------------------------------------------
@@ -99,6 +103,7 @@ class SchemaMaintenanceServiceMarkAllPhantomDiffTest extends TestCase
             $this->schemaHealthService,
             $this->dependencyFactory,
             $this->auditLogger,
+            $this->managerRegistry,
         );
     }
 

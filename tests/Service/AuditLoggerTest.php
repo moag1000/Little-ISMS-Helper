@@ -30,6 +30,11 @@ class AuditLoggerTest extends TestCase
         $this->requestStack = $this->createMock(RequestStack::class);
         $this->security = $this->createMock(Security::class);
 
+        // isOpen() must return true by default so persistAndFlush() does not
+        // short-circuit before reaching persist()/flush(). The new guard added
+        // in AuditLogger::persistAndFlush() skips persist when EM is closed.
+        $this->entityManager->method('isOpen')->willReturn(true);
+
         $this->logger = new AuditLogger(
             $this->entityManager,
             $this->requestStack,
