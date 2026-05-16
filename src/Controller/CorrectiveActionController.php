@@ -67,6 +67,32 @@ class CorrectiveActionController extends AbstractController
             }
         }
 
+        // S3 P0-30: Pre-Fill from an unwirksame Vorgänger-CAPA.
+        // Tenant-Isolation: never accept a previous-CAPA from a different tenant.
+        $previousCapa = null;
+        $fromIneffective = $request->query->getInt('from_ineffective_capa', 0);
+        if ($fromIneffective > 0) {
+            $prev = $this->repository->find($fromIneffective);
+            if ($prev instanceof CorrectiveAction
+                && $tenant instanceof Tenant
+                && $prev->getTenant()?->getId() === $tenant->getId()
+                && $prev->isVerifiedIneffective()
+            ) {
+                $previousCapa = $prev;
+                $action->setPreviousCapa($prev);
+                if ($prev->getFinding() instanceof AuditFinding) {
+                    $action->setFinding($prev->getFinding());
+                    $findingLocked = true;
+                }
+                $action->setDescription(sprintf(
+                    'Folge-Maßnahme zur unwirksamen CAPA #%d: %s',
+                    $prev->getId() ?? 0,
+                    (string) $prev->getTitle(),
+                ));
+                $action->setStatus(CorrectiveAction::STATUS_PLANNED);
+            }
+        }
+
         $form = $this->createForm(CorrectiveActionType::class, $action, ['finding_locked' => $findingLocked]);
         $form->handleRequest($request);
 
@@ -77,7 +103,11 @@ class CorrectiveActionController extends AbstractController
             $this->auditLogger->logCreate(
                 'CorrectiveAction',
                 $action->getId(),
-                ['title' => $action->getTitle(), 'status' => $action->getStatus()],
+                [
+                    'title' => $action->getTitle(),
+                    'status' => $action->getStatus(),
+                    'previousCapaId' => $action->getPreviousCapa()?->getId(),
+                ],
                 'CorrectiveAction created'
             );
 
@@ -88,6 +118,7 @@ class CorrectiveActionController extends AbstractController
         return $this->render('corrective_action/new.html.twig', [
             'form' => $form,
             'finding' => $action->getFinding(),
+            'previousCapa' => $previousCapa,
         ]);
     }
 

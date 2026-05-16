@@ -421,6 +421,10 @@ corrective_action:
         actual_completion_date: 'Actual Completion'
         effectiveness_review_date: 'Effectiveness Review'
         effectiveness_notes: 'Effectiveness Notes'
+        effectiveness_evidence: 'Effectiveness Evidence'
+        verified_by: 'Verified by'
+        verified_at: 'Verified at'
+        previous_capa: 'Follow-up CAPA to ineffective action'
     placeholder:
         finding: '-- Select finding --'
         responsible_person_user: '-- Select user --'
@@ -430,6 +434,7 @@ corrective_action:
         root_cause_analysis: 'Why did this happen? (5-Why / Ishikawa / FMEA)'
         effectiveness_review_date: 'ISO 27001 10.1 requires post-implementation effectiveness review'
         effectiveness_notes: 'Outcome of effectiveness review — why it was (in)effective'
+        effectiveness_evidence: 'Mandatory evidence (re-audit report, re-test result, evidence-document ID) — enforced when status switches to verified effective/ineffective.'
     status:
         planned: 'Planned'
         in_progress: 'In Progress'
@@ -438,6 +443,7 @@ corrective_action:
         verified_ineffective: 'Verified Ineffective — new action required'
     section:
         description: 'Description & Root Cause'
+        verification: 'Effectiveness Verification'
     alert:
         overdue: '%count% overdue action(s).'
     message:
@@ -445,7 +451,20 @@ corrective_action:
         for_finding: 'For Finding'
     confirm:
         delete: 'Delete this corrective action?'
+    error:
+        evidence_required: 'Effectiveness evidence is mandatory for verification (ISO 27001 Cl. 10.1).'
+        verified_by_required: 'Verifier is mandatory.'
+        invalid_transition: 'Status transition from %from% to %to% is not allowed.'
     flash:
         created: 'Corrective action created.'
         updated: 'Corrective action updated.'
         deleted: 'Corrective action deleted.'
+    alva_hint:
+        ineffective_followup:
+            title: 'Action ineffective — follow-up CAPA required'
+            body: 'ISO 27001 Cl. 10.1 (b): when a corrective action proves ineffective it must be re-assessed and re-treated. Create a follow-up CAPA referencing the original action #%id% (%title%).'
+            cta: 'Create follow-up CAPA now'
+    new:
+        followup_banner:
+            title: 'Follow-up CAPA for an ineffective action'
+            body: 'You are creating a follow-up CAPA to the ineffective action #%id% (%title%). Finding and predecessor CAPA are pre-filled.'
