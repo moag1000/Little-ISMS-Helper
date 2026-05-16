@@ -9,6 +9,7 @@ use App\Entity\Person;
 use App\Entity\User;
 use App\Entity\BusinessContinuityPlan;
 use App\Form\DataTransformer\JsonArrayTransformer;
+use App\Form\SectionMapInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -21,7 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class BCExerciseType extends AbstractType
+class BCExerciseType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -236,5 +237,59 @@ class BCExerciseType extends AbstractType
             'data_class' => BCExercise::class,
             'translation_domain' => 'bc_exercises',
         ]);
+    }
+
+    /**
+     * S4 Foundation P-2 SectionPolicy — explicit field-to-section map.
+     *
+     * The previous catch-all rendering buried regulatorily-critical Result
+     * fields (`actualRtoAchieved`, `actualRpoAchieved`, `successCriteria`,
+     * `evidenceArtifacts`) in a generic "Sonstiges" bucket alongside random
+     * other fields. They are now grouped in a dedicated `results` section
+     * which matches the ISO 22301 §8.5.4 exercise-evaluation workflow.
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'name',
+                'exerciseType',
+                'description',
+                'scope',
+                'objectives',
+                'scenario',
+                'exerciseDate',
+                'durationHours',
+                'testedPlans',
+            ],
+            'team' => [
+                'exerciseLeaderUser',
+                'exerciseLeaderPerson',
+                'facilitator',
+                'participants',
+                'observers',
+            ],
+            'results' => [
+                'status',
+                'actualRtoAchieved',
+                'actualRpoAchieved',
+                'successCriteria',
+                'evidenceArtifacts',
+                'successRating',
+                'results',
+                'whatWentWell',
+                'areasForImprovement',
+            ],
+            'lessons_learned' => [
+                'findings',
+                'actionItems',
+                'lessonsLearned',
+                'planUpdatesRequired',
+            ],
+            'audit_metadata' => [
+                'reportCompleted',
+                'reportDate',
+            ],
+        ];
     }
 }
