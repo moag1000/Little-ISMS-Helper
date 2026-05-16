@@ -135,6 +135,63 @@ bc_plans:
     required_resources: 'Minimum resources needed for emergency operations: staff, IT systems, communication tools, premises and critical third-party service providers (ISO 22301 Cl. 8.1).'
   error:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+  team_role:
+    incident_commander: 'Incident Commander'
+    comms_lead: 'Communications Lead'
+    recovery_lead: 'Recovery Lead'
+    technical_lead: 'Technical Lead'
+    other: 'Other role'
+  team_role_builder:
+    aria: 'Response team — structured editor'
+    add: 'Add role'
+    remove: 'Remove role'
+    empty: 'No team members yet. Click "Add role" to build your response team.'
+    col:
+      role: 'Role'
+      name: 'Name'
+      contact: 'Contact'
+      responsibilities: 'Responsibilities'
+      actions: 'Actions'
+    placeholder:
+      name: 'John Doe'
+      contact: '+49 123 456789'
+      responsibilities: 'Overall coordination during incident'
+  resource_list:
+    aria: 'Required resources — structured editor'
+    tab:
+      personnel: 'Personnel'
+      equipment: 'Equipment'
+      supplies: 'Supplies'
+    empty:
+      personnel: 'No personnel requirements yet.'
+      equipment: 'No equipment yet.'
+      supplies: 'No supplies yet.'
+    placeholder:
+      personnel: 'e.g. 2 SysAdmins, 1 Backup Operator'
+      equipment: 'e.g. Laptop, USB-LTE stick, radio'
+      supplies: 'e.g. emergency USB, printed phone list'
+    add: 'Add'
+    remove: 'Remove entry'
+  escalation_chain:
+    aria: 'Escalation levels — BSI 200-4 §6.2'
+    add: 'Add level'
+    remove: 'Remove level'
+    empty: 'No escalation levels defined yet.'
+    level: 'Level'
+    col:
+      level: 'Level'
+      trigger: 'Trigger'
+      responder: 'Responder'
+      escalate_after: 'Escalate after'
+    placeholder:
+      trigger: 'e.g. service outage > 30 min'
+      responder: 'e.g. CISO / crisis team'
+      escalate_after: 'e.g. 15min, 1h, 4h'
+    help: 'Define escalation cascade per BSI 200-4 §6.2: per level set the trigger, responder and time threshold.'
+  json_builder:
+    raw_toggle: 'Edit as JSON'
+    raw_label: 'Raw JSON (power-user)'
+    raw_help: 'Warning: raw editing can corrupt data. Schema must match entity definition.'
 bcm:
   field:
     activation_criteria: Activation Criteria

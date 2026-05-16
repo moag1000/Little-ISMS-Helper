@@ -6845,3 +6845,281 @@ html[data-theme="dark"] .fa-pager-perpage select { background: var(--surface-2);
 }
 
 .fa-cheatsheet__row span:first-child { color: var(--fg-2); }
+
+/* ─── fa-json-builder family (P-9 visual macros) ──────────────────────────
+   Shared shell for:
+     .fa-team-role-builder, .fa-resource-list, .fa-escalation-chain,
+     .fa-success-criteria, .fa-subcontractor-chain
+   Each is a card-like container with hidden raw-JSON textarea + visual editor.
+*/
+.fa-json-builder {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+}
+
+.fa-json-builder__hidden {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.fa-json-builder__table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.fa-json-builder__table th,
+.fa-json-builder__table td {
+    vertical-align: middle;
+    padding: 6px 8px;
+}
+
+.fa-json-builder__empty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 10px;
+    color: var(--fg-3);
+    font: 500 13px var(--font-sans);
+    background: var(--surface-2);
+    border: 1px dashed var(--border);
+    border-radius: var(--r-sm);
+}
+
+.fa-json-builder__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fa-json-builder__raw {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+}
+
+.fa-json-builder__raw textarea {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    min-height: 120px;
+}
+
+.fa-json-builder__raw-toggle[aria-pressed="true"] {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.fa-json-builder__row td:last-child { text-align: end; }
+
+/* ─── fa-resource-list — Tab-Layout for personnel/equipment/supplies ─── */
+.fa-resource-list__tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+}
+
+.fa-resource-list__tab {
+    background: transparent;
+    border: 1px solid transparent;
+    border-bottom: none;
+    padding: 6px 14px;
+    font: 500 12px var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-3);
+    cursor: pointer;
+    border-radius: var(--r-sm) var(--r-sm) 0 0;
+    transition: color var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out),
+                background var(--t-fast) var(--ease-out);
+}
+
+.fa-resource-list__tab:hover {
+    color: var(--fg);
+    background: var(--surface-2);
+}
+
+.fa-resource-list__tab[aria-selected="true"] {
+    color: var(--primary);
+    border-color: var(--border);
+    border-bottom-color: var(--surface);
+    background: var(--surface);
+    margin-bottom: -1px;
+}
+
+.fa-resource-list__count {
+    margin-left: 6px;
+    padding: 1px 6px;
+    background: var(--surface-2);
+    border-radius: var(--r-pill);
+    font-size: 10px;
+    color: var(--fg-2);
+}
+
+.fa-resource-list__panel { display: none; }
+.fa-resource-list__panel.is-active { display: flex; flex-direction: column; gap: 8px; }
+
+.fa-resource-list__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 32px;
+    padding: 6px;
+    background: var(--surface-2);
+    border: 1px dashed var(--border);
+    border-radius: var(--r-sm);
+}
+
+.fa-resource-list__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px 4px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    font: 500 12px var(--font-sans);
+    color: var(--fg);
+}
+
+.fa-resource-list__chip-remove {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: var(--fg-3);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.fa-resource-list__chip-remove:hover { color: var(--danger); }
+
+.fa-resource-list__add {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.fa-resource-list__add input {
+    flex: 1 1 auto;
+}
+
+/* ─── fa-escalation-chain — horizontal stepper-like rows ─── */
+.fa-escalation-chain__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fa-escalation-chain__row {
+    display: grid;
+    grid-template-columns: 56px 1fr 1fr 120px 40px;
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+}
+
+.fa-escalation-chain__level {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-tint, var(--surface));
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    border-radius: var(--r-pill);
+    font: 700 14px var(--font-mono);
+}
+
+@media (max-width: 768px) {
+    .fa-escalation-chain__row {
+        grid-template-columns: 56px 1fr 40px;
+        grid-template-rows: auto auto;
+    }
+    .fa-escalation-chain__row > :nth-child(3),
+    .fa-escalation-chain__row > :nth-child(4) {
+        grid-column: 1 / -1;
+    }
+}
+
+/* ─── fa-success-criteria — table with prefill banner ─── */
+.fa-success-criteria__prefill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--accent-tint, var(--surface-2));
+    border: 1px solid var(--accent, var(--border));
+    border-radius: var(--r-sm);
+    color: var(--accent, var(--fg-2));
+    font-size: 12px;
+}
+
+.fa-success-criteria__met-cell { text-align: center; }
+
+.fa-success-criteria__met-yes { color: var(--success); }
+.fa-success-criteria__met-no { color: var(--danger); }
+.fa-success-criteria__met-unknown { color: var(--fg-3); }
+
+/* ─── fa-subcontractor-chain — indented tree builder ─── */
+.fa-subcontractor-chain__tree {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fa-subcontractor-chain__node {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr 32px 40px 40px;
+    gap: 6px;
+    align-items: center;
+    padding: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+}
+
+.fa-subcontractor-chain__node[data-depth="1"] { margin-left: 28px; border-left: 3px solid var(--primary); }
+.fa-subcontractor-chain__node[data-depth="2"] { margin-left: 56px; border-left: 3px solid var(--accent, var(--primary)); }
+.fa-subcontractor-chain__node[data-depth="3"] { margin-left: 84px; border-left: 3px solid var(--warning, var(--accent, var(--primary))); }
+
+.fa-subcontractor-chain__critical {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.fa-subcontractor-chain__actions {
+    display: flex;
+    gap: 4px;
+}
+
+@media (max-width: 900px) {
+    .fa-subcontractor-chain__node {
+        grid-template-columns: 1fr 80px 32px 40px 40px;
+    }
+    .fa-subcontractor-chain__node > :nth-child(3) {
+        grid-column: 1 / -1;
+    }
+}
+

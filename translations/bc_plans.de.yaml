@@ -137,6 +137,63 @@ bc_plans:
     required_resources: 'Mindestressourcen, die für den Notbetrieb benötigt werden: Personal, IT-Systeme, Kommunikationsmittel, Räumlichkeiten und kritische Drittdienstleister (ISO 22301 Kl. 8.1).'
   error:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+  team_role:
+    incident_commander: 'Vorfalls-Koordinator (Incident Commander)'
+    comms_lead: 'Kommunikations-Lead'
+    recovery_lead: 'Wiederanlauf-Lead'
+    technical_lead: 'Technischer Lead'
+    other: 'Sonstige Rolle'
+  team_role_builder:
+    aria: 'Reaktionsteam — strukturierter Editor'
+    add: 'Rolle hinzufügen'
+    remove: 'Rolle entfernen'
+    empty: 'Noch keine Teammitglieder erfasst. Klicken Sie „Rolle hinzufügen", um Ihr Reaktionsteam aufzubauen.'
+    col:
+      role: 'Rolle'
+      name: 'Name'
+      contact: 'Kontakt'
+      responsibilities: 'Verantwortlichkeiten'
+      actions: 'Aktionen'
+    placeholder:
+      name: 'Max Mustermann'
+      contact: '+49 123 456789'
+      responsibilities: 'Gesamtkoordination im Notfall'
+  resource_list:
+    aria: 'Erforderliche Ressourcen — strukturierter Editor'
+    tab:
+      personnel: 'Personal'
+      equipment: 'Ausstattung'
+      supplies: 'Verbrauchsmaterial'
+    empty:
+      personnel: 'Noch kein Personalbedarf erfasst.'
+      equipment: 'Noch keine Ausstattung erfasst.'
+      supplies: 'Noch kein Verbrauchsmaterial erfasst.'
+    placeholder:
+      personnel: 'z. B. 2 SysAdmins, 1 Backup-Operator'
+      equipment: 'z. B. Laptop, USB-LTE-Stick, Funkgerät'
+      supplies: 'z. B. Notfall-USB, Papierausdruck Telefonliste'
+    add: 'Hinzufügen'
+    remove: 'Eintrag entfernen'
+  escalation_chain:
+    aria: 'Eskalationsstufen — BSI 200-4 §6.2'
+    add: 'Stufe hinzufügen'
+    remove: 'Stufe entfernen'
+    empty: 'Noch keine Eskalationsstufen definiert.'
+    level: 'Stufe'
+    col:
+      level: 'Stufe'
+      trigger: 'Auslöser'
+      responder: 'Verantwortlich'
+      escalate_after: 'Eskalation nach'
+    placeholder:
+      trigger: 'z. B. Service-Ausfall > 30 Min.'
+      responder: 'z. B. ISB / Krisenstab'
+      escalate_after: 'z. B. 15min, 1h, 4h'
+    help: 'Definieren Sie die Eskalations-Kaskade nach BSI 200-4 §6.2: pro Stufe Auslöser, Verantwortlicher und Zeitschwelle.'
+  json_builder:
+    raw_toggle: 'Als JSON bearbeiten'
+    raw_label: 'Roh-JSON (Power-User)'
+    raw_help: 'Achtung: Roh-Editing kann Daten beschädigen. Schema muss zur Entity-Definition passen.'
 bcm:
   field:
     activation_criteria: Aktivierungskriterien
