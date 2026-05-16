@@ -466,6 +466,7 @@
             } %}
             {% else %}
             {# Empty State #}
+            {% set _system_templates = system_templates('App\\Entity\\Document') %}
             {% include '_components/_empty_state.html.twig' with {
                 icon: 'bi-file-earmark-text',
                 title: 'document.message.no_documents'|trans({}, 'document'),
@@ -476,6 +477,25 @@
                     icon: 'bi-cloud-upload'
                 }
             } %}
+            {# Foundation P-14 — ISO 27001 policy starter set #}
+            {% if _system_templates|length > 0 %}
+                <div class="text-center mt-3">
+                    <button type="button" class="btn btn-outline-primary"
+                            data-bs-toggle="modal" data-bs-target="#systemTemplateModalDocument">
+                        <i class="bi bi-collection" aria-hidden="true"></i>
+                        {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
+                    </button>
+                    <div class="form-text small">
+                        {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
+                    </div>
+                </div>
+                {% include '_components/_system_template_selector.html.twig' with {
+                    templates: _system_templates,
+                    entity_class: 'App\\Entity\\Document',
+                    redirect_to: 'app_document_index',
+                    modal_id: 'systemTemplateModalDocument'
+                } %}
+            {% endif %}
             {% endif %}
         {% endblock %}
     {% endembed %}

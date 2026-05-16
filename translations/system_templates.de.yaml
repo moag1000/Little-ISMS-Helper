@@ -1,0 +1,21 @@
+system_templates:
+    modal:
+        title: 'Aus Vorlage erstellen'
+        intro: 'Wähle eine Vorlage, um typische ISMS-Inhalte mit einem Klick anzulegen. Die Daten werden anschließend deinem Mandanten zugeordnet und können wie gewohnt überarbeitet werden.'
+        empty: 'Für diesen Bereich sind aktuell keine Vorlagen verfügbar — entweder ist das passende Modul nicht aktiviert oder es gibt noch keine Templates dieses Typs.'
+        apply: 'Anwenden'
+        bulk_records: '{0}—|{1}1 Datensatz im Bündel|]1,Inf[%count% Datensätze im Bündel'
+    cta:
+        button: 'Aus Vorlage erstellen'
+        hint: 'Schneller Einstieg über Standard-Vorlagen (ISO 27005, BSI, VVT, Policies, Cloud-Anbieter, Modul-Profile)'
+    success:
+        applied: 'Vorlage "%name%" angewendet — %count% Datensatz/Datensätze erstellt.'
+    error:
+        csrf_invalid: 'Sicherheits-Token ungültig oder abgelaufen.'
+        unknown_key: 'Vorlage nicht gefunden.'
+        apply_failed: 'Anwenden fehlgeschlagen: %message%'
+    profile:
+        kmu: 'KMU / Mittelstand'
+        konzern: 'Konzern / Holding'
+        verein: 'Verein / Non-Profit'
+        finanzdienstleister: 'Finanzdienstleister (BaFin / DORA)'
