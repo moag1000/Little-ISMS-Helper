@@ -138,6 +138,7 @@
                         {% endblock %}
                         {% block table_body %}
                             {% trans_default_domain 'audit_workbook' %}
+                            {% import '_components/_status_pill.html.twig' as pill %}
                             {% for framework in frameworks %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">
