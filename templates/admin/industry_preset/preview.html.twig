@@ -33,7 +33,7 @@
                     <div class="d-flex flex-wrap gap-2">
                         {% for module in config.modules|default([]) %}
                             {% set isActive = module in active_modules %}
-                            <span class="badge {{ isActive ? 'bg-success' : 'bg-secondary' }}">
+                            <span class="{{ isActive ? 'fa-status-pill fa-status-pill--success' : 'badge bg-secondary' }}">
                                 {{ module }}{% if isActive %} <i class="fa-icon fa-icon--ui-check ms-1"></i>{% endif %}
                             </span>
                         {% endfor %}

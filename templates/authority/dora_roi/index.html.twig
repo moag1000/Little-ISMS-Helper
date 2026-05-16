@@ -67,7 +67,7 @@
             <div class="col-12">
                 <form method="POST" action="{{ path('dora_roi_generate') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('dora_roi_generate') }}">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>
                         {{ 'eu_authorities.dora_roi.action.generate'|trans({
                             '%year%': reportingYear

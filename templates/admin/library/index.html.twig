@@ -49,7 +49,7 @@
                                         <code>{{ lib.filename }}.yaml</code>
                                     </p>
                                     <form method="post" action="{{ path('admin_library_import', { type: lib.type }) }}">
-                                        <button type="submit" class="btn btn-sm btn-primary">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
                                             <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
                                             {{ 'library.action.import'|trans({}, 'library') }}
                                         </button>
@@ -103,13 +103,13 @@
                                     </td>
                                     <td>
                                         <a href="{{ path('admin_library_export_yaml', { id: framework.id }) }}"
-                                           class="btn btn-xs btn-outline-secondary me-1"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost me-1"
                                            title="{{ 'library.action.export_yaml'|trans({}, 'library') }}">
                                             <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                                             YAML
                                         </a>
                                         <a href="{{ path('admin_library_export_csv', { id: framework.id }) }}"
-                                           class="btn btn-xs btn-outline-secondary"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost"
                                            title="{{ 'library.action.export_csv'|trans({}, 'library') }}">
                                             <i class="fa-icon fa-icon--nav-file-earmark-spreadsheet" aria-hidden="true"></i>
                                             CSV

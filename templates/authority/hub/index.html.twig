@@ -32,15 +32,15 @@
                     <i class="fa-icon fa-icon--nav-heart-pulse fs-3 text-primary" aria-hidden="true"></i>
                     <div class="d-flex flex-wrap gap-4 ms-2">
                         <span class="d-flex align-items-center gap-1">
-                            <span class="badge bg-success rounded-pill fs-6">{{ summary.current + summary.available }}</span>
+                            <span class="fa-status-pill fa-status-pill--success fs-6">{{ summary.current + summary.available }}</span>
                             <span class="text-body-secondary small">{{ 'eu_authorities.hub.summary.current'|trans }}</span>
                         </span>
                         <span class="d-flex align-items-center gap-1">
-                            <span class="badge bg-warning text-dark rounded-pill fs-6">{{ summary.due_soon }}</span>
+                            <span class="fa-status-pill fa-status-pill--warning fs-6">{{ summary.due_soon }}</span>
                             <span class="text-body-secondary small">{{ 'eu_authorities.hub.summary.due_soon'|trans }}</span>
                         </span>
                         <span class="d-flex align-items-center gap-1">
-                            <span class="badge bg-danger rounded-pill fs-6">{{ summary.overdue }}</span>
+                            <span class="fa-status-pill fa-status-pill--danger fs-6">{{ summary.overdue }}</span>
                             <span class="text-body-secondary small">{{ 'eu_authorities.hub.summary.overdue'|trans }}</span>
                         </span>
                         <span class="d-flex align-items-center gap-1">
@@ -77,12 +77,11 @@
                             <i class="fa-icon fa-icon--nav-building-check text-primary" aria-hidden="true"></i>
                             <strong>{{ obligation.label|trans({}, 'eu_authorities') }}</strong>
                         </div>
-                        <span class="badge rounded-pill
-                            {% if obligation.status == 'overdue' %}bg-danger
-                            {% elseif obligation.status == 'due_soon' %}bg-warning text-dark
-                            {% elseif obligation.status == 'current' %}bg-success
-                            {% elseif obligation.status == 'available' %}bg-info text-dark
-                            {% else %}bg-secondary{% endif %}">
+                        <span class="{% if obligation.status == 'overdue' %}fa-status-pill fa-status-pill--danger
+                            {% elseif obligation.status == 'due_soon' %}fa-status-pill fa-status-pill--warning
+                            {% elseif obligation.status == 'current' %}fa-status-pill fa-status-pill--success
+                            {% elseif obligation.status == 'available' %}fa-status-pill fa-status-pill--info
+                            {% else %}badge bg-secondary{% endif %}">
                             {{ ('eu_authorities.hub.status.' ~ obligation.status)|trans }}
                         </span>
                     </div>
@@ -113,7 +112,7 @@
                     </div>
                     <div class="card-footer bg-transparent border-top-0 pt-0 pb-3 px-3">
                         <a href="{{ path(obligation.exportUrl, obligation.exportUrlParams) }}"
-                           class="btn btn-sm {% if obligation.status == 'overdue' %}btn-danger{% elseif obligation.status == 'due_soon' %}btn-warning{% else %}btn-outline-primary{% endif %} w-100">
+                           class="fa-cyber-btn fa-cyber-btn--sm {% if obligation.status == 'overdue' %}fa-cyber-btn--danger{% elseif obligation.status == 'due_soon' %}fa-cyber-btn--warning{% else %}fa-cyber-btn--ghost{% endif %} w-100">
                             <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
                             {{ 'eu_authorities.hub.action.open'|trans }}
                         </a>

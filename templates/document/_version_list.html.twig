@@ -48,7 +48,7 @@
                             <td>
                                 <span class="fw-semibold">v{{ version.versionNumber }}</span>
                                 {% if version.isActive %}
-                                    <span class="badge bg-primary ms-1">{{ 'document.version.current'|trans({}, 'document') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--primary ms-1">{{ 'document.version.current'|trans({}, 'document') }}</span>
                                 {% endif %}
                             </td>
                             <td>{{ version.uploadedAt|date('Y-m-d H:i') }}</td>
@@ -63,9 +63,9 @@
                             </td>
                             <td>
                                 {% if version.isPublished %}
-                                    <span class="badge bg-success">{{ 'document.version.published'|trans({}, 'document') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--success">{{ 'document.version.published'|trans({}, 'document') }}</span>
                                 {% else %}
-                                    <span class="badge bg-warning text-dark">{{ 'document.version.draft'|trans({}, 'document') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--warning">{{ 'document.version.draft'|trans({}, 'document') }}</span>
                                 {% endif %}
                             </td>
                             <td>

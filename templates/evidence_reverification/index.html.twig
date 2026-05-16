@@ -58,7 +58,7 @@
                                 {{ ('evidence_reverification.status.' ~ task.status)|trans({}, 'document') }}
                             </span>
                             {% if task.isOverdue %}
-                                <span class="badge bg-danger">{{ 'evidence_reverification.overdue'|trans({}, 'document') }}</span>
+                                <span class="fa-status-pill fa-status-pill--danger">{{ 'evidence_reverification.overdue'|trans({}, 'document') }}</span>
                             {% endif %}
                         </div>
                         <div class="text-muted small">
