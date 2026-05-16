@@ -21,6 +21,24 @@
         subtitle: ('audit.status.' ~ audit.status)|trans({}, 'audit')
     }) }}
 
+    {# S3 P0-26 — Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d) #}
+    <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
+        <span class="text-muted small">{{ 'audit.field.status'|trans({}, 'audit') }}:</span>
+        {{ pill.render(('audit.status.' ~ audit.status)|trans({}, 'audit'), audit.statusTone) }}
+        {% if audit.reportedAt %}
+            <span class="text-muted small ms-2">
+                <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
+                {{ 'audit.field.reported_at'|trans({}, 'audit') }}: {{ audit.reportedAt|date('d.m.Y H:i') }}
+            </span>
+        {% endif %}
+        {% if audit.approvedAt %}
+            <span class="text-muted small ms-2">
+                <i class="fa-icon fa-icon--status-success" aria-hidden="true"></i>
+                {{ 'audit.field.approved_at'|trans({}, 'audit') }}: {{ audit.approvedAt|date('d.m.Y H:i') }}
+            </span>
+        {% endif %}
+    </div>
+
     <div class="row">
         <div class="col-lg-8">
             {# Main Audit Information #}
@@ -271,6 +289,125 @@
         </div>
 
         <div class="col-lg-4">
+            {# S3 P0-26 — Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d) #}
+            {% set _current_user_id = app.user ? app.user.id : null %}
+            {% set _reported_by_current = audit.reportedBy and _current_user_id and audit.reportedBy.id == _current_user_id %}
+            {% set _can_submit  = audit.canTransitionTo('reported') and audit.status in ['planned', 'conducted', 'in_progress', 'completed'] %}
+            {% set _can_resubmit = audit.status == 'rejected' %}
+            {% set _can_approve = audit.status == 'reported' and not _reported_by_current %}
+            {% set _can_reject  = audit.status == 'reported' and not _reported_by_current %}
+            {% set _can_close   = audit.status == 'approved' %}
+
+            {% if audit.status == 'rejected' and audit.rejectionReason %}
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-4' } } %}
+                    {% block alert_body %}
+                        <h3 class="h6 alert-heading">
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                            {{ 'audit.field.rejection_reason'|trans({}, 'audit') }}
+                        </h3>
+                        <p class="mb-0">{{ audit.rejectionReason|nl2br }}</p>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
+            {% if _can_submit or _can_resubmit or _can_approve or _can_reject or _can_close %}
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-accent' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h6 mb-0">
+                            <i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i>
+                            {{ 'audit.section.approval_workflow'|trans({}, 'audit') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <p class="text-muted small mb-3">
+                        {{ 'audit.help.approval_workflow'|trans({}, 'audit') }}
+                    </p>
+                    <div class="d-grid gap-2">
+                        {% if _can_submit and is_granted('ROLE_USER') %}
+                            <form method="post" action="{{ path('app_audit_submit_report', {id: audit.id}) }}" class="d-grid">
+                                <input type="hidden" name="_token" value="{{ csrf_token('audit_submit_report') }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary" data-turbo="false">
+                                    <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i>
+                                    {{ 'audit.action.submit_report'|trans({}, 'audit') }}
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        {% if _can_resubmit and is_granted('ROLE_USER') %}
+                            <form method="post" action="{{ path('app_audit_resubmit_report', {id: audit.id}) }}" class="d-grid">
+                                <input type="hidden" name="_token" value="{{ csrf_token('audit_resubmit_report') }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary" data-turbo="false">
+                                    <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i>
+                                    {{ 'audit.action.resubmit_report'|trans({}, 'audit') }}
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        {% if _can_approve and is_granted('ROLE_AUDITOR') %}
+                            <form method="post" action="{{ path('app_audit_approve_report', {id: audit.id}) }}" class="d-grid">
+                                <input type="hidden" name="_token" value="{{ csrf_token('audit_approve_report') }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
+                                    <i class="fa-icon fa-icon--status-success" aria-hidden="true"></i>
+                                    {{ 'audit.action.approve_report'|trans({}, 'audit') }}
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        {% if _can_reject and is_granted('ROLE_AUDITOR') %}
+                            <button type="button"
+                                    class="fa-cyber-btn fa-cyber-btn--danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#rejectModal">
+                                <i class="fa-icon fa-icon--ui-x" aria-hidden="true"></i>
+                                {{ 'audit.action.reject_report'|trans({}, 'audit') }}
+                            </button>
+                        {% endif %}
+
+                        {% if _can_close and is_granted('ROLE_MANAGER') %}
+                            <form method="post" action="{{ path('app_audit_close', {id: audit.id}) }}" class="d-grid">
+                                <input type="hidden" name="_token" value="{{ csrf_token('audit_close') }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo="false">
+                                    <i class="fa-icon fa-icon--ui-archive" aria-hidden="true"></i>
+                                    {{ 'audit.action.close_audit'|trans({}, 'audit') }}
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        {% if audit.status == 'reported' and _reported_by_current %}
+                            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-0 mt-2' } } %}
+                                {% block alert_body %}
+                                    <small class="mb-0">{{ 'audit.error.same_user_approve'|trans({}, 'audit') }}</small>
+                                {% endblock %}
+                            {% endembed %}
+                        {% endif %}
+                    </div>
+
+                    {# Approval metadata #}
+                    {% if audit.reportedBy or audit.approvedBy or audit.closedBy %}
+                        <hr>
+                        <dl class="row mb-0 small">
+                            {% if audit.reportedBy %}
+                                <dt class="col-sm-6 text-muted">{{ 'audit.field.reported_by'|trans({}, 'audit') }}</dt>
+                                <dd class="col-sm-6 text-end">{{ audit.reportedBy.email|default('—') }}</dd>
+                            {% endif %}
+                            {% if audit.approvedBy %}
+                                <dt class="col-sm-6 text-muted">{{ 'audit.field.approved_by'|trans({}, 'audit') }}</dt>
+                                <dd class="col-sm-6 text-end">{{ audit.approvedBy.email|default('—') }}</dd>
+                            {% endif %}
+                            {% if audit.closedBy %}
+                                <dt class="col-sm-6 text-muted">{{ 'audit.field.closed_by'|trans({}, 'audit') }}</dt>
+                                <dd class="col-sm-6 text-end">{{ audit.closedBy.email|default('—') }}</dd>
+                                <dt class="col-sm-6 text-muted">{{ 'audit.field.closed_at'|trans({}, 'audit') }}</dt>
+                                <dd class="col-sm-6 text-end">{{ audit.closedAt|date('d.m.Y H:i') }}</dd>
+                            {% endif %}
+                        </dl>
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
+            {% endif %}
+
             {# Action Buttons #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
@@ -473,6 +610,50 @@
     margin-bottom: var(--spacing-xs);
 }
 </style>
+{% endif %}
+
+{# S3 P0-26 — Reject Modal with rejection_reason form (only when current state allows reject) #}
+{% if audit.status == 'reported' and is_granted('ROLE_AUDITOR') and not _reported_by_current %}
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_audit_reject_report', {id: audit.id}) }}">
+                <div class="modal-header">
+                    <h2 class="h5 modal-title" id="rejectModalLabel">
+                        <i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>
+                        {{ 'audit.action.reject_report'|trans({}, 'audit') }}
+                    </h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">{{ 'audit.help.rejection_reason'|trans({}, 'audit') }}</p>
+                    <div class="mb-3">
+                        <label for="rejection_reason_input" class="form-label">
+                            {{ 'audit.field.rejection_reason_required'|trans({}, 'audit') }}
+                        </label>
+                        <textarea id="rejection_reason_input"
+                                  name="rejection_reason"
+                                  class="form-control"
+                                  rows="5"
+                                  required
+                                  minlength="10"
+                                  placeholder="{{ 'audit.help.rejection_reason'|trans({}, 'audit') }}"></textarea>
+                    </div>
+                    <input type="hidden" name="_token" value="{{ csrf_token('audit_reject_report') }}">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
+                        {{ 'common.cancel'|trans({}, 'messages') }}
+                    </button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger" data-turbo="false">
+                        <i class="fa-icon fa-icon--ui-x" aria-hidden="true"></i>
+                        {{ 'audit.action.reject_report'|trans({}, 'audit') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endif %}
 
 {# Delete Confirmation Modal #}
