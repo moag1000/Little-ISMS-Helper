@@ -1,20 +1,18 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'compliance.cross_framework.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
 <div class="container">
-    <div class="page-header">
-        <div>
-            <h1>🔗 {{ 'compliance.cross_framework.title'|trans({}, 'compliance') }}</h1>
-            <p class="text-muted">{{ 'compliance.cross_framework.subtitle'|trans({}, 'compliance') }}</p>
-        </div>
-        <div class="button-group">
-            <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                ← {{ 'compliance.cross_framework.back'|trans({}, 'compliance') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'compliance-shield', label: 'nav.compliance'|trans({}, 'nav') },
+        title: 'compliance.cross_framework.title'|trans({}, 'compliance'),
+        subtitle: 'compliance.cross_framework.subtitle'|trans({}, 'compliance'),
+        actions: [
+            { label: 'compliance.cross_framework.back'|trans({}, 'compliance'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_index') }
+        ]
+    }) }}
 
     {# Coverage Matrix #}
     {% if coverage_matrix is not empty %}

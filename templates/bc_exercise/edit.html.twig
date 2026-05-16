@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bc_exercises' %}
+{% form_theme form 'bc_exercise/_bc_exercise_form_theme.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'bc_exercises.action.edit'|trans({}, 'bc_exercises') }}: {{ bc_exercise.name }}{% endblock %}

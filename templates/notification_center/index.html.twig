@@ -69,7 +69,7 @@
                         <div class="card-body py-2">
                             <div class="d-flex align-items-start gap-3">
                                 {% if isUnread %}
-                                    <span class="badge bg-primary mt-1">{{ 'notification.center.badge.new'|trans }}</span>
+                                    <span class="fa-status-pill fa-status-pill--primary mt-1">{{ 'notification.center.badge.new'|trans }}</span>
                                 {% endif %}
                                 <div class="flex-grow-1">
                                     <div class="fw-semibold">{{ payload.rule_name ?? delivery.rule.name ?? '—' }}</div>

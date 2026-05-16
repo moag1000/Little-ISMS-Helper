@@ -1,25 +1,21 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'workflows' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'workflow.title.definitions'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'workflow.title.definitions'|trans({}, 'workflows') }}</h1>
-        <p class="text-muted">{{ 'workflow.description.definitions'|trans({}, 'workflows') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_workflow_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            ← {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-        <a href="{{ path('app_workflow_definition_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'workflow.action.create_definition'|trans({}, 'workflows') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    badge: { icon: 'nav-workflow', label: 'nav.workflows'|trans({}, 'nav') },
+    title: 'workflow.title.definitions'|trans({}, 'workflows'),
+    subtitle: 'workflow.description.definitions'|trans({}, 'workflows'),
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_workflow_index') },
+        { label: 'workflow.action.create_definition'|trans({}, 'workflows'), variant: 'primary', icon: 'ui-plus', href: path('app_workflow_definition_new') }
+    ]
+}) }}
 
 {# Statistics Cards #}
 <div class="kpi-grid">

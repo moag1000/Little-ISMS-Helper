@@ -34,12 +34,12 @@
         <div class="fa-section__body">
             <div class="d-flex flex-wrap gap-2 align-items-center">
                 <span class="text-muted small fw-semibold">{{ 'compliance_manager.heatmap.drill.filter_section'|trans }}:</span>
-                <a class="badge rounded-pill {% if section_code == '' %}bg-primary{% else %}bg-body-secondary text-body{% endif %} text-decoration-none"
+                <a class="{% if section_code == '' %}fa-status-pill fa-status-pill--primary{% else %}badge bg-body-secondary text-body{% endif %} text-decoration-none"
                    href="{{ path('app_dashboard_cm_heatmap_drill', {framework: framework_code}) }}">
                     {{ 'compliance_manager.heatmap.drill.all_sections'|trans }}
                 </a>
                 {% for sec in available_sections %}
-                    <a class="badge rounded-pill {% if section_code == sec %}bg-primary{% else %}bg-body-secondary text-body{% endif %} text-decoration-none"
+                    <a class="{% if section_code == sec %}fa-status-pill fa-status-pill--primary{% else %}badge bg-body-secondary text-body{% endif %} text-decoration-none"
                        href="{{ path('app_dashboard_cm_heatmap_drill', {framework: framework_code, section: sec}) }}">
                         {{ sec }}
                     </a>
@@ -242,7 +242,7 @@
                                 {{ pill.render(sev, sevTone[sev]|default('neutral'), {size: 'sm'}) }}
                                 {{ pill.render(finding.status, 'neutral', {size: 'sm'}) }}
                                 {% if finding.audit is defined and finding.audit %}
-                                    <a href="{{ path('app_audit_show', {id: finding.audit.id}) }}" class="btn btn-sm btn-outline-secondary py-0 px-1 small">
+                                    <a href="{{ path('app_audit_show', {id: finding.audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost py-0 px-1 small">
                                         <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
                                     </a>
                                 {% endif %}

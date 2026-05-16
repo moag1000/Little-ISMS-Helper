@@ -1,0 +1,213 @@
+{#
+ # FairyAurora v4.0 — fa-success-criteria macro (P-9 JsonBuilder)
+ #
+ # Visual JSON-Builder for BCExercise.successCriteria (ISO 22301 §8.6c).
+ # Table with columns: Kriterium / Soll / Ist / Erfüllt. Supports two
+ # storage shapes (auto-detected on load):
+ #
+ #   Shape A (array of objects — preferred for richer P-9 builder):
+ #     [
+ #       {"criterion": "RTO eingehalten", "target": "4h", "actual": "3h", "met": "met"},
+ #       {"criterion": "Comms funktional", "target": "ja", "actual": "ja", "met": "met"}
+ #     ]
+ #
+ #   Shape B (legacy flat object — ISO 22301 example in BCExercise.successCriteria):
+ #     {"rtoMet": true, "rpoMet": true, "communicationEffective": true, "teamPrepared": false}
+ #     → coerced into Shape A with criterion=key, target='', actual='', met=value
+ #
+ # Auto-Prefill: caller can pass `props.prefillCriteria` = array of
+ # {criterion, target} suggestion-rows (e.g. RTO/RPO pulled from tested
+ # BCPlan.businessProcess). The Stimulus controller renders them as
+ # "suggested" rows the user can accept or override.
+ #
+ # Usage:
+ #   {% import '_components/_fa_success_criteria.html.twig' as _fa_success_criteria %}
+ #
+ #   {{ _fa_success_criteria.render({
+ #       name: 'bc_exercise[successCriteria]',
+ #       value: exercise.successCriteria,
+ #       prefillCriteria: [
+ #           { criterion: 'RTO eingehalten', target: '4h' },
+ #           { criterion: 'RPO eingehalten', target: '15min' }
+ #       ],
+ #       translationDomain: 'bc_exercises'
+ #   }) }}
+ #
+ # Parameters:
+ #   props.name             - hidden-textarea name (required)
+ #   props.value            - current criteria (array OR object OR JSON string)
+ #   props.prefillCriteria  - array of {criterion, target} (optional)
+ #   props.id               - root id (default 'fa-success-criteria-' ~ random())
+ #   props.translationDomain - domain (default 'bc_exercises')
+ #
+ # Embed-Scope-Reminder: see _fa_team_role_builder.html.twig docblock.
+ #}
+
+{% macro render(props = {}) %}
+    {% set name = props.name|default('successCriteria') %}
+    {% set id = props.id|default('fa-success-criteria-' ~ random(99999)) %}
+    {% set translationDomain = props.translationDomain|default('bc_exercises') %}
+    {% set rawValue = props.value is defined and props.value is not null
+        ? (props.value is iterable ? props.value|json_encode : props.value)
+        : '' %}
+    {% set prefillJson = props.prefillCriteria is defined and props.prefillCriteria is not empty
+        ? props.prefillCriteria|json_encode
+        : '[]' %}
+
+    <div class="fa-json-builder fa-success-criteria"
+         id="{{ id }}"
+         data-controller="success-criteria"
+         data-success-criteria-name-value="{{ name }}"
+         data-success-criteria-prefill-value="{{ prefillJson|e('html_attr') }}"
+         role="region"
+         aria-label="{{ props.ariaLabel|default('bc_exercises.success_criteria.aria'|trans({}, translationDomain)) }}">
+
+        <textarea name="{{ name }}"
+                  class="fa-json-builder__hidden"
+                  hidden
+                  aria-hidden="true"
+                  data-success-criteria-target="hidden">{{ rawValue }}</textarea>
+
+        {# Prefill banner — Aurora-info-alert style (visible only when prefill applied). #}
+        <div class="fa-success-criteria__prefill d-none"
+             data-success-criteria-target="prefillBanner"
+             role="status"
+             aria-live="polite">
+            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+            <span data-success-criteria-target="prefillText">
+                {{ ('bc_exercises.success_criteria.prefill_applied')|trans({}, translationDomain) }}
+            </span>
+        </div>
+
+        <div class="fa-table-wrap fa-json-builder__table-wrap">
+            <table class="fa-table fa-table--compact fa-json-builder__table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="fa-table__th">
+                            {{ ('bc_exercises.success_criteria.col.criterion')|trans({}, translationDomain) }}
+                        </th>
+                        <th scope="col" class="fa-table__th" style="width: 22%;">
+                            {{ ('bc_exercises.success_criteria.col.target')|trans({}, translationDomain) }}
+                        </th>
+                        <th scope="col" class="fa-table__th" style="width: 22%;">
+                            {{ ('bc_exercises.success_criteria.col.actual')|trans({}, translationDomain) }}
+                        </th>
+                        <th scope="col" class="fa-table__th" style="width: 14%; text-align: center;">
+                            {{ ('bc_exercises.success_criteria.col.met')|trans({}, translationDomain) }}
+                        </th>
+                        <th scope="col" class="fa-table__th" style="width: 48px;"
+                            aria-label="{{ ('bc_exercises.success_criteria.col.actions')|trans({}, translationDomain) }}"></th>
+                    </tr>
+                </thead>
+                <tbody data-success-criteria-target="body" aria-live="polite"></tbody>
+            </table>
+        </div>
+
+        <div class="fa-json-builder__empty d-none"
+             data-success-criteria-target="emptyState">
+            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
+            <span>{{ ('bc_exercises.success_criteria.empty')|trans({}, translationDomain) }}</span>
+        </div>
+
+        <div class="fa-json-builder__toolbar">
+            <div class="d-flex gap-2">
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                        data-action="click->success-criteria#addRow">
+                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                    {{ ('bc_exercises.success_criteria.add')|trans({}, translationDomain) }}
+                </button>
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm d-none"
+                        data-success-criteria-target="prefillBtn"
+                        data-action="click->success-criteria#applyPrefill">
+                    <i class="fa-icon fa-icon--ui-sparkles" aria-hidden="true"></i>
+                    {{ ('bc_exercises.success_criteria.apply_prefill')|trans({}, translationDomain) }}
+                </button>
+            </div>
+
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-json-builder__raw-toggle"
+                    data-action="click->success-criteria#showRawJson"
+                    aria-pressed="false">
+                <i class="fa-icon fa-icon--ui-code" aria-hidden="true"></i>
+                {{ ('bc_exercises.json_builder.raw_toggle')|trans({}, translationDomain) }}
+            </button>
+        </div>
+
+        <div class="fa-json-builder__raw d-none"
+             data-success-criteria-target="rawPanel">
+            <label for="{{ id }}-raw" class="fa-cyber-input__label">
+                {{ ('bc_exercises.json_builder.raw_label')|trans({}, translationDomain) }}
+            </label>
+            <textarea id="{{ id }}-raw"
+                      class="form-control fa-cyber-input__field"
+                      rows="6"
+                      spellcheck="false"
+                      data-success-criteria-target="rawTextarea"
+                      data-action="input->success-criteria#syncFromRaw">{{ rawValue }}</textarea>
+            <small class="text-muted">
+                {{ ('bc_exercises.json_builder.raw_help')|trans({}, translationDomain) }}
+            </small>
+        </div>
+
+        {# Row-template. Placeholders: __INDEX__, __CRITERION__, __TARGET__,
+           __ACTUAL__, __MET__ (yes|no|unknown), __MET_SEL_<KEY>__ ('selected'). #}
+        <template data-success-criteria-target="template">
+            <tr class="fa-json-builder__row">
+                <td>
+                    <input type="text"
+                           class="form-control form-control-sm fa-cyber-input__field"
+                           data-index="__INDEX__" data-field="criterion"
+                           data-action="input->success-criteria#updateField"
+                           value="__CRITERION__"
+                           placeholder="{{ ('bc_exercises.success_criteria.placeholder.criterion')|trans({}, translationDomain) }}"
+                           aria-label="{{ ('bc_exercises.success_criteria.col.criterion')|trans({}, translationDomain) }}">
+                </td>
+                <td>
+                    <input type="text"
+                           class="form-control form-control-sm fa-cyber-input__field"
+                           data-index="__INDEX__" data-field="target"
+                           data-action="input->success-criteria#updateField"
+                           value="__TARGET__"
+                           placeholder="{{ ('bc_exercises.success_criteria.placeholder.target')|trans({}, translationDomain) }}"
+                           aria-label="{{ ('bc_exercises.success_criteria.col.target')|trans({}, translationDomain) }}">
+                </td>
+                <td>
+                    <input type="text"
+                           class="form-control form-control-sm fa-cyber-input__field"
+                           data-index="__INDEX__" data-field="actual"
+                           data-action="input->success-criteria#updateField"
+                           value="__ACTUAL__"
+                           placeholder="{{ ('bc_exercises.success_criteria.placeholder.actual')|trans({}, translationDomain) }}"
+                           aria-label="{{ ('bc_exercises.success_criteria.col.actual')|trans({}, translationDomain) }}">
+                </td>
+                <td class="fa-success-criteria__met-cell">
+                    <select class="form-select form-select-sm fa-cyber-input__field"
+                            data-index="__INDEX__" data-field="met"
+                            data-action="change->success-criteria#updateField"
+                            aria-label="{{ ('bc_exercises.success_criteria.col.met')|trans({}, translationDomain) }}">
+                        <option value="unknown" __MET_SEL_UNKNOWN__>
+                            {{ ('bc_exercises.success_criteria.met.unknown')|trans({}, translationDomain) }}
+                        </option>
+                        <option value="met" __MET_SEL_MET__>
+                            {{ ('bc_exercises.success_criteria.met.yes')|trans({}, translationDomain) }}
+                        </option>
+                        <option value="not_met" __MET_SEL_NOT_MET__>
+                            {{ ('bc_exercises.success_criteria.met.no')|trans({}, translationDomain) }}
+                        </option>
+                    </select>
+                </td>
+                <td class="text-end">
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
+                            data-index="__INDEX__"
+                            data-action="click->success-criteria#removeRow"
+                            aria-label="{{ ('bc_exercises.success_criteria.remove')|trans({}, translationDomain) }}">
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                    </button>
+                </td>
+            </tr>
+        </template>
+    </div>
+{% endmacro %}

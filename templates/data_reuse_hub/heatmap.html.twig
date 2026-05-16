@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'reuse.heatmap.title'|trans({}, 'messages') }}{% endblock %}
@@ -71,19 +72,14 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-start mb-3">
-        <div>
-            <h1 class="h3 mb-1">
-                <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i>
-                {{ 'reuse.heatmap.title'|trans({}, 'messages') }}
-            </h1>
-            <p class="text-muted mb-0">{{ 'reuse.heatmap.description'|trans({}, 'messages') }}</p>
-        </div>
-        <a href="{{ path('app_data_reuse_hub') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
-            {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-grid', label: 'nav.data_reuse'|trans({}, 'nav') },
+        title: 'reuse.heatmap.title'|trans({}, 'messages'),
+        subtitle: 'reuse.heatmap.description'|trans({}, 'messages'),
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_data_reuse_hub') }
+        ]
+    }) }}
 
     {# Legende #}
     <div class="d-flex gap-3 flex-wrap align-items-center small mb-3">

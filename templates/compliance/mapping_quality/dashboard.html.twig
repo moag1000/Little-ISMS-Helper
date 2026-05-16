@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}{% endblock %}
@@ -17,23 +18,16 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 <div class="container">
-    <div class="page-header">
-        <div>
-            <h1>🔍 {{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}</h1>
-            <p class="text-muted">{{ 'compliance.mapping_quality.subtitle'|trans({}, 'compliance') }}</p>
-        </div>
-        <div class="button-group">
-            <a href="{{ path('app_mapping_quality_review_queue') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <span class="icon"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i></span> {{ 'compliance.mapping_quality.review_queue.title'|trans({}, 'compliance') }}
-            </a>
-            <a href="{{ path('app_mapping_quality_gaps') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <span class="icon">🔍</span> {{ 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance') }}
-            </a>
-            <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <span class="icon">←</span> {{ 'common.back'|trans({}, 'messages') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'compliance-shield', label: 'nav.compliance'|trans({}, 'nav') },
+        title: 'compliance.mapping_quality.title'|trans({}, 'compliance'),
+        subtitle: 'compliance.mapping_quality.subtitle'|trans({}, 'compliance'),
+        actions: [
+            { label: 'compliance.mapping_quality.review_queue.title'|trans({}, 'compliance'), variant: 'primary', icon: 'nav-list-check', href: path('app_mapping_quality_review_queue') },
+            { label: 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance'), variant: 'ghost', icon: 'nav-list-check', href: path('app_mapping_quality_gaps') },
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_index') }
+        ]
+    }) }}
 
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'quality' } %}
 

@@ -120,49 +120,56 @@
                         actions: []
                     }) }}
                 {% else %}
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th>{{ 'audit_workbook.index.table.framework'|trans({}, 'audit_workbook') }}</th>
-                                    <th>{{ 'audit_workbook.index.table.version'|trans({}, 'audit_workbook') }}</th>
-                                    <th class="text-end">{{ 'audit_workbook.index.table.downloads'|trans({}, 'audit_workbook') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for framework in frameworks %}
-                                <tr>
-                                    <td>
-                                        <i class="fa-icon fa-icon--compliance-shield me-1 text-primary" aria-hidden="true"></i>
-                                        <strong>{{ framework.name }}</strong>
-                                        {% if framework.code %}
-                                            {{ pill.render(framework.code, 'neutral') }}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <span class="text-muted">{{ framework.version ?? '—' }}</span>
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="d-flex gap-2 justify-content-end">
-                                            <a href="{{ path('app_audit_workbook_soa', { frameworkId: framework.id }) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                               aria-label="{{ 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook') }}">
-                                                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
-                                                <span class="fa-cyber-btn__label">{{ 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook') }}</span>
-                                            </a>
-                                            <a href="{{ path('app_audit_workbook_compliance', { frameworkId: framework.id }) }}"
-                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                               aria-label="{{ 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook') }}">
-                                                <i class="fa-icon fa-icon--nav-patch-check" aria-hidden="true"></i>
-                                                <span class="fa-cyber-btn__label">{{ 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook') }}</span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    {% embed '_components/_fa_table.html.twig' with {
+                        id: 'audit-workbook-frameworks',
+                        striped: false,
+                        compact: false,
+                        stickyHead: false,
+                        sortable: false,
+                        bulkSelect: false
+                    } %}
+                        {% block table_head %}
+                            {% trans_default_domain 'audit_workbook' %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'audit_workbook.index.table.framework'|trans({}, 'audit_workbook') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'audit_workbook.index.table.version'|trans({}, 'audit_workbook') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'audit_workbook.index.table.downloads'|trans({}, 'audit_workbook') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% trans_default_domain 'audit_workbook' %}
+                            {% for framework in frameworks %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
+                                    <i class="fa-icon fa-icon--compliance-shield me-1 text-primary" aria-hidden="true"></i>
+                                    <strong>{{ framework.name }}</strong>
+                                    {% if framework.code %}
+                                        {{ pill.render(framework.code, 'neutral') }}
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    <span class="text-muted">{{ framework.version ?? '—' }}</span>
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="{{ path('app_audit_workbook_soa', { frameworkId: framework.id }) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                           aria-label="{{ 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook') }}">
+                                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
+                                            <span class="fa-cyber-btn__label">{{ 'audit_workbook.export_type.soa.title'|trans({}, 'audit_workbook') }}</span>
+                                        </a>
+                                        <a href="{{ path('app_audit_workbook_compliance', { frameworkId: framework.id }) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                           aria-label="{{ 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook') }}">
+                                            <i class="fa-icon fa-icon--nav-patch-check" aria-hidden="true"></i>
+                                            <span class="fa-cyber-btn__label">{{ 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook') }}</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                 {% endif %}
             </div>
         </section>

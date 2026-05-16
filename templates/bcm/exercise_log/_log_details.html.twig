@@ -114,7 +114,7 @@
                     {{ 'section.improvement_actions'|trans({}, 'bsi_200_4_exercise') }}
                 </span>
                 {% if log.hasOverdueImprovementActions %}
-                    <span class="badge bg-warning text-dark">{{ log.overdueImprovementActions|length }} {{ 'calendar.log_missing'|trans({}, 'bsi_200_4_exercise') }}</span>
+                    <span class="fa-status-pill fa-status-pill--warning">{{ log.overdueImprovementActions|length }} {{ 'calendar.log_missing'|trans({}, 'bsi_200_4_exercise') }}</span>
                 {% endif %}
             </div>
             <div class="card-body p-0">

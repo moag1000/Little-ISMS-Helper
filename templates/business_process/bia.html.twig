@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% block title %}BIA - {{ business_process.name }}{% endblock %}
 
@@ -13,14 +14,14 @@
         </ol>
     </nav>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>{{ 'business_process.bia.title'|trans({}, 'business_process') }}</h1>
-        <a href="{{ path('app_business_process_show', {'id': business_process.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
-
-    <p class="mb-3 lead">{{ business_process.name }}</p>
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-bar-chart', label: 'nav.bcm'|trans({}, 'nav') },
+        title: 'business_process.bia.title'|trans({}, 'business_process'),
+        subtitle: business_process.name,
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_business_process_show', {'id': business_process.id}) }
+        ]
+    }) }}
 
     {# Recovery Objectives #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}

@@ -1,0 +1,27 @@
+{# BCExercise form theme — extends Aurora cyber-input theme; overrides
+   the successCriteria field with the visual P-9 JsonBuilder macro.
+   Auto-prefill is built by the controller and passed via
+   `success_criteria_prefill` template variable. #}
+{% use "form/fa_cyber_input.html.twig" %}
+
+{%- block _bc_exercise_successCriteria_row -%}
+    {% import '_components/_fa_success_criteria.html.twig' as _fa_success_criteria %}
+    <div class="fa-cyber-input">
+        <div class="fa-cyber-input__header">
+            {{ form_label(form) }}
+        </div>
+        {{ _fa_success_criteria.render({
+            name: form.vars.full_name,
+            value: form.vars.value,
+            id: form.vars.id ~ '-builder',
+            prefillCriteria: success_criteria_prefill|default([]),
+            translationDomain: 'bc_exercises'
+        }) }}
+        {% if form.vars.help %}
+            <small class="fa-cyber-input__hint">
+                {{ form.vars.help|trans({}, form.vars.help_translation_domain|default('bc_exercises')) }}
+            </small>
+        {% endif %}
+        {{ form_errors(form) }}
+    </div>
+{%- endblock -%}

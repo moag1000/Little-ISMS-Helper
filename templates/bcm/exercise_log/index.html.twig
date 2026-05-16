@@ -76,7 +76,7 @@
                                     {{ log.bcExercise.name ?? '—' }}
                                 </a>
                                 {% if log.hasOverdueImprovementActions %}
-                                    <span class="badge bg-warning text-dark ms-1" title="{{ 'alva.improvement_action_overdue.title'|trans({}, 'bsi_200_4_exercise') }}">
+                                    <span class="fa-status-pill fa-status-pill--warning ms-1" title="{{ 'alva.improvement_action_overdue.title'|trans({}, 'bsi_200_4_exercise') }}">
                                         <i class="fa-icon fa-icon--status-warn" aria-hidden="true"></i>
                                     </span>
                                 {% endif %}
@@ -87,9 +87,9 @@
                             <td class="fa-table__cell">{{ ('template.' ~ log.bsi2004Template)|trans({}, 'bsi_200_4_exercise') }}</td>
                             <td class="fa-table__cell">
                                 {% if log.isConfirmed %}
-                                    <span class="badge bg-success">{{ 'status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--success">{{ 'status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
                                 {% elseif log.isSubmitted %}
-                                    <span class="badge bg-info text-dark">{{ 'status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--info">{{ 'status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
                                 {% else %}
                                     <span class="badge bg-light text-muted border">{{ 'status.draft'|trans({}, 'bsi_200_4_exercise') }}</span>
                                 {% endif %}
@@ -101,11 +101,11 @@
                             </td>
                             <td class="fa-table__cell">{{ log.submittedAt ? log.submittedAt|date('d.m.Y') : '—' }}</td>
                             <td class="fa-table__cell fa-table__cell--actions">
-                                <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                     <i class="fa-icon fa-icon--action-view" aria-hidden="true"></i>
                                 </a>
                                 {% if not log.isSubmitted %}
-                                <a href="{{ path('bcm_exercise_log_edit', {id: log.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ path('bcm_exercise_log_edit', {id: log.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                     <i class="fa-icon fa-icon--action-edit" aria-hidden="true"></i>
                                 </a>
                                 {% endif %}
