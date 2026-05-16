@@ -95,22 +95,26 @@
                     <span>{{ ('bc_plans.resource_list.empty.' ~ category)|trans({}, translationDomain) }}</span>
                 </div>
 
-                <form class="fa-resource-list__add"
-                      data-resource-list-target="addForm"
-                      data-category="{{ category }}"
-                      data-action="submit->resource-list#addEntry">
+                {# Nested <form> is illegal HTML when wrapped by another form (e.g. BCPlanType).
+                   Use <div> + button-click + Enter-on-input instead — Stimulus controller handles both. #}
+                <div class="fa-resource-list__add"
+                     data-resource-list-target="addForm"
+                     data-category="{{ category }}">
                     <input type="text"
                            class="form-control form-control-sm fa-cyber-input__field"
                            placeholder="{{ ('bc_plans.resource_list.placeholder.' ~ category)|trans({}, translationDomain) }}"
                            aria-label="{{ ('bc_plans.resource_list.tab.' ~ category)|trans({}, translationDomain) }}"
                            data-resource-list-target="addInput"
-                           data-category="{{ category }}">
-                    <button type="submit"
-                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                           data-category="{{ category }}"
+                           data-action="keydown.enter->resource-list#addEntry">
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                            data-category="{{ category }}"
+                            data-action="click->resource-list#addEntry">
                         <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
                         {{ ('bc_plans.resource_list.add')|trans({}, translationDomain) }}
                     </button>
-                </form>
+                </div>
             </div>
         {% endfor %}
 
