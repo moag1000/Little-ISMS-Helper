@@ -380,6 +380,20 @@ audit_finding:
         high: 'High'
         medium: 'Medium'
         low: 'Low'
+    severity_choice:
+        aria_label: 'Finding severity'
+        low:
+            label: 'Low'
+            definition: 'Minor deviation, no direct compliance breach. Example: typo in a procedure, missing version number.'
+        medium:
+            label: 'Medium'
+            definition: 'Noticeable weakness in the ISMS process but no immediate exposure. Example: incomplete risk assessment, outdated training material.'
+        high:
+            label: 'High'
+            definition: 'Significant deviation with compliance risk. Corrective action mandatory, typical due date 30 days. Example: no documented access review, supplier evaluation missing.'
+        critical:
+            label: 'Critical'
+            definition: 'Major nonconformity — endangers certification. Immediate escalation and corrective measures required. Example: no risk treatment plan, no internal audit performed.'
     status:
         open: 'Open'
         in_progress: 'In Progress'
@@ -469,3 +483,8 @@ corrective_action:
         followup_banner:
             title: 'Follow-up CAPA for an ineffective action'
             body: 'You are creating a follow-up CAPA to the ineffective action #%id% (%title%). Finding and predecessor CAPA are pre-filled.'
+iso_9001_bridge:
+    major_nc: 'In ISO 9001 this is called a "Major Nonconformity" — requires a documented corrective action (10.2).'
+    minor_nc: 'In ISO 9001 this corresponds to a "Minor Nonconformity" — Clause 10.2 Nonconformity and Corrective Action.'
+    corrective_action: 'Identical to the CAPA cycle from ISO 9001 Clause 10.2 (corrective action after a nonconformity).'
+    audit: 'Identical to ISO 9001 Clause 9.2 "Internal Audit" — same audit plan, same audit reports, same audit follow-up actions.'

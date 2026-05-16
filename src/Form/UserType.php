@@ -248,6 +248,23 @@ class UserType extends AbstractType
             'help' => 'user.help.competencies_json',
         ]);
         $builder->get('competencies')->addModelTransformer(new JsonArrayTransformer());
+
+        // Audit-S5 P-12 — Previous QM-System background (drives Norm-Bridge visibility).
+        // Available in every edit mode so an admin can set this for a user during
+        // onboarding without forcing the user to revisit their profile-edit screen.
+        $builder->add('previousQmsBackground', ChoiceType::class, [
+            'label' => 'user.field.previous_qms_background',
+            'help' => 'user.help.previous_qms_background',
+            'required' => false,
+            'placeholder' => 'user.placeholder.previous_qms_background',
+            'choices' => [
+                'user.qms_background.iso_9001' => 'iso_9001',
+                'user.qms_background.iso_14001' => 'iso_14001',
+                'user.qms_background.other' => 'other',
+                'user.qms_background.none' => 'none',
+            ],
+            'choice_translation_domain' => 'user',
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

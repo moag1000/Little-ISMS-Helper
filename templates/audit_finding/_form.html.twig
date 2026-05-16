@@ -1,3 +1,4 @@
+{% import '_components/_fa_severity_choice.html.twig' as _fa_severity_choice %}
 {{ form_start(form) }}
     <div class="row g-3">
         <div class="col-md-6">{{ form_row(form.audit) }}</div>
@@ -5,7 +6,17 @@
         <div class="col-12">{{ form_row(form.title) }}</div>
         <div class="col-12">{{ form_row(form.description) }}</div>
         <div class="col-md-4">{{ form_row(form.type) }}</div>
-        <div class="col-md-4">{{ form_row(form.severity) }}</div>
+        <div class="col-md-12">
+            {{ form_label(form.severity) }}
+            {{ _fa_severity_choice.render({
+                name: form.severity.vars.full_name,
+                selected: form.severity.vars.value,
+                translation_prefix: 'audit_finding',
+                translation_domain: 'audits',
+                required: form.severity.vars.required,
+            }) }}
+            {{ form_errors(form.severity) }}
+        </div>
         <div class="col-md-4">{{ form_row(form.status) }}</div>
         <div class="col-md-6">{{ form_row(form.clauseReference) }}</div>
         <div class="col-md-6">{{ form_row(form.relatedControl) }}</div>

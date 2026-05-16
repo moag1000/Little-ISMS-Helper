@@ -1,0 +1,86 @@
+{#
+  System-Template Selector Modal (Foundation P-14)
+
+  Usage:
+    {% include '_components/_system_template_selector.html.twig' with {
+        templates: system_templates(constant('App\\Entity\\Asset::ASSET_CLASS')),
+        entity_class: 'App\\Entity\\Asset',
+        redirect_to: 'app_asset_index',
+        modal_id: 'systemTemplateModal'
+    } %}
+
+  Required vars:
+    - templates       : list<SystemTemplate>  (from system_templates() Twig fn)
+    - entity_class    : string  FQCN, used for ARIA + display
+    - redirect_to     : string  Route name to return to after apply
+    - modal_id        : string  HTML id of the modal (default: systemTemplateModal)
+
+  Pattern: Bootstrap-modal-by-CSS-class, no JS Modal dependency — uses
+  data-bs-toggle pattern which is wired by app.js.
+#}
+{% set modal_id = modal_id|default('systemTemplateModal') %}
+{% set redirect_to = redirect_to|default('app_dashboard') %}
+
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1"
+     aria-labelledby="{{ modal_id }}Label" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{ modal_id }}Label">
+                    <i class="bi bi-collection" aria-hidden="true"></i>
+                    {{ 'system_templates.modal.title'|trans({}, 'system_templates') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-body-secondary">
+                    {{ 'system_templates.modal.intro'|trans({}, 'system_templates') }}
+                </p>
+                {% if templates is empty %}
+                    <div class="alert alert-info mb-0" role="alert">
+                        {{ 'system_templates.modal.empty'|trans({}, 'system_templates') }}
+                    </div>
+                {% else %}
+                    <ul class="list-group">
+                        {% for tpl in templates %}
+                            <li class="list-group-item">
+                                <form method="post"
+                                      action="{{ path('app_system_template_apply') }}"
+                                      class="d-flex justify-content-between align-items-start gap-3">
+                                    <input type="hidden" name="_token"
+                                           value="{{ csrf_token('system_template_apply') }}">
+                                    <input type="hidden" name="template_key" value="{{ tpl.key }}">
+                                    <input type="hidden" name="redirect_to" value="{{ redirect_to }}">
+                                    <div class="flex-grow-1">
+                                        <div class="fw-semibold">{{ tpl.name }}</div>
+                                        <div class="small text-body-secondary">{{ tpl.description }}</div>
+                                        {% if tpl.items is not null %}
+                                            <span class="badge bg-secondary mt-1">
+                                                {{ 'system_templates.modal.bulk_records'|trans({'%count%': tpl.items|length}, 'system_templates') }}
+                                            </span>
+                                        {% endif %}
+                                        {% if tpl.module %}
+                                            <span class="badge bg-light text-dark border mt-1">
+                                                {{ tpl.module }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm align-self-center">
+                                        <i class="bi bi-check2" aria-hidden="true"></i>
+                                        {{ 'system_templates.modal.apply'|trans({}, 'system_templates') }}
+                                    </button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    {{ 'common.close'|trans({}, 'messages') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

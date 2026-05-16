@@ -161,3 +161,7 @@ coverage:
   transitive_heading: 'Transitive origin (via cross-framework mapping)'
   transitive_formula: 'source fulfilment %fulfillment% %% × mapping strength %mapping% %%'
   empty: 'No contributing controls recorded yet.'
+iso_9001_bridge:
+    soa: 'Conceptually comparable to the process map from ISO 9001 Clause 4.4 — the Statement of Applicability lists which controls from Annex A apply and is therefore the counterpart of the 9001 process overview.'
+    control: 'In ISO 9001 this corresponds to "control of a process" (Clause 8.1) — controls are the operational steering that addresses risks.'
+    objective: 'Identical to "quality objectives" (ISO 9001 6.2) — measurable objectives at process/control level.'

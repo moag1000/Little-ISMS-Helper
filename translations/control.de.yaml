@@ -161,3 +161,7 @@ coverage:
   transitive_heading: 'Transitive Herkunft (via Cross-Framework-Mapping)'
   transitive_formula: 'Quell-Erfüllung %fulfillment% %% × Mapping-Stärke %mapping% %%'
   empty: 'Noch keine beitragenden Maßnahmen erfasst.'
+iso_9001_bridge:
+    soa: 'Konzeptionell vergleichbar mit der Prozesslandkarte aus ISO 9001 Klausel 4.4 — die Statement of Applicability listet auf, welche Maßnahmen aus Annex A gelten und ist damit das Gegenstück zur 9001-Prozessübersicht.'
+    control: 'In ISO 9001 entspricht das einer "Beherrschung eines Prozesses" (Klausel 8.1) — Maßnahmen sind die operative Steuerung, die Risiken adressieren.'
+    objective: 'Identisch mit "Qualitätszielen" (ISO 9001 6.2) — messbare Ziele auf Prozess- bzw. Maßnahmen-Ebene.'

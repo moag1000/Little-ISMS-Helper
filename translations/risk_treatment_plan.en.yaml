@@ -102,3 +102,7 @@ risk_treatment_plan:
         completion_percentage_range: 'Completion percentage must be between 0 and 100'
     error:
         owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+
+iso_9001_bridge:
+    treatment_strategy: 'ISO 9001 calls this "risk treatment in the context of process control" (Clause 6.1.2). Strategies (Avoid/Mitigate/Transfer/Accept) are not explicitly named in 9001 but are implicitly executed via the PDCA cycle.'
+    residual_risk: 'In ISO 9001 this is the "remaining risk" after the process control has been implemented (6.1.1) — 9001 does not require it to be quantified, 27001 does.'

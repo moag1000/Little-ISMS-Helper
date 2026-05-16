@@ -106,3 +106,6 @@ Active: Active
 Inactive: Inactive
 Evaluation: Evaluation
 Terminated: Terminated
+iso_9001_bridge:
+    party: 'Identical to ISO 9001 Clause 4.2 "Understanding the needs and expectations of interested parties". The 9001 terms "interested party" and "stakeholder" are used synonymously.'
+    expectation: 'In ISO 9001 these are the "needs and expectations of relevant interested parties" (Clause 4.2.b).'

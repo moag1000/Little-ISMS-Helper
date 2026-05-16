@@ -104,9 +104,16 @@ user:
         updated_at: 'Zuletzt aktualisiert'
         last_login: 'Letzte Anmeldung'
         competencies: 'Kompetenzen (§7.2)'
+        previous_qms_background: 'Vorherige QM-System-Erfahrung'
     placeholder:
         tenant: '-- Mandant auswählen --'
         competencies_json: '[{"name":"ISO 27001 Grundlagen","category":"compliance","level":3,"certifiedBy":null,"certifiedAt":null,"expiresAt":null}]'
+        previous_qms_background: '-- Bitte auswählen --'
+    qms_background:
+        iso_9001: 'ISO 9001 (Qualitätsmanagement)'
+        iso_14001: 'ISO 14001 (Umweltmanagement)'
+        other: 'Andere QM-System-Erfahrung'
+        none: 'Keine QM-System-Erfahrung'
     help:
         first_name: 'Geben Sie den Vornamen des Benutzers ein'
         last_name: 'Geben Sie den Nachnamen des Benutzers ein'
@@ -123,6 +130,7 @@ user:
         password_change: 'Mindestens %min% Zeichen. Alle Zeichen erlaubt — Buchstaben, Zahlen, Sonderzeichen, Umlaute, Leerzeichen, Emoji. Leer lassen, um das aktuelle Passwort zu behalten.'
         password_create: 'Mindestens %min% Zeichen. Alle Zeichen erlaubt — Buchstaben, Zahlen, Sonderzeichen, Umlaute, Leerzeichen, Emoji. Optional bei Azure-Authentifizierung.'
         competencies_json: 'JSON-Array der Kompetenzen gemäß ISO 27001 §7.2. Felder: name, category (security|compliance|technical|leadership), level (1–5), certifiedBy, certifiedAt, expiresAt.'
+        previous_qms_background: 'Aktiviert Norm-Brücken — z.B. zeigt "Interested Party → Stakeholder" unter dem Feld an, wenn ISO 9001 gewählt ist.'
     validation:
         avatar_format: 'Bitte laden Sie ein gültiges Bild hoch (JPEG, PNG, GIF oder WebP)'
         password_min_length: 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'
