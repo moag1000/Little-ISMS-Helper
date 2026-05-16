@@ -159,7 +159,12 @@ audit:
         planned_date: 'Planned Date'
         actual_date: 'Actual Date'
         lead_auditor: 'Lead Auditor'
+        lead_auditor_user: 'Lead Auditor (User)'
+        lead_auditor_person: 'Lead Auditor (Master-Data Person)'
+        lead_auditor_legacy: 'Lead Auditor (Free Text, Migration)'
         audit_team: 'Audit Team'
+        audit_team_members: 'Audit Team Members (Persons)'
+        audit_team_legacy: 'Audit Team (Free Text, Migration)'
         auditee: Auditee
         department: Department
         status: Status
@@ -220,6 +225,8 @@ audit:
         scope: 'e.g. All ISMS processes and controls'
         objectives: 'e.g. Verify compliance with ISO 27001:2022 requirements'
         lead_auditor: 'Name of the lead auditor'
+        lead_auditor_user: 'Select a user…'
+        lead_auditor_person: 'Select a master-data person…'
         audit_team: 'Names of team members, comma-separated'
         scoped_framework: 'Select framework to audit against'
     help:
@@ -227,6 +234,11 @@ audit:
         objectives: 'Objectives and purpose of the audit (what should be checked?)'
         actual_date: 'Actual date when the audit was conducted'
         audit_team: 'List of audit team members'
+        lead_auditor_user: 'For internal audits — pick the application user leading the audit.'
+        lead_auditor_person: 'For external auditors without an app login — pick from master-data Persons.'
+        lead_auditor_legacy: 'Kept for legacy data only. Long-term, populate the user or person field (Data Reuse).'
+        audit_team_members: 'Typed selection from master-data Persons (Data Reuse).'
+        audit_team_legacy: 'Legacy free-text. Read-only for migration display — use the Persons multi-select instead.'
         scoped_framework: 'If audit is limited to a framework (e.g. ISO 27001 only)'
         audited_subsidiaries: 'For corporate audits: Which subsidiaries are included?'
         findings: 'Audit findings (positive and negative results)'
@@ -287,6 +299,8 @@ audit:
     validation:
         title_required: 'Please provide a title for the audit'
         date_required: 'Please select a planned date'
+    error:
+        lead_auditor_required: 'Please pick a lead auditor — user, master-data person, or free text (at least one).'
 audit_management:
     title: 'Internal Audit'
     subtitle: 'Planning and conducting internal ISMS audits according to ISO 27001'
