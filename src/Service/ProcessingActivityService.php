@@ -469,7 +469,8 @@ class ProcessingActivityService
             );
         }
 
-        $processingActivity->setStatus('active');
+        // S3 P-4: canonical 5-stage lifecycle — legacy 'active' is now 'published'.
+        $processingActivity->setStatus('published');
         $processingActivity->setStartDate(new DateTime());
 
         $this->entityManager->flush();

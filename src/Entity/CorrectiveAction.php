@@ -104,6 +104,34 @@ class CorrectiveAction
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $effectivenessNotes = null;
 
+    /**
+     * S3 P0-32 — Pflicht-Beleg der Wirksamkeitsbewertung (ISO 27001 Cl. 10.1).
+     * Wird beim Transition completed → verified_* zwingend gefordert.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $effectivenessEvidence = null;
+
+    /**
+     * S3 P0-32 — Verifier (Benutzer, der die Wirksamkeit bestätigt/widerlegt hat).
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'verified_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $verifiedBy = null;
+
+    /**
+     * S3 P0-32 — Timestamp der Wirksamkeitsbewertung (immutable).
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeInterface $verifiedAt = null;
+
+    /**
+     * S3 P0-30 — Selbstreferenz zur unwirksamen Vorgänger-CAPA.
+     * Bildet die Maßnahmen-Kette für den Audit-Trail (Cl. 10.1 b).
+     */
+    #[ORM\ManyToOne(targetEntity: CorrectiveAction::class)]
+    #[ORM\JoinColumn(name: 'previous_capa_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?CorrectiveAction $previousCapa = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private DateTimeInterface $createdAt;
 
@@ -318,5 +346,75 @@ class CorrectiveAction
             return false;
         }
         return $this->plannedCompletionDate < new DateTimeImmutable();
+    }
+
+    public function getEffectivenessEvidence(): ?string
+    {
+        return $this->effectivenessEvidence;
+    }
+
+    public function setEffectivenessEvidence(?string $evidence): static
+    {
+        $this->effectivenessEvidence = $evidence;
+        return $this;
+    }
+
+    public function getVerifiedBy(): ?User
+    {
+        return $this->verifiedBy;
+    }
+
+    public function setVerifiedBy(?User $user): static
+    {
+        $this->verifiedBy = $user;
+        return $this;
+    }
+
+    public function getVerifiedAt(): ?DateTimeInterface
+    {
+        return $this->verifiedAt;
+    }
+
+    public function setVerifiedAt(?DateTimeInterface $verifiedAt): static
+    {
+        $this->verifiedAt = $verifiedAt;
+        return $this;
+    }
+
+    public function getPreviousCapa(): ?CorrectiveAction
+    {
+        return $this->previousCapa;
+    }
+
+    public function setPreviousCapa(?CorrectiveAction $previousCapa): static
+    {
+        $this->previousCapa = $previousCapa;
+        return $this;
+    }
+
+    /**
+     * S3 P0-30 — Convenience accessor: did Cl. 10.1 b kick in for this CAPA?
+     * If true, the show-view surfaces a banner offering to create a Folge-CAPA.
+     */
+    public function isVerifiedIneffective(): bool
+    {
+        return $this->status === self::STATUS_VERIFIED_INEFFECTIVE;
+    }
+
+    /**
+     * S3 P0-31 — Cl. 9.1 reminder window check.
+     * True if the entity has an effectivenessReviewDate within the next $days
+     * and is still in `completed` (i.e. not yet verified).
+     */
+    public function isEffectivenessReviewDueWithin(int $days): bool
+    {
+        if ($this->effectivenessReviewDate === null) {
+            return false;
+        }
+        if ($this->status !== self::STATUS_COMPLETED) {
+            return false;
+        }
+        $threshold = (new DateTimeImmutable())->modify("+{$days} days");
+        return $this->effectivenessReviewDate <= $threshold;
     }
 }

@@ -345,6 +345,10 @@ corrective_action:
         actual_completion_date: 'Tatsächlicher Abschluss'
         effectiveness_review_date: 'Wirksamkeitsprüfung'
         effectiveness_notes: 'Notizen zur Wirksamkeit'
+        effectiveness_evidence: 'Wirksamkeitsbeleg'
+        verified_by: 'Wirksamkeit geprüft durch'
+        verified_at: 'Wirksamkeitsprüfung am'
+        previous_capa: 'Folge-CAPA zu unwirksamer Maßnahme'
     placeholder:
         finding: '-- Feststellung auswählen --'
         responsible_person_user: '-- Benutzer auswählen --'
@@ -354,6 +358,7 @@ corrective_action:
         root_cause_analysis: 'Warum ist die Abweichung aufgetreten? (5-Why / Ishikawa / FMEA)'
         effectiveness_review_date: 'ISO 27001 10.1 fordert Wirksamkeitsbewertung nach Umsetzung'
         effectiveness_notes: 'Ergebnis der Wirksamkeitsprüfung — warum wirksam/unwirksam'
+        effectiveness_evidence: 'Pflicht-Beleg (Re-Audit, Re-Test-Bericht, Evidenz-Dokument-ID) — wird beim Status "Wirksam/Unwirksam bestätigt" erzwungen.'
     status:
         planned: 'Geplant'
         in_progress: 'In Umsetzung'
@@ -362,6 +367,7 @@ corrective_action:
         verified_ineffective: 'Unwirksam — neue Maßnahme nötig'
     section:
         description: 'Beschreibung & Ursachenanalyse'
+        verification: 'Wirksamkeitsbewertung'
     alert:
         overdue: '%count% überfällige Maßnahme(n).'
     message:
@@ -369,7 +375,20 @@ corrective_action:
         for_finding: 'Für Feststellung'
     confirm:
         delete: 'Korrekturmaßnahme wirklich löschen?'
+    error:
+        evidence_required: 'Wirksamkeitsbeleg ist Pflicht für Verifizierung (ISO 27001 Cl. 10.1).'
+        verified_by_required: 'Wirksamkeitsprüfer ist Pflicht.'
+        invalid_transition: 'Statuswechsel von %from% nach %to% ist nicht erlaubt.'
     flash:
         created: 'Korrekturmaßnahme erstellt.'
         updated: 'Korrekturmaßnahme aktualisiert.'
         deleted: 'Korrekturmaßnahme gelöscht.'
+    alva_hint:
+        ineffective_followup:
+            title: 'Maßnahme unwirksam — Folge-CAPA Pflicht'
+            body: 'ISO 27001 Cl. 10.1 b: Bei unwirksamer Korrekturmaßnahme muss erneut bewertet und behandelt werden. Folge-CAPA mit Bezug zur ursprünglichen Maßnahme #%id% (%title%) anlegen.'
+            cta: 'Folge-CAPA jetzt anlegen'
+    new:
+        followup_banner:
+            title: 'Folge-CAPA zu unwirksamer Maßnahme'
+            body: 'Sie legen eine Folge-CAPA zur unwirksamen Maßnahme #%id% (%title%) an. Feststellung und Vorgänger-CAPA sind vorbefüllt.'

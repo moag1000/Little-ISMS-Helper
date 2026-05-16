@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\BusinessContinuityPlan;
+use App\Entity\CorrectiveAction;
 use App\Entity\DataBreach;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Repository\BusinessContinuityPlanRepository;
+use App\Repository\CorrectiveActionRepository;
 use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Repository\ProcessingActivityRepository;
@@ -42,8 +44,43 @@ class ReviewReminderService
         private readonly DataBreachRepository $dataBreachRepository,
         private readonly UserRepository $userRepository,
         private readonly EmailNotificationService $emailNotificationService,
-        private readonly ?LoggerInterface $logger = null
+        private readonly ?LoggerInterface $logger = null,
+        // S3 P0-31 — optional; kept at the tail to preserve BC for callers that
+        // construct the service positionally (existing test suite).
+        private readonly ?CorrectiveActionRepository $correctiveActionRepository = null,
     ) {
+    }
+
+    /**
+     * S3 P0-31 — CAPA effectiveness-review due within $days.
+     *
+     * Returns CAPAs that are still in `completed` (not yet verified) but
+     * whose effectivenessReviewDate is within the next $days. ISO 27001
+     * Cl. 10.1 + 9.1 require this measurement to happen on time.
+     *
+     * @return CorrectiveAction[]
+     */
+    public function getCapaEffectivenessReviewsDueWithin(int $days = 14): array
+    {
+        if ($this->correctiveActionRepository === null) {
+            return [];
+        }
+
+        $now = new DateTime();
+        $threshold = (clone $now)->modify("+{$days} days");
+
+        $capas = $this->correctiveActionRepository->findBy(['status' => CorrectiveAction::STATUS_COMPLETED]);
+
+        return array_filter($capas, function (CorrectiveAction $capa) use ($now, $threshold): bool {
+            $reviewDate = $capa->getEffectivenessReviewDate();
+            return $reviewDate instanceof DateTimeInterface
+                && $reviewDate <= $threshold
+                // include both upcoming (within window) AND overdue (past)
+                && (
+                    ($reviewDate >= $now)
+                    || ($reviewDate < $now)
+                );
+        });
     }
 
     /**
@@ -118,7 +155,8 @@ class ReviewReminderService
     public function getOverdueProcessingActivityReviews(): array
     {
         $now = new DateTime();
-        $activities = $this->processingActivityRepository->findBy(['status' => 'active']);
+        // S3 P-4: canonical 5-stage lifecycle — legacy 'active' → 'published'.
+        $activities = $this->processingActivityRepository->findBy(['status' => 'published']);
 
         return array_filter($activities, function (ProcessingActivity $activity) use ($now): bool {
             $nextReview = $activity->getNextReviewDate();
@@ -272,6 +310,37 @@ class ReviewReminderService
             }
         }
 
+        // S3 P0-31 — Process CAPA effectiveness-review reminders.
+        foreach ($this->getCapaEffectivenessReviewsDueWithin(14) as $capa) {
+            $owner = $capa->getResponsiblePersonUser();
+            if (!$owner instanceof User) {
+                continue;
+            }
+            try {
+                $this->emailNotificationService->sendGenericNotification(
+                    '[ISMS Reminder] CAPA-Wirksamkeitsprüfung fällig: ' . $capa->getTitle(),
+                    'emails/review_reminder.html.twig',
+                    [
+                        'entity_type' => 'CorrectiveAction',
+                        'entity_name' => $capa->getTitle(),
+                        'review_date' => $capa->getEffectivenessReviewDate(),
+                        'entity_id' => $capa->getId(),
+                        'route_name' => 'app_corrective_action_show',
+                    ],
+                    [$owner]
+                );
+                $sent++;
+                $details[] = ['type' => 'capa_effectiveness', 'id' => $capa->getId(), 'status' => 'sent'];
+            } catch (Throwable $e) {
+                $failed++;
+                $details[] = ['type' => 'capa_effectiveness', 'id' => $capa->getId(), 'status' => 'failed', 'error' => $e->getMessage()];
+                $this->logger?->error('Failed to send CAPA effectiveness reminder', [
+                    'capa_id' => $capa->getId(),
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         // Process overdue BC Plans
         foreach ($this->getOverdueBcPlanReviews() as $plan) {
             // BC Plans use planOwner as string, would need to resolve to User
@@ -387,7 +456,8 @@ class ReviewReminderService
 
     private function getUpcomingProcessingActivityReviews(DateTime $now, DateTime $threshold): array
     {
-        $activities = $this->processingActivityRepository->findBy(['status' => 'active']);
+        // S3 P-4: canonical 5-stage lifecycle — legacy 'active' → 'published'.
+        $activities = $this->processingActivityRepository->findBy(['status' => 'published']);
 
         return array_filter($activities, function (ProcessingActivity $activity) use ($now, $threshold): bool {
             $nextReview = $activity->getNextReviewDate();

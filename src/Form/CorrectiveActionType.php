@@ -119,6 +119,15 @@ class CorrectiveActionType extends AbstractType
                 'attr' => ['rows' => 3],
                 'help' => 'corrective_action.help.effectiveness_notes',
             ])
+            // S3 P0-32: Pflicht-Beleg der Wirksamkeitsbewertung. Form-required wird
+            // server-side im Lifecycle-Service erzwungen; auf dem Form selbst bleibt
+            // das Feld optional, damit Draft-States ohne Evidence speicherbar sind.
+            ->add('effectivenessEvidence', TextareaType::class, [
+                'label' => 'corrective_action.field.effectiveness_evidence',
+                'required' => false,
+                'attr' => ['rows' => 3],
+                'help' => 'corrective_action.help.effectiveness_evidence',
+            ])
         ;
     }
 
@@ -144,6 +153,24 @@ class CorrectiveActionType extends AbstractType
             $context->buildViolation('audits.error.owner_required_user_or_person')
                 ->atPath('responsiblePersonUser')
                 ->addViolation();
+        }
+
+        // S3 P0-32 — when the form is saved with a verified_* status, the
+        // effectiveness evidence becomes mandatory (Cl. 10.1). The
+        // LifecycleService also enforces this on programmatic transitions;
+        // duplicating the guard at the form level makes the error visible
+        // inline instead of as a 500.
+        $verifyStatuses = [
+            CorrectiveAction::STATUS_VERIFIED_EFFECTIVE,
+            CorrectiveAction::STATUS_VERIFIED_INEFFECTIVE,
+        ];
+        if (in_array($entity->getStatus(), $verifyStatuses, true)) {
+            $evidence = $entity->getEffectivenessEvidence();
+            if ($evidence === null || trim($evidence) === '') {
+                $context->buildViolation('corrective_action.error.evidence_required')
+                    ->atPath('effectivenessEvidence')
+                    ->addViolation();
+            }
         }
     }
 }

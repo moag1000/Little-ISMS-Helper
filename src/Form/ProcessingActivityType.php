@@ -530,13 +530,18 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             // Status & Dates
             // ============================================================================
+            // S3 P-4: migrated from legacy 3-stage (draft/active/archived) to canonical
+            // 5-stage lifecycle per LifecycleRegistry::STANDARD_5_STAGE. Legacy `active`
+            // values were UPDATEd to `published` by the consolidated data-migration.
             ->add('status', ChoiceType::class, [
                 'label' => 'processing_activity.form.status',
                 'help' => 'processing_activity.help.status',
                 'choices' => [
-                    'processing_activity.status.draft' => 'draft',
-                    'processing_activity.status.active' => 'active',
-                    'processing_activity.status.archived' => 'archived',
+                    'processing_activity.status.draft'     => 'draft',
+                    'processing_activity.status.in_review' => 'in_review',
+                    'processing_activity.status.approved'  => 'approved',
+                    'processing_activity.status.published' => 'published',
+                    'processing_activity.status.archived'  => 'archived',
                 ],
                 'required' => true,
                 'choice_translation_domain' => 'privacy',

@@ -34,7 +34,12 @@ class ProcessingActivityRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find active processing activities for a tenant
+     * Find active processing activities for a tenant.
+     *
+     * S3 P-4: "active" in business-domain means a VVT-record currently in
+     * production use. After the canonical 5-stage migration, this maps to
+     * status='published' (legacy 'active' rows were UPDATEd in the
+     * consolidated data-migration).
      */
     public function findActiveByTenant(Tenant $tenant): array
     {
@@ -42,7 +47,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
             ->where('pa.tenant = :tenant')
             ->andWhere('pa.status = :status')
             ->setParameter('tenant', $tenant)
-            ->setParameter('status', 'active')
+            ->setParameter('status', 'published')
             ->orderBy('pa.name', 'ASC')
             ->getQuery()
             ->getResult();
@@ -136,9 +141,11 @@ class ProcessingActivityRepository extends ServiceEntityRepository
 
         $total = (clone $queryBuilder)->select('COUNT(pa.id)')->getQuery()->getSingleScalarResult();
 
+        // S3 P-4: "active" dashboard counter maps to status='published'
+        // after canonical 5-stage migration (legacy 'active' → 'published').
         $active = (clone $queryBuilder)
             ->andWhere('pa.status = :status')
-            ->setParameter('status', 'active')
+            ->setParameter('status', 'published')
             ->select('COUNT(pa.id)')
             ->getQuery()
             ->getSingleScalarResult();

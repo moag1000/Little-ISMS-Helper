@@ -96,8 +96,9 @@ class BadgeExtension
         'obsolete' => 'danger',
         'in_review' => 'info',
         'archived' => 'secondary',
-        // 'active' document state — neutral pill so auditors
-        // can distinguish pre-wizard hand-uploads from approved docs.
+        // 'active' — legacy document state (S3 P-4 migrated to 'published').
+        // Kept for non-document entities (Supplier, Consent, etc.) that still
+        // use 'active' as their canonical value.
         'active' => 'secondary',
     ];
 

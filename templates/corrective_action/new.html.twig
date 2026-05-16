@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'corrective_action.page.new'|trans({}, 'audits') }}{% endblock %}
 
@@ -16,10 +17,23 @@
         title: 'corrective_action.page.new'|trans({}, 'audits'),
         badge: { icon: 'plus', label: '' }
     }) }}
+
+    {# S3 P0-30 — Info-Banner wenn aus unwirksamer Vorgänger-CAPA vorbefüllt. #}
+    {% if previousCapa is defined and previousCapa %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            title: 'corrective_action.new.followup_banner.title'|trans({}, 'audits'),
+            body: 'corrective_action.new.followup_banner.body'|trans({
+                '%id%': previousCapa.id,
+                '%title%': previousCapa.title
+            }, 'audits')
+        }) }}
+    {% endif %}
+
     {% if finding %}
         <p class="text-muted mb-3">
             {{ 'corrective_action.message.for_finding'|trans({}, 'audits') }}:
-            <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}">{{ finding.(findingNumber ?? ('#' ~ finding.id)) }} — {{ finding.title }}</a>
+            <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}">{{ finding.findingNumber ?? ('#' ~ finding.id) }} — {{ finding.title }}</a>
         </p>
     {% endif %}
     {% embed '_components/_card.html.twig' %}
