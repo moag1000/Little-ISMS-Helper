@@ -53,6 +53,15 @@ quick_fix:
             tenant_mismatches: '%count% Mandant-Fehlzuordnung(en) behoben.'
             duplicates: '%count% Duplikat(e) aus "%type%" bereinigt.'
             all: 'Alle Repairs abgeschlossen: %orphans% Orphan(s), %mismatches% Mismatch(es), %duplicates% Duplikat(e).'
+    apply_failure:
+        title: 'Migration fehlgeschlagen — Recovery'
+        warning: 'ACHTUNG: Diese Optionen nur verwenden wenn du verstehst, was die Migration tut. Ein falsches Skip kann zu Dateninkonsistenz fuehren.'
+        skip_single_confirm: 'Ich bestaetige, dass ich die fehlgeschlagene Migration verstehe und sie sicher ueberspringen kann (z.B. weil die Aenderung bereits im Schema vorhanden ist oder die Migration rueckgaengig gemacht werden soll).'
+        skip_single_button: 'Diese Migration ueberspringen (als ausgefuehrt markieren, ohne DDL)'
+        skip_all_show: 'Alle ausstehenden Migrationen ueberspringen (Experten-Option)...'
+        skip_all_body: 'Markiert ALLE ausstehenden Migrationen als ausgefuehrt ohne deren DDL auszufuehren. Nur verwenden wenn du sicher bist, dass das Schema bereits den gewuenschten Zustand hat. Diese Aktion kann nicht rueckgaengig gemacht werden.'
+        skip_all_confirm: 'Ich bestaetige, dass ALLE ausstehenden Migrationen sicher uebersprungen werden koennen und ich die Konsequenzen verstehe.'
+        skip_all_button: 'Alle ausstehenden Migrationen ueberspringen (ohne DDL)'
     phantom_diff:
         title: 'Schema bereits aktuell — Migration als erledigt markieren'
         warning: 'Nur klicken wenn das Schema die Tabelle/Spalte WIRKLICH bereits enthält. Diese Aktion überspringt die DDL-Ausführung und markiert die Migration nur in der Versionstabelle.'
