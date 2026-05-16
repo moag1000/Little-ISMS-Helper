@@ -209,6 +209,12 @@ final class SectionPolicyTest extends TestCase
     /**
      * Parse `->add('<fieldName>', ...)` calls from FormType source.
      *
+     * Additionally synthesises the four fields contributed by the
+     * OwnerPickerFormTrait helper `$this->addOwnerPicker($builder, [...])` —
+     * `user_field`, `person_field`, `deputies_field`, `legacy_field`.
+     * Those land on the builder via the trait but the static parser
+     * doesn't see literal `->add()` calls for them.
+     *
      * @return list<string>
      */
     private static function parseBuilderFields(string $source): array
@@ -218,6 +224,22 @@ final class SectionPolicyTest extends TestCase
             $source,
             $matches
         );
-        return $matches[1];
+        $fields = $matches[1];
+
+        // Capture addOwnerPicker(...) config-array fields.
+        preg_match_all(
+            "/addOwnerPicker\(\s*\\\$builder\s*,\s*\[(.*?)\]\s*\)/s",
+            $source,
+            $pickerCalls
+        );
+        foreach ($pickerCalls[1] ?? [] as $configBody) {
+            foreach (['user_field', 'person_field', 'deputies_field', 'legacy_field'] as $key) {
+                if (preg_match("/['\"]" . $key . "['\"]\s*=>\s*['\"]([A-Za-z_][A-Za-z0-9_]*)['\"]/", $configBody, $m)) {
+                    $fields[] = $m[1];
+                }
+            }
+        }
+
+        return array_values(array_unique($fields));
     }
 }

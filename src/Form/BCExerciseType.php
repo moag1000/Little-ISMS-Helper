@@ -307,8 +307,12 @@ class BCExerciseType extends AbstractType implements SectionMapInterface
                 'exerciseLeaderUser',
                 'exerciseLeaderPerson',
                 'facilitator',
+                'facilitatorUser',
+                'facilitatorPerson',
                 'participants',
+                'participantPersons',
                 'observers',
+                'observerPersons',
             ],
             'results' => [
                 'status',
