@@ -118,7 +118,8 @@ class ReviewReminderService
     public function getOverdueProcessingActivityReviews(): array
     {
         $now = new DateTime();
-        $activities = $this->processingActivityRepository->findBy(['status' => 'active']);
+        // S3 P-4: canonical 5-stage lifecycle — legacy 'active' → 'published'.
+        $activities = $this->processingActivityRepository->findBy(['status' => 'published']);
 
         return array_filter($activities, function (ProcessingActivity $activity) use ($now): bool {
             $nextReview = $activity->getNextReviewDate();
@@ -387,7 +388,8 @@ class ReviewReminderService
 
     private function getUpcomingProcessingActivityReviews(DateTime $now, DateTime $threshold): array
     {
-        $activities = $this->processingActivityRepository->findBy(['status' => 'active']);
+        // S3 P-4: canonical 5-stage lifecycle — legacy 'active' → 'published'.
+        $activities = $this->processingActivityRepository->findBy(['status' => 'published']);
 
         return array_filter($activities, function (ProcessingActivity $activity) use ($now, $threshold): bool {
             $nextReview = $activity->getNextReviewDate();
