@@ -2121,3 +2121,7 @@ sso:
     status:
         enabled: 'Enabled'
         disabled: 'Disabled'
+
+# Owner-Picker — Tri-State Owner Slot Component (S4 P-1)
+owner_picker:
+    legacy_hint: 'Legacy free-text from historical records. Please select a user or person above; this field is read-only and serves as a migration hint.'

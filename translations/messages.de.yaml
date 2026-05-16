@@ -2180,3 +2180,7 @@ sso:
     status:
         enabled: 'Aktiv'
         disabled: 'Deaktiviert'
+
+# Owner-Picker — Tri-State Owner Slot Component (S4 P-1)
+owner_picker:
+    legacy_hint: 'Legacy-Freitext aus älteren Datensätzen. Bitte einen Benutzer oder eine Person oben auswählen, dieses Feld ist nur lesbar und dient als Migrations-Hinweis.'
