@@ -221,7 +221,7 @@ class InternalAudit
     #[ORM\JoinColumn(name: 'internal_audit_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Groups(['audit:read', 'audit:write'])]
-    private Collection $auditTeamMembers;
+    private ?Collection $auditTeamMembers = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
@@ -629,15 +629,15 @@ public function __construct()
 
     public function addAuditTeamMember(Person $person): static
     {
-        if (!$this->auditTeamMembers->contains($person)) {
-            $this->auditTeamMembers->add($person);
+        if (!$this->getAuditTeamMembers()->contains($person)) {
+            $this->getAuditTeamMembers()->add($person);
         }
         return $this;
     }
 
     public function removeAuditTeamMember(Person $person): static
     {
-        $this->auditTeamMembers->removeElement($person);
+        $this->getAuditTeamMembers()->removeElement($person);
         return $this;
     }
 

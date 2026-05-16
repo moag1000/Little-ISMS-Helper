@@ -149,7 +149,7 @@ class BCExercise
     #[ORM\JoinColumn(name: 'bc_exercise_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
-    private Collection $participantPersons;
+    private ?Collection $participantPersons = null;
 
     /**
      * Exercise facilitator/lead — legacy free-text field. P-15 DataReuse:
@@ -215,7 +215,7 @@ class BCExercise
     #[ORM\JoinColumn(name: 'bc_exercise_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
-    private Collection $observerPersons;
+    private ?Collection $observerPersons = null;
 
     /**
      * Status: planned, in_progress, completed, cancelled
@@ -520,15 +520,15 @@ class BCExercise
 
     public function addParticipantPerson(Person $person): static
     {
-        if (!$this->participantPersons->contains($person)) {
-            $this->participantPersons->add($person);
+        if (!$this->getParticipantPersons()->contains($person)) {
+            $this->getParticipantPersons()->add($person);
         }
         return $this;
     }
 
     public function removeParticipantPerson(Person $person): static
     {
-        $this->participantPersons->removeElement($person);
+        $this->getParticipantPersons()->removeElement($person);
         return $this;
     }
 
@@ -633,15 +633,15 @@ class BCExercise
 
     public function addObserverPerson(Person $person): static
     {
-        if (!$this->observerPersons->contains($person)) {
-            $this->observerPersons->add($person);
+        if (!$this->getObserverPersons()->contains($person)) {
+            $this->getObserverPersons()->add($person);
         }
         return $this;
     }
 
     public function removeObserverPerson(Person $person): static
     {
-        $this->observerPersons->removeElement($person);
+        $this->getObserverPersons()->removeElement($person);
         return $this;
     }
 

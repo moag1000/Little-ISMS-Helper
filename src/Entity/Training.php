@@ -205,7 +205,7 @@ class Training
      *
      * @var Collection<int, User>
      */
-    private Collection $participantUsers;
+    private ?Collection $participantUsers = null;
 
 public function __construct()
     {
@@ -231,22 +231,22 @@ public function __construct()
     {
         $this->participantUsers = new ArrayCollection();
         foreach ($users as $user) {
-            $this->participantUsers->add($user);
+            $this->getParticipantUsers()->add($user);
         }
         return $this;
     }
 
     public function addParticipantUser(User $user): static
     {
-        if (!$this->participantUsers->contains($user)) {
-            $this->participantUsers->add($user);
+        if (!$this->getParticipantUsers()->contains($user)) {
+            $this->getParticipantUsers()->add($user);
         }
         return $this;
     }
 
     public function removeParticipantUser(User $user): static
     {
-        $this->participantUsers->removeElement($user);
+        $this->getParticipantUsers()->removeElement($user);
         return $this;
     }
 
