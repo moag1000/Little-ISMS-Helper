@@ -304,6 +304,20 @@ audit_finding:
         high: 'Hoch'
         medium: 'Mittel'
         low: 'Niedrig'
+    severity_choice:
+        aria_label: 'Schweregrad der Feststellung'
+        low:
+            label: 'Niedrig'
+            definition: 'Geringfügige Abweichung, kein direkter Compliance-Verstoß. Beispiel: Tippfehler in einer Verfahrensanweisung, fehlende Versionsnummer.'
+        medium:
+            label: 'Mittel'
+            definition: 'Erkennbare Schwäche im ISMS-Prozess, aber keine unmittelbare Gefährdung. Beispiel: unvollständige Risikobewertung, veraltete Schulungsunterlagen.'
+        high:
+            label: 'Hoch'
+            definition: 'Erhebliche Abweichung mit Compliance-Risiko. Korrekturmaßnahme verpflichtend, Frist üblicherweise 30 Tage. Beispiel: keine dokumentierte Zugriffsrevision, Lieferantenbewertung fehlt.'
+        critical:
+            label: 'Kritisch'
+            definition: 'Hauptabweichung (Major NC) — gefährdet die Zertifizierung. Sofortige Eskalation und korrigierende Maßnahmen erforderlich. Beispiel: kein Risikobehandlungsplan, kein internes Audit durchgeführt.'
     status:
         open: 'Offen'
         in_progress: 'In Bearbeitung'
@@ -393,3 +407,8 @@ corrective_action:
         followup_banner:
             title: 'Folge-CAPA zu unwirksamer Maßnahme'
             body: 'Sie legen eine Folge-CAPA zur unwirksamen Maßnahme #%id% (%title%) an. Feststellung und Vorgänger-CAPA sind vorbefüllt.'
+iso_9001_bridge:
+    major_nc: 'In ISO 9001 wird das als "Hauptabweichung" (Major Nonconformity) bezeichnet — verlangt eine dokumentierte Korrekturmaßnahme (10.2).'
+    minor_nc: 'In ISO 9001 entspricht das einer "Nebenabweichung" (Minor Nonconformity) — Klausel 10.2 Nichtkonformität und Korrekturmaßnahme.'
+    corrective_action: 'Identisch mit dem CAPA-Cycle aus ISO 9001 Klausel 10.2 (Korrekturmaßnahme nach Nichtkonformität).'
+    audit: 'Identisch mit ISO 9001 Klausel 9.2 "Internes Audit" — gleicher Audit-Plan, gleiche Audit-Berichte, gleiche Audit-Folgeaktionen.'

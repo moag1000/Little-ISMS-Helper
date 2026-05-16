@@ -136,11 +136,21 @@ services:
         # F40 — Audit-Workbook generators auto-register via interface tag.
         App\Service\Audit\Generator\AuditWorkbookGeneratorInterface:
             tags: ['app.audit.workbook_generator']
+        # P-14 (S5) — SystemTemplate providers auto-register via interface tag.
+        App\Template\TemplateProviderInterface:
+            tags: ['system_template.provider']
 
     # F40 — Audit-Workbook orchestrator: receives all tagged generators.
     App\Service\Audit\AuditWorkbookGenerator:
         arguments:
             $generators: !tagged_iterator app.audit.workbook_generator
+
+    # P-14 (S5) — SystemTemplate registry: collects every TemplateProviderInterface
+    # implementation tagged via _instanceof above. Foundation for the
+    # "create from template" empty-state CTA + `app:seed-templates` command.
+    App\Template\SystemTemplateRegistry:
+        arguments:
+            $providers: !tagged_iterator system_template.provider
 
     App\AlvaHint\AlvaHintService:
         arguments:

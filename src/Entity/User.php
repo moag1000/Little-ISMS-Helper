@@ -142,6 +142,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
     private array $completedTours = [];
 
+    /**
+     * Audit-S5 P-12 — previous QM-System background.
+     *
+     * Controls visibility of "Norm-Bridge" hints (ISO 27001 ↔ ISO 9001 etc.)
+     * underneath form-labels. Set to 'iso_9001' for the ~80 % of customers
+     * that join from an existing ISO-9001 QM-System; defaults to NULL =
+     * never show bridges. Allowed values: 'iso_9001' | 'iso_14001' |
+     * 'other' | 'none' | NULL.
+     */
+    #[ORM\Column(length: 32, nullable: true)]
+    private ?string $previousQmsBackground = null;
+
     // -------------------------------------------------------------------------
     // FairyAurora v4.0 — Alva Companion user preferences
     // -------------------------------------------------------------------------
@@ -625,6 +637,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function resetAllTours(): static
     {
         $this->completedTours = [];
+        return $this;
+    }
+
+    /**
+     * Audit-S5 P-12 — read previous QM-System background.
+     *
+     * @return string|null One of 'iso_9001' | 'iso_14001' | 'other' | 'none' | NULL.
+     */
+    public function getPreviousQmsBackground(): ?string
+    {
+        return $this->previousQmsBackground;
+    }
+
+    public function setPreviousQmsBackground(?string $previousQmsBackground): static
+    {
+        $allowed = ['iso_9001', 'iso_14001', 'other', 'none', null];
+        if (!in_array($previousQmsBackground, $allowed, true)) {
+            throw new \InvalidArgumentException(\sprintf(
+                'Invalid previousQmsBackground "%s". Allowed: iso_9001, iso_14001, other, none, null.',
+                $previousQmsBackground,
+            ));
+        }
+        $this->previousQmsBackground = $previousQmsBackground;
         return $this;
     }
 

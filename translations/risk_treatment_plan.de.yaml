@@ -102,3 +102,7 @@ risk_treatment_plan:
         completion_percentage_range: 'Der Fertigstellungsgrad muss zwischen 0 und 100 liegen'
     error:
         owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+
+iso_9001_bridge:
+    treatment_strategy: 'ISO 9001 nennt das "Risikobehandlung im Kontext der Prozesssteuerung" (Klausel 6.1.2). Strategien (Avoid/Mitigate/Transfer/Accept) sind in der 9001 nicht explizit benannt, werden aber im PDCA-Zyklus implizit umgesetzt.'
+    residual_risk: 'In ISO 9001 ist das das "verbleibende Risiko" nach Implementierung der Prozesssteuerung (6.1.1) — wird in der 9001 nicht zwingend quantifiziert, in 27001 schon.'

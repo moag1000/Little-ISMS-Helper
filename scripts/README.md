@@ -232,6 +232,71 @@ Fix: move the {% import %} statement inside the {% block %} where it is used.
 
 ---
 
+### quality/check_module_gating.py (Audit-S5 / P-6)
+
+**Zweck:** Erzwingt Module-Gating-Disziplin für regulatorische FormType-Felder.
+Verhindert, dass DORA-/LkSG-/MaRisk-/NIS2-/TISAX-/GDPR-Felder ohne
+`isModuleActive()`-Gate / `addModuleGatedField()` / safe-helper ins
+Form-Layout rutschen.
+
+**Verwendung:**
+```bash
+# Repo-weit, gegen Baseline
+python3 scripts/quality/check_module_gating.py --baseline scripts/quality/baselines/module_gating.txt --quiet
+
+# Einzelne Datei
+python3 scripts/quality/check_module_gating.py --paths src/Form/SupplierType.php
+
+# Baseline neu schreiben (Snapshot-Modus)
+python3 scripts/quality/check_module_gating.py --write-baseline scripts/quality/baselines/module_gating.txt
+```
+
+**Whitelist-Annotation:** `// @no-module-gate-required: <reason>` direkt
+oberhalb des `->add(...)`-Calls.
+
+**CI-Integration:** Gate 11 im `code-quality`-Job (BLOCKING via baseline).
+
+---
+
+### quality/check_flash_domain.py (Audit-S5 / P-5)
+
+**Zweck:** Stoppt `$this->translator->trans('key')`-Calls ohne explizite
+Domain in Controllern. Solche Calls fallen still auf die `messages`-Domain
+zurueck und zeigen Roh-Keys in der UI an. Bevorzugt wird
+`LocalizedFlashTrait::flashSuccess('key.with.dots')`.
+
+**Verwendung:**
+```bash
+python3 scripts/quality/check_flash_domain.py --baseline scripts/quality/baselines/flash_domain.txt --quiet
+```
+
+**Whitelist-Annotation:** `// @flash-domain-fallback-ok: <reason>`.
+
+**CI-Integration:** Gate 12 im `code-quality`-Job (BLOCKING via baseline).
+
+---
+
+### quality/check_freetext_legacy.py (Audit-S5 / P-15)
+
+**Zweck:** Heuristik gegen Freitext-Felder in FormTypes, wo eine
+strukturelle Entity-Referenz existieren sollte (Auditor, Owner, Country,
+Department, Participants, …).
+
+**Verwendung:**
+```bash
+# warn-only (default)
+python3 scripts/quality/check_freetext_legacy.py
+
+# strict (CI-blocking)
+python3 scripts/quality/check_freetext_legacy.py --baseline scripts/quality/baselines/freetext_legacy.txt --strict --quiet
+```
+
+**Whitelist-Annotation:** `// @legacy-freetext: <reason>`.
+
+**CI-Integration:** Gate 13 im `code-quality`-Job (`--strict --baseline`).
+
+---
+
 ### quality/check_translation_issues.py
 
 **Zweck:** Umfassender Translation Quality Checker für Twig-Templates

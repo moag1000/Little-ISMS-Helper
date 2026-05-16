@@ -1,0 +1,21 @@
+system_templates:
+    modal:
+        title: 'Create from template'
+        intro: 'Pick a template to spawn typical ISMS content with one click. The data is scoped to your tenant and can be edited as usual afterwards.'
+        empty: 'No templates are available for this area right now — either the relevant module is inactive or no templates exist for this entity type yet.'
+        apply: 'Apply'
+        bulk_records: '{0}—|{1}1 record in batch|]1,Inf[%count% records in batch'
+    cta:
+        button: 'Create from template'
+        hint: 'Fast start via standard templates (ISO 27005, BSI, RoPA, policies, cloud providers, module profiles)'
+    success:
+        applied: 'Template "%name%" applied — %count% record(s) created.'
+    error:
+        csrf_invalid: 'Security token invalid or expired.'
+        unknown_key: 'Template not found.'
+        apply_failed: 'Apply failed: %message%'
+    profile:
+        kmu: 'SMB / Mid-market'
+        konzern: 'Group / Holding'
+        verein: 'Association / Non-profit'
+        finanzdienstleister: 'Financial services (BaFin / DORA)'

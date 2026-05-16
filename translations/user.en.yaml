@@ -104,9 +104,16 @@ user:
         updated_at: 'Updated At'
         last_login: 'Last Login'
         competencies: 'Competencies (§7.2)'
+        previous_qms_background: 'Previous QM-System experience'
     placeholder:
         tenant: '-- Select tenant --'
         competencies_json: '[{"name":"ISO 27001 Fundamentals","category":"compliance","level":3,"certifiedBy":null,"certifiedAt":null,"expiresAt":null}]'
+        previous_qms_background: '-- Please select --'
+    qms_background:
+        iso_9001: 'ISO 9001 (Quality Management)'
+        iso_14001: 'ISO 14001 (Environmental Management)'
+        other: 'Other QM-System experience'
+        none: 'No QM-System experience'
     help:
         first_name: "Enter the user's first name"
         last_name: "Enter the user's last name"
@@ -123,6 +130,7 @@ user:
         password_change: 'Minimum %min% characters. All characters allowed — letters, digits, symbols, umlauts, spaces, emoji. Leave empty to keep the current password.'
         password_create: 'Minimum %min% characters. All characters allowed — letters, digits, symbols, umlauts, spaces, emoji. Optional with Azure authentication.'
         competencies_json: 'JSON array of competencies per ISO 27001 §7.2. Fields: name, category (security|compliance|technical|leadership), level (1–5), certifiedBy, certifiedAt, expiresAt.'
+        previous_qms_background: 'Enables Norm-Bridges — e.g. shows "Interested Party → Stakeholder" underneath the field if ISO 9001 is selected.'
     validation:
         avatar_format: 'Please upload a valid image (JPEG, PNG, GIF or WebP)'
         password_min_length: 'The password must be at least {{ limit }} characters long.'

@@ -176,6 +176,20 @@ incident:
     medium: Medium
     high: High
     critical: Critical
+  severity_choice:
+    aria_label: 'Severity selection'
+    low:
+      label: Low
+      definition: 'Local effect, manually handleable, no SLA impact. Example: single encrypted spam mail, isolated printer outage.'
+    medium:
+      label: Medium
+      definition: 'Several users affected, workaround available, SLA not violated. Example: file server briefly down, multiple phishing mails in one department.'
+    high:
+      label: High
+      definition: 'Business process disrupted, workaround limited, SLA at risk. Escalation to ISO mandatory. Example: production database server unstable, targeted attack detected.'
+    critical:
+      label: Critical
+      definition: 'Business continuity at risk, personnel or compliance impact, external reporting possible. Immediate escalation to CISO/board. Example: confirmed data exfiltration, ransomware encryption.'
   filter:
     data_breach: Data Breach
     data_breach_only: Data Breach Only

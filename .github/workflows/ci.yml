@@ -265,6 +265,34 @@ jobs:
       #   IdentityProvider-not-found 404 on /admin/sso/new.
       - name: "Gate 10: No wildcard-vs-literal route collisions"
         run: python3 scripts/quality/check_route_wildcard_collisions.py
+
+      # ── Pattern-Discipline Gates (Audit-S5) ────────────────────────────────
+      # Three static analyzers enforcing Foundation patterns from
+      # var/junior-isb-audit/SOLUTIONS_FOUNDATION.md. Pre-existing violations
+      # are captured in scripts/quality/baselines/*.txt; remove an entry once
+      # the underlying issue is migrated. Annotation overrides documented in
+      # each script's header.
+      #
+      # Gate 11 — Module-gating discipline (P-6, BLOCKING via baseline)
+      #   Verifies regulatory fields (DORA/LkSG/MaRisk/NIS2/TISAX/GDPR) live
+      #   inside an isModuleActive() block, addModuleGatedField() call, or a
+      #   safe-helper method. Annotation: // @no-module-gate-required: <why>.
+      - name: "Gate 11: Module-gating discipline (P-6)"
+        run: python3 scripts/quality/check_module_gating.py --baseline scripts/quality/baselines/module_gating.txt --quiet
+
+      # Gate 12 — Flash translation-domain (P-5, BLOCKING via baseline)
+      #   Stops $this->translator->trans('key') without an explicit domain
+      #   parameter in controllers. Annotation: // @flash-domain-fallback-ok.
+      - name: "Gate 12: Flash translation-domain (P-5)"
+        run: python3 scripts/quality/check_flash_domain.py --baseline scripts/quality/baselines/flash_domain.txt --quiet
+
+      # Gate 13 — Freetext-legacy heuristic (P-15, STRICT-via-baseline)
+      #   Flags TextType/TextareaType fields whose name signals an existing
+      #   entity should be used (auditor/owner/department/etc.). Baseline
+      #   captures 14 pre-existing migration targets. Annotation:
+      #   // @legacy-freetext: <reason>.
+      - name: "Gate 13: Freetext-legacy heuristic (P-15)"
+        run: python3 scripts/quality/check_freetext_legacy.py --baseline scripts/quality/baselines/freetext_legacy.txt --strict --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

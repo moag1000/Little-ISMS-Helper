@@ -499,6 +499,25 @@ risk:
   validation:
     likelihood_justification_required: 'Likelihood justification is required (ISO 27001:2022 Cl. 6.1.2.d).'
     impact_justification_required: 'Impact justification is required (ISO 27001:2022 Cl. 6.1.2.d).'
+iso_9001_bridge:
+    threat: 'In ISO 9001 a "Threat" maps to an external cause under Clause 8.5.6 (Control of Changes) or to risks in the context of process control (6.1).'
+    vulnerability: 'In ISO 9001 a "Vulnerability" maps to a weakness identified by the Lessons-Learned process (10.2 — Nonconformity and Corrective Action).'
+    treatment_strategy: 'ISO 9001 calls this "risk treatment in the context of process control" (Clause 6.1.2 — Actions to address risks).'
+
+severity_choice:
+    aria_label: 'Risk severity'
+    low:
+        label: 'Low'
+        definition: 'Risk is below risk appetite, no treatment plan strictly required. Example: single employee awareness gap without sensitive data access.'
+    medium:
+        label: 'Medium'
+        definition: 'Risk between appetite and tolerance threshold. Treatment plan recommended, monitoring mandatory. Example: missing MFA on secondary apps.'
+    high:
+        label: 'High'
+        definition: 'Risk above tolerance threshold. Treatment plan mandatory, escalation to risk owner and CISO. Example: unpatched production servers with internet exposure.'
+    critical:
+        label: 'Critical'
+        definition: 'Risk endangers business continuity or compliance. Immediate treatment measures, reporting to the board. Example: unprotected crown-jewel data store, missing contingency plan for critical processes.'
 dora:
   field:
     ict_risk_category: ICT Risk Category (DORA Art. 6(8))

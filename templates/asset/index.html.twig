@@ -251,6 +251,8 @@
 
 {# Assets Table or Empty State #}
 {% if assets|length == 0 %}
+    {# Foundation P-14 — show "Create from template" CTA if templates exist #}
+    {% set _system_templates = system_templates('App\\Entity\\Asset') %}
     {% include '_components/_empty_state.html.twig' with {
         icon: 'bi-server',
         title: 'asset.modern.empty.title'|trans({}, 'asset'),
@@ -259,6 +261,24 @@
         norm_ref: 'ISO 27001 A.5.9 · ISO 9001: Infrastruktur (7.1.3)',
         help_link: path('app_help_glossary') ~ '#glossary-asset'
     } %}
+    {% if _system_templates|length > 0 %}
+        <div class="text-center mt-3">
+            <button type="button" class="btn btn-outline-primary"
+                    data-bs-toggle="modal" data-bs-target="#systemTemplateModalAsset">
+                <i class="bi bi-collection" aria-hidden="true"></i>
+                {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
+            </button>
+            <div class="form-text small">
+                {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
+            </div>
+        </div>
+        {% include '_components/_system_template_selector.html.twig' with {
+            templates: _system_templates,
+            entity_class: 'App\\Entity\\Asset',
+            redirect_to: 'app_asset_index',
+            modal_id: 'systemTemplateModalAsset'
+        } %}
+    {% endif %}
 {% else %}
 {% embed '_components/_card.html.twig' %}
     {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/asset" data-bulk-actions-entity-label="{{ 'asset.modern.header.title'|trans({}, 'asset')}}"{% endblock %}

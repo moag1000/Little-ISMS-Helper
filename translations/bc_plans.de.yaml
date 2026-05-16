@@ -206,3 +206,6 @@ bcm:
   field:
     activation_criteria: Aktivierungskriterien
     recovery_plan: Wiederherstellung Plan
+iso_9001_bridge:
+    recovery: 'In der neuen Edition von ISO 9001 (Entwurf) ist das Klausel 8.5.5 "Notfallplanung". Die quantitativen Recovery-Ziele RTO/RPO werden in der ISO 9001 nicht explizit gefordert — sie sind ISO-22301-spezifisch.'
+    bc_plan: 'In ISO 9001 ist BC-Planung Teil der Risikobehandlung (6.1.2). Ein separater Plan ist in der 9001 nicht zwingend, in ISO 22301 schon.'

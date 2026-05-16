@@ -247,6 +247,7 @@
                     {% endembed %}
                 {% else %}
                     {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+                    {% set _system_templates = system_templates('App\\Entity\\ProcessingActivity') %}
                     <div class="m-4">
                     {{ _fa_empty_state.render({
                         mood: 'thinking',
@@ -258,6 +259,25 @@
                             { label: 'processing_activity.empty.create_first'|trans({}, 'privacy'), variant: 'primary', icon: 'plus-circle', href: path('app_processing_activity_new') }
                         ]
                     }) }}
+                    {# Foundation P-14 — Standard-VVT-Set (GDPR Art. 30 starters) #}
+                    {% if _system_templates|length > 0 %}
+                        <div class="text-center mt-3">
+                            <button type="button" class="btn btn-outline-primary"
+                                    data-bs-toggle="modal" data-bs-target="#systemTemplateModalVvt">
+                                <i class="bi bi-collection" aria-hidden="true"></i>
+                                {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
+                            </button>
+                            <div class="form-text small">
+                                {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
+                            </div>
+                        </div>
+                        {% include '_components/_system_template_selector.html.twig' with {
+                            templates: _system_templates,
+                            entity_class: 'App\\Entity\\ProcessingActivity',
+                            redirect_to: 'app_processing_activity_index',
+                            modal_id: 'systemTemplateModalVvt'
+                        } %}
+                    {% endif %}
                     </div>
                 {% endif %}
             {% endif %}
