@@ -1,0 +1,167 @@
+{#
+ # Aurora v4 — fa-matrix-table · Risk-Heatmap (5 × N)
+ #
+ # ISO-27005-style heatmap. Y-axis = probability rows, X-axis = impact cols.
+ # Severity is auto-derived from cell.score (≤3 low · ≤6 moderate · ≤9 medium
+ # · ≤16 high · >16 critical). Override per cell via cell.severity.
+ # Count-pill rendered when cell.count > 0. Cell becomes a link when cell.href
+ # is set.
+ #
+ # Outer element emits BOTH .fa-matrix-table (Aurora-primary) AND
+ # .isms-risk-matrix (BC-shim) so legacy CSS keeps working.
+ #
+ # Props:
+ #   title   : string                 — figure caption (also aria-labelledby)
+ #   rows    : [string]               — Y-axis row labels (top → bottom)
+ #   cols    : [string]               — X-axis column labels (left → right)
+ #   cells   : array[row][col]        — { score, severity?, count?, href? }
+ #                                      Keyed by row-index then col-index
+ #   yLabel  : string                 — vertical axis label (optional)
+ #   xLabel  : string                 — horizontal axis label (optional)
+ #   legend  : bool                   — show severity legend (default false)
+ #
+ # Severity-mapping (auto from score, override via cell.severity):
+ #   score ≤  3  → low
+ #   score ≤  6  → moderate
+ #   score ≤  9  → medium
+ #   score ≤ 16  → high
+ #   score >  16 → critical
+ #
+ # Usage:
+ #   {% import '_components/_fa_matrix_table.html.twig' as _fa_matrix %}
+ #   {{ _fa_matrix.render({
+ #       title:  'Risk-Heatmap · Q2 2026',
+ #       rows:   ['Sehr niedrig', 'Niedrig', 'Mittel', 'Hoch', 'Sehr hoch'],
+ #       cols:   ['Vernachlässigbar', 'Gering', 'Mittel', 'Hoch', 'Katastrophal'],
+ #       cells:  matrix,
+ #       yLabel: 'Wahrscheinlichkeit',
+ #       xLabel: 'Auswirkung',
+ #       legend: true
+ #   }) }}
+ #}
+
+{% macro _severity(score) -%}
+    {%- if score <= 3 %}low
+    {%- elseif score <= 6 %}moderate
+    {%- elseif score <= 9 %}medium
+    {%- elseif score <= 16 %}high
+    {%- else %}critical
+    {%- endif -%}
+{% endmacro %}
+
+{% macro render(props = {}) %}
+    {%- import _self as _self -%}
+    {%- set title   = props.title|default('') -%}
+    {%- set rows    = props.rows|default([]) -%}
+    {%- set cols    = props.cols|default([]) -%}
+    {%- set cells   = props.cells|default({}) -%}
+    {%- set yLabel  = props.yLabel|default('') -%}
+    {%- set xLabel  = props.xLabel|default('') -%}
+    {%- set showLegend = props.legend|default(false) -%}
+    {%- set figId   = 'fa-matrix-' ~ random() -%}
+    {%- set legendId = figId ~ '-legend' -%}
+    {%- set titleId  = figId ~ '-title' -%}
+    {%- set colCount = cols|length -%}
+
+    <figure class="fa-matrix-table isms-risk-matrix"
+            role="img"
+            aria-labelledby="{{ titleId }}"
+            {% if showLegend %}aria-describedby="{{ legendId }}"{% endif %}
+            id="{{ figId }}">
+        {%- if title %}
+            <figcaption class="fa-matrix-table__caption" id="{{ titleId }}">{{ title }}</figcaption>
+        {%- endif %}
+
+        <div class="fa-matrix-table__layout">
+            {%- if yLabel %}
+                <div class="fa-matrix-table__y-label isms-risk-matrix__y-label" aria-hidden="true">{{ yLabel }}</div>
+            {%- endif %}
+
+            <div class="fa-matrix-table__body">
+                {# Grid: (colCount + 1) columns — first col is row-labels #}
+                <div class="fa-matrix-table__grid isms-risk-matrix__grid"
+                     style="--fa-matrix-cols: {{ colCount }};">
+                    {# Top-left corner cell #}
+                    <div class="fa-matrix-table__corner" aria-hidden="true"></div>
+
+                    {# Column headers #}
+                    {% for col in cols %}
+                        <div class="fa-matrix-table__hd isms-risk-matrix__hd"
+                             scope="col"
+                             role="columnheader"
+                             title="{{ col }}">
+                            <span>{{ col }}</span>
+                        </div>
+                    {% endfor %}
+
+                    {# Data rows #}
+                    {% for rowIdx, rowLabel in rows %}
+                        <div class="fa-matrix-table__row-label isms-risk-matrix__hd-y"
+                             role="rowheader"
+                             title="{{ rowLabel }}">
+                            {{ rowLabel }}
+                        </div>
+
+                        {% for colIdx, colLabel in cols %}
+                            {%- set cell    = cells[rowIdx][colIdx]|default({}) -%}
+                            {%- set score   = cell.score|default(0) -%}
+                            {%- set sev     = cell.severity|default(_self._severity(score)|trim) -%}
+                            {%- set count   = cell.count|default(0) -%}
+                            {%- set href    = cell.href|default(null) -%}
+                            {%- set cellLabel = rowLabel ~ ' × ' ~ colLabel ~ (count > 0 ? ' (' ~ count ~ ')' : '') -%}
+
+                            {% if href %}
+                                <a class="fa-matrix-table__cell fa-matrix-table__cell--{{ sev }}"
+                                   href="{{ href }}"
+                                   title="{{ cellLabel }}"
+                                   aria-label="{{ cellLabel }}">
+                                    {% if count > 0 %}
+                                        <span class="fa-matrix-table__count" aria-hidden="true">{{ count }}</span>
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                <div class="fa-matrix-table__cell fa-matrix-table__cell--{{ sev }}"
+                                     title="{{ cellLabel }}"
+                                     aria-label="{{ cellLabel }}"
+                                     role="cell">
+                                    {% if count > 0 %}
+                                        <span class="fa-matrix-table__count" aria-hidden="true">{{ count }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+
+                {%- if xLabel %}
+                    <div class="fa-matrix-table__x-label isms-risk-matrix__x-label" aria-hidden="true">{{ xLabel }}</div>
+                {%- endif %}
+            </div>{# /.fa-matrix-table__body #}
+        </div>{# /.fa-matrix-table__layout #}
+
+        {%- if showLegend %}
+            <div class="fa-matrix-table__legend isms-risk-legend" id="{{ legendId }}" aria-label="Severity legend">
+                <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--low">
+                    <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                    Low (≤3)
+                </span>
+                <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--moderate">
+                    <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                    Moderate (≤6)
+                </span>
+                <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--medium">
+                    <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                    Medium (≤9)
+                </span>
+                <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--high">
+                    <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                    High (≤16)
+                </span>
+                <span class="fa-matrix-table__legend-chip fa-matrix-table__legend-chip--critical">
+                    <span class="fa-matrix-table__legend-swatch" aria-hidden="true"></span>
+                    Critical (&gt;16)
+                </span>
+            </div>
+        {%- endif %}
+    </figure>
+{% endmacro %}
