@@ -10,6 +10,8 @@ use Doctrine\Migrations\Metadata\MigrationPlanList;
 use Doctrine\Migrations\MigratorConfiguration;
 use Doctrine\Migrations\Version\Direction;
 use Doctrine\Migrations\Version\Version;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * Aggregates schema-maintenance status (pending Doctrine migrations + schema
@@ -216,6 +218,71 @@ class SchemaMaintenanceService
             'error' => $result['error'],
             'blocked' => $result['blocked'],
         ];
+    }
+
+    /**
+     * Nuclear fallback: runs `doctrine:schema:update --force` (saveMode=true)
+     * programmatically. Use when reconcile still fails after the FK-check
+     * envelope is applied — e.g. complex cross-table constraint ordering that
+     * SchemaTool cannot resolve automatically.
+     *
+     * saveMode=true → SchemaTool only emits ADD/CREATE statements; it never
+     * emits DROP TABLE so existing data is never destroyed by this call.
+     *
+     * @return array{success: bool, statements_executed: int, error: ?string}
+     */
+    public function forceSchemaUpdate(string $actor = 'system'): array
+    {
+        /** @var EntityManagerInterface $em */
+        $em = $this->managerRegistry->getManager();
+        $metadata = $em->getMetadataFactory()->getAllMetadata();
+        $tool = new SchemaTool($em);
+        $sql = $tool->getUpdateSchemaSql($metadata, true); // saveMode=true
+
+        $statementsCount = count($sql);
+
+        if ($statementsCount === 0) {
+            $this->auditLogger->logCustom(
+                'admin.schema.force_update.noop',
+                'Doctrine',
+                null,
+                null,
+                ['actor' => $actor],
+                sprintf('Schema force-update by %s — no statements needed (schema already in sync)', $actor),
+            );
+            return ['success' => true, 'statements_executed' => 0, 'error' => null];
+        }
+
+        try {
+            $conn = $em->getConnection();
+            $conn->executeStatement('SET FOREIGN_KEY_CHECKS=0');
+            try {
+                $tool->updateSchema($metadata, true); // saveMode=true
+            } finally {
+                $conn->executeStatement('SET FOREIGN_KEY_CHECKS=1');
+            }
+        } catch (\Throwable $e) {
+            $this->auditLogger->logCustom(
+                'admin.schema.force_update.failed',
+                'Doctrine',
+                null,
+                null,
+                ['error' => $e->getMessage(), 'sql_count' => $statementsCount, 'actor' => $actor],
+                sprintf('Schema force-update FAILED by %s: %s', $actor, $e->getMessage()),
+            );
+            return ['success' => false, 'statements_executed' => 0, 'error' => $e->getMessage()];
+        }
+
+        $this->auditLogger->logCustom(
+            'admin.schema.force_update.applied',
+            'Doctrine',
+            null,
+            null,
+            ['statements' => $statementsCount, 'actor' => $actor],
+            sprintf('Schema force-update applied by %s (%d statement(s), saveMode=true)', $actor, $statementsCount),
+        );
+
+        return ['success' => true, 'statements_executed' => $statementsCount, 'error' => null];
     }
 
     /**
