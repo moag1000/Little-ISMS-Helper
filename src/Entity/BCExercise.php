@@ -129,23 +129,54 @@ class BCExercise
     private ?int $durationHours = null;
 
     /**
-     * Participants
+     * Legacy free-text participants list. P-15 DataReuse: kept read-only for
+     * migration display once the typed `participantPersons` collection is
+     * populated. No longer NotBlank — the form validator enforces that at
+     * least one of legacy/typed is provided.
      */
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Participants must be documented')]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $participants = null;
 
     /**
-     * Exercise facilitator/lead — legacy free-text field. Phase B1
-     * adds typed `exerciseLeaderUser` / `exerciseLeaderPerson` slots
-     * alongside; populate either when the leader is known to be an
-     * application User or a Stammdaten Person (external BC consultant).
+     * P-15 DataReuse: typed exercise participants as a Collection<Person>.
+     * Replaces the legacy free-text `participants` textarea.
+     *
+     * @var Collection<int, Person>
      */
-    #[ORM\Column(length: 100)]
-    #[Assert\NotBlank]
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'bc_exercise_participant_person')]
+    #[ORM\JoinColumn(name: 'bc_exercise_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    private Collection $participantPersons;
+
+    /**
+     * Exercise facilitator/lead — legacy free-text field. P-15 DataReuse:
+     * Pattern A dual-state with `facilitatorUser` and `facilitatorPerson`
+     * (NB: existing `exerciseLeaderUser` / `exerciseLeaderPerson` from
+     * Phase B1 are kept untouched, the new `facilitatorUser/Person` mirror
+     * the Pattern-A naming used across other entities).
+     */
+    #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $facilitator = null;
+
+    /**
+     * P-15 DataReuse Pattern A: typed facilitator as application User.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'facilitator_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    private ?User $facilitatorUser = null;
+
+    /**
+     * P-15 DataReuse Pattern A: typed facilitator as Stammdaten Person.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'facilitator_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    private ?Person $facilitatorPerson = null;
 
     /**
      * Person-Rollout Phase B1 — typed exercise leader. Application
@@ -167,11 +198,24 @@ class BCExercise
     private ?Person $exerciseLeaderPerson = null;
 
     /**
-     * Observers
+     * Legacy free-text observers list. P-15 DataReuse: kept read-only for
+     * migration display once `observerPersons` is populated.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $observers = null;
+
+    /**
+     * P-15 DataReuse: typed observers as a Collection<Person>.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'bc_exercise_observer_person')]
+    #[ORM\JoinColumn(name: 'bc_exercise_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    private Collection $observerPersons;
 
     /**
      * Status: planned, in_progress, completed, cancelled
@@ -316,6 +360,8 @@ class BCExercise
     {
         $this->testedPlans = new ArrayCollection();
         $this->documents = new ArrayCollection();
+        $this->participantPersons = new ArrayCollection();
+        $this->observerPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -460,9 +506,29 @@ class BCExercise
         return $this->participants;
     }
 
-    public function setParticipants(string $participants): static
+    public function setParticipants(?string $participants): static
     {
         $this->participants = $participants;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getParticipantPersons(): Collection
+    {
+        return $this->participantPersons;
+    }
+
+    public function addParticipantPerson(Person $person): static
+    {
+        if (!$this->participantPersons->contains($person)) {
+            $this->participantPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeParticipantPerson(Person $person): static
+    {
+        $this->participantPersons->removeElement($person);
         return $this;
     }
 
@@ -471,10 +537,45 @@ class BCExercise
         return $this->facilitator;
     }
 
-    public function setFacilitator(string $facilitator): static
+    public function setFacilitator(?string $facilitator): static
     {
         $this->facilitator = $facilitator;
         return $this;
+    }
+
+    public function getFacilitatorUser(): ?User
+    {
+        return $this->facilitatorUser;
+    }
+
+    public function setFacilitatorUser(?User $facilitatorUser): static
+    {
+        $this->facilitatorUser = $facilitatorUser;
+        return $this;
+    }
+
+    public function getFacilitatorPerson(): ?Person
+    {
+        return $this->facilitatorPerson;
+    }
+
+    public function setFacilitatorPerson(?Person $facilitatorPerson): static
+    {
+        $this->facilitatorPerson = $facilitatorPerson;
+        return $this;
+    }
+
+    /**
+     * P-15 DataReuse Tri-State resolver — prefer structured User name, then
+     * Person, fall back to legacy `facilitator` free-text.
+     */
+    public function getEffectiveFacilitatorName(): ?string
+    {
+        return OwnerResolver::resolveEffective(
+            $this->facilitatorUser,
+            $this->facilitatorPerson,
+            $this->facilitator,
+        );
     }
 
     public function getExerciseLeaderUser(): ?User
@@ -521,6 +622,26 @@ class BCExercise
     public function setObservers(?string $observers): static
     {
         $this->observers = $observers;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getObserverPersons(): Collection
+    {
+        return $this->observerPersons;
+    }
+
+    public function addObserverPerson(Person $person): static
+    {
+        if (!$this->observerPersons->contains($person)) {
+            $this->observerPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeObserverPerson(Person $person): static
+    {
+        $this->observerPersons->removeElement($person);
         return $this;
     }
 

@@ -82,16 +82,46 @@ class BCExerciseType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['min' => 1, 'max' => 168],
             ])
+            // P-15 DataReuse: typed participantPersons Multi-Select replaces
+            // free-text participants textarea (kept read-only for legacy).
+            ->add('participantPersons', EntityType::class, [
+                'label' => 'bc_exercises.field.participant_persons',
+                'help' => 'bc_exercises.help.participant_persons',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'attr' => ['data-controller' => 'tom-select'],
+            ])
             ->add('participants', TextareaType::class, [
-                'label' => 'bc_exercises.field.participants',
-                'help' => 'bc_exercises.help.participants',
-                'required' => true,
+                'label' => 'bc_exercises.field.participants_legacy',
+                'help' => 'bc_exercises.help.participants_legacy',
+                'required' => false,
                 'attr' => ['rows' => 3],
             ])
+            // P-15 DataReuse: facilitator now Pattern-A dual-state.
+            // facilitator textfield kept for legacy migration display only.
+            ->add('facilitatorUser', EntityType::class, [
+                'label' => 'bc_exercises.field.facilitator_user',
+                'help' => 'bc_exercises.help.facilitator_user',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => trim(($u->getFirstName() ?? '') . ' ' . ($u->getLastName() ?? '')) ?: ($u->getEmail() ?? ''),
+                'placeholder' => 'bc_exercises.placeholder.facilitator_user',
+                'required' => false,
+            ])
+            ->add('facilitatorPerson', EntityType::class, [
+                'label' => 'bc_exercises.field.facilitator_person',
+                'help' => 'bc_exercises.help.facilitator_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'bc_exercises.placeholder.facilitator_person',
+                'required' => false,
+            ])
             ->add('facilitator', TextType::class, [
-                'label' => 'bc_exercises.field.facilitator',
-                'help' => 'bc_exercises.help.facilitator',
-                'required' => true,
+                'label' => 'bc_exercises.field.facilitator_legacy',
+                'help' => 'bc_exercises.help.facilitator_legacy',
+                'required' => false,
                 'attr' => ['maxlength' => 100],
             ])
             ->add('exerciseLeaderUser', EntityType::class, [
@@ -110,9 +140,20 @@ class BCExerciseType extends AbstractType implements SectionMapInterface
                 'placeholder' => 'bc_exercises.placeholder.exercise_leader_person',
                 'required' => false,
             ])
+            // P-15 DataReuse: typed observerPersons Multi-Select.
+            ->add('observerPersons', EntityType::class, [
+                'label' => 'bc_exercises.field.observer_persons',
+                'help' => 'bc_exercises.help.observer_persons',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'attr' => ['data-controller' => 'tom-select'],
+            ])
             ->add('observers', TextareaType::class, [
-                'label' => 'bc_exercises.field.observers',
-                'help' => 'bc_exercises.help.observers',
+                'label' => 'bc_exercises.field.observers_legacy',
+                'help' => 'bc_exercises.help.observers_legacy',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
