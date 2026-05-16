@@ -9,6 +9,7 @@ use App\Entity\Person;
 use App\Entity\User;
 use App\Entity\BusinessProcess;
 use App\Entity\Risk;
+use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -25,6 +26,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class BusinessProcessType extends AbstractType
 {
+    use OwnerPickerFormTrait;
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -37,38 +40,29 @@ class BusinessProcessType extends AbstractType
                 'attr' => ['rows' => 4],
                 'required' => false,
             ])
-            ->add('processOwnerUser', EntityType::class, [
-                'label' => 'business_process.field.process_owner',
-                'class' => User::class,
-                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
-                'required' => false,
-                'placeholder' => 'business_process.placeholder.process_owner_user',
-                'help' => 'business_process.help.process_owner_user',
-            ])
-            ->add('processOwnerPerson', EntityType::class, [
-                'label' => 'business_process.field.process_owner_person',
-                'class' => \App\Entity\Person::class,
-                'choice_label' => fn(\App\Entity\Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'placeholder' => 'business_process.placeholder.process_owner_person',
-                'help' => 'business_process.help.process_owner_person',
-            ])
-            ->add('processOwnerDeputyPersons', EntityType::class, [
-                'label' => 'business_process.field.process_owner_deputies',
-                'class' => \App\Entity\Person::class,
-                'choice_label' => fn(\App\Entity\Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'attr' => [
-                    'data-controller' => 'tom-select',
-                ],
-                'help' => 'business_process.help.process_owner_deputies',
-            ])
-            ->add('processOwner', TextType::class, [
-                'label' => 'business_process.field.process_owner_legacy',
-                'required' => false,
-            ])
+        ;
+
+        // ── Process Owner cluster (audit-s4 P-1) ────────────────────────────
+        // Replaces 4 hand-rolled add() calls (processOwnerUser /
+        // processOwnerPerson / processOwnerDeputyPersons / processOwner).
+        $this->addOwnerPicker($builder, [
+            'user_field'         => 'processOwnerUser',
+            'person_field'       => 'processOwnerPerson',
+            'deputies_field'     => 'processOwnerDeputyPersons',
+            'legacy_field'       => 'processOwner',
+            'translation_prefix' => 'business_process',
+            'user_label'         => 'business_process.field.process_owner',
+            'user_placeholder'   => 'business_process.placeholder.process_owner_user',
+            'user_help'          => 'business_process.help.process_owner_user',
+            'person_label'       => 'business_process.field.process_owner_person',
+            'person_placeholder' => 'business_process.placeholder.process_owner_person',
+            'person_help'        => 'business_process.help.process_owner_person',
+            'deputies_label'     => 'business_process.field.process_owner_deputies',
+            'deputies_help'      => 'business_process.help.process_owner_deputies',
+            'legacy_label'       => 'business_process.field.process_owner_legacy',
+        ]);
+
+        $builder
             ->add('criticality', ChoiceType::class, [
                 'label' => 'business_process.field.criticality',
                 'choices' => [
