@@ -1,0 +1,205 @@
+{#
+ # FairyAurora v4.0 — fa-team-role-builder macro (P-9 JsonBuilder)
+ #
+ # Visual JSON-Builder for BCPlan.responseTeamMembers — replaces raw JSON
+ # textarea editing per ISO 22301 §8.5.3. Repeater of role-rows with
+ # role-dropdown, person-text, contact, responsibilities, plus a hidden
+ # raw-JSON fallback for power-users.
+ #
+ # Data contract (matches BCPlan.responseTeamMembers entity JSON):
+ #   [
+ #     {
+ #       "role": "incident_commander|comms_lead|recovery_lead|technical_lead|other",
+ #       "userId": int|null,
+ #       "name": string,
+ #       "contact": string,
+ #       "responsibilities": string
+ #     }, ...
+ #   ]
+ #
+ # Usage:
+ #   {% import '_components/_fa_team_role_builder.html.twig' as _fa_team_role_builder %}
+ #
+ #   {{ _fa_team_role_builder.render({
+ #       name: 'business_continuity_plan[responseTeamMembers]',
+ #       value: bc_plan.responseTeamMembers,
+ #       ariaLabel: 'bc_plans.team_role_builder.aria'|trans({}, 'bc_plans')
+ #   }) }}
+ #
+ # Parameters:
+ #   props.name        - hidden-textarea name for form submission (required)
+ #   props.value       - current array OR JSON-encoded string (optional)
+ #   props.id          - root element id (default 'fa-team-role-builder-' ~ random())
+ #   props.ariaLabel   - aria-label for the builder region (optional)
+ #   props.translationDomain - domain for role-labels (default 'bc_plans')
+ #
+ # Stimulus-controller `team-role-builder` handles:
+ #   - addRow / removeRow / updateField
+ #   - JSON-serialisation into hidden <textarea>
+ #   - showRawJson toggle for power-user raw-edit
+ #   - backward compat: legacy free-text JSON parsed as-is
+ #
+ # Embed-Scope-Reminder (CLAUDE.md Pitfall 10/10b):
+ #   When using this macro inside {% embed %}, RE-import here:
+ #     {% import '_components/_fa_team_role_builder.html.twig' as _fa_team_role_builder %}
+ #   and RE-declare `{% trans_default_domain 'bc_plans' %}` on first line
+ #   of the embed-block.
+ #}
+
+{% macro render(props = {}) %}
+    {% set name = props.name|default('responseTeamMembers') %}
+    {% set id = props.id|default('fa-team-role-builder-' ~ random(99999)) %}
+    {% set translationDomain = props.translationDomain|default('bc_plans') %}
+    {% set rawValue = props.value is defined and props.value is not null
+        ? (props.value is iterable ? props.value|json_encode : props.value)
+        : '' %}
+
+    <div class="fa-json-builder fa-team-role-builder"
+         id="{{ id }}"
+         data-controller="team-role-builder"
+         data-team-role-builder-name-value="{{ name }}"
+         role="region"
+         aria-label="{{ props.ariaLabel|default('bc_plans.team_role_builder.aria'|trans({}, translationDomain)) }}">
+
+        {# Hidden textarea — bound to FormType (JsonArrayTransformer). #}
+        <textarea name="{{ name }}"
+                  class="fa-json-builder__hidden"
+                  hidden
+                  aria-hidden="true"
+                  data-team-role-builder-target="hidden">{{ rawValue }}</textarea>
+
+        {# Aurora-table holding the role-rows. #}
+        <div class="fa-table-wrap fa-json-builder__table-wrap">
+            <table class="fa-table fa-table--compact fa-json-builder__table"
+                   data-team-role-builder-target="table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="fa-table__th" style="width: 22%;">
+                            {{ ('bc_plans.team_role_builder.col.role')|trans({}, translationDomain) }}
+                        </th>
+                        <th scope="col" class="fa-table__th" style="width: 22%;">
+                            {{ ('bc_plans.team_role_builder.col.name')|trans({}, translationDomain) }}
+                        </th>
+                        <th scope="col" class="fa-table__th" style="width: 22%;">
+                            {{ ('bc_plans.team_role_builder.col.contact')|trans({}, translationDomain) }}
+                        </th>
+                        <th scope="col" class="fa-table__th">
+                            {{ ('bc_plans.team_role_builder.col.responsibilities')|trans({}, translationDomain) }}
+                        </th>
+                        <th scope="col" class="fa-table__th" style="width: 48px;"
+                            aria-label="{{ ('bc_plans.team_role_builder.col.actions')|trans({}, translationDomain) }}"></th>
+                    </tr>
+                </thead>
+                <tbody data-team-role-builder-target="body"
+                       aria-live="polite"></tbody>
+            </table>
+        </div>
+
+        <div class="fa-json-builder__empty d-none"
+             data-team-role-builder-target="emptyState">
+            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
+            <span>{{ ('bc_plans.team_role_builder.empty')|trans({}, translationDomain) }}</span>
+        </div>
+
+        <div class="fa-json-builder__toolbar">
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                    data-action="click->team-role-builder#addRow">
+                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                {{ ('bc_plans.team_role_builder.add')|trans({}, translationDomain) }}
+            </button>
+
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-json-builder__raw-toggle"
+                    data-action="click->team-role-builder#showRawJson"
+                    aria-pressed="false">
+                <i class="fa-icon fa-icon--ui-code" aria-hidden="true"></i>
+                {{ ('bc_plans.json_builder.raw_toggle')|trans({}, translationDomain) }}
+            </button>
+        </div>
+
+        {# Raw-JSON-Fallback (initially hidden) — opt-in for power-users. #}
+        <div class="fa-json-builder__raw d-none"
+             data-team-role-builder-target="rawPanel">
+            <label for="{{ id }}-raw" class="fa-cyber-input__label">
+                {{ ('bc_plans.json_builder.raw_label')|trans({}, translationDomain) }}
+            </label>
+            <textarea id="{{ id }}-raw"
+                      class="form-control fa-cyber-input__field"
+                      rows="6"
+                      spellcheck="false"
+                      data-team-role-builder-target="rawTextarea"
+                      data-action="input->team-role-builder#syncFromRaw">{{ rawValue }}</textarea>
+            <small class="text-muted">
+                {{ ('bc_plans.json_builder.raw_help')|trans({}, translationDomain) }}
+            </small>
+        </div>
+
+        {# Row-template consumed by the Stimulus controller.
+           Placeholders: __INDEX__, __ROLE__, __NAME__, __CONTACT__, __RESP__,
+           __ROLE_SEL_<KEY>__ for each role option.
+           Roles whitelisted in controller; "other" + free-text fallback. #}
+        <template data-team-role-builder-target="template">
+            <tr class="fa-json-builder__row">
+                <td>
+                    <select class="form-select form-select-sm fa-cyber-input__field"
+                            data-index="__INDEX__" data-field="role"
+                            data-action="change->team-role-builder#updateField"
+                            aria-label="{{ ('bc_plans.team_role_builder.col.role')|trans({}, translationDomain) }}">
+                        <option value="incident_commander" __ROLE_SEL_INCIDENT_COMMANDER__>
+                            {{ ('bc_plans.team_role.incident_commander')|trans({}, translationDomain) }}
+                        </option>
+                        <option value="comms_lead" __ROLE_SEL_COMMS_LEAD__>
+                            {{ ('bc_plans.team_role.comms_lead')|trans({}, translationDomain) }}
+                        </option>
+                        <option value="recovery_lead" __ROLE_SEL_RECOVERY_LEAD__>
+                            {{ ('bc_plans.team_role.recovery_lead')|trans({}, translationDomain) }}
+                        </option>
+                        <option value="technical_lead" __ROLE_SEL_TECHNICAL_LEAD__>
+                            {{ ('bc_plans.team_role.technical_lead')|trans({}, translationDomain) }}
+                        </option>
+                        <option value="other" __ROLE_SEL_OTHER__>
+                            {{ ('bc_plans.team_role.other')|trans({}, translationDomain) }}
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text"
+                           class="form-control form-control-sm fa-cyber-input__field"
+                           data-index="__INDEX__" data-field="name"
+                           data-action="input->team-role-builder#updateField"
+                           value="__NAME__"
+                           placeholder="{{ ('bc_plans.team_role_builder.placeholder.name')|trans({}, translationDomain) }}"
+                           aria-label="{{ ('bc_plans.team_role_builder.col.name')|trans({}, translationDomain) }}">
+                </td>
+                <td>
+                    <input type="text"
+                           class="form-control form-control-sm fa-cyber-input__field"
+                           data-index="__INDEX__" data-field="contact"
+                           data-action="input->team-role-builder#updateField"
+                           value="__CONTACT__"
+                           placeholder="{{ ('bc_plans.team_role_builder.placeholder.contact')|trans({}, translationDomain) }}"
+                           aria-label="{{ ('bc_plans.team_role_builder.col.contact')|trans({}, translationDomain) }}">
+                </td>
+                <td>
+                    <input type="text"
+                           class="form-control form-control-sm fa-cyber-input__field"
+                           data-index="__INDEX__" data-field="responsibilities"
+                           data-action="input->team-role-builder#updateField"
+                           value="__RESP__"
+                           placeholder="{{ ('bc_plans.team_role_builder.placeholder.responsibilities')|trans({}, translationDomain) }}"
+                           aria-label="{{ ('bc_plans.team_role_builder.col.responsibilities')|trans({}, translationDomain) }}">
+                </td>
+                <td class="text-end">
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
+                            data-index="__INDEX__"
+                            data-action="click->team-role-builder#removeRow"
+                            aria-label="{{ ('bc_plans.team_role_builder.remove')|trans({}, translationDomain) }}">
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                    </button>
+                </td>
+            </tr>
+        </template>
+    </div>
+{% endmacro %}
