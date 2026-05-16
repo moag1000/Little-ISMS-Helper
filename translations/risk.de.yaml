@@ -516,6 +516,21 @@ iso_9001_bridge:
     threat: 'In ISO 9001 entspricht "Bedrohung" der externen Ursache aus Klausel 8.5.6 (Steuerung von Änderungen) bzw. Risiken im Kontext der Prozesssteuerung (6.1).'
     vulnerability: 'In ISO 9001 entspricht "Schwachstelle" einer Schwachstelle aus dem Lessons-Learned-Prozess (10.2 — Nichtkonformität und Korrekturmaßnahme).'
     treatment_strategy: 'ISO 9001 nennt das "Risikobehandlung im Kontext der Prozesssteuerung" (Klausel 6.1.2 — Maßnahmen zum Umgang mit Risiken).'
+
+severity_choice:
+    aria_label: 'Risiko-Schweregrad'
+    low:
+        label: 'Niedrig'
+        definition: 'Risiko liegt unter Risk-Appetite, kein Treatment-Plan zwingend nötig. Beispiel: einzelne Mitarbeiter-Awareness-Lücke ohne sensitive Datenzugriffe.'
+    medium:
+        label: 'Mittel'
+        definition: 'Risiko zwischen Appetite und Toleranzgrenze. Treatment-Plan empfohlen, Monitoring Pflicht. Beispiel: fehlende MFA auf Sekundär-Apps.'
+    high:
+        label: 'Hoch'
+        definition: 'Risiko über Toleranzgrenze. Treatment-Plan Pflicht, Eskalation an Risk-Owner und CISO. Beispiel: ungepatchte produktive Server mit Internet-Exposition.'
+    critical:
+        label: 'Kritisch'
+        definition: 'Risiko gefährdet Geschäftsfortführung oder Compliance. Sofortige Treatment-Maßnahmen, Reporting an Vorstand. Beispiel: ungeschützter Kronjuwelen-Datenbestand, fehlender Notfallplan für kritische Prozesse.'
 dora:
   field:
     ict_risk_category: ICT-Risikokategorie (DORA Art. 6(8))

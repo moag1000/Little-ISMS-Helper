@@ -380,6 +380,20 @@ audit_finding:
         high: 'High'
         medium: 'Medium'
         low: 'Low'
+    severity_choice:
+        aria_label: 'Finding severity'
+        low:
+            label: 'Low'
+            definition: 'Minor deviation, no direct compliance breach. Example: typo in a procedure, missing version number.'
+        medium:
+            label: 'Medium'
+            definition: 'Noticeable weakness in the ISMS process but no immediate exposure. Example: incomplete risk assessment, outdated training material.'
+        high:
+            label: 'High'
+            definition: 'Significant deviation with compliance risk. Corrective action mandatory, typical due date 30 days. Example: no documented access review, supplier evaluation missing.'
+        critical:
+            label: 'Critical'
+            definition: 'Major nonconformity — endangers certification. Immediate escalation and corrective measures required. Example: no risk treatment plan, no internal audit performed.'
     status:
         open: 'Open'
         in_progress: 'In Progress'

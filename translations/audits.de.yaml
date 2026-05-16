@@ -304,6 +304,20 @@ audit_finding:
         high: 'Hoch'
         medium: 'Mittel'
         low: 'Niedrig'
+    severity_choice:
+        aria_label: 'Schweregrad der Feststellung'
+        low:
+            label: 'Niedrig'
+            definition: 'Geringfügige Abweichung, kein direkter Compliance-Verstoß. Beispiel: Tippfehler in einer Verfahrensanweisung, fehlende Versionsnummer.'
+        medium:
+            label: 'Mittel'
+            definition: 'Erkennbare Schwäche im ISMS-Prozess, aber keine unmittelbare Gefährdung. Beispiel: unvollständige Risikobewertung, veraltete Schulungsunterlagen.'
+        high:
+            label: 'Hoch'
+            definition: 'Erhebliche Abweichung mit Compliance-Risiko. Korrekturmaßnahme verpflichtend, Frist üblicherweise 30 Tage. Beispiel: keine dokumentierte Zugriffsrevision, Lieferantenbewertung fehlt.'
+        critical:
+            label: 'Kritisch'
+            definition: 'Hauptabweichung (Major NC) — gefährdet die Zertifizierung. Sofortige Eskalation und korrigierende Maßnahmen erforderlich. Beispiel: kein Risikobehandlungsplan, kein internes Audit durchgeführt.'
     status:
         open: 'Offen'
         in_progress: 'In Bearbeitung'
