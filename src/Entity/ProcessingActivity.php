@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Lifecycle\LifecycleRegistry;
 use App\Repository\ProcessingActivityRepository;
 use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -462,10 +463,17 @@ class ProcessingActivity
     // ============================================================================
 
     /**
-     * Status of this record: draft, active, archived
+     * Status of this record (canonical 5-stage lifecycle).
+     *
+     * S3 P-4: migrated from legacy 3-stage (draft / active / archived) to
+     * canonical 5-stage (draft → in_review → approved → published → archived).
+     * Legacy `active` values were UPDATEd to `published` by the consolidated
+     * data-migration (Version20260518150000_vvt_document_canonical_lifecycle).
+     *
+     * @see LifecycleRegistry::STANDARD_5_STAGE
      */
     #[ORM\Column(length: 20, options: ['default' => 'draft'])]
-    #[Assert\Choice(choices: ['draft', 'active', 'archived'])]
+    #[Assert\Choice(choices: LifecycleRegistry::STANDARD_5_STAGE)]
     private string $status = 'draft';
 
     /**

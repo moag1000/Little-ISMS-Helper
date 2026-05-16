@@ -1,0 +1,28 @@
+lifecycle:
+    # Standard 5-stage flow (CLAUDE.md canonical matrix)
+    draft: Entwurf
+    in_review: 'In Prüfung'
+    approved: Freigegeben
+    published: Veröffentlicht
+    archived: Archiviert
+
+    # AuditFinding / CorrectiveAction discovery-style lifecycle
+    open: Offen
+    in_progress: 'In Bearbeitung'
+    resolved: Behoben
+    closed: Geschlossen
+
+    tooltip:
+        next: 'Nächste Schritte'
+
+    actions:
+        change_status: 'Status ändern'
+        submit_for_review: 'Zur Prüfung einreichen'
+        approve: Freigeben
+        publish: Veröffentlichen
+        archive: Archivieren
+        unarchive: Reaktivieren
+        return_to_draft: 'Zurück zu Entwurf'
+
+    errors:
+        invalid_transition: 'Ungültiger Statusübergang von "%from%" zu "%to%". Erlaubte Folgezustände: %allowed%.'

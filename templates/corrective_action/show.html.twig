@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ action.title }}{% endblock %}
 
@@ -20,6 +21,31 @@
             { label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'pencil', href: path('app_corrective_action_edit', {id: action.id}) }
         ]
     }) }}
+
+    {# S3 P0-30 — Tier-1 alert when CAPA is verified_ineffective and no Folge-CAPA yet.
+       AlvaHintService would also surface this via the Show-template, but a hard
+       inline alert covers the path where the hint card is dismissed or absent. #}
+    {% if action.verifiedIneffective %}
+        {{ _fa_alert.render({
+            variant: 'danger',
+            title: 'corrective_action.alva_hint.ineffective_followup.title'|trans({}, 'audits'),
+            body: 'corrective_action.alva_hint.ineffective_followup.body'|trans({'%id%': action.id, '%title%': action.title}, 'audits')
+                  ~ ' <a class="fa-alert__link" href="' ~ path('app_corrective_action_new', {from_ineffective_capa: action.id}) ~ '">'
+                  ~ 'corrective_action.alva_hint.ineffective_followup.cta'|trans({}, 'audits')
+                  ~ '</a>'
+        }) }}
+    {% endif %}
+
+    {# S3 P0-30 — Audit-Trail link to the unwirksame Vorgänger-CAPA. #}
+    {% if action.previousCapa %}
+        <p class="text-muted small mb-3">
+            <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
+            {{ 'corrective_action.field.previous_capa'|trans({}, 'audits') }}:
+            <a href="{{ path('app_corrective_action_show', {id: action.previousCapa.id}) }}">
+                #{{ action.previousCapa.id }} — {{ action.previousCapa.title }}
+            </a>
+        </p>
+    {% endif %}
 
     <div class="row g-3 mb-4">
         <div class="col-md-3"><strong>{{ 'corrective_action.field.status'|trans({}, 'audits') }}:</strong> {{ ('corrective_action.status.' ~ action.status)|trans({}, 'audits') }}</div>
@@ -46,6 +72,27 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+
+    {# S3 P0-32 — Verification details (only when verified_*). #}
+    {% if action.status in ['verified_effective', 'verified_ineffective'] %}
+        {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+            {% block card_header %}
+                <div class="card-header"><h2 class="h5 mb-0">{{ 'corrective_action.section.verification'|trans({}, 'audits') }}</h2></div>
+            {% endblock %}
+            {% block card_body %}
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">{{ 'corrective_action.field.verified_by'|trans({}, 'audits') }}</dt>
+                    <dd class="col-sm-9">{{ action.verifiedBy ? action.verifiedBy.fullName : '—' }}</dd>
+
+                    <dt class="col-sm-3">{{ 'corrective_action.field.verified_at'|trans({}, 'audits') }}</dt>
+                    <dd class="col-sm-9">{{ action.verifiedAt ? action.verifiedAt|date('Y-m-d H:i') : '—' }}</dd>
+
+                    <dt class="col-sm-3">{{ 'corrective_action.field.effectiveness_evidence'|trans({}, 'audits') }}</dt>
+                    <dd class="col-sm-9">{{ action.effectivenessEvidence ? action.effectivenessEvidence|nl2br : '—' }}</dd>
+                </dl>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
 
     <form method="post" action="{{ path('app_corrective_action_delete', {id: action.id}) }}" class="mt-4"
           data-controller="ui-actions"

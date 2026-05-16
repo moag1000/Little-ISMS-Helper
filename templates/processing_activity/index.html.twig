@@ -205,11 +205,14 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                    {# S3 P-4: canonical 5-stage lifecycle — legacy 'active' migrated to 'published'. #}
                                     {% set status_class = {
                                         'draft': 'secondary',
-                                        'active': 'success',
+                                        'in_review': 'info',
+                                        'approved': 'success',
+                                        'published': 'success',
                                         'archived': 'dark'
-                                    }[pa.status] %}
+                                    }[pa.status] ?? 'secondary' %}
                                     {% include '_components/_badge.html.twig' with { variant: status_class, content: ('processing_activity.status.' ~ pa.status)|trans({}, 'privacy') } %}
                                 </td>
                                 <td>

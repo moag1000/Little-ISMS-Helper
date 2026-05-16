@@ -33,7 +33,7 @@ class DocumentTest extends TestCase
         $this->assertNull($document->getSha256Hash());
         $this->assertFalse($document->isPublic());
         $this->assertFalse($document->isArchived());
-        $this->assertEquals('active', $document->getStatus());
+        $this->assertEquals('draft', $document->getStatus());
     }
 
     #[Test]
@@ -188,7 +188,7 @@ class DocumentTest extends TestCase
     {
         $document = new Document();
 
-        $this->assertEquals('active', $document->getStatus());
+        $this->assertEquals('draft', $document->getStatus());
 
         $document->setStatus('archived');
         $this->assertEquals('archived', $document->getStatus());
@@ -301,7 +301,7 @@ class DocumentTest extends TestCase
         $document->setUploadedBy($user);
         $document->setSha256Hash(hash('sha256', 'policy content'));
         $document->setIsPublic(false);
-        $document->setStatus('active');
+        $document->setStatus('published');
 
         $this->assertEquals('abc123.pdf', $document->getFilename());
         $this->assertEquals('information-security-policy-2024.pdf', $document->getOriginalFilename());
@@ -316,7 +316,7 @@ class DocumentTest extends TestCase
         $this->assertSame($user, $document->getUploadedBy());
         $this->assertFalse($document->isPublic());
         $this->assertFalse($document->isArchived());
-        $this->assertEquals('active', $document->getStatus());
+        $this->assertEquals('published', $document->getStatus());
         $this->assertTrue($document->isPdf());
         $this->assertFalse($document->isImage());
         $this->assertEquals('pdf', $document->getFileExtension());

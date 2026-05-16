@@ -499,6 +499,15 @@ processing_activity:
     placeholder:
         contact_person_person: 'Select person from master data...'
         data_protection_officer_person: 'Select person from master data...'
+    # S3 P-4: canonical 5-stage lifecycle (draft → in_review → approved → published → archived).
+    # Legacy `active` key kept as fallback label for any historical row not yet migrated.
+    status:
+        draft: 'Draft'
+        in_review: 'In Review'
+        approved: 'Approved'
+        published: 'Published'
+        archived: 'Archived'
+        active: 'Active (legacy)'
     permanently_delete: 'Permanently Delete'
     view_all_activities: 'View All Processing Activities'
     confirm_delete: 'Do you really want to delete this processing activity?'

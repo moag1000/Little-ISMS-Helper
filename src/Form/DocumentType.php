@@ -79,6 +79,9 @@ class DocumentType extends AbstractType
                 'required' => true,
                     'choice_translation_domain' => 'document',
             ])
+            // S3 P-4: removed legacy 'active' status — migrated to 'published' per
+            // LifecycleRegistry::STANDARD_5_STAGE. Legacy `active` rows were UPDATEd
+            // to 'published' by the consolidated data-migration.
             ->add('status', ChoiceType::class, [
                 'label' => 'document.field.status',
                 'help' => 'document.help.status',
@@ -90,7 +93,6 @@ class DocumentType extends AbstractType
                     'document.status.approved'   => 'approved',
                     'document.status.published'  => 'published',
                     'document.status.archived'   => 'archived',
-                    'document.status.active'     => 'active',
                 ],
                 'choice_translation_domain' => 'document',
             ])

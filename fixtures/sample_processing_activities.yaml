@@ -42,7 +42,7 @@ processing_activities:
       - 'data_subject'
       - 'third_parties'
     hasAutomatedDecisionMaking: false
-    status: 'active'
+    status: 'published'
     startDate: '2023-06-01'
     lastReviewDate: '2024-10-15'
     nextReviewDate: '2025-10-15'
@@ -96,7 +96,7 @@ processing_activities:
     dataSources:
       - 'data_subject'
     hasAutomatedDecisionMaking: false
-    status: 'active'
+    status: 'published'
     startDate: '2019-01-01'
     lastReviewDate: '2024-11-01'
     nextReviewDate: '2025-11-01'
@@ -148,7 +148,7 @@ processing_activities:
       - 'data_subject'
       - 'third_parties'
     hasAutomatedDecisionMaking: false
-    status: 'active'
+    status: 'published'
     startDate: '2022-06-01'
     lastReviewDate: '2024-09-20'
     nextReviewDate: '2025-09-20'
@@ -192,7 +192,7 @@ processing_activities:
     dataSources:
       - 'data_subject'
     hasAutomatedDecisionMaking: false
-    status: 'active'
+    status: 'published'
     startDate: '2020-03-01'
     lastReviewDate: '2024-08-15'
     nextReviewDate: '2025-08-15'
@@ -236,7 +236,7 @@ processing_activities:
     dataSources:
       - 'data_subject'
     hasAutomatedDecisionMaking: false
-    status: 'active'
+    status: 'published'
     startDate: '2023-06-01'
     lastReviewDate: '2024-10-15'
     nextReviewDate: '2025-10-15'
@@ -280,7 +280,7 @@ processing_activities:
     dataSources:
       - 'data_subject'
     hasAutomatedDecisionMaking: false
-    status: 'active'
+    status: 'published'
     startDate: '2023-04-01'
     lastReviewDate: '2024-04-01'
     nextReviewDate: '2025-04-01'
@@ -327,7 +327,7 @@ processing_activities:
     dataSources:
       - 'data_subject'
     hasAutomatedDecisionMaking: false
-    status: 'active'
+    status: 'published'
     startDate: '2022-09-15'
     lastReviewDate: '2024-09-15'
     nextReviewDate: '2025-09-15'
@@ -372,7 +372,7 @@ processing_activities:
     dataSources:
       - 'data_subject'
     hasAutomatedDecisionMaking: false
-    status: 'active'
+    status: 'published'
     startDate: '2023-02-01'
     lastReviewDate: '2024-11-20'
     nextReviewDate: '2025-05-20'

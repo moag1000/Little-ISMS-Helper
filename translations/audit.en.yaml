@@ -113,6 +113,23 @@ audit:
     edit: Edit
     iso_27001_requirement: 'Iso 27001 Requirement'
     iso_27001_clause_info: 'Iso 27001 Clause Info'
+    # S3 P0-26 — Audit report 4-eyes approval workflow (ISO 27001 Cl. 9.2.2 d)
+    action:
+        submit_report: 'Submit Report'
+        approve_report: 'Approve Report'
+        reject_report: 'Reject Report'
+        resubmit_report: 'Resubmit Report'
+        close_audit: 'Close Audit'
+    flash:
+        report_submitted: 'Audit report submitted. Awaiting approval by a second person.'
+        report_approved: 'Audit report approved.'
+        report_rejected: 'Audit report rejected — auditor has been notified.'
+        report_resubmitted: 'Audit report resubmitted.'
+        audit_closed: 'Audit cycle closed and archived.'
+    error:
+        invalid_transition: 'Status transition not allowed in the current lifecycle state.'
+        same_user_approve: 'Four-eyes principle: the approver must differ from the person who submitted the report (ISO 27001 Cl. 9.2.2 d).'
+        rejection_reason_required: 'A rejection reason is required.'
     section:
         basic_info: 'Basic Information'
         frameworks: Frameworks
@@ -126,6 +143,9 @@ audit:
         history: History
         structured_findings: 'Structured findings'
         structured_findings_help: 'Findings are captured here in a structured way and automatically flow into the corrective-action pipeline.'
+        # S3 P0-26 — Approval workflow
+        approval_workflow: 'Report Approval (Four-Eyes Principle)'
+        approval_meta: 'Approval Metadata'
     field:
         title: Title
         scope: Scope
@@ -159,6 +179,15 @@ audit:
         scoped_framework: 'Scoped Framework'
         conclusion: Conclusion
         audit_number: 'Audit Number'
+        # S3 P0-26 — Approval workflow
+        reported_by: 'Report submitted by'
+        reported_at: 'Report date'
+        approved_by: 'Approved by'
+        approved_at: 'Approval date'
+        rejection_reason: 'Rejection reason'
+        closed_by: 'Closed by'
+        closed_at: 'Closed at'
+        rejection_reason_required: 'Reason (required)'
     new: New
     corporate_audit_note_title: 'Corporate Audit Note Title'
     corporate_audit_note: 'Corporate Audit Note'
@@ -166,10 +195,14 @@ audit:
     status:
         planned: Planned
         in_progress: 'In Progress'
+        conducted: Conducted
         completed: Completed
         postponed: Postponed
         cancelled: Cancelled
-        reported: Reported
+        reported: 'Report Submitted'
+        approved: Approved
+        rejected: Rejected
+        closed: Closed
     scope_type:
         full_isms: 'Full Isms'
         compliance_framework: 'Compliance Framework'
@@ -199,6 +232,8 @@ audit:
         findings: 'Audit findings (positive and negative results)'
         recommendations: 'Recommendations from the audit team'
         conclusion: 'Overall conclusion and audit summary'
+        approval_workflow: 'ISO 27001 Cl. 9.2.2 d requires a documented approval process for audit reports. The approver must differ from the person who submitted the report.'
+        rejection_reason: 'Describe which points need rework before the report can be resubmitted.'
     scope: Scope
     message:
         corporate_subsidiaries_info: 'Corporate Subsidiaries Info'

@@ -36,6 +36,23 @@ audit:
     delete_warning: "Möchten Sie das Audit '%title%' wirklich löschen?"
     actions:
         label: Audit‑Aktionen
+    # S3 P0-26 — Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d)
+    action:
+        submit_report: 'Bericht einreichen'
+        approve_report: 'Bericht freigeben'
+        reject_report: 'Bericht zurückweisen'
+        resubmit_report: 'Erneut einreichen'
+        close_audit: 'Audit abschließen'
+    flash:
+        report_submitted: 'Audit-Bericht eingereicht. Freigabe durch zweite Person ausstehend.'
+        report_approved: 'Audit-Bericht freigegeben.'
+        report_rejected: 'Audit-Bericht zurückgewiesen — Auditor wurde benachrichtigt.'
+        report_resubmitted: 'Audit-Bericht erneut eingereicht.'
+        audit_closed: 'Audit-Zyklus abgeschlossen und archiviert.'
+    error:
+        invalid_transition: 'Statusübergang nicht erlaubt im aktuellen Lifecycle-Status.'
+        same_user_approve: 'Vier-Augen-Prinzip: Der Freigebende muss vom Einreicher des Berichts abweichen (ISO 27001 Cl. 9.2.2 d).'
+        rejection_reason_required: 'Bei Ablehnung ist eine Begründung erforderlich.'
     field:
         title: Titel
         scope: Geltungsbereich
@@ -55,6 +72,15 @@ audit:
         audited_subsidiaries: 'Auditierte Tochtergesellschaften'
         audited_departments: 'Auditierte Abteilungen'
         scoped_assets: 'Assets im Geltungsbereich'
+        # S3 P0-26 — Approval workflow
+        reported_by: 'Bericht eingereicht durch'
+        reported_at: 'Bericht-Datum'
+        approved_by: 'Freigegeben durch'
+        approved_at: 'Freigabe-Datum'
+        rejection_reason: 'Begründung der Zurückweisung'
+        closed_by: 'Geschlossen durch'
+        closed_at: 'Geschlossen am'
+        rejection_reason_required: 'Begründung (Pflichtfeld)'
         objectives: Ziele
         audit_criteria: Auditkriterien
         methodology: Methodik
@@ -75,10 +101,14 @@ audit:
     status:
         planned: Geplant
         in_progress: 'In Bearbeitung'
+        conducted: Durchgeführt
         completed: Abgeschlossen
         postponed: Verschoben
         cancelled: Abgebrochen
-        reported: Berichtet
+        reported: 'Bericht eingereicht'
+        approved: Freigegeben
+        rejected: Zurückgewiesen
+        closed: Geschlossen
     scope_type:
         full_isms: 'Gesamtes ISMS'
         compliance_framework: Compliance‑Framework
@@ -102,6 +132,9 @@ audit:
         history: Verlauf
         structured_findings: 'Strukturierte Findings'
         structured_findings_help: 'Findings werden hier strukturiert erfasst und gehen automatisch in die Korrekturmaßnahmen-Pipeline.'
+        # S3 P0-26 — Approval workflow
+        approval_workflow: 'Berichts-Freigabe (4-Augen-Prinzip)'
+        approval_meta: 'Freigabe-Metadaten'
     message:
         corporate_subsidiaries_info: 'Dieses Konzernaudit umfasst %count% Tochtergesellschaft(en)'
         corporate_audit_note_title: Konzernaudit
@@ -131,6 +164,8 @@ audit:
         auditee: 'Der auditierte Bereich oder die auditierte Person'
         department: 'Auditierte Abteilung oder Organisationseinheit'
         status: 'Aktueller Status des Audits (geplant, in Bearbeitung, abgeschlossen, berichtet)'
+        approval_workflow: 'ISO 27001 Cl. 9.2.2 d verlangt einen dokumentierten Freigabeprozess für Audit-Berichte. Der Freigebende muss vom Einreicher abweichen.'
+        rejection_reason: 'Beschreiben Sie, welche Punkte nachzubessern sind, bevor der Bericht erneut eingereicht werden kann.'
         overall_result: 'Gesamtergebnis und Schlussfolgerung des Audits'
         objectives: 'Ziele und Zweck des Audits (was soll geprüft werden?)'
         audit_criteria: 'Kriterien, gegen die auditiert wird (z.B. ISO 27001 Anforderungen)'
