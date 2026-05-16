@@ -40,12 +40,12 @@
                             <p class="fa-meta small mb-3">{{ breach.title }}</p>
                             <div class="d-flex flex-column gap-2">
                                 <a href="{{ path('app_authority_notification_breach_pdf', {_locale: app.request.locale, breachId: breach.id, authorityKey: 'bfdi'}) }}"
-                                   class="btn btn-sm btn-outline-primary">
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                     <i class="fa-icon fa-icon--nav-file-pdf me-1"></i>
                                     {{ 'authority.action.export_pdf'|trans({}, 'eu_authorities') }} (BfDI)
                                 </a>
                                 <a href="{{ path('app_authority_notification_breach_json', {_locale: app.request.locale, breachId: breach.id, authorityKey: 'bfdi'}) }}"
-                                   class="btn btn-sm btn-outline-secondary">
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                     <i class="fa-icon fa-icon--util-filetype-json me-1" aria-hidden="true"></i>
                                     {{ 'authority.action.export_json'|trans({}, 'eu_authorities') }}
                                 </a>
@@ -98,11 +98,11 @@
                         {% for incident in incidents %}
                         <tr>
                             <td>{{ incident.title }}</td>
-                            <td><span class="badge bg-warning text-dark">{{ incident.severity }}</span></td>
+                            <td><span class="fa-status-pill fa-status-pill--warning">{{ incident.severity }}</span></td>
                             <td>{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y') : '—' }}</td>
                             <td>
                                 <a href="{{ path('app_authority_notification_incident_pdf', {_locale: app.request.locale, incidentId: incident.id, authorityKey: 'bsi_meldestelle'}) }}"
-                                   class="btn btn-sm btn-outline-primary">
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                     <i class="fa-icon fa-icon--nav-file-pdf me-1"></i>
                                     {{ 'authority.action.export_pdf'|trans({}, 'eu_authorities') }} (BSI)
                                 </a>

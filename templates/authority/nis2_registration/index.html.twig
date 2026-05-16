@@ -81,7 +81,7 @@
                         <li><small class="text-danger">{{ errorKey|trans({}, 'eu_authorities') }}</small></li>
                     {% endfor %}
                 </ul>
-                <a href="{{ path('nis2_registration_edit') }}" class="btn btn-sm btn-warning mt-3">
+                <a href="{{ path('nis2_registration_edit') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--warning mt-3">
                     <i class="fa-icon fa-icon--ui-edit me-1" aria-hidden="true"></i>
                     {{ 'eu_authorities.nis2_registration.action.fill_profile'|trans }}
                 </a>
@@ -137,9 +137,9 @@
                             <dt class="col-sm-5">{{ 'eu_authorities.nis2_registration.field.category'|trans }}</dt>
                             <dd class="col-sm-7">
                                 {% if profile.nis2EntityCategory == 'essential' %}
-                                    <span class="badge bg-danger">{{ 'eu_authorities.nis2_registration.category.essential'|trans }}</span>
+                                    <span class="fa-status-pill fa-status-pill--danger">{{ 'eu_authorities.nis2_registration.category.essential'|trans }}</span>
                                 {% else %}
-                                    <span class="badge bg-warning text-dark">{{ 'eu_authorities.nis2_registration.category.important'|trans }}</span>
+                                    <span class="fa-status-pill fa-status-pill--warning">{{ 'eu_authorities.nis2_registration.category.important'|trans }}</span>
                                 {% endif %}
                             </dd>
 
@@ -212,7 +212,7 @@
                             {% if profile.lastReportedAt %}
                                 {{ profile.lastReportedAt|date('d.m.Y H:i') }}
                                 {% if profile.portalConfirmationNumber %}
-                                    <span class="badge bg-success ms-2">{{ profile.portalConfirmationNumber }}</span>
+                                    <span class="fa-status-pill fa-status-pill--success ms-2">{{ profile.portalConfirmationNumber }}</span>
                                 {% endif %}
                             {% else %}
                                 <span class="text-muted">{{ 'eu_authorities.nis2_registration.status.never_reported'|trans }}</span>
@@ -225,13 +225,13 @@
                     <div class="col-md-6 d-flex gap-2 flex-wrap">
                         {% if isComplete %}
                         <a href="{{ path('nis2_registration_export_json') }}"
-                           class="btn btn-primary"
+                           class="fa-cyber-btn fa-cyber-btn--primary"
                            aria-label="{{ 'eu_authorities.nis2_registration.action.export_json'|trans }}">
                             <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>
                             {{ 'eu_authorities.nis2_registration.action.export_json'|trans }}
                         </a>
                         {% else %}
-                        <button type="button" class="btn btn-primary" disabled title="{{ 'eu_authorities.nis2_registration.warning.incomplete_title'|trans }}">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" disabled title="{{ 'eu_authorities.nis2_registration.warning.incomplete_title'|trans }}">
                             <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>
                             {{ 'eu_authorities.nis2_registration.action.export_json'|trans }}
                         </button>
@@ -262,7 +262,7 @@
                                aria-required="true">
                     </div>
                     <div class="col-auto">
-                        <button type="submit" class="btn btn-sm btn-success">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success">
                             <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
                             {{ 'eu_authorities.nis2_registration.action.mark_reported'|trans }}
                         </button>

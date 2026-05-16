@@ -53,7 +53,7 @@
                                         <td>
                                             <span class="fw-semibold">{{ ('admin.workflow_slas.event.' ~ event_type)|trans({}, 'admin') }}</span>
                                             {% if regulatory_minimums[event_type] is defined %}
-                                                <span class="badge bg-warning text-dark ms-1 small">{{ 'admin.workflow_slas.regulatory_badge'|trans({}, 'admin') }}</span>
+                                                <span class="fa-status-pill fa-status-pill--warning ms-1 small">{{ 'admin.workflow_slas.regulatory_badge'|trans({}, 'admin') }}</span>
                                             {% endif %}
                                         </td>
                                         <td>

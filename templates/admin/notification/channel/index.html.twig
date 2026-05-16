@@ -58,17 +58,17 @@
                                 <td class="fw-semibold">{{ channel.name }}</td>
                                 <td>
                                     {% set typeClass = {
-                                        'email': 'bg-primary',
-                                        'webhook': 'bg-info text-dark',
-                                        'in_app': 'bg-success'
+                                        'email': 'fa-status-pill--primary',
+                                        'webhook': 'fa-status-pill--info',
+                                        'in_app': 'fa-status-pill--success'
                                     } %}
-                                    <span class="badge {{ typeClass[channel.type] ?? 'bg-secondary' }}">
+                                    <span class="fa-status-pill {{ typeClass[channel.type] ?? 'badge bg-secondary' }}">
                                         {{ ('notification.channel.type.' ~ channel.type)|trans }}
                                     </span>
                                 </td>
                                 <td>
                                     {% if channel.isActive %}
-                                        <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>
                                     {% else %}
                                         <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                     {% endif %}
@@ -84,7 +84,7 @@
                                 <td>
                                     <div class="d-flex gap-2">
                                         <a href="{{ path('admin_notification_channel_edit', { id: channel.id }) }}"
-                                           class="btn btn-sm btn-outline-secondary"
+                                           class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                            title="{{ 'common.edit'|trans({}, 'messages') }}">
                                             <i class="fa-icon fa-icon--edit" aria-hidden="true"></i>
                                         </a>
@@ -94,7 +94,7 @@
                                             <input type="hidden" name="_token"
                                                    value="{{ csrf_token('notification_channel_verify_' ~ channel.id) }}">
                                             <button type="submit"
-                                                    class="btn btn-sm btn-outline-info"
+                                                    class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
                                                     title="{{ 'notification.channel.action.verify'|trans }}">
                                                 <i class="fa-icon fa-icon--shield-check" aria-hidden="true"></i>
                                             </button>
@@ -105,7 +105,7 @@
                                               onsubmit="return confirm('{{ 'notification.channel.confirm.delete'|trans|e('js') }}')">
                                             <input type="hidden" name="_token"
                                                    value="{{ csrf_token('notification_channel_delete_' ~ channel.id) }}">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
                                                     title="{{ 'common.delete'|trans({}, 'messages') }}">
                                                 <i class="fa-icon fa-icon--trash" aria-hidden="true"></i>
                                             </button>

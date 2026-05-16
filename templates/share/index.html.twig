@@ -95,7 +95,7 @@
                             <button type="submit"
                                     name="action"
                                     value="{{ action.id }}"
-                                    class="btn btn-{{ action.highlight|default(false) ? 'primary' : 'outline-secondary' }} btn-lg text-start">
+                                    class="fa-cyber-btn fa-cyber-btn--lg {{ action.highlight|default(false) ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }} text-start">
                                 <div class="d-flex align-items-center">
                                     <i class="bi {{ action.icon }} fs-4 me-3" aria-hidden="true"></i>
                                     <div>
