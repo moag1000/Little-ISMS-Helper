@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'fte_tracking' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_settings_table.html.twig' as _fa_settings %}
 
 {% block title %}{{ 'fte_tracking.calibration.title'|trans({}, 'fte_tracking') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -36,45 +37,25 @@
                     <form method="post" action="{{ path('analytics_fte_calibration', {_locale: app.request.locale}) }}" novalidate>
                         <input type="hidden" name="_token" value="{{ csrf_token('fte_calibration') }}">
 
-                        <div class="table-responsive">
-                            {# TODO: fa-table migration — fa-settings-table needed: inline <input> per row for calibration values #}
-                            <table class="table" aria-label="{{ 'fte_tracking.calibration.form_title'|trans({}, 'fte_tracking') }}">
-                                <thead>
-                                    <tr>
-                                        <th>{{ 'fte_tracking.calibration.col_operation'|trans({}, 'fte_tracking') }}</th>
-                                        <th style="width:160px">{{ 'fte_tracking.calibration.col_minutes'|trans({}, 'fte_tracking') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for opType in operation_types %}
-                                    <tr>
-                                        <td>
-                                            <label for="calib_{{ opType }}" class="form-label mb-0 fw-medium">
-                                                {{ ('fte_tracking.op.' ~ opType)|trans({}, 'fte_tracking') }}
-                                            </label>
-                                            <div class="text-muted small">{{ ('fte_tracking.op.' ~ opType ~ '.desc')|trans({}, 'fte_tracking') }}</div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group input-group-sm">
-                                                <input
-                                                    type="number"
-                                                    id="calib_{{ opType }}"
-                                                    name="calibration[{{ opType }}]"
-                                                    class="form-control"
-                                                    value="{{ constants[opType]|number_format(2) }}"
-                                                    min="0.1"
-                                                    max="9999"
-                                                    step="0.5"
-                                                    aria-label="{{ ('fte_tracking.op.' ~ opType)|trans({}, 'fte_tracking') }}"
-                                                >
-                                                <span class="input-group-text">min</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                        {%- set calib_rows = [] -%}
+                        {%- for opType in operation_types -%}
+                            {%- set calib_rows = calib_rows|merge([{
+                                kind:  'number',
+                                label: ('fte_tracking.op.' ~ opType)|trans({}, 'fte_tracking'),
+                                hint:  ('fte_tracking.op.' ~ opType ~ '.desc')|trans({}, 'fte_tracking'),
+                                name:  'calibration[' ~ opType ~ ']',
+                                value: constants[opType]|number_format(2),
+                                min:   0.1,
+                                max:   9999,
+                                step:  0.5,
+                                attrs: { id: 'calib_' ~ opType }
+                            }]) -%}
+                        {%- endfor -%}
+
+                        {{ _fa_settings.render({
+                            title: 'fte_tracking.calibration.form_title'|trans({}, 'fte_tracking'),
+                            rows:  calib_rows
+                        }) }}
 
                         <div class="d-flex justify-content-between mt-3">
                             <a href="{{ path('analytics_fte_index', {_locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">

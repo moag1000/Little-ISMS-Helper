@@ -7123,3 +7123,280 @@ html[data-theme="dark"] .fa-pager-perpage select { background: var(--surface-2);
     }
 }
 
+/* ==========================================================================
+   Aurora v4 — fa-matrix-table (Risk Heatmap)
+   Macro: _components/_fa_matrix_table.html.twig
+   Outer element carries BOTH .fa-matrix-table (Aurora primary) and
+   .isms-risk-matrix (BC-shim). Inner BEM modifiers use .fa-matrix-table__*.
+   ========================================================================== */
+
+.fa-matrix-table {
+    /* inherit cell palette from .isms-risk-matrix which is also on the element */
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-family: var(--font-sans);
+}
+
+.fa-matrix-table__caption {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: var(--space-2);
+    text-align: left;
+}
+
+.fa-matrix-table__layout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-3);
+}
+
+.fa-matrix-table__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.fa-matrix-table__grid {
+    display: grid;
+    /* col 0 = row-label; cols 1..N = data cols */
+    grid-template-columns: auto repeat(var(--fa-matrix-cols, 5), minmax(72px, 1fr));
+    gap: 4px;
+}
+
+.fa-matrix-table__corner {
+    /* empty top-left corner */
+}
+
+.fa-matrix-table__hd {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--fg-2);
+    font-size: 12px;
+    padding: var(--space-1) var(--space-2);
+    line-height: 1.3;
+    text-align: center;
+}
+
+.fa-matrix-table__row-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-2);
+    padding: var(--space-1) var(--space-2);
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+    white-space: nowrap;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fa-matrix-table__cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-sm);
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid transparent;
+    transition: transform var(--t-fast, 0.15s) var(--ease-out, ease-out),
+                box-shadow var(--t-fast, 0.15s) var(--ease-out, ease-out);
+    text-decoration: none;
+    cursor: default;
+    position: relative;
+}
+
+a.fa-matrix-table__cell {
+    cursor: pointer;
+}
+
+a.fa-matrix-table__cell:hover,
+a.fa-matrix-table__cell:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+    outline: none;
+}
+
+/* Severity variants — use same cell-N tokens as .isms-risk-matrix */
+.fa-matrix-table__cell--low      { background: var(--cell-1, var(--success-tint));          color: var(--cell-fg-1, var(--success-strong)); }
+.fa-matrix-table__cell--moderate { background: var(--cell-2, color-mix(in oklab, var(--success) 35%, transparent)); color: var(--cell-fg-2, var(--success-strong)); }
+.fa-matrix-table__cell--medium   { background: var(--cell-3, var(--warning-tint));          color: var(--cell-fg-3, var(--warning-strong, var(--warning))); }
+.fa-matrix-table__cell--high     { background: var(--cell-4, color-mix(in oklab, var(--warning) 45%, transparent)); color: var(--cell-fg-4, var(--warning-strong, var(--warning))); }
+.fa-matrix-table__cell--critical { background: var(--cell-5, var(--danger-tint));           color: var(--cell-fg-5, var(--danger-strong)); }
+
+/* Count pill inside cell */
+.fa-matrix-table__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: var(--r-pill);
+    background: color-mix(in oklab, currentColor 15%, transparent);
+    font-size: 11px;
+    font-weight: 700;
+    color: inherit;
+}
+
+/* X-axis label */
+.fa-matrix-table__x-label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-2);
+    padding-top: var(--space-1);
+}
+
+/* Legend */
+.fa-matrix-table__legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
+    margin-top: var(--space-2);
+}
+
+.fa-matrix-table__legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--fg-2);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--r-pill);
+}
+
+.fa-matrix-table__legend-swatch {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.fa-matrix-table__legend-chip--low      .fa-matrix-table__legend-swatch { background: var(--cell-1, var(--success-tint)); }
+.fa-matrix-table__legend-chip--moderate .fa-matrix-table__legend-swatch { background: var(--cell-2, color-mix(in oklab, var(--success) 35%, transparent)); }
+.fa-matrix-table__legend-chip--medium   .fa-matrix-table__legend-swatch { background: var(--cell-3, var(--warning-tint)); }
+.fa-matrix-table__legend-chip--high     .fa-matrix-table__legend-swatch { background: var(--cell-4, color-mix(in oklab, var(--warning) 45%, transparent)); }
+.fa-matrix-table__legend-chip--critical .fa-matrix-table__legend-swatch { background: var(--cell-5, var(--danger-tint)); }
+
+/* ==========================================================================
+   Aurora v4 — fa-settings-table (Admin Form-Grid)
+   Macro: _components/_fa_settings_table.html.twig
+   Tabellarisches Form-Layout für /admin/settings/* Seiten.
+   ========================================================================== */
+
+.fa-settings-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: var(--font-sans);
+    font-size: 14px;
+}
+
+.fa-settings-table__caption {
+    caption-side: top;
+    padding: 0 0 var(--space-3);
+    text-align: left;
+}
+
+.fa-settings-table__caption-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--fg);
+}
+
+.fa-settings-table__caption-meta {
+    margin-left: var(--space-3);
+    font-size: 12px;
+    color: var(--fg-3);
+    font-family: var(--font-mono);
+}
+
+.fa-settings-table__col--label   { width: 220px; }
+.fa-settings-table__col--control { }
+.fa-settings-table__col--status  { width: 140px; }
+
+.fa-settings-table__row {
+    border-bottom: 1px solid var(--border);
+}
+
+.fa-settings-table__row:last-child {
+    border-bottom: none;
+}
+
+.fa-settings-table__label-cell {
+    padding: var(--space-3) var(--space-4) var(--space-3) 0;
+    vertical-align: middle;
+    font-weight: normal;
+}
+
+.fa-settings-table__label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg);
+    cursor: pointer;
+}
+
+.fa-settings-table__hint {
+    display: block;
+    font-size: 11px;
+    color: var(--fg-3);
+    margin-top: 2px;
+    line-height: 1.4;
+}
+
+.fa-settings-table__control-cell {
+    padding: var(--space-3) var(--space-4) var(--space-3) 0;
+    vertical-align: middle;
+}
+
+.fa-settings-table__status-cell {
+    padding: var(--space-3) 0;
+    vertical-align: middle;
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Chips inside settings table */
+.fa-settings-table__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+}
+
+.fa-settings-table__chip-label {
+    cursor: pointer;
+    margin: 0;
+}
+
+.fa-settings-table__chip-cb:focus-visible + .fa-filter-chip {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Compact .fa-cyber-input inside settings table */
+.fa-settings-table .fa-cyber-input__frame {
+    min-height: 36px;
+}
+
+.fa-settings-table .fa-cyber-input__field {
+    padding: 6px 10px;
+    font-size: 13px;
+}
+

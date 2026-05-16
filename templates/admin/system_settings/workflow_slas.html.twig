@@ -2,6 +2,7 @@
 {% trans_default_domain 'admin' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_settings_table.html.twig' as _fa_settings %}
 
 {% block admin_title %}{{ 'admin.workflow_slas.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -36,45 +37,29 @@
                     <form method="post" action="{{ path('admin_settings_workflow_slas') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_workflow_slas') }}">
 
-                        <div class="table-responsive">
-                            {# TODO: fa-table migration — fa-settings-table needed: inline <input type="number"> per row #}
-                            <table class="table table-sm align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>{{ 'admin.workflow_slas.col.event_type'|trans({}, 'admin') }}</th>
-                                        <th style="width: 180px;">{{ 'admin.workflow_slas.col.sla_hours'|trans({}, 'admin') }}</th>
-                                        <th class="text-muted small">{{ 'admin.workflow_slas.col.regulatory_basis'|trans({}, 'admin') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for event_type in event_types %}
-                                    {% set hours = current[event_type] %}
-                                    {% set min_hours = regulatory_minimums[event_type] is defined ? regulatory_minimums[event_type] : 1 %}
-                                    <tr>
-                                        <td>
-                                            <span class="fw-semibold">{{ ('admin.workflow_slas.event.' ~ event_type)|trans({}, 'admin') }}</span>
-                                            {% if regulatory_minimums[event_type] is defined %}
-                                                <span class="fa-status-pill fa-status-pill--warning ms-1 small">{{ 'admin.workflow_slas.regulatory_badge'|trans({}, 'admin') }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <div class="input-group input-group-sm">
-                                                <input type="number" class="form-control form-control-sm"
-                                                       name="sla_{{ event_type }}"
-                                                       value="{{ hours }}"
-                                                       min="{{ min_hours }}"
-                                                       aria-label="{{ ('admin.workflow_slas.event.' ~ event_type)|trans({}, 'admin') }} SLA hours">
-                                                <span class="input-group-text">h</span>
-                                            </div>
-                                        </td>
-                                        <td class="text-muted small">
-                                            {{ ('admin.workflow_slas.basis.' ~ event_type)|trans({}, 'admin') }}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                        {%- set sla_rows = [] -%}
+                        {%- for event_type in event_types -%}
+                            {%- set hours     = current[event_type] -%}
+                            {%- set min_hours = regulatory_minimums[event_type] is defined ? regulatory_minimums[event_type] : 1 -%}
+                            {%- set hasReg    = regulatory_minimums[event_type] is defined -%}
+                            {%- set rowLabel  = ('admin.workflow_slas.event.' ~ event_type)|trans({}, 'admin') -%}
+                            {%- set rowHint   = ('admin.workflow_slas.basis.' ~ event_type)|trans({}, 'admin') -%}
+                            {%- set sla_rows = sla_rows|merge([{
+                                kind:   'number',
+                                label:  rowLabel ~ (hasReg ? ' ★' : ''),
+                                hint:   rowHint,
+                                name:   'sla_' ~ event_type,
+                                value:  hours,
+                                min:    min_hours,
+                                attrs:  { 'aria-label': rowLabel ~ ' SLA hours' },
+                                status: hasReg ? { label: 'admin.workflow_slas.regulatory_badge'|trans({}, 'admin'), tone: 'warning' } : null
+                            }]) -%}
+                        {%- endfor -%}
+
+                        {{ _fa_settings.render({
+                            title: 'admin.workflow_slas.defaults_title'|trans({}, 'admin'),
+                            rows:  sla_rows
+                        }) }}
 
                         <div class="d-flex gap-2 mt-4">
                             <a href="{{ path('admin_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
