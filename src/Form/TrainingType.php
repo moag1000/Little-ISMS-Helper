@@ -8,6 +8,8 @@ use App\Entity\ComplianceFramework;
 use App\Entity\Training;
 use App\Entity\Control;
 use App\Entity\ComplianceRequirement;
+use App\Entity\User;
+use App\Entity\Person;
 use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
