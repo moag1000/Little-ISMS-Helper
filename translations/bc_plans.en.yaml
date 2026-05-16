@@ -141,10 +141,8 @@ bc_plans:
     required_resources: 'Minimum resources needed for emergency operations: staff, IT systems, communication tools, premises and critical third-party service providers (ISO 22301 Cl. 8.1).'
   error:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
-<<<<<<< HEAD
     rto_range: 'RTO must be between 0 and 8760 hours (= 1 year).'
     rpo_range: 'RPO must be between 0 and 8760 hours (= 1 year).'
-=======
   team_role:
     incident_commander: 'Incident Commander'
     comms_lead: 'Communications Lead'
@@ -202,7 +200,6 @@ bc_plans:
     raw_toggle: 'Edit as JSON'
     raw_label: 'Raw JSON (power-user)'
     raw_help: 'Warning: raw editing can corrupt data. Schema must match entity definition.'
->>>>>>> b2aafb0f (feat(audit-s5): _fa_team_role_builder Aurora macro + Stimulus + BCPlan adoption (P-9))
 bcm:
   field:
     activation_criteria: Activation Criteria
