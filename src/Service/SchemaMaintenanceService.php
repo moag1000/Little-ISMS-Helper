@@ -38,7 +38,22 @@ class SchemaMaintenanceService
         private readonly SchemaHealthService $schemaHealthService,
         private readonly DependencyFactory $migrationsDependencyFactory,
         private readonly AuditLogger $auditLogger,
+        private readonly \Doctrine\Persistence\ManagerRegistry $managerRegistry,
     ) {
+    }
+
+    /**
+     * Reset the default ORM EntityManager if it was closed by a prior
+     * exception. Used by mark-all-phantom-diff between isolated migration
+     * iterations so subsequent persist/flush calls (including audit-log)
+     * do not throw EntityManagerClosed.
+     */
+    private function resetEntityManagerIfClosed(): void
+    {
+        $em = $this->managerRegistry->getManager();
+        if ($em instanceof \Doctrine\ORM\EntityManagerInterface && !$em->isOpen()) {
+            $this->managerRegistry->resetManager();
+        }
     }
 
     /**
@@ -408,6 +423,12 @@ class SchemaMaintenanceService
                     // Migration ran cleanly → already recorded; nothing extra to do.
                 } catch (\Throwable $e) {
                     $msg = $e->getMessage();
+
+                    // A failed migration may have closed the default ORM EM
+                    // (constraint violation, integrity errors). Reset before
+                    // continuing so subsequent iterations + audit-log writes
+                    // do not throw EntityManagerClosed.
+                    $this->resetEntityManagerIfClosed();
 
                     if ($this->isPhantomDiffError($msg)) {
                         // Schema already has the object → force-mark.

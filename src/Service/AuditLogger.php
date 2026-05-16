@@ -287,6 +287,14 @@ class AuditLogger
         // AUD-02: sign before persist (no-op if hmac secret not configured)
         $this->integrityService?->sign($auditLog);
 
+        // EM may be closed after a prior persistence error (e.g. constraint
+        // violation in an isolated mark-all loop iteration). Persisting on a
+        // closed EM throws EntityManagerClosed. Skip silently if so — the
+        // audit log is best-effort in this recovery context.
+        if (!$this->entityManager->isOpen()) {
+            return;
+        }
+
         $this->entityManager->persist($auditLog);
         $this->entityManager->flush();
     }
