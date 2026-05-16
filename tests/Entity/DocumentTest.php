@@ -33,7 +33,7 @@ class DocumentTest extends TestCase
         $this->assertNull($document->getSha256Hash());
         $this->assertFalse($document->isPublic());
         $this->assertFalse($document->isArchived());
-        $this->assertEquals('active', $document->getStatus());
+        $this->assertEquals('draft', $document->getStatus());
     }
 
     #[Test]
@@ -188,7 +188,7 @@ class DocumentTest extends TestCase
     {
         $document = new Document();
 
-        $this->assertEquals('active', $document->getStatus());
+        $this->assertEquals('draft', $document->getStatus());
 
         $document->setStatus('archived');
         $this->assertEquals('archived', $document->getStatus());
@@ -316,7 +316,7 @@ class DocumentTest extends TestCase
         $this->assertSame($user, $document->getUploadedBy());
         $this->assertFalse($document->isPublic());
         $this->assertFalse($document->isArchived());
-        $this->assertEquals('active', $document->getStatus());
+        $this->assertEquals('draft', $document->getStatus());
         $this->assertTrue($document->isPdf());
         $this->assertFalse($document->isImage());
         $this->assertEquals('pdf', $document->getFileExtension());
