@@ -1096,6 +1096,22 @@ form:
         invalid_format: 'Ungültiges Format'
         too_short: 'Zu kurz (min. %min% Zeichen)'
         too_long: 'Zu lang (max. %max% Zeichen)'
+    section:
+        overview: 'Übersicht'
+        recovery: 'Wiederherstellung'
+        team: 'Team'
+        communication: 'Kommunikation'
+        resources: 'Ressourcen'
+        activation: 'Aktivierung'
+        testing: 'Tests'
+        audit_metadata: 'Audit-Daten'
+        results: 'Ergebnisse'
+        lessons_learned: 'Lessons Learned'
+        details: 'Details'
+        contact: 'Kontakt'
+        warning:
+            unmapped_title: 'Hinweis (nur dev):'
+            unmapped_body: 'Folgende Felder sind in keiner Section abgebildet und landen im Auffangbecken: %fields%. SectionPolicy in der FormType-Klasse aktualisieren.'
 corporate:
     title: Konzernstruktur
     subtitle: 'Verwaltung von Muttergesellschaften und Tochtergesellschaften'

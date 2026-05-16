@@ -1082,6 +1082,22 @@ form:
         invalid_format: 'Invalid format'
         too_short: 'Too short (min. %min% characters)'
         too_long: 'Too long (max. %max% characters)'
+    section:
+        overview: 'Overview'
+        recovery: 'Recovery'
+        team: 'Team'
+        communication: 'Communication'
+        resources: 'Resources'
+        activation: 'Activation'
+        testing: 'Testing'
+        audit_metadata: 'Audit metadata'
+        results: 'Results'
+        lessons_learned: 'Lessons learned'
+        details: 'Details'
+        contact: 'Contact'
+        warning:
+            unmapped_title: 'Notice (dev only):'
+            unmapped_body: 'The following fields are not covered by any section and fall through to the catch-all bucket: %fields%. Update the SectionPolicy on the FormType class.'
 corporate:
     title: 'Corporate Structure'
     subtitle: 'Management of parent companies and subsidiaries'
