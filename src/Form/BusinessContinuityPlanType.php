@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\Asset;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\BusinessProcess;
 use App\Entity\CrisisTeam;
@@ -15,6 +16,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,7 +24,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class BusinessContinuityPlanType extends AbstractType
+class BusinessContinuityPlanType extends AbstractType implements SectionMapInterface
 {
     use OwnerPickerFormTrait;
 
@@ -87,6 +89,31 @@ class BusinessContinuityPlanType extends AbstractType
                 'required' => false,
                 'attr' => ['rows' => 6],
                 'help' => 'bc_plans.help.recovery_procedures',
+            ])
+            // ISO 22301 Cl. 8.2.2 — Recovery targets. P0: previously missing from form.
+            ->add('rto', IntegerType::class, [
+                'label' => 'bc_plans.field.rto',
+                'required' => true,
+                'attr' => ['min' => 0, 'max' => 8760],
+                'help' => 'bc_plans.help.rto',
+            ])
+            ->add('rpo', IntegerType::class, [
+                'label' => 'bc_plans.field.rpo',
+                'required' => true,
+                'attr' => ['min' => 0, 'max' => 8760],
+                'help' => 'bc_plans.help.rpo',
+            ])
+            ->add('criticalAssets', EntityType::class, [
+                'label' => 'bc_plans.field.critical_assets',
+                'class' => Asset::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'bc_plans.help.critical_assets',
             ])
             ->add('communicationPlan', TextareaType::class, [
                 'label' => 'bc_plans.field.communication_plan',
@@ -270,5 +297,76 @@ class BusinessContinuityPlanType extends AbstractType
                 ->atPath('planOwnerUser')
                 ->addViolation();
         }
+    }
+
+    /**
+     * S4 Foundation P-2 SectionPolicy — explicit field-to-section map for the
+     * `_auto_form.html.twig` renderer. Each field added via the form builder
+     * MUST appear in exactly one section (CI-gated by
+     * `scripts/quality/check_form_sections.py`).
+     *
+     * Sections follow ISO 22301 / BSI 200-4 BCM-Plan structure:
+     * - overview:   identity, scope, ownership
+     * - recovery:   RTO/RPO targets, recovery procedures, critical assets
+     * - team:       response team, crisis teams, escalation paths
+     * - communication: internal/external comms plans + stakeholder lists
+     * - resources:  alternative sites, required resources, backup/restore
+     * - activation: trigger criteria + roles
+     * - testing:    test schedule + review cadence
+     * - audit_metadata: version, status, review notes
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'name',
+                'businessProcess',
+                'description',
+                'planOwnerUser',
+                'planOwnerPerson',
+                'planOwnerDeputyPersons',
+                'planOwner',
+            ],
+            'recovery' => [
+                'rto',
+                'rpo',
+                'criticalAssets',
+                'recoveryProcedures',
+            ],
+            'team' => [
+                'bcTeam',
+                'responseTeamMembers',
+                'crisisTeams',
+                'escalationLevels',
+            ],
+            'communication' => [
+                'communicationPlan',
+                'internalCommunication',
+                'externalCommunication',
+            ],
+            'resources' => [
+                'alternativeSite',
+                'alternativeSiteAddress',
+                'alternativeSiteCapacity',
+                'requiredResources',
+                'backupProcedures',
+                'restoreProcedures',
+            ],
+            'activation' => [
+                'activationCriteria',
+                'rolesAndResponsibilities',
+            ],
+            'testing' => [
+                'lastTested',
+                'nextTestDate',
+                'lastReviewDate',
+                'nextReviewDate',
+                'reviewNotes',
+            ],
+            'audit_metadata' => [
+                'version',
+                'status',
+            ],
+        ];
     }
 }
