@@ -71,7 +71,9 @@ final class FaResourceListTest extends KernelTestCase
 
         self::assertStringContainsString('role="tablist"', $output);
         self::assertStringContainsString('role="tabpanel"', $output);
-        self::assertStringContainsString('data-action="submit->resource-list#addEntry"', $output);
+        // Add-entry widget uses div + click/keydown (nested <form> would break the outer BCPlan form).
+        self::assertStringContainsString('data-action="click->resource-list#addEntry"', $output);
+        self::assertStringContainsString('data-action="keydown.enter->resource-list#addEntry"', $output);
     }
 
     #[Test]
