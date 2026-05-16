@@ -1,22 +1,20 @@
-{# Supplier form theme — extends Aurora cyber-input theme; only overrides
-   the subcontractorChain field which needs a structured-editor sub-template. #}
+{# Supplier form theme — extends Aurora cyber-input theme; overrides
+   the subcontractorChain field with the P-9 visual JsonBuilder macro
+   (replaces the legacy table editor with an indented tier-tree). #}
 {% use "form/fa_cyber_input.html.twig" %}
 
 {%- block _supplier_subcontractorChain_row -%}
+    {% import '_components/_fa_subcontractor_chain.html.twig' as _fa_subcontractor_chain %}
     <div class="fa-cyber-input">
         <div class="fa-cyber-input__header">
             {{ form_label(form) }}
         </div>
-        <div class="fa-cyber-input__frame">
-            <span class="fa-cyber-input__tick fa-cyber-input__tick--tl" aria-hidden="true"></span>
-            <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
-            <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
-            <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
-            {% include 'supplier/_subcontractor_chain_editor.html.twig' with {
-                field_name: form.vars.full_name,
-                initial: form.vars.value
-            } %}
-        </div>
+        {{ _fa_subcontractor_chain.render({
+            name: form.vars.full_name,
+            value: form.vars.value,
+            id: form.vars.id ~ '-builder',
+            translationDomain: 'suppliers'
+        }) }}
         {% if form.vars.help %}
             <small class="fa-cyber-input__hint">
                 {{ form.vars.help|trans({}, form.vars.help_translation_domain|default('suppliers')) }}
