@@ -181,11 +181,24 @@ class InternalAudit
     #[Groups(['audit:read', 'audit:write'])]
     private ?string $auditedDepartments = null;
 
+    /**
+     * S3 P0-26 — Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d).
+     *
+     * Lifecycle:
+     *   planned → conducted → reported → approved → closed
+     *                              ↓
+     *                          rejected → reported (rework loop)
+     *   planned / conducted can branch to → cancelled
+     *
+     * Legacy values `in_progress` and `completed` are kept in the Choice
+     * list for backward compatibility with historical audits, but the new
+     * UI transitions go through `conducted`.
+     */
     #[ORM\Column(length: 50)]
     #[Groups(['audit:read', 'audit:write'])]
     #[Assert\NotBlank(message: 'Status is required')]
     #[Assert\Choice(
-        choices: ['planned', 'in_progress', 'completed', 'reported'],
+        choices: ['planned', 'conducted', 'reported', 'approved', 'rejected', 'closed', 'cancelled', 'in_progress', 'completed', 'postponed'],
         message: 'Status must be one of: {{ choices }}'
     )]
     private ?string $status = 'planned';
@@ -257,6 +270,64 @@ class InternalAudit
      */
     #[ORM\OneToMany(targetEntity: AuditFinding::class, mappedBy: 'audit', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $structuredFindings;
+
+    // ==========================================================================
+    // S3 P0-26 — Audit-Bericht 4-Augen-Approval-Workflow (ISO 27001 Cl. 9.2.2 d)
+    // ==========================================================================
+
+    /**
+     * Lifecycle stages with allowed transitions and Aurora tone.
+     * Reads as: status => { transitions: [next…], tone: <aurora-tone> }.
+     *
+     * Server-side enforcement: any setStatus()-via-controller must check the
+     * `transitions` entry of the current status against the requested target.
+     *
+     * @var array<string, array{transitions: list<string>, tone: string}>
+     */
+    public const array LIFECYCLE_STAGES = [
+        'planned'   => ['transitions' => ['conducted', 'cancelled'], 'tone' => 'primary'],
+        'conducted' => ['transitions' => ['reported', 'cancelled'], 'tone' => 'warning'],
+        'reported'  => ['transitions' => ['approved', 'rejected'], 'tone' => 'accent'],
+        'approved'  => ['transitions' => ['closed'], 'tone' => 'success'],
+        'rejected'  => ['transitions' => ['reported'], 'tone' => 'danger'],
+        'closed'    => ['transitions' => [], 'tone' => 'neutral'],
+        'cancelled' => ['transitions' => [], 'tone' => 'neutral'],
+        // legacy buckets — no transitions wired; UI hides approval actions
+        'in_progress' => ['transitions' => ['completed', 'reported', 'cancelled'], 'tone' => 'warning'],
+        'completed'   => ['transitions' => ['reported'], 'tone' => 'success'],
+        'postponed'   => ['transitions' => ['planned', 'cancelled'], 'tone' => 'neutral'],
+    ];
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'reported_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['audit:read'])]
+    private ?User $reportedBy = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['audit:read'])]
+    private ?DateTimeImmutable $reportedAt = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'approved_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['audit:read'])]
+    private ?User $approvedBy = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['audit:read'])]
+    private ?DateTimeImmutable $approvedAt = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['audit:read'])]
+    private ?string $rejectionReason = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'closed_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['audit:read'])]
+    private ?User $closedBy = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['audit:read'])]
+    private ?DateTimeImmutable $closedAt = null;
 
 public function __construct()
     {
@@ -718,5 +789,123 @@ public function __construct()
     {
         $this->tenant = $tenant;
         return $this;
+    }
+
+    // ==========================================================================
+    // S3 P0-26 — Approval-Workflow getters/setters + helpers
+    // ==========================================================================
+
+    public function getReportedBy(): ?User
+    {
+        return $this->reportedBy;
+    }
+
+    public function setReportedBy(?User $reportedBy): static
+    {
+        $this->reportedBy = $reportedBy;
+        return $this;
+    }
+
+    public function getReportedAt(): ?DateTimeImmutable
+    {
+        return $this->reportedAt;
+    }
+
+    public function setReportedAt(?DateTimeImmutable $reportedAt): static
+    {
+        $this->reportedAt = $reportedAt;
+        return $this;
+    }
+
+    public function getApprovedBy(): ?User
+    {
+        return $this->approvedBy;
+    }
+
+    public function setApprovedBy(?User $approvedBy): static
+    {
+        $this->approvedBy = $approvedBy;
+        return $this;
+    }
+
+    public function getApprovedAt(): ?DateTimeImmutable
+    {
+        return $this->approvedAt;
+    }
+
+    public function setApprovedAt(?DateTimeImmutable $approvedAt): static
+    {
+        $this->approvedAt = $approvedAt;
+        return $this;
+    }
+
+    public function getRejectionReason(): ?string
+    {
+        return $this->rejectionReason;
+    }
+
+    public function setRejectionReason(?string $rejectionReason): static
+    {
+        $this->rejectionReason = $rejectionReason;
+        return $this;
+    }
+
+    public function getClosedBy(): ?User
+    {
+        return $this->closedBy;
+    }
+
+    public function setClosedBy(?User $closedBy): static
+    {
+        $this->closedBy = $closedBy;
+        return $this;
+    }
+
+    public function getClosedAt(): ?DateTimeImmutable
+    {
+        return $this->closedAt;
+    }
+
+    public function setClosedAt(?DateTimeImmutable $closedAt): static
+    {
+        $this->closedAt = $closedAt;
+        return $this;
+    }
+
+    /**
+     * Return the Aurora tone (`primary`, `accent`, `success`, …) for the
+     * current status. Used by `_fa_status_chip` / `_status_pill` macros.
+     */
+    public function getStatusTone(): string
+    {
+        return self::LIFECYCLE_STAGES[$this->status ?? 'planned']['tone'] ?? 'neutral';
+    }
+
+    /**
+     * Whether the requested target is reachable from the current status
+     * according to LIFECYCLE_STAGES. Approve-/reject-/close-actions must
+     * call this before mutating state.
+     */
+    public function canTransitionTo(string $target): bool
+    {
+        $current = $this->status ?? 'planned';
+        if (!isset(self::LIFECYCLE_STAGES[$current])) {
+            return false;
+        }
+
+        return in_array($target, self::LIFECYCLE_STAGES[$current]['transitions'], true);
+    }
+
+    /**
+     * Allowed next-stage targets for the current status. Twig uses this
+     * to decide which action-buttons to render.
+     *
+     * @return list<string>
+     */
+    public function getAllowedTransitions(): array
+    {
+        $current = $this->status ?? 'planned';
+
+        return self::LIFECYCLE_STAGES[$current]['transitions'] ?? [];
     }
 }
