@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% block title %}{{ 'compliance.framework.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -11,22 +12,20 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'compliance.framework.heading'|trans({}, 'compliance') }}</h1>
-            <p class="text-muted">{{ 'compliance.framework.description'|trans({}, 'compliance') }}</p>
-        </div>
-        <div>
-            {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_compliance_framework_new') }}" class="fa-cyber-btn fa-cyber-btn--success">
-                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'compliance.framework.action.new'|trans({}, 'compliance') }}
-                </a>
-            {% endif %}
-            <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-            </a>
-        </div>
-    </div>
+    {% set _header_actions = [
+        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_index') }
+    ] %}
+    {% if is_granted('ROLE_ADMIN') %}
+        {% set _header_actions = _header_actions|merge([
+            { label: 'compliance.framework.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'ui-plus', href: path('app_compliance_framework_new') }
+        ]) %}
+    {% endif %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'compliance-shield', label: 'nav.compliance'|trans({}, 'nav') },
+        title: 'compliance.framework.heading'|trans({}, 'compliance'),
+        subtitle: 'compliance.framework.description'|trans({}, 'compliance'),
+        actions: _header_actions
+    }) }}
 
     {# Skip link for filters section - WCAG 2.4.1 #}
     <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>

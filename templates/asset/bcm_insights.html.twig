@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'bcm' %}
 
@@ -15,22 +16,20 @@
         ]
     } %}
 
-    <div class="page-header">
-        <div>
-            <h1><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'bcm.title.asset_insights'|trans({}, 'bcm') }}</h1>
-            <p class="text-muted">{{ asset.name }}</p>
-        </div>
-        <div class="button-group">
-            <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-            </a>
-            {% if canEdit %}
-            <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-            </a>
-            {% endif %}
-        </div>
-    </div>
+    {% set _header_actions = [
+        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_asset_show', {id: asset.id}) }
+    ] %}
+    {% if canEdit %}
+        {% set _header_actions = _header_actions|merge([
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_asset_edit', {id: asset.id}) }
+        ]) %}
+    {% endif %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-bar-chart', label: 'nav.bcm'|trans({}, 'nav') },
+        title: 'bcm.title.asset_insights'|trans({}, 'bcm'),
+        subtitle: asset.name,
+        actions: _header_actions
+    }) }}
 
     {# Protection Requirement Analysis #}
     {% if analysis %}

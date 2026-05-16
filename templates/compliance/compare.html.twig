@@ -1,36 +1,37 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'compliance.title.compare'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="page-header">
+{{ _fa_page_header.render({
+    badge: { icon: 'compliance-shield', label: 'nav.compliance'|trans({}, 'nav') },
+    title: 'compliance.title.compare'|trans({}, 'compliance'),
+    subtitle: 'compliance.description.compare'|trans({}, 'compliance')
+}) }}
+{# TODO: migrate conditional <button id="createMappingsBtn"> and disabled export actions to fa-action-bar or custom block — conditional disabled state + JS button not supported by macro actions array #}
+<div class="d-flex justify-content-end gap-2 mb-3">
+    {% if selectedFramework1 and selectedFramework2 %}
+    <button id="createMappingsBtn" class="fa-cyber-btn fa-cyber-btn--primary" data-framework1="{{ selectedFramework1.id }}" data-framework2="{{ selectedFramework2.id }}">
+        🔗 {{ 'compliance.action.create_mappings'|trans({}, 'compliance') }}
+    </button>
+    {% endif %}
     <div>
-        <h1>{{ 'compliance.title.compare'|trans({}, 'compliance') }}</h1>
-        <p class="text-muted">{{ 'compliance.description.compare'|trans({}, 'compliance') }}</p>
-    </div>
-    <div class="button-group">
+        <a href="{{ path('app_compliance_export_comparison_pdf', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="fa-cyber-btn fa-cyber-btn--danger" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
+            📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
+        </a>
         {% if selectedFramework1 and selectedFramework2 %}
-        <button id="createMappingsBtn" class="fa-cyber-btn fa-cyber-btn--primary" data-framework1="{{ selectedFramework1.id }}" data-framework2="{{ selectedFramework2.id }}">
-            🔗 {{ 'compliance.action.create_mappings'|trans({}, 'compliance') }}
-        </button>
+            {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_compliance_export_comparison_pdf', route_params: {framework1: selectedFramework1.id, framework2: selectedFramework2.id}} only %}
         {% endif %}
-        <div>
-            <a href="{{ path('app_compliance_export_comparison_pdf', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="fa-cyber-btn fa-cyber-btn--danger" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
-                📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
-            </a>
-            {% if selectedFramework1 and selectedFramework2 %}
-                {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_compliance_export_comparison_pdf', route_params: {framework1: selectedFramework1.id, framework2: selectedFramework2.id}} only %}
-            {% endif %}
-        </div>
-        <a href="{{ path('app_compliance_export_comparison_excel', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
-            📊 {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
-        </a>
-        <a href="{{ path('app_compliance_export_comparison', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
-            📄 {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
-        </a>
     </div>
+    <a href="{{ path('app_compliance_export_comparison_excel', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
+        📊 {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
+    </a>
+    <a href="{{ path('app_compliance_export_comparison', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>
+        📄 {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
+    </a>
 </div>
 
 {# Framework Selection #}

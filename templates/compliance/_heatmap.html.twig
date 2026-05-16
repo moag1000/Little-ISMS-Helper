@@ -21,6 +21,7 @@
 {% trans_default_domain 'compliance' %}
 
 <div class="table-responsive" role="region" aria-label="{{ 'compliance.heatmap.title'|trans({}, 'compliance') }}">
+    {# TODO: fa-table migration — fa-matrix-table needed: <caption>, colspan, <th scope="row"> per row (multi-axis heatmap) #}
     <table class="table table-bordered table-sm fte-heatmap" aria-live="polite">
         <caption class="visually-hidden">{{ 'compliance.heatmap.caption'|trans({}, 'compliance') }}</caption>
         <thead>

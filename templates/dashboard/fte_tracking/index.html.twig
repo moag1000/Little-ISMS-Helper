@@ -93,27 +93,36 @@
         </div>
         <div class="card-body p-0">
             {% if by_source|length > 0 %}
-            <table class="table table-hover mb-0" aria-label="{{ 'fte_tracking.table.by_source_title'|trans({}, 'fte_tracking') }}">
-                <thead>
+            {% embed '_components/_fa_table.html.twig' with {
+                id: 'fte-by-source',
+                striped: false,
+                compact: false,
+                stickyHead: false,
+                sortable: false,
+                bulkSelect: false
+            } %}
+                {% block table_head %}
+                    {% trans_default_domain 'fte_tracking' %}
                     <tr>
-                        <th>{{ 'fte_tracking.table.source'|trans({}, 'fte_tracking') }}</th>
-                        <th class="text-end">{{ 'fte_tracking.table.savings_minutes'|trans({}, 'fte_tracking') }}</th>
-                        <th class="text-end">{{ 'fte_tracking.table.savings_hours'|trans({}, 'fte_tracking') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'fte_tracking.table.source'|trans({}, 'fte_tracking') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'fte_tracking.table.savings_minutes'|trans({}, 'fte_tracking') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'fte_tracking.table.savings_hours'|trans({}, 'fte_tracking') }}</th>
                     </tr>
-                </thead>
-                <tbody>
+                {% endblock %}
+                {% block table_body %}
+                    {% trans_default_domain 'fte_tracking' %}
                     {% for source, minutes in by_source %}
-                    <tr>
-                        <td>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">
                             <span class="badge bg-secondary me-2">{{ source }}</span>
                             {{ ('fte_tracking.source.' ~ source)|trans({}, 'fte_tracking') }}
                         </td>
-                        <td class="text-end">{{ minutes }}</td>
-                        <td class="text-end">{{ (minutes / 60)|number_format(1) }}</td>
+                        <td class="fa-table__cell fa-table__cell--num">{{ minutes }}</td>
+                        <td class="fa-table__cell fa-table__cell--num">{{ (minutes / 60)|number_format(1) }}</td>
                     </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% endblock %}
+            {% endembed %}
             {% else %}
             <div class="p-4 text-center text-muted">
                 <i class="fa-icon fa-icon--ui-inbox fa-icon--32 d-block mb-2" aria-hidden="true"></i>
