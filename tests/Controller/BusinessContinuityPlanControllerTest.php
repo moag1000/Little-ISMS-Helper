@@ -625,3 +625,4 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 }
+
