@@ -62,6 +62,11 @@ quick_fix:
         mark_all_body: 'Markiert ALLE ausstehenden Migrationen als ausgeführt, die ein phantom-diff-Muster zeigen (Tabelle/Spalte existiert bereits). Stoppt bei der ersten Migration die keinen phantom-diff-Fehler produziert. Nur verwenden wenn sicher ist, dass ALLE ausstehenden Migrationen bereits im Schema vorhanden sind.'
         mark_all_confirm_label: 'Ich bestätige, dass ALLE ausstehenden Migrationen schema-seitig bereits angewendet sind und sicher ohne DDL markiert werden können.'
         mark_all_button: 'Alle phantom-diff Migrationen als ausgeführt markieren (ohne DDL)'
+    force_update:
+        show: 'Schema-Update erzwingen anzeigen (letzter Ausweg bei persistentem Reconcile-Fehler)...'
+        body: 'Führt doctrine:schema:update --force (saveMode=true) aus — erzeugt nur ADD/CREATE-Statements, löscht keine Tabellen. Einzusetzen wenn Reconcile trotz FK-Checks scheitert. Bypasses Doctrine-Migrations-Tracking.'
+        confirm_label: 'Ich verstehe, dass dieser Vorgang Doctrine-Migrations-Tracking umgeht und nur als letzter Ausweg verwendet werden sollte.'
+        button: 'Schema-Update erzwingen (nuclear)'
     settings:
         title: 'Quick-Fix'
         description: 'Steuert die öffentliche Fallback-Seite, die bei Schema-Mismatch statt eines 500er erscheint.'

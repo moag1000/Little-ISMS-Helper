@@ -129,7 +129,18 @@ class SchemaHealthService
         $sqlHash = hash('sha256', implode(";\n", $sql));
 
         try {
-            $tool->updateSchema($metadata);
+            // Wrap DDL in FK-check disable/enable envelope so SchemaTool ALTER
+            // statements do not fail with 1832 "used in a foreign key constraint"
+            // when the order of generated statements would otherwise require
+            // dropping a referencing FK first. MySQL-specific but safe for
+            // DDL-only reconcile: SchemaTool never INSERTs or DELETEs rows here.
+            $conn = $this->entityManager->getConnection();
+            $conn->executeStatement('SET FOREIGN_KEY_CHECKS=0');
+            try {
+                $tool->updateSchema($metadata);
+            } finally {
+                $conn->executeStatement('SET FOREIGN_KEY_CHECKS=1');
+            }
         } catch (\Throwable $e) {
             $this->auditLogger->logCustom(
                 'admin.schema.update.failed',

@@ -851,4 +851,51 @@ class QuickFixController extends AbstractController
 
         return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
     }
+
+    // =========================================================================
+    // Nuclear fallback: doctrine:schema:update --force (saveMode=true)
+    // Only emits ADD/CREATE — never drops tables. Gated by confirm checkbox.
+    // =========================================================================
+
+    /**
+     * Programmatically runs `doctrine:schema:update --force` (saveMode=true)
+     * so existing data is never destroyed. Use as last resort when reconcile
+     * still fails after the FK-check envelope is applied.
+     *
+     * Protected by:
+     * - QuickFixGuard (IP/token/dev-only constraints)
+     * - CSRF token 'quick_fix_force_schema_update'
+     * - Mandatory confirm_force_schema checkbox
+     */
+    #[IsCsrfTokenValid('quick_fix_force_schema_update')]
+    public function forceSchemaUpdate(
+        Request $request,
+        QuickFixGuard $guard,
+        SchemaMaintenanceService $maintenance,
+    ): Response {
+        if (!$guard->mayAccess($request)) {
+            return $this->render('quick_fix/locked.html.twig', [
+                'token_required' => $guard->isTokenRequired(),
+            ], new Response('', Response::HTTP_FORBIDDEN));
+        }
+
+        $confirmForce = (bool) $request->request->get('confirm_force_schema', false);
+        if (!$confirmForce) {
+            $this->addFlash('error', 'Sicherheitscheck: Bitte Bestätigungs-Checkbox aktivieren um Schema-Update zu erzwingen.');
+            return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
+        }
+
+        $result = $maintenance->forceSchemaUpdate('quick-fix');
+
+        if ($result['success']) {
+            $this->addFlash('success', sprintf(
+                'Schema-Update erfolgreich: %d Statement(s) angewendet.',
+                $result['statements_executed'],
+            ));
+        } else {
+            $this->addFlash('error', sprintf('Schema-Update erzwingen fehlgeschlagen: %s', $result['error'] ?? 'unbekannter Fehler'));
+        }
+
+        return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
+    }
 }
