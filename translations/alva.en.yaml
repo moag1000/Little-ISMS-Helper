@@ -254,6 +254,42 @@ global:
         title: 'NIS-2 BSI Portal Registration Due Soon'
         body: 'The yearly NIS-2 registration with the BSI portal is due on %date%. Please export now and submit via the BSI reporting portal.'
         action: 'Open NIS-2 registration'
+    outdated_evidence:
+        title: 'Evidence outdated — review required'
+        body: '%count% controls are flagged with outdated evidence because linked documents were updated. Please process the reviewer queue to maintain ISO 27001 Cl. 7.5.3 compliance.'
+        action: 'Open reviewer queue'
+    no_notification_channel:
+        title: 'No active notification channels configured'
+        body: 'The notifications module is active but no active channels (email / webhook / in-app) are configured for this tenant. Without a channel, all notification rules run silently — no alert reaches recipients. ISO 27001 Cl. 9.1 requires monitorable processes.'
+        action: 'Create channel'
+    overdue_authority_report:
+        title: 'EU Authority Report Overdue'
+        body: '%count% EU authority reporting obligation(s) are overdue. Immediate action required — regulatory deadlines (GDPR Art. 33 / NIS-2 BSIG § 33 / DORA Art. 28).'
+        action: 'Open Authority Hub'
+    dora_roi_export_due:
+        title: 'DORA RoI Not Yet Submitted'
+        body: 'The DORA Register of Information for %year% has not yet been submitted to the supervisory authority (DORA Art. 28). Deadline: 31 Dec %year%.'
+        action: 'Open DORA RoI'
+    dora_category_unset:
+        title: 'DORA Obligation Status Not Set — Contradiction Detected'
+        body: '%count% supplier(s)/asset(s) are marked as DORA-relevant, but this tenant is not classified as DORA-obligated. Please review the DORA obligation status in Tenant Settings.'
+        action: 'Open Tenant Settings'
+    risks_linked_to_open_incidents:
+        title: 'Open Incidents Hold Risk Pressure — Review Recommended'
+        body: '%count% risk(s) have been linked to open incidents for more than 30 days. Resolving these incidents reduces the actual risk exposure and keeps your risk register accurate.'
+        action: 'Open Risk Register'
+    fte_savings_milestone:
+        title: 'Milestone reached — %hours% FTE hours saved!'
+        body: 'The system has already saved %minutes% minutes (%hours% hours) of manual effort for this tenant — through SSO JIT provisioning, Bulk-Import, and Evidence reuse. Keep up the great work!'
+        action: 'Open FTE Dashboard'
+    library_updated:
+        title: 'Compliance framework update available'
+        body: 'A newer version of framework %code% is available (local: %yaml_version%, imported: %db_version%). Re-import the library to pick up new building blocks/controls.'
+        action: 'Update library'
+    role_mapping_without_claim:
+        title: 'IdP without role mapping — privilege gap'
+        body: '%count% identity provider(s) have active logins but no role mapping configured. JIT-provisioned users only receive the fallback role. Configuring role mapping in ~5 minutes prevents silent privilege drift.'
+        action: 'Configure role mapping'
 
 inbox:
     title: 'Alva Inbox'
@@ -306,31 +342,3 @@ alva_hint:
         body: 'Planned BCM exercise "%exercise_name%" (%exercise_type%) has been overdue for %days% days yet remains in status "planned". ISO 22301 Cl. 8.6 mandates a documented exercise cadence — reschedule with justification or move to "cancelled", otherwise the audit will flag it.'
         cta_label: 'Open exercise'
         dismiss_label: 'Not now'
-    outdated_evidence:
-        title: 'Evidence outdated — review required'
-        body: '%count% controls are flagged with outdated evidence because linked documents were updated. Please process the reviewer queue to maintain ISO 27001 Cl. 7.5.3 compliance.'
-        action: 'Open reviewer queue'
-    no_notification_channel:
-        title: 'No active notification channels configured'
-        body: 'The notifications module is active but no active channels (email / webhook / in-app) are configured for this tenant. Without a channel, all notification rules run silently — no alert reaches recipients. ISO 27001 Cl. 9.1 requires monitorable processes.'
-        action: 'Create channel'
-    overdue_authority_report:
-        title: 'EU Authority Report Overdue'
-        body: '%count% EU authority reporting obligation(s) are overdue. Immediate action required — regulatory deadlines (GDPR Art. 33 / NIS-2 BSIG § 33 / DORA Art. 28).'
-        action: 'Open Authority Hub'
-    dora_roi_export_due:
-        title: 'DORA RoI Not Yet Submitted'
-        body: 'The DORA Register of Information for %year% has not yet been submitted to the supervisory authority (DORA Art. 28). Deadline: 31 Dec %year%.'
-        action: 'Open DORA RoI'
-    dora_category_unset:
-        title: 'DORA Obligation Status Not Set — Contradiction Detected'
-        body: '%count% supplier(s)/asset(s) are marked as DORA-relevant, but this tenant is not classified as DORA-obligated. Please review the DORA obligation status in Tenant Settings.'
-        action: 'Open Tenant Settings'
-    risks_linked_to_open_incidents:
-        title: 'Open Incidents Hold Risk Pressure — Review Recommended'
-        body: '%count% risk(s) have been linked to open incidents for more than 30 days. Resolving these incidents reduces the actual risk exposure and keeps your risk register accurate.'
-        action: 'Open Risk Register'
-    fte_savings_milestone:
-        title: 'Milestone reached — %hours% FTE hours saved!'
-        body: 'The system has already saved %minutes% minutes (%hours% hours) of manual effort for this tenant — through SSO JIT provisioning, Bulk-Import, and Evidence reuse. Keep up the great work!'
-        action: 'Open FTE Dashboard'

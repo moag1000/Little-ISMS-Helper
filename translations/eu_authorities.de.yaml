@@ -291,3 +291,9 @@ authority:
             title: 'NIS-2 BSI-Portal-Registrierung bald fällig'
             body: 'Die jährliche NIS-2-Registrierung beim BSI-Portal ist fällig am %date% — bitte rechtzeitig erneuern.'
             action: 'NIS-2-Registrierung öffnen'
+
+global:
+    authority_template_overdue:
+        title: 'Behörden-Meldung ausstehend (DSGVO Art. 33)'
+        body: '%count% schwere Datenpanne(n) ohne Behörden-Export seit > 24h. DSGVO Art. 33 — 72h-Frist.'
+        action: 'Behörden-Export öffnen'
