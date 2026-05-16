@@ -97,6 +97,7 @@
                         {% endblock %}
                         {% block table_body %}
                             {% trans_default_domain 'data_import' %}
+                            {% import '_components/_fa_entity_badge.html.twig' as _fa_entity_badge %}
                             {% for batch in recentBatches %}
                             {% set statusBadgeType = {
                                 'completed': 'control',
