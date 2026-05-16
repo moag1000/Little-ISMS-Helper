@@ -291,7 +291,14 @@ class QuickFixController extends AbstractController
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
-        $this->addFlash('success', sprintf('%d Schema-Statement(s) erfolgreich angewendet.', $result['executed']));
+        $autoMarkedCount = count($result['auto_marked'] ?? []);
+        $this->addFlash('success', sprintf(
+            '%d Schema-Statement(s) erfolgreich angewendet%s.',
+            $result['executed'],
+            $autoMarkedCount > 0
+                ? sprintf(' + %d ausstehende Migration(en) automatisch als ausgeführt markiert', $autoMarkedCount)
+                : '',
+        ));
         return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
     }
 
@@ -530,7 +537,10 @@ class QuickFixController extends AbstractController
                             $fixed++;
                         } catch (\Throwable $e) {
                             // Roll back this entity's change so the EM stays clean.
-                            $em->refresh($entity);
+                            // A prior failure may have closed the EM; refresh would re-throw.
+                            if ($em->isOpen()) {
+                                try { $em->refresh($entity); } catch (\Throwable) {}
+                            }
                             $perEntityErrors[] = sprintf(
                                 '%s#%d: %s',
                                 (new \ReflectionClass($entity))->getShortName(),
@@ -540,8 +550,10 @@ class QuickFixController extends AbstractController
                         }
                     }
                 }
-                if ($fixed > 0) {
-                    $em->flush();
+                if ($fixed > 0 && $em->isOpen()) {
+                    try { $em->flush(); } catch (\Throwable $e) {
+                        $this->addFlash('warning', 'Flush nach Orphan-Repair partial: ' . $e->getMessage());
+                    }
                 }
             }
         } finally {
@@ -621,7 +633,11 @@ class QuickFixController extends AbstractController
                 );
                 $fixed++;
             }
-            $em->flush();
+            if ($em->isOpen()) {
+                try { $em->flush(); } catch (\Throwable $e) {
+                    $this->addFlash('warning', 'Flush nach Mismatch-Repair partial: ' . $e->getMessage());
+                }
+            }
         } finally {
             if ($wasEnabled) {
                 $filters->enable('tenant_filter');
@@ -762,8 +778,10 @@ class QuickFixController extends AbstractController
                         }
                     }
                 }
-                if ($totalOrphans > 0) {
-                    $em->flush();
+                if ($totalOrphans > 0 && $em->isOpen()) {
+                    try { $em->flush(); } catch (\Throwable $e) {
+                        $allEntityErrors[] = 'Flush partial: ' . $e->getMessage();
+                    }
                 }
             }
 
