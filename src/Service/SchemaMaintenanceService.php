@@ -61,7 +61,8 @@ class SchemaMaintenanceService
     /**
      * @return array{
      *     migration_status: array{pending: int, names: list<string>},
-     *     schema_drift:     array{count: int, statements: list<string>, destructive: list<string>}
+     *     schema_drift:     array{count: int, statements: list<string>, destructive: list<string>},
+     *     entity_drift:     array{count: int, statements: list<string>},
      * }
      */
     public function getMaintenanceStatus(): array
@@ -85,6 +86,19 @@ class SchemaMaintenanceService
             },
         ));
 
+        // Entity-vs-DB drift: additive-only statements (ALTER TABLE ADD /
+        // CREATE TABLE IF NOT EXISTS) that would bring the live DB in sync
+        // with entity metadata without destroying any data. This is the
+        // same source that SchemaExceptionSubscriber uses for phantom-diff
+        // detection, but surfaced here independently so the operator can
+        // act even when pending and schema_drift both report zero.
+        $entityDriftStatements = [];
+        try {
+            $entityDriftStatements = $this->getEntityVsDbDrift();
+        } catch (\Throwable) {
+            // Non-fatal — entity_drift.count stays 0.
+        }
+
         return [
             'migration_status' => [
                 'pending' => count($pendingNames),
@@ -94,6 +108,10 @@ class SchemaMaintenanceService
                 'count' => count($statements),
                 'statements' => array_values($statements),
                 'destructive' => $destructive,
+            ],
+            'entity_drift' => [
+                'count' => count($entityDriftStatements),
+                'statements' => $entityDriftStatements,
             ],
         ];
     }

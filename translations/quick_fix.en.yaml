@@ -17,6 +17,10 @@ quick_fix:
         destructive_warning: 'Destructive statements detected. Review before applying — may delete data. If you accept the risk, tick the checkbox below.'
         destructive_confirm_label: 'I understand the risk and want to apply destructive statements'
         destructive_button: 'Reconcile incl. destructive statements'
+    entity_drift:
+        title: 'Entity-schema drift detected'
+        body: 'The entity model expects columns or tables that do not yet exist in the database. The migrations table and SchemaTool both report zero — the mismatch was detected directly via metadata comparison. Force a schema update (ADD/CREATE only, no DROPs):'
+        count_label: 'missing schema statement(s)'
     ok:
         title: 'All up to date'
         body: 'No pending schema migrations.'
@@ -33,6 +37,9 @@ quick_fix:
     repair:
         section:
             title: 'Data Integrity'
+        partial_error:
+            label: 'Data integrity check partial — %count% error(s) (schema incomplete, some checks could not run)'
+            show: 'Show details'
         orphans:
             title: 'Orphaned entities (no tenant assigned)'
             button: 'Assign orphans'
