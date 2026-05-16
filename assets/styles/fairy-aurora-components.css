@@ -7191,3 +7191,139 @@ html[data-theme="dark"] .fa-pager-perpage select { background: var(--surface-2);
     }
 }
 
+/* ==========================================================================
+   Norm-Bridge — Audit-S5 P-12
+   Subtle hint underneath a form-label that bridges ISO 27001 terminology to
+   ISO 9001 / 14001 / other QM-systems for users with QMS background.
+   Tokens consumed: --fg-3, --border, --primary, --sev-info-color.
+   ========================================================================== */
+
+.fa-norm-bridge {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    padding: 2px var(--space-2);
+    margin: 4px 0 6px 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--fg-3);
+    background: var(--surface);
+    border-left: 2px solid var(--sev-info-color);
+    border-radius: 0 var(--r-sm) var(--r-sm) 0;
+    transition: opacity var(--t-fast) var(--ease-out),
+                background-color var(--t-fast) var(--ease-out);
+}
+
+.fa-norm-bridge--subtle {
+    opacity: 0.78;
+}
+
+.fa-norm-bridge--subtle:hover,
+.fa-norm-bridge--subtle:focus-within {
+    opacity: 1;
+    background: var(--surface-2);
+}
+
+.fa-norm-bridge--always_visible {
+    opacity: 1;
+}
+
+.fa-norm-bridge__icon {
+    --fa-icon-size: 12px;
+    flex-shrink: 0;
+    color: var(--sev-info-color);
+    transform: translateY(1px);
+}
+
+.fa-norm-bridge__norms {
+    font-weight: 600;
+    color: var(--fg-2);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
+.fa-norm-bridge__text {
+    color: var(--fg-3);
+}
+
+/* ==========================================================================
+   Severity-Choice — Audit-S5 P-13
+   4-stage radio-group (low / medium / high / critical) with hover-revealed
+   definition. Each option uses a --sev-*-color tone for visual weight.
+   ========================================================================== */
+
+.fa-severity-choice {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-2);
+    margin: var(--space-2) 0;
+}
+
+.fa-severity-choice__option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: background-color var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out),
+                transform var(--t-fast) var(--ease-out);
+}
+
+.fa-severity-choice__option:hover {
+    background: var(--surface-2);
+    border-color: var(--sev-tone, var(--border));
+    transform: translateY(-1px);
+}
+
+.fa-severity-choice__option.is-selected {
+    background: var(--surface-2);
+    border-color: var(--sev-tone, var(--primary));
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--sev-tone, var(--primary)) 25%, transparent);
+}
+
+.fa-severity-choice__option--success { --sev-tone: var(--sev-success-color); }
+.fa-severity-choice__option--info    { --sev-tone: var(--sev-info-color); }
+.fa-severity-choice__option--warning { --sev-tone: var(--sev-warning-color); }
+.fa-severity-choice__option--danger  { --sev-tone: var(--sev-danger-color); }
+
+.fa-severity-choice__input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.fa-severity-choice__input:focus-visible + .fa-severity-choice__dot {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+.fa-severity-choice__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--sev-tone, var(--border));
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--sev-tone, var(--border)) 40%, transparent);
+    align-self: flex-start;
+}
+
+.fa-severity-choice__label {
+    font: 600 14px var(--font-sans);
+    color: var(--fg);
+    letter-spacing: 0.01em;
+}
+
+.fa-severity-choice__definition {
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--fg-3);
+}
+
+.fa-severity-choice__option.is-selected .fa-severity-choice__label {
+    color: var(--fg);
+}
+
