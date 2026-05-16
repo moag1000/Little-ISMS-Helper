@@ -4,140 +4,58 @@ declare(strict_types=1);
 
 namespace App\Tests\Lifecycle;
 
-use App\Entity\CorrectiveAction;
-use App\Entity\User;
-use App\Lifecycle\InvalidTransitionException;
 use App\Lifecycle\LifecycleRegistry;
-use App\Lifecycle\LifecycleService;
-use App\Service\AuditLogger;
-use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
- * S3 P0-30/31/32 — CAPA lifecycle transitions + evidence guard.
+ * Structural assertions on the CAPA_STAGES constant exposed by
+ * {@see LifecycleRegistry}. Behaviour-level evidence-required guard is
+ * enforced via Form Callback validator on CorrectiveActionType (see
+ * CorrectiveActionTypeTest) — this suite only pins the lifecycle shape.
+ *
+ * Audit-Trail: S3 P0-30/32 — Cl. 10.1 b.
  */
-#[AllowMockObjectsWithoutExpectations]
-class CorrectiveActionLifecycleTest extends TestCase
+final class CorrectiveActionLifecycleTest extends TestCase
 {
     #[Test]
-    public function capaStageTableExposesExpectedTransitions(): void
+    public function capaStagesContainsTheSixCanonicalKeys(): void
+    {
+        $this->assertSame(
+            ['planned', 'in_progress', 'completed', 'verified_effective', 'verified_ineffective', 'cancelled'],
+            array_keys(LifecycleRegistry::CAPA_STAGES),
+        );
+    }
+
+    #[Test]
+    public function plannedAllowsInProgressOrCancelled(): void
     {
         $this->assertSame(
             ['in_progress', 'cancelled'],
-            LifecycleRegistry::allowedTransitions(LifecycleRegistry::CAPA_STAGES, 'planned'),
+            LifecycleRegistry::CAPA_STAGES['planned']['transitions'],
         );
+    }
+
+    #[Test]
+    public function completedAllowsVerifyEitherWay(): void
+    {
         $this->assertSame(
             ['verified_effective', 'verified_ineffective'],
-            LifecycleRegistry::allowedTransitions(LifecycleRegistry::CAPA_STAGES, 'completed'),
-        );
-        $this->assertTrue(
-            LifecycleRegistry::isTerminal(LifecycleRegistry::CAPA_STAGES, 'verified_effective'),
-        );
-        $this->assertTrue(
-            LifecycleRegistry::isTerminal(LifecycleRegistry::CAPA_STAGES, 'verified_ineffective'),
+            LifecycleRegistry::CAPA_STAGES['completed']['transitions'],
         );
     }
 
     #[Test]
-    public function transitionToVerifiedEffectiveWithoutEvidenceThrows(): void
+    public function verifiedStatusesAreTerminal(): void
     {
-        $service = $this->buildService();
-        $action = $this->capaInStatus(CorrectiveAction::STATUS_COMPLETED);
-        $user = new User();
-
-        $this->expectException(InvalidTransitionException::class);
-        $this->expectExceptionMessage('Effectiveness evidence is required');
-
-        $service->transitionCapa($action, CorrectiveAction::STATUS_VERIFIED_EFFECTIVE, $user, []);
+        $this->assertSame([], LifecycleRegistry::CAPA_STAGES['verified_effective']['transitions']);
+        $this->assertSame([], LifecycleRegistry::CAPA_STAGES['verified_ineffective']['transitions']);
+        $this->assertSame([], LifecycleRegistry::CAPA_STAGES['cancelled']['transitions']);
     }
 
     #[Test]
-    public function transitionToVerifiedEffectiveWithEvidenceSucceeds(): void
+    public function ineffectiveStageHasDangerTone(): void
     {
-        $service = $this->buildService();
-        $action = $this->capaInStatus(CorrectiveAction::STATUS_COMPLETED);
-        $user = new User();
-
-        $service->transitionCapa(
-            $action,
-            CorrectiveAction::STATUS_VERIFIED_EFFECTIVE,
-            $user,
-            ['effectivenessEvidence' => 'Re-Audit-Report Q3-2026'],
-        );
-
-        $this->assertSame(CorrectiveAction::STATUS_VERIFIED_EFFECTIVE, $action->getStatus());
-        $this->assertSame($user, $action->getVerifiedBy());
-        $this->assertNotNull($action->getVerifiedAt());
-        $this->assertSame('Re-Audit-Report Q3-2026', $action->getEffectivenessEvidence());
-    }
-
-    #[Test]
-    public function transitionToVerifiedIneffectiveWithEvidenceSucceeds(): void
-    {
-        $service = $this->buildService();
-        $action = $this->capaInStatus(CorrectiveAction::STATUS_COMPLETED);
-        $user = new User();
-
-        $service->transitionCapa(
-            $action,
-            CorrectiveAction::STATUS_VERIFIED_INEFFECTIVE,
-            $user,
-            ['effectivenessEvidence' => 'Re-Test failed — vulnerability still present'],
-        );
-
-        $this->assertSame(CorrectiveAction::STATUS_VERIFIED_INEFFECTIVE, $action->getStatus());
-        $this->assertTrue($action->isVerifiedIneffective());
-        $this->assertSame('Re-Test failed — vulnerability still present', $action->getEffectivenessEvidence());
-    }
-
-    #[Test]
-    public function illegalTransitionFromPlannedToVerifiedThrows(): void
-    {
-        $service = $this->buildService();
-        $action = $this->capaInStatus(CorrectiveAction::STATUS_PLANNED);
-
-        $this->expectException(InvalidTransitionException::class);
-        $this->expectExceptionMessage('not allowed');
-
-        $service->transitionCapa(
-            $action,
-            CorrectiveAction::STATUS_VERIFIED_EFFECTIVE,
-            new User(),
-            ['effectivenessEvidence' => 'irrelevant — should fail earlier'],
-        );
-    }
-
-    #[Test]
-    public function emptyEvidenceStringStillFailsTheGuard(): void
-    {
-        $service = $this->buildService();
-        $action = $this->capaInStatus(CorrectiveAction::STATUS_COMPLETED);
-
-        $this->expectException(InvalidTransitionException::class);
-
-        $service->transitionCapa(
-            $action,
-            CorrectiveAction::STATUS_VERIFIED_EFFECTIVE,
-            new User(),
-            ['effectivenessEvidence' => '   '],
-        );
-    }
-
-    private function buildService(): LifecycleService
-    {
-        return new LifecycleService(
-            $this->createMock(EntityManagerInterface::class),
-            $this->createMock(AuditLogger::class),
-        );
-    }
-
-    private function capaInStatus(string $status): CorrectiveAction
-    {
-        $action = new CorrectiveAction();
-        $action->setStatus($status);
-        $action->setTitle('Test CAPA');
-        return $action;
+        $this->assertSame('danger', LifecycleRegistry::CAPA_STAGES['verified_ineffective']['tone']);
     }
 }

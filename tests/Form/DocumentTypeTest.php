@@ -72,7 +72,7 @@ final class DocumentTypeTest extends TestCase
             $values
         );
         if (class_exists(LifecycleRegistry::class)) {
-            self::assertSame(LifecycleRegistry::STANDARD_5_STAGE, $values);
+            self::assertSame(array_keys(LifecycleRegistry::STANDARD_5_STAGE), $values);
         }
     }
 
