@@ -44,3 +44,24 @@
         {{ form_errors(form) }}
     </div>
 {%- endblock -%}
+
+{%- block _business_continuity_plan_escalationLevels_row -%}
+    {% import '_components/_fa_escalation_chain.html.twig' as _fa_escalation_chain %}
+    <div class="fa-cyber-input">
+        <div class="fa-cyber-input__header">
+            {{ form_label(form) }}
+        </div>
+        {{ _fa_escalation_chain.render({
+            name: form.vars.full_name,
+            value: form.vars.value,
+            id: form.vars.id ~ '-builder',
+            translationDomain: 'bc_plans'
+        }) }}
+        {% if form.vars.help %}
+            <small class="fa-cyber-input__hint">
+                {{ form.vars.help|trans({}, form.vars.help_translation_domain|default('bc_plans')) }}
+            </small>
+        {% endif %}
+        {{ form_errors(form) }}
+    </div>
+{%- endblock -%}
