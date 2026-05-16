@@ -1,0 +1,144 @@
+{#
+ # FairyAurora v4.0 — fa-resource-list macro (P-9 JsonBuilder)
+ #
+ # Visual JSON-Builder for BCPlan.requiredResources (ISO 22301 §8.1).
+ # Three-tab layout: Personnel / Equipment / Supplies. Each tab is an
+ # add-chip pattern with a free-text input. Serialises to JSON object
+ # `{"personnel": [], "equipment": [], "supplies": []}` via hidden textarea.
+ #
+ # Data contract (matches BCPlan entity JSON shape per ISO 22301 §8.1):
+ #   {
+ #     "personnel": ["2 SysAdmins", "1 Backup-Operator"],
+ #     "equipment": ["Laptops", "Phones"],
+ #     "supplies":  ["Paper", "Toner"]
+ #   }
+ #
+ # Backward compat: legacy values with `personnel: int` (numeric headcount)
+ # are coerced to `["<int>"]` so no data is lost.
+ #
+ # Usage:
+ #   {% import '_components/_fa_resource_list.html.twig' as _fa_resource_list %}
+ #
+ #   {{ _fa_resource_list.render({
+ #       name: 'business_continuity_plan[requiredResources]',
+ #       value: bc_plan.requiredResources,
+ #       translationDomain: 'bc_plans'
+ #   }) }}
+ #
+ # Parameters:
+ #   props.name        - hidden-textarea name for form submission (required)
+ #   props.value       - current array/object OR JSON string (optional)
+ #   props.id          - root element id (default 'fa-resource-list-' ~ random())
+ #   props.translationDomain - domain (default 'bc_plans')
+ #   props.ariaLabel   - aria-label for the region (optional)
+ #
+ # Embed-Scope-Reminder: see _fa_team_role_builder.html.twig docblock.
+ #}
+
+{% macro render(props = {}) %}
+    {% set name = props.name|default('requiredResources') %}
+    {% set id = props.id|default('fa-resource-list-' ~ random(99999)) %}
+    {% set translationDomain = props.translationDomain|default('bc_plans') %}
+    {% set rawValue = props.value is defined and props.value is not null
+        ? (props.value is iterable ? props.value|json_encode : props.value)
+        : '' %}
+
+    <div class="fa-json-builder fa-resource-list"
+         id="{{ id }}"
+         data-controller="resource-list"
+         data-resource-list-name-value="{{ name }}"
+         role="region"
+         aria-label="{{ props.ariaLabel|default('bc_plans.resource_list.aria'|trans({}, translationDomain)) }}">
+
+        <textarea name="{{ name }}"
+                  class="fa-json-builder__hidden"
+                  hidden
+                  aria-hidden="true"
+                  data-resource-list-target="hidden">{{ rawValue }}</textarea>
+
+        {# Tab-strip with counts. Tabs are role=tab; panels role=tabpanel. #}
+        <div class="fa-resource-list__tabs"
+             role="tablist"
+             aria-label="{{ ('bc_plans.resource_list.aria')|trans({}, translationDomain) }}">
+            {% for category in ['personnel', 'equipment', 'supplies'] %}
+                <button type="button"
+                        id="{{ id }}-tab-{{ category }}"
+                        class="fa-resource-list__tab"
+                        role="tab"
+                        aria-selected="{{ loop.first ? 'true' : 'false' }}"
+                        aria-controls="{{ id }}-panel-{{ category }}"
+                        data-category="{{ category }}"
+                        data-action="click->resource-list#switchTab"
+                        data-resource-list-target="tab">
+                    {{ ('bc_plans.resource_list.tab.' ~ category)|trans({}, translationDomain) }}
+                    <span class="fa-resource-list__count" data-count-for="{{ category }}" data-resource-list-target="count">0</span>
+                </button>
+            {% endfor %}
+        </div>
+
+        {% for category in ['personnel', 'equipment', 'supplies'] %}
+            <div id="{{ id }}-panel-{{ category }}"
+                 class="fa-resource-list__panel{{ loop.first ? ' is-active' : '' }}"
+                 role="tabpanel"
+                 aria-labelledby="{{ id }}-tab-{{ category }}"
+                 data-category="{{ category }}"
+                 data-resource-list-target="panel">
+
+                <div class="fa-resource-list__chips" data-resource-list-target="chips" data-category="{{ category }}" aria-live="polite">
+                    {# Chips are rendered by Stimulus on connect(). #}
+                </div>
+
+                <div class="fa-resource-list__empty fa-json-builder__empty d-none"
+                     data-resource-list-target="emptyState"
+                     data-category="{{ category }}">
+                    <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
+                    <span>{{ ('bc_plans.resource_list.empty.' ~ category)|trans({}, translationDomain) }}</span>
+                </div>
+
+                <form class="fa-resource-list__add"
+                      data-resource-list-target="addForm"
+                      data-category="{{ category }}"
+                      data-action="submit->resource-list#addEntry">
+                    <input type="text"
+                           class="form-control form-control-sm fa-cyber-input__field"
+                           placeholder="{{ ('bc_plans.resource_list.placeholder.' ~ category)|trans({}, translationDomain) }}"
+                           aria-label="{{ ('bc_plans.resource_list.tab.' ~ category)|trans({}, translationDomain) }}"
+                           data-resource-list-target="addInput"
+                           data-category="{{ category }}">
+                    <button type="submit"
+                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                        <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                        {{ ('bc_plans.resource_list.add')|trans({}, translationDomain) }}
+                    </button>
+                </form>
+            </div>
+        {% endfor %}
+
+        <div class="fa-json-builder__toolbar">
+            <span></span>
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-json-builder__raw-toggle"
+                    data-action="click->resource-list#showRawJson"
+                    aria-pressed="false">
+                <i class="fa-icon fa-icon--ui-code" aria-hidden="true"></i>
+                {{ ('bc_plans.json_builder.raw_toggle')|trans({}, translationDomain) }}
+            </button>
+        </div>
+
+        <div class="fa-json-builder__raw d-none"
+             data-resource-list-target="rawPanel">
+            <label for="{{ id }}-raw" class="fa-cyber-input__label">
+                {{ ('bc_plans.json_builder.raw_label')|trans({}, translationDomain) }}
+            </label>
+            <textarea id="{{ id }}-raw"
+                      class="form-control fa-cyber-input__field"
+                      rows="6"
+                      spellcheck="false"
+                      data-resource-list-target="rawTextarea"
+                      data-action="input->resource-list#syncFromRaw">{{ rawValue }}</textarea>
+            <small class="text-muted">
+                {{ ('bc_plans.json_builder.raw_help')|trans({}, translationDomain) }}
+            </small>
+        </div>
+    </div>
+{% endmacro %}
