@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Trait\OwnerPickerFormTrait;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -32,6 +33,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class IncidentType extends AbstractType
 {
     use ModuleAwareFormTrait;
+    use OwnerPickerFormTrait;
 
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
@@ -101,42 +103,32 @@ class IncidentType extends AbstractType
                 'input' => 'datetime_immutable',
                 'required' => false,
             ])
-            ->add('reportedByUser', EntityType::class, [
-                'label' => 'incident.field.reported_by',
-                'class' => User::class,
-                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
-                'required' => false,
-                'placeholder' => 'incident.placeholder.reported_by_user',
-                'help' => 'incident.help.reported_by_user',
-            ])
-            ->add('reportedByPerson', EntityType::class, [
-                'label' => 'incident.field.reported_by_person',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'placeholder' => 'incident.placeholder.reported_by_person',
-                'help' => 'incident.help.reported_by_person',
-            ])
-            ->add('reportedByDeputyPersons', EntityType::class, [
-                'label' => 'incident.field.reported_by_deputies',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'attr' => [
-                    'data-controller' => 'tom-select',
-                ],
-                'help' => 'incident.help.reported_by_deputies',
-            ])
-            ->add('reportedBy', TextType::class, [
-                'label' => 'incident.field.reported_by_legacy',
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 100,
-                    'placeholder' => 'incident.placeholder.reported_by',
-                ],
-            ])
+        ;
+
+        // ── ReportedBy cluster (audit-s4 P-1) ───────────────────────────────
+        // Replaces 4 hand-rolled add() calls (reportedByUser / reportedByPerson
+        // / reportedByDeputyPersons / reportedBy). The "responsiblePerson"
+        // slot stays separate (Governance Role) per SOLUTIONS_FOUNDATION P-1
+        // exception list — an Incident has BOTH a Reporter AND a Responsible.
+        $this->addOwnerPicker($builder, [
+            'user_field'         => 'reportedByUser',
+            'person_field'       => 'reportedByPerson',
+            'deputies_field'     => 'reportedByDeputyPersons',
+            'legacy_field'       => 'reportedBy',
+            'translation_prefix' => 'incident',
+            'user_label'         => 'incident.field.reported_by',
+            'user_placeholder'   => 'incident.placeholder.reported_by_user',
+            'user_help'          => 'incident.help.reported_by_user',
+            'person_label'       => 'incident.field.reported_by_person',
+            'person_placeholder' => 'incident.placeholder.reported_by_person',
+            'person_help'        => 'incident.help.reported_by_person',
+            'deputies_label'     => 'incident.field.reported_by_deputies',
+            'deputies_help'      => 'incident.help.reported_by_deputies',
+            'legacy_label'       => 'incident.field.reported_by_legacy',
+            'legacy_placeholder' => 'incident.placeholder.reported_by',
+        ]);
+
+        $builder
             ->add('responsiblePerson', EntityType::class, [
                 'label' => 'incident.field.responsible_person',
                 'class' => Person::class,

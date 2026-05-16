@@ -7,7 +7,9 @@ namespace App\Form;
 use Doctrine\ORM\QueryBuilder;
 use App\Entity\InternalAudit;
 use App\Entity\ComplianceFramework;
+use App\Entity\Person;
 use App\Entity\Tenant;
+use App\Entity\User;
 use App\Repository\TenantRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -17,8 +19,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class InternalAuditType extends AbstractType
 {
@@ -96,21 +100,53 @@ class InternalAuditType extends AbstractType
                 ],
                     'choice_translation_domain' => 'audit',
             ])
+            // P-15 DataReuse: Pattern A dual-state lead auditor — structured
+            // User/Person preferred over legacy `leadAuditor` free-text. Legacy
+            // field kept as optional textfield for migration window.
+            ->add('leadAuditorUser', EntityType::class, [
+                'label' => 'audit.field.lead_auditor_user',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'placeholder' => 'audit.placeholder.lead_auditor_user',
+                'required' => false,
+                'help' => 'audit.help.lead_auditor_user',
+            ])
+            ->add('leadAuditorPerson', EntityType::class, [
+                'label' => 'audit.field.lead_auditor_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'audit.placeholder.lead_auditor_person',
+                'required' => false,
+                'help' => 'audit.help.lead_auditor_person',
+            ])
             ->add('leadAuditor', TextType::class, [
-                'label' => 'audit.field.lead_auditor',
+                'label' => 'audit.field.lead_auditor_legacy',
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'audit.placeholder.lead_auditor',
                 ],
+                'help' => 'audit.help.lead_auditor_legacy',
+            ])
+            ->add('auditTeamMembers', EntityType::class, [
+                'label' => 'audit.field.audit_team_members',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'audit.help.audit_team_members',
             ])
             ->add('auditTeam', TextareaType::class, [
-                'label' => 'audit.field.audit_team',
+                'label' => 'audit.field.audit_team_legacy',
                 'required' => false,
                 'attr' => [
                     'rows' => 3,
                     'placeholder' => 'audit.placeholder.audit_team',
                 ],
-                'help' => 'audit.help.audit_team',
+                'help' => 'audit.help.audit_team_legacy',
             ])
             ->add('scopedFramework', EntityType::class, [
                 'label' => 'audit.field.scoped_framework',
@@ -177,6 +213,35 @@ class InternalAuditType extends AbstractType
         $resolver->setDefaults([
             'data_class' => InternalAudit::class,
             'translation_domain' => 'audit',
+            'constraints' => [
+                new Callback([$this, 'validateLeadAuditorSlot']),
+            ],
         ]);
+    }
+
+    /**
+     * P-15 DataReuse: lead auditor must be provided in at least one of
+     * the three Pattern-A states (User, Person, or legacy free-text). The
+     * legacy column is no longer NotBlank in the entity to allow the
+     * migration window — but at form level we still demand one of them.
+     */
+    public function validateLeadAuditorSlot(?InternalAudit $audit, ExecutionContextInterface $context): void
+    {
+        if ($audit === null) {
+            return;
+        }
+        if ($audit->getLeadAuditorUser() !== null) {
+            return;
+        }
+        if ($audit->getLeadAuditorPerson() !== null) {
+            return;
+        }
+        $legacy = $audit->getLeadAuditor();
+        if ($legacy !== null && trim($legacy) !== '') {
+            return;
+        }
+        $context->buildViolation('audit.error.lead_auditor_required')
+            ->atPath('leadAuditorUser')
+            ->addViolation();
     }
 }

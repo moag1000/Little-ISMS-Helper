@@ -145,6 +145,12 @@ common:
         empty_state:
             title: 'No persons in tenant'
             body: 'Please create a Person record before assigning this role.'
+    owner_picker:
+        section_label: 'Owner'
+        or: 'or'
+        legacy:
+            title: 'Legacy data — migration recommended'
+            body: 'This value still uses the legacy free-text owner field. Please migrate it to a User or Person record at your earliest convenience.'
     section:
         other: 'Other Fields'
     link_matrix:
@@ -1076,6 +1082,22 @@ form:
         invalid_format: 'Invalid format'
         too_short: 'Too short (min. %min% characters)'
         too_long: 'Too long (max. %max% characters)'
+    section:
+        overview: 'Overview'
+        recovery: 'Recovery'
+        team: 'Team'
+        communication: 'Communication'
+        resources: 'Resources'
+        activation: 'Activation'
+        testing: 'Testing'
+        audit_metadata: 'Audit metadata'
+        results: 'Results'
+        lessons_learned: 'Lessons learned'
+        details: 'Details'
+        contact: 'Contact'
+        warning:
+            unmapped_title: 'Notice (dev only):'
+            unmapped_body: 'The following fields are not covered by any section and fall through to the catch-all bucket: %fields%. Update the SectionPolicy on the FormType class.'
 corporate:
     title: 'Corporate Structure'
     subtitle: 'Management of parent companies and subsidiaries'
@@ -2115,3 +2137,7 @@ sso:
     status:
         enabled: 'Enabled'
         disabled: 'Disabled'
+
+# Owner-Picker — Tri-State Owner Slot Component (S4 P-1)
+owner_picker:
+    legacy_hint: 'Legacy free-text from historical records. Please select a user or person above; this field is read-only and serves as a migration hint.'

@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\Asset;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\BusinessProcess;
 use App\Entity\CrisisTeam;
-use App\Entity\Person;
-use App\Entity\User;
 use App\Form\DataTransformer\JsonArrayTransformer;
+use App\Form\Trait\OwnerPickerFormTrait;
 use App\Repository\CrisisTeamRepository;
 use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,8 +24,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class BusinessContinuityPlanType extends AbstractType
+class BusinessContinuityPlanType extends AbstractType implements SectionMapInterface
 {
+    use OwnerPickerFormTrait;
+
     public function __construct(private readonly TenantContext $tenantContext)
     {
     }
@@ -50,40 +53,6 @@ class BusinessContinuityPlanType extends AbstractType
                 'required' => false,
                 'attr' => ['rows' => 3],
                 'help' => 'bc_plans.help.description',
-            ])
-            ->add('planOwnerUser', EntityType::class, [
-                'label' => 'bc_plans.field.plan_owner',
-                'class' => User::class,
-                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
-                'required' => false,
-                'placeholder' => 'bc_plans.placeholder.plan_owner_user',
-                'help' => 'bc_plans.help.plan_owner_user',
-            ])
-            ->add('planOwnerPerson', EntityType::class, [
-                'label' => 'bc_plans.field.plan_owner_person',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'placeholder' => 'bc_plans.placeholder.plan_owner_person',
-                'help' => 'bc_plans.help.plan_owner_person',
-            ])
-            ->add('planOwnerDeputyPersons', EntityType::class, [
-                'label' => 'bc_plans.field.plan_owner_deputies',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'attr' => [
-                    'data-controller' => 'tom-select',
-                ],
-                'help' => 'bc_plans.help.plan_owner_deputies',
-            ])
-            ->add('planOwner', TextType::class, [
-                'label' => 'bc_plans.field.plan_owner_legacy',
-                'required' => false,
-                'attr' => ['maxlength' => 100],
-                'help' => 'bc_plans.help.plan_owner',
             ])
             ->add('bcTeam', TextareaType::class, [
                 'label' => 'bc_plans.field.bc_team',
@@ -120,6 +89,31 @@ class BusinessContinuityPlanType extends AbstractType
                 'required' => false,
                 'attr' => ['rows' => 6],
                 'help' => 'bc_plans.help.recovery_procedures',
+            ])
+            // ISO 22301 Cl. 8.2.2 — Recovery targets. P0: previously missing from form.
+            ->add('rto', IntegerType::class, [
+                'label' => 'bc_plans.field.rto',
+                'required' => true,
+                'attr' => ['min' => 0, 'max' => 8760],
+                'help' => 'bc_plans.help.rto',
+            ])
+            ->add('rpo', IntegerType::class, [
+                'label' => 'bc_plans.field.rpo',
+                'required' => true,
+                'attr' => ['min' => 0, 'max' => 8760],
+                'help' => 'bc_plans.help.rpo',
+            ])
+            ->add('criticalAssets', EntityType::class, [
+                'label' => 'bc_plans.field.critical_assets',
+                'class' => Asset::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'bc_plans.help.critical_assets',
             ])
             ->add('communicationPlan', TextareaType::class, [
                 'label' => 'bc_plans.field.communication_plan',
@@ -246,6 +240,30 @@ class BusinessContinuityPlanType extends AbstractType
             ])
         ;
 
+        // S4 P-1 Wave-2 — Plan-Owner compound slot. Replaces the inline
+        // 4-field block (planOwnerUser + planOwnerPerson +
+        // planOwnerDeputyPersons + planOwner legacy text).
+        // Legacy free-text `planOwner` is preserved as read-only Migration-Hint
+        // (rendered only when populated — see _fa_owner_picker macro).
+        $this->addOwnerPicker($builder, [
+            'field_prefix'       => 'planOwner',
+            'user_field'         => 'planOwnerUser',
+            'person_field'       => 'planOwnerPerson',
+            'deputies_field'     => 'planOwnerDeputyPersons',
+            'legacy_field'       => 'planOwner',
+            'label_user'         => 'bc_plans.field.plan_owner',
+            'label_person'       => 'bc_plans.field.plan_owner_person',
+            'label_deputies'     => 'bc_plans.field.plan_owner_deputies',
+            'label_legacy'       => 'bc_plans.field.plan_owner_legacy',
+            'placeholder_user'   => 'bc_plans.placeholder.plan_owner_user',
+            'placeholder_person' => 'bc_plans.placeholder.plan_owner_person',
+            'help_user'          => 'bc_plans.help.plan_owner_user',
+            'help_person'        => 'bc_plans.help.plan_owner_person',
+            'help_deputies'      => 'bc_plans.help.plan_owner_deputies',
+            'with_deputies'      => true,
+            'with_legacy'        => true,
+        ]);
+
         $builder->get('responseTeamMembers')->addModelTransformer(new JsonArrayTransformer());
         $builder->get('requiredResources')->addModelTransformer(new JsonArrayTransformer());
         $builder->get('escalationLevels')->addModelTransformer(new JsonArrayTransformer());
@@ -279,5 +297,76 @@ class BusinessContinuityPlanType extends AbstractType
                 ->atPath('planOwnerUser')
                 ->addViolation();
         }
+    }
+
+    /**
+     * S4 Foundation P-2 SectionPolicy — explicit field-to-section map for the
+     * `_auto_form.html.twig` renderer. Each field added via the form builder
+     * MUST appear in exactly one section (CI-gated by
+     * `scripts/quality/check_form_sections.py`).
+     *
+     * Sections follow ISO 22301 / BSI 200-4 BCM-Plan structure:
+     * - overview:   identity, scope, ownership
+     * - recovery:   RTO/RPO targets, recovery procedures, critical assets
+     * - team:       response team, crisis teams, escalation paths
+     * - communication: internal/external comms plans + stakeholder lists
+     * - resources:  alternative sites, required resources, backup/restore
+     * - activation: trigger criteria + roles
+     * - testing:    test schedule + review cadence
+     * - audit_metadata: version, status, review notes
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'name',
+                'businessProcess',
+                'description',
+                'planOwnerUser',
+                'planOwnerPerson',
+                'planOwnerDeputyPersons',
+                'planOwner',
+            ],
+            'recovery' => [
+                'rto',
+                'rpo',
+                'criticalAssets',
+                'recoveryProcedures',
+            ],
+            'team' => [
+                'bcTeam',
+                'responseTeamMembers',
+                'crisisTeams',
+                'escalationLevels',
+            ],
+            'communication' => [
+                'communicationPlan',
+                'internalCommunication',
+                'externalCommunication',
+            ],
+            'resources' => [
+                'alternativeSite',
+                'alternativeSiteAddress',
+                'alternativeSiteCapacity',
+                'requiredResources',
+                'backupProcedures',
+                'restoreProcedures',
+            ],
+            'activation' => [
+                'activationCriteria',
+                'rolesAndResponsibilities',
+            ],
+            'testing' => [
+                'lastTested',
+                'nextTestDate',
+                'lastReviewDate',
+                'nextReviewDate',
+                'reviewNotes',
+            ],
+            'audit_metadata' => [
+                'version',
+                'status',
+            ],
+        ];
     }
 }

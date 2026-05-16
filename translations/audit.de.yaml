@@ -53,6 +53,7 @@ audit:
         invalid_transition: 'Statusübergang nicht erlaubt im aktuellen Lifecycle-Status.'
         same_user_approve: 'Vier-Augen-Prinzip: Der Freigebende muss vom Einreicher des Berichts abweichen (ISO 27001 Cl. 9.2.2 d).'
         rejection_reason_required: 'Bei Ablehnung ist eine Begründung erforderlich.'
+        lead_auditor_required: 'Bitte leitenden Auditor auswählen — Benutzer, Stammdaten-Person oder Freitext (mindestens eine Variante).'
     field:
         title: Titel
         scope: Geltungsbereich
@@ -65,9 +66,14 @@ audit:
         planned_date: 'Geplantes Datum'
         actual_date: 'Tatsächliches Datum'
         lead_auditor: 'Leitender Auditor'
+        lead_auditor_user: 'Leitender Auditor (Benutzer)'
+        lead_auditor_person: 'Leitender Auditor (Stammdaten-Person)'
+        lead_auditor_legacy: 'Leitender Auditor (Freitext, Migration)'
         department: Abteilung
         auditee: 'Auditierter Bereich'
         audit_team: Audit‑Team
+        audit_team_members: 'Audit-Team-Mitglieder (Personen)'
+        audit_team_legacy: 'Audit-Team (Freitext, Migration)'
         audit_number: Audit‑Nummer
         audited_subsidiaries: 'Auditierte Tochtergesellschaften'
         audited_departments: 'Auditierte Abteilungen'
@@ -146,6 +152,8 @@ audit:
         scope: 'z.B. Alle ISMS-Prozesse und Kontrollen'
         objectives: 'z.B. Überprüfung der Einhaltung von ISO 27001:2022'
         lead_auditor: 'Name des leitenden Auditors'
+        lead_auditor_user: 'Benutzer auswählen…'
+        lead_auditor_person: 'Person aus Stammdaten auswählen…'
         audit_team: 'Namen der Teammitglieder, kommagetrennt'
         scoped_framework: 'Framework auswählen, gegen das auditiert wird'
     help:
@@ -160,7 +168,12 @@ audit:
         planned_date: 'Geplantes Datum für die Durchführung des Audits'
         actual_date: 'Tatsächliches Datum, an dem das Audit durchgeführt wurde'
         lead_auditor: 'Name des leitenden Auditors (ISO 27001 Klausel 9.2.2: kompetent, unparteiisch)'
+        lead_auditor_user: 'Falls der leitende Auditor eine App-Benutzerin ist (interne Audits, ISMS-Team).'
+        lead_auditor_person: 'Falls externer Auditor ohne App-Login — nutzt Stammdaten-Person.'
+        lead_auditor_legacy: 'Nur zum Erhalt von Altdaten. Bitte langfristig User oder Person befüllen (Daten-Reuse).'
         audit_team: 'Liste der Audit-Teammitglieder'
+        audit_team_members: 'Strukturierte Auswahl aus Stammdaten-Personen (Daten-Reuse).'
+        audit_team_legacy: 'Legacy-Freitext, nur lesend bei Migration. Bitte Personen-Multi-Select nutzen.'
         auditee: 'Der auditierte Bereich oder die auditierte Person'
         department: 'Auditierte Abteilung oder Organisationseinheit'
         status: 'Aktueller Status des Audits (geplant, in Bearbeitung, abgeschlossen, berichtet)'
