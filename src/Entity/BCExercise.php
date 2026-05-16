@@ -515,7 +515,7 @@ class BCExercise
     /** @return Collection<int, Person> */
     public function getParticipantPersons(): Collection
     {
-        return $this->participantPersons;
+        return $this->participantPersons ??= new ArrayCollection();
     }
 
     public function addParticipantPerson(Person $person): static
@@ -628,7 +628,7 @@ class BCExercise
     /** @return Collection<int, Person> */
     public function getObserverPersons(): Collection
     {
-        return $this->observerPersons;
+        return $this->observerPersons ??= new ArrayCollection();
     }
 
     public function addObserverPerson(Person $person): static

@@ -219,7 +219,9 @@ public function __construct()
     /** @return Collection<int, User> */
     public function getParticipantUsers(): Collection
     {
-        return $this->participantUsers;
+        // Doctrine bypasses __construct() on hydration; lazy-init keeps
+        // AuditLogger and other reflection-based readers safe.
+        return $this->participantUsers ??= new ArrayCollection();
     }
 
     /**

@@ -624,7 +624,7 @@ public function __construct()
     /** @return Collection<int, Person> */
     public function getAuditTeamMembers(): Collection
     {
-        return $this->auditTeamMembers;
+        return $this->auditTeamMembers ??= new ArrayCollection();
     }
 
     public function addAuditTeamMember(Person $person): static
