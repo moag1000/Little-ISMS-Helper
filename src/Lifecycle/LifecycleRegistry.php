@@ -93,6 +93,47 @@ final class LifecycleRegistry
     ];
 
     /**
+     * Corrective Action lifecycle (ISO 27001 Cl. 10.1).
+     *
+     * planned → in_progress → completed → verified_effective (END)
+     *                              ↓                ↑
+     *                              ↓        (success path)
+     *                              ↓
+     *                          verified_ineffective → triggers Tier-1 AlvaHint
+     *                                                  + auto-pre-fills Folge-CAPA.
+     *
+     * cancelled is a terminal opt-out for actions abandoned before completion.
+     *
+     * @var LifecycleMap
+     */
+    public const array CAPA_STAGES = [
+        'planned' => [
+            'transitions' => ['in_progress', 'cancelled'],
+            'tone' => 'info',
+        ],
+        'in_progress' => [
+            'transitions' => ['completed', 'cancelled'],
+            'tone' => 'warning',
+        ],
+        'completed' => [
+            'transitions' => ['verified_effective', 'verified_ineffective'],
+            'tone' => 'primary',
+        ],
+        'verified_effective' => [
+            'transitions' => [],
+            'tone' => 'success',
+        ],
+        'verified_ineffective' => [
+            'transitions' => [],
+            'tone' => 'danger',
+        ],
+        'cancelled' => [
+            'transitions' => [],
+            'tone' => 'muted',
+        ],
+    ];
+
+    /**
      * Returns the lifecycle map for the given entity class.
      * Defaults to {@see STANDARD_5_STAGE} if no `#[Lifecycle]` attribute
      * is set on the class.
