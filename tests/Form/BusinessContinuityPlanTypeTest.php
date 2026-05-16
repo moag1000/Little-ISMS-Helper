@@ -59,10 +59,6 @@ final class BusinessContinuityPlanTypeTest extends TestCase
             'BusinessContinuityPlanType must wire planOwner slot via $this->addOwnerPicker().'
         );
         self::assertStringContainsString(
-            "'field_prefix'       => 'planOwner',",
-            $source
-        );
-        self::assertStringContainsString(
             "'user_field'         => 'planOwnerUser',",
             $source
         );

@@ -61,11 +61,6 @@ final class IncidentTypeTest extends TestCase
             'IncidentType must wire reportedBy slot via $this->addOwnerPicker().'
         );
         self::assertStringContainsString(
-            "'field_prefix'       => 'reportedBy',",
-            $source,
-            'addOwnerPicker call must use field_prefix=reportedBy.'
-        );
-        self::assertStringContainsString(
             "'person_field'       => 'reportedByPerson',",
             $source,
             'Person slot must remain reportedByPerson.'

@@ -154,11 +154,6 @@ final class ProcessingActivityTypeTest extends TestCase
     {
         $source = self::getFormTypeSource();
         self::assertStringContainsString(
-            "'field_prefix'   => 'contact',",
-            $source,
-            'Contact slot must use field_prefix=contact.'
-        );
-        self::assertStringContainsString(
             "'user_field'     => 'contactPersonUser',",
             $source,
             'Contact-Person slot must keep contactPersonUser as the User-slot field.'

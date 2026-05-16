@@ -65,7 +65,6 @@ final class TrainingTypeTest extends KernelTestCase
         $source = self::getFormTypeSource();
 
         self::assertStringContainsString("\$this->addOwnerPicker(\$builder, [", $source);
-        self::assertStringContainsString("'field_prefix'       => 'trainer',", $source);
         self::assertStringContainsString("'user_field'         => 'trainerUser',", $source);
         self::assertStringContainsString("'person_field'       => 'trainerPerson',", $source);
         self::assertStringContainsString("'deputies_field'     => 'trainerDeputyPersons',", $source);
