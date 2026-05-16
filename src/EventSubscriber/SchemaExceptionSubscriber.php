@@ -213,7 +213,7 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
             try {
                 $forceResult = $this->maintenance->forceSchemaUpdate('auto-fix-on-error');
                 $this->logger->warning('SchemaExceptionSubscriber: forceSchemaUpdate attempted', [
-                    'success' => $forceResult['success'],
+                    'success' => $forceResult['success'] ?? false,
                     'statements_executed' => $forceResult['statements_executed'] ?? 0,
                     'error' => $forceResult['error'] ?? null,
                 ]);
