@@ -17,6 +17,10 @@ quick_fix:
         destructive_warning: 'Destruktive Statements erkannt. Reviewen vor Anwenden — kann Daten loeschen. Wenn bewusst gewollt, Checkbox aktivieren.'
         destructive_confirm_label: 'Ich verstehe das Risiko und will destruktive Statements anwenden'
         destructive_button: 'Reconcile inkl. destruktiver Statements'
+    entity_drift:
+        title: 'Entity-Schema-Drift erkannt'
+        body: 'Das Entity-Modell erwartet Spalten oder Tabellen, die in der Datenbank noch nicht vorhanden sind. Migrations-Tabelle und SchemaTool melden beide 0 — die Abweichung wurde direkt per Metadaten-Vergleich erkannt. Erzwinge ein Schema-Update (nur ADD/CREATE, keine DROPs):'
+        count_label: 'fehlende Schema-Statement(s)'
     ok:
         title: 'Alles aktuell'
         body: 'Keine ausstehenden Schema-Migrationen.'
@@ -33,6 +37,9 @@ quick_fix:
     repair:
         section:
             title: 'Daten-Integrität'
+        partial_error:
+            label: 'Daten-Integritätsprüfung partial — %count% Fehler (Schema unvollständig, einige Prüfungen konnten nicht ausgeführt werden)'
+            show: 'Details anzeigen'
         orphans:
             title: 'Verwaiste Entitäten (ohne Mandant)'
             button: 'Orphans zuweisen'

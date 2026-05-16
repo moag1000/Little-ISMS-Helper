@@ -202,6 +202,36 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
             }
         }
 
+        // Final fallback for InvalidFieldNameException when the standard auto-fix
+        // (migrations + reconcile) did not help: attempt forceSchemaUpdate() which
+        // runs doctrine:schema:update --force (saveMode=true). This covers the
+        // case where the column really is missing from the DB and neither the
+        // migrations table nor SchemaTool reports drift. Recursion guard via
+        // _schema_force_updated query param — only one attempt per request chain.
+        $alreadyForced = $request->query->getBoolean('_schema_force_updated');
+        if ($isUnknownColumn && !$alreadyForced && !str_starts_with($path, '/quick-fix')) {
+            try {
+                $forceResult = $this->maintenance->forceSchemaUpdate('auto-fix-on-error');
+                $this->logger->warning('SchemaExceptionSubscriber: forceSchemaUpdate attempted', [
+                    'success' => $forceResult['success'],
+                    'statements_executed' => $forceResult['statements_executed'] ?? 0,
+                    'error' => $forceResult['error'] ?? null,
+                ]);
+                if (($forceResult['success'] ?? false) && ($forceResult['statements_executed'] ?? 0) > 0) {
+                    $retry = $request->getRequestUri();
+                    $sep = str_contains($retry, '?') ? '&' : '?';
+                    $event->setResponse(new RedirectResponse($retry . $sep . '_schema_force_updated=1'));
+                    return;
+                }
+            } catch (\Throwable $e) {
+                $this->logger->error('SchemaExceptionSubscriber: forceSchemaUpdate threw', [
+                    'exception' => $e::class,
+                    'message' => $e->getMessage(),
+                ]);
+                // fall through to /quick-fix redirect
+            }
+        }
+
         // Auto-fix exhausted (destructive drift, already retried, or reconcile
         // failed). Always redirect to /quick-fix when the exception is a
         // schema-drift signal — regardless of what the migrations table says.

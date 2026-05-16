@@ -54,6 +54,8 @@ class QuickFixController extends AbstractController
         $driftCount = 0;
         $driftStatements = [];
         $driftDestructive = [];
+        $entityDriftCount = 0;
+        $entityDriftStatements = [];
         $errorMessage = null;
         try {
             $status = $maintenance->getMaintenanceStatus();
@@ -62,6 +64,8 @@ class QuickFixController extends AbstractController
             $driftCount = (int) ($status['schema_drift']['count'] ?? 0);
             $driftStatements = $status['schema_drift']['statements'] ?? [];
             $driftDestructive = $status['schema_drift']['destructive'] ?? [];
+            $entityDriftCount = (int) ($status['entity_drift']['count'] ?? 0);
+            $entityDriftStatements = $status['entity_drift']['statements'] ?? [];
 
             // Second source: file-system-discovered pending migrations
             // (the same list SchemaHealthService uses to gate reconcile).
@@ -74,11 +78,15 @@ class QuickFixController extends AbstractController
 
         // Data integrity counts for Operator UI.
         // Failures here are non-fatal — schema may be broken, so integrity
-        // checks could throw. We show zeros in that case.
+        // checks could throw. We show zeros in that case and surface partial
+        // errors as informational flash messages on the index page.
+        // Each operation is independently wrapped so a column-not-found on
+        // one entity type does NOT prevent the remaining checks from running.
         $orphanCount = 0;
         $orphansByType = [];
         $mismatchCount = 0;
         $duplicateCounts = [];
+        $dataIntegrityErrors = [];
         try {
             $orphaned = $dataIntegrity->findAllOrphanedEntities();
             foreach ($orphaned as $type => $entities) {
@@ -86,14 +94,22 @@ class QuickFixController extends AbstractController
                 $orphansByType[$type] = $cnt;
                 $orphanCount += $cnt;
             }
+        } catch (\Throwable $e) {
+            $dataIntegrityErrors[] = 'orphans: ' . $e->getMessage();
+        }
+        try {
             $broken = $dataIntegrity->findBrokenReferences();
             $mismatchCount = count($broken);
+        } catch (\Throwable $e) {
+            $dataIntegrityErrors[] = 'mismatches: ' . $e->getMessage();
+        }
+        try {
             $allDuplicates = $dataIntegrity->findDuplicateEntities();
             foreach ($allDuplicates as $type => $groups) {
                 $duplicateCounts[$type] = count($groups);
             }
-        } catch (\Throwable) {
-            // non-fatal — display zeros, do not override $errorMessage from above
+        } catch (\Throwable $e) {
+            $dataIntegrityErrors[] = 'duplicates: ' . $e->getMessage();
         }
 
         // Read phantom-diff recovery payload stored by apply() on failure.
@@ -122,6 +138,8 @@ class QuickFixController extends AbstractController
             'drift_count' => $driftCount,
             'drift_statements' => $driftStatements,
             'drift_destructive' => $driftDestructive,
+            'entity_drift_count' => $entityDriftCount,
+            'entity_drift_statements' => $entityDriftStatements,
             'error_message' => $errorMessage,
             'error_diagnosis' => $errorDiagnosis,
             // Data integrity
@@ -129,6 +147,7 @@ class QuickFixController extends AbstractController
             'orphans_by_type' => $orphansByType,
             'mismatch_count' => $mismatchCount,
             'duplicate_counts' => $duplicateCounts,
+            'data_integrity_errors' => $dataIntegrityErrors,
         ]);
 
         if ($cookieToSet !== null) {

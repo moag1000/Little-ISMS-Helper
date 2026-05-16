@@ -154,6 +154,35 @@
                     </form>
                 </div>
             </details>
+        {% elseif entity_drift_count > 0 and drift_count == 0 and pending_count == 0 and error_diagnosis is null %}
+            {# Entity-vs-DB drift detected independently of migration/SchemaTool counters.
+               This fires when pending=0 and drift=0 but the entity metadata expects columns
+               the live DB does not have (phantom-diff-state or new deployment). Surface the
+               force-schema-update button prominently — not collapsed — so the operator can
+               resolve with a single click. saveMode=true means only ADD/CREATE is emitted,
+               never DROP TABLE. #}
+            <div class="icon">⚠️</div>
+            <h1>{{ 'quick_fix.entity_drift.title'|trans({}, 'quick_fix') }}</h1>
+            <p>{{ 'quick_fix.entity_drift.body'|trans({}, 'quick_fix') }}</p>
+            <div class="count">{{ entity_drift_count }}</div>
+            <div class="count-label">{{ 'quick_fix.entity_drift.count_label'|trans({}, 'quick_fix') }}</div>
+            <details style="margin-top: 12px;">
+                <summary style="cursor: pointer; color: var(--muted); font-size: 13px;">
+                    {{ 'quick_fix.drift.show_sql'|trans({}, 'quick_fix') }}
+                </summary>
+                <pre style="background: var(--bg); padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 11px; color: var(--muted); margin-top: 8px;">{% for s in entity_drift_statements %}{{ s }}
+{% endfor %}</pre>
+            </details>
+            <form method="POST" action="{{ path('app_quick_fix_force_schema_update') }}" style="margin-top: 16px;">
+                <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_force_schema_update') }}">
+                <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; padding: 8px 0; color: var(--muted);">
+                    <input type="checkbox" name="confirm_force_schema" value="1" required style="margin-top: 3px;">
+                    <span>{{ 'quick_fix.force_update.confirm_label'|trans({}, 'quick_fix') }}</span>
+                </label>
+                <button type="submit" style="background: var(--accent); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                    {{ 'quick_fix.force_update.button'|trans({}, 'quick_fix') }}
+                </button>
+            </form>
         {% elseif error_message %}
             <div class="icon">⚠️</div>
             <h1>{{ 'quick_fix.error.title'|trans({}, 'quick_fix') }}</h1>
@@ -262,6 +291,17 @@
         {% set has_integrity_issues = (orphan_count > 0) or (mismatch_count > 0) or (duplicate_counts|length > 0) %}
         <div class="section">
             <h2>{{ 'quick_fix.repair.section.title'|trans({}, 'quick_fix') }}</h2>
+            {% if data_integrity_errors|length > 0 %}
+                <div class="flash" style="background: rgba(148,163,184,0.1); border: 1px solid var(--border); color: var(--muted); margin-bottom: 12px; font-size: 13px;">
+                    {{ 'quick_fix.repair.partial_error.label'|trans({'%count%': data_integrity_errors|length}, 'quick_fix') }}
+                    <details style="margin-top: 6px;">
+                        <summary style="cursor: pointer; font-size: 12px;">{{ 'quick_fix.repair.partial_error.show'|trans({}, 'quick_fix') }}</summary>
+                        <ul style="margin: 6px 0 0; padding-left: 16px; font-size: 11px; font-family: monospace;">
+                            {% for err in data_integrity_errors %}<li>{{ err }}</li>{% endfor %}
+                        </ul>
+                    </details>
+                </div>
+            {% endif %}
 
             {# Orphans #}
             <div class="repair-row">
