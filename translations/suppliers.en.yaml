@@ -197,10 +197,24 @@ supplier:
         country: Country
         service: Service
         criticality: Criticality
+        critical: 'Critical (DORA Art. 28)'
+        critical_help: 'Flag as DORA Art. 28 critical — subcontractor with material function.'
+        indent: 'Increase tier (nest)'
+        outdent: 'Decrease tier (outdent)'
         add: 'Add subcontractor'
         empty: 'No subcontractors captured yet. Click "Add" to add a new tier.'
         none: 'No subcontractors recorded.'
         tree: 'Sub-outsourcing tree'
+        placeholder:
+            name: 'e.g. Acme Hosting GmbH'
+            service: 'e.g. Cloud Hosting, Backup service'
+    subcontractor_chain:
+        aria: 'Subcontractor chain — structured editor (DORA Art. 28, max 4 tiers)'
+        help: 'Capture the sub-outsourcing chain per DORA Art. 28. Maximum nesting depth: 4 tiers. Flag critical subcontractors for concentration reporting.'
+        remove: 'Remove subcontractor'
+        raw_toggle: 'Edit as JSON'
+        raw_label: 'Raw JSON (power-user)'
+        raw_help: 'Warning: raw editing can corrupt data. Schema must match entity definition.'
     status:
         active: Active
         inactive: Inactive
