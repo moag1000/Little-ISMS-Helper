@@ -1,0 +1,56 @@
+{#
+ # FairyAurora v4 — Lifecycle-aware Status-Chip (audit-s3 P-4)
+ #
+ # Renders an Aurora-v4 .fa-status-pill whose tone is resolved from the
+ # LifecycleRegistry for the entity-class + status pair. Drop-in
+ # replacement for hand-rolled status badges. Translation domain is the
+ # new `lifecycle` domain (default 5-stage labels + AuditFinding 4-stage).
+ #
+ # Usage (call site, schematic):
+ #   import _components/_fa_status_chip.html.twig as _fa_status_chip
+ #   _fa_status_chip.render({
+ #       entity_class: 'App\\Entity\\Document',
+ #       status_key:   document.status
+ #   })
+ #
+ # Props (passed as hash `props`):
+ #   entity_class  string  FQCN of the entity (drives lifecycle lookup)
+ #   status_key    string  current status value (e.g. 'draft')
+ #   label         string  optional override for the displayed text;
+ #                         defaults to lifecycle.<status_key> in lifecycle domain
+ #   size          'sm'|'md'|'lg'  default 'md'
+ #   icon          optional bootstrap-icon class to replace the dot
+ #   class         extra CSS classes
+ #   title         optional tooltip override; otherwise a hint with the
+ #                 allowed next statuses is rendered (when any exist).
+ #}
+
+{% macro render(props) %}
+    {% set entity_class = props.entity_class|default('') %}
+    {% set status_key   = props.status_key|default('') %}
+    {% set size         = props.size|default('md') %}
+    {% set icon         = props.icon|default(null) %}
+    {% set extraClass   = props.class|default('') %}
+    {% set tone         = entity_class is not empty and status_key is not empty
+        ? lifecycle_tone(entity_class, status_key)
+        : 'neutral' %}
+    {% set label        = props.label|default(('lifecycle.' ~ status_key)|trans({}, 'lifecycle')) %}
+    {% set transitions  = entity_class is not empty and status_key is not empty
+        ? lifecycle_transitions(entity_class, status_key)
+        : [] %}
+    {% set defaultTitle = transitions|length > 0
+        ? ('lifecycle.tooltip.next'|trans({}, 'lifecycle')) ~ ': ' ~ transitions|map(t => ('lifecycle.' ~ t)|trans({}, 'lifecycle'))|join(', ')
+        : null %}
+    {% set titleAttr    = props.title|default(defaultTitle) %}
+
+    <span class="fa-status-pill fa-status-pill--{{ tone }} fa-status-pill--{{ size }}{{ extraClass ? ' ' ~ extraClass : '' }}"
+          data-lifecycle-status="{{ status_key }}"
+          data-lifecycle-entity="{{ entity_class }}"{{ titleAttr ? ' title="' ~ titleAttr ~ '"' : '' }}>
+        {% if icon %}
+            <i class="bi {{ icon }}" aria-hidden="true"></i>
+        {% else %}
+            <span class="fa-status-pill__dot" aria-hidden="true"></span>
+        {% endif %}
+        <span class="fa-status-pill__label">{{ label }}</span>
+    </span>
+{% endmacro %}
