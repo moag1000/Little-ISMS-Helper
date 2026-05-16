@@ -32,6 +32,23 @@ FORM_DIR = ROOT / "src" / "Form"
 
 INTERFACE_PATTERN = re.compile(r"implements\s+[^{]*\bSectionMapInterface\b")
 BUILDER_ADD_PATTERN = re.compile(r"->add\(\s*['\"]([A-Za-z_][A-Za-z0-9_]*)['\"]")
+# OwnerPickerFormTrait::addOwnerPicker(...) injects up to 4 child fields
+# whose names come from config-keys user_field / person_field /
+# deputies_field / legacy_field. Parse those config arrays so the gate
+# treats them as builder-added fields.
+OWNER_PICKER_PATTERN = re.compile(
+    r"addOwnerPicker\s*\([^,]+,\s*\[(.*?)\]\s*\)\s*;",
+    re.DOTALL,
+)
+OWNER_PICKER_FIELDS = (
+    "user_field",
+    "person_field",
+    "deputies_field",
+    "legacy_field",
+)
+OWNER_PICKER_FIELD_PATTERN = re.compile(
+    r"['\"](?:" + "|".join(OWNER_PICKER_FIELDS) + r")['\"]\s*=>\s*['\"]([A-Za-z_][A-Za-z0-9_]*)['\"]"
+)
 SECTION_MAP_METHOD_PATTERN = re.compile(
     r"public\s+static\s+function\s+getSectionMap\(\)\s*:\s*array\s*\{(.*?)\n\s*\}",
     re.DOTALL,
@@ -56,6 +73,8 @@ def parse_form_type(path: Path) -> tuple[set[str], dict[str, list[str]]] | None:
         return None
 
     builder_fields = set(BUILDER_ADD_PATTERN.findall(text))
+    for picker_block in OWNER_PICKER_PATTERN.finditer(text):
+        builder_fields.update(OWNER_PICKER_FIELD_PATTERN.findall(picker_block.group(1)))
 
     match = SECTION_MAP_METHOD_PATTERN.search(text)
     if not match:
