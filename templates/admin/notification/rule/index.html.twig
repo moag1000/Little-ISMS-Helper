@@ -72,14 +72,14 @@
                                 </td>
                                 <td>
                                     {% if rule.severityFilter %}
-                                        <span class="badge bg-warning text-dark">{{ ('notification.severity.' ~ rule.severityFilter)|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--warning">{{ ('notification.severity.' ~ rule.severityFilter)|trans }}</span>
                                     {% else %}
                                         <span class="text-muted fst-italic">{{ 'notification.severity.all'|trans }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if rule.isActive %}
-                                        <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>
                                     {% else %}
                                         <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                     {% endif %}
@@ -88,7 +88,7 @@
                                 <td>
                                     <div class="d-flex gap-2">
                                         <a href="{{ path('admin_notification_rule_edit', { id: rule.id }) }}"
-                                           class="btn btn-sm btn-outline-secondary"
+                                           class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                            title="{{ 'common.edit'|trans({}, 'messages') }}">
                                             <i class="fa-icon fa-icon--edit" aria-hidden="true"></i>
                                         </a>
@@ -98,7 +98,7 @@
                                             <input type="hidden" name="_token"
                                                    value="{{ csrf_token('notification_rule_toggle_' ~ rule.id) }}">
                                             <button type="submit"
-                                                    class="btn btn-sm {{ rule.isActive ? 'btn-outline-warning' : 'btn-outline-success' }}"
+                                                    class="fa-cyber-btn fa-cyber-btn--sm {{ rule.isActive ? 'fa-cyber-btn--warning' : 'fa-cyber-btn--success' }}"
                                                     title="{{ (rule.isActive ? 'notification.rule.action.disable' : 'notification.rule.action.enable')|trans }}">
                                                 <i class="fa-icon {{ rule.isActive ? 'fa-icon--pause' : 'fa-icon--play' }}" aria-hidden="true"></i>
                                             </button>
@@ -109,7 +109,7 @@
                                               onsubmit="return confirm('{{ 'notification.rule.confirm.delete'|trans|e('js') }}')">
                                             <input type="hidden" name="_token"
                                                    value="{{ csrf_token('notification_rule_delete_' ~ rule.id) }}">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
                                                     title="{{ 'common.delete'|trans({}, 'messages') }}">
                                                 <i class="fa-icon fa-icon--trash" aria-hidden="true"></i>
                                             </button>

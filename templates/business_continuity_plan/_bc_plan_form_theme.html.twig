@@ -1,0 +1,67 @@
+{# BCP form theme — extends Aurora cyber-input theme; overrides the three
+   JSON fields (responseTeamMembers, requiredResources, escalationLevels)
+   with visual P-9 JsonBuilder macros. #}
+{% use "form/fa_cyber_input.html.twig" %}
+
+{%- block _business_continuity_plan_responseTeamMembers_row -%}
+    {% import '_components/_fa_team_role_builder.html.twig' as _fa_team_role_builder %}
+    <div class="fa-cyber-input">
+        <div class="fa-cyber-input__header">
+            {{ form_label(form) }}
+        </div>
+        {{ _fa_team_role_builder.render({
+            name: form.vars.full_name,
+            value: form.vars.value,
+            id: form.vars.id ~ '-builder',
+            translationDomain: 'bc_plans'
+        }) }}
+        {% if form.vars.help %}
+            <small class="fa-cyber-input__hint">
+                {{ form.vars.help|trans({}, form.vars.help_translation_domain|default('bc_plans')) }}
+            </small>
+        {% endif %}
+        {{ form_errors(form) }}
+    </div>
+{%- endblock -%}
+
+{%- block _business_continuity_plan_requiredResources_row -%}
+    {% import '_components/_fa_resource_list.html.twig' as _fa_resource_list %}
+    <div class="fa-cyber-input">
+        <div class="fa-cyber-input__header">
+            {{ form_label(form) }}
+        </div>
+        {{ _fa_resource_list.render({
+            name: form.vars.full_name,
+            value: form.vars.value,
+            id: form.vars.id ~ '-builder',
+            translationDomain: 'bc_plans'
+        }) }}
+        {% if form.vars.help %}
+            <small class="fa-cyber-input__hint">
+                {{ form.vars.help|trans({}, form.vars.help_translation_domain|default('bc_plans')) }}
+            </small>
+        {% endif %}
+        {{ form_errors(form) }}
+    </div>
+{%- endblock -%}
+
+{%- block _business_continuity_plan_escalationLevels_row -%}
+    {% import '_components/_fa_escalation_chain.html.twig' as _fa_escalation_chain %}
+    <div class="fa-cyber-input">
+        <div class="fa-cyber-input__header">
+            {{ form_label(form) }}
+        </div>
+        {{ _fa_escalation_chain.render({
+            name: form.vars.full_name,
+            value: form.vars.value,
+            id: form.vars.id ~ '-builder',
+            translationDomain: 'bc_plans'
+        }) }}
+        {% if form.vars.help %}
+            <small class="fa-cyber-input__hint">
+                {{ form.vars.help|trans({}, form.vars.help_translation_domain|default('bc_plans')) }}
+            </small>
+        {% endif %}
+        {{ form_errors(form) }}
+    </div>
+{%- endblock -%}

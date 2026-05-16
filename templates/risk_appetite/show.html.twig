@@ -54,13 +54,13 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="info-card {{ risksWithinAppetite|length > 0 ? 'bg-success text-white' : '' }}">
+        <div class="info-card {{ risksWithinAppetite|length > 0 ? 'info-card--success' : '' }}">
             <div class="info-label">{{ 'risk_appetite.risks_within'|trans({}, 'risk_appetite') }}</div>
             <div class="info-value">{{ risksWithinAppetite|length }}</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="info-card {{ risksExceedingAppetite|length > 0 ? 'bg-danger text-white' : '' }}">
+        <div class="info-card {{ risksExceedingAppetite|length > 0 ? 'info-card--danger' : '' }}">
             <div class="info-label">{{ 'risk_appetite.risks_exceeding'|trans({}, 'risk_appetite') }}</div>
             <div class="info-value">{{ risksExceedingAppetite|length }}</div>
         </div>
@@ -346,6 +346,21 @@
     padding: var(--spacing-lg);
     text-align: center;
     height: 100%;
+}
+
+/* Aurora pitfall-#11 compliant tonal variants — colored left-border instead
+   of bg-* (which Aurora's --surface token silently overrides). */
+.info-card--success {
+    border-left: 4px solid var(--success);
+}
+.info-card--success .info-value {
+    color: var(--success);
+}
+.info-card--danger {
+    border-left: 4px solid var(--danger);
+}
+.info-card--danger .info-value {
+    color: var(--danger);
 }
 
 .info-label {

@@ -105,7 +105,7 @@
                             <div class="col-md-3">
                                 <div class="text-center">
                                     <div class="h3 mb-0">
-                                        <span class="badge {% if stats.owasp_2025.status == 'EXCELLENT' %}bg-success{% elseif stats.owasp_2025.status == 'GUT' %}bg-primary{% elseif stats.owasp_2025.status == 'BEFRIEDIGEND' %}bg-warning{% else %}bg-danger{% endif %}">
+                                        <span class="fa-status-pill {% if stats.owasp_2025.status == 'EXCELLENT' %}fa-status-pill--success{% elseif stats.owasp_2025.status == 'GUT' %}fa-status-pill--primary{% elseif stats.owasp_2025.status == 'BEFRIEDIGEND' %}fa-status-pill--warning{% else %}fa-status-pill--danger{% endif %}">
                                             {{ stats.owasp_2025.status }}
                                         </span>
                                     </div>
@@ -174,7 +174,7 @@
                             <div class="col-md-3">
                                 <div class="text-center">
                                     <div class="h3 mb-0">
-                                        <span class="badge {% if stats.owasp_2021.status == 'EXCELLENT' %}bg-success{% elseif stats.owasp_2021.status == 'GUT' %}bg-primary{% elseif stats.owasp_2021.status == 'BEFRIEDIGEND' %}bg-warning{% else %}bg-danger{% endif %}">
+                                        <span class="fa-status-pill {% if stats.owasp_2021.status == 'EXCELLENT' %}fa-status-pill--success{% elseif stats.owasp_2021.status == 'GUT' %}fa-status-pill--primary{% elseif stats.owasp_2021.status == 'BEFRIEDIGEND' %}fa-status-pill--warning{% else %}fa-status-pill--danger{% endif %}">
                                             {{ stats.owasp_2021.status }}
                                         </span>
                                     </div>

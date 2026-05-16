@@ -125,33 +125,40 @@
                 </div>
             </div>
             <div class="fa-section__body">
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle" aria-label="{{ 'import.delta.errors'|trans({}, 'data_import') }}">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'import.diff.col_row'|trans({}, 'data_import') }}</th>
-                                <th scope="col">{{ 'import.diff.col_error'|trans({}, 'data_import') }}</th>
-                                <th scope="col">{{ 'import.diff.col_data'|trans({}, 'data_import') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in errorRows %}
-                            <tr class="isms-diff__line isms-diff__line--del">
-                                <td class="fw-semibold">{{ row.rowNumber }}</td>
-                                <td>
-                                    <span style="color: var(--color-danger);">
-                                        <i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i>
-                                        {{ row.errorMessage }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <code class="small">{{ row.parsedData|json_encode }}</code>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                {% embed '_components/_fa_table.html.twig' with {
+                    id: 'import-diff-errors',
+                    striped: false,
+                    compact: true,
+                    stickyHead: false,
+                    sortable: false,
+                    bulkSelect: false
+                } %}
+                    {% block table_head %}
+                        {% trans_default_domain 'data_import' %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'import.diff.col_row'|trans({}, 'data_import') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'import.diff.col_error'|trans({}, 'data_import') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'import.diff.col_data'|trans({}, 'data_import') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% trans_default_domain 'data_import' %}
+                        {% for row in errorRows %}
+                        <tr class="fa-table__row isms-diff__line isms-diff__line--del">
+                            <td class="fa-table__cell fw-semibold">{{ row.rowNumber }}</td>
+                            <td class="fa-table__cell">
+                                <span style="color: var(--color-danger);">
+                                    <i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i>
+                                    {{ row.errorMessage }}
+                                </span>
+                            </td>
+                            <td class="fa-table__cell">
+                                <code class="small">{{ row.parsedData|json_encode }}</code>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             </div>
         </section>
         {% else %}

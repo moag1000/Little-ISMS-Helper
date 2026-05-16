@@ -45,7 +45,7 @@
                                 <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
                                 {{ monthKey|date('F Y') }}
                             </span>
-                            <span class="badge bg-primary">
+                            <span class="fa-status-pill fa-status-pill--primary">
                                 {{ 'calendar.exercises_planned'|trans({'%count%': exercises|length}, 'bsi_200_4_exercise') }}
                             </span>
                         </div>
@@ -62,12 +62,12 @@
                                 <div class="d-flex flex-column align-items-end gap-1">
                                     {% if exercise.hasExerciseLog %}
                                         <a href="{{ path('bcm_exercise_log_show', {id: exercise.exerciseLog.id}) }}"
-                                           class="badge bg-success text-decoration-none">
+                                           class="fa-status-pill fa-status-pill--success text-decoration-none">
                                             {{ 'calendar.log_exists'|trans({}, 'bsi_200_4_exercise') }}
                                         </a>
                                     {% else %}
                                         <a href="{{ path('bcm_exercise_log_new', {exerciseId: exercise.id}) }}"
-                                           class="badge bg-warning text-dark text-decoration-none">
+                                           class="fa-status-pill fa-status-pill--warning text-decoration-none">
                                             {{ 'calendar.log_missing'|trans({}, 'bsi_200_4_exercise') }}
                                         </a>
                                     {% endif %}
