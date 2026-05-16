@@ -291,3 +291,9 @@ authority:
             title: 'NIS-2 BSI Portal Registration Due Soon'
             body: 'The yearly NIS-2 registration with the BSI portal is due on %date% — please renew in time.'
             action: 'Open NIS-2 registration'
+
+global:
+    authority_template_overdue:
+        title: 'Authority report overdue (GDPR Art. 33)'
+        body: '%count% severe data breach(es) without authority export for > 24h. GDPR Art. 33 — 72h deadline.'
+        action: 'Open authority export'
