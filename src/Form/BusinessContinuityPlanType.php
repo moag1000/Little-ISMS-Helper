@@ -7,9 +7,8 @@ namespace App\Form;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\BusinessProcess;
 use App\Entity\CrisisTeam;
-use App\Entity\Person;
-use App\Entity\User;
 use App\Form\DataTransformer\JsonArrayTransformer;
+use App\Form\Trait\OwnerPickerFormTrait;
 use App\Repository\CrisisTeamRepository;
 use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -25,6 +24,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class BusinessContinuityPlanType extends AbstractType
 {
+    use OwnerPickerFormTrait;
+
     public function __construct(private readonly TenantContext $tenantContext)
     {
     }
@@ -50,40 +51,6 @@ class BusinessContinuityPlanType extends AbstractType
                 'required' => false,
                 'attr' => ['rows' => 3],
                 'help' => 'bc_plans.help.description',
-            ])
-            ->add('planOwnerUser', EntityType::class, [
-                'label' => 'bc_plans.field.plan_owner',
-                'class' => User::class,
-                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
-                'required' => false,
-                'placeholder' => 'bc_plans.placeholder.plan_owner_user',
-                'help' => 'bc_plans.help.plan_owner_user',
-            ])
-            ->add('planOwnerPerson', EntityType::class, [
-                'label' => 'bc_plans.field.plan_owner_person',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'placeholder' => 'bc_plans.placeholder.plan_owner_person',
-                'help' => 'bc_plans.help.plan_owner_person',
-            ])
-            ->add('planOwnerDeputyPersons', EntityType::class, [
-                'label' => 'bc_plans.field.plan_owner_deputies',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'attr' => [
-                    'data-controller' => 'tom-select',
-                ],
-                'help' => 'bc_plans.help.plan_owner_deputies',
-            ])
-            ->add('planOwner', TextType::class, [
-                'label' => 'bc_plans.field.plan_owner_legacy',
-                'required' => false,
-                'attr' => ['maxlength' => 100],
-                'help' => 'bc_plans.help.plan_owner',
             ])
             ->add('bcTeam', TextareaType::class, [
                 'label' => 'bc_plans.field.bc_team',
@@ -245,6 +212,30 @@ class BusinessContinuityPlanType extends AbstractType
                 },
             ])
         ;
+
+        // S4 P-1 Wave-2 — Plan-Owner compound slot. Replaces the inline
+        // 4-field block (planOwnerUser + planOwnerPerson +
+        // planOwnerDeputyPersons + planOwner legacy text).
+        // Legacy free-text `planOwner` is preserved as read-only Migration-Hint
+        // (rendered only when populated — see _fa_owner_picker macro).
+        $this->addOwnerPicker($builder, [
+            'field_prefix'       => 'planOwner',
+            'user_field'         => 'planOwnerUser',
+            'person_field'       => 'planOwnerPerson',
+            'deputies_field'     => 'planOwnerDeputyPersons',
+            'legacy_field'       => 'planOwner',
+            'label_user'         => 'bc_plans.field.plan_owner',
+            'label_person'       => 'bc_plans.field.plan_owner_person',
+            'label_deputies'     => 'bc_plans.field.plan_owner_deputies',
+            'label_legacy'       => 'bc_plans.field.plan_owner_legacy',
+            'placeholder_user'   => 'bc_plans.placeholder.plan_owner_user',
+            'placeholder_person' => 'bc_plans.placeholder.plan_owner_person',
+            'help_user'          => 'bc_plans.help.plan_owner_user',
+            'help_person'        => 'bc_plans.help.plan_owner_person',
+            'help_deputies'      => 'bc_plans.help.plan_owner_deputies',
+            'with_deputies'      => true,
+            'with_legacy'        => true,
+        ]);
 
         $builder->get('responseTeamMembers')->addModelTransformer(new JsonArrayTransformer());
         $builder->get('requiredResources')->addModelTransformer(new JsonArrayTransformer());
