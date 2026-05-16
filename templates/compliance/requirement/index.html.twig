@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}Compliance Requirements{% endblock %}
@@ -12,12 +13,13 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> Compliance Requirements</h1>
-        <a href="{{ path('app_compliance_requirement_new', {framework: selected_framework}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> New Requirement
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-list-check', label: 'nav.compliance'|trans({}, 'nav') },
+        title: 'compliance.requirement.index_title'|trans({}, 'compliance'),
+        actions: [
+            { label: 'compliance.requirement.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'ui-plus', href: path('app_compliance_requirement_new', {framework: selected_framework}) }
+        ]
+    }) }}
 
     {# Framework Filter #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}

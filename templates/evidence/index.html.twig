@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 {% trans_default_domain 'evidence' %}
@@ -15,17 +16,14 @@
     } %}
 </div>
 
-<div class="page-header">
-    <div>
-        <h1><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'evidence.title'|trans({}, 'evidence') }}</h1>
-        <p class="text-muted">{{ 'evidence.subtitle'|trans({}, 'evidence') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_evidence_coverage') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'evidence.coverage.title'|trans({}, 'evidence') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    badge: { icon: 'nav-list-check', label: 'nav.evidence'|trans({}, 'nav') },
+    title: 'evidence.title'|trans({}, 'evidence'),
+    subtitle: 'evidence.subtitle'|trans({}, 'evidence'),
+    actions: [
+        { label: 'evidence.coverage.title'|trans({}, 'evidence'), variant: 'ghost', icon: 'compliance-shield', href: path('app_evidence_coverage') }
+    ]
+}) }}
 
 {# KPI Cards #}
 <div class="row mb-4">

@@ -119,7 +119,7 @@
                                         <td class="fa-table__cell"><code>{{ risk.category|default('–') }}</code></td>
                                         <td class="fa-table__cell">
                                             {% set _v = inherent >= 15 ? 'danger' : (inherent >= 8 ? 'warning' : 'success') %}
-                                            <span class="badge {% if inherent >= 15 %}bg-danger{% elseif inherent >= 8 %}bg-warning-subtle text-warning{% else %}bg-success{% endif %} fa-status-pill fa-status-pill--{{ _v }}">
+                                            <span class="fa-status-pill fa-status-pill--{{ _v }}">
                                                 {{ inherent }}
                                             </span>
                                         </td>

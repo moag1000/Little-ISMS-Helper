@@ -6,6 +6,7 @@ bcm:
         asset_insights: Asset-Einblicke
         bcm_insights: BCM-Einblicke
         critical: 'Kritische Geschäftskontinuität'
+        data_reuse_insights: 'Daten-Wiederverwendungs-Insights'
     level:
         very_high: 'Sehr hoch'
         high: 'Hoch'
@@ -13,6 +14,7 @@ bcm:
         low: 'Niedrig'
     description:
         critical: 'Übersicht über kritische Assets und Prozesse inklusive RTO/RPO und Handlungsbedarf'
+        data_reuse_insights: 'Wie BCM-Daten die Asset-Schutzbedarfsanforderungen verbessern'
         critical_level: 'Sofortiger Geschäftsausfall bei Verlust oder Ausfall. Höchste Priorität für Notfallmaßnahmen.'
         high_level: 'Erhebliche Geschäftsbeeinträchtigung innerhalb kurzer Zeit. Schnelle Wiederanlaufplanung erforderlich.'
         medium_level: 'Spürbare Beeinträchtigung, jedoch mit Puffer. Mittelfristige Maßnahmen ausreichend.'

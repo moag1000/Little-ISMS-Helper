@@ -2,6 +2,22 @@
 {% trans_default_domain 'data_import' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{#
+ # TODO(fa-settings-table migration): The column-mapping table below uses
+ # Symfony form_widget() per row ({{ form_widget(form[fieldName], ...) }}).
+ # This is bound to a FormType with dynamic fields (one per CSV column),
+ # CSRF token validation, and Symfony validation errors rendered via
+ # form_errors(). The fa-settings-table macro renders plain <select> controls
+ # and cannot re-create the FormView hierarchy or preserve CSRF/validation.
+ #
+ # Migration requires:
+ #   1. Keep form_start()/form_end() and form_widget()/form_errors() intact.
+ #   2. A custom kind (e.g. 'symfony_widget') in fa-settings-table, OR
+ #      wrapping this table in a plain include that uses the existing
+ #      form_widget() pattern — which is the recommended approach.
+ # Migration is SKIPPED to avoid breaking the FormType binding.
+ #}
+
 
 {% block title %}{{ 'import.wizard.step.map.title'|trans({}, 'data_import') }}{% endblock %}
 
@@ -49,6 +65,7 @@
                 {{ form_start(form) }}
 
                     <div class="table-responsive mb-4">
+                        {# TODO: fa-table migration — fa-settings-table needed: inline form_widget(<select>) per row via Symfony FormView #}
                         <table class="table align-middle" aria-label="{{ 'import.wizard.step.map.title'|trans({}, 'data_import') }}">
                             <thead>
                                 <tr>

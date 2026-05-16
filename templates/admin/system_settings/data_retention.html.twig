@@ -2,6 +2,7 @@
 {% trans_default_domain 'admin' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_settings_table.html.twig' as _fa_settings %}
 
 {% block admin_title %}{{ 'admin.data_retention.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -36,55 +37,31 @@
                     <form method="post" action="{{ path('admin_settings_data_retention') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('admin_settings_data_retention') }}">
 
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>{{ 'admin.data_retention.col.entity_type'|trans({}, 'admin') }}</th>
-                                        <th style="width: 160px;">{{ 'admin.data_retention.col.retention_days'|trans({}, 'admin') }}</th>
-                                        <th style="width: 140px;">{{ 'admin.data_retention.col.auto_delete'|trans({}, 'admin') }}</th>
-                                        <th class="text-muted small">{{ 'admin.data_retention.col.gdpr_cap'|trans({}, 'admin') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for entity_type in entity_types %}
-                                    {% set entry = current[entity_type] %}
-                                    {% set cap = gdpr_max_days[entity_type] %}
-                                    <tr>
-                                        <td>
-                                            <span class="fw-semibold">{{ ('admin.data_retention.entity.' ~ entity_type)|trans({}, 'admin') }}</span>
-                                        </td>
-                                        <td>
-                                            <input type="number" class="form-control form-control-sm"
-                                                   name="retention_days_{{ entity_type }}"
-                                                   value="{{ entry.retention_days }}"
-                                                   min="30"
-                                                   {% if cap > 0 %}max="{{ cap }}"{% endif %}
-                                                   aria-label="{{ 'admin.data_retention.col.retention_days'|trans({}, 'admin') }} {{ ('admin.data_retention.entity.' ~ entity_type)|trans({}, 'admin') }}">
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="form-check form-switch mb-0">
-                                                <input class="form-check-input" type="checkbox" role="switch"
-                                                       id="auto_delete_{{ entity_type }}"
-                                                       name="auto_delete_{{ entity_type }}" value="1"
-                                                       {% if entry.auto_delete %}checked{% endif %}>
-                                                <label class="form-check-label visually-hidden" for="auto_delete_{{ entity_type }}">
-                                                    {{ 'admin.data_retention.col.auto_delete'|trans({}, 'admin') }}
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td class="text-muted small">
-                                            {% if cap > 0 %}
-                                                {{ 'admin.data_retention.gdpr_cap'|trans({'%days%': cap}, 'admin') }}
-                                            {% else %}
-                                                &mdash;
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                        {%- set retention_rows = [] -%}
+                        {%- for entity_type in entity_types -%}
+                            {%- set entry = current[entity_type] -%}
+                            {%- set cap = gdpr_max_days[entity_type] -%}
+                            {%- set retention_rows = retention_rows|merge([{
+                                kind:  'number',
+                                label: ('admin.data_retention.entity.' ~ entity_type)|trans({}, 'admin'),
+                                name:  'retention_days_' ~ entity_type,
+                                value: entry.retention_days,
+                                min:   30,
+                                max:   cap > 0 ? cap : null,
+                                hint:  cap > 0 ? ('admin.data_retention.gdpr_cap'|trans({'%days%': cap}, 'admin')) : null
+                            }]) -%}
+                            {%- set retention_rows = retention_rows|merge([{
+                                kind:  'toggle',
+                                label: 'admin.data_retention.col.auto_delete'|trans({}, 'admin'),
+                                name:  'auto_delete_' ~ entity_type,
+                                value: entry.auto_delete
+                            }]) -%}
+                        {%- endfor -%}
+
+                        {{ _fa_settings.render({
+                            title: 'admin.data_retention.policies_title'|trans({}, 'admin'),
+                            rows:  retention_rows
+                        }) }}
 
                         <div class="d-flex gap-2 mt-4">
                             <a href="{{ path('admin_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">

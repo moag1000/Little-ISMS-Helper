@@ -1,4 +1,23 @@
 {#
+ # TODO(fa-matrix-table migration): This partial uses a frameworks × clusters
+ # RAG-status data shape (heatmap_data.frameworks, heatmap_data.clusters,
+ # heatmap_data.cells keyed by `<fw_id>_<cluster_key>` with rate+status).
+ # The fa-matrix-table macro (Aurora v4) expects a score-based cells[row][col]
+ # array with numeric scores for severity auto-mapping, which is incompatible
+ # with this RAG/percentage model.
+ #
+ # PHP refactoring required before migration:
+ #   1. In the controller(s) supplying `heatmap_data` (compliance manager
+ #      dashboard + cm_heatmap_drill), add a transformer that converts the
+ #      existing heatmap_data structure into cells[rowIdx][colIdx] = {score, count, href}.
+ #   2. Map RAG status → numeric score (e.g. green=1, amber=6, red=18, none=0)
+ #      OR extend fa-matrix-table macro to accept a `severity` override per cell
+ #      (already supported in the macro spec) and pass 'low'/'moderate'/'high'
+ #      for green/amber/red directly from the controller.
+ #   3. Pass rows = framework names, cols = cluster labels.
+ #
+ # Until then this partial keeps its own RAG markup and inline <style>.
+ #
  # Cross-Framework Gap Heatmap — reusable partial.
  #
  # Renders a Frameworks × Requirement-Cluster × Ampel (RAG) grid showing
@@ -21,6 +40,7 @@
 {% trans_default_domain 'compliance' %}
 
 <div class="table-responsive" role="region" aria-label="{{ 'compliance.heatmap.title'|trans({}, 'compliance') }}">
+    {# TODO: fa-table migration — fa-matrix-table needed: <caption>, colspan, <th scope="row"> per row (multi-axis heatmap) #}
     <table class="table table-bordered table-sm fte-heatmap" aria-live="polite">
         <caption class="visually-hidden">{{ 'compliance.heatmap.caption'|trans({}, 'compliance') }}</caption>
         <thead>

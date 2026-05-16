@@ -39,15 +39,15 @@
     {# Status bar #}
     <div class="d-flex align-items-center gap-3 mb-4">
         {% if log.isConfirmed %}
-            <span class="badge bg-success fs-6">{{ 'status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
+            <span class="fa-status-pill fa-status-pill--success fs-6">{{ 'status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
             <span class="text-muted small">{{ 'table.header_confirmed'|trans({}, 'bsi_200_4_exercise') }}: {{ log.confirmedAt|date('d.m.Y H:i') }}</span>
         {% elseif log.isSubmitted %}
-            <span class="badge bg-info text-dark fs-6">{{ 'status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
+            <span class="fa-status-pill fa-status-pill--info fs-6">{{ 'status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
             <span class="text-muted small">{{ 'table.header_submitted'|trans({}, 'bsi_200_4_exercise') }}: {{ log.submittedAt|date('d.m.Y H:i') }}</span>
             {% if is_granted('ROLE_AUDITOR') and not log.isConfirmed %}
             <form method="post" action="{{ path('bcm_exercise_log_confirm', {id: log.id}) }}" class="ms-auto">
                 <input type="hidden" name="_token" value="{{ csrf_token('bsi_log_confirm_' ~ log.id) }}">
-                <button type="submit" class="btn btn-success">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                     {{ 'action.confirmed'|trans({}, 'bsi_200_4_exercise') }}
                 </button>
@@ -58,7 +58,7 @@
             {% if is_granted('ROLE_MANAGER') %}
             <form method="post" action="{{ path('bcm_exercise_log_submit', {id: log.id}) }}" class="ms-auto">
                 <input type="hidden" name="_token" value="{{ csrf_token('bsi_log_submit_' ~ log.id) }}">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                     <i class="fa-icon fa-icon--action-send" aria-hidden="true"></i>
                     {{ 'action.submitted'|trans({}, 'bsi_200_4_exercise') }}
                 </button>

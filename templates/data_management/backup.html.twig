@@ -774,6 +774,7 @@
                         const result = await response.json();
 
                         if (result.success) {
+                            // TODO: fa-table migration — JS innerHTML template literal, needs dedicated JS component
                             let html = '<div class="table-responsive"><table class="table table-sm">';
                             html += '<thead><tr><th scope="col">{{ 'data_management.backup.preview.entity'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.preview.to_restore'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.preview.existing'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.preview.sample_data'|trans({}, 'admin') }}</th></tr></thead><tbody>';
 

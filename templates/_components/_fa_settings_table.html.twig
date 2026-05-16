@@ -1,0 +1,223 @@
+{#
+ # Aurora v4 — fa-settings-table · Admin Form-Grid
+ #
+ # Tabellarisches Form-Layout mit gleich-alignten Label / Control / Status-
+ # Spalten. Pflicht für alle Settings-Detail-Seiten unter /admin/settings/*.
+ #
+ # The macro renders a semantic <table> with ARIA roles. Each row has three
+ # logical columns: label (+ optional hint), control widget, status pill.
+ # Status column is omitted on rows without a status prop.
+ #
+ # Props (top-level):
+ #   title   : string          — section title (optional, rendered in <caption>)
+ #   meta    : string          — small meta text next to title (optional)
+ #   rows    : [row, ...]
+ #
+ # Per-row props:
+ #   kind    : 'text'|'email'|'number'|'select'|'chips'|'toggle'|'textarea'
+ #   label   : string          — visible label (already translated)
+ #   hint    : string          — small help text below label (optional)
+ #   name    : string          — input name attribute
+ #   value   : mixed           — current value (scalar for most; bool for toggle)
+ #   options : [{value, label}, ...]  — required for kind='select'
+ #   values  : [string, ...]   — current selected values for kind='chips'
+ #   options : [string, ...]   — available chip options for kind='chips'
+ #   span    : int             — colspan for control cell (default 1)
+ #   attrs   : {}              — extra HTML attrs on the control element
+ #   status  : { label: string, tone: 'success'|'warning'|'danger'|'neutral' }
+ #             — optional status pill in the third column
+ #
+ # Row-Kind 'toggle':
+ #   Renders a Bootstrap form-switch. value: true|false.
+ #
+ # Usage:
+ #   {% import '_components/_fa_settings_table.html.twig' as _fa_settings %}
+ #   {{ _fa_settings.render({
+ #       title: 'SMTP-Server · Outbound-Mail',
+ #       meta:  'module · email_delivery',
+ #       rows: [
+ #           { kind: 'text',   label: 'SMTP-Host', hint: 'FQDN oder IP',
+ #             name: 'smtp_host', value: config.smtp_host,
+ #             status: { label: 'erreichbar', tone: 'success' } },
+ #           { kind: 'select', label: 'Port', hint: '587 für STARTTLS',
+ #             name: 'smtp_port', value: 587,
+ #             options: [
+ #                 { value: 587, label: '587 (STARTTLS)' },
+ #                 { value: 465, label: '465 (SMTPS)' }
+ #             ] },
+ #           { kind: 'toggle', label: 'DKIM signieren', name: 'dkim', value: true,
+ #             status: { label: 'aktiv', tone: 'success' } }
+ #       ]
+ #   }) }}
+ #}
+
+{% macro _control(row) %}
+    {%- set kind   = row.kind|default('text') -%}
+    {%- set name   = row.name|default('') -%}
+    {%- set value  = row.value|default('') -%}
+    {%- set attrs  = row.attrs|default({}) -%}
+    {%- set fieldId = 'fst-' ~ name -%}
+
+    {% if kind == 'toggle' %}
+        <div class="form-check form-switch mb-0">
+            <input class="form-check-input"
+                   type="checkbox"
+                   role="switch"
+                   id="{{ fieldId }}"
+                   name="{{ name }}"
+                   value="1"
+                   {% if value %}checked{% endif %}
+                   {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+            <label class="form-check-label visually-hidden" for="{{ fieldId }}">{{ row.label|default('') }}</label>
+        </div>
+
+    {% elseif kind == 'select' %}
+        <div class="fa-cyber-input fa-cyber-input--select">
+            <div class="fa-cyber-input__frame">
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tl" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
+                <select id="{{ fieldId }}"
+                        name="{{ name }}"
+                        class="fa-cyber-input__field"
+                        aria-label="{{ row.label|default('') }}"
+                        {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+                    {% for opt in row.options|default([]) %}
+                        {%- set optVal   = opt.value is defined ? opt.value : opt -%}
+                        {%- set optLabel = opt.label is defined ? opt.label : opt -%}
+                        <option value="{{ optVal }}"{% if value|default('')|trim == optVal|default('')|trim %} selected{% endif %}>{{ optLabel }}</option>
+                    {% endfor %}
+                </select>
+                <span class="fa-cyber-input__chevron" aria-hidden="true"></span>
+            </div>
+        </div>
+
+    {% elseif kind == 'textarea' %}
+        <div class="fa-cyber-input">
+            <div class="fa-cyber-input__frame">
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tl" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
+                <textarea id="{{ fieldId }}"
+                          name="{{ name }}"
+                          class="fa-cyber-input__field"
+                          rows="{{ row.rows|default(3) }}"
+                          aria-label="{{ row.label|default('') }}"
+                          {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>{{ value }}</textarea>
+            </div>
+        </div>
+
+    {% elseif kind == 'chips' %}
+        <div class="fa-settings-table__chips" role="group" aria-label="{{ row.label|default('') }}">
+            {% for opt in row.options|default([]) %}
+                {%- set optVal   = opt.value is defined ? opt.value : opt -%}
+                {%- set optLabel = opt.label is defined ? opt.label : opt -%}
+                {%- set chipId  = 'fst-chip-' ~ name ~ '-' ~ loop.index -%}
+                <label class="fa-settings-table__chip-label">
+                    <input type="checkbox"
+                           class="visually-hidden fa-settings-table__chip-cb"
+                           name="{{ name }}[]"
+                           id="{{ chipId }}"
+                           value="{{ optVal }}"
+                           {% if row.values|default([])|length > 0 and optVal in row.values %}checked{% endif %}
+                           {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+                    <span class="fa-filter-chip {% if row.values|default([])|length > 0 and optVal in row.values %}fa-filter-chip--active{% endif %}">
+                        {{ optLabel }}
+                    </span>
+                </label>
+            {% endfor %}
+        </div>
+
+    {% elseif kind == 'number' %}
+        <div class="fa-cyber-input">
+            <div class="fa-cyber-input__frame">
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tl" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
+                <input type="number"
+                       id="{{ fieldId }}"
+                       name="{{ name }}"
+                       class="fa-cyber-input__field"
+                       value="{{ value }}"
+                       aria-label="{{ row.label|default('') }}"
+                       {%- if row.min is defined %} min="{{ row.min }}"{% endif %}
+                       {%- if row.max is defined %} max="{{ row.max }}"{% endif %}
+                       {%- if row.step is defined %} step="{{ row.step }}"{% endif %}
+                       {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+            </div>
+        </div>
+
+    {% else %}{# text, email, url, … #}
+        <div class="fa-cyber-input">
+            <div class="fa-cyber-input__frame">
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tl" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
+                <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
+                <input type="{{ kind }}"
+                       id="{{ fieldId }}"
+                       name="{{ name }}"
+                       class="fa-cyber-input__field"
+                       value="{{ value }}"
+                       aria-label="{{ row.label|default('') }}"
+                       {%- if row.placeholder is defined %} placeholder="{{ row.placeholder }}"{% endif %}
+                       {%- for k, v in attrs %} {{ k }}="{{ v }}"{% endfor %}>
+            </div>
+        </div>
+    {% endif %}
+{% endmacro %}
+
+{% macro render(props = {}) %}
+    {%- import _self as _self -%}
+    {%- set title = props.title|default('') -%}
+    {%- set meta  = props.meta|default('') -%}
+    {%- set rows  = props.rows|default([]) -%}
+
+    <table class="fa-settings-table" role="grid">
+        {% if title %}
+            <caption class="fa-settings-table__caption">
+                <span class="fa-settings-table__caption-title">{{ title }}</span>
+                {% if meta %}
+                    <span class="fa-settings-table__caption-meta">{{ meta }}</span>
+                {% endif %}
+            </caption>
+        {% endif %}
+        <colgroup>
+            <col class="fa-settings-table__col--label">
+            <col class="fa-settings-table__col--control">
+            <col class="fa-settings-table__col--status">
+        </colgroup>
+        <tbody>
+            {% for row in rows %}
+                {%- set hasStatus = row.status is defined and row.status -%}
+                {%- set span      = row.span|default(1) -%}
+                <tr class="fa-settings-table__row">
+                    <th class="fa-settings-table__label-cell" scope="row">
+                        <label for="fst-{{ row.name|default('') }}" class="fa-settings-table__label">
+                            {{ row.label|default('') }}
+                        </label>
+                        {% if row.hint|default('') %}
+                            <span class="fa-settings-table__hint">{{ row.hint }}</span>
+                        {% endif %}
+                    </th>
+                    <td class="fa-settings-table__control-cell"{% if span > 1 %} colspan="{{ span }}"{% endif %}>
+                        {{ _self._control(row) }}
+                    </td>
+                    {% if span <= 1 %}
+                        <td class="fa-settings-table__status-cell">
+                            {% if hasStatus %}
+                                <span class="fa-status-pill fa-status-pill--sm fa-status-pill--{{ row.status.tone|default('neutral') }}">
+                                    <span class="fa-status-pill__dot" aria-hidden="true"></span>
+                                    {{ row.status.label|default('') }}
+                                </span>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}

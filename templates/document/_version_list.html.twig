@@ -29,57 +29,66 @@
     {% if versions is empty %}
         <p class="text-muted">{{ 'document.version.history.empty'|trans({}, 'document') }}</p>
     {% else %}
-        <div class="table-responsive">
-            <table class="table table-sm table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col">{{ 'document.version.number'|trans({}, 'document') }}</th>
-                        <th scope="col">{{ 'document.version.uploaded_at'|trans({}, 'document') }}</th>
-                        <th scope="col">{{ 'document.version.uploaded_by'|trans({}, 'document') }}</th>
-                        <th scope="col">{{ 'document.version.size'|trans({}, 'document') }}</th>
-                        <th scope="col">{{ 'document.version.hash'|trans({}, 'document') }}</th>
-                        <th scope="col">{{ 'document.version.status'|trans({}, 'document') }}</th>
-                        <th scope="col"></th>
+        {% embed '_components/_fa_table.html.twig' with {
+            id: 'document-version-list',
+            striped: false,
+            compact: true,
+            stickyHead: false,
+            sortable: false,
+            bulkSelect: false
+        } %}
+            {% block table_head %}
+                {% trans_default_domain 'document' %}
+                <tr>
+                    <th scope="col" class="fa-table__th">{{ 'document.version.number'|trans({}, 'document') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'document.version.uploaded_at'|trans({}, 'document') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'document.version.uploaded_by'|trans({}, 'document') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'document.version.size'|trans({}, 'document') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'document.version.hash'|trans({}, 'document') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'document.version.status'|trans({}, 'document') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions">
+                        <span class="visually-hidden">{{ 'common.actions'|trans({}, 'messages') }}</span>
+                    </th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% trans_default_domain 'document' %}
+                {% for version in versions %}
+                    <tr class="fa-table__row{{ version.isActive ? ' fa-table__row--highlighted' : '' }}">
+                        <td class="fa-table__cell">
+                            <span class="fw-semibold">v{{ version.versionNumber }}</span>
+                            {% if version.isActive %}
+                                <span class="fa-status-pill fa-status-pill--primary ms-1">{{ 'document.version.current'|trans({}, 'document') }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell">{{ version.uploadedAt|date('Y-m-d H:i') }}</td>
+                        <td class="fa-table__cell">
+                            {{ version.uploadedBy ? (version.uploadedBy.fullName ?? version.uploadedBy.email) : '—' }}
+                        </td>
+                        <td class="fa-table__cell">{{ version.fileSizeFormatted }}</td>
+                        <td class="fa-table__cell">
+                            <code class="small text-muted" title="{{ version.contentHash }}">
+                                {{ version.contentHash|slice(0, 8) }}…
+                            </code>
+                        </td>
+                        <td class="fa-table__cell">
+                            {% if version.isPublished %}
+                                <span class="fa-status-pill fa-status-pill--success">{{ 'document.version.published'|trans({}, 'document') }}</span>
+                            {% else %}
+                                <span class="fa-status-pill fa-status-pill--warning">{{ 'document.version.draft'|trans({}, 'document') }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell fa-table__cell--actions">
+                            <a href="{{ path('app_document_version_download', {id: document.id, vid: version.id}) }}"
+                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--xs"
+                               data-turbo="false"
+                               title="{{ 'common.download'|trans({}, 'messages') }}">
+                                <i class="fa-icon fa-icon--download" aria-hidden="true"></i>
+                            </a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for version in versions %}
-                        <tr class="{{ version.isActive ? 'table-primary' : '' }}">
-                            <td>
-                                <span class="fw-semibold">v{{ version.versionNumber }}</span>
-                                {% if version.isActive %}
-                                    <span class="badge bg-primary ms-1">{{ 'document.version.current'|trans({}, 'document') }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ version.uploadedAt|date('Y-m-d H:i') }}</td>
-                            <td>
-                                {{ version.uploadedBy ? (version.uploadedBy.fullName ?? version.uploadedBy.email) : '—' }}
-                            </td>
-                            <td>{{ version.fileSizeFormatted }}</td>
-                            <td>
-                                <code class="small text-muted" title="{{ version.contentHash }}">
-                                    {{ version.contentHash|slice(0, 8) }}…
-                                </code>
-                            </td>
-                            <td>
-                                {% if version.isPublished %}
-                                    <span class="badge bg-success">{{ 'document.version.published'|trans({}, 'document') }}</span>
-                                {% else %}
-                                    <span class="badge bg-warning text-dark">{{ 'document.version.draft'|trans({}, 'document') }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{{ path('app_document_version_download', {id: document.id, vid: version.id}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--xs"
-                                   data-turbo="false"
-                                   title="{{ 'common.download'|trans({}, 'messages') }}">
-                                    <i class="fa-icon fa-icon--download" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>

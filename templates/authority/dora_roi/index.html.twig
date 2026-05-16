@@ -67,7 +67,7 @@
             <div class="col-12">
                 <form method="POST" action="{{ path('dora_roi_generate') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('dora_roi_generate') }}">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>
                         {{ 'eu_authorities.dora_roi.action.generate'|trans({
                             '%year%': reportingYear
@@ -83,34 +83,42 @@
         {{ _fa_section.render({
             title: 'eu_authorities.dora_roi.section.history'|trans,
         }) }}
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>{{ 'eu_authorities.dora_roi.field.reporting_date'|trans }}</th>
-                        <th>{{ 'eu_authorities.dora_roi.field.scope'|trans }}</th>
-                        <th>{{ 'eu_authorities.dora_roi.field.payload_hash'|trans }}</th>
-                        <th>{{ 'eu_authorities.dora_roi.field.submitted_at'|trans }}</th>
-                        <th>{{ 'eu_authorities.dora_roi.field.submitted_by'|trans }}</th>
-                        <th>{{ 'eu_authorities.dora_roi.field.confirmation_number'|trans }}</th>
-                        <th>{{ 'common.actions'|trans({}, 'messages') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
+        {% embed '_components/_fa_table.html.twig' with {
+            id: 'dora-roi-submissions',
+            striped: false,
+            compact: false,
+            stickyHead: false,
+            sortable: false,
+            bulkSelect: false
+        } %}
+            {% block table_head %}
+                {% trans_default_domain 'eu_authorities' %}
+                <tr>
+                    <th scope="col" class="fa-table__th">{{ 'eu_authorities.dora_roi.field.reporting_date'|trans }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'eu_authorities.dora_roi.field.scope'|trans }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'eu_authorities.dora_roi.field.payload_hash'|trans }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'eu_authorities.dora_roi.field.submitted_at'|trans }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'eu_authorities.dora_roi.field.submitted_by'|trans }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'eu_authorities.dora_roi.field.confirmation_number'|trans }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% trans_default_domain 'eu_authorities' %}
                 {% for record in submissions %}
-                    <tr>
-                        <td>{{ record.reportingDate ? record.reportingDate|date('d.m.Y') : '—' }}</td>
-                        <td>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">{{ record.reportingDate ? record.reportingDate|date('d.m.Y') : '—' }}</td>
+                        <td class="fa-table__cell">
                             <span class="badge bg-secondary">
                                 {{ ('eu_authorities.dora_roi.scope.' ~ record.reportingScope)|trans }}
                             </span>
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             <code class="small text-body-secondary" title="{{ record.payloadHash ?? '' }}">
                                 {{ record.payloadHash ? record.payloadHash|slice(0, 12) ~ '…' : '—' }}
                             </code>
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             {% if record.isSubmitted %}
                                 <span class="text-success">
                                     <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
@@ -120,9 +128,9 @@
                                 <span class="text-warning">{{ 'eu_authorities.dora_roi.status.pending'|trans }}</span>
                             {% endif %}
                         </td>
-                        <td>{{ record.submittedBy ? record.submittedBy.userIdentifier : '—' }}</td>
-                        <td>{{ record.confirmationNumber ?? '—' }}</td>
-                        <td>
+                        <td class="fa-table__cell">{{ record.submittedBy ? record.submittedBy.userIdentifier : '—' }}</td>
+                        <td class="fa-table__cell">{{ record.confirmationNumber ?? '—' }}</td>
+                        <td class="fa-table__cell fa-table__cell--actions">
                             {% if not record.isSubmitted and is_granted('ROLE_ADMIN') %}
                             <button type="button"
                                     class="btn btn-sm btn-outline-success"
@@ -133,7 +141,7 @@
                             </button>
 
                             {# Mark-submitted modal #}
-                            <div  class="modal fade"  id="modal-mark-submitted-{{ record.id }}"
+                            <div class="modal fade" id="modal-mark-submitted-{{ record.id }}"
                                  tabindex="-1" aria-labelledby="modal-mark-submitted-label-{{ record.id }}" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -175,9 +183,8 @@
                         </td>
                     </tr>
                 {% endfor %}
-                </tbody>
-            </table>
-        </div>
+            {% endblock %}
+        {% endembed %}
         {% else %}
             {{ _fa_empty_state.render({
                 mood:     'info',

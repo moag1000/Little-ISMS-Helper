@@ -1,12 +1,16 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'four_eyes.inbox.title'|trans({}, 'four_eyes') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
-    <h1 class="h3 mb-3">{{ 'four_eyes.inbox.title'|trans({}, 'four_eyes') }}</h1>
-    <p class="text-muted">{{ 'four_eyes.inbox.lead'|trans({}, 'four_eyes') }}</p>
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-inbox', label: 'nav.four_eyes_inbox'|trans({}, 'nav') },
+        title: 'four_eyes.inbox.title'|trans({}, 'four_eyes'),
+        subtitle: 'four_eyes.inbox.lead'|trans({}, 'four_eyes')
+    }) }}
 
     {% if requests is empty %}
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle' } } %}

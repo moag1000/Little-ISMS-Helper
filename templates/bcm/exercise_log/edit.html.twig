@@ -48,7 +48,7 @@
         <h5 class="mb-3">{{ 'section.improvement_actions'|trans({}, 'bsi_200_4_exercise') }}</h5>
         <div class="mb-4" data-prototype="{{ form_widget(form.improvementActionsCollection.vars.prototype)|e('html_attr') }}">
             {{ form_widget(form.improvementActionsCollection) }}
-            <button type="button" class="btn btn-sm btn-outline-secondary mt-2" data-add-improvement-action>
+            <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost mt-2" data-add-improvement-action>
                 <i class="fa-icon fa-icon--action-add" aria-hidden="true"></i>
                 {{ 'section.improvement_actions'|trans({}, 'bsi_200_4_exercise') }}
             </button>
@@ -57,11 +57,11 @@
         <div class="col-md-4 mb-4">{{ form_row(form.overallRating) }}</div>
 
         <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="fa-icon fa-icon--action-save" aria-hidden="true"></i>
                 {{ 'action.saved'|trans({}, 'bsi_200_4_exercise') }}
             </button>
-            <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="btn btn-outline-secondary">
+            <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 {{ 'common.cancel'|trans({}, 'messages') }}
             </a>
         </div>
