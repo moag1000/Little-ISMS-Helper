@@ -19,7 +19,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
     name: 'app:create-screenshot-user',
-    description: 'Idempotent screenshot/demo user (dev/test only): ROLE_SUPER_ADMIN + ROLE_MANAGER + ROLE_AUDITOR. Used by scripts/screenshots/capture.mjs.',
+    description: 'Idempotent screenshot/demo user (dev/test only): ROLE_SUPER_ADMIN + ROLE_MANAGER + ROLE_AUDITOR + ROLE_DPO. Used by scripts/screenshots/capture.mjs.',
 )]
 class CreateScreenshotUserCommand
 {
@@ -64,7 +64,7 @@ class CreateScreenshotUserCommand
 
         $user->setFirstName('Screenshot');
         $user->setLastName('Bot');
-        $user->setRoles(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_AUDITOR', 'ROLE_USER']);
+        $user->setRoles(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_AUDITOR', 'ROLE_USER', 'ROLE_DPO']);
         $user->setAuthProvider('local');
         $user->setIsActive(true);
         $user->setIsVerified(true);
