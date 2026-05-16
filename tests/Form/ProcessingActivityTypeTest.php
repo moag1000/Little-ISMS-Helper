@@ -135,4 +135,109 @@ final class ProcessingActivityTypeTest extends TestCase
             'Legacy hard-coded 3-stage Assert\\Choice must be removed.'
         );
     }
+
+    // ─── S4 P-1 Wave-2 — OwnerPicker rollout assertions ───────────────────────
+
+    #[Test]
+    public function usesOwnerPickerFormTrait(): void
+    {
+        $source = self::getFormTypeSource();
+        self::assertStringContainsString(
+            'use OwnerPickerFormTrait;',
+            $source,
+            'ProcessingActivityType must use OwnerPickerFormTrait to wire contact + DPO slots.'
+        );
+    }
+
+    #[Test]
+    public function contactSlotIsWiredViaAddOwnerPicker(): void
+    {
+        $source = self::getFormTypeSource();
+        self::assertStringContainsString(
+            "'user_field'     => 'contactPersonUser',",
+            $source,
+            'Contact-Person slot must keep contactPersonUser as the User-slot field.'
+        );
+        self::assertStringContainsString(
+            "'person_field'   => 'contactPerson',",
+            $source,
+            'Contact-Person fallback slot must keep contactPerson as the Person-slot field.'
+        );
+        self::assertStringContainsString(
+            "'deputies_field' => 'contactDeputyPersons',",
+            $source,
+            'Contact deputies must remain contactDeputyPersons.'
+        );
+    }
+
+    #[Test]
+    public function dpoSlotIsModuleGatedAndWiredViaAddOwnerPicker(): void
+    {
+        $source = self::getFormTypeSource();
+        // DPO slot must be wrapped in isModuleActive('privacy') guard.
+        self::assertMatchesRegularExpression(
+            "/isModuleActive\('privacy'\)[^}]*?addOwnerPicker[^}]*?'dataProtectionOfficer'/s",
+            $source,
+            'DPO slot must be wired via addOwnerPicker INSIDE an isModuleActive(privacy) guard.'
+        );
+        self::assertStringContainsString(
+            "'user_field'     => 'dataProtectionOfficer',",
+            $source,
+            'DPO User-slot must remain dataProtectionOfficer.'
+        );
+        self::assertStringContainsString(
+            "'person_field'   => 'dataProtectionOfficerPerson',",
+            $source,
+            'DPO Person fallback slot must remain dataProtectionOfficerPerson.'
+        );
+        self::assertStringContainsString(
+            "'deputies_field' => 'dataProtectionOfficerDeputyPersons',",
+            $source,
+            'DPO deputies must remain dataProtectionOfficerDeputyPersons.'
+        );
+    }
+
+    #[Test]
+    public function validateContactPersonSlotIsRetained(): void
+    {
+        $source = self::getFormTypeSource();
+        self::assertStringContainsString(
+            'public function validateContactPersonSlot(',
+            $source,
+            'ProcessingActivityType must retain the validateContactPersonSlot validator.'
+        );
+    }
+
+    #[Test]
+    public function validateDpoSlotIsModuleAwareSinceP1(): void
+    {
+        $source = self::getFormTypeSource();
+        // The validator must short-circuit when privacy module is off, otherwise
+        // it would fire on tenants without GDPR — false-positive.
+        self::assertStringContainsString(
+            "if (!\$this->isModuleActive('privacy')) {",
+            $source,
+            'validateDpoSlot must short-circuit when privacy module is not active (S4 P-1).'
+        );
+    }
+
+    #[Test]
+    public function legacyInlineEntityTypeFieldsAreRemoved(): void
+    {
+        $source = self::getFormTypeSource();
+        // After P-1 rollout, the contactPersonUser / dataProtectionOfficer
+        // EntityType::class blocks should be wired exclusively through
+        // addOwnerPicker — no inline ->add('contactPersonUser', EntityType::class)
+        // duplications.
+        self::assertStringNotContainsString(
+            "->add('contactPersonUser', EntityType::class",
+            $source,
+            'contactPersonUser must be wired exclusively via addOwnerPicker, not as an inline ->add() call.'
+        );
+        self::assertStringNotContainsString(
+            "->add('dataProtectionOfficerDeputyPersons', EntityType::class",
+            $source,
+            'dataProtectionOfficerDeputyPersons must be wired exclusively via addOwnerPicker.'
+        );
+    }
 }

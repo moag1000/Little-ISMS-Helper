@@ -1,0 +1,94 @@
+{#
+  Aurora wrapper macro for the OwnerPicker cluster (audit-s4 P-1).
+
+  Renders the User + Person primary selects side-by-side with a clear
+  "— or —" separator, the optional Deputies multi-select underneath, and
+  the optional Legacy-Freetext field tucked into an Aurora hint so users
+  know it is "Altdaten — bitte auf User oder Person migrieren".
+
+  Backed by `assets/controllers/owner_picker_controller.js` for the
+  cross-disable UX (selecting a User dims the Person select and vice
+  versa, both stay submittable so re-clearing works).
+
+  Props (object):
+    - userField        FormView, REQUIRED  form.<userField>
+    - personField      FormView, REQUIRED  form.<personField>
+    - deputiesField    FormView|null, default null
+    - legacyField      FormView|null, default null
+    - sectionLabel     string|null, default 'common.owner_picker.section_label'
+    - sectionIcon      string|null, default 'fa-icon--ui-person'
+    - showSection      bool, default true     wrap in <fieldset>
+
+  Example:
+    {% import '_components/_fa_owner_picker.html.twig' as _fa_owner_picker %}
+    {{ _fa_owner_picker.render({
+        userField:     form.ownerUser,
+        personField:   form.ownerPerson,
+        deputiesField: form.ownerDeputyPersons,
+        legacyField:   form.owner,
+        sectionLabel:  'asset.section.assignment'|trans({}, 'asset'),
+    }) }}
+#}
+{% macro render(props) %}
+    {% set _showSection = props.showSection|default(true) %}
+    {% set _sectionLabel = props.sectionLabel|default('common.owner_picker.section_label'|trans({}, 'messages')) %}
+    {% set _sectionIcon = props.sectionIcon|default('fa-icon--ui-person') %}
+
+    {% if _showSection %}
+    <fieldset class="fa-owner-picker mb-4" data-controller="owner-picker">
+        <legend class="h5 mb-3">
+            <i class="fa-icon {{ _sectionIcon }}" aria-hidden="true"></i>
+            {{ _sectionLabel }}
+        </legend>
+    {% else %}
+    <div class="fa-owner-picker" data-controller="owner-picker">
+    {% endif %}
+
+        <div class="fa-owner-picker__primary row align-items-end">
+            <div class="col-md-5 fa-owner-picker__slot fa-owner-picker__slot--user">
+                {{ form_row(props.userField) }}
+            </div>
+            <div class="col-md-1 fa-owner-picker__sep d-none d-md-flex">
+                <span class="fa-owner-picker__sep-label" aria-hidden="true">
+                    {{ 'common.owner_picker.or'|trans({}, 'messages') }}
+                </span>
+            </div>
+            <div class="col-md-6 fa-owner-picker__slot fa-owner-picker__slot--person">
+                {{ form_row(props.personField) }}
+            </div>
+        </div>
+
+        {% if props.deputiesField is defined and props.deputiesField is not null %}
+            <div class="fa-owner-picker__deputies row mt-2">
+                <div class="col-md-12">
+                    {{ form_row(props.deputiesField) }}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if props.legacyField is defined and props.legacyField is not null %}
+            {% set _legacyValue = props.legacyField.vars.value|default('') %}
+            <div class="fa-owner-picker__legacy mt-3">
+                {% if _legacyValue is not empty %}
+                    <div class="fa-alert fa-alert--info mb-2" role="alert">
+                        <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+                        <div class="fa-alert__body">
+                            <div class="fa-alert__title">
+                                {{ 'common.owner_picker.legacy.title'|trans({}, 'messages') }}
+                            </div>
+                            <p class="fa-alert__message">
+                                {{ 'common.owner_picker.legacy.body'|trans({}, 'messages') }}
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+                {{ form_row(props.legacyField) }}
+            </div>
+        {% endif %}
+
+    {% if _showSection %}
+    </fieldset>
+    {% else %}
+    </div>
+    {% endif %}
+{% endmacro %}

@@ -157,11 +157,49 @@
     </div>
     <div class="card-body">
         <div class="row">
+            {# P-15 DataReuse: structured lead-auditor pickers (User + Person)
+               surface first; legacy free-text is preserved as a deprecated
+               textfield underneath for migration data. #}
+            {% if form.leadAuditorUser is defined %}
+            <div class="col-md-6">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.leadAuditorUser,
+                    'label_key': 'audit.field.lead_auditor_user',
+                    'help_key': 'audit.help.lead_auditor_user',
+                    'translation_domain': 'audit'
+                } %}
+            </div>
+            {% endif %}
+
+            {% if form.leadAuditorPerson is defined %}
+            <div class="col-md-6">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.leadAuditorPerson,
+                    'label_key': 'audit.field.lead_auditor_person',
+                    'help_key': 'audit.help.lead_auditor_person',
+                    'translation_domain': 'audit'
+                } %}
+            </div>
+            {% endif %}
+
+            {% if form.auditTeamMembers is defined %}
+            <div class="col-12">
+                {% include '_components/_form_field.html.twig' with {
+                    'field': form.auditTeamMembers,
+                    'label_key': 'audit.field.audit_team_members',
+                    'help_key': 'audit.help.audit_team_members',
+                    'translation_domain': 'audit'
+                } %}
+            </div>
+            {% endif %}
+
+            {# Legacy free-text — migration display only. Hidden when the
+               structured field above already carries data. #}
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.leadAuditor,
-                    'label_key': 'audit.field.lead_auditor',
-                    'help_key': 'audit.help.lead_auditor',
+                    'label_key': 'audit.field.lead_auditor_legacy',
+                    'help_key': 'audit.help.lead_auditor_legacy',
                     'translation_domain': 'audit'
                 } %}
             </div>
@@ -169,8 +207,8 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.auditTeam,
-                    'label_key': 'audit.field.audit_team',
-                    'help_key': 'audit.help.audit_team',
+                    'label_key': 'audit.field.audit_team_legacy',
+                    'help_key': 'audit.help.audit_team_legacy',
                     'translation_domain': 'audit'
                 } %}
             </div>

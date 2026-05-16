@@ -63,6 +63,8 @@ training:
     trainer_deputy_persons: 'Vertretungen Trainer (Personen)'
     target_audience: Zielgruppe
     participants: Teilnehmende
+    participants_legacy: Teilnehmende (Freitext, Migration)
+    participant_users: 'Teilnehmende (Benutzer aus Tenant)'
     status: Status
     mandatory: Verpflichtend
     related_controls: Zugeordnete Maßnahmen
@@ -85,6 +87,8 @@ training:
   help:
     duration: Dauer in Minuten (15-480)
     participants: Namen der Teilnehmer (ein Name pro Zeile oder kommasepariert)
+    participants_legacy: 'Legacy-Freitext-Liste — nur für Migration. Bitte Multi-Select „Teilnehmende (Benutzer)“ nutzen.'
+    participant_users: 'Strukturierte Auswahl von Benutzern aus diesem Mandanten. Speichern legt automatisch TrainingParticipation-Datensätze (Status „pending“) an — ISO 27001 §7.3 Audit-Trail.'
     covered_controls: Welche ISO 27001 Controls werden durch diese Schulung adressiert?
     compliance_requirements: Welche Compliance-Anforderungen werden durch diese Schulung
       erfüllt? (z.B. DORA, TISAX, NIS2)

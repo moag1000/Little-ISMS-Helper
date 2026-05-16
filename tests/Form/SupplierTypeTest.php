@@ -221,4 +221,52 @@ final class SupplierTypeTest extends TypeTestCase
         self::assertTrue($form->has('lksgRiskCategory'));     // lksg
         self::assertTrue($form->has('outsourcingClassification')); // marisk
     }
+
+    // ── S4 P-1 Wave-2 — OwnerPicker rollout ────────────────────────────
+    //
+    // The Supplier entity carries only a single legacy free-text
+    // `contactPerson` column — no User/Person slots are defined on
+    // App\Entity\Supplier yet. The Wave-2 spec explicitly qualifies
+    // the SupplierType rollout with "wenn vorhanden" (only if the
+    // primaryContactUser/primaryContactPerson slots exist).
+    //
+    // The rollout is therefore intentionally a no-op for SupplierType.
+    // These tests document the current state so a future agent who
+    // adds the User/Person slots on the entity gets a failing test
+    // that prompts them to wire the compound owner-picker.
+
+    #[Test]
+    public function supplierTypeStillHasLegacyContactPersonFreetext(): void
+    {
+        $this->activeModules = [];
+        $form = $this->factory->create(SupplierType::class, new Supplier());
+
+        // Legacy free-text remains the only contact-person representation
+        // on Supplier as of S4 P-1 Wave-2. Promotion to a compound slot
+        // is blocked by the missing entity columns.
+        self::assertTrue(
+            $form->has('contactPerson'),
+            'SupplierType must keep legacy contactPerson free-text until '
+            . 'User/Person slots are added to the entity.'
+        );
+    }
+
+    #[Test]
+    public function supplierEntityDoesNotYetCarryOwnerPickerSlots(): void
+    {
+        // Marker test — when this assertion starts failing, the entity
+        // has gained the slots and SupplierType should be updated to
+        // wire a compound owner-picker via addOwnerPicker().
+        $entityFile = __DIR__ . '/../../src/Entity/Supplier.php';
+        self::assertFileExists($entityFile);
+        $source = file_get_contents($entityFile);
+        self::assertIsString($source);
+
+        self::assertStringNotContainsString(
+            'private ?User $primaryContactUser',
+            $source,
+            'When Supplier::$primaryContactUser is introduced, wire it via '
+            . 'OwnerPickerFormTrait::addOwnerPicker() in SupplierType (S4 P-1 Wave-2).'
+        );
+    }
 }

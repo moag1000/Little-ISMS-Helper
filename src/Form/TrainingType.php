@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\ComplianceFramework;
-use App\Entity\Person;
-use App\Entity\User;
 use App\Entity\Training;
 use App\Entity\Control;
 use App\Entity\ComplianceRequirement;
+use App\Entity\User;
+use App\Entity\Person;
+use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -26,6 +27,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class TrainingType extends AbstractType
 {
+    use OwnerPickerFormTrait;
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -93,41 +96,6 @@ class TrainingType extends AbstractType
                 ],
                 'help' => 'training.help.duration',
             ])
-            ->add('trainerUser', EntityType::class, [
-                'label' => 'training.field.trainer',
-                'class' => User::class,
-                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
-                'required' => false,
-                'placeholder' => 'training.placeholder.trainer_user',
-                'help' => 'training.help.trainer_user',
-            ])
-            ->add('trainerPerson', EntityType::class, [
-                'label' => 'training.field.trainer_person',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'placeholder' => 'training.placeholder.trainer_person',
-                'required' => false,
-                'help' => 'training.help.trainer_person',
-            ])
-            ->add('trainerDeputyPersons', EntityType::class, [
-                'label' => 'training.field.trainer_deputy_persons',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'attr' => [
-                    'data-controller' => 'tom-select',
-                ],
-                'help' => 'training.help.trainer_deputy_persons',
-            ])
-            ->add('trainer', TextType::class, [
-                'label' => 'training.field.trainer_legacy',
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'training.placeholder.trainer',
-                ],
-            ])
             ->add('targetAudience', TextType::class, [
                 'label' => 'training.field.target_audience',
                 'required' => false,
@@ -136,14 +104,33 @@ class TrainingType extends AbstractType
                 ],
                 'help' => 'training.help.target_audience',
             ])
+            // P-15 DataReuse: structured participantUsers Multi-Select.
+            // Persisting flows through TrainingController which creates
+            // TrainingParticipation rows on save (status=pending,
+            // assignmentSource=manual:edit_form). Legacy `participants`
+            // textarea kept read-only for migration data.
+            ->add('participantUsers', EntityType::class, [
+                'label' => 'training.field.participant_users',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'mapped' => true,
+                'by_reference' => false,
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'training.help.participant_users',
+            ])
             ->add('participants', TextareaType::class, [
-                'label' => 'training.field.participants',
+                'label' => 'training.field.participants_legacy',
                 'required' => false,
                 'attr' => [
                     'rows' => 3,
                     'placeholder' => 'training.placeholder.participants',
                 ],
-                'help' => 'training.help.participants',
+                'help' => 'training.help.participants_legacy',
             ])
             ->add('attendeeCount', IntegerType::class, [
                 'label' => 'training.field.attendee_count',
@@ -220,6 +207,29 @@ class TrainingType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
             ]);
+
+        // S4 P-1 Wave-2 — Trainer compound slot. Replaces the inline
+        // 4-field block (trainerUser + trainerPerson + trainerDeputyPersons
+        // + trainer legacy text). Legacy free-text `trainer` is preserved
+        // as read-only Migration-Hint when populated.
+        $this->addOwnerPicker($builder, [
+            'field_prefix'       => 'trainer',
+            'user_field'         => 'trainerUser',
+            'person_field'       => 'trainerPerson',
+            'deputies_field'     => 'trainerDeputyPersons',
+            'legacy_field'       => 'trainer',
+            'label_user'         => 'training.field.trainer',
+            'label_person'       => 'training.field.trainer_person',
+            'label_deputies'     => 'training.field.trainer_deputy_persons',
+            'label_legacy'       => 'training.field.trainer_legacy',
+            'placeholder_user'   => 'training.placeholder.trainer_user',
+            'placeholder_person' => 'training.placeholder.trainer_person',
+            'help_user'          => 'training.help.trainer_user',
+            'help_person'        => 'training.help.trainer_person',
+            'help_deputies'      => 'training.help.trainer_deputy_persons',
+            'with_deputies'      => true,
+            'with_legacy'        => true,
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

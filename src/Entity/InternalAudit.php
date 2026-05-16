@@ -6,7 +6,10 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Person;
 use App\Entity\Tenant;
+use App\Entity\User;
+use App\Service\OwnerResolver;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -167,15 +170,58 @@ class InternalAudit
     #[Groups(['audit:read', 'audit:write'])]
     private ?DateTimeInterface $actualDate = null;
 
-    #[ORM\Column(length: 100)]
+    /**
+     * Legacy free-text lead auditor name. P-15 DataReuse: kept read-only for
+     * migration display once `leadAuditorUser` or `leadAuditorPerson` is set.
+     * No longer NotBlank — the Pattern-A validator on the form enforces that
+     * at least one of legacy/user/person is provided.
+     */
+    #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\NotBlank(message: 'Lead auditor is required')]
     #[Assert\Length(max: 100, maxMessage: 'Lead auditor name cannot exceed {{ limit }} characters')]
     private ?string $leadAuditor = null;
 
+    /**
+     * Pattern A dual-state (P-15 DataReuse): preferred structured lead auditor
+     * as an application User. Falls back to leadAuditorPerson, then legacy
+     * `leadAuditor` string.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'lead_auditor_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['audit:read', 'audit:write'])]
+    private ?User $leadAuditorUser = null;
+
+    /**
+     * Pattern A dual-state (P-15 DataReuse): preferred structured lead auditor
+     * as a Stammdaten Person (external auditor without app login).
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'lead_auditor_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['audit:read', 'audit:write'])]
+    private ?Person $leadAuditorPerson = null;
+
+    /**
+     * Legacy free-text audit team list ("Names, comma-separated"). P-15
+     * DataReuse: kept read-only for migration display once the typed
+     * `auditTeamMembers` collection is populated.
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
     private ?string $auditTeam = null;
+
+    /**
+     * Pattern A dual-state (P-15 DataReuse): typed audit-team roster as a
+     * Collection<Person>. Replaces the legacy comma-separated `auditTeam`
+     * textarea.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'internal_audit_team_member')]
+    #[ORM\JoinColumn(name: 'internal_audit_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Groups(['audit:read', 'audit:write'])]
+    private ?Collection $auditTeamMembers = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
@@ -336,6 +382,7 @@ public function __construct()
         $this->structuredFindings = new ArrayCollection();
         $this->derivedAudits = new ArrayCollection();
         $this->additionalScopedFrameworks = new ArrayCollection();
+        $this->auditTeamMembers = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -521,10 +568,46 @@ public function __construct()
         return $this->leadAuditor;
     }
 
-    public function setLeadAuditor(string $leadAuditor): static
+    public function setLeadAuditor(?string $leadAuditor): static
     {
         $this->leadAuditor = $leadAuditor;
         return $this;
+    }
+
+    public function getLeadAuditorUser(): ?User
+    {
+        return $this->leadAuditorUser;
+    }
+
+    public function setLeadAuditorUser(?User $leadAuditorUser): static
+    {
+        $this->leadAuditorUser = $leadAuditorUser;
+        return $this;
+    }
+
+    public function getLeadAuditorPerson(): ?Person
+    {
+        return $this->leadAuditorPerson;
+    }
+
+    public function setLeadAuditorPerson(?Person $leadAuditorPerson): static
+    {
+        $this->leadAuditorPerson = $leadAuditorPerson;
+        return $this;
+    }
+
+    /**
+     * P-15 DataReuse Tri-State resolver — prefer structured User name, then
+     * Person, fall back to legacy `leadAuditor` free-text. Templates should
+     * read this instead of accessing the raw fields directly.
+     */
+    public function getEffectiveLeadAuditorName(): ?string
+    {
+        return OwnerResolver::resolveEffective(
+            $this->leadAuditorUser,
+            $this->leadAuditorPerson,
+            $this->leadAuditor,
+        );
     }
 
     public function getAuditTeam(): ?string
@@ -535,6 +618,26 @@ public function __construct()
     public function setAuditTeam(?string $auditTeam): static
     {
         $this->auditTeam = $auditTeam;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getAuditTeamMembers(): Collection
+    {
+        return $this->auditTeamMembers ??= new ArrayCollection();
+    }
+
+    public function addAuditTeamMember(Person $person): static
+    {
+        if (!$this->getAuditTeamMembers()->contains($person)) {
+            $this->getAuditTeamMembers()->add($person);
+        }
+        return $this;
+    }
+
+    public function removeAuditTeamMember(Person $person): static
+    {
+        $this->getAuditTeamMembers()->removeElement($person);
         return $this;
     }
 
