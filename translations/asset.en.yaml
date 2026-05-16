@@ -24,6 +24,7 @@ asset:
   section:
     basic_info: Basic Information
     assignment: Assignment
+    location: Location
     financial: Financial Information
     classification: Classification & Status
     cia_values: CIA assessment (protection needs)

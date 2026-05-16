@@ -10,6 +10,7 @@ use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Trait\OwnerPickerFormTrait;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -28,6 +29,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class AssetType extends AbstractType
 {
     use ModuleAwareFormTrait;
+    use OwnerPickerFormTrait;
 
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
@@ -72,43 +74,27 @@ class AssetType extends AbstractType
                     'data-asset-form-target' => 'assetTypeSelect',
                 ],
             ])
-            ->add('ownerUser', EntityType::class, [
-                'label' => 'asset.field.owner',
-                'class' => User::class,
-                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
-                'required' => false,
-                'placeholder' => 'asset.placeholder.owner_user',
-                'help' => 'asset.help.owner_user',
-            ])
-            ->add('ownerPerson', EntityType::class, [
-                'label' => 'asset.field.owner_person',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'placeholder' => 'asset.placeholder.owner_person',
-                'help' => 'asset.help.owner_person',
-            ])
-            ->add('ownerDeputyPersons', EntityType::class, [
-                'label' => 'asset.field.owner_deputies',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'attr' => [
-                    'data-controller' => 'tom-select',
-                ],
-                'help' => 'asset.help.owner_deputies',
-            ])
-            ->add('owner', TextType::class, [
-                'label' => 'asset.field.owner_legacy',
-                'required' => false,
-                'attr' => [
-                    'maxlength' => 100,
-                    'placeholder' => 'asset.placeholder.owner',
-                ],
-                'help' => 'asset.help.owner',
-            ])
+        ;
+
+        // ── Owner cluster (audit-s4 P-1) ────────────────────────────────────
+        // Replaces 4 hand-rolled add() calls (ownerUser/ownerPerson/
+        // ownerDeputyPersons/owner) with one shared helper. Pattern A
+        // dual-state semantics are preserved at the entity layer
+        // (validateOwnerSlot stays below, getEffectiveOwner stays in Asset).
+        $this->addOwnerPicker($builder, [
+            'user_field'         => 'ownerUser',
+            'person_field'       => 'ownerPerson',
+            'deputies_field'     => 'ownerDeputyPersons',
+            'legacy_field'       => 'owner',
+            'translation_prefix' => 'asset',
+            'user_label'         => 'asset.field.owner',
+            'user_placeholder'   => 'asset.placeholder.owner_user',
+            'legacy_label'       => 'asset.field.owner_legacy',
+            'legacy_help'        => 'asset.help.owner',
+            'legacy_placeholder' => 'asset.placeholder.owner',
+        ]);
+
+        $builder
             ->add('physicalLocation', EntityType::class, [
                 'label' => 'asset.field.location',
                 'class' => Location::class,

@@ -10,6 +10,7 @@ use App\Entity\Control;
 use App\Entity\InternalAudit;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -23,6 +24,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class AuditFindingType extends AbstractType
 {
+    use OwnerPickerFormTrait;
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -120,33 +123,30 @@ class AuditFindingType extends AbstractType
                 'placeholder' => 'audit_finding.placeholder.related_control',
                 'required' => false,
             ])
-            ->add('assignedTo', EntityType::class, [
-                'label' => 'audit_finding.field.assigned_to',
-                'class' => User::class,
-                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
-                'placeholder' => 'audit_finding.placeholder.assigned_to',
-                'required' => false,
-            ])
-            ->add('assignedPerson', EntityType::class, [
-                'label' => 'audit_finding.field.assigned_person',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'placeholder' => 'audit_finding.placeholder.assigned_person',
-                'required' => false,
-                'help' => 'audit_finding.help.assigned_person',
-            ])
-            ->add('assignedDeputyPersons', EntityType::class, [
-                'label' => 'audit_finding.field.assigned_deputy_persons',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'attr' => [
-                    'data-controller' => 'tom-select',
-                ],
-                'help' => 'audit_finding.help.assigned_deputy_persons',
-            ])
+        ;
+
+        // ── Assigned Owner cluster (audit-s4 P-1) ───────────────────────────
+        // Replaces assignedTo / assignedPerson / assignedDeputyPersons. The
+        // separate "reportedByPerson" + "reportedByDeputyPersons" slot stays
+        // hand-rolled below — it is a different governance role (Reporter,
+        // not Owner) per SOLUTIONS_FOUNDATION.md P-1 exception list.
+        $this->addOwnerPicker($builder, [
+            'user_field'         => 'assignedTo',
+            'person_field'       => 'assignedPerson',
+            'deputies_field'     => 'assignedDeputyPersons',
+            'legacy_field'       => null,
+            'translation_prefix' => 'audit_finding',
+            'user_label'         => 'audit_finding.field.assigned_to',
+            'user_placeholder'   => 'audit_finding.placeholder.assigned_to',
+            'user_help'          => 'audit_finding.help.assigned_to',
+            'person_label'       => 'audit_finding.field.assigned_person',
+            'person_placeholder' => 'audit_finding.placeholder.assigned_person',
+            'person_help'        => 'audit_finding.help.assigned_person',
+            'deputies_label'     => 'audit_finding.field.assigned_deputy_persons',
+            'deputies_help'      => 'audit_finding.help.assigned_deputy_persons',
+        ]);
+
+        $builder
             ->add('reportedByPerson', EntityType::class, [
                 'label' => 'audit_finding.field.reported_by_person',
                 'class' => Person::class,

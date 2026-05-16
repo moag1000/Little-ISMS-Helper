@@ -65,6 +65,8 @@ training:
     trainer_deputy_persons: 'Trainer Deputies (Persons)'
     target_audience: Target Audience
     participants: Participants
+    participants_legacy: Participants (Free Text, Migration)
+    participant_users: 'Participants (Tenant Users)'
     status: Status
     mandatory: Mandatory
     related_controls: Related Controls
@@ -97,6 +99,8 @@ training:
   help:
     duration: Duration in minutes (15-480)
     participants: Participant names (one per line or comma-separated)
+    participants_legacy: 'Legacy free-text list — for migration only. Prefer the "Participants (Users)" multi-select.'
+    participant_users: 'Structured user selection from this tenant. Saving auto-creates TrainingParticipation rows (status=pending) — ISO 27001 §7.3 audit trail.'
     covered_controls: Which ISO 27001 Controls are addressed by this training?
     compliance_requirements: Which compliance requirements are fulfilled by this training?
       (e.g. DORA, TISAX, NIS2)

@@ -70,6 +70,9 @@ bc_plans:
     required_resources: 'Erforderliche Ressourcen (strukturiert)'
     escalation_levels: 'Eskalationsstufen'
     crisis_teams: 'Krisenstäbe'
+    rto: 'Recovery Time Objective (Stunden)'
+    rpo: 'Recovery Point Objective (Stunden)'
+    critical_assets: 'Geschäftskritische Assets'
   status:
     draft: Entwurf
     under_review: In Überprüfung
@@ -125,6 +128,9 @@ bc_plans:
     required_resources_json: 'JSON-Objekt mit Ressourcenbedarf: {"personnel": [], "equipment": [], "supplies": []}. ISO 22301 §8.1.'
     escalation_levels_json: 'JSON-Array mit Eskalationsstufen gemäß BSI 200-4 §6.2: [{"level":1,"trigger":"...","responder":"...","escalateAfter":"15min"}].'
     crisis_teams: 'Krisenstäbe, die für diesen Plan zuständig sind (ISO 22301 §8.4.2). Mehrfachauswahl möglich.'
+    rto: 'ISO 22301 Cl. 8.4.2 — maximal akzeptable Wiederherstellungszeit nach Ausfall, in Stunden. Beispiele: kritisch=1, hoch=4, mittel=24, niedrig=72.'
+    rpo: 'ISO 22301 Cl. 8.4.2 — maximal tolerierbarer Datenverlust, gemessen in Stunden zwischen letztem konsistentem Backup und Eintritt der Störung.'
+    critical_assets: 'Assets, die für die Wiederherstellung dieses Geschäftsprozesses essentiell sind. Mehrfachauswahl möglich.'
   placeholder:
     plan_owner_user: -- Verantwortliche Person --
     plan_owner_person: -- Person aus Stammdaten --
@@ -137,6 +143,8 @@ bc_plans:
     required_resources: 'Mindestressourcen, die für den Notbetrieb benötigt werden: Personal, IT-Systeme, Kommunikationsmittel, Räumlichkeiten und kritische Drittdienstleister (ISO 22301 Kl. 8.1).'
   error:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+    rto_range: 'RTO muss zwischen 0 und 8760 Stunden (= 1 Jahr) liegen.'
+    rpo_range: 'RPO muss zwischen 0 und 8760 Stunden (= 1 Jahr) liegen.'
   team_role:
     incident_commander: 'Vorfalls-Koordinator (Incident Commander)'
     comms_lead: 'Kommunikations-Lead'

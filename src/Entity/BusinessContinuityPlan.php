@@ -212,6 +212,31 @@ class BusinessContinuityPlan
     private ?array $requiredResources = null;
 
     /**
+     * Recovery Time Objective (Stunden) — ISO 22301 Cl. 8.2.2 / 8.4.2.
+     *
+     * Maximal akzeptable Wiederherstellungszeit dieses BC-Plans nach Eintritt
+     * einer Störung. Kann vom RTO des assoziierten Geschäftsprozesses
+     * (BIA-Ergebnis) abweichen, wenn der Plan ein dediziertes
+     * Wiederanlauf-Szenario abdeckt.
+     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true, options: ['comment' => 'Recovery Time Objective in hours (ISO 22301 8.2.2)'])]
+    #[Assert\Range(min: 0, max: 8760, notInRangeMessage: 'bc_plans.error.rto_range')]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    private ?int $rto = null;
+
+    /**
+     * Recovery Point Objective (Stunden) — ISO 22301 Cl. 8.2.2 / 8.4.2.
+     *
+     * Maximal tolerierbarer Datenverlust für diesen Plan, gemessen als
+     * Zeitspanne zwischen letztem konsistentem Backup und Eintritt der
+     * Störung.
+     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true, options: ['comment' => 'Recovery Point Objective in hours (ISO 22301 8.2.2)'])]
+    #[Assert\Range(min: 0, max: 8760, notInRangeMessage: 'bc_plans.error.rpo_range')]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    private ?int $rpo = null;
+
+    /**
      * Response team members — structured list per ISO 22301 §8.5.3
      * [{role: 'incident_commander|comms_lead|recovery_lead|technical_lead', userId: int|null, name: string, contact: string, responsibilities: string}, ...]
      */
@@ -555,6 +580,28 @@ class BusinessContinuityPlan
     public function setRequiredResources(?array $requiredResources): static
     {
         $this->requiredResources = $requiredResources;
+        return $this;
+    }
+
+    public function getRto(): ?int
+    {
+        return $this->rto;
+    }
+
+    public function setRto(?int $rto): static
+    {
+        $this->rto = $rto;
+        return $this;
+    }
+
+    public function getRpo(): ?int
+    {
+        return $this->rpo;
+    }
+
+    public function setRpo(?int $rpo): static
+    {
+        $this->rpo = $rpo;
         return $this;
     }
 

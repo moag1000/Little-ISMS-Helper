@@ -11,6 +11,7 @@
 
 {% trans_default_domain 'assets' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_owner_picker.html.twig' as _fa_owner_picker %}
 
 {# Basic Information Section #}
 <fieldset class="mb-4">
@@ -53,34 +54,23 @@
     </div>
 </fieldset>
 
-{# Assignment Section #}
+{# Assignment Section — audit-s4 P-1 OwnerPicker (unified User/Person/Deputies/Legacy) #}
+{{ _fa_owner_picker.render({
+    userField:     form.ownerUser,
+    personField:   form.ownerPerson,
+    deputiesField: form.ownerDeputyPersons,
+    legacyField:   form.owner,
+    sectionLabel:  'asset.section.assignment'|trans({}, 'asset'),
+    sectionIcon:   'fa-icon--ui-person',
+}) }}
+
+{# Location lives next to Assignment but is no longer in the OwnerPicker slot #}
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
-        <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i>
-        {{ 'asset.section.assignment'|trans({}, 'asset') }}
+        <i class="fa-icon fa-icon--ui-location" aria-hidden="true"></i>
+        {{ 'asset.section.location'|trans({}, 'asset') }}
     </legend>
-
     <div class="row">
-        <div class="col-md-4">
-            {{ form_row(form.ownerUser) }}
-        </div>
-        <div class="col-md-4">
-            {{ form_row(form.ownerPerson) }}
-        </div>
-        <div class="col-md-4">
-            {{ form_row(form.ownerDeputyPersons) }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.owner,
-                'label_key': 'asset.field.owner',
-                'help_key': 'asset.help.owner',
-                'translation_domain': 'assets'
-            } %}
-        </div>
-
         <div class="col-md-6">
             {# Field renamed from 'location' to 'physicalLocation' in AssetType — template synced to FormType. #}
             {% include '_components/_form_field.html.twig' with {

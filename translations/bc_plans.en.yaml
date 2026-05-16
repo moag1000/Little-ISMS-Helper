@@ -70,6 +70,9 @@ bc_plans:
     required_resources: 'Required Resources (structured)'
     escalation_levels: 'Escalation Levels'
     crisis_teams: 'Crisis Teams'
+    rto: 'Recovery Time Objective (hours)'
+    rpo: 'Recovery Point Objective (hours)'
+    critical_assets: 'Business-critical assets'
   status:
     draft: Draft
     under_review: Under Review
@@ -123,6 +126,9 @@ bc_plans:
     required_resources_json: 'JSON object with resource requirements: {"personnel": [], "equipment": [], "supplies": []}. ISO 22301 §8.1.'
     escalation_levels_json: 'JSON array with escalation levels per BSI 200-4 §6.2: [{"level":1,"trigger":"...","responder":"...","escalateAfter":"15min"}].'
     crisis_teams: 'Crisis teams responsible for this plan (ISO 22301 §8.4.2). Multiple selection possible.'
+    rto: 'ISO 22301 Cl. 8.4.2 — maximum acceptable recovery time after an outage, in hours. Examples: critical=1, high=4, medium=24, low=72.'
+    rpo: 'ISO 22301 Cl. 8.4.2 — maximum tolerable data loss, measured in hours between last consistent backup and the start of the disruption.'
+    critical_assets: 'Assets essential for the recovery of this business process. Multiple selection possible.'
   placeholder:
     plan_owner_user: -- Select owner --
     plan_owner_person: -- Person from master data --
@@ -135,6 +141,8 @@ bc_plans:
     required_resources: 'Minimum resources needed for emergency operations: staff, IT systems, communication tools, premises and critical third-party service providers (ISO 22301 Cl. 8.1).'
   error:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+    rto_range: 'RTO must be between 0 and 8760 hours (= 1 year).'
+    rpo_range: 'RPO must be between 0 and 8760 hours (= 1 year).'
   team_role:
     incident_commander: 'Incident Commander'
     comms_lead: 'Communications Lead'

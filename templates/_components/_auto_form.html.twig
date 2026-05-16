@@ -51,6 +51,34 @@
 {% set other_section_label = other_section_label|default('common.section.other'|trans({}, 'messages')) %}
 {% set skip_other = skip_other|default(false) %}
 
+{# ─── S4 Foundation P-2 SectionPolicy ───────────────────────────────────────
+   If caller did not pass a `sections` dict explicitly, check if the FormType
+   implements SectionMapInterface (form_section_map() returns non-null) and
+   build the sections dict from `getSectionMap()`. Section labels resolve to
+   the `form.section.<key>` translation key in `messages` domain.
+
+   This makes regulatorily-critical fields (BCPlan RTO/RPO, BCExercise
+   actualRtoAchieved/successCriteria, etc.) appear in well-defined sections
+   instead of leaking into the catch-all "Sonstiges" bucket.
+#}
+{% set sections = sections|default(null) %}
+{% if sections is null %}
+    {% set _form_section_map = form_section_map(form) %}
+    {% if _form_section_map is not null %}
+        {% set sections = {} %}
+        {% for section_key, field_list in _form_section_map %}
+            {% set sections = sections|merge({
+                (section_key): {
+                    'label': ('form.section.' ~ section_key)|trans({}, 'messages'),
+                    'fields': field_list,
+                }
+            }) %}
+        {% endfor %}
+    {% else %}
+        {% set sections = {} %}
+    {% endif %}
+{% endif %}
+
 {# Collect all field names listed in sections — for catch-all detection #}
 {% set listed_fields = [] %}
 {% for section in sections %}
@@ -149,7 +177,13 @@
 
    Skip via {skip_other: true} param if caller intentionally manages all
    fields (e.g. has its own form_widget calls outside this component).
+
+   S4 P-2 SectionPolicy note: if the FormType implements SectionMapInterface,
+   any field that ends up here is a leak — it means the section-map is out
+   of sync with the builder. In dev-env we render a visible warning. CI-gate
+   `scripts/quality/check_form_sections.py` enforces parity.
 #}
+{% set _has_section_map = form_section_map(form) is not null %}
 {% if not skip_other %}
     {% set other_fields = [] %}
     {% for child in form %}
@@ -162,6 +196,12 @@
     {% if other_fields|length > 0 %}
         <fieldset class="mb-4">
             <legend class="h5 mb-3">{{ other_section_label }}</legend>
+            {% if _has_section_map and app.environment == 'dev' %}
+                <div class="alert alert-warning small mb-3" role="alert">
+                    <strong>{{ 'form.section.warning.unmapped_title'|trans({}, 'messages') }}</strong>
+                    {{ 'form.section.warning.unmapped_body'|trans({ '%fields%': other_fields|join(', ') }, 'messages') }}
+                </div>
+            {% endif %}
             {% set current_row_fields = [] %}
             {% set current_row_width = 0 %}
             {% for field_name in other_fields %}
