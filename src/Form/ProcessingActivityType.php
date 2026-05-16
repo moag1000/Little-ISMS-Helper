@@ -6,9 +6,10 @@ namespace App\Form;
 
 use App\Entity\Asset;
 use App\Entity\Control;
-use App\Entity\Person;
 use App\Entity\ProcessingActivity;
-use App\Entity\User;
+use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Trait\OwnerPickerFormTrait;
+use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -29,6 +30,14 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class ProcessingActivityType extends AbstractType
 {
+    use ModuleAwareFormTrait;
+    use OwnerPickerFormTrait;
+
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -352,63 +361,6 @@ class ProcessingActivityType extends AbstractType
                 'help' => 'processing_activity.help.responsible_department',
                 'required' => false,
             ])
-            ->add('contactPersonUser', EntityType::class, [
-                'label' => 'processing_activity.form.contact_person',
-                'help' => 'processing_activity.help.contact_person',
-                'class' => User::class,
-                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
-                'required' => false,
-                'attr' => ['data-controller' => 'tom-select'],
-            ])
-            ->add('contactPerson', EntityType::class, [
-                'label' => 'processing_activity.form.contact_person_person',
-                'help' => 'processing_activity.help.contact_person_person',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'placeholder' => 'processing_activity.placeholder.contact_person_person',
-            ])
-            ->add('contactDeputyPersons', EntityType::class, [
-                'label' => 'processing_activity.form.contact_deputies',
-                'help' => 'processing_activity.help.contact_deputies',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'attr' => [
-                    'data-controller' => 'tom-select',
-                ],
-            ])
-            ->add('dataProtectionOfficer', EntityType::class, [
-                'label' => 'processing_activity.form.data_protection_officer',
-                'help' => 'processing_activity.help.data_protection_officer',
-                'class' => User::class,
-                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
-                'required' => false,
-                'attr' => ['data-controller' => 'tom-select'],
-            ])
-            ->add('dataProtectionOfficerPerson', EntityType::class, [
-                'label' => 'processing_activity.form.data_protection_officer_person',
-                'help' => 'processing_activity.help.data_protection_officer_person',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'placeholder' => 'processing_activity.placeholder.data_protection_officer_person',
-            ])
-            ->add('dataProtectionOfficerDeputyPersons', EntityType::class, [
-                'label' => 'processing_activity.form.data_protection_officer_deputies',
-                'help' => 'processing_activity.help.data_protection_officer_deputies',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'attr' => [
-                    'data-controller' => 'tom-select',
-                ],
-            ])
-
             // ============================================================================
             // Processors (Art. 28)
             // ============================================================================
@@ -565,6 +517,52 @@ class ProcessingActivityType extends AbstractType
                 'required' => false,
             ])
         ;
+
+        // S4 P-1 Wave-2 — OwnerPicker rollout (P-1).
+        // Contact-Person compound slot: contactPersonUser (User) +
+        // contactPerson (Person) + contactDeputyPersons (Multi-Person).
+        // No legacy free-text exists on ProcessingActivity → with_legacy=false.
+        // Slot identity matches existing entity fields so the validator
+        // (validateContactPersonSlot) continues to function unchanged.
+        $this->addOwnerPicker($builder, [
+            'field_prefix'   => 'contact',
+            'user_field'     => 'contactPersonUser',
+            'person_field'   => 'contactPerson',
+            'deputies_field' => 'contactDeputyPersons',
+            'label_user'     => 'processing_activity.form.contact_person',
+            'label_person'   => 'processing_activity.form.contact_person_person',
+            'label_deputies' => 'processing_activity.form.contact_deputies',
+            'help_user'      => 'processing_activity.help.contact_person',
+            'help_person'    => 'processing_activity.help.contact_person_person',
+            'help_deputies'  => 'processing_activity.help.contact_deputies',
+            'placeholder_person' => 'processing_activity.placeholder.contact_person_person',
+            'with_deputies'  => true,
+            'with_legacy'    => false,
+        ]);
+
+        // DPO compound slot — DPO-Modul-Gate: `dpoSlot` nur sichtbar wenn `privacy`-Modul
+        // aktiv (S2-Pattern). The validator (validateDpoSlot) keeps working because
+        // the entity fields are unchanged; the validator only fires when the form
+        // actually built the DPO fields (otherwise both getters return null and
+        // the violation would fire unintentionally — see validateDpoSlot which
+        // checks both for null before raising).
+        if ($this->isModuleActive('privacy')) {
+            $this->addOwnerPicker($builder, [
+                'field_prefix'   => 'dpo',
+                'user_field'     => 'dataProtectionOfficer',
+                'person_field'   => 'dataProtectionOfficerPerson',
+                'deputies_field' => 'dataProtectionOfficerDeputyPersons',
+                'label_user'     => 'processing_activity.form.data_protection_officer',
+                'label_person'   => 'processing_activity.form.data_protection_officer_person',
+                'label_deputies' => 'processing_activity.form.data_protection_officer_deputies',
+                'help_user'      => 'processing_activity.help.data_protection_officer',
+                'help_person'    => 'processing_activity.help.data_protection_officer_person',
+                'help_deputies'  => 'processing_activity.help.data_protection_officer_deputies',
+                'placeholder_person' => 'processing_activity.placeholder.data_protection_officer_person',
+                'with_deputies'  => true,
+                'with_legacy'    => false,
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -597,6 +595,12 @@ class ProcessingActivityType extends AbstractType
     public function validateDpoSlot(?ProcessingActivity $entity, ExecutionContextInterface $context): void
     {
         if ($entity === null) {
+            return;
+        }
+        // Module-gating: DPO slot is only validated when the `privacy` module
+        // is active (S2-Pattern). When privacy is off, the form does not build
+        // the DPO fields at all — no point in raising the violation.
+        if (!$this->isModuleActive('privacy')) {
             return;
         }
         if ($entity->getDataProtectionOfficer() === null && $entity->getDataProtectionOfficerPerson() === null) {

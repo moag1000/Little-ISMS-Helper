@@ -363,6 +363,7 @@ audit_finding:
         clause_reference: 'Standard reference (e.g. ISO 27001 A.5.1, Clause 9.3)'
         evidence: 'Supporting material (interview, document, screenshot, …)'
         due_date: 'Deadline for remediation. ISO 27001 expects traceable dates.'
+        assigned_to: 'Responsible person from user management.'
         assigned_person: 'Person without system login as responsible. Order: User > Person > empty.'
         assigned_deputy_persons: 'Additional persons with deputy or shared responsibility.'
         reported_by_person: 'Person without system login as reporter. Order: User > Person > empty.'

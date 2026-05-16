@@ -15,6 +15,7 @@ use App\Entity\Vulnerability;
 use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Trait\OwnerPickerFormTrait;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -33,6 +34,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class RiskType extends AbstractType
 {
     use ModuleAwareFormTrait;
+    use OwnerPickerFormTrait;
 
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
@@ -161,34 +163,28 @@ class RiskType extends AbstractType
                 'attr' => ['min' => 1, 'max' => 5],
                 'help' => 'risk.help.residual_impact',
             ])
-            ->add('riskOwner', EntityType::class, [
-                'label' => 'risk.field.risk_owner',
-                'class' => User::class,
-                'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
-                'placeholder' => 'risk.placeholder.risk_owner',
-                'required' => false,
-                'help' => 'risk.help.risk_owner',
-                            ])
-            ->add('riskOwnerPerson', EntityType::class, [
-                'label' => 'risk.field.risk_owner_person',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'placeholder' => 'risk.placeholder.risk_owner_person',
-                'help' => 'risk.help.risk_owner_person',
-            ])
-            ->add('riskOwnerDeputyPersons', EntityType::class, [
-                'label' => 'risk.field.risk_owner_deputies',
-                'class' => Person::class,
-                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'attr' => [
-                    'data-controller' => 'tom-select',
-                ],
-                'help' => 'risk.help.risk_owner_deputies',
-            ])
+        ;
+
+        // ── Risk Owner cluster (audit-s4 P-1) ───────────────────────────────
+        // Replaces 3 hand-rolled add() calls (riskOwner / riskOwnerPerson /
+        // riskOwnerDeputyPersons). Risk has no legacy free-text field.
+        $this->addOwnerPicker($builder, [
+            'user_field'         => 'riskOwner',
+            'person_field'       => 'riskOwnerPerson',
+            'deputies_field'     => 'riskOwnerDeputyPersons',
+            'legacy_field'       => null,
+            'translation_prefix' => 'risk',
+            'user_label'         => 'risk.field.risk_owner',
+            'user_placeholder'   => 'risk.placeholder.risk_owner',
+            'user_help'          => 'risk.help.risk_owner',
+            'person_label'       => 'risk.field.risk_owner_person',
+            'person_placeholder' => 'risk.placeholder.risk_owner_person',
+            'person_help'        => 'risk.help.risk_owner_person',
+            'deputies_label'     => 'risk.field.risk_owner_deputies',
+            'deputies_help'      => 'risk.help.risk_owner_deputies',
+        ]);
+
+        $builder
             ->add('treatmentStrategy', EnumType::class, [
                 'label' => 'risk.field.treatment_strategy',
                 'class' => TreatmentStrategy::class,

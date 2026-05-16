@@ -111,6 +111,20 @@ The server enforces a 5-transition matrix: `draft→in_review`,
 `published→archived`, `archived→published`. Do not allow arbitrary
 status targets; validate the transition server-side.
 
+**SectionPolicy (FormType convention, S4 Foundation P-2).** Non-trivial
+FormTypes (anything with >6 fields, or any FormType where some fields are
+regulatorily critical) implement `App\Form\SectionMapInterface` and declare
+an explicit `getSectionMap()` returning `section-key => [field, ...]`. The
+`_auto_form.html.twig` renderer uses this map to group fields into named
+sections (`overview`, `recovery`, `team`, `communication`, `resources`,
+`activation`, `testing`, `audit_metadata`, `results`, `lessons_learned`,
+`details`, `contact`). Section labels resolve to `form.section.<key>` in
+the `messages` domain. Fields not covered by any section leak into a
+deprecation-flagged "Sonstiges" bucket in dev — `scripts/quality/check_form_sections.py`
+CI-gates parity between builder and section-map. The convention exists
+because the previous catch-all silently buried ISO 22301 Cl. 8.2.2 RTO/RPO
+fields and BC-Exercise result-fields among unrelated data.
+
 **Modal Pattern (Important):**
 Bootstrap loaded async via ES Module. For inline scripts:
 ```javascript

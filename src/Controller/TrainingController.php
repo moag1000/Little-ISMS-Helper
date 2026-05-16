@@ -95,6 +95,9 @@ class TrainingController extends AbstractController
             $this->entityManager->persist($training);
             $this->entityManager->flush();
 
+            // P-15 DataReuse: sync participantUsers → TrainingParticipation rows.
+            $this->syncParticipantUsersToParticipationRows($training);
+
             $this->addFlash('success', $this->translator->trans('training.success.created'));
             return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
         }
@@ -178,6 +181,9 @@ class TrainingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
+            // P-15 DataReuse: sync participantUsers → TrainingParticipation rows.
+            $this->syncParticipantUsersToParticipationRows($training);
+
             $this->addFlash('success', $this->translator->trans('training.success.updated'));
             return $this->redirectToRoute('app_training_show', ['id' => $training->getId()]);
         }
@@ -186,6 +192,57 @@ class TrainingController extends AbstractController
             'training' => $training,
             'form' => $form,
         ]);
+    }
+
+    /**
+     * P-15 DataReuse — Form-Submit-Sync for Training.participantUsers.
+     *
+     * For every User selected in the typed multi-select, create a
+     * TrainingParticipation row (idempotent on (training_id, user_id)). Cross-
+     * tenant users are skipped silently. No row is removed when the user is
+     * deselected — TrainingParticipation has audit-trail value (Art. 33 +
+     * ISO 27001 §7.3) and must be soft-cancelled via status=waived elsewhere.
+     */
+    private function syncParticipantUsersToParticipationRows(Training $training): void
+    {
+        if ($this->participationRepository === null) {
+            return;
+        }
+        $tenant = $training->getTenant();
+        if ($tenant === null) {
+            return;
+        }
+        $selected = $training->getParticipantUsers();
+        if ($selected->isEmpty()) {
+            return;
+        }
+        $created = 0;
+        foreach ($selected as $user) {
+            if (!$user instanceof User) {
+                continue;
+            }
+            if ($user->getTenant() !== $tenant) {
+                continue; // tenant isolation
+            }
+            $existing = $this->participationRepository->findOneBy([
+                'training' => $training,
+                'user' => $user,
+            ]);
+            if ($existing instanceof TrainingParticipation) {
+                continue;
+            }
+            $row = new TrainingParticipation();
+            $row->setTenant($tenant);
+            $row->setTraining($training);
+            $row->setUser($user);
+            $row->setStatus(TrainingParticipation::STATUS_PENDING);
+            $row->setAssignmentSource('manual:edit_form');
+            $this->entityManager->persist($row);
+            $created++;
+        }
+        if ($created > 0) {
+            $this->entityManager->flush();
+        }
     }
     #[Route('/training/{id}/delete', name: 'app_training_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

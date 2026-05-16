@@ -109,30 +109,31 @@
                     </div>
 
                     {# Detection & Reporting Section #}
+                    {# S4 P-1 Wave-2 — reportedBy slot now rendered via the canonical
+                       _fa_owner_picker macro (User + Person + Deputies + legacy text).
+                       Macro re-import here is required because we are inside an
+                       {% embed %} block — file-scope imports do NOT carry across
+                       embed boundaries (see CLAUDE.md Common Pitfalls §10). #}
+                    {% import '_components/_fa_owner_picker.html.twig' as _fa_owner_picker %}
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">{{ 'incident.section.detection_reporting'|trans({}, 'incident') }}</legend>
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 {{ form_row(form.detectedAt is defined ? form.detectedAt : form.detectedDate) }}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 {{ form_row(form.occurredAt) }}
                             </div>
-                            <div class="col-md-6">
-                                {{ form_row(form.reportedBy) }}
-                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                {{ form_row(form.reportedByUser) }}
-                            </div>
-                            <div class="col-md-4">
-                                {{ form_row(form.reportedByPerson) }}
-                            </div>
-                            <div class="col-md-4">
-                                {{ form_row(form.reportedByDeputyPersons) }}
-                            </div>
-                        </div>
+                        {{ _fa_owner_picker.render(form, {
+                            slot_id: 'reportedBy',
+                            user_field: 'reportedByUser',
+                            person_field: 'reportedByPerson',
+                            deputies_field: 'reportedByDeputyPersons',
+                            legacy_field: 'reportedBy',
+                            with_deputies: true,
+                            with_legacy: true,
+                        }) }}
                         <div class="row">
                             <div class="col-md-12">
                                 {{ form_row(form.responsiblePerson) }}

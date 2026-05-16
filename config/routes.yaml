@@ -52,6 +52,11 @@ app_quick_fix_mark_all_phantom_diff:
     controller: App\Controller\QuickFixController::markAllPhantomDiff
     methods: [POST]
 
+app_quick_fix_force_schema_update:
+    path: /quick-fix/force-schema-update
+    controller: App\Controller\QuickFixController::forceSchemaUpdate
+    methods: [POST]
+
 # Root redirect - smart locale detection (without locale)
 app_home:
     path: /
