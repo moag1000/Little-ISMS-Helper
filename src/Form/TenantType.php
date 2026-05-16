@@ -155,12 +155,18 @@ class TenantType extends AbstractType
                 'required' => false,
                 'attr' => ['maxlength' => 50, 'placeholder' => 'GmbH / AG / SE / ...'],
             ])
+            // @no-module-gate-required: NACE-Code is a general industry classifier (EU NACE Rev. 2).
+            //   It is used to *infer* whether NIS-2 applies — so it must be visible BEFORE the
+            //   nis2_dora module is activated.
             ->add('naceCode', TextType::class, [
                 'label' => 'corporate.field.nace_code',
                 'help' => 'corporate.field.nace_code_help',
                 'required' => false,
                 'attr' => ['maxlength' => 20, 'placeholder' => '62.03'],
             ])
+            // @no-module-gate-required: NIS-2 classification fields drive module activation —
+            //   they must be visible on the primary tenant form regardless of module state,
+            //   otherwise users could not enable nis2_dora in the first place.
             ->add('nis2Classification', ChoiceType::class, [
                 'label' => 'corporate.field.nis2_classification',
                 'help' => 'corporate.field.nis2_classification_help',
@@ -173,18 +179,21 @@ class TenantType extends AbstractType
                     'corporate.nis2.unknown' => Tenant::NIS2_UNKNOWN,
                 ],
             ])
+            // @no-module-gate-required: see nis2Classification — driver for module activation.
             ->add('nis2Sector', TextType::class, [
                 'label' => 'corporate.field.nis2_sector',
                 'help' => 'corporate.field.nis2_sector_help',
                 'required' => false,
                 'attr' => ['maxlength' => 150],
             ])
+            // @no-module-gate-required: see nis2Classification — driver for module activation.
             ->add('nis2ContactPoint', TextType::class, [
                 'label' => 'corporate.field.nis2_contact_point',
                 'help' => 'corporate.field.nis2_contact_point_help',
                 'required' => false,
                 'attr' => ['maxlength' => 255],
             ])
+            // @no-module-gate-required: see nis2Classification — driver for module activation.
             ->add('nis2RegisteredAt', DateType::class, [
                 'label' => 'corporate.field.nis2_registered_at',
                 'help' => 'corporate.field.nis2_registered_at_help',

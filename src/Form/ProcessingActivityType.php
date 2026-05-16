@@ -312,6 +312,8 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             // Legal Basis (Art. 6)
             // ============================================================================
+            // @no-module-gate-required: ProcessingActivity (VVT) is the canonical GDPR form —
+            //   only rendered behind privacy module. Per-field gating would be redundant.
             ->add('legalBasis', ChoiceType::class, [
                 'label' => 'processing_activity.form.legal_basis',
                 'help' => 'processing_activity.help.legal_basis',
@@ -327,12 +329,14 @@ class ProcessingActivityType extends AbstractType
                 'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
+            // @no-module-gate-required: see legalBasis above — VVT form is privacy-scoped.
             ->add('legalBasisDetails', TextareaType::class, [
                 'label' => 'processing_activity.form.legal_basis_details',
                 'help' => 'processing_activity.help.legal_basis_details',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
+            // @no-module-gate-required: see legalBasis above — VVT form is privacy-scoped.
             ->add('legalBasisSpecialCategories', ChoiceType::class, [
                 'label' => 'processing_activity.form.legal_basis_special_categories',
                 'help' => 'processing_activity.help.legal_basis_special_categories',

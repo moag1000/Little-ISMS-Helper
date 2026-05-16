@@ -77,6 +77,8 @@ class Nis2RegistrationProfileType extends AbstractType
                 'attr' => ['maxlength' => 50],
                 'translation_domain' => 'eu_authorities',
             ])
+            // @no-module-gate-required: whole Nis2RegistrationProfileType form is NIS-2-scoped
+            //   (only rendered behind nis2_dora module). Per-field gating would be redundant.
             ->add('nis2Sector', ChoiceType::class, [
                 'label' => 'eu_authorities.nis2_registration.field.sector',
                 'choices' => $sectorChoices,
@@ -86,6 +88,7 @@ class Nis2RegistrationProfileType extends AbstractType
                 'choice_translation_domain' => 'eu_authorities',
                 'translation_domain' => 'eu_authorities',
             ])
+            // @no-module-gate-required: see above — form is NIS-2-scoped.
             ->add('nis2EntityCategory', ChoiceType::class, [
                 'label' => 'eu_authorities.nis2_registration.field.category',
                 'choices' => $categoryChoices,

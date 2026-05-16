@@ -120,6 +120,9 @@ class AssetType extends AbstractType
             // V3 W2-Bug3 — linked Processing Activities (M:N inverse).
             // Edit from either side; the owning side lives on
             // ProcessingActivity::$assets.
+            // @no-module-gate-required: M:N inverse to ProcessingActivity. When privacy is off,
+            //   no PA exists, so the EntityType list is empty and the field hides itself visually.
+            //   No data leak.
             ->add('processingActivities', EntityType::class, [
                 'label' => 'asset.field.processing_activities',
                 'help' => 'asset.help.processing_activities',

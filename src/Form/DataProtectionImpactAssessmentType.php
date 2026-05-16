@@ -146,6 +146,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'required' => true,
                 'attr' => ['rows' => 4],
             ])
+            // @no-module-gate-required: DPIA form is GDPR-scoped (only rendered behind privacy module).
             ->add('legalBasis', ChoiceType::class, [
                 'label' => 'dpia.form.legal_basis',
                 'help' => 'dpia.help.legal_basis',

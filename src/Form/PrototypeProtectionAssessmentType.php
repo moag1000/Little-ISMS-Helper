@@ -57,6 +57,8 @@ class PrototypeProtectionAssessmentType extends AbstractType
                     'prototype_protection.status.expired' => PrototypeProtectionAssessment::STATUS_EXPIRED,
                 ],
             ])
+            // @no-module-gate-required: PrototypeProtectionAssessment form is TISAX-scoped
+            //   (only rendered behind prototype_protection module).
             ->add('tisaxLevel', ChoiceType::class, [
                 'label' => 'prototype_protection.field.tisax_level',
                 'required' => false,

@@ -125,6 +125,9 @@ final class TenantComplianceSettingsType extends AbstractType
                 'translation_domain' => 'admin',
                 'attr' => ['min' => 0, 'max' => 100000],
             ])
+            // @no-module-gate-required: TenantComplianceSettingsType is a per-tenant *configuration*
+            //   form — the DORA category itself drives the activation of the nis2_dora module,
+            //   so the field must always be visible to admins.
             ->add('doraEntityCategory', ChoiceType::class, [
                 'label'              => 'admin.tenant_settings.dora_entity_category',
                 'help'               => 'admin.tenant_settings.dora_entity_category_help',
