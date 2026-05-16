@@ -230,3 +230,7 @@ document:
             policy_document: 'Policy'
             procedure_document: 'Procedure'
             record: 'Record'
+iso_9001_bridge:
+    policy: 'Identical to ISO 9001 Clause 7.5 "Control of documented information" — policies, procedures and records are versioned and released under the same control scheme.'
+    procedure: 'In ISO 9001 this is a "documented procedure" (7.5.1) — process description with roles, inputs/outputs and measurement criteria.'
+    record: 'In ISO 9001 this is a "record" (7.5.3) — evidence of process execution.'

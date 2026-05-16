@@ -233,3 +233,7 @@ document:
             policy_document: 'Richtlinie'
             procedure_document: 'Verfahrensanweisung'
             record: 'Nachweis'
+iso_9001_bridge:
+    policy: 'Identisch mit ISO 9001 Klausel 7.5 "Lenkung dokumentierter Information" — Richtlinien, Verfahrensanweisungen und Aufzeichnungen werden nach demselben Lenkungsschema versioniert und freigegeben.'
+    procedure: 'In ISO 9001 ist das eine "dokumentierte Verfahrensanweisung" (7.5.1) — Prozessbeschreibung mit Rollen, Ein-/Ausgang und Mess-Kriterien.'
+    record: 'In ISO 9001 ist das ein "Nachweis" (7.5.3) — Aufzeichnung der Prozessdurchführung.'

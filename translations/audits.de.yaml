@@ -393,3 +393,8 @@ corrective_action:
         followup_banner:
             title: 'Folge-CAPA zu unwirksamer Maßnahme'
             body: 'Sie legen eine Folge-CAPA zur unwirksamen Maßnahme #%id% (%title%) an. Feststellung und Vorgänger-CAPA sind vorbefüllt.'
+iso_9001_bridge:
+    major_nc: 'In ISO 9001 wird das als "Hauptabweichung" (Major Nonconformity) bezeichnet — verlangt eine dokumentierte Korrekturmaßnahme (10.2).'
+    minor_nc: 'In ISO 9001 entspricht das einer "Nebenabweichung" (Minor Nonconformity) — Klausel 10.2 Nichtkonformität und Korrekturmaßnahme.'
+    corrective_action: 'Identisch mit dem CAPA-Cycle aus ISO 9001 Klausel 10.2 (Korrekturmaßnahme nach Nichtkonformität).'
+    audit: 'Identisch mit ISO 9001 Klausel 9.2 "Internes Audit" — gleicher Audit-Plan, gleiche Audit-Berichte, gleiche Audit-Folgeaktionen.'
