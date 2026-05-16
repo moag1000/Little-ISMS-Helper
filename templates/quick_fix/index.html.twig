@@ -231,6 +231,26 @@
                     </button>
                 </form>
             {% endif %}
+
+            {# Nuclear fallback — collapsed by default; only visible in drift state #}
+            <details style="margin-top: 16px;">
+                <summary style="cursor: pointer; color: var(--muted); font-size: 13px;">
+                    {{ 'quick_fix.force_update.show'|trans({}, 'quick_fix') }}
+                </summary>
+                <div style="margin-top: 12px;">
+                    <p style="font-size: 13px; color: var(--muted);">{{ 'quick_fix.force_update.body'|trans({}, 'quick_fix') }}</p>
+                    <form method="POST" action="{{ path('app_quick_fix_force_schema_update') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_force_schema_update') }}">
+                        <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; padding: 8px 0; color: var(--muted);">
+                            <input type="checkbox" name="confirm_force_schema" value="1" required style="margin-top: 3px;">
+                            <span>{{ 'quick_fix.force_update.confirm_label'|trans({}, 'quick_fix') }}</span>
+                        </label>
+                        <button type="submit" style="background: var(--danger); color: var(--bg); margin-top: 8px;" onclick="this.disabled=true;this.form.submit();">
+                            {{ 'quick_fix.force_update.button'|trans({}, 'quick_fix') }}
+                        </button>
+                    </form>
+                </div>
+            </details>
         {% else %}
             <div class="icon">✅</div>
             <h1>{{ 'quick_fix.ok.title'|trans({}, 'quick_fix') }}</h1>
