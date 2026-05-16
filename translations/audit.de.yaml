@@ -53,6 +53,7 @@ audit:
         invalid_transition: 'Statusübergang nicht erlaubt im aktuellen Lifecycle-Status.'
         same_user_approve: 'Vier-Augen-Prinzip: Der Freigebende muss vom Einreicher des Berichts abweichen (ISO 27001 Cl. 9.2.2 d).'
         rejection_reason_required: 'Bei Ablehnung ist eine Begründung erforderlich.'
+        lead_auditor_required: 'Bitte leitenden Auditor auswählen — Benutzer, Stammdaten-Person oder Freitext (mindestens eine Variante).'
     field:
         title: Titel
         scope: Geltungsbereich
@@ -215,8 +216,6 @@ audit:
     validation:
         title_required: 'Bitte geben Sie einen Titel für das Audit an'
         date_required: 'Bitte wählen Sie ein geplantes Datum'
-    error:
-        lead_auditor_required: 'Bitte leitenden Auditor auswählen — Benutzer, Stammdaten-Person oder Freitext (mindestens eine Variante).'
 audit_log:
     pagination:
         page_counter: 'Seite %current% von %total%'
