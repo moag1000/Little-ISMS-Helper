@@ -6,6 +6,7 @@ bcm:
         asset_insights: 'Asset Insights'
         bcm_insights: 'BCM Insights'
         critical: 'Critical Business Continuity'
+        data_reuse_insights: 'Data Reuse Insights'
     level:
         very_high: 'Very High'
         high: 'High'
@@ -13,6 +14,7 @@ bcm:
         low: 'Low'
     description:
         critical: 'Overview of critical assets and processes including RTO/RPO and action needs'
+        data_reuse_insights: 'How BCM data enhances asset protection requirements'
         critical_level: 'Immediate business outage in case of loss or failure. Highest priority for emergency actions.'
         high_level: 'Significant business impact within a short time. Rapid recovery planning required.'
         medium_level: 'Noticeable impact with buffer. Mid-term measures sufficient.'

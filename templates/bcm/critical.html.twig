@@ -1,21 +1,19 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bcm' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'bcm.title.critical'|trans({}, 'bcm') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="page-header">
-    <div>
-        <h1>{{ 'bcm.title.critical'|trans({}, 'bcm') }}</h1>
-        <p class="text-muted">{{ 'bcm.description.critical'|trans({}, 'bcm') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_bcm_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    badge: { icon: 'nav-bar-chart', label: 'nav.bcm'|trans({}, 'nav') },
+    title: 'bcm.title.critical'|trans({}, 'bcm'),
+    subtitle: 'bcm.description.critical'|trans({}, 'bcm'),
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_bcm_index') }
+    ]
+}) }}
 
 {# Statistics Cards #}
 <div class="kpi-grid">

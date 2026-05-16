@@ -12,26 +12,17 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> Compliance Mappings</h1>
-        <div class="d-flex gap-2">
-            <a href="{{ path('app_compliance_mapping_hub') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
-                {{ 'compliance.mapping.hub.title'|trans({}, 'compliance') }}
-            </a>
-            <a href="{{ path('app_compliance_mapping_seeds_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
-                {{ 'compliance.mapping.seeds.title'|trans({}, 'compliance')|split('—')|first|trim }}
-            </a>
-            <a href="{{ path('app_compliance_mapping_wizard') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i>
-                {{ 'compliance.mapping.wizard.title'|trans({}, 'compliance') }}
-            </a>
-            <a href="{{ path('app_compliance_mapping_new') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> New Mapping
-            </a>
-        </div>
-    </div>
+    {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-workflow', label: 'nav.compliance'|trans({}, 'nav') },
+        title: 'compliance.mapping.title'|trans({}, 'compliance'),
+        actions: [
+            { label: 'compliance.mapping.hub.title'|trans({}, 'compliance'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_mapping_hub') },
+            { label: 'compliance.mapping.seeds.title'|trans({}, 'compliance')|split('—')|first|trim, variant: 'ghost', icon: 'threat', href: path('app_compliance_mapping_seeds_index') },
+            { label: 'compliance.mapping.wizard.title'|trans({}, 'compliance'), variant: 'primary', icon: 'nav-magic', href: path('app_compliance_mapping_wizard') },
+            { label: 'compliance.mapping.create_link'|trans({}, 'compliance'), variant: 'ghost', icon: 'ui-plus', href: path('app_compliance_mapping_new') }
+        ]
+    }) }}
 
     {% include '_components/_iso9001_analogy.html.twig' with { variant: 'mapping' } %}
 

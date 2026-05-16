@@ -1,21 +1,19 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
 <div class="container">
-    <div class="page-header">
-        <div>
-            <h1>{{ 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance') }}</h1>
-            <p class="text-muted">{{ 'compliance.gaps.title_description'|trans({}, 'compliance') }}</p>
-        </div>
-        <div class="button-group">
-            <a href="{{ path('app_mapping_quality_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <span class="icon">←</span> {{ 'compliance.mapping_quality.title'|trans({}, 'compliance') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'compliance-shield', label: 'nav.compliance'|trans({}, 'nav') },
+        title: 'compliance.mapping_quality.gaps.title'|trans({}, 'compliance'),
+        subtitle: 'compliance.gaps.title_description'|trans({}, 'compliance'),
+        actions: [
+            { label: 'compliance.mapping_quality.title'|trans({}, 'compliance'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_mapping_quality_dashboard') }
+        ]
+    }) }}
 
     {# Remediation Effort Summary #}
     {% if remediation_effort %}

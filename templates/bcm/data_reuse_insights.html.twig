@@ -1,22 +1,20 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bcm' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}BCM Data Reuse Insights{% endblock %}
 
 {% block body %}
 <div class="container">
-    <div class="page-header">
-        <div>
-            <h1>🔗 Data Reuse Insights</h1>
-            <p class="text-muted">How BCM Data Enhances Asset Protection Requirements</p>
-        </div>
-        <div class="button-group">
-            <a href="{{ path('app_bcm_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                ← Back to BCM
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-bar-chart', label: 'nav.bcm'|trans({}, 'nav') },
+        title: 'bcm.title.data_reuse_insights'|trans({}, 'bcm'),
+        subtitle: 'bcm.description.data_reuse_insights'|trans({}, 'bcm'),
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_bcm_index') }
+        ]
+    }) }}
 
     {# Summary Cards #}
     <div class="kpi-grid">

@@ -84,34 +84,43 @@
         {% if incidents|length > 0 %}
         <section class="mb-5">
             <h5 class="mb-3"><i class="fa-icon fa-icon--status-fire fa-icon--warning me-1" aria-hidden="true"></i> {{ 'authority.section.incidents'|trans({}, 'eu_authorities') }}</h5>
-            <div class="table-responsive">
-                <table class="table table-sm table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>{{ 'authority.field.incident'|trans({}, 'eu_authorities') }}</th>
-                            <th>{{ 'authority.field.severity'|trans({}, 'eu_authorities') }}</th>
-                            <th>{{ 'authority.field.detected_at'|trans({}, 'eu_authorities') }}</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for incident in incidents %}
-                        <tr>
-                            <td>{{ incident.title }}</td>
-                            <td><span class="fa-status-pill fa-status-pill--warning">{{ incident.severity }}</span></td>
-                            <td>{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y') : '—' }}</td>
-                            <td>
-                                <a href="{{ path('app_authority_notification_incident_pdf', {_locale: app.request.locale, incidentId: incident.id, authorityKey: 'bsi_meldestelle'}) }}"
-                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                    <i class="fa-icon fa-icon--nav-file-pdf me-1"></i>
-                                    {{ 'authority.action.export_pdf'|trans({}, 'eu_authorities') }} (BSI)
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_fa_table.html.twig' with {
+                id: 'authority-incidents-list',
+                striped: false,
+                compact: true,
+                stickyHead: false,
+                sortable: false,
+                bulkSelect: false
+            } %}
+                {% block table_head %}
+                    {% trans_default_domain 'eu_authorities' %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'authority.field.incident'|trans({}, 'eu_authorities') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'authority.field.severity'|trans({}, 'eu_authorities') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'authority.field.detected_at'|trans({}, 'eu_authorities') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions">
+                            <span class="visually-hidden">{{ 'common.actions'|trans({}, 'messages') }}</span>
+                        </th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% trans_default_domain 'eu_authorities' %}
+                    {% for incident in incidents %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">{{ incident.title }}</td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--warning">{{ incident.severity }}</span></td>
+                        <td class="fa-table__cell">{{ incident.detectedAt ? incident.detectedAt|date('d.m.Y') : '—' }}</td>
+                        <td class="fa-table__cell fa-table__cell--actions">
+                            <a href="{{ path('app_authority_notification_incident_pdf', {_locale: app.request.locale, incidentId: incident.id, authorityKey: 'bsi_meldestelle'}) }}"
+                               class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                <i class="fa-icon fa-icon--nav-file-pdf me-1"></i>
+                                {{ 'authority.action.export_pdf'|trans({}, 'eu_authorities') }} (BSI)
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         </section>
         {% endif %}
 

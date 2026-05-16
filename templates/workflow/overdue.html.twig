@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'workflows' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'workflow.title.overdue'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
@@ -7,17 +8,14 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'workflow.title.overdue'|trans({}, 'workflows') }}</h1>
-        <p class="text-muted">{{ 'workflow.description.overdue_detail'|trans({}, 'workflows') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_workflow_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    badge: { icon: 'nav-workflow', label: 'nav.workflows'|trans({}, 'nav') },
+    title: 'workflow.title.overdue'|trans({}, 'workflows'),
+    subtitle: 'workflow.description.overdue_detail'|trans({}, 'workflows'),
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_workflow_index') }
+    ]
+}) }}
 
 {# Alert Banner #}
 {% if overdue_workflows|length > 0 %}

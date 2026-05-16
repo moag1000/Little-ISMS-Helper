@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'workflows' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'workflow.title.pending'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
@@ -8,17 +9,14 @@
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'workflow.title.pending'|trans({}, 'workflows') }}</h1>
-        <p class="text-muted">{{ 'workflow.description.pending_detail'|trans({}, 'workflows') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_workflow_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    badge: { icon: 'nav-workflow', label: 'nav.workflows'|trans({}, 'nav') },
+    title: 'workflow.title.pending'|trans({}, 'workflows'),
+    subtitle: 'workflow.description.pending_detail'|trans({}, 'workflows'),
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_workflow_index') }
+    ]
+}) }}
 
 {# Statistics Cards #}
 <div class="kpi-grid">
