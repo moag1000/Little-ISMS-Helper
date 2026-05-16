@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bc_plans' %}
+{% form_theme form 'business_continuity_plan/_bc_plan_form_theme.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'bc_plans.action.add_new'|trans({}, 'bc_plans') }} - {{ parent() }}{% endblock %}
