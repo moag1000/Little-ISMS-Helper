@@ -1,0 +1,17 @@
+# check_module_gating.py baseline — generated snapshot.
+# Format: <relative-path>:<line>:<field-name>
+# Remove an entry once the FormType is gated properly.
+src/Form/Admin/TenantComplianceSettingsType.php:128:doraEntityCategory
+src/Form/AssetType.php:123:processingActivities
+src/Form/Authority/Nis2RegistrationProfileType.php:80:nis2Sector
+src/Form/Authority/Nis2RegistrationProfileType.php:89:nis2EntityCategory
+src/Form/DataProtectionImpactAssessmentType.php:149:legalBasis
+src/Form/ProcessingActivityType.php:315:legalBasis
+src/Form/ProcessingActivityType.php:330:legalBasisDetails
+src/Form/ProcessingActivityType.php:336:legalBasisSpecialCategories
+src/Form/PrototypeProtectionAssessmentType.php:60:tisaxLevel
+src/Form/TenantType.php:158:naceCode
+src/Form/TenantType.php:164:nis2Classification
+src/Form/TenantType.php:176:nis2Sector
+src/Form/TenantType.php:182:nis2ContactPoint
+src/Form/TenantType.php:188:nis2RegisteredAt
