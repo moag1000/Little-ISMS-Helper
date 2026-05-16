@@ -1,0 +1,76 @@
+{#
+ # FairyAurora v4 — Severity-Choice Macro (Audit-S5 P-13)
+ #
+ # Aurora-styled 4-stage severity selector (low / medium / high / critical)
+ # that exposes a *definition tooltip* for every stage. Replaces the bare
+ # ChoiceType-radio-widget pattern where a Junior-Implementer has no clue
+ # what "High" actually means in the context of the entity at hand.
+ #
+ # Tooltips read from translation files under:
+ #   <prefix>.severity_choice.<value>.label
+ #   <prefix>.severity_choice.<value>.definition
+ # so each entity-domain (incident, risk, audits, bc_exercises) can ship
+ # its own stage-definitions (see audit-s5 P-13 translation rollout).
+ #
+ # Usage (manual, outside Symfony Form-Theme):
+ #   {% import '_components/_fa_severity_choice.html.twig' as _fa_severity_choice %}
+ #   {{ _fa_severity_choice.render({
+ #       name:               'incident[severity]',
+ #       selected:           incident.severity.value,
+ #       translation_prefix: 'incident',
+ #       translation_domain: 'incident',
+ #   }) }}
+ #
+ # Usage (inside form_widget override block):
+ #   {{ _fa_severity_choice.render({
+ #       name:               form.severity.vars.full_name,
+ #       selected:           form.severity.vars.value,
+ #       translation_prefix: 'incident',
+ #       translation_domain: 'incident',
+ #       required:           form.severity.vars.required,
+ #   }) }}
+ #
+ # Props:
+ #   name                string  — input[name] (full_name from Symfony Form)
+ #   selected            string|null — currently-selected value ('low'..'critical')
+ #   translation_prefix  string  — translation-key prefix (e.g. 'incident')
+ #   translation_domain  string  — translation domain (e.g. 'incident')
+ #   required            bool    — adds the `required` attribute (default false)
+ #}
+{% macro render(props) %}
+    {%- set _prefix   = props.translation_prefix -%}
+    {%- set _domain   = props.translation_domain -%}
+    {%- set _selected = props.selected|default(null) -%}
+    {%- set _required = props.required|default(false) -%}
+    {%- set _name     = props.name -%}
+    {%- set _stages   = [
+        { value: 'low',      tone: 'success' },
+        { value: 'medium',   tone: 'info' },
+        { value: 'high',     tone: 'warning' },
+        { value: 'critical', tone: 'danger' },
+    ] -%}
+    <div class="fa-severity-choice"
+         role="radiogroup"
+         aria-label="{{ (_prefix ~ '.severity_choice.aria_label')|trans({}, _domain) }}">
+        {% for stage in _stages %}
+            {%- set _labelKey = _prefix ~ '.severity_choice.' ~ stage.value ~ '.label' -%}
+            {%- set _defKey   = _prefix ~ '.severity_choice.' ~ stage.value ~ '.definition' -%}
+            {%- set _label    = _labelKey|trans({}, _domain) -%}
+            {%- set _def      = _defKey|trans({}, _domain) -%}
+            {%- set _checked  = (_selected is not null and _selected == stage.value) -%}
+            <label class="fa-severity-choice__option fa-severity-choice__option--{{ stage.tone }}{{ _checked ? ' is-selected' : '' }}">
+                <input type="radio"
+                       class="fa-severity-choice__input"
+                       name="{{ _name }}"
+                       value="{{ stage.value }}"
+                       {{ _checked ? 'checked' : '' }}
+                       {{ _required ? 'required' : '' }}
+                       aria-describedby="{{ _name|replace({'[': '_', ']': ''}) }}_{{ stage.value }}_def">
+                <span class="fa-severity-choice__dot" aria-hidden="true"></span>
+                <span class="fa-severity-choice__label">{{ _label }}</span>
+                <span class="fa-severity-choice__definition"
+                      id="{{ _name|replace({'[': '_', ']': ''}) }}_{{ stage.value }}_def">{{ _def }}</span>
+            </label>
+        {% endfor %}
+    </div>
+{% endmacro %}
