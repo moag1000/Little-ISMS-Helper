@@ -1,0 +1,145 @@
+{#
+ # FairyAurora v4.0 — fa-escalation-chain macro (P-9 JsonBuilder)
+ #
+ # Visual JSON-Builder for BCPlan.escalationLevels (BSI 200-4 §6.2).
+ # Horizontal step-cascade: Level → Trigger → Responder → Escalate-After.
+ # Serialises into a JSON-array via hidden <textarea>.
+ #
+ # Data contract (matches BCPlan entity JSON):
+ #   [
+ #     {
+ #       "level": 1,
+ #       "trigger": "Service-Ausfall > 30min",
+ #       "responder": "ISB / Krisenstab",
+ #       "escalateAfter": "15min"
+ #     }, ...
+ #   ]
+ #
+ # Levels are auto-numbered 1..N on add/remove. Existing data is preserved
+ # but renumbered on next render to keep the cascade contiguous.
+ #
+ # Usage:
+ #   {% import '_components/_fa_escalation_chain.html.twig' as _fa_escalation_chain %}
+ #
+ #   {{ _fa_escalation_chain.render({
+ #       name: 'business_continuity_plan[escalationLevels]',
+ #       value: bc_plan.escalationLevels,
+ #       translationDomain: 'bc_plans'
+ #   }) }}
+ #
+ # Parameters:
+ #   props.name        - hidden-textarea name for form submission (required)
+ #   props.value       - current array OR JSON string (optional)
+ #   props.id          - root id (default 'fa-escalation-chain-' ~ random())
+ #   props.translationDomain - domain (default 'bc_plans')
+ #
+ # Embed-Scope-Reminder: see _fa_team_role_builder.html.twig docblock.
+ #}
+
+{% macro render(props = {}) %}
+    {% set name = props.name|default('escalationLevels') %}
+    {% set id = props.id|default('fa-escalation-chain-' ~ random(99999)) %}
+    {% set translationDomain = props.translationDomain|default('bc_plans') %}
+    {% set rawValue = props.value is defined and props.value is not null
+        ? (props.value is iterable ? props.value|json_encode : props.value)
+        : '' %}
+
+    <div class="fa-json-builder fa-escalation-chain"
+         id="{{ id }}"
+         data-controller="escalation-chain"
+         data-escalation-chain-name-value="{{ name }}"
+         role="region"
+         aria-label="{{ props.ariaLabel|default('bc_plans.escalation_chain.aria'|trans({}, translationDomain)) }}">
+
+        <textarea name="{{ name }}"
+                  class="fa-json-builder__hidden"
+                  hidden
+                  aria-hidden="true"
+                  data-escalation-chain-target="hidden">{{ rawValue }}</textarea>
+
+        <div class="fa-escalation-chain__rows"
+             data-escalation-chain-target="rows"
+             aria-live="polite"></div>
+
+        <div class="fa-json-builder__empty d-none"
+             data-escalation-chain-target="emptyState">
+            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
+            <span>{{ ('bc_plans.escalation_chain.empty')|trans({}, translationDomain) }}</span>
+        </div>
+
+        <small class="text-muted d-block">
+            {{ ('bc_plans.escalation_chain.help')|trans({}, translationDomain) }}
+        </small>
+
+        <div class="fa-json-builder__toolbar">
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                    data-action="click->escalation-chain#addRow">
+                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                {{ ('bc_plans.escalation_chain.add')|trans({}, translationDomain) }}
+            </button>
+
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-json-builder__raw-toggle"
+                    data-action="click->escalation-chain#showRawJson"
+                    aria-pressed="false">
+                <i class="fa-icon fa-icon--ui-code" aria-hidden="true"></i>
+                {{ ('bc_plans.json_builder.raw_toggle')|trans({}, translationDomain) }}
+            </button>
+        </div>
+
+        <div class="fa-json-builder__raw d-none"
+             data-escalation-chain-target="rawPanel">
+            <label for="{{ id }}-raw" class="fa-cyber-input__label">
+                {{ ('bc_plans.json_builder.raw_label')|trans({}, translationDomain) }}
+            </label>
+            <textarea id="{{ id }}-raw"
+                      class="form-control fa-cyber-input__field"
+                      rows="6"
+                      spellcheck="false"
+                      data-escalation-chain-target="rawTextarea"
+                      data-action="input->escalation-chain#syncFromRaw">{{ rawValue }}</textarea>
+            <small class="text-muted">
+                {{ ('bc_plans.json_builder.raw_help')|trans({}, translationDomain) }}
+            </small>
+        </div>
+
+        {# Row-template — placeholders: __INDEX__, __LEVEL__, __TRIGGER__,
+           __RESPONDER__, __ESCALATE_AFTER__. #}
+        <template data-escalation-chain-target="template">
+            <div class="fa-escalation-chain__row" data-index="__INDEX__">
+                <span class="fa-escalation-chain__level" aria-label="{{ ('bc_plans.escalation_chain.col.level')|trans({}, translationDomain) }} __LEVEL__">
+                    __LEVEL__
+                </span>
+                <input type="text"
+                       class="form-control form-control-sm fa-cyber-input__field"
+                       data-index="__INDEX__" data-field="trigger"
+                       data-action="input->escalation-chain#updateField"
+                       value="__TRIGGER__"
+                       placeholder="{{ ('bc_plans.escalation_chain.placeholder.trigger')|trans({}, translationDomain) }}"
+                       aria-label="{{ ('bc_plans.escalation_chain.col.trigger')|trans({}, translationDomain) }}">
+                <input type="text"
+                       class="form-control form-control-sm fa-cyber-input__field"
+                       data-index="__INDEX__" data-field="responder"
+                       data-action="input->escalation-chain#updateField"
+                       value="__RESPONDER__"
+                       placeholder="{{ ('bc_plans.escalation_chain.placeholder.responder')|trans({}, translationDomain) }}"
+                       aria-label="{{ ('bc_plans.escalation_chain.col.responder')|trans({}, translationDomain) }}">
+                <input type="text"
+                       class="form-control form-control-sm fa-cyber-input__field"
+                       data-index="__INDEX__" data-field="escalateAfter"
+                       data-action="input->escalation-chain#updateField"
+                       value="__ESCALATE_AFTER__"
+                       placeholder="{{ ('bc_plans.escalation_chain.placeholder.escalate_after')|trans({}, translationDomain) }}"
+                       aria-label="{{ ('bc_plans.escalation_chain.col.escalate_after')|trans({}, translationDomain) }}">
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
+                        data-index="__INDEX__"
+                        data-action="click->escalation-chain#removeRow"
+                        aria-label="{{ ('bc_plans.escalation_chain.remove')|trans({}, translationDomain) }}">
+                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+        </template>
+    </div>
+{% endmacro %}
