@@ -395,13 +395,13 @@
                             {% endif %}
                         </td>
                         <td class="fa-table__cell">
-                            {# Status pill — direct Aurora tone mapping for document statuses #}
+                            {# Status pill — direct Aurora tone mapping for document statuses.
+                               S3 P-4: legacy 'active' tone removed (rows migrated to 'published'). #}
                             {% set _docStatusTone = {
                                 'draft':      'neutral',
                                 'in_review':  'primary',
                                 'approved':   'success',
                                 'published':  'success',
-                                'active':     'neutral',
                                 'archived':   'neutral'
                             }[document.status] ?? 'neutral' %}
                             {{ pill.render(('document.status.' ~ document.status)|trans({}, 'document'), _docStatusTone, {size: 'sm'}) }}

@@ -1,6 +1,9 @@
 document:
     title: Dokumente
     subtitle: 'Verwaltung und Ablage von Richtlinien, Nachweisen und ISMS‑Dokumenten'
+    # S3 P-4: canonical 5-stage lifecycle (draft → in_review → approved → published → archived).
+    # Legacy `active` removed from FormType-Choices; key retained as fallback label
+    # for any historical row not migrated by Version20260518150000_vvt_document_canonical_lifecycle.
     status:
         draft: 'Entwurf'
         in_review: 'In Prüfung'

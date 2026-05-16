@@ -96,8 +96,18 @@ class Document
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isArchived = false;
 
-    #[ORM\Column(length: 50)]
-    private string $status = 'active';
+    /**
+     * Lifecycle status. Canonical 5-stage workflow:
+     *   draft → in_review → approved → published → archived
+     *
+     * S3 P-4: legacy 6th status `active` removed; rows holding `active` were
+     * migrated to `published` by the consolidated data-migration
+     * (Version20260518150000_vvt_document_canonical_lifecycle).
+     *
+     * @see \App\Lifecycle\LifecycleRegistry::STANDARD_5_STAGE
+     */
+    #[ORM\Column(length: 50, options: ['default' => 'draft'])]
+    private string $status = 'draft';
 
     /**
      * TISAX / VDA-ISA 6.0 information classification.
