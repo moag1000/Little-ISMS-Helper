@@ -480,10 +480,18 @@ class SchemaMaintenanceService
     private function isPhantomDiffError(string $msg): bool
     {
         return (bool) (
+            // Forward phantom-diff: adds something that already exists
             preg_match('/Duplicate column name/i', $msg)
             || preg_match("/Table '[^']+' already exists/i", $msg)
             || preg_match('/SQLSTATE\[42S01\]/', $msg)
             || preg_match('/SQLSTATE\[42S21\]/', $msg)
+            // Reverse phantom-diff: drops something that does NOT exist
+            // (1091 = column, 1051 = table, 1086 = index)
+            || preg_match("/Can't DROP COLUMN/i", $msg)
+            || preg_match("/Can't DROP '[^']+'/i", $msg)
+            || preg_match('/Unknown column .* in/i', $msg)
+            || preg_match('/Unknown table/i', $msg)
+            || preg_match('/1091|1051|1086/', $msg)
         );
     }
 
@@ -542,13 +550,11 @@ class SchemaMaintenanceService
             $offending = (string) end($items)->getVersion();
         }
 
-        // Pattern 1: phantom diff-migration retries DDL that's already there
-        if (
-            preg_match('/Duplicate column name/i', $errorMessage)
-            || preg_match("/Table '[^']+' already exists/i", $errorMessage)
-            || preg_match('/SQLSTATE\[42S01\]/', $errorMessage)
-            || preg_match('/SQLSTATE\[42S21\]/', $errorMessage)
-        ) {
+        // Pattern 1: phantom diff-migration retries DDL that's already
+        // applied — covers both forward (ADD-existing) and reverse
+        // (DROP-non-existing) since both indicate the schema already
+        // matches the migration's intended end-state.
+        if ($this->isPhantomDiffError($errorMessage)) {
             return [
                 'category' => 'phantom_diff_migration',
                 'message' => 'Migration tries to add a column or table that already exists in the database.',
