@@ -112,16 +112,41 @@ class QuickFixController extends AbstractController
             $dataIntegrityErrors[] = 'duplicates: ' . $e->getMessage();
         }
 
-        // Read phantom-diff recovery payload stored by apply() on failure.
-        // Sticky across refreshes — cleared on successful force-mark (or
-        // when pending migrations reach zero in apply()) so the operator
+        // Read recovery payload(s) stored by apply() on failure.
+        // Sticky across refreshes — cleared on successful force-mark or
+        // when pending migrations reach zero in apply() so the operator
         // can refresh the page without losing the recovery affordance.
+        //
+        // Priority: universal key (any error category) > legacy phantom-diff key.
+        // Both are cleared on successful apply or force-mark.
+        $applyFailure = null;
         $errorDiagnosis = null;
         $session = $request->getSession();
-        if ($session->has('quick_fix.last_phantom_diff')) {
+
+        // Universal apply-failure payload (any error category, incl. data
+        // constraint violations like 1048 "Column cannot be null").
+        if ($session->has('quick_fix.last_apply_failure')) {
+            /** @var array{version: string, category: string, message: string, suggested_action: string}|null $failureData */
+            $failureData = $session->get('quick_fix.last_apply_failure');
+            if (is_array($failureData) && isset($failureData['version'])) {
+                $applyFailure = $failureData;
+            }
+        }
+
+        // Backward-compat: if only the legacy phantom-diff key exists (e.g.
+        // stored by an older code version), synthesize applyFailure from it.
+        if ($applyFailure === null && $session->has('quick_fix.last_phantom_diff')) {
             /** @var array{version: string, message: string}|null $phantomData */
             $phantomData = $session->get('quick_fix.last_phantom_diff');
             if (is_array($phantomData) && isset($phantomData['version'])) {
+                $applyFailure = [
+                    'version' => $phantomData['version'],
+                    'category' => 'phantom_diff_migration',
+                    'message' => $phantomData['message'] ?? '',
+                    'suggested_action' => '',
+                ];
+                // Also populate the legacy error_diagnosis for backward-compat
+                // with any template code that might still read it.
                 $errorDiagnosis = [
                     'category' => 'phantom_diff_migration',
                     'offending_version' => $phantomData['version'],
@@ -142,6 +167,7 @@ class QuickFixController extends AbstractController
             'entity_drift_statements' => $entityDriftStatements,
             'error_message' => $errorMessage,
             'error_diagnosis' => $errorDiagnosis,
+            'apply_failure' => $applyFailure,
             // Data integrity
             'orphan_count' => $orphanCount,
             'orphans_by_type' => $orphansByType,
@@ -179,6 +205,7 @@ class QuickFixController extends AbstractController
 
         if ($migrationResult['success']) {
             $request->getSession()->remove('quick_fix.last_phantom_diff');
+            $request->getSession()->remove('quick_fix.last_apply_failure');
         }
 
         if (!$migrationResult['success']) {
@@ -190,15 +217,28 @@ class QuickFixController extends AbstractController
                     $diagnosis['message'] ?? '',
                     $diagnosis['suggested_action'] ?? '',
                 ));
-                // When the error is a phantom-diff migration, store the offending version
-                // in the session so the index page can offer the one-click recovery button.
+
+                // Store the failure payload for ANY error category so the index
+                // page can surface recovery options (skip-single, skip-all,
+                // force-schema-update) regardless of error type.
+                $offendingVersion = $diagnosis['offending_version'] ?? null;
+                if ($offendingVersion !== null) {
+                    $request->getSession()->set('quick_fix.last_apply_failure', [
+                        'version' => $offendingVersion,
+                        'category' => $diagnosis['category'] ?? 'unknown',
+                        'message' => $diagnosis['message'] ?? '',
+                        'suggested_action' => $diagnosis['suggested_action'] ?? '',
+                    ]);
+                }
+
+                // Keep the existing phantom-diff session key as a backward-compat
+                // alias so callers that already read it continue to work.
                 if (
                     ($diagnosis['category'] ?? '') === 'phantom_diff_migration'
-                    && isset($diagnosis['offending_version'])
-                    && $diagnosis['offending_version'] !== null
+                    && $offendingVersion !== null
                 ) {
                     $request->getSession()->set('quick_fix.last_phantom_diff', [
-                        'version' => $diagnosis['offending_version'],
+                        'version' => $offendingVersion,
                         'message' => $diagnosis['message'] ?? '',
                     ]);
                 }
@@ -365,6 +405,7 @@ class QuickFixController extends AbstractController
 
         if ($result['success']) {
             $request->getSession()->remove('quick_fix.last_phantom_diff');
+            $request->getSession()->remove('quick_fix.last_apply_failure');
             $auditLogger->logCustom(
                 'quick_fix.force_mark_migration_executed',
                 'Migration',
@@ -417,9 +458,9 @@ class QuickFixController extends AbstractController
 
         $result = $maintenance->markAllPhantomDiffMigrationsAsExecuted('quick-fix');
 
-        // Clear the single-version phantom-diff session payload — the bulk
-        // action supersedes it.
+        // Clear both session keys — the bulk action supersedes them.
         $request->getSession()->remove('quick_fix.last_phantom_diff');
+        $request->getSession()->remove('quick_fix.last_apply_failure');
 
         $markedCount = count($result['marked']);
 

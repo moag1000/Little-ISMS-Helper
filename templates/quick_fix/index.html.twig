@@ -115,7 +115,80 @@
             {% endfor %}
         {% endfor %}
 
-        {% if error_diagnosis is not null and error_diagnosis.category == 'phantom_diff_migration' and error_diagnosis.offending_version is not null %}
+        {# ── Universal apply-failure recovery card ─────────────────────── #}
+        {# Surfaces for ANY migration failure (data constraint, FK violation,
+           phantom-diff, etc.) — not just phantom_diff_migration category.
+           Priority: this branch before the legacy error_diagnosis branch. #}
+        {% if apply_failure is not null and apply_failure.version is defined %}
+            <div class="icon">🛠️</div>
+            <h1>{{ 'quick_fix.apply_failure.title'|trans({}, 'quick_fix') }}</h1>
+            {% if apply_failure.message %}
+                <p style="font-size: 13px;">{{ apply_failure.message }}</p>
+            {% endif %}
+            <p style="font-family: monospace; font-size: 12px; word-break: break-word; color: var(--muted);">
+                {{ apply_failure.version }}
+                <br>[{{ apply_failure.category }}]
+            </p>
+            <div class="flash error" style="margin-top: 12px; font-size: 13px;">
+                ⚠️ {{ 'quick_fix.apply_failure.warning'|trans({}, 'quick_fix') }}
+            </div>
+
+            {# Option 1: skip THIS migration (mark as executed without DDL) #}
+            <form method="POST" action="{{ path('app_quick_fix_force_mark_executed') }}" style="margin-top: 16px;">
+                <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_force_mark_executed') }}">
+                <input type="hidden" name="version" value="{{ apply_failure.version }}">
+                <label style="display: flex; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 13px; cursor: pointer; padding: 8px 0;">
+                    <input type="checkbox" name="confirm_already_exists" value="1" required style="margin-top: 3px;">
+                    <span>{{ 'quick_fix.apply_failure.skip_single_confirm'|trans({}, 'quick_fix') }}</span>
+                </label>
+                <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                    {{ 'quick_fix.apply_failure.skip_single_button'|trans({}, 'quick_fix') }}
+                </button>
+            </form>
+
+            {# Option 2: skip ALL pending migrations #}
+            <details style="margin-top: 16px;">
+                <summary style="cursor: pointer; color: var(--muted); font-size: 13px;">
+                    {{ 'quick_fix.apply_failure.skip_all_show'|trans({}, 'quick_fix') }}
+                </summary>
+                <div style="margin-top: 12px;">
+                    <p style="font-size: 13px; color: var(--muted);">{{ 'quick_fix.apply_failure.skip_all_body'|trans({}, 'quick_fix') }}</p>
+                    <form method="POST" action="{{ path('app_quick_fix_mark_all_phantom_diff') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_mark_all_phantom_diff') }}">
+                        <label style="display: flex; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 13px; cursor: pointer; padding: 8px 0;">
+                            <input type="checkbox" name="confirm_all_already_exist" value="1" required style="margin-top: 3px;">
+                            <span>{{ 'quick_fix.apply_failure.skip_all_confirm'|trans({}, 'quick_fix') }}</span>
+                        </label>
+                        <button type="submit" style="background: var(--danger); color: var(--bg);" onclick="this.disabled=true;this.form.submit();">
+                            {{ 'quick_fix.apply_failure.skip_all_button'|trans({}, 'quick_fix') }}
+                        </button>
+                    </form>
+                </div>
+            </details>
+
+            {# Option 3: nuclear schema-update (ADD/CREATE only, saveMode=true) #}
+            <details style="margin-top: 16px;">
+                <summary style="cursor: pointer; color: var(--muted); font-size: 13px;">
+                    {{ 'quick_fix.force_update.show'|trans({}, 'quick_fix') }}
+                </summary>
+                <div style="margin-top: 12px;">
+                    <p style="font-size: 13px; color: var(--muted);">{{ 'quick_fix.force_update.body'|trans({}, 'quick_fix') }}</p>
+                    <form method="POST" action="{{ path('app_quick_fix_force_schema_update') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_force_schema_update') }}">
+                        <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; cursor: pointer; padding: 8px 0; color: var(--muted);">
+                            <input type="checkbox" name="confirm_force_schema" value="1" required style="margin-top: 3px;">
+                            <span>{{ 'quick_fix.force_update.confirm_label'|trans({}, 'quick_fix') }}</span>
+                        </label>
+                        <button type="submit" style="background: var(--danger); color: var(--bg); margin-top: 8px;" onclick="this.disabled=true;this.form.submit();">
+                            {{ 'quick_fix.force_update.button'|trans({}, 'quick_fix') }}
+                        </button>
+                    </form>
+                </div>
+            </details>
+
+        {# ── Legacy phantom-diff-only branch (kept for backward-compat) ── #}
+        {# Only reached when error_diagnosis is set WITHOUT apply_failure.  #}
+        {% elseif error_diagnosis is not null and error_diagnosis.category == 'phantom_diff_migration' and error_diagnosis.offending_version is not null %}
             <div class="icon">🔧</div>
             <h1>{{ 'quick_fix.phantom_diff.title'|trans({}, 'quick_fix') }}</h1>
             <p style="font-size: 13px;">{{ error_diagnosis.message }}</p>
