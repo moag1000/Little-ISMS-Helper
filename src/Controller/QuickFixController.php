@@ -291,7 +291,14 @@ class QuickFixController extends AbstractController
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
-        $this->addFlash('success', sprintf('%d Schema-Statement(s) erfolgreich angewendet.', $result['executed']));
+        $autoMarkedCount = count($result['auto_marked'] ?? []);
+        $this->addFlash('success', sprintf(
+            '%d Schema-Statement(s) erfolgreich angewendet%s.',
+            $result['executed'],
+            $autoMarkedCount > 0
+                ? sprintf(' + %d ausstehende Migration(en) automatisch als ausgeführt markiert', $autoMarkedCount)
+                : '',
+        ));
         return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
     }
 

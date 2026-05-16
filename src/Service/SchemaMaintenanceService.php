@@ -188,15 +188,31 @@ class SchemaMaintenanceService
      * so the audit trail + migration-gate stay consistent with the
      * monitoring-page action.
      *
-     * @return array{success: bool, executed: int, error: ?string, blocked: ?string}
+     * @return array{success: bool, executed: int, auto_marked: list<string>, error: ?string, blocked: ?string}
      */
     public function reconcileSchema(string $actor = 'system', bool $bypassMigrationGate = false): array
     {
         $result = $this->schemaHealthService->applyUpdate($actor, $bypassMigrationGate);
 
+        // After a successful reconcile, the live schema matches entity metadata.
+        // Any remaining file-system-pending migrations would phantom-diff on
+        // their next run (their target state is already applied). Auto-mark
+        // them as executed so the operator does not have to click through
+        // each one. Idempotent: markMigrationAsExecuted() skips already-executed.
+        $autoMarked = [];
+        if ($result['success']) {
+            foreach ($this->listPendingMigrationVersionsFromFileSystem() as $version) {
+                $r = $this->markMigrationAsExecuted($version);
+                if ($r['success']) {
+                    $autoMarked[] = $version;
+                }
+            }
+        }
+
         return [
             'success' => $result['success'],
             'executed' => count($result['executed_sql']),
+            'auto_marked' => $autoMarked,
             'error' => $result['error'],
             'blocked' => $result['blocked'],
         ];
@@ -486,12 +502,14 @@ class SchemaMaintenanceService
             || preg_match('/SQLSTATE\[42S01\]/', $msg)
             || preg_match('/SQLSTATE\[42S21\]/', $msg)
             // Reverse phantom-diff: drops something that does NOT exist
-            // (1091 = column, 1051 = table, 1086 = index)
+            // 1091=column, 1051=table, 1086=constraint, 1176=index/key,
+            // 3940=check constraint missing.
             || preg_match("/Can't DROP COLUMN/i", $msg)
             || preg_match("/Can't DROP '[^']+'/i", $msg)
+            || preg_match("/Key '[^']+' doesn't exist in table/i", $msg)
             || preg_match('/Unknown column .* in/i', $msg)
             || preg_match('/Unknown table/i', $msg)
-            || preg_match('/1091|1051|1086/', $msg)
+            || preg_match('/1091|1051|1086|1176|3940/', $msg)
         );
     }
 
