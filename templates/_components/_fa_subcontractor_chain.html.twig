@@ -1,0 +1,178 @@
+{#
+ # FairyAurora v4.0 — fa-subcontractor-chain macro (P-9 JsonBuilder)
+ #
+ # Visual JSON-Builder for Supplier.subcontractorChain (DORA Art. 28
+ # Sub-Outsourcing). Indented tree-builder by tier. Each subcontractor
+ # row has: tier / name / country / service / isCritical / LEI.
+ #
+ # Data contract (matches existing Supplier.subcontractorChain JSON):
+ #   [
+ #     {
+ #       "tier": 1|2|3|4,
+ #       "name": string,
+ #       "lei": string,           # LEI Code (optional)
+ #       "country": "DE"|"IE"|... # ISO-2-letter
+ #       "service": string,
+ #       "criticality": "low|medium|high|critical",
+ #       "critical": bool         # DORA Art. 28 critical flag (new)
+ #     }, ...
+ #   ]
+ #
+ # Backward compat: legacy newline-separated string lists or rows without
+ # the `critical` flag are loaded as tier=1 / critical=false defaults.
+ #
+ # Max-depth = 4 (DORA Art. 28 sub-outsourcing chain limit).
+ #
+ # Usage:
+ #   {% import '_components/_fa_subcontractor_chain.html.twig' as _fa_subcontractor_chain %}
+ #
+ #   {{ _fa_subcontractor_chain.render({
+ #       name: 'supplier[subcontractorChain]',
+ #       value: supplier.subcontractorChain,
+ #       translationDomain: 'suppliers'
+ #   }) }}
+ #
+ # Parameters:
+ #   props.name        - hidden-textarea name (required)
+ #   props.value       - current chain (array OR JSON string)
+ #   props.id          - root id (default 'fa-subcontractor-chain-' ~ random())
+ #   props.translationDomain - domain (default 'suppliers')
+ #
+ # Embed-Scope-Reminder: see _fa_team_role_builder.html.twig docblock.
+ #}
+
+{% macro render(props = {}) %}
+    {% set name = props.name|default('subcontractorChain') %}
+    {% set id = props.id|default('fa-subcontractor-chain-' ~ random(99999)) %}
+    {% set translationDomain = props.translationDomain|default('suppliers') %}
+    {% set rawValue = props.value is defined and props.value is not null
+        ? (props.value is iterable ? props.value|json_encode : props.value)
+        : '' %}
+
+    <div class="fa-json-builder fa-subcontractor-chain"
+         id="{{ id }}"
+         data-controller="subcontractor-chain"
+         data-subcontractor-chain-name-value="{{ name }}"
+         role="region"
+         aria-label="{{ props.ariaLabel|default('supplier.subcontractor_chain.aria'|trans({}, translationDomain)) }}">
+
+        <textarea name="{{ name }}"
+                  class="fa-json-builder__hidden"
+                  hidden
+                  aria-hidden="true"
+                  data-subcontractor-chain-target="hidden">{{ rawValue }}</textarea>
+
+        <div class="fa-subcontractor-chain__tree"
+             data-subcontractor-chain-target="tree"
+             aria-live="polite"></div>
+
+        <div class="fa-json-builder__empty d-none"
+             data-subcontractor-chain-target="emptyState">
+            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
+            <span>{{ ('supplier.subcontractor.empty')|trans({}, translationDomain) }}</span>
+        </div>
+
+        <small class="text-muted d-block">
+            {{ ('supplier.subcontractor_chain.help')|trans({}, translationDomain) }}
+        </small>
+
+        <div class="fa-json-builder__toolbar">
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                    data-action="click->subcontractor-chain#addRow">
+                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                {{ ('supplier.subcontractor.add')|trans({}, translationDomain) }}
+            </button>
+
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-json-builder__raw-toggle"
+                    data-action="click->subcontractor-chain#showRawJson"
+                    aria-pressed="false">
+                <i class="fa-icon fa-icon--ui-code" aria-hidden="true"></i>
+                {{ ('supplier.subcontractor_chain.raw_toggle')|trans({}, translationDomain) }}
+            </button>
+        </div>
+
+        <div class="fa-json-builder__raw d-none"
+             data-subcontractor-chain-target="rawPanel">
+            <label for="{{ id }}-raw" class="fa-cyber-input__label">
+                {{ ('supplier.subcontractor_chain.raw_label')|trans({}, translationDomain) }}
+            </label>
+            <textarea id="{{ id }}-raw"
+                      class="form-control fa-cyber-input__field"
+                      rows="6"
+                      spellcheck="false"
+                      data-subcontractor-chain-target="rawTextarea"
+                      data-action="input->subcontractor-chain#syncFromRaw">{{ rawValue }}</textarea>
+            <small class="text-muted">
+                {{ ('supplier.subcontractor_chain.raw_help')|trans({}, translationDomain) }}
+            </small>
+        </div>
+
+        {# Row-template. Placeholders: __INDEX__, __TIER__, __NAME__,
+           __LEI__, __COUNTRY__, __SERVICE__, __CRITICAL_CHECKED__,
+           __TIER_SEL_<N>__ for each tier 1..4, __CAN_INDENT__ ('disabled' if at max tier),
+           __CAN_OUTDENT__ ('disabled' if at tier 1). #}
+        <template data-subcontractor-chain-target="template">
+            <div class="fa-subcontractor-chain__node" data-index="__INDEX__" data-depth="__DEPTH__">
+                <input type="text"
+                       class="form-control form-control-sm fa-cyber-input__field"
+                       data-index="__INDEX__" data-field="name"
+                       data-action="input->subcontractor-chain#updateField"
+                       value="__NAME__"
+                       placeholder="{{ ('supplier.subcontractor.placeholder.name')|trans({}, translationDomain) }}"
+                       aria-label="{{ ('supplier.subcontractor.name')|trans({}, translationDomain) }}">
+                <input type="text"
+                       class="form-control form-control-sm text-uppercase fa-cyber-input__field"
+                       data-index="__INDEX__" data-field="country"
+                       data-action="input->subcontractor-chain#updateField"
+                       value="__COUNTRY__"
+                       maxlength="2"
+                       placeholder="DE"
+                       aria-label="{{ ('supplier.subcontractor.country')|trans({}, translationDomain) }}">
+                <input type="text"
+                       class="form-control form-control-sm fa-cyber-input__field"
+                       data-index="__INDEX__" data-field="service"
+                       data-action="input->subcontractor-chain#updateField"
+                       value="__SERVICE__"
+                       placeholder="{{ ('supplier.subcontractor.placeholder.service')|trans({}, translationDomain) }}"
+                       aria-label="{{ ('supplier.subcontractor.service')|trans({}, translationDomain) }}">
+                <label class="fa-subcontractor-chain__critical"
+                       title="{{ ('supplier.subcontractor.critical_help')|trans({}, translationDomain) }}">
+                    <input type="checkbox"
+                           data-index="__INDEX__" data-field="critical"
+                           data-action="change->subcontractor-chain#updateCritical"
+                           __CRITICAL_CHECKED__
+                           aria-label="{{ ('supplier.subcontractor.critical')|trans({}, translationDomain) }}">
+                </label>
+                <div class="fa-subcontractor-chain__actions">
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                            data-index="__INDEX__"
+                            data-action="click->subcontractor-chain#indent"
+                            __CAN_INDENT__
+                            aria-label="{{ ('supplier.subcontractor.indent')|trans({}, translationDomain) }}"
+                            title="Tier +1">
+                        →
+                    </button>
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                            data-index="__INDEX__"
+                            data-action="click->subcontractor-chain#outdent"
+                            __CAN_OUTDENT__
+                            aria-label="{{ ('supplier.subcontractor.outdent')|trans({}, translationDomain) }}"
+                            title="Tier −1">
+                        ←
+                    </button>
+                </div>
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger"
+                        data-index="__INDEX__"
+                        data-action="click->subcontractor-chain#removeRow"
+                        aria-label="{{ ('supplier.subcontractor_chain.remove')|trans({}, translationDomain) }}">
+                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+        </template>
+    </div>
+{% endmacro %}

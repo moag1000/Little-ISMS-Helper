@@ -198,10 +198,24 @@ supplier:
         country: Land
         service: Dienstleistung
         criticality: Kritikalität
+        critical: 'Kritisch (DORA Art. 28)'
+        critical_help: 'Als kritisch im Sinne von DORA Art. 28 markieren — Subunternehmer mit wesentlicher Funktion.'
+        indent: 'Tier erhöhen (verschachteln)'
+        outdent: 'Tier reduzieren (ausrücken)'
         add: 'Subunternehmer hinzufügen'
         empty: 'Noch keine Subunternehmer erfasst. Klicken Sie „Hinzufügen", um eine neue Ebene anzulegen.'
         none: 'Keine Unterauftragnehmer erfasst.'
         tree: 'Sub-Outsourcing-Baum'
+        placeholder:
+            name: 'z. B. Acme Hosting GmbH'
+            service: 'z. B. Cloud Hosting, Backup-Service'
+    subcontractor_chain:
+        aria: 'Subunternehmer-Kette — strukturierter Editor (DORA Art. 28, max. 4 Stufen)'
+        help: 'Erfassen Sie die Sub-Outsourcing-Kette nach DORA Art. 28. Maximale Verschachtelungstiefe: 4 Stufen. Markieren Sie kritische Subunternehmer für das Konzentrations-Reporting.'
+        remove: 'Subunternehmer entfernen'
+        raw_toggle: 'Als JSON bearbeiten'
+        raw_label: 'Roh-JSON (Power-User)'
+        raw_help: 'Achtung: Roh-Editing kann Daten beschädigen. Schema muss zur Entity-Definition passen.'
     status:
         active: Aktiv
         inactive: Inaktiv
