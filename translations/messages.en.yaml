@@ -145,6 +145,12 @@ common:
         empty_state:
             title: 'No persons in tenant'
             body: 'Please create a Person record before assigning this role.'
+    owner_picker:
+        section_label: 'Owner'
+        or: 'or'
+        legacy:
+            title: 'Legacy data — migration recommended'
+            body: 'This value still uses the legacy free-text owner field. Please migrate it to a User or Person record at your earliest convenience.'
     section:
         other: 'Other Fields'
     link_matrix:

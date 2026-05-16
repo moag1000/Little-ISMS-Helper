@@ -145,6 +145,12 @@ common:
         empty_state:
             title: 'Keine Personen im Mandanten'
             body: 'Bitte zuerst eine Person anlegen, bevor diese Rolle vergeben werden kann.'
+    owner_picker:
+        section_label: 'Verantwortlich'
+        or: 'oder'
+        legacy:
+            title: 'Altdaten – Migration empfohlen'
+            body: 'Dieser Eintrag stammt aus dem Freitext-Feld. Bitte bei nächster Gelegenheit auf einen Benutzer oder eine Person aus den Stammdaten umstellen.'
     section:
         other: 'Weitere Felder'
     link_matrix:

@@ -6845,3 +6845,74 @@ html[data-theme="dark"] .fa-pager-perpage select { background: var(--surface-2);
 }
 
 .fa-cheatsheet__row span:first-child { color: var(--fg-2); }
+
+/* ---------------------------------------------------------------------------
+ * fa-owner-picker — Unified Person/User owner-slot (audit-s4 P-1)
+ *
+ * Aurora wrapper around the recurring "User + Person + Deputies +
+ * Legacy-Freetext" cluster. Renders the primary User and Person slots
+ * side-by-side with an "— or —" separator, deputies underneath and the
+ * legacy free-text tucked into an info alert.
+ *
+ * Companion macro: templates/_components/_fa_owner_picker.html.twig
+ * Companion Stimulus controller: assets/controllers/owner_picker_controller.js
+ * ------------------------------------------------------------------------- */
+.fa-owner-picker {
+    border: 1px dashed var(--border);
+    border-radius: var(--r-md);
+    padding: var(--space-3) var(--space-3) var(--space-2);
+    background: var(--surface);
+}
+
+.fa-owner-picker > legend {
+    width: auto;
+    padding: 0 var(--space-2);
+    margin-left: var(--space-2);
+    color: var(--fg);
+    font-weight: 600;
+    float: none;
+}
+
+.fa-owner-picker__primary {
+    margin-bottom: var(--space-2);
+}
+
+.fa-owner-picker__sep {
+    align-items: center;
+    justify-content: center;
+    padding-bottom: var(--space-3);
+}
+
+.fa-owner-picker__sep-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--space-2);
+    font: 600 11px var(--font-mono);
+    color: var(--fg-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    height: 22px;
+    border-radius: var(--r-sm);
+}
+
+.fa-owner-picker__slot {
+    transition: opacity var(--t-fast) var(--ease-out);
+}
+
+.fa-owner-picker__slot[data-owner-picker-dimmed="true"] {
+    opacity: 0.55;
+}
+
+.fa-owner-picker__slot[data-owner-picker-dimmed="true"]:hover,
+.fa-owner-picker__slot[data-owner-picker-dimmed="true"]:focus-within {
+    opacity: 1;
+}
+
+.fa-owner-picker__legacy {
+    border-top: 1px solid var(--border);
+    padding-top: var(--space-2);
+}
+
