@@ -102,14 +102,33 @@ class TrainingType extends AbstractType
                 ],
                 'help' => 'training.help.target_audience',
             ])
+            // P-15 DataReuse: structured participantUsers Multi-Select.
+            // Persisting flows through TrainingController which creates
+            // TrainingParticipation rows on save (status=pending,
+            // assignmentSource=manual:edit_form). Legacy `participants`
+            // textarea kept read-only for migration data.
+            ->add('participantUsers', EntityType::class, [
+                'label' => 'training.field.participant_users',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'mapped' => true,
+                'by_reference' => false,
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'training.help.participant_users',
+            ])
             ->add('participants', TextareaType::class, [
-                'label' => 'training.field.participants',
+                'label' => 'training.field.participants_legacy',
                 'required' => false,
                 'attr' => [
                     'rows' => 3,
                     'placeholder' => 'training.placeholder.participants',
                 ],
-                'help' => 'training.help.participants',
+                'help' => 'training.help.participants_legacy',
             ])
             ->add('attendeeCount', IntegerType::class, [
                 'label' => 'training.field.attendee_count',

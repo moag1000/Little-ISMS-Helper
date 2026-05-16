@@ -190,12 +190,62 @@ class Training
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
 
+    /**
+     * Pattern A dual-state (P-15 DataReuse): structured participants as
+     * application Users. Persisting Users here triggers TrainingParticipation
+     * row creation in TrainingController so the audit-trail (ISO 27001 §7.3)
+     * stays intact. Legacy `participants` Textarea remains for migration
+     * display only.
+     *
+     * NOTE: this collection is *transient* on the form — it is NOT a Doctrine
+     * association on its own. We re-use the existing TrainingParticipation
+     * entity as the canonical M:N link; this property is a UI convenience
+     * for the multi-select. The setter is therefore a noop persistance-wise
+     * (data lives in TrainingParticipation rows).
+     *
+     * @var Collection<int, User>
+     */
+    private Collection $participantUsers;
+
 public function __construct()
     {
         $this->coveredControls = new ArrayCollection();
         $this->complianceRequirements = new ArrayCollection();
         $this->trainerDeputyPersons = new ArrayCollection();
+        $this->participantUsers = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+    }
+
+    /** @return Collection<int, User> */
+    public function getParticipantUsers(): Collection
+    {
+        return $this->participantUsers;
+    }
+
+    /**
+     * @param iterable<User> $users
+     */
+    public function setParticipantUsers(iterable $users): static
+    {
+        $this->participantUsers = new ArrayCollection();
+        foreach ($users as $user) {
+            $this->participantUsers->add($user);
+        }
+        return $this;
+    }
+
+    public function addParticipantUser(User $user): static
+    {
+        if (!$this->participantUsers->contains($user)) {
+            $this->participantUsers->add($user);
+        }
+        return $this;
+    }
+
+    public function removeParticipantUser(User $user): static
+    {
+        $this->participantUsers->removeElement($user);
+        return $this;
     }
 
     public function getId(): ?int
