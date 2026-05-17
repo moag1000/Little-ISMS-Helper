@@ -8,6 +8,7 @@ use App\Entity\AuthorityTemplate;
 use App\Entity\DataBreach;
 use App\Entity\Incident;
 use App\Entity\Tenant;
+use App\Exception\Regulatory\FrameworkNotActivatedException;
 use App\Repository\AuthorityTemplateRepository;
 use App\Service\AuditLogger;
 use App\Service\PdfExportService;
@@ -189,16 +190,19 @@ final class AuthorityNotificationGenerator
     private function assertLfdiKey(string $authorityKey): void
     {
         if (!str_starts_with($authorityKey, 'lfdi_')) {
-            throw new \InvalidArgumentException(sprintf(
-                'Authority key "%s" is not a valid LfDI key. Expected prefix: lfdi_',
+            throw new FrameworkNotActivatedException(
                 $authorityKey,
-            ));
+                sprintf(
+                    'Authority key "%s" is not a valid LfDI key. Expected prefix: lfdi_',
+                    $authorityKey,
+                ),
+            );
         }
         if (!in_array($authorityKey, AuthorityTemplate::VALID_AUTHORITY_KEYS, true)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Unknown authority key "%s".',
+            throw new FrameworkNotActivatedException(
                 $authorityKey,
-            ));
+                sprintf('Unknown authority key "%s".', $authorityKey),
+            );
         }
     }
 }

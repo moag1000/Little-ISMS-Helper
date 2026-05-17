@@ -6,6 +6,7 @@ namespace App\Service;
 
 use DateTime;
 use App\Entity\ScheduledReport;
+use App\Exception\Tenant\TenantOrphanException;
 use App\Repository\RiskRepository;
 use App\Repository\ScheduledReportRepository;
 use App\Repository\UserRepository;
@@ -327,7 +328,7 @@ final class ScheduledReportService
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
-            throw new \RuntimeException('Portfolio report requires a tenant context.');
+            throw new TenantOrphanException(null, 'Portfolio report requires a tenant context.');
         }
 
         $stichtag = new \DateTimeImmutable();
