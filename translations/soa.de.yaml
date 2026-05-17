@@ -230,22 +230,23 @@ soa:
             invalid_date: 'Bitte ein gültiges Datum im Format YYYY-MM-DD angeben.'
             future_date: 'Stichtagsdatum darf nicht in der Zukunft liegen.'
 
-no_tenant:
-    title: 'Dein Konto hat noch keinen Mandanten zugewiesen'
-    subtitle: 'Ohne Mandantenbezug können keine Controls geladen werden — was zu tun ist:'
-    body_admin: |
-        Als Administrator kannst du das selbst lösen:
-        1. Öffne die Benutzerverwaltung und weise diesem Konto einen Mandanten zu.
-        2. Alternativ kann die Daten-Reparatur Mandanten-Zuweisungen über mehrere Benutzer hinweg fixen (Bulk-Mode).
 
-        Falls noch kein passender Mandant existiert, lege ihn vorher unter Administration → Mandantenverwaltung an.
-    body_user: |
-        Bitte einen Administrator bitten, dein Benutzerkonto unter
-        „Administration → Benutzerverwaltung" einem Mandanten zuzuweisen.
-        Erst dann sind ISMS-Daten (Controls, Risiken, Vorfälle, VVT-Einträge) sichtbar.
-
-        Wenn du nicht weißt, wer Administrator ist: deine IT- oder QM-Abteilung
-        ist üblicherweise zuständig.
-    cta_user_management: 'Benutzerverwaltung öffnen'
-    cta_data_repair: 'Daten-Reparatur öffnen'
-    cta_logout: 'Abmelden und neu anmelden'
+    no_tenant:
+        title: 'Dein Konto hat noch keinen Mandanten zugewiesen'
+        subtitle: 'Ohne Mandantenbezug können keine Controls geladen werden — was zu tun ist:'
+        body_admin: |
+            Als Administrator kannst du das selbst lösen:
+            1. Öffne die Benutzerverwaltung und weise diesem Konto einen Mandanten zu.
+            2. Alternativ kann die Daten-Reparatur Mandanten-Zuweisungen über mehrere Benutzer hinweg fixen (Bulk-Mode).
+    
+            Falls noch kein passender Mandant existiert, lege ihn vorher unter Administration → Mandantenverwaltung an.
+        body_user: |
+            Bitte einen Administrator bitten, dein Benutzerkonto unter
+            „Administration → Benutzerverwaltung" einem Mandanten zuzuweisen.
+            Erst dann sind ISMS-Daten (Controls, Risiken, Vorfälle, VVT-Einträge) sichtbar.
+    
+            Wenn du nicht weißt, wer Administrator ist: deine IT- oder QM-Abteilung
+            ist üblicherweise zuständig.
+        cta_user_management: 'Benutzerverwaltung öffnen'
+        cta_data_repair: 'Daten-Reparatur öffnen'
+        cta_logout: 'Abmelden und neu anmelden'
