@@ -230,7 +230,10 @@
     --z-tour:           2000;
     --z-command:        2500;
     --z-turbo-bar:    999999;
-    --alva-z:           var(--z-overlay);
+    /* Alva-Dock stays visible above Modal (1001), Toast (1500), Tour (2000) and Command-Palette (2500).
+       Drift-Audit 2026-05-17: spec said 9500, prod had var(--z-overlay)=900 (under Modal). User
+       confirmed Alva must outrank all dialogs. */
+    --alva-z:           9500;
 
     /* — Typografie — */
     --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
