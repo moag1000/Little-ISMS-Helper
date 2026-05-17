@@ -9,5 +9,8 @@ parameters:
         - src/Entity/
         - src/Lifecycle/
 
-rules:
-    - App\Tests\PHPStan\Rule\NoDirectSetStatusRule
+services:
+    -
+        class: App\Tests\PHPStan\Rule\NoDirectSetStatusRule
+        tags:
+            - phpstan.rules.rule

@@ -181,7 +181,7 @@ class IndustryPresetController extends AbstractController
                 $doc->setDocumentType((string) ($ddef['type'] ?? 'policy'));
             }
             if (method_exists($doc, 'setStatus')) {
-                $doc->setStatus((string) ($ddef['status'] ?? 'draft'));
+                $doc->setStatus((string) ($ddef['status'] ?? 'draft')); // @phpstan-ignore lifecycle.directSetStatus (industry preset setup — initial state outside lifecycle flow)
             }
             $this->entityManager->persist($doc);
             $documentsCreated++;
