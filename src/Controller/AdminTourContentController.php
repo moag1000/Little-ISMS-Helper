@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -111,8 +112,11 @@ class AdminTourContentController extends AbstractController
     }
 
     #[Route('/admin/tours/content/{tourId}/save', name: 'admin_tour_content_save', methods: ['POST'], requirements: ['tourId' => '[a-z_]+'])]
-    public function save(string $tourId, Request $request): Response
-    {
+    public function save(
+        string $tourId,
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         $token = (string) $request->request->get('_token');
         if (!$this->isCsrfTokenValid('admin_tour_content_' . $tourId, $token)) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
@@ -125,9 +129,7 @@ class AdminTourContentController extends AbstractController
         $useGlobal = $this->isGranted('ROLE_SUPER_ADMIN') && $request->request->getBoolean('scope_global');
         $scopeTenant = $useGlobal ? null : $tenant;
 
-        /** @var User|null $user */
-        $user = $this->getUser();
-        $userEmail = $user?->getUserIdentifier();
+        $userEmail = $user->getUserIdentifier();
 
         $titles = (array) $request->request->all('title');
         $bodies = (array) $request->request->all('body');
