@@ -13,6 +13,7 @@ use App\Entity\PolicyTemplate;
 use App\Entity\Tag;
 use App\Entity\Tenant;
 use App\Entity\WizardRun;
+use App\Exception\Tenant\TenantOrphanException;
 use App\Repository\ControlRepository;
 use App\Repository\DocumentControlLinkRepository;
 use App\Repository\DocumentRepository;
@@ -136,7 +137,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     {
         $tenant = $run->getTenant();
         if ($tenant === null) {
-            throw new RuntimeException('WizardRun must have a tenant.');
+            throw new TenantOrphanException(null, 'WizardRun must have a tenant.');
         }
 
         $standards = $run->getStandardsAdopted() ?? [];

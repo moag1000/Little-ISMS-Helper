@@ -11,6 +11,7 @@ use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\FulfillmentInheritanceLog;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\Workflow\InvalidStatusTransitionException;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -432,7 +433,12 @@ class ComplianceInheritanceService
     private function assertPending(FulfillmentInheritanceLog $log): void
     {
         if (!$log->isPendingReview()) {
-            throw new LogicException('Inheritance log is not in a pending state (status: ' . $log->getReviewStatus() . ').');
+            throw new InvalidStatusTransitionException(
+                (string) $log->getReviewStatus(),
+                'reviewed',
+                FulfillmentInheritanceLog::class,
+                'Inheritance log is not in a pending state (status: ' . $log->getReviewStatus() . ').',
+            );
         }
     }
 

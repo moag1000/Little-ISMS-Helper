@@ -8,6 +8,7 @@ use App\Entity\Document;
 use App\Entity\DocumentVersion;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\Tenant\TenantOrphanException;
 use App\Repository\DocumentVersionRepository;
 use App\Service\AuditLogger;
 use DateTimeImmutable;
@@ -72,7 +73,7 @@ final class EvidenceVersioningService
 
         $tenant = $document->getTenant();
         if ($tenant === null) {
-            throw new RuntimeException('EvidenceVersioningService: document has no tenant.');
+            throw new TenantOrphanException(null, 'EvidenceVersioningService: document has no tenant.');
         }
 
         // Deactivate previous active versions

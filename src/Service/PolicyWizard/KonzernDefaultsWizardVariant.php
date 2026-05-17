@@ -8,6 +8,7 @@ use App\Entity\Tenant;
 use App\Entity\TenantPolicySetting;
 use App\Entity\User;
 use App\Entity\WizardRun;
+use App\Exception\Tenant\TenantOrphanException;
 use App\Repository\TenantPolicySettingRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -149,7 +150,7 @@ final class KonzernDefaultsWizardVariant
         }
         $konzern = $run->getTenant();
         if (!$konzern instanceof Tenant) {
-            throw new \LogicException('WizardRun has no tenant — cannot commit Konzern defaults.');
+            throw new TenantOrphanException(null, 'WizardRun has no tenant — cannot commit Konzern defaults.');
         }
 
         $inputs = $run->getInputs() ?? [];

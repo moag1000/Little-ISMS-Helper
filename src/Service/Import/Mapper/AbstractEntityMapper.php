@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Import\Mapper;
 
 use App\Entity\Tenant;
+use App\Exception\Tenant\TenantMismatchException;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -38,7 +39,7 @@ abstract class AbstractEntityMapper implements EntityMapperInterface
     /**
      * Assert that a mapped entity belongs to the expected tenant.
      *
-     * @throws \RuntimeException when ownership mismatch is detected
+     * @throws TenantMismatchException when ownership mismatch is detected
      */
     protected function validateTenantOwnership(object $entity, Tenant $expectedTenant): void
     {
@@ -48,11 +49,7 @@ abstract class AbstractEntityMapper implements EntityMapperInterface
 
         $owningTenant = $entity->getTenant();
         if ($owningTenant !== null && $owningTenant->getId() !== $expectedTenant->getId()) {
-            throw new \RuntimeException(sprintf(
-                'Tenant ownership mismatch: entity belongs to tenant %d, expected %d.',
-                (int) $owningTenant->getId(),
-                (int) $expectedTenant->getId(),
-            ));
+            throw TenantMismatchException::forEntity($entity, $expectedTenant->getId());
         }
     }
 

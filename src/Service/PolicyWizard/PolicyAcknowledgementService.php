@@ -8,6 +8,7 @@ use App\Entity\Document;
 use App\Entity\PolicyAcknowledgement;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\Tenant\TenantOrphanException;
 use App\Repository\PolicyAcknowledgementRepository;
 use App\Service\AuditLogger;
 use DateTimeImmutable;
@@ -75,7 +76,7 @@ final class PolicyAcknowledgementService
     {
         $tenant = $document->getTenant();
         if (!$tenant instanceof Tenant) {
-            throw new InvalidArgumentException('Document must be tenant-scoped before acknowledgement requests can be raised.');
+            throw new TenantOrphanException(null, 'Document must be tenant-scoped before acknowledgement requests can be raised.');
         }
 
         if ($audience === []) {
@@ -125,7 +126,7 @@ final class PolicyAcknowledgementService
         }
         $tenant = $document->getTenant();
         if (!$tenant instanceof Tenant) {
-            throw new InvalidArgumentException('Document must be tenant-scoped to be acknowledged.');
+            throw new TenantOrphanException(null, 'Document must be tenant-scoped to be acknowledged.');
         }
 
         $version = $this->resolveDocumentVersion($document);
