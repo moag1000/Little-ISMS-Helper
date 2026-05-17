@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\WorkflowInstanceRepository;
 use App\Repository\WorkflowRepository;
 use App\Repository\UserRepository;
@@ -30,6 +31,8 @@ class WorkflowServiceTest extends TestCase
     private MockObject $userRepository;
     private MockObject $emailService;
     private MockObject $security;
+    /** @var MockObject&LifecycleTransitionInterface */
+    private MockObject $lifecycleService;
     private WorkflowService $service;
 
     protected function setUp(): void
@@ -40,6 +43,7 @@ class WorkflowServiceTest extends TestCase
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->emailService = $this->createMock(EmailNotificationService::class);
         $this->security = $this->createMock(Security::class);
+        $this->lifecycleService = $this->createMock(LifecycleTransitionInterface::class);
 
         $this->service = new WorkflowService(
             $this->entityManager,
@@ -47,7 +51,8 @@ class WorkflowServiceTest extends TestCase
             $this->workflowInstanceRepository,
             $this->userRepository,
             $this->emailService,
-            $this->security
+            $this->security,
+            $this->lifecycleService,
         );
     }
 
@@ -78,8 +83,10 @@ class WorkflowServiceTest extends TestCase
         $this->assertInstanceOf(WorkflowInstance::class, $instance);
         $this->assertSame('Risk', $instance->getEntityType());
         $this->assertSame(123, $instance->getEntityId());
-        $this->assertSame('in_progress', $instance->getStatus());
+        // status is set to 'in_progress' by lifecycleService->transition('start') which is mocked;
+        // assert the transition was called (see testStartWorkflowWithStepsCallsStartTransition in WorkflowServiceLifecycleTest)
         $this->assertSame($step, $instance->getCurrentStep());
+        $this->assertSame(0, $instance->getCurrentStepIndex());
         $this->assertNotNull($instance->getDueDate());
     }
 
@@ -250,15 +257,15 @@ class WorkflowServiceTest extends TestCase
             ->method('addApprovalHistoryEntry');
 
         $instance->expects($this->once())
-            ->method('setStatus')
-            ->with('rejected');
-
-        $instance->expects($this->once())
             ->method('setCompletedAt');
 
         $instance->expects($this->once())
             ->method('setComments')
             ->with('Does not meet requirements');
+
+        $this->lifecycleService->expects($this->once())
+            ->method('transition')
+            ->with($instance, 'workflow_instance_lifecycle', 'reject', $user, 'Does not meet requirements');
 
         // Mock security to allow rejection (check both ROLE_ADMIN and ROLE_MANAGER)
         $this->security->method('isGranted')
@@ -284,13 +291,11 @@ class WorkflowServiceTest extends TestCase
     }
 
     #[Test]
-    public function testCancelWorkflowSetsStatusAndComments(): void
+    public function testCancelWorkflowDelegatesToLifecycleService(): void
     {
+        // cancelWorkflow delegates status to LifecycleService (Sprint Y.0).
         $instance = $this->createMock(WorkflowInstance::class);
-
-        $instance->expects($this->once())
-            ->method('setStatus')
-            ->with('cancelled');
+        $instance->method('getStatus')->willReturn('pending');
 
         $instance->expects($this->once())
             ->method('setCompletedAt')
@@ -300,8 +305,9 @@ class WorkflowServiceTest extends TestCase
             ->method('setComments')
             ->with('Project cancelled');
 
-        $this->entityManager->expects($this->once())
-            ->method('flush');
+        $this->lifecycleService->expects($this->once())
+            ->method('transition')
+            ->with($instance, 'workflow_instance_lifecycle', 'cancel', null, 'Project cancelled');
 
         $this->service->cancelWorkflow($instance, 'Project cancelled');
     }

@@ -59,10 +59,28 @@ class WorkflowInstance
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $dueDate = null;
 
-
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
+
+    /**
+     * Optimistic-locking version column — guards concurrent status transitions
+     * via Symfony Workflow (Sprint Y.0). Doctrine @Version increments this on
+     * every flush so parallel approve/reject calls are serialised safely.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: Types::INTEGER, options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
+     * Zero-based index tracking which step is currently active.
+     * Maintained by WorkflowService::moveToNextStep() as a plain field update
+     * alongside the step-ID reference stored in currentStep.
+     * Kept as a simple integer field; the Symfony Workflow SM only controls
+     * the coarser-grained status (pending/in_progress/approved/rejected/cancelled).
+     */
+    #[ORM\Column(name: 'current_step_index', type: Types::INTEGER, options: ['default' => 0])]
+    private int $currentStepIndex = 0;
 
     /**
      * Policy-Wizard W7-B — co-signature / witness on the approval-trail.
@@ -80,7 +98,7 @@ class WorkflowInstance
     #[ORM\Column(name: 'witnessed_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $witnessedAt = null;
 
-public function __construct()
+    public function __construct()
     {
         $this->startedAt = new DateTimeImmutable();
     }
@@ -270,6 +288,26 @@ public function __construct()
     public function setTenant(?Tenant $tenant): static
     {
         $this->tenant = $tenant;
+        return $this;
+    }
+
+    /**
+     * Optimistic-lock version — read-only from application code; Doctrine
+     * handles increments automatically on flush.
+     */
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
+    }
+
+    public function getCurrentStepIndex(): int
+    {
+        return $this->currentStepIndex;
+    }
+
+    public function setCurrentStepIndex(int $currentStepIndex): static
+    {
+        $this->currentStepIndex = $currentStepIndex;
         return $this;
     }
 
