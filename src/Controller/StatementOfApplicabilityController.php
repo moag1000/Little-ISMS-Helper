@@ -56,6 +56,16 @@ class StatementOfApplicabilityController extends AbstractController
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
+        // Short-circuit: user without tenant assignment cannot see any
+        // multi-tenant data. Render dedicated landing page with concrete
+        // next steps instead of a 0/0/0/0% KPI dashboard the junior cannot
+        // act on.
+        if ($tenant === null) {
+            return $this->render('soa/_no_tenant.html.twig', [
+                'isAdmin' => $this->isGranted('ROLE_ADMIN'),
+            ]);
+        }
+
         // Get filter parameters — URL-persisted so SoA views are shareable/bookmarkable (UXC-11)
         $view = $request->query->get('view', 'inherited'); // Default: inherited
         $q = trim((string) $request->query->get('q', ''));
@@ -86,11 +96,8 @@ class StatementOfApplicabilityController extends AbstractController
                 'currentView' => $view
             ];
         } else {
-            // User has no tenant assignment. Without tenant scope every
-            // multi-tenant query returns []; users see "0 controls" without
-            // any hint that the cause is a missing tenant link, not actual
-            // data. Surface a clear flash so the admin knows to fix it.
-            $this->addFlash('warning', $this->translator->trans('soa.empty.no_tenant', [], 'soa'));
+            // Defensive: short-circuited above, but keep the empty branch so
+            // unrelated callers (filter pipelines) keep working.
             $controls = [];
             $inheritanceInfo = [
                 'hasParent' => false,
