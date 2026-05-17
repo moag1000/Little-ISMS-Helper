@@ -1127,7 +1127,7 @@ class ComplianceController extends AbstractController
             'framework2Unique' => $framework2Unique ?? [],
         ]);
     }
-    #[Route('/compliance/framework/{id}/assess', name: 'app_compliance_assess', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/assess', name: 'app_compliance_assess', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function assessFramework(int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);

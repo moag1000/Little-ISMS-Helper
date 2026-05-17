@@ -372,7 +372,7 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
     }
 
-    #[Route('/workflow/start/{entityType}/{entityId}', name: 'app_workflow_start', requirements: ['entityId' => '\d+'])]
+    #[Route('/workflow/start/{entityType}/{entityId}', name: 'app_workflow_start', requirements: ['entityId' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function start(Request $request, string $entityType, int $entityId): Response
     {
