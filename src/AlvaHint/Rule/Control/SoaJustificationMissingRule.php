@@ -44,7 +44,7 @@ final class SoaJustificationMissingRule extends AbstractAlvaHintRule
             return false;
         }
         // Only fire for explicitly non-applicable controls.
-        if ($entity->getApplicable() !== false) {
+        if ($entity->isApplicable() !== false) {
             return false;
         }
 
