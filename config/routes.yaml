@@ -106,6 +106,13 @@ app_routes:
         - '../src/Controller/HomeController.php'
         - '../src/Controller/QuickFixController.php'
         - '../src/Controller/SsoController.php'
+        - '../src/Controller/LifecycleController.php'
+
+# Lifecycle API routes WITHOUT locale prefix — machine-to-machine JSON endpoints;
+# locale prefix would break client URLs and is unnecessary for API-style routes.
+lifecycle_routes:
+    resource: ../src/Controller/LifecycleController.php
+    type: attribute
 
 # SSO public routes WITHOUT locale prefix — must be declared AFTER app_routes so
 # this registration wins over the locale-prefixed duplicate from the directory scan.

@@ -552,3 +552,7 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    # ── Lifecycle Foundation (Task 13) — interface alias ─────────────────────
+    App\Lifecycle\Config\LifecycleConfigResolverInterface:
+        alias: App\Lifecycle\Config\LifecycleConfigResolver
+
