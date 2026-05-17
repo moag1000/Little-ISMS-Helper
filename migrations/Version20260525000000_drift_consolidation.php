@@ -93,14 +93,10 @@ final class Version20260525000000_drift_consolidation extends AbstractMigration
         }
 
         // =========================================================
-        // 2. DROP TABLE — lifecycle_config (entity removed, orphaned)
+        // 2. lifecycle_config — KEEP (was wrongly flagged as orphaned in
+        //    initial drift-snapshot; LifecycleConfig entity restored in PR #398
+        //    Sprint X.0 Lifecycle Foundation Pilot). No-op here.
         // =========================================================
-        if ($schema->hasTable('lifecycle_config')) {
-            foreach ($schema->getTable('lifecycle_config')->getForeignKeys() as $fk) {
-                $this->addSql(sprintf('ALTER TABLE lifecycle_config DROP FOREIGN KEY `%s`', $fk->getName()));
-            }
-            $this->addSql('DROP TABLE lifecycle_config');
-        }
 
         // =========================================================
         // 3. ALTER COLUMN — tenant_branding watermark opacity defaults
