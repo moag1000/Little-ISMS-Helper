@@ -346,6 +346,19 @@ jobs:
         run: python3 scripts/quality/check_em_writes_in_controller.py --baseline scripts/quality/baselines/em_writes_in_controller.txt --quiet
       - name: "Gate 28: #[CurrentUser] action test-arg count"
         run: python3 scripts/quality/check_currentuser_test_args.py --baseline scripts/quality/baselines/currentuser_test_args.txt --quiet
+
+      # ── Sprint Quality Gates (round 3 — sweep-aftermath gates) ────────────
+      # Caught real bugs at introduction time.
+      - name: "Gate 29: Form-render-completeness (fields flowing past submit)"
+        run: python3 scripts/quality/check_form_render_completeness.py --baseline scripts/quality/baselines/form_render_completeness.txt --quiet
+      - name: "Gate 30: Twig macro positional-arg arity"
+        run: python3 scripts/quality/check_macro_arg_arity.py --baseline scripts/quality/baselines/macro_arg_arity.txt --quiet
+      - name: "Gate 31: Nested Twig print-expr inside string-literal macro args"
+        run: python3 scripts/quality/check_nested_twig_in_string.py --baseline scripts/quality/baselines/nested_twig_in_string.txt --quiet
+      - name: "Gate 32: #[ORM\\Version] columns require explicit type + name"
+        run: python3 scripts/quality/check_version_column_explicit.py --baseline scripts/quality/baselines/version_column_explicit.txt --quiet
+      - name: "Gate 33: No PREPARE/EXECUTE dynamic SQL in migrations"
+        run: python3 scripts/quality/check_no_prepare_execute_migrations.py --baseline scripts/quality/baselines/no_prepare_execute_migrations.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
