@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -41,14 +42,13 @@ class NotificationTemplateController extends AbstractController
     ) {}
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
-    {
+    public function index(
+        #[CurrentUser] User $user,
+    ): Response {
         if ($redirect = $this->checkModuleActive('notifications')) {
             return $redirect;
         }
 
-        /** @var User $user */
-        $user      = $this->getUser();
         $templates = $this->templateRepository->findAvailableForTenant($user->getTenant());
 
         return $this->render('admin/notification/template/index.html.twig', [
@@ -58,14 +58,15 @@ class NotificationTemplateController extends AbstractController
 
     #[Route('/{id}/apply', name: 'apply', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsCsrfTokenValid('notification_template_apply_{id}')]
-    public function apply(NotificationTemplate $template, Request $request): Response
-    {
+    public function apply(
+        NotificationTemplate $template,
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         if ($redirect = $this->checkModuleActive('notifications')) {
             return $redirect;
         }
 
-        /** @var User $user */
-        $user   = $this->getUser();
         $tenant = $user->getTenant();
 
         if ($tenant === null) {

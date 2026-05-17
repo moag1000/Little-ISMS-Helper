@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -44,14 +45,13 @@ class NotificationRuleController extends AbstractController
     ) {}
 
     #[Route('', name: 'index', methods: ['GET'])]
-    public function index(): Response
-    {
+    public function index(
+        #[CurrentUser] User $user,
+    ): Response {
         if ($redirect = $this->checkModuleActive('notifications')) {
             return $redirect;
         }
 
-        /** @var User $user */
-        $user   = $this->getUser();
         $tenant = $user->getTenant();
 
         $rules = $this->ruleRepository->findBy(
@@ -65,14 +65,14 @@ class NotificationRuleController extends AbstractController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
-    {
+    public function new(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         if ($redirect = $this->checkModuleActive('notifications')) {
             return $redirect;
         }
 
-        /** @var User $user */
-        $user   = $this->getUser();
         $tenant = $user->getTenant();
 
         $rule = new NotificationRule();
@@ -129,16 +129,17 @@ class NotificationRuleController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(Request $request, NotificationRule $rule): Response
-    {
+    public function edit(
+        Request $request,
+        NotificationRule $rule,
+        #[CurrentUser] User $user,
+    ): Response {
         if ($redirect = $this->checkModuleActive('notifications')) {
             return $redirect;
         }
 
         $this->denyAccessUnlessGranted(NotificationRuleVoter::EDIT, $rule);
 
-        /** @var User $user */
-        $user   = $this->getUser();
         $tenant = $user->getTenant();
 
         $oldValues = ['name' => $rule->getName(), 'eventType' => $rule->getEventType(), 'isActive' => $rule->isActive()];

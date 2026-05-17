@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -83,8 +84,11 @@ class MappingQualityController extends AbstractController
     }
 
     #[Route('/admin/mapping-quality/{id}/transition', name: 'admin_mapping_quality_transition', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function transition(Request $request, int $id): Response
-    {
+    public function transition(
+        Request $request,
+        int $id,
+        #[CurrentUser] User $actor,
+    ): Response {
         if (!$this->isCsrfTokenValid('mapping_lifecycle_' . $id, $request->request->get('_token'))) {
             $this->addFlash('error', 'Invalid CSRF token.');
             return $this->redirectToRoute('admin_mapping_quality_show', ['id' => $id]);
@@ -94,8 +98,6 @@ class MappingQualityController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        /** @var User $actor */
-        $actor = $this->getUser();
         $newState = (string) $request->request->get('to');
         $reason = trim((string) $request->request->get('reason', ''));
 

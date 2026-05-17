@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Entity\User;
 use App\Repository\SystemSettingsRepository;
 use App\Service\AuditLogger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -33,8 +35,10 @@ class QuickFixSettingsController extends AbstractController
     }
 
     #[Route('', name: 'app_admin_quick_fix_settings', methods: ['GET', 'POST'])]
-    public function edit(Request $request): Response
-    {
+    public function edit(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         $current = [
             'fallback_ui_enabled' => (bool) $this->systemSettings->getSetting(self::CATEGORY, 'fallback_ui_enabled', true),
             'require_installer_token' => (bool) $this->systemSettings->getSetting(self::CATEGORY, 'require_installer_token', false),
@@ -55,8 +59,7 @@ class QuickFixSettingsController extends AbstractController
                 'ip_allowlist' => trim((string) $request->request->get('ip_allowlist', '')),
             ];
 
-            $user = $this->getUser();
-            $updatedBy = method_exists($user, 'getUserIdentifier') ? $user->getUserIdentifier() : null;
+            $updatedBy = $user->getUserIdentifier();
 
             foreach ($new as $key => $value) {
                 $this->systemSettings->setSetting(
