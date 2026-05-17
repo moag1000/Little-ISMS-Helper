@@ -360,6 +360,8 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             // Organizational Details
             // ============================================================================
+            // @legacy-freetext: no Department entity exists yet — Department/OrgUnit
+            //   refactor is its own backlog item. Free-text acceptable until then.
             ->add('responsibleDepartment', TextType::class, [
                 'label' => 'processing_activity.form.responsible_department',
                 'help' => 'processing_activity.help.responsible_department',
