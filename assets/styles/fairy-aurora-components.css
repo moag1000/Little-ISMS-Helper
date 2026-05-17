@@ -4688,14 +4688,16 @@ button.fa-filter-chip.fa-filter-chip--active {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 3px 8px;
+    /* Padding aligned to spec (3px 9px) — prior 3px 8px regressed user-facing pill breathing. */
+    padding: 4px 10px;
     border-radius: var(--r-pill);
     font-family: var(--font-mono);
-    font-size: 10px;
+    /* Slightly larger than the previous 10px hardcode — prior value clamped vertical box too far. */
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    line-height: 1.2;
+    line-height: 1.25;
 }
 .badge.bg-primary,
 .badge.bg-info {
