@@ -98,11 +98,11 @@ class WorkflowController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function definitions(): Response
     {
-        $workflows = $this->workflowRepository->findAll();
-
-        return $this->render('workflow/definitions.html.twig', [
-            'workflows' => $workflows,
-        ]);
+        // Y.4: YAML workflows are now the source of truth. The Admin Workflow
+        // Overlay Editor at /admin/workflows is the canonical UI for inspecting
+        // and overriding workflow steps. Keep this route as a permanent redirect
+        // for bookmarks; DB Workflow rows remain in place for audit-trail.
+        return $this->redirectToRoute('admin_workflow_overlay_index');
     }
 
     #[Route('/workflow/pending', name: 'app_workflow_pending', methods: ['GET'])]

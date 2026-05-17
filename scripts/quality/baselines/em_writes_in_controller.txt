@@ -423,10 +423,7 @@ src/Controller/VulnerabilityController.php:164
 src/Controller/VulnerabilityController.php:180
 src/Controller/VulnerabilityController.php:181
 src/Controller/WelcomeController.php:104
-src/Controller/WorkflowController.php:250
-src/Controller/WorkflowController.php:432
-src/Controller/WorkflowController.php:433
-src/Controller/WorkflowController.php:456
-src/Controller/WorkflowController.php:495
-src/Controller/WorkflowController.php:496
-src/Controller/WorkflowController.php:514
+src/Controller/WorkflowController.php:249
+src/Controller/WorkflowController.php:439
+src/Controller/WorkflowController.php:440
+src/Controller/WorkflowController.php:458
