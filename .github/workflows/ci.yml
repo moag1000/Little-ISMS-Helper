@@ -314,6 +314,38 @@ jobs:
       #   then workflow:dump for every config/workflows/*.yaml state-machine.
       - name: "Gate 14: Workflow configs valid"
         run: ./scripts/quality/check_workflow_configs.sh
+
+      # ── Sprint Quality Gates (round 2 — bug-classes from last sweep) ──────
+      # 14 new gates, each baselined for `main` HEAD. Remove a baseline entry
+      # once the underlying issue is fixed.
+      - name: "Gate 15: Aurora icon-name validity"
+        run: python3 scripts/quality/check_aurora_icon_names.py --baseline scripts/quality/baselines/aurora_icon_names.txt --quiet
+      - name: "Gate 16: No Bootstrap-Icons bi-* classes"
+        run: python3 scripts/quality/check_no_bi_classes.py --baseline scripts/quality/baselines/no_bi_classes.txt --quiet
+      - name: "Gate 17: No nested <form> tags"
+        run: python3 scripts/quality/check_nested_forms.py --baseline scripts/quality/baselines/nested_forms.txt --quiet
+      - name: "Gate 18: #[Route] requires methods: arg"
+        run: python3 scripts/quality/check_route_methods.py --baseline scripts/quality/baselines/route_methods.txt --quiet
+      - name: "Gate 19: Forbid legacy Routing\\Annotation\\Route import"
+        run: python3 scripts/quality/check_legacy_route_import.py --baseline scripts/quality/baselines/legacy_route_import.txt --quiet
+      - name: "Gate 20: DDL migrations need isTransactional()=false"
+        run: python3 scripts/quality/check_ddl_transactional.py --baseline scripts/quality/baselines/ddl_transactional.txt --quiet
+      - name: "Gate 21: Bool-property accessor mismatch"
+        run: python3 scripts/quality/check_bool_accessor_usage.py --baseline scripts/quality/baselines/bool_accessor_usage.txt --quiet
+      - name: "Gate 22: Forbid generic exception throws"
+        run: python3 scripts/quality/check_no_generic_throws.py --baseline scripts/quality/baselines/no_generic_throws.txt --quiet
+      - name: "Gate 23: Translation dynamic-key prefix registry"
+        run: python3 scripts/quality/check_translation_dynamic_keys.py --quiet
+      - name: "Gate 24: AuditLog must set tenant"
+        run: python3 scripts/quality/check_audit_log_tenant.py --baseline scripts/quality/baselines/audit_log_tenant.txt --quiet
+      - name: "Gate 25: God-class size (soft-fail via baseline)"
+        run: python3 scripts/quality/check_god_class_size.py --baseline scripts/quality/baselines/god_class_size.txt --quiet
+      - name: "Gate 26: Translation top-level keys match domain"
+        run: python3 scripts/quality/check_translation_nesting.py --baseline scripts/quality/baselines/translation_nesting.txt --quiet
+      - name: "Gate 27: No EntityManager writes in controllers"
+        run: python3 scripts/quality/check_em_writes_in_controller.py --baseline scripts/quality/baselines/em_writes_in_controller.txt --quiet
+      - name: "Gate 28: #[CurrentUser] action test-arg count"
+        run: python3 scripts/quality/check_currentuser_test_args.py --baseline scripts/quality/baselines/currentuser_test_args.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

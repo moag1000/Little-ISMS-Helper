@@ -1,0 +1,8 @@
+# check_aurora_icon_names.py baseline
+# Format: <relative-path>:<line>:<bad-icon-name>
+templates/_components/_lifecycle_actions.html.twig:37:ui-arrows-expand-vertical
+templates/_components/_lifecycle_actions.html.twig:39:ui-chevron-down
+templates/admin/lifecycle_overrides/edit.html.twig:69:nav-chat-quote
+templates/admin/lifecycle_overrides/edit.html.twig:102:nav-eye
+templates/admin/lifecycle_overrides/index.html.twig:24:nav-flow
+src/Service/Admin/AdminHubCatalog.php:491:nav-flow
