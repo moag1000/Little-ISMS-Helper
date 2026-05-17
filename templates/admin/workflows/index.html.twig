@@ -1,0 +1,163 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block admin_title %}{{ 'admin.workflows.title'|trans }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.workflows.title'|trans }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-workflow', label: 'Workflows' },
+        title: 'admin.workflows.title'|trans,
+        subtitle: 'admin.workflows.subtitle'|trans,
+        actions: [
+            {
+                label: 'admin.workflows.action.lifecycle_overrides'|trans,
+                href: path('admin_lifecycle_overrides_index'),
+                icon: 'nav-flow',
+                variant: 'ghost',
+            }
+        ],
+    }) }}
+
+    {% set lifecycleRows = workflows|filter(w => w.type == 'lifecycle') %}
+    {% set regulatoryRows = workflows|filter(w => w.type == 'regulatory') %}
+
+    {# Regulatory workflows (with step editing) #}
+    <div class="row mb-4">
+        <div class="col-lg-10">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
+                        {{ 'admin.workflows.section.regulatory'|trans }}
+                    </h2>
+                    <p class="fa-section__desc text-muted small mb-0">{{ 'admin.workflows.section.regulatory_desc'|trans }}</p>
+                </div>
+                <div class="fa-section__body">
+                    {% if regulatoryRows is empty %}
+                        {{ _fa_alert.render({
+                            variant: 'info',
+                            icon: 'status-info',
+                            body: 'admin.workflows.no_regulatory'|trans,
+                        }) }}
+                    {% else %}
+                        {% embed '_components/_fa_table.html.twig' with { hover: true } %}
+                            {% block table_head %}
+                                {% trans_default_domain 'admin' %}
+                                <tr>
+                                    <th class="fa-table__th">{{ 'admin.workflows.col.name'|trans }}</th>
+                                    <th class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.steps'|trans }}</th>
+                                    <th class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.overrides'|trans }}</th>
+                                    <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                {% trans_default_domain 'admin' %}
+                                {% for wf in regulatoryRows %}
+                                    <tr class="fa-table__row">
+                                        <td class="fa-table__cell">
+                                            <code class="text-primary">{{ wf.name }}</code>
+                                        </td>
+                                        <td class="fa-table__cell fa-table__cell--num">
+                                            {% if wf.has_steps %}
+                                                <span class="badge bg-secondary">{{ wf.step_count }}</span>
+                                            {% else %}
+                                                <span class="fa-table__cell--muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="fa-table__cell fa-table__cell--num">
+                                            {% if wf.override_count > 0 %}
+                                                <span class="badge bg-warning text-dark">{{ wf.override_count }}</span>
+                                            {% else %}
+                                                <span class="fa-table__cell--muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="fa-table__cell fa-table__cell--actions">
+                                            <a href="{{ path('admin_workflow_overlay_show', {name: wf.name}) }}"
+                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                               aria-label="{{ 'admin.workflows.action.show'|trans }}">
+                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                                                {{ 'admin.workflows.action.show'|trans }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endblock %}
+                        {% endembed %}
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+    </div>
+
+    {# Lifecycle workflows (read-only structure, link to transition-level overrides) #}
+    <div class="row">
+        <div class="col-lg-10">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
+                        {{ 'admin.workflows.section.lifecycle'|trans }}
+                    </h2>
+                    <p class="fa-section__desc text-muted small mb-0">{{ 'admin.workflows.section.lifecycle_desc'|trans }}</p>
+                </div>
+                <div class="fa-section__body">
+                    {% if lifecycleRows is empty %}
+                        {{ _fa_alert.render({
+                            variant: 'info',
+                            icon: 'status-info',
+                            body: 'admin.workflows.no_lifecycle'|trans,
+                        }) }}
+                    {% else %}
+                        {% embed '_components/_fa_table.html.twig' with { hover: true } %}
+                            {% block table_head %}
+                                {% trans_default_domain 'admin' %}
+                                <tr>
+                                    <th class="fa-table__th">{{ 'admin.workflows.col.name'|trans }}</th>
+                                    <th class="fa-table__th fa-table__th--num">{{ 'admin.workflows.col.overrides'|trans }}</th>
+                                    <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                {% trans_default_domain 'admin' %}
+                                {% for wf in lifecycleRows %}
+                                    <tr class="fa-table__row">
+                                        <td class="fa-table__cell">
+                                            <code class="text-body">{{ wf.name }}</code>
+                                        </td>
+                                        <td class="fa-table__cell fa-table__cell--num">
+                                            {% if wf.override_count > 0 %}
+                                                <span class="badge bg-warning text-dark">{{ wf.override_count }}</span>
+                                            {% else %}
+                                                <span class="fa-table__cell--muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="fa-table__cell fa-table__cell--actions">
+                                            <a href="{{ path('admin_lifecycle_overrides_show', {workflowName: wf.name}) }}"
+                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                               aria-label="{{ 'admin.workflows.action.transition_overrides'|trans }}">
+                                                <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
+                                                {{ 'admin.workflows.action.transition_overrides'|trans }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endblock %}
+                        {% endembed %}
+                        {{ _fa_alert.render({
+                            variant: 'info',
+                            icon: 'status-info',
+                            class: 'mt-3 small',
+                            body: 'admin.workflows.hint.lifecycle_redirect'|trans,
+                        }) }}
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}

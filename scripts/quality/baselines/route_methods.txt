@@ -77,3 +77,4 @@ src/Controller/RoleDashboardController.php:20
 src/Controller/ScheduledReportController.php:24
 src/Controller/Setup/ExistingFrameworksController.php:22
 src/Controller/SystemTemplateApplyController.php:33
+src/Controller/Admin/WorkflowOverlayController.php:39
