@@ -32,7 +32,7 @@ use Symfony\Component\Workflow\Registry;
  *     'reject_target_step'     => int|null,
  *   ]
  */
-final class RegulatoryWorkflowLoader
+class RegulatoryWorkflowLoader
 {
     /** @var array<string, array<int, array<string, mixed>>> Cache: workflow_name → steps */
     private array $cache = [];
