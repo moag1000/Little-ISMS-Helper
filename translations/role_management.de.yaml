@@ -12,7 +12,6 @@ role_management:
     section:
         basic_info: Grundinformationen
         permissions: Berechtigungen
-        details: Rollendetails
         users: 'Zugewiesene Benutzer'
     field:
         name: Rollenname
@@ -20,14 +19,8 @@ role_management:
         users: Benutzer
         permissions: Berechtigungen
         type: Typ
-        system_role: Systemrolle
-    placeholder:
-        name: 'z.B. Sicherheitsbeauftragter'
-        description: 'Beschreibung der Rolle und ihrer Verantwortlichkeiten...'
     help:
-        active: 'Aktive Rollen können Benutzern zugewiesen werden'
         permissions: 'Wählen Sie die Berechtigungen aus, die diese Rolle haben soll'
-        system_role: 'Systemrollen können nicht gelöscht werden und haben eingeschränkte Änderungsoptionen'
         compare_before_create: 'Bestehende Rollen vergleichen, bevor eine neue erstellt wird — verhindert Duplikate.'
     permission:
         name: Berechtigung
@@ -114,15 +107,6 @@ role:
     risk_manager: Risikomanager
     auditor: Auditor
     admin: Administrator
-    group_ciso: 'Konzern-CISO'
-    konzern_auditor: 'Konzern-Auditor'
-    holding:
-        group_ciso:
-            label: 'Konzern-CISO'
-            description: 'Mandantenübergreifender Lesezugriff für Konzern-ISBs. Kann alle Tochter-Dashboards, Risk-Register und SOA-Übersichten einsehen. Darf Einzel-Tenant-Konfigurationen nicht ändern.'
-        konzern_auditor:
-            label: 'Konzern-Auditor'
-            description: 'Nur-Lese-Zugriff auf alle Tochter-Tenants. Für interne oder externe Konzern-Auditoren, die alle Tochtergesellschaften prüfen müssen, ohne Schreibrechte zu besitzen.'
     compare:
         title: 'Rollen vergleichen'
         select_roles: 'Rollen zum Vergleich auswählen'
@@ -140,7 +124,3 @@ role:
         title: Rollenvorlagen
         description: 'Vordefinierte Rollenvorlagen für typische ISMS-Funktionen'
         custom_name: 'Benutzerdefinierter Name'
-    field:
-        system_role: Systemrolle
-    help:
-        system_role: 'Systemrolle mit vordefinierten Berechtigungen'

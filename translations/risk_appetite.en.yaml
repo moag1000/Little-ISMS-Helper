@@ -2,9 +2,7 @@ risk_appetite:
     title: 'Risk Appetite'
     description: 'Defines which risk levels are acceptable – globally and per category.'
     new: 'Create new'
-    new_description: 'Create a new risk appetite (global or for a category).'
     edit: Edit
-    title_singular: Entry
     approved: Approved
     list:
         title: Entries
@@ -20,32 +18,18 @@ risk_appetite:
     field:
         category: Category
         max_acceptable_risk: 'Max acceptable risk'
-        review_buffer_multiplier: 'Review buffer multiplier'
         description: Description
         status: Status
-        is_active: Active
         approved_by: 'Approved by'
         approved_at: 'Approved at'
         created_at: 'Created at'
-    placeholder:
-        category: 'e.g. Financial, Operational, Compliance or empty for Global'
-        description: 'Describe the risk appetite and the rationale for this threshold...'
-        approved_by: '-- Select approving person --'
     help:
-        category_empty: 'Enter a category or choose "Global"'
         category: 'Leave empty for global risk appetite, or specify category (e.g. Financial, IT, Compliance)'
         max_acceptable_risk: 'Maximum acceptable risk value on a scale of 1-25 (Probability × Impact)'
-        review_buffer_multiplier: 'Review zone factor: risk scores between MaxAcceptable and MaxAcceptable × factor require review (default 1.5, range 1.0–3.0)'
         description: 'Detailed description and rationale for this risk appetite'
         is_active: 'Is this risk appetite currently valid?'
         approved_by: 'Person who formally approved this risk appetite (ISO 27005)'
         approved_at: 'Date and time of formal approval'
-    validation:
-        category_max_length: 'Category must not exceed 100 characters'
-        max_acceptable_risk_required: 'Please specify the maximum acceptable risk value'
-        max_acceptable_risk_range: 'Risk value must be between 1 and 25'
-        review_buffer_multiplier_range: 'Review buffer multiplier must be between 1.0 and 3.0'
-        description_required: 'Please provide a description'
     stats:
         total: 'Total entries'
         global_threshold: 'Global threshold'
