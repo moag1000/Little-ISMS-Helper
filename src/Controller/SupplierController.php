@@ -35,7 +35,7 @@ class SupplierController extends AbstractController
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
     ) {}
-    #[Route('/supplier/', name: 'app_supplier_index')]
+    #[Route('/supplier/', name: 'app_supplier_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -210,7 +210,7 @@ class SupplierController extends AbstractController
             'message' => "$deleted suppliers deleted successfully"
         ]);
     }
-    #[Route('/supplier/{id}', name: 'app_supplier_show', requirements: ['id' => '\d+'])]
+    #[Route('/supplier/{id}', name: 'app_supplier_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(Supplier $supplier): Response
     {

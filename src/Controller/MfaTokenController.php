@@ -28,7 +28,7 @@ class MfaTokenController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger
     ) {}
-    #[Route('/admin/mfa', name: 'admin_mfa_index')]
+    #[Route('/admin/mfa', name: 'admin_mfa_index', methods: ['GET'])]
     #[IsGranted('MFA_VIEW')]
     public function index(): Response
     {
@@ -60,7 +60,7 @@ class MfaTokenController extends AbstractController
             'webauthn_count' => $webauthnCount,
         ]);
     }
-    #[Route('/admin/mfa/user/{id}/setup-totp', name: 'admin_mfa_setup_totp', requirements: ['id' => '\d+'])]
+    #[Route('/admin/mfa/user/{id}/setup-totp', name: 'admin_mfa_setup_totp', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('MFA_SETUP')]
     public function setupTotp(User $user, Request $request): Response
     {
@@ -163,7 +163,7 @@ class MfaTokenController extends AbstractController
             'backup_codes' => $backupCodes,
         ]);
     }
-    #[Route('/admin/mfa/{id}', name: 'admin_mfa_show', requirements: ['id' => '\d+'])]
+    #[Route('/admin/mfa/{id}', name: 'admin_mfa_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('MFA_VIEW')]
     public function show(MfaToken $mfaToken): Response
     {

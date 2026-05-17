@@ -30,7 +30,7 @@ class BCExerciseController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
     ) {}
-    #[Route('/bc-exercise/', name: 'app_bc_exercise_index')]
+    #[Route('/bc-exercise/', name: 'app_bc_exercise_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -76,7 +76,7 @@ class BCExerciseController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/bc-exercise/{id}', name: 'app_bc_exercise_show', requirements: ['id' => '\d+'])]
+    #[Route('/bc-exercise/{id}', name: 'app_bc_exercise_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(BCExercise $bcExercise): Response
     {

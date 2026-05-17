@@ -28,7 +28,7 @@ class RoleDashboardController extends AbstractController
     /**
      * Dashboard selector - redirects to appropriate dashboard based on role
      */
-    #[Route('', name: 'app_role_dashboard_index')]
+    #[Route('', name: 'app_role_dashboard_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -51,7 +51,7 @@ class RoleDashboardController extends AbstractController
      * Strategic view with compliance across frameworks, high-level risk posture,
      * and pending approvals requiring attention.
      */
-    #[Route('/ciso', name: 'app_dashboard_ciso')]
+    #[Route('/ciso', name: 'app_dashboard_ciso', methods: ['GET'])]
     #[IsGranted('ROLE_CISO')]
     public function cisoDashboard(): Response
     {
@@ -68,7 +68,7 @@ class RoleDashboardController extends AbstractController
      * Operational risk view with treatment pipeline, appetite monitoring,
      * and mitigation effectiveness tracking.
      */
-    #[Route('/risk-manager', name: 'app_dashboard_risk_manager')]
+    #[Route('/risk-manager', name: 'app_dashboard_risk_manager', methods: ['GET'])]
     #[IsGranted('ROLE_RISK_MANAGER')]
     public function riskManagerDashboard(): Response
     {
@@ -85,7 +85,7 @@ class RoleDashboardController extends AbstractController
      * Evidence collection status, findings tracker, audit timeline,
      * and corrective action monitoring.
      */
-    #[Route('/auditor', name: 'app_dashboard_auditor')]
+    #[Route('/auditor', name: 'app_dashboard_auditor', methods: ['GET'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function auditorDashboard(): Response
     {
@@ -102,7 +102,7 @@ class RoleDashboardController extends AbstractController
      * Executive summary with RAG status indicators, trend arrows,
      * and top critical items requiring board attention.
      */
-    #[Route('/board', name: 'app_dashboard_board')]
+    #[Route('/board', name: 'app_dashboard_board', methods: ['GET'])]
     #[IsGranted('ROLE_CISO')]
     public function boardDashboard(): Response
     {
@@ -118,7 +118,7 @@ class RoleDashboardController extends AbstractController
     /**
      * API: Get CISO dashboard data
      */
-    #[Route('/api/ciso', name: 'app_dashboard_api_ciso')]
+    #[Route('/api/ciso', name: 'app_dashboard_api_ciso', methods: ['GET'])]
     #[IsGranted('ROLE_CISO')]
     public function getCisoDashboardData(): JsonResponse
     {
@@ -128,7 +128,7 @@ class RoleDashboardController extends AbstractController
     /**
      * API: Get Risk Manager dashboard data
      */
-    #[Route('/api/risk-manager', name: 'app_dashboard_api_risk_manager')]
+    #[Route('/api/risk-manager', name: 'app_dashboard_api_risk_manager', methods: ['GET'])]
     #[IsGranted('ROLE_RISK_MANAGER')]
     public function getRiskManagerDashboardData(): JsonResponse
     {
@@ -138,7 +138,7 @@ class RoleDashboardController extends AbstractController
     /**
      * API: Get Auditor dashboard data
      */
-    #[Route('/api/auditor', name: 'app_dashboard_api_auditor')]
+    #[Route('/api/auditor', name: 'app_dashboard_api_auditor', methods: ['GET'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function getAuditorDashboardData(): JsonResponse
     {
@@ -148,7 +148,7 @@ class RoleDashboardController extends AbstractController
     /**
      * API: Get Board dashboard data
      */
-    #[Route('/api/board', name: 'app_dashboard_api_board')]
+    #[Route('/api/board', name: 'app_dashboard_api_board', methods: ['GET'])]
     #[IsGranted('ROLE_CISO')]
     public function getBoardDashboardData(): JsonResponse
     {

@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LicenseController extends AbstractController
 {
-    #[Route('/about/licenses', name: 'app_licenses')]
+    #[Route('/about/licenses', name: 'app_licenses', methods: ['GET'])]
     public function index(): Response
     {
         $noticeFile = $this->getParameter('kernel.project_dir') . '/NOTICE.md';
@@ -36,7 +36,7 @@ class LicenseController extends AbstractController
         ]);
     }
 
-    #[Route('/about/licenses/report', name: 'app_licenses_report')]
+    #[Route('/about/licenses/report', name: 'app_licenses_report', methods: ['GET'])]
     public function report(): Response
     {
         $reportFile = $this->getParameter('kernel.project_dir') . '/docs/reports/license-report.md';
@@ -54,7 +54,7 @@ class LicenseController extends AbstractController
         ]);
     }
 
-    #[Route('/about/licenses/summary', name: 'app_licenses_summary')]
+    #[Route('/about/licenses/summary', name: 'app_licenses_summary', methods: ['GET'])]
     public function summary(): Response
     {
         $reportFile = $this->getParameter('kernel.project_dir') . '/docs/reports/license-report.md';

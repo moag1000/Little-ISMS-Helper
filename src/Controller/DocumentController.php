@@ -71,7 +71,7 @@ class DocumentController extends AbstractController
         private readonly ?TenantContext $tenantContext = null,
     ) {}
 
-    #[Route('/document/', name: 'app_document_index')]
+    #[Route('/document/', name: 'app_document_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         // Get current tenant
@@ -611,7 +611,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route('/document/{id}', name: 'app_document_show', requirements: ['id' => '\d+'])]
+    #[Route('/document/{id}', name: 'app_document_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(
         Document $document,
         ?\App\Service\PolicyWizard\Export\PolicyPdfExporter $pdfExporter = null,
@@ -720,7 +720,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route('/document/{id}/download', name: 'app_document_download', requirements: ['id' => '\d+'])]
+    #[Route('/document/{id}/download', name: 'app_document_download', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function download(Document $document, ?Request $request = null): Response
     {
         $request ??= new Request();
@@ -958,7 +958,7 @@ class DocumentController extends AbstractController
         return $this->redirectToRoute('app_document_index');
     }
 
-    #[Route('/document/type/{type}', name: 'app_document_by_type')]
+    #[Route('/document/type/{type}', name: 'app_document_by_type', methods: ['GET'])]
     public function byType(string $type): Response
     {
         $user = $this->security->getUser();

@@ -55,7 +55,7 @@ class AuditLogController extends AbstractController
         return $this->redirectToRoute('app_audit_log_index');
     }
 
-    #[Route('/admin/audit-log/', name: 'app_audit_log_index')]
+    #[Route('/admin/audit-log/', name: 'app_audit_log_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $page = max(1, $request->query->getInt('page', 1));
@@ -113,7 +113,7 @@ class AuditLogController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/audit-log/entity/{entityType}/{entityId}', name: 'app_audit_log_entity')]
+    #[Route('/admin/audit-log/entity/{entityType}/{entityId}', name: 'app_audit_log_entity', methods: ['GET'])]
     public function entityHistory(string $entityType, int $entityId): Response
     {
         $auditLogs = $this->auditLogRepository->findByEntity($entityType, $entityId);
@@ -125,7 +125,7 @@ class AuditLogController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/audit-log/user/{userName}', name: 'app_audit_log_user')]
+    #[Route('/admin/audit-log/user/{userName}', name: 'app_audit_log_user', methods: ['GET'])]
     public function userActivity(string $userName): Response
     {
         $auditLogs = $this->auditLogRepository->findByUser($userName);
@@ -136,7 +136,7 @@ class AuditLogController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/audit-log/statistics', name: 'app_audit_log_statistics')]
+    #[Route('/admin/audit-log/statistics', name: 'app_audit_log_statistics', methods: ['GET'])]
     public function statistics(): Response
     {
         $actionStats = $this->auditLogRepository->getActionStatistics();
@@ -162,7 +162,7 @@ class AuditLogController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/audit-log/{id}', name: 'app_audit_log_detail', requirements: ['id' => '\d+'])]
+    #[Route('/admin/audit-log/{id}', name: 'app_audit_log_detail', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function detail(int $id): Response
     {
         $auditLog = $this->auditLogRepository->find($id);

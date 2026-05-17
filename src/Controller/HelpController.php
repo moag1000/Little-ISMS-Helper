@@ -18,13 +18,13 @@ class HelpController extends AbstractController
     ) {
     }
 
-    #[Route('/help/iso9001-bridge', name: 'app_help_iso9001_bridge')]
+    #[Route('/help/iso9001-bridge', name: 'app_help_iso9001_bridge', methods: ['GET'])]
     public function iso9001Bridge(): Response
     {
         return $this->render('help/iso9001_bridge.html.twig');
     }
 
-    #[Route('/help/glossary', name: 'app_help_glossary')]
+    #[Route('/help/glossary', name: 'app_help_glossary', methods: ['GET'])]
     public function glossary(): Response
     {
         return $this->render('help/glossary.html.twig');
@@ -35,7 +35,7 @@ class HelpController extends AbstractController
      * druckbares Handout-Material. Ersetzt den ursprünglich geplanten
      * PDF-Export (~75 % Aufwand bei gleichem Consultant-Nutzen).
      */
-    #[Route('/help/tour', name: 'app_help_tour_index')]
+    #[Route('/help/tour', name: 'app_help_tour_index', methods: ['GET'])]
     public function tourIndex(): Response
     {
         $tours = $this->tourService?->allMeta() ?? [];
@@ -44,7 +44,7 @@ class HelpController extends AbstractController
         ]);
     }
 
-    #[Route('/help/tour/{role}', name: 'app_help_tour_role', requirements: ['role' => '[a-z_]+'])]
+    #[Route('/help/tour/{role}', name: 'app_help_tour_role', requirements: ['role' => '[a-z_]+'], methods: ['GET'])]
     public function tourRole(string $role): Response
     {
         if ($this->tourService === null || !in_array($role, GuidedTourService::ALL_TOURS, true)) {

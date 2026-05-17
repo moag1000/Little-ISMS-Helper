@@ -21,7 +21,7 @@ class ModuleManagementController extends AbstractController
     /**
      * Module Overview - Redirect to Admin
      */
-    #[Route('/modules/', name: 'module_management_index')]
+    #[Route('/modules/', name: 'module_management_index', methods: ['GET'])]
     public function index(): Response
     {
         return $this->redirectToRoute('admin_modules_index');
@@ -48,7 +48,7 @@ class ModuleManagementController extends AbstractController
     /**
      * Module Details - Redirect to Admin
      */
-    #[Route('/modules/{moduleKey}/details', name: 'module_management_details')]
+    #[Route('/modules/{moduleKey}/details', name: 'module_management_details', methods: ['GET'])]
     public function details(string $moduleKey): Response
     {
         return $this->redirectToRoute('admin_modules_details', ['moduleKey' => $moduleKey]);
@@ -66,7 +66,7 @@ class ModuleManagementController extends AbstractController
     /**
      * Export Module Data - Redirect to Admin
      */
-    #[Route('/modules/{moduleKey}/export', name: 'module_management_export')]
+    #[Route('/modules/{moduleKey}/export', name: 'module_management_export', methods: ['GET'])]
     public function export(string $moduleKey): Response
     {
         return $this->redirectToRoute('admin_modules_export', ['moduleKey' => $moduleKey]);

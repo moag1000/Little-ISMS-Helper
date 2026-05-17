@@ -46,7 +46,7 @@ class Nis2ComplianceController extends AbstractController
     ) {
     }
 
-    #[Route('/nis2-compliance', name: 'app_nis2_compliance_dashboard')]
+    #[Route('/nis2-compliance', name: 'app_nis2_compliance_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
         // Check if NIS2 framework exists and is active
@@ -185,7 +185,7 @@ class Nis2ComplianceController extends AbstractController
      * - Section 2: Incident Notification (72h) - Nature, scope, severity, IoCs, actions
      * - Section 3: Final Report (1 month) - Root cause, corrective/preventive actions, lessons
      */
-    #[Route('/nis2/incident-report/{id}/pdf', name: 'app_nis2_incident_report_pdf')]
+    #[Route('/nis2/incident-report/{id}/pdf', name: 'app_nis2_incident_report_pdf', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function incidentReportPdf(Incident $incident): Response
     {

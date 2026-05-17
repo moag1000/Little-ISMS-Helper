@@ -25,7 +25,7 @@ class BsiGrundschutzCheckController extends AbstractController
     ) {
     }
 
-    #[Route('/bsi-grundschutz-check', name: 'app_bsi_grundschutz_check')]
+    #[Route('/bsi-grundschutz-check', name: 'app_bsi_grundschutz_check', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $raw = (string) $request->query->get('absicherungs_stufe', '');

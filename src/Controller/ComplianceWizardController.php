@@ -64,7 +64,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Wizard selection page - shows available wizards based on active modules
      */
-    #[Route('', name: 'app_compliance_wizard_index')]
+    #[Route('', name: 'app_compliance_wizard_index', methods: ['GET'])]
     public function index(): Response
     {
         $availableWizards = $this->wizardService->getAvailableWizards();
@@ -85,7 +85,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Start a specific wizard
      */
-    #[Route('/{wizard}', name: 'app_compliance_wizard_start', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    #[Route('/{wizard}', name: 'app_compliance_wizard_start', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function start(string $wizard): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -139,7 +139,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Run the assessment and show results
      */
-    #[Route('/{wizard}/assess', name: 'app_compliance_wizard_assess', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    #[Route('/{wizard}/assess', name: 'app_compliance_wizard_assess', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function assess(string $wizard): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -168,7 +168,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Show detailed category results
      */
-    #[Route('/{wizard}/category/{category}', name: 'app_compliance_wizard_category', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    #[Route('/{wizard}/category/{category}', name: 'app_compliance_wizard_category', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function category(string $wizard, string $category): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -215,7 +215,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Export assessment as PDF — V3 W2-M6: real PDF via PdfExportService (DomPDF).
      */
-    #[Route('/{wizard}/export/pdf', name: 'app_compliance_wizard_export_pdf', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    #[Route('/{wizard}/export/pdf', name: 'app_compliance_wizard_export_pdf', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function exportPdf(string $wizard): Response
     {
@@ -264,7 +264,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Compare multiple frameworks
      */
-    #[Route('/compare', name: 'app_compliance_wizard_compare', priority: 10)]
+    #[Route('/compare', name: 'app_compliance_wizard_compare', priority: 10, methods: ['GET'])]
     public function compare(Request $request): Response
     {
         $selectedWizards = $request->query->all('wizards') ?: ['iso27001', 'nis2', 'dora'];
@@ -353,7 +353,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * WS-6: Gap-Report with FTE estimates (`sort=effort|quick-wins`).
      */
-    #[Route('/{wizard}/gap-report', name: 'app_compliance_wizard_gap_report', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    #[Route('/{wizard}/gap-report', name: 'app_compliance_wizard_gap_report', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function gapReport(string $wizard, Request $request): Response
     {
         if ($this->gapEffortCalculator === null || $this->frameworkRepository === null) {
@@ -452,7 +452,7 @@ class ComplianceWizardController extends AbstractController
      * (capped at 10 frameworks for PDF readability), no longer hardcoded
      * to 5. V3 W2-M6: real PDF via DomPDF when PdfExportService present.
      */
-    #[Route('/compare/export/pdf', name: 'app_compliance_wizard_compare_export_pdf', priority: 10)]
+    #[Route('/compare/export/pdf', name: 'app_compliance_wizard_compare_export_pdf', priority: 10, methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function compareExportPdf(Request $request): Response
     {
@@ -644,7 +644,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * V3 B5 / EF-2: Snapshot history with trend chart.
      */
-    #[Route('/{wizard}/history', name: 'app_compliance_wizard_history', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    #[Route('/{wizard}/history', name: 'app_compliance_wizard_history', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'], methods: ['GET'])]
     public function history(string $wizard): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {

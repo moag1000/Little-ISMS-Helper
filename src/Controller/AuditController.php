@@ -41,7 +41,7 @@ class AuditController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly ?InternalAuditCloner $internalAuditCloner = null,
     ) {}
-    #[Route('/audit/', name: 'app_audit_index')]
+    #[Route('/audit/', name: 'app_audit_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         // Get filter parameters
@@ -107,7 +107,7 @@ class AuditController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/audit/export/excel', name: 'app_audit_export_excel')]
+    #[Route('/audit/export/excel', name: 'app_audit_export_excel', methods: ['GET'])]
     public function exportExcel(Request $request): Response
     {
         $audits = $this->internalAuditRepository->findAll();
@@ -185,7 +185,7 @@ class AuditController extends AbstractController
             'message' => "$deleted audits deleted successfully"
         ]);
     }
-    #[Route('/audit/{id}', name: 'app_audit_show', requirements: ['id' => '\d+'])]
+    #[Route('/audit/{id}', name: 'app_audit_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(InternalAudit $internalAudit): Response
     {
         // Get audit log history for this audit (last 10 entries)
@@ -592,7 +592,7 @@ class AuditController extends AbstractController
         return $user;
     }
 
-    #[Route('/audit/{id}/export/pdf', name: 'app_audit_export_pdf', requirements: ['id' => '\d+'])]
+    #[Route('/audit/{id}/export/pdf', name: 'app_audit_export_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function exportPdf(Request $request, InternalAudit $internalAudit): Response
     {
         // Close session to prevent blocking other requests during PDF generation

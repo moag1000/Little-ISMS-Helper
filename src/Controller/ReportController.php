@@ -40,7 +40,7 @@ class ReportController extends AbstractController
         private readonly ISMSObjectiveRepository $ismsObjectiveRepository
     ) {}
 
-    #[Route('/reports/', name: 'app_reports_index')]
+    #[Route('/reports/', name: 'app_reports_index', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('reports/index.html.twig');
@@ -48,7 +48,7 @@ class ReportController extends AbstractController
 
     // ===================== DASHBOARD REPORTS =====================
 
-    #[Route('/reports/dashboard/pdf', name: 'app_reports_dashboard_pdf')]
+    #[Route('/reports/dashboard/pdf', name: 'app_reports_dashboard_pdf', methods: ['GET'])]
     public function dashboardPdf(Request $request): Response
     {
         $data = $this->getDashboardData();
@@ -72,7 +72,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/dashboard/excel', name: 'app_reports_dashboard_excel')]
+    #[Route('/reports/dashboard/excel', name: 'app_reports_dashboard_excel', methods: ['GET'])]
     public function dashboardExcel(Request $request): Response
     {
         $data = $this->getDashboardData();
@@ -116,7 +116,7 @@ class ReportController extends AbstractController
 
     // ===================== RISK REPORTS =====================
 
-    #[Route('/reports/risks/pdf', name: 'app_reports_risks_pdf')]
+    #[Route('/reports/risks/pdf', name: 'app_reports_risks_pdf', methods: ['GET'])]
     public function risksPdf(Request $request): Response
     {
         $risks = $this->riskRepository->findAll();
@@ -147,7 +147,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/risks/excel', name: 'app_reports_risks_excel')]
+    #[Route('/reports/risks/excel', name: 'app_reports_risks_excel', methods: ['GET'])]
     public function risksExcel(Request $request): Response
     {
         $risks = $this->riskRepository->findAll();
@@ -183,7 +183,7 @@ class ReportController extends AbstractController
 
     // ===================== CONTROL REPORTS (SoA) =====================
 
-    #[Route('/reports/controls/pdf', name: 'app_reports_controls_pdf')]
+    #[Route('/reports/controls/pdf', name: 'app_reports_controls_pdf', methods: ['GET'])]
     public function controlsPdf(Request $request): Response
     {
         $controls = $this->controlRepository->findAll();
@@ -214,7 +214,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/controls/excel', name: 'app_reports_controls_excel')]
+    #[Route('/reports/controls/excel', name: 'app_reports_controls_excel', methods: ['GET'])]
     public function controlsExcel(Request $request): Response
     {
         $controls = $this->controlRepository->findAll();
@@ -249,7 +249,7 @@ class ReportController extends AbstractController
 
     // ===================== INCIDENT REPORTS =====================
 
-    #[Route('/reports/incidents/pdf', name: 'app_reports_incidents_pdf')]
+    #[Route('/reports/incidents/pdf', name: 'app_reports_incidents_pdf', methods: ['GET'])]
     public function incidentsPdf(Request $request): Response
     {
         $incidents = $this->incidentRepository->findAll();
@@ -280,7 +280,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/incidents/excel', name: 'app_reports_incidents_excel')]
+    #[Route('/reports/incidents/excel', name: 'app_reports_incidents_excel', methods: ['GET'])]
     public function incidentsExcel(Request $request): Response
     {
         $incidents = $this->incidentRepository->findAll();
@@ -315,7 +315,7 @@ class ReportController extends AbstractController
 
     // ===================== TRAINING REPORTS =====================
 
-    #[Route('/reports/trainings/pdf', name: 'app_reports_trainings_pdf')]
+    #[Route('/reports/trainings/pdf', name: 'app_reports_trainings_pdf', methods: ['GET'])]
     public function trainingsPdf(Request $request): Response
     {
         $trainings = $this->trainingRepository->findAll();
@@ -346,7 +346,7 @@ class ReportController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/trainings/excel', name: 'app_reports_trainings_excel')]
+    #[Route('/reports/trainings/excel', name: 'app_reports_trainings_excel', methods: ['GET'])]
     public function trainingsExcel(Request $request): Response
     {
         $trainings = $this->trainingRepository->findAll();

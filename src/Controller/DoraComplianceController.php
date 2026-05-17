@@ -66,7 +66,7 @@ class DoraComplianceController extends AbstractController
     ) {
     }
 
-    #[Route('/dora-compliance', name: 'app_dora_compliance_dashboard')]
+    #[Route('/dora-compliance', name: 'app_dora_compliance_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
         // Tenant-level DORA gate: redirect non-DORA-obligated tenants away.
@@ -451,7 +451,7 @@ class DoraComplianceController extends AbstractController
      * - Details: description, timeline, affected services, financial impact
      * - DORA reporting timeline: Detection -> Initial (4h) -> Intermediate (72h) -> Final (1 month)
      */
-    #[Route('/dora/ict-incident-report/{id}/pdf', name: 'app_dora_ict_incident_report_pdf')]
+    #[Route('/dora/ict-incident-report/{id}/pdf', name: 'app_dora_ict_incident_report_pdf', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function ictIncidentReportPdf(Incident $incident): Response
     {

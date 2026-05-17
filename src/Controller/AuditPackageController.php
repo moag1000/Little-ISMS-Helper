@@ -25,7 +25,7 @@ class AuditPackageController extends AbstractController
     ) {
     }
 
-    #[Route('/audit-package/{framework}', name: 'app_audit_package_export', requirements: ['framework' => '[A-Za-z0-9_.:-]+'])]
+    #[Route('/audit-package/{framework}', name: 'app_audit_package_export', requirements: ['framework' => '[A-Za-z0-9_.:-]+'], methods: ['GET'])]
     public function export(string $framework): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();

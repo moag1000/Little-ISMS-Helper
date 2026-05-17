@@ -57,7 +57,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== REPORT CENTER =====================
 
-    #[Route('/', name: 'app_management_reports')]
+    #[Route('/', name: 'app_management_reports', methods: ['GET'])]
     public function index(): Response
     {
         $categories = $this->reportService->getReportCategories();
@@ -71,7 +71,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== EXECUTIVE REPORTS =====================
 
-    #[Route('/executive', name: 'app_management_reports_executive')]
+    #[Route('/executive', name: 'app_management_reports_executive', methods: ['GET'])]
     public function executive(Request $request): Response
     {
         [$from, $to] = $this->parseDateRange($request);
@@ -87,7 +87,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/executive/pdf', name: 'app_management_reports_executive_pdf')]
+    #[Route('/executive/pdf', name: 'app_management_reports_executive_pdf', methods: ['GET'])]
     public function executivePdf(Request $request): Response
     {
         $summary = $this->reportService->getExecutiveSummary();
@@ -116,7 +116,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== RISK MANAGEMENT REPORTS =====================
 
-    #[Route('/risk', name: 'app_management_reports_risk')]
+    #[Route('/risk', name: 'app_management_reports_risk', methods: ['GET'])]
     public function riskManagement(Request $request): Response
     {
         [$from, $to] = $this->parseDateRange($request);
@@ -130,7 +130,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/risk/pdf', name: 'app_management_reports_risk_pdf')]
+    #[Route('/risk/pdf', name: 'app_management_reports_risk_pdf', methods: ['GET'])]
     public function riskManagementPdf(Request $request): Response
     {
         $riskReport = $this->reportService->getRiskManagementReport();
@@ -155,7 +155,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/risk/excel', name: 'app_management_reports_risk_excel')]
+    #[Route('/risk/excel', name: 'app_management_reports_risk_excel', methods: ['GET'])]
     public function riskManagementExcel(Request $request): Response
     {
         $riskReport = $this->reportService->getRiskManagementReport();
@@ -221,7 +221,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== BCM REPORTS =====================
 
-    #[Route('/bcm', name: 'app_management_reports_bcm')]
+    #[Route('/bcm', name: 'app_management_reports_bcm', methods: ['GET'])]
     public function bcm(): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -233,7 +233,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/bcm/pdf', name: 'app_management_reports_bcm_pdf')]
+    #[Route('/bcm/pdf', name: 'app_management_reports_bcm_pdf', methods: ['GET'])]
     public function bcmPdf(Request $request): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -260,7 +260,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== COMPLIANCE REPORTS =====================
 
-    #[Route('/compliance', name: 'app_management_reports_compliance')]
+    #[Route('/compliance', name: 'app_management_reports_compliance', methods: ['GET'])]
     public function compliance(Request $request): Response
     {
         [$from, $to] = $this->parseDateRange($request);
@@ -272,7 +272,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/compliance/pdf', name: 'app_management_reports_compliance_pdf')]
+    #[Route('/compliance/pdf', name: 'app_management_reports_compliance_pdf', methods: ['GET'])]
     public function compliancePdf(Request $request): Response
     {
         $complianceReport = $this->reportService->getComplianceStatusReport();
@@ -297,7 +297,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== AUDIT REPORTS =====================
 
-    #[Route('/audit', name: 'app_management_reports_audit')]
+    #[Route('/audit', name: 'app_management_reports_audit', methods: ['GET'])]
     public function audit(): Response
     {
         $auditReport = $this->reportService->getAuditManagementReport();
@@ -307,7 +307,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/audit/pdf', name: 'app_management_reports_audit_pdf')]
+    #[Route('/audit/pdf', name: 'app_management_reports_audit_pdf', methods: ['GET'])]
     public function auditPdf(Request $request): Response
     {
         $auditReport = $this->reportService->getAuditManagementReport();
@@ -332,7 +332,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== ASSET REPORTS =====================
 
-    #[Route('/assets', name: 'app_management_reports_assets')]
+    #[Route('/assets', name: 'app_management_reports_assets', methods: ['GET'])]
     public function assets(): Response
     {
         $assetReport = $this->reportService->getAssetManagementReport();
@@ -342,7 +342,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/assets/pdf', name: 'app_management_reports_assets_pdf')]
+    #[Route('/assets/pdf', name: 'app_management_reports_assets_pdf', methods: ['GET'])]
     public function assetsPdf(Request $request): Response
     {
         $assetReport = $this->reportService->getAssetManagementReport();
@@ -365,7 +365,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/assets/excel', name: 'app_management_reports_assets_excel')]
+    #[Route('/assets/excel', name: 'app_management_reports_assets_excel', methods: ['GET'])]
     public function assetsExcel(Request $request): Response
     {
         $assetReport = $this->reportService->getAssetManagementReport();
@@ -398,7 +398,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== GDPR / DATA BREACH REPORTS =====================
 
-    #[Route('/gdpr', name: 'app_management_reports_gdpr')]
+    #[Route('/gdpr', name: 'app_management_reports_gdpr', methods: ['GET'])]
     public function gdpr(): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();
@@ -408,7 +408,7 @@ class ManagementReportController extends AbstractController
         ]);
     }
 
-    #[Route('/gdpr/pdf', name: 'app_management_reports_gdpr_pdf')]
+    #[Route('/gdpr/pdf', name: 'app_management_reports_gdpr_pdf', methods: ['GET'])]
     public function gdprPdf(Request $request): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();
@@ -433,7 +433,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== BOARD ONE-PAGER =====================
 
-    #[Route('/board-one-pager/pdf', name: 'app_reports_board_one_pager_pdf')]
+    #[Route('/board-one-pager/pdf', name: 'app_reports_board_one_pager_pdf', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function boardOnePagerPdf(Request $request): Response
     {
@@ -501,7 +501,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== CERTIFICATION READINESS =====================
 
-    #[Route('/certification-readiness', name: 'app_management_reports_cert_readiness')]
+    #[Route('/certification-readiness', name: 'app_management_reports_cert_readiness', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function certificationReadiness(): Response
     {
@@ -510,7 +510,7 @@ class ManagementReportController extends AbstractController
         return $this->render('management_reports/certification_readiness.html.twig', $data);
     }
 
-    #[Route('/certification-readiness/pdf', name: 'app_management_reports_cert_readiness_pdf')]
+    #[Route('/certification-readiness/pdf', name: 'app_management_reports_cert_readiness_pdf', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function certificationReadinessPdf(Request $request): Response
     {
@@ -644,7 +644,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== BCM EXCEL EXPORT =====================
 
-    #[Route('/bcm/excel', name: 'app_management_reports_bcm_excel')]
+    #[Route('/bcm/excel', name: 'app_management_reports_bcm_excel', methods: ['GET'])]
     public function bcmExcel(Request $request): Response
     {
         $bcmReport = $this->reportService->getBCMReport();
@@ -720,7 +720,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== COMPLIANCE EXCEL EXPORT =====================
 
-    #[Route('/compliance/excel', name: 'app_management_reports_compliance_excel')]
+    #[Route('/compliance/excel', name: 'app_management_reports_compliance_excel', methods: ['GET'])]
     public function complianceExcel(Request $request): Response
     {
         $complianceReport = $this->reportService->getComplianceStatusReport();
@@ -771,7 +771,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== AUDIT EXCEL EXPORT =====================
 
-    #[Route('/audit/excel', name: 'app_management_reports_audit_excel')]
+    #[Route('/audit/excel', name: 'app_management_reports_audit_excel', methods: ['GET'])]
     public function auditExcel(Request $request): Response
     {
         $auditReport = $this->reportService->getAuditManagementReport();
@@ -804,7 +804,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== GDPR EXCEL EXPORT =====================
 
-    #[Route('/gdpr/excel', name: 'app_management_reports_gdpr_excel')]
+    #[Route('/gdpr/excel', name: 'app_management_reports_gdpr_excel', methods: ['GET'])]
     public function gdprExcel(Request $request): Response
     {
         $dataBreachReport = $this->reportService->getDataBreachReport();
@@ -870,7 +870,7 @@ class ManagementReportController extends AbstractController
      * - Risk assessment/treatment results
      * - Decisions: improvement opportunities, ISMS changes, resource needs
      */
-    #[Route('/review-output/pdf', name: 'app_management_reports_review_output_pdf')]
+    #[Route('/review-output/pdf', name: 'app_management_reports_review_output_pdf', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function reviewOutputPdf(Request $request): Response
     {
@@ -908,7 +908,7 @@ class ManagementReportController extends AbstractController
      * Shows period-over-period comparison of key ISMS metrics using KPI snapshot data.
      * Compares current quarter against previous quarter with delta indicators.
      */
-    #[Route('/quarterly-trend', name: 'app_management_reports_quarterly_trend')]
+    #[Route('/quarterly-trend', name: 'app_management_reports_quarterly_trend', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function quarterlyTrend(): Response
     {
@@ -923,7 +923,7 @@ class ManagementReportController extends AbstractController
     /**
      * Generate quarterly trend comparison PDF report
      */
-    #[Route('/quarterly-trend/pdf', name: 'app_management_reports_quarterly_trend_pdf')]
+    #[Route('/quarterly-trend/pdf', name: 'app_management_reports_quarterly_trend_pdf', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function quarterlyTrendPdf(Request $request): Response
     {
@@ -951,7 +951,7 @@ class ManagementReportController extends AbstractController
 
     // ===================== EVIDENCE PACKAGE (ZIP) =====================
 
-    #[Route('/evidence-package', name: 'app_management_reports_evidence_package')]
+    #[Route('/evidence-package', name: 'app_management_reports_evidence_package', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function evidencePackage(Request $request): Response
     {

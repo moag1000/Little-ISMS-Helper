@@ -35,7 +35,7 @@ class ProfileMfaController extends AbstractController
         private readonly TranslatorInterface $translator
     ) {}
 
-    #[Route('/profile/mfa', name: 'app_profile_mfa_index')]
+    #[Route('/profile/mfa', name: 'app_profile_mfa_index', methods: ['GET'])]
     public function index(): Response
     {
         $user = $this->getUser();
@@ -61,7 +61,7 @@ class ProfileMfaController extends AbstractController
         ]);
     }
 
-    #[Route('/profile/mfa/setup-totp', name: 'app_profile_mfa_setup_totp')]
+    #[Route('/profile/mfa/setup-totp', name: 'app_profile_mfa_setup_totp', methods: ['GET'])]
     public function setupTotp(Request $request): Response
     {
         $user = $this->getUser();
@@ -182,7 +182,7 @@ class ProfileMfaController extends AbstractController
         ]);
     }
 
-    #[Route('/profile/mfa/{id}', name: 'app_profile_mfa_show', requirements: ['id' => '\d+'])]
+    #[Route('/profile/mfa/{id}', name: 'app_profile_mfa_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(MfaToken $mfaToken): Response
     {
         // Verify user owns this token

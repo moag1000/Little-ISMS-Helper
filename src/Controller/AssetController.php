@@ -66,7 +66,7 @@ class AssetController extends AbstractController
     {
         return $this->translator;
     }
-    #[Route('/asset/', name: 'app_asset_index')]
+    #[Route('/asset/', name: 'app_asset_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -342,7 +342,7 @@ class AssetController extends AbstractController
             'message' => $message
         ]);
     }
-    #[Route('/asset/{id}', name: 'app_asset_show', requirements: ['id' => '\d+'])]
+    #[Route('/asset/{id}', name: 'app_asset_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(Asset $asset): Response
     {
@@ -473,7 +473,7 @@ class AssetController extends AbstractController
 
         return $this->redirectToRoute('app_asset_index');
     }
-    #[Route('/asset/{id}/bcm-insights', name: 'app_asset_bcm_insights', requirements: ['id' => '\d+'])]
+    #[Route('/asset/{id}/bcm-insights', name: 'app_asset_bcm_insights', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function bcmInsights(int $id): Response
     {
@@ -552,7 +552,7 @@ class AssetController extends AbstractController
     /**
      * Print a single asset label with QR code
      */
-    #[Route('/asset/{id}/qr-label', name: 'app_asset_qr_label', requirements: ['id' => '\d+'])]
+    #[Route('/asset/{id}/qr-label', name: 'app_asset_qr_label', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function printQrLabel(Asset $asset, Request $request): Response
     {
@@ -568,7 +568,7 @@ class AssetController extends AbstractController
     /**
      * Print multiple asset labels on a sheet (A4 format)
      */
-    #[Route('/asset/qr-labels', name: 'app_asset_qr_labels_bulk')]
+    #[Route('/asset/qr-labels', name: 'app_asset_qr_labels_bulk', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function printQrLabelsBulk(Request $request): Response
     {

@@ -32,7 +32,7 @@ class MfaLoginController extends AbstractController
     ) {
     }
 
-    #[Route('/mfa-challenge', name: 'app_mfa_challenge')]
+    #[Route('/mfa-challenge', name: 'app_mfa_challenge', methods: ['GET'])]
     public function challenge(Request $request): Response
     {
         // Ensure user is authenticated but hasn't completed MFA yet

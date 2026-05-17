@@ -43,7 +43,7 @@ class WelcomeController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
     ) {}
 
-    #[Route('/welcome', name: 'app_welcome')]
+    #[Route('/welcome', name: 'app_welcome', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();

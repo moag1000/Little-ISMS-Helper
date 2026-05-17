@@ -63,7 +63,7 @@ class IncidentController extends AbstractController
         private readonly RiskIncidentLinkRepository $riskIncidentLinkRepository,
         private readonly ?CommentRepository $commentRepository = null,
     ) {}
-    #[Route('/incident/', name: 'app_incident_index')]
+    #[Route('/incident/', name: 'app_incident_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -358,7 +358,7 @@ class IncidentController extends AbstractController
             'message' => "$deleted incidents deleted successfully"
         ]);
     }
-    #[Route('/incident/{id}', name: 'app_incident_show', requirements: ['id' => '\d+'])]
+    #[Route('/incident/{id}', name: 'app_incident_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(Incident $incident): Response
     {
@@ -543,7 +543,7 @@ class IncidentController extends AbstractController
      *
      * Note: Only available when NIS2 framework is installed and active.
      */
-    #[Route('/incident/{id}/nis2-report.pdf', name: 'app_incident_nis2_report', requirements: ['id' => '\d+'])]
+    #[Route('/incident/{id}/nis2-report.pdf', name: 'app_incident_nis2_report', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function downloadNis2Report(Request $request, Incident $incident): Response
     {

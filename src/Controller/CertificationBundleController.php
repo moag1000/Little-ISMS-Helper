@@ -51,7 +51,7 @@ class CertificationBundleController extends AbstractController
      * a non-default framework for the bundle metadata. Only active
      * frameworks are accepted; unknown codes fall back to ISO27001.
      */
-    #[Route('', name: 'index')]
+    #[Route('', name: 'index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $tenant = $this->security->getUser()?->getTenant();
@@ -81,7 +81,7 @@ class CertificationBundleController extends AbstractController
      * GET  → render preflight card
      * POST (bypass=1) → redirect to export
      */
-    #[Route('/preflight', name: 'preflight')]
+    #[Route('/preflight', name: 'preflight', methods: ['GET'])]
     public function preflight(Request $request): Response
     {
         $tenant = $this->security->getUser()?->getTenant();

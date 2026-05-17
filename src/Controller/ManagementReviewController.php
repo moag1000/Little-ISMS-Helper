@@ -30,7 +30,7 @@ class ManagementReviewController extends AbstractController
         private readonly PdfExportService $pdfExportService,
         private readonly ManagementReportService $managementReportService,
     ) {}
-    #[Route('/management-review/', name: 'app_management_review_index')]
+    #[Route('/management-review/', name: 'app_management_review_index', methods: ['GET'])]
     public function index(): Response
     {
         $reviews = $this->managementReviewRepository->findAll();
@@ -73,7 +73,7 @@ class ManagementReviewController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/management-review/{id}', name: 'app_management_review_show', requirements: ['id' => '\d+'])]
+    #[Route('/management-review/{id}', name: 'app_management_review_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(ManagementReview $managementReview): Response
     {
         return $this->render('management_review/show.html.twig', [
@@ -100,7 +100,7 @@ class ManagementReviewController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/management-review/{id}/pdf', name: 'app_management_review_pdf', requirements: ['id' => '\d+'])]
+    #[Route('/management-review/{id}/pdf', name: 'app_management_review_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function pdf(ManagementReview $managementReview): Response
     {

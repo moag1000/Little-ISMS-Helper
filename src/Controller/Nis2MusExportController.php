@@ -27,6 +27,7 @@ class Nis2MusExportController extends AbstractController
         '/nis2/mus-export/{id}/early-warning',
         name: 'app_nis2_mus_export_early_warning',
         requirements: ['id' => '\d+'],
+        methods: ['GET'],
     )]
     public function earlyWarning(Incident $incident): JsonResponse
     {
@@ -41,6 +42,7 @@ class Nis2MusExportController extends AbstractController
         '/nis2/mus-export/{id}/detailed-notification',
         name: 'app_nis2_mus_export_detailed_notification',
         requirements: ['id' => '\d+'],
+        methods: ['GET'],
     )]
     public function detailedNotification(Incident $incident): JsonResponse
     {
@@ -55,6 +57,7 @@ class Nis2MusExportController extends AbstractController
         '/nis2/mus-export/{id}/final-report',
         name: 'app_nis2_mus_export_final_report',
         requirements: ['id' => '\d+'],
+        methods: ['GET'],
     )]
     public function finalReport(Incident $incident): JsonResponse
     {
@@ -69,6 +72,7 @@ class Nis2MusExportController extends AbstractController
         '/nis2/mus-export/{id}/bundle',
         name: 'app_nis2_mus_export_bundle',
         requirements: ['id' => '\d+'],
+        methods: ['GET'],
     )]
     public function bundle(Incident $incident): JsonResponse
     {

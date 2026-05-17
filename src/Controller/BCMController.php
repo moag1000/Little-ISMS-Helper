@@ -20,7 +20,7 @@ class BCMController extends AbstractController
         private readonly BusinessProcessRepository $businessProcessRepository,
         private readonly ProtectionRequirementService $protectionRequirementService
     ) {}
-    #[Route('/bcm/', name: 'app_bcm_index')]
+    #[Route('/bcm/', name: 'app_bcm_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $processes = $this->businessProcessRepository->findAll();
@@ -47,7 +47,7 @@ class BCMController extends AbstractController
             'current_criticality' => $criticality,
         ]);
     }
-    #[Route('/bcm/data-reuse-insights', name: 'app_bcm_data_reuse')]
+    #[Route('/bcm/data-reuse-insights', name: 'app_bcm_data_reuse', methods: ['GET'])]
     public function dataReuseInsights(): Response
     {
         $processes = $this->businessProcessRepository->findAll();
@@ -88,7 +88,7 @@ class BCMController extends AbstractController
             'assets_influenced' => count($assetsInfluenced),
         ]);
     }
-    #[Route('/bcm/critical', name: 'app_bcm_critical')]
+    #[Route('/bcm/critical', name: 'app_bcm_critical', methods: ['GET'])]
     public function criticalProcesses(): Response
     {
         $processes = $this->businessProcessRepository->findCriticalProcesses();

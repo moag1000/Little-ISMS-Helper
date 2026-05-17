@@ -64,7 +64,7 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
     }
 
-    #[Route('/workflow/', name: 'app_workflow_index')]
+    #[Route('/workflow/', name: 'app_workflow_index', methods: ['GET'])]
     public function index(): Response
     {
         $workflows = $this->workflowRepository->findAllActive();
@@ -95,7 +95,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/definitions', name: 'app_workflow_definitions')]
+    #[Route('/workflow/definitions', name: 'app_workflow_definitions', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function definitions(): Response
     {
@@ -106,7 +106,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/pending', name: 'app_workflow_pending')]
+    #[Route('/workflow/pending', name: 'app_workflow_pending', methods: ['GET'])]
     public function pending(): Response
     {
         $user = $this->getUser();
@@ -125,7 +125,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/instance/{id}', name: 'app_workflow_instance_show', requirements: ['id' => '\d+'])]
+    #[Route('/workflow/instance/{id}', name: 'app_workflow_instance_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function showInstance(WorkflowInstance $workflowInstance): Response
     {
         $currentUser = $this->getUser();
@@ -320,7 +320,7 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('app_workflow_index');
     }
 
-    #[Route('/workflow/active', name: 'app_workflow_active')]
+    #[Route('/workflow/active', name: 'app_workflow_active', methods: ['GET'])]
     public function active(): Response
     {
         $activeWorkflows = $this->workflowService->getActiveWorkflows();
@@ -339,7 +339,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/overdue', name: 'app_workflow_overdue')]
+    #[Route('/workflow/overdue', name: 'app_workflow_overdue', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function overdue(): Response
     {
@@ -359,7 +359,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/by-entity/{entityType}/{entityId}', name: 'app_workflow_by_entity', requirements: ['entityId' => '\d+'])]
+    #[Route('/workflow/by-entity/{entityType}/{entityId}', name: 'app_workflow_by_entity', requirements: ['entityId' => '\d+'], methods: ['GET'])]
     public function byEntity(string $entityType, int $entityId): Response
     {
         $instance = $this->workflowService->getWorkflowInstance($entityType, $entityId);
@@ -392,7 +392,7 @@ class WorkflowController extends AbstractController
     // Workflow Definition CRUD
     // ===========================================
 
-    #[Route('/workflow/definition/{id}', name: 'app_workflow_definition_show', requirements: ['id' => '\d+'])]
+    #[Route('/workflow/definition/{id}', name: 'app_workflow_definition_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function showDefinition(Workflow $workflow): Response
     {
@@ -408,7 +408,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/definition/{id}/builder', name: 'app_workflow_definition_builder', requirements: ['id' => '\d+'])]
+    #[Route('/workflow/definition/{id}/builder', name: 'app_workflow_definition_builder', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function builder(Workflow $workflow): Response
     {

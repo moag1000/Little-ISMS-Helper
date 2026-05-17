@@ -33,7 +33,7 @@ class CrisisTeamController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
     ) {}
 
-    #[Route('/crisis-team/', name: 'app_crisis_team_index')]
+    #[Route('/crisis-team/', name: 'app_crisis_team_index', methods: ['GET'])]
     public function index(): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
@@ -87,7 +87,7 @@ class CrisisTeamController extends AbstractController
         ]);
     }
 
-    #[Route('/crisis-team/{id}', name: 'app_crisis_team_show', requirements: ['id' => '\d+'])]
+    #[Route('/crisis-team/{id}', name: 'app_crisis_team_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(CrisisTeam $crisisTeam): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;

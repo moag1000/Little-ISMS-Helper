@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SecurityReportController extends AbstractController
 {
-    #[Route('/about/security', name: 'app_security_report')]
+    #[Route('/about/security', name: 'app_security_report', methods: ['GET'])]
     public function index(): Response
     {
         $report2025File = $this->getParameter('kernel.project_dir') . '/docs/reports/security-audit-owasp-2025-rc1.md';
@@ -29,7 +29,7 @@ class SecurityReportController extends AbstractController
         ]);
     }
 
-    #[Route('/about/security/owasp-2025', name: 'app_security_report_2025')]
+    #[Route('/about/security/owasp-2025', name: 'app_security_report_2025', methods: ['GET'])]
     public function owasp2025(): Response
     {
         $reportFile = $this->getParameter('kernel.project_dir') . '/docs/reports/security-audit-owasp-2025-rc1.md';
@@ -48,7 +48,7 @@ class SecurityReportController extends AbstractController
         ]);
     }
 
-    #[Route('/about/security/owasp-2021', name: 'app_security_report_2021')]
+    #[Route('/about/security/owasp-2021', name: 'app_security_report_2021', methods: ['GET'])]
     public function owasp2021(): Response
     {
         $reportFile = $this->getParameter('kernel.project_dir') . '/docs/reports/security-audit-owasp-2021.md';

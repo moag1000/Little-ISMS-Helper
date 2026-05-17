@@ -25,7 +25,7 @@ class MyDayController extends AbstractController
     ) {
     }
 
-    #[Route('/my-day', name: 'app_my_day')]
+    #[Route('/my-day', name: 'app_my_day', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {

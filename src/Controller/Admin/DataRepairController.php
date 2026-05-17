@@ -83,7 +83,7 @@ class DataRepairController extends AbstractController
         }
     }
 
-    #[Route('/admin/data-repair/', name: 'admin_data_repair_index')]
+    #[Route('/admin/data-repair/', name: 'admin_data_repair_index', methods: ['GET'])]
     public function index(): Response
     {
         // Integrity-Check + Übersicht brauchen TenantFilter-off, sonst

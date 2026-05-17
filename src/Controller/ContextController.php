@@ -27,7 +27,7 @@ class ContextController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly InterestedPartyRepository $interestedPartyRepository,
     ) {}
-    #[Route('/context/', name: 'app_context_index')]
+    #[Route('/context/', name: 'app_context_index', methods: ['GET'])]
     public function index(): Response
     {
         $context = $this->ismsContextService->getCurrentContext();
