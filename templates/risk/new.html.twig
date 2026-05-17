@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 {% trans_default_domain 'risk' %}
 
 {% block title %}{{ 'risk.new'|trans({}, 'risk')}} - {{ parent() }}{% endblock %}
@@ -21,6 +22,14 @@
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_index'), variant: 'secondary', icon: 'arrow-left' }
     ]
+}) }}
+
+{# 9001-bridge for users with previousQmsBackground = iso_9001. P-12 rollout. #}
+{{ _fa_norm_bridge.render({
+    from_norm: 'ISO 27001 6.1',
+    to_norm:   'ISO 9001 6.1 / 8.5.6',
+    bridge_text: ('iso_9001_bridge.threat'|trans({}, 'risk')),
+    prominence: 'subtle'
 }) }}
 
 {% embed '_components/_card.html.twig' %}

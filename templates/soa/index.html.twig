@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 {% trans_default_domain 'soa' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
@@ -40,6 +41,14 @@
 
 {# TODO: export/preview actions above use Turbo navigation; add data-turbo="false" via custom markup if full-page download is required #}
 <p class="text-muted small mb-3"><a href="{{ path('app_help_glossary') }}#glossary-soa" class="text-muted" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i> {{ 'common.glossary_link'|trans({}, 'messages') }}</a></p>
+
+{# 9001-bridge: SoA ↔ Prozesslandkarte. P-12 rollout. #}
+{{ _fa_norm_bridge.render({
+    from_norm: 'ISO 27001 6.1.3',
+    to_norm:   'ISO 9001 4.4',
+    bridge_text: ('iso_9001_bridge.soa'|trans({}, 'control')),
+    prominence: 'subtle'
+}) }}
 
 <main class="fa-aurora-surface">
 

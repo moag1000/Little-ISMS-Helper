@@ -166,6 +166,7 @@
                     {% endblock %}
                     {% block table_body %}
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+    {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
                         {% for pa in processing_activities %}
                             <tr>
                                 <td>
@@ -205,15 +206,12 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {# S3 P-4: canonical 5-stage lifecycle — legacy 'active' migrated to 'published'. #}
-                                    {% set status_class = {
-                                        'draft': 'secondary',
-                                        'in_review': 'info',
-                                        'approved': 'success',
-                                        'published': 'success',
-                                        'archived': 'dark'
-                                    }[pa.status] ?? 'secondary' %}
-                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: ('processing_activity.status.' ~ pa.status)|trans({}, 'privacy') } %}
+                                    {# S3 P-4: canonical 5-stage lifecycle via LifecycleRegistry. #}
+                                    {{ _fa_status_chip.render({
+                                        entity_class: 'App\\Entity\\ProcessingActivity',
+                                        status_key: pa.status,
+                                        label: ('processing_activity.status.' ~ pa.status)|trans({}, 'privacy')
+                                    }) }}
                                 </td>
                                 <td>
                                     {% set completeness = pa.completenessPercentage %}
