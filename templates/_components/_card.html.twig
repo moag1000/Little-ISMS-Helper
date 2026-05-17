@@ -26,7 +26,8 @@
  * Parameters:
  *   - variant: 'default'|'kpi'|'stat'|'widget'|'feature'|'bordered' (default: 'default')
  *   - header: Card header content (optional)
- *   - headerIcon: Bootstrap icon class for header (optional, e.g., 'bi-graph-up')
+ *   - headerIcon: Aurora icon name (without 'fa-icon--' prefix) for header (optional, e.g., 'nav-bar-chart').
+ *                 Legacy `bi-*` prefixed names are auto-stripped + Aurora-rendered.
  *   - title: Card title (alternative to header for simple text)
  *   - titleDomain: Translation domain for title (default: 'messages')
  *   - actions: Card header actions HTML (optional)
@@ -50,7 +51,7 @@
  * 1. Simple card with title:
  *   {% include '_components/_card.html.twig' with {
  *       'title': 'Risk Overview',
- *       'headerIcon': 'bi-shield-check',
+ *       'headerIcon': 'shield-check',
  *       'body': '<p>Content here</p>'
  *   } %}
  *
@@ -131,7 +132,10 @@
         {% elseif title is defined %}
             <h5 class="fa-section__title mb-0">
                 {% if headerIcon is defined %}
-                    <i class="{{ headerIcon }}" aria-hidden="true"></i>
+                    {# Auto-strip legacy bi-* prefix so callers passing either Bootstrap-Icon
+                       or Aurora names render correctly under Aurora. #}
+                    {% set _headerIconName = headerIcon starts with 'bi-' ? headerIcon[3:] : headerIcon %}
+                    <i class="fa-icon fa-icon--{{ _headerIconName }}" aria-hidden="true"></i>
                 {% endif %}
                 {{ title|trans({}, titleDomain|default('messages')) }}
             </h5>

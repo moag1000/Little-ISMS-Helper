@@ -45,8 +45,8 @@ final class EntityMapperRegistryTest extends TestCase
     {
         $registry = new EntityMapperRegistry([]);
 
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessageMatches('/No import mapper registered for entity type "Risk"/');
+        $this->expectException(\App\Exception\Import\ImportFailedException::class);
+        $this->expectExceptionMessageMatches('/Import of type "Risk" failed: No import mapper registered/');
 
         $registry->getMapperFor('Risk');
     }
@@ -58,8 +58,8 @@ final class EntityMapperRegistryTest extends TestCase
 
         try {
             $registry->getMapperFor('Missing');
-            self::fail('Expected InvalidArgumentException');
-        } catch (\InvalidArgumentException $e) {
+            self::fail('Expected ImportFailedException');
+        } catch (\App\Exception\Import\ImportFailedException $e) {
             self::assertStringContainsString('Asset', $e->getMessage());
         }
     }

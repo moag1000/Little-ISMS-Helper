@@ -10,6 +10,7 @@ use DateTimeInterface;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
+use App\Exception\Workflow\InvalidStatusTransitionException;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -258,7 +259,12 @@ final class DataProtectionImpactAssessmentService
     public function submitForReview(DataProtectionImpactAssessment $dataProtectionImpactAssessment): DataProtectionImpactAssessment
     {
         if ($dataProtectionImpactAssessment->getStatus() !== 'draft') {
-            throw new RuntimeException('Only draft DPIAs can be submitted for review');
+            throw new InvalidStatusTransitionException(
+                (string) $dataProtectionImpactAssessment->getStatus(),
+                'in_review',
+                DataProtectionImpactAssessment::class,
+                'Only draft DPIAs can be submitted for review',
+            );
         }
 
         if (!$dataProtectionImpactAssessment->isComplete()) {
@@ -287,7 +293,12 @@ final class DataProtectionImpactAssessmentService
     public function approve(DataProtectionImpactAssessment $dataProtectionImpactAssessment, User $user, ?string $comments = null): DataProtectionImpactAssessment
     {
         if ($dataProtectionImpactAssessment->getStatus() !== 'in_review') {
-            throw new RuntimeException('Only DPIAs in review can be approved');
+            throw new InvalidStatusTransitionException(
+                (string) $dataProtectionImpactAssessment->getStatus(),
+                'approved',
+                DataProtectionImpactAssessment::class,
+                'Only DPIAs in review can be approved',
+            );
         }
 
         $dataProtectionImpactAssessment->setStatus('approved');
@@ -331,7 +342,12 @@ final class DataProtectionImpactAssessmentService
     public function reject(DataProtectionImpactAssessment $dataProtectionImpactAssessment, User $user, string $reason): DataProtectionImpactAssessment
     {
         if ($dataProtectionImpactAssessment->getStatus() !== 'in_review') {
-            throw new RuntimeException('Only DPIAs in review can be rejected');
+            throw new InvalidStatusTransitionException(
+                (string) $dataProtectionImpactAssessment->getStatus(),
+                'rejected',
+                DataProtectionImpactAssessment::class,
+                'Only DPIAs in review can be rejected',
+            );
         }
 
         $dataProtectionImpactAssessment->setStatus('rejected');
@@ -360,7 +376,12 @@ final class DataProtectionImpactAssessmentService
     public function requestRevision(DataProtectionImpactAssessment $dataProtectionImpactAssessment, string $reason): DataProtectionImpactAssessment
     {
         if (!in_array($dataProtectionImpactAssessment->getStatus(), ['in_review', 'approved'])) {
-            throw new RuntimeException('DPIA must be in review or approved to request revision');
+            throw new InvalidStatusTransitionException(
+                (string) $dataProtectionImpactAssessment->getStatus(),
+                'requires_revision',
+                DataProtectionImpactAssessment::class,
+                'DPIA must be in review or approved to request revision',
+            );
         }
 
         $dataProtectionImpactAssessment->setStatus('requires_revision');
@@ -388,7 +409,12 @@ final class DataProtectionImpactAssessmentService
     public function reopen(DataProtectionImpactAssessment $dataProtectionImpactAssessment): DataProtectionImpactAssessment
     {
         if ($dataProtectionImpactAssessment->getStatus() !== 'requires_revision') {
-            throw new RuntimeException('Only DPIAs requiring revision can be reopened');
+            throw new InvalidStatusTransitionException(
+                (string) $dataProtectionImpactAssessment->getStatus(),
+                'draft',
+                DataProtectionImpactAssessment::class,
+                'Only DPIAs requiring revision can be reopened',
+            );
         }
 
         $dataProtectionImpactAssessment->setStatus('draft');

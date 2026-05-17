@@ -31,9 +31,9 @@
                     </h2>
                     <div class="fa-section__tools">
                         {% if is_active %}
-                            <span class="fa-status-pill fa-status-pill--success fs-6">Aktiv</span>
+                            <span class="fa-status-pill fa-status-pill--success">Aktiv</span>
                         {% else %}
-                            <span class="fa-status-pill fa-status-pill--neutral fs-6">Inaktiv</span>
+                            <span class="fa-status-pill fa-status-pill--neutral">Inaktiv</span>
                         {% endif %}
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                             </h3>
                             <div class="mb-4">
                                 {% for dep in graph.dependencies %}
-                                    <span class="fa-status-pill fa-status-pill--warning fs-6 me-2 mb-2">{{ dep }}</span>
+                                    <span class="fa-status-pill fa-status-pill--warning me-2 mb-2">{{ dep }}</span>
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -102,7 +102,7 @@
                             </h3>
                             <div>
                                 {% for dep in graph.dependents %}
-                                    <span class="fa-status-pill fa-status-pill--primary fs-6 me-2 mb-2">{{ dep }}</span>
+                                    <span class="fa-status-pill fa-status-pill--primary me-2 mb-2">{{ dep }}</span>
                                 {% endfor %}
                             </div>
                         {% endif %}
