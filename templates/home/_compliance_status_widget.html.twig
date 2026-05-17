@@ -50,6 +50,7 @@
                     {% if framework.critical_gaps > 0 %}
                     {% include '_components/_badge.html.twig' with {
                         variant: 'danger',
+                        size: 'lg',
                         class: 'me-2',
                         icon: 'status-critical',
                         title: 'wizard.critical_gaps'|trans({}, 'wizard'),
