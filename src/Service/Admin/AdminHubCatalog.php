@@ -255,6 +255,14 @@ final class AdminHubCatalog
                         'description' => 'admin.hub.module.workflow_definitions.desc',
                         'route' => 'app_workflow_definitions',
                     ],
+                    // Sprint Y.3 — Workflow overlay editor
+                    [
+                        'key' => 'workflow_overlay',
+                        'icon' => 'fa-icon--nav-workflow',
+                        'label' => 'admin.hub.module.workflow_overlay.label',
+                        'description' => 'admin.hub.module.workflow_overlay.desc',
+                        'route' => 'admin_workflow_overlay_index',
+                    ],
                     [
                         'key' => 'scheduled_reports',
                         'icon' => 'fa-icon--ui-calendar-event',
@@ -488,7 +496,7 @@ final class AdminHubCatalog
                     ],
                     [
                         'key' => 'lifecycle_overrides',
-                        'icon' => 'fa-icon--nav-flow',
+                        'icon' => 'fa-icon--nav-workflow',
                         'label' => 'admin.hub.module.lifecycle_overrides.label',
                         'description' => 'admin.hub.module.lifecycle_overrides.desc',
                         'route' => 'admin_lifecycle_overrides_index',

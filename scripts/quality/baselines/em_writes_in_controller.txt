@@ -84,6 +84,9 @@ src/Controller/Admin/TagController.php:120
 src/Controller/Admin/TagController.php:121
 src/Controller/Admin/TenantComplianceSettingsController.php:71
 src/Controller/Admin/TenantEmailBrandingController.php:54
+src/Controller/Admin/WorkflowOverlayController.php:258
+src/Controller/Admin/WorkflowOverlayController.php:477
+src/Controller/Admin/WorkflowOverlayController.php:495
 src/Controller/AdminComplianceController.php:128
 src/Controller/AdminComplianceController.php:129
 src/Controller/AdminTourCompletionController.php:146

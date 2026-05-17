@@ -1,0 +1,288 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block admin_title %}{{ 'admin.workflows.edit.title'|trans({ '%workflow%': workflowName, '%step%': stepIndex + 1 }) }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('admin_workflow_overlay_index') }}">{{ 'admin.workflows.title'|trans }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ path('admin_workflow_overlay_show', {name: workflowName}) }}">{{ workflowName }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {{ 'admin.workflows.edit.breadcrumb'|trans({ '%step%': stepIndex + 1 }) }}
+    </li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-workflow', label: 'Step ' ~ (stepIndex + 1) },
+        title: 'admin.workflows.edit.title'|trans({ '%workflow%': workflowName, '%step%': stepIndex + 1 }),
+        subtitle: yamlStep.name ?? ('admin.workflows.step.unnamed'|trans),
+    }) }}
+
+    <div class="row">
+        {# Left column: form #}
+        <div class="col-lg-8">
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
+                        {{ 'admin.workflows.section.override_fields'|trans }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    {{ _fa_alert.render({
+                        variant: 'info',
+                        icon: 'status-info',
+                        class: 'mb-4',
+                        body: 'admin.workflows.edit.hint'|trans,
+                    }) }}
+
+                    {{ form_start(form) }}
+
+                    {# Approver Role #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
+                            {{ 'admin.workflows.form.approver_role'|trans }}
+                        </h5>
+                        <p class="text-muted small mb-2">{{ 'admin.workflows.form.approver_role_help'|trans }}</p>
+                        <div class="row g-2 align-items-start">
+                            <div class="col-md-6">
+                                {{ form_widget(form.approverRole, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.approverRole) }}
+                            </div>
+                        </div>
+                        {% if yamlStep.approver_role is defined %}
+                            <div class="mt-1 small text-muted">
+                                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                                {{ 'admin.workflows.yaml_value'|trans }}:
+                                <code>{{ yamlStep.approver_role }}</code>
+                            </div>
+                        {% endif %}
+                        {% if existing.approverRole is defined %}
+                            <div class="mt-1 small text-warning">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'admin.workflows.current_override'|trans }}:
+                                <code>{{ existing.approverRole }}</code>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# Approver Users #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
+                            {{ 'admin.workflows.form.approver_users'|trans }}
+                        </h5>
+                        <p class="text-muted small mb-2">{{ 'admin.workflows.form.approver_users_help'|trans }}</p>
+                        <div class="row g-2 align-items-start">
+                            <div class="col-md-8">
+                                {{ form_widget(form.approverUsers, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.approverUsers) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Days to complete #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--nav-clock" aria-hidden="true"></i>
+                            {{ 'admin.workflows.form.days_to_complete'|trans }}
+                        </h5>
+                        <p class="text-muted small mb-2">{{ 'admin.workflows.form.days_to_complete_help'|trans }}</p>
+                        <div class="row g-2 align-items-start">
+                            <div class="col-md-3">
+                                {{ form_widget(form.daysToComplete, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.daysToComplete) }}
+                            </div>
+                        </div>
+                        {% if yamlStep.days_to_complete is defined %}
+                            <div class="mt-1 small text-muted">
+                                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                                {{ 'admin.workflows.yaml_value'|trans }}:
+                                <code>{{ yamlStep.days_to_complete }}</code>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# Auto-progress conditions #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
+                            {{ 'admin.workflows.form.auto_progress_conditions'|trans }}
+                        </h5>
+                        <p class="text-muted small mb-2">{{ 'admin.workflows.form.auto_progress_conditions_help'|trans }}</p>
+                        <div>
+                            {{ form_widget(form.autoProgressConditions) }}
+                            {{ form_errors(form.autoProgressConditions) }}
+                        </div>
+                        {% if yamlStep.auto_progress_conditions is defined %}
+                            <div class="mt-1 small text-muted">
+                                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                                {{ 'admin.workflows.yaml_value'|trans }}:
+                                <code>{{ yamlStep.auto_progress_conditions|json_encode }}</code>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# Reason required (tri-state) #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--nav-info-circle" aria-hidden="true"></i>
+                            {{ 'admin.workflows.form.reason_required'|trans }}
+                        </h5>
+                        <div class="row g-2 align-items-center">
+                            <div class="col-auto">
+                                <div class="form-check">
+                                    {{ form_widget(form.reasonRequiredOverride) }}
+                                    <label class="form-check-label small text-muted" for="{{ form.reasonRequiredOverride.vars.id }}">
+                                        {{ 'admin.workflows.form.enable_override'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check">
+                                    {{ form_widget(form.reasonRequired) }}
+                                    <label class="form-check-label" for="{{ form.reasonRequired.vars.id }}">
+                                        {{ 'admin.workflows.form.reason_required_value'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        {% if existing.reasonRequired is defined %}
+                            <div class="mt-1 small text-warning">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'admin.workflows.current_override'|trans }}:
+                                <code>{{ existing.reasonRequired ? 'true' : 'false' }}</code>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# Four-eyes (tri-state) #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                            {{ 'admin.workflows.form.four_eyes'|trans }}
+                        </h5>
+                        <div class="row g-2 align-items-center">
+                            <div class="col-auto">
+                                <div class="form-check">
+                                    {{ form_widget(form.fourEyesOverride) }}
+                                    <label class="form-check-label small text-muted" for="{{ form.fourEyesOverride.vars.id }}">
+                                        {{ 'admin.workflows.form.enable_override'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check">
+                                    {{ form_widget(form.fourEyes) }}
+                                    <label class="form-check-label" for="{{ form.fourEyes.vars.id }}">
+                                        {{ 'admin.workflows.form.four_eyes_value'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        {% if existing.fourEyes is defined %}
+                            <div class="mt-1 small text-warning">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'admin.workflows.current_override'|trans }}:
+                                <code>{{ existing.fourEyes ? 'true' : 'false' }}</code>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# Module gate #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--nav-puzzle" aria-hidden="true"></i>
+                            {{ 'admin.workflows.form.module'|trans }}
+                        </h5>
+                        <p class="text-muted small mb-2">{{ 'admin.workflows.form.module_help'|trans }}</p>
+                        <div class="row g-2 align-items-start">
+                            <div class="col-md-6">
+                                {{ form_widget(form.module, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.module) }}
+                            </div>
+                        </div>
+                        {% if existing.module is defined %}
+                            <div class="mt-1 small text-warning">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'admin.workflows.current_override'|trans }}:
+                                <code>{{ existing.module }}</code>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
+                            {{ 'common.save'|trans({}, 'messages') }}
+                        </button>
+                        <a href="{{ path('admin_workflow_overlay_show', {name: workflowName}) }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost">
+                            {{ 'common.cancel'|trans({}, 'messages') }}
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </section>
+        </div>
+
+        {# Right column: help + YAML baseline #}
+        <div class="col-lg-4">
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title fa-section__title--sm">
+                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                        {{ 'admin.workflows.section.yaml_baseline'|trans }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    {% if yamlStep is not empty %}
+                        <dl class="row row-cols-1 small mb-0">
+                            {% for key, val in yamlStep %}
+                                <dt class="text-muted mb-0">{{ key }}</dt>
+                                <dd class="mb-2">
+                                    {% if val is iterable %}
+                                        <code class="small">{{ val|json_encode }}</code>
+                                    {% else %}
+                                        <code class="small">{{ val }}</code>
+                                    {% endif %}
+                                </dd>
+                            {% endfor %}
+                        </dl>
+                    {% else %}
+                        <p class="text-muted small mb-0">{{ 'admin.workflows.no_yaml_baseline'|trans }}</p>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title fa-section__title--sm">
+                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                        {{ 'admin.workflows.section.help'|trans }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    <dl class="row row-cols-1 small mb-0">
+                        <dt>{{ 'admin.workflows.help.approver_role.title'|trans }}</dt>
+                        <dd class="text-muted mb-3">{{ 'admin.workflows.help.approver_role.body'|trans }}</dd>
+                        <dt>{{ 'admin.workflows.help.days_to_complete.title'|trans }}</dt>
+                        <dd class="text-muted mb-3">{{ 'admin.workflows.help.days_to_complete.body'|trans }}</dd>
+                        <dt>{{ 'admin.workflows.help.auto_progress.title'|trans }}</dt>
+                        <dd class="text-muted mb-3">{{ 'admin.workflows.help.auto_progress.body'|trans }}</dd>
+                        <dt>{{ 'admin.workflows.help.four_eyes.title'|trans }}</dt>
+                        <dd class="text-muted mb-0">{{ 'admin.workflows.help.four_eyes.body'|trans }}</dd>
+                    </dl>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
