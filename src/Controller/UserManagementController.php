@@ -43,7 +43,7 @@ class UserManagementController extends AbstractController
         private readonly string $uploadsDirectory = 'uploads/users',
     ) {
     }
-    #[Route('/admin/users', name: 'user_management_index')]
+    #[Route('/admin/users', name: 'user_management_index', methods: ['GET'])]
     #[IsGranted(UserVoter::VIEW_ALL)]
     public function index(UserRepository $userRepository): Response
     {
@@ -458,7 +458,7 @@ class UserManagementController extends AbstractController
 
         return $this->render('user_management/import.html.twig');
     }
-    #[Route('/admin/users/{id}', name: 'user_management_show', requirements: ['id' => '\d+'])]
+    #[Route('/admin/users/{id}', name: 'user_management_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(User $user): Response
     {
         $this->denyAccessUnlessGranted(UserVoter::VIEW, $user);
@@ -735,7 +735,7 @@ class UserManagementController extends AbstractController
 
         return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
     }
-    #[Route('/admin/users/{id}/activity', name: 'user_management_activity', requirements: ['id' => '\d+'])]
+    #[Route('/admin/users/{id}/activity', name: 'user_management_activity', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function activity(
         User $user,
         AuditLogRepository $auditLogRepository,
@@ -774,7 +774,7 @@ class UserManagementController extends AbstractController
             'total_activities' => count($activities),
         ]);
     }
-    #[Route('/admin/users/{id}/mfa', name: 'user_management_mfa', requirements: ['id' => '\d+'])]
+    #[Route('/admin/users/{id}/mfa', name: 'user_management_mfa', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function mfa(
         User $user,
         MfaTokenRepository $mfaTokenRepository
@@ -829,7 +829,7 @@ class UserManagementController extends AbstractController
 
         return $this->redirectToRoute('user_management_mfa', ['id' => $user->getId()]);
     }
-    #[Route('/admin/users/{id}/impersonate', name: 'user_management_impersonate', requirements: ['id' => '\d+'])]
+    #[Route('/admin/users/{id}/impersonate', name: 'user_management_impersonate', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_SUPER_ADMIN')]
     public function impersonate(User $user): Response
     {

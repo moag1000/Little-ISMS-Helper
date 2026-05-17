@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ReportsController extends AbstractController
 {
-    #[Route('/about/reports', name: 'app_reports_overview')]
+    #[Route('/about/reports', name: 'app_reports_overview', methods: ['GET'])]
     public function overview(): Response
     {
         $projectDir = $this->getParameter('kernel.project_dir');

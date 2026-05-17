@@ -29,7 +29,7 @@ class SecurityController extends AbstractController
         private readonly TenantContext $tenantContext,
     ) {}
 
-    #[Route('/login', name: 'app_login')]
+    #[Route('/login', name: 'app_login', methods: ['GET'])]
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         // Security: Rate limit login attempts to prevent brute force attacks
@@ -93,7 +93,7 @@ class SecurityController extends AbstractController
         return $response;
     }
 
-    #[Route('/logout', name: 'app_logout')]
+    #[Route('/logout', name: 'app_logout', methods: ['GET'])]
     public function logout(): void
     {
         // This method can be blank - it will be intercepted by the logout key on your firewall
@@ -103,7 +103,7 @@ class SecurityController extends AbstractController
     /**
      * Link to this controller to start the "connect" process for Azure OAuth
      */
-    #[Route('/oauth/azure/connect', name: 'oauth_azure_connect')]
+    #[Route('/oauth/azure/connect', name: 'oauth_azure_connect', methods: ['GET'])]
     public function connectAzure(ClientRegistry $clientRegistry): Response
     {
         return $clientRegistry
@@ -118,7 +118,7 @@ class SecurityController extends AbstractController
      * because this is the "redirect_route" you configured
      * in config/packages/knpu_oauth2_client.yaml
      */
-    #[Route('/oauth/azure/check', name: 'oauth_azure_check')]
+    #[Route('/oauth/azure/check', name: 'oauth_azure_check', methods: ['GET'])]
     public function connectAzureCheck(): Response
     {
         // This route will never be reached - the AzureOAuthAuthenticator will intercept it
@@ -128,7 +128,7 @@ class SecurityController extends AbstractController
     /**
      * SAML Login - Initiate SSO
      */
-    #[Route('/saml/login', name: 'saml_login')]
+    #[Route('/saml/login', name: 'saml_login', methods: ['GET'])]
     public function samlLogin(Request $request): Response
     {
         try {
@@ -156,7 +156,7 @@ class SecurityController extends AbstractController
     /**
      * SAML Metadata
      */
-    #[Route('/saml/metadata', name: 'saml_metadata')]
+    #[Route('/saml/metadata', name: 'saml_metadata', methods: ['GET'])]
     public function samlMetadata(Request $request): Response
     {
         try {

@@ -34,7 +34,7 @@ class TrainingController extends AbstractController
         private readonly ?TrainingParticipationRepository $participationRepository = null,
         private readonly ?UserRepository $userRepository = null,
     ) {}
-    #[Route('/training/', name: 'app_training_index')]
+    #[Route('/training/', name: 'app_training_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $user = $this->security->getUser();
@@ -164,7 +164,7 @@ class TrainingController extends AbstractController
             'message' => "$deleted trainings deleted successfully"
         ]);
     }
-    #[Route('/training/{id}', name: 'app_training_show', requirements: ['id' => '\d+'])]
+    #[Route('/training/{id}', name: 'app_training_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Training $training): Response
     {
         return $this->render('training/show.html.twig', [

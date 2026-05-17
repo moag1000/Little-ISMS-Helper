@@ -45,7 +45,7 @@ class ComplianceController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ?FrameworkMaturityService $frameworkMaturityService = null,
     ) {}
-    #[Route('/compliance/', name: 'app_compliance_index')]
+    #[Route('/compliance/', name: 'app_compliance_index', methods: ['GET'])]
     public function index(): Response
     {
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
@@ -74,7 +74,7 @@ class ComplianceController extends AbstractController
             'maturity_portfolio' => $maturityPortfolio,
         ]);
     }
-    #[Route('/compliance/framework/{id}', name: 'app_compliance_framework', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}', name: 'app_compliance_framework', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function frameworkDashboard(int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);
@@ -122,7 +122,7 @@ class ComplianceController extends AbstractController
             'active_modules' => $activeModules,
         ]);
     }
-    #[Route('/compliance/framework/{id}/gaps', name: 'app_compliance_gaps', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/gaps', name: 'app_compliance_gaps', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function gapAnalysis(int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);
@@ -152,7 +152,7 @@ class ComplianceController extends AbstractController
             'total_gaps' => count($gaps),
         ]);
     }
-    #[Route('/compliance/framework/{id}/data-reuse', name: 'app_compliance_data_reuse', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/data-reuse', name: 'app_compliance_data_reuse', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function dataReuseInsights(int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);
@@ -185,7 +185,7 @@ class ComplianceController extends AbstractController
             'total_days_savings' => round($totalTimeSavings / 8, 1),
         ]);
     }
-    #[Route('/compliance/framework/{id}/data-reuse/export', name: 'app_compliance_export_reuse', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/data-reuse/export', name: 'app_compliance_export_reuse', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function exportDataReuse(Request $request, int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);
@@ -293,7 +293,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/framework/{id}/data-reuse/export/excel', name: 'app_compliance_export_reuse_excel', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/data-reuse/export/excel', name: 'app_compliance_export_reuse_excel', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function exportDataReuseExcel(Request $request, int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);
@@ -394,7 +394,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/framework/{id}/data-reuse/export/pdf', name: 'app_compliance_export_reuse_pdf', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/data-reuse/export/pdf', name: 'app_compliance_export_reuse_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function exportDataReusePdf(Request $request, int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);
@@ -452,7 +452,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/framework/{id}/gaps/export', name: 'app_compliance_export_gaps', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/gaps/export', name: 'app_compliance_export_gaps', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function exportGaps(Request $request, int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);
@@ -592,7 +592,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/framework/{id}/gaps/export/excel', name: 'app_compliance_export_gaps_excel', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/gaps/export/excel', name: 'app_compliance_export_gaps_excel', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function exportGapsExcel(Request $request, int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);
@@ -714,7 +714,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/framework/{id}/gaps/export/pdf', name: 'app_compliance_export_gaps_pdf', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/gaps/export/pdf', name: 'app_compliance_export_gaps_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function exportGapsPdf(Request $request, int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);
@@ -835,7 +835,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/cross-framework', name: 'app_compliance_cross_framework')]
+    #[Route('/compliance/cross-framework', name: 'app_compliance_cross_framework', methods: ['GET'])]
     public function crossFrameworkMappings(): Response
     {
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
@@ -879,7 +879,7 @@ class ComplianceController extends AbstractController
             'coverage_matrix' => $coverageMatrix,
         ]);
     }
-    #[Route('/compliance/transitive-compliance', name: 'app_compliance_transitive')]
+    #[Route('/compliance/transitive-compliance', name: 'app_compliance_transitive', methods: ['GET'])]
     public function transitiveCompliance(): Response
     {
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
@@ -994,7 +994,7 @@ class ComplianceController extends AbstractController
             'frameworks_leveraged' => count($frameworksLeveragedSet),
         ]);
     }
-    #[Route('/compliance/compare', name: 'app_compliance_compare')]
+    #[Route('/compliance/compare', name: 'app_compliance_compare', methods: ['GET'])]
     public function compareFrameworks(Request $request): Response
     {
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
@@ -1151,14 +1151,14 @@ class ComplianceController extends AbstractController
      * Redirect to admin framework management
      * Framework management is now centralized in the admin panel
      */
-    #[Route('/compliance/frameworks/manage', name: 'app_compliance_manage_frameworks')]
+    #[Route('/compliance/frameworks/manage', name: 'app_compliance_manage_frameworks', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function manageFrameworks(): Response
     {
         // Redirect to centralized admin framework management
         return $this->redirectToRoute('admin_compliance_index');
     }
-    #[Route('/compliance/export/transitive', name: 'app_compliance_export_transitive')]
+    #[Route('/compliance/export/transitive', name: 'app_compliance_export_transitive', methods: ['GET'])]
     public function exportTransitive(Request $request): Response
     {
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
@@ -1274,7 +1274,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/export/transitive/excel', name: 'app_compliance_export_transitive_excel')]
+    #[Route('/compliance/export/transitive/excel', name: 'app_compliance_export_transitive_excel', methods: ['GET'])]
     public function exportTransitiveExcel(Request $request): Response
     {
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
@@ -1372,7 +1372,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/export/transitive/pdf', name: 'app_compliance_export_transitive_pdf')]
+    #[Route('/compliance/export/transitive/pdf', name: 'app_compliance_export_transitive_pdf', methods: ['GET'])]
     public function exportTransitivePdf(Request $request): Response
     {
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
@@ -1525,7 +1525,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/export/comparison', name: 'app_compliance_export_comparison')]
+    #[Route('/compliance/export/comparison', name: 'app_compliance_export_comparison', methods: ['GET'])]
     public function exportComparison(Request $request): Response
     {
         $framework1Id = $request->query->get('framework1');
@@ -1650,7 +1650,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/export/comparison/excel', name: 'app_compliance_export_comparison_excel')]
+    #[Route('/compliance/export/comparison/excel', name: 'app_compliance_export_comparison_excel', methods: ['GET'])]
     public function exportComparisonExcel(Request $request): Response
     {
         $framework1Id = $request->query->get('framework1');
@@ -1824,7 +1824,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-    #[Route('/compliance/export/comparison/pdf', name: 'app_compliance_export_comparison_pdf')]
+    #[Route('/compliance/export/comparison/pdf', name: 'app_compliance_export_comparison_pdf', methods: ['GET'])]
     public function exportComparisonPdf(Request $request): Response
     {
         $framework1Id = $request->query->get('framework1');

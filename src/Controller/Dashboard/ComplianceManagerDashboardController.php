@@ -46,7 +46,7 @@ class ComplianceManagerDashboardController extends AbstractController
     ) {
     }
 
-    #[Route('/compliance-manager', name: 'compliance_manager')]
+    #[Route('/compliance-manager', name: 'compliance_manager', methods: ['GET'])]
     #[IsGranted('ROLE_COMPLIANCE_MANAGER')]
     public function index(): Response
     {
@@ -138,7 +138,7 @@ class ComplianceManagerDashboardController extends AbstractController
      *
      * Route: GET /dashboards/cm-heatmap-drill?framework=ISO27001&section=A.5
      */
-    #[Route('/cm-heatmap-drill', name: 'cm_heatmap_drill')]
+    #[Route('/cm-heatmap-drill', name: 'cm_heatmap_drill', methods: ['GET'])]
     #[IsGranted('ROLE_COMPLIANCE_MANAGER')]
     public function heatmapDrill(Request $request): Response
     {

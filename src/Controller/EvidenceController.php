@@ -41,7 +41,7 @@ class EvidenceController extends AbstractController
     /**
      * Evidence dashboard: coverage stats, recent uploads, gap overview.
      */
-    #[Route('', name: 'index')]
+    #[Route('', name: 'index', methods: ['GET'])]
     public function index(): Response
     {
         $user = $this->security->getUser();
@@ -180,7 +180,7 @@ class EvidenceController extends AbstractController
     /**
      * Evidence coverage report page.
      */
-    #[Route('/coverage', name: 'coverage')]
+    #[Route('/coverage', name: 'coverage', methods: ['GET'])]
     public function coverage(): Response
     {
         $user = $this->security->getUser();

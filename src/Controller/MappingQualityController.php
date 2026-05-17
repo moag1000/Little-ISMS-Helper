@@ -34,7 +34,7 @@ class MappingQualityController extends AbstractController
     /**
      * Dashboard showing mapping quality overview
      */
-    #[Route('/compliance/mapping-quality/', name: 'app_mapping_quality_dashboard')]
+    #[Route('/compliance/mapping-quality/', name: 'app_mapping_quality_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
         try {
@@ -72,7 +72,7 @@ class MappingQualityController extends AbstractController
     /**
      * List mappings requiring review
      */
-    #[Route('/compliance/mapping-quality/review-queue', name: 'app_mapping_quality_review_queue')]
+    #[Route('/compliance/mapping-quality/review-queue', name: 'app_mapping_quality_review_queue', methods: ['GET'])]
     public function reviewQueue(): Response
     {
         try {
@@ -94,7 +94,7 @@ class MappingQualityController extends AbstractController
     /**
      * Review a specific mapping
      */
-    #[Route('/compliance/mapping-quality/review/{id}', name: 'app_mapping_quality_review', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/mapping-quality/review/{id}', name: 'app_mapping_quality_review', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function review(int $id): Response
     {
         $mapping = $this->complianceMappingRepository->find($id);
@@ -264,7 +264,7 @@ class MappingQualityController extends AbstractController
     /**
      * List all gaps
      */
-    #[Route('/compliance/mapping-quality/gaps', name: 'app_mapping_quality_gaps')]
+    #[Route('/compliance/mapping-quality/gaps', name: 'app_mapping_quality_gaps', methods: ['GET'])]
     public function gaps(): Response
     {
         try {
@@ -561,7 +561,7 @@ class MappingQualityController extends AbstractController
     /**
      * Export quality report
      */
-    #[Route('/compliance/mapping-quality/export', name: 'app_mapping_quality_export')]
+    #[Route('/compliance/mapping-quality/export', name: 'app_mapping_quality_export', methods: ['GET'])]
     public function export(): Response
     {
         $qualityStats = $this->complianceMappingRepository->getQualityStatistics();

@@ -27,7 +27,7 @@ class PatchController extends AbstractController
         private readonly Security $security
     ) {}
 
-    #[Route('/patch/', name: 'app_patch_index')]
+    #[Route('/patch/', name: 'app_patch_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         // Get current user's tenant
@@ -107,7 +107,7 @@ class PatchController extends AbstractController
         ]);
     }
 
-    #[Route('/patch/{id}', name: 'app_patch_show', requirements: ['id' => '\d+'])]
+    #[Route('/patch/{id}', name: 'app_patch_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Patch $patch): Response
     {
         return $this->render('patch/show.html.twig', [

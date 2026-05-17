@@ -35,7 +35,7 @@ class ConsentController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
     ) {}
 
-    #[Route('/', name: 'app_consent_index')]
+    #[Route('/', name: 'app_consent_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -138,7 +138,7 @@ class ConsentController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_consent_show', requirements: ['id' => '\d+'])]
+    #[Route('/{id}', name: 'app_consent_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(Consent $consent): Response
     {

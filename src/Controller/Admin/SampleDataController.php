@@ -35,7 +35,7 @@ class SampleDataController extends AbstractController
     ) {
     }
 
-    #[Route('/admin/sample-data', name: 'admin_sample_data_index')]
+    #[Route('/admin/sample-data', name: 'admin_sample_data_index', methods: ['GET'])]
     public function index(): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();

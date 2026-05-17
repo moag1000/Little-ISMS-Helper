@@ -79,7 +79,7 @@ class RiskController extends AbstractController
     {
         return $this->translator;
     }
-    #[Route('/risk/', name: 'app_risk_index')]
+    #[Route('/risk/', name: 'app_risk_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -207,7 +207,7 @@ class RiskController extends AbstractController
             'detailedStats' => $detailedStats,
         ]);
     }
-    #[Route('/risk/export', name: 'app_risk_export')]
+    #[Route('/risk/export', name: 'app_risk_export', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function export(Request $request): Response
     {
@@ -368,7 +368,7 @@ class RiskController extends AbstractController
 
         return $response;
     }
-    #[Route('/risk/export/excel', name: 'app_risk_export_excel')]
+    #[Route('/risk/export/excel', name: 'app_risk_export_excel', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function exportExcel(Request $request): Response
     {
@@ -609,7 +609,7 @@ class RiskController extends AbstractController
 
         return $response;
     }
-    #[Route('/risk/export/pdf', name: 'app_risk_export_pdf')]
+    #[Route('/risk/export/pdf', name: 'app_risk_export_pdf', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function exportPdf(Request $request): Response
     {
@@ -841,7 +841,7 @@ class RiskController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/risk/matrix', name: 'app_risk_matrix')]
+    #[Route('/risk/matrix', name: 'app_risk_matrix', methods: ['GET'])]
     public function matrix(): Response
     {
         // Get current user's tenant
@@ -927,7 +927,7 @@ class RiskController extends AbstractController
             'message' => "$deleted risks deleted successfully"
         ]);
     }
-    #[Route('/risk/{id}', name: 'app_risk_show', requirements: ['id' => '\d+'])]
+    #[Route('/risk/{id}', name: 'app_risk_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(Risk $risk): Response
     {

@@ -28,7 +28,7 @@ class PersonController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security
     ) {}
-    #[Route('/person/', name: 'app_person_index')]
+    #[Route('/person/', name: 'app_person_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -108,7 +108,7 @@ class PersonController extends AbstractController
             $person->setJobTitle($sourceUser->getJobTitle());
         }
     }
-    #[Route('/person/{id}', name: 'app_person_show', requirements: ['id' => '\d+'])]
+    #[Route('/person/{id}', name: 'app_person_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(Person $person): Response
     {

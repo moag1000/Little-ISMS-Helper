@@ -38,7 +38,7 @@ class InterestedPartyController extends AbstractController
     {
         return $this->translator;
     }
-    #[Route('/interested-party/', name: 'app_interested_party_index')]
+    #[Route('/interested-party/', name: 'app_interested_party_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -75,7 +75,7 @@ class InterestedPartyController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/interested-party/{id}', name: 'app_interested_party_show', requirements: ['id' => '\d+'])]
+    #[Route('/interested-party/{id}', name: 'app_interested_party_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(InterestedParty $interestedParty): Response
     {

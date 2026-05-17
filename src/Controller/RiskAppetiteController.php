@@ -27,7 +27,7 @@ class RiskAppetiteController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator
     ) {}
-    #[Route('/risk-appetite/', name: 'app_risk_appetite_index')]
+    #[Route('/risk-appetite/', name: 'app_risk_appetite_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -98,7 +98,7 @@ class RiskAppetiteController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/risk-appetite/{id}', name: 'app_risk_appetite_show', requirements: ['id' => '\d+'])]
+    #[Route('/risk-appetite/{id}', name: 'app_risk_appetite_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(RiskAppetite $riskAppetite): Response
     {

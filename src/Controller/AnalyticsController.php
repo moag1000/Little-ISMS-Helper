@@ -44,7 +44,7 @@ class AnalyticsController extends AbstractController
         private readonly RiskForecastService $riskForecastService,
         private readonly AssetCriticalityService $assetCriticalityService,
     ) {}
-    #[Route('', name: 'app_analytics_dashboard')]
+    #[Route('', name: 'app_analytics_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
         return $this->render('analytics/dashboard.html.twig');
@@ -53,7 +53,7 @@ class AnalyticsController extends AbstractController
     /**
      * Phase 7B: Advanced Analytics Hub with tabbed navigation
      */
-    #[Route('/advanced', name: 'app_analytics_advanced')]
+    #[Route('/advanced', name: 'app_analytics_advanced', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function advancedDashboard(): Response
     {
@@ -67,7 +67,7 @@ class AnalyticsController extends AbstractController
     /**
      * Phase 7B: Multi-Framework Compliance Dashboard
      */
-    #[Route('/compliance/frameworks', name: 'app_analytics_compliance_frameworks')]
+    #[Route('/compliance/frameworks', name: 'app_analytics_compliance_frameworks', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function complianceFrameworks(): Response
     {
@@ -81,7 +81,7 @@ class AnalyticsController extends AbstractController
     /**
      * Phase 7B: Control Effectiveness Dashboard
      */
-    #[Route('/controls/effectiveness', name: 'app_analytics_control_effectiveness')]
+    #[Route('/controls/effectiveness', name: 'app_analytics_control_effectiveness', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function controlEffectiveness(): Response
     {
@@ -95,7 +95,7 @@ class AnalyticsController extends AbstractController
     /**
      * Phase 7B: Risk Forecast Dashboard
      */
-    #[Route('/risk/forecast', name: 'app_analytics_risk_forecast')]
+    #[Route('/risk/forecast', name: 'app_analytics_risk_forecast', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function riskForecast(): Response
     {
@@ -110,7 +110,7 @@ class AnalyticsController extends AbstractController
     /**
      * Phase 7B: Asset Criticality Dashboard
      */
-    #[Route('/assets/criticality', name: 'app_analytics_asset_criticality')]
+    #[Route('/assets/criticality', name: 'app_analytics_asset_criticality', methods: ['GET'])]
     #[IsGranted('ROLE_MANAGER')]
     public function assetCriticality(): Response
     {
@@ -124,7 +124,7 @@ class AnalyticsController extends AbstractController
 
     // ========== API Endpoints for Charts ==========
 
-    #[Route('/api/heat-map', name: 'app_analytics_heat_map_data')]
+    #[Route('/api/heat-map', name: 'app_analytics_heat_map_data', methods: ['GET'])]
     public function getHeatMapData(): JsonResponse
     {
         $risks = $this->riskRepository->findAll();
@@ -172,7 +172,7 @@ class AnalyticsController extends AbstractController
             'total_risks' => count($risks)
         ]);
     }
-    #[Route('/api/compliance-radar', name: 'app_analytics_compliance_radar_data')]
+    #[Route('/api/compliance-radar', name: 'app_analytics_compliance_radar_data', methods: ['GET'])]
     public function getComplianceRadarData(): JsonResponse
     {
         $controls = $this->controlRepository->findAll();
@@ -217,7 +217,7 @@ class AnalyticsController extends AbstractController
             'overall_compliance' => $this->calculateOverallCompliance($radarData)
         ]);
     }
-    #[Route('/api/trends', name: 'app_analytics_trends_data')]
+    #[Route('/api/trends', name: 'app_analytics_trends_data', methods: ['GET'])]
     public function getTrendsData(Request $request): JsonResponse
     {
         $period = $request->query->get('period', '12'); // months
@@ -237,7 +237,7 @@ class AnalyticsController extends AbstractController
             'incidents' => $incidentTrend
         ]);
     }
-    #[Route('/api/export/{type}', name: 'app_analytics_export')]
+    #[Route('/api/export/{type}', name: 'app_analytics_export', methods: ['GET'])]
     public function exportData(Request $request, string $type): Response
     {
         $data = [];
@@ -429,7 +429,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Framework Comparison Data
      */
-    #[Route('/api/frameworks/comparison', name: 'app_analytics_api_framework_comparison')]
+    #[Route('/api/frameworks/comparison', name: 'app_analytics_api_framework_comparison', methods: ['GET'])]
     public function getFrameworkComparisonData(): JsonResponse
     {
         return new JsonResponse($this->complianceAnalyticsService->getFrameworkComparison());
@@ -438,7 +438,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Framework Overlap Data
      */
-    #[Route('/api/frameworks/overlap', name: 'app_analytics_api_framework_overlap')]
+    #[Route('/api/frameworks/overlap', name: 'app_analytics_api_framework_overlap', methods: ['GET'])]
     public function getFrameworkOverlapData(): JsonResponse
     {
         return new JsonResponse($this->complianceAnalyticsService->getFrameworkOverlap());
@@ -447,7 +447,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Control Coverage Matrix
      */
-    #[Route('/api/controls/coverage', name: 'app_analytics_api_control_coverage')]
+    #[Route('/api/controls/coverage', name: 'app_analytics_api_control_coverage', methods: ['GET'])]
     public function getControlCoverageData(): JsonResponse
     {
         return new JsonResponse($this->complianceAnalyticsService->getControlCoverageMatrix());
@@ -456,7 +456,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Gap Analysis Data
      */
-    #[Route('/api/compliance/gaps', name: 'app_analytics_api_compliance_gaps')]
+    #[Route('/api/compliance/gaps', name: 'app_analytics_api_compliance_gaps', methods: ['GET'])]
     public function getGapAnalysisData(): JsonResponse
     {
         return new JsonResponse($this->complianceAnalyticsService->getGapAnalysis());
@@ -465,7 +465,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Transitive Compliance Data
      */
-    #[Route('/api/compliance/transitive', name: 'app_analytics_api_transitive_compliance')]
+    #[Route('/api/compliance/transitive', name: 'app_analytics_api_transitive_compliance', methods: ['GET'])]
     public function getTransitiveComplianceData(): JsonResponse
     {
         return new JsonResponse($this->complianceAnalyticsService->getTransitiveCompliance());
@@ -474,7 +474,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Compliance Roadmap Data
      */
-    #[Route('/api/compliance/roadmap', name: 'app_analytics_api_compliance_roadmap')]
+    #[Route('/api/compliance/roadmap', name: 'app_analytics_api_compliance_roadmap', methods: ['GET'])]
     public function getComplianceRoadmapData(): JsonResponse
     {
         return new JsonResponse($this->complianceAnalyticsService->getComplianceRoadmap());
@@ -483,7 +483,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Control Effectiveness Data
      */
-    #[Route('/api/controls/effectiveness', name: 'app_analytics_api_control_effectiveness')]
+    #[Route('/api/controls/effectiveness', name: 'app_analytics_api_control_effectiveness', methods: ['GET'])]
     public function getControlEffectivenessData(): JsonResponse
     {
         return new JsonResponse($this->controlEffectivenessService->getEffectivenessDashboard());
@@ -492,7 +492,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Control Category Performance
      */
-    #[Route('/api/controls/categories', name: 'app_analytics_api_control_categories')]
+    #[Route('/api/controls/categories', name: 'app_analytics_api_control_categories', methods: ['GET'])]
     public function getControlCategoryData(): JsonResponse
     {
         return new JsonResponse($this->controlEffectivenessService->getCategoryPerformance());
@@ -501,7 +501,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Control-Risk Matrix
      */
-    #[Route('/api/controls/risk-matrix', name: 'app_analytics_api_control_risk_matrix')]
+    #[Route('/api/controls/risk-matrix', name: 'app_analytics_api_control_risk_matrix', methods: ['GET'])]
     public function getControlRiskMatrixData(): JsonResponse
     {
         return new JsonResponse($this->controlEffectivenessService->getControlRiskMatrix());
@@ -510,7 +510,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Risk Forecast Data
      */
-    #[Route('/api/risk/forecast', name: 'app_analytics_api_risk_forecast')]
+    #[Route('/api/risk/forecast', name: 'app_analytics_api_risk_forecast', methods: ['GET'])]
     public function getRiskForecastData(Request $request): JsonResponse
     {
         $months = (int) $request->query->get('months', 6);
@@ -520,7 +520,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Risk Velocity Data
      */
-    #[Route('/api/risk/velocity', name: 'app_analytics_api_risk_velocity')]
+    #[Route('/api/risk/velocity', name: 'app_analytics_api_risk_velocity', methods: ['GET'])]
     public function getRiskVelocityData(): JsonResponse
     {
         return new JsonResponse($this->riskForecastService->getRiskVelocity());
@@ -529,7 +529,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Risk Appetite Compliance
      */
-    #[Route('/api/risk/appetite', name: 'app_analytics_api_risk_appetite')]
+    #[Route('/api/risk/appetite', name: 'app_analytics_api_risk_appetite', methods: ['GET'])]
     public function getRiskAppetiteData(): JsonResponse
     {
         return new JsonResponse($this->riskForecastService->getRiskAppetiteCompliance());
@@ -538,7 +538,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Anomaly Detection
      */
-    #[Route('/api/risk/anomalies', name: 'app_analytics_api_anomalies')]
+    #[Route('/api/risk/anomalies', name: 'app_analytics_api_anomalies', methods: ['GET'])]
     public function getAnomalyData(): JsonResponse
     {
         return new JsonResponse($this->riskForecastService->getAnomalyDetection());
@@ -547,7 +547,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Asset Incident Probability
      */
-    #[Route('/api/assets/incident-probability', name: 'app_analytics_api_asset_probability')]
+    #[Route('/api/assets/incident-probability', name: 'app_analytics_api_asset_probability', methods: ['GET'])]
     public function getAssetProbabilityData(): JsonResponse
     {
         return new JsonResponse($this->assetCriticalityService->getAssetIncidentProbability());
@@ -556,7 +556,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Asset Criticality Dashboard
      */
-    #[Route('/api/assets/criticality', name: 'app_analytics_api_asset_criticality')]
+    #[Route('/api/assets/criticality', name: 'app_analytics_api_asset_criticality', methods: ['GET'])]
     public function getAssetCriticalityData(): JsonResponse
     {
         return new JsonResponse($this->assetCriticalityService->getCriticalityDashboard());
@@ -565,7 +565,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Asset Vulnerability Matrix
      */
-    #[Route('/api/assets/vulnerability-matrix', name: 'app_analytics_api_vulnerability_matrix')]
+    #[Route('/api/assets/vulnerability-matrix', name: 'app_analytics_api_vulnerability_matrix', methods: ['GET'])]
     public function getVulnerabilityMatrixData(): JsonResponse
     {
         return new JsonResponse($this->assetCriticalityService->getVulnerabilityMatrix());
@@ -574,7 +574,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Asset Type Analysis
      */
-    #[Route('/api/assets/type-analysis', name: 'app_analytics_api_type_analysis')]
+    #[Route('/api/assets/type-analysis', name: 'app_analytics_api_type_analysis', methods: ['GET'])]
     public function getTypeAnalysisData(): JsonResponse
     {
         return new JsonResponse($this->assetCriticalityService->getTypeAnalysis());
@@ -583,7 +583,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Supply Chain Risk
      */
-    #[Route('/api/assets/supply-chain', name: 'app_analytics_api_supply_chain')]
+    #[Route('/api/assets/supply-chain', name: 'app_analytics_api_supply_chain', methods: ['GET'])]
     public function getSupplyChainRiskData(): JsonResponse
     {
         return new JsonResponse($this->assetCriticalityService->getSupplyChainRisk());
@@ -592,7 +592,7 @@ class AnalyticsController extends AbstractController
     /**
      * API: Executive Summary
      */
-    #[Route('/api/executive-summary', name: 'app_analytics_api_executive_summary')]
+    #[Route('/api/executive-summary', name: 'app_analytics_api_executive_summary', methods: ['GET'])]
     public function getExecutiveSummaryData(): JsonResponse
     {
         return new JsonResponse($this->complianceAnalyticsService->getExecutiveSummary());

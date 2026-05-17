@@ -25,7 +25,7 @@ class ChangeRequestController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext
     ) {}
-    #[Route('/change-request/', name: 'app_change_request_index')]
+    #[Route('/change-request/', name: 'app_change_request_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -65,7 +65,7 @@ class ChangeRequestController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/change-request/{id}', name: 'app_change_request_show', requirements: ['id' => '\d+'])]
+    #[Route('/change-request/{id}', name: 'app_change_request_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(ChangeRequest $changeRequest): Response
     {

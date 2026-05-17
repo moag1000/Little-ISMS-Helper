@@ -28,7 +28,7 @@ class ThreatIntelligenceController extends AbstractController
         private readonly TenantContext $tenantContext,
     ) {}
 
-    #[Route('/threat-intelligence/', name: 'app_threat_intelligence_index')]
+    #[Route('/threat-intelligence/', name: 'app_threat_intelligence_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -111,7 +111,7 @@ class ThreatIntelligenceController extends AbstractController
         ]);
     }
 
-    #[Route('/threat-intelligence/{id}', name: 'app_threat_intelligence_show', requirements: ['id' => '\d+'])]
+    #[Route('/threat-intelligence/{id}', name: 'app_threat_intelligence_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(ThreatIntelligence $threat): Response
     {

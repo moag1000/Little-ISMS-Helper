@@ -30,7 +30,7 @@ class BusinessContinuityPlanController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
     ) {}
-    #[Route('/business-continuity-plan/', name: 'app_bc_plan_index')]
+    #[Route('/business-continuity-plan/', name: 'app_bc_plan_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -74,7 +74,7 @@ class BusinessContinuityPlanController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/business-continuity-plan/{id}', name: 'app_bc_plan_show', requirements: ['id' => '\d+'])]
+    #[Route('/business-continuity-plan/{id}', name: 'app_bc_plan_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(BusinessContinuityPlan $businessContinuityPlan): Response
     {

@@ -25,7 +25,7 @@ class LocationController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security
     ) {}
-    #[Route('/location/', name: 'app_location_index')]
+    #[Route('/location/', name: 'app_location_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -66,7 +66,7 @@ class LocationController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/location/{id}', name: 'app_location_show', requirements: ['id' => '\d+'])]
+    #[Route('/location/{id}', name: 'app_location_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(Location $location): Response
     {

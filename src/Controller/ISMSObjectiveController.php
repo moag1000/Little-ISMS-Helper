@@ -26,7 +26,7 @@ class ISMSObjectiveController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext
     ) {}
-    #[Route('/objective/', name: 'app_objective_index')]
+    #[Route('/objective/', name: 'app_objective_index', methods: ['GET'])]
     public function index(): Response
     {
         $objectives = $this->ismsObjectiveRepository->findAll();
@@ -72,7 +72,7 @@ class ISMSObjectiveController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/objective/{id}', name: 'app_objective_show', requirements: ['id' => '\d+'])]
+    #[Route('/objective/{id}', name: 'app_objective_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(ISMSObjective $ismsObjective): Response
     {
         return $this->render('objective/show.html.twig', [

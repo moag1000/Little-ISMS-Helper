@@ -25,7 +25,7 @@ class ActivityFeedController extends AbstractController
     /** Valid scope values for the ?scope= query parameter (V4-EF-6). */
     private const VALID_SCOPES = ['all', 'compliance'];
 
-    #[Route('/activity-feed', name: 'app_activity_feed')]
+    #[Route('/activity-feed', name: 'app_activity_feed', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {

@@ -21,7 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RoleManagementController extends AbstractController
 {
-    #[Route('/admin/roles', name: 'role_management_index')]
+    #[Route('/admin/roles', name: 'role_management_index', methods: ['GET'])]
     public function index(RoleRepository $roleRepository): Response
     {
         $this->denyAccessUnlessGranted(RoleVoter::VIEW, new Role());
@@ -62,7 +62,7 @@ class RoleManagementController extends AbstractController
             'permissions' => $permissions,
         ]);
     }
-    #[Route('/admin/roles/compare', name: 'role_management_compare')]
+    #[Route('/admin/roles/compare', name: 'role_management_compare', methods: ['GET'])]
     public function compare(
         Request $request,
         RoleRepository $roleRepository,
@@ -168,7 +168,7 @@ class RoleManagementController extends AbstractController
             'templates' => $templates,
         ]);
     }
-    #[Route('/admin/roles/{id}', name: 'role_management_show', requirements: ['id' => '\d+'])]
+    #[Route('/admin/roles/{id}', name: 'role_management_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Role $role, RoleRepository $roleRepository): Response
     {
         $this->denyAccessUnlessGranted(RoleVoter::VIEW, $role);

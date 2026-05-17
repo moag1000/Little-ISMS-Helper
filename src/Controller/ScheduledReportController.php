@@ -33,7 +33,7 @@ class ScheduledReportController extends AbstractController
     ) {
     }
 
-    #[Route('/', name: 'app_scheduled_report_index')]
+    #[Route('/', name: 'app_scheduled_report_index', methods: ['GET'])]
     public function index(): Response
     {
         $tenantId = $this->tenantContext->getCurrentTenantId();

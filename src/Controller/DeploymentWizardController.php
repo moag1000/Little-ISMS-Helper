@@ -77,7 +77,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Wizard Start / Welcome
      */
-    #[Route('/setup/', name: 'setup_wizard_index')]
+    #[Route('/setup/', name: 'setup_wizard_index', methods: ['GET'])]
     public function index(): Response
     {
         // Check if setup is already complete
@@ -124,7 +124,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Step 0: Welcome & Language Selection
      */
-    #[Route('/setup/step0-welcome', name: 'setup_step0_welcome')]
+    #[Route('/setup/step0-welcome', name: 'setup_step0_welcome', methods: ['GET'])]
     public function step0Welcome(SessionInterface $session): Response
     {
         // State recovery: Only if there's an active session with progress
@@ -408,7 +408,7 @@ class DeploymentWizardController extends AbstractController
      * Step 3: Backup Restore (Optional)
      * User can restore an existing backup or skip to create fresh installation
      */
-    #[Route('/setup/step3-restore-backup', name: 'setup_step3_restore_backup')]
+    #[Route('/setup/step3-restore-backup', name: 'setup_step3_restore_backup', methods: ['GET'])]
     public function step3RestoreBackup(SessionInterface $session): Response
     {
         // Docker-Standalone: DATABASE_URL ist von init-mysql.sh in .env.local geschrieben.
@@ -1203,7 +1203,7 @@ class DeploymentWizardController extends AbstractController
      *
      * Skipping this screen continues the manual flow via step7-modules.
      */
-    #[Route('/setup/industry-preset', name: 'setup_industry_preset')]
+    #[Route('/setup/industry-preset', name: 'setup_industry_preset', methods: ['GET'])]
     public function industryPreset(SessionInterface $session): Response
     {
         if ($guard = $this->guardPostSetup()) { return $guard; }
@@ -1271,7 +1271,7 @@ class DeploymentWizardController extends AbstractController
      * Step 1: System Requirements Check
      * This is the first step - checks if system meets minimum requirements
      */
-    #[Route('/setup/step1-requirements', name: 'setup_step1_requirements')]
+    #[Route('/setup/step1-requirements', name: 'setup_step1_requirements', methods: ['GET'])]
     public function step1Requirements(SessionInterface $session): Response
     {
         // No prerequisites - this is the first step after welcome
@@ -1285,7 +1285,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Step 7: Module Selection
      */
-    #[Route('/setup/step7-modules', name: 'setup_step7_modules')]
+    #[Route('/setup/step7-modules', name: 'setup_step7_modules', methods: ['GET'])]
     public function step7Modules(SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -1838,7 +1838,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Step 9: Base Data Import
      */
-    #[Route('/setup/step9-base-data', name: 'setup_step9_base_data')]
+    #[Route('/setup/step9-base-data', name: 'setup_step9_base_data', methods: ['GET'])]
     public function step9BaseData(SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -1940,7 +1940,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Step 10: Sample Data (Optional)
      */
-    #[Route('/setup/step10-sample-data', name: 'setup_step10_sample_data')]
+    #[Route('/setup/step10-sample-data', name: 'setup_step10_sample_data', methods: ['GET'])]
     public function step10SampleData(SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -2054,7 +2054,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Step 11: Setup Complete
      */
-    #[Route('/setup/step11-complete', name: 'setup_step11_complete')]
+    #[Route('/setup/step11-complete', name: 'setup_step11_complete', methods: ['GET'])]
     public function step11Complete(SessionInterface $session): Response
     {
         $backupRestored = $session->get('setup_backup_restored', false);

@@ -49,7 +49,7 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?CommentRepository $commentRepository = null,
     ) {}
-    #[Route('/soa/', name: 'app_soa_index')]
+    #[Route('/soa/', name: 'app_soa_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         // Get current user's tenant
@@ -180,7 +180,7 @@ class StatementOfApplicabilityController extends AbstractController
             'essentialFilter' => $essential,
         ]);
     }
-    #[Route('/soa/category/{category}', name: 'app_soa_by_category')]
+    #[Route('/soa/category/{category}', name: 'app_soa_by_category', methods: ['GET'])]
     public function byCategory(string $category): Response
     {
         $user = $this->security->getUser();
@@ -210,7 +210,7 @@ class StatementOfApplicabilityController extends AbstractController
             'iso_27001_active' => $controlsModuleActive,
         ]);
     }
-    #[Route('/soa/report/export', name: 'app_soa_export')]
+    #[Route('/soa/report/export', name: 'app_soa_export', methods: ['GET'])]
     public function export(Request $request): Response
     {
         $user = $this->security->getUser();
@@ -227,7 +227,7 @@ class StatementOfApplicabilityController extends AbstractController
             'generatedAt' => new DateTime(),
         ]);
     }
-    #[Route('/soa/report/pdf', name: 'app_soa_export_pdf')]
+    #[Route('/soa/report/pdf', name: 'app_soa_export_pdf', methods: ['GET'])]
     public function exportPdf(Request $request): Response
     {
         // Close session to prevent blocking other requests during PDF generation
@@ -235,12 +235,12 @@ class StatementOfApplicabilityController extends AbstractController
 
         return $this->soaReportService->downloadSoAReport();
     }
-    #[Route('/soa/report/pdf/preview', name: 'app_soa_preview_pdf')]
+    #[Route('/soa/report/pdf/preview', name: 'app_soa_preview_pdf', methods: ['GET'])]
     public function previewPdf(): Response
     {
         return $this->soaReportService->streamSoAReport();
     }
-    #[Route('/soa/{id}', name: 'app_soa_show', requirements: ['id' => '\d+'])]
+    #[Route('/soa/{id}', name: 'app_soa_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Control $control): Response
     {
         $suggestions = $this->mappingSuggestionService->suggestForControl($control);
