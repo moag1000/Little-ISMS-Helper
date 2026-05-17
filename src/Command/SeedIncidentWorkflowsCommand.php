@@ -12,9 +12,16 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since Sprint Y.2 — incident workflows are now defined in
+ *   config/workflows/regulatory/incident_high_severity.yaml and
+ *   config/workflows/regulatory/incident_low_severity.yaml.
+ *   Use app:generate-regulatory-workflows to seed DB rows from YAML.
+ *   This command will be removed in a future release.
+ */
 #[AsCommand(
     name: 'app:seed:incident-workflows',
-    description: 'Seeds incident escalation workflow definitions into the database',
+    description: '[DEPRECATED] Seeds incident escalation workflow definitions — use app:generate-regulatory-workflows instead',
 )]
 class SeedIncidentWorkflowsCommand
 {

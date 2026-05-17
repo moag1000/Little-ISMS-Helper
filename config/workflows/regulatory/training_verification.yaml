@@ -1,0 +1,75 @@
+framework:
+    workflows:
+        training_verification:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\WorkflowInstance
+            initial_marking: pending
+            places:
+                - pending
+                - in_progress
+                - approved
+                - rejected
+                - cancelled
+            transitions:
+                start:
+                    from: pending
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_progress
+                    to: approved
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        tone_target: success
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: danger
+                cancel:
+                    from: pending
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+            metadata:
+                regulatory_metadata:
+                    standard: "ISO 27001:2022 A.6.3"
+                    sla_hours: null
+                    escalation_threshold_hours: null
+                    escalation_role: ROLE_MANAGER
+                steps:
+                    -   name: "Training Completion"
+                        description: "Participant completes the assigned training"
+                        order: 1
+                        approver_role: ROLE_USER
+                        step_type: approval
+                        days_to_complete: 30
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: Training
+                            fields: [completionDate]
+                    -   name: "Manager Verification"
+                        description: "Manager confirms training was completed satisfactorily"
+                        order: 2
+                        approver_role: ROLE_MANAGER
+                        step_type: approval
+                        days_to_complete: 7
+                        is_required: true

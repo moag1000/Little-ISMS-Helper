@@ -1,0 +1,112 @@
+framework:
+    workflows:
+        dsr:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\WorkflowInstance
+            initial_marking: pending
+            places:
+                - pending
+                - in_progress
+                - approved
+                - rejected
+                - cancelled
+            transitions:
+                start:
+                    from: pending
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_progress
+                    to: approved
+                    metadata:
+                        roles: [ROLE_DPO, ROLE_MANAGER]
+                        tone_target: success
+                        module: privacy
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_DPO, ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: danger
+                        module: privacy
+                cancel:
+                    from: pending
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+            metadata:
+                regulatory_metadata:
+                    standard: "GDPR Art. 12(3) / Art. 12-22"
+                    sla_hours: 720
+                    escalation_threshold_hours: 600
+                    escalation_role: ROLE_DPO
+                    module: privacy
+                steps:
+                    -   name: "Identity Verification"
+                        description: "Verify the identity of the requesting data subject (GDPR Art. 12(6))"
+                        order: 1
+                        approver_role: ROLE_DPO
+                        step_type: approval
+                        days_to_complete: 3
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: DataSubjectRequest
+                            fields: [identityVerified, identityVerificationMethod]
+                    -   name: "Request Processing"
+                        description: "Process the data subject request: gather data, prepare response"
+                        order: 2
+                        approver_role: ROLE_USER
+                        step_type: approval
+                        days_to_complete: 14
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: DataSubjectRequest
+                            fields: [responseDescription]
+                    -   name: "DPO Review & Approval"
+                        description: "DPO reviews the prepared response for completeness and legal compliance"
+                        order: 3
+                        approver_role: ROLE_DPO
+                        step_type: approval
+                        days_to_complete: 5
+                        is_required: true
+                    -   name: "Response Delivery"
+                        description: "Send the response to the data subject and document delivery"
+                        order: 4
+                        approver_role: ROLE_DPO
+                        step_type: approval
+                        days_to_complete: 3
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: DataSubjectRequest
+                            fields: [completedAt]
+                    -   name: "Deadline Extension (Art. 12(3))"
+                        description: "If complex request requires more time: notify data subject of extension within original 30-day period"
+                        order: 5
+                        approver_role: ROLE_DPO
+                        step_type: notification
+                        days_to_complete: 0
+                        is_required: false
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: DataSubjectRequest
+                            fields: [extensionReason, extendedDeadlineAt]
+                            condition: "extensionReason != null"

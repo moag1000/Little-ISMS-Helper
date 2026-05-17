@@ -1,0 +1,80 @@
+framework:
+    workflows:
+        control_verification:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\WorkflowInstance
+            initial_marking: pending
+            places:
+                - pending
+                - in_progress
+                - approved
+                - rejected
+                - cancelled
+            transitions:
+                start:
+                    from: pending
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_progress
+                    to: approved
+                    metadata:
+                        roles: [ROLE_AUDITOR, ROLE_CISO]
+                        tone_target: success
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_AUDITOR, ROLE_CISO]
+                        reason_required: true
+                        tone_target: danger
+                cancel:
+                    from: pending
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+            metadata:
+                regulatory_metadata:
+                    standard: "ISO 27001:2022 Cl. 8 / Annex A"
+                    sla_hours: null
+                    escalation_threshold_hours: null
+                    escalation_role: ROLE_CISO
+                steps:
+                    -   name: "Risk Owner Certification"
+                        description: "Risk owner confirms the control is implemented as designed"
+                        order: 1
+                        approver_role: ROLE_USER
+                        step_type: approval
+                        days_to_complete: 7
+                        is_required: true
+                    -   name: "CISO Technical Validation"
+                        description: "CISO validates the technical implementation and evidence"
+                        order: 2
+                        approver_role: ROLE_CISO
+                        step_type: approval
+                        days_to_complete: 7
+                        is_required: true
+                    -   name: "Auditor Acceptance"
+                        description: "Internal auditor accepts the control as verified (updates SoA). Reject loops back to Risk Owner for re-certification."
+                        order: 3
+                        approver_role: ROLE_AUDITOR
+                        step_type: approval
+                        days_to_complete: 5
+                        is_required: true
+                        reject_action: loop_back
+                        reject_target_step: 1

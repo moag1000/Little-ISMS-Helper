@@ -13,11 +13,12 @@ use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Repository\UserRepository;
+use App\Workflow\Loader\RegulatoryWorkflowLoader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
- * Workflow Management Service — public API facade (Sprint Y.0).
+ * Workflow Management Service — public API facade (Sprint Y.0 / Y.2).
  *
  * Manages the lifecycle of approval workflows for ISMS entities.
  * Supports multi-step approval processes with configurable approvers and SLA tracking.
@@ -27,6 +28,12 @@ use Symfony\Bundle\SecurityBundle\Security;
  * `workflow_instance_lifecycle` Symfony state-machine
  * (config/workflows/workflow_instance.yaml).
  * The public method signatures are UNCHANGED — callers are unaffected.
+ *
+ * Sprint Y.2: startWorkflow() now consults RegulatoryWorkflowLoader first;
+ * if the requested workflow name is registered in the Symfony Workflow Registry
+ * (config/workflows/regulatory/*.yaml), the YAML-defined steps are used to seed
+ * the WorkflowInstance. Falls back to DB-backed WorkflowRepository for tenant-custom
+ * workflows not yet migrated to YAML.
  *
  * Workflow States (now driven by Symfony Workflow):
  * - pending:     Workflow created but not yet started (initial_marking)
@@ -39,6 +46,26 @@ class WorkflowService
 {
     private const WORKFLOW_NAME = 'workflow_instance_lifecycle';
 
+    /**
+     * Map: entityType → canonical YAML workflow name (Sprint Y.2).
+     * Used when startWorkflow() is called without an explicit $workflowName.
+     */
+    private const ENTITY_TYPE_TO_YAML_WORKFLOW = [
+        'DataBreach' => 'gdpr_data_breach',
+        'Incident' => 'incident_high_severity',
+        'Risk' => 'risk_treatment',
+        'DPIA' => 'dpia',
+        'DataSubjectRequest' => 'dsr',
+        'CorrectiveAction' => 'capa',
+        'ChangeRequest' => 'change_request',
+        'ManagementReview' => 'management_review',
+        'Control' => 'control_verification',
+        'Supplier' => 'supplier_assessment',
+        'Training' => 'training_verification',
+        'BusinessContinuityPlan' => 'bc_plan_activation',
+        'Document' => 'document_review',
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly WorkflowRepository $workflowRepository,
@@ -47,26 +74,41 @@ class WorkflowService
         private readonly EmailNotificationService $emailNotificationService,
         private readonly Security $security,
         private readonly LifecycleTransitionInterface $lifecycleService,
+        private readonly RegulatoryWorkflowLoader $regulatoryWorkflowLoader,
     ) {}
 
     /**
-     * Start a workflow for an entity
+     * Start a workflow for an entity.
+     *
+     * Sprint Y.2: tries YAML-registered regulatory workflow first (via
+     * RegulatoryWorkflowLoader), then falls back to DB-backed WorkflowRepository
+     * for tenant-custom workflows not yet migrated to YAML.
      *
      * @param string $entityType The entity type (e.g., 'Incident', 'Risk')
      * @param int $entityId The entity ID
-     * @param string|null $workflowName Optional specific workflow name
+     * @param string|null $workflowName Optional specific workflow name (YAML name or DB name)
      * @param bool $autoFlush Whether to automatically flush after persisting (default: true)
      * @return WorkflowInstance|null The workflow instance or null if no workflow found
      * @throws DateMalformedStringException
      */
     public function startWorkflow(string $entityType, int $entityId, ?string $workflowName = null, bool $autoFlush = true): ?WorkflowInstance
     {
-        // Find appropriate workflow
+        // Sprint Y.2 — YAML-first lookup: resolve the YAML workflow name for this entity type.
+        // When a regulatory YAML is registered, we prefer it over the DB row.
+        $yamlWorkflowName = $workflowName ?? (self::ENTITY_TYPE_TO_YAML_WORKFLOW[$entityType] ?? null);
+        $yamlSteps = $yamlWorkflowName !== null
+            ? $this->regulatoryWorkflowLoader->getStepsForWorkflow($yamlWorkflowName)
+            : null;
+
+        // Find appropriate workflow — DB lookup (backwards-compat for tenant-custom workflows).
+        // Even when a YAML workflow is used, we still look up the DB row so that
+        // WorkflowInstance.workflow_id FK is set (required for history display until Y.4).
         $workflow = $workflowName
             ? $this->workflowRepository->findOneBy(['name' => $workflowName, 'entityType' => $entityType, 'isActive' => true])
             : $this->workflowRepository->findOneBy(['entityType' => $entityType, 'isActive' => true]);
 
-        if (!$workflow) {
+        // If neither YAML steps nor a DB workflow was found, give up
+        if ($yamlSteps === null && !$workflow) {
             return null;
         }
 
@@ -93,6 +135,14 @@ class WorkflowService
         // The setStatus() call here is the only allowed direct setter: it seeds the
         // Symfony Workflow marking-store on a brand-new (pre-persist) entity.
         // All subsequent mutations go through LifecycleTransitionInterface::transition().
+        // When only YAML steps are available (no DB row), startWorkflow cannot create
+        // a WorkflowInstance that satisfies the nullable: false FK constraint on workflow_id.
+        // In that case we return null — callers must ensure a DB row exists (see
+        // GenerateRegulatoryWorkflowsCommand which seeds DB rows from the same YAML data).
+        if (!$workflow) {
+            return null;
+        }
+
         $workflowInstance = new WorkflowInstance(); // @lifecycle-initial-state
         $workflowInstance->setWorkflow($workflow);
         $workflowInstance->setEntityType($entityType);
@@ -102,16 +152,29 @@ class WorkflowService
 
         $this->entityManager->persist($workflowInstance);
 
-        // Set first step as current
-        $steps = $workflow->getSteps();
-        if ($steps->count() > 0) {
-            $firstStep = $steps->first();
-            $workflowInstance->setCurrentStep($firstStep);
+        // Resolve steps: YAML-loader takes precedence; fall back to DB-backed workflow.
+        // Sprint Y.2: when YAML steps are available, we resolve the first step from YAML
+        // metadata. DB workflow steps are still used for WorkflowStep entity FK references
+        // when the DB row exists.
+        $hasYamlSteps = $yamlSteps !== null && count($yamlSteps) > 0;
+        $dbSteps = $workflow?->getSteps();
+        $hasDbSteps = $dbSteps !== null && $dbSteps->count() > 0;
+
+        if ($hasYamlSteps || $hasDbSteps) {
+            // Prefer DB step entity for the currentStep FK if available (audit-trail)
+            $firstStep = $hasDbSteps ? $dbSteps->first() : null;
+            $firstStepDays = $hasYamlSteps
+                ? (int) ($yamlSteps[0]['days_to_complete'] ?? 0)
+                : ($firstStep?->getDaysToComplete() ?? 0);
+
+            if ($firstStep instanceof WorkflowStep) {
+                $workflowInstance->setCurrentStep($firstStep);
+            }
             $workflowInstance->setCurrentStepIndex(0);
 
             // Calculate due date based on first step's SLA
-            if ($firstStep->getDaysToComplete()) {
-                $dueDate = new DateTimeImmutable()->modify('+' . $firstStep->getDaysToComplete() . ' days');
+            if ($firstStepDays > 0) {
+                $dueDate = new DateTimeImmutable()->modify('+' . $firstStepDays . ' days');
                 $workflowInstance->setDueDate($dueDate);
             }
 
@@ -127,7 +190,9 @@ class WorkflowService
             );
 
             // Handle notification step auto-progression or send assignment notification
-            $this->handleStepAssignment($workflowInstance, $firstStep);
+            if ($firstStep instanceof WorkflowStep) {
+                $this->handleStepAssignment($workflowInstance, $firstStep);
+            }
         } elseif ($autoFlush) {
             // No steps — stay in 'pending'; flush if requested
             $this->entityManager->flush();

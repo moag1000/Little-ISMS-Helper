@@ -1,0 +1,96 @@
+framework:
+    workflows:
+        bc_plan_activation:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\WorkflowInstance
+            initial_marking: pending
+            places:
+                - pending
+                - in_progress
+                - approved
+                - rejected
+                - cancelled
+            transitions:
+                start:
+                    from: pending
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_progress
+                    to: approved
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        tone_target: success
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: danger
+                cancel:
+                    from: pending
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+            metadata:
+                regulatory_metadata:
+                    standard: "ISO 22301:2019"
+                    sla_hours: 1
+                    escalation_threshold_hours: 1
+                    escalation_role: ROLE_ADMIN
+                steps:
+                    -   name: "Crisis Declaration"
+                        description: "Crisis manager declares crisis and activates BC plan"
+                        order: 1
+                        approver_role: ROLE_MANAGER
+                        step_type: approval
+                        days_to_complete: 0
+                        is_required: true
+                    -   name: "Crisis Team Notification"
+                        description: "All crisis team members are notified and confirm availability"
+                        order: 2
+                        approver_role: ROLE_USER
+                        step_type: notification
+                        days_to_complete: 0
+                        is_required: true
+                        auto_progress_conditions:
+                            type: auto
+                            condition: "status = active"
+                    -   name: "Recovery Execution"
+                        description: "Execute recovery procedures as documented in the BC plan"
+                        order: 3
+                        approver_role: ROLE_MANAGER
+                        step_type: approval
+                        days_to_complete: 7
+                        is_required: true
+                    -   name: "Plan Deactivation"
+                        description: "Crisis resolved — deactivate plan and return to normal operations"
+                        order: 4
+                        approver_role: ROLE_MANAGER
+                        step_type: approval
+                        days_to_complete: 1
+                        is_required: true
+                    -   name: "Post-Incident Review"
+                        description: "Conduct post-incident review: lessons learned, plan updates needed"
+                        order: 5
+                        approver_role: ROLE_CISO
+                        step_type: approval
+                        days_to_complete: 14
+                        is_required: true

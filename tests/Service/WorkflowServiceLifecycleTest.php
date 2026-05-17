@@ -9,6 +9,7 @@ use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Lifecycle\LifecycleTransitionInterface;
+use App\Workflow\Loader\RegulatoryWorkflowLoader;
 use App\Repository\WorkflowInstanceRepository;
 use App\Repository\WorkflowRepository;
 use App\Repository\UserRepository;
@@ -47,6 +48,8 @@ final class WorkflowServiceLifecycleTest extends TestCase
     private MockObject $security;
     /** @var MockObject&LifecycleTransitionInterface */
     private MockObject $lifecycleService;
+    /** @var MockObject&RegulatoryWorkflowLoader */
+    private MockObject $regulatoryWorkflowLoader;
     private WorkflowService $service;
 
     protected function setUp(): void
@@ -58,6 +61,7 @@ final class WorkflowServiceLifecycleTest extends TestCase
         $this->emailService = $this->createMock(EmailNotificationService::class);
         $this->security = $this->createMock(Security::class);
         $this->lifecycleService = $this->createMock(LifecycleTransitionInterface::class);
+        $this->regulatoryWorkflowLoader = $this->createMock(RegulatoryWorkflowLoader::class);
 
         $this->service = new WorkflowService(
             $this->entityManager,
@@ -67,6 +71,7 @@ final class WorkflowServiceLifecycleTest extends TestCase
             $this->emailService,
             $this->security,
             $this->lifecycleService,
+            $this->regulatoryWorkflowLoader,
         );
     }
 
