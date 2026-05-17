@@ -64,7 +64,7 @@ final class LifecycleOverridesController extends AbstractController
         ]);
     }
 
-    #[Route('/{workflowName}', name: 'admin_lifecycle_overrides_show', methods: ['GET'])]
+    #[Route('/{workflowName}', name: 'admin_lifecycle_overrides_show', methods: ['GET'], requirements: ['workflowName' => '[a-z][a-z0-9_]*_lifecycle'])]
     public function show(string $workflowName): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -93,7 +93,7 @@ final class LifecycleOverridesController extends AbstractController
         ]);
     }
 
-    #[Route('/{workflowName}/{transitionName}/edit', name: 'admin_lifecycle_overrides_edit', methods: ['GET', 'POST'])]
+    #[Route('/{workflowName}/{transitionName}/edit', name: 'admin_lifecycle_overrides_edit', methods: ['GET', 'POST'], requirements: ['workflowName' => '[a-z][a-z0-9_]*_lifecycle', 'transitionName' => '[a-z][a-z0-9_]*'])]
     public function edit(Request $request, string $workflowName, string $transitionName): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -196,7 +196,7 @@ final class LifecycleOverridesController extends AbstractController
         ]);
     }
 
-    #[Route('/{workflowName}/{transitionName}/reset', name: 'admin_lifecycle_overrides_reset', methods: ['POST'])]
+    #[Route('/{workflowName}/{transitionName}/reset', name: 'admin_lifecycle_overrides_reset', methods: ['POST'], requirements: ['workflowName' => '[a-z][a-z0-9_]*_lifecycle', 'transitionName' => '[a-z][a-z0-9_]*'])]
     public function reset(Request $request, string $workflowName, string $transitionName): Response
     {
         if (!$this->isCsrfTokenValid('lifecycle_reset_' . $transitionName, $request->request->get('_token'))) {

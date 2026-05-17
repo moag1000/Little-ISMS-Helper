@@ -9,11 +9,13 @@ use App\Lifecycle\EntityTypeRegistry;
 use App\Lifecycle\Exception\ReasonRequiredException;
 use App\Lifecycle\InvalidTransitionException;
 use App\Lifecycle\LifecycleService;
+use App\Repository\AuditLogRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Workflow\Registry;
@@ -26,6 +28,7 @@ class LifecycleController extends AbstractController
         private readonly LifecycleService $lifecycle,
         private readonly LifecycleConfigResolverInterface $resolver,
         private readonly Registry $workflowRegistry,
+        private readonly AuditLogRepository $auditLogRepository,
     ) {}
 
     #[Route('/lifecycle/{entityType}/{id}/transition', name: 'app_lifecycle_transition', methods: ['POST'])]
@@ -161,6 +164,48 @@ class LifecycleController extends AbstractController
             'current_status' => $current,
             'lock_version' => method_exists($entity, 'getLockVersion') ? $entity->getLockVersion() : null,
             'allowed_transitions' => $allowed,
+        ]);
+    }
+
+    /**
+     * GET /lifecycle/{entityType}/{id}/history
+     * Returns a Turbo-Frame fragment with status-change audit log rows.
+     */
+    #[Route('/lifecycle/{entityType}/{id}/history', name: 'app_lifecycle_history', methods: ['GET'])]
+    public function history(string $entityType, int $id): Response
+    {
+        $mapping = $this->entityRegistry->lookup($entityType);
+        if ($mapping === null) {
+            return $this->jsonError(404, 'unknown_entity_type', sprintf('Lifecycle für Typ "%s" nicht konfiguriert.', $entityType));
+        }
+
+        $entity = $this->em->getRepository($mapping['class'])->find($id);
+        if ($entity === null) {
+            return $this->jsonError(404, 'not_found', 'Entity nicht gefunden.');
+        }
+
+        if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->jsonError(403, 'forbidden', 'Authentifizierung erforderlich.');
+        }
+
+        // Derive audit log entity type from FQCN short name (e.g. "Document", "ProcessingActivity")
+        $shortName = (new \ReflectionClass($mapping['class']))->getShortName();
+        $entries = $this->auditLogRepository->findByEntity($shortName, $id);
+
+        // Filter to status-change events only
+        $statusEntries = array_filter($entries, static function ($entry): bool {
+            $action = $entry->getAction() ?? '';
+            if (str_contains($action, 'lifecycle') || str_contains($action, 'status')) {
+                return true;
+            }
+            $new = $entry->getNewValues() ?? '';
+            return str_contains($new, '"status"') || str_contains($new, "'status'");
+        });
+
+        return $this->render('_components/_lifecycle_history_rows.html.twig', [
+            'entity_type' => $entityType,
+            'entity_id'   => $id,
+            'entries'     => array_values($statusEntries),
         ]);
     }
 

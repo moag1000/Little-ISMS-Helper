@@ -65,14 +65,14 @@
             'revoked': 'danger'
         }[consent.status] ?? 'secondary' %}
 
-        {% include '_components/_badge.html.twig' with { variant: statusBadgeClass, class: 'me-2', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
+        {% include '_components/_badge.html.twig' with { variant: statusBadgeClass, class: 'me-2 fa-status-pill--lg', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
 
         {% if consent.verifiedBy %}
-        {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'status-ok', class: 'me-2', content: 'consent.verified'|trans({}, 'consent') } %}
+        {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'status-ok', class: 'me-2 fa-status-pill--lg', content: 'consent.verified'|trans({}, 'consent') } %}
         {% endif %}
 
         {% if consent.revokedAt %}
-        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'consent.revoked'|trans({}, 'consent') } %}
+        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', class: 'fa-status-pill--lg', content: 'consent.revoked'|trans({}, 'consent') } %}
         {% endif %}
     </div>
 

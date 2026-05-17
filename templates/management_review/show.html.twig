@@ -38,7 +38,7 @@
                             'completed': 'success',
                             'cancelled': 'danger'
                         } %}
-                        {% include '_components/_badge.html.twig' with { variant: statusClass[review.status] ?? 'secondary', content: ('management_review.status.' ~ review.status)|trans({}, 'management_review') } %}
+                        {% include '_components/_badge.html.twig' with { variant: statusClass[review.status] ?? 'secondary', class: 'fa-status-pill--lg', content: ('management_review.status.' ~ review.status)|trans({}, 'management_review') } %}
                     </div>
                 {% endblock %}
                 {% block card_body %}

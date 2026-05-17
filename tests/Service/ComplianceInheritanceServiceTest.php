@@ -42,7 +42,7 @@ final class ComplianceInheritanceServiceTest extends TestCase
         $log->method('isPendingReview')->willReturn(false);
         $log->method('getReviewStatus')->willReturn(FulfillmentInheritanceLog::STATUS_REJECTED);
 
-        $this->expectException(LogicException::class);
+        $this->expectException(\App\Exception\Workflow\InvalidStatusTransitionException::class);
         $service->confirmInheritance(
             $log,
             $this->createMock(User::class),

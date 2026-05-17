@@ -519,12 +519,12 @@ class HomeController extends AbstractController
 
             $action = $log->getAction() ?? 'update';
             [$icon, $color] = match ($action) {
-                'create' => ['bi-plus-circle', 'success'],
-                'update' => ['bi-pencil', 'primary'],
-                'delete' => ['bi-trash', 'danger'],
-                'login' => ['bi-box-arrow-in-right', 'info'],
-                'logout' => ['bi-box-arrow-right', 'secondary'],
-                default => ['bi-clock', 'muted'],
+                'create' => ['plus', 'success'],
+                'update' => ['ui-edit', 'primary'],
+                'delete' => ['ui-delete', 'danger'],
+                'login' => ['util-arrow-right', 'info'],
+                'logout' => ['util-arrow-left', 'secondary'],
+                default => ['nav-clock-history', 'muted'],
             };
 
             $activities[] = [

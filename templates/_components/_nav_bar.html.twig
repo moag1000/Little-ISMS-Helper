@@ -46,9 +46,9 @@
 {% macro _backBtn(back) %}
     {% import '_components/_cyber_button.html.twig' as btn %}
     {% if back.url is defined %}
-        {{ btn.link(back.url, back.label|default('Zurück'), { variant: 'secondary', icon: back.icon|default('bi-arrow-left') }) }}
+        {{ btn.link(back.url, back.label|default('Zurück'), { variant: 'secondary', icon: back.icon|default('util-arrow-left') }) }}
     {% else %}
-        {{ btn.render(back.label|default('Zurück'), { variant: 'secondary', icon: back.icon|default('bi-arrow-left'), attrs: back.attrs|default({}) }) }}
+        {{ btn.render(back.label|default('Zurück'), { variant: 'secondary', icon: back.icon|default('util-arrow-left'), attrs: back.attrs|default({}) }) }}
     {% endif %}
 {% endmacro %}
 
@@ -56,7 +56,7 @@
     {% import '_components/_cyber_button.html.twig' as btn %}
     {% set props = {
         variant: next.variant|default('primary'),
-        icon: next.icon|default('bi-arrow-right'),
+        icon: next.icon|default('util-arrow-right'),
         iconAfter: true,
         disabled: next.disabled|default(false),
         attrs: next.attrs|default({})

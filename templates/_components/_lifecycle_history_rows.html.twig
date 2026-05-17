@@ -1,0 +1,62 @@
+{#
+ # FairyAurora v4 — Lifecycle History Rows (turbo-frame fragment)
+ #
+ # Rendered by LifecycleController::history() inside a <turbo-frame>.
+ # Variables provided by controller: entity_type (string), entity_id (int),
+ # entries (AuditLog[]).
+ #}
+{% trans_default_domain 'lifecycle' %}
+<turbo-frame id="lifecycle_history_{{ entity_type|replace({'-': '_'}) }}_{{ entity_id }}">
+    {% if entries is empty %}
+        <p class="text-muted small mb-0">{{ 'lifecycle.history.empty'|trans({}, 'lifecycle') }}</p>
+    {% else %}
+        <ul class="list-unstyled mb-0">
+            {% for entry in entries %}
+                {# newValues / oldValues are stored as JSON strings; extract status via string-split. #}
+                {% set from_status = null %}
+                {% set to_status   = null %}
+                {% if entry.newValues %}
+                    {% set _nv = entry.newValues %}
+                    {% if '"status":"' in _nv %}
+                        {% set to_status = _nv|split('"status":"')|last|split('"')|first %}
+                    {% endif %}
+                {% endif %}
+                {% if entry.oldValues %}
+                    {% set _ov = entry.oldValues %}
+                    {% if '"status":"' in _ov %}
+                        {% set from_status = _ov|split('"status":"')|last|split('"')|first %}
+                    {% endif %}
+                {% endif %}
+                <li class="d-flex align-items-start gap-2 py-2 border-bottom border-opacity-25">
+                    <span class="fa-status-pill fa-status-pill--neutral fa-status-pill--sm mt-1" aria-hidden="true">
+                        <span class="fa-status-pill__dot"></span>
+                    </span>
+                    <div class="small">
+                        <div class="fw-semibold">
+                            {{ entry.userName|default('System') }}
+                            {% if from_status and to_status %}
+                                <span class="text-muted fw-normal">
+                                    — {{ ('lifecycle.' ~ from_status)|trans({}, 'lifecycle') }}
+                                    → {{ ('lifecycle.' ~ to_status)|trans({}, 'lifecycle') }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="text-muted">
+                            {{ entry.createdAt|date('d.m.Y H:i') }}
+                            {% if entry.action %}
+                                &middot; <code class="small">{{ entry.action }}</code>
+                            {% endif %}
+                        </div>
+                        {% set reason = null %}
+                        {% if entry.newValues and '"reason":"' in entry.newValues %}
+                            {% set reason = entry.newValues|split('"reason":"')|last|split('"')|first %}
+                        {% endif %}
+                        {% if reason %}
+                            <p class="mb-0 text-muted fst-italic small">&ldquo;{{ reason }}&rdquo;</p>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</turbo-frame>

@@ -120,7 +120,7 @@
 {# Risk Matrix Overview #}
 {% embed '_components/_card.html.twig' with {
     'title': 'risk.modern.matrix_overview'|trans({}, 'risk'),
-    'headerIcon': 'bi-grid-3x3',
+    'headerIcon': 'nav-grid',
     'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">' ~ ('risk.modern.view_full_matrix'|trans({}, 'risk')) ~ ' <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i></a>',
     'class': 'mb-4'
 } %}
@@ -164,7 +164,7 @@
 {# Treatment Status #}
 {% embed '_components/_card.html.twig' with {
     'title': 'risk.index.treatment_status'|trans({}, 'risk'),
-    'headerIcon': 'bi-shield-check',
+    'headerIcon': 'shield-check',
     'class': 'mb-4'
 } %}
     {% block card_body %}

@@ -42,12 +42,15 @@
     {% set persistent = props.persistent|default(false) %}
     {% set dismissible = props.dismissible is defined ? props.dismissible : true %}
     {% set toneIcons  = {
-        info:    'bi-info-circle-fill',
-        success: 'bi-check-circle-fill',
-        warning: 'bi-exclamation-triangle-fill',
-        danger:  'bi-exclamation-octagon-fill'
+        info:    'status-info',
+        success: 'status-ok',
+        warning: 'status-warning',
+        danger:  'status-critical'
     } %}
-    {% set icon = props.icon|default(toneIcons[tone]|default('bi-info-circle-fill')) %}
+    {% set icon = props.icon|default(toneIcons[tone]|default('status-info')) %}
+    {# Auto-strip legacy bi-* prefix so callers passing either Bootstrap-Icon
+       or Aurora names render correctly under Aurora. #}
+    {% set icon = icon starts with 'bi-' ? icon[3:] : icon %}
     {% set isCritical = tone in ['warning', 'danger'] %}
     {% set role = isCritical ? 'alert' : 'status' %}
     {% set live = isCritical ? 'assertive' : 'polite' %}
@@ -57,7 +60,7 @@
          aria-live="{{ live }}"
          aria-atomic="true"
          data-fa-toast-target="toast">
-        <i class="fa-toast__icon bi {{ icon }}" aria-hidden="true"></i>
+        <i class="fa-toast__icon fa-icon fa-icon--{{ icon }}" aria-hidden="true"></i>
         <div class="fa-toast__body">
             {% if title is not empty %}
                 <div class="fa-toast__title">{{ title }}</div>
