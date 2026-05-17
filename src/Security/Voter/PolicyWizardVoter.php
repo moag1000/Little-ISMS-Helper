@@ -40,7 +40,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *                                          (nur wenn Template
  *                                          dpoSectionRequired = true)
  */
-class PolicyWizardVoter extends Voter
+final class PolicyWizardVoter extends Voter
 {
     use HoldingTreeAccessTrait;
 

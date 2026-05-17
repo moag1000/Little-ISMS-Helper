@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * Tenant isolation is enforced via TenantContext — the controller
  * resolves the profile from the current tenant before calling this voter.
  */
-class Nis2RegistrationProfileVoter extends Voter
+final class Nis2RegistrationProfileVoter extends Voter
 {
     public const string VIEW          = 'view';
     public const string EDIT          = 'edit';

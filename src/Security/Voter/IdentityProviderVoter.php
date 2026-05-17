@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * enforces this via ModuleGatedControllerTrait; the voter only checks
  * ownership/role.
  */
-class IdentityProviderVoter extends Voter
+final class IdentityProviderVoter extends Voter
 {
     public const string VIEW   = 'view';
     public const string EDIT   = 'edit';

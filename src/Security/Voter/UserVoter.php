@@ -36,7 +36,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * Multi-tenancy:
  * - Users can only view/edit users in their tenant
  */
-class UserVoter extends Voter
+final class UserVoter extends Voter
 {
     public function __construct(
         private readonly InitialAdminService $initialAdminService

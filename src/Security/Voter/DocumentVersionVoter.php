@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * SUPER_ADMIN force-delete (exceptional data-correction) must bypass the
  * voter via a CLI command, never through the HTTP layer.
  */
-class DocumentVersionVoter extends Voter
+final class DocumentVersionVoter extends Voter
 {
     public const string VIEW = 'view';
     public const string DOWNLOAD = 'download';

@@ -28,7 +28,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *   DOCUMENT_SECTION_APPROVE — DPO sign-off / approved transition
  *   DOCUMENT_SECTION_REJECT  — DPO veto / rejected transition
  */
-class DocumentSectionVoter extends Voter
+final class DocumentSectionVoter extends Voter
 {
     use HoldingTreeAccessTrait;
 

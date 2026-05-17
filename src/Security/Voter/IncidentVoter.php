@@ -38,7 +38,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * - Supports ISO 27001 A.16: Information security incident management
  * - Enables proper access control for incident lifecycle tracking
  */
-class IncidentVoter extends Voter
+final class IncidentVoter extends Voter
 {
     use HoldingTreeAccessTrait;
 

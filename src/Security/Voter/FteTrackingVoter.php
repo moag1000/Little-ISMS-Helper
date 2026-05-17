@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * Subject may be an FteTrackingMetric or null (for non-entity checks).
  * When subject is null, tenant isolation is enforced by TenantContext in the controller.
  */
-class FteTrackingVoter extends Voter
+final class FteTrackingVoter extends Voter
 {
     public const string VIEW = 'fte_tracking_view';
     public const string CALIBRATE = 'fte_tracking_calibrate';

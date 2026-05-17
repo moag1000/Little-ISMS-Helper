@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * Controllers call:
  *   $this->denyAccessUnlessGranted(SsoConfigVoter::CONFIGURE, $provider)
  */
-class SsoConfigVoter extends Voter
+final class SsoConfigVoter extends Voter
 {
     public const string CONFIGURE = 'sso_configure';
 

@@ -31,7 +31,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *   API_DELETE — remove entity
  *   API_CREATE — create entity (tenant set by TenantAwareStateProcessor)
  */
-class ApiTenantVoter extends Voter
+final class ApiTenantVoter extends Voter
 {
     use HoldingTreeAccessTrait;
 

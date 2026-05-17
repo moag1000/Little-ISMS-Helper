@@ -23,7 +23,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * as 'risk_incident_link_view', 'risk_incident_link_create',
  * 'risk_incident_link_delete'.
  */
-class RiskIncidentLinkVoter extends Voter
+final class RiskIncidentLinkVoter extends Voter
 {
     public const string VIEW   = 'risk_incident_link_view';
     public const string CREATE = 'risk_incident_link_create';

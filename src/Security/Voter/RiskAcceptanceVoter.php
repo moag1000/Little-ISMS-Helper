@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *  Score 13–19  → ROLE_ADMIN     (high risk — senior approval)
  *  Score 20–25  → ROLE_SUPER_ADMIN (critical risk — executive sign-off)
  */
-class RiskAcceptanceVoter extends Voter
+final class RiskAcceptanceVoter extends Voter
 {
     public const string APPROVE = 'risk_acceptance_approve';
 
