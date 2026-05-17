@@ -33,10 +33,10 @@ final class SetupIndustryPresetService
      * @var array<string, array{icon: string, variant: string}>
      */
     private const PRESET_UI = [
-        'saas-iso27001' => ['icon' => 'cloud-fill', 'variant' => 'primary'],
-        'de-mittelstand-nis2' => ['icon' => 'building-fill', 'variant' => 'info'],
-        'health-care-dora' => ['icon' => 'heart-pulse-fill', 'variant' => 'danger'],
-        'kritis-energie' => ['icon' => 'lightning-charge-fill', 'variant' => 'warning'],
+        'saas-iso27001' => ['icon' => 'asset-cloud', 'variant' => 'primary'],
+        'de-mittelstand-nis2' => ['icon' => 'nav-building', 'variant' => 'info'],
+        'health-care-dora' => ['icon' => 'nav-heart-pulse', 'variant' => 'danger'],
+        'kritis-energie' => ['icon' => 'status-warning', 'variant' => 'warning'],
     ];
 
     private string $presetDir;
@@ -72,7 +72,7 @@ final class SetupIndustryPresetService
                 continue;
             }
             $id = basename($path, '.yaml');
-            $ui = self::PRESET_UI[$id] ?? ['icon' => 'briefcase-fill', 'variant' => 'primary'];
+            $ui = self::PRESET_UI[$id] ?? ['icon' => 'nav-building', 'variant' => 'primary'];
             $primary = [];
             foreach ($config['frameworks'] ?? [] as $fw) {
                 if (($fw['priority'] ?? null) === 'primary' && (bool) ($fw['activate'] ?? false)) {
