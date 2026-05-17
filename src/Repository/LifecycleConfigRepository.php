@@ -40,4 +40,65 @@ class LifecycleConfigRepository extends ServiceEntityRepository
         }
         return $map;
     }
+
+    /**
+     * @return list<LifecycleConfig>
+     */
+    public function findForWorkflow(Tenant $tenant, string $workflowName): array
+    {
+        return $this->createQueryBuilder('lc')
+            ->where('lc.tenant = :tenant')
+            ->andWhere('lc.workflowName = :wf')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('wf', $workflowName)
+            ->orderBy('lc.transitionName', 'ASC')
+            ->addOrderBy('lc.configKey', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countForWorkflow(Tenant $tenant, string $workflowName): int
+    {
+        return (int) $this->createQueryBuilder('lc')
+            ->select('COUNT(lc.id)')
+            ->where('lc.tenant = :tenant')
+            ->andWhere('lc.workflowName = :wf')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('wf', $workflowName)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function findOneByKey(
+        Tenant $tenant,
+        string $workflowName,
+        string $transitionName,
+        string $configKey,
+    ): ?LifecycleConfig {
+        return $this->createQueryBuilder('lc')
+            ->where('lc.tenant = :tenant')
+            ->andWhere('lc.workflowName = :wf')
+            ->andWhere('lc.transitionName = :tr')
+            ->andWhere('lc.configKey = :ck')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('wf', $workflowName)
+            ->setParameter('tr', $transitionName)
+            ->setParameter('ck', $configKey)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function deleteForTransition(Tenant $tenant, string $workflowName, string $transitionName): int
+    {
+        return (int) $this->createQueryBuilder('lc')
+            ->delete()
+            ->where('lc.tenant = :tenant')
+            ->andWhere('lc.workflowName = :wf')
+            ->andWhere('lc.transitionName = :tr')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('wf', $workflowName)
+            ->setParameter('tr', $transitionName)
+            ->getQuery()
+            ->execute();
+    }
 }
