@@ -12,6 +12,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20251127135312 extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Make DataBreach.incident optional and add detected_at field for standalone data breaches';

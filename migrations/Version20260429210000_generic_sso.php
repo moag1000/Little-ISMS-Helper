@@ -15,6 +15,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260429210000_generic_sso extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Generic SSO: identity_provider, sso_user_approval, users.sso_external_id/sso_provider_id';

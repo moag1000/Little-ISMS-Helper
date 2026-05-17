@@ -12,6 +12,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260424212328 extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'FairyAurora v4.0: Add alva_companion_enabled/size/position to users table (Phase 4.2)';

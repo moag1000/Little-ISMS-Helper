@@ -20,6 +20,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260426132821 extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'MRIS v1.5: add mythos_resilience + mythos_flanking_mhcs to control';

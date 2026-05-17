@@ -12,6 +12,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20251119161401 extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Add category field to risk table (ISO 27005:2022 Section 8.2.3 - Risk Categorization)';

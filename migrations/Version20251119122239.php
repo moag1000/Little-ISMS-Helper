@@ -18,6 +18,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20251119122239 extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Add ON DELETE CASCADE to compliance_mapping foreign keys for source_requirement_id and target_requirement_id';

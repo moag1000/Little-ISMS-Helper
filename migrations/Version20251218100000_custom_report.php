@@ -12,6 +12,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20251218100000_custom_report extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Phase 7C: Creates custom_report table for Custom Report Builder';

@@ -13,6 +13,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260425145800 extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Mapping-Quality: lifecycle/provenance/methodology/relationship + MQS breakdown';
