@@ -116,12 +116,17 @@ class AuditFindingType extends AbstractType
                 'attr' => ['rows' => 4],
                 'help' => 'audit_finding.help.evidence',
             ])
-            ->add('relatedControl', EntityType::class, [
-                'label' => 'audit_finding.field.related_control',
+            // Plural M:N — Findings can hit multiple controls (e.g. logging
+            // finding A.8.15 + A.8.16). Junior-ISB-audit P0-NEW.
+            ->add('relatedControls', EntityType::class, [
+                'label' => 'audit_finding.field.related_controls',
                 'class' => Control::class,
                 'choice_label' => fn(Control $c): string => ($c->getControlId() ?? '') . ' — ' . ($c->getName() ?? ''),
-                'placeholder' => 'audit_finding.placeholder.related_control',
+                'multiple' => true,
+                'expanded' => false,
                 'required' => false,
+                'attr' => ['data-controller' => 'tom-select'],
+                'help' => 'audit_finding.help.related_controls',
             ])
         ;
 

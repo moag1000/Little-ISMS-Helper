@@ -96,9 +96,30 @@ class AuditFinding
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $evidence = null;
 
+    /**
+     * @deprecated since junior-isb-audit P0-NEW (2026-05-17). Findings can
+     *             relate to multiple controls (e.g. Logging-finding hits
+     *             ISO 27001 A.8.15 + A.8.16). Use $relatedControls (plural)
+     *             instead. The singular column is preserved for read-only
+     *             access during the migration window and is auto-mirrored
+     *             into the plural collection by the migration backfill.
+     */
     #[ORM\ManyToOne(targetEntity: Control::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Control $relatedControl = null;
+
+    /**
+     * Plural successor of $relatedControl. ISO 27001-Audit-Findings often
+     * cover multiple controls; the singular FK is preserved as a legacy
+     * read-side until callers migrate.
+     *
+     * @var Collection<int, Control>
+     */
+    #[ORM\ManyToMany(targetEntity: Control::class)]
+    #[ORM\JoinTable(name: 'audit_finding_controls')]
+    #[ORM\JoinColumn(name: 'audit_finding_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'control_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $relatedControls;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -161,6 +182,7 @@ class AuditFinding
         $this->reportedByDeputyPersons = new ArrayCollection();
         $this->assignedDeputyPersons = new ArrayCollection();
         $this->linkedRequirements = new ArrayCollection();
+        $this->relatedControls = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -299,6 +321,47 @@ class AuditFinding
     {
         $this->relatedControl = $relatedControl;
         return $this;
+    }
+
+    /** @return Collection<int, Control> */
+    public function getRelatedControls(): Collection
+    {
+        return $this->relatedControls;
+    }
+
+    public function addRelatedControl(Control $control): static
+    {
+        if (!$this->relatedControls->contains($control)) {
+            $this->relatedControls->add($control);
+        }
+        return $this;
+    }
+
+    public function removeRelatedControl(Control $control): static
+    {
+        $this->relatedControls->removeElement($control);
+        return $this;
+    }
+
+    /**
+     * Effective controls view: union of plural Collection and the legacy
+     * singular FK. Use this in templates/services that need a uniform
+     * iterable until callers migrate fully to the plural API.
+     *
+     * @return array<int, Control>
+     */
+    public function getEffectiveRelatedControls(): array
+    {
+        $controls = $this->relatedControls->toArray();
+        if ($this->relatedControl !== null) {
+            foreach ($controls as $existing) {
+                if ($existing === $this->relatedControl) {
+                    return $controls;
+                }
+            }
+            $controls[] = $this->relatedControl;
+        }
+        return $controls;
     }
 
     public function getReportedBy(): ?User
