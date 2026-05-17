@@ -39,7 +39,8 @@
                         {% endif %}
                     </span>
                     <span class="fw-semibold">
-                        <i class="bi {{ step.icon }}" aria-hidden="true"></i>
+                        {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                        <i class="fa-icon fa-icon--{{ (step.icon starts with 'bi-') ? step.icon[3:] : step.icon }}" aria-hidden="true"></i>
                         {{ step.label }}
                     </span>
                     <span class="visually-hidden"> — {{ state_label }}</span>

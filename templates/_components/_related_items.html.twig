@@ -28,7 +28,8 @@
         {% for section in sections %}
             <div class="related-section {% if not loop.last %}mb-4{% endif %}">
                 <h4 class="related-section-title">
-                    <i class="bi {{ section.icon }}"></i>
+                    {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                    <i class="fa-icon fa-icon--{{ (section.icon starts with 'bi-') ? section.icon[3:] : section.icon }}" aria-hidden="true"></i>
                     {{ section.title }}
                     {% include '_components/_badge.html.twig' with { variant: 'secondary', content: section.items|length } %}
                 </h4>

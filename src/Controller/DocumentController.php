@@ -451,7 +451,7 @@ class DocumentController extends AbstractController
      *
      * Returns: { "ok": true, "changed": N, "rejected": [{id, reason}] }
      *
-     * ISO 27001 Cl. 7.5.3 — audit logging delegated to LifecycleService.
+     * ISO 27001 Cl. 7.5.3 — audit logging handled by AuditLogListener on workflow.completed event (not LifecycleService).
      */
     #[Route('/document/bulk-status-change', name: 'app_document_bulk_status_change', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]

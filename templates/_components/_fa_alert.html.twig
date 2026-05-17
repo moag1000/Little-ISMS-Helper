@@ -59,11 +59,8 @@
 
     <div class="fa-alert fa-alert--{{ _variant }}{% if props.class is defined and props.class %} {{ props.class }}{% endif %}" role="alert">
         {%- if _icon -%}
-            {%- if _icon starts with 'bi-' -%}
-                <i class="bi {{ _icon }} fa-alert__icon" aria-hidden="true"></i>
-            {%- else -%}
-                <i class="fa-icon fa-icon--{{ _icon }} fa-alert__icon" aria-hidden="true"></i>
-            {%- endif -%}
+            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+            <i class="fa-icon fa-icon--{{ (_icon starts with 'bi-') ? _icon[3:] : _icon }} fa-alert__icon" aria-hidden="true"></i>
         {%- endif -%}
         <div class="fa-alert__body">
             {%- if props.title is defined and props.title -%}
@@ -94,11 +91,8 @@
 
     <div class="fa-alert fa-alert--{{ variant }}{% if props.class is defined and props.class %} {{ props.class }}{% endif %}" role="alert">
         {%- if icon -%}
-            {%- if icon starts with 'bi-' -%}
-                <i class="bi {{ icon }} fa-alert__icon" aria-hidden="true"></i>
-            {%- else -%}
-                <i class="fa-icon fa-icon--{{ icon }} fa-alert__icon" aria-hidden="true"></i>
-            {%- endif -%}
+            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+            <i class="fa-icon fa-icon--{{ (icon starts with 'bi-') ? icon[3:] : icon }} fa-alert__icon" aria-hidden="true"></i>
         {%- endif -%}
         <div class="fa-alert__body">
             {%- if props.title is defined and props.title -%}

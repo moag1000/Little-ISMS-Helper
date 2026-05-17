@@ -1,0 +1,45 @@
+{#
+ # FairyAurora v4 — Lifecycle Transition Dropdown (lifecycle X.3)
+ #
+ # Renders a fa-menu anchor driven by the lifecycle-dropdown Stimulus controller.
+ # The controller fetches allowed transitions from the JSON endpoint and builds
+ # the menu items dynamically, keeping the template server-render-free for ACL.
+ #
+ # Usage (show pages):
+ #   {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+ #   {{ _lifecycle_actions.dropdown(document, 'document', 'document_lifecycle') }}
+ #
+ # Params:
+ #   entity         object   Entity with .id + .status
+ #   entity_type    string   URL slug (e.g. 'document', 'processing-activity', 'isms-objective')
+ #   workflow_name  string   Workflow name (used for CSRF token binding + hint text)
+ #   label          string   Optional button label override
+ #}
+
+{% macro dropdown(entity, entity_type, workflow_name, label = null) %}
+    {% set _label = label|default('lifecycle.actions.label'|trans({}, 'lifecycle')) %}
+    {% set _url = path('app_lifecycle_allowed', {entityType: entity_type, id: entity.id}) %}
+    {% set _post_url = path('app_lifecycle_transition', {entityType: entity_type, id: entity.id}) %}
+    {% set _csrf = csrf_token('lifecycle_transition') %}
+    <div class="fa-menu-anchor d-inline-block"
+         data-controller="lifecycle-dropdown"
+         data-lifecycle-dropdown-allowed-url-value="{{ _url }}"
+         data-lifecycle-dropdown-transition-url-value="{{ _post_url }}"
+         data-lifecycle-dropdown-csrf-value="{{ _csrf }}"
+         data-lifecycle-dropdown-reason-label-value="{{ 'lifecycle.confirm.reason_required'|trans({}, 'lifecycle') }}"
+         data-lifecycle-dropdown-workflow-value="{{ workflow_name }}">
+        <button type="button"
+                class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm"
+                aria-haspopup="true"
+                aria-expanded="false"
+                data-action="lifecycle-dropdown#toggle"
+                data-lifecycle-dropdown-target="trigger">
+            <i class="fa-icon fa-icon--ui-arrows-expand-vertical me-1" aria-hidden="true"></i>
+            {{ _label }}
+            <i class="fa-icon fa-icon--ui-chevron-down ms-1" aria-hidden="true"></i>
+        </button>
+        <div class="fa-menu" data-lifecycle-dropdown-target="menu" hidden role="menu">
+            {# Populated by lifecycle-dropdown Stimulus controller #}
+        </div>
+    </div>
+{% endmacro %}

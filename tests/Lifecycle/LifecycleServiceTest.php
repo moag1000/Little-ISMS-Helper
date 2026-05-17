@@ -7,7 +7,6 @@ namespace App\Tests\Lifecycle;
 use App\Lifecycle\InvalidTransitionException;
 use App\Lifecycle\LifecycleRegistry;
 use App\Lifecycle\LifecycleService;
-use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -56,9 +55,7 @@ final class LifecycleServiceTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->expects($this->once())->method('flush');
 
-        $audit = $this->createStub(AuditLogger::class);
-
-        $service = new LifecycleService($registry, $em, $audit);
+        $service = new LifecycleService($registry, $em);
         $service->transition($entity, 'document_lifecycle', 'submit_for_review', null, 'test');
     }
 
@@ -93,9 +90,7 @@ final class LifecycleServiceTest extends TestCase
         $em = $this->createMock(EntityManagerInterface::class);
         $em->expects($this->never())->method('flush');
 
-        $audit = $this->createStub(AuditLogger::class);
-
-        $service = new LifecycleService($registry, $em, $audit);
+        $service = new LifecycleService($registry, $em);
 
         try {
             $service->transition($entity, 'document_lifecycle', 'publish');
@@ -117,9 +112,8 @@ final class LifecycleServiceTest extends TestCase
 
         $registry = $this->createStub(Registry::class);
         $em = $this->createStub(EntityManagerInterface::class);
-        $audit = $this->createStub(AuditLogger::class);
 
-        $service = new LifecycleService($registry, $em, $audit);
+        $service = new LifecycleService($registry, $em);
 
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('lacks getStatus()/setStatus()');
@@ -128,8 +122,11 @@ final class LifecycleServiceTest extends TestCase
     }
 
     #[Test]
-    public function testDoesNotCallAuditLoggerDirectly(): void
+    public function testAuditLoggerNotInjected(): void
     {
+        // AuditLogger has been removed from LifecycleService entirely.
+        // Audit is wired exclusively via the AuditLogListener on workflow.completed (Task 11).
+        // Verify the service is constructable with only Registry + EntityManagerInterface.
         $entity = new class {
             public string $status = 'draft';
 
@@ -152,12 +149,10 @@ final class LifecycleServiceTest extends TestCase
 
         $em = $this->createStub(EntityManagerInterface::class);
 
-        // AuditLogger must NOT be invoked — audit is wired via event listener (Task 11)
-        $audit = $this->createMock(AuditLogger::class);
-        $audit->expects($this->never())->method('logCustom');
-        $audit->expects($this->never())->method('logBulk');
-
-        $service = new LifecycleService($registry, $em, $audit);
+        $service = new LifecycleService($registry, $em);
         $service->transition($entity, 'document_lifecycle', 'submit_for_review', null, 'automated test');
+
+        // If we get here without error, the service works without AuditLogger
+        $this->addToAssertionCount(1);
     }
 }

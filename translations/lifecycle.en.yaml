@@ -12,10 +12,17 @@ lifecycle:
     resolved: Resolved
     closed: Closed
 
+    # ISMSObjective lifecycle places
+    not_started: 'Not started'
+    achieved: Achieved
+    delayed: Delayed
+    cancelled: Cancelled
+
     tooltip:
         next: 'Next steps'
 
     actions:
+        label: Actions
         change_status: 'Change status'
         submit_for_review: 'Submit for review'
         approve: Approve
@@ -23,6 +30,34 @@ lifecycle:
         archive: Archive
         unarchive: Re-publish
         return_to_draft: 'Return to draft'
+
+    # Transition names (workflow YAML metadata)
+    transition:
+        submit_for_review: 'Submit for review'
+        approve: Approve
+        request_changes: 'Request changes'
+        publish: Publish
+        archive: Archive
+        restore: Restore
+        activate: Activate
+        start: Start
+        achieve: 'Mark as achieved'
+        mark_achieved: 'Mark as achieved'
+        mark_delayed: 'Mark as delayed'
+        cancel: Cancel
+        reopen: Reopen
+
+    history:
+        title: 'Status history'
+        loading: 'Loading...'
+        empty: 'No transitions recorded yet.'
+        row: '%user% %from% → %to%: %reason%'
+
+    confirm:
+        reason_required: 'Please provide a reason'
+
+    field:
+        status: Status
 
     errors:
         invalid_transition: 'Invalid status transition from "%from%" to "%to%". Allowed next states: %allowed%.'

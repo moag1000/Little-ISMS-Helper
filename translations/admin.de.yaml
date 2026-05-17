@@ -1037,6 +1037,63 @@ admin:
             col_role: 'Rolle'
             default_footer: '%tenant% — vertraulich. Nicht ohne Genehmigung weitergeben.'
             custom_css_inert: 'Custom-CSS (nur im Export aktiv — Vorschau bleibt unangetastet)'
+    lifecycle_overrides:
+        title: 'Lifecycle-Konfiguration'
+        subtitle: 'Workflow-Transition-Metadaten mandantenspezifisch überschreiben'
+        no_tenant: 'Kein Mandanten-Kontext gefunden. Bitte Tenant wechseln.'
+        no_workflows: 'Keine Workflow-Konfigurationsdateien gefunden.'
+        no_transitions: 'Keine Transitionen in diesem Workflow gefunden.'
+        yaml_baseline: 'YAML-Standard'
+        current_value: 'Aktueller Wert'
+        save_success: 'Lifecycle-Override gespeichert.'
+        reset_success: 'Lifecycle-Override zurückgesetzt — YAML-Baseline wird wieder verwendet.'
+        reset_confirm: 'Alle Overrides für diese Transition wirklich zurücksetzen?'
+        section:
+            workflows: 'Workflows'
+            transitions: 'Transitionen'
+            override_fields: 'Override-Felder'
+            help: 'Hilfe'
+        col:
+            workflow: 'Workflow'
+            overrides: 'Aktive Overrides'
+            transition: 'Transition'
+            overridden_keys: 'Überschriebene Schlüssel'
+        show:
+            title: 'Workflow: %workflow%'
+            subtitle: 'Transitionen und ihre aktuellen Overrides'
+        edit:
+            title: 'Override bearbeiten: %transition%'
+            hint: 'Leere Felder verwenden den YAML-Baseline-Wert. Nur ausgefüllte Felder werden in der Datenbank gespeichert.'
+        action:
+            manage: 'Verwalten'
+            back: 'Zurück'
+            reset: 'Zurücksetzen'
+        form:
+            roles: 'Rollen'
+            roles_help: 'Kommagetrennte ROLE_*-Werte, z.B. ROLE_MANAGER, ROLE_ADMIN. Leer lassen für YAML-Standard.'
+            reason_required: 'Begründung erforderlich'
+            reason_required_value: 'Begründung verlangen'
+            four_eyes: 'Vier-Augen-Prinzip'
+            four_eyes_value: 'Vier-Augen aktivieren'
+            module: 'Modul-Gate'
+            module_help: 'Modul-Schlüssel (z.B. privacy, documents). Leer lassen für keine Einschränkung.'
+            enable_override: 'Override aktivieren'
+            override_enabled: 'Override aktiv'
+        help:
+            roles:
+                title: 'Rollen'
+                body: 'Definiert, welche ROLE_*-Rollen die Transition auslösen dürfen. Überschreibt die YAML-Baseline.'
+            reason_required:
+                title: 'Begründung erforderlich'
+                body: 'Wenn aktiviert, muss der Benutzer beim Auslösen der Transition eine Begründung eingeben.'
+            four_eyes:
+                title: 'Vier-Augen-Prinzip'
+                body: 'Wenn aktiviert, muss eine zweite Person die Transition bestätigen (4-Augen-Prinzip).'
+            module:
+                title: 'Modul-Gate'
+                body: 'Schränkt die Transition auf Mandanten ein, bei denen das angegebene Modul aktiv ist.'
+        hint:
+            yaml_baseline: 'Fehlende Overrides verwenden automatisch den YAML-Baseline-Wert aus der Workflow-Konfiguration.'
 
 
 data_management:
@@ -1292,61 +1349,3 @@ industry_preset:
             priority: 'Priorität'
             activate: 'Aktivieren'
             optional: 'optional'
-
-lifecycle_overrides:
-    title: 'Lifecycle-Konfiguration'
-    subtitle: 'Workflow-Transition-Metadaten mandantenspezifisch überschreiben'
-    no_tenant: 'Kein Mandanten-Kontext gefunden. Bitte Tenant wechseln.'
-    no_workflows: 'Keine Workflow-Konfigurationsdateien gefunden.'
-    no_transitions: 'Keine Transitionen in diesem Workflow gefunden.'
-    yaml_baseline: 'YAML-Standard'
-    current_value: 'Aktueller Wert'
-    save_success: 'Lifecycle-Override gespeichert.'
-    reset_success: 'Lifecycle-Override zurückgesetzt — YAML-Baseline wird wieder verwendet.'
-    reset_confirm: 'Alle Overrides für diese Transition wirklich zurücksetzen?'
-    section:
-        workflows: 'Workflows'
-        transitions: 'Transitionen'
-        override_fields: 'Override-Felder'
-        help: 'Hilfe'
-    col:
-        workflow: 'Workflow'
-        overrides: 'Aktive Overrides'
-        transition: 'Transition'
-        overridden_keys: 'Überschriebene Schlüssel'
-    show:
-        title: 'Workflow: %workflow%'
-        subtitle: 'Transitionen und ihre aktuellen Overrides'
-    edit:
-        title: 'Override bearbeiten: %transition%'
-        hint: 'Leere Felder verwenden den YAML-Baseline-Wert. Nur ausgefüllte Felder werden in der Datenbank gespeichert.'
-    action:
-        manage: 'Verwalten'
-        back: 'Zurück'
-        reset: 'Zurücksetzen'
-    form:
-        roles: 'Rollen'
-        roles_help: 'Kommagetrennte ROLE_*-Werte, z.B. ROLE_MANAGER, ROLE_ADMIN. Leer lassen für YAML-Standard.'
-        reason_required: 'Begründung erforderlich'
-        reason_required_value: 'Begründung verlangen'
-        four_eyes: 'Vier-Augen-Prinzip'
-        four_eyes_value: 'Vier-Augen aktivieren'
-        module: 'Modul-Gate'
-        module_help: 'Modul-Schlüssel (z.B. privacy, documents). Leer lassen für keine Einschränkung.'
-        enable_override: 'Override aktivieren'
-        override_enabled: 'Override aktiv'
-    help:
-        roles:
-            title: 'Rollen'
-            body: 'Definiert, welche ROLE_*-Rollen die Transition auslösen dürfen. Überschreibt die YAML-Baseline.'
-        reason_required:
-            title: 'Begründung erforderlich'
-            body: 'Wenn aktiviert, muss der Benutzer beim Auslösen der Transition eine Begründung eingeben.'
-        four_eyes:
-            title: 'Vier-Augen-Prinzip'
-            body: 'Wenn aktiviert, muss eine zweite Person die Transition bestätigen (4-Augen-Prinzip).'
-        module:
-            title: 'Modul-Gate'
-            body: 'Schränkt die Transition auf Mandanten ein, bei denen das angegebene Modul aktiv ist.'
-    hint:
-        yaml_baseline: 'Fehlende Overrides verwenden automatisch den YAML-Baseline-Wert aus der Workflow-Konfiguration.'

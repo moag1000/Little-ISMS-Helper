@@ -60,7 +60,8 @@
                                     data-bs-target="#kpi-{{ section.key }}"
                                     aria-expanded="{{ hasDanger ? 'true' : 'false' }}"
                                     aria-controls="kpi-{{ section.key }}">
-                                <i class="bi {{ section.icon }} me-2" aria-hidden="true"></i>
+                                {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                                <i class="fa-icon fa-icon--{{ (section.icon starts with 'bi-') ? section.icon[3:] : section.icon }} me-2" aria-hidden="true"></i>
                                 {{ section.title_key|trans({}, 'dashboard') }}
                                 {% if hasDanger %}
                                     <span class="fa-status-pill fa-status-pill--danger ms-2">!</span>

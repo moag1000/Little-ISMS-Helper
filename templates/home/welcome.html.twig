@@ -118,7 +118,8 @@
                                         <div class="card fa-section h-100 hover-lift border-{{ wizard.color }}">
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center mb-2">
-                                                    <i class="bi {{ wizard.icon }} text-{{ wizard.color }} me-2 fa-glyph-size-sm" aria-hidden="true"></i>
+                                                    {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                                                    <i class="fa-icon fa-icon--{{ (wizard.icon starts with 'bi-') ? wizard.icon[3:] : wizard.icon }} text-{{ wizard.color }} me-2 fa-glyph-size-sm" aria-hidden="true"></i>
                                                     <h3 class="h6 mb-0">{{ wizard.code }}</h3>
                                                 </div>
                                                 {{ _fa_progress.render({ value: wizard.score, tone: wizard.color, class: 'mb-2' }) }}
