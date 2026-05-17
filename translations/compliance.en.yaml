@@ -1102,6 +1102,14 @@ fulfillment:
 coverage:
     impact:
         view_modal: 'View details'
+        title:
+            asset: 'Compliance coverage of this Asset'
+            control: 'Compliance coverage of this Control'
+            risk: 'Compliance coverage of this Risk'
+        help:
+            asset: 'Frameworks and requirements that this asset covers — via mapped controls or data-source mapping.'
+            control: 'Modifying or deactivating this control affects the following framework requirements.'
+            risk: 'This risk relates to the following framework requirements (via mapped controls or data-source mapping).'
 
 nis2:
     article: Article
