@@ -526,11 +526,11 @@ translations/reports.en.yaml:109:report
 translations/reports.en.yaml:158:pdf
 translations/reports.en.yaml:246:board_one_pager
 translations/reports.en.yaml:280:custom_report
-translations/risk.de.yaml:516:iso_9001_bridge
-translations/risk.de.yaml:521:severity_choice
-translations/risk.de.yaml:535:dora
-translations/risk.de.yaml:568:fair
-translations/risk.de.yaml:613:risk_management
+translations/risk.de.yaml:520:iso_9001_bridge
+translations/risk.de.yaml:525:severity_choice
+translations/risk.de.yaml:539:dora
+translations/risk.de.yaml:572:fair
+translations/risk.de.yaml:617:risk_management
 translations/risk.en.yaml:503:iso_9001_bridge
 translations/risk.en.yaml:508:severity_choice
 translations/risk.en.yaml:522:dora
