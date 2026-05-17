@@ -11,6 +11,9 @@ namespace App\Lifecycle;
  * Sprint X.1 adds ProcessingActivity and ISMSObjective.
  * Lifecycle unblock adds PolicyTemplate (previously deferred — lacked status field).
  * Sprint X.2 adds Asset — custom physical lifecycle (7 places, 9 transitions).
+ * Sprint X.2 batch adds 10 custom-stage entities (AuditFinding, Consent,
+ * CorrectiveAction, DataBreach, DataSubjectRequest, DPIA, Incident,
+ * InternalAudit, Risk, Vulnerability).
  */
 final class EntityTypeRegistry
 {
@@ -35,6 +38,46 @@ final class EntityTypeRegistry
         'asset' => [
             'class' => \App\Entity\Asset::class,
             'workflow' => 'asset_lifecycle',
+        ],
+        'audit-finding' => [
+            'class' => \App\Entity\AuditFinding::class,
+            'workflow' => 'audit_finding_lifecycle',
+        ],
+        'consent' => [
+            'class' => \App\Entity\Consent::class,
+            'workflow' => 'consent_lifecycle',
+        ],
+        'corrective-action' => [
+            'class' => \App\Entity\CorrectiveAction::class,
+            'workflow' => 'corrective_action_lifecycle',
+        ],
+        'data-breach' => [
+            'class' => \App\Entity\DataBreach::class,
+            'workflow' => 'data_breach_lifecycle',
+        ],
+        'data-subject-request' => [
+            'class' => \App\Entity\DataSubjectRequest::class,
+            'workflow' => 'data_subject_request_lifecycle',
+        ],
+        'dpia' => [
+            'class' => \App\Entity\DataProtectionImpactAssessment::class,
+            'workflow' => 'dpia_lifecycle',
+        ],
+        'incident' => [
+            'class' => \App\Entity\Incident::class,
+            'workflow' => 'incident_lifecycle',
+        ],
+        'internal-audit' => [
+            'class' => \App\Entity\InternalAudit::class,
+            'workflow' => 'internal_audit_lifecycle',
+        ],
+        'risk' => [
+            'class' => \App\Entity\Risk::class,
+            'workflow' => 'risk_lifecycle',
+        ],
+        'vulnerability' => [
+            'class' => \App\Entity\Vulnerability::class,
+            'workflow' => 'vulnerability_lifecycle',
         ],
     ];
 

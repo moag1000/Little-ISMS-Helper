@@ -82,6 +82,10 @@ class AuditFinding
     #[ORM\Column(length: 30)]
     private string $status = self::STATUS_OPEN;
 
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     /**
      * Source of the finding — ISO 27001 §10.1: NCs can originate from any source.
      * Values: internal_audit | external_audit | incident | review | customer_complaint | management_review
@@ -277,6 +281,11 @@ class AuditFinding
     {
         $this->status = $status;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getSource(): ?string

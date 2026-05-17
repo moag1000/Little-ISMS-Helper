@@ -1,0 +1,43 @@
+framework:
+    workflows:
+        audit_finding_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\AuditFinding
+            initial_marking: open
+            places:
+                - open
+                - in_progress
+                - resolved
+                - verified
+                - closed
+            transitions:
+                start:
+                    from: open
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                resolve:
+                    from: in_progress
+                    to: resolved
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                verify:
+                    from: resolved
+                    to: verified
+                    metadata:
+                        roles: [ROLE_AUDITOR]
+                close:
+                    from: verified
+                    to: closed
+                    metadata:
+                        roles: [ROLE_AUDITOR]
+                reopen:
+                    from: verified
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_AUDITOR]
+                        reason_required: true

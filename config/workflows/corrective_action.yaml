@@ -1,0 +1,51 @@
+framework:
+    workflows:
+        corrective_action_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\CorrectiveAction
+            initial_marking: planned
+            places:
+                - planned
+                - in_progress
+                - completed
+                - verified_effective
+                - verified_ineffective
+                - cancelled
+            transitions:
+                start:
+                    from: planned
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                complete:
+                    from: in_progress
+                    to: completed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                verify_effective:
+                    from: completed
+                    to: verified_effective
+                    metadata:
+                        roles: [ROLE_AUDITOR]
+                        four_eyes: true
+                verify_ineffective:
+                    from: completed
+                    to: verified_ineffective
+                    metadata:
+                        roles: [ROLE_AUDITOR]
+                        reason_required: true
+                cancel:
+                    from: planned
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                retry:
+                    from: verified_ineffective
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_MANAGER]

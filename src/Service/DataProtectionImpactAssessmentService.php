@@ -271,7 +271,7 @@ final class DataProtectionImpactAssessmentService
             throw new RuntimeException('DPIA must be complete before submission');
         }
 
-        $dataProtectionImpactAssessment->setStatus('in_review');
+        $dataProtectionImpactAssessment->setStatus('in_review'); // FIXME: migrate to LifecycleService::transition($dpia, 'dpia_lifecycle', 'submit')
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
@@ -301,7 +301,7 @@ final class DataProtectionImpactAssessmentService
             );
         }
 
-        $dataProtectionImpactAssessment->setStatus('approved');
+        $dataProtectionImpactAssessment->setStatus('approved'); // FIXME: migrate to LifecycleService::transition($dpia, 'dpia_lifecycle', 'approve')
         $dataProtectionImpactAssessment->setApprover($user);
         $dataProtectionImpactAssessment->setApprovalDate(new DateTime());
         $dataProtectionImpactAssessment->setApprovalComments($comments);
@@ -350,7 +350,7 @@ final class DataProtectionImpactAssessmentService
             );
         }
 
-        $dataProtectionImpactAssessment->setStatus('rejected');
+        $dataProtectionImpactAssessment->setStatus('rejected'); // FIXME: migrate to LifecycleService::transition($dpia, 'dpia_lifecycle', 'reject')
         $dataProtectionImpactAssessment->setApprover($user);
         $dataProtectionImpactAssessment->setRejectionReason($reason);
 
@@ -384,7 +384,7 @@ final class DataProtectionImpactAssessmentService
             );
         }
 
-        $dataProtectionImpactAssessment->setStatus('requires_revision');
+        $dataProtectionImpactAssessment->setStatus('requires_revision'); // FIXME: migrate to LifecycleService::transition($dpia, 'dpia_lifecycle', 'request_revision')
         $dataProtectionImpactAssessment->setRejectionReason($reason);
         $dataProtectionImpactAssessment->setReviewRequired(true);
 
@@ -417,7 +417,7 @@ final class DataProtectionImpactAssessmentService
             );
         }
 
-        $dataProtectionImpactAssessment->setStatus('draft');
+        $dataProtectionImpactAssessment->setStatus('draft'); // FIXME: migrate to LifecycleService::transition($dpia, 'dpia_lifecycle', 'resubmit')
         $dataProtectionImpactAssessment->setRejectionReason(null);
 
         $this->entityManager->flush();
@@ -774,7 +774,7 @@ final class DataProtectionImpactAssessmentService
         }
 
         // Set as draft
-        $clone->setStatus('draft');
+        $clone->setStatus('draft'); // FIXME: migrate to LifecycleService (initial state for clone)
         $clone->setConductor($user);
         $clone->setCreatedBy($user);
         $clone->setUpdatedBy($user);

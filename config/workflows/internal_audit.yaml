@@ -1,0 +1,50 @@
+framework:
+    workflows:
+        internal_audit_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\InternalAudit
+            initial_marking: planned
+            places:
+                - planned
+                - in_progress
+                - reported
+                - approved
+                - rejected
+                - closed
+            transitions:
+                start:
+                    from: planned
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_AUDITOR]
+                report:
+                    from: in_progress
+                    to: reported
+                    metadata:
+                        roles: [ROLE_AUDITOR]
+                approve:
+                    from: reported
+                    to: approved
+                    metadata:
+                        roles: [ROLE_CISO]
+                        four_eyes: true
+                reject:
+                    from: reported
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_CISO]
+                        reason_required: true
+                close:
+                    from: approved
+                    to: closed
+                    metadata:
+                        roles: [ROLE_CISO]
+                rework:
+                    from: rejected
+                    to: reported
+                    metadata:
+                        roles: [ROLE_AUDITOR]

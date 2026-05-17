@@ -59,6 +59,10 @@ class CorrectiveAction
     #[ORM\Column(length: 30)]
     private string $status = self::STATUS_PLANNED;
 
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     /**
      * Action type — ISO 27001 §10.1+§10.2.
      * Values: corrective | preventive | improvement (proactive variant)
@@ -210,6 +214,11 @@ class CorrectiveAction
     {
         $this->status = $status;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getActionType(): ?string

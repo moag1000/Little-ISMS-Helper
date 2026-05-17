@@ -1,0 +1,35 @@
+framework:
+    workflows:
+        consent_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\Consent
+            initial_marking: pending_verification
+            places:
+                - pending_verification
+                - active
+                - revoked
+                - expired
+            transitions:
+                verify:
+                    from: pending_verification
+                    to: active
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: privacy
+                revoke:
+                    from: active
+                    to: revoked
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: privacy
+                        reason_required: true
+                expire:
+                    from: active
+                    to: expired
+                    metadata:
+                        roles: [ROLE_USER]
+                        module: privacy
