@@ -42,6 +42,7 @@
                     {% else %}
                         {% embed '_components/_fa_table.html.twig' with { hover: true } %}
                             {% block table_head %}
+                                {% trans_default_domain 'admin' %}
                                 <tr>
                                     <th class="fa-table__th">{{ 'admin.lifecycle_overrides.col.transition'|trans }}</th>
                                     <th class="fa-table__th">{{ 'admin.lifecycle_overrides.col.overridden_keys'|trans }}</th>
