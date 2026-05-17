@@ -16,6 +16,7 @@ threat:
     action:
         create: 'New Threat'
         update: 'Save Changes'
+        list: 'Back to List'
         created_flash: 'Threat has been created successfully.'
         updated_flash: 'Threat has been updated successfully.'
         deleted_flash: 'Threat has been deleted.'
@@ -32,8 +33,65 @@ threat:
         delete: 'Are you sure you want to permanently delete this threat?'
     warning:
         delete_irreversible: 'Deleting this threat is irreversible. All associated data will be lost.'
+    name: Threat
+    threat_type: 'Threat Type'
+    severity: Severity
+    source: Source
+    cve_id: 'CVE ID'
+    affected_systems: 'Affected Systems'
+    affected_assets: 'Affected Assets'
+    indicators: Indicators
+    mitigation_recommendations: 'Mitigation Recommendations'
+    status: Status
+    detection_date: 'Detection Date'
+    mitigation_date: 'Mitigation Date'
+    actions_taken: 'Actions Taken'
+    affects_organization: 'Affects Organization'
+    cvss_score: 'CVSS Score'
+    references: References
+    assigned_to: 'Assigned To'
+    assigned_person: 'Responsible (Person)'
+    assigned_deputy_persons: 'Deputies (Persons)'
+    placeholder:
+        assigned_person: '-- Person from master data --'
+        title: 'Enter threat title'
+        description: 'Describe the threat in detail'
+        source: 'e.g. CERT advisory, internal detection'
+        cve_id: 'e.g. CVE-2024-12345'
+        assigned_to_user: '-- Select a user --'
+    help:
+        assigned_person: 'Person without system login as responsible. Order: User > Person > empty.'
+        assigned_deputy_persons: 'Additional persons with deputy or shared responsibility.'
+        cvss_score: 'Common Vulnerability Scoring System score (0–10).'
+        affected_assets: 'Assets affected by this threat. Supports multi-selection.'
+        assigned_to_user: 'System user responsible for this threat. At least one of User or Person is required.'
+    type:
+        malware: Malware
+        phishing: Phishing
+        vulnerability: Vulnerability
+        data_breach: 'Data Breach'
+        ddos: DDoS
+        insider_threat: 'Insider Threat'
+        ransomware: Ransomware
+        apt: APT
+        zero_day: 'Zero Day'
+        social_engineering: 'Social Engineering'
+        other: Other
+    status_type:
+        new: New
+        analyzing: Analyzing
+        mitigated: Mitigated
+        monitoring: Monitoring
+        closed: Closed
+    severity_type:
+        critical: Critical
+        high: High
+        medium: Medium
+        low: Low
+        informational: Informational
     field:
         title: Title
+        description: Description
         threat_type: 'Threat Type'
         severity: Severity
         source: Source
@@ -48,7 +106,53 @@ threat:
         affects_organization: 'Affects Organization'
         affected_assets: 'Affected Assets'
         assigned_to_user: 'Assigned To (User)'
+        assigned_person: 'Responsible (Person)'
         assigned_deputy_persons: 'Deputies (Persons)'
+    error:
+        assignee_required_user_or_person: 'At least one of Assigned To (User) or Responsible (Person) must be set.'
+    choice:
+        yes: 'Yes'
+        no: 'No'
+
+# Top-level keys used by ThreatIntelligenceType (translation_domain = 'threat')
+field:
+    title: Title
+    description: Description
+    threat_type: 'Threat Type'
+    severity: Severity
+    source: Source
+    cve_id: 'CVE ID'
+    status: Status
+    detection_date: 'Detection Date'
+    mitigation_date: 'Mitigation Date'
+    cvss_score: 'CVSS Score'
+    mitigation_recommendations: 'Mitigation Recommendations'
+    actions_taken: 'Actions Taken'
+    references: References
+    affects_organization: 'Affects Organization'
+    affected_assets: 'Affected Assets'
+    assigned_to_user: 'Assigned To (User)'
+    assigned_person: 'Responsible (Person)'
+    assigned_deputy_persons: 'Deputies (Persons)'
+
+placeholder:
+    title: 'Enter threat title'
+    description: 'Describe the threat in detail'
+    source: 'e.g. CERT advisory, internal detection'
+    cve_id: 'e.g. CVE-2024-12345'
+    assigned_to_user: '-- Select a user --'
+    assigned_person: '-- Person from master data --'
+
+help:
+    cvss_score: 'Common Vulnerability Scoring System score (0–10).'
+    affected_assets: 'Assets affected by this threat. Supports multi-selection.'
+    assigned_to_user: 'System user responsible for this threat. At least one of User or Person is required.'
+    assigned_person: 'Person without system login as responsible. Order: User > Person > empty.'
+    assigned_deputy_persons: 'Additional persons with deputy or shared responsibility.'
+
+error:
+    assignee_required_user_or_person: 'At least one of Assigned To (User) or Responsible (Person) must be set.'
+
 choice:
     yes: 'Yes'
     no: 'No'
@@ -81,3 +185,34 @@ status_type:
     closed: Closed
 
 # ── vulnerability_intel module fields (gated) ─────────────────────────────
+threat_intelligence:
+    field:
+        tlp_classification: 'TLP Classification'
+        threat_actor_attribution: 'Threat Actor Attribution'
+        mitre_attack_tactics: 'MITRE ATT&CK Tactics'
+        mitre_attack_techniques: 'MITRE ATT&CK Techniques'
+        iocs_list: 'Indicators of Compromise (IOCs)'
+        confidence_level: 'Confidence Level'
+        shared_externally: 'Shared Externally (NIS2 Art. 30)'
+    placeholder:
+        tlp_classification: '-- Select TLP level --'
+        threat_actor_attribution: 'e.g. APT28, Lazarus Group'
+        mitre_attack_tactics: 'e.g. TA0001, TA0002 (one per line or comma-separated)'
+        mitre_attack_techniques: 'e.g. T1059, T1566 (one per line or comma-separated)'
+        confidence_level: '-- Select confidence level --'
+    tlp:
+        red: 'RED — Not for disclosure'
+        amber: 'AMBER — Limited sharing'
+        green: 'GREEN — Community sharing'
+        white: 'WHITE — Unlimited sharing'
+    confidence:
+        low: 'Low'
+        medium: 'Medium'
+        high: 'High'
+    help:
+        tlp_classification: 'FIRST.org Traffic Light Protocol — controls information sharing scope (NIS2 Art. 30).'
+        threat_actor_attribution: 'APT group or crime group responsible (MITRE ATT&CK threat actors).'
+        mitre_attack_tactics: 'MITRE ATT&CK Tactic IDs (TA0001–TA0043). Enter JSON array or comma-separated.'
+        mitre_attack_techniques: 'MITRE ATT&CK Technique IDs (T1xxx). Enter JSON array or comma-separated.'
+        iocs_list_json: 'STIX 2.1 format: [{type: ip|domain|hash|url|email, value: "...", context: "..."}]'
+        shared_externally: 'Check if this intelligence was shared with a CERT/CSIRT (NIS2 Art. 30 obligation).'

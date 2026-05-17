@@ -1,258 +1,406 @@
 incident_management:
-    title: Vorfälle
+  title: Vorfälle
+  description: Erfassen, klassifizieren und verwalten Sie Sicherheitsvorfälle sowie
+    NIS2‑Meldungen.
+  open_incidents: Offene Vorfälle
+  total_recorded: Insgesamt erfasste Vorfälle
 incident:
-    prefill:
-        title_from_risk: 'Vorfall zu Risiko: %title%'
-        note_from_risk: '(Diese Erfassung wurde aus Risiko ID=%id% abgeleitet.)'
-    deadline:
-        gdpr_art33: 'DSGVO Art. 33 SLA'
-    preview:
-        title: Vorfalls-Informationen
-        affected_assets: Betroffene Assets (%count%)
-        more_assets: + %count% weitere
+  prefill:
+    title_from_risk: 'Vorfall zu Risiko: %title%'
+    note_from_risk: '(Diese Erfassung wurde aus Risiko ID=%id% abgeleitet.)'
+  deadline:
+    gdpr_art33: 'DSGVO Art. 33 SLA'
+  deadline_counter:
+    remaining: '%hours%h verbleibend'
+    overdue: '%hours%h überfällig'
+  follow_up:
+    data_breach_required:
+      title: 'DSGVO Art. 33 — Datenpanne melden (72h-Frist)'
+      body: 'Diese Maßnahme erstellt eine vorbefüllte Datenpanne basierend auf dem Vorfall. Frist: 72h ab Detection.'
+      cta: 'Datenpanne jetzt anlegen'
+  preview:
+    title: Vorfalls-Informationen
+    affected_assets: Betroffene Assets (%count%)
+    more_assets: + %count% weitere
+  breadcrumb: Vorfallsmanagement
+  header:
+    title: Vorfallsmanagement
+    subtitle: Dokumentation und Behandlung von Informationssicherheitsvorfällen
+    action:
+      report: Vorfall melden
+      export: Export
+  kpi:
+    total: Gesamte Vorfälle
+    open: Offene Vorfälle
+    critical: Kritische Vorfälle
+    avg_resolution: Ø Lösungszeit
+    nis2_attention: NIS2 erfordert Aufmerksamkeit
+    categories: Kategorien
+    unit:
+      days: Tage
+  new: Neuer Vorfall
+  create: Vorfall erstellen
+  action:
+    report_new: Neuen Vorfall melden
+    edit: Bearbeiten
+    back_to_list: Zurück zur Liste
+    delete: Löschen
+    download_nis2_report: NIS2-Report herunterladen
+    mus_export: 'BSI-MUS-Export'
+    mus_export_group: 'BSI-MUS-Exportoptionen'
+    mus_early_warning: 'Frühwarnung (24h)'
+    mus_detailed_notification: 'Detailmeldung (72h)'
+    mus_final_report: 'Abschlussbericht (30 Tage)'
+    mus_bundle: 'Vollständiger Datensatz'
+  confirm:
+    delete: Möchten Sie diesen Vorfall wirklich löschen?
+  section:
+    basic_info: Basisinformationen
+    severity_status: Schweregrad & Status
+    detection_reporting: Erkennung & Meldung
+    affected_systems: Betroffene Systeme & Assets
+    analysis: Analyse & Maßnahmen
+    nis2_reporting: NIS2‑Meldung
+    nis2_info: Aktivieren Sie diesen Abschnitt, wenn der Vorfall NIS2‑relevant ist.
+    history: History
+    closure: Abschluss
+    root_cause: Ursachenanalyse
+    affected_assets: 'Betroffene Assets (%count%)'
+    bcm_impact: Business-Continuity-Auswirkungen
+    realized_risks: 'Realisierte Risiken (%count%)'
+    related_controls: 'Zugehörige Maßnahmen (%count%)'
+  modern:
     breadcrumb: Vorfallsmanagement
     header:
-        title: Vorfallsmanagement
-        subtitle: Dokumentation und Behandlung von Informationssicherheitsvorfällen
-        action:
-            report: Vorfall melden
+      title: Vorfallsmanagement
+      subtitle: Dokumentation und Behandlung von Informationssicherheitsvorfällen
+      action:
+        report: Vorfall melden
+        export: Export
     kpi:
-        total: Gesamte Vorfälle
-        open: Offene Vorfälle
-        critical: Kritische Vorfälle
-        avg_resolution: Ø Lösungszeit
-        unit:
-            days: Tage
-    new: Neuer Vorfall
-    create: Vorfall erstellen
-    action:
-        edit: Bearbeiten
-        back_to_list: Zurück zur Liste
-        delete: Löschen
-        download_nis2_report: NIS2-Report herunterladen
-        mus_export: 'BSI-MUS-Export'
-        mus_export_group: 'BSI-MUS-Exportoptionen'
-        mus_early_warning: 'Frühwarnung (24h)'
-        mus_detailed_notification: 'Detailmeldung (72h)'
-        mus_final_report: 'Abschlussbericht (30 Tage)'
-        mus_bundle: 'Vollständiger Datensatz'
-    confirm:
-        delete: Möchten Sie diesen Vorfall wirklich löschen?
-    section:
-        basic_info: Basisinformationen
-        severity_status: Schweregrad & Status
-        detection_reporting: Erkennung & Meldung
-        affected_systems: Betroffene Systeme & Assets
-        analysis: Analyse & Maßnahmen
-        nis2_reporting: NIS2‑Meldung
-        nis2_info: Aktivieren Sie diesen Abschnitt, wenn der Vorfall NIS2‑relevant ist.
-        history: History
-        closure: Abschluss
-        root_cause: Ursachenanalyse
-        affected_assets: 'Betroffene Assets (%count%)'
-        bcm_impact: Business-Continuity-Auswirkungen
-        realized_risks: 'Realisierte Risiken (%count%)'
-        related_controls: 'Zugehörige Maßnahmen (%count%)'
-    status:
-        open: Offen
-        in_progress: In Bearbeitung
-        resolved: Gelöst
-        closed: Abgeschlossen
-        reported: Gemeldet
-        in_investigation: In Untersuchung
-        in_resolution: In Lösung
-    nis2_timeline:
-        title: NIS2 Meldezeitplan (Artikel 23)
-        description: Gemäß NIS2-Richtlinie (EU 2022/2555) müssen bedeutende Vorfälle innerhalb definierter Fristen gemeldet werden.
-    timeline:
-        early_warning: Frühwarnung (24h)
-        detailed_notification: Detaillierte Meldung (72h)
-        final_report: Abschlussbericht (1 Monat)
-        deadline: Frist
-        reported_at: Gemeldet am
-        overdue: Überfällig
-        hours_remaining: '%hours% Stunden verbleibend'
-        days_remaining: '%days% Tage verbleibend'
-    field:
-        title: Titel
-        description: Beschreibung
-        category: Kategorie
-        detected: Erkannt
-        detected_at: Erkannt am
-        reported_by: Gemeldet von
-        occurred: Aufgetreten
-        occurred_at: Aufgetreten am
-        severity: Schweregrad
-        status: Status
-        affected_systems: Betroffene Systeme
-        affected_assets: Betroffene Assets
-        corrective_actions: Korrekturmaßnahmen
-        lessons_learned: Gelernte Lektionen
-        nis2_category: NIS2‑Kategorie
-        cross_border_impact: Grenzüberschreitende Auswirkungen
-        affected_users_count: Betroffene Nutzer (Anzahl)
-        estimated_financial_impact: Geschätzter finanzieller Schaden
-        national_authority_notified: Nationale Behörde benachrichtigt
-        authority_reference_number: Aktenzeichen der Behörde
-        closed_date: Abschlussdatum
-        data_breach_occurred: Datenschutzverletzung aufgetreten
-        responsible_person: Verantwortliche Person (Governance)
-    nis2_compliance:
-        title: NIS2 Compliance-Status
-        not_applicable: Nicht NIS2-relevant
-        compliant: Konform
-        overdue: Frist überschritten
-        awaiting_early_warning: Frühwarnung ausstehend
-        awaiting_detailed: Detaillierte Meldung ausstehend
-        awaiting_final: Abschlussbericht ausstehend
-    nis2_alert:
-        title: NIS2‑Relevanz prüfen
-        description: Prüfen Sie, ob der Vorfall unter die NIS2‑Meldepflicht fällt. Falls ja, aktivieren Sie den NIS2‑Abschnitt und pflegen Sie die Fristen.
-        early_warning: Frühwarnung innerhalb von 24 Stunden
-        detailed_notification: Detaillierte Meldung innerhalb von 72 Stunden
-        final_report: Abschlussbericht innerhalb eines Monats
-    nis2_toggle:
-        show: NIS2‑Abschnitt anzeigen
-        hide: NIS2‑Abschnitt verbergen
-    label:
-        title: Titel
-        severity: Schweregrad
-    edit: Bearbeiten
-    analysis_resolution: Analyse und Lösung
-    update: Vorfall aktualisieren
-    severity:
-        low: Niedrig
-        medium: Mittel
-        high: Hoch
-        critical: Kritisch
-    severity_choice:
-        aria_label: 'Schweregrad-Auswahl'
-        low:
-            label: Niedrig
-            definition: 'Lokaler Effekt, manuell handhabbar, keine SLA-Auswirkung. Beispiel: einzelne verschlüsselte Spam-Mail, isolierter Druckerausfall.'
-        medium:
-            label: Mittel
-            definition: 'Mehrere Nutzer betroffen, Workaround verfügbar, SLA nicht verletzt. Beispiel: Datei-Server kurzfristig down, mehrere Phishing-Mails in einer Abteilung.'
-        high:
-            label: Hoch
-            definition: 'Geschäftsprozess gestört, Workaround eingeschränkt, SLA gefährdet. Eskalation an ISB Pflicht. Beispiel: produktiver Datenbankserver instabil, gezielter Angriffsversuch erkannt.'
-        critical:
-            label: Kritisch
-            definition: 'Geschäftsfortführung gefährdet, Personal- oder Compliance-Risiko, externes Reporting möglich. Sofort-Eskalation an CISO/Vorstand. Beispiel: bestätigter Datenabfluss, Ransomware-Verschlüsselung.'
-    filter:
-        all_status: Alle Status
-        all_severity: Alle Schweregrade
-    empty:
-        title: Noch keine Sicherheitsvorfaelle
-        description: 'Hier werden Sicherheitsvorfaelle dokumentiert und verfolgt. Bei einem Vorfall klicken Sie auf ''Vorfall melden''.'
-    severity_distribution:
-        title: Schweregrade
-    list:
-        all_incidents: Alle Vorfälle (%count%)
-    controls_should_prevent: Maßnahmen, die diesen Vorfall hätten verhindern sollen
-    workflow:
-        active: Aktiver Workflow
-        data_breach_active: Datenschutzverletzungs-Workflow aktiv
-        view_details: Workflow-Details anzeigen
-        gdpr_72h_deadline: DSGVO 72h-Frist für Meldung von Datenschutzverletzungen
-        escalation:
-            low: Niedrige Priorität
-            medium: Mittlere Priorität
-            high: Hohe Priorität
-            critical: Kritische Priorität
-            data_breach: Datenschutzverletzung - DSGVO-Konformität
-    pdf:
-        reported_at: Gemeldet am
-        reported_by: Gemeldet von
-    category:
-        data_breach: Datenschutzverletzung
-        security_incident: Sicherheitsvorfall
-        system_outage: Systemausfall
-        compliance_violation: Compliance-Verstoß
-        physical_security: Physische Sicherheit
-        other: Sonstiges
-    nis2_category:
-        operational: Operativ
-        security: Sicherheit
-        privacy: Datenschutz
-        availability: Verfügbarkeit
+      total: Gesamte Vorfälle
+      open: Offene Vorfälle
+      critical: Kritische Vorfälle
+      avg_resolution: Ø Lösungszeit
+      unit:
+        days: Tage
+  status:
+    open: Offen
+    in_progress: In Bearbeitung
+    resolved: Gelöst
+    closed: Abgeschlossen
+    reported: Gemeldet
+    in_investigation: In Untersuchung
+    in_resolution: In Lösung
+  nis2_timeline:
+    title: NIS2 Meldezeitplan (Artikel 23)
+    description: Gemäß NIS2-Richtlinie (EU 2022/2555) müssen bedeutende Vorfälle innerhalb
+      definierter Fristen gemeldet werden.
+  timeline:
+    early_warning: Frühwarnung (24h)
+    detailed_notification: Detaillierte Meldung (72h)
+    final_report: Abschlussbericht (1 Monat)
+    deadline: Frist
+    reported: Gemeldet
+    reported_at: Gemeldet am
+    overdue: Überfällig
+    hours_remaining: '%hours% Stunden verbleibend'
+    days_remaining: '%days% Tage verbleibend'
+  field:
+    title: Titel
+    description: Beschreibung
+    category: Kategorie
+    detected: Erkannt
+    detected_at: Erkannt am
+    reported_by: Gemeldet von
+    occurred: Aufgetreten
+    occurred_at: Aufgetreten am
+    severity: Schweregrad
+    status: Status
+    affected_systems: Betroffene Systeme
+    affected_assets: Betroffene Assets
+    root_cause: Ursächliche Ursache
+    corrective_actions: Korrekturmaßnahmen
+    lessons_learned: Gelernte Lektionen
+    closed_at: Geschlossen am
+    nis2_category: NIS2‑Kategorie
+    cross_border_impact: Grenzüberschreitende Auswirkungen
+    early_warning_reported_at: Frühwarnung gemeldet am
+    detailed_notification_reported_at: Detaillierte Meldung gemeldet am
+    final_report_submitted_at: Abschlussbericht eingereicht am
+    affected_users_count: Betroffene Nutzer (Anzahl)
+    estimated_financial_impact: Geschätzter finanzieller Schaden
+    national_authority_notified: Nationale Behörde benachrichtigt
+    authority_reference_number: Aktenzeichen der Behörde
+    detected_date: Erkennungsdatum
+    closed_date: Abschlussdatum
+    visible_to_holding: 'Für Konzern-Krisenstab sichtbar'
+    data_breach_occurred: Datenschutzverletzung aufgetreten
+    reported_by_legacy: Gemeldet von (freitext, veraltet)
+    reported_by_person: Gemeldet von (Person aus Stammdaten)
+    reported_by_deputies: Vertretungen (Personen)
+    responsible_person: Verantwortliche Person (Governance)
+    incident_classification: Vorfallsklassifizierung (A.5.24)
+    containment_actions: Eindämmungsmaßnahmen (A.5.26)
+    evidence_preserved: Beweise gesichert (A.5.28)
+    ict_incident_classification: ICT-Incident-Klassifizierung (DORA Art. 18)
+    data_loss_occurred: Datenverlust eingetreten (DORA Art. 19)
+    data_leakage_occurred: Datenabfluss eingetreten (DORA Art. 19)
+    economic_impact: Wirtschaftlicher Schaden in EUR (DORA Art. 19)
+    reputational_impact: Reputationsschaden 1–5 (DORA Art. 19)
+    critical_services_affected: Betroffene kritische Dienste (DORA Art. 19)
+    recurring_incident: Wiederkehrender Incident (DORA Art. 19)
+    clients_affected: Betroffene Kunden / Gegenparteien (Anzahl)
+    clients_affected_financial_volume: Geschäftsvolumen betroffener Kunden (EUR)
+    replication_of_impact: Service-Replikat / Failover aktiviert
+    initial_report_submitted_at: Erstmeldung eingereicht (DORA 4h)
+    intermediate_report_submitted_at: Zwischenmeldung eingereicht (DORA 72h)
+    data_recovery_strategy: Datenwiederherstellungsstrategie (BCM Art. 11)
+  nis2_compliance:
+    title: NIS2 Compliance-Status
+    not_applicable: Nicht NIS2-relevant
+    compliant: Konform
+    overdue: Frist überschritten
+    awaiting_early_warning: Frühwarnung ausstehend
+    awaiting_detailed: Detaillierte Meldung ausstehend
+    awaiting_final: Abschlussbericht ausstehend
+  nis2_alert:
+    title: NIS2‑Relevanz prüfen
+    description: Prüfen Sie, ob der Vorfall unter die NIS2‑Meldepflicht fällt. Falls
+      ja, aktivieren Sie den NIS2‑Abschnitt und pflegen Sie die Fristen.
+    early_warning: Frühwarnung innerhalb von 24 Stunden
+    detailed_notification: Detaillierte Meldung innerhalb von 72 Stunden
+    final_report: Abschlussbericht innerhalb eines Monats
+  nis2_toggle:
+    show: NIS2‑Abschnitt anzeigen
+    hide: NIS2‑Abschnitt verbergen
+  label:
+    title: Titel
+    severity: Schweregrad
+  edit: Bearbeiten
+  status_help: Aktueller Bearbeitungsstatus des Vorfalls
+  analysis_resolution: Analyse und Lösung
+  update: Vorfall aktualisieren
+  severity:
+    low: Niedrig
+    medium: Mittel
+    high: Hoch
+    critical: Kritisch
+  severity_choice:
+    aria_label: 'Schweregrad-Auswahl'
+    low:
+      label: Niedrig
+      definition: 'Lokaler Effekt, manuell handhabbar, keine SLA-Auswirkung. Beispiel: einzelne verschlüsselte Spam-Mail, isolierter Druckerausfall.'
+    medium:
+      label: Mittel
+      definition: 'Mehrere Nutzer betroffen, Workaround verfügbar, SLA nicht verletzt. Beispiel: Datei-Server kurzfristig down, mehrere Phishing-Mails in einer Abteilung.'
+    high:
+      label: Hoch
+      definition: 'Geschäftsprozess gestört, Workaround eingeschränkt, SLA gefährdet. Eskalation an ISB Pflicht. Beispiel: produktiver Datenbankserver instabil, gezielter Angriffsversuch erkannt.'
+    critical:
+      label: Kritisch
+      definition: 'Geschäftsfortführung gefährdet, Personal- oder Compliance-Risiko, externes Reporting möglich. Sofort-Eskalation an CISO/Vorstand. Beispiel: bestätigter Datenabfluss, Ransomware-Verschlüsselung.'
+  filter:
+    data_breach: Datenschutzverletzung
+    data_breach_only: Nur Datenschutzverletzungen
+    nis2_only: Nur NIS2-relevante Vorfälle
+    all_status: Alle Status
+    all_severity: Alle Schweregrade
+  empty:
+    title: Noch keine Sicherheitsvorfaelle
+    description: 'Hier werden Sicherheitsvorfaelle dokumentiert und verfolgt. Bei einem Vorfall klicken Sie auf ''Vorfall melden''.'
+    action: Vorfall melden
+  severity_distribution:
+    title: Schweregrade
+  list:
+    title: Vorfallsliste
+    all_incidents: Alle Vorfälle (%count%)
+  controls_should_prevent: Maßnahmen, die diesen Vorfall hätten verhindern sollen
+  workflow:
+    active: Aktiver Workflow
+    data_breach_active: Datenschutzverletzungs-Workflow aktiv
+    view_details: Workflow-Details anzeigen
+    gdpr_72h_deadline: DSGVO 72h-Frist für Meldung von Datenschutzverletzungen
     escalation:
-        title: Vorfall eskaliert
-        level: 'Eskalationsstufe: %level%'
-        greeting: Sehr geehrte(r) %name%,
-        alert: Wichtige Sicherheitsmitteilung
-        message: Ein Vorfall mit Schweregrad %severity% wurde auf Eskalationsstufe %level% eskaliert und erfordert Ihre sofortige Aufmerksamkeit.
-        incident_number: Vorfallsnummer
-        sla_deadline: SLA-Frist
-        action_required: Erforderliche Maßnahmen
-        action_review: Überprüfen Sie die Vorfalldetails und den aktuellen Status
-        action_assess: Bewerten Sie die Auswirkungen und identifizieren Sie betroffene Systeme
-        action_update: Aktualisieren Sie den Vorfall mit Ihren Erkenntnissen und ergriffenen Maßnahmen
-        action_notify_management: Benachrichtigen Sie die Geschäftsführung über diesen kritischen Vorfall
-        view_incident: Vorfall anzeigen
-        automated_notification: Dies ist eine automatisierte Benachrichtigung des Vorfallmanagement-Systems.
-        iso_reference: ISO 27001 A.16.1 - Management von Informationssicherheitsvorfällen
-    escalation_preview:
-        title: Eskalations-Vorschau
-        select_severity: Wählen Sie einen Schweregrad aus, um die Eskalationsvorschau zu sehen
-        workflow_name: Workflow
-        automatic: Automatisch
-        notified_users: 'Wer wird benachrichtigt:'
-        emails: E-Mails werden gesendet
-        sla_requirement: SLA-Anforderung
-        gdpr_warning: DSGVO-Datenpanne - 72h Frist
-        gdpr_deadline: 'Frist:'
-        gdpr_reference: DSGVO Art. 33 erfordert Meldung an Aufsichtsbehörde innerhalb von 72 Stunden nach Bekanntwerden der Verletzung.
-        approval_required: Genehmigung erforderlich
-        estimated_time: 'Geschätzte Zeit:'
-        summary_title: 'Was wird passieren:'
-        actions:
-            workflow_started: Workflow wird automatisch gestartet
-            notifications_sent: E-Mail-Benachrichtigungen werden an Stakeholder gesendet
-            approval_required: Genehmigungsschritte werden initiiert
-            sla_tracked: SLA-Tracking wird gestartet
-    bcm:
-        affected_processes: Betroffene Prozesse
-        recovery_priority: Wiederherstellungspriorität
-        est_impact_24h: Gesch. Auswirkung (24h)
-        value: Wert
-        owner: Eigentümer
-        detailed_analysis: Detaillierte BCM-Auswirkungsanalyse
-        auto_detect_more: Weitere Prozesse erkennen
-        auto_detect: Betroffene Prozesse erkennen
-        empty_title: Noch keine Geschäftsprozesse verknüpft.
-        empty_description: Verknüpfen Sie Prozesse manuell im Bearbeitungsformular oder nutzen Sie die automatische Erkennung basierend auf betroffenen Assets.
-    reuse:
-        risk_realization: Risikorealisierung
-        risk_realization_detail: 'Dieser Vorfall hat %count% identifizierte(s) Risiko/Risiken realisiert. Überprüfen Sie die Risikowahrscheinlichkeiten.'
-        risk_level: 'Risikostufe: %level%'
-        probability: 'Wahrscheinlichkeit: %value%/5'
-        control_not_implemented: Maßnahme nicht vollständig umgesetzt
-    feedback:
-        risk_re_evaluation_triggered: Risiko-Neubewertung wurde für verknüpfte Risiken ausgelöst
-    fv5:
-        not_linked: Risiko ist nicht mit diesem Vorfall verknüpft.
-        reassess_started: Risiko-Neubewertung gestartet — bitte Risikowerte anhand des Vorfalls aktualisieren.
-        reassess_button: Risiko-Bewertung aktualisieren
-        reassess_help: Bewertung dieses Risikos anhand des realen Vorfalls neu prüfen.
-        last_reassessed: 'Letzte Vorfall-Neubewertung am %date%'
-    link:
-        section_title: 'Verknüpfte Risiken'
-        add_link: 'Risiko verknüpfen'
-        submit: 'Verknüpfen'
-        empty: 'Bisher sind keine Risiken mit diesem Vorfall verknüpft.'
-        risk_linked: 'Risiko erfolgreich verknüpft.'
-        risk_unlinked: 'Verknüpfung zum Risiko entfernt.'
-        csrf_invalid: 'Sicherheitstoken ungültig — bitte Seite neu laden und erneut versuchen.'
-        risk_not_found: 'Risiko nicht gefunden.'
-        link_not_found: 'Verknüpfung nicht gefunden oder gehört nicht zu diesem Vorfall.'
-        unlink: 'Verknüpfung entfernen'
-        unlink_confirm: 'Diese Verknüpfung zum Risiko entfernen?'
-        risk_review_suggested: '%count% verknüpfte(s) Risiko(en) sollte(n) nach Schließung dieses Vorfalls geprüft werden.'
-        field:
-            risk: 'Risiko'
-            link_type: 'Verknüpfungstyp'
-            notes: 'Notizen'
-        placeholder:
-            risk: 'Risiko auswählen…'
-            notes: 'Optionaler Kontext oder Beobachtung…'
+      low: Niedrige Priorität
+      medium: Mittlere Priorität
+      high: Hohe Priorität
+      critical: Kritische Priorität
+      data_breach: Datenschutzverletzung - DSGVO-Konformität
+  pdf:
+    reported_at: Gemeldet am
+    reported_by: Gemeldet von
+  placeholder:
+    title: z.B. Unbefugter Zugriff auf Kundendatenbank
+    description: Beschreiben Sie den Vorfall detailliert (Was ist passiert? Wann?
+      Wie wurde es entdeckt?)...
+    reported_by: Name des meldenden Mitarbeiters
+    affected_systems: z.B. CRM-System, E-Mail-Server, Datenbank XY
+    root_cause: Beschreiben Sie die Ursache, die den Vorfall ermöglicht hat...
+    corrective_actions: Beschreiben Sie ergriffene und geplante Maßnahmen...
+    lessons_learned: Welche Erkenntnisse wurden gewonnen? Was sollte verbessert werden?
+    nis2_category: -- NIS2-Kategorie auswählen --
+    national_authority: z.B. BSI, BNetzA
+    authority_reference: Aktenzeichen von der Behörde
+    reported_by_user: -- Meldende Person --
+    reported_by_person: -- Person aus Stammdaten --
+    responsible_person: -- Verantwortliche Person waehlen --
+    classification: -- Ereignis oder Vorfall --
+    containment_actions: 'z.B. System isoliert, Zugänge gesperrt, Backup eingespielt...'
+    ict_classification: -- ICT-Incident-Klassifizierung --
+    economic_impact: '0.00'
+    reputational_impact: -- Reputationsschaden bewerten --
+  help:
+    visible_to_holding: 'Standard ein: Holding-/Konzern-CISO kann diesen Vorfall sehen, um Konzern-Response zu koordinieren. Nur für vertrauliche Fälle (z. B. HR) deaktivieren.'
+    severity: Bewerten Sie den Schweregrad basierend auf Auswirkung und Umfang (ISO
+      27001 A.16.1.4)
+    affected_systems: Listen Sie alle betroffenen Systeme, Anwendungen und Infrastruktur
+      auf
+    affected_assets: Wählen Sie die vom Vorfall betroffenen Assets aus (Tippen
+      zum Suchen, Mehrfachauswahl möglich)
+    nis2_category: Kategorie gemäß NIS2-Richtlinie Artikel 23
+    early_warning_24h: Frühwarnung muss innerhalb von 24 Stunden nach Erkennung erfolgen
+      (NIS2 Art. 23)
+    detailed_notification_72h: Detaillierte Meldung innerhalb von 72 Stunden (NIS2
+      Art. 23)
+    final_report_1month: Abschlussbericht innerhalb eines Monats nach dem Vorfall
+      (NIS2 Art. 23)
+    cross_border_impact: Hat der Vorfall Auswirkungen auf andere EU-Mitgliedstaaten?
+    affected_users_count: Geschätzte Anzahl betroffener Nutzer/Kunden
+    estimated_financial_impact: Geschätzter finanzieller Schaden in EUR
+    national_authority: Zuständige nationale Behörde (z.B. BSI in Deutschland)
+    data_breach_occurred: 'Wenn aktiviert, sollten Sie zusaetzlich eine Datenpanne unter Privacy/GDPR → Datenpannen erfassen. Dies loest KEINE automatische Erstellung aus — Sie muessen die Datenpanne separat melden.'
+    resolution_after_investigation: Typischerweise erst nach Abschluss der Untersuchung
+      ausfüllen
+    reported_by_user: Meldende Person aus der Benutzerverwaltung. Leer lassen wenn
+      extern gemeldet.
+    reported_by_person: 'Person ohne System-Login als Melder wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
+    reported_by_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
+    responsible_person: 'Langfristig verantwortliche Person fuer diesen Vorfall (Governance-Sicht). Unabhaengig vom Bearbeiter (Ticket-Assignee) und Melder (Audit-Trail). Kann ein externer CISO/ISB ohne System-Login sein.'
+    incident_classification: 'Ereignis (Event) vs. Vorfall (Incident) nach A.5.24 — steuert das Workflow-Routing.'
+    containment_actions: 'Kurzfristige Sofortmaßnahmen (Eindämmung) und langfristige Abhilfemaßnahmen (Remediation) nach A.5.26.'
+    evidence_preserved: 'Bestätigung, dass digitale Beweise gemäß A.5.28 gesichert und integritätsgeschützt wurden.'
+    ict_incident_classification: 'Klassifizierung nach DORA Art. 18 und den EBA/ESMA/EIOPA RTS: Major ICT-Incident oder bedeutende Cyber-Bedrohung.'
+    economic_impact: 'Geschätzter wirtschaftlicher Gesamtschaden in EUR (Direkt- und Folgekosten) gemäß DORA Art. 19(1)(b).'
+    critical_services_affected: 'Kritische oder wichtige Funktionen/Dienste, die beeinträchtigt wurden (DORA Art. 19(1)(e)).'
+    clients_affected_financial_volume: 'Gesamtes Transaktions- oder Vertragsvolumen der betroffenen Kunden in EUR (DORA Art. 19).'
+    replication_of_impact: 'Wurde ein Service-Replikat oder Failover aktiviert, um die Auswirkungen zu begrenzen?'
+    initial_report_submitted_at: 'DORA 4-Stunden-Erstmeldung (≠ NIS2 24h!): Zeitpunkt der Übermittlung an die zuständige Behörde (Art. 19(4)(a)).'
+    data_recovery_strategy: 'Strategie zur Wiederherstellung von Daten und Diensten; Cross-Referenz auf den BCM-Kontinuitätsplan (DORA Art. 11(2)).'
+  category:
+    data_breach: Datenschutzverletzung
+    security_incident: Sicherheitsvorfall
+    system_outage: Systemausfall
+    compliance_violation: Compliance-Verstoß
+    physical_security: Physische Sicherheit
+    other: Sonstiges
+  nis2_category:
+    operational: Operativ
+    security: Sicherheit
+    privacy: Datenschutz
+    availability: Verfügbarkeit
+  escalation:
+    title: Vorfall eskaliert
+    level: 'Eskalationsstufe: %level%'
+    greeting: Sehr geehrte(r) %name%,
+    alert: Wichtige Sicherheitsmitteilung
+    message: Ein Vorfall mit Schweregrad %severity% wurde auf Eskalationsstufe %level%
+      eskaliert und erfordert Ihre sofortige Aufmerksamkeit.
+    incident_number: Vorfallsnummer
+    sla_deadline: SLA-Frist
+    action_required: Erforderliche Maßnahmen
+    action_review: Überprüfen Sie die Vorfalldetails und den aktuellen Status
+    action_assess: Bewerten Sie die Auswirkungen und identifizieren Sie betroffene
+      Systeme
+    action_update: Aktualisieren Sie den Vorfall mit Ihren Erkenntnissen und ergriffenen
+      Maßnahmen
+    action_notify_management: Benachrichtigen Sie die Geschäftsführung über diesen
+      kritischen Vorfall
+    view_incident: Vorfall anzeigen
+    automated_notification: Dies ist eine automatisierte Benachrichtigung des Vorfallmanagement-Systems.
+    iso_reference: ISO 27001 A.16.1 - Management von Informationssicherheitsvorfällen
+  escalation_preview:
+    title: Eskalations-Vorschau
+    select_severity: Wählen Sie einen Schweregrad aus, um die Eskalationsvorschau
+      zu sehen
+    workflow_name: Workflow
+    escalation_level: Eskalationsstufe
+    automatic: Automatisch
+    notified_users: 'Wer wird benachrichtigt:'
+    emails: E-Mails werden gesendet
+    sla_requirement: SLA-Anforderung
+    gdpr_warning: DSGVO-Datenpanne - 72h Frist
+    gdpr_deadline: 'Frist:'
+    gdpr_reference: DSGVO Art. 33 erfordert Meldung an Aufsichtsbehörde innerhalb
+      von 72 Stunden nach Bekanntwerden der Verletzung.
+    approval_required: Genehmigung erforderlich
+    approval_steps: Genehmigungsschritte
+    estimated_time: 'Geschätzte Zeit:'
+    summary_title: 'Was wird passieren:'
+    actions:
+      workflow_started: Workflow wird automatisch gestartet
+      notifications_sent: E-Mail-Benachrichtigungen werden an Stakeholder gesendet
+      approval_required: Genehmigungsschritte werden initiiert
+      sla_tracked: SLA-Tracking wird gestartet
+  bcm:
+    affected_processes: Betroffene Prozesse
+    recovery_priority: Wiederherstellungspriorität
+    est_impact_24h: Gesch. Auswirkung (24h)
+    value: Wert
+    owner: Eigentümer
+    detailed_analysis: Detaillierte BCM-Auswirkungsanalyse
+    auto_detect_more: Weitere Prozesse erkennen
+    auto_detect: Betroffene Prozesse erkennen
+    empty_title: Noch keine Geschäftsprozesse verknüpft.
+    empty_description: Verknüpfen Sie Prozesse manuell im Bearbeitungsformular oder nutzen Sie die automatische Erkennung basierend auf betroffenen Assets.
+  reuse:
+    risk_realization: Risikorealisierung
+    risk_realization_detail: 'Dieser Vorfall hat %count% identifizierte(s) Risiko/Risiken realisiert. Überprüfen Sie die Risikowahrscheinlichkeiten.'
+    risk_level: 'Risikostufe: %level%'
+    probability: 'Wahrscheinlichkeit: %value%/5'
+    control_not_implemented: Maßnahme nicht vollständig umgesetzt
+  feedback:
+    risk_re_evaluation_triggered: Risiko-Neubewertung wurde für verknüpfte Risiken
+      ausgelöst
+  error:
+    owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+  # T31.2.2 — ISO 27001 A.5.24-A.5.28 + DORA Art. 17-19
+  classification:
+    event: Ereignis
+    incident: Vorfall
+  dora_classification:
+    major: Major ICT-Incident (Art. 18)
+    significant: Bedeutende Cyber-Bedrohung (Art. 17)
+  impact:
+    minimal: 1 – Minimal
+    minor: 2 – Gering
+    moderate: 3 – Mäßig
+    major: 4 – Erheblich
+    severe: 5 – Schwerwiegend
+  # V3 W2-FV-5 — Incident-driven Risk-Reassessment
+  fv5:
+    not_linked: Risiko ist nicht mit diesem Vorfall verknüpft.
+    reassess_started: Risiko-Neubewertung gestartet — bitte Risikowerte anhand des Vorfalls aktualisieren.
+    reassess_button: Risiko-Bewertung aktualisieren
+    reassess_help: Bewertung dieses Risikos anhand des realen Vorfalls neu prüfen.
+    last_reassessed: 'Letzte Vorfall-Neubewertung am %date%'
+  link:
+    section_title: 'Verknüpfte Risiken'
+    add_link: 'Risiko verknüpfen'
+    submit: 'Verknüpfen'
+    empty: 'Bisher sind keine Risiken mit diesem Vorfall verknüpft.'
+    risk_linked: 'Risiko erfolgreich verknüpft.'
+    risk_unlinked: 'Verknüpfung zum Risiko entfernt.'
+    csrf_invalid: 'Sicherheitstoken ungültig — bitte Seite neu laden und erneut versuchen.'
+    risk_not_found: 'Risiko nicht gefunden.'
+    link_not_found: 'Verknüpfung nicht gefunden oder gehört nicht zu diesem Vorfall.'
+    unlink: 'Verknüpfung entfernen'
+    unlink_confirm: 'Diese Verknüpfung zum Risiko entfernen?'
+    risk_review_suggested: '%count% verknüpfte(s) Risiko(en) sollte(n) nach Schließung dieses Vorfalls geprüft werden.'
+    field:
+      risk: 'Risiko'
+      link_type: 'Verknüpfungstyp'
+      notes: 'Notizen'
+    placeholder:
+      risk: 'Risiko auswählen…'
+      notes: 'Optionaler Kontext oder Beobachtung…'

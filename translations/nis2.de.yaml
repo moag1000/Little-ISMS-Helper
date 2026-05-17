@@ -3,17 +3,25 @@
 
 nis2:
     # General
+    not_installed: "NIS2-Framework ist nicht installiert. Falls Ihre Organisation NIS2 unterliegt, laden Sie bitte das Framework von der Compliance-Frameworks-Seite."
+    not_active: "NIS2-Framework ist deaktiviert. Dies bedeutet, dass NIS2 für Ihre Organisation nicht relevant ist. Aktivieren Sie es bei Bedarf in den Compliance-Frameworks."
+
+    # Incident Report PDF
     incident_report:
         title: "NIS2 Art. 23 Sicherheitsvorfall-Meldung"
         subtitle: "Richtlinie (EU) 2022/2555 - Vorfallmeldung"
         reference: "Referenznr."
+        organization: "Organisation"
         generated_at: "Bericht erstellt"
         incident_number: "Vorfallnummer"
+        classification: "Klassifizierung"
         severity: "Schweregrad"
         status: "Status"
+        category: "Kategorie"
         nis2_category: "NIS2-Kategorie"
         reported_by: "Gemeldet von"
         assigned_to: "Zugewiesen an"
+        cross_border: "Grenzüberschreitende Auswirkung"
         yes: "Ja"
         no: "Nein"
         not_specified: "Nicht angegeben"
@@ -53,6 +61,7 @@ nis2:
             related_vulnerabilities: "Verwandte Schwachstellen"
             initial_actions: "Ergriffene Sofortmaßnahmen"
             authority_notified: "Benachrichtigte nationale Behörde"
+            authority_reference: "Behörden-Referenznummer"
             notification_status: "Meldungsstatus"
             reported_at: "Gemeldet am"
 
@@ -85,3 +94,4 @@ nis2:
 
         # Footer
         footer: "Vertraulich - NIS2 Art. 23 Sicherheitsvorfall-Meldung"
+        page: "Seite"

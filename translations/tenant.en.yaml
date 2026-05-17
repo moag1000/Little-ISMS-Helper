@@ -22,25 +22,46 @@ tenant:
         inactive: Inactive
     field:
         code: 'Tenant Code'
+        code_help: 'Unique alphanumeric code (only a-z, 0-9, _, -)'
         code_auto_generated: 'Automatically generated from name'
         name: Name
+        name_help: 'Full organization name'
         description: Description
+        description_help: 'Optional tenant description'
         logo: Logo
+        logo_help: 'Tenant logo (max. 2MB, JPG/PNG/GIF/WebP)'
         azure_tenant_id: 'Azure Tenant ID'
+        azure_tenant_id_help: 'Azure AD Tenant ID (UUID format) for SSO integration'
+        is_active: Active
+        is_active_help: 'Only active tenants can sign in'
         settings: 'Settings (JSON)'
+        settings_help: 'Tenant-specific settings in JSON format'
         users: Users
         status: Status
         created: Created
         updated: Updated
         parent: Parent
         corporate_notes: 'Corporate Notes'
+    placeholder:
+        code: 'e.g. acme-corp'
+        name: 'e.g. ACME Corporation'
+        description: 'Tenant description...'
+        azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
+    validation:
+        code_format: 'The code may only contain letters, numbers, underscores, and hyphens'
+        azure_tenant_id_format: 'The Azure Tenant ID must be in UUID format'
+        logo_format: 'The logo must be in JPG, PNG, GIF or WebP format'
     status:
         active: Active
         inactive: Inactive
     action:
         create: 'Create New Tenant'
         create_first: 'Create First Tenant'
+        edit: Edit
         delete: Delete
+        activate: Activate
+        deactivate: Deactivate
     section:
         information: 'Tenant Information'
         users: Users
@@ -59,9 +80,27 @@ tenant:
         add_help: 'Enter the email address of an existing user to assign them to this tenant'
         current_users: 'Current Users'
         confirm_remove: 'Do you really want to remove user %email% from this tenant?'
+        flash:
+            email_required: 'Email address is required'
+            user_not_found: 'User with this email address was not found'
+            already_assigned: 'User is already assigned to this tenant'
+            user_added: 'User successfully added to tenant'
+            user_removed: 'User successfully removed from tenant'
+            not_assigned: 'User is not assigned to this tenant'
+            error: 'Error managing users'
     form:
         create_title: 'Create New Tenant'
         edit_title: 'Edit Tenant'
+    flash:
+        created: 'Tenant created successfully'
+        updated: 'Tenant updated successfully'
+        deleted: 'Tenant deleted successfully'
+        activated: 'Tenant activated successfully'
+        deactivated: 'Tenant deactivated successfully'
+        error: 'Error saving tenant'
+        has_users: 'Tenant cannot be deleted as it still has assigned users'
+        organisation_context_updated: 'Organisation profile successfully updated'
+        organisation_context_error: 'Error updating organisation profile'
     confirm:
         delete: 'Are you sure you want to delete this tenant? This action cannot be undone.'
         toggle: 'Do you really want to change the status of this tenant?'
@@ -106,6 +145,11 @@ tenant:
     setup_progress:
         title: 'Setup Progress'
         org_profile: 'Organisation profile configured'
+        isms_context: 'ISMS context created'
+        context_complete: 'ISMS context at least 50% completed'
+    link:
+        view: 'View Tenant'
+        back_to_tenant: 'Back to Tenant'
     info:
         title: 'About Tenants'
         text: 'Tenants allow managing multiple organizations in a single instance. Each user belongs to a tenant.'
@@ -145,6 +189,9 @@ tenant:
             from_address: 'Sender Email Address'
             logo_url: 'Logo URL (HTTPS)'
             support_address: 'Support Email Address'
+        logo_url:
+            https_only: 'HTTPS URLs only (otherwise mixed content in HTML emails).'
+        saved: 'Email branding saved.'
 corporate:
     view:
         own_only: 'Own Only'
@@ -178,9 +225,37 @@ corporate:
         actions: Actions
         subsidiary: Subsidiary
         parent: Parent
+        parent_help: 'Parent tenant (holding). Leave empty for standalone tenants.'
         governance_model: 'Governance Model'
         hierarchy_depth: 'Hierarchy Depth'
         subsidiaries: Subsidiaries
+        is_corporate_parent: 'Holding tenant (corporate root)'
+        is_corporate_parent_help: 'Marks this tenant as a holding node for Group-CISO views and baseline inheritance.'
+        corporate_notes: 'Corporate notes'
+        corporate_notes_help: 'Optional free-text notes on the corporate structure.'
+        legal_name: 'Legal entity name'
+        legal_name_help: 'Formal legal name (may differ from display name). Relevant for NIS2 registration.'
+        legal_form: 'Legal form'
+        legal_form_help: 'e.g. GmbH, AG, SE, Ltd.'
+        nace_code: 'NACE code'
+        nace_code_help: 'Industry classification, e.g. 62.03 (computing facilities management).'
+        nis2_classification: 'NIS2 classification'
+        nis2_classification_help: 'Determined per legal entity under BSIG §28 — not aggregated across the group.'
+        nis2_sector: 'NIS2 sector'
+        nis2_sector_help: 'BSI sector label, e.g. "Digital Infrastructure", "Energy", "Health".'
+        nis2_contact_point: 'BSI reporting contact'
+        nis2_contact_point_help: 'Person or function registered with BSI as contact point.'
+        nis2_registered_at: 'Registered with BSI on'
+        nis2_registered_at_help: 'Date of registration with the BSI reporting portal.'
+    placeholder:
+        parent: '— No parent —'
+        corporate_notes: 'Optional notes on the corporate structure ...'
+        nis2_classification: '— Not yet assessed —'
+    nis2:
+        essential: 'Essential entity (Annex I)'
+        important: 'Important entity (Annex II)'
+        not_regulated: 'Not NIS2 regulated'
+        unknown: 'Unknown / to be assessed'
     action:
         set_parent: 'Set Parent'
         update_governance: 'Update Governance'
@@ -233,3 +308,27 @@ corporate:
             error: Error
         confirm:
             delete: Delete
+    email:
+        title: 'Email Branding'
+        subtitle: 'Sender, logo, and footer for emails per tenant. Empty fields inherit from the holding parent, then SystemSettings, then default.'
+        section:
+            branding: 'Branding Settings'
+            effective: 'Effective Values (after fallback cascade)'
+        effective_hint: 'These values are used when sending — if your own fields are empty, they come from parent tenant or SystemSettings.'
+        field:
+            from_name: 'Sender Name'
+            from_address: 'Sender Email Address'
+            logo_url: 'Logo URL (HTTPS)'
+            footer_text: 'Footer Text'
+            support_address: 'Support Email Address'
+        help:
+            from_name: 'Appears in the "From" field. Example: ACME Inc. Compliance.'
+            from_address: 'Sender address. Must be authorized in the mail server (SPF/DKIM).'
+            logo_url: 'Full HTTPS URL to the logo (shown at the top of HTML emails).'
+            footer_text: 'Legal notes / signature below email. Max 2000 characters, plain text.'
+            support_address: 'Reply-to / support contact — may differ from sender.'
+        hint:
+            fallback: 'Empty field → parent tenant → SystemSettings (category=email) → hardcoded default.'
+        logo_url:
+            https_only: 'HTTPS URLs only (otherwise mixed content in HTML emails).'
+        saved: 'Email branding saved.'

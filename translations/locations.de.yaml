@@ -14,12 +14,24 @@ location:
         name: Name
         type: Typ
         code: Code
+        location_type: Standorttyp
         city: Stadt
         address: Adresse
+        postal_code: Postleitzahl
+        country: Land
         parent_location: 'Übergeordneter Standort'
+        access_control_system: Zutrittskontrollsystem
         access_control: Zutrittskontrolle
         security_level: Sicherheitsniveau
         badge_access: 'Ausweiszugang erforderlich'
+        requires_badge_access: 'Ausweiszugang erforderlich'
+        requires_escort: 'Begleitung erforderlich'
+        camera_monitored: Kameraüberwacht
+        responsible_person: 'Verantwortliche Person'
+        capacity: Kapazität
+        square_meters: 'Fläche (m²)'
+        active: Aktiv
+        notes: Notizen
         description: Beschreibung
         status: Status
     section:
@@ -30,6 +42,26 @@ location:
         details: Details
         child_locations: 'Untergeordnete Standorte'
         features: Merkmale
+    placeholder:
+        name: 'z. B. Hauptgebäude München'
+        code: 'z. B. DE-MUC-HQ'
+        description: 'Beschreiben Sie den Standort...'
+        address: 'Vollständige Adresse eingeben...'
+        city: 'z. B. München'
+        country: 'z. B. Deutschland'
+        postal_code: 'z. B. 80331'
+        parent_location: '-- Übergeordneten Standort wählen --'
+        access_control_system: 'z. B. Kaba, dormakaba, SALTO'
+        responsible_person: 'Name der verantwortlichen Person'
+        capacity: 'z. B. 50'
+        square_meters: 'z. B. 120.50'
+        notes: 'Zusätzliche Hinweise und Bemerkungen...'
+    help:
+        type: 'Wählen Sie den passenden Standorttyp (Gebäude, Raum, Rechenzentrum, …)'
+        code: 'Interner Standort‑Code für eindeutige Referenz (optional)'
+        parent: 'Optional – ordnen Sie den Standort einem übergeordneten Standort zu'
+        parent_location: 'Ordnen Sie diesen Standort einem übergeordneten Standort zu (z.B. Raum zu Gebäude)'
+        capacity: 'Maximale Personenkapazität dieses Standorts'
     type:
         building: Gebäude
         floor: Etage

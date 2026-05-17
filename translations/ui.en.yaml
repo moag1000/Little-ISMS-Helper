@@ -1,4 +1,20 @@
 ui:
+    location: Location
+    responsible: Responsible
+    contact: Contact
+    details: Details
+    overview: Overview
+    new: New
+    add: Add
+    remove: Remove
+    select: Select
+    none: None
+    all: All
+    'true': true
+    'false': false
+    optional: Optional
+    required: Required
+    n_a: N/A
     command_palette:
         placeholder: 'Search for commands or navigation...'
         no_results: 'No commands found'
@@ -34,10 +50,17 @@ ui:
         trigger_title: 'Search (Cmd+K)'
         tip: 'Tip: Press <kbd>Cmd</kbd>+<kbd>K</kbd> to open search'
     theme:
+        toggle_title: 'Toggle Dark Mode (Current: %current%)'
         switch_title: 'Switch color mode'
         light: 'Light'
         dark: 'Dark'
         system: 'System'
+    system:
+        status:
+            operational: 'Operational'
+            degraded: 'Degraded'
+            down: 'Down'
+            maintenance: 'Maintenance'
     keyboard:
         navigation: Navigation
         select: Select
@@ -46,15 +69,51 @@ ui:
             title: 'Keyboard Shortcuts'
             tip: 'Tip: Press <kbd>?</kbd> to show this help anytime'
             trigger_title: 'Keyboard Shortcuts (?)'
+    bulk_actions:
+        entity_label: 'items'
+        delete_success: '%count% %entity% successfully deleted'
+        delete_error: 'Error deleting: '
+        export_success: 'Export successful'
+        export_error: 'Error exporting'
+        tag_prompt: 'Add tag:'
+        tag_success: 'Tag added'
+        tag_error: 'Error adding tag'
+    button_loading:
+        saving: 'Saving...'
+        deleting: 'Deleting...'
+        sending: 'Sending...'
+        loading: 'Loading...'
+        creating: 'Creating...'
+        updating: 'Updating...'
+        importing: 'Importing...'
+        exporting: 'Exporting...'
+        processing: 'Processing...'
+    file_upload:
+        file_too_large: 'File "%name%" is too large. Maximum: %size%'
+        invalid_file_type: 'File "%name%" has an invalid file type.'
+        no_files_selected: 'No files selected'
+        upload_success: 'Files uploaded successfully!'
+        upload_error: 'Error uploading files.'
+    quick_view:
+        loading: 'Loading preview...'
+        error_title: 'Error loading preview'
+        error_subtitle: 'Please try again'
+        close: 'Close'
     common:
         show_details: 'Show details'
         hide_details: 'Hide details'
+        expand: 'Expand'
+        collapse: 'Collapse'
+        more_info: 'More information'
+        less_info: 'Less information'
     filter:
         search_label: 'Search'
         search_placeholder: 'Search by name, ID, owner …'
         search_aria_label: 'Search'
         advanced_filters: 'Advanced filters'
+        advanced_filters_hint: 'Click to open more filters'
         apply: 'Apply filters'
         reset: 'Reset filters'
         reset_aria_label: 'Clear all active filters'
+        active_filters: 'Active filters'
         shareable_hint: 'This URL contains the current filters and can be shared or bookmarked.'

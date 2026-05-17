@@ -4,6 +4,7 @@ journey:
     percent_complete: '%percent%% complete'
     dismiss: 'Hide progress'
     restore: 'Show implementation progress'
+    show_full_dashboard: 'Show full dashboard'
     next_step: 'Next step'
     phase:
         context:
@@ -40,6 +41,8 @@ journey:
         complete: 'Complete'
         locked: 'Prerequisite missing'
         dismissed: 'Intentionally skipped'
+    dismissed_hint: 'This phase has been marked as not applicable.'
+
 first_hour:
     title: 'Your first hour — 4 steps to an audit draft'
     subtitle: 'Review the pre-filled data and adapt it to your organization'

@@ -5,6 +5,16 @@ policy_wizard:
 
     # User mandate (2026-05-08): Aurora flash when routing a policy
     # approval to top management (ROLE_TOP_MGMT, "Geschäftsführung").
+    approval_routing:
+        top_management_assigned: 'Approval for "%document%" routed to top management (%user%).'
+        top_management_assigned_short: 'Approval routed to top management'
+
+    # Task #126 — Approver-Role Validation per Topic.
+    # Persona walkthrough Risk-Owner-Business + Auditor-External
+    # surfaced the gap: the approval chain had no fachlich validation
+    # ("does this approver actually carry the right role for this
+    # topic?"). The audit trail now answers it via the
+    # policy_wizard.approver_role_match* events.
     approver_match:
         strict_label: 'Match'
         weak_label: 'Recommended role: %roles%'
@@ -13,6 +23,11 @@ policy_wizard:
         recommended_roles_hint: 'Recommended: %roles%'
         chain_hint: 'At approval time the system checks per topic whether the approver carries the recommended role. The audit trail records every match / mismatch — a mismatch approval is permitted but visibly defensible in an external audit.'
     # SoA auto-update on document generation — Aurora flash + audit-trail strings.
+    soa_auto_update:
+        bumped: 'SoA entry %control% bumped from "%old_status%" to "%new_status%" by Policy Wizard.'
+        self_assessment: 'Self-assessment: only one active user in tenant — implementation status for %control% recorded as self-assessment in the audit trail.'
+
+    # Topic-key translations (24 ISO 27002:2022 topics + cross-cutting).
     topic:
         top_level: 'Top-level policy (ISO 27001 Cl. 5.2)'
         acceptable_use: 'Acceptable use (A.5.10)'
@@ -928,6 +943,9 @@ policy_wizard:
                     reversibility: 'Existing approved versions are ARCHIVED, NOT deleted — recoverable from the document module.'
 
     action:
+        start_full: 'Start full run'
+        start_targeted: 'Start targeted re-run'
+        start_sandbox: 'Start sandbox run'
         continue: 'Continue'
         back: 'Back'
         cancel: 'Cancel'
@@ -1023,6 +1041,7 @@ policy_wizard:
 
     witness:
         label: 'Witness / co-signature'
+        signed_at: 'Co-signed at'
         optional: 'Optional — DPO/CISO co-signature'
 
     konzern_defaults:
@@ -1092,8 +1111,14 @@ policy_wizard:
     # Junior-ISB Wish #6 — clickable warning link CTA on Step 7.
     warning:
         click_to_jump: 'Click to jump to "%step%" and fix.'
+        self_approval_single_user: 'Self-approval active: this tenant has only one app user. Document this in the audit — once a second user exists, switch the approval chain to four-eyes.'
+
+    # Junior-ISB Wish #5 — Auditor-Score badge / detail section.
     auditor_score:
         label: 'Auditor score'
+        tier_green: 'Audit-ready'
+        tier_yellow: 'Partly audit-ready'
+        tier_red: 'Not audit-ready'
         reasons_heading: 'Findings:'
         regenerate_cta: 'Regenerate document'
         reason:
@@ -1108,6 +1133,15 @@ policy_wizard:
 
     # Cross-step consistency warnings (Form-Audit follow-up, May 2026).
     # Surfaced on STEP_REVIEW_GENERATE — informational, NOT blocking.
+    consistency:
+        conservative_tier_rpo: 'A very conservative risk appetite (tier 1) typically expects a backup RPO ≤ 12 h. Currently configured: %rpo% h.'
+        aggressive_tier_patch: 'Aggressive risk appetite (tier 5) rarely supports a 4 h critical-patch SLA — currently %hours% h. Please verify resourcing.'
+        dora_rpo: 'DORA Art. 12 expects a backup RPO ≤ 24 h for critical ICT systems. Currently configured: %rpo% h.'
+        bcm_rto: 'BCM-critical processes typically need RTO ≤ 24 h. Current high-criticality RTO: %rto% h.'
+        significant_no_dpo: 'A DORA significant entity should have a Data Protection Officer appointed. Please review the DPO assignment in Step 3 or Step 5.'
+
+    # Persona-ISB / Auditor follow-up: Step 7 review summary replaces the
+    # legacy raw-JSON dump with a curated, label/value-formatted view.
     review:
         no_inputs_yet: 'No inputs from previous steps available yet.'
         no_inputs_in_step: 'No relevant inputs in this step.'
@@ -1127,6 +1161,42 @@ policy_wizard:
                 biennial: 'biennial'
                 semi_annual: 'semi-annual'
                 quarterly: 'quarterly'
+        welcome:
+            standards: 'Adopted standards'
+            mode: 'Run mode'
+            finding_reference: 'Audit-finding reference'
+            preset_bundle: 'Industry preset'
+            preset_bundles: 'Industry presets'
+        org:
+            legal_name: 'Legal name'
+            scope_statement: 'Scope statement'
+            primary_address: 'Primary address'
+            site_count: 'Number of sites'
+            climate_change_wording: 'Climate-change clause (ISO 27001:2024)'
+        roles:
+            role:
+                ciso: 'CISO'
+                isb: 'Information security officer'
+                dpo: 'Data protection officer'
+                bcm_officer: 'BCM officer'
+            function_owners_count: 'Assigned function-owner slots'
+            approval_chain: 'Approval chain'
+        risk:
+            appetite_tier: 'Risk appetite tier'
+            data_classification_levels: 'Data classification levels'
+            schutzbedarf_levels: 'Protection-requirement levels (BSI Schutzbedarf)'
+            annex_applicable_count: 'Applicable Annex A controls'
+            review_interval_months: 'Review interval'
+        op:
+            crypto_count: 'Crypto allowlist entries'
+            backup_rpo_hours: 'Backup RPO'
+            patch_sla_severities: 'Patch-SLA severities'
+            continuity_rto_count: 'Continuity-RTO classes'
+            dora_significant: 'DORA: significant'
+            dora_entity_type: 'DORA: entity type'
+            dora_competent_authority: 'DORA: competent authority'
+            dpo: 'DPO (operationally confirmed)'
+            bcm_officer: 'BCM officer (operationally confirmed)'
         lifecycle:
             default_review_interval: 'Default review interval'
             per_policy_overrides_count: 'Policy-specific overrides'
@@ -1136,10 +1206,76 @@ policy_wizard:
 
     error:
         review_interval_max: 'The review interval must not exceed 24 months (ISO 27001 + audit defang).'
+        approver_must_be_user_id: 'Approver must be a concrete person (user-id), not a role string.'
+        approver_must_have_login: 'Approver must be a User with system login. Please link a Person to a user account first.'
+        roles_invalid: 'The roles mapping is invalid.'
+        role_required:
+            ciso: 'CISO is a mandatory role.'
+            dpo: 'Data Protection Officer is a mandatory role.'
+            bcm_officer: 'BCM Officer is mandatory because BCM is in scope.'
+        function_owners_invalid: 'The function-owner assignments are invalid.'
+        function_slot_unknown: 'Unknown function-owner slot.'
+        approval_chain_invalid: 'The approval chain is invalid.'
+        approval_chain_required: 'At least one approver in the approval chain is required.'
+        self_approval_forbidden: 'Self-approval is forbidden — the wizard starter cannot be in the approval chain once at least one second app user exists.'
+        crypto_allowlist_required: 'At least one allowed algorithm must be selected.'
+        crypto_allowlist_invalid: 'The crypto allow-list is invalid.'
+        backup_rpo_required: 'Please provide a backup RPO in hours.'
+        backup_rpo_invalid: 'Backup RPO must be between 1 and 720 hours.'
+        patch_sla_invalid: 'Patch SLA values are invalid.'
+        patch_sla_required:
+            critical: 'Patch SLA for critical vulnerabilities is required.'
+            high: 'Patch SLA for high vulnerabilities is required.'
+            medium: 'Patch SLA for medium vulnerabilities is required.'
+        continuity_rto_invalid: 'Continuity RTO values are invalid.'
+        continuity_rto_required: 'Please provide at least one RTO value (BCM is in scope).'
+        dora_block_invalid: 'The DORA block is invalid.'
+        dora_block_invalid_threshold: 'The ICT concentration threshold must be between 1 and 100 %.'
+        dora_block_required:
+            entity_type: 'DORA entity type is required.'
+            competent_authority: 'Competent authority is required.'
+            significance: 'DORA significance is required.'
+        per_policy_overrides_invalid: 'Per-template overrides are invalid.'
+        approver_per_template_invalid: 'Approver assignments are invalid.'
+        annex_a_invalid: 'The Annex A applicability table is invalid.'
+        review_interval_invalid: 'Review interval is invalid.'
+        review_interval_too_long: 'Review interval exceeds the 24-month upper bound.'
         run_not_found: 'The requested wizard run was not found.'
+        run_already_completed: 'This wizard run is already completed.'
         invalid_step: 'The requested step is invalid.'
         access_denied: 'You are not allowed to access this wizard run.'
         no_tenant: 'No tenant context available.'
+        bestandsaufnahme:
+            unknown_document: 'This document does not belong to your tenant or no longer exists.'
+            action_invalid: 'Please pick a valid action (replace, keep, merge or split).'
+            target_topic_required: 'When merging into a wizard topic you must pick a target topic.'
+            target_topics_required: 'When splitting you must pick at least two target topics.'
+            rationale_too_long: 'The rationale may be at most 1000 characters long.'
+            decision_required: 'Please record a decision for every existing document.'
+        preset_bundle_unknown: 'The selected industry preset is unknown or inactive.'
+        finding_reference_invalid: 'The audit-finding reference is invalid. Please pick again or leave it empty.'
+        finding_reference_too_long: 'The audit-finding reference must be at most 100 characters long.'
+        finding_reference_unknown: 'The selected audit finding does not exist or belongs to a different tenant.'
+        # W1 audit-defang gap #3 — Variable-substitution Leakage Detector.
+        substitution_leakage:
+            title: 'Template variable left unresolved'
+            detail: 'The generated policy still contains raw Twig markers (`{{ … }}`, `{% … %}` or `{# … #}`). Please complete the missing inputs or notify your administrator. Persistence was aborted on purpose — auditors do not accept raw variable names in approved evidence.'
+        # W1 audit-defang gap #2 — Generation-to-approval min-elapsed-time gate.
+        minimum_elapsed:
+            title: 'Minimum review window not reached'
+            detail: 'A minimum of %required% seconds must elapse between document generation and your approval so a realistic read/review pass is on record. Please wait another %remaining% seconds and submit the approval again.'
+        # W1 audit-defang gap #1 — Tailoring field minimum quality.
+        tailoring_quality:
+            too_short: 'Please enter at least 30 characters of real content — auditors immediately spot one-word rubber-stamp answers.'
+            repetition: 'The same word repeats too often. Please rephrase the entry more precisely and without redundancy.'
+            placeholder: 'Placeholder text such as "lorem ipsum", "TBD", "TODO" or "n/a" is not accepted. Please enter the tenant-specific information.'
+            custom: 'The entry does not match the format configured for this field. Please check the template guidance.'
+        # W6 Gap-E — DPO Charter excluded from bulk-approval (GDPR Art. 38(3)).
+        dpo_charter_in_bulk:
+            title: 'DPO Charter cannot be bulk-approved'
+            detail: 'GDPR Art. 38(3) requires the DPO Charter to be approved standalone. Please submit it separately for top-management sign-off.'
+
+    # W4-B — IndustryPresetBundle picker (Step 1, multi-select since v3.6).
     preset:
         label: 'Industry preset(s) (optional)'
         placeholder: 'Optional: pick an industry preset'
@@ -1193,8 +1329,20 @@ policy_wizard:
         soc2: 'SOC 2'
         c5: 'BSI C5'
 
+    csrf:
+        invalid: 'Invalid CSRF token. Please reload the page.'
+
+    # W7-A — PDF + ZIP export (TenantBranding letterhead, audit pack).
     export:
+        pdf:
+            title: 'Download as PDF'
+            download_button: 'Download PDF'
+        zip:
+            title: 'Audit pack (ZIP)'
+            download_button: 'Download audit pack'
+            confirm: 'Generate the audit-pack ZIP including all selected standards?'
         cover:
+            title: 'Title'
             standard: 'Standard'
             version: 'Version'
             valid_from: 'Valid from'
@@ -1223,6 +1371,7 @@ policy_wizard:
             intro: 'The signatories confirm the validity of this policy for the stated scope.'
         footer:
             page_of: 'Page'
+            system_attribution: 'Generated by Little ISMS Helper'
             batch_id_label: 'Batch ID'
             locally_edited: 'Locally edited version (last edited by %name% on %date%)'
 
@@ -1243,6 +1392,17 @@ policy_wizard:
             body: 'A privacy or policy section in your document was rejected by the DPO/approver. Please rework the highlighted section and resubmit it for sign-off.'
 
     # W6 Gap-D — GDPR-toggle off-cleanup behaviour.
+    gdpr_cleanup:
+        title: 'GDPR cleanup after toggle-off'
+        success: 'GDPR documents archived and sections locked. Inventory recorded in audit log.'
+        confirm: 'The tenant is no longer a GDPR subject. Archive all GDPR documents and lock GDPR sections? This action is recorded in the audit log.'
+
+    # ────────────────────────────────────────────────────────────────────
+    # W7-E — Dashboard widgets, drift badge on Document index, mobile
+    # bulk acknowledgement inbox. CISO board-reporting consolidates KPIs
+    # from the wizard (policies generated, pending approvals, finding
+    # cross-refs, acknowledgement coverage, DPO veto count).
+    # ────────────────────────────────────────────────────────────────────
     widget:
         policies_you_own:
             title: 'Policies you own'
@@ -1265,6 +1425,9 @@ policy_wizard:
     # Drift badge on the Document index. W7-C ships the SettingsDriftDetector
     # — its display strings live here so W7-E can wire the badge.
     drift_badge:
+        label: 'Group baseline updated'
+        title: 'Group-level settings tightened after this policy was generated. Please re-generate.'
+        aria_label: 'Group settings updated'
         settings_drift:
             label: 'Settings changed'
             tooltip: 'Settings driving this policy have changed since it was generated. Please re-generate.'
@@ -1325,3 +1488,404 @@ policy_ack:
 # W3-D — Compliance-Wizard check-types covering Policy-Wizard outputs.
 # Keys are addressed as `compliance_check.<check_id>.{title,description,pass_message,fail_message}`
 # from Twig (`{{ 'compliance_check.policy_top_level_present.title'|trans({}, 'policy_wizard') }}`).
+compliance_check:
+    policy_top_level_present:
+        title: 'Top-level information security policy published'
+        description: 'Confirms the tenant has a published top-level ISMS policy (ISO 27001 Cl. 5.2) generated by the Policy-Wizard.'
+        pass_message: 'Top-level information security policy is published.'
+        fail_message: 'No published top-level information security policy found — run the Policy-Wizard or approve the document.'
+    policy_topic_acceptable_use_present:
+        title: 'Topic policy "Acceptable Use" published'
+        description: 'Confirms a published topic-specific policy for A.5.10 Acceptable Use.'
+        pass_message: 'Acceptable-Use policy is published.'
+        fail_message: 'Acceptable-Use policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_access_control_present:
+        title: 'Topic policy "Access Control" published'
+        description: 'Confirms a published topic-specific policy for A.5.15 Access Control.'
+        pass_message: 'Access-Control policy is published.'
+        fail_message: 'Access-Control policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_information_classification_present:
+        title: 'Topic policy "Information Classification" published'
+        description: 'Confirms a published topic-specific policy for A.5.12/A.5.13 classification & labelling.'
+        pass_message: 'Information-Classification policy is published.'
+        fail_message: 'Information-Classification policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_information_transfer_present:
+        title: 'Topic policy "Information Transfer" published'
+        description: 'Confirms a published topic-specific policy for A.5.14 Information Transfer.'
+        pass_message: 'Information-Transfer policy is published.'
+        fail_message: 'Information-Transfer policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_identity_management_present:
+        title: 'Topic policy "Identity Management" published'
+        description: 'Confirms a published topic-specific policy for A.5.16 Identity Management.'
+        pass_message: 'Identity-Management policy is published.'
+        fail_message: 'Identity-Management policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_authentication_information_present:
+        title: 'Topic policy "Authentication Information" published'
+        description: 'Confirms a published topic-specific policy for A.5.17 Authentication Information.'
+        pass_message: 'Authentication-Information policy is published.'
+        fail_message: 'Authentication-Information policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_cryptography_present:
+        title: 'Topic policy "Cryptography" published'
+        description: 'Confirms a published topic-specific policy for A.8.24 Use of Cryptography.'
+        pass_message: 'Cryptography policy is published.'
+        fail_message: 'Cryptography policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_backup_present:
+        title: 'Topic policy "Backup" published'
+        description: 'Confirms a published topic-specific policy for A.8.13 Information Backup.'
+        pass_message: 'Backup policy is published.'
+        fail_message: 'Backup policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_logging_present:
+        title: 'Topic policy "Logging & Monitoring" published'
+        description: 'Confirms a published topic-specific policy for A.8.15/A.8.16 Logging & Monitoring.'
+        pass_message: 'Logging policy is published.'
+        fail_message: 'Logging policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_patch_management_present:
+        title: 'Topic policy "Patch & Vulnerability Management" published'
+        description: 'Confirms a published topic-specific policy for A.8.8 Vulnerability Management.'
+        pass_message: 'Patch-Management policy is published.'
+        fail_message: 'Patch-Management policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_malware_present:
+        title: 'Topic policy "Malware Protection" published'
+        description: 'Confirms a published topic-specific policy for A.8.7 Malware Protection.'
+        pass_message: 'Malware Protection policy is published.'
+        fail_message: 'Malware Protection policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_secure_configuration_present:
+        title: 'Topic policy "Secure Configuration" published'
+        description: 'Confirms a published topic-specific policy for A.8.9 Configuration Management.'
+        pass_message: 'Secure-Configuration policy is published.'
+        fail_message: 'Secure-Configuration policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_network_security_present:
+        title: 'Topic policy "Network Security" published'
+        description: 'Confirms a published topic-specific policy for A.8.20–A.8.23 Networks Security.'
+        pass_message: 'Network-Security policy is published.'
+        fail_message: 'Network-Security policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_secure_development_present:
+        title: 'Topic policy "Secure Development" published'
+        description: 'Confirms a published topic-specific policy for A.8.25–A.8.30 Secure Development Life Cycle.'
+        pass_message: 'Secure-Development policy is published.'
+        fail_message: 'Secure-Development policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_supplier_relationships_present:
+        title: 'Topic policy "Supplier Relationships" published'
+        description: 'Confirms a published topic-specific policy for A.5.19–A.5.22 supplier relationships.'
+        pass_message: 'Supplier-Relationships policy is published.'
+        fail_message: 'Supplier-Relationships policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_project_management_present:
+        title: 'Topic policy "Information Security in Project Management" published'
+        description: 'Confirms a published topic-specific policy for A.5.8 Information Security in Project Management.'
+        pass_message: 'Project-Management security policy is published.'
+        fail_message: 'Project-Management security policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_privacy_pii_present:
+        title: 'Topic policy "Privacy & PII Protection" published'
+        description: 'Confirms a published topic-specific policy for A.5.34 Privacy & PII Protection.'
+        pass_message: 'Privacy & PII Protection policy is published.'
+        fail_message: 'Privacy & PII Protection policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_incident_management_present:
+        title: 'Topic policy "Incident Management" published'
+        description: 'Confirms a published topic-specific policy for A.5.24–A.5.28 Incident Management.'
+        pass_message: 'Incident-Management policy is published.'
+        fail_message: 'Incident-Management policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_continuity_present:
+        title: 'Topic policy "ICT Continuity" published'
+        description: 'Confirms a published topic-specific policy for A.5.29/A.5.30 ICT Readiness for Business Continuity.'
+        pass_message: 'ICT Continuity policy is published.'
+        fail_message: 'ICT Continuity policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_threat_intelligence_present:
+        title: 'Topic policy "Threat Intelligence" published'
+        description: 'Confirms a published topic-specific policy for A.5.7 Threat Intelligence.'
+        pass_message: 'Threat-Intelligence policy is published.'
+        fail_message: 'Threat-Intelligence policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_mobile_device_present:
+        title: 'Topic policy "Mobile Device & Remote Working" published'
+        description: 'Confirms a published topic-specific policy for A.6.7/A.7.9/A.8.1 Mobile & Remote Working.'
+        pass_message: 'Mobile-Device policy is published.'
+        fail_message: 'Mobile-Device policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_asset_management_present:
+        title: 'Topic policy "Asset Management" published'
+        description: 'Confirms a published topic-specific policy for A.5.9–A.5.11 Asset Management.'
+        pass_message: 'Asset-Management policy is published.'
+        fail_message: 'Asset-Management policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_hr_security_present:
+        title: 'Topic policy "HR Security" published'
+        description: 'Confirms a published topic-specific policy for A.6.1–A.6.6 HR Security.'
+        pass_message: 'HR-Security policy is published.'
+        fail_message: 'HR-Security policy missing — run the Policy-Wizard for this topic.'
+    policy_topic_physical_security_present:
+        title: 'Topic policy "Physical Security" published'
+        description: 'Confirms a published topic-specific policy for A.7.1–A.7.14 Physical Security.'
+        pass_message: 'Physical-Security policy is published.'
+        fail_message: 'Physical-Security policy missing — run the Policy-Wizard for this topic.'
+    policy_approval_chain_completed:
+        title: 'Approval chain (CISO + top management) completed for every policy'
+        description: 'Confirms every published Policy-Wizard policy carries a ROLE_CISO and ROLE_TOP_MGMT signoff in its workflow approval history.'
+        pass_message: 'All published policies are fully approved.'
+        fail_message: 'At least one published policy is missing a complete approval chain — review the approval inbox.'
+    policy_acknowledgement_coverage:
+        title: 'Acknowledgement coverage ≥ 95 % per published policy'
+        description: 'Confirms at least 95 % of active tenant users acknowledged each published policy (via the PolicyAcknowledgement entity).'
+        pass_message: 'Acknowledgement coverage meets the 95 % threshold for every policy.'
+        fail_message: 'At least one policy is below the 95 % acknowledgement threshold — trigger an awareness reminder.'
+    policy_review_cadence:
+        title: 'Review cadence honoured (no overdue policies)'
+        description: 'Confirms each published policy has a computed nextReviewDate (uploadedAt + reviewIntervalMonths) and is not overdue.'
+        pass_message: 'All policies are within their review interval.'
+        fail_message: 'At least one policy is overdue for review — start a targeted re-run in the Policy-Wizard.'
+    policy_tailoring_fields:
+        title: 'Mandatory tailoring fields populated'
+        description: 'Confirms each published policy has a non-empty value for every PolicyTemplate substitution-variable flagged as required.'
+        pass_message: 'All mandatory tailoring fields are populated for every published policy.'
+        fail_message: 'At least one policy has an empty mandatory tailoring field — run the wizard again.'
+    # W4-D — DORA-specific compliance checks (Regulation (EU) 2022/2554)
+    dora_ict_risk_framework_present:
+        title: 'ICT Risk Management Framework published (DORA Art. 6)'
+        description: 'Confirms a published ICT-RMF policy generated by the Policy-Wizard, per DORA Art. 6 + Commission Delegated Regulation (EU) 2024/1773.'
+        pass_message: 'ICT Risk Management Framework is published.'
+        fail_message: 'ICT Risk Management Framework missing — run the Policy-Wizard with DORA topic "ict_risk_management_framework".'
+    dora_incident_reporting_deadlines:
+        title: 'Incident reporting deadlines aligned with DORA (Art. 19)'
+        description: 'Confirms the per-severity Incident SLA configuration meets DORA timelines: initial ≤ 4h (critical), intermediate ≤ 72h (high), final ≤ 1 month (breach).'
+        pass_message: 'All DORA-relevant incident deadlines are configured within the regulatory ceiling.'
+        fail_message: 'At least one severity SLA exceeds the DORA ceiling — open the Incident-SLA admin and tighten the reporting window.'
+    dora_third_party_register_maintained:
+        title: 'Register of Information for ICT third parties maintained (Art. 28.3)'
+        description: 'Confirms at least one supplier row classified as ICT-critical or ICT-important per DORA Art. 28.3 + Commission Implementing Regulation (EU) 2024/2956.'
+        pass_message: 'The Register of Information lists ICT third parties with criticality classification.'
+        fail_message: 'No ICT third party with criticality classification on file — open the Suppliers module and assign ICT criticality.'
+    dora_tlpt_cadence:
+        title: 'TLPT cadence respected (DORA Art. 24-27)'
+        description: 'For DORA-significant tenants: confirms a planned or executed TLPT exercise within the last 36 months (Art. 26.1, RTS JC 2024 29 / TIBER-EU aligned).'
+        pass_message: 'TLPT cadence satisfied — exercise planned or completed within the 36-month window.'
+        fail_message: 'No TLPT exercise within the last 36 months — schedule a BC-Exercise with TLPT / TIBER scope.'
+    dora_exit_strategy_documented:
+        title: 'Exit strategy documented for ICT-critical suppliers (Art. 28.8)'
+        description: 'Confirms every supplier flagged ICT-critical carries an active exit-strategy flag plus a linked document (DORA Art. 28.8).'
+        pass_message: 'All ICT-critical suppliers have a documented exit strategy.'
+        fail_message: 'At least one ICT-critical supplier is missing a documented exit strategy — open the supplier detail view and link the exit strategy + document.'
+    dora_validity_from:
+        title: 'DORA validity-from marker on every DORA document (Art. 1)'
+        description: 'Confirms each published DORA document carries the tag "dora-validity:2025-01-17" — the date Regulation (EU) 2022/2554 becomes applicable.'
+        pass_message: 'All DORA documents carry the validity-from marker.'
+        fail_message: 'At least one DORA document does not carry the validity-from marker — re-run the Policy-Wizard or apply the tag manually.'
+    dora_extension_coverage:
+        title: 'DORA extension applied to every ISO topic policy (§10)'
+        description: 'Confirms each ISO topic policy listed in the DoraExtensionCatalogue carries the tag "dora-extension:applied".'
+        pass_message: 'All applicable ISO topic policies carry the DORA extension.'
+        fail_message: 'At least one ISO topic document is missing the DORA extension — re-run the Policy-Wizard with DORA scope.'
+    # W5-C — BSI Grundschutz Compliance-Checks (BSI 200-1 / 200-2 / 200-3 / 200-4)
+    bsi_top_level_leitlinie_present:
+        title: 'IT Security Policy approved by leadership (BSI 200-1 §6.2)'
+        description: 'Confirms a leadership-approved (status=approved) IT Security Policy generated by the Policy-Wizard, per BSI 200-1 §6.2 + ISMS.1.A4.'
+        pass_message: 'IT Security Policy is approved by leadership.'
+        fail_message: 'IT Security Policy is not approved by leadership — start the Policy-Wizard with BSI topic "it_security_policy" and complete the approval workflow.'
+    bsi_isms_concept_present:
+        title: 'ISMS concept (security concept) published (BSI 200-2 §5–9)'
+        description: 'Confirms a published ISMS concept document per BSI 200-2 §5–9 + ISMS.1.A6.'
+        pass_message: 'ISMS concept is published.'
+        fail_message: 'ISMS concept is missing — start the Policy-Wizard with BSI topic "isms_concept".'
+    bsi_baseline_coverage:
+        title: 'Baseline mandatory set fully generated (BSI 200-2 Basis tier)'
+        description: 'Confirms every BSI Basis-tier template has a published tenant document (28 mandatory baseline policies).'
+        pass_message: 'All baseline mandatory policies are published.'
+        fail_message: 'At least one Basis-tier topic has no generated document — re-run the Policy-Wizard and generate the missing topics.'
+    bsi_schutzbedarf_method_present:
+        title: 'Protection-needs methodology published (BSI 200-2 §6)'
+        description: 'Confirms a published methodology document for protection-needs assessment (Schutzbedarfsfeststellung) per BSI 200-2 §6.'
+        pass_message: 'Protection-needs methodology is published.'
+        fail_message: 'Protection-needs methodology is missing — start the Policy-Wizard with BSI topic "protection_needs_methodology".'
+    bsi_tier_consistency:
+        title: 'Tier filter consistent with generated documents (BSI 200-2 §3)'
+        description: 'Confirms the tenant setting "bsi.tier_filter" is consistent with the bsi_tier of generated documents (e.g. no Kern documents when basis_only).'
+        pass_message: 'Tier filter and generated documents are consistent.'
+        fail_message: 'At least one document falls outside the declared tier filter — review bsi.tier_filter or archive the off-tier documents.'
+    bsi_kritis_flag_documented:
+        title: 'KRITIS applicability documented (BSIG §8a / KRITIS-DachG)'
+        description: 'For KRITIS operators: confirms the IT Security Policy carries a KRITIS marker (KRITIS-DachG / BSIG §8a) in the body or substitution variables.'
+        pass_message: 'KRITIS section is documented in the IT Security Policy.'
+        fail_message: 'KRITIS section is missing in the IT Security Policy — re-run the Policy-Wizard and set legal_basis to "KRITIS-DachG / BSIG §8a".'
+    # W5 Gap-C — Works-Council BR-evidence attachment (Auditor gap, BetrVG § 87 (1) Nr. 6).
+    works_council_evidence_attached:
+        title: 'Works-Council participation evidence attached (BetrVG § 87 (1) Nr. 6)'
+        description: 'Confirms every published policy covering logging, monitoring, telework, acceptable-use, awareness training, malware protection or IT administration carries a signed Works-Council participation record as an attachment (Document.category=works_council_evidence).'
+        pass_message: 'All relevant policies carry a Works-Council participation record.'
+        fail_message: 'At least one workplace-monitoring or personal-data policy is missing a Works-Council participation record — please upload the BR attachment as a Document with category "works_council_evidence" linked to the policy.'
+    # W5-C — BCM Compliance-Checks (ISO 22301:2019)
+    bcm_top_level_policy_present:
+        title: 'BCM top-level policy approved (ISO 22301 Cl. 5.2)'
+        description: 'Confirms a top-management approved (status=approved) BCM top-level policy generated by the Policy-Wizard.'
+        pass_message: 'BCM top-level policy is approved by top management.'
+        fail_message: 'BCM top-level policy is not approved — start the Policy-Wizard with BCM topic "bcms_top_level" and obtain top-management sign-off.'
+    bcms_scope_statement_present:
+        title: 'BCMS scope statement published (ISO 22301 Cl. 4.3)'
+        description: 'Confirms a published BCMS scope statement per ISO 22301 Cl. 4.3.'
+        pass_message: 'BCMS scope statement is published.'
+        fail_message: 'BCMS scope statement is missing — start the Policy-Wizard with BCM topic "bcms_scope_statement".'
+    bcm_bia_methodology_present:
+        title: 'BIA methodology published (ISO 22301 Cl. 8.2.2)'
+        description: 'Confirms a published business impact analysis methodology per ISO 22301 Cl. 8.2.2.'
+        pass_message: 'BIA methodology is published.'
+        fail_message: 'BIA methodology is missing — start the Policy-Wizard with BCM topic "bia_methodology".'
+    bcm_exercise_programme_active:
+        title: 'BCM exercise programme active (ISO 22301 Cl. 8.6)'
+        description: 'Confirms a completed or planned BCExercise within the last or next 12 months per ISO 22301 Cl. 8.6.'
+        pass_message: 'BCM exercise programme is active (at least one exercise in the 12-month window).'
+        fail_message: 'No BCExercise in the 12-month window — open the BC-Exercise module and plan or document an exercise (major-nonconformity risk).'
+    bcm_crisis_management_plan_present:
+        title: 'Crisis management plan published (ISO 22301 Cl. 8.4.4)'
+        description: 'Confirms a published crisis management plan (Krisenstabsordnung) per ISO 22301 Cl. 8.4.4 + BSI 200-4 §5.4.'
+        pass_message: 'Crisis management plan is published.'
+        fail_message: 'Crisis management plan is missing — start the Policy-Wizard with BCM topic "crisis_management_plan".'
+    bcm_recovery_plans_present:
+        title: 'Recovery plans present for crown jewels (ISO 22301 Cl. 8.4.5)'
+        description: 'Confirms at least one published recovery plan exists when crown-jewel assets (max(C,I,A) ≥ 4) are present in the tenant scope.'
+        pass_message: 'Recovery plans are present for crown-jewel assets.'
+        fail_message: 'Crown jewels without a recovery plan — start the Policy-Wizard with BCM topic "recovery_plans".'
+    bcm_management_review_bcm:
+        title: 'BCMS management review procedure published (ISO 22301 Cl. 9.3)'
+        description: 'Confirms a published management review procedure for the BCMS per ISO 22301 Cl. 9.3.'
+        pass_message: 'BCMS management review procedure is published.'
+        fail_message: 'BCMS management review procedure is missing — start the Policy-Wizard with BCM topic "management_review_bcm".'
+    # W6-D — GDPR / Privacy compliance checks (GDPR Art. 5/24/30/33-39 + ISO 27001 A.5.34)
+    privacy_policy_present:
+        title: 'Privacy / Data-Protection Policy approved (GDPR Art. 5/24)'
+        description: 'Confirms a leadership-approved (status=approved) Privacy / Data-Protection Policy generated by the Policy-Wizard, per GDPR Art. 5/24 + ISO 27701 Cl. 5.1/5.2.'
+        pass_message: 'Privacy / Data-Protection Policy is leadership-approved.'
+        fail_message: 'Privacy / Data-Protection Policy is missing — start the Policy-Wizard with GDPR topic "privacy_policy" and complete the DPO / CISO / Top-Mgmt approval chain.'
+    ropa_methodology_present:
+        title: 'RoPA methodology published (GDPR Art. 30)'
+        description: 'Confirms a published Records-of-Processing methodology per GDPR Art. 30 + ISO 27701 Cl. 7.2.8.'
+        pass_message: 'RoPA methodology is published.'
+        fail_message: 'RoPA methodology is missing — start the Policy-Wizard with GDPR topic "ropa_methodology".'
+    dpia_methodology_present:
+        title: 'DPIA methodology published (GDPR Art. 35/36)'
+        description: 'Confirms a published Data-Protection Impact-Assessment methodology per GDPR Art. 35/36 + ISO 27701 Cl. 6.2/7.2.5.'
+        pass_message: 'DPIA methodology is published.'
+        fail_message: 'DPIA methodology is missing — start the Policy-Wizard with GDPR topic "dpia_methodology".'
+    dsr_procedure_present:
+        title: 'Data-Subject-Rights procedure published (GDPR Art. 12-22)'
+        description: 'Confirms a published Data-Subject-Rights procedure per GDPR Art. 12-22 + ISO 27701 Cl. 7.3.'
+        pass_message: 'DSR procedure is published.'
+        fail_message: 'DSR procedure is missing — start the Policy-Wizard with GDPR topic "dsr_procedure".'
+    data_breach_notification_72h:
+        title: '72-hour breach notification path documented (GDPR Art. 33)'
+        description: 'Confirms a published Data Breach Notification procedure AND an Incident-SLA row for severity "breach" with response time ≤ 72 h per GDPR Art. 33.'
+        pass_message: 'Breach notification procedure is published and the 72-h SLA is configured.'
+        fail_message: 'Breach notification procedure or 72-h SLA is missing — start the Policy-Wizard for "data_breach_notification_procedure" and open the Incident-SLA admin to set severity "breach" to ≤ 72 h.'
+    dpo_charter_appointed:
+        title: 'DPO appointed and charter documented (GDPR Art. 37-39)'
+        description: 'Confirms at least one tenant user holds ROLE_DPO AND a published DPO charter (standalone document or section "gdpr_dpo_mandate") exists.'
+        pass_message: 'DPO is appointed and the charter is documented.'
+        fail_message: 'DPO appointment or charter is missing — assign ROLE_DPO to a user and start the Policy-Wizard for "dpo_charter" or for the ISO host "awareness_training".'
+    gdpr_section_coverage:
+        title: 'GDPR sections generated on each ISO host'
+        description: 'Confirms every GdprSectionCatalogue entry (10 sections per §0 Decision Matrix v2) has a generated DocumentSection on the corresponding ISO topic Document.'
+        pass_message: 'All 10 GDPR sections are generated on the ISO hosts.'
+        fail_message: 'At least one GDPR section is missing on the ISO host — re-run the Policy-Wizard with GDPR scope and regenerate the affected ISO topics.'
+    a534_thin_host_present:
+        title: 'A.5.34 cross-reference host present (ISO 27001 A.5.34 + GDPR)'
+        description: 'When ISO 27001 + GDPR scope are both active: confirms a published thin host for A.5.34 (Privacy & PII Protection) cross-referencing the 5 standalone privacy artefacts.'
+        pass_message: 'A.5.34 thin host is present — privacy artefacts are linked into the ISO SoA.'
+        fail_message: 'A.5.34 thin host is missing — start the Policy-Wizard for "iso_a534_thin_host" so the ISO SoA mapping has an evidence-link target for the privacy artefacts.'
+    # W6-D — ISO 27701 PIMS compliance checks (ISO 27701:2025 / 2019)
+    iso27701_version_configured:
+        title: 'ISO 27701 edition declared (ISO 27701 §3)'
+        description: 'When the PIMS addon is enabled (iso27701.enabled=true): confirms the tenant setting "iso27701.version" is set to "2019" or "2025".'
+        pass_message: 'ISO 27701 edition is declared.'
+        fail_message: 'ISO 27701 edition is not declared — open the Policy-Wizard and set "iso27701.version" to "2019" or "2025" (default 2025 from 2025-09).'
+    iso27701_clause_tags_applied:
+        title: 'ISO 27701 clause tags on every PIMS document (Cl. 5.1/7.2.8/...)'
+        description: 'When the PIMS addon is enabled: confirms every published document whose template carries an ISO 27701 clause mapping (e.g. 5.1, 7.2.8) carries an "iso27701:<clause>" tag.'
+        pass_message: 'All PIMS-relevant documents carry the clause tag.'
+        fail_message: 'At least one PIMS document is missing the ISO 27701 clause tag — re-run the Policy-Wizard with PIMS scope or set the tag manually.'
+    iso27701_schrems_ii_clause_in_transfers:
+        title: 'Schrems II clause in international-transfers policy (ISO 27701:2025 Cl. 7.5)'
+        description: 'When the PIMS addon is enabled with edition 2025: confirms the international-transfers policy (ISO host "information_transfer") references "Schrems II" and "supplementary measures" / "TIA / TOMs".'
+        pass_message: 'Schrems II and supplementary-measures wording is documented in the international-transfers policy.'
+        fail_message: 'Schrems II or supplementary-measures wording is missing — re-run the Policy-Wizard with GDPR scope and extend the "gdpr_international_transfers" section with Schrems II + TIA / TOMs language.'
+
+    # W5-B — BCM exercise programme auto-seeding.
+    bcm:
+        exercise_seeded:
+            title: 'BCM exercise programme auto-seeded'
+            body: 'Four BCExercise placeholders were created for the next 12 months (tabletop, walkthrough, simulation, full_test). Refine scope, scenario and participants before execution.'
+        exercise_frequency:
+            quarterly: 'Quarterly (every 3 months)'
+            semi_annual: 'Semi-annual (every 6 months)'
+            annual: 'Annual (every 12 months)'
+
+    # W6-B — Privacy / DPO PolicyTemplate seeds (06-dpo-input.md §0 Decision Matrix v2).
+    template:
+        privacy_policy:
+            title: 'Data Protection Policy'
+            description: 'Top-level data-protection policy (GDPR Art. 5/24, ISO 27701 Cl. 5.1/5.2). Anchors the seven principles, data-subject rights and accountability framework.'
+        ropa_methodology:
+            title: 'Records of Processing Activities — Methodology'
+            description: 'Methodology governing the RoPA per GDPR Art. 30 / ISO 27701 Cl. 7.2.8. Drives the existing ProcessingActivity module.'
+        dpia_methodology:
+            title: 'DPIA Methodology'
+            description: 'Data Protection Impact Assessment per GDPR Art. 35/36 / ISO 27701 Cl. 6.2 + 7.2.5. Trigger criteria, threshold assessment, consultation rules.'
+        dsr_procedure:
+            title: 'Data Subject Rights Procedure'
+            description: 'Procedure for access, rectification, erasure and portability requests per GDPR Art. 12-22 / ISO 27701 Cl. 7.3.1-7.3.10. Drives the DataSubjectRequest module.'
+        data_breach_notification_procedure:
+            title: 'Personal Data Breach Notification Procedure'
+            description: '72h notification procedure per GDPR Art. 33/34, ISO 27701 Cl. 6.13 (2025) / Cl. 6.13.1.5 (2019). Multi-track matrix for GDPR / DORA Art. 19 / NIS2.'
+        iso_a534_thin_host:
+            title: 'A.5.34 Privacy Cross-Reference'
+            description: 'Thin cross-reference stub for ISO 27001 A.5.34. Links to the five standalone privacy documents — no own content, satisfies only the "shall maintain a topic-specific policy" requirement.'
+
+    # W6-B — ISO 27701 PIMS settings labels (06-dpo-input.md §3.3).
+    iso27701:
+        enabled:
+            label: 'Enable ISO 27701 (PIMS)'
+            help: 'Appends clause-mapping tags (iso27701:5.1, iso27701:7.2.8 …) to privacy documents. Optional — parallel addon analogous to DORA.'
+        version_2019:
+            label: 'ISO 27701:2019 (legacy)'
+            help: 'For audit cycles still using the legacy clause numbering (e.g. 6.13.1.5 instead of 6.13).'
+        version_2025:
+            label: 'ISO 27701:2025 (standard)'
+            help: 'Current edition (published 2025-09). Aligned with ISO 27002:2022 and explicit Schrems-II supplementary measures.'
+
+    # W6-B — Sectoral privacy overlays (06-dpo-input.md §7).
+    privacy_overlay:
+        healthcare_bdsg22:
+            label: 'Healthcare (§ 22 BDSG)'
+            description: 'Activates the § 22 BDSG (special categories) and § 203 StGB (medical confidentiality) overlays for RoPA, DPIA and §2.16 special-category templates.'
+        public_sector_bbg:
+            label: 'Public Sector (BDSG § 70 ff.)'
+            description: 'Activates the public-body overlays — BDSG § 70 ff., state DSGs, BArchG § 5 — on RoPA and the top-level Privacy Policy.'
+
+    # W6-C — GDPR section injector titles + descriptions. Skeleton only;
+    # full prose ships with W6-F. Sections are injected into ISO host
+    # policies when the tenant adopts GDPR scope (per `06-dpo-input.md`
+    # §0 Decision Matrix v2 — 10 sections total).
+    gdpr_section:
+        gdpr_lawful_basis_workplace:
+            title: 'Lawful basis for workplace data (GDPR Art. 6, 9)'
+            description: 'Embedded in the Acceptable Use Policy. Documents the lawful basis for processing employee data in the workplace incl. § 26 BDSG.'
+        gdpr_dpo_mandate:
+            title: 'DPO mandate and tasks (GDPR Art. 37-39)'
+            description: 'Embedded in the Awareness Training Programme. Describes appointment, tasks and independence of the Data Protection Officer.'
+        gdpr_special_categories:
+            title: 'Special categories of personal data (GDPR Art. 9)'
+            description: 'Embedded in the Information Classification Policy. Classification + protection rules for special categories (health, religion, trade-union membership etc.).'
+        gdpr_privacy_by_design:
+            title: 'Privacy by Design / by Default (GDPR Art. 25)'
+            description: 'Embedded in the Secure Development Policy. Privacy-by-Design gates in the SDLC and default settings for new processing activities.'
+        gdpr_ai_systems:
+            title: 'AI systems and automated decisions (GDPR Art. 22 + EU AI Act)'
+            description: 'Embedded in the Secure Development Policy. Special rules for AI-driven profiling and solely automated individual decisions.'
+        gdpr_joint_controllers:
+            title: 'Joint controllership (GDPR Art. 26)'
+            description: 'Embedded in the Supplier Security Policy. Disambiguation against processor relationships (Art. 28) and joint-controller obligations.'
+        gdpr_international_transfers:
+            title: 'International data transfers (GDPR Art. 44-49 / Schrems II)'
+            description: 'Embedded in the Information Transfer Policy. Adequacy decisions, Standard Contractual Clauses, Transfer Impact Assessments.'
+        gdpr_retention_minimisation:
+            title: 'Storage limitation and data minimisation (GDPR Art. 5(1)(c)+(e))'
+            description: 'Embedded in the Asset Management Policy. References the binding Retention Schedule as the single source of truth.'
+        gdpr_breach_72h:
+            title: 'Personal data breach notification (GDPR Art. 33)'
+            description: 'Embedded in the Incident Management Policy. 72-hour notification clock to the supervisory authority, data-subject communication.'
+        gdpr_premises_processing:
+            title: 'Personal data in physical security zones (GDPR Art. 32)'
+            description: 'Embedded in the Physical Security Policy. Protection of personal data in premises and access-control regimes.'
+

@@ -46,6 +46,7 @@ audit_log:
     pagination:
         prev: '« Zurück'
         next: 'Weiter »'
+        page_counter: 'Seite %current% von %total%'
     message:
         no_entries: 'Keine Protokolleinträge gefunden.'
         no_entries_filtered: 'Keine Protokolleinträge für den ausgewählten Filter gefunden.'
@@ -60,6 +61,7 @@ audit_log:
         about_title: 'Über das Audit Log'
         about_text: 'Das Audit Log protokolliert alle wichtigen Aktionen im System, einschließlich Erstellen, Aktualisieren und Löschen. Dies ermöglicht eine vollständige Nachvollziehbarkeit für Compliance und Sicherheit.'
         module_link: 'Zum Audit‑Log‑Modul'
+        entries: audit_log
     showing_recent: 'Showing Recent'
     entries: Entries
     view_all: 'Alle anzeigen'
@@ -89,6 +91,11 @@ audit_log:
             days: 'Aufbewahrungsdauer (Tage)'
             help: 'Zwischen %min% und %max% Tagen. Standard: %default% (entspricht 2 Jahren, ISO 27001 Clause 9.1).'
         warning: 'Änderungen nur nach Rücksprache mit Datenschutz/Compliance. DSGVO Art. 5.1(e) verlangt Minimierung, NIS2 Art. 21.2 verlangt mindestens 365 Tage.'
+        saved: 'Aufbewahrungsdauer gespeichert.'
+        csrf_invalid: 'Sicherheits-Token ungültig. Bitte erneut versuchen.'
+        error:
+            min: 'Die Aufbewahrungsdauer muss mindestens 365 Tage betragen (NIS2 Art. 21.2).'
+            max: 'Die Aufbewahrungsdauer darf 3650 Tage (10 Jahre) nicht überschreiten.'
         compliance_title: 'Regulatorische Grundlagen'
         compliance:
             gdpr: 'Speicherbegrenzung — personenbezogene Daten dürfen nicht länger aufbewahrt werden als notwendig.'

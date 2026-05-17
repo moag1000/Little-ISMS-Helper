@@ -12,6 +12,7 @@ analytics:
         refresh: Aktualisieren
         export_png: 'Als PNG exportieren'
         reset_filters: 'Filter zurücksetzen'
+        advanced: 'Erweiterte Analytics'
         back_to_basic: 'Zurück zu Basis-Analytics'
         back_to_advanced: 'Zurück zu erweiterten Analytics'
         view_dashboard: 'Dashboard ansehen'
@@ -105,8 +106,20 @@ analytics:
             matrix_title: 'Framework-Überlappungsmatrix'
         roadmap:
             title: 'Compliance-Verbesserungsplan'
+            gaps_identified: 'Lücken identifiziert'
+            high_priority: 'Hohe Priorität'
+            medium_priority: 'Mittlere Priorität'
+            low_priority: 'Niedrige Priorität'
             no_gaps: 'Keine Compliance-Lücken'
             fully_compliant: 'Herzlichen Glückwunsch! Alle Compliance-Anforderungen sind erfüllt.'
+            table:
+                framework: 'Framework'
+                requirement: 'Anforderung'
+                status: 'Status'
+                priority: 'Priorität'
+                recommendation: 'Empfehlung'
+
+    # Maßnahmenwirksamkeit Analytics
     controls:
         title: 'Maßnahmenwirksamkeit Analytics'
         subtitle: 'Performance-Analyse und Alterungsverfolgung'
@@ -193,6 +206,8 @@ analytics:
             risk_forecast: 'Risikoniveau-Prognose'
             historical: 'Historisch'
             predicted: 'Prognostiziert'
+            new_risks: 'Neue Risiken'
+            closed_risks: 'Geschlossene Risiken'
             compliant: 'Konform'
             gap: 'Lücke'
         predictions:
@@ -201,6 +216,7 @@ analytics:
             increasing: 'Steigend'
             decreasing: 'Sinkend'
             stable: 'Stabil'
+            confidence: 'Konfidenzgrad'
             change: 'Prognostizierte Änderung'
             by_level: 'Nach Risikoniveau'
         velocity:
@@ -212,6 +228,13 @@ analytics:
             avg_per_month: 'Ø pro Monat'
             period: 'Analysezeitraum'
             monthly_breakdown: 'Monatliche Aufschlüsselung'
+        table:
+            month: 'Monat'
+            new: 'Neu'
+            closed: 'Geschlossen'
+            net: 'Netto'
+            total: 'Gesamt'
+            trend: 'Trend'
         appetite:
             compliance_score: 'Risikoappetit-Compliance'
             score_description: 'Prozentsatz der Risikoniveaus innerhalb definierter Schwellenwerte'
@@ -223,6 +246,7 @@ analytics:
         anomalies:
             none_detected: 'Keine Anomalien erkannt'
             all_normal: 'Alle Risikomuster liegen innerhalb normaler Parameter.'
+            items_affected: 'Elemente betroffen'
             historical_patterns: 'Historische Anomaliemuster'
 
     # Asset-Kritikalität Analytics

@@ -2,43 +2,58 @@
 # Sprint 10A — F5b Wave 1 BSI/TISAX Library + Roundtrip
 
 library:
-    title: 'Framework Library Import/Export'
-    badge: 'Library'
-    subtitle: 'Import BSI IT-Grundschutz and TISAX VDA ISA via YAML and export for round-trip validation.'
+  title: 'Framework Library Import/Export'
+  badge: 'Library'
+  subtitle: 'Import BSI IT-Grundschutz and TISAX VDA ISA via YAML and export for round-trip validation.'
 
-    section:
-        available: 'Available Library YAMLs'
-        imported: 'Imported Frameworks'
+  section:
+    available: 'Available Library YAMLs'
+    imported: 'Imported Frameworks'
 
-    table:
-        code: 'Code'
-        name: 'Name'
-        version: 'Version'
-        body: 'Publisher'
-        status: 'Status'
-        actions: 'Actions'
+  table:
+    code: 'Code'
+    name: 'Name'
+    version: 'Version'
+    body: 'Publisher'
+    status: 'Status'
+    actions: 'Actions'
 
-    action:
-        import: 'Import'
-        export_yaml: 'Export as YAML'
-        export_csv: 'Export as CSV'
-        back: 'Back to overview'
-        file: 'File'
+  action:
+    import: 'Import'
+    export_yaml: 'Export as YAML'
+    export_csv: 'Export as CSV'
+    back: 'Back to overview'
+    file: 'File'
 
-    empty:
-        no_yamls: 'No library YAMLs found'
-        no_yamls_desc: 'Please place YAML files under fixtures/library/frameworks/.'
-        no_imports: 'No frameworks imported yet'
-        no_imports_desc: 'Import a framework using one of the available library YAMLs above.'
+  empty:
+    no_yamls: 'No library YAMLs found'
+    no_yamls_desc: 'Please place YAML files under fixtures/library/frameworks/.'
+    no_imports: 'No frameworks imported yet'
+    no_imports_desc: 'Import a framework using one of the available library YAMLs above.'
 
-    import_result:
-        title: 'Import Result: %type%'
-        success: 'Import completed successfully.'
-        partial_success: 'Import completed with warnings.'
-        errors_occurred: '%count% error(s) occurred — see details below.'
-        frameworks_created: 'Frameworks created'
-        frameworks_updated: 'Frameworks updated'
-        requirements_created: 'Requirements created'
-        requirements_updated: 'Requirements updated'
-        show_errors: 'Show %count% error(s)'
+  import_result:
+    title: 'Import Result: %type%'
+    success: 'Import completed successfully.'
+    partial_success: 'Import completed with warnings.'
+    errors_occurred: '%count% error(s) occurred — see details below.'
+    frameworks_created: 'Frameworks created'
+    frameworks_updated: 'Frameworks updated'
+    requirements_created: 'Requirements created'
+    requirements_updated: 'Requirements updated'
+    show_errors: 'Show %count% error(s)'
 
+  framework:
+    imported: 'Framework imported'
+    exported_yaml: 'Framework exported as YAML'
+    exported_csv: 'Framework exported as CSV'
+    mapping_imported: 'Mapping imported'
+
+  export:
+    yaml_success: 'YAML export started.'
+    csv_success: 'CSV export started.'
+
+  error:
+    file_not_found: 'YAML file not found: %path%'
+    invalid_metadata: 'Invalid metadata in YAML file.'
+    framework_not_found: 'Framework not found.'
+    import_failed: 'Import failed: %message%'

@@ -1,5 +1,6 @@
 eu_authorities:
     nav:
+        title: 'Behörden-Export'
         index_title: 'EU-Behörden-Templates'
         index_subtitle: 'Meldungsvorlagen für Aufsichtsbehörden'
     page:
@@ -20,6 +21,16 @@ eu_authorities:
             export_pdf: 'BfDI-PDF exportieren'
         error:
             no_processing_activities: 'Keine Verarbeitungstätigkeiten erfasst — bitte mindestens eine anlegen.'
+        column:
+            verantwortlicher: 'Verantwortlicher'
+            dpo: 'Datenschutzbeauftragter'
+            zweck: 'Verarbeitungszweck'
+            betroffene: 'Kategorien betroffener Personen'
+            daten: 'Kategorien personenbezogener Daten'
+            empfaenger: 'Empfänger'
+            drittland: 'Drittlandübermittlung'
+            loeschfristen: 'Löschfristen'
+            toms: 'Technische und organisatorische Maßnahmen'
     nis2_registration:
         page:
             title: 'NIS-2 BSI-Portal-Registrierung'
@@ -40,6 +51,8 @@ eu_authorities:
             sector: 'NIS-2-Sektor'
             category: 'Einrichtungskategorie'
             headcount: 'Betroffene Beschäftigte (Anzahl)'
+            turnover: 'Jahresumsatz in EUR (optional)'
+            ict_dependency: 'Abhängigkeit von IKT-Systemen'
             nace_codes: 'NACE-Codes'
             current_nace_codes: 'Aktuelle NACE-Codes'
             incident_contact: 'Kontakt für Vorfallsmeldungen'
@@ -49,8 +62,16 @@ eu_authorities:
             next_due: 'Nächste Fälligkeit'
             confirmation_number: 'BSI-Bestätigungsnummer'
         placeholder:
+            legal_form: 'z.B. GmbH, AG, KG …'
+            sector: 'Sektor auswählen …'
+            backup_contact: 'Keine Stellvertretung'
             confirmation_number: 'z.B. BSI-2026-XXXX-YYYY'
         help:
+            legal_form: 'Rechtsform gem. Handelsregister, z.B. GmbH, AG, GbR'
+            register_number: 'Handelsregisternummer, z.B. HRB 12345'
+            headcount: 'Anzahl der von der Einrichtung betroffenen Beschäftigten'
+            turnover: 'Jährlicher Umsatz in EUR — relevant für Schwellenwertprüfung'
+            ict_dependency: 'Kurzbeschreibung der kritischen IKT-Abhängigkeiten (max. 5 Sätze)'
             nace_codes: 'NACE-Rev.2-Codes Ihrer Haupttätigkeit'
             nace_codes_detail: 'NACE-Codes werden aus den Mandanten-Stammdaten übernommen und können dort aktualisiert werden.'
         action:
@@ -67,6 +88,17 @@ eu_authorities:
             overdue_body: 'Deadline war %date% — sofortige Einreichung erforderlich (BSIG § 33).'
             never_reported: 'Noch nicht beim BSI gemeldet'
         error:
+            legal_name_required: 'Juristischer Name ist Pflichtfeld'
+            legal_form_required: 'Rechtsform ist Pflichtfeld'
+            register_city_required: 'Handelsregistergericht ist Pflichtfeld'
+            register_number_required: 'Handelsregisternummer ist Pflichtfeld'
+            nace_codes_required: 'Mindestens ein NACE-Code ist erforderlich'
+            sector_required: 'NIS-2-Sektor ist Pflichtfeld'
+            category_invalid: 'Ungültige Einrichtungskategorie'
+            headcount_required: 'Beschäftigtenzahl muss größer als 0 sein'
+            ict_description_required: 'IKT-Abhängigkeitsbeschreibung ist Pflichtfeld'
+            incident_contact_required: 'Kontakt für Vorfallsmeldungen ist Pflichtfeld'
+            security_contact_required: 'Verantwortliche/r IT-Sicherheit ist Pflichtfeld'
             profile_incomplete: 'Profil unvollständig — bitte zuerst alle Pflichtfelder ausfüllen.'
             confirmation_number_required: 'BSI-Bestätigungsnummer ist Pflichtfeld'
         success:
@@ -124,6 +156,11 @@ eu_authorities:
             on_demand: 'Auf Anfrage'
             yearly: 'Jährlich'
             triggered: 'Ereignisbasiert'
+        obligation:
+            vvt_bfdi: 'VVT / BfDI-Export (DSGVO Art. 30)'
+            bfdi_templates: 'Behörden-Meldung-Templates (BfDI / LfDI)'
+            bsi_nis2: 'NIS-2 BSI-Portal-Registrierung'
+            dora_roi: 'DORA Register of Information (RoI XBRL)'
         action:
             open: 'Öffnen'
         empty:
@@ -168,7 +205,36 @@ eu_authorities:
             confirmation_required: 'Bestätigungsnummer ist Pflichtfeld.'
         success:
             submitted: 'DORA RoI als eingereicht markiert. Bestätigungsnummer: %number%'
+        info:
+            not_applicable_to_tenant: 'DORA ist für diesen Mandanten nicht einschlägig. Setzen Sie den DORA-Verpflichtungsstatus unter Mandanten-Einstellungen.'
+        alva:
+            overdue_authority_report:
+                title: 'EU-Behörden-Meldung überfällig'
+                body: 'Mindestens eine EU-Behörden-Meldepflicht ist überfällig. Sofortiger Handlungsbedarf.'
+                action: 'Behörden-Hub öffnen'
+            dora_roi_due:
+                title: 'DORA RoI noch nicht für dieses Jahr eingereicht'
+                body: 'Der DORA Register of Information (RoI) für das aktuelle Jahr wurde noch nicht beim Aufseher eingereicht.'
+                action: 'DORA RoI öffnen'
+        global:
+            overdue_authority_report:
+                title: 'EU-Behörden-Meldung überfällig'
+                body: 'Mindestens eine EU-Behörden-Meldepflicht ist überfällig. Sofortiger Handlungsbedarf.'
+                action: 'Behörden-Hub öffnen'
+            dora_roi_export_due:
+                title: 'DORA RoI noch nicht eingereicht'
+                body: 'Der DORA Register of Information für das aktuelle Geschäftsjahr wurde noch nicht beim zuständigen Aufseher eingereicht (DORA Art. 28).'
+                action: 'DORA RoI öffnen'
 authority:
+    bsi_meldestelle:
+        name: 'BSI-Meldestelle (NIS-2)'
+        description: 'Bundesamt für Sicherheit in der Informationstechnik — NIS-2-Meldestelle'
+    bfdi:
+        name: 'BfDI'
+        description: 'Bundesbeauftragte/r für den Datenschutz und die Informationsfreiheit'
+    lfdi:
+        name: 'LfDI'
+        description: 'Landesbeauftragte/r für den Datenschutz und die Informationsfreiheit'
     bundesland:
         bw: 'Baden-Württemberg (LfDI BW)'
         by: 'Bayern (LDA Bayern)'
@@ -189,6 +255,11 @@ authority:
     action:
         export_pdf: 'PDF exportieren'
         export_json: 'JSON exportieren'
+    error:
+        module_inactive: 'EU-Behörden-Reporting ist nicht aktiv.'
+        breach_not_found: 'Datenpanne nicht gefunden.'
+        incident_not_found: 'Vorfall nicht gefunden.'
+        unknown_authority: 'Unbekannte Behörde: %key%'
     section:
         data_breaches: 'Datenpannen-Meldungen (Art. 33 DSGVO)'
         incidents: 'Vorfalls-Meldungen (NIS-2 BSI)'
@@ -202,6 +273,11 @@ authority:
         no_breaches_body: 'Sobald eine Datenpanne angelegt ist, können Sie hier die Behörden-Meldung als PDF oder JSON exportieren.'
     nav:
         title: 'Behörden-Notification-Templates'
+    alva:
+        authority_overdue:
+            title: 'Behörden-Meldung ausstehend (DSGVO Art. 33)'
+            body: '%count% Datenpanne(n) kritisch/hoch — über 24h ohne dokumentierten Behörden-Export. DSGVO Art. 33: Meldung binnen 72h.'
+            action: 'Behörden-Export öffnen'
     global:
         authority_template_overdue:
             title: 'Behörden-Meldung ausstehend (DSGVO Art. 33)'
