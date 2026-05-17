@@ -8,7 +8,7 @@
 {% block admin_content %}
 <div class="container-fluid">
     {{ _fa_page_header.render({
-        badge: { icon: 'stopwatch', label: 'SLA' },
+        badge: { icon: 'ui-hourglass', label: 'SLA' },
         title: 'incident_sla.title'|trans({}, 'incident_sla'),
         subtitle: 'incident_sla.subtitle'|trans({}, 'incident_sla'),
     }) }}
@@ -61,7 +61,7 @@
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}
-                    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'small mb-0 mt-3', body: 'incident_sla.hint.regulatory'|trans({}, 'incident_sla') }) }}
+                    {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'small mb-0 mt-3', body: 'incident_sla.hint.regulatory'|trans({}, 'incident_sla') }) }}
                 </div>
             </section>
         </div>

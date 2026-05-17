@@ -7,7 +7,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'dpia.new.breadcrumb_gdpr'|trans({}, 'privacy'), icon: 'bi-shield-check' },
+            { label: 'dpia.new.breadcrumb_gdpr'|trans({}, 'privacy'), icon: 'shield-check' },
             { label: 'dpia.new.breadcrumb_dpia'|trans({}, 'privacy'), url: path('app_dpia_index') },
             { label: 'dpia.new.breadcrumb_new'|trans({}, 'privacy') }
         ]
@@ -16,9 +16,9 @@
     {{ _fa_page_header.render({
         title: 'dpia.new.page_title'|trans({}, 'privacy'),
         subtitle: 'dpia.new.page_subtitle'|trans({}, 'privacy'),
-        badge: { icon: 'plus-circle', label: '' },
+        badge: { icon: 'plus', label: '' },
         actions: [
-            { label: 'dpia.new.button_cancel'|trans({}, 'privacy'), href: path('app_dpia_index'), variant: 'secondary', icon: 'x-lg' }
+            { label: 'dpia.new.button_cancel'|trans({}, 'privacy'), href: path('app_dpia_index'), variant: 'secondary', icon: 'ui-close' }
         ]
     }) }}
 

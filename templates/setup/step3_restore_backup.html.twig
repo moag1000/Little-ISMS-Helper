@@ -129,7 +129,7 @@
 
                                     {# Risk-Asset and Incident-Asset Repair #}
                                     {% if backup_restore_result.risks_without_assets is defined and backup_restore_result.risks_without_assets > 0 %}
-                                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-link', class: 'mt-3' } } %}
+                                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'link', class: 'mt-3' } } %}
                                             {% block alert_body %}<p class="h5 mb-2"> <i class="fa-icon me-2 fa-icon--ui-link" aria-hidden="true"></i> {{ 'setup.step3.asset_links.title'|trans({}, 'setup') }} </p> <p> {{ 'setup.step3.asset_links.description'|trans({'%count%': backup_restore_result.risks_without_assets}, 'setup')|raw }} <a href="{{ path('admin_data_repair_index') }}" class="alert-link">{{ 'setup.step3.asset_links.link_text'|trans({}, 'setup') }}</a> {{ 'setup.step3.asset_links.suffix'|trans({}, 'setup') }} </p>{% endblock %}
                                         {% endembed %}
                                     {% endif %}
@@ -144,7 +144,7 @@
                                         </div>
                                     {% endif %}
                                 {% else %}
-                                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'bi-exclamation-circle' } } %}
+                                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'status-critical' } } %}
                                         {% block alert_body %}<strong>{{ 'setup.step3.restore_result.error'|trans({}, 'setup') }}</strong> <p class="mb-0 mt-2">{{ backup_restore_result.message }}</p>{% endblock %}
                                     {% endembed %}
                                 {% endif %}
@@ -166,7 +166,7 @@
                                 <p class="text-muted mb-3">
                                     {{ 'setup.step3.schema.description'|trans({}, 'setup') }}
                                 </p>
-                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
                                     {% block alert_body %}<strong>{{ 'setup.common.note'|trans({}, 'setup') }}:</strong> {{ 'setup.step3.schema.hint'|trans({}, 'setup') }}{% endblock %}
                                 {% endembed %}
                                 <form id="create-schema-form"
@@ -206,7 +206,7 @@
                                 </div>
                             {% endblock %}
                             {% block card_body %}
-                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle', class: 'mb-3' } } %}
+                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'status-ok', class: 'mb-3' } } %}
                                     {% block alert_body %}<strong>{{ 'setup.step3.restore.schema_success'|trans({}, 'setup') }}</strong> {{ 'setup.step3.restore.schema_success_msg'|trans({}, 'setup') }}{% endblock %}
                                 {% endembed %}
                                 <p class="text-muted">

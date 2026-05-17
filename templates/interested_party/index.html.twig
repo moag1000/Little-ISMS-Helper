@@ -16,11 +16,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'people', label: 'nav.interested_parties'|trans({}, 'nav') },
+        badge: { icon: 'nav-people', label: 'nav.interested_parties'|trans({}, 'nav') },
         title: 'interested_party.page.title'|trans({}, 'interested_parties'),
         subtitle: 'interested_party.iso_reference'|trans({}, 'interested_parties'),
         actions: [
-            { label: 'interested_party.action.add_new'|trans({}, 'interested_parties'), variant: 'primary', icon: 'plus-lg', href: path('app_interested_party_new') }
+            { label: 'interested_party.action.add_new'|trans({}, 'interested_parties'), variant: 'primary', icon: 'plus', href: path('app_interested_party_new') }
         ]
     }) }}
 {% set _global_hints = alva_hints('interested_party_index') %}
@@ -120,7 +120,7 @@
                 text: 'interested_party.empty.body'|trans({}, 'interested_parties'),
                 norm_ref: 'ISO 27001 Klausel 4.2 · ISO 9001 Klausel 4.2',
                 actions: [
-                    { label: 'interested_party.action.create_first'|trans({}, 'interested_parties'), variant: 'primary', icon: 'plus-lg', href: path('app_interested_party_new') }
+                    { label: 'interested_party.action.create_first'|trans({}, 'interested_parties'), variant: 'primary', icon: 'plus', href: path('app_interested_party_new') }
                 ],
                 help_link: 'interested_party.help.empty_link'|trans({}, 'interested_parties')
             }) }}

@@ -17,9 +17,9 @@
 
             {{ _fa_page_header.render({
     title: ('incident.edit'|trans({}, 'incident')) ~ ': ' ~ (incident.title),
-    badge: { icon: 'pencil', label: '' },
+    badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_incident_show', {id: incident.id}), variant: 'ghost', icon: 'arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_incident_show', {id: incident.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
 

@@ -17,14 +17,14 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'server', label: 'asset.modern.header.title'|trans({}, 'asset') },
+    badge: { icon: 'asset-server', label: 'asset.modern.header.title'|trans({}, 'asset') },
     title: 'asset.modern.header.title'|trans({}, 'asset'),
     subtitle: 'asset.modern.header.subtitle'|trans({}, 'asset'),
     actions: [
-        { label: 'asset.action.print_all_labels'|trans({}, 'asset'), href: path('app_asset_qr_labels_bulk'), variant: 'ghost', icon: 'qr-code' },
-        { label: 'asset.action.quick_new'|trans({}, 'asset'), href: path('app_asset_new_quick'), variant: 'ghost', icon: 'lightning' },
-        { label: 'asset.action.create'|trans({}, 'asset'), href: path('app_asset_new'), variant: 'primary', icon: 'plus-lg' }
-    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'asset', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
+        { label: 'asset.action.print_all_labels'|trans({}, 'asset'), href: path('app_asset_qr_labels_bulk'), variant: 'ghost', icon: 'ui-key' },
+        { label: 'asset.action.quick_new'|trans({}, 'asset'), href: path('app_asset_new_quick'), variant: 'ghost', icon: 'ui-lightbulb' },
+        { label: 'asset.action.create'|trans({}, 'asset'), href: path('app_asset_new'), variant: 'primary', icon: 'plus' }
+    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'asset', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
 }) }}
 {% set _global_hints = alva_hints('asset_index') %}
 {% if _global_hints|length > 0 %}
@@ -79,7 +79,7 @@
 {# KPI Cards Grid #}
 <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
     {{ _fa_feature_card.render({
-        icon: 'server',
+        icon: 'asset-server',
         label: 'asset.modern.kpi.total'|trans({}, 'asset'),
         value: detailedStats.total,
         hint: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant')) : null,
@@ -89,7 +89,7 @@
 
     {% set criticalAssets = assets|filter(a => a.confidentialityValue >= 4 or a.integrityValue >= 4 or a.availabilityValue >= 4)|length %}
     {{ _fa_feature_card.render({
-        icon: 'shield-exclamation',
+        icon: 'nav-shield-alert',
         label: 'asset.modern.kpi.critical'|trans({}, 'asset'),
         value: criticalAssets,
         variant: 'danger',
@@ -98,7 +98,7 @@
 
     {% set avgCIA = (assets|reduce((carry, asset) => carry + asset.confidentialityValue + asset.integrityValue + asset.availabilityValue, 0) / (assets|length > 0 ? assets|length * 3 : 1))|round(1) %}
     {{ _fa_feature_card.render({
-        icon: 'bar-chart',
+        icon: 'nav-bar-chart',
         label: 'asset.modern.kpi.avg_cia'|trans({}, 'asset'),
         value: avgCIA,
         unit: 'asset.modern.kpi.unit.out_of_5'|trans({}, 'asset'),
@@ -112,7 +112,7 @@
         {% endif %}
     {% endfor %}
     {{ _fa_feature_card.render({
-        icon: 'exclamation-triangle',
+        icon: 'status-warning',
         label: 'asset.modern.kpi.with_risks'|trans({}, 'asset'),
         value: assetsWithRisks,
         unit: '/ ' ~ assets|length,
@@ -254,10 +254,10 @@
     {# Foundation P-14 — show "Create from template" CTA if templates exist #}
     {% set _system_templates = system_templates('App\\Entity\\Asset') %}
     {% include '_components/_empty_state.html.twig' with {
-        icon: 'bi-server',
+        icon: 'asset-server',
         title: 'asset.modern.empty.title'|trans({}, 'asset'),
         description: 'asset.modern.empty.description'|trans({}, 'asset'),
-        action: { label: 'asset.action.create'|trans({}, 'asset'), url: path('app_asset_new'), icon: 'bi-plus-circle' },
+        action: { label: 'asset.action.create'|trans({}, 'asset'), url: path('app_asset_new'), icon: 'plus' },
         norm_ref: 'ISO 27001 A.5.9 · ISO 9001: Infrastruktur (7.1.3)',
         help_link: path('app_help_glossary') ~ '#glossary-asset'
     } %}
@@ -265,7 +265,7 @@
         <div class="text-center mt-3">
             <button type="button" class="btn btn-outline-primary"
                     data-bs-toggle="modal" data-bs-target="#systemTemplateModalAsset">
-                <i class="bi bi-collection" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
                 {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
             </button>
             <div class="form-text small">

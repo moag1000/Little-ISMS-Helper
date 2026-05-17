@@ -18,11 +18,11 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'clipboard-check', label: 'nav.treatment_plans'|trans({}, 'nav') },
+    badge: { icon: 'nav-clipboard-check', label: 'nav.treatment_plans'|trans({}, 'nav') },
     title: 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan'),
     subtitle: 'risk_treatment_plan.description'|trans({}, 'risk_treatment_plan'),
     actions: [
-        { label: 'risk_treatment_plan.new'|trans({}, 'risk_treatment_plan'), variant: 'primary', icon: 'plus-lg', href: path('app_risk_treatment_plan_new') }
+        { label: 'risk_treatment_plan.new'|trans({}, 'risk_treatment_plan'), variant: 'primary', icon: 'plus', href: path('app_risk_treatment_plan_new') }
     ]
 }) }}
 {% set _global_hints = alva_hints('risk_treatment_plan_index') %}
@@ -146,7 +146,7 @@
                 <td>
                     <strong>{{ plan.title }}</strong>
                     {% if plan.isOverdue() %}
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-2', icon: 'bi-exclamation-triangle', content: 'risk_treatment_plan.overdue'|trans({}, 'risk_treatment_plan') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-2', icon: 'status-warning', content: 'risk_treatment_plan.overdue'|trans({}, 'risk_treatment_plan') } %}
                     {% endif %}
                 </td>
                 <td>

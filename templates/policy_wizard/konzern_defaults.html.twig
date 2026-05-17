@@ -11,13 +11,13 @@
 {% block body %}
 <div class="container-fluid py-4 fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge: { icon: 'building', label: 'policy_wizard.konzern_defaults.badge'|trans },
+        badge: { icon: 'nav-building', label: 'policy_wizard.konzern_defaults.badge'|trans },
         title: 'policy_wizard.konzern_defaults.title'|trans,
         subtitle: 'policy_wizard.konzern_defaults.subtitle'|trans,
         actions: [
             { label: 'policy_wizard.action.back'|trans,
               variant: 'ghost',
-              icon: 'arrow-left',
+              icon: 'util-arrow-left',
               href: path('app_policy_wizard_index') }
         ]
     }) }}

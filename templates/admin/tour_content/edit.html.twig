@@ -10,7 +10,7 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'stars', label: 'admin.tour_content.title'|trans({}, 'admin') },
+        badge: { icon: 'ui-stars', label: 'admin.tour_content.title'|trans({}, 'admin') },
         title: ('guided_tour.' ~ tour_id ~ '.meta.label')|trans({}, 'guided_tour'),
         subtitle: tour_id,
     }) }}

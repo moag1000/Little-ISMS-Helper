@@ -18,9 +18,9 @@
 
 {{ _fa_page_header.render({
     title: ('soa.action.edit'|trans({}, 'soa')) ~ ': ' ~ (control.controlId),
-    badge: { icon: 'pencil', label: '' },
+    badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_soa_index'), variant: 'ghost', icon: 'arrow-left' }
+        { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_soa_index'), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}

@@ -18,14 +18,14 @@
     } %}
 
     {% set _show_actions = [
-        { label: 'incident.action.edit'|trans({}, 'incident'), variant: 'primary', icon: 'pencil', href: path('app_incident_edit', {id: incident.id}) }
+        { label: 'incident.action.edit'|trans({}, 'incident'), variant: 'primary', icon: 'ui-edit', href: path('app_incident_edit', {id: incident.id}) }
     ] %}
     {% if is_nis2_active() and incident.requiresNis2Reporting %}
-        {% set _show_actions = _show_actions|merge([{ label: 'incident.action.download_nis2_report'|trans({}, 'incident'), variant: 'accent', icon: 'file-earmark-pdf', href: path('app_incident_nis2_report', {id: incident.id}), attrs: { 'data-turbo': 'false' } }]) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'incident.action.download_nis2_report'|trans({}, 'incident'), variant: 'accent', icon: 'nav-file-pdf', href: path('app_incident_nis2_report', {id: incident.id}), attrs: { 'data-turbo': 'false' } }]) %}
     {% endif %}
-    {% set _show_actions = _show_actions|merge([{ label: 'incident.action.back_to_list'|trans({}, 'incident'), variant: 'ghost', icon: 'arrow-left', href: path('app_incident_index') }]) %}
+    {% set _show_actions = _show_actions|merge([{ label: 'incident.action.back_to_list'|trans({}, 'incident'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_incident_index') }]) %}
     {{ _fa_page_header.render({
-        badge: { icon: 'exclamation-octagon', label: 'nav.incidents'|trans({}, 'nav') },
+        badge: { icon: 'status-critical', label: 'nav.incidents'|trans({}, 'nav') },
         title: incident.title,
         actions: _show_actions
     }) }}
@@ -162,7 +162,7 @@
                     {{ pill.render(incident.status.value|upper|replace({'_': ' '}), pill_tone_status(incident.status)) }}
                     {% if is_nis2_active() and incident.requiresNis2Reporting %}
                         {% set nis2Status = incident.nis2ComplianceStatus %}
-                        {{ pill.render(('incident.nis2_compliance.' ~ nis2Status)|trans({}, 'incident'), pill_tone_nis2(nis2Status), { icon: 'bi-award' }) }}
+                        {{ pill.render(('incident.nis2_compliance.' ~ nis2Status)|trans({}, 'incident'), pill_tone_nis2(nis2Status), { icon: 'certificate' }) }}
                     {% endif %}
                 </div>
             </div>

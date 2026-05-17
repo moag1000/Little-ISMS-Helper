@@ -14,9 +14,9 @@
             subtitle: 'home.description'|trans({}, 'messages'),
             actions: [
                 { label: 'home.go_to_dashboard'|trans({}, 'messages'),
-                  variant: 'primary', icon: 'bi-grid', href: path('app_dashboard') },
+                  variant: 'primary', icon: 'grid', href: path('app_dashboard') },
                 { label: 'common.view_details'|trans({}, 'messages'),
-                  variant: 'ghost', icon: 'bi-info-circle', href: '#features' }
+                  variant: 'ghost', icon: 'status-info', href: '#features' }
             ],
             alvaSize: 160
         }) }}
@@ -26,7 +26,7 @@
             {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
             <div class="col-md-4">
                 {{ _fa_feature_card.render({
-                    icon: 'box',
+                    icon: 'nav-boxes',
                     label: 'assets'|trans({}, 'messages'),
                     value: stats.assets|default(0),
                     variant: 'primary',
@@ -35,7 +35,7 @@
             </div>
             <div class="col-md-4">
                 {{ _fa_feature_card.render({
-                    icon: 'exclamation-triangle',
+                    icon: 'status-warning',
                     label: 'risks'|trans({}, 'messages'),
                     value: stats.risks|default(0),
                     variant: 'warning',

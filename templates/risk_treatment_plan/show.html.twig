@@ -17,12 +17,12 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge:    { icon: 'list-task', label: 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan') },
+    badge:    { icon: 'ui-list', label: 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan') },
     title:    plan.title,
     subtitle: 'risk_treatment_plan.show.subtitle'|trans({}, 'risk_treatment_plan') ~ (plan.isOverdue() ? ' • ' ~ 'risk_treatment_plan.overdue'|trans({}, 'risk_treatment_plan') : ''),
     actions: [
-        { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil',     href: path('app_risk_treatment_plan_edit',  {id: plan.id}) },
-        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost',   icon: 'arrow-left', href: path('app_risk_treatment_plan_index') }
+        { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit',     href: path('app_risk_treatment_plan_edit',  {id: plan.id}) },
+        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost',   icon: 'util-arrow-left', href: path('app_risk_treatment_plan_index') }
     ]
 }) }}
 

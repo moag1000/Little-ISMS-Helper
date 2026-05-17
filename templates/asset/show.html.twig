@@ -21,15 +21,15 @@
 
     {% set _show_actions = [] %}
     {% if canEdit is defined and canEdit %}
-        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_asset_edit', {id: asset.id}) }]) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_asset_edit', {id: asset.id}) }]) %}
     {% endif %}
     {% set _show_actions = _show_actions|merge([
         { label: 'asset.action.bcm_insights'|trans({}, 'asset'), variant: 'ghost', href: path('app_asset_bcm_insights', {id: asset.id}) },
-        { label: 'asset.action.qr_label'|trans({}, 'asset'), variant: 'ghost', icon: 'qr-code', href: path('app_asset_qr_label', {id: asset.id}), attrs: { 'data-turbo': 'false', title: 'asset.action.print_qr_label'|trans({}, 'asset') } },
+        { label: 'asset.action.qr_label'|trans({}, 'asset'), variant: 'ghost', icon: 'ui-key', href: path('app_asset_qr_label', {id: asset.id}), attrs: { 'data-turbo': 'false', title: 'asset.action.print_qr_label'|trans({}, 'asset') } },
         { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_asset_index') }
     ]) %}
     {{ _fa_page_header.render({
-        badge: (isInherited is defined and isInherited) ? { icon: 'building', label: 'corporate.inherited'|trans({}, 'messages') } : null,
+        badge: (isInherited is defined and isInherited) ? { icon: 'nav-building', label: 'corporate.inherited'|trans({}, 'messages') } : null,
         title: asset.name,
         actions: _show_actions
     }) }}
@@ -84,7 +84,7 @@
                 <div class="detail-section">
                     {% include '_components/_badge.html.twig' with {
                         variant: 'warning',
-                        icon: 'bi-bank',
+                        icon: 'nav-building',
                         content: 'DORA Art. 28'
                     } %}
                     <small class="text-muted ms-2">{{ 'asset.help.is_dora_relevant'|trans({}, 'asset') }}</small>

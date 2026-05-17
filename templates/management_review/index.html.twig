@@ -15,10 +15,10 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'clipboard2-check', label: 'nav.management_reviews'|trans({}, 'nav') },
+        badge: { icon: 'nav-clipboard-check', label: 'nav.management_reviews'|trans({}, 'nav') },
         title: 'management_review.title'|trans({}, 'management_review'),
         actions: is_granted('ROLE_ADMIN') ? [
-            { label: 'management_review.new'|trans({}, 'management_review'), variant: 'primary', icon: 'plus-circle', href: path('app_management_review_new'), attrs: {'data-turbo-action': 'advance'} }
+            { label: 'management_review.new'|trans({}, 'management_review'), variant: 'primary', icon: 'plus', href: path('app_management_review_new'), attrs: {'data-turbo-action': 'advance'} }
         ] : []
     }) }}
 

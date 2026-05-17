@@ -16,9 +16,9 @@
 
     {{ _fa_page_header.render({
     title: ('objective.title.edit'|trans({}, 'objective')) ~ ': ' ~ (objective.title),
-    badge: { icon: 'pencil', label: '' },
+    badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_objective_show', {id: objective.id}), variant: 'ghost', icon: 'arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_objective_show', {id: objective.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
 

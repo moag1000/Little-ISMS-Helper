@@ -34,32 +34,32 @@
                 <div class="role-hierarchy-chain d-flex flex-wrap align-items-center gap-2 p-3 bg-body-secondary rounded">
                     {% include '_components/_badge.html.twig' with {
                         variant: 'secondary',
-                        icon: 'bi-person',
+                        icon: 'ui-person',
                         content: 'user.role.user'|trans({}, 'user')
                     } %}
                     <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                     {% include '_components/_badge.html.twig' with {
                         variant: 'info',
-                        icon: 'bi-search',
+                        icon: 'ui-search',
                         content: 'user.role.auditor'|trans({}, 'user')
                     } %}
                     <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                     {% include '_components/_badge.html.twig' with {
                         variant: 'primary',
-                        icon: 'bi-briefcase',
+                        icon: 'nav-building',
                         content: 'user.role.manager'|trans({}, 'user')
                     } %}
                     <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                     {% include '_components/_badge.html.twig' with {
                         variant: 'warning',
-                        icon: 'bi-gear',
+                        icon: 'nav-gear',
                         class: '',
                         content: 'user.role.admin'|trans({}, 'user')
                     } %}
                     <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                     {% include '_components/_badge.html.twig' with {
                         variant: 'danger',
-                        icon: 'bi-shield-lock',
+                        icon: 'nav-shield-lock',
                         content: 'user.role.super_admin'|trans({}, 'user')
                     } %}
                 </div>

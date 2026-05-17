@@ -8,7 +8,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'dsr.breadcrumb.privacy'|trans({}, 'data_subject_request'), icon: 'bi-shield-lock' },
+            { label: 'dsr.breadcrumb.privacy'|trans({}, 'data_subject_request'), icon: 'nav-shield-lock' },
             { label: 'dsr.breadcrumb.data_subject_requests'|trans({}, 'data_subject_request'), url: path('app_data_subject_request_index') },
             { label: '#' ~ dsr.id, url: path('app_data_subject_request_show', {id: dsr.id}) },
             { label: 'dsr.page.edit_title'|trans({}, 'data_subject_request') }
@@ -18,9 +18,9 @@
     {{ _fa_page_header.render({
         title: 'dsr.page.edit_title'|trans({}, 'data_subject_request'),
         subtitle: dsr.dataSubjectName ~ ' - ' ~ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request'),
-        badge: { icon: 'pencil-square', label: '' },
+        badge: { icon: 'ui-edit', label: '' },
         actions: [
-            { label: 'common.cancel'|trans({}, 'messages'), href: path('app_data_subject_request_show', {id: dsr.id}), variant: 'secondary', icon: 'x-lg' }
+            { label: 'common.cancel'|trans({}, 'messages'), href: path('app_data_subject_request_show', {id: dsr.id}), variant: 'secondary', icon: 'ui-close' }
         ]
     }) }}
 

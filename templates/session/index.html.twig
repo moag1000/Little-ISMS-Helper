@@ -193,7 +193,7 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
                     {% block alert_body %}{{ 'session.no_sessions_found'|trans({}, 'session') }}{% endblock %}
                 {% endembed %}
             {% endif %}
@@ -201,7 +201,7 @@
     {% endembed %}
 
     {# Info Box #}
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle', class: 'mt-4' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'status-ok', class: 'mt-4' } } %}
         {% block alert_body %}{{ 'session.info_box'|trans({'%max_concurrent%': statistics.max_concurrent}, 'session')|raw }}{% endblock %}
     {% endembed %}
 {% endblock %}

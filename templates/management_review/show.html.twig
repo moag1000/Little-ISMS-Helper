@@ -19,7 +19,7 @@
     </nav>
 
     {{ _fa_page_header.render({
-        badge: { icon: 'clipboard2-check', label: 'management_review.title'|trans({}, 'management_review') },
+        badge: { icon: 'nav-clipboard-check', label: 'management_review.title'|trans({}, 'management_review') },
         title: review.title
     }) }}
 
@@ -171,7 +171,7 @@
                     {% if review.decisions %}
                     <div class="mb-3">
                         <div class="text-muted small fw-semibold">{{ 'management_review.decisions'|trans({}, 'management_review') }}</div>
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-gavel' } } %}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'regulator' } } %}
                             {% block alert_body %}<strong><i class="fa-icon fa-icon--review" aria-hidden="true"></i> {{ 'management_review.management_decisions'|trans({}, 'management_review') }}</strong> <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>{% endblock %}
                         {% endembed %}
                     </div>
@@ -180,7 +180,7 @@
                     {% if review.actionItems %}
                     <div class="mb-0">
                         <div class="text-muted small fw-semibold">{{ 'management_review.action_items'|trans({}, 'management_review') }}</div>
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-list-check' } } %}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'nav-list-check' } } %}
                             {% block alert_body %}<strong><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'management_review.action_items_label'|trans({}, 'management_review') }}</strong> <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>{% endblock %}
                         {% endembed %}
                     </div>

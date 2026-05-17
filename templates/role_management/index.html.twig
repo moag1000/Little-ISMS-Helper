@@ -15,12 +15,12 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'shield-lock', label: 'nav.roles'|trans({}, 'nav') },
+    badge: { icon: 'nav-shield-lock', label: 'nav.roles'|trans({}, 'nav') },
     title: 'role_management.title.list'|trans({}, 'role_management'),
     subtitle: 'role_management.description.overview'|trans({}, 'role_management'),
     actions: [
-        { label: 'role_management.action.compare'|trans({}, 'role_management'), variant: 'ghost', icon: 'arrow-left-right', href: path('role_management_compare') },
-        { label: 'role_management.action.create'|trans({}, 'role_management'), variant: 'primary', icon: 'plus-lg', href: path('role_management_new') }
+        { label: 'role_management.action.compare'|trans({}, 'role_management'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_compare') },
+        { label: 'role_management.action.create'|trans({}, 'role_management'), variant: 'primary', icon: 'plus', href: path('role_management_new') }
     ]
 }) }}
 

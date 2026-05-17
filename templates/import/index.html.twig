@@ -17,7 +17,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'upload', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
+        badge: { icon: 'ui-upload', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
         title: 'import.page.title'|trans({}, 'data_import'),
         subtitle: 'import.page.subtitle'|trans({}, 'data_import'),
         actions: [
@@ -25,7 +25,7 @@
                 label: 'import.action.upload'|trans({}, 'data_import'),
                 href: path('app_bulk_import_upload', { _locale: app.request.locale, entityType: entityType }),
                 variant: 'primary',
-                icon: 'upload'
+                icon: 'ui-upload'
             }
         ]
     }) }}
@@ -43,7 +43,7 @@
                     label: 'import.delta.total'|trans({}, 'data_import'),
                     value: totalBatches,
                     variant: 'primary',
-                    icon: 'layers'
+                    icon: 'nav-collection'
                 }) }}
             </div>
             <div class="col-md-4">
@@ -51,7 +51,7 @@
                     label: 'import.delta.creates'|trans({}, 'data_import'),
                     value: successBatches,
                     variant: 'success',
-                    icon: 'check-circle'
+                    icon: 'status-ok'
                 }) }}
             </div>
             <div class="col-md-4">
@@ -59,7 +59,7 @@
                     label: 'import.delta.errors'|trans({}, 'data_import'),
                     value: failedBatches,
                     variant: 'danger',
-                    icon: 'exclamation-triangle'
+                    icon: 'status-warning'
                 }) }}
             </div>
         </div>
@@ -150,7 +150,7 @@
                         label: 'import.action.upload'|trans({}, 'data_import'),
                         href: path('app_bulk_import_upload', { _locale: app.request.locale, entityType: entityType }),
                         variant: 'primary',
-                        icon: 'upload'
+                        icon: 'ui-upload'
                     }
                 ]
             }) }}

@@ -20,11 +20,11 @@
     } only %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'zoom-in', label: framework_code|default('—') },
+        badge:    { icon: 'util-zoom-in', label: framework_code|default('—') },
         title:    'compliance_manager.heatmap.drill.title'|trans({'%framework%': framework_code, '%section%': section_code ?: 'compliance_manager.heatmap.drill.all_sections'|trans}),
         subtitle: 'compliance_manager.heatmap.drill.subtitle'|trans,
         actions: [
-            { label: 'compliance_manager.heatmap.drill.back'|trans, variant: 'ghost', icon: 'arrow-left', href: path('app_dashboard_compliance_manager') ~ '#coverage-heatmap' }
+            { label: 'compliance_manager.heatmap.drill.back'|trans, variant: 'ghost', icon: 'util-arrow-left', href: path('app_dashboard_compliance_manager') ~ '#coverage-heatmap' }
         ]
     }) }}
 

@@ -10,7 +10,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'dsr.breadcrumb.privacy'|trans({}, 'data_subject_request'), icon: 'bi-shield-lock' },
+            { label: 'dsr.breadcrumb.privacy'|trans({}, 'data_subject_request'), icon: 'nav-shield-lock' },
             { label: 'dsr.breadcrumb.data_subject_requests'|trans({}, 'data_subject_request'), url: path('app_data_subject_request_index') },
             { label: '#' ~ dsr.id }
         ]
@@ -20,11 +20,11 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'person-raised-hand', label: '#' ~ dsr.id },
+        badge:    { icon: 'ui-person', label: '#' ~ dsr.id },
         title:    dsr.dataSubjectName,
         subtitle: ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') ~ ' (' ~ dsr.gdprArticle ~ ')',
         actions: [
-            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_data_subject_request_index') }
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_data_subject_request_index') }
         ]
     }) }}
 

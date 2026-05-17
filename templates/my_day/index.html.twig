@@ -11,46 +11,46 @@
 {% block body %}
 <main class="fa-aurora-surface my-day">
     {{ _fa_page_header.render({
-        badge:    { icon: 'inboxes', label: 'badge'|trans },
+        badge:    { icon: 'nav-inbox', label: 'badge'|trans },
         title:    'title'|trans,
         subtitle: 'subtitle'|trans({'%generated_at%': inbox.generated_at|date('d.m.Y H:i')}),
         actions: [
-            { label: 'action.standard_dashboard'|trans, variant: 'ghost', icon: 'house', href: path('app_dashboard') }
+            { label: 'action.standard_dashboard'|trans, variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
         ]
     }) }}
 
     {# KPI tile bar — Counts per category #}
     <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
         {{ _fa_feature_card.render({
-            icon: 'arrow-counterclockwise',
+            icon: 'ui-undo',
             label: 'kpi.workflows_pending'|trans,
             value: inbox.summary.workflows_pending,
             variant: inbox.summary.workflows_pending > 0 ? 'warning' : 'success',
             href: '#workflows-pending'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'exclamation-octagon',
+            icon: 'status-critical',
             label: 'kpi.workflows_overdue'|trans,
             value: inbox.summary.workflows_overdue,
             variant: inbox.summary.workflows_overdue > 0 ? 'danger' : 'success',
             href: '#workflows-overdue'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'people',
+            icon: 'nav-people',
             label: 'kpi.four_eyes'|trans,
             value: inbox.summary.four_eyes,
             variant: inbox.summary.four_eyes > 0 ? 'warning' : 'success',
             href: '#four-eyes'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'check2-square',
+            icon: 'ui-check',
             label: 'kpi.acknowledgements'|trans,
             value: inbox.summary.acknowledgements,
             variant: inbox.summary.acknowledgements > 0 ? 'primary' : 'success',
             href: '#acknowledgements'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'search',
+            icon: 'ui-search',
             label: 'kpi.findings'|trans,
             value: inbox.summary.findings,
             variant: inbox.summary.findings > 0 ? 'warning' : 'success',
@@ -64,28 +64,28 @@
             href: '#dsrs'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'hourglass-bottom',
+            icon: 'ui-hourglass',
             label: 'kpi.corrective_actions_overdue'|trans,
             value: inbox.summary.corrective_actions_overdue,
             variant: inbox.summary.corrective_actions_overdue > 0 ? 'danger' : 'success',
             href: '#corrective-actions'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'shield-exclamation',
+            icon: 'nav-shield-alert',
             label: 'kpi.risk_acceptance_expiring'|trans,
             value: inbox.summary.risk_acceptance_expiring,
             variant: inbox.summary.risk_acceptance_expiring > 0 ? 'warning' : 'success',
             href: '#risk-acceptance-expiring'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'file-earmark-text',
+            icon: 'nav-file-earmark-text',
             label: 'kpi.documents_review_overdue'|trans,
             value: inbox.summary.documents_review_overdue,
             variant: inbox.summary.documents_review_overdue > 0 ? 'danger' : 'success',
             href: '#documents-review-overdue'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'mortarboard',
+            icon: 'nav-mortarboard',
             label: 'kpi.trainings_pending'|trans,
             value: inbox.summary.trainings_pending,
             variant: inbox.summary.trainings_pending > 0 ? 'primary' : 'success',
@@ -93,14 +93,14 @@
         }) }}
         {# Audit V4 V4-LB-1 Round-2 — 6 ISB-Tagesgeschäft tiles #}
         {{ _fa_feature_card.render({
-            icon: 'exclamation-octagon',
+            icon: 'status-critical',
             label: 'kpi.incidents_open_assigned'|trans,
             value: inbox.summary.incidents_open_assigned,
             variant: inbox.summary.incidents_open_assigned > 0 ? 'danger' : 'success',
             href: '#incidents-open-assigned'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'shield-exclamation',
+            icon: 'nav-shield-alert',
             label: 'kpi.data_breaches_72h_ticking'|trans,
             value: inbox.summary.data_breaches_72h_ticking,
             variant: inbox.summary.data_breaches_72h_ticking > 0 ? 'danger' : 'success',
@@ -114,21 +114,21 @@
             href: '#vulnerabilities-critical-unpatched'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'clipboard-check',
+            icon: 'nav-clipboard-check',
             label: 'kpi.audit_checklist_due'|trans,
             value: inbox.summary.audit_checklist_due,
             variant: inbox.summary.audit_checklist_due > 0 ? 'primary' : 'success',
             href: '#audit-checklist-due'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'arrow-repeat',
+            icon: 'util-refresh',
             label: 'kpi.change_requests_pending_approval'|trans,
             value: inbox.summary.change_requests_pending_approval,
             variant: inbox.summary.change_requests_pending_approval > 0 ? 'primary' : 'success',
             href: '#change-requests-pending-approval'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'clipboard-data',
+            icon: 'nav-clipboard-data',
             label: 'kpi.management_review_upcoming'|trans,
             value: inbox.summary.management_review_upcoming,
             variant: inbox.summary.management_review_upcoming > 0 ? 'success' : 'success',
@@ -137,7 +137,7 @@
         {# V4-EF-7 — Compliance-Manager CM-Buckets (only shown when non-zero) #}
         {% if inbox.summary.documents_pending_approval_for_me is defined %}
         {{ _fa_feature_card.render({
-            icon: 'file-earmark-check',
+            icon: 'nav-file-check',
             label: 'kpi.documents_pending_approval_for_me'|trans,
             value: inbox.summary.documents_pending_approval_for_me,
             variant: inbox.summary.documents_pending_approval_for_me > 0 ? 'warning' : 'success',
@@ -146,7 +146,7 @@
         {% endif %}
         {% if inbox.summary.wizard_overdue is defined %}
         {{ _fa_feature_card.render({
-            icon: 'hourglass-split',
+            icon: 'ui-hourglass',
             label: 'kpi.wizard_overdue'|trans,
             value: inbox.summary.wizard_overdue,
             variant: inbox.summary.wizard_overdue > 0 ? 'warning' : 'success',
@@ -155,7 +155,7 @@
         {% endif %}
         {% if inbox.summary.framework_gaps_critical is defined %}
         {{ _fa_feature_card.render({
-            icon: 'bar-chart-line',
+            icon: 'nav-bar-chart',
             label: 'kpi.framework_gaps_critical'|trans,
             value: inbox.summary.framework_gaps_critical,
             variant: inbox.summary.framework_gaps_critical > 0 ? 'danger' : 'success',

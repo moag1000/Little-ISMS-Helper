@@ -7,7 +7,7 @@
 <div class="container-fluid py-4">
     {{ _fa_page_header.render({
         title: ('audit_finding.page.edit'|trans({}, 'audits')) ~ ': ' ~ finding.title,
-        badge: { icon: 'pencil', label: '' }
+        badge: { icon: 'ui-edit', label: '' }
     }) }}
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}

@@ -40,7 +40,7 @@
 </div>
 
 {% if auto_seeded is defined and auto_seeded > 0 %}
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle-fill' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'status-ok' } } %}
         {% block alert_body %}{{ 'soa.message.auto_seeded'|trans({'%count%': auto_seeded}, 'soa') }}{% endblock %}
     {% endembed %}
 {% endif %}
@@ -75,7 +75,7 @@
         {% endblock %}
     {% endembed %}
 {% elseif controls|length == 0 %}
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
         {% block alert_body %}{{ 'soa.empty.no_controls_in_category'|trans({'%category%': category, '%total%': total_for_tenant}, 'soa') }}{% endblock %}
     {% endembed %}
 {% endif %}
@@ -104,19 +104,19 @@
             </td>
             <td class="text-center">
                 {% if control.applicable %}
-                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check', content: 'soa.value.yes'|trans({}, 'soa') } %}
+                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'check', content: 'soa.value.yes'|trans({}, 'soa') } %}
                 {% else %}
-                    {% include '_components/_badge.html.twig' with { variant: 'neutral', icon: 'bi-x', content: 'soa.value.no'|trans({}, 'soa') } %}
+                    {% include '_components/_badge.html.twig' with { variant: 'neutral', icon: 'ui-x', content: 'soa.value.no'|trans({}, 'soa') } %}
                 {% endif %}
             </td>
             <td>
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'implemented' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'soa.status.implemented'|trans({}, 'soa') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'soa.status.implemented'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'in_progress' %}
                         {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.in_progress_badge_emoji'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'not_started' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-pause-circle', content: 'soa.status.not_started'|trans({}, 'soa') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'pause', content: 'soa.status.not_started'|trans({}, 'soa') } %}
                     {% else %}
                         {% include '_components/_badge.html.twig' with { variant: 'neutral', content: 'soa.value.na'|trans({}, 'soa') } %}
                     {% endif %}

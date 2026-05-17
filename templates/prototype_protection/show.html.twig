@@ -29,13 +29,13 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-shaded', label: ('prototype_protection.status.' ~ assessment.status)|trans({}, 'prototype_protection') },
+        badge: { icon: 'nav-shield', label: ('prototype_protection.status.' ~ assessment.status)|trans({}, 'prototype_protection') },
         title: assessment.title,
         subtitle: assessment.tisaxLevel|default(''),
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_prototype_protection_edit', {id: assessment.id}) },
-            { label: 'prototype_protection.action.pdf'|trans({}, 'prototype_protection'), variant: 'ghost', icon: 'file-earmark-pdf', href: path('app_prototype_protection_pdf', {id: assessment.id}), attrs: { 'data-turbo': 'false' } },
-            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_prototype_protection_index') }
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_prototype_protection_edit', {id: assessment.id}) },
+            { label: 'prototype_protection.action.pdf'|trans({}, 'prototype_protection'), variant: 'ghost', icon: 'nav-file-pdf', href: path('app_prototype_protection_pdf', {id: assessment.id}), attrs: { 'data-turbo': 'false' } },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_prototype_protection_index') }
         ]
     }) }}
 

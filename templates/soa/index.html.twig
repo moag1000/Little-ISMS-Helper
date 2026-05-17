@@ -26,11 +26,11 @@
     title: 'soa.page.title'|trans({}, 'soa'),
     subtitle: 'soa.page.subtitle'|trans({}, 'soa'),
     actions: [
-        { label: 'soa.action.export_html'|trans({}, 'soa'), variant: 'ghost', icon: 'file-earmark-text', href: path('app_soa_export') },
-        { label: 'soa.action.export_pdf'|trans({}, 'soa'), variant: 'secondary', icon: 'file-earmark-pdf', href: path('app_soa_export_pdf') },
-        { label: 'soa.action.preview_pdf'|trans({}, 'soa'), variant: 'ghost', icon: 'eye', href: path('app_soa_preview_pdf') }
+        { label: 'soa.action.export_html'|trans({}, 'soa'), variant: 'ghost', icon: 'nav-file-earmark-text', href: path('app_soa_export') },
+        { label: 'soa.action.export_pdf'|trans({}, 'soa'), variant: 'secondary', icon: 'nav-file-pdf', href: path('app_soa_export_pdf') },
+        { label: 'soa.action.preview_pdf'|trans({}, 'soa'), variant: 'ghost', icon: 'ui-eye', href: path('app_soa_preview_pdf') }
     ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_index') }] : [])
-     |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'control', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
+     |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'control', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
 }) }}
 {% set _global_hints = alva_hints('soa_index') %}
 {% if _global_hints|length > 0 %}
@@ -368,15 +368,15 @@
             <td>
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'verified' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-patch-check', content: 'soa.status.verified'|trans({}, 'soa') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'nav-patch-check', content: 'soa.status.verified'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'implemented' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'soa.status.implemented'|trans({}, 'soa') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'soa.status.implemented'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-arrow-clockwise', content: 'soa.status.in_progress'|trans({}, 'soa') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'util-refresh', content: 'soa.status.in_progress'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'planned' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-calendar-event', content: 'soa.status.planned'|trans({}, 'soa') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'ui-calendar-event', content: 'soa.status.planned'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'not_started' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-pause-circle', content: 'soa.status.not_started'|trans({}, 'soa') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'pause', content: 'soa.status.not_started'|trans({}, 'soa') } %}
                     {% else %}
                         {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: 'soa.value.na'|trans({}, 'soa') } %}
                     {% endif %}
@@ -419,7 +419,7 @@
     text: 'soa.empty.body'|trans({}, 'soa'),
     norm_ref: 'ISO 27001 Klausel 6.1.3 d · A.5.1ff',
     actions: [
-        { label: 'soa.empty.create_first'|trans({}, 'soa'), variant: 'primary', icon: 'plus-lg', href: path('app_soa_index') }
+        { label: 'soa.empty.create_first'|trans({}, 'soa'), variant: 'primary', icon: 'plus', href: path('app_soa_index') }
     ],
     help_link: path('app_help_glossary') ~ '#glossary-soa'
 }) }}

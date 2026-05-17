@@ -32,7 +32,7 @@
             label: 'evidence.kpi.total_documents'|trans({}, 'evidence'),
             value: totalDocuments,
             variant: 'primary',
-            icon: 'file-earmark-text'
+            icon: 'nav-file-earmark-text'
         }) }}
     </div>
     <div class="col-md-3">
@@ -49,7 +49,7 @@
             value: coverage.coverage_percent,
             unit: '%',
             variant: coverage.coverage_percent >= 80 ? 'success' : (coverage.coverage_percent >= 50 ? 'warning' : 'danger'),
-            icon: 'pie-chart-fill'
+            icon: 'nav-pie-chart'
         }) }}
     </div>
     <div class="col-md-3">
@@ -57,7 +57,7 @@
             label: 'evidence.kpi.gaps'|trans({}, 'evidence'),
             value: coverage.missing|length,
             variant: coverage.missing|length == 0 ? 'success' : 'danger',
-            icon: 'exclamation-triangle'
+            icon: 'status-warning'
         }) }}
     </div>
 </div>

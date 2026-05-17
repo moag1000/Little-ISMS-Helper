@@ -17,15 +17,15 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'exclamation-triangle', label: 'nav.risks'|trans({}, 'nav') },
+    badge: { icon: 'status-warning', label: 'nav.risks'|trans({}, 'nav') },
     title: 'risk.modern.header.title'|trans({}, 'risk'),
     subtitle: 'risk.modern.header.subtitle'|trans({}, 'risk'),
     actions: [
-        { label: 'risk.action.quick_new'|trans({}, 'risk'), variant: 'ghost', icon: 'lightning', href: path('app_risk_new_quick') },
-        { label: 'risk.modern.header.action.new'|trans({}, 'risk'), variant: 'primary', icon: 'plus-lg', href: path('app_risk_new') },
-        { label: 'risk.modern.header.action.matrix'|trans({}, 'risk'), variant: 'ghost', icon: 'grid-3x3', href: path('app_risk_matrix') }
+        { label: 'risk.action.quick_new'|trans({}, 'risk'), variant: 'ghost', icon: 'ui-lightbulb', href: path('app_risk_new_quick') },
+        { label: 'risk.modern.header.action.new'|trans({}, 'risk'), variant: 'primary', icon: 'plus', href: path('app_risk_new') },
+        { label: 'risk.modern.header.action.matrix'|trans({}, 'risk'), variant: 'ghost', icon: 'nav-grid', href: path('app_risk_matrix') }
     ]|merge(is_granted('ROLE_AUDITOR') ? [{ label: 'audit_workbook.action.export_xlsx'|trans({}, 'audit_workbook'), variant: 'success', icon: 'download', href: path('app_audit_workbook_risk_register') }] : [])
-     |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'risk', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
+     |merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'risk', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
 }) }}
 {% set _global_hints = alva_hints('risk_index') %}
 {% if _global_hints|length > 0 %}
@@ -79,7 +79,7 @@
 {# KPI Cards Grid #}
 <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
     {{ _fa_feature_card.render({
-        icon: 'exclamation-triangle',
+        icon: 'status-warning',
         label: 'risk.modern.kpi.total'|trans({}, 'risk'),
         value: detailedStats.total,
         hint: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
@@ -90,7 +90,7 @@
     {# ISO 27001 compliant thresholds #}
     {% set criticalRisks = risks|filter(r => r.getRiskScore() >= 20)|length %}
     {{ _fa_feature_card.render({
-        icon: 'shield-fill-exclamation',
+        icon: 'nav-shield-alert',
         label: 'risk.modern.kpi.critical'|trans({}, 'risk'),
         value: criticalRisks,
         variant: 'danger',
@@ -100,7 +100,7 @@
 
     {% set highRisks = risks|filter(r => r.getRiskScore() >= 12 and r.getRiskScore() < 20)|length %}
     {{ _fa_feature_card.render({
-        icon: 'exclamation-circle',
+        icon: 'status-critical',
         label: 'risk.modern.kpi.high'|trans({}, 'risk'),
         value: highRisks,
         variant: 'warning',
@@ -109,7 +109,7 @@
 
     {% set avgResidualRisk = risks|length > 0 ? (risks|reduce((carry, risk) => carry + risk.getResidualRiskLevel(), 0) / risks|length)|round(1) : 0 %}
     {{ _fa_feature_card.render({
-        icon: 'graph-down',
+        icon: 'nav-bar-chart',
         label: 'risk.modern.kpi.avg_residual'|trans({}, 'risk'),
         value: avgResidualRisk,
         unit: 'risk.modern.kpi.unit.max'|trans({}, 'risk'),
@@ -171,10 +171,10 @@
         <div class="row">
             {# TODO(aurora-v4-icons): treatment icon dict — bi-shield-check/bi-check-circle/bi-x-circle inline dict, migrate when Twig allows fa-icon class construction #}
             {% set treatments = {
-                'mitigate': { label: 'risk.index.treatment.mitigate'|trans({}, 'risk'), icon: 'bi-shield-check', color: 'success' },
-                'accept': { label: 'risk.index.treatment.accept'|trans({}, 'risk'), icon: 'bi-check-circle', color: 'info' },
-                'transfer': { label: 'risk.index.treatment.transfer'|trans({}, 'risk'), icon: 'bi-arrow-right-circle', color: 'warning' },
-                'avoid': { label: 'risk.index.treatment.avoid'|trans({}, 'risk'), icon: 'bi-x-circle', color: 'danger' }
+                'mitigate': { label: 'risk.index.treatment.mitigate'|trans({}, 'risk'), icon: 'shield-check', color: 'success' },
+                'accept': { label: 'risk.index.treatment.accept'|trans({}, 'risk'), icon: 'status-ok', color: 'info' },
+                'transfer': { label: 'risk.index.treatment.transfer'|trans({}, 'risk'), icon: 'ui-arrow-right', color: 'warning' },
+                'avoid': { label: 'risk.index.treatment.avoid'|trans({}, 'risk'), icon: 'status-critical', color: 'danger' }
             } %}
             {% for strategy, data in treatments %}
                 {% set count = risks|filter(r => r.treatmentStrategy and r.treatmentStrategy.value == strategy)|length %}
@@ -288,10 +288,10 @@
     {# Foundation P-14 — "Create from template" (ISO 27005 catalog, BSI hazards) #}
     {% set _system_templates = system_templates('App\\Entity\\Risk') %}
     {% include '_components/_empty_state.html.twig' with {
-        icon: 'bi-exclamation-triangle',
+        icon: 'status-warning',
         title: 'risk.index.empty.title'|trans({}, 'risk'),
         description: 'risk.index.empty.description'|trans({}, 'risk'),
-        action: { label: 'risk.index.empty.action'|trans({}, 'risk'), url: path('app_risk_new'), icon: 'bi-plus-circle' },
+        action: { label: 'risk.index.empty.action'|trans({}, 'risk'), url: path('app_risk_new'), icon: 'plus' },
         norm_ref: 'ISO 27001 Clause 6.1.2 · ISO 9001: Risiken & Chancen (6.1)',
         help_link: path('app_help_glossary') ~ '#glossary-risk'
     } %}
@@ -299,7 +299,7 @@
         <div class="text-center mt-3">
             <button type="button" class="btn btn-outline-primary"
                     data-bs-toggle="modal" data-bs-target="#systemTemplateModalRisk">
-                <i class="bi bi-collection" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
                 {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
             </button>
             <div class="form-text small">

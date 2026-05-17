@@ -16,7 +16,7 @@
 
     {# Page Header — Aurora v4 fa-page-header #}
     {{ _fa_page_header.render({
-        badge:    { icon: 'file-earmark-bar-graph', label: 'reports.badge'|trans({}, 'aurora_components') },
+        badge:    { icon: 'nav-bar-chart', label: 'reports.badge'|trans({}, 'aurora_components') },
         title:    'reports.compliance.title'|trans({}, 'reports'),
         subtitle: 'reports.compliance.subtitle'|trans({}, 'reports')
     }) }}
@@ -47,9 +47,9 @@
                                 <i class="fa-icon fa-icon--nav-reports text-primary me-2" aria-hidden="true"></i>
                                 <strong>{{ 'reports.license_report.detailed_report'|trans({}, 'reports') }}</strong> - {{ 'reports.license_report.detailed_report_desc'|trans({}, 'reports') }}
                                 {% if license_stats.exists %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'reports.status.available'|trans({}, 'reports'), class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'reports.status.available'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% else %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'reports.status.not_generated'|trans({}, 'reports'), class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-warning', content: 'reports.status.not_generated'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% endif %}
                             </li>
                             <li>
@@ -97,9 +97,9 @@
                                 <i class="fa-icon fa-icon--control fa-icon--danger me-2" aria-hidden="true"></i>
                                 <strong>{{ 'reports.security_report.owasp_2025'|trans({}, 'reports') }}</strong> {{ 'reports.security_report.owasp_2025_label'|trans({}, 'reports') }}
                                 {% if security_stats.owasp_2025.exists %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'reports.status.available'|trans({}, 'reports'), class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'reports.status.available'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% else %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'reports.status.not_generated'|trans({}, 'reports'), class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-warning', content: 'reports.status.not_generated'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% endif %}
                                 {% if security_stats.owasp_2025.updated_at %}
                                     <br>
@@ -110,9 +110,9 @@
                                 <i class="fa-icon fa-icon--compliance-shield fa-icon--danger me-2" aria-hidden="true"></i>
                                 <strong>{{ 'reports.security_report.owasp_2021'|trans({}, 'reports') }}</strong> {{ 'reports.security_report.owasp_2021_label'|trans({}, 'reports') }}
                                 {% if security_stats.owasp_2021.exists %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'reports.status.available'|trans({}, 'reports'), class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'reports.status.available'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% else %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'reports.status.not_generated'|trans({}, 'reports'), class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-warning', content: 'reports.status.not_generated'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% endif %}
                                 {% if security_stats.owasp_2021.updated_at %}
                                     <br>

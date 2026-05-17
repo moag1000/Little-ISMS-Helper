@@ -17,10 +17,10 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'arrow-repeat', label: 'change_request.title'|trans({}, 'change_requests') },
+        badge: { icon: 'util-refresh', label: 'change_request.title'|trans({}, 'change_requests') },
         title: 'change_request.page.title'|trans({}, 'change_requests'),
         actions: [
-            { label: 'change_request.action.create'|trans({}, 'change_requests'), href: path('app_change_request_new'), variant: 'primary', icon: 'plus-lg' }
+            { label: 'change_request.action.create'|trans({}, 'change_requests'), href: path('app_change_request_new'), variant: 'primary', icon: 'plus' }
         ]
     }) }}
 {% set _global_hints = alva_hints('change_request_index') %}
@@ -129,7 +129,7 @@
                 mood: 'sleeping',
                 title: 'change_request.empty.message'|trans({}, 'change_requests'),
                 actions: [
-                    { label: 'change_request.empty.create_first'|trans({}, 'change_requests'), variant: 'primary', icon: 'plus-circle', href: path('app_change_request_new') }
+                    { label: 'change_request.empty.create_first'|trans({}, 'change_requests'), variant: 'primary', icon: 'plus', href: path('app_change_request_new') }
                 ]
             }) }}
             {% endif %}

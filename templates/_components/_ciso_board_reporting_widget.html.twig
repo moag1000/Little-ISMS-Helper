@@ -27,14 +27,14 @@
 {% set tiles %}
     <div class="kpi-grid">
         {{ _fa_feature_card.render({
-            icon: 'file-earmark-text',
+            icon: 'nav-file-earmark-text',
             label: 'policy_wizard.widget.board_reporting.kpi_total_policies'|trans,
             value: kpis.total_policies,
             variant: 'primary'
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'hourglass-split',
+            icon: 'ui-hourglass',
             label: 'policy_wizard.widget.board_reporting.kpi_pending_approvals'|trans,
             value: kpis.pending_approvals,
             variant: kpis.pending_approvals > 0 ? 'warning' : 'success',
@@ -44,14 +44,14 @@
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'shield-exclamation',
+            icon: 'nav-shield-alert',
             label: 'policy_wizard.widget.board_reporting.kpi_open_findings'|trans,
             value: kpis.open_findings,
             variant: kpis.open_findings > 0 ? 'danger' : 'success'
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'check2-square',
+            icon: 'ui-check',
             label: 'policy_wizard.widget.board_reporting.kpi_ack_coverage'|trans,
             value: kpis.ack_coverage_percent|number_format(1, '.', ''),
             unit: '%',
@@ -60,7 +60,7 @@
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'shield-lock',
+            icon: 'nav-shield-lock',
             label: 'policy_wizard.widget.board_reporting.kpi_dpo_veto_count'|trans,
             value: kpis.dpo_veto_count,
             variant: kpis.dpo_veto_count > 0 ? 'warning' : 'primary',

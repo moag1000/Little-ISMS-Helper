@@ -8,11 +8,11 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {{ _fa_page_header.render({
-    badge: { icon: 'compass', label: 'wizard.title'|trans({}, 'wizard') },
+    badge: { icon: 'nav-target', label: 'wizard.title'|trans({}, 'wizard') },
     title: 'wizard.title'|trans({}, 'wizard'),
     subtitle: 'wizard.subtitle'|trans({}, 'wizard'),
     actions: available_wizards|length > 1 ? [
-        { label: 'wizard.compare_frameworks'|trans({}, 'wizard'), href: path('app_compliance_wizard_compare'), variant: 'ghost', icon: 'columns-gap' }
+        { label: 'wizard.compare_frameworks'|trans({}, 'wizard'), href: path('app_compliance_wizard_compare'), variant: 'ghost', icon: 'nav-grid' }
     ] : []
 }) }}
 {% set _global_hints = alva_hints('compliance_wizard_index') %}
@@ -53,7 +53,7 @@
                     <div class="mb-3">
                         <small class="text-muted d-block mb-1">{{ 'wizard.required_modules'|trans({}, 'wizard') }}:</small>
                         {% for mod in wizard.required_modules %}
-                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', class: 'me-1', content: mod } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', class: 'me-1', content: mod } %}
                         {% endfor %}
                     </div>
 
@@ -62,9 +62,9 @@
                         <small class="text-muted d-block mb-1">{{ 'wizard.recommended_modules'|trans({}, 'wizard') }}:</small>
                         {% for mod in wizard.recommended_modules %}
                             {% if mod in active_modules %}
-                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', class: 'me-1', content: mod } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', class: 'me-1', content: mod } %}
                             {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', class: 'me-1', content: mod } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-warning', class: 'me-1', content: mod } %}
                             {% endif %}
                         {% endfor %}
                     </div>

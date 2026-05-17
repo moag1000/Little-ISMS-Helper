@@ -9,7 +9,7 @@
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.documents'|trans({}, 'nav'), url: path('app_document_index'), icon: 'bi-file-earmark-text' },
+        { label: 'nav.documents'|trans({}, 'nav'), url: path('app_document_index'), icon: 'nav-file-earmark-text' },
         { label: document.originalFilename, url: path('app_document_show', {id: document.id}) },
         { label: 'document.edit'|trans({}, 'document') }
     ]
@@ -18,9 +18,9 @@
 {# Page Header #}
 {{ _fa_page_header.render({
     title: 'document.edit'|trans({}, 'document') ~ ': ' ~ document.originalFilename,
-    badge: { icon: 'pencil', label: '' },
+    badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_document_show', {id: document.id}), variant: 'secondary', icon: 'arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_document_show', {id: document.id}), variant: 'secondary', icon: 'util-arrow-left' }
     ]
 }) }}
 

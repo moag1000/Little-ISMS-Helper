@@ -29,7 +29,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'clipboard-data', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
+        badge: { icon: 'nav-clipboard-data', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
         title: 'import.page.title'|trans({}, 'data_import'),
         subtitle: 'import.wizard.step.diff.title'|trans({}, 'data_import'),
         actions: batch.rowCountError > 0 ? [
@@ -70,7 +70,7 @@
         {% if isCommitting %}
             {{ _fa_alert.render({
                 variant: 'info',
-                icon: 'bi-hourglass-split',
+                icon: 'ui-hourglass',
                 body: 'import.wizard.step.commit.title'|trans({}, 'data_import') ~ '…'
             }) }}
         {% endif %}
@@ -82,7 +82,7 @@
                     label: 'import.delta.creates'|trans({}, 'data_import'),
                     value: batch.rowCountSuccess - batch.rowCountUpdated,
                     variant: 'success',
-                    icon: 'plus-circle'
+                    icon: 'plus'
                 }) }}
             </div>
             <div class="col-6 col-md-3">
@@ -90,7 +90,7 @@
                     label: 'import.delta.updates'|trans({}, 'data_import'),
                     value: batch.rowCountUpdated,
                     variant: 'primary',
-                    icon: 'pencil-square'
+                    icon: 'ui-edit'
                 }) }}
             </div>
             <div class="col-6 col-md-3">
@@ -98,7 +98,7 @@
                     label: 'import.delta.unchanged'|trans({}, 'data_import'),
                     value: batch.rowCountSkipped,
                     variant: 'primary',
-                    icon: 'dash-circle'
+                    icon: 'ui-x'
                 }) }}
             </div>
             <div class="col-6 col-md-3">
@@ -106,7 +106,7 @@
                     label: 'import.delta.errors'|trans({}, 'data_import'),
                     value: batch.rowCountError,
                     variant: batch.rowCountError > 0 ? 'danger' : 'primary',
-                    icon: 'exclamation-triangle'
+                    icon: 'status-warning'
                 }) }}
             </div>
         </div>

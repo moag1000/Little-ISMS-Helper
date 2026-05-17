@@ -18,11 +18,11 @@
     {% set hint = alva_hint(finding) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
     {{ _fa_page_header.render({
-        badge:    { icon: 'exclamation-circle', label: finding.(findingNumber ?? ('#' ~ finding.id)) },
+        badge:    { icon: 'status-critical', label: finding.(findingNumber ?? ('#' ~ finding.id)) },
         title:    finding.title,
         subtitle: finding.clauseReference|default(null),
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'),                       variant: 'ghost',   icon: 'pencil', href: path('app_audit_finding_edit',     {id: finding.id}) },
+            { label: 'common.edit'|trans({}, 'messages'),                       variant: 'ghost',   icon: 'ui-edit', href: path('app_audit_finding_edit',     {id: finding.id}) },
             { label: 'corrective_action.action.new'|trans({}, 'audits'),        variant: 'primary', icon: 'plus',   href: path('app_corrective_action_new', {findingId: finding.id}) }
         ]
     }) }}

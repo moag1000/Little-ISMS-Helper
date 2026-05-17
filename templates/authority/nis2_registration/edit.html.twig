@@ -8,14 +8,14 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'eu_authorities.page.title'|trans({}, 'eu_authorities'), icon: 'bi-building-check' },
+            { label: 'eu_authorities.page.title'|trans({}, 'eu_authorities'), icon: 'nav-building-check' },
             { label: 'eu_authorities.nis2_registration.page.title'|trans, url: path('nis2_registration_index') },
             { label: 'eu_authorities.nis2_registration.page.edit_title'|trans }
         ]
     } %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'pencil-square', label: 'NIS-2' },
+        badge:    { icon: 'ui-edit', label: 'NIS-2' },
         title:    'eu_authorities.nis2_registration.page.edit_title'|trans,
         subtitle: 'eu_authorities.nis2_registration.page.edit_subtitle'|trans,
         actions: [

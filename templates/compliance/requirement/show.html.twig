@@ -17,12 +17,12 @@
     </nav>
 
     {{ _fa_page_header.render({
-        badge: { icon: 'list-check', label: requirement.framework.code },
+        badge: { icon: 'nav-list-check', label: requirement.framework.code },
         title: requirement.requirementId,
         subtitle: requirement.title,
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_compliance_requirement_edit', {id: requirement.id}) },
-            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_compliance_requirement_index') ~ '?framework=' ~ requirement.framework.id }
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_compliance_requirement_edit', {id: requirement.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_requirement_index') ~ '?framework=' ~ requirement.framework.id }
         ]
     }) }}
 
@@ -274,7 +274,7 @@
                     </div>
 
                     {% if calculated_fulfillment != fulfillment.fulfillmentPercentage %}
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-calculator' } } %}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'nav-clipboard-data' } } %}
                             {% block alert_body %}<small><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> Calculated from controls: <strong>{{ calculated_fulfillment }}%</strong></small>{% endblock %}
                         {% endembed %}
                     {% endif %}
@@ -431,7 +431,7 @@
                             </button>
                         </form>
                     {% else %}
-                        {{ _fa_alert.render({ variant: 'warning', icon: 'bi-lock', class: 'mt-3', body: 'You cannot edit inherited fulfillment data. Only the parent tenant can modify this.' }) }}
+                        {{ _fa_alert.render({ variant: 'warning', icon: 'ui-lock', class: 'mt-3', body: 'You cannot edit inherited fulfillment data. Only the parent tenant can modify this.' }) }}
                     {% endif %}
 
                     <script>

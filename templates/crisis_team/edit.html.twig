@@ -16,9 +16,9 @@
 
     {{ _fa_page_header.render({
     title: ('crisis_team.edit'|trans({}, 'crisis_team')) ~ ': ' ~ (crisis_team.teamName),
-    badge: { icon: 'pencil', label: '' },
+    badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_crisis_team_show', {id: crisis_team.id}), variant: 'ghost', icon: 'arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_crisis_team_show', {id: crisis_team.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
 

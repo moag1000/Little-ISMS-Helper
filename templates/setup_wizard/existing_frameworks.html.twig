@@ -32,7 +32,7 @@
         <p class="text-muted mb-0">{{ 'existing_frameworks.description'|trans({}, 'setup_wizard') }}</p>
     </header>
 
-    {{ _fa_alert.render({ variant: 'info', icon: 'bi-lightbulb', body: '<strong>' ~ ('existing_frameworks.info.title'|trans({}, 'setup_wizard')) ~ '</strong> ' ~ ('existing_frameworks.info.message'|trans({}, 'setup_wizard')) }) }}
+    {{ _fa_alert.render({ variant: 'info', icon: 'ui-lightbulb', body: '<strong>' ~ ('existing_frameworks.info.title'|trans({}, 'setup_wizard')) ~ '</strong> ' ~ ('existing_frameworks.info.message'|trans({}, 'setup_wizard')) }) }}
 
     {{ form_start(form, {
         'attr': {
@@ -155,7 +155,7 @@
              aria-live="polite"
              aria-busy="false"
              aria-label="{{ 'existing_frameworks.preview.aria_label'|trans({}, 'setup_wizard') }}">
-            {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'border', body: 'existing_frameworks.preview.idle'|trans({}, 'setup_wizard') }) }}
+            {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'border', body: 'existing_frameworks.preview.idle'|trans({}, 'setup_wizard') }) }}
         </div>
     </div>
 

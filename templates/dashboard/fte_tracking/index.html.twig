@@ -19,12 +19,12 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'clock-history', label: 'fte_tracking.badge'|trans({}, 'fte_tracking') },
+        badge: { icon: 'nav-clock-history', label: 'fte_tracking.badge'|trans({}, 'fte_tracking') },
         title: 'fte_tracking.dashboard.title'|trans({}, 'fte_tracking'),
         subtitle: 'fte_tracking.dashboard.subtitle'|trans({}, 'fte_tracking'),
         actions: [
-            { label: 'fte_tracking.action.board_report'|trans({}, 'fte_tracking'), variant: 'ghost', icon: 'file-earmark-pdf', href: path('analytics_fte_board_report', {_locale: app.request.locale}) ~ '?format=pdf' },
-            { label: 'fte_tracking.action.calibrate'|trans({}, 'fte_tracking'), variant: 'secondary', icon: 'sliders', href: path('analytics_fte_calibration', {_locale: app.request.locale}) }
+            { label: 'fte_tracking.action.board_report'|trans({}, 'fte_tracking'), variant: 'ghost', icon: 'nav-file-pdf', href: path('analytics_fte_board_report', {_locale: app.request.locale}) ~ '?format=pdf' },
+            { label: 'fte_tracking.action.calibrate'|trans({}, 'fte_tracking'), variant: 'secondary', icon: 'nav-sliders', href: path('analytics_fte_calibration', {_locale: app.request.locale}) }
         ]
     }) }}
 
@@ -32,7 +32,7 @@
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             {{ _fa_feature_card.render({
-                icon: 'stopwatch',
+                icon: 'ui-hourglass',
                 label: 'fte_tracking.kpi.savings_90d'|trans({}, 'fte_tracking'),
                 value: total_savings_hours ~ ' h',
                 description: 'fte_tracking.kpi.savings_90d_desc'|trans({}, 'fte_tracking'),
@@ -41,7 +41,7 @@
         </div>
         <div class="col-md-4">
             {{ _fa_feature_card.render({
-                icon: 'graph-up-arrow',
+                icon: 'nav-bar-chart',
                 label: 'fte_tracking.kpi.all_time'|trans({}, 'fte_tracking'),
                 value: all_time_savings_hours ~ ' h',
                 description: 'fte_tracking.kpi.all_time_desc'|trans({}, 'fte_tracking'),
@@ -50,7 +50,7 @@
         </div>
         <div class="col-md-4">
             {{ _fa_feature_card.render({
-                icon: 'lightning-charge',
+                icon: 'ui-lightbulb',
                 label: 'fte_tracking.kpi.top_source'|trans({}, 'fte_tracking'),
                 value: by_source|length > 0 ? (by_source|keys|first) : '—',
                 description: 'fte_tracking.kpi.top_source_desc'|trans({}, 'fte_tracking'),

@@ -9,7 +9,7 @@
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'context_management.title'|trans({}, 'context'), url: path('app_context_index'), icon: 'bi-building' },
+            { label: 'context_management.title'|trans({}, 'context'), url: path('app_context_index'), icon: 'nav-building' },
             { label: context.organizationName, url: path('app_context_index') },
             { label: 'common.edit'|trans({}, 'messages') }
         ]
@@ -18,9 +18,9 @@
     {{ _fa_page_header.render({
         title: 'context.edit.title'|trans({}, 'context'),
         subtitle: 'context.info.subtitle'|trans({}, 'context'),
-        badge: { icon: 'building', label: '' },
+        badge: { icon: 'nav-building', label: '' },
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), href: path('app_context_index'), variant: 'secondary', icon: 'arrow-left' }
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_context_index'), variant: 'secondary', icon: 'util-arrow-left' }
         ]
     }) }}
 

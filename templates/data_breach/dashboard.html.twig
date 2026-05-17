@@ -7,7 +7,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'Privacy', icon: 'bi-shield-lock' },
+            { label: 'Privacy', icon: 'nav-shield-lock' },
             { label: 'Data Breaches', url: path('app_data_breach_index') },
             { label: 'Dashboard' }
         ]
@@ -16,10 +16,10 @@
     {% include '_components/_page_header.html.twig' with {
         title: 'Data Breach Dashboard',
         subtitle: 'GDPR Art. 33/34 Compliance Overview',
-        icon: 'bi-speedometer2',
+        icon: 'nav-dashboard',
         actions: [
-            { label: 'View All Breaches', url: path('app_data_breach_index'), variant: 'primary', icon: 'bi-list' },
-            { label: 'New Data Breach', url: path('app_data_breach_new'), variant: 'danger', icon: 'bi-plus-lg' }
+            { label: 'View All Breaches', url: path('app_data_breach_index'), variant: 'primary', icon: 'ui-list' },
+            { label: 'New Data Breach', url: path('app_data_breach_new'), variant: 'danger', icon: 'plus' }
         ]
     } %}
 

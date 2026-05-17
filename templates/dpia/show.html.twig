@@ -9,7 +9,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.privacy'|trans({}, 'nav'), icon: 'bi-shield-check' },
+            { label: 'nav.privacy'|trans({}, 'nav'), icon: 'shield-check' },
             { label: 'nav.dpia'|trans({}, 'nav'), url: path('app_dpia_index') },
             { label: dpia.referenceNumber }
         ]
@@ -19,12 +19,12 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'clipboard-check', label: dpia.referenceNumber },
+        badge:    { icon: 'nav-clipboard-check', label: dpia.referenceNumber },
         title:    dpia.title,
         subtitle: 'Version ' ~ dpia.version,
         actions: [
-            { label: 'dpia.action.export_pdf'|trans({}, 'privacy'), variant: 'success', icon: 'file-pdf',   href: path('app_dpia_export_pdf', {id: dpia.id}) },
-            { label: 'common.back_to_list'|trans({}, 'messages'),   variant: 'ghost',   icon: 'arrow-left', href: path('app_dpia_index') }
+            { label: 'dpia.action.export_pdf'|trans({}, 'privacy'), variant: 'success', icon: 'nav-file-pdf',   href: path('app_dpia_export_pdf', {id: dpia.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'),   variant: 'ghost',   icon: 'util-arrow-left', href: path('app_dpia_index') }
         ]
     }) }}
     {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_dpia_export_pdf', route_params: {id: dpia.id}} only %}

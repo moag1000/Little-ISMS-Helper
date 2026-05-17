@@ -289,7 +289,7 @@ export default class extends Controller {
                         data-action="click->notifications#deleteNotification:stop"
                         data-notifications-id-param="${notification.id}"
                         title="${this.deleteTitleValue}">
-                    <i class="bi-x"></i>
+                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                 </button>
             </div>
         `;
@@ -298,7 +298,7 @@ export default class extends Controller {
     renderEmpty() {
         this.listTarget.innerHTML = `
             <div class="notification-empty">
-                <i class="bi-bell-slash" style="font-size: 3rem; color: #ccc;"></i>
+                <i class="fa-icon fa-icon--bell" style="font-size: 3rem; color: #ccc;" aria-hidden="true"></i>
                 <p class="mt-3 mb-0">${this.emptyTitleValue}</p>
                 <p class="text-muted small">${this.emptyMessageValue}</p>
             </div>
@@ -319,11 +319,12 @@ export default class extends Controller {
     }
 
     getIconClass(type) {
+        // Aurora-namespaced icon classes (see assets/styles/fairy-aurora-icons.css)
         const icons = {
-            success: 'bi-check-circle-fill',
-            info: 'bi-info-circle-fill',
-            warning: 'bi-exclamation-triangle-fill',
-            danger: 'bi-x-circle-fill'
+            success: 'fa-icon fa-icon--status-ok',
+            info: 'fa-icon fa-icon--status-info',
+            warning: 'fa-icon fa-icon--status-warning',
+            danger: 'fa-icon fa-icon--status-critical'
         };
         return icons[type] || icons.info;
     }

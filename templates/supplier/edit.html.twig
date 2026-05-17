@@ -17,9 +17,9 @@
 
     {{ _fa_page_header.render({
     title: ('supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers')),
-    badge: { icon: 'pencil', label: '' },
+    badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: 'supplier.action.view'|trans({}, 'suppliers'), href: path('app_supplier_show', {id: supplier.id}), variant: 'ghost', icon: 'arrow-left' }
+        { label: 'supplier.action.view'|trans({}, 'suppliers'), href: path('app_supplier_show', {id: supplier.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
 

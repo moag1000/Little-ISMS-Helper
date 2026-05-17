@@ -122,7 +122,7 @@ export default class extends Controller {
                             <span class="badge bg-primary rounded-pill fs-6">${index + 1}</span>
                         </div>
                         <div class="step-icon me-3">
-                            <i class="bi ${stepTypeIcon} fs-4 text-${this.getStepTypeColor(step.stepType)}"></i>
+                            <i class="fa-icon fa-icon--${stepTypeIcon} fs-4 text-${this.getStepTypeColor(step.stepType)}" aria-hidden="true"></i>
                         </div>
                         <div class="flex-grow-1">
                             <h5 class="card-title mb-1">${this.escapeHtml(step.name || 'Unnamed Step')}</h5>
@@ -163,12 +163,13 @@ export default class extends Controller {
     }
 
     getStepTypeIcon(stepType) {
+        // Aurora-namespaced icon names (see assets/styles/fairy-aurora-icons.css)
         const icons = {
-            'approval': 'bi-check-circle',
-            'notification': 'bi-bell',
-            'auto_action': 'bi-gear'
+            'approval': 'approve',
+            'notification': 'bell',
+            'auto_action': 'nav-gear'
         };
-        return icons[stepType] || 'bi-circle';
+        return icons[stepType] || 'ui-circle';
     }
 
     getStepTypeColor(stepType) {

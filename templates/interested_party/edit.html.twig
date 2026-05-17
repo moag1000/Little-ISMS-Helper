@@ -16,9 +16,9 @@
 
     {{ _fa_page_header.render({
     title: ('interested_party.page.edit_title'|trans({}, 'interested_parties')) ~ ': ' ~ (interested_party.name),
-    badge: { icon: 'pencil', label: '' },
+    badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: 'common.view'|trans({}, 'messages'), href: path('app_interested_party_show', {id: interested_party.id}), variant: 'ghost', icon: 'arrow-left' }
+        { label: 'common.view'|trans({}, 'messages'), href: path('app_interested_party_show', {id: interested_party.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
 

@@ -8,18 +8,18 @@
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'threat.title.index'|trans({}, 'threat'), url: path('app_threat_intelligence_index'), icon: 'bi-shield-exclamation' },
+            { label: 'threat.title.index'|trans({}, 'threat'), url: path('app_threat_intelligence_index'), icon: 'nav-shield-alert' },
             { label: threat.title }
         ]
     } %}
 
     {% set _show_actions = [] %}
     {% if is_granted('ROLE_MANAGER') %}
-        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_threat_intelligence_edit', {id: threat.id}) }]) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_threat_intelligence_edit', {id: threat.id}) }]) %}
     {% endif %}
-    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_threat_intelligence_index') }]) %}
+    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_threat_intelligence_index') }]) %}
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-exclamation', label: 'threat.title.index'|trans({}, 'threat') },
+        badge: { icon: 'nav-shield-alert', label: 'threat.title.index'|trans({}, 'threat') },
         title: threat.title,
         actions: _show_actions
     }) }}

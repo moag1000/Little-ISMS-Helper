@@ -12,12 +12,12 @@
 <main class="fa-aurora-surface role-dashboard auditor-dashboard">
     {# Page Header — Aurora v4 fa-page-header #}
     {{ _fa_page_header.render({
-        badge:    { icon: 'clipboard-check', label: 'auditor.badge'|trans({}, 'dashboards') },
+        badge:    { icon: 'nav-clipboard-check', label: 'auditor.badge'|trans({}, 'dashboards') },
         title:    'auditor.title'|trans({}, 'dashboards'),
         subtitle: 'auditor.subtitle'|trans({}, 'dashboards'),
         actions: [
-            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'house',          href: path('app_dashboard') },
-            { label: 'action.audit_plan'|trans({}, 'dashboards'),         variant: 'primary', icon: 'journal-check',  href: path('app_audit_index') }
+            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'nav-home',          href: path('app_dashboard') },
+            { label: 'action.audit_plan'|trans({}, 'dashboards'),         variant: 'primary', icon: 'nav-clipboard-check',  href: path('app_audit_index') }
         ]
     }) }}
 

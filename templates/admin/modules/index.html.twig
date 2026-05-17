@@ -34,10 +34,10 @@
 } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'puzzle', label: 'Modules' },
+        badge: { icon: 'nav-puzzle', label: 'Modules' },
         title: 'admin.modules.title'|trans({}, 'admin'),
         actions: [
-            { label: 'admin.modules.dependency_graph'|trans({}, 'admin'), variant: 'ghost', icon: 'diagram-3', href: path('admin_modules_graph') }
+            { label: 'admin.modules.dependency_graph'|trans({}, 'admin'), variant: 'ghost', icon: 'nav-workflow', href: path('admin_modules_graph') }
         ]
     }) }}
 

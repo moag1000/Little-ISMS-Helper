@@ -10,11 +10,11 @@
 {% block body %}
 <main class="fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge:    { icon: 'collection', label: 'industry_preset.badge'|trans },
+        badge:    { icon: 'nav-collection', label: 'industry_preset.badge'|trans },
         title:    'industry_preset.title'|trans,
         subtitle: 'industry_preset.subtitle'|trans,
         actions: [
-            { label: 'industry_preset.action.admin_hub'|trans, variant: 'ghost', icon: 'arrow-left', href: path('admin_hub_index') }
+            { label: 'industry_preset.action.admin_hub'|trans, variant: 'ghost', icon: 'util-arrow-left', href: path('admin_hub_index') }
         ]
     }) }}
 
@@ -43,10 +43,10 @@
                         <div class="fa-section__body">
                             <p class="text-muted small mb-3">{{ preset.description|nl2br }}</p>
                             <div class="d-flex flex-wrap gap-2 mb-3">
-                                {{ pill.render(preset.modules_count ~ ' ' ~ 'industry_preset.badge_label.modules'|trans, 'primary', {size: 'sm', icon: 'bi-box'}) }}
-                                {{ pill.render(preset.frameworks_count ~ ' ' ~ 'industry_preset.badge_label.frameworks'|trans, 'primary', {size: 'sm', icon: 'bi-shield-check'}) }}
-                                {{ pill.render(preset.controls_count ~ ' ' ~ 'industry_preset.badge_label.controls'|trans, 'success', {size: 'sm', icon: 'bi-check2-square'}) }}
-                                {{ pill.render(preset.documents_count ~ ' ' ~ 'industry_preset.badge_label.documents'|trans, 'warning', {size: 'sm', icon: 'bi-file-earmark-text'}) }}
+                                {{ pill.render(preset.modules_count ~ ' ' ~ 'industry_preset.badge_label.modules'|trans, 'primary', {size: 'sm', icon: 'nav-boxes'}) }}
+                                {{ pill.render(preset.frameworks_count ~ ' ' ~ 'industry_preset.badge_label.frameworks'|trans, 'primary', {size: 'sm', icon: 'shield-check'}) }}
+                                {{ pill.render(preset.controls_count ~ ' ' ~ 'industry_preset.badge_label.controls'|trans, 'success', {size: 'sm', icon: 'ui-check'}) }}
+                                {{ pill.render(preset.documents_count ~ ' ' ~ 'industry_preset.badge_label.documents'|trans, 'warning', {size: 'sm', icon: 'nav-file-earmark-text'}) }}
                             </div>
                         </div>
                         <div class="fa-section__footer d-flex gap-2 justify-content-end">

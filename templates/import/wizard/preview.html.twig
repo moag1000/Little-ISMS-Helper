@@ -17,7 +17,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'clipboard-check', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
+        badge: { icon: 'nav-clipboard-check', label: ('import.entity.' ~ entityType)|trans({}, 'data_import') },
         title: 'import.page.title'|trans({}, 'data_import'),
         subtitle: 'import.wizard.step.preview.title'|trans({}, 'data_import')
     }) }}
@@ -37,7 +37,7 @@
                     label: 'import.delta.creates'|trans({}, 'data_import'),
                     value: deltaResult.summary.creates,
                     variant: 'success',
-                    icon: 'plus-circle'
+                    icon: 'plus'
                 }) }}
             </div>
             <div class="col-6 col-md-3">
@@ -45,7 +45,7 @@
                     label: 'import.delta.updates'|trans({}, 'data_import'),
                     value: deltaResult.summary.updates,
                     variant: 'primary',
-                    icon: 'pencil-square'
+                    icon: 'ui-edit'
                 }) }}
             </div>
             <div class="col-6 col-md-3">
@@ -53,7 +53,7 @@
                     label: 'import.delta.unchanged'|trans({}, 'data_import'),
                     value: deltaResult.summary.unchanged,
                     variant: 'primary',
-                    icon: 'dash-circle'
+                    icon: 'ui-x'
                 }) }}
             </div>
             <div class="col-6 col-md-3">
@@ -61,7 +61,7 @@
                     label: 'import.delta.errors'|trans({}, 'data_import'),
                     value: deltaResult.summary.errors,
                     variant: deltaResult.summary.errors > 0 ? 'danger' : 'primary',
-                    icon: 'exclamation-triangle'
+                    icon: 'status-warning'
                 }) }}
             </div>
         </div>

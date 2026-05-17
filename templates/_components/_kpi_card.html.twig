@@ -6,7 +6,7 @@
     {{ _fa_feature_card.render({
         label: 'Offene Risiken',
         value: 12,
-        icon: 'shield-exclamation',       {# no 'bi-' prefix #}
+        icon: 'nav-shield-alert',       {# no 'bi-' prefix #}
         variant: 'primary',
         hint: '+3 seit letzter Woche',
         href: '/risk'
@@ -33,7 +33,7 @@
 
   Usage (Voll):
   {% include '_components/_kpi_card.html.twig' with {
-      icon: 'bi-shield-exclamation',
+      icon: 'nav-shield-alert',
       label: 'Offene Risiken',
       value: 12,
       unit: '',
@@ -100,7 +100,7 @@
 
         {% if delta %}
             <div class="fa-kpi-card__delta kpi-card-trend trend-{{ delta.direction }}">
-                <i class="fa-icon fa-icon--util-arrow-{{ delta.direction }}" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-arrow-right{{ delta.direction }}" aria-hidden="true"></i>
                 <span class="fa-kpi-card__delta-value">{{ delta.value }}</span>
                 {% if hint %}<span class="fa-kpi-card__hint">· {{ hint }}</span>{% endif %}
             </div>

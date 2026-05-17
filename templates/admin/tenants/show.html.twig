@@ -15,13 +15,13 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'building', label: tenant.code },
+        badge: { icon: 'nav-building', label: tenant.code },
         title: tenant.name,
         subtitle: tenant.description|default(''),
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('tenant_management_edit', {id: tenant.id}) },
-            { label: 'admin.tenant_settings.title'|trans({}, 'admin'), variant: 'ghost', icon: 'sliders', href: path('admin_tenant_compliance_settings_edit', {tenantId: tenant.id}) },
-            { label: 'tenant.organisation_context.title'|trans({}, 'tenant'), variant: 'ghost', icon: 'building', href: path('tenant_management_organisation_context', {id: tenant.id}) }
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('tenant_management_edit', {id: tenant.id}) },
+            { label: 'admin.tenant_settings.title'|trans({}, 'admin'), variant: 'ghost', icon: 'nav-sliders', href: path('admin_tenant_compliance_settings_edit', {tenantId: tenant.id}) },
+            { label: 'tenant.organisation_context.title'|trans({}, 'tenant'), variant: 'ghost', icon: 'nav-building', href: path('tenant_management_organisation_context', {id: tenant.id}) }
         ]
     }) }}
 
@@ -713,15 +713,15 @@
                     html += '<div class="row">';
 
                     const fields = [
-                        { key: 'organizationName', label: '{{ 'context.field.organization_name'|trans({}, 'context') }}', icon: 'building' },
-                        { key: 'ismsScope', label: '{{ 'context.field.isms_scope'|trans({}, 'context') }}', icon: 'bullseye', multiline: true },
-                        { key: 'scopeExclusions', label: '{{ 'context.field.scope_exclusions'|trans({}, 'context') }}', icon: 'x-circle', multiline: true },
-                        { key: 'externalIssues', label: '{{ 'context.field.external_issues'|trans({}, 'context') }}', icon: 'globe', multiline: true },
-                        { key: 'internalIssues', label: '{{ 'context.field.internal_issues'|trans({}, 'context') }}', icon: 'house', multiline: true },
-                        { key: 'interestedParties', label: '{{ 'context.field.interested_parties'|trans({}, 'context') }}', icon: 'people', multiline: true },
-                        { key: 'legalRequirements', label: '{{ 'context.field.legal_requirements'|trans({}, 'context') }}', icon: 'file-text', multiline: true },
+                        { key: 'organizationName', label: '{{ 'context.field.organization_name'|trans({}, 'context') }}', icon: 'nav-building' },
+                        { key: 'ismsScope', label: '{{ 'context.field.isms_scope'|trans({}, 'context') }}', icon: 'nav-bullseye', multiline: true },
+                        { key: 'scopeExclusions', label: '{{ 'context.field.scope_exclusions'|trans({}, 'context') }}', icon: 'status-critical', multiline: true },
+                        { key: 'externalIssues', label: '{{ 'context.field.external_issues'|trans({}, 'context') }}', icon: 'ui-globe', multiline: true },
+                        { key: 'internalIssues', label: '{{ 'context.field.internal_issues'|trans({}, 'context') }}', icon: 'nav-home', multiline: true },
+                        { key: 'interestedParties', label: '{{ 'context.field.interested_parties'|trans({}, 'context') }}', icon: 'nav-people', multiline: true },
+                        { key: 'legalRequirements', label: '{{ 'context.field.legal_requirements'|trans({}, 'context') }}', icon: 'nav-file-earmark-text', multiline: true },
                         { key: 'ismsPolicy', label: '{{ 'context.field.isms_policy'|trans({}, 'context') }}', icon: 'shield-check', multiline: true },
-                        { key: 'rolesAndResponsibilities', label: '{{ 'context.field.roles_and_responsibilities'|trans({}, 'context') }}', icon: 'person-badge', multiline: true }
+                        { key: 'rolesAndResponsibilities', label: '{{ 'context.field.roles_and_responsibilities'|trans({}, 'context') }}', icon: 'role', multiline: true }
                     ];
 
                     fields.forEach((field, index) => {

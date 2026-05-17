@@ -14,12 +14,12 @@
 <main class="fa-aurora-surface role-dashboard risk-manager-dashboard">
     {# Page Header — Aurora v4 fa-page-header #}
     {{ _fa_page_header.render({
-        badge:    { icon: 'bar-chart-line', label: 'risk_manager.badge'|trans({}, 'dashboards') },
+        badge:    { icon: 'nav-bar-chart', label: 'risk_manager.badge'|trans({}, 'dashboards') },
         title:    'risk_manager.title'|trans({}, 'dashboards'),
         subtitle: 'risk_manager.subtitle'|trans({}, 'dashboards'),
         actions: [
-            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'house', href: path('app_dashboard') },
-            { label: 'action.risk_register'|trans({}, 'dashboards'),      variant: 'primary', icon: 'list',  href: path('app_risk_index') }
+            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'nav-home', href: path('app_dashboard') },
+            { label: 'action.risk_register'|trans({}, 'dashboards'),      variant: 'primary', icon: 'ui-list',  href: path('app_risk_index') }
         ]
     }) }}
 

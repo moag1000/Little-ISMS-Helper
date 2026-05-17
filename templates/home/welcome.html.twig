@@ -74,12 +74,12 @@
     {% endif %}
     {% set _hero_actions = [
         { label: 'welcome.action.dashboard'|trans({}, 'welcome'),
-          variant: 'primary', icon: 'bi-grid', href: path('app_dashboard') }
+          variant: 'primary', icon: 'grid', href: path('app_dashboard') }
     ] %}
     {% if total_urgent_count|default(0) > 0 %}
         {% set _hero_actions = _hero_actions|merge([
             { label: 'welcome.action.urgent_tasks'|trans({'%count%': total_urgent_count}, 'welcome'),
-              variant: 'warning', icon: 'bi-exclamation-triangle', href: '#urgent-tasks' }
+              variant: 'warning', icon: 'status-warning', href: '#urgent-tasks' }
         ]) %}
     {% endif %}
     <div class="row justify-content-center mb-5">
@@ -128,7 +128,7 @@
                                                         {% include '_components/_badge.html.twig' with {
                                                             variant: 'danger-subtle',
                                                             class: 'text-danger',
-                                                            icon: 'bi-exclamation-circle',
+                                                            icon: 'status-critical',
                                                             content: wizard.critical_gaps
                                                         } only %}
                                                     {% endif %}

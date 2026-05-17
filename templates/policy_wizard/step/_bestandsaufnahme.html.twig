@@ -29,7 +29,7 @@
      # Aurora-DS: _fa_alert info-variant + bi-mortarboard icon for the "Junior-ISB tip" pattern. #}
     {% embed '_components/_fa_alert.html.twig' with { props: {
         variant: 'info',
-        icon: 'bi-mortarboard',
+        icon: 'nav-mortarboard',
         class: 'mt-3 mb-0'
     } } %}
         {% block alert_body %}
@@ -233,7 +233,7 @@
                             {% if is_sammelpolitik %}
                                 {{ _fa_alert.render({
                                     variant: 'warning',
-                                    icon: 'bi-collection-fill',
+                                    icon: 'nav-collection',
                                     title: 'policy_wizard.step.bestandsaufnahme.sammelpolitik_hint.title'|trans,
                                     body: 'policy_wizard.step.bestandsaufnahme.sammelpolitik_hint.body'|trans,
                                     class: 'py-2 small mb-2'

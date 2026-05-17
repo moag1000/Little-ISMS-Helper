@@ -15,12 +15,12 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'diagram-3', label: 'nav.workflows'|trans({}, 'nav') },
+    badge: { icon: 'nav-workflow', label: 'nav.workflows'|trans({}, 'nav') },
     title: 'workflow.title.list'|trans({}, 'workflows'),
     subtitle: 'workflow.description.overview'|trans({}, 'workflows'),
     actions: [
-        { label: 'workflow.action.definitions'|trans({}, 'workflows'), variant: 'ghost', icon: 'list-check', href: path('app_workflow_definitions') },
-        { label: 'workflow.action.pending'|trans({}, 'workflows'), variant: 'primary', icon: 'hourglass-split', href: path('app_workflow_pending') }
+        { label: 'workflow.action.definitions'|trans({}, 'workflows'), variant: 'ghost', icon: 'nav-list-check', href: path('app_workflow_definitions') },
+        { label: 'workflow.action.pending'|trans({}, 'workflows'), variant: 'primary', icon: 'ui-hourglass', href: path('app_workflow_pending') }
     ]
 }) }}
 
@@ -129,7 +129,7 @@
                 } %}
                 {% include '_components/_badge.html.twig' with { variant: statusColors[instance.status] ?? 'secondary', content: ('workflow.status.' ~ instance.status)|trans({}, 'workflows') } %}
                 {% if instance.status == 'in_progress' and hasEligibleApprovers[instance.id] is defined and not hasEligibleApprovers[instance.id] %}
-                    {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', title: 'workflow.warning.no_eligible_approvers'|trans({}, 'workflows'), icon: 'bi-person-exclamation' } %}
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', title: 'workflow.warning.no_eligible_approvers'|trans({}, 'workflows'), icon: 'ui-person' } %}
                 {% endif %}
             </td>
             <td>{{ instance.initiatedBy ? (instance.initiatedBy.firstName ~ ' ' ~ instance.initiatedBy.lastName) : '-' }}</td>

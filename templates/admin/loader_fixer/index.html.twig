@@ -30,7 +30,7 @@
         </form>
     </div>
 
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'd-flex gap-2' } } %}
         {% block alert_body %}<div> <strong>{{ 'loader_fixer.hint.heading'|trans({}, 'loader_fixer') }}</strong> <div class="small">{{ 'loader_fixer.hint.body'|trans({}, 'loader_fixer') }}</div> </div>{% endblock %}
     {% endembed %}
 

@@ -15,10 +15,10 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'clock-history', label: 'nav.reports'|trans({}, 'nav') },
+    badge: { icon: 'nav-clock-history', label: 'nav.reports'|trans({}, 'nav') },
     title: 'scheduled_report.title'|trans({}, 'scheduled_reports'),
     actions: [
-        { label: 'scheduled_report.action.new'|trans({}, 'scheduled_reports'), variant: 'primary', icon: 'plus-lg', href: path('app_scheduled_report_new') }
+        { label: 'scheduled_report.action.new'|trans({}, 'scheduled_reports'), variant: 'primary', icon: 'plus', href: path('app_scheduled_report_new') }
     ]
 }) }}
 
@@ -111,9 +111,9 @@
                     <td class="fa-table__cell">{{ ('scheduled_report.schedule.' ~ report.schedule)|trans({}, 'scheduled_reports') }}</td>
                     <td class="fa-table__cell">
                         {% if report.format == 'pdf' %}
-                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-file-pdf', content: 'PDF' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'nav-file-pdf', content: 'PDF' } %}
                         {% else %}
-                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-file-excel', content: 'Excel' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'nav-file-earmark-spreadsheet', content: 'Excel' } %}
                         {% endif %}
                     </td>
                     <td class="fa-table__cell">
@@ -159,7 +159,7 @@
                 title: 'scheduled_report.empty.title'|trans({}, 'scheduled_reports'),
                 text: 'scheduled_report.empty.text'|trans({}, 'scheduled_reports'),
                 actions: [
-                    { label: 'scheduled_report.action.new'|trans({}, 'scheduled_reports'), variant: 'primary', icon: 'plus-circle', href: path('app_scheduled_report_new') }
+                    { label: 'scheduled_report.action.new'|trans({}, 'scheduled_reports'), variant: 'primary', icon: 'plus', href: path('app_scheduled_report_new') }
                 ]
             }) }}
         {% endblock %}

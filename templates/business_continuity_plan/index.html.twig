@@ -21,7 +21,7 @@
         title: 'bc_plans.page.header'|trans({}, 'bc_plans'),
         subtitle: 'bc_plans.page.subtitle'|trans({}, 'bc_plans'),
         actions: [
-            { label: 'bc_plans.action.add_new'|trans({}, 'bc_plans'), href: path('app_bc_plan_new'), variant: 'primary', icon: 'plus-circle' }
+            { label: 'bc_plans.action.add_new'|trans({}, 'bc_plans'), href: path('app_bc_plan_new'), variant: 'primary', icon: 'plus' }
         ]
     }) }}
 {% set _global_hints = alva_hints('business_continuity_plan_index') %}
@@ -129,7 +129,7 @@
                 text: 'bc_plans.empty.body'|trans({}, 'bc_plans'),
                 norm_ref: 'ISO 22301 Klausel 8.4 · ISO 27001 A.5.30',
                 actions: [
-                    { label: 'bc_plans.action.create_first'|trans({}, 'bc_plans'), variant: 'primary', icon: 'plus-circle', href: path('app_bc_plan_new') }
+                    { label: 'bc_plans.action.create_first'|trans({}, 'bc_plans'), variant: 'primary', icon: 'plus', href: path('app_bc_plan_new') }
                 ],
                 help_link: 'bc_plans.help.empty_link'|trans({}, 'bc_plans')
             }) }}

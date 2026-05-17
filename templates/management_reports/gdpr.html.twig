@@ -44,7 +44,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'calendar',
+                icon: 'ui-calendar',
                 label: 'management_reports.gdpr.this_year'|trans({}, 'management_reports'),
                 value: report.this_year,
                 variant: 'primary'
@@ -52,7 +52,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'check-circle',
+                icon: 'status-ok',
                 label: 'management_reports.gdpr.notified'|trans({}, 'management_reports'),
                 value: report.notification_status.notified,
                 variant: 'success'
@@ -60,7 +60,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'hourglass-split',
+                icon: 'ui-hourglass',
                 label: 'management_reports.gdpr.pending_notification'|trans({}, 'management_reports'),
                 value: report.notification_status.pending,
                 variant: 'warning'

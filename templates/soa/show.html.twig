@@ -21,12 +21,12 @@
 
     {%- set categoryLabel = ('soa.category.' ~ control.category)|trans({}, 'soa') -%}
     {{ _fa_page_header.render({
-        badge: { icon: 'check2-circle', label: control.controlId },
+        badge: { icon: 'status-ok', label: control.controlId },
         title: control.name,
         subtitle: categoryLabel,
         actions: [
-            { label: 'soa.action.edit'|trans({}, 'soa'), variant: 'primary', icon: 'pencil', href: path('app_soa_edit', {id: control.id}) },
-            { label: 'soa.action.back_to_category'|trans({'%category%': categoryLabel}, 'soa'), variant: 'ghost', icon: 'arrow-left', href: path('app_soa_by_category', {category: control.category}) }
+            { label: 'soa.action.edit'|trans({}, 'soa'), variant: 'primary', icon: 'ui-edit', href: path('app_soa_edit', {id: control.id}) },
+            { label: 'soa.action.back_to_category'|trans({'%category%': categoryLabel}, 'soa'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_soa_by_category', {category: control.category}) }
         ]
     }) }}
 
@@ -73,7 +73,7 @@
     {% endembed %}
 </div>
 {% elseif control.mythosResilience == 'degradiert' and control.mythosFlankingMhcs is not empty %}
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-info-circle-fill', class: 'mb-4' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-info', class: 'mb-4' } } %}
         {% block alert_body %}
             <strong>{{ 'soa.mris.degradiert_hint_title'|trans({}, 'soa') }}</strong><br>
             {{ 'soa.mris.degradiert_hint_body'|trans({}, 'soa') }}
@@ -119,11 +119,11 @@
             <div class="stat-item">
                 <strong class="fs-4">
                     {% if control.implementationStatus == 'implemented' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', size: 'lg', icon: 'bi-check-circle', content: 'soa.status.implemented'|trans({}, 'soa') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', size: 'lg', icon: 'status-ok', content: 'soa.status.implemented'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'warning', size: 'lg', icon: 'bi-arrow-clockwise', content: 'soa.status.in_progress'|trans({}, 'soa') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', size: 'lg', icon: 'util-refresh', content: 'soa.status.in_progress'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'not_started' %}
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', size: 'lg', icon: 'bi-pause-circle', content: 'soa.status.not_started'|trans({}, 'soa') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', size: 'lg', icon: 'pause', content: 'soa.status.not_started'|trans({}, 'soa') } %}
                     {% else %}
                         {% include '_components/_badge.html.twig' with { variant: 'secondary', size: 'lg', class: 'badge-neutral-lg', content: 'soa.value.na'|trans({}, 'soa') } %}
                     {% endif %}
@@ -215,7 +215,7 @@
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
         <h2><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'soa') }}</h2>
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-exclamation-triangle', class: 'mt-2' } } %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-warning', class: 'mt-2' } } %}
             {% block alert_body %}<strong>{{ 'soa.label.control_coverage'|trans({}, 'soa') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'soa') }} {% if control.highRiskAssetCount > 0 %} <br><strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'soa') }} {% endif %}{% endblock %}
         {% endembed %}
         <div class="data-reuse-list">
@@ -257,7 +257,7 @@
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_body %}
         <h2><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle' } } %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning' } } %}
             {% block alert_body %}<strong><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }} {% if control.isReviewNeeded %} <br><strong>{{ 'soa.label.review_required'|trans({}, 'soa') }}</strong> {{ 'soa.message.review_required'|trans({}, 'soa') }} {% endif %}{% endblock %}
         {% endembed %}
         <div class="data-reuse-list">

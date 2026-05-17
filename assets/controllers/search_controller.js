@@ -173,11 +173,11 @@ export default class extends Controller {
 
         // Group results by category
         const categories = [
-            { key: 'assets', label: 'Assets', icon: 'bi-server', color: 'primary' },
-            { key: 'risks', label: 'Risiken', icon: 'bi-exclamation-triangle', color: 'warning' },
-            { key: 'controls', label: 'Controls', icon: 'bi-shield-check', color: 'success' },
-            { key: 'incidents', label: 'Vorfälle', icon: 'bi-exclamation-circle', color: 'danger' },
-            { key: 'trainings', label: 'Trainings', icon: 'bi-mortarboard', color: 'info' }
+            { key: 'assets', label: 'Assets', icon: 'asset-server', color: 'primary' },
+            { key: 'risks', label: 'Risiken', icon: 'status-warning', color: 'warning' },
+            { key: 'controls', label: 'Controls', icon: 'shield-check', color: 'success' },
+            { key: 'incidents', label: 'Vorfälle', icon: 'status-critical', color: 'danger' },
+            { key: 'trainings', label: 'Trainings', icon: 'nav-mortarboard', color: 'info' }
         ];
 
         categories.forEach(category => {
@@ -194,7 +194,7 @@ export default class extends Controller {
         let html = `
             <div class="search-category">
                 <div class="search-category-header">
-                    <i class="${category.icon} text-${category.color}"></i>
+                    <i class="fa-icon fa-icon--${category.icon} text-${category.color}" aria-hidden="true"></i>
                     <span>${category.label}</span>
                     <span class="badge bg-${category.color}">${items.length}</span>
                 </div>
@@ -208,7 +208,7 @@ export default class extends Controller {
                    data-index="${index}"
                    data-action="click->search#handleResultClick">
                     <div class="search-result-icon">
-                        <i class="${category.icon} text-${category.color}"></i>
+                        <i class="fa-icon fa-icon--${category.icon} text-${category.color}" aria-hidden="true"></i>
                     </div>
                     <div class="search-result-content">
                         <div class="search-result-title">${this.highlight(item.title, query)}</div>
@@ -237,7 +237,7 @@ export default class extends Controller {
     displayEmpty(query) {
         this.resultsTarget.innerHTML = `
             <div class="search-empty">
-                <i class="bi-search" style="font-size: 3rem; color: #ccc;"></i>
+                <i class="fa-icon fa-icon--ui-search" style="font-size: 3rem; color: #ccc;" aria-hidden="true"></i>
                 <p class="mt-3 mb-0">Keine Ergebnisse für "${query}"</p>
                 <p class="text-muted small">Versuchen Sie andere Suchbegriffe</p>
             </div>
@@ -247,7 +247,7 @@ export default class extends Controller {
     displayError() {
         this.resultsTarget.innerHTML = `
             <div class="search-error">
-                <i class="bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                <i class="fa-icon fa-icon--status-warning text-danger" style="font-size: 3rem;" aria-hidden="true"></i>
                 <p class="mt-3 mb-0">Fehler bei der Suche</p>
                 <p class="text-muted small">Bitte versuchen Sie es erneut</p>
             </div>

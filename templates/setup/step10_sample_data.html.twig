@@ -122,7 +122,7 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('setup_sample_skip') }}">
                             </form>
                         {% else %}
-                            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+                            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
                                 {% block alert_body %}{{ 'setup.sample_data.no_data_available'|trans({}, 'setup') }}{% endblock %}
                             {% endembed %}
 

@@ -7,7 +7,7 @@
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
+        { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'status-warning' },
         { label: 'risk.quick_form.title'|trans({}, 'risk') }
     ]
 } %}
@@ -16,9 +16,9 @@
 {% include '_components/_page_header.html.twig' with {
     title: 'risk.quick_form.title'|trans({}, 'risk'),
     subtitle: 'risk.quick_form.subtitle'|trans({}, 'risk'),
-    icon: 'bi-lightning',
+    icon: 'ui-lightbulb',
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), url: path('app_risk_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), url: path('app_risk_index'), variant: 'secondary', icon: 'util-arrow-left' }
     ]
 } %}
 

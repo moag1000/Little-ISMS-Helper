@@ -12,13 +12,13 @@
 {% block body %}
 <main class="fa-aurora-surface role-dashboard compliance-manager-dashboard">
     {{ _fa_page_header.render({
-        badge:    { icon: 'clipboard2-check', label: 'compliance_manager.badge'|trans },
+        badge:    { icon: 'nav-clipboard-check', label: 'compliance_manager.badge'|trans },
         title:    'compliance_manager.title'|trans,
         subtitle: 'compliance_manager.subtitle'|trans,
         actions: [
-            { label: 'action.standard_dashboard'|trans, variant: 'ghost',   icon: 'house',     href: path('app_dashboard') },
-            { label: 'compliance_manager.action.ciso_view'|trans, variant: 'ghost', icon: 'shield-lock', href: path('app_dashboard_ciso') },
-            { label: 'compliance_manager.action.compliance_wizards'|trans, variant: 'primary', icon: 'magic', href: path('app_compliance_wizard_index') }
+            { label: 'action.standard_dashboard'|trans, variant: 'ghost',   icon: 'nav-home',     href: path('app_dashboard') },
+            { label: 'compliance_manager.action.ciso_view'|trans, variant: 'ghost', icon: 'nav-shield-lock', href: path('app_dashboard_ciso') },
+            { label: 'compliance_manager.action.compliance_wizards'|trans, variant: 'primary', icon: 'nav-magic', href: path('app_compliance_wizard_index') }
         ]
     }) }}
 
@@ -33,41 +33,41 @@
     {# Top-line KPIs #}
     <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
         {{ _fa_feature_card.render({
-            icon: 'collection',
+            icon: 'nav-collection',
             label: 'compliance_manager.kpi.frameworks_active'|trans,
             value: dashboard.frameworks_active,
             variant: 'primary',
             href: path('app_compliance_wizard_index')
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'speedometer',
+            icon: 'nav-speedometer',
             label: 'compliance_manager.kpi.avg_compliance'|trans,
             value: dashboard.avg_compliance,
             unit: '%',
             variant: dashboard.avg_compliance >= 80 ? 'success' : (dashboard.avg_compliance >= 60 ? 'warning' : 'danger'),
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'exclamation-triangle',
+            icon: 'status-warning',
             label: 'compliance_manager.kpi.at_risk'|trans,
             value: dashboard.at_risk_count,
             variant: dashboard.at_risk_count > 0 ? 'warning' : 'success',
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'search',
+            icon: 'ui-search',
             label: 'compliance_manager.kpi.open_findings'|trans,
             value: dashboard.findings_total,
             variant: dashboard.findings_total > 0 ? 'warning' : 'success',
             href: '#findings'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'calendar-event',
+            icon: 'ui-calendar-event',
             label: 'compliance_manager.kpi.upcoming_audits'|trans,
             value: dashboard.upcoming_audits|length,
             variant: 'info',
             href: '#audit-schedule'
         }) }}
         {{ _fa_feature_card.render({
-            icon: 'file-earmark-check',
+            icon: 'nav-file-check',
             label: 'compliance_manager.kpi.approval_queue'|trans,
             value: dashboard.pending_docs|length,
             variant: dashboard.pending_docs|length > 0 ? 'warning' : 'success',
@@ -147,7 +147,7 @@
                     title: 'compliance_manager.empty.no_frameworks_title'|trans,
                     text: 'compliance_manager.empty.no_frameworks_text'|trans,
                     actions: [
-                        { label: 'compliance_manager.empty.no_frameworks_action'|trans, variant: 'primary', icon: 'magic', href: path('app_compliance_wizard_index') }
+                        { label: 'compliance_manager.empty.no_frameworks_action'|trans, variant: 'primary', icon: 'nav-magic', href: path('app_compliance_wizard_index') }
                     ]
                 }) }}
             {% endif %}
@@ -191,7 +191,7 @@
             <div class="row g-3">
                 <div class="col-md-3">
                     {{ _fa_feature_card.render({
-                        icon: 'shield-fill-exclamation',
+                        icon: 'nav-shield-alert',
                         label: 'compliance_manager.severity.critical'|trans,
                         value: dashboard.findings_severity.critical,
                         variant: 'danger'
@@ -199,7 +199,7 @@
                 </div>
                 <div class="col-md-3">
                     {{ _fa_feature_card.render({
-                        icon: 'exclamation-circle',
+                        icon: 'status-critical',
                         label: 'compliance_manager.severity.high'|trans,
                         value: dashboard.findings_severity.high,
                         variant: 'warning'
@@ -207,7 +207,7 @@
                 </div>
                 <div class="col-md-3">
                     {{ _fa_feature_card.render({
-                        icon: 'info-circle',
+                        icon: 'status-info',
                         label: 'compliance_manager.severity.medium'|trans,
                         value: dashboard.findings_severity.medium,
                         variant: 'info'
@@ -215,7 +215,7 @@
                 </div>
                 <div class="col-md-3">
                     {{ _fa_feature_card.render({
-                        icon: 'circle',
+                        icon: 'ui-circle',
                         label: 'compliance_manager.severity.low'|trans,
                         value: dashboard.findings_severity.low,
                         variant: 'success'

@@ -30,11 +30,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-lock', label: 'nav.compliance'|trans({}, 'nav') },
+        badge: { icon: 'nav-shield-lock', label: 'nav.compliance'|trans({}, 'nav') },
         title: 'prototype_protection.page.index_title'|trans({}, 'prototype_protection'),
         subtitle: 'prototype_protection.page.index_description'|trans({}, 'prototype_protection'),
         actions: [
-            { label: 'prototype_protection.action.new'|trans({}, 'prototype_protection'), variant: 'primary', icon: 'plus-circle', href: path('app_prototype_protection_new') }
+            { label: 'prototype_protection.action.new'|trans({}, 'prototype_protection'), variant: 'primary', icon: 'plus', href: path('app_prototype_protection_new') }
         ]
     }) }}
 
@@ -61,7 +61,7 @@
         {% block card_body %}
             {% if assessments|length == 0 %}
                 {% include '_components/_empty_state.html.twig' with {
-                    icon: 'bi-shield-lock',
+                    icon: 'nav-shield-lock',
                     title: 'prototype_protection.empty.title'|trans({}, 'prototype_protection'),
                     message: 'prototype_protection.empty.message'|trans({}, 'prototype_protection')
                 } %}

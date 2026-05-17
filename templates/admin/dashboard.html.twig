@@ -4,7 +4,7 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'speedometer2', label: 'admin.dashboard.title'|trans({}, 'admin') },
+        badge: { icon: 'nav-dashboard', label: 'admin.dashboard.title'|trans({}, 'admin') },
         title: 'admin.dashboard.title'|trans({}, 'admin'),
         subtitle: 'admin.dashboard.subtitle'|trans({}, 'admin'),
     }) }}
@@ -66,7 +66,7 @@
         <div class="col-md-6 col-lg-3">
             {{ _fa_feature_card.render({
                 variant: 'primary',
-                icon: 'people-fill',
+                icon: 'nav-people',
                 label: 'admin.dashboard.stats.users'|trans({}, 'admin'),
                 value: stats.users.total,
                 hint: stats.users.active ~ ' ' ~ ('admin.dashboard.stats.active'|trans({}, 'admin')) ~ (stats.users.inactive > 0 ? ' · ' ~ stats.users.inactive ~ ' ' ~ ('admin.dashboard.stats.inactive'|trans({}, 'admin')) : ''),
@@ -76,7 +76,7 @@
         <div class="col-md-6 col-lg-3">
             {{ _fa_feature_card.render({
                 variant: 'success',
-                icon: 'calendar-check-fill',
+                icon: 'nav-calendar-check',
                 label: 'admin.dashboard.stats.active_sessions'|trans({}, 'admin'),
                 value: stats.sessions.active_24h,
                 hint: 'admin.dashboard.stats.last_24h'|trans({}, 'admin')
@@ -95,7 +95,7 @@
         <div class="col-md-6 col-lg-3">
             {{ _fa_feature_card.render({
                 variant: _review_variant,
-                icon: 'person-check-fill',
+                icon: 'approve',
                 label: 'admin.dashboard.stats.unreviewed_mappings'|trans({}, 'admin'),
                 value: stats.compliance.unreviewed_seed_mappings,
                 hint: stats.workflows.open > 0

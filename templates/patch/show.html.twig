@@ -16,12 +16,12 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'bandaid', label: ('patch.priority.' ~ patch.priority)|trans({}, 'patches') },
+        badge: { icon: 'mitigation', label: ('patch.priority.' ~ patch.priority)|trans({}, 'patches') },
         title: patch.title,
         subtitle: ('patch.status.' ~ patch.status)|trans({}, 'patches'),
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_patch_edit', {id: patch.id}) },
-            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_patch_index') }
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_patch_edit', {id: patch.id}) },
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_patch_index') }
         ]
     }) }}
 

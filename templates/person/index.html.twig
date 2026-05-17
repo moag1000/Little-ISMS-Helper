@@ -17,11 +17,11 @@
 </div>
 
 {{ _fa_page_header.render({
-    badge: { icon: 'people', label: 'nav.people'|trans({}, 'nav') },
+    badge: { icon: 'nav-people', label: 'nav.people'|trans({}, 'nav') },
     title: 'person.title.list'|trans({}, 'messages'),
     subtitle: 'person.description.overview'|trans({}, 'messages'),
     actions: [
-        { label: 'person.action.create'|trans({}, 'messages'), variant: 'primary', icon: 'plus-circle', href: path('app_person_new') }
+        { label: 'person.action.create'|trans({}, 'messages'), variant: 'primary', icon: 'plus', href: path('app_person_new') }
     ]
 }) }}
 {% set _global_hints = alva_hints('person_index') %}

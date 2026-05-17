@@ -22,8 +22,8 @@
         {% endif %}
 
         <div style="display:flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
-            {{ btn.link('javascript:location.reload()', 'error.action.retry'|trans({}, 'messages')|default('Nochmal versuchen'), { variant: 'primary', icon: 'bi-arrow-clockwise' }) }}
-            {{ btn.link(path('app_home'), 'error.action.homepage'|trans({}, 'messages'), { variant: 'secondary', icon: 'bi-house' }) }}
+            {{ btn.link('javascript:location.reload()', 'error.action.retry'|trans({}, 'messages')|default('Nochmal versuchen'), { variant: 'primary', icon: 'util-refresh' }) }}
+            {{ btn.link(path('app_home'), 'error.action.homepage'|trans({}, 'messages'), { variant: 'secondary', icon: 'nav-home' }) }}
         </div>
     </div>
 {% endblock %}

@@ -16,10 +16,10 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'target', label: 'nav.objectives'|trans({}, 'nav') },
+        badge: { icon: 'nav-target', label: 'nav.objectives'|trans({}, 'nav') },
         title: 'objective.page.title'|trans({}, 'objective'),
         actions: is_granted('ROLE_ADMIN') ? [
-            { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus-circle', href: path('app_objective_new') }
+            { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus', href: path('app_objective_new') }
         ] : []
     }) }}
 {% set _global_hints = alva_hints('objective_index') %}
@@ -60,7 +60,7 @@
                 mood: 'sleeping',
                 title: 'objective.message.no_objectives'|trans({}, 'objective'),
                 actions: is_granted('ROLE_ADMIN') ? [
-                    { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus-circle', href: path('app_objective_new') }
+                    { label: 'objective.action.add_new'|trans({}, 'objective'), variant: 'primary', icon: 'plus', href: path('app_objective_new') }
                 ] : []
             }) }}
             {% else %}

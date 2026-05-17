@@ -15,11 +15,11 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'hand-thumbs-up', label: 'consent.header.title'|trans({}, 'consent') },
+    badge: { icon: 'approve', label: 'consent.header.title'|trans({}, 'consent') },
     title: 'consent.header.title'|trans({}, 'consent'),
     subtitle: 'consent.header.subtitle'|trans({}, 'consent'),
     actions: [
-        { label: 'consent.header.action.new'|trans({}, 'consent'), href: path('app_consent_new'), variant: 'primary', icon: 'plus-lg' }
+        { label: 'consent.header.action.new'|trans({}, 'consent'), href: path('app_consent_new'), variant: 'primary', icon: 'plus' }
     ]
 }) }}
 {% set _global_hints = alva_hints('consent_index') %}
@@ -34,7 +34,7 @@
 {# KPI Cards Grid #}
 <div class="kpi-grid kpi-grid-responsive">
     {{ _fa_feature_card.render({
-        icon: 'hand-thumbs-up',
+        icon: 'approve',
         label: 'consent.kpi.total'|trans({}, 'consent'),
         value: consents|length,
         variant: 'primary'
@@ -42,7 +42,7 @@
 
     {% set activeConsents = consents|filter(c => c.status == 'active')|length %}
     {{ _fa_feature_card.render({
-        icon: 'check-circle',
+        icon: 'status-ok',
         label: 'consent.kpi.active'|trans({}, 'consent'),
         value: activeConsents,
         variant: activeConsents > 0 ? 'success' : 'primary',
@@ -51,7 +51,7 @@
 
     {% set pendingConsents = consents|filter(c => c.status == 'pending_verification')|length %}
     {{ _fa_feature_card.render({
-        icon: 'hourglass',
+        icon: 'ui-hourglass',
         label: 'consent.kpi.pending'|trans({}, 'consent'),
         value: pendingConsents,
         variant: pendingConsents > 0 ? 'warning' : 'primary',
@@ -60,7 +60,7 @@
 
     {% set revokedConsents = consents|filter(c => c.status == 'revoked')|length %}
     {{ _fa_feature_card.render({
-        icon: 'x-circle',
+        icon: 'status-critical',
         label: 'consent.kpi.revoked'|trans({}, 'consent'),
         value: revokedConsents,
         variant: revokedConsents > 0 ? 'danger' : 'primary'
@@ -79,9 +79,9 @@
         <div class="row">
             {# TODO(aurora-migration): dynamic icon — keep bi-* (icon rendered via `<i class="bi {{ data.icon }}">`) #}
             {% set statuses = {
-                'pending_verification': { label: 'consent.status.pending_verification'|trans({}, 'consent'), icon: 'bi-hourglass', color: 'warning' },
-                'active': { label: 'consent.status.active'|trans({}, 'consent'), icon: 'bi-check-circle', color: 'success' },
-                'revoked': { label: 'consent.status.revoked'|trans({}, 'consent'), icon: 'bi-x-circle', color: 'danger' }
+                'pending_verification': { label: 'consent.status.pending_verification'|trans({}, 'consent'), icon: 'ui-hourglass', color: 'warning' },
+                'active': { label: 'consent.status.active'|trans({}, 'consent'), icon: 'status-ok', color: 'success' },
+                'revoked': { label: 'consent.status.revoked'|trans({}, 'consent'), icon: 'status-critical', color: 'danger' }
             } %}
             {% for status, data in statuses %}
                 {% set count = consents|filter(c => c.status == status)|length %}
@@ -138,10 +138,10 @@
 {# Consents Table or Empty State #}
 {% if consents|length == 0 %}
     {% include '_components/_empty_state.html.twig' with {
-        icon: 'bi-hand-thumbs-up',
+        icon: 'approve',
         title: 'consent.empty.title'|trans({}, 'consent'),
         description: 'consent.empty.description'|trans({}, 'consent'),
-        action: { label: 'consent.header.action.new'|trans({}, 'consent'), url: path('app_consent_new'), icon: 'bi-plus-circle' }
+        action: { label: 'consent.header.action.new'|trans({}, 'consent'), url: path('app_consent_new'), icon: 'plus' }
     } %}
 {% else %}
 {% embed '_components/_card.html.twig' %}
@@ -223,7 +223,7 @@
                 </td>
                 <td class="text-center">
                     {% if consent.verifiedBy %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', title: 'consent.verified_by'|trans({}, 'consent'), content: 'common.yes'|trans({}, 'messages') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', title: 'consent.verified_by'|trans({}, 'consent'), content: 'common.yes'|trans({}, 'messages') } %}
                     {% else %}
                         <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
                     {% endif %}

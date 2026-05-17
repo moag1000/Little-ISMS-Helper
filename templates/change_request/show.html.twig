@@ -15,10 +15,10 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'arrow-repeat', label: change_request.changeNumber },
+        badge: { icon: 'util-refresh', label: change_request.changeNumber },
         title: change_request.title,
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_change_request_edit', {id: change_request.id}) },
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_change_request_edit', {id: change_request.id}) },
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', href: path('app_change_request_index') }
         ]
     }) }}

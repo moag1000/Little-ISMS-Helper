@@ -35,7 +35,7 @@
     <div class="row mb-4">
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'clipboard-check',
+                icon: 'nav-clipboard-check',
                 label: 'management_reports.audit.total_audits'|trans({}, 'management_reports'),
                 value: report.audits.total,
                 variant: 'primary'
@@ -43,7 +43,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'calendar-check',
+                icon: 'nav-calendar-check',
                 label: 'management_reports.audit.this_year'|trans({}, 'management_reports'),
                 value: report.audits.this_year,
                 variant: 'success'
@@ -51,7 +51,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'people',
+                icon: 'nav-people',
                 label: 'management_reports.audit.total_reviews'|trans({}, 'management_reports'),
                 value: report.management_reviews.total,
                 variant: 'primary'
@@ -59,7 +59,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'calendar-event',
+                icon: 'ui-calendar-event',
                 label: 'management_reports.audit.reviews_this_year'|trans({}, 'management_reports'),
                 value: report.management_reviews.this_year,
                 variant: 'warning'

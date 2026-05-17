@@ -15,11 +15,11 @@
 
     {% set _show_actions = [] %}
     {% if is_granted('ROLE_ADMIN') %}
-        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_risk_appetite_edit', {id: appetite.id}) }]) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_risk_appetite_edit', {id: appetite.id}) }]) %}
     {% endif %}
-    {% set _show_actions = _show_actions|merge([{ label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_risk_appetite_index') }]) %}
+    {% set _show_actions = _show_actions|merge([{ label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_risk_appetite_index') }]) %}
     {{ _fa_page_header.render({
-        badge: { icon: 'speedometer2', label: appetite.isGlobal() ? 'risk_appetite.category.global'|trans({}, 'risk_appetite') : appetite.category },
+        badge: { icon: 'nav-dashboard', label: appetite.isGlobal() ? 'risk_appetite.category.global'|trans({}, 'risk_appetite') : appetite.category },
         title: appetite.displayName,
         subtitle: 'risk_appetite.show.subtitle'|trans({}, 'risk_appetite'),
         actions: _show_actions

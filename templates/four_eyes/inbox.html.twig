@@ -13,7 +13,7 @@
     }) }}
 
     {% if requests is empty %}
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle' } } %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'status-ok' } } %}
             {% block alert_body %}{{ 'four_eyes.inbox.empty'|trans({}, 'four_eyes') }}{% endblock %}
         {% endembed %}
     {% else %}

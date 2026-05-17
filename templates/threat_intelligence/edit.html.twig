@@ -7,7 +7,7 @@
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'threat.title.index'|trans({}, 'threat'), url: path('app_threat_intelligence_index'), icon: 'bi-shield-exclamation' },
+        { label: 'threat.title.index'|trans({}, 'threat'), url: path('app_threat_intelligence_index'), icon: 'nav-shield-alert' },
         { label: threat.title, url: path('app_threat_intelligence_show', {id: threat.id}) },
         { label: 'threat.title.edit'|trans({}, 'threat') }
     ]
@@ -15,9 +15,9 @@
 
 {{ _fa_page_header.render({
     title: 'threat.title.edit'|trans({}, 'threat') ~ ': ' ~ threat.title,
-    badge: { icon: 'pencil', label: '' },
+    badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_threat_intelligence_show', {id: threat.id}), variant: 'secondary', icon: 'arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_threat_intelligence_show', {id: threat.id}), variant: 'secondary', icon: 'util-arrow-left' }
     ]
 }) }}
 

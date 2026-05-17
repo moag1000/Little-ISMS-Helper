@@ -14,12 +14,12 @@
 <main class="fa-aurora-surface role-dashboard ciso-dashboard">
     {# Page Header — Aurora v4 fa-page-header #}
     {{ _fa_page_header.render({
-        badge:    { icon: 'shield-lock', label: 'ciso.badge'|trans({}, 'dashboards') },
+        badge:    { icon: 'nav-shield-lock', label: 'ciso.badge'|trans({}, 'dashboards') },
         title:    'ciso.title'|trans({}, 'dashboards'),
         subtitle: 'ciso.subtitle'|trans({}, 'dashboards'),
         actions: [
-            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'house',     href: path('app_dashboard') },
-            { label: 'action.board_view'|trans({}, 'dashboards'),         variant: 'primary', icon: 'briefcase', href: path('app_dashboard_board') }
+            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'nav-home',     href: path('app_dashboard') },
+            { label: 'action.board_view'|trans({}, 'dashboards'),         variant: 'primary', icon: 'nav-building', href: path('app_dashboard_board') }
         ]
     }) }}
 

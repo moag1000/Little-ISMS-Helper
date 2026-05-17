@@ -10,21 +10,21 @@
     {# Breadcrumb #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'processing_activity.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'bi-shield-check' },
+            { label: 'processing_activity.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'shield-check' },
             { label: 'processing_activity.breadcrumb.vvt'|trans({}, 'privacy')}
         ]
     } %}
 
     {# TODO: export actions (PDF/CSV) use plain href links; data-turbo-disabled is not available in fa-cyber-btn #}
     {{ _fa_page_header.render({
-        badge: { icon: 'file-earmark-text', label: 'processing_activity.breadcrumb.vvt'|trans({}, 'privacy') },
+        badge: { icon: 'nav-file-earmark-text', label: 'processing_activity.breadcrumb.vvt'|trans({}, 'privacy') },
         title: 'processing_activity.title'|trans({}, 'privacy'),
         subtitle: 'processing_activity.subtitle'|trans({}, 'privacy'),
         actions: [
-            { label: 'processing_activity.button.dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'speedometer2', href: path('app_processing_activity_dashboard') },
-            { label: 'processing_activity.button.export_pdf'|trans({}, 'privacy'), variant: 'ghost', icon: 'file-earmark-pdf', href: path('app_processing_activity_export_pdf') },
+            { label: 'processing_activity.button.dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-dashboard', href: path('app_processing_activity_dashboard') },
+            { label: 'processing_activity.button.export_pdf'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-file-pdf', href: path('app_processing_activity_export_pdf') },
             { label: 'processing_activity.button.export_csv'|trans({}, 'privacy'), variant: 'ghost', icon: 'filetype-csv', href: path('app_processing_activity_export_csv') },
-            { label: 'processing_activity.button.new'|trans({}, 'privacy'), variant: 'primary', icon: 'plus-lg', href: path('app_processing_activity_new') }
+            { label: 'processing_activity.button.new'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_processing_activity_new') }
         ]
     }) }}
 
@@ -254,7 +254,7 @@
                         norm_ref: 'DSGVO Art. 30 · ISO 27701',
                         help_link: path('app_help_glossary') ~ '#glossary-processing-activity',
                         actions: [
-                            { label: 'processing_activity.empty.create_first'|trans({}, 'privacy'), variant: 'primary', icon: 'plus-circle', href: path('app_processing_activity_new') }
+                            { label: 'processing_activity.empty.create_first'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_processing_activity_new') }
                         ]
                     }) }}
                     {# Foundation P-14 — Standard-VVT-Set (GDPR Art. 30 starters) #}
@@ -262,7 +262,7 @@
                         <div class="text-center mt-3">
                             <button type="button" class="btn btn-outline-primary"
                                     data-bs-toggle="modal" data-bs-target="#systemTemplateModalVvt">
-                                <i class="bi bi-collection" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
                                 {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
                             </button>
                             <div class="form-text small">

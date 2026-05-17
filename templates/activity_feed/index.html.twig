@@ -9,11 +9,11 @@
 {% block body %}
 <main class="fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge:    { icon: 'activity', label: 'badge'|trans },
+        badge:    { icon: 'nav-heart-pulse', label: 'badge'|trans },
         title:    'title'|trans,
         subtitle: 'subtitle'|trans,
         actions: [
-            { label: 'action.standard_dashboard'|trans, variant: 'ghost', icon: 'house', href: path('app_dashboard') }
+            { label: 'action.standard_dashboard'|trans, variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
         ]
     }) }}
 

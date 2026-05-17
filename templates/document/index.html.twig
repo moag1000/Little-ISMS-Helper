@@ -19,13 +19,13 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'file-earmark-text', label: 'document.title'|trans({}, 'document') },
+        badge: { icon: 'nav-file-earmark-text', label: 'document.title'|trans({}, 'document') },
         title: 'document.title'|trans({}, 'document'),
         subtitle: 'document.subtitle'|trans({}, 'document'),
         actions: [
-            { label: 'document.action.policy_wizard'|trans({}, 'document'), variant: 'success', icon: 'magic', href: path('app_policy_wizard_index') },
-            { label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'cloud-upload', href: path('app_document_new') }
-        ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'document', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
+            { label: 'document.action.policy_wizard'|trans({}, 'document'), variant: 'success', icon: 'nav-magic', href: path('app_policy_wizard_index') },
+            { label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'ui-upload', href: path('app_document_new') }
+        ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'document', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
     }) }}
 {% set _global_hints = alva_hints('document_index') %}
 {% if _global_hints|length > 0 %}
@@ -116,7 +116,7 @@
     {# KPI Cards #}
     <div class="kpi-grid">
         {{ _fa_feature_card.render({
-            icon: 'file-earmark-text',
+            icon: 'nav-file-earmark-text',
             label: 'document.kpi.total_documents'|trans({}, 'document'),
             value: total,
             hint: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
@@ -124,7 +124,7 @@
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'hdd',
+            icon: 'nav-hdd',
             label: 'document.kpi.total_size'|trans({}, 'document'),
             value: totalSizeMB,
             unit: 'MB',
@@ -132,28 +132,28 @@
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'file-pdf',
+            icon: 'nav-file-pdf',
             label: 'document.type.pdf'|trans({}, 'document'),
             value: pdfDocs,
             variant: 'danger'
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'file-earmark-spreadsheet',
+            icon: 'nav-file-earmark-spreadsheet',
             label: 'document.type.excel'|trans({}, 'document'),
             value: excelDocs,
             variant: 'success'
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'file-earmark-text',
+            icon: 'nav-file-earmark-text',
             label: 'document.kpi.drafts'|trans({}, 'document'),
             value: kpiDrafts,
             variant: 'secondary'
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'hourglass-split',
+            icon: 'ui-hourglass',
             label: 'document.kpi.in_review'|trans({}, 'document'),
             value: kpiInReview,
             variant: 'warning'
@@ -348,13 +348,13 @@
                             {{ inheritance.small_badge(document, currentTenant) }}
                             {# Policy-Wizard W7-C — settings-drift badge. #}
                             {% if driftMap[document.id] is defined and driftMap[document.id] %}
-                                {{ pill.render('policy_wizard.drift_badge.settings_drift.label'|trans({}, 'policy_wizard'), 'warning', {size: 'sm', icon: 'bi-exclamation-triangle-fill', class: 'ms-1', title: 'policy_wizard.drift_badge.settings_drift.tooltip'|trans({}, 'policy_wizard')}) }}
+                                {{ pill.render('policy_wizard.drift_badge.settings_drift.label'|trans({}, 'policy_wizard'), 'warning', {size: 'sm', icon: 'status-warning', class: 'ms-1', title: 'policy_wizard.drift_badge.settings_drift.tooltip'|trans({}, 'policy_wizard')}) }}
                             {% endif %}
                             {% if document.supersedes %}
                                 <a href="{{ path('app_policy_wizard_diff', {currentDocId: document.id}) }}"
                                    class="text-decoration-none ms-1"
                                    title="{{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}">
-                                    {{ pill.render('policy_wizard.diff.title'|trans({}, 'policy_wizard'), 'primary', {size: 'sm', icon: 'bi-arrow-left-right'}) }}
+                                    {{ pill.render('policy_wizard.diff.title'|trans({}, 'policy_wizard'), 'primary', {size: 'sm', icon: 'util-arrow-left'}) }}
                                 </a>
                             {% endif %}
                             {# Editable-policy-body — "Lokal angepasst"
@@ -363,7 +363,7 @@
                                signal: this body deviates from the
                                wizard baseline. #}
                             {% if document.generatedFromTemplate is not null and document.hasPostGenerationEdits %}
-                                {{ pill.render('document.policy_body.drift_badge.label'|trans({}, 'document'), 'neutral', {size: 'sm', icon: 'bi-pencil-square', class: 'ms-1', title: 'document.policy_body.drift_badge.tooltip'|trans({}, 'document')}) }}
+                                {{ pill.render('document.policy_body.drift_badge.label'|trans({}, 'document'), 'neutral', {size: 'sm', icon: 'ui-edit', class: 'ms-1', title: 'document.policy_body.drift_badge.tooltip'|trans({}, 'document')}) }}
                             {% endif %}
                             {# Junior-ISB Wish #5 — Auditor-Score badge.
                                Only rendered for Wizard-generated docs
@@ -387,7 +387,7 @@
                                but never lengthen). Auditor signal:
                                policy lacks Wirksamkeitspruefung. #}
                             {% if document.isEffectivenessOverdue(12) %}
-                                {{ pill.render('document.effectiveness.badge.overdue.label'|trans({}, 'document'), 'danger', {size: 'sm', icon: 'bi-shield-exclamation', class: 'ms-1', title: 'document.effectiveness.badge.overdue.tooltip'|trans({}, 'document')}) }}
+                                {{ pill.render('document.effectiveness.badge.overdue.label'|trans({}, 'document'), 'danger', {size: 'sm', icon: 'nav-shield-alert', class: 'ms-1', title: 'document.effectiveness.badge.overdue.tooltip'|trans({}, 'document')}) }}
                             {% endif %}
                             {% if document.description %}
                             <br>
@@ -468,13 +468,13 @@
             {# Empty State #}
             {% set _system_templates = system_templates('App\\Entity\\Document') %}
             {% include '_components/_empty_state.html.twig' with {
-                icon: 'bi-file-earmark-text',
+                icon: 'nav-file-earmark-text',
                 title: 'document.message.no_documents'|trans({}, 'document'),
                 description: 'document.message.upload_first'|trans({}, 'document'),
                 action: {
                     label: 'document.action.upload'|trans({}, 'document'),
                     url: path('app_document_new'),
-                    icon: 'bi-cloud-upload'
+                    icon: 'ui-upload'
                 }
             } %}
             {# Foundation P-14 — ISO 27001 policy starter set #}
@@ -482,7 +482,7 @@
                 <div class="text-center mt-3">
                     <button type="button" class="btn btn-outline-primary"
                             data-bs-toggle="modal" data-bs-target="#systemTemplateModalDocument">
-                        <i class="bi bi-collection" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
                         {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
                     </button>
                     <div class="form-text small">

@@ -15,10 +15,10 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'cloud-arrow-up', label: 'Import' },
+        badge: { icon: 'ui-upload', label: 'Import' },
         title: 'compliance_import.history.title'|trans({}, 'compliance_import'),
         actions: [
-            { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import'), variant: 'primary', icon: 'cloud-arrow-up', href: path('admin_compliance_import_upload') }
+            { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import'), variant: 'primary', icon: 'ui-upload', href: path('admin_compliance_import_upload') }
         ]
     }) }}
 
@@ -27,7 +27,7 @@
             mood: 'thinking',
             title: 'compliance_import.history.empty'|trans({}, 'compliance_import'),
             actions: [
-                { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import'), variant: 'primary', icon: 'cloud-arrow-up', href: path('admin_compliance_import_upload') }
+                { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import'), variant: 'primary', icon: 'ui-upload', href: path('admin_compliance_import_upload') }
             ]
         }) }}
     {% else %}

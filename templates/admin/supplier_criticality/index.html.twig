@@ -12,11 +12,11 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'building', label: 'Suppliers' },
+        badge: { icon: 'nav-building', label: 'Suppliers' },
         title: 'supplier_criticality.title'|trans({}, 'supplier_criticality'),
         subtitle: 'supplier_criticality.subtitle'|trans({}, 'supplier_criticality'),
         actions: [
-            { label: 'supplier_criticality.action.new'|trans({}, 'supplier_criticality'), variant: 'primary', icon: 'plus-lg', href: path('app_admin_supplier_criticality_new') }
+            { label: 'supplier_criticality.action.new'|trans({}, 'supplier_criticality'), variant: 'primary', icon: 'plus', href: path('app_admin_supplier_criticality_new') }
         ]
     }) }}
 

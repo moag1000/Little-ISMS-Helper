@@ -23,8 +23,8 @@
         subtitle: config.description|trans,
         badge: { icon: 'shield-check', label: config.code },
         actions: [
-            { label: 'wizard.back'|trans({}, 'wizard'), href: path('app_compliance_wizard_index'), variant: 'ghost', icon: 'arrow-left' },
-            { label: 'wizard.run_assessment'|trans({}, 'wizard'), href: path('app_compliance_wizard_assess', {wizard: wizard}), variant: 'primary', icon: 'play-fill' }
+            { label: 'wizard.back'|trans({}, 'wizard'), href: path('app_compliance_wizard_index'), variant: 'ghost', icon: 'util-arrow-left' },
+            { label: 'wizard.run_assessment'|trans({}, 'wizard'), href: path('app_compliance_wizard_assess', {wizard: wizard}), variant: 'primary', icon: 'play' }
         ]
     }) }}
 {% set _global_hints = alva_hints('compliance_wizard_start') %}
@@ -175,7 +175,7 @@
                     {% trans_default_domain 'wizard' %}
                     <p class="small text-muted mb-3">{{ 'wizard.data_sources_info'|trans }}</p>
                     {% for mod in active_modules %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', class: 'me-1 mb-1', icon: 'bi-check-circle', content: mod } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'success', class: 'me-1 mb-1', icon: 'status-ok', content: mod } %}
                     {% endfor %}
                 {% endblock %}
             {% endembed %}

@@ -15,12 +15,12 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'person-badge', label: ('person.type.' ~ person.personType)|trans({}, 'people') },
+        badge: { icon: 'role', label: ('person.type.' ~ person.personType)|trans({}, 'people') },
         title: person.fullName,
         subtitle: person.badgeId|default(''),
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_person_edit', {id: person.id}) },
-            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_person_index') }
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_person_edit', {id: person.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_person_index') }
         ]
     }) }}
 </div>

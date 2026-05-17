@@ -15,11 +15,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'calendar-check', label: 'scheduled_report.title'|trans({}, 'scheduled_reports') },
+        badge:    { icon: 'nav-calendar-check', label: 'scheduled_report.title'|trans({}, 'scheduled_reports') },
         title:    report.name,
         actions: [
-            { label: 'scheduled_report.action.edit'|trans({}, 'scheduled_reports'),    variant: 'ghost', icon: 'pencil', href: path('app_scheduled_report_edit',    {id: report.id}) },
-            { label: 'scheduled_report.action.preview'|trans({}, 'scheduled_reports'), variant: 'ghost', icon: 'eye',    href: path('app_scheduled_report_preview', {id: report.id}) }
+            { label: 'scheduled_report.action.edit'|trans({}, 'scheduled_reports'),    variant: 'ghost', icon: 'ui-edit', href: path('app_scheduled_report_edit',    {id: report.id}) },
+            { label: 'scheduled_report.action.preview'|trans({}, 'scheduled_reports'), variant: 'ghost', icon: 'ui-eye',    href: path('app_scheduled_report_preview', {id: report.id}) }
         ]
     }) }}
 
@@ -47,9 +47,9 @@
                         <div class="col-md-6 mb-3">
                             <strong>{{ 'scheduled_report.form.format'|trans({}, 'scheduled_reports') }}:</strong><br>
                             {% if report.format == 'pdf' %}
-                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-file-pdf', content: 'PDF' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'nav-file-pdf', content: 'PDF' } %}
                             {% else %}
-                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-file-excel', content: 'Excel' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'nav-file-earmark-spreadsheet', content: 'Excel' } %}
                             {% endif %}
                         </div>
                         <div class="col-md-6 mb-3">

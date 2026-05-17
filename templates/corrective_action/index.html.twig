@@ -15,10 +15,10 @@
     ]
 } %}
 {{ _fa_page_header.render({
-    badge: { icon: 'tools', label: 'corrective_action.page.title'|trans({}, 'audits') },
+    badge: { icon: 'nav-tools', label: 'corrective_action.page.title'|trans({}, 'audits') },
     title: 'corrective_action.page.title'|trans({}, 'audits'),
     actions: [
-        { label: 'corrective_action.action.new'|trans({}, 'audits'), href: path('app_corrective_action_new'), variant: 'primary', icon: 'plus-lg' }
+        { label: 'corrective_action.action.new'|trans({}, 'audits'), href: path('app_corrective_action_new'), variant: 'primary', icon: 'plus' }
     ]
 }) }}
 {% set _global_hints = alva_hints('corrective_action_index') %}
@@ -32,7 +32,7 @@
 <div class="container-fluid py-4">
 
     {% if overdue_count > 0 %}
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle' } } %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning' } } %}
             {% block alert_body %}{{ 'corrective_action.alert.overdue'|trans({'%count%': overdue_count}, 'audits') }}{% endblock %}
         {% endembed %}
     {% endif %}

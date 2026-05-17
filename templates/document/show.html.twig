@@ -26,11 +26,11 @@
         { label: 'common.download'|trans({}, 'messages'), variant: 'primary', icon: 'download', href: path('app_document_download', {id: document.id}), attrs: {'data-turbo': 'false'} }
     ] %}
     {% if canEdit is defined and canEdit %}
-        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'pencil', href: path('app_document_edit', {id: document.id}) }]) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'ui-edit', href: path('app_document_edit', {id: document.id}) }]) %}
     {% endif %}
-    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_document_index') }]) %}
+    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_document_index') }]) %}
     {{ _fa_page_header.render({
-        badge: (isInherited is defined and isInherited) ? { icon: 'building', label: 'corporate.inherited'|trans({}, 'messages') } : { icon: 'file-earmark-text', label: 'nav.documents'|trans({}, 'nav') },
+        badge: (isInherited is defined and isInherited) ? { icon: 'nav-building', label: 'corporate.inherited'|trans({}, 'messages') } : { icon: 'nav-file-earmark-text', label: 'nav.documents'|trans({}, 'nav') },
         title: document.originalFilename,
         actions: _show_actions
     }) }}
@@ -69,18 +69,18 @@
         <div class="d-flex flex-wrap gap-2 mb-3" data-test="document-norm-anchor-chips">
             {% if doraValidityDate is defined and doraValidityDate is not null %}
                 <span data-test="document-dora-validity-badge">
-                    {{ pill.render('document.dora_validity.badge'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document'), 'primary', {icon: 'bi-calendar-event', title: 'document.dora_validity.tooltip'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document')}) }}
+                    {{ pill.render('document.dora_validity.badge'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document'), 'primary', {icon: 'ui-calendar-event', title: 'document.dora_validity.tooltip'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document')}) }}
                 </span>
             {% endif %}
             {% if climateChangeAware is defined and climateChangeAware %}
                 <span data-test="document-climate-change-badge">
-                    {{ pill.render('document.climate_change.badge'|trans({}, 'document'), 'success', {icon: 'bi-globe2', title: 'document.climate_change.tooltip'|trans({}, 'document')}) }}
+                    {{ pill.render('document.climate_change.badge'|trans({}, 'document'), 'success', {icon: 'ui-globe', title: 'document.climate_change.tooltip'|trans({}, 'document')}) }}
                 </span>
             {% endif %}
         </div>
 
         {% if doraValidityDate is defined and doraValidityDate is not null %}
-            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-calendar-event', class: 'mb-3' } } %}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'ui-calendar-event', class: 'mb-3' } } %}
                 {% block alert_body %}
                     <div class="fa-alert__title">{{ 'document.dora_validity.heading'|trans({}, 'document') }}</div>
                     <p class="fa-alert__message mb-0 small">{{ 'document.dora_validity.body'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document') }}</p>
@@ -116,8 +116,8 @@
     {% if document.generatedFromTemplate is not null and auditorScore is defined and auditorScore is not null %}
         {% set _score = auditorScore %}
         {% set _variant = _score.tier == 'green' ? 'success' : (_score.tier == 'yellow' ? 'warning' : 'danger') %}
-        {% set _icon = _score.tier == 'green' ? 'shield-check' : (_score.tier == 'yellow' ? 'shield-exclamation' : 'shield-x') %}
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: _variant, icon: 'bi-' ~ _icon, class: 'mb-3' } } %}
+        {% set _icon = _score.tier == 'green' ? 'shield-check' : (_score.tier == 'yellow' ? 'nav-shield-alert' : 'nav-shield-alert') %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: _variant, icon: _icon, class: 'mb-3' } } %}
             {% block alert_body %}
                 <div class="fa-alert__title">
                     {{ ('policy_wizard.auditor_score.tier_' ~ _score.tier)|trans({}, 'policy_wizard') }}
@@ -207,7 +207,7 @@
                         <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
                         {{ 'document.policy_body.preview.heading'|trans({}, 'document') }}
                         {% if document.hasPostGenerationEdits() %}
-                            {{ pill.render('document.policy_body.drift_badge.label'|trans({}, 'document'), 'warning', {class: 'ms-2', icon: 'bi-pencil-square', title: 'document.policy_body.drift_badge.tooltip'|trans({}, 'document')}) }}
+                            {{ pill.render('document.policy_body.drift_badge.label'|trans({}, 'document'), 'warning', {class: 'ms-2', icon: 'ui-edit', title: 'document.policy_body.drift_badge.tooltip'|trans({}, 'document')}) }}
                         {% endif %}
                     </h3>
                     {% if document.hasPostGenerationEdits() %}

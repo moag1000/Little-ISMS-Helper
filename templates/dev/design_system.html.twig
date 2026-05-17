@@ -46,12 +46,12 @@
 
         {# ── Page header ───────────────────────────────────────────────── #}
         {{ _fa_page_header.render({
-            badge:    { icon: 'palette2', label: 'Dev only' },
+            badge:    { icon: 'nav-palette', label: 'Dev only' },
             title:    'Aurora v4 Living Styleguide',
             subtitle: 'Every FairyAurora component with live preview and copy-paste Twig snippet.',
             actions: [
-                { label: 'Source',   variant: 'ghost',   icon: 'github',    href: '#' },
-                { label: 'Phase 5',  variant: 'primary',  icon: 'stars',     href: '#' }
+                { label: 'Source',   variant: 'ghost',   icon: 'ui-external-link',    href: '#' },
+                { label: 'Phase 5',  variant: 'primary',  icon: 'ui-stars',     href: '#' }
             ]
         }) }}
 
@@ -112,11 +112,11 @@
 
                 <div class="mb-3" style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-lg,8px); padding:1.5rem;">
                     {{ _fa_page_header.render({
-                        badge:    { icon: 'shield-lock', label: 'ISMS' },
+                        badge:    { icon: 'nav-shield-lock', label: 'ISMS' },
                         title:    'Risikoübersicht',
                         subtitle: 'Alle offenen Risiken der aktuellen Periode.',
                         actions: [
-                            { label: 'Filter',    variant: 'ghost',   icon: 'funnel',  href: '#' },
+                            { label: 'Filter',    variant: 'ghost',   icon: 'ui-funnel',  href: '#' },
                             { label: 'Neu',       variant: 'primary', icon: 'plus',    href: '#' }
                         ]
                     }) }}
@@ -127,11 +127,11 @@
                     <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto;"><code>{% verbatim %}{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {{ _fa_page_header.render({
-    badge:    { icon: 'shield-lock', label: 'ISMS' },
+    badge:    { icon: 'nav-shield-lock', label: 'ISMS' },
     title:    'Risikoübersicht',
     subtitle: 'Alle offenen Risiken der aktuellen Periode.',
     actions: [
-        { label: 'Filter', variant: 'ghost',   icon: 'funnel', href: path('risk_index') },
+        { label: 'Filter', variant: 'ghost',   icon: 'ui-funnel', href: path('risk_index') },
         { label: 'Neu',    variant: 'primary',  icon: 'plus',   href: path('risk_new') }
     ]
 }) }}{% endverbatim %}</code></pre>
@@ -266,8 +266,8 @@
                         title:   'Noch keine Dokumente vorhanden',
                         text:    'Laden Sie das erste Dokument hoch oder wählen Sie eine Vorlage, um loszulegen.',
                         actions: [
-                            { label: 'Dokument hochladen', variant: 'primary', icon: 'upload',        href: '#' },
-                            { label: 'Vorlage wählen',     variant: 'ghost',   icon: 'file-earmark',  href: '#' }
+                            { label: 'Dokument hochladen', variant: 'primary', icon: 'ui-upload',        href: '#' },
+                            { label: 'Vorlage wählen',     variant: 'ghost',   icon: 'nav-file-earmark-text',  href: '#' }
                         ]
                     }) }}
                 </div>
@@ -281,8 +281,8 @@
     title:   'Noch keine Dokumente vorhanden',
     text:    'Laden Sie das erste Dokument hoch oder wählen Sie eine Vorlage.',
     actions: [
-        { label: 'Hochladen',     variant: 'primary', icon: 'upload',       href: path('document_new') },
-        { label: 'Vorlage wählen', variant: 'ghost',  icon: 'file-earmark', href: '#' }
+        { label: 'Hochladen',     variant: 'primary', icon: 'ui-upload',       href: path('document_new') },
+        { label: 'Vorlage wählen', variant: 'ghost',  icon: 'nav-file-earmark-text', href: '#' }
     ]
 }) }}{% endverbatim %}</code></pre>
                 </details>
@@ -304,7 +304,7 @@
                         title:    'Willkommen zurück, Max',
                         subtitle: 'Heute warten 3 Aufgaben in der Inbox auf Sie. Ihr ISMS-Status ist aktuell.',
                         actions:  [
-                            { label: "Los geht's", variant: 'primary', icon: 'arrow-right-circle', href: '#' }
+                            { label: "Los geht's", variant: 'primary', icon: 'ui-arrow-right', href: '#' }
                         ]
                     }) }}
                 </div>
@@ -318,7 +318,7 @@
     title:    'Willkommen zurück, {{ app.user.displayName }}',
     subtitle: 'Heute warten 3 Aufgaben in der Inbox auf Sie.',
     actions:  [
-        { label: "Los geht's", variant: 'primary', icon: 'arrow-right-circle', href: path('dashboard') }
+        { label: "Los geht's", variant: 'primary', icon: 'ui-arrow-right', href: path('dashboard') }
     ]
 }) }}{% endverbatim %}</code></pre>
                 </details>
@@ -339,7 +339,7 @@
                 <div class="d-flex flex-wrap gap-2 mb-4">
                     {{ _fa_filter_chip.render('Alle',  { active: false }) }}
                     {{ _fa_filter_chip.render('Heute', { active: true  }) }}
-                    {{ _fa_filter_chip.render('Mit Icon', { active: false, icon: 'funnel' }) }}
+                    {{ _fa_filter_chip.render('Mit Icon', { active: false, icon: 'ui-funnel' }) }}
                 </div>
 
                 {# Group #}
@@ -366,7 +366,7 @@
 {{ _fa_filter_chip.render('Heute', { active: true }) }}
 
 {# Single chip — as <a> with icon #}
-{{ _fa_filter_chip.render('Filter', { active: false, icon: 'funnel', href: '?filter=1' }) }}
+{{ _fa_filter_chip.render('Filter', { active: false, icon: 'ui-funnel', href: '?filter=1' }) }}
 
 {# Group — string labels, second chip active #}
 {{ _fa_filter_chip.group(['Heute', 'Woche', 'Monat'], 1) }}

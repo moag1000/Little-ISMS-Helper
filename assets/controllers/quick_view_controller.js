@@ -181,7 +181,7 @@ export default class extends Controller {
     displayError() {
         this.bodyTarget.innerHTML = `
             <div class="text-center py-5">
-                <i class="bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                <i class="fa-icon fa-icon--status-warning text-danger" style="font-size: 3rem;" aria-hidden="true"></i>
                 <p class="mt-3 mb-2">${this.errorTitleValue}</p>
                 <p class="text-muted small">${this.errorSubtitleValue}</p>
                 <button class="btn btn-sm btn-primary mt-3" data-action="click->quick-view#close">

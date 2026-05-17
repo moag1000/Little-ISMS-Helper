@@ -61,7 +61,7 @@
     <div class="row mb-4">
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'server',
+                icon: 'asset-server',
                 label: 'management_reports.executive.assets'|trans({}, 'management_reports'),
                 value: summary.summary.total_assets,
                 variant: 'primary'
@@ -69,7 +69,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'exclamation-triangle',
+                icon: 'status-warning',
                 label: 'management_reports.executive.risks'|trans({}, 'management_reports'),
                 value: summary.summary.total_risks,
                 variant: 'danger'
@@ -86,7 +86,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'shield',
+                icon: 'nav-shield',
                 label: 'management_reports.executive.controls'|trans({}, 'management_reports'),
                 value: summary.summary.total_controls,
                 variant: 'primary'

@@ -14,12 +14,12 @@
 <main class="fa-aurora-surface role-dashboard board-dashboard">
     {# Page Header — Aurora v4 fa-page-header #}
     {{ _fa_page_header.render({
-        badge:    { icon: 'briefcase', label: 'board.badge'|trans({}, 'dashboards') },
+        badge:    { icon: 'nav-building', label: 'board.badge'|trans({}, 'dashboards') },
         title:    'board.title'|trans({}, 'dashboards'),
         subtitle: 'board.subtitle'|trans({}, 'dashboards'),
         actions: [
-            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'house',       href: path('app_dashboard') },
-            { label: 'action.ciso_view'|trans({}, 'dashboards'),          variant: 'primary', icon: 'shield-lock', href: path('app_dashboard_ciso') }
+            { label: 'action.standard_dashboard'|trans({}, 'dashboards'), variant: 'ghost',   icon: 'nav-home',       href: path('app_dashboard') },
+            { label: 'action.ciso_view'|trans({}, 'dashboards'),          variant: 'primary', icon: 'nav-shield-lock', href: path('app_dashboard_ciso') }
         ]
     }) }}
 

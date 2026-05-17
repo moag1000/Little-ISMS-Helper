@@ -44,7 +44,7 @@ export default class extends Controller {
         this.restTarget.textContent = this.fullValue;
         this.#revealed = true;
         if (this.hasIconTarget) {
-            this.iconTarget.classList.replace('bi-eye', 'bi-eye-slash');
+            this.iconTarget.classList.replace('fa-icon--ui-eye', 'fa-icon--ui-eye-off');
         }
         this.#clearTimer();
         this.#hideTimer = window.setTimeout(() => this.#hide(), this.autoHideMsValue);
@@ -57,7 +57,7 @@ export default class extends Controller {
         this.restTarget.textContent = this.maskedValue;
         this.#revealed = false;
         if (this.hasIconTarget) {
-            this.iconTarget.classList.replace('bi-eye-slash', 'bi-eye');
+            this.iconTarget.classList.replace('fa-icon--ui-eye-off', 'fa-icon--ui-eye');
         }
         this.#clearTimer();
     }

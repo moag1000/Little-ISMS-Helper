@@ -162,11 +162,12 @@ export default class extends Controller {
     }
 
     _createToast(opts) {
+        // Aurora-namespaced icon names (see assets/styles/fairy-aurora-icons.css)
         const toneIcons = {
-            info:    'bi-info-circle-fill',
-            success: 'bi-check-circle-fill',
-            warning: 'bi-exclamation-triangle-fill',
-            danger:  'bi-exclamation-octagon-fill',
+            info:    'status-info',
+            success: 'status-ok',
+            warning: 'status-warning',
+            danger:  'status-critical',
         };
         const isCritical = opts.tone === 'warning' || opts.tone === 'danger';
         const toast = document.createElement('div');
@@ -184,7 +185,7 @@ export default class extends Controller {
             : '';
 
         toast.innerHTML = `
-            <i class="fa-toast__icon bi ${icon}" aria-hidden="true"></i>
+            <i class="fa-toast__icon fa-icon fa-icon--${icon}" aria-hidden="true"></i>
             <div class="fa-toast__body">${title}${msg}${actions}</div>
             <button type="button" class="fa-toast__close" aria-label="Close" data-action="click->fa-toast#dismiss">&times;</button>
             ${opts.persistent ? '' : '<span class="fa-toast__progress" aria-hidden="true"></span>'}

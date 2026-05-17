@@ -14,18 +14,18 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'speedometer2', label: 'KPI' },
+        badge: { icon: 'nav-dashboard', label: 'KPI' },
         title: 'kpi_threshold.page.title'|trans({}, 'admin'),
         subtitle: 'kpi_threshold.page.subtitle'|trans({}, 'admin'),
         actions: [
-            { label: 'kpi_threshold.action.new'|trans({}, 'admin'), variant: 'primary', icon: 'plus-lg', href: path('admin_kpi_threshold_new') }
+            { label: 'kpi_threshold.action.new'|trans({}, 'admin'), variant: 'primary', icon: 'plus', href: path('admin_kpi_threshold_new') }
         ]
     }) }}
 
     <section class="fa-section">
         <div class="fa-section__body p-0">
             {% if configs is empty %}
-                {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'm-3', body: 'kpi_threshold.message.no_configs'|trans({}, 'admin') }) }}
+                {{ _fa_alert.render({ variant: 'info', icon: 'status-info', class: 'm-3', body: 'kpi_threshold.message.no_configs'|trans({}, 'admin') }) }}
             {% else %}
                 {# V3 W3-UX: migrated to fa-table Aurora pattern #}
                 {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}

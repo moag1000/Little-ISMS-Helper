@@ -17,10 +17,10 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'patch-check', label: 'nav.patches'|trans({}, 'nav') },
+        badge: { icon: 'nav-patch-check', label: 'nav.patches'|trans({}, 'nav') },
         title: 'patch.title'|trans({}, 'patches'),
         actions: [
-            { label: 'patch.new'|trans({}, 'patches'), variant: 'primary', icon: 'plus-circle', href: path('app_patch_new') }
+            { label: 'patch.new'|trans({}, 'patches'), variant: 'primary', icon: 'plus', href: path('app_patch_new') }
         ]
     }) }}
 {% set _global_hints = alva_hints('patch_index') %}

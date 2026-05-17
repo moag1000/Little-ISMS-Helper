@@ -18,10 +18,10 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'clipboard-data', label: 'bc_exercises.page.title'|trans({}, 'bc_exercises') },
+        badge: { icon: 'nav-clipboard-data', label: 'bc_exercises.page.title'|trans({}, 'bc_exercises') },
         title: 'bc_exercises.page.header'|trans({}, 'bc_exercises'),
         actions: [
-            { label: 'bc_exercises.action.add_new'|trans({}, 'bc_exercises'), href: path('app_bc_exercise_new'), variant: 'primary', icon: 'plus-lg' }
+            { label: 'bc_exercises.action.add_new'|trans({}, 'bc_exercises'), href: path('app_bc_exercise_new'), variant: 'primary', icon: 'plus' }
         ]
     }) }}
 {% set _global_hints = alva_hints('bc_exercise_index') %}
@@ -135,7 +135,7 @@
                 mood: 'sleeping',
                 title: 'bc_exercises.message.no_exercises'|trans({}, 'bc_exercises'),
                 actions: [
-                    { label: 'bc_exercises.message.schedule_first'|trans({}, 'bc_exercises'), variant: 'primary', icon: 'plus-lg', href: path('app_bc_exercise_new') }
+                    { label: 'bc_exercises.message.schedule_first'|trans({}, 'bc_exercises'), variant: 'primary', icon: 'plus', href: path('app_bc_exercise_new') }
                 ]
             }) }}
             {% endif %}

@@ -8,7 +8,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'GDPR', icon: 'bi-shield-check' },
+            { label: 'GDPR', icon: 'shield-check' },
             { label: 'DPIA', url: path('app_dpia_index') },
             { label: 'Dashboard' }
         ]
@@ -17,10 +17,10 @@
     {% include '_components/_page_header.html.twig' with {
         title: 'dpia.dashboard.title'|trans({}, 'privacy'),
         subtitle: 'dpia.dashboard.subtitle'|trans({}, 'privacy'),
-        icon: 'bi-speedometer2',
+        icon: 'nav-dashboard',
         actions: [
-            { label: 'dpia.dashboard.view_all'|trans({}, 'privacy'), url: path('app_dpia_index'), variant: 'primary', icon: 'bi-list' },
-            { label: 'dpia.dashboard.new'|trans({}, 'privacy'), url: path('app_dpia_new'), variant: 'success', icon: 'bi-plus-lg' }
+            { label: 'dpia.dashboard.view_all'|trans({}, 'privacy'), url: path('app_dpia_index'), variant: 'primary', icon: 'ui-list' },
+            { label: 'dpia.dashboard.new'|trans({}, 'privacy'), url: path('app_dpia_new'), variant: 'success', icon: 'plus' }
         ]
     } %}
 

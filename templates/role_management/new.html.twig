@@ -11,11 +11,11 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-lock', label: 'role_management.title.create'|trans({}, 'role_management') },
+        badge: { icon: 'nav-shield-lock', label: 'role_management.title.create'|trans({}, 'role_management') },
         title: 'role_management.title.create'|trans({}, 'role_management'),
         actions: [
-            { label: 'role_management.action.compare'|trans({}, 'role_management'), variant: 'ghost', icon: 'arrow-left-right', href: path('role_management_compare') },
-            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('role_management_index') }
+            { label: 'role_management.action.compare'|trans({}, 'role_management'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_compare') },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_index') }
         ]
     }) }}
 

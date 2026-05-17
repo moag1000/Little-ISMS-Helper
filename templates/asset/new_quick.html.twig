@@ -7,7 +7,7 @@
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.assets'|trans({}, 'nav'), url: path('app_asset_index'), icon: 'bi-cpu' },
+        { label: 'nav.assets'|trans({}, 'nav'), url: path('app_asset_index'), icon: 'cpu' },
         { label: 'asset.quick_form.title'|trans({}, 'asset') }
     ]
 } %}
@@ -16,9 +16,9 @@
 {% include '_components/_page_header.html.twig' with {
     title: 'asset.quick_form.title'|trans({}, 'asset'),
     subtitle: 'asset.quick_form.subtitle'|trans({}, 'asset'),
-    icon: 'bi-lightning',
+    icon: 'ui-lightbulb',
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), url: path('app_asset_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), url: path('app_asset_index'), variant: 'secondary', icon: 'util-arrow-left' }
     ]
 } %}
 

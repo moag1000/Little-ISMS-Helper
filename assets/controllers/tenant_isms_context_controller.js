@@ -194,15 +194,15 @@ export default class extends Controller {
 
         // Context fields
         const fields = [
-            { key: 'organizationName', label: this.fieldOrganizationNameValue, icon: 'building' },
-            { key: 'ismsScope', label: this.fieldIsmsScopeValue, icon: 'bullseye', multiline: true },
-            { key: 'scopeExclusions', label: this.fieldScopeExclusionsValue, icon: 'x-circle', multiline: true },
-            { key: 'externalIssues', label: this.fieldExternalIssuesValue, icon: 'globe', multiline: true },
-            { key: 'internalIssues', label: this.fieldInternalIssuesValue, icon: 'house', multiline: true },
-            { key: 'interestedParties', label: this.fieldInterestedPartiesValue, icon: 'people', multiline: true },
-            { key: 'legalRequirements', label: this.fieldLegalRequirementsValue, icon: 'file-text', multiline: true },
+            { key: 'organizationName', label: this.fieldOrganizationNameValue, icon: 'nav-building' },
+            { key: 'ismsScope', label: this.fieldIsmsScopeValue, icon: 'nav-bullseye', multiline: true },
+            { key: 'scopeExclusions', label: this.fieldScopeExclusionsValue, icon: 'status-critical', multiline: true },
+            { key: 'externalIssues', label: this.fieldExternalIssuesValue, icon: 'ui-globe', multiline: true },
+            { key: 'internalIssues', label: this.fieldInternalIssuesValue, icon: 'nav-home', multiline: true },
+            { key: 'interestedParties', label: this.fieldInterestedPartiesValue, icon: 'nav-people', multiline: true },
+            { key: 'legalRequirements', label: this.fieldLegalRequirementsValue, icon: 'nav-file-earmark-text', multiline: true },
             { key: 'ismsPolicy', label: this.fieldIsmsPolicyValue, icon: 'shield-check', multiline: true },
-            { key: 'rolesAndResponsibilities', label: this.fieldRolesAndResponsibilitiesValue, icon: 'person-badge', multiline: true }
+            { key: 'rolesAndResponsibilities', label: this.fieldRolesAndResponsibilitiesValue, icon: 'role', multiline: true }
         ];
 
         html += '<div class="row">';
@@ -217,7 +217,7 @@ export default class extends Controller {
                         <div class="card h-100">
                             <div class="card-body">
                                 <h6 class="text-muted mb-2">
-                                    <i class="bi bi-${field.icon}" aria-hidden="true"></i> ${field.label}
+                                    <i class="fa-icon fa-icon--${field.icon}" aria-hidden="true"></i> ${field.label}
                                 </h6>
                                 <p class="mb-0">${this.nl2br(displayValue)}</p>
                             </div>

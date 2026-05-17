@@ -11,18 +11,18 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'privacy.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'bi-shield-lock' },
+            { label: 'privacy.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'nav-shield-lock' },
             { label: 'privacy.breadcrumb.data_breaches'|trans({}, 'privacy') }
         ]
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'exclamation-triangle-fill', label: 'privacy.data_breach.management'|trans({}, 'privacy') },
+        badge: { icon: 'status-warning', label: 'privacy.data_breach.management'|trans({}, 'privacy') },
         title: 'privacy.data_breach.management'|trans({}, 'privacy'),
         subtitle: 'privacy.data_breach.subtitle'|trans({}, 'privacy'),
         actions: [
-            { label: 'privacy.data_breach.actions.dashboard'|trans({}, 'privacy'), href: path('app_data_breach_dashboard'), variant: 'ghost', icon: 'speedometer2' },
-            { label: 'privacy.data_breach.actions.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus-lg' }
+            { label: 'privacy.data_breach.actions.dashboard'|trans({}, 'privacy'), href: path('app_data_breach_dashboard'), variant: 'ghost', icon: 'nav-dashboard' },
+            { label: 'privacy.data_breach.actions.new'|trans({}, 'privacy'), href: path('app_data_breach_new'), variant: 'danger', icon: 'plus' }
         ]
     }) }}
 {% set _global_hints = alva_hints('data_breach_index') %}
@@ -282,7 +282,7 @@
                     mood: current_filter != 'all' ? 'curious' : 'celebrating',
                     title: 'data_breach.index.no_breaches_found'|trans({}, 'privacy'),
                     actions: current_filter != 'all' ? [
-                        { label: 'data_breach.index.view_all_breaches'|trans({}, 'privacy'), variant: 'ghost', icon: 'list', href: path('app_data_breach_index') }
+                        { label: 'data_breach.index.view_all_breaches'|trans({}, 'privacy'), variant: 'ghost', icon: 'ui-list', href: path('app_data_breach_index') }
                     ] : []
                 }) }}
             {% endif %}

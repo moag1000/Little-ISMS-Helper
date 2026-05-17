@@ -19,14 +19,14 @@
 } %}
 
 {% set supplierActions = [
-    { label: 'supplier.action.add_new'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus-lg', href: path('app_supplier_new') }
+    { label: 'supplier.action.add_new'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new') }
 ] %}
 {% if doraActive ?? false %}
     {% set supplierActions = [{ label: 'dora.register_export.button'|trans({}, 'dora'), variant: 'ghost', icon: 'download', href: path('app_dora_register_export_csv') }] | merge(supplierActions) %}
 {% endif %}
 {% if is_granted('ROLE_MANAGER') %}
     {% set supplierActions = [{ label: 'supplier.action.lksg_export'|trans({}, 'suppliers'), variant: 'ghost', icon: 'download', href: path('app_supplier_lksg_annual_report_csv') }] | merge(supplierActions) %}
-    {% set supplierActions = supplierActions | merge([{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'supplier', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }]) %}
+    {% set supplierActions = supplierActions | merge([{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'supplier', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }]) %}
 {% endif %}
 {{ _fa_page_header.render({
     badge: { icon: 'truck', label: 'nav.suppliers'|trans({}, 'nav') },
@@ -286,7 +286,7 @@
                 mood: 'sleeping',
                 title: 'supplier.empty.message'|trans({}, 'suppliers'),
                 actions: [
-                    { label: 'supplier.empty.add_first'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus-circle', href: path('app_supplier_new') }
+                    { label: 'supplier.empty.add_first'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new') }
                 ]
             }) }}
             {# Foundation P-14 — Hyperscaler / SaaS starter set #}
@@ -294,7 +294,7 @@
                 <div class="text-center mt-3">
                     <button type="button" class="btn btn-outline-primary"
                             data-bs-toggle="modal" data-bs-target="#systemTemplateModalSupplier">
-                        <i class="bi bi-collection" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
                         {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
                     </button>
                     <div class="form-text small">

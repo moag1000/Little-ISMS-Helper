@@ -18,13 +18,13 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'building', label: 'context_management.title'|trans({}, 'context') },
+        badge: { icon: 'nav-building', label: 'context_management.title'|trans({}, 'context') },
         title: 'context_management.title'|trans({}, 'context'),
         subtitle: 'context.info.subtitle'|trans({}, 'context'),
         actions: context ? [
-            { label: 'context.link.edit'|trans({}, 'context'), href: path('app_context_edit'), variant: 'primary', icon: 'pencil' }
+            { label: 'context.link.edit'|trans({}, 'context'), href: path('app_context_edit'), variant: 'primary', icon: 'ui-edit' }
         ] : [
-            { label: 'context.link.create'|trans({}, 'context'), href: path('app_context_edit'), variant: 'primary', icon: 'plus-circle' }
+            { label: 'context.link.create'|trans({}, 'context'), href: path('app_context_edit'), variant: 'primary', icon: 'plus' }
         ]
     }) }}
     <main class="fa-aurora-surface fa-aurora-surface--dots">
@@ -49,7 +49,7 @@
     {# KPI Cards (daysSinceReview / daysUntilReview / isReviewDue from controller) #}
     <div class="kpi-grid">
         {{ _fa_feature_card.render({
-            icon: 'check-circle',
+            icon: 'status-ok',
             label: 'context.kpi.completeness'|trans({}, 'context'),
             value: completenessPercentage,
             unit: '%',
@@ -57,7 +57,7 @@
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'bullseye',
+            icon: 'nav-bullseye',
             label: 'context.kpi.active_goals'|trans({}, 'context'),
             value: objectives|length,
             variant: 'primary',
@@ -65,7 +65,7 @@
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'calendar-check',
+            icon: 'nav-calendar-check',
             label: daysSinceReview ? 'context.kpi.days_since_review'|trans({}, 'context') : 'context.kpi.last_review'|trans({}, 'context'),
             value: daysSinceReview ?? '-',
             unit: daysSinceReview ? (daysSinceReview == 1 ? 'context.unit.day'|trans({}, 'context') : 'context.unit.days'|trans({}, 'context')) : '',
@@ -73,7 +73,7 @@
         }) }}
 
         {{ _fa_feature_card.render({
-            icon: 'calendar-event',
+            icon: 'ui-calendar-event',
             label: daysUntilReview ? 'context.kpi.days_until_review'|trans({}, 'context') : 'context.kpi.next_review'|trans({}, 'context'),
             value: daysUntilReview ?? '-',
             unit: daysUntilReview ? (daysUntilReview == 1 ? 'context.unit.day'|trans({}, 'context') : 'context.unit.days'|trans({}, 'context')) : '',
@@ -253,7 +253,7 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'small py-2 mb-2' } } %}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'small py-2 mb-2' } } %}
                             {% block alert_body %}{{ 'context.message.no_interested_parties'|trans({}, 'context') }}{% endblock %}
                         {% endembed %}
                     {% endif %}
@@ -486,7 +486,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-0' } } %}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-0' } } %}
                 {% block alert_body %}{{ 'context.message.no_objectives'|trans({}, 'context') }} <a href="{{ path('app_objective_index') }}" class="alert-link"> {{ 'context.action.manage_objectives'|trans({}, 'context') }} </a>{% endblock %}
             {% endembed %}
         {% endblock %}
@@ -496,13 +496,13 @@
     {% else %}
     {# Empty State - No Context #}
     {% include '_components/_empty_state.html.twig' with {
-        icon: 'bi-building',
+        icon: 'nav-building',
         title: 'context.empty.title'|trans({}, 'context'),
         description: 'context.empty.description'|trans({}, 'context'),
         action: {
             label: 'context.action.create_context'|trans({}, 'context'),
             url: path('app_context_edit'),
-            icon: 'bi-plus-circle'
+            icon: 'plus'
         },
         norm_ref: 'ISO 27001 Clause 4.1-4.3',
         help_link: path('app_help_glossary') ~ '#glossary-context'

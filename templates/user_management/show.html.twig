@@ -15,12 +15,12 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'person-circle', label: 'nav.users'|trans({}, 'nav') },
+        badge: { icon: 'ui-person', label: 'nav.users'|trans({}, 'nav') },
         title: user.firstName ~ ' ' ~ user.lastName,
         subtitle: user.email,
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('user_management_edit', {'id': user.id}) },
-            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('user_management_index') }
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('user_management_edit', {'id': user.id}) },
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('user_management_index') }
         ]
     }) }}
 
@@ -112,9 +112,9 @@
                                 <th scope="row" width="40%">{{ 'user.label.status'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.isActive %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'user.status.active'|trans({}, 'user') } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'user.status.active'|trans({}, 'user') } %}
                                     {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'user.status.inactive'|trans({}, 'user') } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'user.status.inactive'|trans({}, 'user') } %}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -122,9 +122,9 @@
                                 <th scope="row">{{ 'user.label.verified'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.isVerified %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'user.label.yes'|trans({}, 'user') } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'user.label.yes'|trans({}, 'user') } %}
                                     {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'user.label.no'|trans({}, 'user') } %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-warning', content: 'user.label.no'|trans({}, 'user') } %}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -266,7 +266,7 @@
                         <div class="row">
                             {% for permission in allPermissions %}
                                 <div class="col-md-3 mb-2">
-                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'bi-check', class: 'w-100', content: permission.name } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'check', class: 'w-100', content: permission.name } %}
                                 </div>
                             {% endfor %}
                         </div>

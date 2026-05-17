@@ -17,7 +17,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'graph-up-arrow', label: 'nav.reports'|trans({}, 'nav') },
+        badge: { icon: 'nav-bar-chart', label: 'nav.reports'|trans({}, 'nav') },
         title: 'management_reports.title'|trans({}, 'management_reports'),
         subtitle: 'management_reports.subtitle'|trans({}, 'management_reports')
     }) }}
@@ -26,7 +26,7 @@
     <div class="row mb-4">
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'server',
+                icon: 'asset-server',
                 label: 'management_reports.stats.assets'|trans({}, 'management_reports'),
                 value: summary.summary.total_assets,
                 variant: 'primary'
@@ -34,7 +34,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'exclamation-triangle',
+                icon: 'status-warning',
                 label: 'management_reports.stats.high_risks'|trans({}, 'management_reports'),
                 value: summary.risk_distribution.critical + summary.risk_distribution.high,
                 variant: 'danger'

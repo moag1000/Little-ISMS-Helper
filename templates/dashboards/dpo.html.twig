@@ -11,13 +11,13 @@
 {% block body %}
 <main class="fa-aurora-surface role-dashboard dpo-dashboard">
     {{ _fa_page_header.render({
-        badge:    { icon: 'shield-lock', label: 'dpo.badge'|trans },
+        badge:    { icon: 'nav-shield-lock', label: 'dpo.badge'|trans },
         title:    'dpo.title'|trans,
         subtitle: 'dpo.subtitle'|trans,
         actions: [
-            { label: 'action.standard_dashboard'|trans, variant: 'ghost',   icon: 'house',        href: path('app_dashboard') },
-            { label: 'dpo.action.vvt_export'|trans,    variant: 'ghost',   icon: 'file-earmark-arrow-down', href: path('app_vvt_export_xlsx') },
-            { label: 'dpo.action.dpia_list'|trans,     variant: 'primary', icon: 'clipboard2-check', href: path('app_dpia_index') }
+            { label: 'action.standard_dashboard'|trans, variant: 'ghost',   icon: 'nav-home',        href: path('app_dashboard') },
+            { label: 'dpo.action.vvt_export'|trans,    variant: 'ghost',   icon: 'nav-download', href: path('app_vvt_export_xlsx') },
+            { label: 'dpo.action.dpia_list'|trans,     variant: 'primary', icon: 'nav-clipboard-check', href: path('app_dpia_index') }
         ]
     }) }}
 

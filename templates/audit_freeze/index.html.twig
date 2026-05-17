@@ -13,11 +13,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'snow', label: 'audit_freeze.title'|trans({}, 'audit_freeze') },
+        badge: { icon: 'ui-circle', label: 'audit_freeze.title'|trans({}, 'audit_freeze') },
         title: 'audit_freeze.title'|trans({}, 'audit_freeze'),
         subtitle: 'audit_freeze.subtitle'|trans({}, 'audit_freeze'),
         actions: [
-            { label: 'audit_freeze.action.create'|trans({}, 'audit_freeze'), href: path('app_audit_freeze_new'), variant: 'primary', icon: 'plus-circle' }
+            { label: 'audit_freeze.action.create'|trans({}, 'audit_freeze'), href: path('app_audit_freeze_new'), variant: 'primary', icon: 'plus' }
         ]
     }) }}
     <main class="fa-aurora-surface">

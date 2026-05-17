@@ -10,7 +10,7 @@
         badge:   { icon: 'shield-check', label: 'mfa.section.title'|trans({}, 'mfa') },
         title:   'mfa.token_details'|trans({}, 'mfa'),
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_profile_mfa_index') }
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_profile_mfa_index') }
         ]
     }) }}
 
@@ -43,16 +43,16 @@
                         <dt class="col-sm-4">{{ 'mfa.field.status'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.isActive %}
-                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'mfa.status.active'|trans({}, 'mfa') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'mfa.status.active'|trans({}, 'mfa') } %}
                             {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'bi-dash-circle', content: 'mfa.status.inactive'|trans({}, 'mfa') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'ui-x', content: 'mfa.status.inactive'|trans({}, 'mfa') } %}
                             {% endif %}
                         </dd>
 
                         <dt class="col-sm-4">{{ 'mfa.field.is_primary'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.isPrimary %}
-                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-star-fill', content: 'mfa.is_primary'|trans({}, 'mfa') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'ui-star', content: 'mfa.is_primary'|trans({}, 'mfa') } %}
                             {% else %}
                                 <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
                             {% endif %}
