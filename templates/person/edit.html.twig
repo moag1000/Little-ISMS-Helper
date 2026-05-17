@@ -19,7 +19,7 @@
     title: ('person.title.edit'|trans({}, 'messages')) ~ ': ' ~ (person.fullName),
     badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: '← {{ \'common.back\'|trans({}, \'messages\') }}', href: path('app_person_show', {id: person.id}), variant: 'ghost', icon: 'util-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_person_show', {id: person.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
 

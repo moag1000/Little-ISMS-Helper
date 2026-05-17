@@ -1,0 +1,2 @@
+# check_form_render_completeness.py baseline
+# Format: <template-path> :: <FormTypeName>

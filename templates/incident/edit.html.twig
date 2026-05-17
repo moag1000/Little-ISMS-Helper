@@ -125,14 +125,12 @@
                                 {{ form_row(form.occurredAt) }}
                             </div>
                         </div>
-                        {{ _fa_owner_picker.render(form, {
-                            slot_id: 'reportedBy',
-                            user_field: 'reportedByUser',
-                            person_field: 'reportedByPerson',
-                            deputies_field: 'reportedByDeputyPersons',
-                            legacy_field: 'reportedBy',
-                            with_deputies: true,
-                            with_legacy: true,
+                        {{ _fa_owner_picker.render({
+                            userField:     form.reportedByUser,
+                            personField:   form.reportedByPerson,
+                            deputiesField: form.reportedByDeputyPersons is defined ? form.reportedByDeputyPersons : null,
+                            legacyField:   form.reportedBy is defined ? form.reportedBy : null,
+                            showSection:   false,
                         }) }}
                         <div class="row">
                             <div class="col-md-12">
@@ -180,6 +178,60 @@
                             {% endif %}
                         </div>
                     </fieldset>
+
+                    {# Konzern-Visibility & ISO 27001 A.5.24–A.5.28 — always-active classification & containment. #}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">{{ 'incident.section.classification_containment'|trans({}, 'incident') }}</legend>
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{ form_row(form.visibleToHolding) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.incidentClassification) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.evidencePreserved) }}
+                            </div>
+                            <div class="col-md-12">
+                                {{ form_row(form.containmentActions) }}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    {# NIS2 + DORA — module-gated on nis2_dora #}
+                    {% if is_module_active('nis2_dora') and form.nis2Category is defined %}
+                    <fieldset class="mb-4">
+                        <legend class="h5 mb-3">{{ 'incident.section.nis2_reporting'|trans({}, 'incident') }}</legend>
+                        <div class="row">
+                            <div class="col-md-6">{{ form_row(form.nis2Category) }}</div>
+                            <div class="col-md-6">{{ form_row(form.crossBorderImpact) }}</div>
+                            <div class="col-md-4">{{ form_row(form.earlyWarningReportedAt) }}</div>
+                            <div class="col-md-4">{{ form_row(form.detailedNotificationReportedAt) }}</div>
+                            <div class="col-md-4">{{ form_row(form.finalReportSubmittedAt) }}</div>
+                            <div class="col-md-4">{{ form_row(form.affectedUsersCount) }}</div>
+                            <div class="col-md-4">{{ form_row(form.estimatedFinancialImpact) }}</div>
+                            <div class="col-md-8">{{ form_row(form.nationalAuthorityNotified) }}</div>
+                            <div class="col-md-4">{{ form_row(form.authorityReferenceNumber) }}</div>
+                        </div>
+                        <hr class="my-3">
+                        <h3 class="h6 mb-3">{{ 'incident.section.dora_reporting'|trans({}, 'incident') }}</h3>
+                        <div class="row">
+                            <div class="col-md-6">{{ form_row(form.ictIncidentClassification) }}</div>
+                            <div class="col-md-6">{{ form_row(form.reputationalImpact) }}</div>
+                            <div class="col-md-4">{{ form_row(form.dataLossOccurred) }}</div>
+                            <div class="col-md-4">{{ form_row(form.dataLeakageOccurred) }}</div>
+                            <div class="col-md-4">{{ form_row(form.recurringIncident) }}</div>
+                            <div class="col-md-6">{{ form_row(form.economicImpact) }}</div>
+                            <div class="col-md-6">{{ form_row(form.criticalServicesAffected) }}</div>
+                            <div class="col-md-6">{{ form_row(form.clientsAffected) }}</div>
+                            <div class="col-md-6">{{ form_row(form.clientsAffectedFinancialVolume) }}</div>
+                            <div class="col-md-12">{{ form_row(form.replicationOfImpact) }}</div>
+                            <div class="col-md-6">{{ form_row(form.initialReportSubmittedAt) }}</div>
+                            <div class="col-md-6">{{ form_row(form.intermediateReportSubmittedAt) }}</div>
+                            <div class="col-md-12">{{ form_row(form.dataRecoveryStrategy) }}</div>
+                        </div>
+                    </fieldset>
+                    {% endif %}
 
                     {# Remove the old auto_form include since we've manually rendered everything #}
                     {#{% set detection_fields = ['detectedAt', 'occurredAt', 'reportedBy'] %}

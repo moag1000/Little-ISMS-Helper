@@ -1,0 +1,2 @@
+# check_macro_arg_arity.py baseline
+# Format: <template>:<line>:<component>:<macro>
