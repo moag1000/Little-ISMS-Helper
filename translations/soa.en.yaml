@@ -231,3 +231,23 @@ soa:
         error:
             invalid_date: 'Please supply a valid date in YYYY-MM-DD format.'
             future_date: 'As-of-date must not be in the future.'
+
+no_tenant:
+    title: 'Your account is not yet assigned to a tenant'
+    subtitle: 'Without a tenant link, no controls can be loaded — here is what to do:'
+    body_admin: |
+        As administrator you can resolve this yourself:
+        1. Open User Management and assign this account to a tenant.
+        2. Alternatively, Data Repair lets you fix tenant assignments across many users at once (bulk mode).
+
+        If no suitable tenant exists yet, create one first under Administration → Tenant Management.
+    body_user: |
+        Please ask an administrator to assign your account to a tenant under
+        "Administration → User Management". Only then will ISMS data
+        (controls, risks, incidents, processing activities) become visible.
+
+        If you do not know who the administrator is: your IT or QM department
+        is typically responsible.
+    cta_user_management: 'Open User Management'
+    cta_data_repair: 'Open Data Repair'
+    cta_logout: 'Sign out and sign in again'
