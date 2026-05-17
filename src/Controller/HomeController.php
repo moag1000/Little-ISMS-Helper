@@ -357,7 +357,7 @@ class HomeController extends AbstractController
                     'url' => $this->generateUrl('app_risk_treatment_plan_show', ['id' => $plan->getId()]),
                     'priority' => $overdueDays > 14 ? 'danger' : 'warning',
                     'overdue_days' => $overdueDays,
-                    'icon' => 'bi-exclamation-triangle-fill',
+                    'icon' => 'status-warning',
                 ];
             }
         }
@@ -370,7 +370,7 @@ class HomeController extends AbstractController
                 'url' => $this->generateUrl('app_workflow_pending'),
                 'priority' => 'info',
                 'overdue_days' => null,
-                'icon' => 'bi-hourglass-split',
+                'icon' => 'status-pending',
             ];
         }
 
@@ -386,7 +386,7 @@ class HomeController extends AbstractController
                     'url' => $this->generateUrl('app_risk_show', ['id' => $risk->getId()]),
                     'priority' => 'warning',
                     'overdue_days' => $overdueDays,
-                    'icon' => 'bi-calendar-x',
+                    'icon' => 'nav-calendar',
                 ];
             }
         }
@@ -427,7 +427,7 @@ class HomeController extends AbstractController
         if (count($overdueReviews) > 0) {
             $tasks[] = [
                 'type' => 'overdue_reviews',
-                'icon' => 'bi-calendar-x',
+                'icon' => 'nav-calendar',
                 'color' => 'warning',
                 'label' => $this->translator->trans('dashboard.urgent.overdue_reviews', [], 'dashboard'),
                 'count' => count($overdueReviews),
@@ -440,7 +440,7 @@ class HomeController extends AbstractController
         if (count($overdueTreatmentPlans) > 0) {
             $tasks[] = [
                 'type' => 'overdue_treatment_plans',
-                'icon' => 'bi-exclamation-triangle-fill',
+                'icon' => 'status-warning',
                 'color' => 'danger',
                 'label' => $this->translator->trans('dashboard.urgent.overdue_treatment_plans', [], 'dashboard'),
                 'count' => count($overdueTreatmentPlans),
@@ -453,7 +453,7 @@ class HomeController extends AbstractController
         if (count($approachingTreatmentPlans) > 0) {
             $tasks[] = [
                 'type' => 'approaching_deadlines',
-                'icon' => 'bi-clock-history',
+                'icon' => 'nav-clock-history',
                 'color' => 'warning',
                 'label' => $this->translator->trans('dashboard.urgent.approaching_deadlines', [], 'dashboard'),
                 'count' => count($approachingTreatmentPlans),
@@ -466,7 +466,7 @@ class HomeController extends AbstractController
         if ($user && count($pendingWorkflows) > 0) {
             $tasks[] = [
                 'type' => 'pending_workflows',
-                'icon' => 'bi-hourglass-split',
+                'icon' => 'status-pending',
                 'color' => 'info',
                 'label' => $this->translator->trans('dashboard.urgent.pending_workflows', [], 'dashboard'),
                 'count' => count($pendingWorkflows),
@@ -479,7 +479,7 @@ class HomeController extends AbstractController
         if (count($overdueWorkflows) > 0) {
             $tasks[] = [
                 'type' => 'overdue_workflows',
-                'icon' => 'bi-exclamation-circle-fill',
+                'icon' => 'status-critical',
                 'color' => 'danger',
                 'label' => $this->translator->trans('dashboard.urgent.overdue_workflows', [], 'dashboard'),
                 'count' => count($overdueWorkflows),

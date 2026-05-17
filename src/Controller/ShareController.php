@@ -165,7 +165,7 @@ class ShareController extends AbstractController
                 [
                     'id' => 'note',
                     'label' => 'share.action.save_note',
-                    'icon' => 'bi-sticky',
+                    'icon' => 'nav-clipboard-check',
                     'description' => 'share.action.note_desc',
                 ],
             ],
@@ -181,7 +181,7 @@ class ShareController extends AbstractController
                 array_unshift($context['actions'], [
                     'id' => 'incident',
                     'label' => 'share.action.create_incident',
-                    'icon' => 'bi-exclamation-triangle',
+                    'icon' => 'status-warning',
                     'description' => 'share.action.incident_desc',
                     'highlight' => true,
                 ]);
@@ -197,7 +197,7 @@ class ShareController extends AbstractController
                 array_unshift($context['actions'], [
                     'id' => 'risk',
                     'label' => 'share.action.create_risk',
-                    'icon' => 'bi-shield-exclamation',
+                    'icon' => 'nav-shield-alert',
                     'description' => 'share.action.risk_desc',
                     'highlight' => true,
                 ]);
@@ -210,7 +210,7 @@ class ShareController extends AbstractController
             $context['actions'][] = [
                 'id' => 'document',
                 'label' => 'share.action.create_document',
-                'icon' => 'bi-file-earmark-text',
+                'icon' => 'nav-file-earmark-text',
                 'description' => 'share.action.document_desc',
             ];
         }
@@ -221,7 +221,7 @@ class ShareController extends AbstractController
             $context['actions'][] = [
                 'id' => 'document',
                 'label' => 'share.action.create_document',
-                'icon' => 'bi-file-earmark-text',
+                'icon' => 'nav-file-earmark-text',
                 'description' => 'share.action.document_desc',
             ];
         }

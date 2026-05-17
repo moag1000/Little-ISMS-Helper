@@ -392,7 +392,7 @@ class AdminDashboardController extends AbstractController
         ) {
             $alerts[] = [
                 'type' => 'danger',
-                'icon' => 'bi-exclamation-triangle-fill',
+                'icon' => 'status-warning',
                 'message' => 'admin.alert.annex_a_missing',
                 'count' => 93,
                 'action' => $this->generateUrl('app_soa_index'),
@@ -407,7 +407,7 @@ class AdminDashboardController extends AbstractController
         if ($inactiveCount > 0) {
             $alerts[] = [
                 'type' => 'warning',
-                'icon' => 'bi-person-x',
+                'icon' => 'nav-people',
                 'message' => "admin.alert.inactive_users",
                 'count' => $inactiveCount,
                 'action' => $this->generateUrl('user_management_index'),
@@ -419,7 +419,7 @@ class AdminDashboardController extends AbstractController
         if ($unverifiedCount > 0) {
             $alerts[] = [
                 'type' => 'info',
-                'icon' => 'bi-person-check',
+                'icon' => 'nav-people',
                 'message' => "admin.alert.unverified_users",
                 'count' => $unverifiedCount,
                 'action' => $this->generateUrl('user_management_index'),
@@ -431,7 +431,7 @@ class AdminDashboardController extends AbstractController
         if ($dbSize > self::DATABASE_SIZE_WARNING_MB) {
             $alerts[] = [
                 'type' => 'warning',
-                'icon' => 'bi-database-exclamation',
+                'icon' => 'status-warning',
                 'message' => "admin.alert.large_database",
                 'count' => round($dbSize / 1024, 2),
                 'action' => null,

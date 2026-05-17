@@ -55,7 +55,7 @@ class ComplianceMappingSeedController extends AbstractController
                 'target_label' => 'ISO/IEC 27001:2022 Annex A',
                 'mapping_count' => 42,
                 'rationale_source' => 'Offizielle BSI-Cross-Reference-Tabelle (Kompendium 2023)',
-                'icon' => 'bi-shield-check',
+                'icon' => 'shield-check',
             ],
             [
                 'id' => 'soc2-iso27001',
@@ -66,7 +66,7 @@ class ComplianceMappingSeedController extends AbstractController
                 'target_label' => 'ISO/IEC 27001:2022 Annex A',
                 'mapping_count' => 38,
                 'rationale_source' => 'AICPA Trust Services Criteria + Vanta/Drata Cross-Refs',
-                'icon' => 'bi-globe-americas',
+                'icon' => 'ui-globe',
             ],
             [
                 'id' => 'c52026-iso27001',
@@ -77,7 +77,7 @@ class ComplianceMappingSeedController extends AbstractController
                 'target_label' => 'ISO/IEC 27001:2022 Annex A',
                 'mapping_count' => 16,
                 'rationale_source' => 'C5:2026 ↔ 27001:2022 Annex A (ISO-tagged + SCS + CNT + CSA + CFC)',
-                'icon' => 'bi-cloud',
+                'icon' => 'asset-cloud',
             ],
             [
                 'id' => 'nis2-iso27001',
@@ -88,7 +88,7 @@ class ComplianceMappingSeedController extends AbstractController
                 'target_label' => 'ISO/IEC 27001:2022 Annex A',
                 'mapping_count' => 79,
                 'rationale_source' => 'ENISA Technical Guidance + BSI „NIS2 mit ISO 27001" + Impl. Reg. (EU) 2024/2690',
-                'icon' => 'bi-shield-fill-exclamation',
+                'icon' => 'nav-shield-alert',
             ],
             [
                 'id' => 'dora-iso27001',
@@ -99,7 +99,7 @@ class ComplianceMappingSeedController extends AbstractController
                 'target_label' => 'ISO/IEC 27001:2022 Annex A',
                 'mapping_count' => 68,
                 'rationale_source' => 'EBA Guidelines on ICT Risk + ENISA DORA Technical Guidance + BaFin FAQ',
-                'icon' => 'bi-bank',
+                'icon' => 'nav-building',
             ],
             [
                 'id' => 'tisax-iso27001',
@@ -110,7 +110,7 @@ class ComplianceMappingSeedController extends AbstractController
                 'target_label' => 'ISO/IEC 27001:2022 Annex A',
                 'mapping_count' => 98,
                 'rationale_source' => 'VDA-ISA direkt abgeleitet aus ISO 27001:2013 Annex A, umgebildet auf 2022er Struktur',
-                'icon' => 'bi-car-front',
+                'icon' => 'nav-truck',
             ],
             [
                 'id' => 'gdpr-iso27001',
@@ -121,7 +121,7 @@ class ComplianceMappingSeedController extends AbstractController
                 'target_label' => 'ISO/IEC 27001:2022 Annex A',
                 'mapping_count' => 40,
                 'rationale_source' => 'EDPB Guidelines + BSI „Datenschutz und IT-Sicherheit" + ISO/IEC 27701',
-                'icon' => 'bi-person-lock',
+                'icon' => 'nav-people',
             ],
             [
                 'id' => 'gdpr-iso27701',
@@ -132,7 +132,7 @@ class ComplianceMappingSeedController extends AbstractController
                 'target_label' => 'ISO/IEC 27701:2019 — PIMS',
                 'mapping_count' => 60,
                 'rationale_source' => 'ISO 27701:2019 Annex D (GDPR-Mapping) + EDPB Guidelines 2/2023',
-                'icon' => 'bi-file-earmark-lock2',
+                'icon' => 'nav-file-check',
             ],
         ];
     }
