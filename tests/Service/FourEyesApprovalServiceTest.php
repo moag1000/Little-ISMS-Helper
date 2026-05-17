@@ -84,7 +84,7 @@ final class FourEyesApprovalServiceTest extends TestCase
         $request->method('isPending')->willReturn(false);
         $request->method('getStatus')->willReturn(FourEyesApprovalRequest::STATUS_APPROVED);
 
-        $this->expectException(LogicException::class);
+        $this->expectException(\App\Exception\Workflow\InvalidStatusTransitionException::class);
         $service->approve($request, $approver);
     }
 }

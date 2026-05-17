@@ -33,7 +33,7 @@
             <div class="info-label">{{ 'risk_treatment_plan.field.status'|trans({}, 'risk_treatment_plan') }}</div>
             <div class="info-value">
                 {% set status_variant = plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) %}
-                {% include '_components/_badge.html.twig' with { variant: status_variant, class: 'fs-6', content: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') } %}
+                {% include '_components/_badge.html.twig' with { variant: status_variant, class: 'fa-status-pill--lg', content: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') } %}
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
             <div class="info-label">{{ 'risk_treatment_plan.field.priority'|trans({}, 'risk_treatment_plan') }}</div>
             <div class="info-value">
                 {% set priority_variant = plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) %}
-                {% include '_components/_badge.html.twig' with { variant: priority_variant, class: 'fs-6', content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper } %}
+                {% include '_components/_badge.html.twig' with { variant: priority_variant, class: 'fa-status-pill--lg', content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper } %}
             </div>
         </div>
     </div>
