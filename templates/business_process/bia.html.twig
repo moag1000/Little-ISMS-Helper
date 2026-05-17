@@ -141,7 +141,7 @@
             <div class="small text-muted text-uppercase fw-semibold mb-2">{{ 'business_process.bia.field.suggested_availability'|trans({}, 'business_process') }}</div>
             <p class="lead">
                 {{ 'business_process.bia.field.rto_recommendation_intro'|trans({'%rto%': bia_data.rto}, 'business_process') }}
-                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'fs-5', content: bia_data.suggested_availability ~ '/5' } %}
+                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'fa-status-pill--lg', content: bia_data.suggested_availability ~ '/5' } %}
             </p>
             <small class="text-muted">
                 {{ 'business_process.bia.field.rto_consistency_hint'|trans({}, 'business_process') }}

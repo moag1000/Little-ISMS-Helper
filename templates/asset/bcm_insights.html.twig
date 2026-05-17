@@ -50,7 +50,7 @@
                                 <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.confidentiality'|trans({}, 'bcm') }}</div>
                                 {% set confLevel = analysis.confidentiality.level|default('normal') %}
                                 {% set levelColors = {'very_high': 'danger', 'high': 'warning', 'normal': 'info', 'low': 'secondary'} %}
-                                {% include '_components/_badge.html.twig' with { variant: levelColors[confLevel]|default('secondary'), class: 'fs-5', content: ('bcm.level.' ~ confLevel)|trans({}, 'bcm') } %}
+                                {% include '_components/_badge.html.twig' with { variant: levelColors[confLevel]|default('secondary'), class: 'fa-status-pill--lg', content: ('bcm.level.' ~ confLevel)|trans({}, 'bcm') } %}
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -64,7 +64,7 @@
                             <div class="text-center">
                                 <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.integrity'|trans({}, 'bcm') }}</div>
                                 {% set intLevel = analysis.integrity.level|default('normal') %}
-                                {% include '_components/_badge.html.twig' with { variant: levelColors[intLevel]|default('secondary'), class: 'fs-5', content: ('bcm.level.' ~ intLevel)|trans({}, 'bcm') } %}
+                                {% include '_components/_badge.html.twig' with { variant: levelColors[intLevel]|default('secondary'), class: 'fa-status-pill--lg', content: ('bcm.level.' ~ intLevel)|trans({}, 'bcm') } %}
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -78,7 +78,7 @@
                             <div class="text-center">
                                 <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.availability'|trans({}, 'bcm') }}</div>
                                 {% set availLevel = analysis.availability.level|default('normal') %}
-                                {% include '_components/_badge.html.twig' with { variant: levelColors[availLevel]|default('secondary'), class: 'fs-5', content: ('bcm.level.' ~ availLevel)|trans({}, 'bcm') } %}
+                                {% include '_components/_badge.html.twig' with { variant: levelColors[availLevel]|default('secondary'), class: 'fa-status-pill--lg', content: ('bcm.level.' ~ availLevel)|trans({}, 'bcm') } %}
                             </div>
                         {% endblock %}
                     {% endembed %}
