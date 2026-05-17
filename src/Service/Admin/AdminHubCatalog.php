@@ -496,7 +496,7 @@ final class AdminHubCatalog
                     ],
                     [
                         'key' => 'lifecycle_overrides',
-                        'icon' => 'fa-icon--nav-flow',
+                        'icon' => 'fa-icon--nav-workflow',
                         'label' => 'admin.hub.module.lifecycle_overrides.label',
                         'description' => 'admin.hub.module.lifecycle_overrides.desc',
                         'route' => 'admin_lifecycle_overrides_index',
