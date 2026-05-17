@@ -24,11 +24,6 @@ cert_bundle:
             title: 'Checkliste'
             passed: 'OK'
             failed: 'Fehlt'
-            documents_approved: 'Alle Dokumente genehmigt'
-            policy_acknowledgements: 'Alle Policy-Bestätigungen gesammelt'
-            findings_closed: 'Alle Audit-Findings geschlossen'
-            risk_assessment_current: 'Risikobeurteilung aktuell (< 12 Monate)'
-            management_review_current: 'Management-Review aktuell (< 12 Monate)'
         blocker:
             documents_unapproved: '%count% Dokument(e) noch nicht genehmigt'
             documents_unapproved_hint: 'Alle Dokumente müssen den Status "approved" haben bevor ein Audit-Bundle erstellt wird.'

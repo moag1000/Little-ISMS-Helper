@@ -10,12 +10,3 @@ system_templates:
         hint: 'Schneller Einstieg über Standard-Vorlagen (ISO 27005, BSI, VVT, Policies, Cloud-Anbieter, Modul-Profile)'
     success:
         applied: 'Vorlage "%name%" angewendet — %count% Datensatz/Datensätze erstellt.'
-    error:
-        csrf_invalid: 'Sicherheits-Token ungültig oder abgelaufen.'
-        unknown_key: 'Vorlage nicht gefunden.'
-        apply_failed: 'Anwenden fehlgeschlagen: %message%'
-    profile:
-        kmu: 'KMU / Mittelstand'
-        konzern: 'Konzern / Holding'
-        verein: 'Verein / Non-Profit'
-        finanzdienstleister: 'Finanzdienstleister (BaFin / DORA)'
