@@ -186,6 +186,15 @@ class DataRepairController extends AbstractController
 
             // Tier 3 data quality checks (operational gaps)
             'dataQualityIssues' => $dataQualityIssues,
+
+            // Extended coverage (2026-05) — passed from the full integrity
+            // check result so the template has direct access without a
+            // second service round-trip.
+            'orphanedUploads' => $integrityCheck['orphaned_uploads'] ?? ['files' => [], 'scanned' => 0, 'referenced' => 0, 'uploads_dir' => null],
+            'cascadeOrphans' => $integrityCheck['cascade_orphans'] ?? [],
+            'jsonSchemaViolations' => $integrityCheck['json_schema_violations'] ?? [],
+            'auditLogIntegrity' => $integrityCheck['audit_log_integrity'] ?? ['bulk_batch_mismatches' => [], 'day_gaps' => [], 'null_tenant_entries' => []],
+            'statusEnumDrift' => $integrityCheck['status_enum_drift'] ?? [],
         ]);
     }
 
@@ -804,6 +813,174 @@ class DataRepairController extends AbstractController
                 ));
             }
         }
+
+        return $this->redirectToRoute('admin_data_repair_index');
+    }
+
+    /**
+     * Moves orphaned upload files (files on disk with no DB owner) to
+     * `var/quarantine/<YYYY-MM-DD>/`. NEVER `unlink` — quarantine is
+     * reversible. Every move logged through AuditLogger::logBulk() under
+     * a single batch_id (ISO 27001 Clause 7.5.3).
+     */
+    #[Route('/admin/data-repair/quarantine-uploads', name: 'admin_data_repair_quarantine_uploads', methods: ['POST'])]
+    public function quarantineOrphanedUploads(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('quarantine_uploads', (string) $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $orphans = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->findOrphanedUploads()
+        );
+        $uploadsDir = $orphans['uploads_dir'] ?? null;
+        if (!is_string($uploadsDir) || $uploadsDir === '' || count($orphans['files']) === 0) {
+            $this->addFlash('info', $this->translator->trans('admin.data_repair.uploads.nothing_to_quarantine', [], 'admin'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        // var/quarantine/<date>/ — created lazily; never auto-deleted.
+        $projectDir = dirname($uploadsDir, 2); // public/uploads → project root
+        $stamp = (new \DateTimeImmutable())->format('Y-m-d_His');
+        $quarantineDir = $projectDir . '/var/quarantine/' . $stamp;
+        if (!is_dir($quarantineDir) && !@mkdir($quarantineDir, 0775, true) && !is_dir($quarantineDir)) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.uploads.quarantine_dir_failed', ['%dir%' => $quarantineDir], 'admin'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $perEntity = [];
+        $moved = 0;
+        foreach ($orphans['files'] as $orphan) {
+            $src = (string) ($orphan['path'] ?? '');
+            $relative = (string) ($orphan['relative'] ?? '');
+            if ($src === '' || !is_file($src)) {
+                continue;
+            }
+            // Path-traversal-safe: only files whose realpath is inside uploadsDir
+            // ever reach this list (the scanner filters them already).
+            $basename = basename($src);
+            $target = $quarantineDir . '/' . $basename;
+            // Tolerate collisions: append a counter when needed.
+            $counter = 0;
+            while (file_exists($target)) {
+                $counter++;
+                $target = $quarantineDir . '/' . $counter . '_' . $basename;
+            }
+            if (@rename($src, $target)) {
+                $moved++;
+                $perEntity[] = [
+                    'entity_id' => null,
+                    'action' => 'delete',
+                    'old_values' => ['path' => $relative, 'size' => (int) ($orphan['size'] ?? 0)],
+                    'new_values' => ['quarantine_path' => $target],
+                ];
+            }
+        }
+
+        if ($moved > 0) {
+            $this->auditLogger->logBulk(
+                'admin.data_repair.uploads_quarantined',
+                'UploadFile',
+                [
+                    'quarantine_dir' => $quarantineDir,
+                    'scanned' => (int) ($orphans['scanned'] ?? 0),
+                    'referenced' => (int) ($orphans['referenced'] ?? 0),
+                ],
+                $perEntity,
+                sprintf('Quarantined %d orphaned upload files to %s', $moved, $quarantineDir),
+            );
+        }
+
+        $this->addFlash('success', $this->translator->trans(
+            'admin.data_repair.uploads.quarantined',
+            ['%count%' => $moved, '%dir%' => $quarantineDir],
+            'admin',
+        ));
+
+        return $this->redirectToRoute('admin_data_repair_index');
+    }
+
+    /**
+     * Cleans up entities whose ManyToOne target row was deleted but the
+     * cascade never fired. Five categories (workflow_instances, mfa_tokens,
+     * sso_user_approvals, evidence_tasks, notification_deliveries) are
+     * processed under ONE AuditLogger::logBulk() batch so an auditor can
+     * answer "show me the cleanup of $batch_id" in one query.
+     */
+    #[Route('/admin/data-repair/cleanup-dangling-refs', name: 'admin_data_repair_cleanup_dangling_refs', methods: ['POST'])]
+    public function cleanupDanglingRefs(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('cleanup_dangling_refs', (string) $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        // Reason is mandatory for cascade-cleanup — a misclick could remove an
+        // SSO approval that an admin still needed for forensics.
+        $reason = trim((string) $request->request->get('reason', ''));
+        if (mb_strlen($reason) < 20) {
+            $this->addFlash('danger', $this->translator->trans(
+                'admin.data_repair.reason_required',
+                ['%min%' => 20, '%actual%' => mb_strlen($reason)],
+                'admin',
+            ));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $categoryClassMap = [
+            'workflow_instances' => \App\Entity\WorkflowInstance::class,
+            'mfa_tokens' => \App\Entity\MfaToken::class,
+            'sso_user_approvals' => \App\Entity\SsoUserApproval::class,
+            'evidence_tasks' => \App\Entity\EvidenceReverificationTask::class,
+            'notification_deliveries' => \App\Entity\Notification\NotificationDelivery::class,
+        ];
+
+        $perEntity = [];
+        $deleted = 0;
+        $this->withoutTenantFilter(function () use ($categoryClassMap, &$perEntity, &$deleted): void {
+            $cascadeOrphans = $this->dataIntegrityService->findCascadeOrphans();
+            foreach ($categoryClassMap as $category => $fqcn) {
+                $items = $cascadeOrphans[$category] ?? [];
+                foreach ($items as $item) {
+                    $id = (int) ($item['id'] ?? 0);
+                    if ($id <= 0) {
+                        continue;
+                    }
+                    $entity = $this->entityManager->find($fqcn, $id);
+                    if ($entity === null) {
+                        continue;
+                    }
+                    $perEntity[] = [
+                        'entity_id' => $id,
+                        'action' => 'delete',
+                        'old_values' => ['class' => $fqcn, 'label' => (string) ($item['label'] ?? '')],
+                        'new_values' => null,
+                    ];
+                    $this->entityManager->remove($entity);
+                    $deleted++;
+                }
+            }
+            if ($deleted > 0) {
+                $this->entityManager->flush();
+            }
+        });
+
+        if ($deleted > 0) {
+            $this->auditLogger->logBulk(
+                'admin.data_repair.cascade_cleaned',
+                'CascadeOrphan',
+                ['reason' => $reason, 'category_count' => 5],
+                $perEntity,
+                sprintf('Cleaned %d cascade-orphan rows across 5 categories: %s', $deleted, $reason),
+            );
+        }
+
+        $this->addFlash('success', $this->translator->trans(
+            'admin.data_repair.cascade.cleaned',
+            ['%count%' => $deleted],
+            'admin',
+        ));
 
         return $this->redirectToRoute('admin_data_repair_index');
     }

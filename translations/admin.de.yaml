@@ -638,6 +638,63 @@ admin:
             col_started: 'Gestartet am'
             col_treatment: 'Behandlungsplan'
             col_risk: 'Risiko'
+        # Extended coverage (2026-05) — file orphans, cascade cleanup,
+        # JSON schema, audit-log integrity, status-enum drift.
+        uploads:
+            title: 'Verwaiste Datei-Uploads'
+            description: 'Dateien im Upload-Verzeichnis (public/uploads/), die in keiner Doctrine-Entity referenziert werden. Quarantäne verschiebt die Dateien nach var/quarantine/ — kein direktes Löschen.'
+            all_ok: 'Keine verwaisten Datei-Uploads gefunden — Dateisystem ist konsistent mit der Datenbank.'
+            unavailable: 'Upload-Verzeichnis nicht zugänglich (Projekt-Pfad fehlt oder public/uploads/ existiert nicht).'
+            col_path: 'Pfad'
+            col_size: 'Größe'
+            col_mtime: 'Letzte Änderung'
+            more: 'weitere Dateien'
+            confirm_quarantine: 'Wirklich %count% verwaiste Datei(en) in die Quarantäne verschieben? Dies kann durch manuelles Zurückkopieren rückgängig gemacht werden.'
+            action_quarantine: '%count% Datei(en) in Quarantäne verschieben'
+            action_hint: 'Dateien werden nach var/quarantine/<datum>/ verschoben, nicht gelöscht.'
+            quarantined: '%count% Datei(en) erfolgreich nach %dir% verschoben.'
+            nothing_to_quarantine: 'Keine Dateien zur Quarantäne markiert.'
+            quarantine_dir_failed: 'Quarantäne-Verzeichnis konnte nicht angelegt werden: %dir%'
+        cascade:
+            title: 'Cascade-Cleanup (Dangling Referenzen)'
+            description: 'Entities, deren ManyToOne-Ziel gelöscht wurde, aber der Cascade nicht ausgelöst hat. Fünf Kategorien werden in einem Audit-Batch behoben.'
+            all_ok: 'Keine dangling Referenzen gefunden — alle Cascade-Ziele sind konsistent.'
+            show_examples: 'Beispiele anzeigen'
+            more: 'weitere'
+            confirm_cleanup: 'Wirklich %count% dangling Einträge löschen? Diese Aktion ist nicht reversibel und wird im Audit-Log unter einem batch_id protokolliert.'
+            action_cleanup: '%count% dangling Referenz(en) löschen'
+            cleaned: '%count% dangling Referenz(en) erfolgreich aufgeräumt.'
+            category:
+                workflow_instances: 'Workflow-Instanzen (Ziel fehlt)'
+                mfa_tokens: 'MFA-Token (abgelaufen, nie benutzt)'
+                sso_user_approvals: 'SSO-Approvals (Reviewer gelöscht)'
+                evidence_tasks: 'Evidence-Tasks (kein Anker)'
+                notification_deliveries: 'Notification-Deliveries (Rule gelöscht)'
+        json_schema:
+            title: 'JSON-Schema-Validierung'
+            description: 'JSON-Spalten gegen erwartete Form prüfen (Tenant.settings, TenantPolicySetting.value, NotificationRule.conditions, WorkflowStep.metadata). Nur Erkennung — keine automatische Reparatur.'
+            all_ok: 'Keine JSON-Schema-Verletzungen erkannt.'
+            detection_only: 'Reine Erkennung — bitte manuell prüfen und einzeln korrigieren. Es gibt keinen Auto-Repair-Button für dieses Risiko.'
+            col_error: 'Fehler'
+            category:
+                tenant_settings: 'Tenant.settings (k/v-Objekt erwartet)'
+                tenant_policy_settings: 'TenantPolicySetting.value (JSON-decode-Fehler)'
+                notification_rule_conditions: 'NotificationRule.conditions (Liste {field, op, value})'
+                workflow_step_metadata: 'WorkflowStep.metadata (Objekt, opt. auto_progression)'
+        audit_integrity:
+            title: 'Audit-Log-Integrität'
+            description: 'Strukturelle Anomalien, die die HMAC-Chain alleine nicht erkennt: Bulk-Batch-Mismatches, Tages-Lücken, NULL-Tenant-Einträge.'
+            all_ok: 'Audit-Log-Integrität OK — keine Bulk-Mismatches, Tages-Lücken oder NULL-Tenants.'
+            bulk_mismatches: 'Bulk-Batch-Mismatches (per_entity_count > tatsächlich)'
+            day_gaps: 'Tages-Lücken (letzte 30 Tage)'
+            null_tenants: 'Einträge mit tenant_id IS NULL'
+        status_enum_drift:
+            title: 'Status-Enum-Drift'
+            description: 'DB-Status-Werte, die nicht im neuen App\\Enum\\<Entity>Status enthalten sind. Manuelle Triage erforderlich — Auto-Repair würde echte Lifecycle-Bugs verbergen.'
+            all_ok: 'Alle Status-Werte entsprechen den definierten Enum-Cases — kein Drift.'
+            col_entity: 'Entity'
+            col_enum: 'Enum'
+            col_unknown_values: 'Unbekannte Werte × Anzahl'
     modules:
         title: Modul-Verwaltung
         dependency_graph: Abhängigkeitsgraph
