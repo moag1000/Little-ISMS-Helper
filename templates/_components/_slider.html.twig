@@ -345,7 +345,7 @@
         {# Value pill #}
         {% if show_value and not show_input %}
         <div class="slider-value text-center" style="min-width: 65px;">
-            <span class="fa-status-pill fa-status-pill--{{ computed_variant }} fs-6"
+            <span class="fa-status-pill fa-status-pill--{{ computed_variant }} fa-status-pill--lg"
                   data-{{ controller }}-target="value">
                 <span class="fa-status-pill__label">{{ value_prefix }}{{ decimals > 0 ? value|number_format(decimals) : value }}{{ value_suffix }}</span>
             </span>
