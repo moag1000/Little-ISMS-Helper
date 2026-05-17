@@ -107,6 +107,10 @@ class DataSubjectRequest
     #[Assert\Choice(choices: self::STATUSES)]
     private string $status = 'received';
 
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     /**
      * Name of the data subject making the request
      */
@@ -466,6 +470,11 @@ class DataSubjectRequest
     {
         $this->status = $status;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getDataSubjectName(): ?string
