@@ -36,7 +36,7 @@ use Psr\Log\LoggerInterface;
  *
  * Not marked final — tests mock this class.
  */
-class SlaDeadlineWatcher
+final class SlaDeadlineWatcher
 {
     /**
      * Look-ahead window for the approaching-deadline query (hours).

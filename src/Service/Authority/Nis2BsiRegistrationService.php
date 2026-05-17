@@ -26,7 +26,7 @@ use LogicException;
  *
  * Module gate: nis2_dora (enforced in controller, not here)
  */
-class Nis2BsiRegistrationService
+final class Nis2BsiRegistrationService
 {
     public function __construct(
         private readonly Nis2RegistrationProfileRepository $profileRepository,

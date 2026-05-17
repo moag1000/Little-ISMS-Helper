@@ -26,7 +26,7 @@ use Symfony\Bundle\SecurityBundle\Security;
  * - Auditor: Evidence status, findings, audit timeline
  * - Board: Executive summary, RAG status, trends
  */
-class RoleDashboardService
+final class RoleDashboardService
 {
     public function __construct(
         private readonly DashboardStatisticsService $dashboardStatisticsService,

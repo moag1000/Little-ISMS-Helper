@@ -19,7 +19,7 @@ use Symfony\Bundle\SecurityBundle\Security;
  * Service for managing Processing Activities (Verarbeitungstätigkeiten).
  * Provides CRUD operations, validation, compliance checking, and reporting.
  */
-class ProcessingActivityService
+final class ProcessingActivityService
 {
     public function __construct(
         private readonly ProcessingActivityRepository $processingActivityRepository,

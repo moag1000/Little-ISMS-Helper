@@ -23,7 +23,7 @@ use App\Repository\RiskRepository;
  * - Trend analysis based on risk status distribution
  * - Tenant-aware queries via TenantContext
  */
-class RiskAggregationService
+final class RiskAggregationService
 {
     public function __construct(
         private readonly RiskRepository $riskRepository,

@@ -17,7 +17,7 @@ use App\Repository\IncidentRepository;
  * - Control Implementation → Residual Risk Calculation
  * - Historical Data → Probability Estimation
  */
-class RiskIntelligenceService
+final class RiskIntelligenceService
 {
     public function __construct(
         private readonly IncidentRepository $incidentRepository

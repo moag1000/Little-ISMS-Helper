@@ -24,7 +24,7 @@ use App\Repository\PortfolioSnapshotRepository;
  *
  * @see docs/DATA_REUSE_IMPROVEMENT_PLAN.md WS-4
  */
-class PortfolioReportService
+final class PortfolioReportService
 {
     /**
      * NIST CSF Function-Categories used as matrix rows.

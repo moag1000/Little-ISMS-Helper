@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
  * Handles the full lifecycle: receive, verify identity, process, complete/reject/extend.
  * Art. 12(3): 30-day deadline, extendable to 90 days for complex requests.
  */
-class DataSubjectRequestService
+final class DataSubjectRequestService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

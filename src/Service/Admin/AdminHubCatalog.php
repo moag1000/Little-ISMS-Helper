@@ -21,7 +21,7 @@ namespace App\Service\Admin;
  * Icon-values are full Aurora CSS class names (fa-icon--<name>).
  * Bootstrap-icons were removed in PR #368; all icons reference Aurora only.
  */
-class AdminHubCatalog
+final class AdminHubCatalog
 {
     /**
      * @return list<array{

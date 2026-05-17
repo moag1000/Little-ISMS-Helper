@@ -30,7 +30,7 @@ use App\Repository\ComplianceRequirementRepository;
  * Fulfillment itself comes from `ComplianceRequirement::calculateFulfillmentFromControls()`,
  * which walks the mappedControls and averages their implementation %.
  */
-class BsiGrundschutzCheckService
+final class BsiGrundschutzCheckService
 {
     public const FULFILLED_THRESHOLD = 80;
 

@@ -16,7 +16,7 @@ use App\Repository\RiskRepository;
  * Dieser Service nutzt Daten aus verschiedenen ISMS-Bereichen zur
  * automatischen Bewertung und Vorschlägen für Schutzbedarfe.
  */
-class ProtectionRequirementService
+final class ProtectionRequirementService
 {
     public function __construct(
         private readonly BusinessProcessRepository $businessProcessRepository,

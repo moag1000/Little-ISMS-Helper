@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * Manages evidence documents for ISO 27001 audit preparation.
  * Links uploaded files to Controls, ComplianceRequirements, and RiskTreatmentPlans.
  */
-class EvidenceCollectionService
+final class EvidenceCollectionService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

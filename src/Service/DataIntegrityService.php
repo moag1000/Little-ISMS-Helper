@@ -43,7 +43,7 @@ use App\Repository\RiskTreatmentPlanRepository;
  * - Inconsistent entity relationships
  * - Missing required relationships
  */
-class DataIntegrityService
+final class DataIntegrityService
 {
     /**
      * Entity classes that are INTENTIONALLY globally scoped (tenant_id = NULL by design).

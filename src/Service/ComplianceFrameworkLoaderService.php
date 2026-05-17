@@ -39,7 +39,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 /**
  * Service to manage and load compliance frameworks via UI
  */
-class ComplianceFrameworkLoaderService
+final class ComplianceFrameworkLoaderService
 {
     public function __construct(
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,

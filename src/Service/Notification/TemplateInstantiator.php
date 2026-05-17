@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * delivery, a default email channel with empty recipient list is auto-created
  * so the tenant can fill in recipients in the admin UI.
  */
-class TemplateInstantiator
+final class TemplateInstantiator
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

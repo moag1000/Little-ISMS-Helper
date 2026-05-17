@@ -20,7 +20,7 @@ use RuntimeException;
  * PenTest Finding PT-003 (CVSS 6.5): TOTP secrets were stored in cleartext.
  * Backup codes were already Argon2id-hashed — this closes the gap.
  */
-class MfaEncryptionService
+final class MfaEncryptionService
 {
     private const string ENCRYPTED_PREFIX = 'enc:';
 

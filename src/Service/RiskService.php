@@ -14,7 +14,7 @@ use App\Repository\CorporateGovernanceRepository;
 /**
  * Risk Service - Business logic for Risk Management with Corporate Structure awareness
  */
-class RiskService
+final class RiskService
 {
     public function __construct(
         private readonly RiskRepository $riskRepository,

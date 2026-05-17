@@ -7,7 +7,7 @@ namespace App\Service;
 use Exception;
 use Symfony\Component\Yaml\Yaml;
 
-class SystemRequirementsChecker
+final class SystemRequirementsChecker
 {
     private array $requirements;
     private array $results = [];

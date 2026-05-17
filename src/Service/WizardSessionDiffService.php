@@ -24,7 +24,7 @@ use App\Entity\WizardSession;
  *     'changeType'  => 'added'|'removed'|'changed'|'unchanged'
  *   ]
  */
-class WizardSessionDiffService
+final class WizardSessionDiffService
 {
     /**
      * Diff two completed WizardSession snapshots.

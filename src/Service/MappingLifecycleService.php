@@ -25,7 +25,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * Jede Transition wird im AuditLog mit before/after, Reason und Actor
  * protokolliert.
  */
-class MappingLifecycleService
+final class MappingLifecycleService
 {
     public const STATES = ['draft', 'review', 'approved', 'published', 'deprecated'];
 

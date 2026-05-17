@@ -13,7 +13,7 @@ use RuntimeException;
  * Encrypted values are stored as a JSON-serialisable envelope so they
  * survive JSON round-trips transparently inside backup archives.
  */
-class BackupEncryptionService
+final class BackupEncryptionService
 {
     private const CIPHER = 'aes-256-gcm';
 

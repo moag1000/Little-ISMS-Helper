@@ -21,7 +21,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * only the missing deltas. Loaders that still skip when requirements exist will
  * report 0 added (still safe to run).
  */
-class ComplianceLoaderFixerService
+final class ComplianceLoaderFixerService
 {
     /**
      * Ordered map of framework code → label + invoker.

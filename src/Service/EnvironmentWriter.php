@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  * - Properly escapes values for shell safety
  * - Creates backup before overwriting
  */
-class EnvironmentWriter
+final class EnvironmentWriter
 {
     private const string ENV_LOCAL_FILE = '/.env.local';
     private const string BACKUP_SUFFIX = '.backup';

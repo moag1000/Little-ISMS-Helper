@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
  *
  * CRITICAL: Handles 72-hour notification deadline tracking!
  */
-class DataBreachService
+final class DataBreachService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

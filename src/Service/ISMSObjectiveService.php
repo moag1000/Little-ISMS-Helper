@@ -11,7 +11,7 @@ use App\Entity\ISMSObjective;
 use App\Repository\ISMSObjectiveRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ISMSObjectiveService
+final class ISMSObjectiveService
 {
     public function __construct(
         private readonly ISMSObjectiveRepository $ismsObjectiveRepository,

@@ -20,7 +20,7 @@ use DateTimeImmutable;
  * BSI MUS portal expects. Operators copy the JSON into their MUS upload,
  * or a downstream integration POSTs it directly.
  */
-class Nis2MusExportService
+final class Nis2MusExportService
 {
     private const int EARLY_WARNING_DEADLINE_HOURS = 24;
     private const int DETAILED_NOTIFICATION_DEADLINE_HOURS = 72;

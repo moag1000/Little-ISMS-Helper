@@ -89,7 +89,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *     entity_type: string, tone: success|warning|danger|info, title: string,
  *     subtitle: string, badge: ?string }
  */
-class MyDayAggregator
+final class MyDayAggregator
 {
     /** Days-window for Risk-acceptance-expiry surfacing (Audit V4 V4-LB-1). */
     private const RISK_ACCEPTANCE_WARN_DAYS = 30;

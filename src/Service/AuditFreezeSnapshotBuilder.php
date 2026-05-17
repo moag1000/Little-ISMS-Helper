@@ -27,7 +27,7 @@ use DateTimeInterface;
  *
  * @see docs/CM_JUNIOR_RESPONSE.md CM-8
  */
-class AuditFreezeSnapshotBuilder
+final class AuditFreezeSnapshotBuilder
 {
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,

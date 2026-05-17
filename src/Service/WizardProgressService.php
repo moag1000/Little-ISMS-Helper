@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
  * Phase 7E: Manages compliance wizard sessions and progress tracking.
  * Allows users to pause, resume, and complete wizard assessments.
  */
-class WizardProgressService
+final class WizardProgressService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

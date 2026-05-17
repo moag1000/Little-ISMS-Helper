@@ -21,7 +21,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * Not final so it can be mocked in tests.
  */
-class VdaIsaImporter
+final class VdaIsaImporter
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

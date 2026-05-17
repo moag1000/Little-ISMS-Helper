@@ -38,7 +38,7 @@ use BadMethodCallException;
  *   leftover_markers_detected: bool,
  * }
  */
-class PolicyTemplateRenderer
+final class PolicyTemplateRenderer
 {
     /**
      * Render the template body for a given variable bag, returning the

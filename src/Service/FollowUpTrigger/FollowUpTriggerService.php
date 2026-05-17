@@ -25,7 +25,7 @@ namespace App\Service\FollowUpTrigger;
  *   2. public property `dataBreachOccurred`
  * — so existing entities with `isXxx()` booleans work without adapter.
  */
-class FollowUpTriggerService
+final class FollowUpTriggerService
 {
     /** @var array<class-string, array<int, FollowUpTriggerDefinition>> */
     private array $triggers = [];

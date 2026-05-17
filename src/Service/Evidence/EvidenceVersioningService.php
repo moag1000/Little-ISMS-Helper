@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * Audit events: document.version.created (via AuditLogger::logCustom).
  */
-class EvidenceVersioningService
+final class EvidenceVersioningService
 {
     private const string SESSION_UNDO_KEY = 'evidence.undo.version_id';
     private const int UNDO_WINDOW_SECONDS = 5;

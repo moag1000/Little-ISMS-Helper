@@ -18,7 +18,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * (WS-1 mapping-based inheritance suggestions). Respects feature flag
  * compliance.mapping_inheritance.enabled (CM-Auflage 4 rollback safety).
  */
-class ComplianceFrameworkActivationService
+final class ComplianceFrameworkActivationService
 {
     public function __construct(
         private readonly EventDispatcherInterface $dispatcher,

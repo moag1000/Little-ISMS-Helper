@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  * - Does not expose raw SQL errors to frontend
  * - Sanitizes connection parameters
  */
-class DatabaseTestService
+final class DatabaseTestService
 {
     public function __construct(
         private readonly ParameterBagInterface $parameterBag

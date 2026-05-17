@@ -26,7 +26,7 @@ use Psr\Log\LoggerInterface;
  * - Overdue review tracking
  * - Review interval enforcement
  */
-class RiskReviewService
+final class RiskReviewService
 {
     public function __construct(
         private readonly RiskRepository $riskRepository,

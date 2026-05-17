@@ -33,7 +33,7 @@ use App\Service\AuditLogger;
  * on bulk approval and passed through to per-doc calls. For ad-hoc
  * single-document approvals (no batch), `batch_id` is null.
  */
-class PerDocumentAuditLogger
+final class PerDocumentAuditLogger
 {
     private const string AUDIT_TAG = 'policy-bulk-approval';
 

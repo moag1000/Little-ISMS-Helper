@@ -19,7 +19,7 @@ use App\Repository\SupplierRepository;
  * Provides intelligent insights for ISO 27001, ISO 22301, ISO 27005, and ISO 31000 compliance
  * using data reuse across all entities
  */
-class ISOComplianceIntelligenceService
+final class ISOComplianceIntelligenceService
 {
     public function __construct(
         private readonly SupplierRepository $supplierRepository,

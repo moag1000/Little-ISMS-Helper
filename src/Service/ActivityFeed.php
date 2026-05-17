@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *   - Full-page feed via /activity-feed
  *   - Dashboard widget via _activity_feed_widget.html.twig
  */
-class ActivityFeed
+final class ActivityFeed
 {
     public function __construct(
         private readonly AuditLogRepository $auditLogRepo,

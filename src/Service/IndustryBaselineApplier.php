@@ -29,7 +29,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * Idempotent: running apply() twice has no additional effect.
  * Tenant-strict: all writes are scoped to the passed tenant.
  */
-class IndustryBaselineApplier
+final class IndustryBaselineApplier
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

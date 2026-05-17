@@ -19,7 +19,7 @@ use Twig\Environment;
  *   - HTML  → Twig-rendered board_report.html.twig
  *   - CSV   → hand-built RFC 4180 CSV (no library dependency)
  */
-class BoardReportGenerator
+final class BoardReportGenerator
 {
     public function __construct(
         private readonly FteTrackingMetricRepository $metricRepo,

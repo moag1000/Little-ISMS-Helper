@@ -26,7 +26,7 @@ use DateTimeImmutable;
  * - A.8.2.1: Asset classification
  * - A.12.6.1: Management of technical vulnerabilities
  */
-class AssetRiskCalculator
+final class AssetRiskCalculator
 {
     /**
      * Calculate comprehensive risk score for an asset

@@ -28,7 +28,7 @@ use DOMElement;
  *
  * Module gate: nis2_dora (enforced in controller, not here)
  */
-class DoraRoiXbrlExporter
+final class DoraRoiXbrlExporter
 {
     /** XBRL namespace for ESA RoI taxonomy (placeholder until ESA publishes final namespace URI) */
     private const string NS_XBRLI       = 'http://www.xbrl.org/2003/instance';

@@ -20,7 +20,7 @@ use Symfony\Component\Process\Process;
  * monolog rotation — hence the dedicated entity_type "HealthAutoFix"
  * and an explicit action namespace "admin.health_fix.*".
  */
-class HealthAutoFixService
+final class HealthAutoFixService
 {
     private readonly Filesystem $filesystem;
 

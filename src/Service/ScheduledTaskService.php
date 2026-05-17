@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
  * Provides API for creating, updating, and deleting scheduled tasks
  * Validates cron expressions and calculates next run times
  */
-class ScheduledTaskService
+final class ScheduledTaskService
 {
     public function __construct(
         private readonly ScheduledTaskRepository $taskRepository,

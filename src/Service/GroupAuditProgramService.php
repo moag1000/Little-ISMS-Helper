@@ -29,7 +29,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * Holding tenant as a template row. Rolling up findings across the
  * subtree happens by enumerating $program->getDerivedAudits().
  */
-class GroupAuditProgramService
+final class GroupAuditProgramService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
