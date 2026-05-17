@@ -86,6 +86,11 @@ class StatementOfApplicabilityController extends AbstractController
                 'currentView' => $view
             ];
         } else {
+            // User has no tenant assignment. Without tenant scope every
+            // multi-tenant query returns []; users see "0 controls" without
+            // any hint that the cause is a missing tenant link, not actual
+            // data. Surface a clear flash so the admin knows to fix it.
+            $this->addFlash('warning', $this->translator->trans('soa.empty.no_tenant', [], 'soa'));
             $controls = [];
             $inheritanceInfo = [
                 'hasParent' => false,
