@@ -19,7 +19,7 @@ src/Controller/SecurityController.php:169
 src/Controller/SecurityController.php:193
 src/Entity/AuditFreeze.php:211
 src/Entity/Authority/DoraRegisterOfInformation.php:133
-src/Entity/ComplianceRequirementFulfillment.php:378
+src/Entity/ComplianceRequirementFulfillment.php:382
 src/Entity/DocumentSection.php:204
 src/Entity/DocumentSection.php:314
 src/Entity/EvidenceReverificationTask.php:192

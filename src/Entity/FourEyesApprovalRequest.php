@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Person;
+use App\Enum\FourEyesApprovalRequestStatus;
 use App\Repository\FourEyesApprovalRequestRepository;
 use App\Service\OwnerResolver;
 use DateTimeImmutable;
@@ -198,10 +199,18 @@ class FourEyesApprovalRequest
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(FourEyesApprovalRequestStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?FourEyesApprovalRequestStatus
+    {
+        return FourEyesApprovalRequestStatus::tryFrom($this->status);
     }
 
     public function getApprovedBy(): ?User

@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Enum\AssetStatus;
 use App\Repository\AssetRepository;
 use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
@@ -540,10 +541,18 @@ class Asset
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(AssetStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?AssetStatus
+    {
+        return $this->status === null ? null : AssetStatus::tryFrom($this->status);
     }
 
     public function getLockVersion(): int
