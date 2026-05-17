@@ -9,6 +9,7 @@ use App\Lifecycle\LifecycleTransitionInterface;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Workflow\Registry;
 use Symfony\Component\Workflow\WorkflowInterface;
 
@@ -156,6 +157,7 @@ final class FieldCompletionAutoTransitionTest extends TestCase
         return new FieldCompletionAutoTransition(
             workflowRegistry: $registry,
             lifecycleService: $lifecycleService,
+            propertyAccessor: PropertyAccess::createPropertyAccessor(),
             rules: [
                 $mappedClass => [
                     'assess_when_complete' => [

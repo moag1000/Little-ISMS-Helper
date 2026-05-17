@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
+use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Repository\RiskAppetiteRepository;
 use App\Service\WorkflowAutoProgressionService;
 use App\Service\WorkflowService;
@@ -31,6 +32,7 @@ class WorkflowAutoProgressionServiceTest extends TestCase
     private MockObject $workflowService;
     private MockObject $logger;
     private MockObject $riskAppetiteRepository;
+    private MockObject $fieldCompletionAutoTransition;
     private WorkflowAutoProgressionService $service;
 
     protected function setUp(): void
@@ -40,13 +42,15 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $this->workflowService = $this->createMock(WorkflowService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->riskAppetiteRepository = $this->createMock(RiskAppetiteRepository::class);
+        $this->fieldCompletionAutoTransition = $this->createMock(FieldCompletionAutoTransitionInterface::class);
 
         $this->service = new WorkflowAutoProgressionService(
             $this->entityManager,
             $this->propertyAccessor,
             $this->workflowService,
             $this->logger,
-            $this->riskAppetiteRepository
+            $this->riskAppetiteRepository,
+            $this->fieldCompletionAutoTransition,
         );
     }
 

@@ -1,25 +1,97 @@
 parameters:
     # ── FieldCompletionAutoTransition rules ───────────────────────────────────
     # Each entry maps a fully-qualified entity class to one or more named rules.
-    # A rule fires when ALL required_fields are non-null/non-empty AND the
-    # configured transition is enabled in the Symfony Workflow state machine.
+    #
+    # Two rule formats are supported (Y.1 extended syntax):
+    #
+    # Legacy format — all listed required_fields must be non-null/non-empty:
+    #   required_fields: [field1, field2]
+    #
+    # Extended format — structured AND/OR condition tree:
+    #   conditions:
+    #     all:   # AND — every item must be true
+    #       - { field: severity, comparison: ">=", value: high }
+    #       - { field: affectedDataSubjectsCount, comparison: ">", value: 100 }
+    #     any:   # OR — at least one item must be true
+    #       - { field: acceptedManually, comparison: "==", value: true }
+    #       - { field: residualRisk, comparison: "<=", value_from: riskAppetiteThreshold }
+    #
+    # Supported comparison operators: ==, !=, >, <, >=, <=
+    # value_from: resolves the RHS from another field on the same entity.
     # Rules referencing workflows not yet registered are silently skipped.
     lifecycle.auto_transition_rules:
+        # ── DataBreach (GDPR Art. 33/34) ─────────────────────────────────────
         App\Entity\DataBreach:
+            # X.4 original: all core assessment fields filled → move to 'assess'
             assess_when_complete:
                 workflow: data_breach_lifecycle
                 transition: assess
                 required_fields: [severity, affectedDataSubjectsCount, dataCategories]
+            # Y.1 migrated from WAPS: high-severity + large scope → fast-track assess
+            assess_high_severity:
+                workflow: data_breach_lifecycle
+                transition: assess
+                conditions:
+                    all:
+                        - { field: severity, comparison: ">=", value: high }
+                        - { field: affectedDataSubjectsCount, comparison: ">", value: 100 }
+            # Y.1 migrated from WAPS: notification is legally required → assess immediately
+            assess_notification_required:
+                workflow: data_breach_lifecycle
+                transition: assess
+                conditions:
+                    any:
+                        - { field: notificationRequired, comparison: "==", value: true }
+
+        # ── DPIA (GDPR Art. 35/36) ────────────────────────────────────────────
         App\Entity\DataProtectionImpactAssessment:
+            # X.4 original
             review_when_complete:
                 workflow: dpia_lifecycle
                 transition: submit
                 required_fields: [riskAssessment, mitigations]
+
+        # ── Risk (ISO 27001 Cl. 6.1.2) ───────────────────────────────────────
         App\Entity\Risk:
+            # X.4 original: both likelihood + impact filled → transition to assessed
             assess_when_complete:
                 workflow: risk_lifecycle
                 transition: assess
                 required_fields: [likelihood, impact]
+            # Y.1 migrated from WAPS: residual risk within appetite → auto-accept
+            # value_from resolves riskAppetiteThreshold from the entity itself
+            # (populated by RiskService when the active RiskAppetite is evaluated)
+            accept_within_appetite:
+                workflow: risk_lifecycle
+                transition: accept
+                conditions:
+                    any:
+                        - { field: residualRisk, comparison: "<=", value_from: riskAppetiteThreshold }
+                        - { field: acceptedManually, comparison: "==", value: true }
+
+        # ── Incident (ISO 27001 Cl. 6.1.2 c) ─────────────────────────────────
+        App\Entity\Incident:
+            # Y.1 migrated from WAPS: severity + response plan filled → begin review
+            review_when_assessed:
+                workflow: incident_lifecycle
+                transition: review
+                required_fields: [severity, responseActions]
+            # Y.1 migrated from WAPS: containment confirmed → resolve incident
+            resolve_when_contained:
+                workflow: incident_lifecycle
+                transition: resolve
+                conditions:
+                    all:
+                        - { field: containmentConfirmed, comparison: "==", value: true }
+                        - { field: rootCause, comparison: "!=", value: null }
+
+        # ── ProcessingActivity (GDPR Art. 30) ─────────────────────────────────
+        App\Entity\ProcessingActivity:
+            # Y.1 migrated from WAPS: legal basis + purpose filled → activate
+            activate_when_complete:
+                workflow: processing_activity_lifecycle
+                transition: activate
+                required_fields: [legalBasis, purpose, dataCategories]
 
     # ── WorkflowAutoProgressionBridge mappings ────────────────────────────────
     # Maps fully-qualified entity class names to the lifecycle workflow +

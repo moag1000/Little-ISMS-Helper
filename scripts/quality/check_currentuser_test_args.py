@@ -165,6 +165,18 @@ def scan_tests(actions: dict[str, int]) -> list[tuple[Path, int, str]]:
             close = find_block_end(text, open_paren)
             if close < 0:
                 continue
+            # Skip comments — `//`, `*`, or `#` prefix on the line
+            line_start = text.rfind("\n", 0, m.start()) + 1
+            prefix = text[line_start:m.start()].lstrip()
+            if prefix.startswith(("//", "*", "#")):
+                continue
+            # Skip when the receiver is `lifecycleService` or a property of it —
+            # that's the Lifecycle facade with a different signature
+            # (signature: $entity, $workflowName, $transitionName, ?User, ?string).
+            # Look backwards for receiver — last identifier before `->`.
+            recv_match = re.search(r"(\$?\w+)\s*->\s*$", text[line_start:m.start()])
+            if recv_match and "lifecycleservice" in recv_match.group(1).lower():
+                continue
             args_text = text[open_paren + 1:close].strip()
             if not args_text:
                 actual = 0
@@ -172,7 +184,6 @@ def scan_tests(actions: dict[str, int]) -> list[tuple[Path, int, str]]:
                 actual = len(split_top_commas(args_text))
             if actual < required:
                 ln = text.count("\n", 0, m.start()) + 1
-                line_start = text.rfind("\n", 0, m.start()) + 1
                 line_end = text.find("\n", m.end())
                 if line_end < 0:
                     line_end = len(text)
