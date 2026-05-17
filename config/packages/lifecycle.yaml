@@ -1,0 +1,38 @@
+parameters:
+    # ── FieldCompletionAutoTransition rules ───────────────────────────────────
+    # Each entry maps a fully-qualified entity class to one or more named rules.
+    # A rule fires when ALL required_fields are non-null/non-empty AND the
+    # configured transition is enabled in the Symfony Workflow state machine.
+    # Rules referencing workflows not yet registered are silently skipped.
+    lifecycle.auto_transition_rules:
+        App\Entity\DataBreach:
+            assess_when_complete:
+                workflow: data_breach_lifecycle
+                transition: assess
+                required_fields: [severity, affectedDataSubjectsCount, dataCategories]
+        App\Entity\DataProtectionImpactAssessment:
+            review_when_complete:
+                workflow: dpia_lifecycle
+                transition: submit
+                required_fields: [riskAssessment, mitigations]
+        App\Entity\Risk:
+            assess_when_complete:
+                workflow: risk_lifecycle
+                transition: assess
+                required_fields: [likelihood, impact]
+
+    # ── WorkflowAutoProgressionBridge mappings ────────────────────────────────
+    # Maps fully-qualified entity class names to the lifecycle workflow +
+    # transition that should fire when a WorkflowInstance for that entity
+    # reaches status 'approved'. Extend as new entity lifecycles are wired.
+    lifecycle.approval_bridges:
+        App\Entity\Document:
+            workflow: document_lifecycle
+            transition: approve
+        # Future entries — uncomment as lifecycle state machines are added:
+        # App\Entity\Risk:
+        #     workflow: risk_lifecycle
+        #     transition: approve
+        # App\Entity\DataBreach:
+        #     workflow: data_breach_lifecycle
+        #     transition: close
