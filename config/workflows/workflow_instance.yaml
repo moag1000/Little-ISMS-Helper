@@ -1,0 +1,51 @@
+framework:
+    workflows:
+        workflow_instance_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\WorkflowInstance
+            initial_marking: pending
+            places:
+                - pending
+                - in_progress
+                - approved
+                - rejected
+                - cancelled
+            transitions:
+                start:
+                    from: pending
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_progress
+                    to: approved
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                        tone_target: success
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        tone_target: danger
+                cancel:
+                    from: pending
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
