@@ -102,6 +102,10 @@ risk:
       organizational: organisatorisch
       financial: finanziell
       physical: physisch
+      business: geschäftlich
+      legal: rechtlich
+      privacy: Datenschutz
+      other: sonstiges
   label:
     title: Risikotitel
     inherent_risk: Inhärentes Risiko
