@@ -49,8 +49,8 @@
                 <div class="d-flex align-items-center">
                     {% if framework.critical_gaps > 0 %}
                     {% include '_components/_badge.html.twig' with {
-                        variant: 'danger-subtle',
-                        class: 'text-danger me-2',
+                        variant: 'danger',
+                        class: 'me-2',
                         icon: 'status-critical',
                         title: 'wizard.critical_gaps'|trans({}, 'wizard'),
                         content: framework.critical_gaps
