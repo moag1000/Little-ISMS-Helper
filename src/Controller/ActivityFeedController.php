@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -27,11 +28,10 @@ class ActivityFeedController extends AbstractController
 
     #[Route('/activity-feed', name: 'app_activity_feed', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $request): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
+    public function index(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         // V4-EF-6: optional ?scope=compliance filter.
         $scope = $request->query->get('scope', 'all');
         if (!in_array($scope, self::VALID_SCOPES, true)) {

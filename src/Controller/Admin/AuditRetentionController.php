@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Entity\User;
 use App\Repository\SystemSettingsRepository;
 use App\Service\AuditLogger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -33,8 +35,10 @@ class AuditRetentionController extends AbstractController
     }
 
     #[Route('', name: 'app_admin_audit_retention', methods: ['GET', 'POST'])]
-    public function edit(Request $request): Response
-    {
+    public function edit(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         $current = (int) ($this->systemSettingsRepository->getSetting('audit', 'retention_days', self::DEFAULT_DAYS));
 
         if ($request->isMethod('POST')) {
@@ -55,8 +59,7 @@ class AuditRetentionController extends AbstractController
                 return $this->redirectToRoute('app_admin_audit_retention');
             }
 
-            $user = $this->getUser();
-            $updatedBy = method_exists($user, 'getUserIdentifier') ? $user->getUserIdentifier() : null;
+            $updatedBy = $user->getUserIdentifier();
 
             $this->systemSettingsRepository->setSetting(
                 category: 'audit',

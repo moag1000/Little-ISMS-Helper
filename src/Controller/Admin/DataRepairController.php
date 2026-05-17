@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Control;
+use App\Entity\User;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
@@ -19,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -715,8 +717,11 @@ class DataRepairController extends AbstractController
      */
     #[Route('/admin/data-repair/fix-duplicates/{entityType}', name: 'admin_data_repair_fix_duplicates', methods: ['POST'])]
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    public function fixDuplicates(Request $request, string $entityType): Response
-    {
+    public function fixDuplicates(
+        Request $request,
+        string $entityType,
+        #[CurrentUser] User $user,
+    ): Response {
         $allowedTypes = ['audits', 'assets', 'risks', 'incidents', 'documents'];
 
         if (!$this->isCsrfTokenValid('fix_duplicates_' . $entityType, $request->request->get('_token'))) {
@@ -733,8 +738,7 @@ class DataRepairController extends AbstractController
             fn() => $this->dataIntegrityService->mergeDuplicates($entityType)
         );
 
-        $user = $this->getUser();
-        $actor = (is_object($user) && method_exists($user, 'getEmail')) ? (string) $user->getEmail() : 'admin';
+        $actor = (string) ($user->getEmail() ?? 'admin');
         $this->auditLogger->logCustom(
             'admin.data_repair.duplicates_merged',
             $entityType,
@@ -762,15 +766,16 @@ class DataRepairController extends AbstractController
      * {@see SchemaMaintenanceService::executePendingMigrations()}.
      */
     #[Route('/admin/data-repair/schema/migrations', name: 'admin_data_repair_migrations_execute', methods: ['POST'])]
-    public function executeMigrations(Request $request): Response
-    {
+    public function executeMigrations(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         if (!$this->isCsrfTokenValid('migrations_execute', (string) $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        $user = $this->getUser();
-        $actor = (is_object($user) && method_exists($user, 'getEmail')) ? (string) $user->getEmail() : 'admin';
+        $actor = (string) ($user->getEmail() ?? 'admin');
         $result = $this->schemaMaintenanceService->executePendingMigrations($actor);
 
         if ($result['success']) {
@@ -810,15 +815,16 @@ class DataRepairController extends AbstractController
      * but the service still audit-logs every executed statement bundle.
      */
     #[Route('/admin/data-repair/schema/reconcile', name: 'admin_data_repair_schema_reconcile', methods: ['POST'])]
-    public function reconcileSchema(Request $request): Response
-    {
+    public function reconcileSchema(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         if (!$this->isCsrfTokenValid('schema_reconcile', (string) $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        $user = $this->getUser();
-        $actor = (is_object($user) && method_exists($user, 'getEmail')) ? (string) $user->getEmail() : 'admin';
+        $actor = (string) ($user->getEmail() ?? 'admin');
         // Reconcile from the data-repair page intentionally bypasses the
         // pending-migration gate: an admin who's looking at a populated
         // drift card has already seen any pending migrations on the same
