@@ -94,7 +94,7 @@ final class GdprToggleOffCleanupService
                 continue;
             }
             $document->setIsArchived(true);
-            $document->setStatus('archived');
+            $document->setStatus('archived'); // @phpstan-ignore lifecycle.directSetStatus (GDPR module deactivation — bulk archival; lifecycle migration deferred to X.6)
             $this->entityManager->persist($document);
             $report['archived_documents'][] = $id;
         }

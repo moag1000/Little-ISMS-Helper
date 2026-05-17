@@ -15,6 +15,12 @@ framework:
                 - approved
                 - rejected
                 - closed
+                # legacy buckets — accepted as places to satisfy entity LIFECYCLE_STAGES;
+                # no transitions wired (read-only legacy data)
+                - conducted
+                - completed
+                - postponed
+                - cancelled
             transitions:
                 start:
                     from: planned
@@ -22,7 +28,7 @@ framework:
                     metadata:
                         roles: [ROLE_AUDITOR]
                 report:
-                    from: in_progress
+                    from: [in_progress, conducted]
                     to: reported
                     metadata:
                         roles: [ROLE_AUDITOR]

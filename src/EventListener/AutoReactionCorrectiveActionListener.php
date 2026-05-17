@@ -111,7 +111,7 @@ final class AutoReactionCorrectiveActionListener
                 $ca->setPlannedCompletionDate(new DateTimeImmutable('+' . $dueDays . ' days'));
             }
             if (method_exists($ca, 'setStatus')) {
-                $ca->setStatus(CorrectiveAction::STATUS_PLANNED);
+                $ca->setStatus(CorrectiveAction::STATUS_PLANNED); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist entity)
             }
 
             $em->persist($ca);

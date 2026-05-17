@@ -68,7 +68,7 @@ final class GroupAuditProgramService
                 continue;
             }
 
-            $child = (new InternalAudit())
+            $child = (new InternalAudit()) // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist InternalAudit; 'planned' is the internal_audit_lifecycle initial_marking)
                 ->setTenant($tenant)
                 ->setParentAudit($program)
                 ->setAuditNumber($program->getAuditNumber() . '-' . (string) $tenant->getCode())

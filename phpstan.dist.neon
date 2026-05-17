@@ -1,0 +1,16 @@
+parameters:
+    paths:
+        - src/
+
+    level: 1
+
+    # Exclude paths that are allowed to call setStatus() directly
+    excludePaths:
+        - src/Entity/
+        - src/Lifecycle/
+
+services:
+    -
+        class: App\Tests\PHPStan\Rule\NoDirectSetStatusRule
+        tags:
+            - phpstan.rules.rule

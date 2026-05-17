@@ -492,7 +492,7 @@ final class ProcessingActivityService
             );
         } else {
             // Fallback (e.g. unit tests without Workflow component).
-            $processingActivity->setStatus('published');
+            $processingActivity->setStatus('published'); // @phpstan-ignore lifecycle.directSetStatus (fallback path when Symfony Workflow not available; primary path uses LifecycleService above)
             $this->entityManager->flush();
         }
 
@@ -528,7 +528,7 @@ final class ProcessingActivityService
             );
         } else {
             // Fallback (e.g. unit tests without Workflow component).
-            $processingActivity->setStatus('archived');
+            $processingActivity->setStatus('archived'); // @phpstan-ignore lifecycle.directSetStatus (fallback path when Symfony Workflow not available; primary path uses LifecycleService above)
             $this->entityManager->flush();
         }
 
@@ -584,7 +584,7 @@ final class ProcessingActivityService
         }
 
         // Set status to draft
-        $clone->setStatus('draft');
+        $clone->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist clone; Symfony Workflow takes over after persist)
 
         return $this->create($clone);
     }

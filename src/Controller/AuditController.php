@@ -10,6 +10,7 @@ use Exception;
 use App\Entity\InternalAudit;
 use App\Entity\User;
 use App\Form\InternalAuditType;
+use App\Lifecycle\LifecycleService;
 use App\Repository\AuditChecklistRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\InternalAuditRepository;
@@ -39,6 +40,7 @@ class AuditController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly AuditChecklistRepository $auditChecklistRepository,
         private readonly AuditLogger $auditLogger,
+        private readonly LifecycleService $lifecycleService,
         private readonly ?InternalAuditCloner $internalAuditCloner = null,
     ) {}
     #[Route('/audit/', name: 'app_audit_index', methods: ['GET'])]
@@ -98,7 +100,7 @@ class AuditController extends AbstractController
             $this->entityManager->persist($internalAudit);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('audit.success.created'));
+            $this->addFlash('success', $this->translator->trans('audit.success.created', [], 'audit'));
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
@@ -209,7 +211,7 @@ class AuditController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('audit.success.updated'));
+            $this->addFlash('success', $this->translator->trans('audit.success.updated', [], 'audit'));
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
@@ -360,7 +362,7 @@ class AuditController extends AbstractController
             $this->entityManager->remove($internalAudit);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('audit.success.deleted'));
+            $this->addFlash('success', $this->translator->trans('audit.success.deleted', [], 'audit'));
         }
 
         return $this->redirectToRoute('app_audit_index');
@@ -388,12 +390,12 @@ class AuditController extends AbstractController
         $currentUser = $this->getCurrentUserOrThrow();
         $oldStatus = (string) $internalAudit->getStatus();
 
-        $internalAudit->setStatus('reported'); // FIXME: migrate to LifecycleService::transition($internalAudit, 'internal_audit_lifecycle', 'report')
         $internalAudit->setReportedBy($currentUser);
         $internalAudit->setReportedAt(new DateTimeImmutable());
         $internalAudit->setUpdatedAt(new DateTimeImmutable());
 
         $this->entityManager->flush();
+        $this->lifecycleService->transition($internalAudit, 'internal_audit_lifecycle', 'report', $currentUser);
 
         $this->auditLogger->logCustom(
             action: 'audit.report.submitted',
@@ -435,7 +437,6 @@ class AuditController extends AbstractController
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
-        $internalAudit->setStatus('approved'); // FIXME: migrate to LifecycleService::transition($internalAudit, 'internal_audit_lifecycle', 'approve')
         $internalAudit->setApprovedBy($currentUser);
         $internalAudit->setApprovedAt(new DateTimeImmutable());
         // Clear any previous rejection reason — the report is now approved.
@@ -443,6 +444,7 @@ class AuditController extends AbstractController
         $internalAudit->setUpdatedAt(new DateTimeImmutable());
 
         $this->entityManager->flush();
+        $this->lifecycleService->transition($internalAudit, 'internal_audit_lifecycle', 'approve', $currentUser);
 
         $this->auditLogger->logCustom(
             action: 'audit.report.approved',
@@ -483,12 +485,12 @@ class AuditController extends AbstractController
 
         $currentUser = $this->getCurrentUserOrThrow();
 
-        $internalAudit->setStatus('rejected'); // FIXME: migrate to LifecycleService::transition($internalAudit, 'internal_audit_lifecycle', 'reject')
         $internalAudit->setRejectionReason($reason);
         // approvedBy/approvedAt stay null — a rejection is not an approval.
         $internalAudit->setUpdatedAt(new DateTimeImmutable());
 
         $this->entityManager->flush();
+        $this->lifecycleService->transition($internalAudit, 'internal_audit_lifecycle', 'reject', $currentUser, $reason);
 
         $this->auditLogger->logCustom(
             action: 'audit.report.rejected',
@@ -523,12 +525,13 @@ class AuditController extends AbstractController
         $currentUser = $this->getCurrentUserOrThrow();
         $oldStatus = (string) $internalAudit->getStatus();
 
-        $internalAudit->setStatus('reported'); // FIXME: migrate to LifecycleService::transition($internalAudit, 'internal_audit_lifecycle', 'rework' then 'report')
         $internalAudit->setReportedBy($currentUser);
         $internalAudit->setReportedAt(new DateTimeImmutable());
         $internalAudit->setUpdatedAt(new DateTimeImmutable());
 
         $this->entityManager->flush();
+        // Workflow: rejected → reported via the 'rework' transition (single hop per workflow YAML)
+        $this->lifecycleService->transition($internalAudit, 'internal_audit_lifecycle', 'rework', $currentUser);
 
         $this->auditLogger->logCustom(
             action: 'audit.report.resubmitted',
@@ -561,12 +564,12 @@ class AuditController extends AbstractController
 
         $currentUser = $this->getCurrentUserOrThrow();
 
-        $internalAudit->setStatus('closed'); // FIXME: migrate to LifecycleService::transition($internalAudit, 'internal_audit_lifecycle', 'close')
         $internalAudit->setClosedBy($currentUser);
         $internalAudit->setClosedAt(new DateTimeImmutable());
         $internalAudit->setUpdatedAt(new DateTimeImmutable());
 
         $this->entityManager->flush();
+        $this->lifecycleService->transition($internalAudit, 'internal_audit_lifecycle', 'close', $currentUser);
 
         $this->auditLogger->logCustom(
             action: 'audit.cycle.closed',

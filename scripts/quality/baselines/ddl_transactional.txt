@@ -1,5 +1,2 @@
 # check_ddl_transactional.py baseline
 # Format: <relative-path>:<line>
-migrations/Version20260515200000_consolidate_legacy_drift.php:23
-migrations/Version20260518150000_vvt_document_canonical_lifecycle.php:34
-migrations/Version20260526100000_AddLockVersionMulti.php:44

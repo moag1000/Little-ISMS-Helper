@@ -216,7 +216,7 @@ class RiskAcceptanceWorkflowService
         $risk->setFormallyAccepted(true);
         $risk->setAcceptanceApprovedBy($user->getFullName() . ' (automatic)');
         $risk->setAcceptanceApprovedAt($now);
-        $risk->setStatus(RiskStatus::Accepted);
+        $risk->setStatus(RiskStatus::Accepted); // @phpstan-ignore lifecycle.directSetStatus (risk acceptance workflow uses its own approval flow; LifecycleService migration deferred to X.6)
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
@@ -301,7 +301,7 @@ class RiskAcceptanceWorkflowService
     private function createManualApprovalRequest(Risk $risk, User $user, string $approvalLevel): array
     {
         // Set status to indicate pending approval
-        $risk->setStatus(RiskStatus::Assessed); // Keep in assessed until approved
+        $risk->setStatus(RiskStatus::Assessed); // @phpstan-ignore lifecycle.directSetStatus (risk acceptance workflow uses its own approval flow; LifecycleService migration deferred to X.6; keep in assessed until approved)
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
@@ -378,7 +378,7 @@ class RiskAcceptanceWorkflowService
         $risk->setFormallyAccepted(true);
         $risk->setAcceptanceApprovedBy($user->getFullName());
         $risk->setAcceptanceApprovedAt($now);
-        $risk->setStatus(RiskStatus::Accepted);
+        $risk->setStatus(RiskStatus::Accepted); // @phpstan-ignore lifecycle.directSetStatus (risk acceptance workflow uses its own approval flow; LifecycleService migration deferred to X.6)
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
@@ -428,7 +428,7 @@ class RiskAcceptanceWorkflowService
      */
     public function rejectAcceptance(Risk $risk, User $user, string $reason): array
     {
-        $risk->setStatus(RiskStatus::Assessed); // Return to assessed status
+        $risk->setStatus(RiskStatus::Assessed); // @phpstan-ignore lifecycle.directSetStatus (risk acceptance workflow uses its own approval flow; LifecycleService migration deferred to X.6; return to assessed status)
         $risk->setFormallyAccepted(false);
 
         $this->entityManager->persist($risk);

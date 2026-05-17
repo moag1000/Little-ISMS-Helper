@@ -8,6 +8,7 @@ use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Consent;
 use App\Entity\User;
 use App\Form\ConsentType;
+use App\Lifecycle\LifecycleService;
 use App\Repository\ConsentRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -33,6 +34,7 @@ class ConsentController extends AbstractController
         private readonly Security $security,
         private readonly TranslatorInterface $translator,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly LifecycleService $lifecycleService,
     ) {}
 
     #[Route('/', name: 'app_consent_index', methods: ['GET'])]
@@ -118,13 +120,14 @@ class ConsentController extends AbstractController
                     $consent->setIsVerifiedByDpo(true);
                     $consent->setVerifiedBy($currentUser);
                     $consent->setVerifiedAt(new DateTimeImmutable());
-                    $consent->setStatus('active'); // FIXME: migrate to LifecycleService::transition($consent, 'consent_lifecycle', 'verify')
+                    $this->entityManager->persist($consent);
+                    $this->entityManager->flush();
+                    $this->lifecycleService->transition($consent, 'consent_lifecycle', 'verify', $currentUser);
                 } else {
-                    $consent->setStatus('pending_verification'); // FIXME: migrate to LifecycleService (initial state)
+                    // pending_verification is the workflow initial_marking — no transition needed
+                    $this->entityManager->persist($consent);
+                    $this->entityManager->flush();
                 }
-
-                $this->entityManager->persist($consent);
-                $this->entityManager->flush();
 
                 $this->addFlash('success', $this->translator->trans('consent.success.created', [], 'consent'));
                 return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);
@@ -201,10 +204,10 @@ class ConsentController extends AbstractController
             $consent->setIsVerifiedByDpo(true);
             $consent->setVerifiedBy($currentUser);
             $consent->setVerifiedAt(new DateTimeImmutable());
-            $consent->setStatus('active'); // FIXME: migrate to LifecycleService::transition($consent, 'consent_lifecycle', 'verify')
             $consent->setUpdatedAt(new DateTimeImmutable());
 
             $this->entityManager->flush();
+            $this->lifecycleService->transition($consent, 'consent_lifecycle', 'verify', $currentUser);
 
             $this->addFlash('success', $this->translator->trans('consent.success.verified', [], 'consent'));
         }
@@ -238,7 +241,6 @@ class ConsentController extends AbstractController
             $consent->setRevokedAt(new DateTimeImmutable());
             $consent->setRevocationMethod($revocationMethod);
             $consent->setRevocationDocumentedBy($currentUser);
-            $consent->setStatus('revoked'); // FIXME: migrate to LifecycleService::transition($consent, 'consent_lifecycle', 'revoke')
             $consent->setUpdatedAt(new DateTimeImmutable());
 
             // Append revocation notes
@@ -257,6 +259,7 @@ class ConsentController extends AbstractController
             }
 
             $this->entityManager->flush();
+            $this->lifecycleService->transition($consent, 'consent_lifecycle', 'revoke', $currentUser);
 
             $this->addFlash('success', $this->translator->trans('consent.success.revoked', [], 'consent'));
         }

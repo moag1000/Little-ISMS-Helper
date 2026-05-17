@@ -90,7 +90,7 @@ final class PolicyDiffController extends AbstractController
         // We do NOT delete the current — supersession history must remain
         // intact for §10 immutability/audit. The status flip is enough.
         $current->setIsArchived(true);
-        $current->setStatus('archived');
+        $current->setStatus('archived'); // @phpstan-ignore lifecycle.directSetStatus (policy supersession — atomic status flip; lifecycle migration tracked in X.6)
         $current->setUpdatedAt(new DateTimeImmutable());
 
         $previous->setIsArchived(false);
@@ -98,7 +98,7 @@ final class PolicyDiffController extends AbstractController
         // status when not approved (e.g. draft) so we don't elevate beyond
         // the policy's last reviewed state.
         if ($previous->getStatus() === 'archived' || $previous->getStatus() === 'deleted') {
-            $previous->setStatus('approved');
+            $previous->setStatus('approved'); // @phpstan-ignore lifecycle.directSetStatus (policy supersession restore; lifecycle migration tracked in X.6)
         }
         $previous->setUpdatedAt(new DateTimeImmutable());
 

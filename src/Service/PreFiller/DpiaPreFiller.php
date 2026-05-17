@@ -66,7 +66,7 @@ final readonly class DpiaPreFiller
         }
 
         // Always start in 'draft' so the DPO can iterate before submission.
-        $dpia->setStatus('draft');
+        $dpia->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist DPIA; 'draft' is the dpia_lifecycle initial_marking)
 
         return $dpia;
     }
