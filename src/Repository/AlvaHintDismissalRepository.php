@@ -67,6 +67,25 @@ class AlvaHintDismissalRepository extends ServiceEntityRepository
     }
 
     /**
+     * Deletes all dismissal records for a given entity so that hints
+     * re-surface after a workflow transition changes the entity state.
+     *
+     * Called by AlvaHintInvalidator on every workflow.completed event.
+     * Returns the number of rows deleted (0 when no dismissals existed).
+     */
+    public function invalidateForEntity(string $entityClass, int $entityId): int
+    {
+        return (int) $this->createQueryBuilder('d')
+            ->delete()
+            ->where('d.entityType = :class')
+            ->andWhere('d.entityId = :id')
+            ->setParameter('class', $entityClass)
+            ->setParameter('id', $entityId)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
      * Aggregate dismissal counts per hint key for telemetry / "which
      * hints get nuked the most" dashboards. Tenant-scoped to keep
      * cross-tenant leakage impossible.
