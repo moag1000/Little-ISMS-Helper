@@ -35,7 +35,7 @@
     {% if quality_stats.total_mappings == 0 %}
     <div class="fa-alert fa-alert--warning" role="alert">
         <i class="fa-icon fa-icon--status-warning" fa-alert__icon" aria-hidden="true"></i>
-        <div class="fa-alert__body"><p class="fw-bold fs-5"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'compliance.mapping_quality.no_mappings'|trans({}, 'compliance') }}</p>
+        <div class="fa-alert__body"><div class="fa-alert__title">{{ 'compliance.mapping_quality.no_mappings'|trans({}, 'compliance') }}</div>
         <p>{{ 'compliance.mapping_quality.no_mappings_found'|trans({}, 'compliance') }}</p>
         <hr>
         <p class="fw-bold">{{ 'compliance.mapping_quality.next_steps.title'|trans({}, 'compliance') }}:</p>
@@ -50,7 +50,7 @@
     {% elseif quality_stats.analyzed_mappings == 0 %}
     <div class="fa-alert fa-alert--info" role="alert">
         <i class="fa-icon fa-icon--status-info" fa-alert__icon" aria-hidden="true"></i>
-        <div class="fa-alert__body"><p class="fw-bold fs-5"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'compliance.mapping_quality.no_analysis_yet.title'|trans({}, 'compliance') }}</p>
+        <div class="fa-alert__body"><div class="fa-alert__title">{{ 'compliance.mapping_quality.no_analysis_yet.title'|trans({}, 'compliance') }}</div>
         <p>{{ 'compliance.mapping_quality.no_analysis_yet.found_not_analyzed'|trans({'%count%': quality_stats.total_mappings}, 'compliance') }}</p>
         <hr>
         <p class="fw-bold">{{ 'compliance.mapping_quality.no_analysis_yet.start_analysis'|trans({}, 'compliance') }}</p>

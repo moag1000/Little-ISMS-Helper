@@ -242,7 +242,7 @@
                                 {{ pill.render(sev, sevTone[sev]|default('neutral'), {size: 'sm'}) }}
                                 {{ pill.render(finding.status, 'neutral', {size: 'sm'}) }}
                                 {% if finding.audit is defined and finding.audit %}
-                                    <a href="{{ path('app_audit_show', {id: finding.audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost py-0 px-1 small">
+                                    <a href="{{ path('app_audit_show', {id: finding.audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                                         <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
                                     </a>
                                 {% endif %}
