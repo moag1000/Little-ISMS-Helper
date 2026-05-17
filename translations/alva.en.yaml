@@ -346,3 +346,8 @@ alva_hint:
         body: 'Planned BCM exercise "%exercise_name%" (%exercise_type%) has been overdue for %days% days yet remains in status "planned". ISO 22301 Cl. 8.6 mandates a documented exercise cadence — reschedule with justification or move to "cancelled", otherwise the audit will flag it.'
         cta_label: 'Open exercise'
         dismiss_label: 'Not now'
+    lifecycle:
+        stuck_in_status:
+            title: 'Lifecycle transitions stalled'
+            body: '%count% document(s) have been stuck in a non-terminal status (draft, in review, etc.) for over %days% days. Please review and advance to the next step.'
+            action: 'View documents'

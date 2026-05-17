@@ -346,3 +346,8 @@ alva_hint:
         body: 'Geplante BCM-Übung "%exercise_name%" (%exercise_type%) ist seit %days% Tagen überfällig und steht weiterhin auf "planned". ISO 22301 Cl. 8.6 verlangt dokumentierte Übungs-Kadenz — verschieben mit Begründung oder Status auf "cancelled" setzen, andernfalls Audit-Risiko.'
         cta_label: 'Übung öffnen'
         dismiss_label: 'Nicht jetzt'
+    lifecycle:
+        stuck_in_status:
+            title: 'Lifecycle-Übergänge feststeckend'
+            body: '%count% Dokument(e) stecken seit über %days% Tagen in einem nicht-terminalen Status (Entwurf, In Prüfung usw.). Bitte überprüfen und den nächsten Schritt einleiten.'
+            action: 'Dokumente anzeigen'
