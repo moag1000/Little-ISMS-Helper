@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
 
 {% block title %}{{ action.title }}{% endblock %}
 
@@ -21,6 +24,12 @@
             { label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'ui-edit', href: path('app_corrective_action_edit', {id: action.id}) }
         ]
     }) }}
+
+    {# Lifecycle X.3b — status chip + transition dropdown #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\CorrectiveAction', status_key: action.status }) }}
+        {{ _lifecycle_actions.dropdown(action, 'corrective-action', 'corrective_action_lifecycle') }}
+    </div>
 
     {# S3 P0-30 — Tier-1 alert when CAPA is verified_ineffective and no Folge-CAPA yet.
        AlvaHintService would also surface this via the Show-template, but a hard
@@ -114,5 +123,8 @@
         formAction: path('app_comment_post', {entityType: 'CorrectiveAction', entityId: action.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
+
+    {# Lifecycle X.3b — transition history tab #}
+    {{ _lifecycle_history.history('corrective-action', action.id) }}
 </div>
 {% endblock %}
