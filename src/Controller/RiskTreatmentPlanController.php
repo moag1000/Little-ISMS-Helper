@@ -89,7 +89,7 @@ class RiskTreatmentPlanController extends AbstractController
             'criticalPlans' => $criticalPlans,
         ]);
     }
-    #[Route('/risk-treatment-plan/new', name: 'app_risk_treatment_plan_new')]
+    #[Route('/risk-treatment-plan/new', name: 'app_risk_treatment_plan_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -126,7 +126,7 @@ class RiskTreatmentPlanController extends AbstractController
             'totalAuditLogs' => count($auditLogs),
         ]);
     }
-    #[Route('/risk-treatment-plan/{id}/edit', name: 'app_risk_treatment_plan_edit', requirements: ['id' => '\d+'])]
+    #[Route('/risk-treatment-plan/{id}/edit', name: 'app_risk_treatment_plan_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, RiskTreatmentPlan $riskTreatmentPlan): Response
     {

@@ -49,7 +49,7 @@ class BusinessContinuityPlanController extends AbstractController
             'active_plans' => $activePlans,
         ]);
     }
-    #[Route('/business-continuity-plan/new', name: 'app_bc_plan_new')]
+    #[Route('/business-continuity-plan/new', name: 'app_bc_plan_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -84,7 +84,7 @@ class BusinessContinuityPlanController extends AbstractController
             'bc_plan' => $businessContinuityPlan,
         ]);
     }
-    #[Route('/business-continuity-plan/{id}/edit', name: 'app_bc_plan_edit', requirements: ['id' => '\d+'])]
+    #[Route('/business-continuity-plan/{id}/edit', name: 'app_bc_plan_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, BusinessContinuityPlan $businessContinuityPlan): Response
     {

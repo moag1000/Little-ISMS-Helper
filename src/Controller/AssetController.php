@@ -213,7 +213,7 @@ class AssetController extends AbstractController
             'detailedStats' => $detailedStats,
         ]);
     }
-    #[Route('/asset/new', name: 'app_asset_new')]
+    #[Route('/asset/new', name: 'app_asset_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -397,7 +397,7 @@ class AssetController extends AbstractController
             'comments' => $comments,
         ]);
     }
-    #[Route('/asset/{id}/edit', name: 'app_asset_edit', requirements: ['id' => '\d+'])]
+    #[Route('/asset/{id}/edit', name: 'app_asset_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Asset $asset): Response
     {

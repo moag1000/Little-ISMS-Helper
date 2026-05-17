@@ -49,7 +49,7 @@ class ManagementReviewController extends AbstractController
             'statistics' => $statistics,
         ]);
     }
-    #[Route('/management-review/new', name: 'app_management_review_new')]
+    #[Route('/management-review/new', name: 'app_management_review_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request): Response
     {
@@ -80,7 +80,7 @@ class ManagementReviewController extends AbstractController
             'review' => $managementReview,
         ]);
     }
-    #[Route('/management-review/{id}/edit', name: 'app_management_review_edit', requirements: ['id' => '\d+'])]
+    #[Route('/management-review/{id}/edit', name: 'app_management_review_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, ManagementReview $managementReview): Response
     {

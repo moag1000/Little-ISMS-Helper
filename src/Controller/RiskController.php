@@ -714,7 +714,7 @@ class RiskController extends AbstractController
 
         return $response;
     }
-    #[Route('/risk/new', name: 'app_risk_new')]
+    #[Route('/risk/new', name: 'app_risk_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -1055,7 +1055,7 @@ class RiskController extends AbstractController
         return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
     }
 
-    #[Route('/risk/{id}/edit', name: 'app_risk_edit', requirements: ['id' => '\d+'])]
+    #[Route('/risk/{id}/edit', name: 'app_risk_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Risk $risk): Response
     {

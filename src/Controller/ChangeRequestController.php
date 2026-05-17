@@ -42,7 +42,7 @@ class ChangeRequestController extends AbstractController
             'overdue' => $overdue,
         ]);
     }
-    #[Route('/change-request/new', name: 'app_change_request_new')]
+    #[Route('/change-request/new', name: 'app_change_request_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -73,7 +73,7 @@ class ChangeRequestController extends AbstractController
             'change_request' => $changeRequest,
         ]);
     }
-    #[Route('/change-request/{id}/edit', name: 'app_change_request_edit', requirements: ['id' => '\d+'])]
+    #[Route('/change-request/{id}/edit', name: 'app_change_request_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, ChangeRequest $changeRequest): Response
     {

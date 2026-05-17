@@ -152,7 +152,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Step 2: Database Configuration
      */
-    #[Route('/setup/step2-database-config', name: 'setup_step2_database_config')]
+    #[Route('/setup/step2-database-config', name: 'setup_step2_database_config', methods: ['GET', 'POST'])]
     public function step2DatabaseConfig(Request $request, SessionInterface $session): Response
     {
         if ($guard = $this->guardPostSetup()) { return $guard; }
@@ -923,7 +923,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Step 4: Admin User Creation
      */
-    #[Route('/setup/step4-admin-user', name: 'setup_step4_admin_user')]
+    #[Route('/setup/step4-admin-user', name: 'setup_step4_admin_user', methods: ['GET', 'POST'])]
     public function step4AdminUser(Request $request, SessionInterface $session): Response
     {
         if ($guard = $this->guardPostSetup()) { return $guard; }
@@ -1028,7 +1028,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Step 5: Email Configuration (Optional)
      */
-    #[Route('/setup/step5-email-config', name: 'setup_step5_email_config')]
+    #[Route('/setup/step5-email-config', name: 'setup_step5_email_config', methods: ['GET', 'POST'])]
     public function step5EmailConfig(Request $request, SessionInterface $session): Response
     {
         if ($guard = $this->guardPostSetup()) { return $guard; }
@@ -1135,7 +1135,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Step 6: Organisation Information
      */
-    #[Route('/setup/step6-organisation-info', name: 'setup_step6_organisation_info')]
+    #[Route('/setup/step6-organisation-info', name: 'setup_step6_organisation_info', methods: ['GET', 'POST'])]
     public function step6OrganisationInfo(Request $request, SessionInterface $session): Response
     {
         if ($guard = $this->guardPostSetup()) { return $guard; }
@@ -1379,7 +1379,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Step 8: Compliance Frameworks Selection
      */
-    #[Route('/setup/step8-compliance-frameworks', name: 'setup_step8_compliance_frameworks')]
+    #[Route('/setup/step8-compliance-frameworks', name: 'setup_step8_compliance_frameworks', methods: ['GET', 'POST'])]
     public function step8ComplianceFrameworks(Request $request, SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -2089,7 +2089,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Reset Setup (Development Only)
      */
-    #[Route('/setup/reset', name: 'setup_wizard_reset')]
+    #[Route('/setup/reset', name: 'setup_wizard_reset', methods: ['GET', 'POST'])]
     public function reset(SessionInterface $session): Response
     {
         // Only allow in dev environment
