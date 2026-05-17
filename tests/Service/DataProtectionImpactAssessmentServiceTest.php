@@ -294,7 +294,8 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia->method('getReferenceNumber')->willReturn('DPIA-2025-001');
         $dpia->method('getCompletenessPercentage')->willReturn(100);
 
-        $dpia->expects($this->once())->method('setStatus')->with('in_review');
+        $this->lifecycleService->expects($this->once())->method('transition')
+            ->with($dpia, 'dpia_lifecycle', 'submit');
 
         $this->entityManager->expects($this->once())->method('flush');
 
@@ -326,7 +327,8 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia->method('getResidualRiskLevel')->willReturn('medium');
         $dpia->method('getProcessingActivity')->willReturn(null);
 
-        $dpia->expects($this->once())->method('setStatus')->with('approved');
+        $this->lifecycleService->expects($this->once())->method('transition')
+            ->with($dpia, 'dpia_lifecycle', 'approve', $this->user);
         $dpia->expects($this->once())->method('setApprover')->with($this->user);
         $dpia->expects($this->once())->method('setApprovalDate');
         $dpia->expects($this->once())->method('setNextReviewDate');
@@ -378,7 +380,8 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia->method('getStatus')->willReturn('in_review');
         $dpia->method('getReferenceNumber')->willReturn('DPIA-2025-001');
 
-        $dpia->expects($this->once())->method('setStatus')->with('rejected');
+        $this->lifecycleService->expects($this->once())->method('transition')
+            ->with($dpia, 'dpia_lifecycle', 'reject', $this->user, $this->anything());
         $dpia->expects($this->once())->method('setApprover')->with($this->user);
         $dpia->expects($this->once())->method('setRejectionReason')->with('Insufficient analysis');
 
@@ -409,7 +412,8 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia->method('getStatus')->willReturn('in_review');
         $dpia->method('getReferenceNumber')->willReturn('DPIA-2025-001');
 
-        $dpia->expects($this->once())->method('setStatus')->with('requires_revision');
+        $this->lifecycleService->expects($this->once())->method('transition')
+            ->with($dpia, 'dpia_lifecycle', 'request_revision', null, $this->anything());
         $dpia->expects($this->once())->method('setRejectionReason')->with('Needs more detail');
         $dpia->expects($this->once())->method('setReviewRequired')->with(true);
 
@@ -440,7 +444,8 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia->method('getStatus')->willReturn('requires_revision');
         $dpia->method('getReferenceNumber')->willReturn('DPIA-2025-001');
 
-        $dpia->expects($this->once())->method('setStatus')->with('draft');
+        $this->lifecycleService->expects($this->once())->method('transition')
+            ->with($dpia, 'dpia_lifecycle', 'resubmit');
         $dpia->expects($this->once())->method('setRejectionReason')->with(null);
 
         $this->entityManager->expects($this->once())->method('flush');
