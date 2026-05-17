@@ -250,6 +250,19 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
+        // AuditLogger::logCustom flushes per call. If one of those flushes
+        // tripped (constraint violation, savepoint after DDL, etc.) the EM
+        // closed and the audit-log was swallowed best-effort. Detect that
+        // here and surface a clean message instead of bombing with HTTP 500.
+        // CLAUDE.md Common-Pitfalls #1.
+        if (!$this->entityManager->isOpen()) {
+            $this->addFlash('warning', $this->translator->trans('admin.data_repair.partial_assignment', [
+                '%count%' => $count,
+                '%tenant%' => $tenant->getName(),
+            ]));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
         $this->entityManager->flush();
 
         $this->addFlash('success', $this->translator->trans('admin.data_repair.assigned_count', [
