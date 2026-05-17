@@ -1,0 +1,47 @@
+framework:
+    workflows:
+        isms_objective_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\ISMSObjective
+            initial_marking: not_started
+            places:
+                - not_started
+                - in_progress
+                - achieved
+                - delayed
+                - cancelled
+            transitions:
+                start:
+                    from: not_started
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                achieve:
+                    from: in_progress
+                    to: achieved
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        reason_required: false
+                mark_delayed:
+                    from: in_progress
+                    to: delayed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                cancel:
+                    from: [not_started, in_progress, delayed]
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                reopen:
+                    from: delayed
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true

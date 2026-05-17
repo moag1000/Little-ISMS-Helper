@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use DateTime;
 use DateTimeInterface;
 use App\Entity\ISMSObjective;
+use App\Lifecycle\LifecycleService;
 use App\Repository\ISMSObjectiveRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -15,7 +16,8 @@ final class ISMSObjectiveService
 {
     public function __construct(
         private readonly ISMSObjectiveRepository $ismsObjectiveRepository,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ?LifecycleService $lifecycleService = null,
     ) {}
 
     /**
@@ -155,9 +157,19 @@ final class ISMSObjectiveService
             );
         }
 
-        // Check if objective is now achieved
+        // Check if objective is now achieved; delegate to Lifecycle X.1 if available.
         if ($ismsObjective->getTargetValue() && $currentValue >= (float)$ismsObjective->getTargetValue()) {
-            $ismsObjective->setStatus('achieved');
+            if ($this->lifecycleService !== null && $ismsObjective->getStatus() === 'in_progress') {
+                // Lifecycle X.1: canonical `achieve` transition (in_progress → achieved).
+                $this->lifecycleService->transition(
+                    $ismsObjective,
+                    'isms_objective_lifecycle',
+                    'achieve',
+                );
+            } else {
+                // Fallback: direct assignment (e.g. not in_progress yet, or no Workflow).
+                $ismsObjective->setStatus('achieved');
+            }
             $ismsObjective->setAchievedDate(new DateTime());
         }
 
