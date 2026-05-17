@@ -240,10 +240,13 @@ jobs:
         continue-on-error: true
 
       # Gate 6 — Missing translation keys (BLOCKING for high-priority domains)
-      #   Checks 12 high-priority translation domains for missing German keys.
-      #   Full-domain check: ALL_DOMAINS=1 bash check_missing_translations.sh
+      #   Pure-Python YAML-diff between <domain>.de.yaml and <domain>.en.yaml.
+      #   Replaced the previous shell wrapper around `bin/console
+      #   debug:translation` which cold-started the Symfony kernel 12 times
+      #   sequentially (~12-24s). Python implementation runs in <1s.
+      #   Full-domain check: ALL_DOMAINS=1 python3 scripts/quality/check_missing_translations.py
       - name: "Gate 6: Missing translation keys"
-        run: bash scripts/quality/check_missing_translations.sh
+        run: python3 scripts/quality/check_missing_translations.py
 
       # Gate 7 — Competitor-names in source/templates/translations (BLOCKING)
       #   Detects Vanta/Drata/Probo/Verinice/HiScout/etc. in codebase.

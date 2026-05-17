@@ -37,6 +37,15 @@ class TenantContext
             $this->initialize();
         }
 
+        // Re-initialize if we cached "no tenant" but a user is now logged in.
+        // Tests with `disableReboot()` boot the container BEFORE login_user; the
+        // first call to initialize() runs with security->getUser()===null and
+        // memoizes currentTenant=null. Without this re-check the controller
+        // would 403 every multi-tenant route in that flow.
+        if ($this->currentTenant === null && $this->security->getUser() !== null) {
+            $this->initialize();
+        }
+
         // Re-fetch if cached tenant became detached from EM (e.g. after EM clear
         // between requests in long-running processes / tests with disableReboot).
         if ($this->currentTenant !== null
