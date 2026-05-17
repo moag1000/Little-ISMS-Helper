@@ -1,0 +1,2 @@
+# check_nested_twig_in_string.py baseline
+# Format: <template>:<line>
