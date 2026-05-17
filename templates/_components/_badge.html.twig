@@ -16,7 +16,8 @@
  * @param string variant - Badge color variant (primary|secondary|success|danger|warning|info|light|dark|severity)
  * @param string|null severity - When variant='severity', maps critical|high|medium|low → danger|warning|info|success
  * @param string|null size - Badge size (sm|lg|null for default)
- * @param string|null icon - Bootstrap icon class (optional, e.g., 'bi-check-circle')
+ * @param string|null icon - Aurora icon name (e.g. 'shield-check', 'ui-edit', 'status-warning').
+ *                           Legacy `bi-*` prefixed names are auto-stripped + remapped where possible.
  * @param string|null class - Additional CSS classes
  * @param string|null title - Tooltip text for accessibility
  * @param boolean pill - DEPRECATED — Aurora pills always pill-shaped, kept for BC
@@ -69,7 +70,11 @@
 
 <span class="{{ badgeClasses|join(' ') }}"{% if title %} title="{{ title }}"{% endif %}>
     {%- if icon -%}
-        <i class="bi {{ icon }}" aria-hidden="true"></i>
+        {# Strip legacy `bi-` prefix so callers passing either Bootstrap-Icon or
+           Aurora names render correctly. Aurora classes are namespaced
+           (e.g. `fa-icon--shield-check`); the bare name is what we want. #}
+        {%- set _iconName = icon starts with 'bi-' ? icon[3:] : icon -%}
+        <i class="fa-icon fa-icon--{{ _iconName }}" aria-hidden="true"></i>
     {%- endif -%}
     {%- if content is defined -%}
         {{- content -}}
