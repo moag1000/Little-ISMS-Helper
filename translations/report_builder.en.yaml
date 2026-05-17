@@ -54,10 +54,6 @@ layout:
     single: 'Single Column'
     two_column: 'Two Columns'
     dashboard: 'Dashboard Grid'
-    wide_narrow: 'Wide + Narrow'
-    narrow_wide: 'Narrow + Wide'
-
-# Actions
 action:
     create: 'Create Report'
     create_first: 'Create Your First Report'
@@ -236,42 +232,3 @@ pdf:
 uses: 'uses'
 loading: 'Loading...'
 
-field:
-    name: 'Report Name'
-    description: 'Description'
-    category: 'Category'
-    layout: 'Layout'
-    owner_user: 'Owner (User)'
-    owner_person: 'Owner (Person)'
-    owner_deputies: 'Deputy Owners (Persons)'
-    is_shared: 'Shared'
-    is_template: 'Template'
-
-placeholder:
-    name: 'Enter report name'
-    description: 'Brief description of this report'
-    owner_user: '-- Select a user --'
-    owner_person: '-- Person from master data --'
-
-help:
-    description: 'Optional description visible to readers of this report.'
-    owner_user: 'System user as report owner. At least one of User or Person is required.'
-    owner_person: 'Person without system login as owner. Order: User > Person > empty.'
-    owner_deputies: 'Additional persons with deputy ownership. Supports multi-selection.'
-
-error:
-    owner_required_user_or_person: 'At least one of Owner (User) or Owner (Person) must be set.'
-
-choice:
-    yes: 'Yes'
-    no: 'No'
-
-category:
-    general: 'General'
-    executive: 'Executive'
-    risk: 'Risk Management'
-    compliance: 'Compliance'
-    bcm: 'Business Continuity'
-    asset: 'Asset Management'
-    audit: 'Audit'
-    incident: 'Incident Management'

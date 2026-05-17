@@ -41,8 +41,6 @@ fte_tracking:
         subtitle: 'Passen Sie die Minuten-Schätzungen für manuelle Tätigkeiten an Ihren Mandanten an'
         form_title: 'Kalibrierungskonstanten bearbeiten'
         help: 'Geben Sie die durchschnittliche manuelle Bearbeitungszeit (Minuten) für jeden Operationstyp ein. Diese Werte fließen direkt in die FTE-Einsparungsberechnung ein.'
-        col_operation: 'Operationstyp'
-        col_minutes: 'Minuten'
         save: 'Speichern'
         saved: 'Kalibrierungswerte gespeichert.'
     op:

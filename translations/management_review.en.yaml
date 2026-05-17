@@ -25,44 +25,10 @@ management_review:
         tenant: 'Organization'
         dora_obligation: 'DORA obligation status'
         generated_at: 'Generated at'
-        title: Title
         review_date: 'Review Date'
         reviewed_by: 'Reviewed by'
-        reviewed_by_person: 'Reviewed by (Person)'
-        reviewed_by_deputy_persons: 'Deputies (Persons)'
         participants: Participants
-        person_participants: 'Participants (Persons)'
         status: Status
-        changes_relevant_to_isms: 'Changes relevant to the ISMS'
-        feedback_from_interested_parties: 'Feedback from interested parties'
-        audit_results: 'Audit results'
-        performance_evaluation: 'ISMS performance (objectives, indicators)'
-        previous_review_actions: 'Status of previous actions'
-        non_conformities_status: 'Status of nonconformities'
-        corrective_actions_status: 'Status of corrective actions'
-        nonconformities_review: 'Nonconformities review'
-        incidents_review: 'Incidents review'
-        risks_review: 'Risks review'
-        objectives_review: 'Objectives review'
-        context_changes: 'Context changes'
-        improvement_opportunities: 'Improvement opportunities'
-        opportunities_for_improvement: 'Opportunities for improvement'
-        resource_needs: 'Resource needs'
-        decisions: Decisions
-        action_items: 'Action items'
-        summary: Summary
-        top_management_attended: 'Top Management Attendance'
-        next_review_date: 'Next Review Date'
-        meeting_minutes_document: 'Meeting Minutes Document'
-        risk_treatment_effectiveness: 'Risk Treatment Effectiveness'
-        policy_review_outcome: 'Policy Review Outcome (§5.2)'
-        framework_compliance_status: 'Framework Compliance Status'
-        action_items_with_deadlines: 'Action Items with Deadlines (structured)'
-    status_values:
-        planned: Planned
-        in_progress: 'In Progress'
-        completed: Completed
-        cancelled: Cancelled
     status:
         planned: Planned
         in_progress: 'In Progress'
@@ -135,46 +101,6 @@ management_review:
             action_items: 'Action items (tracked)'
             summary: 'Summary'
     edit: Edit
-    placeholder:
-        title: 'e.g. Management Review Q1 2025'
-        reviewed_by_person: '-- Person from master data --'
-        meeting_minutes_document: '-- Select meeting minutes document --'
-        risk_treatment_effectiveness: 'e.g. Firewall upgrade reduced attack surface by 40%; Patch-management SLA met at 92% ...'
-        policy_review_outcome: 'e.g. ISMS policy updated for new cloud usage; no material changes to §5.2 requirements ...'
-        framework_compliance_status: '[{"framework":"ISO 27001:2022","status":"compliant","last_review":"2025-01-15"},{"framework":"NIS2","status":"in_progress","open_items":3}]'
-        action_items_with_deadlines: '[{"action":"Update risk assessment","owner":"CISO","deadline":"2025-06-30","status":"open"}]'
-    help:
-        reviewed_by: 'Usually a member of top management'
-        reviewed_by_person: 'Person without system login as reviewer. Order: User > Person > empty.'
-        reviewed_by_deputy_persons: 'Additional persons with deputy or shared responsibility.'
-        person_participants: 'External attendees (board members, auditors, consultants) without a system login. Complements the user attendance from the "Participants" field.'
-        performance_evaluation: 'Assessment of ISMS performance and KPIs'
-        changes_relevant_to_isms: 'Changes relevant to the ISMS (e.g. legal, organizational, technological)'
-        feedback_from_interested_parties: 'Feedback from interested parties (customers, partners, authorities, employees)'
-        audit_results: 'Results of internal/external audits since last review'
-        nonconformities_review: 'Status of open nonconformities from audits'
-        incidents_review: 'Analysis of security incidents since last review'
-        risks_review: 'Changes in the risk profile'
-        objectives_review: 'Status of ISMS objectives and achievement'
-        context_changes: 'Changes in internal/external requirements'
-        previous_review_actions: 'Status of actions from the previous management review'
-        non_conformities_status: 'Overview of open nonconformities and their processing status'
-        corrective_actions_status: 'Status of corrective actions (planned, in progress, completed)'
-        improvement_opportunities: 'Identified opportunities to improve the ISMS'
-        opportunities_for_improvement: 'Improvement opportunities (alias field, compatible with existing template)'
-        decisions: 'Decisions and actions taken'
-        action_items: 'Specific actions with responsibilities and deadlines'
-        resource_needs: 'Budget, personnel or other resources'
-        summary: 'Executive summary of the management review'
-        top_management_attended: 'Confirms that at least one top-management member was personally present (ISO 27001 §9.3 mandatory).'
-        next_review_date: 'Date for the next planned management review (≥1× per year as required by §9.3).'
-        meeting_minutes_document: 'Official meeting-minutes document from the document archive (§7.5.3).'
-        risk_treatment_effectiveness: 'Assessment of whether the implemented risk-treatment measures are effective (treatment ROI; supplements risksReview).'
-        policy_review_outcome: 'Outcome of the information-security policy review according to §5.2.'
-        framework_compliance_status: 'JSON snapshot of current compliance status across all relevant frameworks (DORA, NIS2, ISO 27001, BaFin). Only visible when compliance module is active.'
-        action_items_with_deadlines: 'Structured action items with owners and deadlines. JSON format: [{action, owner, deadline (ISO date), status: open|in_progress|done}]'
-    error:
-        owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
     auto_collect:
         title: 'Generate from current data'
         title_prefix: 'Management Review (auto-generated)'

@@ -1,168 +1,67 @@
 control:
-  title:
-    plural: Maßnahmen
-  section:
-    applicability: Anwendbarkeit
-    implementation: Umsetzung
-    responsibility: Verantwortlichkeit
-    review: Überprüfung
-    assets: Geschützte Assets
-  field:
-    control_id: Maßnahme‑ID
-    name: Name
-    title: Titel
-    category: Kategorie
-    implementation_status: Umsetzungsstatus
-    status: Status
-    description: Beschreibung
-    applicable: Anwendbar
-    justification: Begründung
-    implementation_percentage: Umsetzungsgrad (%)
-    implementation_notes: Umsetzungshinweise
-    responsible_person: Verantwortliche Person
-    responsible_person_contact: Verantwortliche Person (Person aus Stammdaten)
-    responsible_deputies: Vertretungen (Personen)
-    target_date: Zieldatum
-    last_review_date: Letzte Überprüfung
-    next_review_date: Nächste Überprüfung
-    protected_assets: Geschützte Assets
-    responsible_person_legacy: Verantwortliche Person (freitext, veraltet)
-    essential_for_small_business: Wesentlich für KMU
-    effectiveness: Wirksamkeit
-    control_type: Maßnahmentyp (NIST)
-    automation_level: Automatisierungsgrad
-    control_maturity: Reifegrad (ISO 33001)
-    last_effectiveness_test: Letzter Wirksamkeitstest
-    next_effectiveness_test: Nächster Wirksamkeitstest
-    framework_references: Framework-Referenzen (JSON)
-    related_risks: Verknüpfte Risiken
-    cloud_control_reference: Cloud-Control-Referenz (ISO 27017)
-    cloud_privacy_reference: Cloud-Privacy-Referenz (ISO 27018)
-    pims_reference: PIMS-Referenz (ISO 27701)
-    customer_or_provider_responsibility: Verantwortlichkeit (Shared-Model)
-  help:
-    control_id: ISO 27001:2022 Annex A Maßnahmen-ID
-    applicable_explained: "Anwendbarkeit (ISO 27001 6.1.3 d): 'Anwendbar' = diese Massnahme ist fuer Ihre Organisation relevant und MUSS umgesetzt werden. 'Nicht anwendbar' = diese Massnahme ist fuer Ihren ISMS-Scope nicht relevant — Begruendung im Feld 'Justification' PFLICHT. Beispiel: A.7.4 (Physische Ueberwachung) kann fuer ein reines Cloud-Unternehmen 'nicht anwendbar' sein."
-    implementation_status_explained: "Umsetzungsstatus: not_started = noch nicht begonnen, planned = geplant (Termin gesetzt), in_progress = in Umsetzung (teilweise wirksam), implemented = vollstaendig umgesetzt und wirksam, verified = durch Audit/Test als wirksam bestaetigt. Hinweis: Nur 'anwendbare' Controls zaehlen fuer die Compliance-Berechnung."
-    justification: Pflicht für ISO 27001 Statement of Applicability (SoA)
-    implementation_percentage: Implementierungsfortschritt in Prozent (0-100)
-    implementation_notes: Beschreiben Sie wie das Control implementiert ist
-    target_date: Bis wann soll das Control vollständig implementiert sein?
-    next_review_date: Wann soll das Control das nächste Mal überprüft werden?
-    protected_assets: Welche Assets werden durch dieses Control geschützt?
-    responsible_person_user: Verantwortliche Person aus der Benutzerverwaltung.
-    responsible_person_contact: 'Person ohne System-Login als Verantwortliche wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
-    responsible_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
-    framework_references_json: 'JSON-Format: {"iso27001":["A.5.1"],"bsi":["ORP.1.A1"],"nist":["AC-1"],"dora":["Art. 6"]}'
-    iso_27017: ISO 27017 Cloud-Control-Referenz (z. B. CLD.9.5.1)
-    iso_27018: ISO 27018 Cloud-Privacy-Referenz (z. B. CLD.6.3.1)
-    iso_27701: ISO 27701 PIMS-Referenz (z. B. 6.4.1.2)
-    shared_responsibility: Wer trägt die Verantwortung für dieses Control? (ISO 27017 §5.1.1)
-  placeholder:
-    control_id: z.B. A.5.1
-    name: z.B. Policies for information security
-    justification: Begründen Sie die Anwendbarkeit oder Nicht-Anwendbarkeit...
-    responsible_person: Name der verantwortlichen Person
-    responsible_person_user: -- Verantwortliche Person --
-    responsible_person_contact: -- Person aus Stammdaten --
-    effectiveness: -- Wirksamkeit wählen --
-    control_type: -- Maßnahmentyp wählen --
-    automation_level: -- Automatisierungsgrad wählen --
-    control_maturity: -- Reifegrad wählen --
-    responsibility: -- Verantwortlichkeit wählen --
-  status:
-    implemented: Implementiert
-    in_progress: In Bearbeitung
-    not_started: Nicht begonnen
-    not_applicable: Nicht anwendbar
-  category:
-    organizational: Organisatorisch
-    people: Personell
-    physical: Physisch
-    technological: Technologisch
-  applicable:
-    'yes': Ja
-    'no': Nein
-  implementation_status:
-    not_started: Nicht begonnen
-    planned: Geplant
-    in_progress: In Umsetzung
-    implemented: Implementiert
-    verified: Verifiziert
-  effectiveness:
-    not_assessed: Nicht bewertet
-    ineffective: Unwirksam
-    partially_effective: Teilweise wirksam
-    effective: Wirksam
-    highly_effective: Hochwirksam
-  type:
-    preventive: Präventiv
-    detective: Detektiv
-    corrective: Korrektiv
-    deterrent: Abschreckend
-    recovery: Wiederherstellend
-  automation:
-    manual: Manuell
-    semi_automated: Teilautomatisiert
-    fully_automated: Vollautomatisiert
-  maturity:
-    1_initial: '1 – Initial'
-    2_managed: '2 – Verwaltet'
-    3_defined: '3 – Definiert'
-    4_quantitatively_managed: '4 – Quantitativ verwaltet'
-    5_optimizing: '5 – Optimierend'
-  responsibility:
-    customer: Kunde
-    provider: Anbieter
-    shared: Geteilt
-  success:
-    updated: Maßnahme erfolgreich aktualisiert
-  flash:
-    mapping_accepted: 'Mapping-Vorschlag übernommen — Anforderung %requirement% ist nun mit dieser Maßnahme verknüpft.'
-  mapping_suggestions:
-    title: '%count% Mapping-Vorschläge in %frameworks% Framework(s)'
-    description: 'Automatisch ermittelte Anforderungen, die diese Maßnahme abdecken könnte. Konfidenz basiert auf Text-Ähnlichkeit (Jaccard) zwischen Control-Beschreibung und Requirement-Text.'
-    accept: 'Übernehmen'
-    footer_hint: 'Jede Übernahme wird im Audit-Log als "A2_auto_mapping_suggestion" mit Konfidenz-Wert protokolliert — Auditoren sehen die Herkunft.'
-    confidence:
-      high: 'Sehr hohe Text-Ähnlichkeit'
-      medium: 'Mittlere Text-Ähnlichkeit'
-      low: 'Geringe Text-Ähnlichkeit'
-      tooltip: 'Jaccard-Score: %pct% %% gemeinsame Tokens (gefilterte Token-Überlappung zwischen Control-Beschreibung und Requirement-Text).'
-  bulk:
-    title: 'Bulk-Applicability (mehrere Controls auf einmal ändern)'
-    hint: 'Power-User-Tool für CM — Control-IDs eingeben, applicable/N/A setzen, optional Begründung.'
-    ids: 'Control-IDs (Komma-getrennt)'
-    status: 'Status'
-    applicable: 'Applicable'
-    non_applicable: 'N/A (nicht anwendbar)'
-    reason: 'Begründung (Pflicht bei N/A)'
-    reason_placeholder: 'z. B. "Cloud-only, kein eigener physischer Standort"'
-    submit: 'Anwenden'
-    footer_hint: 'Jede Änderung wird pro Control als "control.bulk_applicability" im Audit-Log protokolliert (mit old/new-Werten, Begründung, Akteur).'
+    title:
+        plural: Maßnahmen
+    section:
+        applicability: Anwendbarkeit
+        implementation: Umsetzung
+        responsibility: Verantwortlichkeit
+        review: Überprüfung
+        assets: Geschützte Assets
+    field:
+        control_id: Maßnahme‑ID
+        name: Name
+        title: Titel
+        category: Kategorie
+        implementation_status: Umsetzungsstatus
+        status: Status
+    status:
+        implemented: Implementiert
+        in_progress: In Bearbeitung
+        not_started: Nicht begonnen
+        not_applicable: Nicht anwendbar
+    success:
+        updated: Maßnahme erfolgreich aktualisiert
     flash:
-      no_selection: 'Keine Control-IDs angegeben. Bitte mindestens eine ID wählen.'
-      reason_required: 'Eine Begründung ist Pflicht, wenn Controls als N/A markiert werden.'
-      updated: '%count% Control(s) als %status% aktualisiert.'
-  error:
-    owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
-    justification_required_when_not_applicable: 'Begründung erforderlich, wenn der Control als "nicht anwendbar" markiert ist (ISO 27001 6.1.3 d).'
+        mapping_accepted: 'Mapping-Vorschlag übernommen — Anforderung %requirement% ist nun mit dieser Maßnahme verknüpft.'
+    mapping_suggestions:
+        title: '%count% Mapping-Vorschläge in %frameworks% Framework(s)'
+        description: 'Automatisch ermittelte Anforderungen, die diese Maßnahme abdecken könnte. Konfidenz basiert auf Text-Ähnlichkeit (Jaccard) zwischen Control-Beschreibung und Requirement-Text.'
+        accept: 'Übernehmen'
+        footer_hint: 'Jede Übernahme wird im Audit-Log als "A2_auto_mapping_suggestion" mit Konfidenz-Wert protokolliert — Auditoren sehen die Herkunft.'
+        confidence:
+            high: 'Sehr hohe Text-Ähnlichkeit'
+            medium: 'Mittlere Text-Ähnlichkeit'
+            low: 'Geringe Text-Ähnlichkeit'
+            tooltip: 'Jaccard-Score: %pct% %% gemeinsame Tokens (gefilterte Token-Überlappung zwischen Control-Beschreibung und Requirement-Text).'
+    bulk:
+        title: 'Bulk-Applicability (mehrere Controls auf einmal ändern)'
+        hint: 'Power-User-Tool für CM — Control-IDs eingeben, applicable/N/A setzen, optional Begründung.'
+        ids: 'Control-IDs (Komma-getrennt)'
+        status: 'Status'
+        applicable: 'Applicable'
+        non_applicable: 'N/A (nicht anwendbar)'
+        reason: 'Begründung (Pflicht bei N/A)'
+        reason_placeholder: 'z. B. "Cloud-only, kein eigener physischer Standort"'
+        submit: 'Anwenden'
+        footer_hint: 'Jede Änderung wird pro Control als "control.bulk_applicability" im Audit-Log protokolliert (mit old/new-Werten, Begründung, Akteur).'
+        flash:
+            no_selection: 'Keine Control-IDs angegeben. Bitte mindestens eine ID wählen.'
+            reason_required: 'Eine Begründung ist Pflicht, wenn Controls als N/A markiert werden.'
+            updated: '%count% Control(s) als %status% aktualisiert.'
 inverse_coverage:
-  total: 'Deckt %count% Anforderung(en) in %frameworks% Framework(s)'
-  document:
-    heading: 'Wo wird dieses Dokument genutzt?'
-    empty: 'Dieses Dokument ist noch in keiner Compliance-Anforderung als Evidence hinterlegt.'
-  supplier:
-    heading: 'Welche Anforderungen adressieren diesen Lieferanten?'
-    empty: 'Keine Anforderungen adressieren diesen Lieferanten direkt (weder via Supplier-Mapping noch via A.5.19–A.5.23).'
+    total: 'Deckt %count% Anforderung(en) in %frameworks% Framework(s)'
+    document:
+        heading: 'Wo wird dieses Dokument genutzt?'
+        empty: 'Dieses Dokument ist noch in keiner Compliance-Anforderung als Evidence hinterlegt.'
+    supplier:
+        heading: 'Welche Anforderungen adressieren diesen Lieferanten?'
+        empty: 'Keine Anforderungen adressieren diesen Lieferanten direkt (weder via Supplier-Mapping noch via A.5.19–A.5.23).'
 coverage:
-  tooltip: 'Transitive Abdeckung: Direkte Controls + gemappte Quelle-Anforderungen'
-  contributors: '%direct% direkt · %transitive% transitiv · %unique% eindeutige Controls'
-  direct_heading: 'Direkt verknüpfte Maßnahmen'
-  transitive_heading: 'Transitive Herkunft (via Cross-Framework-Mapping)'
-  transitive_formula: 'Quell-Erfüllung %fulfillment% %% × Mapping-Stärke %mapping% %%'
-  empty: 'Noch keine beitragenden Maßnahmen erfasst.'
+    tooltip: 'Transitive Abdeckung: Direkte Controls + gemappte Quelle-Anforderungen'
+    contributors: '%direct% direkt · %transitive% transitiv · %unique% eindeutige Controls'
+    direct_heading: 'Direkt verknüpfte Maßnahmen'
+    transitive_heading: 'Transitive Herkunft (via Cross-Framework-Mapping)'
+    transitive_formula: 'Quell-Erfüllung %fulfillment% %% × Mapping-Stärke %mapping% %%'
+    empty: 'Noch keine beitragenden Maßnahmen erfasst.'
 iso_9001_bridge:
     soa: 'Konzeptionell vergleichbar mit der Prozesslandkarte aus ISO 9001 Klausel 4.4 — die Statement of Applicability listet auf, welche Maßnahmen aus Annex A gelten und ist damit das Gegenstück zur 9001-Prozessübersicht.'
-    control: 'In ISO 9001 entspricht das einer "Beherrschung eines Prozesses" (Klausel 8.1) — Maßnahmen sind die operative Steuerung, die Risiken adressieren.'
-    objective: 'Identisch mit "Qualitätszielen" (ISO 9001 6.2) — messbare Ziele auf Prozess- bzw. Maßnahmen-Ebene.'

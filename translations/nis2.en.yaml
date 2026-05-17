@@ -3,25 +3,17 @@
 
 nis2:
     # General
-    not_installed: "NIS2 framework is not installed. If your organization is subject to NIS2, please load the framework from the compliance frameworks page."
-    not_active: "NIS2 framework is deactivated. This indicates that NIS2 is not relevant for your organization. Activate it in compliance frameworks if needed."
-
-    # Incident Report PDF
     incident_report:
         title: "NIS2 Art. 23 Incident Notification Report"
         subtitle: "Directive (EU) 2022/2555 - Incident Notification"
         reference: "Reference No."
-        organization: "Organization"
         generated_at: "Report Generated"
         incident_number: "Incident Number"
-        classification: "Classification"
         severity: "Severity"
         status: "Status"
-        category: "Category"
         nis2_category: "NIS2 Category"
         reported_by: "Reported By"
         assigned_to: "Assigned To"
-        cross_border: "Cross-Border Impact"
         yes: "Yes"
         no: "No"
         not_specified: "Not specified"
@@ -61,7 +53,6 @@ nis2:
             related_vulnerabilities: "Related Vulnerabilities"
             initial_actions: "Initial Actions Taken"
             authority_notified: "National Authority Notified"
-            authority_reference: "Authority Reference Number"
             notification_status: "Notification Status"
             reported_at: "Reported At"
 
@@ -94,4 +85,3 @@ nis2:
 
         # Footer
         footer: "Confidential - NIS2 Art. 23 Incident Notification Report"
-        page: "Page"

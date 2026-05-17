@@ -2,7 +2,6 @@ certification_bundle:
     title: 'Zertifizierungs-Dokumentenpaket'
     subtitle: 'Alle ISMS-Dokumente in einem ZIP-Archiv für den Auditor'
     generate: 'Paket generieren'
-    generating: 'Wird generiert...'
     preview:
         organization: 'Organisation'
         framework: 'Framework'
@@ -26,8 +25,6 @@ certification_bundle:
         desc_metadata: 'Export-Metadaten mit SHA-256-Integritätsprüfung'
         note_generation: 'Die Generierung kann je nach Datenmenge einige Sekunden dauern.'
     warning_gaps: 'Es gibt noch %count% offene Gaps — das Paket wird trotzdem generiert.'
-    success: 'Zertifizierungs-Dokumentenpaket wurde erfolgreich generiert.'
-
     konzern_export:
         title: 'Konzern-Bundle (Holding)'
         subtitle: 'Aggregiert die Zertifizierungs-Bundles aller Tochter-Tenants in eine ZIP — mit gemeinsamer INDEX.csv, KONZERN-OVERVIEW und RACI-Übersicht für die Holding-Auditierung.'
@@ -38,19 +35,10 @@ certification_bundle:
         subsidiaries_help: 'Leer lassen, um alle Töchter einzuschließen. Holding-Wurzel ist immer enthalten.'
         generate: 'Konzern-Bundle generieren'
         note: 'Generierung kann je nach Konzerngröße länger dauern (1 Bundle pro Tochter).'
-        success: 'Konzern-Zertifizierungs-Bundle wurde erfolgreich generiert.'
-        error:
-            not_a_holding: 'Aktueller Tenant hat keine Töchter — kein Konzern-Bundle möglich.'
-
-    # PDF-spezifische Übersetzungen
     pdf:
         generated: 'Erstellt'
         organization: 'Organisation'
         confidential: 'VERTRAULICH'
-        total: 'Gesamt'
-        total_colon: 'Gesamt'
-        and_separator: '|'
-
         asset_register:
             title: 'Asset-Register'
             total_assets: 'Assets gesamt'

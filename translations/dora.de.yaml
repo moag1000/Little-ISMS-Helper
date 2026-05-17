@@ -77,19 +77,9 @@ dora:
     # MINOR-6: ITS-konformer Register-of-Information Export
     register_export:
         button: "Register of Information exportieren (ITS-konform)"
-        download_name: "dora-register-of-information"
         aria: "Register of Information als ITS-konforme CSV-Datei herunterladen"
 
     # MINOR-6: zusätzliche Supplier-Felder für ITS-ROI-Konformität
-    supplier:
-        nace_code:
-            label: "NACE-Code (Rev.2)"
-            help: "EU NACE Rev.2 Branchencode des ICT-Drittdienstleisters (z.B. 62.01)."
-        country_of_head_office:
-            label: "Hauptsitz (ISO-3166)"
-            help: "ISO-3166 alpha-2 Ländercode des Hauptsitzes (z.B. DE, IE, US)."
-
-    # IKT-Vorfall-Bericht PDF (DORA Art. 19)
     ict_incident_report:
         title: "DORA Art. 19 IKT-Vorfall-Bericht"
         subtitle: "Digital Operational Resilience Act (EU 2022/2554)"
@@ -124,9 +114,7 @@ dora:
             detection_datetime: "Datum/Uhrzeit der Erkennung"
             duration: "Dauer"
             duration_ongoing: "Andauernd"
-            duration_hours: "%hours%h %minutes%m"
             services_affected: "Betroffene Dienste/Funktionen"
-            affected_systems: "Betroffene Systeme"
             affected_assets: "Betroffene Assets"
             affected_processes: "Betroffene Geschäftsprozesse"
             clients_affected: "Anzahl betroffener Kunden/Gegenparteien"
@@ -136,7 +124,6 @@ dora:
             immediate_actions: "Ergriffene Sofortmaßnahmen"
             corrective_actions: "Korrekturmaßnahmen"
             root_cause: "Ursache"
-            recovery_timeline: "Wiederherstellungszeitplan"
             resolved_at: "Gelöst am"
 
         # Zeitplan
@@ -146,15 +133,12 @@ dora:
             deadline: "Frist"
             status: "Status"
             detection: "Erkennung"
-            classification_phase: "Klassifizierung"
             initial_report: "Erstmeldung (4h)"
             intermediate: "Zwischenbericht (72h)"
             final_report: "Abschlussbericht (1 Monat)"
             overdue: "ÜBERFÄLLIG"
-            compliant: "Konform"
             pending: "Ausstehend"
             completed: "Abgeschlossen"
 
         # Footer
         footer: "Vertraulich - DORA Art. 19 IKT-Vorfall-Bericht"
-        page: "Seite"

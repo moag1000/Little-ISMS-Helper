@@ -1,9 +1,7 @@
 monitoring:
-    title: 'System Monitoring'
     subtitle: 'System monitoring and diagnostics'
     health:
         title: 'System Health'
-        overall_status: 'Overall Status'
         system_status: 'System Status'
         healthy: Healthy
         warning: Warning
@@ -39,7 +37,6 @@ monitoring:
         sessions: 'Sessions'
         uploads: 'Uploads'
     database:
-        title: Database
         status: Status
         response_time: 'Response Time'
         driver: Driver
@@ -52,9 +49,7 @@ monitoring:
         errors: 'mapping errors'
         pending: 'pending DDL statements'
         show_mapping_errors: 'Show mapping errors'
-        show_pending_sql: 'Show pending SQL'
         apply_update: 'Run schema update (force)'
-        confirm_update: 'Schema update will run DDL against the live database. Continue?'
         preview_open: 'Review SQL preview and continue'
         preview_warning_title: 'Warning: destructive DDL operation'
         preview_warning_body: 'This schema update runs SQL statements directly against the production database. There is no transaction wrap and no automatic rollback. Review every statement and make sure a recent backup exists.'
@@ -63,13 +58,10 @@ monitoring:
         backup_confirmed_help: 'This checkbox is mandatory. The schema update will not start until it is ticked.'
         actions_label: 'Schema update actions'
     disk:
-        title: Disk
         free: Free
         used: Used
         total: Total
-        percentage: Percentage
     php:
-        title: PHP
         version: Version
         memory_limit: 'Memory Limit'
         max_execution_time: 'Max Execution Time'
@@ -77,16 +69,13 @@ monitoring:
         loaded: Loaded
         missing: Missing
     symfony:
-        title: Symfony
         version: Version
         environment: Environment
         debug: 'Debug Mode'
     cache:
-        title: Cache
         directory: Directory
         writable: Writable
     logs:
-        title: Logs
         directory: Directory
         writable: Writable
     performance:
@@ -105,7 +94,6 @@ monitoring:
         system_resources: 'System Resources'
         active_today: 'Active today'
         current: 'Current'
-        note: Note
         note_title: 'Performance Monitoring Note'
         note_text: 'These metrics are based on audit log data and current PHP process information. For production environments, consider integrating professional monitoring tools like: <strong>New Relic</strong>, <strong>Datadog</strong>, or <strong>Blackfire</strong> for detailed performance insights.'
         no_data: 'No data available'
@@ -114,40 +102,17 @@ monitoring:
         subtitle: 'System errors and exceptions'
         total: 'Total Errors'
         shown: 'Shown (last %count%)'
-        by_level: 'By Level'
         file_size: 'File Size'
         log_file_size: 'Log file size'
         last_modified: 'Last Modified'
         log_file: 'Log File'
-        show_entries: 'Show Entries'
         recent: 'Recent Errors'
-        no_errors: 'No errors found!'
         no_log_file: 'No log file found'
         no_log_file_text: 'The log file <code>%file%</code> does not exist yet. Errors will be logged here once they occur.'
         show_full: 'Show full log entry'
         important_notes: 'Important Notes'
     audit_log:
         title: 'Audit Log'
-        total_entries: 'Total Entries'
-        top_actions: 'Top Actions'
-        top_entities: 'Top Entities'
-        quick_filters: 'Quick Filters'
-        all: All
-        today: Today
-        this_week: 'This Week'
-        critical_actions: 'Critical Actions'
-        entries: Entries
-        timestamp: Timestamp
-        user: User
-        action: Action
-        entity: Entity
-        ip_address: 'IP Address'
-        details: Details
-        view: View
-        description: Description
-        changes: Changes
-        about: 'About Audit Log'
-        about_text: 'The audit log tracks all significant actions in the system including create, update, and delete operations.'
     related: 'Related Monitoring'
     refresh: Refresh
     back_to_health: 'Back to Health'

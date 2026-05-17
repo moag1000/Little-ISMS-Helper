@@ -1,34 +1,4 @@
 person:
-    title:
-        list: People
-        create: 'Create person'
-        show: 'Person details'
-        edit: 'Edit person'
-    description:
-        overview: 'Overview of employees, contractors and other persons'
-    action:
-        create: 'Create person'
-    stats:
-        total: 'Total people'
-        employees: Employees
-        contractors: Contractors
-        with_badge: 'With badge'
-    field:
-        name: Name
-        full_name: 'Full Name'
-        type: Type
-        person_type: 'Person Type'
-        badge_id: 'Badge ID'
-        company: Company
-        email: Email
-        department: Department
-        job_title: 'Job Title'
-        phone: Phone
-        linked_user: 'Linked User'
-        active: Active
-        access_valid_from: 'Access Valid From'
-        access_valid_until: 'Access Valid Until'
-        notes: Notes
     type:
         employee: Employee
         contractor: Contractor
@@ -37,35 +7,6 @@ person:
         auditor: Auditor
         consultant: Consultant
         other: Other
-    placeholder:
-        name: 'e.g. John Doe'
-        full_name: 'e.g. John Doe'
-        badge_id: 'e.g. B-12345'
-        company: 'e.g. External IT Services Inc.'
-        email: 'john.doe@example.com'
-        phone: '+1 234 567 890'
-        department: 'e.g. IT Department'
-        job_title: 'e.g. System Administrator'
-        linked_user: '-- Select user --'
-        notes: 'Additional notes and remarks...'
-    help:
-        badge_id: 'Unique badge/ID number for access control'
-        linked_user: 'Optional: Link this person to a user account in the system'
-        access_valid_from: 'From when is access valid for this person?'
-        access_valid_until: 'Until when is access valid? (Empty = unlimited)'
-    actions:
-        label: 'Person Actions'
-    message:
-        no_persons: 'No people available.'
-    section:
-        basic_info: 'Basic information'
-        organization: Organization
-        contact: Contact
-        additional: 'Additional information'
-        details: Details
-        notes: Notes
-    confirm:
-        delete: 'Are you sure you want to delete this person?'
     from_user:
         title: 'Create person from user'
         help: 'Optional: pick an existing user to prefill name, email, phone, department, and job title. You can also fill in the form without selecting a user.'

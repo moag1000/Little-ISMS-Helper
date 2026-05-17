@@ -1,209 +1,76 @@
 bc_plans:
-  page:
-    title: Business Continuity Plans
-    header: Business Continuity Plans
-    subtitle: ISO 22301:2019 Business Continuity Management
-  action:
-    add_new: Add New BC Plan
-    create_first: Create first BC plan
-  empty:
-    title: No business continuity plans yet
-    body: 'BC plans secure the recovery of critical business processes. For each process, document activation criteria, recovery procedures, team, and communication plan — required by ISO 22301 §8.4.'
-  alert:
-    overdue_tests: ⚠️ Overdue BC Plan Tests
-    overdue_reviews: ⚠️ Overdue BC Plan Reviews
-  section:
-    details: BC Plan Details
-    testing_review: Testing & Review
-    review_notes: Review Notes
-    communication_plan: Communication Plan
-    alternative_site: Alternative Site
-    related_risks: Related Risks
-    basic_info: Basic Information
-    team: Team
-    activation: Activation
-    communication: Communication
-    backup_recovery: Backup Recovery
-    version_review: Version Review
-  table:
-    name: Name
-    business_process: Business Process
-    owner: Owner
-    status: Status
-    readiness: Readiness
-    last_tested: Last Tested
-    actions: Actions
-  field:
-    business_process: Business Process
-    plan_owner: Plan Owner
-    version: Version
-    last_tested: Last Tested
-    next_test: Next Test
-    last_review: Last Review
-    next_review: Next Review
-    address: Address
-    capacity: Capacity
-    name: Name
-    description: Description
-    status: Status
-    bc_team: BC Team
-    activation_criteria: Activation Criteria
-    roles_and_responsibilities: Roles and Responsibilities
-    roles_responsibilities: Roles and Responsibilities
-    recovery_procedures: Recovery Procedures
-    communication_plan: Communication Plan
-    internal_communication: Internal Communication
-    external_communication: External Communication
-    alternative_site: Alternative Site
-    alternative_site_address: Alternative Site Address
-    alternative_site_capacity: Alternative Site Capacity
-    backup_procedures: Backup Procedures
-    restore_procedures: Restore Procedures
-    next_test_date: Next Test Date
-    last_review_date: Last Review Date
-    next_review_date: Next Review Date
-    review_notes: Review Notes
-    plan_owner_legacy: Plan Owner (free text, legacy)
-    plan_owner_person: Plan Owner (Person from master data)
-    plan_owner_deputies: Deputies (Persons)
-    response_team_members: 'Response Team Members (structured)'
-    required_resources: 'Required Resources (structured)'
-    escalation_levels: 'Escalation Levels'
-    crisis_teams: 'Crisis Teams'
-    rto: 'Recovery Time Objective (hours)'
-    rpo: 'Recovery Point Objective (hours)'
-    critical_assets: 'Business-critical assets'
-  status:
-    draft: Draft
-    under_review: Under Review
-    active: Active
-    archived: Archived
-  badge:
-    overdue: OVERDUE
-  message:
-    not_scheduled: Not scheduled
-    never: Never
-    no_plans: No BC plans found.
-    create_first: Create your first BC plan
-    readiness_score: 'Readiness Score: %score%%'
-  help:
-    empty_link: /en/help/glossary#glossary-bc-plan
-    name: Unique name of the BC plan
-    business_process: Business process protected by this plan (ISO 22301)
-    description: Detailed description of the plan and its scope
-    plan_owner: Person responsible for maintaining and implementing the plan
-    status: Current status of the plan (Draft, Active, Archived)
-    bc_team: People to be involved when the plan is activated (BC team per ISO 22301)
-    activation_criteria: Conditions under which this plan should be activated (e.g.
-      server outage > 4h)
-    roles_and_responsibilities: Roles and responsibilities of team members during
-      a BC situation
-    roles_responsibilities: Roles and responsibilities of team members during a BC
-      situation
-    recovery_procedures: Step-by-step procedures for restoring business operations
-    communication_plan: Communication strategy during the continuity situation
-    internal_communication: Communication with internal stakeholders (employees, management)
-    external_communication: Communication with external stakeholders (customers, suppliers,
-      authorities)
-    alternative_site: Alternative site for emergency operations (if physical location
-      is unavailable)
-    alternative_site_address: Full address of the alternative site
-    alternative_site_capacity: Capacity and resources at the alternative site (workstations,
-      technology)
-    backup_procedures: Data backup procedures (backup strategy, frequency, storage
-      locations)
-    restore_procedures: Data restoration procedures (restore process, prioritization)
-    version: Current version number of the BC plan
-    last_tested: Date of last BC plan test (exercises per ISO 22301:2019 Clause 8.5)
-    next_test_date: Date of next scheduled BC plan test
-    last_review_date: Date of last plan review
-    next_review_date: Date of next scheduled review (at least annually per ISO 22301)
-    review_notes: Notes from the last plan review (changes needed, improvements)
-    plan_owner_user: Plan owner from user management.
-    plan_owner_person: 'Select a person without a system login as plan owner. Priority&#58; User &gt; Person &gt; legacy.'
-    plan_owner_deputies: Additional persons sharing plan ownership or deputising. Multiple selection possible.
-    response_team_members_json: 'JSON array with response team roles per ISO 22301 §8.5.3. Roles: incident_commander, comms_lead, recovery_lead, technical_lead.'
-    required_resources_json: 'JSON object with resource requirements: {"personnel": [], "equipment": [], "supplies": []}. ISO 22301 §8.1.'
-    escalation_levels_json: 'JSON array with escalation levels per BSI 200-4 §6.2: [{"level":1,"trigger":"...","responder":"...","escalateAfter":"15min"}].'
-    crisis_teams: 'Crisis teams responsible for this plan (ISO 22301 §8.4.2). Multiple selection possible.'
-    rto: 'ISO 22301 Cl. 8.4.2 — maximum acceptable recovery time after an outage, in hours. Examples: critical=1, high=4, medium=24, low=72.'
-    rpo: 'ISO 22301 Cl. 8.4.2 — maximum tolerable data loss, measured in hours between last consistent backup and the start of the disruption.'
-    critical_assets: 'Assets essential for the recovery of this business process. Multiple selection possible.'
-  placeholder:
-    plan_owner_user: -- Select owner --
-    plan_owner_person: -- Person from master data --
-    response_team_members: '[{"role":"incident_commander","userId":null,"name":"John Doe","contact":"+49 123 456789","responsibilities":"Overall responsibility"}]'
-  tooltip:
-    activation_criteria: 'Predefined conditions that trigger plan activation (e.g. server outage > 4h, building evacuation). Measurable thresholds make the decision easier during a crisis.'
-    recovery_procedures: 'Step-by-step guide to restoring business operations. Each step should include responsible persons, time targets and verification criteria (ISO 22301 Cl. 8.4).'
-    communication_plan: 'Communication strategy during a disruption: who informs whom, via which channel, in what order? Includes escalation paths and backup communication channels.'
-    alternative_site: 'Fallback location for emergency operations if the primary site is unavailable. Describe capacity, available infrastructure and activation lead time.'
-    required_resources: 'Minimum resources needed for emergency operations: staff, IT systems, communication tools, premises and critical third-party service providers (ISO 22301 Cl. 8.1).'
-  error:
-    owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
-    rto_range: 'RTO must be between 0 and 8760 hours (= 1 year).'
-    rpo_range: 'RPO must be between 0 and 8760 hours (= 1 year).'
-  team_role:
-    incident_commander: 'Incident Commander'
-    comms_lead: 'Communications Lead'
-    recovery_lead: 'Recovery Lead'
-    technical_lead: 'Technical Lead'
-    other: 'Other role'
-  team_role_builder:
-    aria: 'Response team — structured editor'
-    add: 'Add role'
-    remove: 'Remove role'
-    empty: 'No team members yet. Click "Add role" to build your response team.'
-    col:
-      role: 'Role'
-      name: 'Name'
-      contact: 'Contact'
-      responsibilities: 'Responsibilities'
-      actions: 'Actions'
-    placeholder:
-      name: 'John Doe'
-      contact: '+49 123 456789'
-      responsibilities: 'Overall coordination during incident'
-  resource_list:
-    aria: 'Required resources — structured editor'
-    tab:
-      personnel: 'Personnel'
-      equipment: 'Equipment'
-      supplies: 'Supplies'
+    page:
+        title: Business Continuity Plans
+        header: Business Continuity Plans
+        subtitle: ISO 22301:2019 Business Continuity Management
+    action:
+        add_new: Add New BC Plan
+        create_first: Create first BC plan
     empty:
-      personnel: 'No personnel requirements yet.'
-      equipment: 'No equipment yet.'
-      supplies: 'No supplies yet.'
-    placeholder:
-      personnel: 'e.g. 2 SysAdmins, 1 Backup Operator'
-      equipment: 'e.g. Laptop, USB-LTE stick, radio'
-      supplies: 'e.g. emergency USB, printed phone list'
-    add: 'Add'
-    remove: 'Remove entry'
-  escalation_chain:
-    aria: 'Escalation levels — BSI 200-4 §6.2'
-    add: 'Add level'
-    remove: 'Remove level'
-    empty: 'No escalation levels defined yet.'
-    level: 'Level'
-    col:
-      level: 'Level'
-      trigger: 'Trigger'
-      responder: 'Responder'
-      escalate_after: 'Escalate after'
-    placeholder:
-      trigger: 'e.g. service outage > 30 min'
-      responder: 'e.g. CISO / crisis team'
-      escalate_after: 'e.g. 15min, 1h, 4h'
-    help: 'Define escalation cascade per BSI 200-4 §6.2: per level set the trigger, responder and time threshold.'
-  json_builder:
-    raw_toggle: 'Edit as JSON'
-    raw_label: 'Raw JSON (power-user)'
-    raw_help: 'Warning: raw editing can corrupt data. Schema must match entity definition.'
+        title: No business continuity plans yet
+        body: 'BC plans secure the recovery of critical business processes. For each process, document activation criteria, recovery procedures, team, and communication plan — required by ISO 22301 §8.4.'
+    alert:
+        overdue_tests: ⚠️ Overdue BC Plan Tests
+        overdue_reviews: ⚠️ Overdue BC Plan Reviews
+    section:
+        details: BC Plan Details
+        testing_review: Testing & Review
+        review_notes: Review Notes
+        communication_plan: Communication Plan
+        alternative_site: Alternative Site
+        related_risks: Related Risks
+        basic_info: Basic Information
+        team: Team
+        activation: Activation
+        communication: Communication
+        backup_recovery: Backup Recovery
+        version_review: Version Review
+    table:
+        name: Name
+        business_process: Business Process
+        owner: Owner
+        status: Status
+        readiness: Readiness
+        last_tested: Last Tested
+        actions: Actions
+    field:
+        business_process: Business Process
+        plan_owner: Plan Owner
+        version: Version
+        last_tested: Last Tested
+        next_test: Next Test
+        last_review: Last Review
+        next_review: Next Review
+        address: Address
+        capacity: Capacity
+    status:
+        draft: Draft
+        under_review: Under Review
+        active: Active
+        archived: Archived
+    badge:
+        overdue: OVERDUE
+    message:
+        not_scheduled: Not scheduled
+        never: Never
+        readiness_score: 'Readiness Score: %score%%'
+    help:
+        empty_link: /en/help/glossary#glossary-bc-plan
+        roles_and_responsibilities: Roles and responsibilities of team members during a BC situation
+    resource_list:
+        tab:
+            personnel: 'Personnel'
+            equipment: 'Equipment'
+            supplies: 'Supplies'
+        empty:
+            personnel: 'No personnel requirements yet.'
+            equipment: 'No equipment yet.'
+            supplies: 'No supplies yet.'
+        placeholder:
+            personnel: 'e.g. 2 SysAdmins, 1 Backup Operator'
+            equipment: 'e.g. Laptop, USB-LTE stick, radio'
+            supplies: 'e.g. emergency USB, printed phone list'
 bcm:
-  field:
-    activation_criteria: Activation Criteria
-    recovery_plan: Recovery Plan
-iso_9001_bridge:
-    recovery: 'In the new edition of ISO 9001 (draft) this is Clause 8.5.5 "Emergency planning". The quantitative recovery targets RTO/RPO are not explicitly required by ISO 9001 — they are ISO-22301-specific.'
-    bc_plan: 'In ISO 9001 BC planning is part of risk treatment (6.1.2). A separate plan is not mandatory in 9001, but it is in ISO 22301.'
+    field:
+        activation_criteria: Activation Criteria
+        recovery_plan: Recovery Plan

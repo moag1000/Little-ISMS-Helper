@@ -3,9 +3,7 @@ objective:
         title: ISMS‑Ziele
     title:
         edit: 'Ziel bearbeiten'
-        list: Ziele
         new: 'Neues Ziel'
-        show: 'Ziel anzeigen'
     section:
         basic_info: Grundinformationen
         measurement: 'Messbare Indikatoren'
@@ -15,51 +13,14 @@ objective:
         add_new: 'Neues Ziel'
         create: 'Ziel erstellen'
     field:
-        title: Titel
         category: Kategorie
-        description: Beschreibung
         measurable_indicators: 'Messbare Indikatoren'
-        target_value: Zielwert
-        current_value: Ist‑Wert
-        unit: Einheit
         responsible_person: 'Verantwortliche Person'
-        responsible_for_measurement: 'Verantwortlich für Messung'
-        measurement_frequency: 'Mess-Frequenz'
-        measurement_method: 'Mess-Methode'
         target_date: Zieltermin
         achieved_date: 'Erreicht am'
-        status: Status
         progress_notes: Fortschrittsnotizen
-    placeholder:
-        title: 'z.B. Verbesserung der Informationssicherheit'
-        description: 'Detaillierte Beschreibung des Ziels'
-        measurable_indicators: 'Wie wird der Fortschritt gemessen? z.B. Anzahl durchgeführter Schulungen'
-        target_value: 'z.B. 100'
-        current_value: 'z.B. 75'
-        unit: 'Einheit auswählen'
-        responsible_person: 'Name des Verantwortlichen'
-        progress_notes: 'Notizen zum aktuellen Fortschritt, Hindernisse, etc.'
-        measurement_frequency: 'Frequenz auswählen'
-        measurement_method: 'z.B. Auswertung Audit-Logs, KPI-Dashboard, Quartals-Review'
     help:
         target_date: 'Zieldatum für die Erreichung des Ziels'
-        responsible_for_measurement: 'ISO 27001 §6.2.b — wer die Messung tatsächlich durchführt (kann von der verantwortlichen Person abweichen).'
-        measurement_frequency: 'ISO 27001 §6.2.b — wie oft der Wert gemessen / aktualisiert wird.'
-        measurement_method: 'ISO 27001 §6.2.b — Beschreibung der Mess-Methode (Datenquelle, Werkzeug, Prozess).'
-    frequency:
-        daily: Täglich
-        weekly: Wöchentlich
-        monthly: Monatlich
-        quarterly: Quartalsweise
-        biannually: Halbjährlich
-        annually: Jährlich
-        on_event: Anlassbezogen
-    tooltip:
-        measurable_indicators: 'Definieren Sie quantifizierbare Kriterien, um den Fortschritt zu messen (z. B. "Anzahl durchgeführter Schulungen", "Anteil patchbarer Systeme"). Ohne messbare Indikatoren kann das Ziel nicht auditiert werden (ISO 27001 Kl. 6.2).'
-        current_value: 'Aktueller Istwert des Indikators zum Zeitpunkt der Erfassung. Wird für die Fortschrittsberechnung verwendet und sollte regelmäßig aktualisiert werden.'
-        target_value: 'Angestrebter Zielwert, der bis zum Zieldatum erreicht werden soll. Dient als Referenz für die Erfolgsbewertung und das Monitoring.'
-        category: 'Ordnen Sie das Ziel einem ISMS-Bereich zu (z. B. Verfügbarkeit, Compliance). Ermöglicht gefilterte Auswertungen und erleichtert die Zuordnung zu ISO 27001-Klauseln.'
-        status: 'Aktueller Bearbeitungsstatus des Ziels. "Gefährdet" oder "Verzögert" signalisiert dem ISB Handlungsbedarf. Status wird für Management-Reviews und KPI-Dashboards ausgewertet.'
     label:
         current: Ist
         target: Ziel
@@ -87,24 +48,3 @@ objective:
         at_risk: Gefährdet
         total: Gesamt
         active: Aktiv
-    link:
-        new: Neu
-        create_new: 'Erstellen Neu'
-    category:
-        availability: Verfügbarkeit
-        confidentiality: Vertraulichkeit
-        integrity: Integrität
-        compliance: Compliance
-        risk_management: Risikomanagement
-        incident_response: 'Incident Response'
-        awareness: 'Awareness & Schulung'
-        continual_improvement: 'Kontinuierliche Verbesserung'
-    unit:
-        percent: 'Prozent (%)'
-        days: Tage
-        hours: Stunden
-        count: Anzahl
-        incidents: Vorfälle
-        employees: Mitarbeiter
-        euro: 'Euro (€)'
-        points: Punkte

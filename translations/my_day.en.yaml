@@ -48,35 +48,6 @@ section:
     wizard_overdue: 'Wizard assessments — stalled (90+ days)'
     framework_gaps_critical: 'Framework coverage gaps — critical (< 60 %)'
 
-bucket:
-    risk_acceptance_expiring:
-        title: 'Risk acceptance expiring'
-        empty: 'No risk acceptances expiring within the next 30 days.'
-    documents_review_overdue:
-        title: 'Documents: review overdue'
-        empty: 'No overdue document reviews.'
-    trainings_pending:
-        title: 'Trainings (assigned to me)'
-        empty: 'No pending trainings right now.'
-    incidents_open_assigned:
-        title: 'Incidents (assigned to me)'
-        empty: 'No open incidents on your plate.'
-    data_breaches_72h_ticking:
-        title: 'Data breaches — 72h clock ticking'
-        empty: 'No open data breaches with active 72h clock.'
-    vulnerabilities_critical_unpatched:
-        title: 'Vulnerabilities — critical / unpatched'
-        empty: 'No critical vulnerabilities open.'
-    audit_checklist_due:
-        title: 'Audit checklist — due'
-        empty: 'No audit checklist items due in the next 7 days.'
-    change_requests_pending_approval:
-        title: 'Change requests — pending approval'
-        empty: 'No change requests waiting for approval.'
-    management_review_upcoming:
-        title: 'Management review — upcoming'
-        empty: 'No management reviews planned within 90 days.'
-
 empty:
     title: 'All done'
     text: 'No open tasks for you right now. Great work!'
