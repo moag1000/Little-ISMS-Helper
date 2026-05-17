@@ -28,7 +28,7 @@ framework:
                     metadata:
                         roles: [ROLE_AUDITOR]
                 report:
-                    from: in_progress
+                    from: [in_progress, conducted]
                     to: reported
                     metadata:
                         roles: [ROLE_AUDITOR]
