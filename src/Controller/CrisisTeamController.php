@@ -57,7 +57,7 @@ class CrisisTeamController extends AbstractController
         ]);
     }
 
-    #[Route('/crisis-team/new', name: 'app_crisis_team_new')]
+    #[Route('/crisis-team/new', name: 'app_crisis_team_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
@@ -97,7 +97,7 @@ class CrisisTeamController extends AbstractController
         ]);
     }
 
-    #[Route('/crisis-team/{id}/edit', name: 'app_crisis_team_edit', requirements: ['id' => '\d+'])]
+    #[Route('/crisis-team/{id}/edit', name: 'app_crisis_team_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, CrisisTeam $crisisTeam): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;

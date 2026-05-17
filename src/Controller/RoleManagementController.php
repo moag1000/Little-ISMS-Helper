@@ -32,7 +32,7 @@ class RoleManagementController extends AbstractController
             'roles' => $roles,
         ]);
     }
-    #[Route('/admin/roles/new', name: 'role_management_new')]
+    #[Route('/admin/roles/new', name: 'role_management_new', methods: ['GET', 'POST'])]
     #[IsGranted(RoleVoter::CREATE)]
     public function new(
         Request $request,
@@ -115,7 +115,7 @@ class RoleManagementController extends AbstractController
             'selected_role_ids' => $roleIds,
         ]);
     }
-    #[Route('/admin/roles/templates', name: 'role_management_templates')]
+    #[Route('/admin/roles/templates', name: 'role_management_templates', methods: ['GET', 'POST'])]
     #[IsGranted(RoleVoter::CREATE)]
     public function templates(
         Request $request,
@@ -179,7 +179,7 @@ class RoleManagementController extends AbstractController
             'role' => $role,
         ]);
     }
-    #[Route('/admin/roles/{id}/edit', name: 'role_management_edit', requirements: ['id' => '\d+'])]
+    #[Route('/admin/roles/{id}/edit', name: 'role_management_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(
         Role $role,
         Request $request,

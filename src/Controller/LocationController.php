@@ -38,7 +38,7 @@ class LocationController extends AbstractController
             'top_level' => $topLevel,
         ]);
     }
-    #[Route('/location/new', name: 'app_location_new')]
+    #[Route('/location/new', name: 'app_location_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -81,7 +81,7 @@ class LocationController extends AbstractController
             'assets' => $assets,
         ]);
     }
-    #[Route('/location/{id}/edit', name: 'app_location_edit', requirements: ['id' => '\d+'])]
+    #[Route('/location/{id}/edit', name: 'app_location_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Location $location): Response
     {

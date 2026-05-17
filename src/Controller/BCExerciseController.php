@@ -51,7 +51,7 @@ class BCExerciseController extends AbstractController
             'incomplete_reports' => $incompleteReports,
         ]);
     }
-    #[Route('/bc-exercise/new', name: 'app_bc_exercise_new')]
+    #[Route('/bc-exercise/new', name: 'app_bc_exercise_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -86,7 +86,7 @@ class BCExerciseController extends AbstractController
             'bc_exercise' => $bcExercise,
         ]);
     }
-    #[Route('/bc-exercise/{id}/edit', name: 'app_bc_exercise_edit', requirements: ['id' => '\d+'])]
+    #[Route('/bc-exercise/{id}/edit', name: 'app_bc_exercise_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, BCExercise $bcExercise): Response
     {

@@ -81,7 +81,7 @@ class TrainingController extends AbstractController
             'detailedStats' => $detailedStats,
         ]);
     }
-    #[Route('/training/new', name: 'app_training_new')]
+    #[Route('/training/new', name: 'app_training_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -171,7 +171,7 @@ class TrainingController extends AbstractController
             'training' => $training,
         ]);
     }
-    #[Route('/training/{id}/edit', name: 'app_training_edit', requirements: ['id' => '\d+'])]
+    #[Route('/training/{id}/edit', name: 'app_training_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Training $training): Response
     {

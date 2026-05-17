@@ -84,7 +84,7 @@ class ThreatIntelligenceController extends AbstractController
         ]);
     }
 
-    #[Route('/threat-intelligence/new', name: 'app_threat_intelligence_new')]
+    #[Route('/threat-intelligence/new', name: 'app_threat_intelligence_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
@@ -120,7 +120,7 @@ class ThreatIntelligenceController extends AbstractController
         ]);
     }
 
-    #[Route('/threat-intelligence/{id}/edit', name: 'app_threat_intelligence_edit', requirements: ['id' => '\d+'])]
+    #[Route('/threat-intelligence/{id}/edit', name: 'app_threat_intelligence_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, ThreatIntelligence $threat): Response
     {

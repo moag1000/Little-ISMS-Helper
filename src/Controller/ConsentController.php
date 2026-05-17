@@ -89,7 +89,7 @@ class ConsentController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_consent_new')]
+    #[Route('/new', name: 'app_consent_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -149,7 +149,7 @@ class ConsentController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_consent_edit', requirements: ['id' => '\d+'])]
+    #[Route('/{id}/edit', name: 'app_consent_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Consent $consent): Response
     {

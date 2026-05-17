@@ -63,7 +63,7 @@ class UserManagementController extends AbstractController
             'initial_admin_id' => $initialAdminId,
         ]);
     }
-    #[Route('/admin/users/new', name: 'user_management_new')]
+    #[Route('/admin/users/new', name: 'user_management_new', methods: ['GET', 'POST'])]
     #[IsGranted(UserVoter::CREATE)]
     public function new(
         Request $request,
@@ -471,7 +471,7 @@ class UserManagementController extends AbstractController
             'is_initial_admin' => $isInitialAdmin,
         ]);
     }
-    #[Route('/admin/users/{id}/edit', name: 'user_management_edit', requirements: ['id' => '\d+'])]
+    #[Route('/admin/users/{id}/edit', name: 'user_management_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(
         User $user,
         Request $request,

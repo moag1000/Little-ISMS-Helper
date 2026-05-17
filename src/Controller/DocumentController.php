@@ -226,7 +226,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route('/document/new', name: 'app_document_new')]
+    #[Route('/document/new', name: 'app_document_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $document = new Document();
@@ -773,7 +773,7 @@ class DocumentController extends AbstractController
         return $binaryFileResponse;
     }
 
-    #[Route('/document/{id}/edit', name: 'app_document_edit', requirements: ['id' => '\d+'])]
+    #[Route('/document/{id}/edit', name: 'app_document_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Document $document): Response
     {
         // Security: Check if user has permission to edit this document (OWASP #1 - Broken Access Control)

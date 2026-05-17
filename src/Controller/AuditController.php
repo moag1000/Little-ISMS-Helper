@@ -82,7 +82,7 @@ class AuditController extends AbstractController
             'upcoming' => $upcoming,
         ]);
     }
-    #[Route('/audit/new', name: 'app_audit_new')]
+    #[Route('/audit/new', name: 'app_audit_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -199,7 +199,7 @@ class AuditController extends AbstractController
             'totalAuditLogs' => $totalAuditLogs,
         ]);
     }
-    #[Route('/audit/{id}/edit', name: 'app_audit_edit', requirements: ['id' => '\d+'])]
+    #[Route('/audit/{id}/edit', name: 'app_audit_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, InternalAudit $internalAudit): Response
     {

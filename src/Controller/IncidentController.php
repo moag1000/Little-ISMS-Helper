@@ -202,7 +202,7 @@ class IncidentController extends AbstractController
             'detailedStats' => $detailedStats,
         ]);
     }
-    #[Route('/incident/new', name: 'app_incident_new')]
+    #[Route('/incident/new', name: 'app_incident_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -404,7 +404,7 @@ class IncidentController extends AbstractController
             'comments' => $comments,
         ]);
     }
-    #[Route('/incident/{id}/edit', name: 'app_incident_edit', requirements: ['id' => '\d+'])]
+    #[Route('/incident/{id}/edit', name: 'app_incident_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Incident $incident): Response
     {

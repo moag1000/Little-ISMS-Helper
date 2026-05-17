@@ -181,7 +181,7 @@ class SecurityController extends AbstractController
     /**
      * SAML Single Logout Service
      */
-    #[Route('/saml/sls', name: 'saml_sls')]
+    #[Route('/saml/sls', name: 'saml_sls', methods: ['GET', 'POST'])]
     public function samlSls(Request $request): Response
     {
         try {

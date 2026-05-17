@@ -45,7 +45,7 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    #[Route('/profile/edit', name: 'app_profile_edit')]
+    #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         EntityManagerInterface $entityManager,

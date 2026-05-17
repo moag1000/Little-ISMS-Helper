@@ -125,7 +125,7 @@ class SupplierController extends AbstractController
             'doraActive' => $doraActive,
         ]);
     }
-    #[Route('/supplier/new', name: 'app_supplier_new')]
+    #[Route('/supplier/new', name: 'app_supplier_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -248,7 +248,7 @@ class SupplierController extends AbstractController
             'inverse_coverage' => $inverseCoverage,
         ]);
     }
-    #[Route('/supplier/{id}/edit', name: 'app_supplier_edit', requirements: ['id' => '\d+'])]
+    #[Route('/supplier/{id}/edit', name: 'app_supplier_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Supplier $supplier): Response
     {

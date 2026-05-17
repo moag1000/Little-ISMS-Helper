@@ -79,7 +79,7 @@ class PatchController extends AbstractController
         ]);
     }
 
-    #[Route('/patch/new', name: 'app_patch_new')]
+    #[Route('/patch/new', name: 'app_patch_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $patch = new Patch();
@@ -115,7 +115,7 @@ class PatchController extends AbstractController
         ]);
     }
 
-    #[Route('/patch/{id}/edit', name: 'app_patch_edit', requirements: ['id' => '\d+'])]
+    #[Route('/patch/{id}/edit', name: 'app_patch_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Patch $patch): Response
     {
         $form = $this->createForm(PatchType::class, $patch);

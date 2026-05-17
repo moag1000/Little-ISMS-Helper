@@ -77,7 +77,7 @@ class RiskAppetiteController extends AbstractController
             'risksExceedingAppetite' => $risksExceedingAppetite,
         ]);
     }
-    #[Route('/risk-appetite/new', name: 'app_risk_appetite_new')]
+    #[Route('/risk-appetite/new', name: 'app_risk_appetite_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request): Response
     {
@@ -127,7 +127,7 @@ class RiskAppetiteController extends AbstractController
             'totalAuditLogs' => count($auditLogs),
         ]);
     }
-    #[Route('/risk-appetite/{id}/edit', name: 'app_risk_appetite_edit', requirements: ['id' => '\d+'])]
+    #[Route('/risk-appetite/{id}/edit', name: 'app_risk_appetite_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, RiskAppetite $riskAppetite): Response
     {

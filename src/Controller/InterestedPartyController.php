@@ -52,7 +52,7 @@ class InterestedPartyController extends AbstractController
             'high_importance' => $highImportance,
         ]);
     }
-    #[Route('/interested-party/new', name: 'app_interested_party_new')]
+    #[Route('/interested-party/new', name: 'app_interested_party_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -83,7 +83,7 @@ class InterestedPartyController extends AbstractController
             'interested_party' => $interestedParty,
         ]);
     }
-    #[Route('/interested-party/{id}/edit', name: 'app_interested_party_edit', requirements: ['id' => '\d+'])]
+    #[Route('/interested-party/{id}/edit', name: 'app_interested_party_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, InterestedParty $interestedParty): Response
     {

@@ -41,7 +41,7 @@ class PersonController extends AbstractController
             'statistics' => $statistics,
         ]);
     }
-    #[Route('/person/new', name: 'app_person_new')]
+    #[Route('/person/new', name: 'app_person_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -119,7 +119,7 @@ class PersonController extends AbstractController
             'access_logs' => $accessLogs,
         ]);
     }
-    #[Route('/person/{id}/edit', name: 'app_person_edit', requirements: ['id' => '\d+'])]
+    #[Route('/person/{id}/edit', name: 'app_person_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Person $person): Response
     {
