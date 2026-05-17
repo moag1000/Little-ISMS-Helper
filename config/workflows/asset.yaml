@@ -1,0 +1,70 @@
+framework:
+    workflows:
+        asset_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\Asset
+            initial_marking: draft
+            places:
+                - draft
+                - active
+                - inactive
+                - in_use
+                - returned
+                - retired
+                - disposed
+            transitions:
+                activate:
+                    from: draft
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                        module: assets
+                deactivate:
+                    from: active
+                    to: inactive
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                        reason_required: true
+                reactivate:
+                    from: inactive
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                assign_to_person:
+                    from: active
+                    to: in_use
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                return_from_person:
+                    from: in_use
+                    to: returned
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                restore_to_active:
+                    from: returned
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_ASSET_OWNER]
+                retire_from_active:
+                    from: active
+                    to: retired
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                retire_from_inactive:
+                    from: inactive
+                    to: retired
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                dispose:
+                    from: retired
+                    to: disposed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        four_eyes: true
+                        reason_required: true

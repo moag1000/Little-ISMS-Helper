@@ -1,0 +1,52 @@
+framework:
+    workflows:
+        policy_template_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\PolicyTemplate
+            initial_marking: draft
+            places:
+                - draft
+                - in_review
+                - approved
+                - published
+                - archived
+            transitions:
+                submit_for_review:
+                    from: draft
+                    to: in_review
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_review
+                    to: approved
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: false
+                request_changes:
+                    from: in_review
+                    to: draft
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                publish:
+                    from: approved
+                    to: published
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                archive:
+                    from: published
+                    to: archived
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                restore:
+                    from: archived
+                    to: published
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
