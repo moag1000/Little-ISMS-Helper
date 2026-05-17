@@ -94,11 +94,11 @@ src/Service/DataBreachService.php:400
 src/Service/DataBreachService.php:476
 src/Service/DataBreachService.php:480
 src/Service/DataBreachService.php:513
-src/Service/DataProtectionImpactAssessmentService.php:271
-src/Service/DataSubjectRequestService.php:87
-src/Service/DataSubjectRequestService.php:121
-src/Service/DataSubjectRequestService.php:154
-src/Service/DataSubjectRequestService.php:194
+src/Service/DataProtectionImpactAssessmentService.php:273
+src/Service/DataSubjectRequestService.php:89
+src/Service/DataSubjectRequestService.php:123
+src/Service/DataSubjectRequestService.php:156
+src/Service/DataSubjectRequestService.php:196
 src/Service/EnvironmentWriter.php:71
 src/Service/EnvironmentWriter.php:120
 src/Service/EnvironmentWriter.php:147
