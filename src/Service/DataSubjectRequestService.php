@@ -10,7 +10,7 @@ use App\Entity\DataSubjectRequest;
 use App\Entity\Tenant;
 use App\Exception\Tenant\TenantOrphanException;
 use App\Exception\Workflow\InvalidStatusTransitionException;
-use App\Lifecycle\LifecycleService;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DataSubjectRequestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -29,7 +29,7 @@ final class DataSubjectRequestService
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
-        private readonly LifecycleService $lifecycleService,
+        private readonly LifecycleTransitionInterface $lifecycleService,
     ) {
     }
 

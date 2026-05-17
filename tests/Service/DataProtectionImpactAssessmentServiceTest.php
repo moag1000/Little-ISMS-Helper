@@ -11,7 +11,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Service\AuditLogger;
-use App\Lifecycle\LifecycleService;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Service\DataProtectionImpactAssessmentService;
 use App\Service\TenantContext;
 use DateTime;
@@ -47,7 +47,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->security = $this->createMock(Security::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
-        $this->lifecycleService = $this->createMock(LifecycleService::class);
+        $this->lifecycleService = $this->createMock(LifecycleTransitionInterface::class);
 
         $this->tenant = $this->createMock(Tenant::class);
         $this->tenant->method('getId')->willReturn(1);

@@ -11,7 +11,7 @@ use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
 use App\Exception\Workflow\InvalidStatusTransitionException;
-use App\Lifecycle\LifecycleService;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -31,7 +31,7 @@ final class DataProtectionImpactAssessmentService
         private readonly Security $security,
         private readonly AuditLogger $auditLogger,
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
-        private readonly LifecycleService $lifecycleService,
+        private readonly LifecycleTransitionInterface $lifecycleService,
     ) {}
 
     // ============================================================================
