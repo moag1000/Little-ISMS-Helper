@@ -6,17 +6,69 @@ lifecycle:
     published: Published
     archived: Archived
 
-    # AuditFinding / CorrectiveAction discovery-style lifecycle
+    # General / shared states
+    deleted: Deleted
+    pending: Pending
+    cancelled: Cancelled
+    active: Active
+    inactive: Inactive
+    rejected: Rejected
+    accepted: Accepted
+    requires_revision: 'Requires Revision'
+    planned: Planned
+    completed: Completed
+    verified: Verified
     open: Open
-    in_progress: 'In Progress'
-    resolved: Resolved
     closed: Closed
+    resolved: Resolved
+    reported: Reported
+    received: Received
+    identified: Identified
+    assessed: Assessed
+    monitored: Monitored
+    treated: Treated
+    revoked: Revoked
+    expired: Expired
+
+    # AuditFinding / CorrectiveAction discovery-style lifecycle
+    in_progress: 'In Progress'
 
     # ISMSObjective lifecycle places
-    not_started: 'Not started'
+    not_started: 'Not Started'
     achieved: Achieved
     delayed: Delayed
-    cancelled: Cancelled
+
+    # Incident lifecycle places
+    in_investigation: 'In Investigation'
+    contained: Contained
+    eradicated: Eradicated
+    recovered: Recovered
+
+    # Data Breach / GDPR lifecycle places
+    under_assessment: 'Under Assessment'
+    authority_notified: 'Authority Notified'
+    subjects_notified: 'Data Subjects Notified'
+
+    # Risk lifecycle places
+    in_treatment: 'In Treatment'
+
+    # Control / Corrective Action lifecycle places
+    verified_effective: 'Verified Effective'
+    verified_ineffective: 'Verified Ineffective'
+
+    # Vulnerability lifecycle places
+    in_triage: 'In Triage'
+    in_remediation: 'In Remediation'
+    mitigated: Mitigated
+
+    # Data Subject Request lifecycle places
+    pending_verification: 'Pending Verification'
+
+    # Asset lifecycle places
+    in_use: 'In Use'
+    returned: Returned
+    retired: Retired
+    disposed: Disposed
 
     tooltip:
         next: 'Next steps'
@@ -33,19 +85,69 @@ lifecycle:
 
     # Transition names (workflow YAML metadata)
     transition:
-        submit_for_review: 'Submit for review'
+        submit_for_review: 'Submit for Review'
         approve: Approve
-        request_changes: 'Request changes'
+        request_changes: 'Request Changes'
         publish: Publish
         archive: Archive
         restore: Restore
         activate: Activate
+        deactivate: Deactivate
+        reactivate: Reactivate
         start: Start
-        achieve: 'Mark as achieved'
-        mark_achieved: 'Mark as achieved'
-        mark_delayed: 'Mark as delayed'
+        achieve: 'Mark as Achieved'
+        mark_achieved: 'Mark Achieved'
+        mark_delayed: 'Mark Delayed'
         cancel: Cancel
         reopen: Reopen
+        reject: Reject
+        accept: Accept
+        request_revision: 'Request Revision'
+        resubmit: Resubmit
+        submit: Submit
+        complete: Complete
+        close: Close
+        resolve: Resolve
+        report: Report
+        rework: Rework
+        # Incident transitions
+        start_investigation: 'Start Investigation'
+        contain: Contain
+        eradicate: Eradicate
+        recover: Recover
+        false_positive: 'Mark False Positive'
+        # Data Breach / GDPR transitions
+        assess: Assess
+        notify_authority: 'Notify Authority'
+        notify_subjects: 'Notify Subjects'
+        # Risk transitions
+        treat: Treat
+        complete_treatment: 'Complete Treatment'
+        monitor: Monitor
+        # Control / Corrective Action transitions
+        verify_effective: 'Verify Effective'
+        verify_ineffective: 'Verify Ineffective'
+        verify: Verify
+        # Vulnerability transitions
+        triage: Triage
+        remediate: Remediate
+        mitigate: Mitigate
+        regression: 'Mark Regression'
+        # Data Subject Request transitions
+        process: Process
+        # Asset transitions
+        assign_to_person: 'Assign to Person'
+        return_from_person: 'Return from Person'
+        restore_to_active: 'Restore to Active'
+        retire_from_active: 'Retire from Active'
+        retire_from_inactive: 'Retire from Inactive'
+        dispose: Dispose
+        revoke: Revoke
+        expire: Expire
+        # Objective transitions
+        cancel_in_progress: 'Cancel In Progress'
+        # Retry
+        retry: Retry
 
     history:
         title: 'Status history'
