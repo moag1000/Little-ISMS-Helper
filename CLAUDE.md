@@ -199,6 +199,48 @@ Translation Quality:
 - Run before commits to maintain translation quality
 - See `scripts/README.md` for details
 
+## Lifecycle (Symfony Workflow Foundation P-4b)
+
+Every entity with a `status` field that goes through staged transitions uses **Symfony Workflow** as the canonical state-machine engine. The `LifecycleService` facade exposes `transition($entity, $workflowName, $transitionName, $user, $reason)` — call-sites MUST go through this facade, NOT through direct `setStatus()`.
+
+**Two-layer config:**
+- Static baseline: `config/workflows/<entity>.yaml` (places + transition wiring — immutable at runtime)
+- Tenant overrides: `lifecycle_config` DB-table (admin UI at `/admin/lifecycle-overrides`) — overrides `roles`, `reason_required`, `four_eyes`, `module` metadata per tenant
+
+**Effective metadata resolution:** `LifecycleConfigResolver::resolve()` merges YAML + DB-overrides. Voter / Guards / Listeners ALWAYS read via Resolver, never from YAML directly.
+
+**Existing workflows** (as of 2026-05-17):
+- `document_lifecycle` (5 stages: draft → in_review → approved → published → archived)
+- `processing_activity_lifecycle` (5 stages, GDPR-gated — `privacy` module required)
+- `isms_objective_lifecycle` (5 custom stages: in_progress / achieved / delayed / cancelled)
+- `policy_template_lifecycle` (5 stages, isActive-sync on publish/archive)
+- `asset_lifecycle` (7 stages: active / in_use / returned / retired / disposed + 4-eyes on disposal)
+
+**Adding a new entity to the lifecycle:**
+1. `config/workflows/<entity>.yaml` — workflow definition (copy document.yaml as template)
+2. Add to `config/packages/workflow.yaml` imports
+3. Add slug to `src/Lifecycle/EntityTypeRegistry.php` MAP constant
+4. Refactor existing `setStatus()` call-sites to `LifecycleService::transition()`
+5. Add `#[ORM\Version] private int $lockVersion = 0;` to entity + migration (`isTransactional()=false`)
+6. Smoke tests in `tests/Lifecycle/`
+
+**Anti-pattern — never do this:**
+```php
+$entity->setStatus('approved'); // direct setter bypasses audit-log, RBAC, tenant-guard
+$em->flush();
+```
+
+**Correct pattern:**
+```php
+$lifecycleService->transition($entity, 'foo_lifecycle', 'approve', $user, 'reason'); // facade
+```
+
+**Spec:** `docs/superpowers/specs/2026-05-17-lifecycle-foundation-pilot-design.md`
+**ADR:** `docs/decisions/2026-05-17-lifecycle-state-machine.md`
+**User-guide:** `docs/user-guide/STATUS_LIFECYCLE.md`
+
+---
+
 ## Workflow System (Event-Driven Approvals)
 
 **Overview:**
