@@ -20,11 +20,11 @@ src/Controller/SecurityController.php:193
 src/Entity/AuditFreeze.php:211
 src/Entity/Authority/DoraRegisterOfInformation.php:133
 src/Entity/ComplianceRequirementFulfillment.php:382
-src/Entity/DocumentSection.php:204
-src/Entity/DocumentSection.php:314
-src/Entity/EvidenceReverificationTask.php:192
-src/Entity/PolicyAcknowledgement.php:171
-src/Entity/PolicyTemplate.php:434
+src/Entity/DocumentSection.php:208
+src/Entity/DocumentSection.php:324
+src/Entity/EvidenceReverificationTask.php:196
+src/Entity/PolicyAcknowledgement.php:175
+src/Entity/PolicyTemplate.php:435
 src/Entity/Tenant.php:507
 src/Entity/Tenant.php:510
 src/Entity/TenantBranding.php:310
