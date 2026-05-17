@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Enum\DocumentStatus;
 use App\Repository\DocumentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -106,6 +107,12 @@ class Document
      *
      * @see \App\Lifecycle\LifecycleRegistry::STANDARD_5_STAGE
      */
+    // Phase 1 status-enum rollout: VARCHAR storage stays, accessors stay
+    // string-typed for now. DocumentStatus::class provides a typed surface
+    // for FormType + voters + templates; full property/accessor migration
+    // ships in a follow-up PR once all 50+ string-comparison call-sites
+    // have been swept (DocumentController, CertificationBundleExporter,
+    // ActivityFeed, DashboardStatisticsService, …).
     #[ORM\Column(length: 50, options: ['default' => 'draft'])]
     private string $status = 'draft';
 
@@ -452,7 +459,19 @@ class Document
     public function isArchived(): bool { return $this->isArchived; }
     public function setIsArchived(bool $isArchived): static { $this->isArchived = $isArchived; return $this; }
     public function getStatus(): string { return $this->status; }
-    public function setStatus(string $status): static { $this->status = $status; return $this; }
+    public function setStatus(DocumentStatus|string $status): static
+    {
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
+        return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): DocumentStatus
+    {
+        return DocumentStatus::from($this->status);
+    }
 
     /**
      * Optimistic-locking counter — read-only from outside Doctrine.
