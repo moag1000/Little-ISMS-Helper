@@ -89,7 +89,7 @@ class CorrectiveActionController extends AbstractController
                     $prev->getId() ?? 0,
                     (string) $prev->getTitle(),
                 ));
-                $action->setStatus(CorrectiveAction::STATUS_PLANNED); // FIXME: migrate to LifecycleService (initial state, no transition needed)
+                $action->setStatus(CorrectiveAction::STATUS_PLANNED); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'planned' is the corrective_action_lifecycle initial_marking)
             }
         }
 
