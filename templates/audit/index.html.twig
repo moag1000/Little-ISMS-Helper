@@ -228,19 +228,18 @@
                             {% endif %}
                         </td>
                         <td>
-                            {# TODO(aurora-v4-icons): dynamic icon map — compliance_framework uses bi-shield-check still (inline dict limitation) #}
                             {% set typeIcons = {
-                                'full_isms': 'bi-building',
-                                'compliance_framework': 'bi-shield-check',
-                                'asset': 'bi-server',
-                                'asset_type': 'bi-hdd-stack',
-                                'asset_group': 'bi-collection',
-                                'location': 'bi-geo-alt',
-                                'department': 'bi-people',
-                                'corporate_wide': 'bi-globe',
-                                'corporate_subsidiaries': 'bi-diagram-3'
+                                'full_isms': 'nav-building',
+                                'compliance_framework': 'shield-check',
+                                'asset': 'asset-server',
+                                'asset_type': 'nav-collection',
+                                'asset_group': 'nav-collection',
+                                'location': 'nav-building',
+                                'department': 'nav-people',
+                                'corporate_wide': 'nav-building',
+                                'corporate_subsidiaries': 'nav-collection'
                             } %}
-                            <i class="bi {{ typeIcons[audit.scopeType] ?? 'bi-question-circle' }}"></i>
+                            <i class="fa-icon fa-icon--{{ typeIcons[audit.scopeType] ?? 'status-info' }}"></i>
                             {{ ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') }}
                         </td>
                         <td>

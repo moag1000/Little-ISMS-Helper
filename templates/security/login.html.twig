@@ -81,7 +81,9 @@
                     <a href="{{ path('app_sso_start', {slug: p.slug}) }}" class="fa-auth-oauth-btn"
                        {% if p.buttonColor %}style="border-color: {{ p.buttonColor }};"{% endif %}>
                         {% if p.buttonIcon %}
-                            <i class="bi {{ p.buttonIcon }}" aria-hidden="true"
+                            {# Auto-strip legacy bi-* prefix so DB-stored values still render under Aurora. #}
+                            {% set _btnIcon = p.buttonIcon starts with 'bi-' ? p.buttonIcon[3:] : p.buttonIcon %}
+                            <i class="fa-icon fa-icon--{{ _btnIcon }}" aria-hidden="true"
                                {% if p.buttonColor %}style="color: {{ p.buttonColor }};"{% endif %}></i>
                         {% else %}
                             <i class="fa-icon fa-icon--control" aria-hidden="true"></i>

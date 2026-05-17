@@ -30,7 +30,7 @@
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'mfa.field.token_type'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
-                            {% include '_components/_badge.html.twig' with { variant: 'primary', icon: mfa_token.tokenType == 'totp' ? 'bi-phone' : 'bi-key', content: mfa_token.tokenType == 'totp' ? 'mfa.token_type.totp'|trans({}, 'mfa') : 'mfa.token_type.webauthn'|trans({}, 'mfa') } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'primary', icon: mfa_token.tokenType == 'totp' ? 'phone' : 'ui-key', content: mfa_token.tokenType == 'totp' ? 'mfa.token_type.totp'|trans({}, 'mfa') : 'mfa.token_type.webauthn'|trans({}, 'mfa') } %}
                         </dd>
 
                         <dt class="col-sm-4">{{ 'mfa.field.device_name'|trans({}, 'mfa') }}</dt>
