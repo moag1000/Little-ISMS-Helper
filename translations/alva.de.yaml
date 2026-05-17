@@ -150,6 +150,10 @@ control:
         title: 'Anwendbares Control ohne Verknüpfung'
         body: 'Control ist als anwendbar markiert, aber weder Risiken noch Compliance-Anforderungen sind verknüpft. SoA-Lücke nach ISO 27001 Cl. 6.1.3 b/c.'
         action: 'Verknüpfungen prüfen'
+    soa_justification_missing:
+        title: 'Nicht-anwendbares Control ohne Begründung — Major-NC-Risiko'
+        body: 'Dieses Control ist als „nicht anwendbar" markiert, aber im SoA fehlt die schriftliche Begründung. ISO 27001 Cl. 6.1.3 d / 8.3 b verlangen für jede Ausschluss-Entscheidung eine dokumentierte Begründung — sonst Major-NC beim externen Zertifizierungs-Audit.'
+        action: 'Begründung ergänzen'
 
 dpia:
     sdm_incomplete:
