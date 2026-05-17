@@ -15,12 +15,22 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_action', columns: ['action'])]
 #[ORM\Index(name: 'idx_created_at', columns: ['created_at'])]
 #[ORM\Index(name: 'idx_audit_actor_role', columns: ['actor_role'])]
+#[ORM\Index(name: 'idx_audit_tenant', columns: ['tenant_id'])]
 class AuditLog
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    /**
+     * Multi-tenancy: explicit FK to Tenant. Captured at write time so
+     * future user-renames / re-tenancy do not leak audit-trail data
+     * across boundaries (prior brittle string-JOIN via userName).
+     */
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(name: 'tenant_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 100)]
     private ?string $entityType = null;
@@ -81,6 +91,17 @@ class AuditLog
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
     }
 
     public function getEntityType(): ?string

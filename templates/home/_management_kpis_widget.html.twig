@@ -88,12 +88,11 @@
                                                 <span>
                                                     {% set kpiVariant = kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'secondary')) %}
                                                     {% include '_components/_badge.html.twig' with {
-                                                        variant: kpiVariant ~ '-subtle',
-                                                        class: 'text-' ~ kpiVariant,
+                                                        variant: kpiVariant,
                                                         content: kpi.value ~ kpi.unit
                                                     } %}
                                                     {% if kpi.trend is defined and kpi.trend != 'stable' %}
-                                                    <span class="fs-6 ms-1 text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
+                                                    <span class="small ms-1 text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
                                                         {% if kpi.trend == 'up' %}
                                                             <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                                         {% elseif kpi.trend == 'down' %}
@@ -117,7 +116,7 @@
                                             <div class="fw-bold text-{{ kpi.status == 'good' ? 'success' : (kpi.status == 'warning' ? 'warning' : (kpi.status == 'danger' ? 'danger' : 'body')) }}">
                                                 {{ kpi.value }}{{ kpi.unit }}
                                                 {% if kpi.trend is defined and kpi.trend != 'stable' %}
-                                                <span class="fs-6 ms-1 text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
+                                                <span class="small ms-1 text-{{ kpi.trend_sentiment|default('neutral') == 'good' ? 'success' : (kpi.trend_sentiment|default('neutral') == 'bad' ? 'danger' : 'muted') }}">
                                                     {% if kpi.trend == 'up' %}
                                                         <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                                     {% elseif kpi.trend == 'down' %}
