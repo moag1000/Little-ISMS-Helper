@@ -39,6 +39,8 @@ admin:
             mappings: { label: 'Cross-framework mappings', desc: 'Requirement links between frameworks' }
             mapping_quality: { label: 'Mapping quality score', desc: 'Review pipeline for mapping suggestions' }
             industry_baselines: { label: 'Industry baselines', desc: 'Pre-filled risk/asset/control sets per NACE' }
+            industry_preset: { label: 'Industry presets', desc: 'Create a demo tenant from an industry bundle' }
+            compliance_mapping_seeds: { label: 'Mapping seeds', desc: 'Pre-filled cross-framework mapping suggestions' }
             tags: { label: 'Tags', desc: 'Framework tags + bulk-apply actions' }
             audit_log: { label: 'Audit log', desc: 'Tamper-evident activity trail' }
             audit_retention: { label: 'Retention policy', desc: 'Audit-log retention windows' }
@@ -47,6 +49,7 @@ admin:
             incident_sla: { label: 'Incident SLAs', desc: 'Response times per severity' }
             audit_log_monitoring: { label: 'Audit-log monitoring', desc: 'Live stream + anomaly filter' }
             workflow_definitions: { label: 'Workflow definitions', desc: 'Design and activate approval workflows' }
+            workflow_overlay: { label: 'Workflow overlays', desc: 'Per-tenant overrides for workflow configuration' }
             scheduled_reports: { label: 'Scheduled reports', desc: 'Manage recurring report delivery' }
             compliance_import: { label: 'Compliance import', desc: 'CSV/YAML bulk import of requirements' }
             gstool_import: { label: 'GSTool import', desc: 'BSI IT-Grundschutz from GSTool export' }

@@ -55,6 +55,8 @@ admin:
             mappings: { label: 'Cross-Framework-Mappings', desc: 'Anforderungs-Verknüpfungen zwischen Frameworks' }
             mapping_quality: { label: 'Mapping-Quality-Score', desc: 'Review-Pipeline für Mapping-Vorschläge' }
             industry_baselines: { label: 'Branchen-Baselines', desc: 'Vorbefüllte Risk-/Asset-/Control-Sets pro NACE' }
+            industry_preset: { label: 'Branchen-Presets', desc: 'Demo-Tenant aus Branchen-Bundle erstellen' }
+            compliance_mapping_seeds: { label: 'Mapping-Seeds', desc: 'Vorbefüllte Cross-Framework-Mapping-Vorschläge' }
             tags: { label: 'Tags', desc: 'Framework-Tags + Bulk-Apply-Aktionen' }
             audit_log: { label: 'Audit-Log', desc: 'Tamper-evident Activity-Trail' }
             audit_retention: { label: 'Retention-Policy', desc: 'Aufbewahrungsfristen Audit-Log' }
@@ -63,6 +65,7 @@ admin:
             incident_sla: { label: 'Incident-SLAs', desc: 'Reaktionszeiten pro Severity' }
             audit_log_monitoring: { label: 'Audit-Log-Monitoring', desc: 'Live-Stream + Anomalie-Filter' }
             workflow_definitions: { label: 'Workflow-Definitionen', desc: 'Genehmigungs-Workflows entwerfen und aktivieren' }
+            workflow_overlay: { label: 'Workflow-Overlays', desc: 'Per-Tenant-Overrides für Workflow-Konfiguration' }
             scheduled_reports: { label: 'Geplante Reports', desc: 'Wiederkehrende Report-Versendung verwalten' }
             compliance_import: { label: 'Compliance-Import', desc: 'CSV/YAML-Bulk-Import von Anforderungen' }
             gstool_import: { label: 'GSTool-Import', desc: 'BSI-IT-Grundschutz aus GSTool-Export' }

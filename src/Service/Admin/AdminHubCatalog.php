@@ -191,6 +191,20 @@ final class AdminHubCatalog
                         'route' => 'admin_industry_baselines_index',
                     ],
                     [
+                        'key' => 'industry_preset',
+                        'icon' => 'fa-icon--nav-boxes',
+                        'label' => 'admin.hub.module.industry_preset.label',
+                        'description' => 'admin.hub.module.industry_preset.desc',
+                        'route' => 'app_admin_industry_preset_index',
+                    ],
+                    [
+                        'key' => 'compliance_mapping_seeds',
+                        'icon' => 'fa-icon--nav-link',
+                        'label' => 'admin.hub.module.compliance_mapping_seeds.label',
+                        'description' => 'admin.hub.module.compliance_mapping_seeds.desc',
+                        'route' => 'app_compliance_mapping_seeds_index',
+                    ],
+                    [
                         'key' => 'tags',
                         'icon' => 'fa-icon--nav-tags',
                         'label' => 'admin.hub.module.tags.label',
@@ -254,6 +268,13 @@ final class AdminHubCatalog
                         'label' => 'admin.hub.module.workflow_definitions.label',
                         'description' => 'admin.hub.module.workflow_definitions.desc',
                         'route' => 'app_workflow_definitions',
+                    ],
+                    [
+                        'key' => 'workflow_overlay',
+                        'icon' => 'fa-icon--nav-flow',
+                        'label' => 'admin.hub.module.workflow_overlay.label',
+                        'description' => 'admin.hub.module.workflow_overlay.desc',
+                        'route' => 'admin_workflow_overlay_index',
                     ],
                     [
                         'key' => 'scheduled_reports',
