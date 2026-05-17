@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * Comprehensive form for GDPR Art. 30 VVT entry.
  * Organized in logical sections matching Art. 30(1) structure.
  */
-class ProcessingActivityType extends AbstractType
+final class ProcessingActivityType extends AbstractType
 {
     use ModuleAwareFormTrait;
     use OwnerPickerFormTrait;

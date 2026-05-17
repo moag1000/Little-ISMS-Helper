@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints\Positive;
  * Translation domain: eu_authorities
  * Contact fields use EntityType for User selection.
  */
-class Nis2RegistrationProfileType extends AbstractType
+final class Nis2RegistrationProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

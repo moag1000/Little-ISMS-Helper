@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * Form type for Data Subject Request (GDPR Art. 15-22)
  */
-class DataSubjectRequestType extends AbstractType
+final class DataSubjectRequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

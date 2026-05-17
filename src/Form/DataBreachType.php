@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * Form type for Data Breach (Art. 33/34 GDPR)
  */
-class DataBreachType extends AbstractType
+final class DataBreachType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

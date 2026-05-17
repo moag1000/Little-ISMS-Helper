@@ -15,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * DTO form for system-wide feature toggles.
  * Data is stored in SystemSettings entity as key-value pairs.
  */
-class FeatureSettingsType extends AbstractType
+final class FeatureSettingsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

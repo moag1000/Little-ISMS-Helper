@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class KpiThresholdConfigType extends AbstractType
+final class KpiThresholdConfigType extends AbstractType
 {
     /** List of tunable KPI keys; extend as new KPIs gain tenant-configurable thresholds. */
     public const KPI_KEYS = [

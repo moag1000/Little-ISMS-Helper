@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *   4. Lessons Learned: lessonsLearned, improvementActions (collection)
  *   5. Bewertung: overallRating
  */
-class Bsi2004ExerciseLogType extends AbstractType
+final class Bsi2004ExerciseLogType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

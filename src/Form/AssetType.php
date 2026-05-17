@@ -26,7 +26,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class AssetType extends AbstractType
+final class AssetType extends AbstractType
 {
     use ModuleAwareFormTrait;
     use OwnerPickerFormTrait;

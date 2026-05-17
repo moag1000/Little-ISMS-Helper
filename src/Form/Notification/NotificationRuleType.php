@@ -24,7 +24,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Channels are filtered to those belonging to the current tenant
  * (passed as form option 'tenant').
  */
-class NotificationRuleType extends AbstractType
+final class NotificationRuleType extends AbstractType
 {
     use ModuleAwareFormTrait;
 

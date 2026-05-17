@@ -20,7 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * Translation domain: 'risk' (link-related keys under risk.link_incident.*)
  */
-class RiskIncidentLinkType extends AbstractType
+final class RiskIncidentLinkType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

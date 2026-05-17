@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Constraints\File;
  *       'entity_types' => $this->registry->getSupportedEntityTypes(),
  *   ]);
  */
-class UploadStepType extends AbstractType
+final class UploadStepType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

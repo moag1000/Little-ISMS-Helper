@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * A single condition row: field + operator + value.
  */
-class ConditionRowType extends AbstractType
+final class ConditionRowType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

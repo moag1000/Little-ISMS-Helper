@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class CustomReportType extends AbstractType
+final class CustomReportType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

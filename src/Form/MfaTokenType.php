@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MfaTokenType extends AbstractType
+final class MfaTokenType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * DTO form for system-wide security settings (session, password, 2FA, login).
  * Data is stored in SystemSettings entity as key-value pairs.
  */
-class SecuritySettingsType extends AbstractType
+final class SecuritySettingsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Admin form for creating/editing SupplierCriticalityLevel records.
  */
-class SupplierCriticalityLevelType extends AbstractType
+final class SupplierCriticalityLevelType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

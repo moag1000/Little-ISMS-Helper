@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class RiskTreatmentPlanType extends AbstractType
+final class RiskTreatmentPlanType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

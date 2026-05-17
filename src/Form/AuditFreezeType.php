@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * guard against meaningless freeze names like "Q1" that later auditors
  * cannot map to a specific audit.
  */
-class AuditFreezeType extends AbstractType
+final class AuditFreezeType extends AbstractType
 {
     public const PURPOSE_CHOICES = [
         'audit_freeze.purpose.certification' => AuditFreeze::PURPOSE_CERTIFICATION,

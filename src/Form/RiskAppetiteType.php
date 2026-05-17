@@ -18,7 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class RiskAppetiteType extends AbstractType
+final class RiskAppetiteType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

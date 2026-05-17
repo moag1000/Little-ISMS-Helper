@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * This FormType is provided for future web-controller integration and
  * covers all user-editable fields including the Tri-State assignee slot.
  */
-class ThreatIntelligenceType extends AbstractType
+final class ThreatIntelligenceType extends AbstractType
 {
     use ModuleAwareFormTrait;
 

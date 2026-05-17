@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Url;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class CrisisTeamType extends AbstractType
+final class CrisisTeamType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

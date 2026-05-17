@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class TrainingType extends AbstractType
+final class TrainingType extends AbstractType
 {
     use OwnerPickerFormTrait;
 

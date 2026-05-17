@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class BusinessProcessType extends AbstractType
+final class BusinessProcessType extends AbstractType
 {
     use OwnerPickerFormTrait;
 

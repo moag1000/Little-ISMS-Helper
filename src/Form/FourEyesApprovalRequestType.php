@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * by the FourEyesApprovalService and are intentionally excluded from this form.
  * Only the approver slot (User + Person + Deputies) is user-editable.
  */
-class FourEyesApprovalRequestType extends AbstractType
+final class FourEyesApprovalRequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

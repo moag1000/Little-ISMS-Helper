@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * Comprehensive form for GDPR Art. 35 DPIA (Datenschutz-Folgenabschätzung).
  * Organized in logical sections matching Art. 35(7) structure.
  */
-class DataProtectionImpactAssessmentType extends AbstractType
+final class DataProtectionImpactAssessmentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

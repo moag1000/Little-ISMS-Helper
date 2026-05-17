@@ -20,7 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * The collection is managed via Stimulus notification_condition_builder_controller.js.
  */
-class ConditionBuilderType extends AbstractType
+final class ConditionBuilderType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
