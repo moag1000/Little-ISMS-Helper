@@ -9,9 +9,6 @@ parameters:
         - src/Entity/
         - src/Lifecycle/
 
-    bootstrapFiles:
-        - tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php
-
 services:
     # X.5b — Prevents `setStatus()` outside src/Entity/ and src/Lifecycle/
     -
@@ -21,8 +18,7 @@ services:
 
     # Y.4 — Prevents `new App\Entity\Workflow()` / `new App\Entity\WorkflowStep()`
     # in src/ code outside Repository and Command namespaces.
-    # See: tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php
     -
-        class: LittleIsmsHelper\PhpStan\Rule\NoNewWorkflowOrWorkflowStep
+        class: App\Tests\PHPStan\Rule\NoNewWorkflowOrWorkflowStepRule
         tags:
             - phpstan.rules.rule

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LittleIsmsHelper\PhpStan\Rule;
+namespace App\Tests\PHPStan\Rule;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
@@ -33,7 +33,7 @@ use PHPStan\Rules\RuleErrorBuilder;
  *
  * @implements Rule<New_>
  */
-class NoNewWorkflowOrWorkflowStep implements Rule
+class NoNewWorkflowOrWorkflowStepRule implements Rule
 {
     private const DEPRECATED_CLASSES = [
         'App\\Entity\\Workflow',
