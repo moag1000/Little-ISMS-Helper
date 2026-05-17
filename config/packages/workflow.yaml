@@ -1,4 +1,5 @@
 imports:
+    - { resource: '../workflows/workflow_instance.yaml' }
     - { resource: '../workflows/document.yaml' }
     - { resource: '../workflows/processing_activity.yaml' }
     - { resource: '../workflows/isms_objective.yaml' }
