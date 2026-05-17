@@ -215,19 +215,19 @@
                                 {% for framework in matrix.frameworks %}
                                     {% set cell = row.cells[framework.code] %}
                                     {% set cell_variant = 'secondary' %}
-                                    {% set cell_icon = 'bi-dash-circle' %}
+                                    {% set cell_icon = 'status-pending' %}
                                     {% if cell.count == 0 %}
                                         {% set cell_variant = 'secondary' %}
-                                        {% set cell_icon = 'bi-slash-circle' %}
+                                        {% set cell_icon = 'status-pending' %}
                                     {% elseif cell.pct >= thresholds.green %}
                                         {% set cell_variant = 'success' %}
-                                        {% set cell_icon = 'bi-check-circle-fill' %}
+                                        {% set cell_icon = 'status-ok' %}
                                     {% elseif cell.pct >= thresholds.yellow %}
                                         {% set cell_variant = 'warning' %}
-                                        {% set cell_icon = 'bi-exclamation-triangle-fill' %}
+                                        {% set cell_icon = 'status-warning' %}
                                     {% else %}
                                         {% set cell_variant = 'danger' %}
-                                        {% set cell_icon = 'bi-x-circle-fill' %}
+                                        {% set cell_icon = 'status-critical' %}
                                     {% endif %}
 
                                     {% set aria = 'portfolio_report.cell.aria'|trans({
