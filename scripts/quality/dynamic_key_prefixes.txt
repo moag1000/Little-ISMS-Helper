@@ -5,8 +5,10 @@
 
 Art	1
 action	1
+admin.data_repair.cascade.category	1
 admin.data_repair.compliance_health	1
 admin.data_repair.data_quality	1
+admin.data_repair.json_schema.category	1
 admin.data_repair.operational_health	1
 admin.data_repair.risk_health	1
 admin.data_retention.entity	1
