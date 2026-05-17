@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Entity\User;
 use App\Service\TenantContext;
 use App\Service\WebPushService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -52,8 +54,10 @@ class PushSubscriptionController extends AbstractController
      */
     #[Route('/subscribe', name: 'api_push_subscribe', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function subscribe(Request $request): JsonResponse
-    {
+    public function subscribe(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
         if (!$data) {
@@ -75,7 +79,6 @@ class PushSubscriptionController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = $this->getUser();
         $tenant = $this->tenantContext->getCurrentTenant();
 
         if (!$tenant) {
@@ -135,10 +138,9 @@ class PushSubscriptionController extends AbstractController
      */
     #[Route('/test', name: 'api_push_test', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function testPush(): JsonResponse
-    {
-        $user = $this->getUser();
-
+    public function testPush(
+        #[CurrentUser] User $user,
+    ): JsonResponse {
         $count = $this->webPushService->sendToUser(
             $user,
             'Test Notification',
