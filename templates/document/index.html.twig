@@ -371,7 +371,7 @@
                             {% if document.generatedFromTemplate is not null and auditorScores[document.id] is defined %}
                                 {% set _score = auditorScores[document.id] %}
                                 {% set _tone = _score.tier == 'green' ? 'success' : (_score.tier == 'yellow' ? 'warning' : 'danger') %}
-                                {% set _icon = _score.tier == 'green' ? 'bi-shield-check' : (_score.tier == 'yellow' ? 'bi-shield-exclamation' : 'bi-shield-x') %}
+                                {% set _icon = _score.tier == 'green' ? 'shield-check' : (_score.tier == 'yellow' ? 'nav-shield-alert' : 'nav-shield-alert') %}
                                 {% set _reason_lines = [] %}
                                 {% for r in _score.reasons %}
                                     {% set _key = 'policy_wizard.auditor_score.reason.' ~ (r|split(':')|first) %}

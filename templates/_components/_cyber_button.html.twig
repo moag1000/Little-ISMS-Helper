@@ -25,9 +25,12 @@ fa-cyber-btn fa-cyber-btn--{{ variant|default('primary') }} fa-cyber-btn--{{ siz
 {% macro body(label, props) %}
     {% set icon = props.icon|default(null) %}
     {% set iconAfter = props.iconAfter|default(false) %}
-    {% if icon and not iconAfter %}<i class="bi {{ icon }}" aria-hidden="true"></i>{% endif %}
+    {# Auto-strip legacy bi-* prefix so callers passing either Bootstrap-Icon
+       or Aurora names render correctly under Aurora. #}
+    {% set _iconName = icon and icon starts with 'bi-' ? icon[3:] : icon %}
+    {% if icon and not iconAfter %}<i class="fa-icon fa-icon--{{ _iconName }}" aria-hidden="true"></i>{% endif %}
     <span class="fa-cyber-btn__label">{{ label }}</span>
-    {% if icon and iconAfter %}<i class="bi {{ icon }}" aria-hidden="true"></i>{% endif %}
+    {% if icon and iconAfter %}<i class="fa-icon fa-icon--{{ _iconName }}" aria-hidden="true"></i>{% endif %}
     {% if props.loading|default(false) %}
         <span class="fa-cyber-btn__dots" aria-live="polite" aria-label="{{ 'common.loading'|trans({}, 'messages') }}">
             <span></span><span></span><span></span>

@@ -124,7 +124,7 @@
                         </strong>
                     </td>
                     <td class="text-center">
-                        {% include '_components/_badge.html.twig' with { variant: appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger'), content: appetite.maxAcceptableRisk } %}
+                        {% include '_components/_badge.html.twig' with { variant: appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger'), content: appetite.maxAcceptableRisk, class: 'fa-status-pill--lg' } %}
                         <br>
                         <small class="text-muted">({{ 'risk_appetite.scale'|trans({}, 'risk_appetite') }}: 1-25)</small>
                     </td>

@@ -44,7 +44,7 @@
                         </div>
                         {{ _fa_progress.render({ value: overall_score.score, tone: overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger'), class: 'mt-3 mx-auto' }) }}
                         <p class="mt-3 mb-0">
-                            {% include '_components/_badge.html.twig' with { variant: overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : (overall_score.status == 'in_progress' ? 'info' : 'danger')), content: ('dora.status.' ~ overall_score.status)|trans } %}
+                            {% include '_components/_badge.html.twig' with { variant: overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : (overall_score.status == 'in_progress' ? 'info' : 'danger')), class: 'fa-status-pill--lg', content: ('dora.status.' ~ overall_score.status)|trans } %}
                         </p>
                     </div>
                 {% endblock %}

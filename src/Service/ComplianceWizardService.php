@@ -507,7 +507,7 @@ final class ComplianceWizardService
         return [
             'name' => $category['name'],
             'description' => $category['description'] ?? '',
-            'icon' => $category['icon'] ?? 'bi-check-circle',
+            'icon' => $category['icon'] ?? 'status-ok',
             'score' => $categoryScore,
             'items' => $items,
             'gaps' => $gaps,

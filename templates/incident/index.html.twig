@@ -332,13 +332,13 @@
                 </td>
                 <td>
                     {% set statusIcons = {
-                        'reported': 'bi-circle text-danger',
-                        'in_investigation': 'bi-search text-warning',
-                        'in_resolution': 'bi-arrow-repeat text-info',
-                        'resolved': 'bi-check-circle text-success',
-                        'closed': 'bi-check-circle-fill text-secondary'
+                        'reported': 'status-critical text-danger',
+                        'in_investigation': 'ui-search text-warning',
+                        'in_resolution': 'util-refresh text-info',
+                        'resolved': 'status-ok text-success',
+                        'closed': 'status-ok text-secondary'
                     } %}
-                    <i class="bi {{ statusIcons[incident.status.value] ?? 'bi-circle' }}" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--{{ statusIcons[incident.status.value] ?? 'status-info' }}" aria-hidden="true"></i>
                     {{ ('incident.status.' ~ incident.status.value)|trans({}, 'incident') }}
                 </td>
                 <td>

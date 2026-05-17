@@ -21,7 +21,11 @@
         {% for activity in activities %}
         <div class="activity-item">
             <div class="activity-icon icon-{{ activity.color|default('primary') }}">
-                <i class="{{ activity.icon|default('bi-circle') }}"></i>
+                {# Auto-strip legacy bi-* prefix so callers passing either Bootstrap-Icon
+                   or Aurora names render correctly under Aurora. #}
+                {% set _activityIcon = activity.icon|default('status-info') %}
+                {% set _activityIcon = _activityIcon starts with 'bi-' ? _activityIcon[3:] : _activityIcon %}
+                <i class="fa-icon fa-icon--{{ _activityIcon }}" aria-hidden="true"></i>
             </div>
             <div class="activity-content">
                 <div class="activity-title">{{ activity.title }}</div>
