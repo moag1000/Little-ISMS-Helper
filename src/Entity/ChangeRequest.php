@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
+use App\Enum\ChangeRequestStatus;
 use App\Repository\ChangeRequestRepository;
 use App\State\TenantAwareStateProcessor;
 use App\Entity\Tenant;
@@ -413,10 +414,18 @@ class ChangeRequest
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(ChangeRequestStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?ChangeRequestStatus
+    {
+        return $this->status !== null ? ChangeRequestStatus::tryFrom($this->status) : null;
     }
 
     public function getClauseReference(): ?string

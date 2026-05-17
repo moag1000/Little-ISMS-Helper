@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
+use App\Enum\BusinessContinuityPlanStatus;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
@@ -423,10 +424,18 @@ class BusinessContinuityPlan
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(BusinessContinuityPlanStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?BusinessContinuityPlanStatus
+    {
+        return $this->status !== null ? BusinessContinuityPlanStatus::tryFrom($this->status) : null;
     }
 
     public function getActivationCriteria(): ?string

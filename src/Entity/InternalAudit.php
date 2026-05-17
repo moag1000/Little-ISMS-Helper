@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Enum\InternalAuditStatus;
 use App\Service\OwnerResolver;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
@@ -661,10 +662,18 @@ public function __construct()
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(InternalAuditStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?InternalAuditStatus
+    {
+        return $this->status !== null ? InternalAuditStatus::tryFrom($this->status) : null;
     }
 
     public function getLockVersion(): int
