@@ -1,0 +1,28 @@
+{#
+ # FairyAurora v4 — Lifecycle Status History Tab (lifecycle X.3)
+ #
+ # Renders a turbo-frame that lazy-loads status-change history rows from
+ # the GET /lifecycle/{entityType}/{id}/history endpoint.
+ #
+ # Usage (show pages — inside a tab pane or card body):
+ #   {% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+ #   {{ _lifecycle_history.history('document', document.id) }}
+ #
+ # Params:
+ #   entity_type  string  URL slug (document / processing-activity / isms-objective)
+ #   entity_id    int     Entity primary key
+ #}
+
+{% macro history(entity_type, entity_id) %}
+    <div class="fa-section mt-3" data-testid="lifecycle-history-tab">
+        <h5 class="fa-section__title mb-3">{{ 'lifecycle.history.title'|trans({}, 'lifecycle') }}</h5>
+        <turbo-frame id="lifecycle_history_{{ entity_type|replace({'-': '_'}) }}_{{ entity_id }}"
+                     src="{{ path('app_lifecycle_history', {entityType: entity_type, id: entity_id}) }}"
+                     loading="lazy">
+            <p class="text-muted small">
+                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                {{ 'lifecycle.history.loading'|trans({}, 'lifecycle') }}
+            </p>
+        </turbo-frame>
+    </div>
+{% endmacro %}
