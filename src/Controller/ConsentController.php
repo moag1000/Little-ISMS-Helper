@@ -118,9 +118,9 @@ class ConsentController extends AbstractController
                     $consent->setIsVerifiedByDpo(true);
                     $consent->setVerifiedBy($currentUser);
                     $consent->setVerifiedAt(new DateTimeImmutable());
-                    $consent->setStatus('active');
+                    $consent->setStatus('active'); // FIXME: migrate to LifecycleService::transition($consent, 'consent_lifecycle', 'verify')
                 } else {
-                    $consent->setStatus('pending_verification');
+                    $consent->setStatus('pending_verification'); // FIXME: migrate to LifecycleService (initial state)
                 }
 
                 $this->entityManager->persist($consent);
@@ -201,7 +201,7 @@ class ConsentController extends AbstractController
             $consent->setIsVerifiedByDpo(true);
             $consent->setVerifiedBy($currentUser);
             $consent->setVerifiedAt(new DateTimeImmutable());
-            $consent->setStatus('active');
+            $consent->setStatus('active'); // FIXME: migrate to LifecycleService::transition($consent, 'consent_lifecycle', 'verify')
             $consent->setUpdatedAt(new DateTimeImmutable());
 
             $this->entityManager->flush();
@@ -238,7 +238,7 @@ class ConsentController extends AbstractController
             $consent->setRevokedAt(new DateTimeImmutable());
             $consent->setRevocationMethod($revocationMethod);
             $consent->setRevocationDocumentedBy($currentUser);
-            $consent->setStatus('revoked');
+            $consent->setStatus('revoked'); // FIXME: migrate to LifecycleService::transition($consent, 'consent_lifecycle', 'revoke')
             $consent->setUpdatedAt(new DateTimeImmutable());
 
             // Append revocation notes
