@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Repository\UserRepository;
@@ -16,36 +17,36 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
- * Workflow Management Service
+ * Workflow Management Service — public API facade (Sprint Y.0).
  *
  * Manages the lifecycle of approval workflows for ISMS entities.
  * Supports multi-step approval processes with configurable approvers and SLA tracking.
  *
- * Features:
- * - Workflow instance creation and management
- * - Step-by-step approval tracking
- * - SLA-based due date calculation
- * - Approval/rejection with history tracking
- * - Role-based and user-based approver assignment
- * - Overdue workflow detection
- * - Pending approval queries per user
+ * Sprint Y.0: Internal status mutations have been replaced with
+ * LifecycleTransitionInterface::transition() calls against the
+ * `workflow_instance_lifecycle` Symfony state-machine
+ * (config/workflows/workflow_instance.yaml).
+ * The public method signatures are UNCHANGED — callers are unaffected.
  *
- * Workflow States:
- * - pending: Workflow created but not started
- * - in_progress: Actively being processed
- * - approved: Successfully completed all steps
- * - rejected: Rejected at any step
- * - cancelled: Manually cancelled
+ * Workflow States (now driven by Symfony Workflow):
+ * - pending:     Workflow created but not yet started (initial_marking)
+ * - in_progress: First step reached; actively being processed
+ * - approved:    All steps completed successfully
+ * - rejected:    Rejected at any step by an authorised reviewer
+ * - cancelled:   Manually cancelled (from pending or in_progress)
  */
 class WorkflowService
 {
+    private const WORKFLOW_NAME = 'workflow_instance_lifecycle';
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly WorkflowRepository $workflowRepository,
         private readonly WorkflowInstanceRepository $workflowInstanceRepository,
         private readonly UserRepository $userRepository,
         private readonly EmailNotificationService $emailNotificationService,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly LifecycleTransitionInterface $lifecycleService,
     ) {}
 
     /**
@@ -88,19 +89,25 @@ class WorkflowService
             return $existingInstance;
         }
 
-        // Create new workflow instance
-        $workflowInstance = new WorkflowInstance();
+        // Create new workflow instance — status starts at 'pending' (initial_marking).
+        // The setStatus() call here is the only allowed direct setter: it seeds the
+        // Symfony Workflow marking-store on a brand-new (pre-persist) entity.
+        // All subsequent mutations go through LifecycleTransitionInterface::transition().
+        $workflowInstance = new WorkflowInstance(); // @lifecycle-initial-state
         $workflowInstance->setWorkflow($workflow);
         $workflowInstance->setEntityType($entityType);
         $workflowInstance->setEntityId($entityId);
-        $workflowInstance->setStatus('pending');
+        $workflowInstance->setStatus('pending'); // @lifecycle-initial-state — seeds SM
         $workflowInstance->setInitiatedBy($this->security->getUser());
+
+        $this->entityManager->persist($workflowInstance);
 
         // Set first step as current
         $steps = $workflow->getSteps();
         if ($steps->count() > 0) {
             $firstStep = $steps->first();
             $workflowInstance->setCurrentStep($firstStep);
+            $workflowInstance->setCurrentStepIndex(0);
 
             // Calculate due date based on first step's SLA
             if ($firstStep->getDaysToComplete()) {
@@ -108,15 +115,21 @@ class WorkflowService
                 $workflowInstance->setDueDate($dueDate);
             }
 
-            $workflowInstance->setStatus('in_progress');
+            // Flush before transition so the entity has an ID for the SM
+            $this->entityManager->flush();
+
+            // Transition pending → in_progress via Symfony state-machine
+            $this->lifecycleService->transition(
+                $workflowInstance,
+                self::WORKFLOW_NAME,
+                'start',
+                $this->security->getUser() instanceof User ? $this->security->getUser() : null,
+            );
 
             // Handle notification step auto-progression or send assignment notification
             $this->handleStepAssignment($workflowInstance, $firstStep);
-        }
-
-        $this->entityManager->persist($workflowInstance);
-
-        if ($autoFlush) {
+        } elseif ($autoFlush) {
+            // No steps — stay in 'pending'; flush if requested
             $this->entityManager->flush();
         }
 
@@ -157,6 +170,8 @@ class WorkflowService
         $workflowInstance->addCompletedStep($currentStep->getId());
 
         // Move to next step or complete workflow
+        // NOTE: on the final step, moveToNextStep calls lifecycleService->transition('approve')
+        // which includes a flush. For intermediate steps, flush below handles persistence.
         $nextStep = $this->moveToNextStep($workflowInstance);
 
         // Handle next step (notification or approval notification)
@@ -164,6 +179,7 @@ class WorkflowService
             $this->handleStepAssignment($workflowInstance, $nextStep);
         }
 
+        // Flush for intermediate steps; harmless double-flush on final step (Doctrine no-ops empty EM)
         $this->entityManager->flush();
 
         return true;
@@ -199,11 +215,17 @@ class WorkflowService
             'timestamp' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
         ]);
 
-        $workflowInstance->setStatus('rejected');
         $workflowInstance->setCompletedAt(new DateTimeImmutable());
         $workflowInstance->setComments($reason);
 
-        $this->entityManager->flush();
+        // Transition in_progress → rejected via Symfony state-machine (includes flush)
+        $this->lifecycleService->transition(
+            $workflowInstance,
+            self::WORKFLOW_NAME,
+            'reject',
+            $user,
+            $reason,
+        );
 
         return true;
     }
@@ -213,15 +235,30 @@ class WorkflowService
      */
     public function cancelWorkflow(WorkflowInstance $workflowInstance, string $reason): void
     {
-        $workflowInstance->setStatus('cancelled');
         $workflowInstance->setCompletedAt(new DateTimeImmutable());
         $workflowInstance->setComments($reason);
 
-        $this->entityManager->flush();
+        // Choose cancel vs cancel_in_progress depending on current state
+        $transitionName = $workflowInstance->getStatus() === 'pending' ? 'cancel' : 'cancel_in_progress';
+
+        // Transition → cancelled via Symfony state-machine (includes flush)
+        $this->lifecycleService->transition(
+            $workflowInstance,
+            self::WORKFLOW_NAME,
+            $transitionName,
+            null,
+            $reason,
+        );
     }
 
     /**
-     * Move workflow to next step or complete
+     * Move workflow to next step or complete.
+     *
+     * Intermediate step advancement does NOT change WorkflowInstance.status — the SM
+     * only tracks the coarse-grained approval-chain state. Only the final step
+     * triggers a transition (in_progress → approved via LifecycleTransitionInterface).
+     * currentStepIndex is updated as a plain field write alongside the step-ID
+     * reference in currentStep.
      *
      * @return WorkflowStep|null The next step, or null if workflow is complete
      * @throws DateMalformedStringException
@@ -232,12 +269,13 @@ class WorkflowService
         $currentStep = $workflowInstance->getCurrentStep();
 
         $steps = $workflow->getSteps()->toArray();
-        $currentIndex = array_search($currentStep, $steps);
+        $currentIndex = array_search($currentStep, $steps, strict: true);
 
         if ($currentIndex !== false && isset($steps[$currentIndex + 1])) {
-            // Move to next step
+            // Move to next step — status stays in_progress; only index advances
             $nextStep = $steps[$currentIndex + 1];
             $workflowInstance->setCurrentStep($nextStep);
+            $workflowInstance->setCurrentStepIndex((int) $currentIndex + 1);
 
             // Update due date based on next step's SLA
             if ($nextStep->getDaysToComplete()) {
@@ -247,10 +285,18 @@ class WorkflowService
 
             return $nextStep;
         }
-        // Workflow completed
-        $workflowInstance->setStatus('approved');
+
+        // All steps completed → transition in_progress → approved via Symfony SM
         $workflowInstance->setCompletedAt(new DateTimeImmutable());
         $workflowInstance->setCurrentStep(null);
+
+        // LifecycleTransitionInterface::transition calls flush internally
+        $this->lifecycleService->transition(
+            $workflowInstance,
+            self::WORKFLOW_NAME,
+            'approve',
+        );
+
         return null;
     }
 
