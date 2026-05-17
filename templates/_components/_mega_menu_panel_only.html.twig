@@ -995,7 +995,7 @@
                             <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'admin.hub.title'|trans({}, 'admin') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'admin.hub.subtitle'|trans({'%count%': 36}, 'admin') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'admin.hub.subtitle'|trans({'%count%': admin_hub_total_modules()}, 'admin') }}</span>
                             </div>
                         </a></li>
                         <li><a href="{{ path('admin_dashboard') }}" class="{% if current_route == 'admin_dashboard' %}active{% endif %}" data-turbo-action="advance">
