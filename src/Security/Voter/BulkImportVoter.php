@@ -29,7 +29,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *
  * Multi-tenancy: strict tenant equality check for all subject-bound attributes.
  */
-class BulkImportVoter extends Voter
+final class BulkImportVoter extends Voter
 {
     public const string VIEW                = 'BULK_IMPORT_VIEW';
     public const string EDIT                = 'BULK_IMPORT_EDIT';

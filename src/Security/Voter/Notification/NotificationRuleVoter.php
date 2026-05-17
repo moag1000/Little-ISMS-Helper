@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * Gate:       notifications module active + tenant isolation
  * Requires:   ROLE_MANAGER for EDIT/DELETE
  */
-class NotificationRuleVoter extends Voter
+final class NotificationRuleVoter extends Voter
 {
     public const string VIEW   = 'view';
     public const string EDIT   = 'edit';

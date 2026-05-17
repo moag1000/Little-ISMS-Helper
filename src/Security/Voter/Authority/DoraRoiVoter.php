@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * Tenant isolation is enforced via TenantContext — the controller resolves
  * the record from the current tenant before calling this voter.
  */
-class DoraRoiVoter extends Voter
+final class DoraRoiVoter extends Voter
 {
     public const string VIEW           = 'view';
     public const string EXPORT         = 'export';

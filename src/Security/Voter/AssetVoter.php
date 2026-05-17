@@ -33,7 +33,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * - Tenant validation on all operations
  * - Prevents horizontal privilege escalation
  */
-class AssetVoter extends Voter
+final class AssetVoter extends Voter
 {
     use HoldingTreeAccessTrait;
 

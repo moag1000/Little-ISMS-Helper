@@ -41,7 +41,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * - Tenant-based sharing within organization
  * - Future: Can be extended with document classification and access levels
  */
-class DocumentVoter extends Voter
+final class DocumentVoter extends Voter
 {
     use HoldingTreeAccessTrait;
 

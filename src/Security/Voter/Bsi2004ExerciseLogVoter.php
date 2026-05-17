@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * CONFIRM — ROLE_AUDITOR (same tenant)
  * DELETE  — ROLE_ADMIN
  */
-class Bsi2004ExerciseLogVoter extends Voter
+final class Bsi2004ExerciseLogVoter extends Voter
 {
     public const string VIEW    = 'VIEW';
     public const string EDIT    = 'EDIT';

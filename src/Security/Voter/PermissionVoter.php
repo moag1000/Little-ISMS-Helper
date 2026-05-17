@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *
  * ISO 27001: A.9.2.2 (User access provisioning)
  */
-class PermissionVoter extends Voter
+final class PermissionVoter extends Voter
 {
     // Admin permissions
     public const string ADMIN_ACCESS = 'ADMIN_ACCESS';

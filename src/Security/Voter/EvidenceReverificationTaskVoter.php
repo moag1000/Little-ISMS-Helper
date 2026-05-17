@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *  - SKIP: same as COMPLETE.
  *  - DELETE: ADMIN+ of the same tenant.
  */
-class EvidenceReverificationTaskVoter extends Voter
+final class EvidenceReverificationTaskVoter extends Voter
 {
     public const string VIEW = 'view';
     public const string COMPLETE = 'complete';

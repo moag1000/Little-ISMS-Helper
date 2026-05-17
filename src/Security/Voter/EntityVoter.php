@@ -38,7 +38,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * - Use specific voters (AssetVoter, RiskVoter, etc.) for complex entity-specific logic
  * - Use this voter as a fallback for simple entities without special authorization rules
  */
-class EntityVoter extends Voter
+final class EntityVoter extends Voter
 {
     // Entity actions
     public const string VIEW = 'view';

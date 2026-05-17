@@ -33,7 +33,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * - Prevents privilege escalation by protecting core system roles
  * - Ensures role integrity for security-critical operations
  */
-class RoleVoter extends Voter
+final class RoleVoter extends Voter
 {
     public const string VIEW = 'role.view';
     public const string CREATE = 'role.create';

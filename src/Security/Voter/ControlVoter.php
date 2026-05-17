@@ -33,7 +33,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * - Tenant validation on all operations
  * - Future: Can be extended with control owner/responsible party checks
  */
-class ControlVoter extends Voter
+final class ControlVoter extends Voter
 {
     use HoldingTreeAccessTrait;
 
