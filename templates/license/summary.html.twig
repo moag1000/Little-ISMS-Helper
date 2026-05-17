@@ -17,7 +17,7 @@
     {% include '_components/_page_header.html.twig' with {
         title: 'Lizenz-Compliance Zusammenfassung',
         subtitle: 'Schnellübersicht über die Lizenz-Compliance',
-        icon: 'bi-bar-chart'
+        icon: 'nav-bar-chart'
     } %}
 
     <div class="row">
@@ -182,7 +182,7 @@
                             {% block table_body %}
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                                 <tr>
-                                    <td>{% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Erlaubt' } %}</td>
+                                    <td>{% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'Erlaubt' } %}</td>
                                     <td><small>Permissive Lizenzen (MIT, BSD, Apache)</small></td>
                                     <td class="text-end"><strong>{{ stats.allowed }}</strong></td>
                                     <td class="text-end">{{ (stats.allowed / stats.total * 100)|round(1) }}%</td>
@@ -191,7 +191,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>{% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Eingeschränkt' } %}</td>
+                                    <td>{% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-warning', content: 'Eingeschränkt' } %}</td>
                                     <td><small>Weak copyleft (MPL, EPL, CC-BY)</small></td>
                                     <td class="text-end"><strong>{{ stats.restricted }}</strong></td>
                                     <td class="text-end">{{ (stats.restricted / stats.total * 100)|round(1) }}%</td>
@@ -200,7 +200,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>{% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-arrow-repeat', content: 'Copyleft' } %}</td>
+                                    <td>{% include '_components/_badge.html.twig' with { variant: 'info', icon: 'util-refresh', content: 'Copyleft' } %}</td>
                                     <td><small>Strong copyleft (GPL, LGPL, AGPL)</small></td>
                                     <td class="text-end"><strong>{{ stats.copyleft }}</strong></td>
                                     <td class="text-end">{{ (stats.copyleft / stats.total * 100)|round(1) }}%</td>
@@ -209,7 +209,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>{% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'Nicht erlaubt' } %}</td>
+                                    <td>{% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'Nicht erlaubt' } %}</td>
                                     <td><small>Non-commercial Lizenzen</small></td>
                                     <td class="text-end"><strong>{{ stats.not_allowed }}</strong></td>
                                     <td class="text-end">{{ (stats.not_allowed / stats.total * 100)|round(1) }}%</td>

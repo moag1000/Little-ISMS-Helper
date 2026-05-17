@@ -25,9 +25,9 @@
     {{ _fa_page_header.render({
         title:    ('diff.title'|trans({}, 'compliance_wizard')) ~ ' — ' ~ config.name,
         subtitle: 'diff.subtitle'|trans({from: from_session.completedAt ? from_session.completedAt|date('Y-m-d') : '?', to: to_session.completedAt ? to_session.completedAt|date('Y-m-d') : '?'}, 'compliance_wizard'),
-        badge:    { icon: 'arrow-left-right', label: config.code },
+        badge:    { icon: 'util-arrow-left', label: config.code },
         actions: [
-            { label: 'wizard.history.title'|trans({}, 'wizard'), href: path('app_compliance_wizard_history', {wizard: wizard}), variant: 'ghost', icon: 'arrow-left' }
+            { label: 'wizard.history.title'|trans({}, 'wizard'), href: path('app_compliance_wizard_history', {wizard: wizard}), variant: 'ghost', icon: 'util-arrow-left' }
         ]
     }) }}
 

@@ -13,17 +13,17 @@
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 <div class="container-fluid py-4 fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge: { icon: 'building-fill-gear', label: 'policy_wizard.konzern_defaults.badge'|trans },
+        badge: { icon: 'nav-building-shield', label: 'policy_wizard.konzern_defaults.badge'|trans },
         title: 'policy_wizard.konzern_rollup.title'|trans,
         subtitle: 'policy_wizard.konzern_rollup.subtitle'|trans,
         actions: [
             { label: 'policy_wizard.konzern_rollup.one_pager.cta'|trans,
               variant: 'primary',
-              icon: 'file-earmark-pdf',
+              icon: 'nav-file-pdf',
               href: not_a_konzern ? '#' : path('app_policy_wizard_konzern_rollup_one_pager_pdf') },
             { label: 'policy_wizard.action.back'|trans,
               variant: 'ghost',
-              icon: 'arrow-left',
+              icon: 'util-arrow-left',
               href: path('app_policy_wizard_index') }
         ]
     }) }}
@@ -49,7 +49,7 @@
 
     {{ _fa_alert.render({
         variant: 'info',
-        icon: 'bi-stars',
+        icon: 'ui-stars',
         title: 'Alva-Tipp',
         body: 'policy_wizard.konzern_rollup.alva_tipp'|trans
     }) }}
@@ -150,7 +150,7 @@
                                                 value: std.policy_count,
                                                 unit: '',
                                                 variant: 'primary',
-                                                icon: 'shield-lock',
+                                                icon: 'nav-shield-lock',
                                                 hint: std.last_updated_at is not null
                                                     ? (std.last_updated_at|date('Y-m-d'))
                                                     : '—'

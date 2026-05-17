@@ -19,11 +19,11 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'diagram-3', label: 'nav.bcm'|trans({}, 'nav') },
+        badge: { icon: 'nav-workflow', label: 'nav.bcm'|trans({}, 'nav') },
         title: business_process.name,
         actions: [
-            { label: 'business_process.action.bia_view'|trans({}, 'bcm'), variant: 'primary', icon: 'bar-chart', href: path('app_business_process_bia', {'id': business_process.id}) },
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'pencil', href: path('app_business_process_edit', {'id': business_process.id}) }
+            { label: 'business_process.action.bia_view'|trans({}, 'bcm'), variant: 'primary', icon: 'nav-bar-chart', href: path('app_business_process_bia', {'id': business_process.id}) },
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'ui-edit', href: path('app_business_process_edit', {'id': business_process.id}) }
         ]
     }) }}
 

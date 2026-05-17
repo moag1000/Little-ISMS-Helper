@@ -19,7 +19,7 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'mortarboard', label: 'nav.training'|trans({}, 'nav') },
+        badge: { icon: 'nav-mortarboard', label: 'nav.training'|trans({}, 'nav') },
         title: training.title,
         subtitle: ('training.status.' ~ training.status)|trans({}, 'training')
     }) }}

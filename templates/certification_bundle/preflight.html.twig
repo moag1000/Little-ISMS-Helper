@@ -24,7 +24,7 @@
         title: 'cert_bundle.preflight.title'|trans,
         subtitle: 'cert_bundle.preflight.subtitle'|trans,
         actions: [
-            { label: 'cert_bundle.preflight.back'|trans, variant: 'ghost', icon: 'arrow-left', href: path('app_certification_bundle_index') }
+            { label: 'cert_bundle.preflight.back'|trans, variant: 'ghost', icon: 'util-arrow-left', href: path('app_certification_bundle_index') }
         ]
     }) }}
 
@@ -33,7 +33,7 @@
         <div class="col-md-4 mb-3">
             {% set scoreVariant = readiness.score >= 80 ? 'success' : (readiness.score >= 60 ? 'warning' : 'danger') %}
             {{ _fa_feature_card.render({
-                icon: 'speedometer',
+                icon: 'nav-speedometer',
                 label: 'cert_bundle.preflight.score.label'|trans,
                 value: readiness.score,
                 unit: '%',
@@ -52,7 +52,7 @@
         </div>
         <div class="col-md-4 mb-3">
             {{ _fa_feature_card.render({
-                icon: 'exclamation-triangle',
+                icon: 'status-warning',
                 label: 'cert_bundle.preflight.blockers.count_label'|trans,
                 value: readiness.blockers|length,
                 variant: readiness.blockers|length > 0 ? 'danger' : 'success',

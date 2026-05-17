@@ -17,7 +17,7 @@
 
     {# Page Header — V3 W2-L1 KL-6 Aurora migration #}
     {{ _fa_page_header.render({
-        badge: { icon: 'signpost-2', label: 'help.badge'|trans({}, 'help') },
+        badge: { icon: 'nav-target', label: 'help.badge'|trans({}, 'help') },
         title: 'help.iso9001_bridge.title'|trans({}, 'help'),
         subtitle: 'help.iso9001_bridge.subtitle'|trans({}, 'help')
     }) }}
@@ -298,7 +298,7 @@
     {% endembed %}
 
     {# Tip Box #}
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'bi-check-circle-fill', class: 'mb-4' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'success', icon: 'status-ok', class: 'mb-4' } } %}
         {% block alert_body %}<div class="d-flex align-items-start"> <i class="fa-icon fa-icon--ui-check me-3 fs-4" aria-hidden="true"></i> <div> <strong>{{ 'help.iso9001_bridge.tip_title'|trans({}, 'help') }}</strong> <p class="mb-0 mt-1">{{ 'help.iso9001_bridge.tip_text'|trans({}, 'help') }}</p> </div> </div>{% endblock %}
     {% endembed %}
 </div>

@@ -32,7 +32,7 @@
             label: 'evidence.coverage.total_controls'|trans({}, 'evidence'),
             value: coverage.total_controls,
             variant: 'primary',
-            icon: 'shield-lock'
+            icon: 'nav-shield-lock'
         }) }}
     </div>
     <div class="col-md-3">
@@ -40,7 +40,7 @@
             label: 'evidence.coverage.with_evidence'|trans({}, 'evidence'),
             value: coverage.controls_with_evidence,
             variant: 'success',
-            icon: 'check-circle'
+            icon: 'status-ok'
         }) }}
     </div>
     <div class="col-md-3">
@@ -48,7 +48,7 @@
             label: 'evidence.coverage.without_evidence'|trans({}, 'evidence'),
             value: coverage.total_controls - coverage.controls_with_evidence,
             variant: (coverage.total_controls - coverage.controls_with_evidence) == 0 ? 'success' : 'danger',
-            icon: 'x-circle'
+            icon: 'status-critical'
         }) }}
     </div>
     <div class="col-md-3">
@@ -57,7 +57,7 @@
             value: coverage.coverage_percent,
             unit: '%',
             variant: coverage.coverage_percent >= 80 ? 'success' : (coverage.coverage_percent >= 50 ? 'warning' : 'danger'),
-            icon: 'pie-chart-fill'
+            icon: 'nav-pie-chart'
         }) }}
     </div>
 </div>
@@ -106,9 +106,9 @@
                     </td>
                     <td>
                         {% if item.hasEvidence %}
-                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'evidence.status.has_evidence'|trans({}, 'evidence') } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'evidence.status.has_evidence'|trans({}, 'evidence') } %}
                         {% else %}
-                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'evidence.status.missing'|trans({}, 'evidence') } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'evidence.status.missing'|trans({}, 'evidence') } %}
                         {% endif %}
                     </td>
                     <td>

@@ -20,11 +20,11 @@
 
     {% set _show_actions = [] %}
     {% if canEdit is defined and canEdit %}
-        {% set _show_actions = _show_actions|merge([{ label: 'supplier.action.edit'|trans({}, 'suppliers'), variant: 'primary', icon: 'pencil', href: path('app_supplier_edit', {id: supplier.id}) }]) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'supplier.action.edit'|trans({}, 'suppliers'), variant: 'primary', icon: 'ui-edit', href: path('app_supplier_edit', {id: supplier.id}) }]) %}
     {% endif %}
-    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_supplier_index') }]) %}
+    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_supplier_index') }]) %}
     {{ _fa_page_header.render({
-        badge: (isInherited is defined and isInherited) ? { icon: 'building', label: 'corporate.inherited'|trans({}, 'messages') } : { icon: 'truck', label: 'nav.suppliers'|trans({}, 'nav') },
+        badge: (isInherited is defined and isInherited) ? { icon: 'nav-building', label: 'corporate.inherited'|trans({}, 'messages') } : { icon: 'truck', label: 'nav.suppliers'|trans({}, 'nav') },
         title: supplier.name,
         actions: _show_actions
     }) }}
@@ -61,10 +61,10 @@
                 <a href="{{ path('app_compliance_framework_show', {id: iso27001Framework.id}) }}"
                    class="text-decoration-none me-1"
                    title="{{ 'supplier.frameworks.iso27001_tooltip'|trans({}, 'suppliers') }}">
-                    {% include '_components/_badge.html.twig' with { variant: 'primary', icon: 'bi-shield-lock', content: 'ISO 27001 A.5.19–A.5.22' } %}
+                    {% include '_components/_badge.html.twig' with { variant: 'primary', icon: 'nav-shield-lock', content: 'ISO 27001 A.5.19–A.5.22' } %}
                 </a>
             {% else %}
-                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'me-1', icon: 'bi-shield-lock', content: 'ISO 27001 A.5.19–A.5.22' } %}
+                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'me-1', icon: 'nav-shield-lock', content: 'ISO 27001 A.5.19–A.5.22' } %}
             {% endif %}
         {% endif %}
 
@@ -73,10 +73,10 @@
                 <a href="{{ path('app_compliance_framework_show', {id: doraFramework.id}) }}"
                    class="text-decoration-none me-1"
                    title="{{ 'supplier.frameworks.dora_tooltip'|trans({}, 'suppliers') }}">
-                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-bank', content: 'DORA Art. 28' } %}
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'nav-building', content: 'DORA Art. 28' } %}
                 </a>
             {% else %}
-                {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'me-1', icon: 'bi-bank', content: 'DORA Art. 28' } %}
+                {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'me-1', icon: 'nav-building', content: 'DORA Art. 28' } %}
             {% endif %}
         {% endif %}
 
@@ -85,16 +85,16 @@
                 <a href="{{ path('app_compliance_framework_show', {id: gdprFramework.id}) }}"
                    class="text-decoration-none me-1"
                    title="{{ 'supplier.frameworks.gdpr_tooltip'|trans({}, 'suppliers') }}">
-                    {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-person-lock', content: 'GDPR Art. 28' } %}
+                    {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'privileged', content: 'GDPR Art. 28' } %}
                 </a>
             {% else %}
-                {% include '_components/_badge.html.twig' with { variant: 'info', class: 'me-1', icon: 'bi-person-lock', content: 'GDPR Art. 28' } %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', class: 'me-1', icon: 'privileged', content: 'GDPR Art. 28' } %}
             {% endif %}
         {% endif %}
     </div>
 
     {% if isInherited is defined and isInherited %}
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle-fill', class: 'mb-3' } } %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-3' } } %}
             {% block alert_body %}<div class="d-flex align-items-start"> <i class="fa-icon fa-icon--ui-info me-2 mt-1" aria-hidden="true"></i> <div> <strong>{{ 'corporate.inheritance.view_only_title'|trans({}, 'messages') }}</strong> <p class="mb-0">{{ 'corporate.inheritance.supplier_inherited_message'|trans({}, 'messages') }}</p> </div> </div>{% endblock %}
         {% endembed %}
     {% endif %}
@@ -418,7 +418,7 @@
 
                     {{ _fa_alert.render({
                         variant: isCriticalIct ? 'danger' : 'info',
-                        icon: 'bi-bank',
+                        icon: 'nav-building',
                         title: 'supplier.dora.section_heading'|trans({}, 'suppliers'),
                         body: 'supplier.dora.section_description'|trans({}, 'suppliers')
                     }) }}
@@ -427,7 +427,7 @@
                         <dt class="col-sm-4">{{ 'supplier.field.is_dora_relevant'|trans({}, 'suppliers') }}</dt>
                         <dd class="col-sm-8">
                             {% if supplier.isDoraRelevant %}
-                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-bank', content: 'DORA Art. 28' } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'nav-building', content: 'DORA Art. 28' } %}
                             {% else %}
                                 <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
                             {% endif %}
@@ -533,9 +533,9 @@
                             <dt class="col-sm-4">{{ 'supplier.dora.field.has_exit_strategy'|trans({}, 'suppliers') }}</dt>
                             <dd class="col-sm-8">
                                 {% if supplier.hasExitStrategy %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'supplier.value.yes'|trans({}, 'suppliers') } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'supplier.value.yes'|trans({}, 'suppliers') } %}
                                 {% else %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-exclamation-triangle', content: 'supplier.value.no'|trans({}, 'suppliers') } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-warning', content: 'supplier.value.no'|trans({}, 'suppliers') } %}
                                 {% endif %}
                             </dd>
 
@@ -562,7 +562,7 @@
                      aria-labelledby="tab-privacy"
                      tabindex="0">
 
-                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-person-lock' } } %}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'privileged' } } %}
                         {% block alert_body %}<strong>{{ 'supplier.gdpr.section_heading'|trans({}, 'suppliers') }}</strong> <p class="mb-0">{{ 'supplier.gdpr.section_description'|trans({}, 'suppliers') }}</p>{% endblock %}
                     {% endembed %}
 
@@ -582,9 +582,9 @@
                         <dt class="col-sm-4">{{ 'supplier.gdpr.field.gdpr_av_contract_signed'|trans({}, 'suppliers') }}</dt>
                         <dd class="col-sm-8">
                             {% if supplier.gdprAvContractSigned %}
-                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'supplier.value.signed'|trans({}, 'suppliers') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'supplier.value.signed'|trans({}, 'suppliers') } %}
                             {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-exclamation-triangle', content: 'supplier.value.not_signed'|trans({}, 'suppliers') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-warning', content: 'supplier.value.not_signed'|trans({}, 'suppliers') } %}
                             {% endif %}
                         </dd>
 

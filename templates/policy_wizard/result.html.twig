@@ -10,13 +10,13 @@
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 <div class="container-fluid py-4 fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge: { icon: 'check-circle', label: ('policy_wizard.status.' ~ run.status)|trans },
+        badge: { icon: 'status-ok', label: ('policy_wizard.status.' ~ run.status)|trans },
         title: 'policy_wizard.result.title'|trans,
         subtitle: 'policy_wizard.result.subtitle'|trans,
         actions: [
             { label: 'policy_wizard.title'|trans,
               variant: 'ghost',
-              icon: 'house',
+              icon: 'nav-home',
               href: path('app_policy_wizard_index') }
         ]
     }) }}
@@ -132,7 +132,7 @@
                                     <a href="{{ path('app_workflow_instance_show', {id: doc.workflow_id}) }}"
                                        class="ms-2 text-decoration-none"
                                        target="_blank" rel="noopener">
-                                        {{ pill.render(('policy_wizard.result.workflow.status.' ~ doc.workflow_status)|trans, wf_tone, {size: 'sm', icon: 'bi-diagram-3'}) }}
+                                        {{ pill.render(('policy_wizard.result.workflow.status.' ~ doc.workflow_status)|trans, wf_tone, {size: 'sm', icon: 'nav-workflow'}) }}
                                     </a>
                                 {% endif %}
                             </div>

@@ -14,10 +14,10 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'people', label: 'nav.users'|trans({}, 'nav') },
+    badge: { icon: 'nav-people', label: 'nav.users'|trans({}, 'nav') },
     title: 'user.page.title'|trans({}, 'user'),
     actions: [
-        { label: 'user.action.new_user'|trans({}, 'user'), variant: 'primary', icon: 'person-plus', href: path('user_management_new') }
+        { label: 'user.action.new_user'|trans({}, 'user'), variant: 'primary', icon: 'ui-person', href: path('user_management_new') }
     ]
 }) }}
 
@@ -153,9 +153,9 @@
                                     </td>
                                     <td>
                                         {% if user.isActive %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'user.status.active'|trans({}, 'user') } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'user.status.active'|trans({}, 'user') } %}
                                         {% else %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'user.status.inactive'|trans({}, 'user') } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'user.status.inactive'|trans({}, 'user') } %}
                                         {% endif %}
                                         {% if not user.isVerified %}
                                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'user.status.not_verified'|trans({}, 'user') } %}
@@ -218,10 +218,10 @@
                     {% endembed %}
                 {% else %}
                     {% include '_components/_empty_state.html.twig' with {
-                        icon: 'bi-people',
+                        icon: 'nav-people',
                         title: 'user.empty.title'|trans({}, 'user'),
                         description: 'user.empty.description'|trans({}, 'user'),
-                        action: { label: 'user.action.new_user'|trans({}, 'user'), url: path('user_management_new'), icon: 'bi-person-plus' }
+                        action: { label: 'user.action.new_user'|trans({}, 'user'), url: path('user_management_new'), icon: 'ui-person' }
                     } %}
                 {% endif %}
             {% endblock %}

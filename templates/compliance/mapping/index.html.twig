@@ -36,13 +36,13 @@
             {% if mappings is empty %}
                 <div class="p-4">
                     {% include '_components/_empty_state.html.twig' with {
-                        icon: 'bi-diagram-2',
+                        icon: 'nav-workflow',
                         title: 'compliance.mapping.empty.title'|trans({}, 'compliance'),
                         description: 'compliance.mapping.empty.description'|trans({}, 'compliance'),
                         action: {
                             label: 'compliance.mapping.empty.action_wizard'|trans({}, 'compliance'),
                             url: path('app_compliance_mapping_wizard'),
-                            icon: 'bi-magic'
+                            icon: 'nav-magic'
                         }
                     } %}
                     <div class="text-center mt-3">

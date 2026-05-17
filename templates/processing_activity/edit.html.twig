@@ -8,7 +8,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'processing_activity.breadcrumb.privacy'|trans({}, 'privacy'), url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
+            { label: 'processing_activity.breadcrumb.privacy'|trans({}, 'privacy'), url: path('app_processing_activity_index'), icon: 'shield-check' },
             { label: 'processing_activity.breadcrumb.vvt'|trans({}, 'privacy'), url: path('app_processing_activity_index') },
             { label: processing_activity.name, url: path('app_processing_activity_show', {id: processing_activity.id}) },
             { label: 'common.edit'|trans({}, 'messages') }
@@ -18,9 +18,9 @@
     {{ _fa_page_header.render({
         title: 'processing_activity.page.edit_title'|trans({}, 'privacy'),
         subtitle: processing_activity.name,
-        badge: { icon: 'pencil', label: '' },
+        badge: { icon: 'ui-edit', label: '' },
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), href: path('app_processing_activity_show', {id: processing_activity.id}), variant: 'secondary', icon: 'arrow-left' }
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_processing_activity_show', {id: processing_activity.id}), variant: 'secondary', icon: 'util-arrow-left' }
         ]
     }) }}
 

@@ -126,7 +126,7 @@
                     {{ btn.render('preferences.backup.export'|trans({}, 'preferences')|default('Exportieren'), {
                         variant: 'secondary',
                         size: 'sm',
-                        icon: 'bi-download',
+                        icon: 'download',
                         attrs: { 'data-action': 'click->preferences#exportPreferences' }
                     }) }}
                     <label class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm">
@@ -147,7 +147,7 @@
             {{ btn.render('common.reset'|trans({}, 'messages')|default('Zurücksetzen'), {
                 variant: 'danger',
                 size: 'sm',
-                icon: 'bi-arrow-counterclockwise',
+                icon: 'ui-undo',
                 attrs: { 'data-action': 'click->preferences#resetToDefaults' }
             }) }}
             {{ btn.render('common.close'|trans({}, 'messages')|default('Schließen'), {

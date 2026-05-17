@@ -15,13 +15,13 @@
 
     {% set _show_actions = [] %}
     {% if freeze.pdfPath %}
-        {% set _show_actions = _show_actions|merge([{ label: 'audit_freeze.action.download_pdf'|trans({}, 'audit_freeze'), variant: 'danger', icon: 'file-earmark-pdf', href: path('app_audit_freeze_download_pdf', {id: freeze.id}) }]) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'audit_freeze.action.download_pdf'|trans({}, 'audit_freeze'), variant: 'danger', icon: 'nav-file-pdf', href: path('app_audit_freeze_download_pdf', {id: freeze.id}) }]) %}
     {% endif %}
     {% set _show_actions = _show_actions|merge([
         { label: 'audit_freeze.action.verify'|trans({}, 'audit_freeze'), variant: 'ghost', icon: 'shield-check', href: path('app_audit_freeze_verify', {id: freeze.id}) }
     ]) %}
     {{ _fa_page_header.render({
-        badge: { icon: 'snow', label: freeze.stichtag|date('Y-m-d') },
+        badge: { icon: 'ui-circle', label: freeze.stichtag|date('Y-m-d') },
         title: freeze.freezeName,
         subtitle: ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze'),
         actions: _show_actions
@@ -48,14 +48,14 @@
     {% if verified %}
         {{ _fa_alert.render({
             variant: 'success',
-            icon: 'bi-shield-check',
+            icon: 'shield-check',
             title: 'audit_freeze.integrity.verified'|trans({}, 'audit_freeze'),
             body: 'audit_freeze.integrity.verified_body'|trans({'%hash%': freeze.payloadSha256|slice(0, 16)}, 'audit_freeze')
         }) }}
     {% else %}
         {{ _fa_alert.render({
             variant: 'danger',
-            icon: 'bi-exclamation-triangle',
+            icon: 'status-warning',
             title: 'audit_freeze.integrity.tampered'|trans({}, 'audit_freeze'),
             body: 'audit_freeze.integrity.tampered_body'|trans({}, 'audit_freeze')
         }) }}

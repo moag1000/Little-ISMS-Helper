@@ -15,9 +15,9 @@
 
 {% include '_components/_page_header.html.twig' with {
     title: 'settings.title'|trans({}, 'report_builder') ~ ': ' ~ report.name,
-    icon: 'bi-gear',
+    icon: 'nav-gear',
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), url: path('report_builder_edit', {id: report.id}), variant: 'secondary', icon: 'bi-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), url: path('report_builder_edit', {id: report.id}), variant: 'secondary', icon: 'util-arrow-left' }
     ]
 } %}
 

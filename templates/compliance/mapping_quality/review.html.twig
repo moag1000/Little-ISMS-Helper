@@ -125,7 +125,7 @@
                     </div>
                     {% if mapping.requiresReview %}
                         <div class="mt-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'mapping_review.field.requires_review'|trans({}, 'compliance') } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-warning', content: 'mapping_review.field.requires_review'|trans({}, 'compliance') } %}
                         </div>
                     {% endif %}
                 {% endblock %}

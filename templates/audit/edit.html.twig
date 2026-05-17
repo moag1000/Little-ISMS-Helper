@@ -27,9 +27,9 @@
 
             {{ _fa_page_header.render({
     title: ('audit.edit'|trans({}, 'audit')) ~ ': ' ~ (audit.title),
-    badge: { icon: 'pencil', label: '' },
+    badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: 'common.view'|trans({}, 'messages'), href: path('app_audit_show', {id: audit.id}), variant: 'ghost', icon: 'arrow-left' }
+        { label: 'common.view'|trans({}, 'messages'), href: path('app_audit_show', {id: audit.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
 

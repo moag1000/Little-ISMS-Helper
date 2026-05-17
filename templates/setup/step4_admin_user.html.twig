@@ -93,7 +93,7 @@
             <li>{{ 'setup.admin.password_requirements.number'|trans({}, 'setup') }}</li>
         </ul>
     {% endset %}
-    {{ faAlert.render(pwReqs, 'info', { title: 'setup.admin.password_requirements.title'|trans({}, 'setup'), icon: 'bi-shield-lock' })|raw }}
+    {{ faAlert.render(pwReqs, 'info', { title: 'setup.admin.password_requirements.title'|trans({}, 'setup'), icon: 'nav-shield-lock' })|raw }}
 
     {{ faAlert.render(
         'setup.admin.security_note.message'|trans({}, 'setup'),
@@ -103,10 +103,10 @@
 
     <div class="fa-nav-bar">
         <div class="fa-nav-bar__left">
-            {{ btn.link(path('setup_step3_restore_backup'), 'setup.navigation.back'|trans({}, 'setup'), { variant: 'secondary', icon: 'bi-arrow-left' }) }}
+            {{ btn.link(path('setup_step3_restore_backup'), 'setup.navigation.back'|trans({}, 'setup'), { variant: 'secondary', icon: 'util-arrow-left' }) }}
         </div>
         <div class="fa-nav-bar__right">
-            {{ btn.submit('setup.navigation.next'|trans({}, 'setup'), { variant: 'primary', icon: 'bi-arrow-right', iconAfter: true }) }}
+            {{ btn.submit('setup.navigation.next'|trans({}, 'setup'), { variant: 'primary', icon: 'util-arrow-right', iconAfter: true }) }}
         </div>
     </div>
 
@@ -115,6 +115,6 @@
     {{ faAlert.render(
         'setup.admin.next_steps.description'|trans({}, 'setup'),
         'info',
-        { title: 'setup.admin.next_steps.title'|trans({}, 'setup'), icon: 'bi-info-circle' }
+        { title: 'setup.admin.next_steps.title'|trans({}, 'setup'), icon: 'status-info' }
     )|raw }}
 {% endblock %}

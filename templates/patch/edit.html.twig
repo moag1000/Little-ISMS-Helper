@@ -16,9 +16,9 @@
 
     {{ _fa_page_header.render({
         title: ('patch.edit'|trans({}, 'patches')) ~ ': ' ~ patch.title,
-        badge: { icon: 'pencil', label: '' },
+        badge: { icon: 'ui-edit', label: '' },
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), href: path('app_patch_show', {id: patch.id}), variant: 'ghost', icon: 'arrow-left' }
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_patch_show', {id: patch.id}), variant: 'ghost', icon: 'util-arrow-left' }
         ]
     }) }}
 

@@ -103,7 +103,7 @@
                 {% block card_body %}
                     {% if backups is empty %}
                         {% include '_components/_empty_state.html.twig' with {
-                            icon: 'bi-archive',
+                            icon: 'archive',
                             title: 'data_management.backup.empty.title'|trans({}, 'admin'),
                             description: 'data_management.backup.empty.description'|trans({}, 'admin')
                         } %}
@@ -172,7 +172,7 @@
                     <button type="button" class="btn-close backup-modal-close" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="backup-modal-body">
-                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle-fill' } } %}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning' } } %}
                         {% block alert_body %}<strong>{{ 'data_management.backup.restore.warning'|trans({}, 'admin') }}:</strong> {{ 'data_management.backup.restore.warning_text'|trans({}, 'admin') }}{% endblock %}
                     {% endembed %}
 
@@ -545,7 +545,7 @@
                 const fileInput = document.getElementById('backupFile');
                 if (!fileInput.files.length) {
                     uploadBackupStatus.innerHTML = `
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle' } } %}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning' } } %}
                             {% block alert_body %}{{ 'data_management.backup.message.select_file'|trans({}, 'admin') }}{% endblock %}
                         {% endembed %}
                     `;
@@ -902,7 +902,7 @@
                             setTimeout(() => location.reload(), 3000);
                         }
                     } else {
-                        restoreStatus.innerHTML = `{{ _fa_alert.render({ variant: 'danger', icon: 'bi-x-circle', body: '${result.message}' }) }}`;
+                        restoreStatus.innerHTML = `{{ _fa_alert.render({ variant: 'danger', icon: 'status-critical', body: '${result.message}' }) }}`;
                     }
                 } catch (error) {
                     restoreStatus.innerHTML = _t.restoreErrorAlert(error.message);

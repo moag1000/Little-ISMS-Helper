@@ -8,7 +8,7 @@
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index'), icon: 'bi-shield-check' },
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index'), icon: 'shield-check' },
             { label: 'compliance.requirement.list.title'|trans({}, 'compliance'), url: path('app_compliance_requirement_index') },
             { label: 'compliance.requirement.new.title'|trans({}, 'compliance') }
         ]
@@ -17,9 +17,9 @@
     {# Page Header #}
     {{ _fa_page_header.render({
         title: 'compliance.requirement.new.title'|trans({}, 'compliance'),
-        badge: { icon: 'plus-circle', label: '' },
+        badge: { icon: 'plus', label: '' },
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), href: path('app_compliance_requirement_index'), variant: 'secondary', icon: 'arrow-left' }
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_compliance_requirement_index'), variant: 'secondary', icon: 'util-arrow-left' }
         ]
     }) }}
 

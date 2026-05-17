@@ -15,12 +15,12 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'clipboard-check', label: 'DPIA / DSFA' },
+        badge: { icon: 'nav-clipboard-check', label: 'DPIA / DSFA' },
         title: 'dpia.index.page_title'|trans({}, 'privacy'),
         subtitle: 'dpia.index.page_subtitle'|trans({}, 'privacy'),
         actions: [
-            { label: 'dpia.index.button_dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'speedometer2', href: path('app_dpia_dashboard') },
-            { label: 'dpia.index.button_new_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus-lg', href: path('app_dpia_new') }
+            { label: 'dpia.index.button_dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-dashboard', href: path('app_dpia_dashboard') },
+            { label: 'dpia.index.button_new_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_dpia_new') }
         ]
     }) }}
 {% set _global_hints = alva_hints('dpia_index') %}
@@ -234,7 +234,7 @@
                     mood: 'sleeping',
                     title: 'dpia.index.no_dpias_found'|trans({}, 'privacy'),
                     actions: [
-                        { label: 'dpia.index.create_first_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus-circle', href: path('app_dpia_new') }
+                        { label: 'dpia.index.create_first_dpia'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_dpia_new') }
                     ]
                 }) }}
             {% endif %}

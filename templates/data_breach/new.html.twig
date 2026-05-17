@@ -8,7 +8,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'privacy.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'bi-shield-lock' },
+            { label: 'privacy.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'nav-shield-lock' },
             { label: 'privacy.breadcrumb.data_breaches'|trans({}, 'privacy'), url: path('app_data_breach_index') },
             { label: 'privacy.data_breach.page.new_title'|trans({}, 'privacy') }
         ]
@@ -17,9 +17,9 @@
     {{ _fa_page_header.render({
         title: 'privacy.data_breach.page.new_title'|trans({}, 'privacy'),
         subtitle: 'privacy.data_breach.page.new_subtitle'|trans({}, 'privacy'),
-        badge: { icon: 'exclamation-triangle-fill', label: '' },
+        badge: { icon: 'status-warning', label: '' },
         actions: [
-            { label: 'common.cancel'|trans({}, 'messages'), href: path('app_data_breach_index'), variant: 'secondary', icon: 'x-lg' }
+            { label: 'common.cancel'|trans({}, 'messages'), href: path('app_data_breach_index'), variant: 'secondary', icon: 'ui-close' }
         ]
     }) }}
 

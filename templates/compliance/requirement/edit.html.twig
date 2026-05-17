@@ -8,7 +8,7 @@
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index'), icon: 'bi-shield-check' },
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index'), icon: 'shield-check' },
             { label: 'compliance.requirement.list.title'|trans({}, 'compliance'), url: path('app_compliance_requirement_index') },
             { label: requirement.requirementId, url: path('app_compliance_requirement_show', {id: requirement.id}) },
             { label: 'common.edit'|trans({}, 'messages') }
@@ -18,10 +18,10 @@
     {# Page Header #}
     {{ _fa_page_header.render({
         title: ('compliance.requirement.edit.title'|trans({}, 'compliance')) ~ ' ' ~ requirement.requirementId,
-        badge: { icon: 'pencil', label: '' },
+        badge: { icon: 'ui-edit', label: '' },
         actions: [
-            { label: 'common.view'|trans({}, 'messages'), href: path('app_compliance_requirement_show', {id: requirement.id}), variant: 'outline-primary', icon: 'eye' },
-            { label: 'common.back'|trans({}, 'messages'), href: path('app_compliance_requirement_index'), variant: 'secondary', icon: 'arrow-left' }
+            { label: 'common.view'|trans({}, 'messages'), href: path('app_compliance_requirement_show', {id: requirement.id}), variant: 'outline-primary', icon: 'ui-eye' },
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_compliance_requirement_index'), variant: 'secondary', icon: 'util-arrow-left' }
         ]
     }) }}
 

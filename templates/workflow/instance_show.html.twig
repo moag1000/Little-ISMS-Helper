@@ -195,11 +195,11 @@
             {% if isCurrentStep and can_approve %}
                 {% set _actions = [
                     { label: 'approval.action.approve'|trans({}, 'workflows'),
-                      variant: 'success', icon: 'fa-icon--ui-check', modal_target: '#approveModal' },
+                      variant: 'success', icon: 'ui-check', modal_target: '#approveModal' },
                     { label: 'approval.action.reject'|trans({}, 'workflows'),
-                      variant: 'danger', icon: 'fa-icon--ui-close', modal_target: '#rejectModal' },
+                      variant: 'danger', icon: 'ui-close', modal_target: '#rejectModal' },
                     { label: 'approval.action.clarify'|trans({}, 'workflows'),
-                      variant: 'ghost', icon: 'fa-icon--ui-help', modal_target: '#clarifyModal' }
+                      variant: 'ghost', icon: 'ui-help', modal_target: '#clarifyModal' }
                 ] %}
             {% endif %}
             {% set _stages = _stages|merge([{

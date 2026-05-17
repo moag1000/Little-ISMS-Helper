@@ -16,17 +16,17 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'calendar3', label: 'BSI 200-4' },
+        badge: { icon: 'ui-calendar', label: 'BSI 200-4' },
         title: 'page.calendar_title'|trans({}, 'bsi_200_4_exercise'),
         subtitle: 'page.calendar_subtitle'|trans({}, 'bsi_200_4_exercise'),
         actions: [
-            { label: 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), href: path('bcm_exercise_log_index'), variant: 'secondary', icon: 'list-ul' }
+            { label: 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), href: path('bcm_exercise_log_index'), variant: 'secondary', icon: 'ui-list' }
         ]
     }) }}
 
     {% if byMonth|length == 0 %}
         {{ _fa_empty_state.render({
-            icon: 'calendar-x',
+            icon: 'ui-calendar',
             title: 'calendar.no_exercises'|trans({}, 'bsi_200_4_exercise'),
             body: 'calendar.no_exercises'|trans({}, 'bsi_200_4_exercise'),
             action: {

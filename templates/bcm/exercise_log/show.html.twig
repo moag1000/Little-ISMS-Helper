@@ -17,7 +17,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'clipboard-check', label: 'BSI 200-4' },
+        badge: { icon: 'nav-clipboard-check', label: 'BSI 200-4' },
         title: log.bcExercise.name ?? 'page.show_title'|trans({}, 'bsi_200_4_exercise'),
         subtitle: ('exercise_type.' ~ log.exerciseType)|trans({}, 'bsi_200_4_exercise') ~ ' · ' ~ ('template.' ~ log.bsi2004Template)|trans({}, 'bsi_200_4_exercise'),
         actions: [
@@ -25,7 +25,7 @@
                 label: 'action.saved'|trans({}, 'bsi_200_4_exercise'),
                 href: path('bcm_exercise_log_edit', {id: log.id}),
                 variant: 'primary',
-                icon: 'pencil'
+                icon: 'ui-edit'
             } : null
         ]|filter(a => a is not null)
     }) }}
@@ -59,7 +59,7 @@
             <form method="post" action="{{ path('bcm_exercise_log_submit', {id: log.id}) }}" class="ms-auto">
                 <input type="hidden" name="_token" value="{{ csrf_token('bsi_log_submit_' ~ log.id) }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="fa-icon fa-icon--action-send" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--send" aria-hidden="true"></i>
                     {{ 'action.submitted'|trans({}, 'bsi_200_4_exercise') }}
                 </button>
             </form>

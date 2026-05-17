@@ -18,7 +18,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'file-earmark-spreadsheet', label: 'audit_workbook.page.badge'|trans({}, 'audit_workbook') },
+        badge: { icon: 'nav-file-earmark-spreadsheet', label: 'audit_workbook.page.badge'|trans({}, 'audit_workbook') },
         title: 'audit_workbook.index.title'|trans({}, 'audit_workbook'),
         subtitle: 'audit_workbook.index.subtitle'|trans({}, 'audit_workbook')
     }) }}
@@ -40,7 +40,7 @@
                 {{ _fa_feature_card.render({
                     label: 'audit_workbook.export_type.control_implementation.title'|trans({}, 'audit_workbook'),
                     value: 'XLSX',
-                    icon: 'list-check',
+                    icon: 'nav-list-check',
                     variant: 'success',
                     hint: 'audit_workbook.export_type.control_implementation.description'|trans({}, 'audit_workbook')
                 }) }}
@@ -49,7 +49,7 @@
                 {{ _fa_feature_card.render({
                     label: 'audit_workbook.export_type.compliance_fulfillment.title'|trans({}, 'audit_workbook'),
                     value: 'XLSX',
-                    icon: 'patch-check',
+                    icon: 'nav-patch-check',
                     variant: 'info',
                     hint: 'audit_workbook.export_type.compliance_fulfillment.description'|trans({}, 'audit_workbook')
                 }) }}
@@ -58,7 +58,7 @@
                 {{ _fa_feature_card.render({
                     label: 'audit_workbook.export_type.risk_register.title'|trans({}, 'audit_workbook'),
                     value: 'XLSX',
-                    icon: 'exclamation-triangle',
+                    icon: 'status-warning',
                     variant: 'warning',
                     hint: 'audit_workbook.export_type.risk_register.description'|trans({}, 'audit_workbook')
                 }) }}

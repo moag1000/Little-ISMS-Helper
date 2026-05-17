@@ -144,7 +144,7 @@ export default class extends Controller {
                 <li class="risk-item-enhanced">
                     <div class="risk-header">
                         <a href="/${locale}/risk/${risk.id}" class="risk-title">
-                            <i class="bi-exclamation-triangle-fill"></i>
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                             <strong>${this.escapeHtml(risk.title)}</strong>
                         </a>
                         <span class="risk-level badge bg-${this.getLevelClass(risk.level)}">
@@ -154,7 +154,7 @@ export default class extends Controller {
                     <div class="risk-meta">
                         ${risk.status ? `<span class="badge bg-secondary">${risk.status}</span>` : ''}
                         ${risk.category ? `<span class="badge bg-light text-dark">${risk.category}</span>` : ''}
-                        ${risk.owner ? `<span class="text-muted"><i class="bi-person"></i> ${this.escapeHtml(risk.owner)}</span>` : ''}
+                        ${risk.owner ? `<span class="text-muted"><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> ${this.escapeHtml(risk.owner)}</span>` : ''}
                     </div>
                     ${risk.description ? `<p class="risk-description">${this.escapeHtml(risk.description.substring(0, 120))}${risk.description.length > 120 ? '...' : ''}</p>` : ''}
                 </li>
@@ -215,7 +215,7 @@ export default class extends Controller {
         if (this.hasGridTarget) {
             this.gridTarget.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi-exclamation-triangle"></i>
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                     Failed to load heat map data. Please try again.
                 </div>
             `;

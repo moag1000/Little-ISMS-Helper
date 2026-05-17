@@ -27,16 +27,16 @@
         {# Define KPI sections with their metadata #}
         {# TODO(aurora-migration): kpi_sections icons are Twig-embedded strings used in `bi {{ section.icon }}` loop — migrate after extracting to Aurora mask-icons #}
         {% set kpi_sections = [
-            { key: 'core', icon: 'bi-shield-check', title_key: 'dashboard.management_kpis.core.title', route: 'app_soa_index', col_class: 'col-6' },
-            { key: 'risk_management', icon: 'bi-exclamation-triangle', title_key: 'dashboard.management_kpis.risk_management.title', route: 'app_risk_index', col_class: 'col-6 col-md-4' },
-            { key: 'asset_management', icon: 'bi-server', title_key: 'dashboard.management_kpis.asset_management.title', route: 'app_asset_index', col_class: 'col-6 col-md-4' },
-            { key: 'incident_management', icon: 'bi-fire', title_key: 'dashboard.management_kpis.incident_management.title', route: 'app_incident_index', col_class: 'col-6 col-md-3' },
-            { key: 'business_continuity', icon: 'bi-diagram-3', title_key: 'dashboard.management_kpis.business_continuity.title', route: 'app_bcm_index', col_class: 'col-6 col-md-3' },
-            { key: 'training', icon: 'bi-mortarboard', title_key: 'dashboard.management_kpis.training.title', route: 'app_training_index', col_class: 'col-6' },
-            { key: 'audits', icon: 'bi-clipboard-check', title_key: 'dashboard.management_kpis.audits.title', route: 'app_audit_index', col_class: 'col-6 col-md-4' },
-            { key: 'supplier_management', icon: 'bi-building', title_key: 'dashboard.management_kpis.supplier_management.title', route: 'app_supplier_index', col_class: 'col-6 col-md-3' },
-            { key: 'documentation', icon: 'bi-file-text', title_key: 'dashboard.management_kpis.documentation.title', route: 'app_document_index', col_class: 'col-6 col-md-4' },
-            { key: 'bsi_stufen', icon: 'bi-shield-shaded', title_key: 'dashboard.management_kpis.bsi_stufen.title', route: 'app_bsi_grundschutz_check', col_class: 'col-6 col-md-4' },
+            { key: 'core', icon: 'shield-check', title_key: 'dashboard.management_kpis.core.title', route: 'app_soa_index', col_class: 'col-6' },
+            { key: 'risk_management', icon: 'status-warning', title_key: 'dashboard.management_kpis.risk_management.title', route: 'app_risk_index', col_class: 'col-6 col-md-4' },
+            { key: 'asset_management', icon: 'asset-server', title_key: 'dashboard.management_kpis.asset_management.title', route: 'app_asset_index', col_class: 'col-6 col-md-4' },
+            { key: 'incident_management', icon: 'fire', title_key: 'dashboard.management_kpis.incident_management.title', route: 'app_incident_index', col_class: 'col-6 col-md-3' },
+            { key: 'business_continuity', icon: 'nav-workflow', title_key: 'dashboard.management_kpis.business_continuity.title', route: 'app_bcm_index', col_class: 'col-6 col-md-3' },
+            { key: 'training', icon: 'nav-mortarboard', title_key: 'dashboard.management_kpis.training.title', route: 'app_training_index', col_class: 'col-6' },
+            { key: 'audits', icon: 'nav-clipboard-check', title_key: 'dashboard.management_kpis.audits.title', route: 'app_audit_index', col_class: 'col-6 col-md-4' },
+            { key: 'supplier_management', icon: 'nav-building', title_key: 'dashboard.management_kpis.supplier_management.title', route: 'app_supplier_index', col_class: 'col-6 col-md-3' },
+            { key: 'documentation', icon: 'nav-file-earmark-text', title_key: 'dashboard.management_kpis.documentation.title', route: 'app_document_index', col_class: 'col-6 col-md-4' },
+            { key: 'bsi_stufen', icon: 'nav-shield', title_key: 'dashboard.management_kpis.bsi_stufen.title', route: 'app_bsi_grundschutz_check', col_class: 'col-6 col-md-4' },
         ] %}
 
         <div class="accordion" id="kpiAccordion">

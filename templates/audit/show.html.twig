@@ -16,7 +16,7 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'clipboard-check', label: audit.auditNumber|default('audit_management.title'|trans({}, 'audit')) },
+        badge: { icon: 'nav-clipboard-check', label: audit.auditNumber|default('audit_management.title'|trans({}, 'audit')) },
         title: audit.title,
         subtitle: ('audit.status.' ~ audit.status)|trans({}, 'audit')
     }) }}
@@ -33,7 +33,7 @@
         {% endif %}
         {% if audit.approvedAt %}
             <span class="text-muted small ms-2">
-                <i class="fa-icon fa-icon--status-success" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                 {{ 'audit.field.approved_at'|trans({}, 'audit') }}: {{ audit.approvedAt|date('d.m.Y H:i') }}
             </span>
         {% endif %}
@@ -315,7 +315,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="h6 mb-0">
-                            <i class="fa-icon fa-icon--ui-check-circle" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                             {{ 'audit.section.approval_workflow'|trans({}, 'audit') }}
                         </h2>
                     </div>
@@ -349,7 +349,7 @@
                             <form method="post" action="{{ path('app_audit_approve_report', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('audit_approve_report') }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
-                                    <i class="fa-icon fa-icon--status-success" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                     {{ 'audit.action.approve_report'|trans({}, 'audit') }}
                                 </button>
                             </form>
@@ -369,7 +369,7 @@
                             <form method="post" action="{{ path('app_audit_close', {id: audit.id}) }}" class="d-grid">
                                 <input type="hidden" name="_token" value="{{ csrf_token('audit_close') }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo="false">
-                                    <i class="fa-icon fa-icon--ui-archive" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--archive" aria-hidden="true"></i>
                                     {{ 'audit.action.close_audit'|trans({}, 'audit') }}
                                 </button>
                             </form>

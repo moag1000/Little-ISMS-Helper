@@ -7,10 +7,10 @@
       entityType: 'Asset',
       entityId: asset.id,
       actions: [
-          { label: 'Bearbeiten', action: 'edit', url: path('app_asset_edit', {id: asset.id}), icon: 'bi-pencil', shortcut: '⌘E' },
-          { label: 'Duplizieren', action: 'duplicate', url: path('app_asset_duplicate', {id: asset.id}), icon: 'bi-files' },
-          { label: 'Exportieren', action: 'export', url: path('app_asset_export', {id: asset.id}), icon: 'bi-download' },
-          { label: 'Löschen', action: 'delete', url: path('app_asset_delete', {id: asset.id}), icon: 'bi-trash', variant: 'danger' }
+          { label: 'Bearbeiten', action: 'edit', url: path('app_asset_edit', {id: asset.id}), icon: 'ui-edit', shortcut: '⌘E' },
+          { label: 'Duplizieren', action: 'duplicate', url: path('app_asset_duplicate', {id: asset.id}), icon: 'files' },
+          { label: 'Exportieren', action: 'export', url: path('app_asset_export', {id: asset.id}), icon: 'download' },
+          { label: 'Löschen', action: 'delete', url: path('app_asset_delete', {id: asset.id}), icon: 'trash', variant: 'danger' }
       ]
   } %}
 #}

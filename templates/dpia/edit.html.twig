@@ -9,7 +9,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'GDPR', icon: 'bi-shield-check' },
+            { label: 'GDPR', icon: 'shield-check' },
             { label: 'DPIA', url: path('app_dpia_index') },
             { label: dpia.referenceNumber, url: path('app_dpia_show', {id: dpia.id}) },
             { label: 'Edit' }
@@ -19,9 +19,9 @@
     {{ _fa_page_header.render({
         title: 'Edit DPIA: ' ~ dpia.title,
         subtitle: dpia.referenceNumber ~ ' - Version ' ~ dpia.version,
-        badge: { icon: 'pencil-square', label: '' },
+        badge: { icon: 'ui-edit', label: '' },
         actions: [
-            { label: 'Cancel', href: path('app_dpia_show', {id: dpia.id}), variant: 'secondary', icon: 'x-lg' }
+            { label: 'Cancel', href: path('app_dpia_show', {id: dpia.id}), variant: 'secondary', icon: 'ui-close' }
         ]
     }) }}
 

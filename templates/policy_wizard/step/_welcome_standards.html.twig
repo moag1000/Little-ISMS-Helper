@@ -18,7 +18,7 @@
  # Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
     variant: 'info',
-    icon: 'bi-mortarboard',
+    icon: 'nav-mortarboard',
     class: 'mb-3'
 } } %}
     {% block alert_body %}
@@ -60,7 +60,7 @@
 {% if 'dora' in selected_standards %}
     {% embed '_components/_fa_alert.html.twig' with { props: {
         variant: 'success',
-        icon: 'bi-shield-check',
+        icon: 'shield-check',
         class: 'mb-3'
     } } %}
         {% block alert_body %}
@@ -116,7 +116,7 @@
             {% if _conflicts|length > 0 %}
                 {% embed '_components/_fa_alert.html.twig' with { props: {
                     variant: 'warning',
-                    icon: 'bi-exclamation-triangle',
+                    icon: 'status-warning',
                     class: 'mt-2 mb-0'
                 } } %}
                     {% block alert_body %}

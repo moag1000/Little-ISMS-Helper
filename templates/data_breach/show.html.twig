@@ -12,7 +12,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'privacy.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'bi-shield-lock' },
+            { label: 'privacy.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'nav-shield-lock' },
             { label: 'privacy.breadcrumb.data_breaches'|trans({}, 'privacy'), url: path('app_data_breach_index') },
             { label: breach.referenceNumber }
         ]
@@ -22,12 +22,12 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'exclamation-triangle-fill', label: breach.referenceNumber },
+        badge:    { icon: 'status-warning', label: breach.referenceNumber },
         title:    breach.title,
         subtitle: breach.status|replace({'_': ' '})|title,
         actions: [
-            { label: 'privacy.data_breach.action.export_pdf'|trans({}, 'privacy'), variant: 'success', icon: 'file-pdf',    href: path('app_data_breach_export_pdf', {id: breach.id}) },
-            { label: 'common.back_to_list'|trans({}, 'messages'),                  variant: 'ghost',   icon: 'arrow-left',  href: path('app_data_breach_index') }
+            { label: 'privacy.data_breach.action.export_pdf'|trans({}, 'privacy'), variant: 'success', icon: 'nav-file-pdf',    href: path('app_data_breach_export_pdf', {id: breach.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'),                  variant: 'ghost',   icon: 'util-arrow-left',  href: path('app_data_breach_index') }
         ]
     }) }}
     {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_data_breach_export_pdf', route_params: {id: breach.id}} only %}
@@ -48,7 +48,7 @@
                 {% endblock %}
             {% endembed %}
         {% elseif hours < 24 %}
-            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-clock' } } %}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'clock' } } %}
                 {% block alert_body %}
                     <div class="fa-alert__title">{{ 'privacy.data_breach.score.timeliness'|trans({}, 'privacy') }}</div>
                     <p class="fa-alert__message">
@@ -300,7 +300,7 @@
                 <p>{% for category in breach.dataSubjectCategories %}{{ ('data_breach.data_subject_categories.' ~ category)|trans({}, 'privacy') }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
             {% endif %}
             {% if breach.specialCategoriesAffected %}
-                {{ _fa_alert.render({ variant: 'warning', icon: 'bi-shield-lock', body: '<strong>' ~ 'privacy.data_breach.field.special_categories_affected'|trans({}, 'privacy') ~ '</strong>' }) }}
+                {{ _fa_alert.render({ variant: 'warning', icon: 'nav-shield-lock', body: '<strong>' ~ 'privacy.data_breach.field.special_categories_affected'|trans({}, 'privacy') ~ '</strong>' }) }}
             {% endif %}
             {% if breach.criminalDataAffected %}
                 {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'privacy.data_breach.field.criminal_data_affected'|trans({}, 'privacy') ~ '</strong>' }) }}

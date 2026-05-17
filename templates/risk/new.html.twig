@@ -10,7 +10,7 @@
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
+        { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'status-warning' },
         { label: 'risk.new'|trans({}, 'risk')}
     ]
 } %}
@@ -18,9 +18,9 @@
 {# Page Header #}
 {{ _fa_page_header.render({
     title: 'risk.new'|trans({}, 'risk'),
-    badge: { icon: 'plus-circle', label: '' },
+    badge: { icon: 'plus', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_index'), variant: 'secondary', icon: 'arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_index'), variant: 'secondary', icon: 'util-arrow-left' }
     ]
 }) }}
 
@@ -229,7 +229,7 @@
                             {% endblock %}
                         {% endembed %}
 
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-lightbulb', class: 'mt-3 mb-0' } } %}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'ui-lightbulb', class: 'mt-3 mb-0' } } %}
                             {% block alert_body %}<small> <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> {{ 'risk.guidance.tip'|trans({}, 'risk')}} </small>{% endblock %}
                         {% endembed %}
                     </div>

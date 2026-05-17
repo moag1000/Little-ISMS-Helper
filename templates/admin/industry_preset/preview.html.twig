@@ -9,11 +9,11 @@
 {% block body %}
 <main class="fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge:    { icon: 'eye', label: 'industry_preset.preview.badge'|trans },
+        badge:    { icon: 'ui-eye', label: 'industry_preset.preview.badge'|trans },
         title:    config.name|default(preset),
         subtitle: 'industry_preset.preview.subtitle'|trans,
         actions: [
-            { label: 'industry_preset.action.back'|trans, variant: 'ghost', icon: 'arrow-left', href: path('app_admin_industry_preset_index') }
+            { label: 'industry_preset.action.back'|trans, variant: 'ghost', icon: 'util-arrow-left', href: path('app_admin_industry_preset_index') }
         ]
     }) }}
 

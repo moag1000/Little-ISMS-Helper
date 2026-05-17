@@ -23,10 +23,10 @@
     {{ _fa_page_header.render({
         title: ('wizard.history.title'|trans({}, 'wizard')) ~ ' — ' ~ config.name,
         subtitle: 'wizard.history.subtitle'|trans({}, 'wizard'),
-        badge: { icon: 'clock-history', label: config.code },
+        badge: { icon: 'nav-clock-history', label: config.code },
         actions: [
-            { label: 'wizard.back'|trans({}, 'wizard'), href: path('app_compliance_wizard_start', {wizard: wizard}), variant: 'ghost', icon: 'arrow-left' },
-            { label: 'wizard.run_assessment'|trans({}, 'wizard'), href: path('app_compliance_wizard_assess', {wizard: wizard}), variant: 'primary', icon: 'play-fill' }
+            { label: 'wizard.back'|trans({}, 'wizard'), href: path('app_compliance_wizard_start', {wizard: wizard}), variant: 'ghost', icon: 'util-arrow-left' },
+            { label: 'wizard.run_assessment'|trans({}, 'wizard'), href: path('app_compliance_wizard_assess', {wizard: wizard}), variant: 'primary', icon: 'play' }
         ]
     }) }}
 

@@ -23,7 +23,7 @@
         badge: { icon: 'shield-check', label: ('bc_plans.status.' ~ bc_plan.status)|trans({}, 'bc_plans') },
         title: bc_plan.name,
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_bc_plan_edit', {id: bc_plan.id}) },
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_bc_plan_edit', {id: bc_plan.id}) },
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_bc_plan_index') }
         ]
     }) }}

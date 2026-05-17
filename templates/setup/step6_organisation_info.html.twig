@@ -53,7 +53,7 @@
                         </div>
 
                         {# Multi-Industry Selection for Corporate Structures #}
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-diagram-3', class: 'mb-2' } } %}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'nav-workflow', class: 'mb-2' } } %}
                             {% block alert_body %}<small>{{ 'setup.organisation.industries_help'|trans({}, 'setup') }}</small>{% endblock %}
                         {% endembed %}
                         <div class="row">
@@ -90,7 +90,7 @@
                         </div>
 
                         {# Information Box #}
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle' } } %}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
                             {% block alert_body %}<strong>{{ 'setup.organisation.usage.title'|trans({}, 'setup') }}</strong> <p class="mb-0">{{ 'setup.organisation.usage.message'|trans({}, 'setup') }}</p>{% endblock %}
                         {% endembed %}
 

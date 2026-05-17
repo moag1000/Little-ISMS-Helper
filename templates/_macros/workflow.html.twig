@@ -195,7 +195,7 @@
                         {% if isOverdue %}
                             {% include '_components/_badge.html.twig' with {
                                 variant: 'danger',
-                                icon: 'bi-exclamation-triangle',
+                                icon: 'status-warning',
                                 content: 'workflow.badge.overdue'|trans({}, 'workflows')
                             } %}
                         {% endif %}

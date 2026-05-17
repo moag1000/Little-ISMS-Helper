@@ -8,7 +8,7 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'processing_activity.breadcrumb.privacy'|trans({}, 'privacy'), url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
+            { label: 'processing_activity.breadcrumb.privacy'|trans({}, 'privacy'), url: path('app_processing_activity_index'), icon: 'shield-check' },
             { label: 'processing_activity.breadcrumb.vvt'|trans({}, 'privacy'), url: path('app_processing_activity_index') },
             { label: 'processing_activity.breadcrumb.new'|trans({}, 'privacy')}
         ]
@@ -17,7 +17,7 @@
     {{ _fa_page_header.render({
         title: 'processing_activity.page.new_title'|trans({}, 'privacy'),
         subtitle: 'processing_activity.page.new_subtitle'|trans({}, 'privacy'),
-        badge: { icon: 'plus-lg', label: '' }
+        badge: { icon: 'plus', label: '' }
     }) }}
 
     {% embed '_components/_card.html.twig' %}

@@ -8,7 +8,7 @@
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.assets'|trans({}, 'nav', 'nav'), url: path('app_asset_index'), icon: 'bi-cpu' },
+        { label: 'nav.assets'|trans({}, 'nav', 'nav'), url: path('app_asset_index'), icon: 'cpu' },
         { label: 'asset.title.new'|trans({}, 'asset') }
     ]
 } %}
@@ -16,9 +16,9 @@
 {# Page Header #}
 {{ _fa_page_header.render({
     title: 'asset.title.new'|trans({}, 'asset'),
-    badge: { icon: 'plus-circle', label: '' },
+    badge: { icon: 'plus', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_asset_index'), variant: 'secondary', icon: 'arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_asset_index'), variant: 'secondary', icon: 'util-arrow-left' }
     ]
 }) }}
 

@@ -9,13 +9,13 @@
 {% block body %}
 <div class="container-fluid py-4 fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge: { icon: 'file-earmark-text', label: 'policy_wizard.badge'|trans },
+        badge: { icon: 'nav-file-earmark-text', label: 'policy_wizard.badge'|trans },
         title: document.originalFilename ?? document.filename,
         subtitle: 'policy_ack.view.subtitle'|trans,
         actions: [
             { label: 'policy_ack.widget.action.go_to_inbox'|trans,
               variant: 'ghost',
-              icon: 'arrow-left',
+              icon: 'util-arrow-left',
               href: path('app_policy_ack_inbox') }
         ]
     }) }}

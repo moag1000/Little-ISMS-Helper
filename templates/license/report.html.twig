@@ -17,7 +17,7 @@
     {% include '_components/_page_header.html.twig' with {
         title: 'Detaillierter Lizenzbericht',
         subtitle: 'Vollständige Compliance-Analyse aller Dependencies',
-        icon: 'bi-file-earmark-bar-graph'
+        icon: 'nav-bar-chart'
     } %}
 
     <div class="row">
@@ -120,19 +120,19 @@
                 {% block card_body %}
                     <div class="row">
                         <div class="col-md-6 mb-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Erlaubt', class: 'me-2' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'Erlaubt', class: 'me-2' } %}
                             <small>Permissive Lizenzen (MIT, BSD, Apache-2.0)</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Eingeschränkt', class: 'me-2' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'status-warning', content: 'Eingeschränkt', class: 'me-2' } %}
                             <small>Weak copyleft (MPL-2.0, EPL, CC-BY)</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-arrow-repeat', content: 'Copyleft', class: 'me-2' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'util-refresh', content: 'Copyleft', class: 'me-2' } %}
                             <small>Strong copyleft (GPL/LGPL/AGPL)</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'Nicht erlaubt', class: 'me-2' } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'Nicht erlaubt', class: 'me-2' } %}
                             <small>Non-commercial licenses</small>
                         </div>
                         <div class="col-md-6 mb-2">

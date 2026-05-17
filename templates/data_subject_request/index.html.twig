@@ -10,17 +10,17 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'dsr.breadcrumb.privacy'|trans({}, 'data_subject_request'), icon: 'bi-shield-lock' },
+            { label: 'dsr.breadcrumb.privacy'|trans({}, 'data_subject_request'), icon: 'nav-shield-lock' },
             { label: 'dsr.breadcrumb.data_subject_requests'|trans({}, 'data_subject_request') }
         ]
     } only %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'person-raised-hand', label: 'dsr.breadcrumb.data_subject_requests'|trans({}, 'data_subject_request') },
+        badge: { icon: 'ui-person', label: 'dsr.breadcrumb.data_subject_requests'|trans({}, 'data_subject_request') },
         title: 'dsr.page.index_title'|trans({}, 'data_subject_request'),
         subtitle: 'dsr.page.index_subtitle'|trans({}, 'data_subject_request'),
         actions: [
-            { label: 'dsr.action.new'|trans({}, 'data_subject_request'), variant: 'primary', icon: 'plus-lg', href: path('app_data_subject_request_new') }
+            { label: 'dsr.action.new'|trans({}, 'data_subject_request'), variant: 'primary', icon: 'plus', href: path('app_data_subject_request_new') }
         ]
     }) }}
 {% set _global_hints = alva_hints('data_subject_request_index') %}
@@ -220,7 +220,7 @@
                 {% endembed %}
             {% else %}
                 {% include '_components/_empty_state.html.twig' with {
-                    icon: 'bi-person-raised-hand',
+                    icon: 'ui-person',
                     title: 'dsr.empty.title'|trans({}, 'data_subject_request'),
                     message: 'dsr.empty.message'|trans({}, 'data_subject_request'),
                     action_label: 'dsr.action.new'|trans({}, 'data_subject_request'),

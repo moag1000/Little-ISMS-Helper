@@ -11,14 +11,14 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'eu_authorities.page.title'|trans({}, 'eu_authorities'), icon: 'bi-building-shield' },
+            { label: 'eu_authorities.page.title'|trans({}, 'eu_authorities'), icon: 'nav-building-shield' },
             { label: 'eu_authorities.hub.page.title'|trans({}, 'eu_authorities'), url: path('authority_hub_index') },
             { label: 'eu_authorities.dora_roi.page.title'|trans }
         ]
     } %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'file-earmark-spreadsheet', label: 'DORA' },
+        badge:    { icon: 'nav-file-earmark-spreadsheet', label: 'DORA' },
         title:    'eu_authorities.dora_roi.page.title'|trans,
         subtitle: 'eu_authorities.dora_roi.page.subtitle'|trans,
         actions:  []

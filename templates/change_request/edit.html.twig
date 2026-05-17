@@ -26,9 +26,9 @@
 
             {{ _fa_page_header.render({
     title: ('change_request.page.edit'|trans({}, 'change_requests')) ~ ': ' ~ (change_request.changeNumber),
-    badge: { icon: 'pencil', label: '' },
+    badge: { icon: 'ui-edit', label: '' },
     actions: [
-        { label: 'change_request.action.view'|trans({}, 'change_requests'), href: path('app_change_request_show', {id: change_request.id}), variant: 'ghost', icon: 'arrow-left' }
+        { label: 'change_request.action.view'|trans({}, 'change_requests'), href: path('app_change_request_show', {id: change_request.id}), variant: 'ghost', icon: 'util-arrow-left' }
     ]
 }) }}
 

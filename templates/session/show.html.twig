@@ -14,11 +14,11 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'person-lines-fill', label: 'admin.nav.sessions'|trans({}, 'admin') },
+        badge: { icon: 'nav-people', label: 'admin.nav.sessions'|trans({}, 'admin') },
         title: user_name,
         subtitle: 'session.user_activity'|trans({}, 'session'),
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('session_index') }
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('session_index') }
         ]
     }) }}
 

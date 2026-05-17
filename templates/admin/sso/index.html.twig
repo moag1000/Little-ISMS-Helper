@@ -11,12 +11,12 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-lock', label: 'SSO' },
+        badge: { icon: 'nav-shield-lock', label: 'SSO' },
         title: 'sso.admin.title'|trans,
         subtitle: 'sso.admin.subtitle'|trans,
         actions: [
-            { label: 'sso.admin.approvals'|trans ~ (pending_count > 0 ? ' (' ~ pending_count ~ ')' : ''), variant: 'ghost', icon: 'person-check', href: path('admin_sso_approvals') },
-            { label: 'sso.admin.new_provider'|trans, variant: 'primary', icon: 'plus-lg', href: path('admin_sso_new') }
+            { label: 'sso.admin.approvals'|trans ~ (pending_count > 0 ? ' (' ~ pending_count ~ ')' : ''), variant: 'ghost', icon: 'approve', href: path('admin_sso_approvals') },
+            { label: 'sso.admin.new_provider'|trans, variant: 'primary', icon: 'plus', href: path('admin_sso_new') }
         ]
     }) }}
 
@@ -25,7 +25,7 @@
             mood: 'thinking',
             title: 'sso.admin.empty'|trans,
             actions: [
-                { label: 'sso.admin.new_provider'|trans, variant: 'primary', icon: 'plus-lg', href: path('admin_sso_new') }
+                { label: 'sso.admin.new_provider'|trans, variant: 'primary', icon: 'plus', href: path('admin_sso_new') }
             ]
         }) }}
     {% else %}

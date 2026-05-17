@@ -20,11 +20,11 @@
 
     {% set _show_actions = [] %}
     {% if is_granted('ROLE_USER') and (consent.status == 'pending_verification' or consent.status == 'active') %}
-        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_consent_edit', {id: consent.id}) }]) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_consent_edit', {id: consent.id}) }]) %}
     {% endif %}
-    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_consent_index') }]) %}
+    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_consent_index') }]) %}
     {{ _fa_page_header.render({
-        badge: { icon: 'check2-square', label: 'consent.header.title'|trans({}, 'consent') },
+        badge: { icon: 'ui-check', label: 'consent.header.title'|trans({}, 'consent') },
         title: consent.dataSubjectIdentifier,
         actions: _show_actions
     }) }}
@@ -68,11 +68,11 @@
         {% include '_components/_badge.html.twig' with { variant: statusBadgeClass, class: 'me-2 fs-6 px-3 py-2', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
 
         {% if consent.verifiedBy %}
-        {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-check-circle', class: 'me-2 fs-6 px-3 py-2', content: 'consent.verified'|trans({}, 'consent') } %}
+        {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'status-ok', class: 'me-2 fs-6 px-3 py-2', content: 'consent.verified'|trans({}, 'consent') } %}
         {% endif %}
 
         {% if consent.revokedAt %}
-        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', class: 'fs-6 px-3 py-2', content: 'consent.revoked'|trans({}, 'consent') } %}
+        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', class: 'fs-6 px-3 py-2', content: 'consent.revoked'|trans({}, 'consent') } %}
         {% endif %}
     </div>
 
@@ -205,7 +205,7 @@
                 </span>
             </div>
             {% else %}
-            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-0' } } %}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-0' } } %}
                 {% block alert_body %}{{ 'consent.no_proof_document'|trans({}, 'consent') }}{% endblock %}
             {% endembed %}
             {% endif %}

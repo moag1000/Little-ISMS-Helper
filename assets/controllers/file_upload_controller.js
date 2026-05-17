@@ -179,7 +179,7 @@ export default class extends Controller {
         const removeBtn = document.createElement('button');
         removeBtn.type = 'button';
         removeBtn.className = 'btn btn-sm btn-outline-danger';
-        removeBtn.innerHTML = '<i class="bi-x-lg"></i>';
+        removeBtn.innerHTML = '<i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>';
         removeBtn.addEventListener('click', () => this.removeFile(index));
 
         // Assemble item
@@ -203,18 +203,19 @@ export default class extends Controller {
     getFileIcon(mimeType, fileName) {
         const extension = fileName.split('.').pop().toLowerCase();
 
+        // Aurora-namespaced icon classes (no Bootstrap-Icons font loaded)
         if (mimeType === 'application/pdf' || extension === 'pdf') {
-            return '<i class="bi-file-pdf-fill text-danger" style="font-size: 2rem;"></i>';
+            return '<i class="fa-icon fa-icon--nav-file-pdf text-danger" style="font-size: 2rem;" aria-hidden="true"></i>';
         } else if (mimeType.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
-            return '<i class="bi-file-image-fill text-primary" style="font-size: 2rem;"></i>';
+            return '<i class="fa-icon fa-icon--camera text-primary" style="font-size: 2rem;" aria-hidden="true"></i>';
         } else if (mimeType.includes('spreadsheet') || ['xls', 'xlsx'].includes(extension)) {
-            return '<i class="bi-file-earmark-spreadsheet-fill text-success" style="font-size: 2rem;"></i>';
+            return '<i class="fa-icon fa-icon--nav-file-earmark-spreadsheet text-success" style="font-size: 2rem;" aria-hidden="true"></i>';
         } else if (mimeType.includes('word') || mimeType.includes('document') || ['doc', 'docx'].includes(extension)) {
-            return '<i class="bi-file-word-fill text-info" style="font-size: 2rem;"></i>';
+            return '<i class="fa-icon fa-icon--nav-file-earmark-text text-info" style="font-size: 2rem;" aria-hidden="true"></i>';
         } else if (mimeType === 'text/plain' || extension === 'txt') {
-            return '<i class="bi-file-text-fill text-secondary" style="font-size: 2rem;"></i>';
+            return '<i class="fa-icon fa-icon--nav-file-earmark-text text-secondary" style="font-size: 2rem;" aria-hidden="true"></i>';
         } else {
-            return '<i class="bi-file-earmark-fill text-secondary" style="font-size: 2rem;"></i>';
+            return '<i class="fa-icon fa-icon--nav-file-earmark-text text-secondary" style="font-size: 2rem;" aria-hidden="true"></i>';
         }
     }
 

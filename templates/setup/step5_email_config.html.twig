@@ -35,7 +35,7 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="p-4">
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-4' } } %}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-4' } } %}
                             {% block alert_body %}<strong>{{ 'setup.email.optional.title'|trans({}, 'setup') }}</strong> <p class="mb-0">{{ 'setup.email.optional.message'|trans({}, 'setup') }}</p>{% endblock %}
                         {% endembed %}
 

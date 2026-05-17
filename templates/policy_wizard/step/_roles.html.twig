@@ -20,7 +20,7 @@
  # Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
     variant: 'info',
-    icon: 'bi-mortarboard',
+    icon: 'nav-mortarboard',
     class: 'mb-3'
 } } %}
     {% block alert_body %}
@@ -37,7 +37,7 @@
  # Approval-chain at the bottom remains User (login required for sign-off). #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
     variant: 'info',
-    icon: 'bi-people',
+    icon: 'nav-people',
     class: 'mb-3 py-2 small'
 } } %}
     {% block alert_body %}
@@ -144,7 +144,7 @@
          # what is a Function-Owner, which functions are typical. #}
         {% embed '_components/_fa_alert.html.twig' with { props: {
             variant: 'info',
-            icon: 'bi-mortarboard',
+            icon: 'nav-mortarboard',
             class: 'mb-3 py-2 small'
         } } %}
             {% block alert_body %}
@@ -206,7 +206,7 @@
             {{ 'policy_wizard.approver_match.chain_hint'|trans }}
         </div>
         {% if approver_user_pool|length == 0 %}
-            {{ _fa_alert.render({ variant: 'warning', icon: 'bi-exclamation-triangle', class: 'mt-2 small', body: 'policy_wizard.step.roles.field.approval_chain.empty_state'|trans }) }}
+            {{ _fa_alert.render({ variant: 'warning', icon: 'status-warning', class: 'mt-2 small', body: 'policy_wizard.step.roles.field.approval_chain.empty_state'|trans }) }}
         {% endif %}
     </div>
 </div>

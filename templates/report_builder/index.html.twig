@@ -15,11 +15,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'palette', label: 'nav.reports'|trans({}, 'nav') },
+        badge: { icon: 'nav-palette', label: 'nav.reports'|trans({}, 'nav') },
         title: 'page.title'|trans,
         subtitle: 'page.subtitle'|trans,
         actions: [
-            { label: 'action.create'|trans, variant: 'primary', icon: 'plus-lg', href: path('report_builder_new') }
+            { label: 'action.create'|trans, variant: 'primary', icon: 'plus', href: path('report_builder_new') }
         ]
     }) }}
 
@@ -141,7 +141,7 @@
                         mood: 'sleeping',
                         title: 'empty.no_reports'|trans,
                         actions: [
-                            { label: 'action.create_first'|trans, variant: 'primary', icon: 'plus-lg', href: path('report_builder_new') }
+                            { label: 'action.create_first'|trans, variant: 'primary', icon: 'plus', href: path('report_builder_new') }
                         ]
                     }) }}
                     {% endif %}

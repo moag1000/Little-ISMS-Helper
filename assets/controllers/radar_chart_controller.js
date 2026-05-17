@@ -226,7 +226,7 @@ export default class extends Controller {
         if (this.hasCanvasTarget) {
             this.canvasTarget.parentElement.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi-exclamation-triangle"></i>
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                     Failed to load compliance radar data. Please try again.
                 </div>
             `;

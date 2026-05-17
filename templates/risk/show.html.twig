@@ -21,13 +21,13 @@
 
     {% set _show_actions = [] %}
     {% if canEdit is defined and canEdit %}
-        {% set _show_actions = _show_actions|merge([{ label: 'action.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_risk_edit', {id: risk.id}) }]) %}
+        {% set _show_actions = _show_actions|merge([{ label: 'action.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_risk_edit', {id: risk.id}) }]) %}
     {% endif %}
     {% set _show_actions = _show_actions|merge([
         { label: 'action.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_risk_index') }
     ]) %}
     {{ _fa_page_header.render({
-        badge: (isInherited is defined and isInherited) ? { icon: 'building', label: 'corporate.inherited'|trans({}, 'tenant') } : null,
+        badge: (isInherited is defined and isInherited) ? { icon: 'nav-building', label: 'corporate.inherited'|trans({}, 'tenant') } : null,
         title: risk.title,
         actions: _show_actions
     }) }}

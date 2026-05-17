@@ -21,7 +21,7 @@
 }) }}
 
     {# Info Alert #}
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-4' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-4' } } %}
         {% block alert_body %}{{ 'scheduled_report.info.create_hint'|trans({}, 'scheduled_reports') }}{% endblock %}
     {% endembed %}
 

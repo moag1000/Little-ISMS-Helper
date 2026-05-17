@@ -62,7 +62,7 @@
     {{ faAlert.render(
         'setup.applicability.intro.description'|trans({}, 'setup'),
         'info',
-        { title: 'setup.applicability.intro.title'|trans({}, 'setup'), icon: 'bi-info-circle' }
+        { title: 'setup.applicability.intro.title'|trans({}, 'setup'), icon: 'status-info' }
     )|raw }}
 
     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'fa-setup-form', 'data-controller': 'wizard-busy', 'data-wizard-busy-message-value': 'setup.alva.busy.frameworks'|trans({}, 'setup')}}) }}
@@ -126,10 +126,10 @@
 
     <div class="fa-nav-bar">
         <div class="fa-nav-bar__left">
-            {{ btn.link(path('setup_step7_modules'), 'setup.navigation.back'|trans({}, 'setup'), { variant: 'secondary', icon: 'bi-arrow-left' }) }}
+            {{ btn.link(path('setup_step7_modules'), 'setup.navigation.back'|trans({}, 'setup'), { variant: 'secondary', icon: 'util-arrow-left' }) }}
         </div>
         <div class="fa-nav-bar__right">
-            {{ btn.submit('setup.navigation.next'|trans({}, 'setup'), { variant: 'primary', icon: 'bi-arrow-right', iconAfter: true }) }}
+            {{ btn.submit('setup.navigation.next'|trans({}, 'setup'), { variant: 'primary', icon: 'util-arrow-right', iconAfter: true }) }}
         </div>
     </div>
 

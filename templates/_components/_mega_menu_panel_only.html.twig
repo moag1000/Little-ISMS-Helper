@@ -306,7 +306,7 @@
                         {% endif %}
                         {% if is_module_active('bcm') and is_granted('ROLE_MANAGER') %}
                         <li><a href="{{ path('bcm_exercise_log_index') }}" class="{% if current_route starts with 'bcm_exercise_log_' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--clipboard-check" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.exercise_log_desc'|trans({}, 'bsi_200_4_exercise') }}</span>

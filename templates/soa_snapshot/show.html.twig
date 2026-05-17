@@ -22,7 +22,7 @@
     subtitle: snapshot.purpose|default(''),
     actions: [
         { label: 'soa.snapshot.action.export_csv'|trans({}, 'soa'), variant: 'primary', icon: 'download', href: path('app_soa_snapshot_export_csv', { id: snapshot.id }), attrs: { 'data-turbo': 'false' } },
-        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_soa_snapshot_index') }
+        { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_soa_snapshot_index') }
     ]
 }) }}
 

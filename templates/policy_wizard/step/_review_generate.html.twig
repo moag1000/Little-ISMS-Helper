@@ -5,7 +5,7 @@
 {# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
     variant: 'info',
-    icon: 'bi-mortarboard',
+    icon: 'nav-mortarboard',
     class: 'mb-3'
 } } %}
     {% block alert_body %}
@@ -26,7 +26,7 @@
 {% if run.mode == 'sandbox' %}
     {{ _fa_alert.render({
         variant: 'warning',
-        icon: 'bi-flask',
+        icon: 'nav-magic',
         title: 'policy_wizard.step.review_generate.sandbox_banner.title'|trans,
         body: 'policy_wizard.step.review_generate.sandbox_banner.body'|trans
     }) }}
@@ -49,14 +49,14 @@
     {% endset %}
     {{ _fa_alert.render({
         variant: 'danger',
-        icon: 'bi-exclamation-octagon',
+        icon: 'status-critical',
         title: 'policy_wizard.step.review_generate.conflicts_heading'|trans ~ ' (' ~ ('policy_wizard.review.severity.blocking'|trans) ~ ')',
         body: conflicts_body
     }) }}
 {% else %}
     {{ _fa_alert.render({
         variant: 'success',
-        icon: 'bi-check-circle',
+        icon: 'status-ok',
         body: 'policy_wizard.step.review_generate.conflicts_empty'|trans
     }) }}
 {% endif %}
@@ -146,9 +146,9 @@
                                     {% endif %}
                                 {% elseif row.value_type == 'bool' %}
                                     {% if row.value %}
-                                        {{ pill.render('policy_wizard.review.value.yes'|trans, 'success', {size: 'sm', icon: 'bi-check-circle'}) }}
+                                        {{ pill.render('policy_wizard.review.value.yes'|trans, 'success', {size: 'sm', icon: 'status-ok'}) }}
                                     {% else %}
-                                        {{ pill.render('policy_wizard.review.value.no'|trans, 'neutral', {size: 'sm', icon: 'bi-x-circle'}) }}
+                                        {{ pill.render('policy_wizard.review.value.no'|trans, 'neutral', {size: 'sm', icon: 'status-critical'}) }}
                                     {% endif %}
                                 {% elseif row.value_type == 'count' %}
                                     {{ 'policy_wizard.review.value.count'|trans({'%count%': row.value}) }}

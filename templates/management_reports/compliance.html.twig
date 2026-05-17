@@ -65,7 +65,7 @@
         <div class="col-md-4">
             {% set compliance_color = report.overall_compliance >= 80 ? 'success' : (report.overall_compliance >= 60 ? 'warning' : 'danger') %}
             {{ _fa_feature_card.render({
-                icon: 'clipboard-check',
+                icon: 'nav-clipboard-check',
                 label: 'management_reports.compliance.overall'|trans({}, 'management_reports'),
                 value: report.overall_compliance,
                 unit: '%',

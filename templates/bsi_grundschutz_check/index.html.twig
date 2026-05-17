@@ -165,7 +165,7 @@
     </div>
     {% if report.bausteine|length == 0 %}
         {% include '_components/_empty_state.html.twig' with {
-            icon: 'bi-collection',
+            icon: 'nav-collection',
             title: 'bsi_check.empty.title'|trans({}, 'messages'),
             message: 'bsi_check.empty.message'|trans({}, 'messages'),
         } %}

@@ -135,7 +135,7 @@ export default class extends Controller {
         const icon = this._fileIcon(file.name);
         this.previewTarget.innerHTML =
             `<div class="file-drop__preview-row mt-2 d-flex align-items-center gap-2">` +
-            `<i class="bi bi-${icon} fs-4" aria-hidden="true"></i>` +
+            `<i class="fa-icon fa-icon--${icon} fs-4" aria-hidden="true"></i>` +
             `<div>` +
             `<div class="fw-semibold small">${this._escapeHtml(file.name)}</div>` +
             `<div class="text-muted small">${this._formatSize(file.size)}</div>` +
@@ -145,9 +145,10 @@ export default class extends Controller {
 
     _fileIcon(name) {
         const ext = (name.split('.').pop() || '').toLowerCase();
-        const map = { xlsx: 'file-earmark-spreadsheet-fill', xls: 'file-earmark-spreadsheet-fill',
-            csv: 'file-earmark-text-fill', ods: 'file-earmark-spreadsheet-fill' };
-        return map[ext] || 'file-earmark-fill';
+        // Aurora-namespaced icon names (see assets/styles/fairy-aurora-icons.css)
+        const map = { xlsx: 'nav-file-earmark-spreadsheet', xls: 'nav-file-earmark-spreadsheet',
+            csv: 'filetype-csv', ods: 'nav-file-earmark-spreadsheet' };
+        return map[ext] || 'nav-file-earmark-text';
     }
 
     _formatSize(bytes) {

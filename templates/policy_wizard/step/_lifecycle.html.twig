@@ -22,7 +22,7 @@
 {# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
     variant: 'info',
-    icon: 'bi-mortarboard',
+    icon: 'nav-mortarboard',
     class: 'mb-3'
 } } %}
     {% block alert_body %}
@@ -43,7 +43,7 @@
    compete with the primary help-card above. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
     variant: 'warning',
-    icon: 'bi-exclamation-triangle',
+    icon: 'status-warning',
     class: 'mb-3'
 } } %}
     {% block alert_body %}
@@ -201,11 +201,11 @@
                                 {% if recommended_roles|length > 0 %}
                                     {% if selected_match is not null %}
                                         {% if selected_match.state == 'strict_match' %}
-                                            {{ pill.render('policy_wizard.approver_match.strict_label'|trans, 'success', {size: 'sm', icon: 'bi-check-circle', class: 'mt-1', title: 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')})}) }}
+                                            {{ pill.render('policy_wizard.approver_match.strict_label'|trans, 'success', {size: 'sm', icon: 'status-ok', class: 'mt-1', title: 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')})}) }}
                                         {% elseif selected_match.state == 'weak_match' %}
-                                            {{ pill.render('policy_wizard.approver_match.weak_label'|trans({'%roles%': recommended_roles|join(', ')}), 'warning', {size: 'sm', icon: 'bi-exclamation-triangle', class: 'mt-1', title: 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')})}) }}
+                                            {{ pill.render('policy_wizard.approver_match.weak_label'|trans({'%roles%': recommended_roles|join(', ')}), 'warning', {size: 'sm', icon: 'status-warning', class: 'mt-1', title: 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')})}) }}
                                         {% else %}
-                                            {{ pill.render('policy_wizard.approver_match.mismatch_label'|trans({'%roles%': recommended_roles|join(', ')}), 'warning', {size: 'sm', icon: 'bi-exclamation-triangle', class: 'mt-1', title: 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')})}) }}
+                                            {{ pill.render('policy_wizard.approver_match.mismatch_label'|trans({'%roles%': recommended_roles|join(', ')}), 'warning', {size: 'sm', icon: 'status-warning', class: 'mt-1', title: 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')})}) }}
                                         {% endif %}
                                     {% else %}
                                         <span class="form-text small text-muted mt-1">

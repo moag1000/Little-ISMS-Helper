@@ -167,7 +167,7 @@
                     norm_ref: 'ISO 27001 Clause 4.2, 6.1.3',
                     help_link: path('app_help_glossary') ~ '#glossary-framework',
                     actions: is_granted('ROLE_ADMIN') ? [
-                        { label: 'compliance.framework.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'plus-circle', href: path('app_compliance_framework_new') }
+                        { label: 'compliance.framework.action.new'|trans({}, 'compliance'), variant: 'primary', icon: 'plus', href: path('app_compliance_framework_new') }
                     ] : []
                 }) }}
             {% endif %}

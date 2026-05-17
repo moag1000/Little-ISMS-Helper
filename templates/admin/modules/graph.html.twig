@@ -12,11 +12,11 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'diagram-3', label: 'Modules' },
+        badge: { icon: 'nav-workflow', label: 'Modules' },
         title: 'Modul-Abhängigkeiten',
         subtitle: 'Visualisierung der Modul-Abhängigkeiten',
         actions: [
-            { label: 'common.back_to_overview'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('admin_modules_index') }
+            { label: 'common.back_to_overview'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('admin_modules_index') }
         ]
     }) }}
 

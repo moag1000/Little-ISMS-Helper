@@ -32,13 +32,13 @@
     </div>
 
     {{ _fa_page_header.render({
-        badge: { icon: 'magic', label: ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans },
+        badge: { icon: 'nav-magic', label: ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans },
         title: step_title_key|trans,
         subtitle: step_subtitle_key|trans,
         actions: [
             { label: 'policy_wizard.action.cancel'|trans,
               variant: 'ghost',
-              icon: 'x-lg',
+              icon: 'ui-close',
               href: path('app_policy_wizard_index') }
         ]
     }) }}

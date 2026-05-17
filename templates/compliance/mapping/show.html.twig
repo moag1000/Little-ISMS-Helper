@@ -15,12 +15,12 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'arrow-left-right', label: 'compliance.mapping.title'|trans({}, 'compliance') },
+        badge: { icon: 'util-arrow-left', label: 'compliance.mapping.title'|trans({}, 'compliance') },
         title: mapping.sourceRequirement.requirementId ~ ' → ' ~ mapping.targetRequirement.requirementId,
         subtitle: 'Compliance Mapping',
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_compliance_mapping_edit', {id: mapping.id}) },
-            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_compliance_mapping_index') }
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_compliance_mapping_edit', {id: mapping.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_compliance_mapping_index') }
         ]
     }) }}
 

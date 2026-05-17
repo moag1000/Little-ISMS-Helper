@@ -15,11 +15,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'people', label: 'nav.interested_parties'|trans({}, 'nav') },
+        badge: { icon: 'nav-people', label: 'nav.interested_parties'|trans({}, 'nav') },
         title: interested_party.name,
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_interested_party_edit', {id: interested_party.id}) },
-            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_interested_party_index') }
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('app_interested_party_edit', {id: interested_party.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_interested_party_index') }
         ]
     }) }}
 

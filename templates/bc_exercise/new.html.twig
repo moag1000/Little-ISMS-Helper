@@ -10,7 +10,7 @@
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.bcm'|trans({}, 'nav', 'nav'), url: path('app_bc_exercise_index'), icon: 'bi-shield-exclamation' },
+            { label: 'nav.bcm'|trans({}, 'nav', 'nav'), url: path('app_bc_exercise_index'), icon: 'nav-shield-alert' },
             { label: 'bc_exercises.page.title'|trans({}, 'bc_exercises'), url: path('app_bc_exercise_index') },
             { label: 'bc_exercises.action.add_new'|trans({}, 'bc_exercises') }
         ]
@@ -19,9 +19,9 @@
     {# Page Header #}
     {{ _fa_page_header.render({
         title: 'bc_exercises.action.add_new'|trans({}, 'bc_exercises'),
-        badge: { icon: 'plus-circle', label: '' },
+        badge: { icon: 'plus', label: '' },
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), href: path('app_bc_exercise_index'), variant: 'secondary', icon: 'arrow-left' }
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_bc_exercise_index'), variant: 'secondary', icon: 'util-arrow-left' }
         ]
     }) }}
 

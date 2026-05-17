@@ -23,12 +23,12 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'file-text', label: 'Policy' },
+        badge: { icon: 'nav-file-earmark-text', label: 'Policy' },
         title: 'compliance_policy.page.title'|trans({}, 'compliance_policy'),
         subtitle: 'compliance_policy.page.lead'|trans({}, 'compliance_policy')
     }) }}
 
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'd-flex gap-2' } } %}
         {% block alert_body %}<div> <strong>{{ 'compliance_policy.hint.heading'|trans({}, 'compliance_policy') }}</strong> <div class="small">{{ 'compliance_policy.hint.body'|trans({}, 'compliance_policy') }}</div> </div>{% endblock %}
     {% endembed %}
 

@@ -222,7 +222,7 @@ export default class extends Controller {
                         data-guided-tour-action="close">&times;</button>
             </div>
             <h3 id="guided-tour-title" class="guided-tour-title">
-                ${step.icon ? `<i class="${this.escapeHtml(step.icon)}" aria-hidden="true"></i> ` : ''}${this.escapeHtml(step.title)}
+                ${step.icon ? `<i class="fa-icon fa-icon--${this.escapeHtml(this.normalizeIcon(step.icon))}" aria-hidden="true"></i> ` : ''}${this.escapeHtml(step.title)}
             </h3>
             <div id="guided-tour-body" class="guided-tour-body">${this.escapeHtml(step.body)}</div>
             <div class="guided-tour-footer">
@@ -433,7 +433,7 @@ export default class extends Controller {
         hint.className = 'guided-tour-mobile-hint alert alert-info alert-dismissible fade show';
         hint.setAttribute('role', 'status');
         hint.innerHTML = `
-            <i class="bi bi-phone /* TODO: design Aurora fa-icon--ui-phone */ /* TODO: design Aurora fa-icon--phone */" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--phone" aria-hidden="true"></i>
             <strong>${this.escapeHtml(this.translations('mobile_title'))}</strong>
             ${this.escapeHtml(this.translations('mobile_body'))}
             <button type="button" class="btn-close" aria-label="Close"
@@ -465,5 +465,50 @@ export default class extends Controller {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
+    }
+
+    /**
+     * Normalize legacy Bootstrap-Icon names (e.g. "bi-stars") to Aurora
+     * fa-icon names so the rendered <i> matches a class in
+     * assets/styles/fairy-aurora-icons.css. Server-side data from
+     * GuidedTourService still uses `bi-*` strings — this keeps that data
+     * working without a backfill migration.
+     */
+    normalizeIcon(raw) {
+        if (!raw) return 'ui-info';
+        const stripped = raw.startsWith('bi-') ? raw.slice(3) : raw;
+        const aliases = {
+            'building-shield': 'nav-building-shield',
+            'person-badge': 'role',
+            'life-preserver': 'recovery',
+            'stars': 'ui-stars',
+            'grid-3x3-gap': 'nav-grid',
+            'grid-3x3': 'nav-grid',
+            'speedometer2': 'nav-dashboard',
+            'bridge': 'nav-target',
+            'command': 'ui-magic',
+            'box-seam': 'nav-boxes',
+            'keyboard': 'ui-key',
+            'diagram-3': 'nav-workflow',
+            'diagram-2': 'nav-workflow',
+            'recycle': 'util-refresh',
+            'check2-circle': 'status-ok',
+            'shield-lock': 'nav-shield-lock',
+            'file-earmark-slides': 'nav-file-pdf',
+            'heart-pulse': 'nav-heart-pulse',
+            'clipboard-check': 'nav-clipboard-check',
+            'exclamation-triangle': 'status-warning',
+            'exclamation-diamond': 'status-warning',
+            'journal-text': 'nav-journal-text',
+            'search': 'ui-search',
+            'file-earmark-text': 'nav-file-earmark-text',
+            'table': 'nav-grid',
+            'shield-exclamation': 'nav-shield-alert',
+            'graph-up-arrow': 'nav-bar-chart',
+            'robot': 'nav-robot',
+            'magic': 'nav-magic',
+            'book': 'nav-book',
+        };
+        return aliases[stripped] || stripped;
     }
 }

@@ -15,11 +15,11 @@
 } %}
 
 {{ _fa_page_header.render({
-    badge: { icon: 'speedometer2', label: 'nav.risk_appetite'|trans({}, 'nav') },
+    badge: { icon: 'nav-dashboard', label: 'nav.risk_appetite'|trans({}, 'nav') },
     title: 'risk_appetite.title'|trans({}, 'risk_appetite'),
     subtitle: 'risk_appetite.description'|trans({}, 'risk_appetite'),
     actions: is_granted('ROLE_ADMIN') ? [
-        { label: 'risk_appetite.new'|trans({}, 'risk_appetite'), variant: 'primary', icon: 'plus-lg', href: path('app_risk_appetite_new') }
+        { label: 'risk_appetite.new'|trans({}, 'risk_appetite'), variant: 'primary', icon: 'plus', href: path('app_risk_appetite_new') }
     ] : []
 }) }}
 

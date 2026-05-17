@@ -16,10 +16,10 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-exclamation', label: 'crisis_team.title'|trans({}, 'crisis_team') },
+        badge: { icon: 'nav-shield-alert', label: 'crisis_team.title'|trans({}, 'crisis_team') },
         title: 'crisis_team.title'|trans({}, 'crisis_team'),
         actions: [
-            { label: 'crisis_team.new'|trans({}, 'crisis_team'), href: path('app_crisis_team_new'), variant: 'primary', icon: 'plus-circle' }
+            { label: 'crisis_team.new'|trans({}, 'crisis_team'), href: path('app_crisis_team_new'), variant: 'primary', icon: 'plus' }
         ]
     }) }}
 {% set _global_hints = alva_hints('crisis_team_index') %}
@@ -47,7 +47,7 @@
             mood: 'sleeping',
             title: 'crisis_team.empty'|trans({}, 'crisis_team'),
             actions: [
-                { label: 'crisis_team.new'|trans({}, 'crisis_team'), variant: 'primary', icon: 'plus-circle', href: path('app_crisis_team_new') }
+                { label: 'crisis_team.new'|trans({}, 'crisis_team'), variant: 'primary', icon: 'plus', href: path('app_crisis_team_new') }
             ]
         }) }}
     {% else %}

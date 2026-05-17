@@ -15,12 +15,12 @@
     ]
 } %}
 {{ _fa_page_header.render({
-    badge: { icon: 'clipboard2-check', label: 'audit_finding.page.title'|trans({}, 'audits') },
+    badge: { icon: 'nav-clipboard-check', label: 'audit_finding.page.title'|trans({}, 'audits') },
     title: 'audit_finding.page.title'|trans({}, 'audits'),
     subtitle: 'audit_finding.page.subtitle'|trans({}, 'audits'),
     actions: [
-        { label: 'audit_finding.action.new'|trans({}, 'audits'), href: path('app_audit_finding_new'), variant: 'primary', icon: 'plus-lg' }
-    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'audit_finding', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
+        { label: 'audit_finding.action.new'|trans({}, 'audits'), href: path('app_audit_finding_new'), variant: 'primary', icon: 'plus' }
+    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'audit_finding', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
 }) }}
 {% set _global_hints = alva_hints('audit_finding_index') %}
 {% if _global_hints|length > 0 %}
@@ -33,7 +33,7 @@
 <div class="container-fluid py-4">
 
     {% if overdue_count > 0 %}
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-exclamation-triangle' } } %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning' } } %}
             {% block alert_body %}{{ 'audit_finding.alert.overdue'|trans({'%count%': overdue_count}, 'audits') }}{% endblock %}
         {% endembed %}
     {% endif %}
@@ -80,7 +80,7 @@
             text: 'audit_finding.empty.body'|trans({}, 'audits'),
             norm_ref: 'ISO 27001 Klausel 9.2 · ISO 19011',
             actions: [
-                { label: 'audit_finding.action.new'|trans({}, 'audits'), variant: 'primary', icon: 'plus-lg', href: path('app_audit_finding_new') }
+                { label: 'audit_finding.action.new'|trans({}, 'audits'), variant: 'primary', icon: 'plus', href: path('app_audit_finding_new') }
             ],
             help_link: 'audit_finding.help.empty_link'|trans({}, 'audits')
         }) }}

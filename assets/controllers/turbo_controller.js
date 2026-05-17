@@ -222,7 +222,7 @@ export default class extends Controller {
     notify(message, type = 'info') {
         const html = `
             <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                <i class="bi bi-${this.getIconForType(type)}"></i> ${message}
+                <i class="fa-icon fa-icon--${this.getIconForType(type)}" aria-hidden="true"></i> ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         `;
@@ -231,14 +231,15 @@ export default class extends Controller {
     }
 
     getIconForType(type) {
+        // Aurora-namespaced names (mapped from former Bootstrap-Icon ids)
         const icons = {
-            'success': 'check-circle',
-            'danger': 'exclamation-triangle',
-            'warning': 'exclamation-circle',
-            'info': 'info-circle'
+            'success': 'status-ok',
+            'danger': 'status-critical',
+            'warning': 'status-warning',
+            'info': 'status-info'
         };
 
-        return icons[type] || 'info-circle';
+        return icons[type] || 'status-info';
     }
 
     handleBeforeCache(event) {

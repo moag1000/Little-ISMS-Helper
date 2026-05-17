@@ -13,12 +13,12 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'arrows-collapse', label: 'reuse.page.title'|trans({}, 'messages') },
+        badge: { icon: 'nav-collapse', label: 'reuse.page.title'|trans({}, 'messages') },
         title: 'reuse.page.title'|trans({}, 'messages'),
         subtitle: 'reuse.page.description'|trans({}, 'messages'),
         actions: [
-            { label: 'reuse.cta.heatmap'|trans({}, 'messages'), variant: 'ghost', icon: 'grid-3x3-gap', href: path('app_data_reuse_heatmap') },
-            { label: 'reuse.cta.portfolio'|trans({}, 'messages'), variant: 'primary', icon: 'graph-up-arrow', href: path('app_management_reports_portfolio') }
+            { label: 'reuse.cta.heatmap'|trans({}, 'messages'), variant: 'ghost', icon: 'nav-grid', href: path('app_data_reuse_heatmap') },
+            { label: 'reuse.cta.portfolio'|trans({}, 'messages'), variant: 'primary', icon: 'nav-bar-chart', href: path('app_management_reports_portfolio') }
         ]
     }) }}
 
@@ -64,7 +64,7 @@
     {% endembed %}
 
     {# 9001-Brücke für Junior-Einstieg #}
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-lightbulb', class: 'small mb-4' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'ui-lightbulb', class: 'small mb-4' } } %}
         {% block alert_body %}<strong>{{ 'reuse.iso9001_bridge.title'|trans({}, 'messages') }}</strong> {{ 'reuse.iso9001_bridge.text'|trans({}, 'messages') }}{% endblock %}
     {% endembed %}
 
@@ -162,7 +162,7 @@
         </div>
     </div>
 
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'small mt-4 mb-0' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'small mt-4 mb-0' } } %}
         {% block alert_body %}{{ 'reuse.page.footer_hint'|trans({}, 'messages') }}{% endblock %}
     {% endembed %}
     </main>

@@ -8,7 +8,7 @@
     {# Breadcrumb #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'Incidents', url: path('app_incident_index'), icon: 'bi-exclamation-triangle' },
+            { label: 'Incidents', url: path('app_incident_index'), icon: 'status-warning' },
             { label: incident.incidentNumber, url: path('app_incident_show', {id: incident.id}) },
             { label: 'BCM Impact Analysis' }
         ]
@@ -18,10 +18,10 @@
     {% include '_components/_page_header.html.twig' with {
         title: 'BCM Impact Analysis',
         subtitle: incident.title,
-        icon: 'bi-diagram-3',
+        icon: 'nav-workflow',
         actions: [
-            { label: 'Back to Incident', url: path('app_incident_show', {id: incident.id}), variant: 'secondary', icon: 'bi-arrow-left' },
-            { label: 'Download PDF', url: path('app_incident_bcm_impact_report', {id: incident.id}), variant: 'primary', icon: 'bi-file-earmark-pdf' }
+            { label: 'Back to Incident', url: path('app_incident_show', {id: incident.id}), variant: 'secondary', icon: 'util-arrow-left' },
+            { label: 'Download PDF', url: path('app_incident_bcm_impact_report', {id: incident.id}), variant: 'primary', icon: 'nav-file-pdf' }
         ]
     } %}
 

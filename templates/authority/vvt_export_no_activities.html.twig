@@ -9,13 +9,13 @@
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'eu_authorities.vvt.title'|trans, icon: 'bi-shield-check' },
+            { label: 'eu_authorities.vvt.title'|trans, icon: 'shield-check' },
             { label: 'eu_authorities.vvt.subtitle'|trans }
         ]
     } %}
 
     {{ _fa_page_header.render({
-        badge:    { icon: 'file-earmark-text', label: 'eu_authorities.vvt.title'|trans },
+        badge:    { icon: 'nav-file-earmark-text', label: 'eu_authorities.vvt.title'|trans },
         title:    'eu_authorities.vvt.title'|trans,
         subtitle: 'eu_authorities.vvt.subtitle'|trans,
         actions: []

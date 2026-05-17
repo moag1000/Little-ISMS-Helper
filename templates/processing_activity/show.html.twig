@@ -10,7 +10,7 @@
     {# Breadcrumb #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'GDPR', url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
+            { label: 'GDPR', url: path('app_processing_activity_index'), icon: 'shield-check' },
             { label: 'VVT', url: path('app_processing_activity_index') },
             { label: processing_activity.name }
         ]
@@ -21,13 +21,13 @@
 
     {# Page Header #}
     {{ _fa_page_header.render({
-        badge:    { icon: 'file-earmark-text', label: 'GDPR' },
+        badge:    { icon: 'nav-file-earmark-text', label: 'GDPR' },
         title:    processing_activity.name,
         subtitle: 'processing_activity.show.subtitle'|trans({}, 'privacy'),
         actions: [
-            { label: 'Edit',         variant: 'primary', icon: 'pencil',     href: path('app_processing_activity_edit', {id: processing_activity.id}) },
+            { label: 'Edit',         variant: 'primary', icon: 'ui-edit',     href: path('app_processing_activity_edit', {id: processing_activity.id}) },
             { label: 'Clone',        variant: 'ghost',   icon: 'files',      href: '#', attrs: { 'data-action': 'clone' } },
-            { label: 'Back to List', variant: 'ghost',   icon: 'arrow-left', href: path('app_processing_activity_index') }
+            { label: 'Back to List', variant: 'ghost',   icon: 'util-arrow-left', href: path('app_processing_activity_index') }
         ]
     }) }}
 
@@ -250,9 +250,9 @@
                                     <td>{{ check|replace({'_': ' '})|title }}</td>
                                     <td>
                                         {% if passed %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle-fill', content: 'Pass' } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'Pass' } %}
                                         {% else %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle-fill', content: 'Fail' } %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'status-critical', content: 'Fail' } %}
                                         {% endif %}
                                     </td>
                                 </tr>

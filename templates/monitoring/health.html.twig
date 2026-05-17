@@ -132,7 +132,7 @@
                             {{ 'monitoring.schema.preview_open'|trans({}, 'monitoring') }}
                         </summary>
 
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'bi-exclamation-triangle-fill', class: 'mt-2 mb-2' } } %}
+                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'status-warning', class: 'mt-2 mb-2' } } %}
                             {% block alert_body %}<h3 class="h6 mb-1"> <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'monitoring.schema.preview_warning_title'|trans({}, 'monitoring') }} </h3> <p class="mb-0 small"> {{ 'monitoring.schema.preview_warning_body'|trans({}, 'monitoring') }} </p>{% endblock %}
                         {% endembed %}
 

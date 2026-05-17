@@ -17,11 +17,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-lock', label: 'nav.mfa'|trans({}, 'nav') },
+        badge: { icon: 'nav-shield-lock', label: 'nav.mfa'|trans({}, 'nav') },
         title: mfa_token.tokenTypeName,
         subtitle: 'mfa_token.details.subtitle'|trans({}, 'mfa'),
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('admin_mfa_index') }
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('admin_mfa_index') }
         ]
     }) }}
 
@@ -57,16 +57,16 @@
                         <dt class="col-sm-4">{{ 'mfa_token.field.status'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.isActive %}
-                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'mfa_token.status.active'|trans({}, 'mfa') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'status-ok', content: 'mfa_token.status.active'|trans({}, 'mfa') } %}
                             {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'bi-dash-circle', content: 'mfa_token.status.inactive'|trans({}, 'mfa') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'ui-x', content: 'mfa_token.status.inactive'|trans({}, 'mfa') } %}
                             {% endif %}
                         </dd>
 
                         <dt class="col-sm-4">{{ 'mfa_token.field.is_primary'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
                             {% if mfa_token.isPrimary %}
-                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-star-fill', content: 'mfa_token.primary'|trans({}, 'mfa') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'ui-star', content: 'mfa_token.primary'|trans({}, 'mfa') } %}
                             {% else %}
                                 <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
                             {% endif %}

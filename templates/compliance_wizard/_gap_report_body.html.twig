@@ -58,7 +58,7 @@
 </div>
 
 {% if effort_estimated_count == 0 %}
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'mb-4' } } %}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-4' } } %}
         {% block alert_body %}{{ 'gap_report.info.no_estimates'|trans({}, 'gap_report') }}{% endblock %}
     {% endembed %}
 {% else %}

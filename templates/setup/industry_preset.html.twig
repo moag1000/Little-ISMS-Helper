@@ -42,7 +42,7 @@
     {{ faAlert.render(
         'setup.preset.info.message'|trans({}, 'setup'),
         'info',
-        { title: 'setup.preset.info.title'|trans({}, 'setup'), icon: 'bi-lightbulb', withAlva: true }
+        { title: 'setup.preset.info.title'|trans({}, 'setup'), icon: 'ui-lightbulb', withAlva: true }
     )|raw }}
 
     <form method="post" action="{{ path('setup_industry_preset_apply') }}" class="fa-setup-preset-form mt-3"
@@ -78,13 +78,13 @@
                         </div>
                         <div class="fa-toggle-card__sub">{{ preset.description }}</div>
                         <div class="mt-2 d-flex flex-wrap gap-2 align-items-center">
-                            {{ pill.render('setup.preset.stats.modules'|trans({'%count%': preset.modules_count}, 'setup'), 'neutral', {size: 'sm', icon: 'bi-grid-3x3-gap-fill'}) }}
-                            {{ pill.render('setup.preset.stats.frameworks'|trans({'%count%': preset.frameworks_count}, 'setup'), 'neutral', {size: 'sm', icon: 'bi-shield-check'}) }}
+                            {{ pill.render('setup.preset.stats.modules'|trans({'%count%': preset.modules_count}, 'setup'), 'neutral', {size: 'sm', icon: 'nav-grid'}) }}
+                            {{ pill.render('setup.preset.stats.frameworks'|trans({'%count%': preset.frameworks_count}, 'setup'), 'neutral', {size: 'sm', icon: 'shield-check'}) }}
                             {% if preset.controls_count > 0 %}
-                                {{ pill.render('setup.preset.stats.controls'|trans({'%count%': preset.controls_count}, 'setup'), 'neutral', {size: 'sm', icon: 'bi-check2-square'}) }}
+                                {{ pill.render('setup.preset.stats.controls'|trans({'%count%': preset.controls_count}, 'setup'), 'neutral', {size: 'sm', icon: 'ui-check'}) }}
                             {% endif %}
                             {% if preset.documents_count > 0 %}
-                                {{ pill.render('setup.preset.stats.documents'|trans({'%count%': preset.documents_count}, 'setup'), 'neutral', {size: 'sm', icon: 'bi-file-earmark-text'}) }}
+                                {{ pill.render('setup.preset.stats.documents'|trans({'%count%': preset.documents_count}, 'setup'), 'neutral', {size: 'sm', icon: 'nav-file-earmark-text'}) }}
                             {% endif %}
                         </div>
                         {% if preset.primary_frameworks|length > 0 %}
@@ -122,7 +122,7 @@
 
         {{ nav.render({
             back: { url: path('setup_step6_organisation_info'), label: 'setup.common.back'|trans({}, 'setup') },
-            next: { submit: true, label: 'setup.preset.actions.apply'|trans({}, 'setup'), icon: 'bi-rocket-takeoff' }
+            next: { submit: true, label: 'setup.preset.actions.apply'|trans({}, 'setup'), icon: 'rocket-takeoff' }
         })|raw }}
     </form>
 {% endblock %}

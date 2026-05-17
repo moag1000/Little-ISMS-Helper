@@ -5,7 +5,7 @@
 {# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
     variant: 'info',
-    icon: 'bi-mortarboard',
+    icon: 'nav-mortarboard',
     class: 'mb-3'
 } } %}
     {% block alert_body %}
@@ -93,7 +93,7 @@
                     {
                         label: 'policy_wizard.step.organisation_scope.field.in_scope_locations.empty_state.cta_label'|trans,
                         variant: 'primary',
-                        icon: 'plus-circle',
+                        icon: 'plus',
                         href: path('app_location_new')
                     }
                 ]

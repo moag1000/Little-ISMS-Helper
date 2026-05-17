@@ -13,11 +13,11 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-lock', label: role.systemRole ? 'role_management.badge.system'|trans({}, 'role_management') : 'role_management.badge.custom'|trans({}, 'role_management') },
+        badge: { icon: 'nav-shield-lock', label: role.systemRole ? 'role_management.badge.system'|trans({}, 'role_management') : 'role_management.badge.custom'|trans({}, 'role_management') },
         title: role.name,
         actions: [
-            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('role_management_edit', {id: role.id}) },
-            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('role_management_index') }
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'ui-edit', href: path('role_management_edit', {id: role.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('role_management_index') }
         ]
     }) }}
 

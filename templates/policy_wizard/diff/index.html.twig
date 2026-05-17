@@ -20,7 +20,7 @@
     {% set severityVariant = severity == 'major' ? 'danger' : (severity == 'moderate' ? 'warning' : 'info') %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'arrow-left-right', label: 'policy_wizard.diff.title'|trans({}, 'policy_wizard') },
+        badge: { icon: 'util-arrow-left', label: 'policy_wizard.diff.title'|trans({}, 'policy_wizard') },
         title: 'policy_wizard.diff.title'|trans({}, 'policy_wizard'),
         subtitle: 'policy_wizard.diff.subtitle'|trans({
             '%total%': diff.totalChanges(),

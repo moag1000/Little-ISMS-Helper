@@ -37,7 +37,7 @@
         {{ faAlert.render(
             'setup.step7.recommendations.description'|trans({}, 'setup'),
             'info',
-            { title: 'setup.step7.recommendations.title'|trans({}, 'setup'), icon: 'bi-lightbulb' }
+            { title: 'setup.step7.recommendations.title'|trans({}, 'setup'), icon: 'ui-lightbulb' }
         )|raw }}
     {% endif %}
 
@@ -135,11 +135,11 @@
         <div class="fa-nav-bar">
             <div class="fa-nav-bar__left">
                 {{ btn.link(path('setup_step6_organisation_info'), 'setup.common.back'|trans({}, 'setup'),
-                   { variant: 'secondary', icon: 'bi-arrow-left' }) }}
+                   { variant: 'secondary', icon: 'util-arrow-left' }) }}
             </div>
             <div class="fa-nav-bar__right">
                 {{ btn.submit('setup.next_step'|trans({'%step%': 8, '%name%': 'setup.steps.compliance_frameworks'|trans({}, 'setup')}, 'messages'),
-                   { variant: 'primary', icon: 'bi-arrow-right', iconAfter: true }) }}
+                   { variant: 'primary', icon: 'util-arrow-right', iconAfter: true }) }}
             </div>
         </div>
     </form>

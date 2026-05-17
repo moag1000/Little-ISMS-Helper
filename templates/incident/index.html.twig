@@ -18,8 +18,8 @@
     title: 'incident.header.title'|trans({}, 'incident'),
     subtitle: 'incident.header.subtitle'|trans({}, 'incident'),
     actions: [
-        { label: 'incident.header.action.report'|trans({}, 'incident'), variant: 'danger', icon: 'exclamation-circle', href: path('app_incident_new') }
-    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'incident', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'file-earmark-excel' }] : [])
+        { label: 'incident.header.action.report'|trans({}, 'incident'), variant: 'danger', icon: 'status-critical', href: path('app_incident_new') }
+    ]|merge(is_granted('ROLE_MANAGER') ? [{ label: 'filtered_export.button.label'|trans({}, 'filtered_export'), href: path('app_filtered_export_entity', { entityType: 'incident', format: 'xlsx' }) ~ (app.request.queryString ? '?' ~ app.request.queryString : ''), variant: 'ghost', icon: 'nav-file-earmark-spreadsheet' }] : [])
 }) }}
 {% set _global_hints = alva_hints('incident_index') %}
 {% if _global_hints|length > 0 %}
@@ -82,7 +82,7 @@
     }) }}
 
     {{ _fa_feature_card.render({
-        icon: 'exclamation-circle',
+        icon: 'status-critical',
         label: 'incident.kpi.open'|trans({}, 'incident'),
         value: openIncidents|length,
         variant: openIncidents|length > 0 ? 'danger' : 'success',
@@ -91,7 +91,7 @@
 
     {% set criticalIncidents = allIncidents|filter(i => i.severity.value == 'critical')|length %}
     {{ _fa_feature_card.render({
-        icon: 'shield-fill-exclamation',
+        icon: 'nav-shield-alert',
         label: 'incident.kpi.critical'|trans({}, 'incident'),
         value: criticalIncidents,
         variant: 'warning'
@@ -103,7 +103,7 @@
         : 0 %}
     <div class="position-relative">
         {{ _fa_feature_card.render({
-            icon: 'clock-history',
+            icon: 'nav-clock-history',
             label: 'incident.kpi.avg_resolution'|trans({}, 'incident'),
             value: avgResolutionDays,
             unit: 'incident.kpi.unit.days'|trans({}, 'incident'),
@@ -124,11 +124,11 @@
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
         <div class="row">
             {% set statuses = {
-                'reported': { label: 'incident.status.reported'|trans({}, 'incident'), icon: 'bi-exclamation-circle', color: 'danger' },
-                'in_investigation': { label: 'incident.status.in_investigation'|trans({}, 'incident'), icon: 'bi-search', color: 'warning' },
-                'in_resolution': { label: 'incident.status.in_resolution'|trans({}, 'incident'), icon: 'bi-arrow-repeat', color: 'info' },
-                'resolved': { label: 'incident.status.resolved'|trans({}, 'incident'), icon: 'bi-check-circle', color: 'success' },
-                'closed': { label: 'incident.status.closed'|trans({}, 'incident'), icon: 'bi-check-circle-fill', color: 'secondary' }
+                'reported': { label: 'incident.status.reported'|trans({}, 'incident'), icon: 'status-critical', color: 'danger' },
+                'in_investigation': { label: 'incident.status.in_investigation'|trans({}, 'incident'), icon: 'ui-search', color: 'warning' },
+                'in_resolution': { label: 'incident.status.in_resolution'|trans({}, 'incident'), icon: 'util-refresh', color: 'info' },
+                'resolved': { label: 'incident.status.resolved'|trans({}, 'incident'), icon: 'status-ok', color: 'success' },
+                'closed': { label: 'incident.status.closed'|trans({}, 'incident'), icon: 'status-ok', color: 'secondary' }
             } %}
             {% for status, data in statuses %}
                 {% set count = allIncidents|filter(i => i.status.value == status)|length %}
@@ -252,10 +252,10 @@
 {# Incidents Table or Empty State #}
 {% if allIncidents|length == 0 %}
     {% include '_components/_empty_state.html.twig' with {
-        icon: 'bi-shield-check',
+        icon: 'shield-check',
         title: 'incident.empty.title'|trans({}, 'incident'),
         description: 'incident.empty.description'|trans({}, 'incident'),
-        action: { label: 'incident.header.action.report'|trans({}, 'incident'), url: path('app_incident_new'), icon: 'bi-exclamation-circle' },
+        action: { label: 'incident.header.action.report'|trans({}, 'incident'), url: path('app_incident_new'), icon: 'status-critical' },
         norm_ref: 'ISO 27001 A.5.24-28 · ISO 9001: Nichtkonformität (10.2)',
         help_link: path('app_help_glossary') ~ '#glossary-incident'
     } %}
@@ -365,7 +365,7 @@
                 </td>
                 <td class="text-center">
                     {% if incident.dataBreachOccurred %}
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-shield-exclamation', title: 'incident.field.data_breach_occurred'|trans({}, 'incident'), content: 'common.yes'|trans({}, 'messages') } %}
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'nav-shield-alert', title: 'incident.field.data_breach_occurred'|trans({}, 'incident'), content: 'common.yes'|trans({}, 'messages') } %}
                     {% else %}
                         <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
                     {% endif %}

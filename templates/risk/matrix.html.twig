@@ -7,11 +7,11 @@
 {% block body %}
 <div class="container py-4">
     {{ _fa_page_header.render({
-        badge: { icon: 'shield-exclamation', label: '5 × 5' },
+        badge: { icon: 'nav-shield-alert', label: '5 × 5' },
         title: 'risk.matrix.title'|trans({}, 'risk'),
         subtitle: 'risk.matrix.description'|trans({}, 'risk'),
         actions: [
-            { label: 'risk.matrix.back_to_risks'|trans({}, 'risk'), variant: 'ghost', icon: 'arrow-left', href: path('app_risk_index') }
+            { label: 'risk.matrix.back_to_risks'|trans({}, 'risk'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_risk_index') }
         ]
     }) }}
 

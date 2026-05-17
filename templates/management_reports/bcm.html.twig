@@ -35,7 +35,7 @@
     <div class="row mb-4">
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'file-earmark-text',
+                icon: 'nav-file-earmark-text',
                 label: 'management_reports.bcm.total_plans'|trans({}, 'management_reports'),
                 value: report.bc_plans.total,
                 variant: 'primary'
@@ -43,7 +43,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'check-circle',
+                icon: 'status-ok',
                 label: 'management_reports.bcm.active_plans'|trans({}, 'management_reports'),
                 value: report.bc_plans.active,
                 variant: 'success'
@@ -51,7 +51,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'hourglass-split',
+                icon: 'ui-hourglass',
                 label: 'management_reports.bcm.draft_plans'|trans({}, 'management_reports'),
                 value: report.bc_plans.draft,
                 variant: 'warning'
@@ -59,7 +59,7 @@
         </div>
         <div class="col-md-3">
             {{ _fa_feature_card.render({
-                icon: 'search',
+                icon: 'ui-search',
                 label: 'management_reports.bcm.review_plans'|trans({}, 'management_reports'),
                 value: report.bc_plans.review,
                 variant: 'primary'

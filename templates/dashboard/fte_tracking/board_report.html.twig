@@ -16,11 +16,11 @@
     } %}
 
     {{ _fa_page_header.render({
-        badge: { icon: 'file-earmark-bar-graph', label: 'fte_tracking.report.badge'|trans({}, 'fte_tracking') },
+        badge: { icon: 'nav-bar-chart', label: 'fte_tracking.report.badge'|trans({}, 'fte_tracking') },
         title: 'fte_tracking.report.title'|trans({}, 'fte_tracking') ~ ' — ' ~ month_label,
         subtitle: 'fte_tracking.report.subtitle'|trans({}, 'fte_tracking'),
         actions: [
-            { label: 'fte_tracking.action.download_pdf'|trans({}, 'fte_tracking'), variant: 'primary', icon: 'file-pdf', href: app.request.uri ~ '&format=pdf' },
+            { label: 'fte_tracking.action.download_pdf'|trans({}, 'fte_tracking'), variant: 'primary', icon: 'nav-file-pdf', href: app.request.uri ~ '&format=pdf' },
             { label: 'fte_tracking.action.download_csv'|trans({}, 'fte_tracking'), variant: 'ghost', icon: 'filetype-csv', href: app.request.uri ~ '&format=csv' }
         ]
     }) }}

@@ -15,11 +15,11 @@
 
 {% block admin_content %}
     {{ _fa_page_header.render({
-        badge: { icon: 'building', label: 'tenant.title'|trans({}, 'tenant') },
+        badge: { icon: 'nav-building', label: 'tenant.title'|trans({}, 'tenant') },
         title: 'tenant.title'|trans({}, 'tenant'),
         subtitle: 'tenant.subtitle'|trans({}, 'tenant'),
         actions: [
-            { label: 'tenant.action.create'|trans({}, 'tenant'), variant: 'primary', icon: 'plus-lg', href: path('tenant_management_new') }
+            { label: 'tenant.action.create'|trans({}, 'tenant'), variant: 'primary', icon: 'plus', href: path('tenant_management_new') }
         ]
     }) }}
 
@@ -35,6 +35,30 @@
             {{ _fa_kpi_card.render({ value: inactiveCount, label: 'tenant.stats.inactive'|trans({}, 'tenant') }) }}
         </div>
     </div>
+
+    {# Orphan-user banner — accounts with NO tenant assignment cannot see any
+       ISMS data and are invisible to per-tenant role pages. Surface them
+       front-and-centre so the admin notices. #}
+    {% if orphanUserCount|default(0) > 0 %}
+        {% embed '_components/_fa_alert.html.twig' with { props: {
+            variant: 'warning',
+            icon: 'status-warning',
+            class: 'mb-4'
+        } } %}
+            {% block alert_body %}
+                <strong>{{ 'tenant.orphan_users.title'|trans({'%count%': orphanUserCount}, 'tenant') }}</strong>
+                <div class="mt-1">{{ 'tenant.orphan_users.body'|trans({}, 'tenant') }}</div>
+                <div class="mt-2">
+                    <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                        {{ 'tenant.orphan_users.cta_user_management'|trans({}, 'tenant') }}
+                    </a>
+                    <a href="{{ path('admin_data_repair_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm ms-1">
+                        {{ 'tenant.orphan_users.cta_data_repair'|trans({}, 'tenant') }}
+                    </a>
+                </div>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
 
     {# Toolbar #}
     <section class="fa-section mb-4">
@@ -72,7 +96,7 @@
                     mood: 'sleeping',
                     title: 'tenant.empty'|trans({}, 'tenant'),
                     actions: [
-                        { label: 'tenant.action.create_first'|trans({}, 'tenant'), variant: 'primary', icon: 'plus-circle', href: path('tenant_management_new') }
+                        { label: 'tenant.action.create_first'|trans({}, 'tenant'), variant: 'primary', icon: 'plus', href: path('tenant_management_new') }
                     ]
                 }) }}
             {% else %}
