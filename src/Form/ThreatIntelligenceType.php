@@ -10,6 +10,7 @@ use App\Entity\ThreatIntelligence;
 use App\Entity\User;
 use App\Form\DataTransformer\JsonArrayTransformer;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Type\JsonTagsType;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -229,24 +230,20 @@ final class ThreatIntelligenceType extends AbstractType
                     ],
                     'help' => 'threat_intelligence.help.threat_actor_attribution',
                 ])
-                ->add('mitreAttackTactics', TextareaType::class, [
+                ->add('mitreAttackTactics', JsonTagsType::class, [
                     'label' => 'threat_intelligence.field.mitre_attack_tactics',
                     'required' => false,
-                    'attr' => [
-                        'rows' => 2,
-                        'placeholder' => 'threat_intelligence.placeholder.mitre_attack_tactics',
-                    ],
+                    'placeholder' => 'threat_intelligence.placeholder.mitre_attack_tactics',
                     'help' => 'threat_intelligence.help.mitre_attack_tactics',
                 ])
-                ->add('mitreAttackTechniques', TextareaType::class, [
+                ->add('mitreAttackTechniques', JsonTagsType::class, [
                     'label' => 'threat_intelligence.field.mitre_attack_techniques',
                     'required' => false,
-                    'attr' => [
-                        'rows' => 2,
-                        'placeholder' => 'threat_intelligence.placeholder.mitre_attack_techniques',
-                    ],
+                    'placeholder' => 'threat_intelligence.placeholder.mitre_attack_techniques',
                     'help' => 'threat_intelligence.help.mitre_attack_techniques',
                 ])
+                // TODO(s5-json-objects): replace with CollectionType + IocEntryType
+                // (STIX 2.1 shape: [{type:ip|domain|hash|url|email, value, context}]).
                 ->add('iocsList', TextareaType::class, [
                     'label' => 'threat_intelligence.field.iocs_list',
                     'required' => false,
@@ -270,10 +267,7 @@ final class ThreatIntelligenceType extends AbstractType
                 ])
             ;
 
-            // JSON array transformers for MITRE / IOC fields
-            foreach (['mitreAttackTactics', 'mitreAttackTechniques', 'iocsList'] as $jsonField) {
-                $builder->get($jsonField)->addModelTransformer(new JsonArrayTransformer());
-            }
+            $builder->get('iocsList')->addModelTransformer(new JsonArrayTransformer());
         }
     }
 
