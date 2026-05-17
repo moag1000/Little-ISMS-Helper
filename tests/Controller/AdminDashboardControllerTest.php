@@ -158,7 +158,7 @@ class AdminDashboardControllerTest extends TestCase
             )
             ->willReturn('<html>Dashboard</html>');
 
-        $response = $this->controller->index();
+        $response = $this->controller->index($user);
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals('<html>Dashboard</html>', $response->getContent());
@@ -211,7 +211,7 @@ class AdminDashboardControllerTest extends TestCase
             ->method('render')
             ->willReturn('<html>Dashboard</html>');
 
-        $response = $this->controller->index();
+        $response = $this->controller->index($user);
 
         $this->assertInstanceOf(Response::class, $response);
     }
@@ -253,7 +253,7 @@ class AdminDashboardControllerTest extends TestCase
             ->method('render')
             ->willReturn('<html>Dashboard</html>');
 
-        $response = $this->controller->index();
+        $response = $this->controller->index($user);
         $this->assertInstanceOf(Response::class, $response);
     }
 
@@ -293,7 +293,7 @@ class AdminDashboardControllerTest extends TestCase
             ->method('render')
             ->willReturn('<html>Dashboard</html>');
 
-        $response = $this->controller->index();
+        $response = $this->controller->index($user);
         $this->assertInstanceOf(Response::class, $response);
     }
 
@@ -354,7 +354,7 @@ class AdminDashboardControllerTest extends TestCase
             ->method('render')
             ->willReturn('<html>Dashboard</html>');
 
-        $response = $this->controller->index();
+        $response = $this->controller->index($user);
         $this->assertInstanceOf(Response::class, $response);
     }
 
@@ -413,7 +413,7 @@ class AdminDashboardControllerTest extends TestCase
             ->method('render')
             ->willReturn('<html>Dashboard</html>');
 
-        $response = $this->controller->index();
+        $response = $this->controller->index($user);
         $this->assertInstanceOf(Response::class, $response);
     }
 
@@ -460,7 +460,7 @@ class AdminDashboardControllerTest extends TestCase
             ->method('render')
             ->willReturn('<html>Dashboard</html>');
 
-        $response = $this->controller->index();
+        $response = $this->controller->index($user);
         $this->assertInstanceOf(Response::class, $response);
     }
 
@@ -505,7 +505,7 @@ class AdminDashboardControllerTest extends TestCase
             ->method('render')
             ->willReturn('<html>Dashboard</html>');
 
-        $response = $this->controller->index();
+        $response = $this->controller->index($user);
         $this->assertInstanceOf(Response::class, $response);
     }
 
