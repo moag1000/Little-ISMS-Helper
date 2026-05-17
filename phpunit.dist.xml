@@ -40,5 +40,20 @@
     </source>
 
     <extensions>
+        <!--
+            DAMA Doctrine Test Bundle is INSTALLED as a dev-dep but the
+            PHPUnit extension is intentionally DISABLED.
+
+            Symfony BP audit item #11 added the bundle so it is ready to
+            use, but the existing test suite (~6900 tests) is built around
+            manual fixture setUp/tearDown + `disableReboot()`, which
+            conflicts with DAMA's per-test transactional rollback (85/97
+            sample tests fail when activated). A future sprint must
+            migrate the fixture-heavy tests to DAMA conventions before
+            this extension is re-enabled.
+
+            To re-enable per-test later:
+              <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+        -->
     </extensions>
 </phpunit>
