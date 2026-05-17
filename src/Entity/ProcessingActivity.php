@@ -514,6 +514,14 @@ class ProcessingActivity
     #[ORM\JoinColumn(nullable: true)]
     private ?User $updatedBy = null;
 
+    /**
+     * Optimistic locking version — Lifecycle X.1.
+     * Prevents concurrent status-transition conflicts (409 response).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     public function __construct()
     {
         $this->implementedControls = new ArrayCollection();
@@ -1283,6 +1291,11 @@ class ProcessingActivity
     {
         $this->updatedBy = $user;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     /**
