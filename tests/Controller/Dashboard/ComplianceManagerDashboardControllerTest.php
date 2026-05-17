@@ -12,6 +12,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Service\ComplianceAnalyticsService;
+use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -41,6 +42,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
     private MockObject $documentRepo;
     private MockObject $tenantContext;
     private MockObject $requirementRepo;
+    private MockObject $roleDashboardService;
     private MockObject $container;
     private MockObject $twig;
     private ComplianceManagerDashboardController $controller;
@@ -55,6 +57,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
         $this->documentRepo = $this->createMock(DocumentRepository::class);
         $this->requirementRepo = $this->createMock(ComplianceRequirementRepository::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
+        $this->roleDashboardService = $this->createMock(RoleDashboardService::class);
         $this->container = $this->createMock(ContainerInterface::class);
         $this->twig = $this->createMock(Environment::class);
 
@@ -73,6 +76,9 @@ class ComplianceManagerDashboardControllerTest extends TestCase
             return 'rendered';
         });
 
+        $this->roleDashboardService->method('getPendingApprovals')->willReturn([]);
+        $this->roleDashboardService->method('getLifecycleStuck')->willReturn([]);
+
         $this->controller = new ComplianceManagerDashboardController(
             $this->analytics,
             $this->frameworkRepo,
@@ -81,6 +87,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
             $this->documentRepo,
             $this->tenantContext,
             $this->requirementRepo,
+            $this->roleDashboardService,
         );
         $this->controller->setContainer($this->container);
     }
@@ -179,6 +186,31 @@ class ComplianceManagerDashboardControllerTest extends TestCase
         $this->assertSame(4, $this->renderedDashboard['at_risk_count']);
         $this->assertSame(67, $this->renderedDashboard['mapping_coverage']);
         $this->assertSame(55.5, $this->renderedDashboard['avg_compliance']);
+    }
+
+    #[Test]
+    public function dashboardPayloadContainsWorkflowTransparencyKeys(): void
+    {
+        // Z.0 — verify pending_approvals + lifecycle_stuck keys exist in payload
+        $tenant = $this->createMock(Tenant::class);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+
+        $this->analytics->method('getFrameworkComparison')->willReturn([
+            'frameworks' => [],
+            'summary' => ['at_risk' => 0, 'cross_mapping_coverage' => null, 'average_compliance' => 0.0,
+                'mandatory_compliance' => 0.0, 'total_frameworks' => 0, 'total_requirements' => 0, 'total_fulfilled' => 0],
+        ]);
+        $this->findingRepo->method('findOpenByTenant')->willReturn([]);
+        $this->auditRepo->method('findUpcoming')->willReturn([]);
+        $this->stubDocumentRepo();
+
+        $this->controller->index();
+
+        $this->assertNotNull($this->renderedDashboard);
+        $this->assertArrayHasKey('pending_approvals', $this->renderedDashboard);
+        $this->assertArrayHasKey('lifecycle_stuck', $this->renderedDashboard);
+        $this->assertIsArray($this->renderedDashboard['pending_approvals']);
+        $this->assertIsArray($this->renderedDashboard['lifecycle_stuck']);
     }
 
     private function stubDocumentRepo(): void

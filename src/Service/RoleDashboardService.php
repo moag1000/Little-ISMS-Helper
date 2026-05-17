@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Tenant;
+use App\Entity\WorkflowInstance;
 use App\Enum\TreatmentStrategy;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
@@ -26,7 +27,7 @@ use Symfony\Bundle\SecurityBundle\Security;
  * - Auditor: Evidence status, findings, audit timeline
  * - Board: Executive summary, RAG status, trends
  */
-final class RoleDashboardService
+class RoleDashboardService
 {
     public function __construct(
         private readonly DashboardStatisticsService $dashboardStatisticsService,
@@ -142,6 +143,10 @@ final class RoleDashboardService
         // Top untreated risks
         $untreatedRisks = $this->getUntreatedRisks($tenant, 10);
 
+        // Z.0 — workflow transparency
+        $pendingApprovals = $this->getPendingApprovals();
+        $lifecycleStuck = $this->getLifecycleStuck();
+
         return [
             'summary' => [
                 'total_risks' => count($this->riskRepository->findAll()),
@@ -164,6 +169,8 @@ final class RoleDashboardService
             ],
             'overdue_treatments' => $overdueTreatments,
             'untreated_risks' => $untreatedRisks,
+            'pending_approvals' => $pendingApprovals,
+            'lifecycle_stuck' => $lifecycleStuck,
         ];
     }
 
@@ -510,7 +517,15 @@ final class RoleDashboardService
         ], array_slice($criticalRisks, 0, $limit));
     }
 
-    private function getPendingApprovals(): array
+    /**
+     * Get pending workflow approvals for the current user.
+     *
+     * Z.0 — made public so DPO/ComplianceManager/RiskManager dashboards
+     * can reuse the same computation without an N+1 query per persona.
+     *
+     * @return array<int, array{id: int|null, title: string, entity_type: string|null, created_at: \DateTimeImmutable|null}>
+     */
+    public function getPendingApprovals(): array
     {
         $user = $this->security->getUser();
         if ($user === null) {
@@ -521,10 +536,70 @@ final class RoleDashboardService
 
         return array_map(fn($w) => [
             'id' => $w->getId(),
-            'title' => $w->getDefinition()?->getName() ?? 'Unknown',
+            'title' => $w->getWorkflow()?->getName() ?? 'Unknown',
             'entity_type' => $w->getEntityType(),
-            'created_at' => $w->getCreatedAt(),
+            'entity_id' => $w->getEntityId(),
+            'created_at' => $w->getStartedAt(),
+            'due_date' => $w->getDueDate(),
+            'status' => $w->getStatus(),
         ], array_slice($pending, 0, 5));
+    }
+
+    /**
+     * Get lifecycle-stuck workflow instances (active but past due).
+     *
+     * Z.0 — surfaces workflows that auto-progression missed, or manual
+     * approver did not act within the deadline. Limit 10 to avoid noise.
+     *
+     * @return WorkflowInstance[]
+     */
+    public function getLifecycleStuck(): array
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            return [];
+        }
+        $overdue = $this->workflowInstanceRepository->findOverdueForTenant($tenant);
+        return array_slice($overdue, 0, 10);
+    }
+
+    /**
+     * Get workflow_info dict for a specific entity (used by show-page banner).
+     *
+     * Z.0 — Returns a pre-computed dict for the `_lifecycle_pending_banner`
+     * macro. Checks whether the entity has an active WorkflowInstance that the
+     * current user is expected to act on. Returns an empty array when no pending
+     * instance exists, preventing an N+1 loop in templates.
+     *
+     * @param string   $entityType  Short entity class name (e.g. 'Risk', 'DataBreach')
+     * @param int|null $entityId    Entity primary key
+     * @return array<string, mixed> workflow_info dict or [] when no pending workflow
+     */
+    public function getWorkflowInfoForEntity(string $entityType, ?int $entityId): array
+    {
+        if ($entityId === null) {
+            return [];
+        }
+
+        $instances = $this->workflowInstanceRepository->findByEntity($entityType, $entityId);
+        $now = new \DateTimeImmutable();
+
+        foreach ($instances as $instance) {
+            if (!in_array($instance->getStatus(), ['pending', 'in_progress'], true)) {
+                continue;
+            }
+            $dueDate = $instance->getDueDate();
+            return [
+                'id'        => $instance->getId(),
+                'title'     => $instance->getWorkflow()?->getName() ?? $entityType . ' Workflow',
+                'status'    => $instance->getStatus(),
+                'due_date'  => $dueDate,
+                'stuck'     => $dueDate !== null && $dueDate < $now,
+                'step_name' => $instance->getCurrentStep()?->getName() ?? null,
+            ];
+        }
+
+        return [];
     }
 
     private function getRecentIncidents(?Tenant $tenant, int $limit): array

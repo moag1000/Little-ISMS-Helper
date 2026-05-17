@@ -16,6 +16,7 @@ use App\Service\DataProtectionImpactAssessmentService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\PreFiller\DpiaPreFiller;
+use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,6 +40,7 @@ class DPIAController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?DpiaPreFiller $dpiaPreFiller = null,
+        private readonly ?RoleDashboardService $roleDashboardService = null,
     ) {}
 
     /**
@@ -526,10 +528,17 @@ class DPIAController extends AbstractController
             $comments = $this->commentRepository->findThread($tenant, 'DataProtectionImpactAssessment', $dataProtectionImpactAssessment->getId());
         }
 
+        // Z.0 — Workflow transparency: pre-compute pending banner for this entity
+        $workflowInfo = $this->roleDashboardService?->getWorkflowInfoForEntity(
+            'DataProtectionImpactAssessment',
+            $dataProtectionImpactAssessment->getId()
+        ) ?? [];
+
         return $this->render('dpia/show.html.twig', [
             'dpia' => $dataProtectionImpactAssessment,
             'compliance_report' => $complianceReport,
             'comments' => $comments,
+            'workflow_info' => $workflowInfo,
         ]);
     }
 

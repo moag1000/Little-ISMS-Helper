@@ -12,6 +12,7 @@ use App\Entity\Tenant;
 use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Repository\ProcessingActivityRepository;
+use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
@@ -37,6 +38,7 @@ class DpoDashboardControllerTest extends TestCase
     private MockObject $dataBreachRepo;
     private MockObject $dpiaRepo;
     private MockObject $processingActivityRepo;
+    private MockObject $roleDashboardService;
     private MockObject $container;
     private MockObject $twig;
     private DpoDashboardController $controller;
@@ -48,6 +50,7 @@ class DpoDashboardControllerTest extends TestCase
         $this->dataBreachRepo         = $this->createMock(DataBreachRepository::class);
         $this->dpiaRepo               = $this->createMock(DataProtectionImpactAssessmentRepository::class);
         $this->processingActivityRepo = $this->createMock(ProcessingActivityRepository::class);
+        $this->roleDashboardService   = $this->createMock(RoleDashboardService::class);
         $this->container              = $this->createMock(ContainerInterface::class);
         $this->twig                   = $this->createMock(Environment::class);
 
@@ -68,11 +71,15 @@ class DpoDashboardControllerTest extends TestCase
             return 'rendered';
         });
 
+        $this->roleDashboardService->method('getPendingApprovals')->willReturn([]);
+        $this->roleDashboardService->method('getLifecycleStuck')->willReturn([]);
+
         $this->controller = new DpoDashboardController(
             $this->tenantContext,
             $this->dataBreachRepo,
             $this->dpiaRepo,
             $this->processingActivityRepo,
+            $this->roleDashboardService,
         );
         $this->controller->setContainer($this->container);
     }
@@ -104,6 +111,9 @@ class DpoDashboardControllerTest extends TestCase
             'activities_needing_dpia',
             'activities_due_review',
             'third_country_transfers',
+            // Z.0 — workflow transparency keys
+            'pending_approvals',
+            'lifecycle_stuck',
         ];
         foreach ($requiredKeys as $key) {
             $this->assertArrayHasKey($key, $this->renderedDashboard, "Missing dashboard key: $key");

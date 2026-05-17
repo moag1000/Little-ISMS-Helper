@@ -31,6 +31,7 @@ use App\Service\RiskService;
 use App\Service\RiskAcceptanceWorkflowService;
 use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
+use App\Service\RoleDashboardService;
 use App\Service\TagFilterService;
 use App\Service\WorkflowAutoProgressionService;
 use App\Service\Risk\RiskIncidentLinkService;
@@ -68,6 +69,7 @@ class RiskController extends AbstractController
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?RiskIncidentLinkService $riskIncidentLinkService = null,
         private readonly ?RiskIncidentLinkRepository $riskIncidentLinkRepository = null,
+        private readonly ?RoleDashboardService $roleDashboardService = null,
     ) {}
 
     protected function getFlashDomain(): string
@@ -972,6 +974,9 @@ class RiskController extends AbstractController
         // F16: structured incident cross-links
         $riskIncidentLinks = $this->riskIncidentLinkRepository?->findByRisk($risk) ?? [];
 
+        // Z.0 — Workflow transparency: pre-compute pending banner for this entity
+        $workflowInfo = $this->roleDashboardService?->getWorkflowInfoForEntity('Risk', $risk->getId()) ?? [];
+
         return $this->render('risk/show.html.twig', [
             'risk' => $risk,
             'auditLogs' => $recentAuditLogs,
@@ -990,6 +995,8 @@ class RiskController extends AbstractController
             'comments' => $comments,
             // F16: structured incident cross-links
             'riskIncidentLinks' => $riskIncidentLinks,
+            // Z.0: lifecycle pending banner data (no N+1)
+            'workflow_info' => $workflowInfo,
         ]);
     }
     /**
