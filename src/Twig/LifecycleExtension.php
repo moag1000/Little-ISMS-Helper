@@ -63,14 +63,4 @@ final class LifecycleExtension
         return $this->registry->getAllowedTransitions($entityClass, $currentStatus);
     }
 
-    /**
-     * All registered status keys for an entity (e.g. for filter chips).
-     *
-     * @return list<string>
-     */
-    #[AsTwigFunction('lifecycle_stages')]
-    public function lifecycleStages(string $entityClass): array
-    {
-        return $this->registry->getStages($entityClass);
-    }
 }

@@ -7,46 +7,34 @@ namespace App\Lifecycle;
 use App\Entity\User;
 use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Workflow\Exception\NotEnabledTransitionException;
+use Symfony\Component\Workflow\Exception\TransitionException;
+use Symfony\Component\Workflow\Registry;
 
 /**
- * Orchestrator for entity status transitions (audit-s3 foundation
- * pattern P-4).
+ * Facade over Symfony Workflow component. Keeps the audit-s3 P-4 API
+ * stable while internally delegating state-machine logic to
+ * `symfony/workflow`.
  *
- * Validates the requested transition against {@see LifecycleRegistry},
- * applies the new status via the entity's `setStatus()` setter, flushes,
- * and emits an `AuditLogger::logCustom()` entry of action
- * `status_change` so the audit-trail satisfies ISO 27001 Cl. 7.5.3.
- *
- * Entity contract:
- *  - Must implement `getStatus(): ?string` and `setStatus(string): void`
- *    (or compatible signatures). Reflection-fallback callers should use
- *    {@see InvalidTransitionException} to surface mismatches.
- *  - The entity must already exist in Doctrine's UnitOfWork
- *    (i.e. `flush()` here applies the status change in-place).
+ * Callers must pass a `$workflowName` registered in
+ * `config/workflows/*.yaml`. The marking_store is `method`, so the
+ * entity must expose `getStatus()/setStatus()`.
  */
 final class LifecycleService
 {
     public function __construct(
-        private readonly LifecycleRegistry $registry,
+        private readonly Registry $workflowRegistry,
         private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
-    ) {
-    }
+    ) {}
 
     /**
-     * Transition an entity's status with validation + audit logging.
-     *
-     * @param object      $entity        Entity instance with getStatus/setStatus
-     * @param string      $targetStatus  Desired new status key
-     * @param User|null   $user          Acting user (optional — for log enrichment)
-     * @param string|null $reason        Optional human-readable rationale
-     *
-     * @throws InvalidTransitionException when the transition is not allowed
-     * @throws \LogicException            when the entity lacks getStatus/setStatus
+     * @throws InvalidTransitionException
      */
     public function transition(
         object $entity,
-        string $targetStatus,
+        string $workflowName,
+        string $transitionName,
         ?User $user = null,
         ?string $reason = null,
     ): void {
@@ -57,55 +45,44 @@ final class LifecycleService
             ));
         }
 
+        $workflow = $this->workflowRegistry->get($entity, $workflowName);
         $current = (string) $entity->getStatus();
-        $entityClass = $entity::class;
 
-        if (!$this->registry->isValidTransition($entityClass, $current, $targetStatus)) {
-            $allowed = $this->registry->getAllowedTransitions($entityClass, $current);
+        try {
+            $workflow->apply($entity, $transitionName, [
+                'user' => $user,
+                'reason' => $reason,
+            ]);
+        } catch (NotEnabledTransitionException $e) {
+            $allowed = array_map(
+                static fn ($t) => $t->getName(),
+                $workflow->getEnabledTransitions($entity),
+            );
             throw new InvalidTransitionException(
                 message: sprintf(
-                    'Invalid lifecycle transition for %s: %s → %s. Allowed: %s.',
-                    $entityClass,
+                    'Transition "%s" not enabled for %s in state "%s". Allowed: %s.',
+                    $transitionName,
+                    $entity::class,
                     $current,
-                    $targetStatus,
                     $allowed === [] ? '<none>' : implode(', ', $allowed),
                 ),
-                entityClass: $entityClass,
+                entityClass: $entity::class,
                 fromStatus: $current,
-                toStatus: $targetStatus,
+                toStatus: '<unknown>',
                 allowedTransitions: $allowed,
+                previous: $e,
+            );
+        } catch (TransitionException $e) {
+            throw new InvalidTransitionException(
+                message: $e->getMessage(),
+                entityClass: $entity::class,
+                fromStatus: $current,
+                toStatus: '<unknown>',
+                allowedTransitions: [],
+                previous: $e,
             );
         }
 
-        $entity->setStatus($targetStatus);
         $this->entityManager->flush();
-
-        $entityId = null;
-        if (method_exists($entity, 'getId')) {
-            $rawId = $entity->getId();
-            if (is_int($rawId)) {
-                $entityId = $rawId;
-            } elseif (is_string($rawId) && ctype_digit($rawId)) {
-                $entityId = (int) $rawId;
-            }
-        }
-
-        $this->auditLogger->logCustom(
-            action: 'status_change',
-            entityType: $this->auditLogger->getEntityTypeName($entity),
-            entityId: $entityId,
-            oldValues: ['status' => $current],
-            newValues: [
-                'status' => $targetStatus,
-                'reason' => $reason,
-            ],
-            description: sprintf(
-                'Lifecycle transition: %s → %s%s',
-                $current,
-                $targetStatus,
-                $reason !== null && $reason !== '' ? ' (' . $reason . ')' : '',
-            ),
-            userName: $user?->getEmail(),
-        );
     }
 }

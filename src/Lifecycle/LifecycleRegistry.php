@@ -5,23 +5,16 @@ declare(strict_types=1);
 namespace App\Lifecycle;
 
 /**
- * Declarative lifecycle registry — Single Source of Truth for status
- * lifecycles across entities (audit-s3 foundation pattern P-4).
+ * UI-helper metadata only. Transition logic lives in Symfony Workflow
+ * config (`config/workflows/*.yaml`). This class survives to keep the
+ * LifecycleExtension Twig helper (tone/label rendering) working.
  *
- * CLAUDE.md mandates the canonical 5-stage flow
- * `draft → in_review → approved → published → archived` plus the
- * documented side-paths `in_review → draft` and `archived → published`.
+ * The static stage maps (STANDARD_5_STAGE, FINDING_4_STAGE, CAPA_STAGES)
+ * are retained solely to back the `#[Lifecycle]` attribute pattern used
+ * on entity classes — they inform the Twig helpers (tone, transitions,
+ * stages) without containing any transition-enforcement logic.
  *
- * Per-entity overrides happen via the {@see Lifecycle} attribute on the
- * entity class. Entities without the attribute fall back to
- * {@see STANDARD_5_STAGE}.
- *
- * Tone-values map to Aurora v4 status-pill variants. Aurora supports the
- * variants `primary`, `accent`, `success`, `warning`, `danger`, `neutral`.
- * Semantic tones used here (`info`, `muted`) are translated to valid
- * Aurora variants by the LifecycleExtension before rendering — keeping
- * the registry semantically rich without leaking design-tokens.
- *
+ * @phpstan-type ToneMap array<string, string>
  * @phpstan-type LifecycleStage array{transitions: array<int, string>, tone: string}
  * @phpstan-type LifecycleMap array<string, LifecycleStage>
  */
@@ -29,13 +22,6 @@ final class LifecycleRegistry
 {
     /**
      * Canonical 5-stage flow per CLAUDE.md.
-     *
-     * Transitions matrix:
-     *  - draft     → in_review
-     *  - in_review → approved | draft
-     *  - approved  → published
-     *  - published → archived
-     *  - archived  → published
      *
      * @var LifecycleMap
      */
@@ -65,12 +51,6 @@ final class LifecycleRegistry
     /**
      * AuditFinding / CorrectiveAction discovery-style lifecycle.
      *
-     * Transitions matrix:
-     *  - open        → in_progress
-     *  - in_progress → resolved | open
-     *  - resolved    → closed | in_progress
-     *  - closed      → (terminal)
-     *
      * @var LifecycleMap
      */
     public const array FINDING_4_STAGE = [
@@ -94,15 +74,6 @@ final class LifecycleRegistry
 
     /**
      * Corrective Action lifecycle (ISO 27001 Cl. 10.1).
-     *
-     * planned → in_progress → completed → verified_effective (END)
-     *                              ↓                ↑
-     *                              ↓        (success path)
-     *                              ↓
-     *                          verified_ineffective → triggers Tier-1 AlvaHint
-     *                                                  + auto-pre-fills Folge-CAPA.
-     *
-     * cancelled is a terminal opt-out for actions abandoned before completion.
      *
      * @var LifecycleMap
      */
@@ -131,6 +102,16 @@ final class LifecycleRegistry
             'transitions' => [],
             'tone' => 'muted',
         ],
+    ];
+
+    /** @var ToneMap */
+    private const array TONE_MAP = [
+        'draft' => 'neutral',
+        'in_review' => 'info',
+        'approved' => 'success',
+        'published' => 'primary',
+        'archived' => 'muted',
+        'deleted' => 'danger',
     ];
 
     /**
@@ -175,22 +156,24 @@ final class LifecycleRegistry
     }
 
     /**
-     * Semantic tone for the given status (raw registry value — may be
-     * `info`/`muted`/etc.; map to Aurora variants via LifecycleExtension).
+     * Semantic tone for the given status. Checks the entity-class lifecycle
+     * map first, then falls back to the status-name TONE_MAP for generic
+     * status keys not covered by a specific lifecycle.
      */
     public function getTone(string $entityClass, string $status): string
     {
         $lifecycle = $this->getLifecycle($entityClass);
-        return $lifecycle[$status]['tone'] ?? 'neutral';
+        if (isset($lifecycle[$status]['tone'])) {
+            return $lifecycle[$status]['tone'];
+        }
+        return self::TONE_MAP[$status] ?? 'neutral';
     }
 
-    public function isValidTransition(string $entityClass, string $from, string $to): bool
+    /**
+     * Simple tone lookup by status key only (no entity context needed).
+     */
+    public function tone(string $status): string
     {
-        return in_array($to, $this->getAllowedTransitions($entityClass, $from), true);
-    }
-
-    public function hasStatus(string $entityClass, string $status): bool
-    {
-        return array_key_exists($status, $this->getLifecycle($entityClass));
+        return self::TONE_MAP[$status] ?? 'neutral';
     }
 }
