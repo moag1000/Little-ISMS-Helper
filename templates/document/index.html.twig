@@ -397,14 +397,14 @@
                         <td class="fa-table__cell">
                             {# Status pill — direct Aurora tone mapping for document statuses.
                                S3 P-4: legacy 'active' tone removed (rows migrated to 'published'). #}
-                            {% set _docStatusTone = {
-                                'draft':      'neutral',
-                                'in_review':  'primary',
-                                'approved':   'success',
-                                'published':  'success',
-                                'archived':   'neutral'
-                            }[document.status] ?? 'neutral' %}
-                            {{ pill.render(('document.status.' ~ document.status)|trans({}, 'document'), _docStatusTone, {size: 'sm'}) }}
+                            {# Lifecycle-aware tone resolved via LifecycleRegistry. #}
+                            {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+                            {{ _fa_status_chip.render({
+                                entity_class: 'App\\Entity\\Document',
+                                status_key: document.status,
+                                label: ('document.status.' ~ document.status)|trans({}, 'document'),
+                                size: 'sm'
+                            }) }}
                             {# Superseded marker — only visible when history toggle is on #}
                             {% if document.id in supersededIds|keys %}
                                 {{ pill.render('document.status.superseded'|trans({}, 'document'), 'warning', {size: 'sm', class: 'ms-1'}) }}
