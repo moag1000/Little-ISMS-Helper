@@ -26,7 +26,7 @@ use Psr\Log\LoggerInterface;
  */
 #[AsEntityListener(event: Events::postPersist, entity: ProcessingActivity::class)]
 #[AsEntityListener(event: Events::postUpdate, entity: ProcessingActivity::class)]
-class AutoReactionDpiaSuggestListener
+final class AutoReactionDpiaSuggestListener
 {
     public function __construct(
         private readonly AutoReactionService $reactions,

@@ -18,7 +18,7 @@ use Twig\TwigFunction;
  *
  * Plan § 13 Pattern-Source.
  */
-class SetupFlowExtension extends AbstractExtension
+final class SetupFlowExtension extends AbstractExtension
 {
     public function __construct(
         private readonly RequestStack $requestStack

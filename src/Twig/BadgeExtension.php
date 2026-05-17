@@ -22,7 +22,7 @@ use Twig\Attribute\AsTwigFunction;
  *
  * @author Claude Code
  */
-class BadgeExtension
+final class BadgeExtension
 {
     /**
      * Severity level to Bootstrap color mapping

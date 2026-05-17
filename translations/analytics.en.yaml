@@ -12,6 +12,7 @@ analytics:
         refresh: Refresh
         export_png: 'Export as PNG'
         reset_filters: 'Reset filters'
+        advanced: 'Advanced Analytics'
         back_to_basic: 'Back to Basic Analytics'
         back_to_advanced: 'Back to Advanced Analytics'
         view_dashboard: 'View Dashboard'
@@ -105,8 +106,20 @@ analytics:
             matrix_title: 'Framework Overlap Matrix'
         roadmap:
             title: 'Compliance Improvement Roadmap'
+            gaps_identified: 'gaps identified'
+            high_priority: 'High Priority'
+            medium_priority: 'Medium Priority'
+            low_priority: 'Low Priority'
             no_gaps: 'No Compliance Gaps'
             fully_compliant: 'Congratulations! All compliance requirements are met.'
+            table:
+                framework: 'Framework'
+                requirement: 'Requirement'
+                status: 'Status'
+                priority: 'Priority'
+                recommendation: 'Recommendation'
+
+    # Control Effectiveness Analytics
     controls:
         title: 'Control Effectiveness Analytics'
         subtitle: 'Performance analysis and aging tracking'
@@ -193,6 +206,8 @@ analytics:
             risk_forecast: 'Risk Level Forecast'
             historical: 'Historical'
             predicted: 'Predicted'
+            new_risks: 'New Risks'
+            closed_risks: 'Closed Risks'
             compliant: 'Compliant'
             gap: 'Gap'
         predictions:
@@ -201,6 +216,7 @@ analytics:
             increasing: 'Increasing'
             decreasing: 'Decreasing'
             stable: 'Stable'
+            confidence: 'Confidence Level'
             change: 'Predicted Change'
             by_level: 'By Risk Level'
         velocity:
@@ -212,6 +228,13 @@ analytics:
             avg_per_month: 'Avg per Month'
             period: 'Analysis Period'
             monthly_breakdown: 'Monthly Breakdown'
+        table:
+            month: 'Month'
+            new: 'New'
+            closed: 'Closed'
+            net: 'Net'
+            total: 'Total'
+            trend: 'Trend'
         appetite:
             compliance_score: 'Risk Appetite Compliance'
             score_description: 'Percentage of risk levels within defined thresholds'
@@ -223,6 +246,7 @@ analytics:
         anomalies:
             none_detected: 'No Anomalies Detected'
             all_normal: 'All risk patterns are within normal parameters.'
+            items_affected: 'items affected'
             historical_patterns: 'Historical Anomaly Patterns'
 
     # Asset Criticality Analytics

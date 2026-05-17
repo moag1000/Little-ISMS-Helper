@@ -19,7 +19,7 @@ use Twig\Attribute\AsTwigFunction;
  *   {% set _hints = alva_hints('asset_index') %}
  *   {% for h in _hints %}{{ _fa_alva_hint.render(h) }}{% endfor %}
  */
-class AlvaHintExtension
+final class AlvaHintExtension
 {
     public function __construct(
         private readonly AlvaHintService $alvaHintService,

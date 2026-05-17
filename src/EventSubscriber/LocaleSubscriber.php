@@ -26,7 +26,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * 3. Fall back to session locale if no explicit locale
  * 4. Fall back to default locale as last resort
  */
-class LocaleSubscriber implements EventSubscriberInterface
+final class LocaleSubscriber implements EventSubscriberInterface
 {
     public function __construct(private readonly string $defaultLocale = 'de')
     {

@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraint;
  * confirmation before a destructive bulk-import commit is executed.
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
-class MustEqualCommit extends Constraint
+final class MustEqualCommit extends Constraint
 {
     public string $message = 'import.error.must_equal_commit';
 }

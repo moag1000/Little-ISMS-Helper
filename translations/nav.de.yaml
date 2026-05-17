@@ -28,18 +28,30 @@ nav:
     certification_bundle: 'Zertifizierungspaket'
     treatment_plans: Behandlungspläne
     roles: 'Rollen & Berechtigungen'
+    tenants: Mandanten
+    data_repair: Datenreparatur
     management_reviews: Managementbewertungen
     bc_plans: BC-Pläne
     bc_exercises: BC-Übungen
     incidents: Vorfälle
     audits: Audits
     compliance: Compliance
+    audit_log: 'Audit Log'
+    nis2_dashboard: 'NIS2 Dashboard'
     vulnerabilities: Schwachstellen
     patches: Patches
     users: Benutzer
     documents: Dokumente
     evidence: Nachweise
+    evidence_coverage: 'Evidence Coverage'
+    assets_risk_hub: 'Assets & Risiken'
     risk_matrix: Risikomatrix
+    bcm_hub: 'BCM Hub'
+    compliance_overview: Übersicht
+    frameworks: Frameworks
+    tools: Werkzeuge
+    cross_framework: Framework-übergreifend
+    compare: Vergleichen
     mapping_hub: Mapping-Hub
     mapping_quality: Mapping-Qualität
     mris_kpis: 'MRIS-KPIs'
@@ -56,6 +68,10 @@ nav:
     workflows: Workflows
     workflow_definitions: 'Workflow-Definitionen'
     training: Schulungen
+    management_review: Managementbewertung
+    admin_portal: 'Admin Portal'
+    privacy_hub: Datenschutz-Kern
+    vvt: 'VVT (Art. 30)'
     dpia: 'DSFA (Art. 35)'
     data_breaches: 'Datenschutzverletzungen (Art. 33/34)'
     consents: 'Einwilligungen (Art. 7)'
@@ -109,6 +125,10 @@ nav:
             documents: Dokumentenverwaltung
             security_ops: Sicherheitsbetrieb
             auditing: 'Audits & Schulungen'
+            frameworks: 'Compliance Frameworks'
+            user_management: Benutzerverwaltung
+            system: Systemverwaltung
+            # Audit-V3 ME-*: Discovery sections.
             my_inbox: 'Meine Inbox'
             reports: 'Reports & Exporte'
             # V3 B7 / KL-2: Compliance-Panel Sub-Sektionen
@@ -184,6 +204,11 @@ nav:
             group_report: 'Konzernstruktur + NIS2-Registrierungsmatrix (Konzern-ISB/Group-CISO)'
             management_reports: 'Board One-Pager, Executive Summary, Risk/BCM/Compliance-Berichte (PDF + Excel)'
             certification_bundle: 'Alle ISMS-Dokumente in einem ZIP-Archiv für die Zertifizierung'
+            users: 'Benutzerkontenverwaltung'
+            roles: 'Rollen und Berechtigungen'
+            tenants: 'Mandantenverwaltung'
+            data_repair: 'Datenintegritätswerkzeuge'
+            audit_log: 'System-Audit-Trail'
             iso9001_bridge: 'Konzeptuelle Übersetzung: CAPA ↔ Risikobehandlung, Prozesslandkarte ↔ SoA'
             glossary: 'ISMS-Fachbegriffe einfach erklärt — von Asset bis Vulnerability'
             keyboard_shortcuts: 'Alle Tastenkürzel und Schnellzugriffe auf einen Blick'
@@ -207,6 +232,14 @@ nav:
 
     evidence_reviewer_queue: 'Nachweise-Prüf-Queue'
 
+    section:
+        isms_core: 'ISMS Kern'
+        assets_risk: 'Assets & Risiken'
+        bcm: Geschäftskontinuität
+        privacy: Datenschutz
+        operations: Betrieb
+        compliance: Compliance
+        admin: Administration
     admin: Administration
     privacy: Datenschutz
     crisis_teams: Krisenteams

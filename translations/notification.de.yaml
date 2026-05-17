@@ -3,6 +3,27 @@
 # Sprint 6b: UI keys (rule CRUD, channel forms, bell center).
 
 notification:
+    audit:
+        rule:
+            created: 'Benachrichtigungsregel erstellt'
+            updated: 'Benachrichtigungsregel aktualisiert'
+            deleted: 'Benachrichtigungsregel gelöscht'
+            enabled: 'Benachrichtigungsregel aktiviert'
+            disabled: 'Benachrichtigungsregel deaktiviert'
+        channel:
+            created: 'Benachrichtigungskanal erstellt'
+            updated: 'Benachrichtigungskanal aktualisiert'
+            verified: 'Benachrichtigungskanal verifiziert'
+        delivery:
+            succeeded: 'Benachrichtigung erfolgreich zugestellt'
+            failed: 'Benachrichtigung fehlgeschlagen'
+            retried: 'Benachrichtigungszustellung wiederholt'
+    error:
+        webhook_internal_ip: 'Webhook-URL zeigt auf eine interne oder reservierte IP-Adresse (SSRF-Schutz aktiv).'
+        invalid_event_type: 'Der angegebene Ereignistyp ist ungültig oder nicht unterstützt.'
+        template_not_found: 'Die angegebene Benachrichtigungsvorlage wurde nicht gefunden.'
+
+    # Sprint 6b: Rule CRUD
     rule:
         index:
             title: 'Benachrichtigungsregeln'
@@ -23,7 +44,9 @@ notification:
             body: 'Erstellen Sie Ihre erste Benachrichtigungsregel, um über wichtige Ereignisse informiert zu werden.'
         field:
             name: 'Name'
+            name_placeholder: 'z. B. Kritischer Vorfall – sofortige Benachrichtigung'
             event_type: 'Ereignistyp'
+            event_type_placeholder: 'Ereignistyp auswählen…'
             severity_filter: 'Schweregrad-Filter'
             channels: 'Benachrichtigungskanäle'
             conditions: 'Zusatzbedingungen'
@@ -32,14 +55,23 @@ notification:
             created_at: 'Erstellt am'
             last_evaluated: 'Zuletzt ausgewertet'
         help:
+            name: 'Ein eindeutiger Name für diese Regel (max. 120 Zeichen).'
+            event_type: 'Das Ereignis, das die Auswertung dieser Regel auslöst.'
+            severity_filter: 'Optional: Regel nur für einen bestimmten Schweregrad aktivieren.'
+            channels: 'Mindestens einen aktiven Kanal auswählen.'
             conditions: 'Optionale Zusatzbedingungen (Feld / Operator / Wert). Leer = immer auslösen.'
+            is_active: 'Deaktivierte Regeln werden vom Evaluator übersprungen.'
         action:
             new: 'Neue Regel'
             create: 'Regel erstellen'
+            enable: 'Aktivieren'
+            disable: 'Deaktivieren'
         flash:
             created: 'Regel „%name%" wurde erstellt.'
             updated: 'Regel „%name%" wurde aktualisiert.'
             deleted: 'Regel „%name%" wurde gelöscht.'
+            enabled: 'Regel „%name%" wurde aktiviert.'
+            disabled: 'Regel „%name%" wurde deaktiviert.'
         confirm:
             delete: 'Regel wirklich unwiderruflich löschen?'
 
@@ -62,7 +94,11 @@ notification:
             body: 'Legen Sie einen Kanal an, bevor Sie Regeln konfigurieren.'
         field:
             name: 'Kanalname'
+            name_placeholder: 'z. B. IT-Security E-Mail'
             type: 'Kanaltyp'
+            config: 'Konfiguration (JSON)'
+            secret: 'HMAC-Signatur-Geheimnis'
+            secret_placeholder: 'Nur ausfüllen, um Geheimnis zu setzen oder zu ändern'
             is_active: 'Kanal aktiv'
             verified_at: 'Verifiziert'
         type:
@@ -70,9 +106,14 @@ notification:
             webhook: 'Webhook'
             in_app: 'In-App'
         help:
+            name: 'Ein eindeutiger Name für diesen Kanal.'
+            type: 'Kanaltyp bestimmt die Zustellmethode.'
+            config: 'JSON-Konfiguration z. B. {"recipients": ["admin@firma.de"]} für E-Mail oder {"url": "https://hooks.example.com/…"} für Webhook.'
             config_examples: 'Beispiele'
             config_email_example: '{"recipients": ["admin@example.com"], "from": "noreply@example.com"}'
+            secret: 'Optionaler HMAC-SHA256-Schlüssel für Webhook-Signaturen. Wird verschlüsselt gespeichert.'
             secret_edit_hint: 'Leer lassen, um das bestehende Geheimnis beizubehalten.'
+            is_active: 'Inaktive Kanäle werden bei der Zustellung übersprungen.'
         action:
             new: 'Neuer Kanal'
             create: 'Kanal anlegen'
@@ -164,5 +205,10 @@ notification:
 
     # Sprint 6b: Condition builder
     condition:
+        field: 'Feld'
+        field_placeholder: 'z. B. severity'
+        operator: 'Operator'
+        value: 'Wert'
+        value_placeholder: 'z. B. high'
         action:
             add: 'Bedingung hinzufügen'

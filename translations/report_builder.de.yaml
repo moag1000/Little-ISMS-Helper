@@ -54,6 +54,10 @@ layout:
     single: 'Einzelne Spalte'
     two_column: 'Zwei Spalten'
     dashboard: 'Dashboard-Raster'
+    wide_narrow: 'Breit + Schmal'
+    narrow_wide: 'Schmal + Breit'
+
+# Aktionen
 action:
     create: 'Report erstellen'
     create_first: 'Ersten Report erstellen'
@@ -232,3 +236,42 @@ pdf:
 uses: 'Verwendungen'
 loading: 'Laden...'
 
+field:
+    name: 'Report-Name'
+    description: 'Beschreibung'
+    category: 'Kategorie'
+    layout: 'Layout'
+    owner_user: 'Eigentümer (Benutzer)'
+    owner_person: 'Eigentümer (Person)'
+    owner_deputies: 'Stellvertretende Eigentümer (Personen)'
+    is_shared: 'Geteilt'
+    is_template: 'Vorlage'
+
+placeholder:
+    name: 'Report-Namen eingeben'
+    description: 'Kurze Beschreibung dieses Reports'
+    owner_user: '-- Benutzer auswählen --'
+    owner_person: '-- Person aus Stammdaten --'
+
+help:
+    description: 'Optionale Beschreibung, die Lesern dieses Reports angezeigt wird.'
+    owner_user: 'Systembenutzer als Report-Eigentümer. Mindestens einer von Benutzer oder Person ist erforderlich.'
+    owner_person: 'Person ohne Systemzugang als Eigentümer. Reihenfolge: Benutzer > Person > leer.'
+    owner_deputies: 'Weitere Personen mit stellvertretender Eigentümerschaft. Mehrfachauswahl möglich.'
+
+error:
+    owner_required_user_or_person: 'Mindestens einer von Eigentümer (Benutzer) oder Eigentümer (Person) muss gesetzt sein.'
+
+choice:
+    yes: 'Ja'
+    no: 'Nein'
+
+category:
+    general: 'Allgemein'
+    executive: 'Management'
+    risk: 'Risikomanagement'
+    compliance: 'Compliance'
+    bcm: 'Business Continuity'
+    asset: 'Asset-Management'
+    audit: 'Audit'
+    incident: 'Vorfallsmanagement'

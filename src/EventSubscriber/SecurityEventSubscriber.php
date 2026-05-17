@@ -42,7 +42,7 @@ use Symfony\Component\Security\Http\Event\LogoutEvent;
  * - Unauthorized access monitoring
  * - Audit trail for compliance (ISO 27001, GDPR)
  */
-class SecurityEventSubscriber implements EventSubscriberInterface
+final class SecurityEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly SecurityEventLogger $securityEventLogger

@@ -1,9 +1,14 @@
 context_management:
     title: 'ISMS Kontext'
+    description: 'Überblick und Pflege des organisatorischen Kontexts gemäß ISO 27001 (Klauseln 4.1–4.3).'
+    isms_scope: ISMS-Geltungsbereich
+    no_context_defined: 'Noch kein ISMS-Kontext definiert'
+    isms_objectives: ISMS-Ziele
 context:
     link:
         edit: 'Kontext bearbeiten'
         create: 'Kontext erfassen'
+        create_now: 'Jetzt erstellen'
         interested_parties_module: 'Interessierte Parteien verwalten'
     info:
         iso_clause: 'ISO 27001: Kontext der Organisation'
@@ -35,10 +40,19 @@ context:
     kpi:
         completeness: Kontext‑Vollständigkeit
         active_goals: 'Aktive Ziele'
+        of_total: 'von insgesamt %total%'
+        achieved_goals: 'Erreichte Ziele'
+        success_rate: 'Erfolgsquote: %rate%%'
         next_review: 'Nächstes Review'
         days_since_review: 'Tage seit Review'
         last_review: 'Letztes Review'
         days_until_review: 'Tage bis Review'
+    review_status:
+        days_remaining: 'Tage verbleibend'
+        today: 'Heute fällig'
+        due: 'Bald fällig'
+        days_overdue: 'Tage überfällig'
+        not_scheduled: 'Nicht geplant'
     section:
         organization: Organisation
         scope: Scope
@@ -50,9 +64,21 @@ context:
         legal_requirements: 'Gesetzliche Anforderungen'
         regulatory_requirements: 'Regulatorische Anforderungen'
         contractual_obligations: 'Vertragliche Verpflichtungen'
+        requirements: Anforderungen
+        history: Verlauf
         objectives: ISMS‑Ziele
+        title: 'ISMS Kontext'
+        description: 'Definition des Organisationskontexts, Geltungsbereichs und der ISMS-Ziele'
+        isms_scope: 'ISMS Geltungsbereich'
+        no_context_defined: 'Noch kein ISMS-Kontext definiert. Bitte erfassen Sie zunächst'
+        isms_objectives: ISMS-Ziele
+        active_objectives: 'Aktive Ziele'
+        no_objectives: 'Noch keine ISMS-Ziele definiert.'
         policy: ISMS-Policy
         review: Kontextüberprüfung
+        exclusions: 'Ausschlüsse vom ISMS-Scope'
+        external_issues: 'Externe Themen'
+        internal_issues: 'Interne Themen'
     field:
         organization_name: Organisationsname
         isms_scope: ISMS‑Scope
@@ -62,12 +88,45 @@ context:
         interested_parties: 'Interessierte Parteien'
         interested_parties_requirements: 'Anforderungen interessierter Parteien'
         legal_requirements: 'Gesetzliche Anforderungen'
+        regulatory_requirements: 'Regulatorische Anforderungen'
+        contractual_obligations: 'Vertragliche Verpflichtungen'
         isms_policy: ISMS‑Policy
         roles_and_responsibilities: 'Rollen & Verantwortlichkeiten'
+        last_review_date: 'Letztes Review‑Datum'
+        next_review_date: 'Nächstes Review‑Datum'
     unit:
         day: Tag
         days: Tage
+    placeholder:
+        organization_name: 'Name der Organisation'
+        isms_scope: 'Definieren Sie den Geltungsbereich des ISMS (z.B. Abteilungen, Standorte, Prozesse)...'
+        scope_exclusions: 'Bereiche, die ausdrücklich vom ISMS ausgeschlossen sind...'
+        external_issues: 'Gesetzliche, technologische, wettbewerbliche, kulturelle und wirtschaftliche Themen...'
+        internal_issues: 'Organisationskultur, Werte, Wissen, Performance, Ressourcen...'
+        interested_parties: 'Kunden, Regulierungsbehörden, Lieferanten, Mitarbeiter, Aktionäre...'
+        interested_parties_requirements: 'Welche Anforderungen stellen die interessierten Parteien?'
+        legal_requirements: 'DSGVO, IT-Sicherheitsgesetz, KRITIS, etc.'
+        regulatory_requirements: 'Branchenspezifische Vorschriften, Standards, etc.'
+        contractual_obligations: 'SLAs, Vertraulichkeitsvereinbarungen, Kundenverträge...'
+        isms_policy: 'Übergeordnete Informationssicherheitsrichtlinie der Organisation...'
+        roles_and_responsibilities: 'ISMS-Verantwortlicher, Informationssicherheitsbeauftragter, etc.'
+    help:
+        organization_name: 'Dieser Name wird automatisch vom zugeordneten Mandanten übernommen. Um ihn zu ändern, bearbeiten Sie den Mandanten in der Mandantenverwaltung.'
+        isms_scope: 'ISO 27001 Clause 4.3: Definieren Sie Grenzen und Anwendbarkeit des ISMS'
+        scope_exclusions: 'Begründen Sie, warum bestimmte Bereiche ausgeschlossen werden'
+        external_issues: 'ISO 27001 Clause 4.1: Externe Faktoren, die das ISMS beeinflussen'
+        internal_issues: 'ISO 27001 Clause 4.1: Interne Faktoren, die das ISMS beeinflussen'
+        interested_parties: 'ISO 27001 Clause 4.2: Stakeholder, die Anforderungen an das ISMS stellen'
+        interested_parties_requirements: 'Spezifische Anforderungen der Stakeholder bezüglich Informationssicherheit'
+        legal_requirements: 'Gesetzliche Verpflichtungen und rechtliche Rahmenbedingungen'
+        regulatory_requirements: 'Regulatorische Vorgaben und Branchenstandards'
+        contractual_obligations: 'Vertragliche Anforderungen an Informationssicherheit'
+        isms_policy: 'ISO 27001 Clause 5.2: Festlegung der Informationssicherheitsrichtlinie'
+        roles_and_responsibilities: 'ISO 27001 Clause 5.3: Definition von Rollen und Verantwortlichkeiten im ISMS'
+        last_review_date: 'Wann wurde der ISMS-Kontext zuletzt überprüft?'
+        next_review_date: 'Wann soll die nächste Überprüfung stattfinden? (Empfohlen: jährlich)'
     action:
+        edit_context: 'Kontext bearbeiten'
         create_context: 'ISMS‑Kontext erfassen'
         view_all_objectives: 'Alle %count% Ziele anzeigen'
         manage_objectives: 'Ziele verwalten'
@@ -92,5 +151,10 @@ context:
     hint:
         structured_parties: 'Nutzen Sie das Modul "Interessierte Parteien" fuer strukturierte Erfassung nach ISO 27001 Klausel 4.2'
         migrate_freetext: 'Legacy-Freitext: Bitte Inhalte in strukturierte Einträge im Modul übertragen und danach oben im Kontext-Formular den Freitext leeren.'
+    tooltip:
+        external_issues: 'ISO 27001 Kl. 4.1: Externe Faktoren, die das ISMS beeinflussen. Umfasst rechtliche, technologische, wettbewerbliche, kulturelle und wirtschaftliche Rahmenbedingungen sowie gesellschaftliche und politische Entwicklungen.'
+        internal_issues: 'ISO 27001 Kl. 4.1: Interne Faktoren, die das ISMS beeinflussen. Umfasst Organisationskultur, Werte, Wissen, Strategie, Prozesse, Ressourcen und interne Governance-Strukturen.'
+        scope_exclusions: 'ISO 27001 Kl. 4.3: Bereiche, die explizit vom ISMS-Geltungsbereich ausgeschlossen sind. Jeder Ausschluss muss sachlich begründet sein und darf die Erfüllung der Sicherheitsziele nicht beeinträchtigen.'
+        interested_parties_requirements: 'ISO 27001 Kl. 4.2: Anforderungen der Stakeholder bezüglich Informationssicherheit. Umfasst gesetzliche, regulatorische und vertragliche Verpflichtungen sowie Erwartungen von Kunden, Lieferanten und Aufsichtsbehörden.'
     edit:
         title: Titel

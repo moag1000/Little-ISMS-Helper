@@ -12,6 +12,8 @@ soa:
         print: 'Print / Save as PDF'
         back_to_overview: 'Back to overview'
     filter:
+        view: View
+        search: Search
         search_placeholder: 'Search by control ID, name or description …'
         category: Category
         status: Status
@@ -21,6 +23,7 @@ soa:
         mris_all: 'All MRIS categories'
         essential_only: 'Essential controls only (SME)'
         essential_hint: '31 of 93 controls — recommended for companies under 50 employees'
+        reset: 'Reset filters'
     kpi:
         total_controls: 'Total controls'
         applicable_controls: 'Applicable controls'
@@ -98,6 +101,8 @@ soa:
         not_applicable_prefix: 'Not applicable:'
         responsible: 'Responsible:'
         linked_risks: 'Linked risks:'
+        classification_confidential: Confidential
+        classification_confidential_upper: CONFIDENTIAL
         status: Status
         completed_on: 'Completed on'
         effectiveness_score: 'Effectiveness score'
@@ -114,7 +119,9 @@ soa:
     empty:
         title: 'No controls match the current filter'
         body: 'Loosen the active filters or load the ISO 27001 Annex A controls to maintain your SoA. For each control, decide on applicability, justification, and implementation status.'
+        help_link: '/en/help/glossary#glossary-soa'
         create_first: 'Add first control'
+        reset_filter: 'Reset filters'
         no_controls_for_tenant:
             title: 'No ISO 27001 Annex A controls loaded for this tenant yet'
             iso_active: 'The controls module is active but none of the 93 Annex A controls have been loaded for this tenant yet. The Statement of Applicability cannot be maintained without them.'
@@ -125,15 +132,36 @@ soa:
         no_tenant: 'No active tenant — controls cannot be loaded.'
         loaded_flash: '%count% ISO 27001 Annex A controls successfully loaded.'
         already_loaded_flash: 'Annex A controls were already loaded for this tenant — no change.'
+        no_justification: 'No justification provided.'
+        no_implementation_notes: 'No implementation notes available.'
+        control_coverage: 'This control protects %count% asset(s) with a total value of %value%.'
+        high_risk_assets: 'of which are high-risk assets.'
+        related_risks_info: 'This control contributes to the treatment of the following risks:'
+        related_incidents_count: 'are related to this control.'
+        review_required: 'Please review control effectiveness.'
         no_completed_trainings: 'No completed trainings for this control.'
         effectiveness_note: 'Based on incident analysis after control implementation.'
     report:
+        document_type: 'ISO 27001:2022 conformity document'
+        header_center: 'Statement of Applicability - ISO 27001:2022'
+        default_reviewer: 'ISMS Responsible'
+        default_approver: 'Top Management'
         generated_at: 'Generated: %datetime%'
     footer:
         note: 'Confidential - ISO 27001:2022 SoA | Page {PAGE_NUM}'
+    help:
+        applicable: 'Mark this control as applicable if it is relevant for your ISMS.'
+        justification: 'A clear justification is important for audits and compliance evidence.'
+        implementation_notes: 'Document technical details, tools used and processes.'
+    placeholder:
+        justification: 'Explain why this control is applicable or not applicable …'
+        implementation_notes: 'Describe how this control was or will be implemented …'
+        responsible_person: 'e.g. Jane Doe (Information Security Officer)'
     field:
         applicable: Applicable
+        justification: Justification
         implementation_percentage: 'Implementation percentage'
+        implementation_notes: 'Implementation notes'
         responsible_person: 'Responsible person'
         unassigned: Unassigned
         target_date: 'Target date'

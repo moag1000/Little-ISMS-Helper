@@ -17,7 +17,7 @@ use Twig\Attribute\AsTwigFunction;
  *   available_tags()                          → Tag[] visible to current tenant
  *   active_tags_for(entityClass, entityId)    → EntityTag[] active links
  */
-class TagExtension
+final class TagExtension
 {
     public function __construct(
         private readonly TagRepository $tagRepository,

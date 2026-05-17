@@ -9,23 +9,23 @@ reports:
         dashboard:
             title: Dashboard‑Zusammenfassung
             description: 'Umfassender ISMS‑Überblick mit allen wichtigen Kennzahlen und Statistiken.'
-            features: {feature_1: 'Assets‑ & Risiko‑Überblick', feature_2: 'Umsetzungsstatus der Maßnahmen', feature_3: Vorfallsübersicht, feature_4: Compliance‑Prozentsatz}
+            features: { feature_1: 'Assets‑ & Risiko‑Überblick', feature_2: 'Umsetzungsstatus der Maßnahmen', feature_3: Vorfallsübersicht, feature_4: Compliance‑Prozentsatz }
         risks:
             title: Risikoregister
             description: 'Vollständige Risikobewertung mit Eintrittswahrscheinlichkeit, Auswirkung und Behandlungsplänen.'
-            features: {feature_1: 'Alle identifizierten Risiken', feature_2: 'Risikoscores & ‑stufen', feature_3: Behandlungsstrategien, feature_4: 'Verantwortliche Personen'}
+            features: { feature_1: 'Alle identifizierten Risiken', feature_2: 'Risikoscores & ‑stufen', feature_3: Behandlungsstrategien, feature_4: 'Verantwortliche Personen' }
         soa:
             title: 'Statement of Applicability'
             description: 'ISO 27001 Anhang‑A Maßnahmen mit Begründung der Anwendbarkeit.'
-            features: {feature_1: 'Alle 93 ISO 27001:2022 Maßnahmen', feature_2: Anwendbarkeitsstatus, feature_3: Umsetzungsfortschritt, feature_4: Begründungen}
+            features: { feature_1: 'Alle 93 ISO 27001:2022 Maßnahmen', feature_2: Anwendbarkeitsstatus, feature_3: Umsetzungsfortschritt, feature_4: Begründungen }
         incidents:
             title: Vorfallsprotokoll
             description: 'Vollständige Vorfallverwaltung mit Zeitleiste und Lösungen.'
-            features: {feature_1: 'Alle Sicherheitsvorfälle', feature_2: Schweregrad‑Klassifikationen, feature_3: Reaktionszeitleisten, feature_4: Lösungsstatus}
+            features: { feature_1: 'Alle Sicherheitsvorfälle', feature_2: Schweregrad‑Klassifikationen, feature_3: Reaktionszeitleisten, feature_4: Lösungsstatus }
         training:
             title: Schulungsprotokoll
             description: 'Dokumentation zu Awareness‑Schulungen inkl. Teilnehmerlisten.'
-            features: {feature_1: 'Alle durchgeführten Schulungen', feature_2: Teilnehmerlisten, feature_3: 'Schulungstypen & Methoden', feature_4: Pflichtschulungen}
+            features: { feature_1: 'Alle durchgeführten Schulungen', feature_2: Teilnehmerlisten, feature_3: 'Schulungstypen & Methoden', feature_4: Pflichtschulungen }
     management:
         title: 'Management-Berichte'
         description: 'Umfassende Berichte für Führungskräfte mit KPIs, Trends und Compliance-Status.'
@@ -44,15 +44,24 @@ reports:
             feature_3: 'Automatischer E-Mail-Versand'
             feature_4: 'Manuelle Aktivierung erforderlich'
         manage: 'Geplante Berichte verwalten'
+    custom:
+        title: 'Benutzerdefinierte Berichte'
+        subtitle: 'Zusätzliche benutzerdefinierte Berichte folgen in Kürze:'
+        items:
+            item_1: Audit‑Zusammenfassungen
+            item_2: Managementbewertungs‑Berichte
+            item_3: Asset‑Inventar
+            item_4: Compliance‑Gap‑Analyse
+        coming_soon: 'Bald verfügbar'
     section:
         best_practices: 'Best Practices für Berichte'
     best_practices:
         audits:
             title: 'Für Audits & Compliance:'
-            items: {item_1: 'Statement of Applicability vor Audits generieren', item_2: 'Risikoregister in Managementbewertungen einbeziehen', item_3: 'Vorfall‑Trends über die Zeit dokumentieren', item_4: 'Schulungsabschluss‑Quoten nachverfolgen'}
+            items: { item_1: 'Statement of Applicability vor Audits generieren', item_2: 'Risikoregister in Managementbewertungen einbeziehen', item_3: 'Vorfall‑Trends über die Zeit dokumentieren', item_4: 'Schulungsabschluss‑Quoten nachverfolgen' }
         management:
             title: 'Für Management‑Reporting:'
-            items: {item_1: 'Dashboard‑Zusammenfassung für Executive‑Overviews verwenden', item_2: 'Hochrisiko‑Einträge aus dem Risikoregister hervorheben', item_3: 'Umsetzungsfortschritt der Maßnahmen zeigen', item_4: 'Abschlussraten für Pflichtschulungen berichten'}
+            items: { item_1: 'Dashboard‑Zusammenfassung für Executive‑Overviews verwenden', item_2: 'Hochrisiko‑Einträge aus dem Risikoregister hervorheben', item_3: 'Umsetzungsfortschritt der Maßnahmen zeigen', item_4: 'Abschlussraten für Pflichtschulungen berichten' }
     overview: 'Berichtsübersicht'
     integrate_ci_cd: 'In CI/CD-Pipeline integrieren'
     compliance:
@@ -148,7 +157,10 @@ report:
 # PDF Export Templates
 pdf:
     common:
+        generated: 'Erstellt'
         total: 'Gesamt'
+        confidential: 'Vertraulich'
+        page: 'Seite'
         open: 'Offen'
         yes: 'JA'
         no: 'Nein'
@@ -167,6 +179,7 @@ pdf:
             owner: 'Verantwortlich'
         legend: 'Risikomatrix-Legende'
         legend_text: 'Kritisch (≥20): Sofortmaßnahme erforderlich | Hoch (12-19): Hohe Priorität | Mittel (6-11): Genau beobachten | Niedrig (<6): Akzeptabel'
+        footer: 'Vertraulich - Risikoregister'
     incident:
         title: 'Vorfallsprotokoll'
         header:
@@ -189,8 +202,24 @@ pdf:
             mandatory: 'Pflicht'
             status: 'Status'
             participants: 'Teilnehmer'
+    controls:
+        title: 'Maßnahmenregister'
+        header:
+            id: 'Control-ID'
+            name: 'Name'
+            category: 'Kategorie'
+            status: 'Status'
+            progress: 'Fortschritt'
+            target_date: 'Zieldatum'
+            owner: 'Verantwortlich'
     dashboard:
         title: 'ISMS Dashboard-Zusammenfassung'
+        section:
+            overview: 'Übersicht'
+            assets: 'Assets'
+            risks: 'Risiken'
+            controls: 'Maßnahmen'
+            incidents: 'Vorfälle'
         stats:
             assets: 'Assets'
             total_risks: 'Risiken gesamt'
@@ -216,10 +245,15 @@ pdf:
 # Board One-Pager Report
 board_one_pager:
     title: 'ISMS Board One-Pager'
+    status:
+        good: 'Gut'
+        warning: 'Warnung'
+        critical: 'Kritisch'
     section:
         key_metrics: 'Wichtige Kennzahlen'
         top_risks: 'Top-Risiken'
         framework_compliance: 'Framework-Compliance'
+        readiness: 'Zertifizierungsbereitschaft'
         operational: 'Operative Kennzahlen'
     metric:
         health: 'ISMS-Gesundheit'
@@ -229,9 +263,26 @@ board_one_pager:
     table:
         risk: 'Risiko'
         level: 'Stufe'
+    no_risks: 'Keine Top-Risiken vorhanden.'
+    no_frameworks: 'Keine Compliance-Frameworks konfiguriert.'
+    no_data: 'Keine Daten verfügbar.'
     ops:
         open_incidents: 'Offene Vorfälle'
         risk_treatment: 'Risikobehandlung'
         overdue_treatments: 'Überfällige Behandlungen'
         training_completion: 'Schulungsabschluss'
         control_compliance: 'Maßnahmen-Compliance'
+    footer:
+        prepared_by: 'Erstellt von'
+        generated: 'Generiert'
+        confidential: 'Vertraulich'
+
+custom_report:
+    field:
+        owner_person: 'Verantwortlich (Person)'
+        owner_deputy_persons: 'Vertretungen (Personen)'
+    placeholder:
+        owner_person: '-- Person aus Stammdaten --'
+    help:
+        owner_person: 'Person ohne System-Login als Verantwortliche. Reihenfolge: User > Person > leer.'
+        owner_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'

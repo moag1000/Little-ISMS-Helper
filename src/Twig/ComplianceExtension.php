@@ -20,7 +20,7 @@ use Symfony\Contracts\Cache\ItemInterface;
  * Provides quick access to compliance frameworks for navigation menus.
  * This enables direct links to frameworks from the sidebar without extra clicks.
  */
-class ComplianceExtension
+final class ComplianceExtension
 {
     public function __construct(
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,

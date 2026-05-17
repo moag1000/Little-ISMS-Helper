@@ -4,6 +4,7 @@ journey:
     percent_complete: '%percent%% umgesetzt'
     dismiss: 'Fortschritt ausblenden'
     restore: 'Implementierungsfortschritt anzeigen'
+    show_full_dashboard: 'Vollständiges Dashboard anzeigen'
     next_step: 'Nächster Schritt'
     phase:
         context:
@@ -40,6 +41,8 @@ journey:
         complete: 'Abgeschlossen'
         locked: 'Voraussetzung fehlt'
         dismissed: 'Bewusst leer gelassen'
+    dismissed_hint: 'Diese Phase wurde als nicht zutreffend markiert.'
+
 first_hour:
     title: 'Ihre erste Stunde — 4 Schritte zum Audit-Draft'
     subtitle: 'Prüfen Sie die vorausgefüllten Daten und passen Sie sie an Ihr Unternehmen an'

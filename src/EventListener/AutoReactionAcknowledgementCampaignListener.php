@@ -39,7 +39,7 @@ use Psr\Log\LoggerInterface;
  * Toggle: AutoReactionService::KEY_ACK_CAMPAIGN (default true).
  */
 #[AsEntityListener(event: Events::postUpdate, entity: Document::class)]
-class AutoReactionAcknowledgementCampaignListener
+final class AutoReactionAcknowledgementCampaignListener
 {
     public function __construct(
         private readonly AutoReactionService $reactions,

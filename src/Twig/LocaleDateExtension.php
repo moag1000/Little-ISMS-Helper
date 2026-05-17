@@ -16,7 +16,7 @@ use Twig\TwigFilter;
  *   {{ entity.createdAt|locale_date }}           → "29.04.2026" (DE) / "2026-04-29" (EN)
  *   {{ entity.createdAt|locale_datetime }}        → "29.04.2026 09:15" (DE) / "2026-04-29 09:15" (EN)
  */
-class LocaleDateExtension extends AbstractExtension
+final class LocaleDateExtension extends AbstractExtension
 {
     private const array DATE_FORMATS = [
         'de' => 'd.m.Y',

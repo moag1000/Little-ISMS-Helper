@@ -7,11 +7,21 @@ existing_frameworks:
         message: 'Eine bestehende ISO-27001-Zertifizierung kann 60–80 % der NIS2- oder DORA-Anforderungen abdecken. Diese Auswahl priorisiert die Ableitungsvorschläge (Review-pflichtig) nach dem Setup-Abschluss.'
 
     already_certified:
+        label: 'Bereits zertifizierte Frameworks'
         heading: 'Bereits vorhanden'
         description: 'Frameworks, für die deine Organisation bereits zertifiziert ist oder die vollständig umgesetzt sind.'
+        help: 'Auswahl optional — dient als Basis für die Reuse-Prognose.'
+
     newly_added:
+        label: 'Neu hinzuzufügende Frameworks'
         heading: 'Neu hinzufügen'
         description: 'Frameworks, die im Rahmen dieses Setups neu aufgenommen werden. Vorbelegt mit deiner Auswahl aus Schritt 8.'
+        help: 'Änderungen wirken nur auf diesen Reuse-Dialog — die Aktivierung erfolgt beim Setup-Abschluss.'
+
+    certification_dates:
+        label: 'Zertifizierungsdaten'
+        help: 'Internes Feld — nicht sichtbar.'
+
     certification_date:
         label: 'Zertifiziert seit'
         help: 'Optional — wird im Audit-Trail dokumentiert.'
@@ -37,3 +47,6 @@ existing_frameworks:
         skip: 'Überspringen'
         save_next: 'Speichern & weiter'
 
+    flash:
+        saved: '%count% neue Frameworks für Reuse-Aktivierung gemerkt.'
+        skipped: 'Portfolio-Abfrage übersprungen — Reuse-Prognose nicht aktiv.'

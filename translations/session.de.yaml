@@ -1,5 +1,7 @@
 session:
+    title: Sitzungen
     list: 'Aktive Sitzungen'
+    show: Sitzungsdetails
     activities_7_days: 'Aktivitäten (7 Tage)'
     ip_addresses_title: 'IP-Adressen'
     no_activities_7_days: 'Keine Aktivitäten in den letzten 7 Tagen gefunden.'
@@ -8,9 +10,11 @@ session:
     user_agent: 'User Agent'
     last_activity: 'Letzte Aktivität'
     session_start: Sitzungsbeginn
+    terminate: 'Sitzung beenden'
     statistics:
         total: 'Gesamt aktive Sitzungen'
         today: Heute
+        hours_filter: 'Zeitfilter (Stunden)'
         active_sessions: 'Aktive Sitzungen'
         last_24h: 'Letzte 24h'
         unique_users: 'Eindeutige Benutzer'
@@ -34,5 +38,9 @@ session:
     activity_timeline: Aktivitätsverlauf
     unique_ips: 'Eindeutige IP-Adressen'
     unique_devices: 'Eindeutige Geräte'
+    error:
+        invalid_token: 'Ungültiges CSRF-Token'
+    info:
+        termination_not_implemented: 'Sitzungsbeendigung erfordert zusätzliche Konfiguration (Datenbank-Session-Speicherung)'
     subtitle: 'Verwaltung aktiver Benutzersitzungen'
     user_activity: 'Benutzeraktivität und Session-Monitoring'

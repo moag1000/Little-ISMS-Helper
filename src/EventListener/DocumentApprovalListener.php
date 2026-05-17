@@ -48,7 +48,7 @@ use Psr\Log\LoggerInterface;
  */
 #[AsEntityListener(event: Events::preUpdate, entity: Document::class)]
 #[AsDoctrineListener(event: Events::postFlush)]
-class DocumentApprovalListener
+final class DocumentApprovalListener
 {
     /**
      * Documents that transitioned to 'approved' during the current flush cycle.

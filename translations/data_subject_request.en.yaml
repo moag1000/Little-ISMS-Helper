@@ -53,17 +53,67 @@ dsr:
     # Form labels
     form:
         title: "Data Subject Request Form"
+        request_type: "Request Type"
+        received_at: "Received At"
+        description: "Request Description"
+        data_subject_name: "Data Subject Name"
+        data_subject_email: "Email Address"
+        data_subject_identifier: "Identifier (Customer/Employee ID)"
+        identity_verified: "Identity Verified"
+        identity_verification_method: "Verification Method"
+        assigned_to: "Assigned To"
+        assigned_person: "Responsible (Person)"
+        assigned_deputy_persons: "Deputies (Persons)"
         dpo_person: "Data Protection Officer (Governance)"
+        processing_activity: "Related Processing Activity (VVT)"
+        notes: "Internal Notes"
+        response_at: "Response Sent At"
+        extended_deadline: "Extended Deadline (Art. 12(3))"
+        extension_reason: "Extension Reason"
+        response_document: "Response Artefact (file path / UUID)"
+        response_method: "Response Channel"
+        rejection_reason: "Rejection Reason (Art. 12(5)(b))"
         placeholder:
+            request_type: "-- Select request type --"
+            description: "Describe what the data subject is requesting..."
+            data_subject_name: "Full name of the requesting person"
+            data_subject_email: "email@example.com"
+            data_subject_identifier: "e.g. Customer ID, Employee ID"
+            verification_method: "-- Select verification method --"
+            assigned_to: "-- Assign to user --"
+            assigned_person: "-- Person from master data --"
+            dpo_person: "-- Select Data Protection Officer --"
+            processing_activity: "-- Link to processing activity --"
+            notes: "Internal notes (not shared with the data subject)..."
             response_description: "Describe what was done to fulfill the request..."
             rejection_reason: "Reason for rejection (Art. 12(5))..."
             extension_reason: "Reason for extending deadline (complexity, number of requests)..."
+            response_document: "e.g. /responses/dsr-2024-001.pdf or UUID"
+            response_method: "-- Select response channel --"
+        help:
+            request_type: "Art. 15 Access, Art. 16 Rectification, Art. 17 Erasure, Art. 18 Restriction, Art. 20 Data Portability, Art. 21 Objection, Art. 22 Automated Decision-Making"
+            received_at: "Date and time the request was received"
+            data_subject_identifier: "Any identifier to locate the person in your systems"
+            processing_activity: "Link to a relevant processing activity from the VVT"
+            notes: "Internal notes are not shared with the data subject"
+            assigned_person: "Person without system login as responsible. Order: User > Person > empty."
+            assigned_deputy_persons: "Additional persons with deputy or shared responsibility."
+            dpo_person: "Governance-side DPO accountable for this request. Distinct from the action handler. Often an external person without a system login."
+            response_at: "Date and time the response was sent to the data subject (Art. 12(3) — proof of deadline compliance)."
+            extended_deadline: "Extended deadline per Art. 12(3): max. 90 days from receipt for complex requests."
+            extension_reason: "Mandatory when extending the deadline — state reason (complexity, high volume of requests)."
+            response_document: "Path or UUID of the stored response letter / email archive as evidence."
+            response_method: "Art. 12(1): response should where possible use the same format as the request."
+            rejection_reason: "Only for rejection (Art. 12(5)(b)): manifestly unfounded or excessive request."
+
+    # Section headings
     section:
         request_details: "Request Details"
         data_subject_info: "Data Subject Information"
         identity_verification: "Identity Verification"
         assignment: "Assignment & Links"
         internal_notes: "Internal Notes"
+        response: "Response Details"
         response_tracking: "Deadline Tracking & Response Evidence (Art. 12(3))"
         actions: "Actions"
         processing_activity: "Processing Activity"
@@ -88,6 +138,7 @@ dsr:
         verified_at: "Verified At"
         response_description: "Response"
         response_at: "Response Sent At"
+        extended_deadline: "Extended Deadline"
         extension_reason: "Extension Reason"
         response_document: "Response Artefact"
         response_method: "Response Channel"
@@ -124,6 +175,19 @@ dsr:
         deadline_approaching: "Deadline Approaching"
 
     # Flash messages
+    flash:
+        created: "Data subject request created successfully."
+        updated: "Data subject request updated successfully."
+        completed: "Data subject request marked as completed."
+        rejected: "Data subject request rejected."
+        extended: "Deadline extended to 90 days."
+        deleted: "Data subject request deleted."
+        cannot_edit_terminal: "Cannot edit a completed or rejected request."
+        response_required: "Response description is required to complete the request."
+        rejection_reason_required: "A reason is required to reject the request."
+        extension_reason_required: "A reason is required to extend the deadline."
+
+    # KPI labels
     kpi:
         total: "Total Requests"
         in_progress: "Open Requests"
@@ -190,3 +254,8 @@ dsr:
         deadline_text: "You must respond without undue delay and at the latest within one month of receipt. For complex or numerous requests, this may be extended by up to two additional months — but the data subject must be informed within the first month."
         verification_title: "Identity Verification"
         verification_text: "Before fulfilling a request you must verify the identity of the requesting person to prevent unauthorised disclosure. The method must be proportionate — do not request more information than necessary."
+    error:
+        owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+        extension_reason_required_when_extended: 'Extension reason is mandatory when an extended deadline is set (Art. 12(3) GDPR).'
+        response_method_required_when_responded: 'When a response date is recorded, the response channel must also be specified.'
+        response_at_required_when_rejected: 'A rejection is itself a response — please also record the date the response was sent.'

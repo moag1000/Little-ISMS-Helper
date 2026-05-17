@@ -1,11 +1,105 @@
 audits:
     page:
         title: Audits
+    error:
+        owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+    field:
+        finding_source: 'Feststellungsquelle'
+        action_type: 'Maßnahmentyp'
+    placeholder:
+        finding_source: '-- Quelle auswählen --'
+        action_type: '-- Maßnahmentyp auswählen --'
+    help:
+        finding_source: 'Ursprung der Feststellung — ISO 27001 §10.1: Abweichungen können aus jeder Quelle stammen'
+        action_type: 'Korrektiv: Abweichung beheben. Präventiv: Wiederholung verhindern. Verbesserung: proaktive Chance (§10.2).'
+    finding_source:
+        internal_audit: 'Internes Audit'
+        external_audit: 'Externes Audit'
+        incident: 'Sicherheitsvorfall'
+        review: 'Management-/Dokumentenprüfung'
+        customer_complaint: 'Kundenreklamation'
+        management_review: 'Management-Review'
+    action_type:
+        corrective: 'Korrekturmaßnahme'
+        preventive: 'Vorbeugungsmaßnahme'
+        improvement: 'Kontinuierliche Verbesserung'
+
 audit:
+    new: 'Neues Audit'
+    edit: 'Audit bearbeiten'
+    create: 'Audit erstellen'
+    export_pdf: 'PDF exportieren'
     action:
         clone: 'Audit klonen'
     flash:
         cloned: 'Audit als Vorlage geklont: "%title%" (Status = geplant, Findings nicht kopiert).'
+    quick_stats: Schnellübersicht
+    framework: Rahmenwerk
+    standard: Standard
+    planned_date: 'Geplantes Datum'
+    actual_date: 'Tatsächliches Datum'
+    lead_auditor: 'Leitender Auditor'
+    department: Abteilung
+    auditee: 'Auditierter Bereich'
+    audit_team: Audit‑Team
+    overall_result: Gesamtergebnis
+    objectives: Ziele
+    audit_criteria: Auditkriterien
+    methodology: Methodik
+    findings: Feststellungen
+    nonconformities: Nichtkonformitäten
+    observations: Beobachtungen
+    recommendations: Empfehlungen
+    corrective_actions: Korrekturmaßnahmen
+    follow_up_actions: Nachverfolgungsmaßnahmen
+    documentation: Dokumentation
+    evidence_collected: 'Gesammelte Nachweise'
+    summary: Zusammenfassung
+    notes: Notizen
+    type: Typ
+    team_size: Teamgröße
+    result: Ergebnis
+    iso_27001_requirement: 'ISO 27001: Internes Audit (Klausel 9.2)'
+    iso_27001_clause_info: 'Interne Audits müssen in geplanten Abständen durchgeführt werden, um zu prüfen, ob das ISMS die Anforderungen erfüllt und wirksam umgesetzt/aufrechterhalten wird.'
+    confirm_delete: 'Audit löschen?'
+    delete_warning: "Möchten Sie das Audit '%title%' wirklich löschen?"
+    actions:
+        label: Audit‑Aktionen
+    field:
+        title: Titel
+        scope: Geltungsbereich
+        status: Status
+        scope_type: Scope‑Typ
+        scoped_framework: 'Framework im Geltungsbereich'
+        additional_scoped_frameworks: 'Zusätzliche abgedeckte Frameworks'
+        framework: Rahmenwerk
+        standard: Standard
+        audit_type: Audit‑Typ
+        planned_date: 'Geplantes Datum'
+        actual_date: 'Tatsächliches Datum'
+        lead_auditor: 'Leitender Auditor'
+        department: Abteilung
+        auditee: 'Auditierter Bereich'
+        audit_team: Audit‑Team
+        audit_number: Audit‑Nummer
+        audited_subsidiaries: 'Auditierte Tochtergesellschaften'
+        objectives: Ziele
+        audit_criteria: Auditkriterien
+        methodology: Methodik
+        findings: Feststellungen
+        observations: Beobachtungen
+        recommendations: Empfehlungen
+        corrective_actions: Korrekturmaßnahmen
+        follow_up_actions: Nachverfolgungsmaßnahmen
+        documentation: Dokumentation
+        evidence_collected: 'Gesammelte Nachweise'
+        summary: Zusammenfassung
+        notes: Notizen
+        team_size: Teamgröße
+        result: Ergebnis
+        overall_result: Gesamtergebnis
+        nonconformities: Nichtkonformitäten
+        conclusion: Schlussfolgerung
     status:
         planned: Geplant
         in_progress: 'In Bearbeitung'
@@ -23,6 +117,136 @@ audit:
         department: Abteilung
         corporate_wide: Unternehmensweit
         corporate_subsidiaries: Tochtergesellschaften
+    section:
+        basic_info: Grundinformationen
+        schedule: Zeitplan
+        frameworks: 'Frameworks & Standards'
+        team: 'Team & Verantwortlichkeiten'
+        status: 'Status & Ergebnisse'
+        objectives: 'Ziele & Kriterien'
+        findings: Feststellungen
+        structured_findings: 'Strukturierte Findings'
+        structured_findings_help: 'Einzelne Feststellungen mit Severity, Status und Verantwortung (Ergänzung zum Freitext-Findings).'
+        recommendations: 'Empfehlungen & Maßnahmen'
+        documentation: Dokumentation
+        history: Verlauf
+    message:
+        corporate_subsidiaries_info: 'Dieses Konzernaudit umfasst %count% Tochtergesellschaft(en)'
+        corporate_audit_note_title: Konzernaudit
+        corporate_audit_note: "Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen. Bei 'Konzernweites Audit' sollten alle relevanten Tochtergesellschaften ausgewählt werden."
+    corporate_audit_note_title: Konzernaudit-Hinweis
+    corporate_audit_note: 'Informationen zum konzernweiten Audit'
+    placeholder:
+        title: 'z.B. ISO 27001:2022 Internes Audit Q1/2024'
+        scope: 'z.B. Alle ISMS-Prozesse und Kontrollen'
+        objectives: 'z.B. Überprüfung der Einhaltung von ISO 27001:2022'
+        lead_auditor: 'Name des leitenden Auditors'
+        audit_team: 'Namen der Teammitglieder, kommagetrennt'
+        scoped_framework: 'Framework auswählen, gegen das auditiert wird'
+    help:
+        title: 'Kurze Beschreibung des Audit-Zwecks'
+        scope: 'Definiert den Umfang des Audits (z.B. gesamtes ISMS, spezifische Abteilung)'
+        scope_type: 'Art des Geltungsbereichs (ISMS, Framework, Asset, Abteilung, etc.)'
+        scoped_framework: 'Falls Audit auf ein Framework beschränkt ist (z.B. nur ISO 27001)'
+        additional_scoped_frameworks: 'Mehrfachauswahl — z. B. 27001 + NIS2 + DORA in einem Audit-Durchgang. Findings werden transitiv auf alle abgedeckten Frameworks gemappt.'
+        audit_type: 'Art des Audits (intern, extern, Zertifizierung)'
+        audited_subsidiaries: 'Bei Konzernaudits: Welche Tochtergesellschaften werden einbezogen?'
+        framework: 'Gegen welches Framework/Standard wird auditiert (z.B. ISO 27001, TISAX)'
+        standard: 'Spezifischer Standard oder Version (z.B. ISO 27001:2022)'
+        planned_date: 'Geplantes Datum für die Durchführung des Audits'
+        actual_date: 'Tatsächliches Datum, an dem das Audit durchgeführt wurde'
+        lead_auditor: 'Name des leitenden Auditors (ISO 27001 Klausel 9.2.2: kompetent, unparteiisch)'
+        audit_team: 'Liste der Audit-Teammitglieder'
+        auditee: 'Der auditierte Bereich oder die auditierte Person'
+        department: 'Auditierte Abteilung oder Organisationseinheit'
+        status: 'Aktueller Status des Audits (geplant, in Bearbeitung, abgeschlossen, berichtet)'
+        overall_result: 'Gesamtergebnis und Schlussfolgerung des Audits'
+        objectives: 'Ziele und Zweck des Audits (was soll geprüft werden?)'
+        audit_criteria: 'Kriterien, gegen die auditiert wird (z.B. ISO 27001 Anforderungen)'
+        methodology: 'Angewandte Audit-Methodik (Interviews, Dokumentenprüfung, Stichproben)'
+        findings: 'Audit-Feststellungen (positive und negative Befunde)'
+        nonconformities: 'Identifizierte Nichtkonformitäten (Abweichungen von Anforderungen)'
+        observations: 'Beobachtungen und Verbesserungspotenziale'
+        recommendations: 'Empfehlungen des Audit-Teams'
+        corrective_actions: 'Geplante oder umgesetzte Korrekturmaßnahmen'
+        follow_up_actions: 'Maßnahmen zur Nachverfolgung und Verifizierung'
+        conclusion: 'Gesamtfazit und Audit-Schlussfolgerung'
+        evidence_collected: 'Liste der während des Audits gesammelten Nachweise'
+        summary: 'Kurze Zusammenfassung des Audits'
+        notes: 'Zusätzliche Notizen und Anmerkungen'
+    scope: Geltungsbereich
+    status_in_progress: 'In Bearbeitung'
+    validation:
+        title_required: 'Bitte geben Sie einen Titel für das Audit an'
+        date_required: 'Bitte wählen Sie ein geplantes Datum'
+    conclusion: 'Fazit'
+audit_log:
+    pagination:
+        page_counter: 'Seite %current% von %total%'
+    showing_recent: 'Neueste %count% Einträge werden angezeigt'
+audit_management:
+    title: Audits
+    description: 'Planung, Durchführung und Nachverfolgung interner und externer Audits'
+    planned_audits: 'Geplante Audits'
+    total_audits: Gesamt‑Audits
+    audits_list: Audits‑Liste
+    no_audits: 'Keine Audits vorhanden.'
+checklist:
+    title: 'Audit-Checkliste'
+    save_progress: 'Fortschritt speichern'
+    progress: 'Fortschritt: %verified%/%total% Anforderungen geprüft'
+    status:
+        not_checked: 'Nicht geprüft'
+        compliant: 'Konform'
+        partial: 'Teilweise'
+        non_compliant: 'Nicht konform'
+        not_applicable: 'N/A'
+    requirement_description: 'Anforderungsbeschreibung'
+    audit_notes: 'Audit-Notizen'
+    evidence_found: 'Gefundene Nachweise'
+    findings: 'Feststellungen'
+    recommendations: 'Empfehlungen'
+    compliance_score: 'Compliance Score'
+    detailed_requirements: 'Detailanforderungen (%count%)'
+pdf:
+    title: 'Interner Audit-Bericht'
+    section:
+        audit_information: 'Audit-Informationen'
+        schedule: 'Zeitplan'
+        scope_objectives: 'Geltungsbereich & Ziele'
+        compliance_framework: 'Compliance-Framework'
+        audited_assets: 'Auditierte Assets'
+        audit_findings: 'Audit-Feststellungen'
+        conclusion: 'Fazit'
+        document_information: 'Dokumentinformationen'
+    label:
+        audit_number: 'Audit-Nummer'
+        title: 'Titel'
+        status: 'Status'
+        scope_type: 'Scope-Typ'
+        lead_auditor: 'Leitender Auditor'
+        audit_team: 'Audit-Team'
+        planned_date: 'Geplantes Datum'
+        actual_date: 'Tatsächliches Datum'
+        report_date: 'Berichtsdatum'
+        scope: 'Geltungsbereich'
+        objectives: 'Ziele'
+        audited_departments: 'Auditierte Abteilungen'
+        framework: 'Framework'
+        version: 'Version'
+        asset_name: 'Asset-Name'
+        type: 'Typ'
+        generated: 'Erstellt'
+        created: 'Angelegt'
+        last_updated: 'Zuletzt aktualisiert'
+    findings:
+        general: 'Allgemeine Feststellungen'
+        non_conformities: 'Nichtkonformitäten'
+        observations: 'Beobachtungen'
+        recommendations: 'Empfehlungen'
+    footer: 'Interner Audit-Bericht - %audit_number% - Erstellt %datetime% - Vertraulich'
+    default_scope: 'Gesamtes ISMS'
+
 audit_finding:
     page:
         title: 'Audit-Feststellungen'
@@ -32,12 +256,45 @@ audit_finding:
     action:
         new: 'Neue Feststellung'
     field:
+        audit: 'Audit'
+        finding_number: 'Feststellungsnummer'
+        title: 'Titel'
+        description: 'Beschreibung'
         type: 'Typ'
         severity: 'Schweregrad'
         status: 'Status'
+        clause_reference: 'Klausel-/Control-Referenz'
         evidence: 'Nachweis / Evidenz'
+        related_control: 'Verknüpfter Control'
+        related_controls: 'Verknüpfte Controls'
+        assigned_to: 'Zugewiesen an'
+        assigned_person: 'Verantwortlich (Person)'
+        assigned_deputy_persons: 'Vertretungen (Personen)'
+        reported_by_person: 'Gemeldet von (Person)'
+        reported_by_deputy_persons: 'Vertretungen Meldender (Personen)'
         due_date: 'Fällig bis'
+        linked_requirements: 'Verknüpfte Norm-Anforderungen'
+    placeholder:
+        audit: '-- Audit auswählen --'
+        related_control: '-- Control auswählen (optional) --'
+        assigned_to: '-- Verantwortliche Person --'
+        assigned_person: '-- Person aus Stammdaten --'
+        reported_by_person: '-- Person aus Stammdaten --'
     help:
+        audit: 'Internes Audit, in dem diese Feststellung entstanden ist'
+        finding_number: 'Eindeutige Nummer (optional — z.B. F-2026-001)'
+        description: 'Ausführliche Beschreibung der Abweichung bzw. Beobachtung'
+        type: 'Major-NC = schwerwiegende Abweichung; Minor-NC = geringfügige Abweichung; Observation = Hinweis; Opportunity = Verbesserungschance'
+        clause_reference: 'Norm-Referenz (z.B. ISO 27001 A.5.1, Clause 9.3)'
+        evidence: 'Belegmaterial (Interview, Dokument, Screenshot, …)'
+        related_controls: 'Mehrere ISO-27001-Controls auswählbar. Findings betreffen oft mehr als ein Control (z.B. Logging-Befund trifft A.8.15 + A.8.16).'
+        due_date: 'Termin bis zur Behebung. ISO 27001 erwartet nachvollziehbare Fristen.'
+        assigned_to: 'Verantwortliche Person aus der Benutzerverwaltung.'
+        assigned_person: 'Person ohne System-Login als Verantwortliche. Reihenfolge: User > Person > leer.'
+        assigned_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
+        reported_by_person: 'Person ohne System-Login als Meldende. Reihenfolge: User > Person > leer.'
+        reported_by_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Meldenden.'
+        linked_requirements: 'Verknüpfung mit ISO/BSI-Anforderungen erstellt automatisch Korrekturmaßnahmen (F15).'
         empty_link: '/de/help/glossary#glossary-audit-finding'
     type:
         major_nc: 'Major Nonconformity'
@@ -49,6 +306,20 @@ audit_finding:
         high: 'Hoch'
         medium: 'Mittel'
         low: 'Niedrig'
+    severity_choice:
+        aria_label: 'Schweregrad der Feststellung'
+        low:
+            label: 'Niedrig'
+            definition: 'Geringfügige Abweichung, kein direkter Compliance-Verstoß. Beispiel: Tippfehler in einer Verfahrensanweisung, fehlende Versionsnummer.'
+        medium:
+            label: 'Mittel'
+            definition: 'Erkennbare Schwäche im ISMS-Prozess, aber keine unmittelbare Gefährdung. Beispiel: unvollständige Risikobewertung, veraltete Schulungsunterlagen.'
+        high:
+            label: 'Hoch'
+            definition: 'Erhebliche Abweichung mit Compliance-Risiko. Korrekturmaßnahme verpflichtend, Frist üblicherweise 30 Tage. Beispiel: keine dokumentierte Zugriffsrevision, Lieferantenbewertung fehlt.'
+        critical:
+            label: 'Kritisch'
+            definition: 'Hauptabweichung (Major NC) — gefährdet die Zertifizierung. Sofortige Eskalation und korrigierende Maßnahmen erforderlich. Beispiel: kein Risikobehandlungsplan, kein internes Audit durchgeführt.'
     status:
         open: 'Offen'
         in_progress: 'In Bearbeitung'
@@ -66,6 +337,11 @@ audit_finding:
         body: 'Keine offenen Feststellungen — Ihr ISMS arbeitet aktuell konformitätsfest. Im Audit-Modul können Sie jederzeit neue Feststellungen aus internen oder externen Audits dokumentieren.'
     confirm:
         delete: 'Möchten Sie diese Feststellung wirklich löschen?'
+    flash:
+        created: 'Feststellung erstellt.'
+        updated: 'Feststellung aktualisiert.'
+        deleted: 'Feststellung gelöscht.'
+
 corrective_action:
     page:
         title: 'Korrekturmaßnahmen'
@@ -74,10 +350,14 @@ corrective_action:
     action:
         new: 'Korrekturmaßnahme hinzufügen'
     field:
+        finding: 'Feststellung'
         title: 'Titel'
+        description: 'Beschreibung'
         root_cause_analysis: 'Ursachenanalyse (Root Cause)'
         status: 'Status'
+        responsible_person_user: 'Verantwortliche Person (Benutzer)'
         responsible_person: 'Verantwortliche Person (Kontakt)'
+        responsible_deputy_persons: 'Stellvertreter'
         planned_completion_date: 'Geplanter Abschluss'
         actual_completion_date: 'Tatsächlicher Abschluss'
         effectiveness_review_date: 'Wirksamkeitsprüfung'
@@ -86,6 +366,16 @@ corrective_action:
         verified_by: 'Wirksamkeit geprüft durch'
         verified_at: 'Wirksamkeitsprüfung am'
         previous_capa: 'Folge-CAPA zu unwirksamer Maßnahme'
+    placeholder:
+        finding: '-- Feststellung auswählen --'
+        responsible_person_user: '-- Benutzer auswählen --'
+        responsible_person: '-- Kontaktperson auswählen --'
+    help:
+        description: 'Konkrete Maßnahme zur Behebung der Abweichung'
+        root_cause_analysis: 'Warum ist die Abweichung aufgetreten? (5-Why / Ishikawa / FMEA)'
+        effectiveness_review_date: 'ISO 27001 10.1 fordert Wirksamkeitsbewertung nach Umsetzung'
+        effectiveness_notes: 'Ergebnis der Wirksamkeitsprüfung — warum wirksam/unwirksam'
+        effectiveness_evidence: 'Pflicht-Beleg (Re-Audit, Re-Test-Bericht, Evidenz-Dokument-ID) — wird beim Status "Wirksam/Unwirksam bestätigt" erzwungen.'
     status:
         planned: 'Geplant'
         in_progress: 'In Umsetzung'
@@ -102,6 +392,14 @@ corrective_action:
         for_finding: 'Für Feststellung'
     confirm:
         delete: 'Korrekturmaßnahme wirklich löschen?'
+    error:
+        evidence_required: 'Wirksamkeitsbeleg ist Pflicht für Verifizierung (ISO 27001 Cl. 10.1).'
+        verified_by_required: 'Wirksamkeitsprüfer ist Pflicht.'
+        invalid_transition: 'Statuswechsel von %from% nach %to% ist nicht erlaubt.'
+    flash:
+        created: 'Korrekturmaßnahme erstellt.'
+        updated: 'Korrekturmaßnahme aktualisiert.'
+        deleted: 'Korrekturmaßnahme gelöscht.'
     alva_hint:
         ineffective_followup:
             title: 'Maßnahme unwirksam — Folge-CAPA Pflicht'
@@ -111,3 +409,8 @@ corrective_action:
         followup_banner:
             title: 'Folge-CAPA zu unwirksamer Maßnahme'
             body: 'Sie legen eine Folge-CAPA zur unwirksamen Maßnahme #%id% (%title%) an. Feststellung und Vorgänger-CAPA sind vorbefüllt.'
+iso_9001_bridge:
+    major_nc: 'In ISO 9001 wird das als "Hauptabweichung" (Major Nonconformity) bezeichnet — verlangt eine dokumentierte Korrekturmaßnahme (10.2).'
+    minor_nc: 'In ISO 9001 entspricht das einer "Nebenabweichung" (Minor Nonconformity) — Klausel 10.2 Nichtkonformität und Korrekturmaßnahme.'
+    corrective_action: 'Identisch mit dem CAPA-Cycle aus ISO 9001 Klausel 10.2 (Korrekturmaßnahme nach Nichtkonformität).'
+    audit: 'Identisch mit ISO 9001 Klausel 9.2 "Internes Audit" — gleicher Audit-Plan, gleiche Audit-Berichte, gleiche Audit-Folgeaktionen.'

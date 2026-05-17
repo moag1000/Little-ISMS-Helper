@@ -23,14 +23,22 @@ rating:
 
 field:
     exercise_type: Übungstyp
+    template: BSI-200-4-Vorlage
     scenario_summary: Szenario-Zusammenfassung
     objectives: Übungsziele
+    objectives_placeholder: 'Jedes Ziel in eine neue Zeile'
+    objectives_help: 'Ein Ziel pro Zeile. Beispiel: "RTO von 4 Stunden einhalten"'
     participants: Teilnehmer
+    participants_placeholder: 'Namen durch Komma trennen'
     lessons_learned: Lessons Learned
     overall_rating: Gesamtbewertung
+    rating_placeholder: '— Bewertung wählen —'
     improvement_action_description: Maßnahmenbeschreibung
+    improvement_action_owner: Verantwortlicher (Benutzer-ID)
     improvement_action_due_date: Fälligkeitsdatum
     improvement_action_completed: Abgeschlossen
+    owner_user_id_placeholder: 'Benutzer-ID (optional)'
+
 section:
     actions_before: Maßnahmen vor der Übung
     actions_during: Maßnahmen während der Übung
@@ -46,6 +54,9 @@ action:
 error:
     log_already_exists: 'Für diese Übung existiert bereits ein Logbuch.'
     invalid_token: 'Ungültiges CSRF-Token. Bitte Seite neu laden.'
+    not_submitted: 'Das Logbuch muss zuerst eingereicht werden.'
+    already_confirmed: 'Das Logbuch wurde bereits bestätigt.'
+
 nav:
     exercise_log: BSI-200-4 Übungs-Logbuch
     exercise_log_calendar: Übungsplan-Kalender

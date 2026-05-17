@@ -3,6 +3,8 @@ user:
         title: 'User Management'
     action:
         new_user: 'New User'
+        view: View
+        edit: Edit
         delete_user: 'Delete User'
         deactivate: 'Deactivate'
     stats:
@@ -24,12 +26,17 @@ user:
         actions: Actions
     message:
         all_users: 'All Users'
+        no_users: 'No users available.'
+        no_custom_roles: 'No custom roles available.'
         no_system_roles: 'No system roles assigned.'
         no_custom_roles_assigned: 'No custom roles assigned.'
         no_specific_permissions: 'No specific permissions assigned. Permissions are inherited from system roles.'
     empty:
         title: 'No users yet'
         description: 'Create your first user to start managing users.'
+    name: Name
+    email: Email
+    department: Department
     edit: Edit
     edit_suffix: 'Edit Suffix'
     save_changes: 'Save Changes'
@@ -80,13 +87,52 @@ user:
         department: Department
         job_title: 'Job Title'
         phone_number: 'Phone Number'
+        avatar: Avatar
+        avatar_file: 'Upload Avatar'
         tenant: Tenant
         auth_provider: 'Authentication Provider'
+        password: Password
+        plain_password: 'New Password'
         roles: Roles
+        system_roles: 'System Roles'
+        custom_roles: 'Custom Roles'
+        is_active: Active
+        active: Active
+        is_verified: Verified
+        email_verified: 'Email Verified'
         created_at: 'Created At'
         updated_at: 'Updated At'
         last_login: 'Last Login'
+        competencies: 'Competencies (§7.2)'
+        previous_qms_background: 'Previous QM-System experience'
+    placeholder:
+        tenant: '-- Select tenant --'
+        competencies_json: '[{"name":"ISO 27001 Fundamentals","category":"compliance","level":3,"certifiedBy":null,"certifiedAt":null,"expiresAt":null}]'
+        previous_qms_background: '-- Please select --'
+    qms_background:
+        iso_9001: 'ISO 9001 (Quality Management)'
+        iso_14001: 'ISO 14001 (Environmental Management)'
+        other: 'Other QM-System experience'
+        none: 'No QM-System experience'
+    help:
+        first_name: "Enter the user's first name"
+        last_name: "Enter the user's last name"
+        email: 'Enter a valid email address (used for login and notifications)'
+        department: "User's department or organizational unit"
+        job_title: "User's job title or function"
+        phone_number: 'Phone number for contact (optional)'
+        avatar: 'Upload profile picture (recommended: square format, max 2MB)'
+        avatar_help: 'Recommended format: square, max 2MB (JPEG, PNG, GIF, WebP)'
+        tenant: 'Tenant this user belongs to (in multi-tenant environments)'
+        tenant_help: 'Leave empty for Super Admin users without tenant binding'
+        password_edit: 'Leave empty to keep current password'
+        password: 'Minimum 8 characters, should contain uppercase and lowercase letters, numbers and special characters'
+        password_change: 'Minimum %min% characters. All characters allowed — letters, digits, symbols, umlauts, spaces, emoji. Leave empty to keep the current password.'
+        password_create: 'Minimum %min% characters. All characters allowed — letters, digits, symbols, umlauts, spaces, emoji. Optional with Azure authentication.'
+        competencies_json: 'JSON array of competencies per ISO 27001 §7.2. Fields: name, category (security|compliance|technical|leadership), level (1–5), certifiedBy, certifiedAt, expiresAt.'
+        previous_qms_background: 'Enables Norm-Bridges — e.g. shows "Interested Party → Stakeholder" underneath the field if ISO 9001 is selected.'
     validation:
+        avatar_format: 'Please upload a valid image (JPEG, PNG, GIF or WebP)'
         password_min_length: 'The password must be at least {{ limit }} characters long.'
     auth_provider:
         local: 'Local Authentication'
@@ -129,6 +175,10 @@ user:
         manager: 'Manager'
         admin: 'Administrator'
         super_admin: 'Super Administrator'
+        ciso: 'CISO'
+        risk_manager: 'Risk Manager'
+        dpo: 'Data Protection Officer'
+        compliance_manager: 'Compliance Manager'
     role_description:
         user: 'Basic access to ISMS modules. Can view data and edit own tasks.'
         auditor: 'Extended read permissions for audits and reviews. Can document audit findings and verify compliance.'
@@ -142,20 +192,26 @@ user:
     role_hierarchy:
         title: 'Role Hierarchy'
         description: 'Each role automatically inherits the permissions of all lower roles.'
+        chain: 'User → Auditor → Manager → Administrator → Super Administrator'
     roles_info:
         title: 'Understanding Roles'
         system_title: 'System Roles (Symfony Security)'
         system_description: 'System roles define basic access levels and are hardcoded in the application. They control access to areas like /admin and determine the role hierarchy.'
+        system_note: 'Every user must have at least ROLE_USER. Higher roles automatically inherit all rights from lower roles.'
         system_feature_1: 'Control access to application areas (URLs, Controllers)'
         system_feature_2: 'Hierarchical: Higher roles inherit all rights from lower roles'
         system_feature_3: 'Hardcoded in the application (ROLE_USER, ROLE_ADMIN, etc.)'
         custom_title: 'Custom Roles (Database)'
         custom_description: 'Custom roles enable fine-grained permissions for specific resources (e.g., "Edit risks only", "View own department only").'
+        custom_note: 'These roles are stored in the database and can be created and customized by the administrator.'
         custom_feature_1: 'Control permissions at resource level (read/write/delete)'
         custom_feature_2: 'Flexible: Can be created and customized by administrators'
         custom_feature_3: 'Fine-grained: Specific permissions per module/entity'
         difference_title: 'Important Note'
         difference_same_name: 'A custom role can have the same name as a system role (e.g., "Manager"), but they are NOT identical! System roles always start with ROLE_ and control application access. Custom roles control detailed resource permissions.'
+        difference_system: 'System role ROLE_MANAGER: Checked by Symfony Security, controls access to URLs and controllers.'
+        difference_custom: 'Custom role "Manager": Controls specific permissions at resource level (read/write/delete).'
+        recommendation: 'Recommendation: Use different names for custom roles (e.g., "Risk Manager", "ISMS Officer") to avoid confusion.'
     profile:
         title: 'My Profile'
         action:
@@ -181,6 +237,9 @@ user:
         confirm:
             delete_avatar: 'Do you really want to delete your profile picture?'
         success:
+            updated: 'Profile successfully updated'
+            password_changed: 'Password successfully changed'
+            avatar_deleted: 'Avatar successfully deleted'
             alva_settings: 'Alva Companion settings saved'
         alva:
             enabled_label: 'Show Alva Companion'

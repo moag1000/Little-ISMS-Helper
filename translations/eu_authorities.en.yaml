@@ -1,5 +1,6 @@
 eu_authorities:
     nav:
+        title: 'Authority Export'
         index_title: 'EU Authority Templates'
         index_subtitle: 'Regulatory notification templates for supervisory authorities'
     page:
@@ -20,6 +21,16 @@ eu_authorities:
             export_pdf: 'Export BfDI-PDF'
         error:
             no_processing_activities: 'No processing activities recorded — please create at least one.'
+        column:
+            verantwortlicher: 'Controller'
+            dpo: 'Data Protection Officer'
+            zweck: 'Processing Purpose'
+            betroffene: 'Categories of Data Subjects'
+            daten: 'Categories of Personal Data'
+            empfaenger: 'Recipients'
+            drittland: 'Third-Country Transfer'
+            loeschfristen: 'Retention Periods'
+            toms: 'Technical and Organisational Measures'
     nis2_registration:
         page:
             title: 'NIS-2 BSI Portal Registration'
@@ -40,6 +51,8 @@ eu_authorities:
             sector: 'NIS-2 Sector'
             category: 'Entity Category'
             headcount: 'Affected Employees (count)'
+            turnover: 'Annual Turnover in EUR (optional)'
+            ict_dependency: 'ICT System Dependency'
             nace_codes: 'NACE Codes'
             current_nace_codes: 'Current NACE Codes'
             incident_contact: 'Incident Reporting Contact'
@@ -49,8 +62,16 @@ eu_authorities:
             next_due: 'Next Due Date'
             confirmation_number: 'BSI Confirmation Number'
         placeholder:
+            legal_form: 'e.g. GmbH, AG, Ltd …'
+            sector: 'Select sector …'
+            backup_contact: 'No deputy'
             confirmation_number: 'e.g. BSI-2026-XXXX-YYYY'
         help:
+            legal_form: 'Legal form as registered, e.g. GmbH, AG'
+            register_number: 'Commercial register number, e.g. HRB 12345'
+            headcount: 'Number of employees affected by this registration'
+            turnover: 'Annual turnover in EUR — relevant for threshold assessment'
+            ict_dependency: 'Brief description of critical ICT dependencies (max. 5 sentences)'
             nace_codes: 'NACE Rev.2 codes for your primary business activity'
             nace_codes_detail: 'NACE codes are derived from tenant master data and can be updated there.'
         action:
@@ -67,6 +88,17 @@ eu_authorities:
             overdue_body: 'Deadline was %date% — immediate submission required (BSIG § 33).'
             never_reported: 'Not yet reported to BSI'
         error:
+            legal_name_required: 'Legal name is required'
+            legal_form_required: 'Legal form is required'
+            register_city_required: 'Commercial register city is required'
+            register_number_required: 'Commercial register number is required'
+            nace_codes_required: 'At least one NACE code is required'
+            sector_required: 'NIS-2 sector is required'
+            category_invalid: 'Invalid entity category'
+            headcount_required: 'Headcount must be greater than 0'
+            ict_description_required: 'ICT dependency description is required'
+            incident_contact_required: 'Incident reporting contact is required'
+            security_contact_required: 'IT security officer contact is required'
             profile_incomplete: 'Profile incomplete — please fill in all required fields first.'
             confirmation_number_required: 'BSI confirmation number is required'
         success:
@@ -124,6 +156,11 @@ eu_authorities:
             on_demand: 'On Demand'
             yearly: 'Yearly'
             triggered: 'Event-triggered'
+        obligation:
+            vvt_bfdi: 'RoPA / BfDI Export (GDPR Art. 30)'
+            bfdi_templates: 'Authority Notification Templates (BfDI / State DPA)'
+            bsi_nis2: 'NIS-2 BSI Portal Registration'
+            dora_roi: 'DORA Register of Information (RoI XBRL)'
         action:
             open: 'Open'
         empty:
@@ -168,7 +205,36 @@ eu_authorities:
             confirmation_required: 'Confirmation number is required.'
         success:
             submitted: 'DORA RoI marked as submitted. Confirmation number: %number%'
+        info:
+            not_applicable_to_tenant: 'DORA does not apply to this tenant. Set the DORA obligation status under Tenant Settings.'
+        alva:
+            overdue_authority_report:
+                title: 'EU Authority Report Overdue'
+                body: 'At least one EU authority reporting obligation is overdue. Immediate action required.'
+                action: 'Open Authority Hub'
+            dora_roi_due:
+                title: 'DORA RoI Not Yet Submitted This Year'
+                body: 'The DORA Register of Information (RoI) for the current year has not yet been submitted to the supervisory authority.'
+                action: 'Open DORA RoI'
+        global:
+            overdue_authority_report:
+                title: 'EU Authority Report Overdue'
+                body: 'At least one EU authority reporting obligation is overdue. Immediate action required.'
+                action: 'Open Authority Hub'
+            dora_roi_export_due:
+                title: 'DORA RoI Not Yet Submitted'
+                body: 'The DORA Register of Information for the current financial year has not yet been submitted to the supervisory authority (DORA Art. 28).'
+                action: 'Open DORA RoI'
 authority:
+    bsi_meldestelle:
+        name: 'BSI Reporting Office (NIS-2)'
+        description: 'Federal Office for Information Security — NIS-2 reporting office'
+    bfdi:
+        name: 'BfDI'
+        description: 'Federal Commissioner for Data Protection and Freedom of Information'
+    lfdi:
+        name: 'State DPA'
+        description: 'State Commissioner for Data Protection'
     bundesland:
         bw: 'Baden-Württemberg (LfDI BW)'
         by: 'Bavaria (LDA Bayern)'
@@ -189,6 +255,11 @@ authority:
     action:
         export_pdf: 'Export PDF'
         export_json: 'Export JSON'
+    error:
+        module_inactive: 'EU authority reporting is not active.'
+        breach_not_found: 'Data breach not found.'
+        incident_not_found: 'Incident not found.'
+        unknown_authority: 'Unknown authority: %key%'
     section:
         data_breaches: 'Data Breach Notifications (GDPR Art. 33)'
         incidents: 'Incident Notifications (NIS-2 BSI)'
@@ -202,6 +273,11 @@ authority:
         no_breaches_body: 'Once a data breach is created, you can export the authority notification as PDF or JSON here.'
     nav:
         title: 'Authority Notification Templates'
+    alva:
+        authority_overdue:
+            title: 'Authority Notification Pending (GDPR Art. 33)'
+            body: '%count% high/critical breach(es) — over 24h without documented authority export. GDPR Art. 33: notify within 72h.'
+            action: 'Open authority export'
     global:
         authority_template_overdue:
             title: 'Authority Notification Pending (GDPR Art. 33)'

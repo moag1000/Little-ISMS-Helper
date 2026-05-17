@@ -18,7 +18,7 @@ use App\Service\ModuleConfigurationService;
  * - get_active_modules(): Get list of all active module keys
  * - get_module_info(moduleKey): Get detailed module information
  */
-class ModuleExtension
+final class ModuleExtension
 {
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfigurationService

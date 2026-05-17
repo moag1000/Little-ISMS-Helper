@@ -28,7 +28,7 @@ use Psr\Log\LoggerInterface;
  */
 #[AsEntityListener(event: Events::postPersist, entity: AuditFinding::class)]
 #[AsEntityListener(event: Events::postUpdate, entity: AuditFinding::class)]
-class AutoReactionCorrectiveActionListener
+final class AutoReactionCorrectiveActionListener
 {
     /**
      * V3 W2-WS-7 — SystemSettings key for severity-based CA due-days.

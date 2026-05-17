@@ -15,7 +15,7 @@ use Twig\Extension\AbstractExtension;
  *
  * Wird vom Brand-Component (_brand.html.twig) und Email-Footer genutzt.
  */
-class AppVersionExtension extends AbstractExtension implements GlobalsInterface
+final class AppVersionExtension extends AbstractExtension implements GlobalsInterface
 {
     private ?string $version = null;
 

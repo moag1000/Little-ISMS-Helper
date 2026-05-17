@@ -23,7 +23,7 @@ use Twig\Extension\GlobalsInterface;
  * konkreten Services via Session/Flash gesetzt, damit keine DB-Query
  * in jedem Render steckt.
  */
-class AlvaMoodExtension extends AbstractExtension implements GlobalsInterface
+final class AlvaMoodExtension extends AbstractExtension implements GlobalsInterface
 {
     private const VALID_MOODS = [
         'idle', 'happy', 'thinking', 'focused', 'working',

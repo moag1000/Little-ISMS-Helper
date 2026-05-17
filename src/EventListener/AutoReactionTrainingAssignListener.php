@@ -35,7 +35,7 @@ use Psr\Log\LoggerInterface;
  * Toggle: AutoReactionService::KEY_TRAINING_ASSIGN (default true).
  */
 #[AsEntityListener(event: Events::postPersist, entity: User::class)]
-class AutoReactionTrainingAssignListener
+final class AutoReactionTrainingAssignListener
 {
     public function __construct(
         private readonly AutoReactionService $reactions,

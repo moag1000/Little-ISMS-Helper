@@ -19,7 +19,7 @@ use Twig\Attribute\AsTwigFunction;
  * via `SystemTemplateRegistry::findActive()`. Language is taken from the
  * current request locale.
  */
-class SystemTemplateExtension
+final class SystemTemplateExtension
 {
     public function __construct(
         private readonly SystemTemplateRegistry $registry,

@@ -12,6 +12,7 @@ role_management:
     section:
         basic_info: 'Basic Information'
         permissions: Permissions
+        details: 'Role Details'
         users: 'Assigned Users'
     field:
         name: 'Role Name'
@@ -19,8 +20,14 @@ role_management:
         users: Users
         permissions: Permissions
         type: Type
+        system_role: 'System Role'
+    placeholder:
+        name: 'e.g. Security Officer'
+        description: 'Description of the role and its responsibilities...'
     help:
+        active: 'Active roles can be assigned to users'
         permissions: 'Select the permissions this role should have'
+        system_role: 'System roles cannot be deleted and have restricted modification options'
         compare_before_create: 'Compare existing roles before creating a new one — prevents duplicates.'
     permission:
         name: Permission
@@ -107,6 +114,15 @@ role:
     risk_manager: 'Risk Manager'
     auditor: Auditor
     admin: Admin
+    group_ciso: 'Group CISO'
+    konzern_auditor: 'Group Auditor'
+    holding:
+        group_ciso:
+            label: 'Group CISO'
+            description: 'Cross-tenant read access for Group-CISOs. Can view all subsidiary dashboards, risk registers, and SOA overviews. Cannot modify individual tenant configurations.'
+        konzern_auditor:
+            label: 'Group Auditor'
+            description: 'Read-only access across all subsidiary tenants. For internal or external group auditors who need to review all subsidiaries without write permissions.'
     compare:
         title: 'Compare Roles'
         select_roles: 'Select Roles to Compare'

@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * When no user is authenticated or user has no tenant (super admin),
  * the parameter is set to 'null' which disables filtering (admin mode).
  */
-class TenantFilterSubscriber implements EventSubscriberInterface
+final class TenantFilterSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
