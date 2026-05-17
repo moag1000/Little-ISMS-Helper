@@ -244,7 +244,7 @@ class IncidentController extends AbstractController
                     default => IncidentSeverity::Low,
                 };
                 $incident->setSeverity($severity);
-                $incident->setStatus(IncidentStatus::Reported);
+                $incident->setStatus(IncidentStatus::Reported); // FIXME: migrate to LifecycleService (initial state, no transition needed)
                 // Link back to the originating risk via realizedRisks
                 $incident->addRealizedRisk($sourceRisk);
             }
