@@ -50,7 +50,7 @@ src/Controller/Bsi2004ExerciseLogController.php:27
 src/Controller/CertificationBundleController.php:31
 src/Controller/ComplianceInheritanceController.php:25
 src/Controller/ComplianceWizardController.php:43
-src/Controller/ConsentController.php:24
+src/Controller/ConsentController.php:25
 src/Controller/CorrectiveActionController.php:26
 src/Controller/Dashboard/ComplianceManagerDashboardController.php:35
 src/Controller/Dashboard/DpoDashboardController.php:29
