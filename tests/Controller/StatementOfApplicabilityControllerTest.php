@@ -302,23 +302,19 @@ class StatementOfApplicabilityControllerTest extends TestCase
     #[Test]
     public function testIndexWhenUserHasNoTenant(): void
     {
+        // Tenant-less users get a dedicated landing page with concrete next
+        // steps instead of a 0/0/0/0% KPI dashboard. The controller
+        // short-circuits and renders soa/_no_tenant.html.twig.
         $user = $this->createMock(User::class);
         $user->method('getTenant')->willReturn(null);
-        $controls = [$this->createControl(1, '5.1', 'Organizational')];
 
         $this->security->method('getUser')->willReturn($user);
-        $this->controlRepository->method('findAllInIsoOrder')->willReturn($controls);
-        $this->controlRepository->method('getImplementationStats')->willReturn([]);
-        $this->controlRepository->method('countByCategory')->willReturn([]);
 
         $this->twig->expects($this->once())
             ->method('render')
             ->with(
-                'soa/index.html.twig',
-                $this->callback(function ($params) {
-                    return $params['inheritanceInfo']['hasParent'] === false
-                        && $params['inheritanceInfo']['hasSubsidiaries'] === false;
-                })
+                'soa/_no_tenant.html.twig',
+                $this->callback(static fn ($params): bool => array_key_exists('isAdmin', $params))
             )
             ->willReturn('rendered');
 
