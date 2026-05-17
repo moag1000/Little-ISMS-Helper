@@ -161,7 +161,7 @@
                                 {% elseif row.value_type == 'months' %}
                                     {{ 'policy_wizard.review.value.months'|trans({'%count%': row.value}, 'policy_wizard') }}
                                 {% elseif row.value_type == 'months_with_label' %}
-                                    {{ 'policy_wizard.review.value.months'|trans({'%count%': row.value}) }}
+                                    {{ 'policy_wizard.review.value.months'|trans({'%count%': row.value}, 'policy_wizard') }}
                                     {% if row.value == 12 %}
                                         <span class="text-muted small">({{ 'policy_wizard.review.value.months_label.yearly'|trans }})</span>
                                     {% elseif row.value == 24 %}
