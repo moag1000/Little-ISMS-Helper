@@ -176,6 +176,12 @@ class LifecycleController extends AbstractController
     #[Route('/lifecycle/{entityType}/{id}/history', name: 'app_lifecycle_history', methods: ['GET'])]
     public function history(string $entityType, int $id): Response
     {
+        // Auth must precede entity lookup — otherwise unknown/missing entities
+        // leak as 404 to anonymous callers instead of being refused with 403.
+        if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->jsonError(403, 'forbidden', 'Authentifizierung erforderlich.');
+        }
+
         $mapping = $this->entityRegistry->lookup($entityType);
         if ($mapping === null) {
             return $this->jsonError(404, 'unknown_entity_type', sprintf('Lifecycle für Typ "%s" nicht konfiguriert.', $entityType));
@@ -184,10 +190,6 @@ class LifecycleController extends AbstractController
         $entity = $this->em->getRepository($mapping['class'])->find($id);
         if ($entity === null) {
             return $this->jsonError(404, 'not_found', 'Entity nicht gefunden.');
-        }
-
-        if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->jsonError(403, 'forbidden', 'Authentifizierung erforderlich.');
         }
 
         // Derive audit log entity type from FQCN short name (e.g. "Document", "ProcessingActivity")
