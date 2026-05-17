@@ -10,7 +10,20 @@ parameters:
         - src/Lifecycle/
 
 services:
+    # X.5b — Prevents `setStatus()` outside src/Entity/ and src/Lifecycle/
     -
         class: App\Tests\PHPStan\Rule\NoDirectSetStatusRule
         tags:
             - phpstan.rules.rule
+
+    # Y.4 — Prevents `new App\Entity\Workflow()` / `new App\Entity\WorkflowStep()`
+    # in src/ code outside Repository and Command namespaces.
+    # See: tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php
+    -
+        class: LittleIsmsHelper\PhpStan\Rule\NoNewWorkflowOrWorkflowStep
+        tags:
+            - phpstan.rules.rule
+
+autoload:
+    files:
+        - tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php
