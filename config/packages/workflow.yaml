@@ -4,3 +4,13 @@ imports:
     - { resource: '../workflows/isms_objective.yaml' }
     - { resource: '../workflows/policy_template.yaml' }
     - { resource: '../workflows/asset.yaml' }
+    - { resource: '../workflows/audit_finding.yaml' }
+    - { resource: '../workflows/consent.yaml' }
+    - { resource: '../workflows/corrective_action.yaml' }
+    - { resource: '../workflows/data_breach.yaml' }
+    - { resource: '../workflows/data_subject_request.yaml' }
+    - { resource: '../workflows/dpia.yaml' }
+    - { resource: '../workflows/incident.yaml' }
+    - { resource: '../workflows/internal_audit.yaml' }
+    - { resource: '../workflows/risk.yaml' }
+    - { resource: '../workflows/vulnerability.yaml' }
