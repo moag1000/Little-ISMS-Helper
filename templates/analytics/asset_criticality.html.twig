@@ -277,6 +277,17 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
         document.addEventListener('turbo:load', function() {
+            // Resolve Aurora design-tokens to color strings for Chart.js
+            // (Chart.js doesn't resolve CSS custom properties).
+            const _tokens = getComputedStyle(document.documentElement);
+            const T = (name) => _tokens.getPropertyValue(name).trim();
+            const COLORS = {
+                danger:  T('--danger'),
+                warning: T('--warning'),
+                primary: T('--primary'),
+                success: T('--success'),
+            };
+
             const probabilityData = {{ incident_probability|json_encode|raw }};
 
             // Criticality Distribution Chart
@@ -302,7 +313,7 @@
                         labels: Object.keys(criticalityGroups),
                         datasets: [{
                             data: Object.values(criticalityGroups),
-                            backgroundColor: ['var(--danger)', 'var(--warning)', 'var(--primary)', 'var(--success)']
+                            backgroundColor: [COLORS.danger, COLORS.warning, COLORS.primary, COLORS.success]
                         }]
                     },
                     options: {
@@ -342,7 +353,7 @@
                         datasets: [{
                             label: '{{ 'analytics.assets.chart.asset_count'|trans({}, 'analytics') }}',
                             data: Object.values(probabilityGroups),
-                            backgroundColor: ['var(--success)', 'var(--primary)', 'var(--warning)', 'var(--warning)', 'var(--danger)']
+                            backgroundColor: [COLORS.success, COLORS.primary, COLORS.warning, COLORS.warning, COLORS.danger]
                         }]
                     },
                     options: {

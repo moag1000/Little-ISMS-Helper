@@ -452,6 +452,20 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
         document.addEventListener('turbo:load', function() {
+            // Resolve Aurora design-tokens to color strings for Chart.js
+            // (Chart.js doesn't resolve CSS custom properties).
+            const _tokens = getComputedStyle(document.documentElement);
+            const T = (name) => _tokens.getPropertyValue(name).trim();
+            const COLORS = {
+                primary:      T('--primary'),
+                primaryTint:  T('--primary-tint'),
+                warning:      T('--warning'),
+                warningGlow:  T('--warning-glow'),
+                success:      T('--success'),
+                danger:       T('--danger'),
+                surface3:     T('--surface-3'),
+            };
+
             // Forecast Chart
             const forecastCtx = document.getElementById('forecastChart');
             if (forecastCtx) {
@@ -466,15 +480,15 @@
                         datasets: [{
                             label: '{{ 'analytics.forecast.chart.historical'|trans({}, 'analytics') }}',
                             data: [...historical.map(h => h.total), ...Array(predicted.length).fill(null)],
-                            borderColor: 'var(--primary)',
-                            backgroundColor: 'var(--primary-tint)',
+                            borderColor: COLORS.primary,
+                            backgroundColor: COLORS.primaryTint,
                             fill: true
                         }, {
                             label: '{{ 'analytics.forecast.chart.predicted'|trans({}, 'analytics') }}',
                             data: [...Array(historical.length - 1).fill(null), historical.length > 0 ? historical[historical.length - 1].total : 0, ...predicted.map(p => p.total)],
-                            borderColor: 'var(--warning)',
+                            borderColor: COLORS.warning,
                             borderDash: [5, 5],
-                            backgroundColor: 'var(--warning-glow)',
+                            backgroundColor: COLORS.warningGlow,
                             fill: true
                         }]
                     },
@@ -510,7 +524,7 @@
                         datasets: [{
                             label: '{{ 'analytics.forecast.velocity.net_change'|trans({}, 'analytics') }}',
                             data: changes,
-                            backgroundColor: changes.map(c => c > 0 ? 'var(--danger)' : 'var(--success)')
+                            backgroundColor: changes.map(c => c > 0 ? COLORS.danger : COLORS.success)
                         }]
                     },
                     options: {
@@ -535,8 +549,8 @@
                         datasets: [{
                             data: [score, 100 - score],
                             backgroundColor: [
-                                score >= 80 ? 'var(--success)' : (score >= 50 ? 'var(--warning)' : 'var(--danger)'),
-                                'var(--surface-3)'
+                                score >= 80 ? COLORS.success : (score >= 50 ? COLORS.warning : COLORS.danger),
+                                COLORS.surface3
                             ],
                             circumference: 180,
                             rotation: 270

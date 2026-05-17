@@ -350,6 +350,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
         document.addEventListener('turbo:load', function() {
+            // Resolve Aurora design-tokens to actual color values for Chart.js.
+            // Chart.js does NOT resolve CSS custom properties — it needs literal
+            // color strings (hex/rgb/rgba). Read tokens at chart-init.
+            const _tokens = getComputedStyle(document.documentElement);
+            const T = (name) => _tokens.getPropertyValue(name).trim();
+            const COLORS = {
+                success: T('--success'),
+                warning: T('--warning'),
+                danger:  T('--danger'),
+                primary: T('--primary'),
+                fg3:     T('--fg-3'),
+            };
+
             // Framework Comparison Chart
             const comparisonCtx = document.getElementById('frameworkComparisonChart');
             if (comparisonCtx) {
@@ -362,17 +375,17 @@
                             {
                                 label: '{{ 'analytics.compliance.chart.compliant'|trans({}, 'analytics') }}',
                                 data: comparisonData.map(f => f.fulfilled),
-                                backgroundColor: 'var(--success)'
+                                backgroundColor: COLORS.success
                             },
                             {
                                 label: '{{ 'analytics.compliance.chart.partial'|trans({}, 'analytics') }}',
                                 data: comparisonData.map(f => f.in_progress),
-                                backgroundColor: 'var(--warning)'
+                                backgroundColor: COLORS.warning
                             },
                             {
                                 label: '{{ 'analytics.compliance.chart.non_compliant'|trans({}, 'analytics') }}',
                                 data: comparisonData.map(f => f.not_started),
-                                backgroundColor: 'var(--danger)'
+                                backgroundColor: COLORS.danger
                             }
                         ]
                     },
@@ -399,7 +412,7 @@
                         labels: ['{{ 'analytics.compliance.chart.shared'|trans({}, 'analytics') }}', '{{ 'analytics.compliance.chart.unique'|trans({}, 'analytics') }}'],
                         datasets: [{
                             data: [totalShared, Math.max(0, totalFrameworks - totalShared)],
-                            backgroundColor: ['var(--success)', 'var(--fg-3)']
+                            backgroundColor: [COLORS.success, COLORS.fg3]
                         }]
                     },
                     options: {
