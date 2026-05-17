@@ -361,7 +361,7 @@ class ControlType extends AbstractType
         if ($entity === null) {
             return;
         }
-        if ($entity->getApplicable() === false && trim((string) $entity->getJustification()) === '') {
+        if ($entity->isApplicable() === false && trim((string) $entity->getJustification()) === '') {
             $context->buildViolation('control.error.justification_required_when_not_applicable')
                 ->atPath('justification')
                 ->addViolation();
