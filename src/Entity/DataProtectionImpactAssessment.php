@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Enum\DpiaStatus;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -1149,10 +1150,18 @@ class DataProtectionImpactAssessment
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(DpiaStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): DpiaStatus
+    {
+        return DpiaStatus::from($this->status);
     }
 
     public function getLockVersion(): int
