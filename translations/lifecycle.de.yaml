@@ -6,17 +6,69 @@ lifecycle:
     published: Veröffentlicht
     archived: Archiviert
 
-    # AuditFinding / CorrectiveAction discovery-style lifecycle
+    # General / shared states
+    deleted: Gelöscht
+    pending: Ausstehend
+    cancelled: Abgebrochen
+    active: Aktiv
+    inactive: Inaktiv
+    rejected: Abgelehnt
+    accepted: Akzeptiert
+    requires_revision: 'Überarbeitung erforderlich'
+    planned: Geplant
+    completed: Abgeschlossen
+    verified: Verifiziert
     open: Offen
-    in_progress: 'In Bearbeitung'
-    resolved: Behoben
     closed: Geschlossen
+    resolved: Behoben
+    reported: Gemeldet
+    received: Empfangen
+    identified: Identifiziert
+    assessed: Bewertet
+    monitored: Überwacht
+    treated: Behandelt
+    revoked: Widerrufen
+    expired: Abgelaufen
+
+    # AuditFinding / CorrectiveAction discovery-style lifecycle
+    in_progress: 'In Bearbeitung'
 
     # ISMSObjective lifecycle places
     not_started: 'Nicht gestartet'
     achieved: Erreicht
     delayed: Verzögert
-    cancelled: Abgebrochen
+
+    # Incident lifecycle places
+    in_investigation: 'In Untersuchung'
+    contained: Eingedämmt
+    eradicated: Beseitigt
+    recovered: Wiederhergestellt
+
+    # Data Breach / GDPR lifecycle places
+    under_assessment: 'In Bewertung'
+    authority_notified: 'Behörde informiert'
+    subjects_notified: 'Betroffene informiert'
+
+    # Risk lifecycle places
+    in_treatment: 'In Behandlung'
+
+    # Control / Corrective Action lifecycle places
+    verified_effective: 'Verifiziert (wirksam)'
+    verified_ineffective: 'Verifiziert (unwirksam)'
+
+    # Vulnerability lifecycle places
+    in_triage: 'In Triage'
+    in_remediation: 'In Behebung'
+    mitigated: Gemindert
+
+    # Data Subject Request lifecycle places
+    pending_verification: 'Ausstehende Verifizierung'
+
+    # Asset lifecycle places
+    in_use: 'In Nutzung'
+    returned: Zurückgegeben
+    retired: 'Außer Dienst'
+    disposed: Entsorgt
 
     tooltip:
         next: 'Nächste Schritte'
@@ -35,17 +87,67 @@ lifecycle:
     transition:
         submit_for_review: 'Zur Prüfung einreichen'
         approve: Freigeben
-        request_changes: 'Überarbeitung anfordern'
+        request_changes: 'Änderungen anfordern'
         publish: Veröffentlichen
         archive: Archivieren
-        restore: Reaktivieren
+        restore: Wiederherstellen
         activate: Aktivieren
+        deactivate: Deaktivieren
+        reactivate: Reaktivieren
         start: Starten
-        achieve: Als erreicht markieren
-        mark_achieved: Als erreicht markieren
-        mark_delayed: Als verzögert markieren
+        achieve: 'Als erreicht markieren'
+        mark_achieved: 'Als erreicht markieren'
+        mark_delayed: 'Als verzögert markieren'
         cancel: Abbrechen
-        reopen: Wiederöffnen
+        reopen: Wiedereröffnen
+        reject: Ablehnen
+        accept: Akzeptieren
+        request_revision: 'Überarbeitung anfordern'
+        resubmit: 'Erneut einreichen'
+        submit: Einreichen
+        complete: Abschließen
+        close: Schließen
+        resolve: Beheben
+        report: Berichten
+        rework: Überarbeiten
+        # Incident transitions
+        start_investigation: 'Untersuchung starten'
+        contain: Eindämmen
+        eradicate: Beseitigen
+        recover: Wiederherstellen
+        false_positive: 'False Positive'
+        # Data Breach / GDPR transitions
+        assess: Bewerten
+        notify_authority: 'Behörde benachrichtigen'
+        notify_subjects: 'Betroffene benachrichtigen'
+        # Risk transitions
+        treat: Behandeln
+        complete_treatment: 'Behandlung abschließen'
+        monitor: Überwachen
+        # Control / Corrective Action transitions
+        verify_effective: 'Wirksamkeit bestätigen'
+        verify_ineffective: 'Wirksamkeit verneinen'
+        verify: Verifizieren
+        # Vulnerability transitions
+        triage: Triagieren
+        remediate: Beheben
+        mitigate: Mindern
+        regression: 'Regression markieren'
+        # Data Subject Request transitions
+        process: Bearbeiten
+        # Asset transitions
+        assign_to_person: 'Person zuweisen'
+        return_from_person: Zurücknehmen
+        restore_to_active: 'Wieder aktivieren'
+        retire_from_active: 'Aus aktivem Dienst nehmen'
+        retire_from_inactive: 'Aus Inaktiv außer Dienst'
+        dispose: Entsorgen
+        revoke: Widerrufen
+        expire: 'Ablaufen lassen'
+        # Objective transitions
+        cancel_in_progress: 'Im Verlauf abbrechen'
+        # Retry
+        retry: Wiederholen
 
     history:
         title: Statushistorie

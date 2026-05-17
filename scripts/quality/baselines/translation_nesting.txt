@@ -238,7 +238,7 @@ translations/compliance.en.yaml:1016:compliance_framework
 translations/compliance.en.yaml:1050:admin
 translations/compliance.en.yaml:1072:fulfillment
 translations/compliance.en.yaml:1102:coverage
-translations/compliance.en.yaml:1106:nis2
+translations/compliance.en.yaml:1114:nis2
 translations/compliance_inheritance.de.yaml:1:status
 translations/compliance_inheritance.de.yaml:9:confidence
 translations/compliance_inheritance.de.yaml:14:queue
