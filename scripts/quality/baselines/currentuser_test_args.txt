@@ -1,0 +1,34 @@
+# check_currentuser_test_args.py baseline
+# Format: <relative-path>:<line>
+tests/Controller/AssetControllerTest.php:206
+tests/Controller/CertificationBundleControllerKonzernTest.php:175
+tests/Controller/CertificationBundleControllerKonzernTest.php:194
+tests/Controller/CommentControllerTest.php:182
+tests/Controller/ComplianceControllerTest.php:163
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:115
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:145
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:177
+tests/Controller/DocumentControllerTest.php:357
+tests/Controller/DocumentControllerTest.php:428
+tests/Controller/DocumentControllerTest.php:486
+tests/Controller/IncidentControllerTest.php:344
+tests/Controller/IncidentControllerTest.php:361
+tests/Controller/IncidentControllerTest.php:388
+tests/Controller/IncidentControllerTest.php:440
+tests/Controller/InternalAuditApprovalWorkflowTest.php:162
+tests/Controller/PolicyAcknowledgementControllerTest.php:159
+tests/Controller/PolicyExportControllerTest.php:177
+tests/Controller/PolicyWizardBestandsaufnahmeFlowTest.php:179
+tests/Controller/PolicyWizardControllerTest.php:162
+tests/Controller/PolicyWizardTargetedFlowTest.php:169
+tests/Controller/PolicyWizardWarningAcknowledgementTest.php:154
+tests/Controller/QuickFixControllerTest.php:114
+tests/Service/Import/SpreadsheetParserTest.php:269
+tests/Service/IndustryBaselineApplierTest.php:192
+tests/Service/IndustryBaselineApplierTest.php:193
+tests/Service/IndustryBaselineApplierTest.php:194
+tests/Service/TenantContextTest.php:208
+tests/Template/SystemTemplateApplierTest.php:52
+tests/Template/SystemTemplateApplierTest.php:90
+tests/Template/SystemTemplateApplierTest.php:120
+tests/Template/SystemTemplateApplierTest.php:152
