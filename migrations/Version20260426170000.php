@@ -21,6 +21,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260426170000 extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'DPIA: nullable related_asset_id ManyToOne -> asset (AI Act Art. 9 + DSGVO Art. 35)';

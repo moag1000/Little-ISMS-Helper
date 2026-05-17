@@ -16,6 +16,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260417173835 extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Fix CASCADE→SET NULL on Risk subjects, ComplianceRequirement parent, and Document uploaded_by';

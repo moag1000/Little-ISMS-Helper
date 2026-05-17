@@ -14,6 +14,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20251114120000_mapping_quality_analysis extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Add mapping quality analysis fields and gap tracking system';

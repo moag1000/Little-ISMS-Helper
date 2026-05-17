@@ -14,6 +14,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260506180000_dpia_sdm extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Add SDM 3.1 protection-goal assessment fields to data_protection_impact_assessment.';

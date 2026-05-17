@@ -22,6 +22,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260426153940 extends AbstractMigration
 {
+    /**
+     * DDL migration — MySQL implicitly commits ALTER/CREATE/DROP which
+     * invalidates Doctrine's per-migration SAVEPOINT (CLAUDE.md Pitfall #6).
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'AI-Agent-Inventar: 9 nullable Felder auf asset für EU AI Act + ISO 42001 + MRIS MHC-13';
