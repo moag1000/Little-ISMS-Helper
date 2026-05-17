@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Enum\CryptographicOperationStatus;
 use App\Repository\CryptographicOperationRepository;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\DBAL\Types\Types;
@@ -213,10 +214,18 @@ class CryptographicOperation
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(CryptographicOperationStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?CryptographicOperationStatus
+    {
+        return $this->status === null ? null : CryptographicOperationStatus::tryFrom($this->status);
     }
 
     public function getErrorMessage(): ?string

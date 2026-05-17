@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\ComplianceRequirementFulfillmentStatus;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use App\Service\OwnerResolver;
 use DateTimeImmutable;
@@ -371,18 +372,27 @@ class ComplianceRequirementFulfillment
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(ComplianceRequirementFulfillmentStatus|string $status): static
     {
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $value = is_string($status) ? $status : $status->value;
         $allowedStatuses = ['not_started', 'in_progress', 'implemented', 'verified'];
-        if (!in_array($status, $allowedStatuses)) {
+        if (!in_array($value, $allowedStatuses)) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid status "%s". Allowed: %s',
-                $status,
+                $value,
                 implode(', ', $allowedStatuses)
             ));
         }
-        $this->status = $status;
+        $this->status = $value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?ComplianceRequirementFulfillmentStatus
+    {
+        return ComplianceRequirementFulfillmentStatus::tryFrom($this->status);
     }
 
     public function getCreatedAt(): ?DateTimeImmutable

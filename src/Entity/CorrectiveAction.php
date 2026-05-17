@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\CorrectiveActionStatus;
 use App\Repository\CorrectiveActionRepository;
 use App\Service\OwnerResolver;
 use DateTimeImmutable;
@@ -210,10 +211,18 @@ class CorrectiveAction
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(CorrectiveActionStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?CorrectiveActionStatus
+    {
+        return CorrectiveActionStatus::tryFrom($this->status);
     }
 
     public function getLockVersion(): int

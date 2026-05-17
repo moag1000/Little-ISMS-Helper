@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Person;
+use App\Enum\PrototypeProtectionAssessmentStatus;
 use App\Repository\PrototypeProtectionAssessmentRepository;
 use App\Service\OwnerResolver;
 use DateTimeImmutable;
@@ -206,7 +207,19 @@ class PrototypeProtectionAssessment
     public function setScope(?string $scope): self { $this->scope = $scope; return $this; }
 
     public function getStatus(): string { return $this->status; }
-    public function setStatus(string $status): self { $this->status = $status; return $this; }
+    public function setStatus(PrototypeProtectionAssessmentStatus|string $status): self
+    {
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
+        return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?PrototypeProtectionAssessmentStatus
+    {
+        return PrototypeProtectionAssessmentStatus::tryFrom($this->status);
+    }
 
     public function getTisaxLevel(): ?string { return $this->tisaxLevel; }
     public function setTisaxLevel(?string $level): self { $this->tisaxLevel = $level; return $this; }
