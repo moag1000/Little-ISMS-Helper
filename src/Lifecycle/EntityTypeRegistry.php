@@ -9,11 +9,8 @@ namespace App\Lifecycle;
  *
  * Foundation pilot (X.0) shipped the Document mapping.
  * Sprint X.1 adds ProcessingActivity and ISMSObjective.
- *
- * Deferred (blocked — see X.1 PR description):
- *   - PolicyTemplate: no `status` field (uses `isActive: bool`) — needs entity refactor.
- *   - Asset: domain-specific status model (active/inactive/in_use/returned/retired/disposed)
- *     incompatible with standard 5-stage flow — needs a custom workflow design.
+ * Lifecycle unblock adds PolicyTemplate (previously deferred — lacked status field).
+ * Sprint X.2 adds Asset — custom physical lifecycle (7 places, 9 transitions).
  */
 final class EntityTypeRegistry
 {
@@ -30,6 +27,14 @@ final class EntityTypeRegistry
         'isms-objective' => [
             'class' => \App\Entity\ISMSObjective::class,
             'workflow' => 'isms_objective_lifecycle',
+        ],
+        'policy-template' => [
+            'class' => \App\Entity\PolicyTemplate::class,
+            'workflow' => 'policy_template_lifecycle',
+        ],
+        'asset' => [
+            'class' => \App\Entity\Asset::class,
+            'workflow' => 'asset_lifecycle',
         ],
     ];
 

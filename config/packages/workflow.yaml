@@ -2,3 +2,5 @@ imports:
     - { resource: '../workflows/document.yaml' }
     - { resource: '../workflows/processing_activity.yaml' }
     - { resource: '../workflows/isms_objective.yaml' }
+    - { resource: '../workflows/policy_template.yaml' }
+    - { resource: '../workflows/asset.yaml' }
