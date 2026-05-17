@@ -110,6 +110,17 @@ class Document
     private string $status = 'draft';
 
     /**
+     * Optimistic-locking version counter (Lifecycle Foundation Pilot).
+     * Managed exclusively by Doctrine — no setter exposed.
+     * Doctrine increments this column on every UPDATE; concurrent writers
+     * who hold a stale value receive an OptimisticLockException which the
+     * controller layer must catch and surface as a 409 Conflict.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * TISAX / VDA-ISA 6.0 information classification.
      * Values: public, internal, confidential, strictly_confidential, prototype.
      */
@@ -442,6 +453,14 @@ class Document
     public function setIsArchived(bool $isArchived): static { $this->isArchived = $isArchived; return $this; }
     public function getStatus(): string { return $this->status; }
     public function setStatus(string $status): static { $this->status = $status; return $this; }
+
+    /**
+     * Optimistic-locking counter — read-only from outside Doctrine.
+     */
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
+    }
 
     /**
      * Operationally visible = not soft-deleted or archived. Used for
