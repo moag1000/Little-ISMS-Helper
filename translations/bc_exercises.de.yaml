@@ -32,90 +32,21 @@ bc_exercises:
         status: Status
         effectiveness: Wirksamkeit
     field:
-        name: Übungsname
-        exercise_type: Übungstyp
-        description: Beschreibung
-        scope: Umfang
-        objectives: Ziele
-        scenario: Übungsszenario
         exercise_date: Übungsdatum
         duration: Dauer
         duration_hours: 'Dauer (Stunden)'
-        participants: Teilnehmende
-        participants_legacy: 'Teilnehmende (Freitext, Migration)'
-        participant_persons: 'Teilnehmende (Personen)'
         facilitator: 'Moderator/Leitung'
-        facilitator_user: 'Moderator/Leitung (User)'
-        facilitator_person: 'Moderator/Leitung (Person)'
-        facilitator_legacy: 'Moderator/Leitung (Freitext, Migration)'
-        exercise_leader_user: 'Übungsleitung (User)'
-        exercise_leader_person: 'Übungsleitung (Person)'
-        observers: Beobachter
-        observers_legacy: 'Beobachter (Freitext, Migration)'
-        observer_persons: 'Beobachter (Personen)'
-        status: Status
-        results: Ergebnisse
-        what_went_well: 'Was lief gut (WWW)'
-        areas_for_improvement: 'Verbesserungsbereiche (AFI)'
-        findings: Feststellungen
-        action_items: Maßnahmenliste
-        lessons_learned: 'Gelernte Lektionen'
-        plan_updates_required: 'Erforderliche Planaktualisierungen'
         success_rating: 'Gesamterfolgsbewertung (1-5)'
         report_completed: 'Bericht abgeschlossen'
         report_date: Berichtsdatum
-        success_criteria: 'Erfolgskriterien (strukturiert)'
-        actual_rto_achieved: 'Tatsächliches RTO erreicht (Stunden)'
-        actual_rpo_achieved: 'Tatsächliches RPO erreicht (Stunden)'
-        bc_plans_tested: 'Getestete BC-Pläne'
-        evidence_artifacts: 'Nachweise & Artefakte'
     badge:
         'yes': Ja
         'no': Nein
     message:
         no_exercises: 'Keine BC‑Übungen gefunden.'
         schedule_first: 'Planen Sie Ihre erste Übung'
-        incomplete_reports: 'Unvollständige Berichte'
-        upcoming: 'Bevorstehende Übungen'
         confirm_delete: 'Soll diese Übung wirklich gelöscht werden?'
         na: 'k. A.'
-    help:
-        name: 'Eindeutiger Name für diese BC-Übung'
-        exercise_type: 'Typ der Übung gemäß ISO 22301:2019 Klausel 8.5'
-        description: 'Detaillierte Beschreibung der geplanten Übung'
-        scope: 'Welche BC-Pläne, Prozesse oder Systeme werden getestet?'
-        objectives: 'Was soll mit dieser Übung erreicht werden? (Lernziele, zu testende Prozesse)'
-        scenario: 'Beschreiben Sie das Übungsszenario (z.B. "Serverraum-Brand" oder "Ransomware-Angriff")'
-        exercise_date: 'Geplantes Datum der Übung'
-        duration_hours: 'Geplante oder tatsächliche Dauer der Übung in Stunden'
-        participants: 'Welche Personen/Teams nehmen an der Übung teil?'
-        participants_legacy: 'Legacy-Freitext, nur lesend bei Migration. Bitte Personen-Multi-Select nutzen.'
-        participant_persons: 'Strukturierte Auswahl aus Stammdaten-Personen — Daten-Reuse (P-15).'
-        facilitator: 'Person, die die Übung leitet und moderiert'
-        facilitator_user: 'Moderator/Leitung als Anwendungs-Benutzer.'
-        facilitator_person: 'Moderator/Leitung als Stammdaten-Person (z.B. externer BCM-Berater).'
-        facilitator_legacy: 'Legacy-Freitext, nur lesend bei Migration.'
-        exercise_leader_user: 'Übungsleitung mit Anwendungs-Login. Optional, wenn die Leitung intern und mit System-Account hinterlegt ist.'
-        exercise_leader_person: 'Übungsleitung als Stammdaten-Person — typischerweise externer BCM-Berater ohne System-Login.'
-        observers: 'Externe Beobachter (z.B. Auditoren, Management)'
-        observers_legacy: 'Legacy-Freitext, nur lesend bei Migration.'
-        observer_persons: 'Strukturierte Auswahl externer Beobachter aus Stammdaten-Personen.'
-        status: 'Aktueller Status der Übung'
-        results: 'Zusammenfassung der Übungsergebnisse'
-        what_went_well: 'Was hat gut funktioniert? Stärken und Erfolge dokumentieren'
-        areas_for_improvement: 'Wo gibt es Verbesserungspotenzial? Schwächen identifizieren'
-        findings: 'Konkrete Feststellungen und Beobachtungen während der Übung'
-        action_items: 'Maßnahmen, die aus der Übung abgeleitet werden (wer, was, bis wann)'
-        lessons_learned: 'Wichtige Erkenntnisse für zukünftige Übungen und BC-Planung'
-        plan_updates_required: 'Welche BC-Pläne müssen aufgrund der Übungsergebnisse aktualisiert werden?'
-        success_rating: 'Gesamtbewertung der Übung auf einer Skala von 1-5'
-        report_completed: 'Wurde der Übungsbericht fertiggestellt?'
-        report_date: 'Datum, an dem der Übungsbericht erstellt wurde'
-        success_criteria_json: 'JSON-Objekt mit Erfolgskriterien gemäß ISO 22301 §8.6 c: {"rtoMet":true,"rpoMet":true,"communicationEffective":true,"teamPrepared":true}.'
-        actual_rto_achieved: 'Tatsächlich gemessene Wiederherstellungszeit in Stunden (ISO 22301 §8.6 d). Vergleich mit Ziel-RTO.'
-        actual_rpo_achieved: 'Tatsächlich gemessener Datenverlust-Zeitraum in Stunden (ISO 22301 §8.6 d). Vergleich mit Ziel-RPO.'
-        bc_plans_tested: 'BC-Pläne, die in dieser Übung getestet wurden (ISO 22301 §8.6 a). Mehrfachauswahl möglich.'
-        evidence_artifacts_json: 'JSON-Array mit Audit-Nachweisen: [{"type":"photo|log|report|screenshot","reference":"Dateiname/URL","description":"Beschreibung"}].'
     exercise_type:
         tabletop: 'Planübung (Tabletop)'
         walkthrough: 'Walkthrough-Übung'
@@ -127,69 +58,3 @@ bc_exercises:
         in_progress: 'In Durchführung'
         completed: Abgeschlossen
         cancelled: Abgesagt
-    placeholder:
-        name: 'z.B. Jährlicher BC-Test Q4 2024'
-        description: 'Beschreiben Sie Zweck und Hintergrund der Übung...'
-        scope: 'z.B. Notfall-Kommunikationsplan, Rechenzentrum-Failover'
-        objectives: 'z.B. Testen der Reaktionszeiten, Validierung der Kommunikationsketten'
-        scenario: 'z.B. Stromausfall im Hauptgebäude für 24 Stunden'
-        participants: 'z.B. IT-Team, Geschäftsleitung, Krisenteam'
-        facilitator: 'Name des Übungsleiters'
-        facilitator_user: '-- User auswählen --'
-        facilitator_person: '-- Person aus Stammdaten --'
-        exercise_leader_user: '-- User auswählen --'
-        exercise_leader_person: '-- Person aus Stammdaten --'
-        observers: 'z.B. Externer Auditor, ISO-Beauftragter'
-    tooltip:
-        scenario: 'Beschreiben Sie das konkrete Übungsszenario (z. B. "Ransomware-Angriff auf Produktivsysteme"). Ein realistisches Szenario erhöht den Lerneffekt und deckt Lücken in den BC-Plänen auf.'
-        exercise_type: 'Wählen Sie den Übungstyp gemäß ISO 22301:2019 Kl. 8.5. Tabletop-Übungen sind theoretisch; Volltests simulieren einen realen Notfall vollständig und erfordern höheren Planungsaufwand.'
-        success_criteria: 'Definieren Sie messbare Kriterien, anhand derer der Erfolg der Übung bewertet wird (z. B. RTO eingehalten, alle Kommunikationswege funktionieren, kein Datenverlust).'
-        success_rating: 'Gesamtbewertung der Übungsdurchführung auf einer Skala von 1 (nicht bestanden) bis 5 (hervorragend). Dient als KPI für die BC-Übungshistorie und Audit-Nachweise gemäß ISO 22301.'
-    success_criteria:
-        aria: 'Erfolgskriterien — strukturierter Editor'
-        add: 'Kriterium hinzufügen'
-        remove: 'Kriterium entfernen'
-        apply_prefill: 'Vorschläge übernehmen'
-        prefill_applied: 'RTO/RPO-Vorschläge aus getesteten BC-Plänen übernommen. Felder können überschrieben werden.'
-        empty: 'Noch keine Erfolgskriterien definiert. Definieren Sie messbare Kriterien (z. B. RTO eingehalten, Kommunikation funktional).'
-        col:
-            criterion: 'Kriterium'
-            target: 'Soll'
-            actual: 'Ist'
-            met: 'Erfüllt'
-            actions: 'Aktionen'
-        met:
-            unknown: '— Offen —'
-            'yes': 'Erfüllt'
-            'no': 'Nicht erfüllt'
-        placeholder:
-            criterion: 'z. B. RTO eingehalten'
-            target: 'z. B. 4h'
-            actual: 'z. B. 3h 12min'
-    json_builder:
-        raw_toggle: 'Als JSON bearbeiten'
-        raw_label: 'Roh-JSON (Power-User)'
-        raw_help: 'Achtung: Roh-Editing kann Daten beschädigen. Schema muss zur Entity-Definition passen.'
-bc_plans:
-    message:
-        readiness_score: 'Readiness Score'
-
-# Audit-S5 P-13 — Severity-Definitionen für BC-Exercise-Bewertung. Aktuell
-# nicht via _fa_severity_choice gerendert, da successRating eine 5-stufige
-# Integer-Skala ist (siehe field.success_rating). Definitionen werden hier
-# bewusst gepflegt, damit das Hover-Tooltip-Pattern später nachgezogen
-# werden kann, sobald BC-Exercise ein echtes 4-Stufen-Severity-Feld bekommt.
-severity_choice:
-    aria_label: 'Schweregrad der Exercise-Bewertung'
-    low:
-        label: 'Niedrig'
-        definition: 'Übung lief weitgehend erfolgreich, kleine Plan-Anpassungen ausreichend. Beispiel: minimale Zeitabweichung beim Recovery-Test.'
-    medium:
-        label: 'Mittel'
-        definition: 'Übung legte erkennbare Schwächen offen, BC-Plan-Update empfohlen. Beispiel: Kontaktlisten-Update nötig, eine Recovery-Schritt-Anweisung unklar.'
-    high:
-        label: 'Hoch'
-        definition: 'Übung deckte gravierende Probleme auf, BC-Plan muss überarbeitet werden, erneute Übung empfohlen. Beispiel: RTO nicht erreicht, Crisis-Team nicht vollständig erreichbar.'
-    critical:
-        label: 'Kritisch'
-        definition: 'Übung fehlgeschlagen — BC-Plan ist in der aktuellen Form nicht tauglich. Sofortiges Plan-Re-Design, Eskalation an Management. Beispiel: kompletter Recovery-Fehlschlag, kritische Abhängigkeit nicht abgedeckt.'
