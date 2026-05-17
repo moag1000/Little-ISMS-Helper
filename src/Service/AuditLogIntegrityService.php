@@ -17,7 +17,7 @@ use App\Repository\AuditLogRepository;
  * empty secret falls back to a derived key and emits no signature to avoid
  * a false sense of integrity).
  */
-class AuditLogIntegrityService
+final class AuditLogIntegrityService
 {
     private const ALGO = 'sha256';
 

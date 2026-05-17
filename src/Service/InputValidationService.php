@@ -19,7 +19,7 @@ use DateTime;
  *
  * Following Symfony best practices and OWASP guidelines.
  */
-class InputValidationService
+final class InputValidationService
 {
     /**
      * Security: Sanitize string for safe output (XSS prevention)

@@ -14,7 +14,7 @@ use App\Repository\CorporateGovernanceRepository;
 /**
  * Supplier Service - Business logic for Supplier Management with Corporate Structure awareness
  */
-class SupplierService
+final class SupplierService
 {
     public function __construct(
         private readonly SupplierRepository $supplierRepository,

@@ -7,7 +7,7 @@ namespace App\Service;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 
-class LicenseReportService
+final class LicenseReportService
 {
     public function __construct(private readonly string $projectDir)
     {

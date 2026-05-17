@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *
  * Follows the same patterns as DashboardStatisticsService for consistency.
  */
-class BCMService
+final class BCMService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

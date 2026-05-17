@@ -26,7 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Phase 7A: Handles generation and delivery of scheduled reports.
  * Reports are generated based on configuration and sent via email.
  */
-class ScheduledReportService
+final class ScheduledReportService
 {
     public function __construct(
         private readonly ScheduledReportRepository $repository,

@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *
  * Also provides tenant-level aggregate statistics for reporting.
  */
-class DocumentReuseAnalyticsService
+final class DocumentReuseAnalyticsService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

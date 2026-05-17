@@ -13,7 +13,7 @@ use App\Entity\MappingGapItem;
  *
  * Identifies specific gaps and missing elements that prevent full compliance mapping
  */
-class AutomatedGapAnalysisService
+final class AutomatedGapAnalysisService
 {
     private const int CONFIDENCE_THRESHOLD_HIGH = 80;
 

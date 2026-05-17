@@ -41,7 +41,7 @@ use Throwable;
  * `policy-section-approval` so the per-section history is queryable
  * separately from the host-document workflow history.
  */
-class PolicySectionApprovalService
+final class PolicySectionApprovalService
 {
     private const string AUDIT_TAG = 'policy-section-approval';
 

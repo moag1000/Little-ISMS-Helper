@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * - Quick asset identification during audits
  * - Mobile access to asset details
  */
-class AssetQrCodeService
+final class AssetQrCodeService
 {
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,

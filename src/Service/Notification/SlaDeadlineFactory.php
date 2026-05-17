@@ -25,7 +25,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *  - Incident (high/critical + NIS2 scope) → NIS2 Art. 23 24h/72h
  *  - AuditFinding → ISO 27001 Cl. 10.1 30-day corrective action
  */
-class SlaDeadlineFactory
+final class SlaDeadlineFactory
 {
     /** Default checkpoints for the GDPR 72h deadline (hours before deadline). */
     private const array CHECKPOINTS_GDPR_72H = [48, 24, 12, 4, 1];

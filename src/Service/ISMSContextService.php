@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ISMSContextService
+final class ISMSContextService
 {
     public function __construct(
         private readonly ISMSContextRepository $ismsContextRepository,

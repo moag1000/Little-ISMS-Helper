@@ -43,7 +43,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * - Compliance Status Reports
  * - Asset Management Reports
  */
-class ManagementReportService
+final class ManagementReportService
 {
     public function __construct(
         private readonly AssetRepository $assetRepository,

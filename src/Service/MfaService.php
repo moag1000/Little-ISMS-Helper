@@ -23,7 +23,7 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
  * MFA Service for NIS2 Compliance (Art. 21.2.b)
  * Handles TOTP, Backup Codes, and Token Management
  */
-class MfaService
+final class MfaService
 {
     private const int BACKUP_CODES_COUNT = 10;
     private const int BACKUP_CODE_LENGTH = 8; // 5 minutes

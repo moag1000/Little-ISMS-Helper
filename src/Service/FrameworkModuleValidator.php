@@ -14,7 +14,7 @@ use App\Repository\ComplianceFrameworkRepository;
  * Surfaces a warning list that the admin-UI and dashboards can render,
  * plus a CLI entry point for CI / scheduled checks.
  */
-class FrameworkModuleValidator
+final class FrameworkModuleValidator
 {
     public function __construct(
         private readonly ComplianceFrameworkRepository $frameworkRepository,

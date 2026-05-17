@@ -34,7 +34,7 @@ use Throwable;
  * 2. Dashboard widgets for real-time overdue counts
  * 3. API endpoints for frontend integration
  */
-class ReviewReminderService
+final class ReviewReminderService
 {
     public function __construct(
         private readonly RiskRepository $riskRepository,

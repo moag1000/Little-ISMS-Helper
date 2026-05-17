@@ -47,7 +47,7 @@ use BadMethodCallException;
  *   min_rationale_chars: int,
  * }
  */
-class BulkApprovalGroupingService
+final class BulkApprovalGroupingService
 {
     /**
      * Hardcoded audit-defang #4: ISO Cl. 5.2 ceremonial sign-off batch

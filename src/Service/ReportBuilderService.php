@@ -28,7 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Phase 7C: Provides widget library and data generation for custom report builder.
  * Supports 25+ widget types across all ISMS domains.
  */
-class ReportBuilderService
+final class ReportBuilderService
 {
     // Widget Categories
     public const WIDGET_CATEGORY_KPI = 'kpi';

@@ -25,7 +25,7 @@ use Psr\Log\LoggerInterface;
  * - Calculation is suggestion-only, user can override
  * - Audit log tracks all changes
  */
-class RiskImpactCalculatorService
+final class RiskImpactCalculatorService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

@@ -31,7 +31,7 @@ use Psr\Log\NullLogger;
  * einen neuen SettingProviderInterface zu injizieren — die Logik selbst lebt im
  * generischen Resolver. Blocked by: TenantPolicySetting entity (Sprint 9+).
  */
-class PasswordPolicyResolver
+final class PasswordPolicyResolver
 {
     public const SETTING_KEY = 'security.password_min_length';
     public const GLOBAL_FLOOR = 8;

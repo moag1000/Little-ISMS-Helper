@@ -19,7 +19,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * Not final so it can be mocked in tests.
  */
-class LibraryRoundtripService
+final class LibraryRoundtripService
 {
     public function __construct(
         private readonly ComplianceRequirementRepository $requirementRepository,

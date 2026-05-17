@@ -69,7 +69,7 @@ use Symfony\Component\Yaml\Yaml;
  * 3. Load data from YAML files
  * 4. Track results and errors
  */
-class DataImportService
+final class DataImportService
 {
     private array $importLog = [];
 

@@ -20,7 +20,7 @@ use App\Entity\Notification\NotificationRule;
  * Severity comparison uses a canonical ordering:
  *   low < medium < high < critical
  */
-class NotificationRuleEvaluator
+final class NotificationRuleEvaluator
 {
     private const SEVERITY_ORDER = ['low' => 1, 'medium' => 2, 'high' => 3, 'critical' => 4];
 

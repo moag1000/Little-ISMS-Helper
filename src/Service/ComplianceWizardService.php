@@ -77,7 +77,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * - BSI IT-Grundschutz (controls, assets, risks)
  * - GDPR/DSGVO (processing activities, DPIA, data breaches)
  */
-class ComplianceWizardService
+final class ComplianceWizardService
 {
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfigurationService,

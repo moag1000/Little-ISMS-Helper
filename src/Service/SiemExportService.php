@@ -19,7 +19,7 @@ use App\Repository\ThreatIntelligenceRepository;
  * Exports security events in SIEM-compatible formats (CEF, JSON, Syslog)
  * Supports integration with enterprise SIEM solutions for ISO 27001 compliance
  */
-class SiemExportService
+final class SiemExportService
 {
     public function __construct(
         private readonly AuditLogRepository $auditLogRepository,

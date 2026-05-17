@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *
  * @see docs/CM_JUNIOR_RESPONSE.md CM-8
  */
-class AuditFreezeService
+final class AuditFreezeService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

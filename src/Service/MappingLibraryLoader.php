@@ -16,7 +16,7 @@ use Symfony\Component\Yaml\Yaml;
  * Validiert vor Import via MappingValidatorService und berechnet MQS-Score
  * nach erfolgreicher Persistierung.
  */
-class MappingLibraryLoader
+final class MappingLibraryLoader
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

@@ -25,7 +25,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * - Checks ComplianceRequirementFulfillment for tenant-specific implementation status
  * - Aggregates by Baustein, Schicht, and AnforderungsTyp (basis/standard/hoch)
  */
-class GrundschutzCheckService
+final class GrundschutzCheckService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

@@ -20,7 +20,7 @@ use Symfony\Bundle\SecurityBundle\Security;
  * Service for managing DPIAs (Datenschutz-Folgenabschätzung) per GDPR Art. 35.
  * Provides CRUD operations, workflow management, validation, and compliance reporting.
  */
-class DataProtectionImpactAssessmentService
+final class DataProtectionImpactAssessmentService
 {
     public function __construct(
         private readonly DataProtectionImpactAssessmentRepository $dataProtectionImpactAssessmentRepository,

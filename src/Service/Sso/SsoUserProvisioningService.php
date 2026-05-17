@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
  * Falls back to defaultFallbackRole when no mapping matches.
  * Emits ACTION_SSO_JIT_PROVISIONED via SsoEventLogger on new user creation.
  */
-class SsoUserProvisioningService
+final class SsoUserProvisioningService
 {
     public function __construct(
         private readonly UserRepository $userRepo,

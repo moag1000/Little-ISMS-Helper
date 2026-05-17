@@ -14,7 +14,7 @@ use App\Repository\CorporateGovernanceRepository;
 /**
  * Asset Service - Business logic for Asset Management with Corporate Structure awareness
  */
-class AssetService
+final class AssetService
 {
     public function __construct(
         private readonly AssetRepository $assetRepository,

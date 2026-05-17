@@ -24,7 +24,7 @@ use App\Repository\SystemSettingsRepository;
  * Once W1-A lands, swap this provider for one that hits
  * TenantPolicySettingRepository::findOneBy(['tenant'=>..., 'key'=>...]).
  */
-class SystemSettingsBackedProvider implements SettingProviderInterface
+final class SystemSettingsBackedProvider implements SettingProviderInterface
 {
     /**
      * @param array<string, OverrideMode> $overrideModeMap key => mode override

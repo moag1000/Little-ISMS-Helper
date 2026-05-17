@@ -16,7 +16,7 @@ use App\Repository\RiskRepository;
  * Phase 7B: Asset risk profiling and criticality analytics.
  * Analyzes assets based on CIA values, incident history, and risk exposure.
  */
-class AssetCriticalityService
+final class AssetCriticalityService
 {
     public function __construct(
         private readonly AssetRepository $assetRepository,

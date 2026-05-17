@@ -29,7 +29,7 @@ use Psr\Log\NullLogger;
  * The propagation is idempotent: re-running with an unchanged value
  * leaves drift markers untouched and does not re-emit hints.
  */
-class KonzernPushDownService
+final class KonzernPushDownService
 {
     /**
      * Override-mode catalogue for known Policy-Wizard setting keys.

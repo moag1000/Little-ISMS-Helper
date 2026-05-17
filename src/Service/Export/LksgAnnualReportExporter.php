@@ -17,7 +17,7 @@ use App\Repository\SupplierRepository;
  * download this CSV, augment it with internal evidence, and submit to
  * BAFA. Auditors can pull the same export as evidence.
  */
-class LksgAnnualReportExporter
+final class LksgAnnualReportExporter
 {
     public function __construct(
         private readonly SupplierRepository $supplierRepository,

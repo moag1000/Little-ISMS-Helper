@@ -13,7 +13,7 @@ use App\Repository\TenantRepository;
  * Service to check if multi-tenant mode is active
  * Corporate structure features should only be visible when multiple tenants exist
  */
-class MultiTenantCheckService
+final class MultiTenantCheckService
 {
     private ?int $cachedCount = null;
     private ?bool $cachedIsMultiTenant = null;

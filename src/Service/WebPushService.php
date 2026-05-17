@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * Handles sending push notifications to subscribed PWA clients.
  * Uses the Web Push API with VAPID authentication.
  */
-class WebPushService
+final class WebPushService
 {
     private const VAPID_SUBJECT = 'mailto:admin@little-isms-helper.local';
 

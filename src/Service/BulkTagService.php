@@ -26,7 +26,7 @@ use InvalidArgumentException;
  *
  * Every write produces an AuditLogger entry ("tag.applied", "tag.removed").
  */
-class BulkTagService
+final class BulkTagService
 {
     public const AUDIT_APPLIED = 'tag.applied';
     public const AUDIT_REMOVED = 'tag.removed';

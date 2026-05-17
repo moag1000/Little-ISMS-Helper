@@ -26,7 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Risk-band thresholds are owned by {@see RiskMatrixThresholds} (single source
  * of truth, ISO 27001 Cl. 6.1.2 b). Do NOT re-introduce inline thresholds.
  */
-class RiskMatrixService
+final class RiskMatrixService
 {
     private const int MATRIX_SIZE = 5;
 

@@ -14,7 +14,7 @@ use App\Repository\CorporateGovernanceRepository;
 /**
  * Control Service - Business logic for ISO 27001 Controls with Corporate Structure awareness
  */
-class ControlService
+final class ControlService
 {
     public function __construct(
         private readonly ControlRepository $controlRepository,

@@ -36,7 +36,7 @@ use Psr\Log\LoggerInterface;
  * - Maintains user control (no auto-decrease)
  * - Compliance with ISO 27005 (audit trail)
  */
-class RiskProbabilityAdjustmentService
+final class RiskProbabilityAdjustmentService
 {
     private const int MINIMUM_AGE_DAYS = 30; // Only consider incidents older than 30 days
     private const int MINIMUM_REALIZATION_COUNT = 2; // Need at least 2 incidents to suggest adjustment

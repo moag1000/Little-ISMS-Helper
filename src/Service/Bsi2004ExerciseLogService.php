@@ -17,7 +17,7 @@ use RuntimeException;
  * Handles creation from a BCExercise, lifecycle transitions (submit / confirm)
  * and extraction of improvement actions for follow-up task management.
  */
-class Bsi2004ExerciseLogService
+final class Bsi2004ExerciseLogService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

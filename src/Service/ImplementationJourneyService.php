@@ -27,7 +27,7 @@ use App\Repository\RiskRepository;
  * Maps the 7 core phases of an ISO 27001 implementation to measurable
  * completion criteria drawn from existing entities/repositories.
  */
-class ImplementationJourneyService
+final class ImplementationJourneyService
 {
     public function __construct(
         private readonly ISMSContextRepository $ismsContextRepository,

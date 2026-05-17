@@ -38,7 +38,7 @@ use App\Repository\VulnerabilityRepository;
  * Status thresholds are intentionally conservative — the goal is to flag
  * measurable shortcomings without painting every tenant red out of the box.
  */
-class Nis2ComplianceService
+final class Nis2ComplianceService
 {
     public function __construct(
         private readonly IncidentRepository $incidentRepository,
