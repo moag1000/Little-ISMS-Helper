@@ -16,6 +16,8 @@ export default class extends Controller {
         maxOptions: { type: Number, default: 500 },
         placeholder: { type: String, default: '' },
         removeButton: { type: Boolean, default: true },
+        create: { type: Boolean, default: false },
+        delimiter: { type: String, default: ',' },
     }
 
     connect() {
@@ -25,14 +27,30 @@ export default class extends Controller {
             plugins.push('remove_button')
         }
 
-        this.tomSelect = new TomSelect(this.element, {
+        const opts = {
             plugins,
             maxOptions: this.maxOptionsValue,
             placeholder: this.placeholderValue || this.element.getAttribute('placeholder') || '',
             closeAfterSelect: !isMultiple,
             hidePlaceholder: false,
             allowEmptyOption: true,
-        })
+        }
+
+        // Free-tag input: accept new values typed by the user (Enter / comma).
+        // Used by JsonTagsType-backed fields where the underlying entity column
+        // is a JSON array of strings (competencies, objectives, references, …).
+        if (this.createValue) {
+            opts.create = true
+            opts.createOnBlur = true
+            opts.persist = true
+            opts.delimiter = this.delimiterValue
+            opts.render = {
+                option_create: (data, escape) =>
+                    `<div class="create"><strong>${escape(data.input)}</strong> &nbsp;⏎</div>`,
+            }
+        }
+
+        this.tomSelect = new TomSelect(this.element, opts)
 
         // Re-initialise after Turbo frame swaps so the enhanced control is not
         // left orphaned from a cached frame.

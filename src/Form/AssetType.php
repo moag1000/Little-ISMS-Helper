@@ -11,6 +11,7 @@ use App\Entity\ProcessingActivity;
 use App\Entity\User;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
+use App\Form\Type\JsonTagsType;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -402,12 +403,11 @@ final class AssetType extends AbstractType
                 ],
                 'help' => 'asset.ai_agent.help.model_version',
             ])
-            ->add('aiAgentCapabilityScope', TextareaType::class, [
+            ->add('aiAgentCapabilityScope', JsonTagsType::class, [
                 'label' => 'asset.ai_agent.field.capability_scope',
                 'required' => false,
+                'placeholder' => 'asset.ai_agent.placeholder.capability_scope',
                 'attr' => [
-                    'rows' => 4,
-                    'placeholder' => 'asset.ai_agent.placeholder.capability_scope',
                     'data-depends-on' => 'asset_form_assetType',
                     'data-depends-on-value' => 'ai_agent',
                 ],
@@ -424,12 +424,11 @@ final class AssetType extends AbstractType
                 ],
                 'help' => 'asset.ai_agent.help.threat_model_doc_id',
             ])
-            ->add('aiAgentExtensionAllowlist', TextareaType::class, [
+            ->add('aiAgentExtensionAllowlist', JsonTagsType::class, [
                 'label' => 'asset.ai_agent.field.extension_allowlist',
                 'required' => false,
+                'placeholder' => 'asset.ai_agent.placeholder.extension_allowlist',
                 'attr' => [
-                    'rows' => 4,
-                    'placeholder' => 'asset.ai_agent.placeholder.extension_allowlist',
                     'data-depends-on' => 'asset_form_assetType',
                     'data-depends-on-value' => 'ai_agent',
                 ],

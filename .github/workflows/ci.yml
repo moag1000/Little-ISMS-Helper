@@ -359,6 +359,8 @@ jobs:
         run: python3 scripts/quality/check_version_column_explicit.py --baseline scripts/quality/baselines/version_column_explicit.txt --quiet
       - name: "Gate 33: No PREPARE/EXECUTE dynamic SQL in migrations"
         run: python3 scripts/quality/check_no_prepare_execute_migrations.py --baseline scripts/quality/baselines/no_prepare_execute_migrations.txt --quiet
+      - name: "Gate 34: No raw TextareaType for JSON+array entity columns"
+        run: python3 scripts/quality/check_raw_json_textarea.py --baseline scripts/quality/baselines/raw_json_textarea.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

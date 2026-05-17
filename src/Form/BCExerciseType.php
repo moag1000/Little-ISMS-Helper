@@ -228,6 +228,8 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                 'widget' => 'single_text',
                 'required' => false,
             ])
+            // TODO(s5-json-objects): replace with CollectionType + SuccessCriterionEntryType
+            // (shape: {rtoMet, rpoMet, communicationEffective, teamPrepared}).
             ->add('successCriteria', TextareaType::class, [
                 'label' => 'bc_exercises.field.success_criteria',
                 'required' => false,
@@ -260,6 +262,8 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                     'data-controller' => 'tom-select',
                 ],
             ])
+            // TODO(s5-json-objects): replace with CollectionType + EvidenceArtifactEntryType
+            // (shape: [{type:photo|log|report|screenshot, reference, description}]).
             ->add('evidenceArtifacts', TextareaType::class, [
                 'label' => 'bc_exercises.field.evidence_artifacts',
                 'required' => false,

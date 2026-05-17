@@ -261,6 +261,8 @@ final class ControlType extends AbstractType
                 'label' => 'control.field.next_effectiveness_test',
                 'required' => false,
             ])
+            // TODO(s5-json-objects): replace with structured map editor
+            // (shape: {iso27001:[...], bsi:[...], nist:[...], dora:[...]}).
             ->add('frameworkReferences', TextareaType::class, [
                 'label' => 'control.field.framework_references',
                 'required' => false,
