@@ -240,7 +240,9 @@ final class UserType extends AbstractType
             ]);
         }
 
-        // ISO 27001 §7.2 Competence — available for all edit modes
+        // ISO 27001 §7.2 Competence — list of structured competency objects
+        // {name, category, level, certifiedBy, certifiedAt, expiresAt}.
+        // TODO(s5-json-objects): replace with CollectionType + CompetencyEntryType.
         $builder->add('competencies', TextareaType::class, [
             'label' => 'user.field.competencies',
             'required' => false,
