@@ -4,6 +4,11 @@ tenant:
     empty: 'No tenants available'
     switch_hint: 'Switch'
     switch_header: 'Switch tenant'
+    orphan_users:
+        title: '%count% user account(s) without tenant assignment'
+        body: 'These accounts can sign in but cannot see any ISMS data (controls, risks, processing activities) because every query is scoped to a tenant. Assign the tenant via User Management or use Data Repair in bulk mode.'
+        cta_user_management: 'Open User Management'
+        cta_data_repair: 'Open Data Repair'
     stats:
         total: Total
         active: Active

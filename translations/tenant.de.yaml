@@ -4,6 +4,11 @@ tenant:
     empty: 'Keine Mandanten vorhanden'
     switch_hint: 'Wechseln'
     switch_header: 'Mandant wechseln'
+    orphan_users:
+        title: '%count% Benutzerkonto/-konten ohne Mandantenzuweisung'
+        body: 'Diese Konten können sich anmelden, sehen aber keine ISMS-Daten (Controls, Risiken, VVT-Einträge), weil jede Abfrage an einen Mandanten gekoppelt ist. Bitte den Mandanten in der Benutzerverwaltung setzen oder die Daten-Reparatur im Bulk-Modus nutzen.'
+        cta_user_management: 'Benutzerverwaltung öffnen'
+        cta_data_repair: 'Daten-Reparatur öffnen'
     stats:
         total: Gesamt
         active: Aktiv

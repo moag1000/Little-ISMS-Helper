@@ -325,4 +325,31 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * Count users with NO tenant assignment. Such accounts cannot see any
+     * multi-tenant data (controls, risks, VVT, …) because every repository
+     * scopes to `u.tenant = :tenant`. Surfaced on the Tenant-Admin index
+     * so admins notice orphan accounts.
+     */
+    public function countOrphan(): int
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->andWhere('u.tenant IS NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findOrphan(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.tenant IS NULL')
+            ->orderBy('u.email', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
