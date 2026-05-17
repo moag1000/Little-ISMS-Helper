@@ -3,7 +3,6 @@ privacy:
         privacy: Privacy
         data_breaches: 'Data Breaches'
     data_breach:
-        title: 'Data Breaches'
         management: 'Data Breach Management'
         subtitle: 'Art. 33/34 GDPR – 72-hour notification requirement'
         urgent_banner: 'URGENT: DATA BREACH - 72-HOUR DEADLINE'
@@ -48,7 +47,6 @@ privacy:
             record_exemption: 'Record Exemption (Art. 34(3))'
             close_investigation: 'Close Investigation'
             reopen: Reopen
-            delete: Delete
         form:
             title: 'Data Breach Form'
         alert:
@@ -68,32 +66,10 @@ privacy:
             deadline_72h: '72h deadline'
             special_categories: 'Special Categories'
             art9_data: 'Art. 9 data'
-            affected_subjects: 'Affected Subjects'
-            total_count: 'Total count'
         filter:
-            title: 'Filter Data Breaches'
-            all: 'All (%count%)'
-            overdue: 'OVERDUE (%count%)'
-            pending_authority: 'Pending Authority'
-            pending_subjects: 'Pending Subjects'
             draft: 'Draft (%count%)'
-            under_assessment: 'Under Assessment (%count%)'
-            authority_notified: 'Authority Notified (%count%)'
-            closed: 'Closed (%count%)'
-        table:
-            heading: 'Data Breaches (%count%)'
-            reference: Reference
-            title: Title
-            status: Status
-            risk: Risk
-            affected_subjects: 'Affected Subjects'
-            deadline_72h: '72h Deadline'
-            authority: Authority
-            subjects: Subjects
-            unknown: Unknown
         section:
             status_workflow: 'Status & Workflow'
-            linked_incident: 'Linked Security Incident'
             detection_links: 'Detection & Links'
             authority: 'Art. 33 - Supervisory Authority'
             subjects: 'Art. 34 - Data Subjects'
@@ -156,134 +132,11 @@ privacy:
         follow_up_actions: 'Follow Up Actions'
         reopen_reason: 'Reopen Reason'
     # Choice fields for DPIA form (privacy.* keys)
-    personal_data:
-        identification: 'Identification data (name, ID number)'
-        contact: 'Contact data (address, email, phone)'
-        financial: 'Financial data (bank account, payment info)'
-        location: 'Location data'
-        online_identifiers: 'Online identifiers (IP, cookies)'
-        employment: 'Employment data'
-        educational: 'Educational data'
-        contract: 'Contract data'
-        communication: 'Communication data'
-        usage: 'Usage data'
-    data_subject:
-        customers: Customers
-        employees: Employees
-        applicants: Applicants
-        suppliers: 'Suppliers/Partners'
-        visitors: 'Website visitors'
-        subscribers: 'Newsletter subscribers'
-        patients: Patients
-        students: Students
-        children: Children
-        vulnerable: 'Vulnerable groups'
-        other: Other
-    data_category:
-        health_art9: 'Health data (Art. 9 GDPR)'
-        biometric_art9: 'Biometric data (Art. 9 GDPR)'
-        genetic_art9: 'Genetic data (Art. 9 GDPR)'
-        behavioral: 'Behavioral/profiling data'
-    legal_basis:
-        consent: 'Art. 6(1)(a) Consent'
-        contract: 'Art. 6(1)(b) Contract performance'
-        legal_obligation: 'Art. 6(1)(c) Legal obligation'
-        vital_interests: 'Art. 6(1)(d) Vital interests'
-        public_task: 'Art. 6(1)(e) Public task'
-        legitimate_interests: 'Art. 6(1)(f) Legitimate interests'
-    risk_level:
-        low: Low
-        medium: Medium
-        high: High
-        critical: Critical
-    likelihood:
-        rare: 'Rare (0-10%)'
-        unlikely: 'Unlikely (10-30%)'
-        possible: 'Possible (30-50%)'
-        likely: 'Likely (50-70%)'
-        certain: 'Certain (70-100%)'
-    impact:
-        negligible: Negligible
-        minor: Minor
-        moderate: Moderate
-        major: Major
-        severe: Severe
-    supervisory_consultation:
-        yes_high_risk: 'Yes (high residual risk - Art. 36)'
-
     wizard:
-        trigger_button: 'Start GDPR Breach Wizard'
-        trigger_hint: 'Use the wizard to determine if GDPR reporting is required (Art. 33)'
-        title: 'GDPR Data Breach Assessment Wizard'
-        subtitle: 'Step-by-step assessment according to GDPR Art. 33'
-
-        # Step 1
-        step1_title: 'Is personal data involved?'
-        personal_data_question: 'Does this incident involve personal data (data relating to identified or identifiable natural persons)?'
-        personal_data_yes: 'Personal data is involved'
-        personal_data_no: 'No personal data involved (then NOT a GDPR breach)'
-        personal_data_hint: 'Personal data is any information relating to an identified or identifiable natural person (name, email, IP address, location data, etc.).'
-
-        # Step 2
-        step2_title: 'What type of personal data?'
-        data_type_question: 'Select all affected data categories (multiple selections possible):'
-        data_types:
-            names_contact: 'Names and contact information'
-            names_contact_desc: 'Name, address, email, phone number'
-            financial: 'Financial data'
-            financial_desc: 'Bank account, credit card numbers, payment information'
-            health_biometric: 'Health/Biometric data'
-            health_biometric_desc: 'Health information, fingerprints, facial recognition'
-            special_category_art9: 'Special categories (Art. 9 GDPR)'
-            special_category_art9_desc: 'Racial/ethnic origin, political opinions, religious beliefs, trade union membership, genetic data, sex life'
-            criminal_records_art10: 'Criminal records (Art. 10 GDPR)'
-            criminal_records_art10_desc: 'Criminal convictions and offences'
-        risk_score: 'Risk score'
-
-        # Step 3
-        step3_title: 'How many individuals are affected?'
-        affected_count_question: 'Select the number of affected individuals:'
-        scale_options:
-            under_100: 'Less than 100 individuals'
-            100_to_1000: '100 to 1,000 individuals'
-            1001_to_10000: '1,001 to 10,000 individuals'
-            over_10000: 'More than 10,000 individuals'
-        scale_score: 'Scale score'
-
-        # Step 4
-        step4_title: 'Result & Recommendation'
-        risk_level_label: 'Risk Level'
-        gdpr_article_33_requirement: 'GDPR Art. 33 Reporting Requirement'
-        deadline_warning: '72-hour deadline is running!'
-        deadline_date: 'Reporting deadline (72h from now)'
-        recommendation_label: 'Recommendation'
-        legal_references: 'Legal References'
-        complete_and_create: 'Complete & Create Incident'
-
-        # Risk levels
-        risk_level:
-            low: 'Low Risk'
-            medium: 'Medium Risk'
-            high: 'High Risk'
-            very_high: 'Very High Risk'
-
-        # Recommendations
-        recommendation:
-            not_reportable: 'This breach is unlikely to result in a risk to rights and freedoms. Documentation recommended, but no mandatory reporting to supervisory authority.'
-            reportable_low: 'Report to supervisory authority within 72 hours (Art. 33). Document the breach thoroughly.'
-            reportable_medium: 'Report to supervisory authority within 72 hours (Art. 33). Begin impact assessment and prepare for potential data subject notification.'
-            reportable_high: 'URGENT: Report to supervisory authority within 72 hours (Art. 33). Consider notifying affected data subjects (Art. 34). Immediate action required.'
-            reportable_very_high: 'CRITICAL: Report to supervisory authority within 72 hours (Art. 33). Notify affected data subjects without undue delay (Art. 34). Immediate escalation required.'
         calculating: 'Calculating...'
         yes_reportable: 'YES - Reportable to Supervisory Authority'
         no_not_reportable: 'NO - Not Reportable'
         step_of: 'of'
-    error:
-        dpo_required_user_or_person: 'Data Protection Officer: User or master-data Person required (free-text alone is not sufficient).'
-        assessor_required_user_or_person: 'Assessor: User or master-data Person required (free-text alone is not sufficient).'
-        conductor_required_user_or_person: 'Conductor: User or master-data Person required (free-text alone is not sufficient).'
-        approver_required_user_or_person: 'Approver: User or master-data Person required (free-text alone is not sufficient).'
-        contact_person_required_user_or_person: 'Contact person: User or master-data Person required (free-text alone is not sufficient).'
     sdm:
         title: 'Standard Data Protection Model (SDM 3.1)'
         description: 'Assessment of the seven protection goals defined by the German Data Protection Conference (DSK).'
@@ -297,14 +150,10 @@ processing_activity:
         new_title: 'New Processing Activity'
         new_subtitle: 'Create new VVT entry (Art. 30 GDPR)'
         edit_title: 'Edit Processing Activity'
-        edit_subtitle: 'Edit VVT entry (Art. 30 GDPR)'
     breadcrumb:
         privacy: 'Privacy'
-        gdpr: 'GDPR'
         vvt: 'VVT - Processing Activities'
-        vvt_short: 'VVT'
         new: 'New Processing Activity'
-        edit: 'Edit'
     button:
         dashboard: 'Dashboard'
         export_pdf: 'Export PDF'
@@ -321,10 +170,6 @@ processing_activity:
         missing_dpia: 'missing DPIA'
         special_categories: 'Special Categories'
         art9_data: 'Art. 9 data'
-        completeness: 'Completeness'
-        status: 'Status'
-        risk_level: 'Risk Level'
-        dpia_status: 'DPIA Status'
     filter:
         title: 'Filters'
         all: 'All'
@@ -353,7 +198,6 @@ processing_activity:
         title: 'No processing activities found.'
         description: 'A record of processing activities (ROPA) documents which personal data you process, why, and how. It is mandatory under GDPR Art. 30.'
         filter_hint: 'Try changing the filter or'
-        create_hint: 'Start by'
         create_first: 'creating your first processing activity'
     section:
         basic_info: 'Basic Information (Art. 30(1)(a))'
@@ -371,66 +215,19 @@ processing_activity:
         save: 'Save Processing Activity'
         cancel: 'Cancel'
         delete: 'Delete Processing Activity'
-        clone: 'Clone'
-    alert:
-        compliance_issues: 'Compliance Issues'
-    dpia:
-        required: 'Required'
-        not_required: 'Not Required'
-    sdm:
-        title: 'Standard Data Protection Model (SDM 3.1)'
-        description: 'Assessment of the seven protection goals defined by the German Data Protection Conference (DSK).'
-        coverage: 'Assessed goals'
-        highest_risk: 'Highest risk'
-        summary: 'Assessment summary'
-        risk_level:
-            low: 'Low'
-            medium: 'Medium'
-            high: 'High'
-        goal:
-            verfuegbarkeit: 'Availability'
-            integritaet: 'Integrity'
-            vertraulichkeit: 'Confidentiality'
-            transparenz: 'Transparency'
-            intervenierbarkeit: 'Intervenability'
-            nichtverkettung: 'Unlinkability'
-            datenminimierung: 'Data minimisation'
-        goal_help:
-            verfuegbarkeit: 'Personal data is available to authorised parties in a timely manner.'
-            integritaet: 'Data and processing operations remain intact, complete, and current.'
-            vertraulichkeit: 'Only authorised parties access personal data.'
-            transparenz: 'Processing is intelligible to data subjects, supervisors, and the controller.'
-            intervenierbarkeit: 'Data-subject rights (access, rectification, erasure) can be exercised effectively.'
-            nichtverkettung: 'Data is not linked beyond the original processing purpose.'
-            datenminimierung: 'Processing is limited to what is necessary for the stated purpose.'
-    compliance:
-        pass: 'Pass'
-        fail: 'Fail'
     field:
         name: Name
         status: Status
         description: Description
         purposes: Purposes
         legal_basis: 'Legal Basis'
-        legal_basis_details: 'Legal Basis Details'
         data_subject_categories: 'Data Subject Categories'
         estimated_data_subjects_count: 'Estimated Data Subjects Count'
         personal_data_categories: 'Personal Data Categories'
         processes_special_categories: 'Processes Special Categories'
         processes_criminal_data: 'Processes Criminal Data'
-        special_categories_details: 'Special Categories Details'
-        legal_basis_special_categories: 'Legal Basis Special Categories'
-        recipient_categories: 'Recipient Categories'
-        has_third_country_transfer: 'Has Third Country Transfer'
-        recipient_details: 'Recipient Details'
-        third_countries: 'Third Countries'
-        transfer_safeguards: 'Transfer Safeguards'
         retention_period: 'Retention Period'
         retention_period_days: 'Retention Period Days'
-        retention_legal_basis: 'Retention Legal Basis'
-        technical_organizational_measures: 'Technical Organizational Measures'
-        implemented_controls: 'Implemented Controls'
-        assets: 'Linked Assets'
         responsible_department: 'Responsible Department'
         contact_person: 'Contact Person'
         contact_person_person: 'Contact Person (Person master data)'
@@ -438,69 +235,6 @@ processing_activity:
         data_protection_officer: 'Data Protection Officer'
         data_protection_officer_person: 'DPO (Person master data)'
         data_protection_officer_deputies: 'DPO Deputies'
-        involves_processors: 'Involves Processors'
-        is_joint_controller: 'Is Joint Controller'
-        is_high_risk: 'Is High Risk'
-        dpia_completed: 'Dpia Completed'
-        dpia_date: 'Dpia Date'
-        risk_level: 'Risk Level'
-        has_automated_decision_making: 'Has Automated Decision Making'
-        automated_decision_making_details: 'Automated Decision Making Details'
-        data_sources: 'Data Sources'
-        start_date: 'Start Date'
-        end_date: 'End Date'
-        next_review_date: 'Next Review Date'
-    help:
-        name: 'Name/title of the processing activity (e.g., "Customer Management", "Payroll")'
-        description: 'Detailed description of the processing activity'
-        purposes: 'Purpose(s) of processing (Art. 30(1)(a))'
-        data_subject_categories: 'Categories of data subjects (Art. 30(1)(b))'
-        estimated_data_subjects_count: 'Approximate number of affected data subjects'
-        personal_data_categories: 'Categories of personal data processed (Art. 30(1)(c))'
-        processes_special_categories: 'Does this process special categories of data (Art. 9 GDPR)?'
-        special_categories_details: 'Which special categories are processed (Art. 9 GDPR)?'
-        processes_criminal_data: 'Does this process criminal convictions data (Art. 10 GDPR)?'
-        recipient_categories: 'Categories of recipients (Art. 30(1)(d))'
-        recipient_details: 'Specific recipients (optional, for transparency)'
-        has_third_country_transfer: 'Is data transferred to countries outside EU/EEA (Art. 30(1)(e))?'
-        third_countries: 'Which countries receive data?'
-        transfer_safeguards: 'Legal basis for third country transfer (Art. 44-49)'
-        retention_period: 'Retention period/deletion deadline (Art. 30(1)(f))'
-        retention_period_days: 'Retention period in days (optional, for automated deletion)'
-        retention_legal_basis: 'Legal basis for retention period (e.g., HGB §257, Tax Code)'
-        technical_organizational_measures: 'Description of technical and organizational security measures (Art. 32 GDPR)'
-        implemented_controls: 'Link to ISO 27001 controls (optional)'
-        assets: 'Assets (servers, databases, applications) used by this processing activity.
-            When a linked asset has data classification "confidential" or "restricted",
-            a DPIA suggestion is auto-generated (Art. 35 GDPR).'
-        legal_basis: 'Legal basis for processing (Art. 6(1) GDPR)'
-        legal_basis_details: 'Detailed explanation (mandatory for legitimate interests)'
-        legal_basis_special_categories: 'Legal basis for processing special categories (Art. 9(2) GDPR)'
-        responsible_department: 'Department/unit responsible for this processing'
-        contact_person: 'Contact person for this processing activity'
-        contact_person_person: 'Contact person from person master data (alternative to user account)'
-        contact_deputies: 'Deputy persons for the contact person slot'
-        data_protection_officer: 'Data Protection Officer (if applicable)'
-        data_protection_officer_person: 'DPO from person master data (alternative to user account)'
-        data_protection_officer_deputies: 'Deputy persons for the DPO slot'
-        involves_processors: 'Are processors (Auftragsverarbeiter) involved (Art. 28)?'
-        is_joint_controller: 'Is this a joint controller arrangement (Art. 26)?'
-        is_high_risk: 'Is this considered high-risk processing?'
-        dpia_completed: 'Has a Data Protection Impact Assessment (DPIA) been conducted?'
-        dpia_date: 'Date of DPIA completion'
-        risk_level: 'Overall risk level assessment'
-        has_automated_decision_making: 'Does this involve automated decision-making/profiling (Art. 22)?'
-        automated_decision_making_details: 'Explain logic and significance of automated decision-making'
-        data_sources: 'Where is data collected from?'
-        status: 'Status of this record'
-        start_date: 'When did this processing start?'
-        end_date: 'When did this processing end (if applicable)?'
-        next_review_date: 'When should this be reviewed next?'
-    placeholder:
-        contact_person_person: 'Select person from master data...'
-        data_protection_officer_person: 'Select person from master data...'
-    # S3 P-4: canonical 5-stage lifecycle (draft → in_review → approved → published → archived).
-    # Legacy `active` key kept as fallback label for any historical row not yet migrated.
     status:
         draft: 'Draft'
         in_review: 'In Review'
@@ -519,9 +253,7 @@ processing_activity:
         not_documented: 'Not documented'
         subtitle: 'Processing Activity Details (Art. 30 GDPR)'
         tab:
-            overview: Overview
             data_details: 'Data Details'
-            compliance: Compliance
     pdf:
         art_30_title: 'Record of Processing Activities according to Art. 30 GDPR'
         table_of_contents: 'Table of Contents'
@@ -537,30 +269,6 @@ data_breach:
     index:
         view_all_breaches: 'View All Breaches'
         no_breaches_found: 'No data breaches found'
-        kpi_affected_subjects: 'Affected Subjects'
-        kpi_total_count: 'Total count'
-        filter_title: 'Filter Data Breaches'
-        filter_all: 'All'
-        filter_overdue: 'OVERDUE'
-        filter_pending_authority: 'Pending Authority'
-        filter_pending_subjects: 'Pending Subjects'
-        filter_draft: 'Draft'
-        filter_under_assessment: 'Under Assessment'
-        filter_authority_notified: 'Authority Notified'
-        filter_closed: 'Closed'
-        table_title: 'Data Breaches'
-        col_reference: 'Reference'
-        col_title: 'Title'
-        col_status: 'Status'
-        col_risk: 'Risk'
-        col_affected_subjects: 'Affected Subjects'
-        col_deadline: '72h Deadline'
-        col_authority: 'Authority'
-        col_subjects: 'Subjects'
-        col_actions: 'Actions'
-        unknown: 'Unknown'
-        overdue: 'OVERDUE'
-        hours_left: '%hours%h left'
     notified_at: 'Notified %date%'
     not_required: 'Not required'
     stats:
@@ -571,26 +279,7 @@ data_breach:
         delete: 'Are you sure you want to delete this data breach?'
     section:
         basic_info: 'Basic Information'
-        notification_content: 'Art. 33(3) - Content of Notification'
         risk_assessment: 'Risk Assessment'
-        notification_requirements: 'Notification Requirements'
-        investigation: 'Investigation & Follow-up'
-        responsible_persons: 'Responsible Persons'
-    form:
-        title: 'Title'
-        detected_at: 'Detection Date/Time'
-        incident: 'Related Security Incident (optional)'
-        processing_activity: 'Processing Activity (ROPA)'
-        severity: 'Severity'
-        data_protection_officer_person: 'DPO (Person master data)'
-        data_protection_officer_deputies: 'DPO Deputies'
-        assessor_person: 'Assessor (Person master data)'
-        assessor_deputies: 'Assessor Deputies'
-    severity:
-        low: 'Low'
-        medium: 'Medium'
-        high: 'High'
-        critical: 'Critical'
     data_categories:
         personal_identification: 'Personal Identification (Name, ID No.)'
         contact_information: 'Contact Information (Address, Email, Phone)'
@@ -615,15 +304,6 @@ data_breach:
         minors: 'Minors'
         vulnerable: 'Vulnerable Persons'
         other: 'Other'
-    risk_level:
-        low: 'Low'
-        medium: 'Medium'
-        high: 'High'
-        critical: 'Critical'
-    tooltip:
-        affected_data_subjects: '<strong>👥 Number of Affected Persons</strong><br><em>Question: How many people are affected by this data breach?</em><br><br>Estimate the number of affected persons:<br>• Exact count if known<br>• Upper limit if uncertain<br><br><em>Important for Art. 33 GDPR: Above ~1,000 persons, supervisory authorities will look more closely!</em>'
-        severity: '<strong>⚠️ Breach Severity</strong><br><em>Question: How severe is this data breach?</em><br><br><strong>Low</strong> = Minor impact on data subjects<br><strong>Medium</strong> = Possible inconvenience<br><strong>High</strong> = Significant harm possible<br><strong>Critical</strong> = Severe harm expected<br><br><em>Tip: For special categories (health, religion) use at least "High"</em>'
-        risk_level: '<strong>🎯 Risk Level for Data Subjects</strong><br><em>Question: What risk exists for the rights and freedoms of data subjects?</em><br><br>Assess risk based on:<br>• Type of data (sensitive?)<br>• Number of affected persons<br>• Possible consequences (identity theft?)<br><br><em>From "High" → Authority notification required (Art. 33)</em>'
     pdf:
         art_33_3a_nature: 'Art. 33(3)(a) GDPR - Nature of the Breach'
         categories_personal_data: 'Categories of Personal Data'
@@ -634,47 +314,6 @@ data_breach:
         measures_taken: 'Measures Already Taken'
         measures_mitigate: 'Measures to Mitigate Adverse Effects'
         art_34_communication: 'Art. 34 GDPR - Communication to Data Subjects'
-    placeholder:
-        severity: 'Select severity...'
-        title: 'e.g., Unauthorized access to customer database'
-        incident: 'Select incident...'
-        processing_activity: 'Select processing activity (VVT)...'
-        affected_data_subjects: 'Number of affected individuals'
-        breach_nature: 'Describe the nature of the personal data breach, including the circumstances...'
-        likely_consequences: 'Describe the likely consequences of the breach for data subjects...'
-        measures_taken: 'Describe measures taken or proposed to address the breach...'
-        mitigation_measures: 'Additional mitigation measures including remedies...'
-        risk_level: 'Assess risk level...'
-        risk_assessment: 'Detailed risk assessment...'
-        no_subject_notification_reason: 'Explain why notification is not required (Art. 34(3))...'
-        root_cause: 'Root cause analysis...'
-        lessons_learned: 'Lessons learned from this breach...'
-        data_protection_officer: 'Select DPO...'
-        data_protection_officer_person: 'Select person from master data...'
-        assessor_person: 'Select person from master data...'
-    help:
-        detected_at: 'When was the data breach discovered? The 72-hour deadline starts from this point.'
-        incident: 'Optional: If the breach was caused by a security incident, you can link it here.'
-        severity: 'Breach severity (internal handling urgency). Do NOT confuse with risk_level (= risk to data subjects per GDPR Art. 33/34).'
-        processing_activity: 'Link to ROPA (Art. 30 GDPR)'
-        affected_data_subjects: 'Art. 33(3)(a) GDPR'
-        data_categories: 'Art. 33(3)(a) GDPR - Select all applicable categories'
-        data_subject_categories: 'Art. 33(3)(a) GDPR'
-        breach_nature: 'Art. 33(3)(a) GDPR - Describe what happened'
-        likely_consequences: 'Art. 33(3)(b) GDPR'
-        measures_taken: 'Art. 33(3)(c) & (d) GDPR'
-        mitigation_measures: 'Art. 33(3)(d) GDPR - Measures to mitigate adverse effects'
-        risk_level: 'Risk to rights and freedoms of data subjects (GDPR Art. 33/34). Determines whether authority/subject notification is required. Severity = internal urgency, risk_level = external notification duty.'
-        special_categories_affected: 'Art. 9 GDPR - Racial/ethnic origin, political opinions, religious beliefs, health data, etc.'
-        criminal_data_affected: 'Art. 10 GDPR - Criminal convictions and offences'
-        requires_authority_notification: 'Art. 33(1) GDPR - Notification required UNLESS risk to rights/freedoms is unlikely. Factors: Risk level, number affected, data categories (Art. 9/10), nature of breach, safeguards in place.'
-        requires_subject_notification: 'Art. 34(1) GDPR - Only required for HIGH risk. Factors: Sensitive data (Art. 9), many affected, identity theft/fraud possible, no encryption, no quick containment.'
-        no_subject_notification_reason: 'Art. 34(3) GDPR exemptions: (a) Protection measures, (b) Subsequent measures, (c) Disproportionate effort'
-        data_protection_officer: 'Data Protection Officer (Art. 35(4) GDPR)'
-        data_protection_officer_person: 'DPO from person master data (alternative to user account)'
-        data_protection_officer_deputies: 'Deputy persons for the DPO slot'
-        assessor_person: 'Assessor from person master data (alternative to user account)'
-        assessor_deputies: 'Deputy persons for the assessor slot'
     wizard:
         trigger_button: 'Start GDPR Breach Wizard'
         trigger_hint: 'Use the wizard to determine if GDPR reporting is required (Art. 33)'
@@ -817,89 +456,12 @@ dpia:
         no_dpias_found: 'No DPIAs found for the selected filter.'
         create_first_dpia: 'Create First Data Protection Impact Assessment'
     form:
-        title: 'DPIA Title'
-        reference_number: 'Reference Number'
-        processing_activity: 'Processing Activity'
         processing_description: 'Description of Processing Operations (Art. 35(7)(a))'
         processing_purposes: 'Purposes of Processing'
         data_categories: 'Categories of Personal Data'
-        data_subject_categories: 'Categories of Data Subjects'
-        estimated_data_subjects: 'Estimated Number of Data Subjects'
-        data_retention_period: 'Data Retention Period'
-        data_flow_description: 'Data Flow Description'
-        necessity_assessment: 'Necessity Assessment (Art. 35(7)(b))'
-        proportionality_assessment: 'Proportionality Assessment (Art. 35(7)(b))'
-        legal_basis: 'Legal Basis (Art. 6 GDPR)'
-        legislative_compliance: 'Legislative Compliance'
-        risk_level: 'Risk Level (Art. 35(7)(c))'
-        likelihood: 'Likelihood'
-        impact: 'Impact'
-        data_subject_risks: 'Risks to Data Subjects'
         technical_measures: 'Technical Measures (Art. 35(7)(d))'
         organizational_measures: 'Organizational Measures (Art. 35(7)(d))'
-        implemented_controls: 'Implemented Controls (ISO 27001)'
-        compliance_measures: 'Compliance Measures (Art. 24 GDPR)'
-        residual_risk_assessment: 'Residual Risk Assessment'
-        residual_risk_level: 'Residual Risk Level'
-        data_protection_officer: 'Data Protection Officer (Art. 35(2))'
-        dpo_consultation_date: 'DPO Consultation Date'
-        dpo_advice: 'DPO Advice'
-        data_subjects_consulted: 'Data Subjects Consulted? (Art. 35(9))'
-        data_subject_consultation_details: 'Data Subject Consultation Details'
-        requires_supervisory_consultation: 'Requires Supervisory Authority Consultation? (Art. 36)'
-        supervisory_consultation_date: 'Supervisory Authority Consultation Date'
-        supervisory_authority_feedback: 'Supervisory Authority Feedback'
-        conductor: 'Conductor'
-        data_protection_officer_person: 'DPO (Person master data)'
-        data_protection_officer_deputies: 'DPO Deputies'
-        conductor_person: 'Conductor (Person master data)'
-        conductor_deputies: 'Conductor Deputies'
-        approver_person: 'Approver (Person master data)'
-        approver_deputies: 'Approver Deputies'
-        review_frequency_months: 'Review Frequency (Months)'
         next_review_date: 'Next Review Date (Art. 35(11))'
-    help:
-        title: 'Title of the DPIA (e.g., "Employee Monitoring System DPIA")'
-        reference_number: 'Reference number (auto-generated if empty, format: DPIA-YYYY-XXX)'
-        processing_activity: 'Link to related VVT processing activity (Art. 30)'
-        processing_description: 'Systematic description of the envisaged processing operations (Art. 35(7)(a))'
-        processing_purposes: 'Purposes of the processing (Art. 35(7)(a))'
-        data_categories: 'Categories of personal data processed (Art. 35(7)(a))'
-        data_subject_categories: 'Categories of data subjects affected (Art. 35(7)(a))'
-        estimated_data_subjects: 'Estimated number of affected data subjects'
-        data_retention_period: 'How long will the data be retained?'
-        data_flow_description: 'Description of data flows (collection, storage, processing, sharing, deletion)'
-        necessity_assessment: 'Why is this processing necessary? (Art. 35(7)(b))'
-        proportionality_assessment: 'Is the processing proportionate to the purpose? (Art. 35(7)(b))'
-        legal_basis: 'Legal basis for processing (Art. 6 GDPR)'
-        legislative_compliance: 'Compliance with other legislation (e.g., NIS2, sector-specific laws)'
-        risk_level: 'Overall risk level to rights and freedoms (Art. 35(7)(c))'
-        likelihood: 'Likelihood of risk occurrence'
-        impact: 'Impact if risk materializes'
-        data_subject_risks: 'Specific risks to data subjects (e.g., discrimination, identity theft, financial loss)'
-        technical_measures: 'Technical measures to mitigate risks (Art. 32 GDPR)'
-        organizational_measures: 'Organizational measures to mitigate risks (Art. 32 GDPR)'
-        implemented_controls: 'ISO 27001 controls implemented'
-        compliance_measures: 'Measures to demonstrate compliance (Art. 24 GDPR - accountability)'
-        residual_risk_assessment: 'Residual risk assessment after implementing measures'
-        residual_risk_level: 'Residual risk level after mitigation'
-        data_protection_officer: 'Data Protection Officer (Art. 35(2))'
-        dpo_consultation_date: 'Date DPO was consulted'
-        dpo_advice: 'DPO advice/feedback'
-        data_subjects_consulted: 'Were data subjects consulted? (Art. 35(9) - where appropriate)'
-        data_subject_consultation_details: 'Details of data subject consultation'
-        requires_supervisory_consultation: 'Does this require prior consultation with supervisory authority? (Art. 36)'
-        supervisory_consultation_date: 'Date supervisory authority was consulted'
-        supervisory_authority_feedback: 'Supervisory authority feedback/decision'
-        conductor: 'Person responsible for conducting the DPIA'
-        data_protection_officer_person: 'DPO from person master data (alternative to user account)'
-        data_protection_officer_deputies: 'Deputy persons for the DPO slot'
-        conductor_person: 'Conductor from person master data (alternative to user account)'
-        conductor_deputies: 'Deputy persons for the conductor slot'
-        approver_person: 'Approver from person master data (alternative to user account)'
-        approver_deputies: 'Deputy persons for the approver slot'
-        review_frequency_months: 'Review frequency in months (e.g., 12 = annually)'
-        next_review_date: 'Next scheduled review date (Art. 35(11))'
     sidebar:
         title: 'GDPR Art. 35 – DPIA Guide'
         what_title: 'What is a DPIA?'
@@ -913,18 +475,6 @@ dpia:
         elements_d: '(d) Measures to address the risks, including safeguards and mechanisms'
         consultation_title: 'Art. 36 – Prior Consultation'
         consultation_text: 'If the residual risk remains high after applying measures, you must consult the supervisory authority before starting the processing. The authority has up to 8 weeks to respond.'
-    placeholder:
-        processing_activity: 'Select processing activity'
-        legal_basis: 'Select legal basis'
-        risk_level: 'Select risk level'
-        likelihood: 'Select likelihood'
-        impact: 'Select impact'
-        residual_risk_level: 'Select residual risk level'
-        data_protection_officer: 'Select DPO'
-        conductor: 'Select conductor'
-        data_protection_officer_person: 'Select person from master data...'
-        conductor_person: 'Select person from master data...'
-        approver_person: 'Select person from master data...'
     pdf:
         art_35_7a_description: 'Art. 35(7)(a) GDPR - Description of Processing Operations'
         purposes_processing: 'Purposes of Processing'
@@ -936,7 +486,6 @@ dpia:
         approved_by: 'Approved By'
         footer_text: 'Data Protection Impact Assessment (DPIA) according to Art. 35 GDPR'
     show:
-        cancel_button: Cancel
         page_title: 'DPIA - %ref%'
         section:
             status_workflow: 'Status & Workflow'
@@ -979,126 +528,11 @@ dpia:
         approved: 'Approved'
         rejected: 'Rejected'
         requires_revision: 'Requires Revision'
-    purpose:
-        contract_fulfillment: 'Contract fulfillment'
-        marketing: Marketing
-        legal_obligation: 'Legal obligation'
-        crm: 'Customer relationship management'
-        hr_management: 'Human resources management'
-        accounting: 'Financial accounting'
-        it_security: 'IT security'
-        quality_assurance: 'Quality assurance'
-        research: 'Research and development'
-        other: Other
-    data_subject:
-        customers: Customers
-        employees: Employees
-        applicants: 'Job applicants'
-        suppliers: 'Suppliers/Partners'
-        visitors: 'Website visitors'
-        subscribers: 'Newsletter subscribers'
-        patients: Patients
-        students: Students
-        children: Children
-        vulnerable: 'Vulnerable groups'
-        other: Other
-    personal_data:
-        identification: 'Identification data (name, ID number)'
-        contact: 'Contact data (address, email, phone)'
-        financial: 'Financial data (bank account, payment info)'
-        location: 'Location data'
-        online_identifiers: 'Online identifiers (IP, cookies)'
-        employment: 'Employment data'
-        educational: 'Educational data'
-        contract: 'Contract data'
-        communication: 'Communication data'
-        usage: 'Usage data'
-    special_category:
-        health: 'Health data'
-        biometric: 'Biometric data'
-        genetic: 'Genetic data'
-        racial_ethnic: 'Racial/ethnic origin'
-        political: 'Political opinions'
-        religious: 'Religious/philosophical beliefs'
-        union: 'Trade union membership'
-        sex_life: 'Sex life/sexual orientation'
-    recipient:
-        internal_departments: 'Internal departments'
-        it_service_providers: 'IT service providers'
-        cloud_providers: 'Cloud providers'
-        payment_processors: 'Payment processors'
-        marketing_agencies: 'Marketing agencies'
-        auditors: 'Auditors/Consultants'
-        public_authorities: 'Public authorities'
-        legal: 'Legal representatives'
-        other_processors: 'Other processors'
-    country:
-        us: USA
-        gb: 'United Kingdom'
-        ch: Switzerland
-        ca: Canada
-        jp: Japan
-        in: India
-        cn: China
-        other: Other
-    transfer_safeguard:
-        adequacy_decision: 'Art. 45 Adequacy Decision'
-        standard_contractual_clauses: 'Art. 46 Standard Contractual Clauses (SCCs)'
-        binding_corporate_rules: 'Art. 47 Binding Corporate Rules (BCRs)'
-        certification: 'Art. 42 Certification'
-        codes_of_conduct: 'Art. 40 Codes of Conduct'
-        explicit_consent: 'Art. 49(1)(a) Explicit consent'
-        contract_necessity: 'Art. 49(1)(b) Contract necessity'
-        public_interest: 'Art. 49(1)(d) Public interest'
-        legal_claims: 'Art. 49(1)(e) Legal claims'
-        vital_interests: 'Art. 49(1)(f) Vital interests'
-    legal_basis:
-        consent: 'Art. 6(1)(a) Consent'
-        contract: 'Art. 6(1)(b) Contract performance'
-        legal_obligation: 'Art. 6(1)(c) Legal obligation'
-        vital_interests: 'Art. 6(1)(d) Vital interests'
-        public_task: 'Art. 6(1)(e) Public task'
-        legitimate_interests: 'Art. 6(1)(f) Legitimate interests'
-    legal_basis_special:
-        explicit_consent: 'Art. 9(2)(a) Explicit consent'
-        employment_law: 'Art. 9(2)(b) Employment law'
-        vital_interests: 'Art. 9(2)(c) Vital interests'
-        legitimate_activities: 'Art. 9(2)(d) Legitimate activities'
-        made_public: 'Art. 9(2)(e) Made public by data subject'
-        legal_claims: 'Art. 9(2)(f) Legal claims'
-        substantial_public_interest: 'Art. 9(2)(g) Substantial public interest'
-        health_care: 'Art. 9(2)(h) Health care'
-        public_health: 'Art. 9(2)(i) Public health'
-        research_statistics: 'Art. 9(2)(j) Research/statistics'
-    data_category:
-        health_art9: 'Health data (Art. 9 GDPR)'
-        biometric_art9: 'Biometric data (Art. 9 GDPR)'
-        genetic_art9: 'Genetic data (Art. 9 GDPR)'
-        behavioral: 'Behavioral/profiling data'
     risk_level:
         low: Low
         medium: Medium
         high: High
         critical: Critical
-    likelihood:
-        rare: 'Rare (0-10%)'
-        unlikely: 'Unlikely (10-30%)'
-        possible: 'Possible (30-50%)'
-        likely: 'Likely (50-70%)'
-        certain: 'Certain (70-100%)'
-    impact:
-        negligible: 'Negligible'
-        minor: 'Minor'
-        moderate: 'Moderate'
-        major: 'Major'
-        severe: 'Severe'
-    supervisory_consultation:
-        yes_high_risk: 'Yes (high residual risk - Art. 36)'
-
-    chart:
-        by_status: 'By Status'
-        by_risk_level: 'By Risk Level'
-        by_legal_basis: 'By Legal Basis'
     status_label:
         draft: 'Draft'
         in_review: 'In Review'
