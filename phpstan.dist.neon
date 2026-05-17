@@ -9,6 +9,9 @@ parameters:
         - src/Entity/
         - src/Lifecycle/
 
+    bootstrapFiles:
+        - tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php
+
 services:
     # X.5b — Prevents `setStatus()` outside src/Entity/ and src/Lifecycle/
     -
@@ -23,7 +26,3 @@ services:
         class: LittleIsmsHelper\PhpStan\Rule\NoNewWorkflowOrWorkflowStep
         tags:
             - phpstan.rules.rule
-
-autoload:
-    files:
-        - tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php
