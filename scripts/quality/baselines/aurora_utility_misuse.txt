@@ -1,0 +1,15 @@
+# check_aurora_utility_misuse.py baseline
+templates/mris/baselines.html.twig:33:fa-alert:small
+templates/mris/baselines.html.twig:45:fa-alert:small
+templates/mris/baselines.html.twig:52:fa-alert:small
+templates/mris/baselines.html.twig:104:fa-alert:small
+templates/soa/edit.html.twig:91:fa-status-pill:fs-1
+templates/admin/industry_baseline/index.html.twig:22:fa-alert:small
+templates/admin/industry_baseline/index.html.twig:59:fa-alert:small
+templates/admin/industry_baseline/show.html.twig:23:fa-alert:small
+templates/admin/gstool_import/index.html.twig:171:fa-alert:small
+templates/mris/wizard/ai_risk_class.html.twig:29:fa-alert:small
+templates/mris/wizard/maturity_evidence.html.twig:29:fa-alert:small
+templates/mris/wizard/pure_friction.html.twig:29:fa-alert:small
+templates/policy_wizard/step/_bestandsaufnahme.html.twig:186:fa-cyber-btn:fw-semibold
+templates/policy_wizard/step/_bestandsaufnahme.html.twig:271:fa-alert:small

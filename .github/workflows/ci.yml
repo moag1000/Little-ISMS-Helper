@@ -361,6 +361,16 @@ jobs:
         run: python3 scripts/quality/check_no_prepare_execute_migrations.py --baseline scripts/quality/baselines/no_prepare_execute_migrations.txt --quiet
       - name: "Gate 34: No raw TextareaType for JSON+array entity columns"
         run: python3 scripts/quality/check_raw_json_textarea.py --baseline scripts/quality/baselines/raw_json_textarea.txt --quiet
+
+      # ── Sprint Quality Gates (round 4 — 21-day fix-pattern audit) ─────────
+      - name: "Gate 35: No Bootstrap size utilities on Aurora components"
+        run: python3 scripts/quality/check_aurora_utility_misuse.py --baseline scripts/quality/baselines/aurora_utility_misuse.txt --quiet
+      - name: "Gate 36: #[Route] paths must not have trailing slash"
+        run: python3 scripts/quality/check_route_trailing_slash.py --baseline scripts/quality/baselines/route_trailing_slash.txt --quiet
+      - name: "Gate 37: No non-portable DQL date functions"
+        run: python3 scripts/quality/check_dql_non_portable.py --baseline scripts/quality/baselines/dql_non_portable.txt --quiet
+      - name: "Gate 40: _auto_form include requires explicit field whitelist"
+        run: python3 scripts/quality/check_auto_form_field_whitelist.py --baseline scripts/quality/baselines/auto_form_field_whitelist.txt --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
