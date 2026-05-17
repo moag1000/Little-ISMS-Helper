@@ -1,0 +1,193 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block admin_title %}{{ 'admin.lifecycle_overrides.edit.title'|trans({ '%transition%': transitionName }) }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('admin_lifecycle_overrides_index') }}">{{ 'admin.lifecycle_overrides.title'|trans }}</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ path('admin_lifecycle_overrides_show', {workflowName: workflowName}) }}">{{ workflowName }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ transitionName }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-flow', label: 'Lifecycle' },
+        title: 'admin.lifecycle_overrides.edit.title'|trans({ '%transition%': transitionName }),
+        subtitle: workflowName,
+    }) }}
+
+    <div class="row">
+        <div class="col-lg-8">
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
+                        {{ 'admin.lifecycle_overrides.section.override_fields'|trans }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    {{ _fa_alert.render({
+                        variant: 'info',
+                        icon: 'status-info',
+                        class: 'mb-4',
+                        body: 'admin.lifecycle_overrides.edit.hint'|trans,
+                    }) }}
+
+                    {{ form_start(form) }}
+
+                    {# Roles override #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
+                            {{ 'admin.lifecycle_overrides.form.roles'|trans }}
+                        </h5>
+                        <p class="text-muted small mb-2">{{ 'admin.lifecycle_overrides.form.roles_help'|trans }}</p>
+                        <div class="row g-2 align-items-start">
+                            <div class="col-md-10">
+                                {{ form_widget(form.roles_raw, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.roles_raw) }}
+                            </div>
+                        </div>
+                        {% if existing.roles is defined %}
+                            <div class="mt-1 small text-warning">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'admin.lifecycle_overrides.current_value'|trans }}:
+                                <code>{{ existing.roles|json_encode }}</code>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# reason_required override #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--nav-chat-quote" aria-hidden="true"></i>
+                            {{ 'admin.lifecycle_overrides.form.reason_required'|trans }}
+                        </h5>
+                        <div class="row g-2 align-items-center">
+                            <div class="col-auto">
+                                <div class="form-check">
+                                    {{ form_widget(form.reason_required_override) }}
+                                    <label class="form-check-label small text-muted" for="{{ form.reason_required_override.vars.id }}">
+                                        {{ 'admin.lifecycle_overrides.form.enable_override'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check">
+                                    {{ form_widget(form.reason_required) }}
+                                    <label class="form-check-label" for="{{ form.reason_required.vars.id }}">
+                                        {{ 'admin.lifecycle_overrides.form.reason_required_value'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        {% if existing.reason_required is defined %}
+                            <div class="mt-1 small text-warning">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'admin.lifecycle_overrides.current_value'|trans }}:
+                                <code>{{ existing.reason_required ? 'true' : 'false' }}</code>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# four_eyes override #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--nav-eye" aria-hidden="true"></i>
+                            {{ 'admin.lifecycle_overrides.form.four_eyes'|trans }}
+                        </h5>
+                        <div class="row g-2 align-items-center">
+                            <div class="col-auto">
+                                <div class="form-check">
+                                    {{ form_widget(form.four_eyes_override) }}
+                                    <label class="form-check-label small text-muted" for="{{ form.four_eyes_override.vars.id }}">
+                                        {{ 'admin.lifecycle_overrides.form.enable_override'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check">
+                                    {{ form_widget(form.four_eyes) }}
+                                    <label class="form-check-label" for="{{ form.four_eyes.vars.id }}">
+                                        {{ 'admin.lifecycle_overrides.form.four_eyes_value'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        {% if existing.four_eyes is defined %}
+                            <div class="mt-1 small text-warning">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'admin.lifecycle_overrides.current_value'|trans }}:
+                                <code>{{ existing.four_eyes ? 'true' : 'false' }}</code>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# module override #}
+                    <div class="mb-4">
+                        <h5 class="mb-2">
+                            <i class="fa-icon fa-icon--nav-puzzle" aria-hidden="true"></i>
+                            {{ 'admin.lifecycle_overrides.form.module'|trans }}
+                        </h5>
+                        <p class="text-muted small mb-2">{{ 'admin.lifecycle_overrides.form.module_help'|trans }}</p>
+                        <div class="row g-2 align-items-start">
+                            <div class="col-md-6">
+                                {{ form_widget(form.module, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.module) }}
+                            </div>
+                        </div>
+                        {% if existing.module is defined %}
+                            <div class="mt-1 small text-warning">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'admin.lifecycle_overrides.current_value'|trans }}:
+                                <code>{{ existing.module }}</code>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
+                            {{ 'common.save'|trans({}, 'messages') }}
+                        </button>
+                        <a href="{{ path('admin_lifecycle_overrides_show', {workflowName: workflowName}) }}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost">
+                            {{ 'common.cancel'|trans({}, 'messages') }}
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title fa-section__title--sm">
+                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                        {{ 'admin.lifecycle_overrides.section.help'|trans }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    <dl class="row row-cols-1 small mb-0">
+                        <dt>{{ 'admin.lifecycle_overrides.help.roles.title'|trans }}</dt>
+                        <dd class="text-muted mb-3">{{ 'admin.lifecycle_overrides.help.roles.body'|trans }}</dd>
+                        <dt>{{ 'admin.lifecycle_overrides.help.reason_required.title'|trans }}</dt>
+                        <dd class="text-muted mb-3">{{ 'admin.lifecycle_overrides.help.reason_required.body'|trans }}</dd>
+                        <dt>{{ 'admin.lifecycle_overrides.help.four_eyes.title'|trans }}</dt>
+                        <dd class="text-muted mb-3">{{ 'admin.lifecycle_overrides.help.four_eyes.body'|trans }}</dd>
+                        <dt>{{ 'admin.lifecycle_overrides.help.module.title'|trans }}</dt>
+                        <dd class="text-muted mb-0">{{ 'admin.lifecycle_overrides.help.module.body'|trans }}</dd>
+                    </dl>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}

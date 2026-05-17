@@ -487,6 +487,13 @@ final class AdminHubCatalog
                         'route' => 'admin_settings_workflow_slas',
                     ],
                     [
+                        'key' => 'lifecycle_overrides',
+                        'icon' => 'fa-icon--nav-flow',
+                        'label' => 'admin.hub.module.lifecycle_overrides.label',
+                        'description' => 'admin.hub.module.lifecycle_overrides.desc',
+                        'route' => 'admin_lifecycle_overrides_index',
+                    ],
+                    [
                         'key' => 'data_backup',
                         'icon' => 'fa-icon--nav-hdd',
                         'label' => 'admin.hub.module.data_backup.label',

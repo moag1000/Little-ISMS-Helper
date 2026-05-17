@@ -1,0 +1,96 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block admin_title %}{{ 'admin.lifecycle_overrides.show.title'|trans({ '%workflow%': workflowName }) }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('admin_lifecycle_overrides_index') }}">{{ 'admin.lifecycle_overrides.title'|trans }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">{{ workflowName }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-flow', label: 'Lifecycle' },
+        title: workflowName,
+        subtitle: 'admin.lifecycle_overrides.show.subtitle'|trans,
+        actions: [
+            {
+                label: 'admin.lifecycle_overrides.action.back'|trans,
+                href: path('admin_lifecycle_overrides_index'),
+                icon: 'ui-arrow-left',
+                variant: 'ghost',
+            }
+        ],
+    }) }}
+
+    <div class="row">
+        <div class="col-lg-10">
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i>
+                        {{ 'admin.lifecycle_overrides.section.transitions'|trans }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    {% if transitions is empty %}
+                        {{ _fa_alert.render({ variant: 'warning', icon: 'status-warning', body: 'admin.lifecycle_overrides.no_transitions'|trans }) }}
+                    {% else %}
+                        {% embed '_components/_fa_table.html.twig' with { hover: true } %}
+                            {% block table_head %}
+                                <tr>
+                                    <th class="fa-table__th">{{ 'admin.lifecycle_overrides.col.transition'|trans }}</th>
+                                    <th class="fa-table__th">{{ 'admin.lifecycle_overrides.col.overridden_keys'|trans }}</th>
+                                    <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                {% trans_default_domain 'admin' %}
+                                {% for transition in transitions %}
+                                    {% set tOverrides = overrideMap[transition] ?? {} %}
+                                    <tr class="fa-table__row">
+                                        <td class="fa-table__cell">
+                                            <code class="text-body">{{ transition }}</code>
+                                        </td>
+                                        <td class="fa-table__cell">
+                                            {% if tOverrides is not empty %}
+                                                {% for key, val in tOverrides %}
+                                                    <span class="badge bg-warning text-dark me-1">{{ key }}</span>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="fa-table__cell--muted">{{ 'admin.lifecycle_overrides.yaml_baseline'|trans }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="fa-table__cell fa-table__cell--actions d-flex gap-1">
+                                            <a href="{{ path('admin_lifecycle_overrides_edit', {workflowName: workflowName, transitionName: transition}) }}"
+                                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                               aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                                            </a>
+                                            {% if tOverrides is not empty %}
+                                                <form method="post"
+                                                      action="{{ path('admin_lifecycle_overrides_reset', {workflowName: workflowName, transitionName: transition}) }}"
+                                                      onsubmit="return confirm({{ 'admin.lifecycle_overrides.reset_confirm'|trans|json_encode|raw }})">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('lifecycle_reset_' ~ transition) }}">
+                                                    <button type="submit"
+                                                            class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
+                                                            aria-label="{{ 'admin.lifecycle_overrides.action.reset'|trans }}">
+                                                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endblock %}
+                        {% endembed %}
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
