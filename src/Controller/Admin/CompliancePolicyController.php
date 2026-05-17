@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -59,8 +60,10 @@ final class CompliancePolicyController extends AbstractController
     }
 
     #[Route('', name: 'index', methods: ['GET', 'POST'])]
-    public function index(Request $request): Response
-    {
+    public function index(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         $defs = $this->fieldDefs();
         $current = $this->policy->all();
         $defaults = $this->policy->defaults();
@@ -72,8 +75,6 @@ final class CompliancePolicyController extends AbstractController
                 return $this->redirectToRoute('admin_compliance_policy_index');
             }
 
-            /** @var User $user */
-            $user = $this->getUser();
             $actor = $user->getEmail() ?? 'admin';
             $changed = 0;
 
@@ -114,16 +115,17 @@ final class CompliancePolicyController extends AbstractController
     }
 
     #[Route('/reset/{key}', name: 'reset', methods: ['POST'], requirements: ['key' => '[a-z0-9_.]+'])]
-    public function reset(string $key, Request $request): Response
-    {
+    public function reset(
+        string $key,
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         $token = (string) $request->request->get('_token');
         if (!$this->csrf->isTokenValid(new CsrfToken('compliance_policy_reset_' . $key, $token))) {
             $this->addFlash('danger', 'Ungültiges CSRF-Token.');
             return $this->redirectToRoute('admin_compliance_policy_index');
         }
 
-        /** @var User $user */
-        $user = $this->getUser();
         $default = $this->policy->defaults()[$key] ?? null;
         $this->policy->set($key, $default, $user->getEmail() ?? 'admin');
 
