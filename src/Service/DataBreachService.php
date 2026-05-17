@@ -53,7 +53,7 @@ final class DataBreachService
         $dataBreach = new DataBreach();
         $dataBreach->setTenant($tenant);
         $dataBreach->setReferenceNumber($referenceNumber);
-        $dataBreach->setStatus('draft'); // FIXME: migrate to LifecycleService (initial state)
+        $dataBreach->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'draft' is the data_breach_lifecycle initial_marking)
         // Defaults to false - user decides based on risk assessment
         $dataBreach->setRequiresAuthorityNotification(false);
         $dataBreach->setRequiresSubjectNotification(false);
