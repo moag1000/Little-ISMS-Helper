@@ -6,6 +6,8 @@ namespace App\Service;
 
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\User;
+use App\Exception\Tenant\TenantOrphanException;
+use App\Exception\Workflow\InvalidStatusTransitionException;
 use App\Repository\FourEyesApprovalRequestRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +51,7 @@ class FourEyesApprovalService
 
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
-            throw new LogicException('No tenant context when requesting four-eyes approval.');
+            throw new TenantOrphanException(null, 'No tenant context when requesting four-eyes approval.');
         }
 
         $request = (new FourEyesApprovalRequest())
@@ -83,7 +85,12 @@ class FourEyesApprovalService
     public function approve(FourEyesApprovalRequest $request, User $approver): void
     {
         if (!$request->isPending()) {
-            throw new LogicException('Approval request is not pending (status: ' . $request->getStatus() . ').');
+            throw new InvalidStatusTransitionException(
+                (string) $request->getStatus(),
+                'approved',
+                FourEyesApprovalRequest::class,
+                'Approval request is not pending (status: ' . $request->getStatus() . ').',
+            );
         }
         if ($request->getRequestedBy()?->getId() === $approver->getId()) {
             throw new InvalidArgumentException('Approver must differ from requester.');
@@ -115,7 +122,12 @@ class FourEyesApprovalService
     public function reject(FourEyesApprovalRequest $request, User $approver, string $reason): void
     {
         if (!$request->isPending()) {
-            throw new LogicException('Approval request is not pending.');
+            throw new InvalidStatusTransitionException(
+                (string) $request->getStatus(),
+                'rejected',
+                FourEyesApprovalRequest::class,
+                'Approval request is not pending.',
+            );
         }
         $minLen = $this->rejectionMinLength();
         if (mb_strlen(trim($reason)) < $minLen) {

@@ -8,6 +8,7 @@ use RuntimeException;
 use DateTimeImmutable;
 use App\Entity\DataSubjectRequest;
 use App\Entity\Tenant;
+use App\Exception\Tenant\TenantOrphanException;
 use App\Repository\DataSubjectRequestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -36,7 +37,7 @@ final class DataSubjectRequestService
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant instanceof Tenant) {
-            throw new RuntimeException('No tenant context available');
+            throw new TenantOrphanException(null, 'No tenant context available');
         }
 
         $request->setTenant($tenant);

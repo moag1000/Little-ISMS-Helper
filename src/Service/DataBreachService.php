@@ -14,6 +14,8 @@ use App\Entity\Incident;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\Tenant\TenantOrphanException;
+use App\Exception\Workflow\InvalidStatusTransitionException;
 use App\Repository\DataBreachRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -43,7 +45,7 @@ final class DataBreachService
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant instanceof Tenant) {
-            throw new RuntimeException('No tenant context available');
+            throw new TenantOrphanException(null, 'No tenant context available');
         }
 
         $referenceNumber = $this->dataBreachRepository->getNextReferenceNumber($tenant);
@@ -70,7 +72,7 @@ final class DataBreachService
     ): DataBreach {
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant instanceof Tenant) {
-            throw new RuntimeException('No tenant context available');
+            throw new TenantOrphanException(null, 'No tenant context available');
         }
 
         // Generate reference number
@@ -132,7 +134,7 @@ final class DataBreachService
     ): DataBreach {
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant instanceof Tenant) {
-            throw new RuntimeException('No tenant context available');
+            throw new TenantOrphanException(null, 'No tenant context available');
         }
 
         // Generate reference number
@@ -461,7 +463,12 @@ final class DataBreachService
     public function close(DataBreach $dataBreach, User $user): DataBreach
     {
         if (!in_array($dataBreach->getStatus(), ['authority_notified', 'subjects_notified'])) {
-            throw new RuntimeException('Data breach must be in authority_notified or subjects_notified status to close');
+            throw new InvalidStatusTransitionException(
+                (string) $dataBreach->getStatus(),
+                'closed',
+                DataBreach::class,
+                'Data breach must be in authority_notified or subjects_notified status to close',
+            );
         }
 
         // Validate required notifications are complete
