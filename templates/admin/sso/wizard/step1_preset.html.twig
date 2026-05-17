@@ -42,7 +42,10 @@
                              data-sso-wizard-target="presetCard"
                              data-preset="{{ preset_key }}">
                             <div class="fa-feature-card__icon">
-                                <i class="{{ preset.icon|default('bi-shield-lock') }}" aria-hidden="true"
+                                {# Auto-strip legacy bi-* prefix so YAML preset values still render under Aurora. #}
+                                {% set _presetIcon = preset.icon|default('nav-shield-lock') %}
+                                {% set _presetIcon = _presetIcon starts with 'bi-' ? _presetIcon[3:] : _presetIcon %}
+                                <i class="fa-icon fa-icon--{{ _presetIcon }}" aria-hidden="true"
                                    style="color: {{ preset.color|default('var(--color-brand)') }}; font-size: 2rem;"></i>
                             </div>
                             <div class="fa-feature-card__title">{{ ('sso.preset.' ~ preset_key)|trans }}</div>

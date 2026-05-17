@@ -45,7 +45,7 @@
 
                         <dt class="col-sm-4">{{ 'mfa_token.field.token_type'|trans({}, 'mfa') }}</dt>
                         <dd class="col-sm-8">
-                            {% include '_components/_badge.html.twig' with { variant: 'primary', icon: mfa_token.tokenType == 'totp' ? 'bi-phone' : 'bi-key', content: ('mfa_token.type.' ~ mfa_token.tokenType)|trans({}, 'mfa') } %}
+                            {% include '_components/_badge.html.twig' with { variant: 'primary', icon: mfa_token.tokenType == 'totp' ? 'phone' : 'ui-key', content: ('mfa_token.type.' ~ mfa_token.tokenType)|trans({}, 'mfa') } %}
                         </dd>
 
                         <dt class="col-sm-4">{{ 'mfa_token.field.device_name'|trans({}, 'mfa') }}</dt>

@@ -73,14 +73,14 @@
                                     {# Entity Type Icon #}
                                     {% set entityType = instance.entityType|split('\\')|last|lower %}
                                     {% set entityIcon = {
-                                        'incident': 'bi-exclamation-circle',
-                                        'risk': 'bi-exclamation-triangle',
-                                        'asset': 'bi-server',
-                                        'control': 'bi-shield-check',
-                                        'document': 'bi-file-text'
-                                    }[entityType] ?? 'bi-file-earmark' %}
+                                        'incident': 'status-critical',
+                                        'risk': 'status-warning',
+                                        'asset': 'asset-server',
+                                        'control': 'shield-check',
+                                        'document': 'nav-file-earmark-text'
+                                    }[entityType] ?? 'nav-file-earmark-text' %}
 
-                                    <i class="bi {{ entityIcon }}" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--{{ entityIcon }}" aria-hidden="true"></i>
                                     <strong>{{ workflow.name }}</strong>
                                 </div>
 

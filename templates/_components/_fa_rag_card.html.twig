@@ -21,12 +21,12 @@
 {% macro render(props = {}) %}
     {% set status = props.status|default('green') %}
     {% set faVariant = status == 'green' ? 'success' : (status == 'amber' ? 'warning' : 'danger') %}
-    {% set icon = status == 'green' ? 'bi-check-circle' : (status == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle') %}
+    {% set icon = status == 'green' ? 'status-ok' : (status == 'amber' ? 'status-warning' : 'status-critical') %}
 
     <article class="fa-rag-card fa-rag-card--{{ status }}">
         <div class="fa-rag-card__pill">
             <span class="fa-status-pill fa-status-pill--{{ faVariant }} fa-status-pill--lg">
-                <i class="bi {{ icon }}" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--{{ icon }}" aria-hidden="true"></i>
             </span>
         </div>
         <h5 class="fa-rag-card__title">{{ props.title|default('') }}</h5>

@@ -148,7 +148,7 @@
                                 <span class="text-muted">{{ 'analytics.forecast.predictions.trend'|trans({}, 'analytics') }}</span>
                                 {% include '_components/_badge.html.twig' with {
                                     variant: forecast.trend.direction == 'increasing' ? 'danger' : (forecast.trend.direction == 'decreasing' ? 'success' : 'secondary'),
-                                    icon: forecast.trend.direction == 'increasing' ? 'bi-arrow-up' : (forecast.trend.direction == 'decreasing' ? 'bi-arrow-down' : 'bi-arrow-right'),
+                                    icon: forecast.trend.direction == 'increasing' ? 'util-arrow-up' : (forecast.trend.direction == 'decreasing' ? 'util-arrow-down' : 'util-arrow-right'),
                                     content: forecast.trend.direction == 'increasing' ? 'analytics.forecast.predictions.increasing'|trans({}, 'analytics') : (forecast.trend.direction == 'decreasing' ? 'analytics.forecast.predictions.decreasing'|trans({}, 'analytics') : 'analytics.forecast.predictions.stable'|trans({}, 'analytics'))
                                 } %}
                             </div>

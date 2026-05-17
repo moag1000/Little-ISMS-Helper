@@ -8,7 +8,7 @@
        message: 'Dies entfernt den Tenant und alle Daten unwiderruflich.',
        confirmUrl: path('tenant_delete', {id: x}),
        confirmLabel: 'Löschen',
-       confirmIcon: 'bi-trash',
+       confirmIcon: 'ui-delete',
        typingConfirm: 'LÖSCHEN'    {# optional: Typing-Bestätigung für High-Risk #}
    } %}
 
@@ -49,11 +49,11 @@
                 {{ btn.render(cancelLabel, { variant: 'secondary', attrs: { 'data-bs-dismiss': 'modal' } }) }}
                 {% if confirmUrl is defined and confirmUrl %}
                     {% if confirmMethod|default('post') == 'get' %}
-                        {{ btn.link(confirmUrl, confirmLabel, { variant: 'danger', icon: confirmIcon|default('bi-exclamation-triangle') }) }}
+                        {{ btn.link(confirmUrl, confirmLabel, { variant: 'danger', icon: confirmIcon|default('status-warning') }) }}
                     {% else %}
                         <form action="{{ confirmUrl }}" method="post" class="fa-confirm-modal__form">
                             {% if csrfToken is defined %}<input type="hidden" name="_token" value="{{ csrfToken }}">{% endif %}
-                            {{ btn.submit(confirmLabel, { variant: 'danger', icon: confirmIcon|default('bi-exclamation-triangle') }) }}
+                            {{ btn.submit(confirmLabel, { variant: 'danger', icon: confirmIcon|default('status-warning') }) }}
                         </form>
                     {% endif %}
                 {% endif %}

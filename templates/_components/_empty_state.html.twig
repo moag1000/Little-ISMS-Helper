@@ -16,7 +16,7 @@
 
 {% set _actions = [] %}
 {% if action is defined and is_granted('ROLE_USER') %}
-    {% set _icon = action.icon|default('bi-plus-circle') %}
+    {% set _icon = action.icon|default('plus') %}
     {# Strip 'bi-' prefix — v4 macro adds it back #}
     {% if _icon starts with 'bi-' %}
         {% set _icon = _icon[3:] %}
