@@ -491,6 +491,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
         document.addEventListener('turbo:load', function() {
+            // Resolve Aurora design-tokens to color strings for Chart.js
+            // (Chart.js doesn't resolve CSS custom properties).
+            const _tokens = getComputedStyle(document.documentElement);
+            const T = (name) => _tokens.getPropertyValue(name).trim();
+            const COLORS = {
+                success: T('--success'),
+                warning: T('--warning'),
+                danger:  T('--danger'),
+                primary: T('--primary'),
+                fg3:     T('--fg-3'),
+            };
+
             // Status Distribution Chart
             const statusCtx = document.getElementById('statusDistributionChart');
             if (statusCtx) {
@@ -513,7 +525,7 @@
                                 statusData.not_applicable || 0,
                                 statusData.not_implemented || 0
                             ],
-                            backgroundColor: ['var(--success)', 'var(--warning)', 'var(--primary)', 'var(--fg-3)', 'var(--danger)']
+                            backgroundColor: [COLORS.success, COLORS.warning, COLORS.primary, COLORS.fg3, COLORS.danger]
                         }]
                     },
                     options: {
@@ -537,11 +549,11 @@
                         datasets: [{
                             label: '{{ 'analytics.controls.chart.effectiveness'|trans({}, 'analytics') }}',
                             data: categoryData.map(c => c.average_effectiveness),
-                            backgroundColor: 'var(--primary)'
+                            backgroundColor: COLORS.primary
                         }, {
                             label: '{{ 'analytics.controls.chart.implementation'|trans({}, 'analytics') }}',
                             data: categoryData.map(c => c.implementation_rate),
-                            backgroundColor: 'var(--success)'
+                            backgroundColor: COLORS.success
                         }]
                     },
                     options: {
@@ -576,7 +588,7 @@
                                 agingData.critical || 0,
                                 agingData.never_reviewed || 0
                             ],
-                            backgroundColor: ['var(--success)', 'var(--primary)', 'var(--warning)', 'var(--danger)', 'var(--fg-3)']
+                            backgroundColor: [COLORS.success, COLORS.primary, COLORS.warning, COLORS.danger, COLORS.fg3]
                         }]
                     },
                     options: {
