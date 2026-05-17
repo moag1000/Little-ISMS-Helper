@@ -8,8 +8,6 @@ vulnerability:
     list: Schwachstellenliste
     empty: 'Keine Schwachstellen vorhanden.'
     section:
-        basic_info: Grundinformationen
-        scoring: 'Bewertung & CVSS'
         dates: Termine
         remediation: Behebung
         details: Details
@@ -29,35 +27,9 @@ vulnerability:
         status: Status
         affected_assets: 'Betroffene Assets'
         cvss_score: CVSS‑Score
-        cvss_vector: CVSS-Vektor
         description: Beschreibung
         discovered_date: Entdeckungsdatum
-        published_date: Veröffentlichungsdatum
-        remediation_deadline: Behebungsfrist
-        remediated_date: Behebungsdatum
-        exploit_availability: 'Exploit-Verfügbarkeit'
-        actively_exploited: 'Aktiv ausgenutzt'
         responsible_person: 'Verantwortliche Person'
-        remediation_notes: Behebungshinweise
-        source: Quelle
-    placeholder:
-        cve_id: 'z.B. CVE-2024-12345'
-        title: 'z.B. Remote Code Execution in Apache Log4j'
-        description: 'Beschreibung der Schwachstelle und ihrer Auswirkungen...'
-        cvss_score: '7.5'
-        responsible_person: 'Name der verantwortlichen Person'
-        remediation_notes: 'Schritte zur Behebung und Notizen...'
-    help:
-        cve_id: 'Offizielle CVE-Kennung (Common Vulnerabilities and Exposures)'
-        severity: 'Schweregrad basierend auf CVSS-Score oder manueller Bewertung'
-        cvss_score: 'CVSS-Score von 0.0 bis 10.0'
-        cvss_vector: 'CVSS v3.1 Vektor-String für detaillierte Bewertung'
-        source: 'Quelle der Schwachstelleninformation'
-        affected_assets: 'Assets, die von dieser Schwachstelle betroffen sind'
-        published_date: 'Datum der öffentlichen Bekanntgabe'
-        remediation_deadline: 'Frist für die Behebung der Schwachstelle'
-        exploit_availability: 'Verfügbarkeit von Exploit-Code'
-        actively_exploited: 'Wird die Schwachstelle aktiv in freier Wildbahn ausgenutzt?'
     severity:
         critical: Kritisch
         high: Hoch
@@ -73,18 +45,3 @@ vulnerability:
         false_positive: 'Falsch-Positiv'
         resolved: Gelöst
         closed: Geschlossen
-    source:
-        nist: 'NIST NVD'
-        mitre: 'MITRE CVE'
-        vendor: Herstellermeldung
-        internal: 'Interne Entdeckung'
-        pentest: Penetrationstest
-        bugbounty: Bug-Bounty-Programm
-    exploit:
-        none: 'Kein Exploit bekannt'
-        poc: 'Proof of Concept verfügbar'
-        public: 'Öffentlicher Exploit'
-        weaponized: 'Weaponized Exploit'
-    tooltip:
-        cvss_score: '<strong>📊 CVSS Score (0-10)</strong><br><em>Common Vulnerability Scoring System</em><br><br><strong>0.0</strong> = Keine Auswirkung<br><strong>0.1-3.9</strong> = Niedrig<br><strong>4.0-6.9</strong> = Mittel<br><strong>7.0-8.9</strong> = Hoch<br><strong>9.0-10.0</strong> = Kritisch<br><br><em>Tipp: Den CVSS-Score finden Sie in der CVE-Datenbank (nvd.nist.gov)</em>'
-        severity: '<strong>⚠️ Schweregrad</strong><br><em>Frage: Wie kritisch ist diese Schwachstelle für Ihr System?</em><br><br><strong>Kritisch</strong> = Sofortige Maßnahme erforderlich<br><strong>Hoch</strong> = Innerhalb 7 Tagen beheben<br><strong>Mittel</strong> = Im nächsten Wartungsfenster<br><strong>Niedrig</strong> = Bei Gelegenheit<br><strong>Info</strong> = Zur Kenntnis nehmen'

@@ -9,7 +9,6 @@ change_request:
         create: 'Create Change Request'
         view: View
         edit: Edit
-        update: Update
     statistics:
         total: 'Total Requests'
         pending_approval: 'Pending Approval'
@@ -51,35 +50,14 @@ change_request:
         closure: Closure
         affected_assets: 'Affected Assets'
         affected_controls: 'Affected Controls'
-        affected_risks: 'Affected Risks'
         associated_risks: 'Associated Risks'
     field:
-        change_number: 'Request No.'
-        title: Title
-        change_type: 'Change Type'
-        description: Description
-        justification: Justification
         requested_by: 'Requested by'
         requested_date: 'Requested date'
-        priority: Priority
-        status: Status
-        isms_impact: 'ISMS Impact'
-        risk_assessment: 'Risk Assessment'
-        implementation_plan: 'Implementation Plan'
-        rollback_plan: 'Rollback Plan'
-        testing_requirements: 'Testing Requirements'
-        planned_implementation_date: 'Planned Implementation Date'
-        actual_implementation_date: 'Actual Implementation Date'
         implemented_by: 'Implemented by'
-        implementation_notes: 'Implementation Notes'
         approved_by: 'Approved by'
-        approved_date: 'Approved date'
-        approval_comments: 'Approval Comments'
         verified_by: 'Verified by'
-        verified_date: 'Verified date'
-        verification_results: 'Verification Results'
         closed_date: 'Closed date'
-        closure_notes: 'Closure Notes'
         complexity_score: 'Complexity Score'
         planned_implementation: 'Planned Implementation'
         approval_date: 'Approval Date'
@@ -88,11 +66,6 @@ change_request:
         notes: Notes
         verification_date: 'Verification Date'
         results: Results
-        clause_reference: 'Clause Reference'
-    placeholder:
-        clause_reference: 'e.g. ISO 27001 §6.3, DORA Art. 6'
-    help:
-        clause_reference: 'Optional ISO 27001 / DORA / NIS2 clause tag for §6.3 planned changes or §8.1 operational control differentiation'
     edit: Edit
     confirm:
         delete: Delete
@@ -125,9 +98,3 @@ change_request:
         closed: 'Closed'
         cancelled: 'Cancelled'
         not_scheduled: 'Not Scheduled'
-    tooltip:
-        risk_assessment: 'Assess potential risks that could result from this change (e.g. data loss, service outage, security vulnerabilities). Use the ISMS risk assessment methodology.'
-        rollback_plan: 'Describe the concrete steps to undo this change if it fails. A rollback plan is mandatory for all changes with medium to high risk.'
-        isms_impact: 'Analyse which ISMS components are affected by this change: confidentiality, integrity, availability, existing controls, policies or the ISMS scope.'
-        priority: 'Set the urgency of the change. Critical: immediate action required. High: within one week. Medium: within one month. Low: as planned.'
-        change_type: 'Classify the type of change to select the correct approval and testing process. ISMS Policy and ISMS Scope changes require special review by the Information Security Officer.'
