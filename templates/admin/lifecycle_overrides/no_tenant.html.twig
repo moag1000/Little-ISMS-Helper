@@ -1,0 +1,13 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block admin_title %}{{ 'admin.lifecycle_overrides.title'|trans }}{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_alert.render({
+        variant: 'warning',
+        icon: 'status-warning',
+        body: 'admin.lifecycle_overrides.no_tenant'|trans,
+    }) }}
+{% endblock %}

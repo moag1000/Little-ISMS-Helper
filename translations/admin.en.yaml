@@ -67,6 +67,7 @@ admin:
             monitoring_errors: { label: 'Error monitoring', desc: 'Application errors, stack traces, frequencies' }
             api_doc: { label: 'API documentation', desc: 'OpenAPI / Swagger UI for integrations' }
             setup_wizard: { label: 'Setup wizard', desc: 'Re-run initial configuration' }
+            lifecycle_overrides: { label: 'Lifecycle Overrides', desc: 'Configure workflow transition metadata per tenant' }
             supplier_criticality: { label: 'Supplier criticalities', desc: 'Custom levels for supplier classification' }
             tour_content: { label: 'Guided-tour content', desc: 'Edit step texts and order' }
             tour_completion: { label: 'Tour completion', desc: 'Completion rates + reset tools' }
@@ -1276,3 +1277,61 @@ industry_preset:
             priority: 'Priority'
             activate: 'Activate'
             optional: 'optional'
+
+lifecycle_overrides:
+    title: 'Lifecycle Configuration'
+    subtitle: 'Override workflow transition metadata per tenant'
+    no_tenant: 'No tenant context found. Please switch tenant.'
+    no_workflows: 'No workflow configuration files found.'
+    no_transitions: 'No transitions found in this workflow.'
+    yaml_baseline: 'YAML baseline'
+    current_value: 'Current value'
+    save_success: 'Lifecycle override saved.'
+    reset_success: 'Lifecycle override reset — YAML baseline will be used again.'
+    reset_confirm: 'Really reset all overrides for this transition?'
+    section:
+        workflows: 'Workflows'
+        transitions: 'Transitions'
+        override_fields: 'Override Fields'
+        help: 'Help'
+    col:
+        workflow: 'Workflow'
+        overrides: 'Active Overrides'
+        transition: 'Transition'
+        overridden_keys: 'Overridden Keys'
+    show:
+        title: 'Workflow: %workflow%'
+        subtitle: 'Transitions and their current overrides'
+    edit:
+        title: 'Edit Override: %transition%'
+        hint: 'Empty fields use the YAML baseline value. Only populated fields are stored in the database.'
+    action:
+        manage: 'Manage'
+        back: 'Back'
+        reset: 'Reset'
+    form:
+        roles: 'Roles'
+        roles_help: 'Comma-separated ROLE_* values, e.g. ROLE_MANAGER, ROLE_ADMIN. Leave empty to use YAML default.'
+        reason_required: 'Reason required'
+        reason_required_value: 'Require reason'
+        four_eyes: 'Four-eyes principle'
+        four_eyes_value: 'Enable four-eyes'
+        module: 'Module gate'
+        module_help: 'Module key (e.g. privacy, documents). Leave empty for no restriction.'
+        enable_override: 'Enable override'
+        override_enabled: 'Override active'
+    help:
+        roles:
+            title: 'Roles'
+            body: 'Defines which ROLE_* roles are allowed to trigger the transition. Overrides the YAML baseline.'
+        reason_required:
+            title: 'Reason required'
+            body: 'When enabled, the user must provide a reason when triggering the transition.'
+        four_eyes:
+            title: 'Four-eyes principle'
+            body: 'When enabled, a second person must confirm the transition (four-eyes principle).'
+        module:
+            title: 'Module gate'
+            body: 'Restricts the transition to tenants where the specified module is active.'
+    hint:
+        yaml_baseline: 'Missing overrides automatically use the YAML baseline value from the workflow configuration.'
