@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * config is a JSON textarea so admins can set channel-specific keys
  * (e.g. recipients[], url, timeout) without bespoke sub-forms for each type.
  */
-class NotificationChannelType extends AbstractType
+final class NotificationChannelType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

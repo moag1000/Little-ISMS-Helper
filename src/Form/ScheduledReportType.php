@@ -19,7 +19,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ScheduledReportType extends AbstractType
+final class ScheduledReportType extends AbstractType
 {
     public function __construct(
         private readonly RecipientFilter $recipientFilter,

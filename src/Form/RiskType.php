@@ -31,7 +31,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class RiskType extends AbstractType
+final class RiskType extends AbstractType
 {
     use ModuleAwareFormTrait;
     use OwnerPickerFormTrait;

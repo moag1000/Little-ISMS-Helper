@@ -22,7 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class AuditFindingType extends AbstractType
+final class AuditFindingType extends AbstractType
 {
     use OwnerPickerFormTrait;
 

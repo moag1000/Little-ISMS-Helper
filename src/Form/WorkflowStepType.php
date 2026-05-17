@@ -17,7 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class WorkflowStepType extends AbstractType
+final class WorkflowStepType extends AbstractType
 {
     public function __construct(private readonly UserRepository $userRepository)
     {

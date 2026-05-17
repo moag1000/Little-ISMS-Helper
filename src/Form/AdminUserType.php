@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Form for creating the initial admin user during setup wizard.
  */
-class AdminUserType extends AbstractType
+final class AdminUserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

@@ -23,7 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
  * their OWN form_type_class (e.g. TextType, ChoiceType) — only the root
  * form's class matters for SectionPolicy.
  */
-class FormTypeClassExtension extends AbstractTypeExtension
+final class FormTypeClassExtension extends AbstractTypeExtension
 {
     public static function getExtendedTypes(): iterable
     {

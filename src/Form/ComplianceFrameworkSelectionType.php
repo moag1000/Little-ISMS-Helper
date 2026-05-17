@@ -14,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * ISO 27001 is pre-selected and mandatory (cannot be deselected).
  */
-class ComplianceFrameworkSelectionType extends AbstractType
+final class ComplianceFrameworkSelectionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * Prototype-Protection assessment form.
  * Mirrors the five VDA-ISA-6 Kapitel 8 sub-sections.
  */
-class PrototypeProtectionAssessmentType extends AbstractType
+final class PrototypeProtectionAssessmentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

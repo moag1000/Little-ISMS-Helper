@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Sub-form for a single improvement action entry.
  * Maps to the JSON structure: {description, owner_user_id?, due_date?, completed?}
  */
-class ImprovementActionType extends AbstractType
+final class ImprovementActionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

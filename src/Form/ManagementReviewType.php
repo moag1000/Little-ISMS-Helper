@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class ManagementReviewType extends AbstractType
+final class ManagementReviewType extends AbstractType
 {
     use ModuleAwareFormTrait;
 

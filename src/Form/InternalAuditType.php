@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class InternalAuditType extends AbstractType
+final class InternalAuditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

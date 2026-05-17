@@ -31,7 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Form for creating and editing User entities with role management.
  * Supports both Symfony security roles and custom Role entities.
  */
-class UserType extends AbstractType
+final class UserType extends AbstractType
 {
     public function __construct(
         private readonly TranslatorInterface $translator,

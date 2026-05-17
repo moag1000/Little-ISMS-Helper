@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * Optional step - users can skip and configure later.
  */
-class EmailConfigurationType extends AbstractType
+final class EmailConfigurationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

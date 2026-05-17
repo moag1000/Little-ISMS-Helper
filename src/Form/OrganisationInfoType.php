@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * Collects basic organization data needed for compliance reporting and scope definition.
  */
-class OrganisationInfoType extends AbstractType
+final class OrganisationInfoType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

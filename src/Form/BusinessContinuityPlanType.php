@@ -24,7 +24,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class BusinessContinuityPlanType extends AbstractType implements SectionMapInterface
+final class BusinessContinuityPlanType extends AbstractType implements SectionMapInterface
 {
     use OwnerPickerFormTrait;
 

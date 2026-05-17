@@ -21,7 +21,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
-class DocumentType extends AbstractType
+final class DocumentType extends AbstractType
 {
     use ModuleAwareFormTrait;
 

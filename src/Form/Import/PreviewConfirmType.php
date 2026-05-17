@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  *   - confirmText     must equal "COMMIT" (MustEqualCommit constraint)
  *   - batchId         hidden — links this form to the pending BulkImportBatch
  */
-class PreviewConfirmType extends AbstractType
+final class PreviewConfirmType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

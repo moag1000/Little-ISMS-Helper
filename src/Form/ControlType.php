@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class ControlType extends AbstractType
+final class ControlType extends AbstractType
 {
     use ModuleAwareFormTrait;
 

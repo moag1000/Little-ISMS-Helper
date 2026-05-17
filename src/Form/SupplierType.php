@@ -22,7 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SupplierType extends AbstractType
+final class SupplierType extends AbstractType
 {
     use ModuleAwareFormTrait;
 

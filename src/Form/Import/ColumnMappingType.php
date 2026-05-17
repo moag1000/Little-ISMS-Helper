@@ -27,7 +27,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *   - auto_mappings  array<string, array{target: string, confidence: float}>
  *                    output of HeaderHeuristicMapper::suggestMappings()
  */
-class ColumnMappingType extends AbstractType
+final class ColumnMappingType extends AbstractType
 {
     /** Minimum confidence required to pre-select a suggestion. */
     private const PREFILL_THRESHOLD = 0.6;

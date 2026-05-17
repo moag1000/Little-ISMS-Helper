@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Form for database configuration during setup wizard.
  */
-class DatabaseConfigurationType extends AbstractType
+final class DatabaseConfigurationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

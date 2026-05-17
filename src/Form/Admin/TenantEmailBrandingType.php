@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TenantEmailBrandingType extends AbstractType
+final class TenantEmailBrandingType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
