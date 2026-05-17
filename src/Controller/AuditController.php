@@ -100,7 +100,7 @@ class AuditController extends AbstractController
             $this->entityManager->persist($internalAudit);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('audit.success.created'));
+            $this->addFlash('success', $this->translator->trans('audit.success.created', [], 'audit'));
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
@@ -211,7 +211,7 @@ class AuditController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('audit.success.updated'));
+            $this->addFlash('success', $this->translator->trans('audit.success.updated', [], 'audit'));
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
@@ -362,7 +362,7 @@ class AuditController extends AbstractController
             $this->entityManager->remove($internalAudit);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('audit.success.deleted'));
+            $this->addFlash('success', $this->translator->trans('audit.success.deleted', [], 'audit'));
         }
 
         return $this->redirectToRoute('app_audit_index');
