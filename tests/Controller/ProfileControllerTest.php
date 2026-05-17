@@ -186,7 +186,7 @@ class ProfileControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         // Update profile data
         $form['user[firstName]'] = 'UpdatedFirstName';
@@ -216,7 +216,7 @@ class ProfileControllerTest extends WebTestCase
         $originalUpdatedAt = $this->testUser->getUpdatedAt();
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         $form['user[firstName]'] = 'NewName';
 
@@ -246,7 +246,7 @@ class ProfileControllerTest extends WebTestCase
         $oldPasswordHash = $this->testUser->getPassword();
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         $newPassword = 'NewSecurePassword123!';
         $form['user[plainPassword]'] = $newPassword;
@@ -276,7 +276,7 @@ class ProfileControllerTest extends WebTestCase
         $oldPasswordHash = $this->testUser->getPassword();
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         // Submit with empty password
         $form['user[plainPassword]'] = '';
@@ -302,7 +302,7 @@ class ProfileControllerTest extends WebTestCase
         $oldPasswordHash = $this->testUser->getPassword();
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         // Submit with whitespace-only password
         $form['user[plainPassword]'] = '   ';
@@ -345,7 +345,7 @@ class ProfileControllerTest extends WebTestCase
         );
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         // Upload avatar
         $form['user[avatarFile]'] = $uploadedFile;
@@ -401,7 +401,7 @@ class ProfileControllerTest extends WebTestCase
         );
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         $form['user[avatarFile]'] = $uploadedFile;
 
@@ -505,7 +505,7 @@ class ProfileControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         $form['user[firstName]'] = 'AuditTest';
 
@@ -580,7 +580,7 @@ class ProfileControllerTest extends WebTestCase
         $this->entityManager->flush();
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         // Only change first name
         $form['user[firstName]'] = 'NewFirstName';
@@ -603,7 +603,7 @@ class ProfileControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         $form['user[firstName]'] = 'FlashTest';
 
@@ -620,7 +620,7 @@ class ProfileControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/profile/edit');
-        $form = $crawler->filter('form')->form();
+        $form = $crawler->filter('form[name="user"]')->form();
 
         $form['user[plainPassword]'] = 'NewPassword123!';
 

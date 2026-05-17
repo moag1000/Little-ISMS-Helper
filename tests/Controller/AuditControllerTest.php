@@ -307,21 +307,16 @@ class AuditControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/en/audit/new');
 
-        // The form might have different button text, let's find the submit button
-        $submitButton = $crawler->filter('button[type="submit"]');
-        if ($submitButton->count() === 0) {
-            // Try finding by form name and submitting directly
-            $form = $crawler->selectButton('Save')->form();
-        } else {
-            $form = $submitButton->form();
-        }
-
-        $form['internal_audit[title]'] = 'New Audit Test';
-        $form['internal_audit[scope]'] = 'Test audit scope description';
-        $form['internal_audit[scopeType]'] = 'full_isms';
-        $form['internal_audit[status]'] = 'planned';
-        $form['internal_audit[plannedDate]'] = '2025-12-15';
-        $form['internal_audit[leadAuditor]'] = 'Test Lead Auditor';
+        // Select form by name (avoids grabbing the mega-menu/notifications form
+        // when the first <button type=submit> on the page belongs to chrome).
+        $form = $crawler->filter('form[name="internal_audit"]')->form([
+            'internal_audit[title]' => 'New Audit Test',
+            'internal_audit[scope]' => 'Test audit scope description',
+            'internal_audit[scopeType]' => 'full_isms',
+            'internal_audit[status]' => 'planned',
+            'internal_audit[plannedDate]' => '2025-12-15',
+            'internal_audit[leadAuditor]' => 'Test Lead Auditor',
+        ]);
 
         // CRITICAL: Re-login immediately before form submission to maintain authentication
         $this->loginAsUser($this->testUser);
