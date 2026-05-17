@@ -52,14 +52,8 @@ quick_fix:
             title: 'Duplicates'
             button: 'Merge'
         all:
-            title: 'Safe repair all'
             button: 'Safe repair all'
             empty: 'All data integrity checks OK'
-        success:
-            orphans: '%count% orphan(s) assigned to default tenant.'
-            tenant_mismatches: '%count% tenant mismatch(es) fixed.'
-            duplicates: '%count% duplicate(s) merged for "%type%".'
-            all: 'All repairs done: %orphans% orphan(s), %mismatches% mismatch(es), %duplicates% duplicate(s).'
     apply_failure:
         title: 'Migration failed — Recovery'
         warning: 'WARNING: Only use these options if you understand what the migration does. An incorrect skip can lead to data inconsistency.'

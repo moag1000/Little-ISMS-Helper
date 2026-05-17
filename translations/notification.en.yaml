@@ -3,27 +3,6 @@
 # Sprint 6b: UI keys (rule CRUD, channel forms, bell center).
 
 notification:
-    audit:
-        rule:
-            created: 'Notification rule created'
-            updated: 'Notification rule updated'
-            deleted: 'Notification rule deleted'
-            enabled: 'Notification rule enabled'
-            disabled: 'Notification rule disabled'
-        channel:
-            created: 'Notification channel created'
-            updated: 'Notification channel updated'
-            verified: 'Notification channel verified'
-        delivery:
-            succeeded: 'Notification delivered successfully'
-            failed: 'Notification delivery failed'
-            retried: 'Notification delivery retried'
-    error:
-        webhook_internal_ip: 'Webhook URL resolves to an internal or reserved IP address (SSRF protection active).'
-        invalid_event_type: 'The specified event type is invalid or not supported.'
-        template_not_found: 'The specified notification template was not found.'
-
-    # Sprint 6b: Rule CRUD
     rule:
         index:
             title: 'Notification Rules'
@@ -44,9 +23,7 @@ notification:
             body: 'Create your first notification rule to get alerted about important events.'
         field:
             name: 'Name'
-            name_placeholder: 'e.g. Critical incident — immediate alert'
             event_type: 'Event type'
-            event_type_placeholder: 'Select an event type…'
             severity_filter: 'Severity filter'
             channels: 'Notification channels'
             conditions: 'Additional conditions'
@@ -55,23 +32,14 @@ notification:
             created_at: 'Created'
             last_evaluated: 'Last evaluated'
         help:
-            name: 'A unique name for this rule (max 120 characters).'
-            event_type: 'The event that triggers evaluation of this rule.'
-            severity_filter: 'Optional: restrict this rule to a specific severity level.'
-            channels: 'Select at least one active channel.'
             conditions: 'Optional extra conditions (field / operator / value). Empty = always fire.'
-            is_active: 'Disabled rules are skipped by the evaluator.'
         action:
             new: 'New Rule'
             create: 'Create Rule'
-            enable: 'Enable'
-            disable: 'Disable'
         flash:
             created: 'Rule "%name%" has been created.'
             updated: 'Rule "%name%" has been updated.'
             deleted: 'Rule "%name%" has been deleted.'
-            enabled: 'Rule "%name%" has been enabled.'
-            disabled: 'Rule "%name%" has been disabled.'
         confirm:
             delete: 'Permanently delete this rule?'
 
@@ -94,11 +62,7 @@ notification:
             body: 'Create a channel before configuring rules.'
         field:
             name: 'Channel name'
-            name_placeholder: 'e.g. IT Security Email'
             type: 'Channel type'
-            config: 'Configuration (JSON)'
-            secret: 'HMAC signature secret'
-            secret_placeholder: 'Fill in only to set or change the secret'
             is_active: 'Channel active'
             verified_at: 'Verified'
         type:
@@ -106,14 +70,9 @@ notification:
             webhook: 'Webhook'
             in_app: 'In-App'
         help:
-            name: 'A unique name for this channel.'
-            type: 'The channel type determines the delivery method.'
-            config: 'JSON configuration e.g. {"recipients": ["admin@company.com"]} for email or {"url": "https://hooks.example.com/…"} for webhook.'
             config_examples: 'Examples'
             config_email_example: '{"recipients": ["admin@example.com"], "from": "noreply@example.com"}'
-            secret: 'Optional HMAC-SHA256 key for webhook signatures. Stored encrypted.'
             secret_edit_hint: 'Leave blank to keep the existing secret.'
-            is_active: 'Inactive channels are skipped during delivery.'
         action:
             new: 'New Channel'
             create: 'Create Channel'
@@ -205,10 +164,5 @@ notification:
 
     # Sprint 6b: Condition builder
     condition:
-        field: 'Field'
-        field_placeholder: 'e.g. severity'
-        operator: 'Operator'
-        value: 'Value'
-        value_placeholder: 'e.g. high'
         action:
             add: 'Add condition'

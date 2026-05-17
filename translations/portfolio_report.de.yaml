@@ -44,9 +44,6 @@ portfolio_report:
     pdf:
         footer: 'Vertraulich – Cross-Framework Portfolio Report | Little ISMS Helper'
 
-    flash:
-        no_tenant: 'Es ist kein Mandant für den Portfolio-Report aktiv.'
-
     inheritance:
         title: 'Inheritance-Rate pro Framework (WS-1)'
         rate: 'Rate'

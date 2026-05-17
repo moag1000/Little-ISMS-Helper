@@ -52,14 +52,8 @@ quick_fix:
             title: 'Duplikate'
             button: 'Bereinigen'
         all:
-            title: 'Alles-Sicher-Reparieren'
             button: 'Alles sicher reparieren'
             empty: 'Alle Daten-Integritätsprüfungen OK'
-        success:
-            orphans: '%count% Orphan(s) dem Standard-Mandanten zugewiesen.'
-            tenant_mismatches: '%count% Mandant-Fehlzuordnung(en) behoben.'
-            duplicates: '%count% Duplikat(e) aus "%type%" bereinigt.'
-            all: 'Alle Repairs abgeschlossen: %orphans% Orphan(s), %mismatches% Mismatch(es), %duplicates% Duplikat(e).'
     apply_failure:
         title: 'Migration fehlgeschlagen — Recovery'
         warning: 'ACHTUNG: Diese Optionen nur verwenden wenn du verstehst, was die Migration tut. Ein falsches Skip kann zu Dateninkonsistenz fuehren.'

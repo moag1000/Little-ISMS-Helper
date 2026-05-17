@@ -14,8 +14,6 @@ tags:
         actions: "Aktionen"
         scope: "Sichtbarkeit"
         scope_global: "Global"
-        table:
-            caption: "Liste aller sichtbaren Tags"
         empty: "Noch keine Tags vorhanden. Lege einen neuen Tag an, um Bulk-Klassifikation über mehrere Frameworks zu nutzen."
         aria:
             edit: 'Tag "%name%" bearbeiten'
@@ -27,31 +25,11 @@ tags:
         name: "Name"
         type: "Typ"
         framework_code: "Framework-Code"
-        framework_code_help: "Optional: Code des zugehörigen Frameworks (z. B. NIS2, DORA, ISO27001). Nur bei Typ 'Framework' relevant."
-        color: "Farbe"
-        description: "Beschreibung"
-
     type:
         framework: "Framework"
         classification: "Klassifikation"
         custom: "Benutzerdefiniert"
         scope: "Scope (in/out)"
-    scope:
-        label: "ISMS-Scope-Tag"
-        help: "Kennzeichnet Entities als in-scope oder out-of-scope gemäß ISO 27001 Klausel 4.3."
-        filter:
-            in_scope: "Im Scope"
-            out_of_scope: "Außerhalb Scope"
-
-    color:
-        primary: "Blau"
-        secondary: "Grau"
-        success: "Grün"
-        danger: "Rot"
-        warning: "Gelb"
-        info: "Türkis"
-        dark: "Dunkel"
-
     flash:
         created: "Tag wurde erstellt."
         updated: "Tag wurde aktualisiert."
@@ -73,6 +51,3 @@ tags:
         aria:
             select_tag: 'Tag "%name%" auswählen'
 
-    filter:
-        label: "Framework-Tag"
-        all: "Alle"

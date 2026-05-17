@@ -16,7 +16,6 @@ threat:
     action:
         create: 'Bedrohung erfassen'
         update: 'Änderungen speichern'
-        list: 'Zur Liste'
         created_flash: 'Bedrohung wurde erfolgreich erfasst.'
         updated_flash: 'Bedrohung wurde erfolgreich aktualisiert.'
         deleted_flash: 'Bedrohung wurde gelöscht.'
@@ -33,65 +32,8 @@ threat:
         delete: 'Möchten Sie diese Bedrohung wirklich unwiderruflich löschen?'
     warning:
         delete_irreversible: 'Das Löschen dieser Bedrohung kann nicht rückgängig gemacht werden. Alle verknüpften Daten gehen verloren.'
-    name: Bedrohung
-    threat_type: Bedrohungstyp
-    severity: Schweregrad
-    source: Quelle
-    cve_id: CVE-ID
-    affected_systems: 'Betroffene Systeme'
-    affected_assets: 'Betroffene Assets'
-    indicators: Indikatoren
-    mitigation_recommendations: 'Empfohlene Gegenmaßnahmen'
-    status: Status
-    detection_date: Erkennungsdatum
-    mitigation_date: Maßnahmendatum
-    actions_taken: 'Ergriffene Maßnahmen'
-    affects_organization: 'Betrifft Organisation'
-    cvss_score: CVSS-Score
-    references: Referenzen
-    assigned_to: 'Zugewiesen an'
-    assigned_person: 'Verantwortlich (Person)'
-    assigned_deputy_persons: 'Vertretungen (Personen)'
-    placeholder:
-        assigned_person: '-- Person aus Stammdaten --'
-        title: 'Bedrohungstitel eingeben'
-        description: 'Beschreiben Sie die Bedrohung im Detail'
-        source: 'z.B. CERT-Meldung, interne Erkennung'
-        cve_id: 'z.B. CVE-2024-12345'
-        assigned_to_user: '-- Benutzer auswählen --'
-    help:
-        assigned_person: 'Person ohne System-Login als Verantwortliche. Reihenfolge: User > Person > leer.'
-        assigned_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
-        cvss_score: 'Common Vulnerability Scoring System Score (0–10).'
-        affected_assets: 'Von dieser Bedrohung betroffene Assets. Mehrfachauswahl möglich.'
-        assigned_to_user: 'Systembenutzer als Verantwortlicher. Mindestens einer von Benutzer oder Person ist erforderlich.'
-    type:
-        malware: Malware
-        phishing: Phishing
-        vulnerability: Schwachstelle
-        data_breach: Datenschutzvorfall
-        ddos: DDoS
-        insider_threat: Insider-Bedrohung
-        ransomware: Ransomware
-        apt: APT
-        zero_day: Zero-Day
-        social_engineering: 'Social Engineering'
-        other: Sonstiges
-    status_type:
-        new: Neu
-        analyzing: 'In Analyse'
-        mitigated: Behoben
-        monitoring: Überwacht
-        closed: Geschlossen
-    severity_type:
-        critical: Kritisch
-        high: Hoch
-        medium: Mittel
-        low: Niedrig
-        informational: Informativ
     field:
         title: Titel
-        description: Beschreibung
         threat_type: Bedrohungstyp
         severity: Schweregrad
         source: Quelle
@@ -106,53 +48,7 @@ threat:
         affects_organization: 'Betrifft Organisation'
         affected_assets: 'Betroffene Assets'
         assigned_to_user: 'Zugewiesen an (Benutzer)'
-        assigned_person: 'Verantwortlich (Person)'
         assigned_deputy_persons: 'Vertretungen (Personen)'
-    error:
-        assignee_required_user_or_person: 'Mindestens einer von Zugewiesen an (Benutzer) oder Verantwortlich (Person) muss gesetzt sein.'
-    choice:
-        yes: 'Ja'
-        no: 'Nein'
-
-# Top-level keys used by ThreatIntelligenceType (translation_domain = 'threat')
-field:
-    title: Titel
-    description: Beschreibung
-    threat_type: Bedrohungstyp
-    severity: Schweregrad
-    source: Quelle
-    cve_id: CVE-ID
-    status: Status
-    detection_date: Erkennungsdatum
-    mitigation_date: Maßnahmendatum
-    cvss_score: CVSS-Score
-    mitigation_recommendations: 'Empfohlene Gegenmaßnahmen'
-    actions_taken: 'Ergriffene Maßnahmen'
-    references: Referenzen
-    affects_organization: 'Betrifft Organisation'
-    affected_assets: 'Betroffene Assets'
-    assigned_to_user: 'Zugewiesen an (Benutzer)'
-    assigned_person: 'Verantwortlich (Person)'
-    assigned_deputy_persons: 'Vertretungen (Personen)'
-
-placeholder:
-    title: 'Bedrohungstitel eingeben'
-    description: 'Beschreiben Sie die Bedrohung im Detail'
-    source: 'z.B. CERT-Meldung, interne Erkennung'
-    cve_id: 'z.B. CVE-2024-12345'
-    assigned_to_user: '-- Benutzer auswählen --'
-    assigned_person: '-- Person aus Stammdaten --'
-
-help:
-    cvss_score: 'Common Vulnerability Scoring System Score (0–10).'
-    affected_assets: 'Von dieser Bedrohung betroffene Assets. Mehrfachauswahl möglich.'
-    assigned_to_user: 'Systembenutzer als Verantwortlicher. Mindestens einer von Benutzer oder Person ist erforderlich.'
-    assigned_person: 'Person ohne Systemzugang als Verantwortliche. Reihenfolge: Benutzer > Person > leer.'
-    assigned_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
-
-error:
-    assignee_required_user_or_person: 'Mindestens einer von Zugewiesen an (Benutzer) oder Verantwortlich (Person) muss gesetzt sein.'
-
 choice:
     yes: 'Ja'
     no: 'Nein'
@@ -185,34 +81,3 @@ status_type:
     closed: Geschlossen
 
 # ── vulnerability_intel-Modul-Felder (gegatete Felder) ────────────────────
-threat_intelligence:
-    field:
-        tlp_classification: 'TLP-Klassifizierung'
-        threat_actor_attribution: 'Bedrohungsakteur-Attribution'
-        mitre_attack_tactics: 'MITRE ATT&CK-Taktiken'
-        mitre_attack_techniques: 'MITRE ATT&CK-Techniken'
-        iocs_list: 'Indikatoren für Kompromittierung (IOCs)'
-        confidence_level: 'Verlässlichkeitsgrad'
-        shared_externally: 'Extern geteilt (NIS2 Art. 30)'
-    placeholder:
-        tlp_classification: '-- TLP-Stufe wählen --'
-        threat_actor_attribution: 'z.B. APT28, Lazarus Group'
-        mitre_attack_tactics: 'z.B. TA0001, TA0002 (je Zeile oder kommagetrennt)'
-        mitre_attack_techniques: 'z.B. T1059, T1566 (je Zeile oder kommagetrennt)'
-        confidence_level: '-- Verlässlichkeitsgrad wählen --'
-    tlp:
-        red: 'RED — Keine Weitergabe'
-        amber: 'AMBER — Eingeschränkte Weitergabe'
-        green: 'GREEN — Community-Weitergabe'
-        white: 'WHITE — Unbeschränkte Weitergabe'
-    confidence:
-        low: 'Niedrig'
-        medium: 'Mittel'
-        high: 'Hoch'
-    help:
-        tlp_classification: 'FIRST.org Traffic Light Protocol — steuert Informationsweitergabe (NIS2 Art. 30).'
-        threat_actor_attribution: 'APT-Gruppe oder Verbrechergruppe (MITRE ATT&CK Threat Actors).'
-        mitre_attack_tactics: 'MITRE ATT&CK Taktik-IDs (TA0001–TA0043). JSON-Array oder kommagetrennt.'
-        mitre_attack_techniques: 'MITRE ATT&CK Technik-IDs (T1xxx). JSON-Array oder kommagetrennt.'
-        iocs_list_json: 'STIX 2.1-Format: [{type: ip|domain|hash|url|email, value: "...", context: "..."}]'
-        shared_externally: 'Gesetzt wenn diese Information an ein CERT/CSIRT weitergegeben wurde (NIS2 Art. 30).'

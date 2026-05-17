@@ -41,8 +41,6 @@ fte_tracking:
         subtitle: 'Adjust the per-minute estimates for manual operations to match your tenant''s reality'
         form_title: 'Edit Calibration Constants'
         help: 'Enter the average manual processing time (in minutes) for each operation type. These values feed directly into the FTE savings calculation.'
-        col_operation: 'Operation Type'
-        col_minutes: 'Minutes'
         save: 'Save'
         saved: 'Calibration values saved.'
     op:
