@@ -10,3 +10,12 @@ system_templates:
         hint: 'Fast start via standard templates (ISO 27005, BSI, RoPA, policies, cloud providers, module profiles)'
     success:
         applied: 'Template "%name%" applied — %count% record(s) created.'
+    error:
+        csrf_invalid: 'Security token invalid or expired.'
+        unknown_key: 'Template not found.'
+        apply_failed: 'Apply failed: %message%'
+    profile:
+        kmu: 'SMB / Mid-market'
+        konzern: 'Group / Holding'
+        verein: 'Association / Non-profit'
+        finanzdienstleister: 'Financial services (BaFin / DORA)'

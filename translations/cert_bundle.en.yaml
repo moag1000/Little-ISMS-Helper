@@ -24,6 +24,11 @@ cert_bundle:
             title: 'Checklist'
             passed: 'OK'
             failed: 'Missing'
+            documents_approved: 'All documents approved'
+            policy_acknowledgements: 'All policy acknowledgements collected'
+            findings_closed: 'All audit findings closed'
+            risk_assessment_current: 'Risk assessment current (< 12 months)'
+            management_review_current: 'Management review current (< 12 months)'
         blocker:
             documents_unapproved: '%count% document(s) not yet approved'
             documents_unapproved_hint: 'All documents must have "approved" status before creating an audit bundle.'

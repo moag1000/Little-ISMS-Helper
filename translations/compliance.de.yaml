@@ -464,9 +464,9 @@ compliance:
             title: 'Neues Compliance-Framework'
             heading: 'Neues Framework erstellen'
         help:
-            code: {title: Framework-Code, text: 'Eindeutiger Identifikator für das Framework (z.B. ISO-27001, NIS2, DORA)'}
-            mandatory: {title: Verpflichtend, text: 'Kennzeichnet, ob die Einhaltung dieses Frameworks gesetzlich oder vertraglich vorgeschrieben ist'}
-            active: {title: 'Aktiv/Inaktiv', text: 'Nur aktive Frameworks werden in Compliance-Dashboards und Berichten berücksichtigt'}
+            code: { title: Framework-Code, text: 'Eindeutiger Identifikator für das Framework (z.B. ISO-27001, NIS2, DORA)' }
+            mandatory: { title: Verpflichtend, text: 'Kennzeichnet, ob die Einhaltung dieses Frameworks gesetzlich oder vertraglich vorgeschrieben ist' }
+            active: { title: 'Aktiv/Inaktiv', text: 'Nur aktive Frameworks werden in Compliance-Dashboards und Berichten berücksichtigt' }
         action:
             dashboard: 'Zum Dashboard'
             new: 'Neues Framework'
@@ -888,6 +888,65 @@ compliance:
                 total: 'Total:'
                 days_at_8h: 'Tage bei einem 8h-Arbeitstag'
                 tracking: 'Tracking'
+compliance_mapping:
+    mapping_type:
+        weak: 'Schwach (0-49%)'
+        partial: 'Teilweise (50-99%)'
+        full: 'Vollständig (100%)'
+        exceeds: 'Überschreitet (101-150%)'
+    confidence:
+        low: Niedrig
+        medium: Mittel
+        high: Hoch
+compliance_requirement:
+    field:
+        framework: Framework
+        requirement_id: Anforderungs-ID
+        title: Titel
+        description: Beschreibung
+        category: Kategorie
+        priority: Priorität
+        requirement_type: Anforderungstyp
+        parent_requirement: Übergeordnete Anforderung
+    placeholder:
+        requirement_id: 'z.B. A.5.1 oder REQ-001'
+        title: 'z.B. Informationssicherheitsrichtlinien'
+        description: 'Beschreiben Sie die Anforderung detailliert...'
+        category: 'z.B. Organisatorisch, Technisch, Physisch'
+    help:
+        framework: 'Wählen Sie das Compliance-Framework, zu dem diese Anforderung gehört'
+        requirement_id: 'Eindeutige Kennung der Anforderung gemäß dem Framework (z.B. A.5.1 für ISO 27001)'
+        category: 'Optionale Kategorisierung zur besseren Übersicht (z.B. Organisatorisch, Technisch)'
+        requirement_type: 'Kern-Anforderung = Hauptanforderung, Detailliert = Konkretisierung, Unter-Anforderung = Teil einer übergeordneten Anforderung'
+        parent_requirement: 'Bei Unter-Anforderungen: Wählen Sie die übergeordnete Anforderung aus'
+    validation:
+        framework_required: 'Bitte wählen Sie ein Framework aus'
+        requirement_id_required: 'Bitte geben Sie eine Anforderungs-ID an'
+        requirement_id_max_length: 'Die Anforderungs-ID darf maximal 50 Zeichen lang sein'
+        title_required: 'Bitte geben Sie einen Titel an'
+        title_max_length: 'Der Titel darf maximal 255 Zeichen lang sein'
+        description_required: 'Bitte geben Sie eine Beschreibung an'
+        category_max_length: 'Die Kategorie darf maximal 100 Zeichen lang sein'
+        priority_required: 'Bitte wählen Sie eine Priorität aus'
+        requirement_type_required: 'Bitte wählen Sie einen Anforderungstyp aus'
+    priority:
+        critical: Kritisch
+        high: Hoch
+        medium: Mittel
+        low: Niedrig
+    requirement_type:
+        core: Kern-Anforderung
+        detailed: 'Detaillierte Anforderung'
+        sub_requirement: Unter-Anforderung
+    message:
+        no_gaps: 'Keine Gaps gefunden'
+        no_gaps_desc: 'Für das ausgewählte Framework wurden keine Umsetzungs‑Lücken identifiziert.'
+        no_opportunities: 'Keine Wiederverwendungs‑Möglichkeiten gefunden.'
+        no_data_elements: 'Keine Datenelemente vorhanden.'
+        no_frameworks: 'Keine Frameworks vorhanden.'
+    badge:
+        overdue: Überfällig
+        reusable: wiederverwendbar
 nis2:
     article: Artikel
 
@@ -904,6 +963,7 @@ mapping_review:
         percentages: 'Prozentsätze'
         quality_confidence: 'Quality & Confidence'
         similarity_scores: 'Similarity Scores'
+        gaps: 'Identifizierte Gaps'
         perform_review: 'Review durchführen'
         metadata: 'Metadaten'
     field:
@@ -956,6 +1016,40 @@ mapping_review:
         created: 'Created'
         updated: 'Updated'
 
+compliance_framework:
+    industry:
+        all_sectors: 'Alle Branchen'
+        automotive: Automobil
+        financial_services: Finanzdienstleistungen
+        healthcare: Gesundheitswesen
+        telecommunications: Telekommunikation
+        pharmaceutical: Pharma
+        cloud_services: Cloud-Dienste
+        critical_infrastructure: 'Kritische Infrastruktur'
+        energy: Energie
+        manufacturing: Fertigung
+        retail: Einzelhandel
+        transportation: Transport
+        public_sector: 'Öffentlicher Sektor'
+        education: Bildung
+        insurance: Versicherung
+    maturity:
+        title: 'Reifegrad-Portfolio (CMMI-Level pro Framework)'
+        hint: 'Level 1 Initial → 5 Optimizing — basierend auf Coverage, Cross-Framework-Mappings, Audit-Aktivität und KPI-Historie.'
+        framework: 'Framework'
+        level: 'Reifegrad'
+        coverage: 'Abdeckung'
+        mappings: 'Cross-Mappings'
+        missing: 'Nächste Stufe verlangt'
+        none_missing: 'Maximal-Level erreicht'
+        label:
+            n/a: 'nicht erfasst'
+            initial: 'Initial'
+            managed: 'Managed'
+            defined: 'Defined'
+            quantitatively_managed: 'Quant. Managed'
+            optimizing: 'Optimizing'
+
 admin:
     compliance:
         applicability:
@@ -964,6 +1058,20 @@ admin:
             conditional: 'Branchen-/größenabhängig'
             voluntary: 'Freiwillig'
             applies_when: 'Pflicht wenn'
+            condition:
+                tisax: 'Automotive-Zulieferer mit OEM-Geschäft (VDA-Anforderung, kein Gesetz — aber Marktzugang hängt dran).'
+                dora: 'Finanzdienstleister nach DORA Art. 2 (Banken, Zahlungsdienste, Krypto, Versicherungen, kritische IKT-Drittparteien).'
+                nis2: 'Wesentliche oder wichtige Einrichtung in einem NIS2-Sektor (Anhang I+II) **und** ≥ 50 MA oder ≥ 10 Mio € Jahresumsatz.'
+                nis2umsucg: 'Gleiche Schwellwerte wie NIS2 + deutscher Sitz. Zusätzlich: Betreiber besonders wichtiger Einrichtungen nach BSI-Katalog.'
+                bsi_grundschutz: 'Bundesbehörden (pflichtig via UP Bund), Landesbehörden mit Bezug zum Bund, sowie Zulieferer öffentlicher Auftraggeber.'
+                kritis: 'Betreiber kritischer Infrastrukturen nach BSI-Kritis-Verordnung (Sektoren: Energie, Wasser, Ernährung, IKT, Gesundheit, Finanz, Transport, Entsorgung).'
+                kritis_health: 'Krankenhäuser ab 30.000 vollstationären Fällen/Jahr, sowie Pflegeeinrichtungen und Rettungsdienste nach KHZG/§75c SGB V.'
+                digav: 'Hersteller oder Vertrieb digitaler Gesundheitsanwendungen (DiGA) mit BfArM-Zulassung (App auf Rezept).'
+                tkg: 'Betreiber öffentlicher Telekommunikationsnetze und -dienste nach §§164–167 TKG (Mobilfunk-/Festnetz-Provider, Internet-Access-Provider, VoIP).'
+                gxp: 'Hersteller, Distributoren oder Service-Provider von Arzneimitteln, Medizinprodukten oder deren IT-Systemen (GMP-/GxP-regulierte Branchen).'
+                bdsg: 'Verantwortliche oder Auftragsverarbeiter mit Sitz oder PII-Verarbeitung in Deutschland.'
+                eu_ai_act: 'Anbieter oder Deployer von KI-Systemen, die als High-Risk nach EU AI Act Anhang III klassifiziert sind.'
+
 fulfillment:
     field:
         responsible_person_user: 'Verantwortliche Person (Benutzer)'
@@ -981,6 +1089,19 @@ fulfillment:
         attestation_owner_person: 'Person, die die jaehrliche Konformitaets-Attestierung formal abzeichnet. Unabhaengig vom taeglichen Verantwortlichen — typischerweise CISO, Compliance-Officer oder externer Auditor.'
 
     # V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
+    coverage:
+        impact:
+            title:
+                asset: 'Compliance-Impact dieses Assets'
+                control: 'Compliance-Impact dieses Controls'
+                risk: 'Compliance-Impact dieses Risks'
+            help:
+                asset: 'Wenn dieses Asset deaktiviert oder neu klassifiziert wird, betrifft das die folgenden Framework-Anforderungen.'
+                control: 'Wenn dieses Control geändert oder deaktiviert wird, betrifft das die folgenden Framework-Anforderungen — sie verlieren u.U. ihre Erfüllung.'
+                risk: 'Dieses Risk steht in Bezug zu den folgenden Framework-Anforderungen (über gemappte Controls bzw. data-source mapping).'
+            view_modal: 'Details anzeigen'
+
+# Top-level coverage alias for templates using coverage.impact.* directly
 coverage:
     impact:
         view_modal: 'Details anzeigen'

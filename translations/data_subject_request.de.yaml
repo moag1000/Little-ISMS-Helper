@@ -53,17 +53,67 @@ dsr:
     # Formularfelder
     form:
         title: "Betroffenenanfrage-Formular"
+        request_type: "Antragsart"
+        received_at: "Eingangsdatum"
+        description: "Beschreibung der Anfrage"
+        data_subject_name: "Name der betroffenen Person"
+        data_subject_email: "E-Mail-Adresse"
+        data_subject_identifier: "Kennung (Kunden-/Mitarbeiter-Nr.)"
+        identity_verified: "Identitaet verifiziert"
+        identity_verification_method: "Verifizierungsmethode"
+        assigned_to: "Zugewiesen an"
+        assigned_person: "Verantwortlich (Person)"
+        assigned_deputy_persons: "Vertretungen (Personen)"
         dpo_person: "Datenschutzbeauftragte/r (Governance)"
+        processing_activity: "Zugehoerige Verarbeitungstaetigkeit (VVT)"
+        notes: "Interne Notizen"
+        response_at: "Antwort gesendet am"
+        extended_deadline: "Verlaengerte Frist (Art. 12(3))"
+        extension_reason: "Begruendung Fristverlaengerung"
+        response_document: "Antwort-Artefakt (Dateipfad / UUID)"
+        response_method: "Antwortkanal"
+        rejection_reason: "Ablehnungsbegruendung (Art. 12(5)(b))"
         placeholder:
+            request_type: "-- Antragsart waehlen --"
+            description: "Beschreiben Sie, was die betroffene Person anfragt..."
+            data_subject_name: "Vollstaendiger Name der anfragenden Person"
+            data_subject_email: "email@beispiel.de"
+            data_subject_identifier: "z.B. Kundennummer, Mitarbeiternummer"
+            verification_method: "-- Verifizierungsmethode waehlen --"
+            assigned_to: "-- Benutzer zuweisen --"
+            assigned_person: "-- Person aus Stammdaten --"
+            dpo_person: "-- Datenschutzbeauftragte/n waehlen --"
+            processing_activity: "-- Mit Verarbeitungstaetigkeit verknuepfen --"
+            notes: "Interne Notizen (werden nicht mit der betroffenen Person geteilt)..."
             response_description: "Beschreiben Sie, was zur Erfuellung der Anfrage unternommen wurde..."
             rejection_reason: "Grund der Ablehnung (Art. 12(5))..."
             extension_reason: "Grund fuer Fristverlaengerung (Komplexitaet, Anzahl der Anfragen)..."
+            response_document: "z.B. /antworten/dsr-2024-001.pdf oder UUID"
+            response_method: "-- Antwortkanal waehlen --"
+        help:
+            request_type: "Art. 15 Auskunft, Art. 16 Berichtigung, Art. 17 Loeschung, Art. 18 Einschraenkung, Art. 20 Datenuebertragbarkeit, Art. 21 Widerspruch, Art. 22 Automatisierte Entscheidung"
+            received_at: "Datum und Uhrzeit des Eingangs der Anfrage"
+            data_subject_identifier: "Beliebige Kennung zur Identifikation der Person in Ihren Systemen"
+            processing_activity: "Verknuepfung mit einer relevanten Verarbeitungstaetigkeit aus dem VVT"
+            notes: "Interne Notizen werden nicht mit der betroffenen Person geteilt"
+            assigned_person: "Person ohne System-Login als Verantwortliche. Reihenfolge: User > Person > leer."
+            assigned_deputy_persons: "Weitere Personen mit Vertretungs- oder Mitverantwortung."
+            dpo_person: "Governance-seitig verantwortliche/r DSB fuer diese Anfrage. Unabhaengig vom Bearbeiter (Action). Haeufig externe Person ohne System-Login."
+            response_at: "Datum und Uhrzeit der Antwortsendung an die betroffene Person (Art. 12(3) — Nachweis der Frist-Einhaltung)."
+            extended_deadline: "Verlaengerte Frist gemaess Art. 12(3): max. 90 Tage ab Eingang bei komplexen Anfragen."
+            extension_reason: "Pflichtangabe bei Fristverlaengerung — Begruendung (Komplexitaet, hohes Anfragevolumen)."
+            response_document: "Pfad oder UUID des gespeicherten Antwortschreibens / E-Mail-Archivs als Beweisstueck."
+            response_method: "Art. 12(1): Antwort moeglicherweise in gleicher Form wie die Anfrage."
+            rejection_reason: "Nur bei Ablehnung (Art. 12(5)(b)): offensichtlich unbegruedet oder exzessiv."
+
+    # Abschnittueberschriften
     section:
         request_details: "Anfragedetails"
         data_subject_info: "Informationen zur betroffenen Person"
         identity_verification: "Identitaetspruefung"
         assignment: "Zuweisung & Verknuepfungen"
         internal_notes: "Interne Notizen"
+        response: "Antwortdetails"
         response_tracking: "Frist-Tracking & Antwortnachweis (Art. 12(3))"
         actions: "Aktionen"
         processing_activity: "Verarbeitungstaetigkeit"
@@ -88,6 +138,7 @@ dsr:
         verified_at: "Verifiziert am"
         response_description: "Antwort"
         response_at: "Antwort gesendet am"
+        extended_deadline: "Verlaengerte Frist"
         extension_reason: "Verlaengerungsgrund"
         response_document: "Antwort-Artefakt"
         response_method: "Antwortkanal"
@@ -124,6 +175,19 @@ dsr:
         deadline_approaching: "Frist naehert sich"
 
     # Flash-Meldungen
+    flash:
+        created: "Betroffenenanfrage erfolgreich erstellt."
+        updated: "Betroffenenanfrage erfolgreich aktualisiert."
+        completed: "Betroffenenanfrage als abgeschlossen markiert."
+        rejected: "Betroffenenanfrage abgelehnt."
+        extended: "Frist auf 90 Tage verlaengert."
+        deleted: "Betroffenenanfrage geloescht."
+        cannot_edit_terminal: "Eine abgeschlossene oder abgelehnte Anfrage kann nicht bearbeitet werden."
+        response_required: "Eine Antwortbeschreibung ist erforderlich, um die Anfrage abzuschliessen."
+        rejection_reason_required: "Ein Grund ist erforderlich, um die Anfrage abzulehnen."
+        extension_reason_required: "Ein Grund ist erforderlich, um die Frist zu verlaengern."
+
+    # KPI-Bezeichnungen
     kpi:
         total: "Anfragen gesamt"
         in_progress: "Offene Anfragen"
@@ -190,3 +254,8 @@ dsr:
         deadline_text: "Sie muessen unverzueglich und spaetestens innerhalb eines Monats nach Eingang antworten. Bei komplexen oder zahlreichen Anfragen kann dies um bis zu zwei weitere Monate verlaengert werden – die betroffene Person muss jedoch innerhalb des ersten Monats informiert werden."
         verification_title: "Identitaetspruefung"
         verification_text: "Vor der Erfuellung einer Anfrage muessen Sie die Identitaet der anfragenden Person pruefen, um unberechtigte Offenbarungen zu verhindern. Die Methode muss verhaeltnismaessig sein – fordern Sie keine uebertriebenen Angaben an."
+    error:
+        owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+        extension_reason_required_when_extended: 'Bei Fristverlaengerung ist eine Begruendung Pflicht (Art. 12(3) DSGVO).'
+        response_method_required_when_responded: 'Wenn eine Antwort gesendet wurde, muss der Antwortkanal angegeben werden.'
+        response_at_required_when_rejected: 'Eine Ablehnung ist eine Antwort — bitte auch das Datum der Antwortsendung eintragen.'

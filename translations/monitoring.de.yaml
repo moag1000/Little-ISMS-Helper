@@ -1,7 +1,9 @@
 monitoring:
+    title: System-Überwachung
     subtitle: 'Systemüberwachung und Diagnose'
     health:
         title: System-Gesundheit
+        overall_status: Gesamtstatus
         system_status: 'Systemstatus'
         healthy: Gesund
         warning: Warnung
@@ -37,6 +39,7 @@ monitoring:
         sessions: 'Sitzungen'
         uploads: 'Uploads'
     database:
+        title: Datenbank
         status: Status
         response_time: Antwortzeit
         driver: Treiber
@@ -49,7 +52,9 @@ monitoring:
         errors: "Mapping-Fehler"
         pending: "offene DDL-Statements"
         show_mapping_errors: "Mapping-Fehler anzeigen"
+        show_pending_sql: "Ausstehende SQL-Statements anzeigen"
         apply_update: "Schema-Update ausführen (force)"
+        confirm_update: "Schema-Update führt DDL gegen die Live-DB aus. Fortfahren?"
         preview_open: "SQL-Preview prüfen und weiter"
         preview_warning_title: "Achtung: Destruktive DDL-Operation"
         preview_warning_body: "Dieses Schema-Update führt SQL-Statements direkt gegen die produktive Datenbank aus. Es gibt keine Transaktions-Wrap und kein automatisches Rollback. Prüfen Sie jedes Statement und stellen Sie sicher, dass ein aktuelles Backup vorliegt."
@@ -58,10 +63,13 @@ monitoring:
         backup_confirmed_help: "Dieser Haken ist Pflicht. Das Schema-Update startet erst nach Bestätigung."
         actions_label: "Schema-Update-Aktionen"
     disk:
+        title: Festplatte
         free: Frei
         used: Belegt
         total: Gesamt
+        percentage: Prozent
     php:
+        title: PHP
         version: Version
         memory_limit: Speicherlimit
         max_execution_time: 'Max. Ausführungszeit'
@@ -69,13 +77,16 @@ monitoring:
         loaded: Geladen
         missing: Fehlend
     symfony:
+        title: Symfony
         version: Version
         environment: Umgebung
         debug: Debug-Modus
     cache:
+        title: Cache
         directory: Verzeichnis
         writable: Schreibbar
     logs:
+        title: Protokolle
         directory: Verzeichnis
         writable: Schreibbar
     performance:
@@ -94,6 +105,7 @@ monitoring:
         system_resources: Systemressourcen
         active_today: 'Heute aktiv'
         current: 'Aktuell'
+        note: Hinweis
         note_title: 'Hinweis zur Performance-Überwachung'
         note_text: 'Diese Metriken basieren auf Audit-Log-Daten und aktuellen PHP-Prozessinformationen. Für Produktionsumgebungen empfehlen wir professionelle Monitoring-Tools wie: <strong>New Relic</strong>, <strong>Datadog</strong> oder <strong>Blackfire</strong> für detaillierte Performance-Einblicke.'
         no_data: 'Keine Daten verfügbar'
@@ -102,17 +114,40 @@ monitoring:
         subtitle: 'Systemfehler und Ausnahmen'
         total: 'Fehler gesamt'
         shown: 'Angezeigt (letzte %count%)'
+        by_level: 'Nach Stufe'
         file_size: Dateigröße
         log_file_size: 'Protokolldateigröße'
         last_modified: 'Zuletzt geändert'
         log_file: Protokolldatei
+        show_entries: 'Einträge anzeigen'
         recent: 'Letzte Fehler'
+        no_errors: 'Keine Fehler gefunden!'
         no_log_file: 'Keine Protokolldatei gefunden'
         no_log_file_text: 'Die Protokolldatei <code>%file%</code> existiert noch nicht. Fehler werden hier protokolliert, sobald sie auftreten.'
         show_full: 'Vollständigen Eintrag anzeigen'
         important_notes: 'Wichtige Hinweise'
     audit_log:
         title: Audit-Protokoll
+        total_entries: 'Einträge gesamt'
+        top_actions: Top-Aktionen
+        top_entities: Top-Entitäten
+        quick_filters: Schnellfilter
+        all: Alle
+        today: Heute
+        this_week: 'Diese Woche'
+        critical_actions: 'Kritische Aktionen'
+        entries: Einträge
+        timestamp: Zeitstempel
+        user: Benutzer
+        action: Aktion
+        entity: Entität
+        ip_address: IP-Adresse
+        details: Details
+        view: Ansehen
+        description: Beschreibung
+        changes: Änderungen
+        about: 'Über Audit-Protokoll'
+        about_text: 'Das Audit-Protokoll verfolgt alle wichtigen Aktionen im System einschließlich Erstellen, Aktualisieren und Löschen.'
     related: 'Verwandte Überwachung'
     refresh: Aktualisieren
     back_to_health: 'Zurück zur Gesundheit'

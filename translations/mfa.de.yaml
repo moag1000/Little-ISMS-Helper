@@ -15,6 +15,7 @@ mfa:
     enrolled_at: 'Registriert am'
     last_used: 'Zuletzt verwendet'
     usage_count: Verwendungsanzahl
+    is_active: Aktiv
     is_primary: Primär
     never_used: 'Noch nie verwendet'
     no_tokens: 'Keine Token vorhanden'
@@ -32,11 +33,13 @@ mfa:
         disable: 'Möchten Sie diesen MFA-Token wirklich deaktivieren?'
         delete: 'Möchten Sie diesen MFA-Token wirklich löschen?'
     error:
+        token_not_found: 'MFA-Token nicht gefunden'
         access_denied: 'Zugriff verweigert'
         code_required: 'Bitte geben Sie einen Bestätigungscode ein.'
         invalid_code: 'Ungültiger Code. Bitte versuchen Sie es erneut.'
         verification_failed: 'Verifizierung fehlgeschlagen'
     success:
+        token_reset: 'MFA-Token erfolgreich zurückgesetzt'
         verified: 'MFA-Token erfolgreich verifiziert und aktiviert'
         disabled: 'MFA-Token erfolgreich deaktiviert'
         deleted: 'MFA-Token erfolgreich gelöscht'
@@ -69,9 +72,19 @@ mfa:
         code: Bestätigungscode
         code_help: 'Geben Sie den 6-stelligen Code von Ihrer Authenticator-App oder einen 8-stelligen Backup-Code ein.'
         verify: 'Code überprüfen'
+        success: 'Zwei-Faktor-Authentifizierung erfolgreich!'
         cancel: 'Abbrechen und abmelden'
+        backup_code_hint: 'Kein Zugriff auf Ihr Gerät?'
         using_backup_code: 'Backup-Code verwenden'
         backup_code_info: 'Geben Sie einen Ihrer 8-stelligen Backup-Codes ein, die Sie bei der Einrichtung erhalten haben. Jeder Backup-Code kann nur einmal verwendet werden.'
+        device_changed: 'Gerät gewechselt'
+        help_title: 'Hilfe benötigt?'
+        help_text: 'Wenden Sie sich an Ihren Administrator, wenn Sie keinen Zugriff auf Ihre Authentifizierungsgeräte haben.'
+        nis2_compliance: 'NIS2-konforme Multi-Faktor-Authentifizierung (Art. 21.2.b)'
+        error:
+            code_required: 'Bitte geben Sie einen Bestätigungscode ein.'
+            invalid_code: 'Ungültiger Code. Bitte versuchen Sie es erneut.'
+            invalid_token: 'Ungültiges oder inaktives Authentifizierungsgerät.'
     field:
         device_name: Gerätename
         token_type: Token-Typ
@@ -111,6 +124,7 @@ mfa:
         secret_key: 'Geheimer Schlüssel'
     backup_codes:
         title: 'Backup-Codes'
+        subtitle: 'Notfall-Wiederherstellungscodes'
         warning: 'WICHTIG: Codes sicher aufbewahren!'
         warning_text: 'Diese Codes können verwendet werden, um auf Ihr Konto zuzugreifen, wenn Sie den Zugriff auf Ihr Authenticator-Gerät verlieren. Jeder Code kann nur einmal verwendet werden.'
         onetime_display: 'Diese Codes werden nur einmal angezeigt. Speichern oder drucken Sie sie jetzt.'
@@ -137,6 +151,7 @@ mfa_token:
     new: 'Neues MFA-Token'
     new.subtitle: 'Neues Authentifizierungsgerät einrichten'
     section:
+        title: 'Multi-Faktor-Authentifizierung'
         basic_info: 'Grundlegende Informationen'
         settings: 'Token-Einstellungen'
     field:
@@ -147,8 +162,10 @@ mfa_token:
         last_used: 'Zuletzt verwendet'
         usage_count: Verwendungen
         user: Benutzer
+        is_active: 'Aktiv'
         is_primary: 'Primäres Gerät'
         expires_at: 'Läuft ab am'
+        phone_number: 'Telefonnummer'
         verification_code: Bestätigungscode
     status:
         active: Aktiv

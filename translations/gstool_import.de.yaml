@@ -7,6 +7,11 @@ gstool_import:
         Phase 3 (Bausteine), 4 (Maßnahmen) und 5 (Risikoanalyse) folgen.
     upload:
         card_title: GSTOOL-XML hochladen
+        file_label: GSTOOL-XML-Datei (Schema gstool_xml_v1)
+        file_type_error: Bitte eine XML-Datei hochladen.
+        dry_run_label: Vorschau (kein Schreiben in die Datenbank)
+        dry_run_help: Empfohlen für ersten Test. Kein Schreibvorgang, kein ImportSession-Eintrag.
+        submit: Importieren
     schema:
         title: Erwartetes XML-Schema (v1)
         description: >-
@@ -26,6 +31,12 @@ gstool_import:
         new: neu
         update: Update
         error: Fehler
+    flash:
+        preview_ok: Vorschau erstellt — keine Daten geschrieben.
+        commit_ok: Import erfolgreich abgeschlossen.
+    error:
+        no_tenant: Kein Tenant aktiv. Bitte zuerst einen Tenant auswählen.
+        upload_failed: Upload fehlgeschlagen.
     tab:
         assets: Zielobjekte → Assets
         bausteine: Bausteine

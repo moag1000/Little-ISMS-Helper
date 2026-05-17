@@ -44,6 +44,15 @@ document:
         tables: Tables
         excel: Excel
         other: Other
+        asset: Asset
+        risk: Risk
+        incident: Incident
+        control: Control
+        audit: Audit
+        compliance: Compliance
+        training: Training
+        general: General
+        communication_plan: Communication Plan
     section:
         type_overview: 'Type overview'
         all_documents: 'All documents'
@@ -73,8 +82,10 @@ document:
     new: 'New Document'
     edit: 'Edit Document'
     field:
+        name: Name
         description: Description
         document_type: 'Document type'
+        file: File
         title: Title
         version: Version
         status: Status
@@ -88,8 +99,39 @@ document:
         overdue_reviews: 'Overdue Reviews'
         documents: Documents
         updated: Updated
+        inheritable: 'Inheritable to subsidiaries'
+        override_allowed: 'Local override allowed in subsidiaries'
+        data_classification: 'Classification'
+        requires_acknowledgement: 'Requires user acknowledgement'
+        # V3 W2-LB-8 — Review-cycle
+        review_interval_months: 'Review cycle (months)'
+        next_review_date: 'Next review date'
+    classification:
+        public: 'Public'
+        internal: 'Internal'
+        confidential: 'Confidential'
+        strictly_confidential: 'Strictly Confidential'
     help:
+        name: 'Unique name of the document'
+        description: 'Detailed description of the content and purpose'
+        document_type: 'Category of the document (e.g. policy, procedure)'
+        file: 'Choose a file to upload'
         edit_file: 'Leave the field empty to keep the existing file'
+        file_edit: 'Upload a new file (optional)'
+        inheritable: 'Makes the document visible to every subsidiary of this holding (default off).'
+        override_allowed: 'When off: subsidiaries must use this policy verbatim (e.g. ISMS policy). When on: subsidiaries may author a local version.'
+        data_classification: 'Information classification per TISAX/ISO 27001 A.8.2. Default configurable under Admin → System → Documents.'
+        version: 'Version label (e.g. "1.0", "1.2.3-beta", "2026-Q2"). Required when acknowledgement is enabled — every acknowledgement record is keyed by version.'
+        requires_acknowledgement: 'When the document transitions to "approved" the ISMS-Helper automatically requests acknowledgement from every active user of the tenant (ISO 27001 A.6.3). Use for binding policies, not for evidence or internal notes.'
+        # V3 W2-LB-8 — Review-cycle
+        review_interval_months: 'Cadence for the scheduled review-cycle (default 12 months, ISO 27001 Cl. 7.5.2). When the document is approved the next review date is auto-populated.'
+        status: 'Lifecycle status. Canonical workflow: Draft → In review → Approved → Published → Archived. "Active (legacy)" marks pre-wizard uploads without an approval trail.'
+    tooltip:
+        category: 'Select the document type that describes the content purpose of the document (e.g. policy, procedure, evidence). The type controls filtering and assignment to ISMS areas.'
+        classification: 'Information classification per TISAX/ISO 27001 A.8.2. Determines who may access the document. "Strictly Confidential" applies to documents requiring special protection (e.g. key material, security concepts).'
+    placeholder:
+        data_classification: '-- Select classification --'
+        version: 'e.g. 1.0'
     delete_warning: 'Deleting this document cannot be undone.'
     badge:
         controlled: Controlled
@@ -110,6 +152,12 @@ document:
         overdue_reviews: 'Overdue Reviews'
     option:
         all_types: 'All Types'
+    uploaded_by: 'Uploaded by'
+    uploaded_at: 'Uploaded at'
+    edit_button: 'Edit document'
+    drag_files: 'Drag files here or click to upload'
+    validation:
+        mime_types: 'Please select a valid file (PDF, Word, Excel, Image or Text)'
     effectiveness:
         section_title: 'Effectiveness Review'
         last_reviewed_at: 'Last reviewed at'
@@ -143,6 +191,13 @@ document:
     bulk:
         status_change:
             label: 'Change status'
+            confirm: 'Change status of %count% documents to %newStatus%?'
+            success: '%count% documents updated'
+            partial: '%changed% updated, %rejected% rejected'
+            error: 'Update failed'
+            invalid_transition: 'Status transition not allowed'
+            not_found: 'Document not found'
+            tenant_mismatch: 'Access denied'
             target:
                 draft: 'Draft'
                 in_review: 'In review'
@@ -151,6 +206,8 @@ document:
                 archived: 'Archived'
     policy_body:
         section_title: 'Edit policy text (your customisation)'
+        label: 'Policy text (your customisation)'
+        help: 'Markdown supported. Leave empty to use the wizard default. Your customisation is detected on the next wizard run; differences from the baseline appear in the comparison view.'
         edited_by: 'Last edited by %name% on %date%'
         regen_warning_title: 'What happens on the next wizard run?'
         regeneration_conflict_warning: 'If you run the wizard again: your customisation stays, a new baseline version is created as a successor. Differences appear in the comparison view (W7-C).'
@@ -173,3 +230,7 @@ document:
             policy_document: 'Policy'
             procedure_document: 'Procedure'
             record: 'Record'
+iso_9001_bridge:
+    policy: 'Identical to ISO 9001 Clause 7.5 "Control of documented information" — policies, procedures and records are versioned and released under the same control scheme.'
+    procedure: 'In ISO 9001 this is a "documented procedure" (7.5.1) — process description with roles, inputs/outputs and measurement criteria.'
+    record: 'In ISO 9001 this is a "record" (7.5.3) — evidence of process execution.'

@@ -23,6 +23,13 @@ import:
         risk: 'Risk'
         business_process: 'Business Process'
 
+    entity_type:
+        asset: 'Asset'
+        supplier: 'Supplier'
+        control: 'Control'
+        risk: 'Risk'
+        business_process: 'Business Process'
+
     wizard:
         step:
             upload:
@@ -38,9 +45,15 @@ import:
 
     success:
         dispatched: 'The import has been started and is running in the background.'
+        committed: 'Import completed successfully.'
+
     error:
         upload_failed: 'File upload failed: %message%'
         parse_failed: 'File could not be parsed: %message%'
+        unknown_entity: 'Unknown entity type: %type%'
+        batch_not_found: 'Import batch not found.'
+        must_equal_commit: 'Please type "COMMIT" to confirm the import.'
+
     action:
         upload: 'Upload File'
         map: 'Back to Mapping'
@@ -51,7 +64,9 @@ import:
         download_sample_help: 'Pre-filled example file with correct column headers to adapt.'
 
     preview:
+        skip_on_error_label: 'Skip rows with errors (instead of aborting)'
         confirm_text_label: 'Type "COMMIT" to confirm the import'
+        summary: 'Please review the detected changes before starting the import.'
         show_errors: 'Show errors'
         row: 'Row'
 
@@ -59,11 +74,23 @@ import:
         creates: 'New Records'
         updates: 'Updates'
         unchanged: 'Unchanged'
+        deletes: 'Deletes'
         errors: 'Errors'
         total: 'Total'
 
     upload:
+        entity_type_label: 'Entity Type'
+        entity_type_placeholder: '— Please select —'
+        mode_label: 'Import Mode'
         file_label: 'File (XLSX, CSV, ODS)'
+        invalid_mime_type: 'Only XLSX, XLS, CSV, and ODS files are allowed.'
+        file_too_large: 'The file must not exceed 10 MB.'
+
+    mode:
+        initial: 'Initial Import (create all rows)'
+        delta: 'Delta Mode (update + create)'
+        dry_run: 'Dry Run (no changes saved)'
+
     index:
         col_mode: 'Mode'
         col_file: 'File'
@@ -76,7 +103,40 @@ import:
         col_data: 'Data'
 
     mapping:
+        subtitle: 'Assign each source column to its target field. Confidence shows the auto-mapping accuracy.'
         col_source: 'Column (file)'
         col_target: 'Mapping'
         col_confidence: 'Confidence'
         reset: 'Reset to Auto-Mapping'
+        ignore: '— Ignore column —'
+        field:
+            name: 'Name'
+            assetType: 'Asset Type'
+            owner: 'Owner'
+            classification: 'Classification'
+            confidentiality: 'Confidentiality (C)'
+            integrity: 'Integrity (I)'
+            availability: 'Availability (A)'
+            description: 'Description'
+            contactEmail: 'Contact Email'
+            criticality: 'Criticality'
+            isDoraRelevant: 'DORA Relevant'
+            identifier: 'Control ID'
+            title: 'Title'
+            applicability: 'Applicability'
+            justification: 'Justification'
+            category: 'Category'
+            threatSource: 'Threat Source'
+            vulnerability: 'Vulnerability'
+            inherentImpact: 'Inherent Impact (1-5)'
+            inherentLikelihood: 'Inherent Likelihood (1-5)'
+            treatmentStrategy: 'Treatment Strategy'
+            riskOwner: 'Risk Owner'
+            requiresDpia: 'Requires DPIA'
+            rto: 'RTO (hours)'
+            rpo: 'RPO (hours)'
+            mtpd: 'MTPD (hours)'
+            financialImpactPerHour: 'Financial Impact per Hour'
+            processOwner: 'Process Owner'
+            dependenciesUpstream: 'Upstream Dependencies'
+            dependenciesDownstream: 'Downstream Dependencies'
