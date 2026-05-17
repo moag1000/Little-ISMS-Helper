@@ -6,6 +6,7 @@ namespace App\Controller\Analytics;
 
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Fte\FteCalibrationConstant;
+use App\Entity\User;
 use App\Repository\Fte\FteCalibrationConstantRepository;
 use App\Repository\Fte\FteTrackingMetricRepository;
 use App\Service\Admin\AdminHubCatalog;
@@ -20,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -84,8 +86,10 @@ class FteTrackingDashboardController extends AbstractController
 
     #[Route('/calibration', name: 'calibration', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function calibration(Request $request): Response
-    {
+    public function calibration(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         if ($redirect = $this->checkModuleActive('analytics')) {
             return $redirect;
         }
@@ -113,7 +117,6 @@ class FteTrackingDashboardController extends AbstractController
             }
 
             $submittedValues = $request->request->all('calibration');
-            $user = $this->getUser();
 
             foreach ($operationTypes as $opType) {
                 if (!isset($submittedValues[$opType])) {
@@ -129,10 +132,7 @@ class FteTrackingDashboardController extends AbstractController
                 $oldValue = $constant->getMinutesPerOperation();
                 $constant->setMinutesPerOperation($rawValue);
                 $constant->setLastUpdatedAt(new DateTimeImmutable());
-                if ($user !== null) {
-                    /** @var \App\Entity\User $user */
-                    $constant->setLastUpdatedBy($user);
-                }
+                $constant->setLastUpdatedBy($user);
 
                 $this->em->persist($constant);
 
