@@ -1105,3 +1105,11 @@ fulfillment:
 coverage:
     impact:
         view_modal: 'Details anzeigen'
+        title:
+            asset: 'Compliance-Abdeckung dieses Assets'
+            control: 'Compliance-Abdeckung dieses Controls'
+            risk: 'Compliance-Abdeckung dieses Risks'
+        help:
+            asset: 'Frameworks und Anforderungen, die dieses Asset abdeckt — über zugeordnete Controls bzw. data-source-Mapping.'
+            control: 'Wenn dieses Control geändert oder deaktiviert wird, betrifft das die folgenden Framework-Anforderungen.'
+            risk: 'Dieses Risk steht in Bezug zu den folgenden Framework-Anforderungen (über gemappte Controls bzw. data-source-Mapping).'
