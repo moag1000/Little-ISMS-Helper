@@ -11,6 +11,9 @@
 {# Twig {% extends %} requires re-import inside the block where used. #}
 {% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -34,6 +37,12 @@
         title: document.originalFilename,
         actions: _show_actions
     }) }}
+
+    {# Lifecycle X.3 — status pill + transition dropdown #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Document', status_key: document.status }) }}
+        {{ _lifecycle_actions.dropdown(document, 'document', 'document_lifecycle') }}
+    </div>
 
     {# Inline disabled-edit + POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if (canEdit is defined and not canEdit) or (is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit)) %}
@@ -463,5 +472,8 @@
             </div>
         </div>
     {% endif %}
+
+    {# Lifecycle X.3 — status history tab #}
+    {{ _lifecycle_history.history('document', document.id) }}
 </div>
 {% endblock %}

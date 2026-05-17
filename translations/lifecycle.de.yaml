@@ -12,10 +12,17 @@ lifecycle:
     resolved: Behoben
     closed: Geschlossen
 
+    # ISMSObjective lifecycle places
+    not_started: 'Nicht gestartet'
+    achieved: Erreicht
+    delayed: Verzögert
+    cancelled: Abgebrochen
+
     tooltip:
         next: 'Nächste Schritte'
 
     actions:
+        label: Aktionen
         change_status: 'Status ändern'
         submit_for_review: 'Zur Prüfung einreichen'
         approve: Freigeben
@@ -23,6 +30,34 @@ lifecycle:
         archive: Archivieren
         unarchive: Reaktivieren
         return_to_draft: 'Zurück zu Entwurf'
+
+    # Transition names (workflow YAML metadata)
+    transition:
+        submit_for_review: 'Zur Prüfung einreichen'
+        approve: Freigeben
+        request_changes: 'Überarbeitung anfordern'
+        publish: Veröffentlichen
+        archive: Archivieren
+        restore: Reaktivieren
+        activate: Aktivieren
+        start: Starten
+        achieve: Als erreicht markieren
+        mark_achieved: Als erreicht markieren
+        mark_delayed: Als verzögert markieren
+        cancel: Abbrechen
+        reopen: Wiederöffnen
+
+    history:
+        title: Statushistorie
+        loading: 'Lädt...'
+        empty: 'Noch keine Übergänge aufgezeichnet.'
+        row: '%user% %from% → %to%: %reason%'
+
+    confirm:
+        reason_required: 'Bitte Begründung angeben'
+
+    field:
+        status: Status
 
     errors:
         invalid_transition: 'Ungültiger Statusübergang von "%from%" zu "%to%". Erlaubte Folgezustände: %allowed%.'
