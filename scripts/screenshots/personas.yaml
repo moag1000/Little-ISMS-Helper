@@ -27,6 +27,7 @@ personas:
   # ISB / Security Officer — operative ISO 27001 practice
   # Canonical owner of: dashboard, SoA, risk register, asset register,
   # control effectiveness, incident register, document register.
+  # Notification ops (channels/rules/templates) belong to isb-practitioner.
   # ─────────────────────────────────────────────────────────────────
   isb-practitioner:
     label: "ISB / Security Officer"
@@ -47,11 +48,15 @@ personas:
       - { name: kpi-dashboard,         path: /de/analytics }
       - { name: audit-findings,        path: /de/audit-finding/ }
       - { name: bsi-grundschutz-check, path: /de/bsi-grundschutz-check, full_page: false }
+      # Notification ops — channels/rules/templates (admin role required)
+      - { name: notification-channels, path: /de/admin/notification/channel }
+      - { name: notification-rules,    path: /de/admin/notification/rule }
+      - { name: notification-templates, path: /de/admin/notification/template }
 
   # ─────────────────────────────────────────────────────────────────
   # CISO / Executive — heatmaps, trends, board reporting
   # Canonical owner of: ciso/board dashboards, analytics overviews,
-  # management reports, scheduled reports, dora cockpit.
+  # management reports, scheduled reports, dora cockpit, FTE tracking.
   # ─────────────────────────────────────────────────────────────────
   ciso-executive:
     label: "CISO / Executive"
@@ -64,9 +69,14 @@ personas:
       - { name: risk-forecast,         path: /de/analytics/risk/forecast }
       - { name: asset-criticality,     path: /de/analytics/assets/criticality, full_page: false }
       - { name: compliance-frameworks-radar, path: /de/analytics/compliance/frameworks }
+      # FTE Tracking (FteTrackingDashboardController — CISO analytics scope)
+      - { name: fte-tracking,          path: /de/dashboard/fte-tracking }
+      - { name: fte-calibration,       path: /de/dashboard/fte-tracking/calibration }
+      - { name: fte-board-report,      path: /de/dashboard/fte-tracking/board-report }
       - { name: management-reports,    path: /de/reports/management/ }
       - { name: portfolio-report,      path: /de/reports/management/portfolio }
       - { name: executive-report,      path: /de/reports/management/executive }
+      - { name: bcm-management-report, path: /de/reports/management/bcm }
       - { name: scheduled-reports,     path: /de/reports/scheduled/ }
       - { name: dora-dashboard,        path: /de/dora-compliance }
       - { name: certification-bundle,  path: /de/certification-bundle, full_page: false }
@@ -75,14 +85,15 @@ personas:
   # ─────────────────────────────────────────────────────────────────
   # Compliance-Manager / Head of GRC — framework portfolio + reuse
   # Canonical owner of: compliance overview, framework list, mapping
-  # hub/wizard/seeds, requirements, suppliers, modules-overview.
+  # hub/wizard/seeds, requirements, suppliers, modules-overview,
+  # library-importer, compliance-policy settings.
   # ─────────────────────────────────────────────────────────────────
   compliance-manager:
     label: "Compliance-Manager / Head of GRC"
     description: "Framework-Portfolio, Cross-Mapping, Gap-Heatmap, Library-Reuse"
     screens:
       - { name: cm-dashboard,           path: /de/dashboards/compliance-manager, full_page: false }
-      - { name: compliance-overview,    path: /de/compliance }
+      - { name: compliance-overview,    path: /de/compliance/ }
       - { name: framework-list,         path: /de/compliance/framework/ }
       - { name: framework-manage,       path: /de/compliance/frameworks/manage }
       - { name: compliance-wizard,      path: /de/compliance-wizard }
@@ -95,6 +106,9 @@ personas:
       - { name: mapping-list,           path: /de/compliance/mapping/ }
       - { name: mapping-wizard,         path: /de/compliance/mapping/wizard }
       - { name: mapping-seeds,          path: /de/compliance/mappings/seeds }
+      # Mapping quality (new — admin-library-importer scope, compliance-manager owns)
+      - { name: mapping-quality-dashboard, path: /de/compliance/mapping-quality/ }
+      - { name: mapping-quality-review-queue, path: /de/compliance/mapping-quality/review-queue }
       - { name: requirements-list,      path: /de/compliance/requirement/ }
       - { name: suppliers,              path: /de/supplier/ }
       - { name: modules-overview,       path: /de/admin/modules }
@@ -104,6 +118,11 @@ personas:
       - { name: gstool-import,          path: /de/admin/import/gstool }
       - { name: import-history,         path: /de/admin/import/history }
       - { name: tenant-compliance-settings, path: /de/admin/tenant-compliance-settings }
+      # Library importer — control catalogue YAML import/export (admin role required)
+      - { name: library-catalogue,      path: /de/admin/library }
+      - { name: library-import,         path: /de/admin/library/import }
+      # Compliance-policy settings (tenant-level compliance policy defaults)
+      - { name: compliance-policy-settings, path: /de/admin/compliance/settings }
       - { name: bcm-data-reuse-insights, path: /de/bcm/data-reuse-insights }
 
   # ─────────────────────────────────────────────────────────────────
@@ -135,7 +154,7 @@ personas:
   # ─────────────────────────────────────────────────────────────────
   # Risk-Owner / Business — mobile, simple approval flows
   # Canonical owner of: workflow inbox, business processes, BCM views,
-  # data-subject requests, consent.
+  # data-subject requests, consent, BC exercises.
   # ─────────────────────────────────────────────────────────────────
   risk-owner-business:
     label: "Risk-Owner / Fachbereichsleiter"
@@ -144,6 +163,10 @@ personas:
       - { name: workflows-inbox,       path: /de/workflow/ }
       - { name: business-processes,    path: /de/bcm/business-process/ }
       - { name: bcm-overview,          path: /de/bcm/ }
+      - { name: bc-exercises,          path: /de/bc-exercise/ }
+      # BCM exercise log — requires at least one BC exercise to exist
+      - { name: bcm-exercise-log,      path: /de/bcm/exercise-log }
+      - { name: bcm-exercise-log-calendar, path: /de/bcm/exercise-log/calendar }
       - { name: data-subject-requests, path: /de/data-subject-request }
       - { name: consent-list,          path: /de/consent/ }
 
@@ -163,10 +186,30 @@ personas:
       - { name: mapping-quality-coverage, path: /de/admin/mapping-quality/coverage/all }
       - { name: data-repair,           path: /de/admin/data-repair/ }
       - { name: loader-fixer,          path: /de/admin/loader-fixer }
+      # Core settings pages
       - { name: admin-settings,        path: /de/admin/settings }
       - { name: admin-settings-application, path: /de/admin/settings/application }
       - { name: admin-settings-features, path: /de/admin/settings/features }
       - { name: admin-settings-security, path: /de/admin/settings/security }
+      # New admin/settings/* sub-pages (added during settings expansion sprint)
+      - { name: admin-settings-api-rate-limits, path: /de/admin/settings/api-rate-limits }
+      - { name: admin-settings-backups, path: /de/admin/settings/backups }
+      - { name: admin-settings-data-retention, path: /de/admin/settings/data-retention }
+      - { name: admin-settings-fiscal-year, path: /de/admin/settings/fiscal-year }
+      - { name: admin-settings-notifications, path: /de/admin/settings/notifications }
+      - { name: admin-settings-workflow-slas, path: /de/admin/settings/workflow-slas }
+      # Lifecycle overrides (admin role; requires at least one workflow definition)
+      - { name: lifecycle-overrides,   path: /de/admin/lifecycle-overrides }
+      # Supplier criticality config
+      - { name: supplier-criticality,  path: /de/admin/supplier-criticality }
+      # SSO provider management + wizard entry-point
+      - { name: sso-providers,         path: /de/admin/sso }
+      - { name: sso-wizard-step1,      path: /de/admin/sso/wizard/step1 }
+      - { name: sso-approvals,         path: /de/admin/sso/approvals }
+      # Quick-fix settings
+      - { name: quick-fix-settings,    path: /de/admin/quick-fix-settings }
+      # Backup/restore UI
+      - { name: data-backup,           path: /de/admin/data/backup }
       - { name: monitoring-health,     path: /de/admin/monitoring/health }
       - { name: monitoring-performance, path: /de/admin/monitoring/performance }
       - { name: monitoring-errors,     path: /de/admin/monitoring/errors }
@@ -186,9 +229,10 @@ personas:
       - { name: kpi-thresholds,        path: /de/admin/kpi-thresholds/ }
       - { name: incident-sla,          path: /de/admin/incident-sla }
       - { name: risk-approval-config,  path: /de/admin/risk-governance/approval-thresholds }
+      # Locale smoke-tests (confirms EN translation completeness)
       - { name: en-locale-dashboard,   path: /en/dashboard }
       - { name: en-locale-soa,         path: /en/soa/ }
-      - { name: en-locale-compliance,  path: /en/compliance }
+      - { name: en-locale-compliance,  path: /en/compliance/ }
 
   # ─────────────────────────────────────────────────────────────────
   # External Auditor (ISO 19011) — evidence-driven, point-in-time
