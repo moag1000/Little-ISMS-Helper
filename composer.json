@@ -57,11 +57,12 @@
         "symfony/ux-turbo": "^2.35",
         "symfony/validator": "7.4.*",
         "symfony/web-link": "7.4.*",
+        "symfony/workflow": "7.4.*",
         "symfony/yaml": "7.4.*",
         "thenetworg/oauth2-azure": "^2.2.5",
         "twig/extra-bundle": "^3.24.0",
         "twig/string-extra": "^3.24.0",
-        "twig/twig": "^3.24.0",
+        "twig/twig": "^3.25.0",
         "vich/uploader-bundle": ">=2.9.2",
         "web-token/jwt-library": "^4.1.6"
     },
