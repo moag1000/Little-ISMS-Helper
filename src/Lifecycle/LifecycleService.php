@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Lifecycle;
 
 use App\Entity\User;
-use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Workflow\Exception\NotEnabledTransitionException;
 use Symfony\Component\Workflow\Exception\TransitionException;
@@ -25,7 +24,6 @@ final class LifecycleService
     public function __construct(
         private readonly Registry $workflowRegistry,
         private readonly EntityManagerInterface $entityManager,
-        private readonly AuditLogger $auditLogger,
     ) {}
 
     /**

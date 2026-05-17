@@ -26,7 +26,8 @@
 
     <span class="fa-status-pill fa-status-pill--{{ tone }} fa-status-pill--{{ size }}{{ extraClass ? ' ' ~ extraClass : '' }}"{{ titleAttr ? ' title="' ~ titleAttr ~ '"' : '' }}>
         {% if icon %}
-            <i class="bi {{ icon }}" aria-hidden="true"></i>
+            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+            <i class="fa-icon fa-icon--{{ (icon starts with 'bi-') ? icon[3:] : icon }}" aria-hidden="true"></i>
         {% elseif not noDot %}
             <span class="fa-status-pill__dot" aria-hidden="true"></span>
         {% endif %}

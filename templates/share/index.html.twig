@@ -97,7 +97,8 @@
                                     value="{{ action.id }}"
                                     class="fa-cyber-btn fa-cyber-btn--lg {{ action.highlight|default(false) ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }} text-start">
                                 <div class="d-flex align-items-center">
-                                    <i class="bi {{ action.icon }} fs-4 me-3" aria-hidden="true"></i>
+                                    {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                                    <i class="fa-icon fa-icon--{{ (action.icon starts with 'bi-') ? action.icon[3:] : action.icon }} fs-4 me-3" aria-hidden="true"></i>
                                     <div>
                                         <strong>{{ action.label|trans({}, 'messages') }}</strong>
                                         <br>

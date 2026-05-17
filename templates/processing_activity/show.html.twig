@@ -6,6 +6,9 @@
 
 {% block body %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
 <div class="container-fluid mt-4">
     {# Breadcrumb #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -30,6 +33,12 @@
             { label: 'Back to List', variant: 'ghost',   icon: 'util-arrow-left', href: path('app_processing_activity_index') }
         ]
     }) }}
+
+    {# Lifecycle X.3 — status pill + transition dropdown #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\ProcessingActivity', status_key: processing_activity.status }) }}
+        {{ _lifecycle_actions.dropdown(processing_activity, 'processing-activity', 'processing_activity_lifecycle') }}
+    </div>
 
     {# Compliance Status Banner #}
     {% if not compliance_report.is_compliant %}
@@ -304,4 +313,7 @@ document.querySelector('[data-action="clone"]')?.addEventListener('click', async
     }
 });
 </script>
+
+{# Lifecycle X.3 — status history tab #}
+{{ _lifecycle_history.history('processing-activity', processing_activity.id) }}
 {% endblock %}

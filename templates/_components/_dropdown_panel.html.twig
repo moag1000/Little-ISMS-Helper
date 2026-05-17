@@ -46,7 +46,8 @@
         class="fa-dropdown-panel__item {% if props.active|default(false) %}is-active{% endif %}"
         role="menuitem">
         {% if props.icon is defined and props.icon %}
-            <i class="bi {{ props.icon }} fa-dropdown-panel__item-icon" aria-hidden="true"></i>
+            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+            <i class="fa-icon fa-icon--{{ (props.icon starts with 'bi-') ? props.icon[3:] : props.icon }} fa-dropdown-panel__item-icon" aria-hidden="true"></i>
         {% endif %}
         <span class="fa-dropdown-panel__item-body">
             <span class="fa-dropdown-panel__item-title">{{ props.title }}</span>

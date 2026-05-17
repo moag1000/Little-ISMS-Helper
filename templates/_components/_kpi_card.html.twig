@@ -86,7 +86,8 @@
 
     {% if icon %}
         <div class="fa-kpi-card__icon kpi-card-icon" aria-hidden="true">
-            <i class="bi {{ icon }}"></i>
+            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+            <i class="fa-icon fa-icon--{{ (icon starts with 'bi-') ? icon[3:] : icon }}" aria-hidden="true"></i>
         </div>
     {% endif %}
 

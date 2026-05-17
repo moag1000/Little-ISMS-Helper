@@ -1,0 +1,29 @@
+{#
+ # FairyAurora v4 — Simplified Status Pill (lifecycle X.3)
+ #
+ # Thin wrapper over _fa_status_chip that takes an entity object directly.
+ # For callers that have the entity in scope and just want a one-liner.
+ #
+ # Usage:
+ #   {% import '_components/_fa_status_pill.html.twig' as _fa_status_pill %}
+ #   {{ _fa_status_pill.pill(document, 'App\\Entity\\Document') }}
+ #
+ # Props:
+ #   entity        object   Any lifecycle entity with a .status property
+ #   entity_class  string   FQCN (e.g. 'App\\Entity\\Document'). If omitted,
+ #                          tone defaults to neutral.
+ #   size          string   'sm'|'md'|'lg' (default 'md')
+ #   icon          string   optional Bootstrap-icon class
+ #   class         string   extra CSS classes
+ #}
+
+{% macro pill(entity, entity_class = '', size = 'md', icon = null, class = '') %}
+    {% import '_components/_fa_status_chip.html.twig' as _chip %}
+    {{ _chip.render({
+        entity_class: entity_class,
+        status_key:   entity.status|default('unknown'),
+        size:         size,
+        icon:         icon,
+        class:        class,
+    }) }}
+{% endmacro %}
