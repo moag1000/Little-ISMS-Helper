@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Enum\ISMSObjectiveStatus;
 use App\Repository\ISMSObjectiveRepository;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\DBAL\Types\Types;
@@ -258,10 +259,18 @@ public function __construct()
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(ISMSObjectiveStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?ISMSObjectiveStatus
+    {
+        return $this->status !== null ? ISMSObjectiveStatus::tryFrom($this->status) : null;
     }
 
     public function getProgressNotes(): ?string
