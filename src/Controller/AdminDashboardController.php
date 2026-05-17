@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Tenant;
+use App\Entity\User;
 use DateTimeImmutable;
 use Exception;
 use App\Repository\AuditLogRepository;
@@ -24,6 +25,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_ADMIN')]
@@ -61,11 +63,10 @@ class AdminDashboardController extends AbstractController
     }
 
     #[Route('/admin', name: 'admin_dashboard', methods: ['GET'])]
-    public function index(): Response
-    {
-        // Get current user's tenant
-        $currentUser = $this->getUser();
-        $currentTenant = $currentUser?->getTenant();
+    public function index(
+        #[CurrentUser] User $currentUser,
+    ): Response {
+        $currentTenant = $currentUser->getTenant();
 
         // System Health Stats
         $stats = $this->getSystemHealthStats($currentTenant);
