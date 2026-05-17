@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeImmutable;
 use App\Entity\Tenant;
+use App\Enum\WorkflowInstanceStatus;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -146,10 +147,18 @@ class WorkflowInstance
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(WorkflowInstanceStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?WorkflowInstanceStatus
+    {
+        return WorkflowInstanceStatus::tryFrom($this->status);
     }
 
     public function getInitiatedBy(): ?User
