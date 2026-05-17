@@ -64,7 +64,7 @@ final class Version20260526100000_AddLockVersionMulti extends AbstractMigration
     {
         return [
             ['processing_activity', 'lock_version'],
-            ['isms_objective', 'lock_version'],
+            ['ismsobjective', 'lock_version'],
         ];
     }
 }
