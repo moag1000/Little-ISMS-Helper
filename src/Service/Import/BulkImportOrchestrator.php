@@ -8,6 +8,7 @@ use App\Entity\BulkImportBatch;
 use App\Entity\BulkImportRow;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\Import\ImportFailedException;
 use App\Message\BulkImportMessage;
 use App\Service\AuditLogger;
 use App\Service\Fte\FteRecorderService;
@@ -91,7 +92,9 @@ class BulkImportOrchestrator
         // Compute SHA-256 of the persisted file for tamper-evidence + dedup
         $fileHash = hash_file('sha256', $storedPath);
         if ($fileHash === false) {
-            throw new \RuntimeException(sprintf('Could not compute SHA-256 for uploaded file: %s', $storedPath));
+            throw new ImportFailedException(
+                sprintf('Could not compute SHA-256 for uploaded file: %s', $storedPath),
+            );
         }
 
         $fileSize = (string) filesize($storedPath);
@@ -423,7 +426,7 @@ class BulkImportOrchestrator
     private function resolveStoredFilePath(string $fileHash): string
     {
         if (!is_dir($this->uploadDir)) {
-            throw new \RuntimeException(sprintf(
+            throw new ImportFailedException(sprintf(
                 'Upload directory does not exist: %s',
                 $this->uploadDir,
             ));
@@ -436,7 +439,7 @@ class BulkImportOrchestrator
             }
         }
 
-        throw new \RuntimeException(sprintf(
+        throw new ImportFailedException(sprintf(
             'No stored import file found for hash "%s" in directory "%s".',
             $fileHash,
             $this->uploadDir,

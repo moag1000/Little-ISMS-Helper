@@ -8,6 +8,7 @@ use App\Entity\ImportRowEvent;
 use App\Entity\ImportSession;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\Import\ImportFailedException;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use RuntimeException;
@@ -59,7 +60,7 @@ final class ImportSessionRecorder
             : $sourcePath;
 
         if (!is_file($realPath) || !is_readable($realPath)) {
-            throw new RuntimeException(sprintf(
+            throw new ImportFailedException(sprintf(
                 'ImportSessionRecorder: file not readable at %s',
                 $realPath,
             ));
@@ -67,7 +68,7 @@ final class ImportSessionRecorder
 
         $hash = hash_file('sha256', $realPath);
         if ($hash === false) {
-            throw new RuntimeException('ImportSessionRecorder: sha256 hash failed.');
+            throw new ImportFailedException('ImportSessionRecorder: sha256 hash failed.');
         }
 
         $size = @filesize($realPath);
