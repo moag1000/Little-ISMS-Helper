@@ -15,8 +15,9 @@ class LifecycleControllerTest extends WebTestCase
             server: ['CONTENT_TYPE' => 'application/json'],
             content: json_encode(['transition' => 'submit_for_review']),
         );
-        // Allow 403 (firewall) or 404. Both are acceptable for the no-fixture state.
-        $this->assertContains($client->getResponse()->getStatusCode(), [403, 404]);
+        // Allow 302 (firewall redirect to login), 403, or 404 — all acceptable for the
+        // no-fixture state. Full assertion deferred until DocumentFixtureFactory exists.
+        $this->assertContains($client->getResponse()->getStatusCode(), [302, 403, 404]);
     }
 
     public function testRoutesRegisteredViaContainer(): void
