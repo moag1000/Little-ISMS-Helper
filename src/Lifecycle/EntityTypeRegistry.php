@@ -11,6 +11,9 @@ namespace App\Lifecycle;
  * Sprint X.1 adds ProcessingActivity and ISMSObjective.
  * Lifecycle unblock adds PolicyTemplate (previously deferred — lacked status field).
  * Sprint X.2 adds Asset — custom physical lifecycle (7 places, 9 transitions).
+ * Sprint X.2 batch adds 10 custom-stage entities (AuditFinding, Consent,
+ * CorrectiveAction, DataBreach, DataSubjectRequest, DPIA, Incident,
+ * InternalAudit, Risk, Vulnerability).
  */
 final class EntityTypeRegistry
 {
@@ -35,6 +38,10 @@ final class EntityTypeRegistry
         'asset' => [
             'class' => \App\Entity\Asset::class,
             'workflow' => 'asset_lifecycle',
+        ],
+        'audit-finding' => [
+            'class' => \App\Entity\AuditFinding::class,
+            'workflow' => 'audit_finding_lifecycle',
         ],
     ];
 
