@@ -452,6 +452,55 @@ This lets, e.g., `Risk.status` transitioning to `assessed` spawn the risk-treatm
 
 ---
 
+### Sprint Y.2b — Entity show-page lifecycle UI sweep [BLOCKING for Y.3]
+
+**Why:** X.3 (PR #405) integrated lifecycle UI macros only on Document / ProcessingActivity / ISMSObjective show-pages. Sprint X.1 added PolicyTemplate + Asset, X.2 added 10 more entities — total 12 new workflows ship without their corresponding entity-show-page UI. Without this sprint, end-users only see the new lifecycle on 3 of 15 entities, while admins switch them via overlay-config — confusing.
+
+This sprint is the **prerequisite for Y.3**: the legacy Workflow-Builder UI can only be deprecated AFTER every entity's show-page exposes the new lifecycle. Otherwise users lose visibility into their approval-chain progress.
+
+**Scope:** For each of the 12 X.1+X.2 entities, edit the show-page template to:
+1. Replace existing status badge with `_fa_status_pill.pill(entity)` macro
+2. Add `_lifecycle_actions.dropdown(entity, '<slug>', '<workflow>')` macro near header actions
+3. Add Status-History tab using `_lifecycle_history_tab.history(entity_class, entity_id)` macro
+4. Verify lifecycle-route attributes are gated to the entity's allowed transitions via the new LifecycleVoter
+
+**Per-entity work:**
+- `templates/data_breach/show.html.twig` (DataBreach — privacy)
+- `templates/incident/show.html.twig` (Incident — CSIRT chain)
+- `templates/risk/show.html.twig` (Risk — accepted/treated)
+- `templates/dpia/show.html.twig` (DataProtectionImpactAssessment)
+- `templates/corrective_action/show.html.twig` (CAPA)
+- `templates/audit_finding/show.html.twig` (AuditFinding)
+- `templates/internal_audit/show.html.twig` (InternalAudit)
+- `templates/vulnerability/show.html.twig` (Vulnerability)
+- `templates/data_subject_request/show.html.twig` (DSR)
+- `templates/consent/show.html.twig` (Consent)
+- `templates/policy_template/show.html.twig` (PolicyTemplate)
+- `templates/asset/show.html.twig` (Asset)
+
+If a show-page does not exist for a given entity (some admin-only entities have only list-views): skip with a comment in the plan.
+
+**Bulk-action-bar update:** For each entity-list-view that uses `_bulk_action_bar.html.twig`, verify the `status_change` action option now reads from the new lifecycle config (already generalized in X.3). Mostly a re-test, not new code.
+
+**Persona-dashboard tiles:** ROLE_CISO / ROLE_DPO / ROLE_RISK_MANAGER dashboards should surface lifecycle-stuck-entity counts (already covered by `LifecycleStuckInStatusRule` AlvaHint from X.4). No new code, just verification.
+
+**Acceptance:**
+- All 12 show-pages render lifecycle-pill + transition dropdown + history tab
+- E2E quality audit confirms each entity-type shows correct workflow info under `/de/<entity>/{id}`
+- No raw `XX.status.foo` translation placeholders visible
+- Bulk-action-bar status-change works for at least 1 entity per type (smoke)
+- Quality-gate Twig macro-scope check stays green
+
+**Files to touch:** 12 templates × small additions; 0-3 lines per entity in service-layer to expose `getLifecycleWorkflow()` if a custom slug-resolver is needed.
+
+**Test coverage:** Smoke tests for each entity show-page already exist as part of existing controller-test suite. No new unit tests needed; X.3 macros already covered.
+
+**Effort:** ~3 dev-days (mechanical sweep, low risk).
+
+**Blocking for:** Y.3 — the legacy Workflow-Builder UI can only be removed after Y.2b ships and every entity uses the new lifecycle UI surface.
+
+---
+
 ### Sprint Y.3 — Workflow-Builder UI re-purpose
 
 **Files to touch:**
