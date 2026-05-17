@@ -21,7 +21,8 @@ final class InvalidTransitionException extends \DomainException
         public readonly string $toStatus,
         /** @var list<string> */
         public readonly array $allowedTransitions = [],
+        ?\Throwable $previous = null,
     ) {
-        parent::__construct($message);
+        parent::__construct($message, previous: $previous);
     }
 }

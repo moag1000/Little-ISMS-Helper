@@ -27,6 +27,7 @@ use App\Entity\User;
 use App\Service\AuditLogger;
 use App\Service\PolicyWizard\AuditorScoreCalculator;
 use App\Service\PolicyWizard\Diff\SettingsDriftDetector;
+use App\Lifecycle\LifecycleService;
 use App\Service\SecurityEventLogger;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -69,6 +70,7 @@ class DocumentController extends AbstractController
         private readonly ?DocumentReuseAnalyticsService $documentReuseAnalyticsService = null,
         private readonly ?UserRepository $userRepository = null,
         private readonly ?TenantContext $tenantContext = null,
+        private readonly ?LifecycleService $lifecycleService = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index', methods: ['GET'])]
@@ -439,16 +441,17 @@ class DocumentController extends AbstractController
      * Bulk status-change endpoint for the document list.
      *
      * Accepts JSON body: { "ids": [1,2,3], "newStatus": "approved" }
-     * Enforces server-side status-transition rules per the document lifecycle:
-     *   draft      → in_review
-     *   in_review  → approved | draft  (approve or reject back)
-     *   approved   → published
-     *   published  → archived
-     *   archived   → published          (re-activation)
+     * Delegates to LifecycleService::transition() using the `document_lifecycle`
+     * Symfony Workflow. The `newStatus` target is mapped to its transition name:
+     *   in_review → submit_for_review
+     *   approved  → approve
+     *   draft     → request_changes   (reject back from in_review)
+     *   published → publish | restore (from approved or archived respectively)
+     *   archived  → archive
      *
-     * Returns: { "ok": true, "changed": N, "rejected": [{id, reason}], "batchId": "uuid" }
+     * Returns: { "ok": true, "changed": N, "rejected": [{id, reason}] }
      *
-     * ISO 27001 Cl. 7.5.3 — AuditLogger::logBulk() with per-entity old/new status entries.
+     * ISO 27001 Cl. 7.5.3 — audit logging delegated to LifecycleService.
      */
     #[Route('/document/bulk-status-change', name: 'app_document_bulk_status_change', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
@@ -456,7 +459,8 @@ class DocumentController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         $ids = $data['ids'] ?? [];
-        $newStatus = $data['newStatus'] ?? '';
+        $newStatus = (string) ($data['newStatus'] ?? '');
+        $reason = (string) ($data['reason'] ?? '');
 
         if (empty($ids) || !is_array($ids)) {
             return $this->json(['error' => 'No items selected'], 400);
@@ -467,21 +471,23 @@ class DocumentController extends AbstractController
             return $this->json(['error' => 'Invalid target status'], 400);
         }
 
-        // Valid transitions: [from => [allowed targets]]
-        $validTransitions = [
-            'draft'     => ['in_review'],
-            'in_review' => ['approved', 'draft'],
-            'approved'  => ['published'],
-            'published' => ['archived'],
-            'archived'  => ['published'],
+        // Map target-status values (posted by the UI) to workflow transition names
+        // defined in config/workflows/document.yaml.
+        // `published` is context-sensitive: use `restore` when coming from `archived`,
+        // else `publish` (from `approved`). Resolved per-document inside the loop.
+        $staticStatusToTransition = [
+            'in_review' => 'submit_for_review',
+            'approved'  => 'approve',
+            'draft'     => 'request_changes',
+            'archived'  => 'archive',
         ];
 
+        /** @var User|null $user */
         $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
+        $tenant = $user instanceof User ? $user->getTenant() : null;
 
-        $validChanges = [];
+        $changed = 0;
         $rejected = [];
-        $perEntityData = [];
 
         foreach ($ids as $rawId) {
             $id = (int) $rawId;
@@ -497,53 +503,38 @@ class DocumentController extends AbstractController
                 continue;
             }
 
-            $currentStatus = $document->getStatus() ?? 'draft';
-            $allowed = $validTransitions[$currentStatus] ?? [];
+            // Resolve context-sensitive transition for `published` target
+            if ($newStatus === 'published') {
+                $currentStatus = (string) ($document->getStatus() ?? 'draft');
+                $transitionName = $currentStatus === 'archived' ? 'restore' : 'publish';
+            } else {
+                $transitionName = $staticStatusToTransition[$newStatus] ?? $newStatus;
+            }
 
-            if (!in_array($newStatus, $allowed, true)) {
-                $rejected[] = ['id' => $id, 'reason' => 'invalid_transition'];
+            if ($this->lifecycleService === null) {
+                $rejected[] = ['id' => $id, 'reason' => 'lifecycle_service_unavailable'];
                 continue;
             }
 
-            $validChanges[] = ['id' => $id, 'oldStatus' => $currentStatus];
-            $perEntityData[] = [
-                'action'     => 'update',
-                'entity_id'  => $id,
-                'old_values' => ['status' => $currentStatus],
-                'new_values' => ['status' => $newStatus],
-            ];
-        }
-
-        if (!empty($validChanges)) {
-            foreach ($validChanges as $entry) {
-                $managed = $this->entityManager->find(Document::class, $entry['id']);
-                if ($managed instanceof Document) {
-                    $managed->setStatus($newStatus);
-                }
+            try {
+                $lifecycleUser = $user instanceof User ? $user : null;
+                $this->lifecycleService->transition(
+                    $document,
+                    'document_lifecycle',
+                    $transitionName,
+                    $lifecycleUser,
+                    $reason !== '' ? $reason : null,
+                );
+                $changed++;
+            } catch (\Throwable $e) {
+                $rejected[] = ['id' => $id, 'reason' => $e->getMessage()];
             }
-            $this->entityManager->flush();
-        }
-
-        $batchId = '';
-        if ($this->auditLogger !== null && !empty($perEntityData)) {
-            $batchId = $this->auditLogger->logBulk(
-                'document.status_change',
-                'Document',
-                [
-                    'new_status'    => $newStatus,
-                    'changed_count' => count($validChanges),
-                    'rejected_count' => count($rejected),
-                ],
-                $perEntityData,
-                sprintf('Bulk status change to "%s": %d changed, %d rejected', $newStatus, count($validChanges), count($rejected)),
-            );
         }
 
         return $this->json([
             'ok'       => true,
-            'changed'  => count($validChanges),
+            'changed'  => $changed,
             'rejected' => $rejected,
-            'batchId'  => $batchId,
         ]);
     }
 

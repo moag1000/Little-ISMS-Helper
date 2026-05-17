@@ -9,194 +9,155 @@ use App\Lifecycle\LifecycleRegistry;
 use App\Lifecycle\LifecycleService;
 use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Workflow\Exception\NotEnabledTransitionException;
+use Symfony\Component\Workflow\Registry;
+use Symfony\Component\Workflow\Transition;
+use Symfony\Component\Workflow\TransitionBlockerList;
+use Symfony\Component\Workflow\WorkflowInterface;
 
 /**
- * Tests for LifecycleService::transition() — audit-s3 P-4.
+ * Tests for LifecycleService — Symfony Workflow facade (audit-s3 P-4).
  *
  * Covers:
- *  - Happy path: setStatus + flush + AuditLogger::logCustom called once
- *  - Invalid transitions raise InvalidTransitionException with metadata
- *  - Missing getStatus/setStatus raises LogicException
+ *  - Delegation to Workflow::apply + EM::flush
+ *  - NotEnabledTransitionException wrapped into InvalidTransitionException with allowed-list
+ *  - LogicException when entity lacks getStatus/setStatus
+ *  - No direct AuditLogger calls (handled by listener in Task 11)
  */
-#[AllowMockObjectsWithoutExpectations]
 final class LifecycleServiceTest extends TestCase
 {
-    private LifecycleRegistry $registry;
-    private MockObject $entityManager;
-    private MockObject $auditLogger;
-    private LifecycleService $service;
-
-    protected function setUp(): void
+    #[Test]
+    public function testTransitionDelegatesToWorkflowApply(): void
     {
-        $this->registry = new LifecycleRegistry();
-        $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->auditLogger = $this->createMock(AuditLogger::class);
+        $entity = new class {
+            public string $status = 'draft';
 
-        $this->service = new LifecycleService(
-            $this->registry,
-            $this->entityManager,
-            $this->auditLogger,
-        );
+            public function getStatus(): string
+            {
+                return $this->status;
+            }
+
+            public function setStatus(string $s): void
+            {
+                $this->status = $s;
+            }
+        };
+
+        $workflow = $this->createMock(WorkflowInterface::class);
+        $workflow->expects($this->once())
+            ->method('apply')
+            ->with($entity, 'submit_for_review', $this->callback(fn ($ctx) => ($ctx['reason'] ?? null) === 'test'));
+
+        $registry = $this->createStub(Registry::class);
+        $registry->method('get')->willReturn($workflow);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->expects($this->once())->method('flush');
+
+        $audit = $this->createStub(AuditLogger::class);
+
+        $service = new LifecycleService($registry, $em, $audit);
+        $service->transition($entity, 'document_lifecycle', 'submit_for_review', null, 'test');
     }
 
     #[Test]
-    public function testTransitionUpdatesStatusFlushesAndLogs(): void
+    public function testThrowsInvalidTransitionExceptionOnNotEnabled(): void
     {
-        $entity = new FakeStatusEntity('draft', id: 42);
+        $entity = new class {
+            public string $status = 'draft';
 
-        $this->entityManager->expects(self::once())->method('flush');
+            public function getStatus(): string
+            {
+                return $this->status;
+            }
 
-        $this->auditLogger->expects(self::once())
-            ->method('getEntityTypeName')
-            ->with($entity)
-            ->willReturn('FakeStatusEntity');
+            public function setStatus(string $s): void
+            {
+                $this->status = $s;
+            }
+        };
 
-        $this->auditLogger->expects(self::once())
-            ->method('logCustom')
-            ->with(
-                'status_change',
-                'FakeStatusEntity',
-                42,
-                ['status' => 'draft'],
-                ['status' => 'in_review', 'reason' => 'submitted for review'],
-                self::stringContains('draft → in_review'),
-                null,
-            );
+        $allowedTransition = new Transition('submit_for_review', 'draft', 'in_review');
 
-        $this->service->transition($entity, 'in_review', null, 'submitted for review');
+        $workflow = $this->createStub(WorkflowInterface::class);
+        $workflow->method('apply')
+            ->willThrowException(new NotEnabledTransitionException($entity, 'publish', $workflow, new TransitionBlockerList(), []));
+        $workflow->method('getEnabledTransitions')
+            ->willReturn([$allowedTransition]);
 
-        self::assertSame('in_review', $entity->getStatus());
-    }
+        $registry = $this->createStub(Registry::class);
+        $registry->method('get')->willReturn($workflow);
 
-    #[Test]
-    public function testInvalidTransitionRaisesInvalidTransitionException(): void
-    {
-        $entity = new FakeStatusEntity('draft', id: 7);
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->expects($this->never())->method('flush');
 
-        $this->entityManager->expects(self::never())->method('flush');
-        $this->auditLogger->expects(self::never())->method('logCustom');
+        $audit = $this->createStub(AuditLogger::class);
+
+        $service = new LifecycleService($registry, $em, $audit);
 
         try {
-            $this->service->transition($entity, 'published');
-            self::fail('Expected InvalidTransitionException was not thrown.');
+            $service->transition($entity, 'document_lifecycle', 'publish');
+            $this->fail('Expected InvalidTransitionException was not thrown.');
         } catch (InvalidTransitionException $ex) {
             self::assertSame($entity::class, $ex->entityClass);
             self::assertSame('draft', $ex->fromStatus);
-            self::assertSame('published', $ex->toStatus);
-            self::assertSame(['in_review'], $ex->allowedTransitions);
-            self::assertStringContainsString('Invalid lifecycle transition', $ex->getMessage());
+            self::assertSame(['submit_for_review'], $ex->allowedTransitions);
+            self::assertStringContainsString('publish', $ex->getMessage());
+            self::assertStringContainsString('submit_for_review', $ex->getMessage());
+            self::assertInstanceOf(NotEnabledTransitionException::class, $ex->getPrevious());
         }
-
-        // Status must remain untouched
-        self::assertSame('draft', $entity->getStatus());
     }
 
     #[Test]
-    public function testTransitionFromTerminalStatusIsRejectedWithEmptyAllowedList(): void
-    {
-        // Use the finding fixture — 'closed' is terminal.
-        $entity = new FindingFixtureWithStatus('closed', id: 99);
-
-        $this->expectException(InvalidTransitionException::class);
-        $this->service->transition($entity, 'open');
-    }
-
-    #[Test]
-    public function testEntityWithoutStatusMethodsRaisesLogicException(): void
+    public function testThrowsLogicExceptionWhenEntityLacksGetStatus(): void
     {
         $entity = new \stdClass();
+
+        $registry = $this->createStub(Registry::class);
+        $em = $this->createStub(EntityManagerInterface::class);
+        $audit = $this->createStub(AuditLogger::class);
+
+        $service = new LifecycleService($registry, $em, $audit);
 
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('lacks getStatus()/setStatus()');
 
-        $this->service->transition($entity, 'in_review');
+        $service->transition($entity, 'document_lifecycle', 'submit_for_review');
     }
 
     #[Test]
-    public function testTransitionToleratesEntityWithoutNumericId(): void
+    public function testDoesNotCallAuditLoggerDirectly(): void
     {
-        $entity = new FakeStatusEntity('in_review', id: null);
+        $entity = new class {
+            public string $status = 'draft';
 
-        $this->auditLogger->expects(self::once())
-            ->method('getEntityTypeName')
-            ->willReturn('FakeStatusEntity');
+            public function getStatus(): string
+            {
+                return $this->status;
+            }
 
-        $this->auditLogger->expects(self::once())
-            ->method('logCustom')
-            ->with(
-                'status_change',
-                'FakeStatusEntity',
-                null, // entity-id stays null
-                self::anything(),
-                self::anything(),
-                self::anything(),
-                self::anything(),
-            );
+            public function setStatus(string $s): void
+            {
+                $this->status = $s;
+            }
+        };
 
-        $this->entityManager->expects(self::once())->method('flush');
+        $workflow = $this->createStub(WorkflowInterface::class);
+        $workflow->method('apply'); // no-op
 
-        $this->service->transition($entity, 'approved');
-        self::assertSame('approved', $entity->getStatus());
-    }
-}
+        $registry = $this->createStub(Registry::class);
+        $registry->method('get')->willReturn($workflow);
 
-/**
- * Test fixture — entity using STANDARD_5_STAGE (no #[Lifecycle] attribute).
- *
- * @internal
- */
-class FakeStatusEntity
-{
-    public function __construct(
-        private string $status,
-        private readonly ?int $id = null,
-    ) {}
+        $em = $this->createStub(EntityManagerInterface::class);
 
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
+        // AuditLogger must NOT be invoked — audit is wired via event listener (Task 11)
+        $audit = $this->createMock(AuditLogger::class);
+        $audit->expects($this->never())->method('logCustom');
+        $audit->expects($this->never())->method('logBulk');
 
-    public function setStatus(string $status): void
-    {
-        $this->status = $status;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-}
-
-/**
- * Test fixture — entity with FINDING_4_STAGE lifecycle override.
- *
- * @internal
- */
-#[\App\Lifecycle\Lifecycle(stages: LifecycleRegistry::FINDING_4_STAGE)]
-class FindingFixtureWithStatus
-{
-    public function __construct(
-        private string $status,
-        private readonly ?int $id = null,
-    ) {}
-
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): void
-    {
-        $this->status = $status;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
+        $service = new LifecycleService($registry, $em, $audit);
+        $service->transition($entity, 'document_lifecycle', 'submit_for_review', null, 'automated test');
     }
 }
