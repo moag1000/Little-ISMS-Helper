@@ -705,7 +705,10 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 .fa-status-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
+    /* Default = --md sizing — matches docs/design_system/assets/fairy-aurora-components.css */
+    padding: 5px 14px;
+    font-size: 10px;
     border: 1px solid;
     border-radius: var(--r-pill);
     font-family: var(--font-mono);
@@ -715,9 +718,11 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     line-height: 1;
     white-space: nowrap;
 }
-.fa-status-pill--sm { padding: 2px 8px;  font-size: 9px; }
-.fa-status-pill--md { padding: 4px 10px; font-size: 10px; }
-.fa-status-pill--lg { padding: 6px 14px; font-size: 12px; }
+/* Padding scale aligned to design-system spec update 2026-05-17. Old prod values
+   (2px 8px / 4px 10px / 6px 14px) were tighter than spec. */
+.fa-status-pill--sm { padding: 3px 11px; font-size: 9px; }
+.fa-status-pill--md { padding: 5px 14px; font-size: 10px; }
+.fa-status-pill--lg { padding: 7px 18px; font-size: 12px; }
 
 .fa-status-pill__dot {
     width: 6px; height: 6px;
