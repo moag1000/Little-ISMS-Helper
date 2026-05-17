@@ -1,0 +1,2 @@
+# check_no_bi_classes.py baseline
+# Format: <relative-path>:<line>
