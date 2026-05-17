@@ -14,12 +14,24 @@ location:
         name: Name
         type: Type
         code: Code
+        location_type: 'Location Type'
         city: City
         address: Address
+        postal_code: 'Postal code'
+        country: Country
         parent_location: 'Parent location'
+        access_control_system: 'Access control system'
         access_control: 'Access control'
         security_level: 'Security level'
         badge_access: 'Badge access'
+        requires_badge_access: 'Requires badge access'
+        requires_escort: 'Requires escort'
+        camera_monitored: 'Camera monitored'
+        responsible_person: 'Responsible person'
+        capacity: Capacity
+        square_meters: 'Area (m²)'
+        active: Active
+        notes: Notes
         description: Description
         status: Status
     section:
@@ -30,6 +42,26 @@ location:
         details: Details
         child_locations: 'Child locations'
         features: Features
+    placeholder:
+        name: 'e.g. Headquarters Munich'
+        code: 'e.g. DE-MUC-HQ'
+        description: 'Describe the location...'
+        address: 'Enter full address...'
+        city: 'e.g. Munich'
+        country: 'e.g. Germany'
+        postal_code: 'e.g. 80331'
+        parent_location: '-- Select parent location --'
+        access_control_system: 'e.g. Kaba, dormakaba, SALTO'
+        responsible_person: 'Name of responsible person'
+        capacity: 'e.g. 50'
+        square_meters: 'e.g. 120.50'
+        notes: 'Additional notes and remarks...'
+    help:
+        type: 'Select the appropriate location type (building, room, data center, …)'
+        code: 'Internal location code for unique reference (optional)'
+        parent: 'Optional – assign the location to a parent location'
+        parent_location: 'Assign this location to a parent location (e.g. room to building)'
+        capacity: 'Maximum person capacity of this location'
     type:
         building: Building
         floor: Floor

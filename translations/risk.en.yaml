@@ -1,282 +1,606 @@
 risk:
-    not_found: 'Risk not found.'
-    prefill:
-        title_from_vulnerability: 'Risk derived from vulnerability: %title%'
-        title_from_incident: 'Risk derived from incident: %title%'
-        threat_from_vulnerability: 'Exploit of %title%'
-        note_from_vulnerability: '(Derived from vulnerability ID=%id%.)'
-        note_from_incident: '(Derived from incident ID=%id%.)'
-    preview:
-        title: Risk Information
-    filter:
-        owner_placeholder: Search for owner...
-        level_label: Risk Level
-        all_risks: All Risks
-        level_critical: Critical
-        level_high: High
-        level_medium: Medium
-        level_low: Low
-        status_label: Status
-        all_status: All Status
-        status_identified: Identified
-        status_assessed: Assessed
-        status_in_treatment: In Treatment
-        status_treated: Treated
-        status_mitigated: Mitigated
-        status_monitored: Monitored
-        status_closed: Closed
-        status_accepted: Accepted
-        status_open: Open
-        treatment_label: Treatment Strategy
-        all_strategies: All Strategies
-        owner_label: Risk Owner
-        at_risk: Assets at Risk
-    index:
-        risk_level:
-            critical: Critical
-            high: High
-            medium: Medium
-            low: Low
-        treatment_status: Treatment Status
-        treatment:
-            mitigate: Mitigate
-            accept: Accept
-            transfer: Transfer
-            avoid: Avoid
-        empty:
-            title: No risks recorded yet
-            description: 'Start by recording your first risk. Tip: Create assets first, then you can assign risks directly to them.'
-            action: Record first risk
-        all_risks: All Risks
-        table:
-            title: Title
-            threat: Threat
-            probability: Probability
-            impact: Impact
-            risk_score: Risk Score
-            residual_risk: Residual Risk
-            treatment: Treatment
-            risk_subject: Risk Subject
-            actions: Actions
-            not_defined: Not defined
-            asset: Asset
-            person: Person
-            location: Location
-            supplier: Supplier
-            none: None
-    modern:
-        breadcrumb: Risk Management
-        header:
-            title: Risk Management
-            subtitle: Identification, assessment, and treatment of information security risks
-            action:
-                new: New Risk
-                matrix: Risk Matrix
-        kpi:
-            total: Identified Risks
-            critical: Critical Risks
-            high: High Risks
-            avg_residual: Avg. Residual Risk
-            unit:
-                max: / 25
-        matrix_overview: Risk Matrix Overview
-        view_full_matrix: View full matrix
-        status:
-            open: Open
-            in_progress: In Progress
-            mitigated: Mitigated
-            resolved: Resolved
-            closed: Closed
-        category:
-            business: business
-            legal: legal
-            privacy: privacy
-            other: other
-    label:
-        title: Title
-        inherent_risk: Inherent Risk
-    field:
-        title: Title
-        score: Score
-        level: Risk Level
-        treatment_strategy: Treatment Strategy
-        status: Status
-        asset: Asset
-        description: Description
-        probability: Probability
-        impact: Impact
-        risk_owner: Risk Owner
-        treatment_description: Treatment Description
-        created: Created
-        last_review: Last Review
-        next_review: Next Review
-        review_date: Review Date
-        inherent_risk: Inherent Risk
-        residual_risk: Residual Risk
-        risk_reduction: Risk Reduction
-        linked_controls: Linked Controls
-    confirm:
-        delete: Delete
-    edit: Edit
-    update: Update
-    delete_warning: Delete Warning
-    action:
-        quick_new: Quick entry
-    quick_form:
-        title: Quick risk entry
-        subtitle: 7 fields -- for a quick start
-        switch_to_full: Switch to full form
-    new: New
-    create: Create
-    guidance:
-        scale: Rating Scale
-        description: Description
-        probability:
-            very_unlikely: Very Unlikely (1)
-            very_unlikely_desc: Occurs at most once in 10 years
-            unlikely: Unlikely (2)
-            unlikely_desc: Occurs approximately once in 5 years
-            possible: Possible (3)
-            possible_desc: Occurs approximately once per year
-            likely: Likely (4)
-            likely_desc: Occurs multiple times per year
-            very_likely: Very Likely (5)
-            very_likely_desc: Occurs frequently or almost certainly
-        impact:
-            negligible: Negligible (1)
-            negligible_desc: Minimal impact, no significant consequences
-            minor: Minor (2)
-            minor_desc: Low impact, limited consequences
-            moderate: Moderate (3)
-            moderate_desc: Noticeable impact, considerable consequences
-            major: Major (4)
-            major_desc: Severe impact, significant consequences
-            catastrophic: Catastrophic (5)
-            catastrophic_desc: Existential impact, catastrophic consequences
-        title: Assessment Guidance
-        intro: Use these guidelines for consistent risk assessment according to ISO 27005
-        probability_title: Probability of Occurrence (1-5)
-        impact_title: Impact Severity (1-5)
-        tip: 'Tip: Inherent risk is calculated as Probability × Impact'
-    section:
-        assessment: Risk Assessment
-        basic_info: Basic Information
-        gdpr_assessment: GDPR Assessment
-        inherent_risk: Inherent Risk
-        residual_risk: Residual Risk
-        treatment: Treatment
-        acceptance: Acceptance
-        details: Details
-        description: Description
-        treatment_strategy: Treatment Strategy
-        risk_owner: Risk Owner
-        mitigating_controls: Mitigating Controls
-        realization_history: Realization History
-        risk_subject: Risk Subject
-        history: History
-        ict_dependencies: ICT Asset Dependencies
-        ict_dependencies_help: 'Which IT systems/services are directly or indirectly affected by this risk (DORA Art. 8 + ISO 27001 A.5.9).'
-        treatment_plans: Treatment Plans
-        treatment_plans_help: 'Concrete mitigation plans for this risk (ISO 27005:2022 + ISO 27001 Cl. 6.1.3).'
-    # V3 W2-FV-2 — Unified Asset-overview on Risk-Show
-        all_linked_assets: All linked assets
-        all_linked_assets_help: 'Unified overview combining the primary risk subject with ICT asset dependencies, including each asset’s maximum CIA protection requirement.'
-    delete:
-        confirm_message: Confirm Message
-    not_reviewed: Not Reviewed
-    assessment:
-        inherent_risk: Inherent Risk
-        probability: Probability
-        impact: Impact
-        residual_risk: Residual Risk
-    incidents: Incidents
-    realization:
-        warning: Warning
-        review_suggestion: Review Suggestion
-    subject:
-        asset:
-            monetary_value_hint: Monetary Value Hint
-        location:
-            city_country: City Country
-    matrix:
-        title: Title
-        back_to_risks: Back To Risks
-        header: Header
-        description: Description
-        impact: Impact
-        probability: Probability
-        level:
-            critical: Critical
-            high: High
-            medium: Medium
-            low: Low
-        risks_total: 'Risks total'
-        cell_title: 'Risk Level: %level% (%count% risks)'
-        likelihood:
-            1: 'Very rare'
-            2: 'Rare'
-            3: 'Occasional'
-            4: 'Probable'
-            5: 'Very probable'
-        impact_label:
-            1: 'Negligible'
-            2: 'Minor'
-            3: 'Moderate'
-            4: 'High'
-            5: 'Critical'
-    acceptance:
-        title: Title
-        request: Request
-        justification_label: Justification Label
-        justification_help: Justification Help
-        submit_request: Submit Request
-        required_approval_level: Required Approval Level
-        approval_threshold_info: Approval Threshold Info
-        approval_levels:
-            automatic: Automatic Approval
-            manager: Manager Approval Required
-            executive: Executive Approval Required
-        success:
-            approved: 'Risk acceptance has been approved.'
-    residual_assessment: Residual Assessment
-    status:
-        open: Open
-        in_progress: In Progress
-        mitigated: Mitigated
-        closed: Closed
-    category:
-        technical: Technical
-        organizational: Organizational
-        physical: Physical
+  not_found: 'Risk not found.'
+  success:
+    created: 'Risk has been created.'
+    updated: 'Risk has been updated.'
+    deleted: 'Risk has been deleted.'
+  prefill:
+    title_from_vulnerability: 'Risk derived from vulnerability: %title%'
+    title_from_incident: 'Risk derived from incident: %title%'
+    threat_from_vulnerability: 'Exploit of %title%'
+    note_from_vulnerability: '(Derived from vulnerability ID=%id%.)'
+    note_from_incident: '(Derived from incident ID=%id%.)'
+  preview:
+    title: Risk Information
+  filter:
+    owner_placeholder: Search for owner...
+    level_label: Risk Level
+    all_risks: All Risks
+    level_critical: Critical
+    level_high: High
+    level_medium: Medium
+    level_low: Low
+    status_label: Status
+    all_status: All Status
+    status_identified: Identified
+    status_assessed: Assessed
+    status_in_treatment: In Treatment
+    status_treated: Treated
+    status_mitigated: Mitigated
+    status_monitored: Monitored
+    status_closed: Closed
+    status_accepted: Accepted
+    status_open: Open
+    treatment_label: Treatment Strategy
+    all_strategies: All Strategies
+    owner_label: Risk Owner
+    at_risk: Assets at Risk
+  index:
+    risk_level:
+      critical: Critical
+      high: High
+      medium: Medium
+      low: Low
+    treatment_status: Treatment Status
     treatment:
-        mitigate: Mitigate
-        transfer: Transfer
-        accept: Accept
-        avoid: Avoid
+      mitigate: Mitigate
+      accept: Accept
+      transfer: Transfer
+      avoid: Avoid
+    filter_options: Filter Options
+    empty:
+      title: No risks recorded yet
+      description: 'Start by recording your first risk. Tip: Create assets first, then you can assign risks directly to them.'
+      action: Record first risk
+    all_risks: All Risks
+    table:
+      select_all: Select all
+      title: Title
+      threat: Threat
+      probability: Probability
+      impact: Impact
+      risk_score: Risk Score
+      residual_risk: Residual Risk
+      treatment: Treatment
+      risk_subject: Risk Subject
+      actions: Actions
+      not_defined: Not defined
+      asset: Asset
+      person: Person
+      location: Location
+      supplier: Supplier
+      none: None
+  modern:
+    breadcrumb: Risk Management
+    header:
+      title: Risk Management
+      subtitle: Identification, assessment, and treatment of information security
+        risks
+      action:
+        new: New Risk
+        matrix: Risk Matrix
+        export_pdf: PDF Report
+        export_excel: Excel Export
+        export_csv: CSV Export
+    kpi:
+      total: Identified Risks
+      critical: Critical Risks
+      high: High Risks
+      avg_residual: Avg. Residual Risk
+      unit:
+        max: / 25
+    matrix_overview: Risk Matrix Overview
+    view_full_matrix: View full matrix
+    status:
+      open: Open
+      in_progress: In Progress
+      mitigated: Mitigated
+      resolved: Resolved
+      closed: Closed
+    category:
+      technical: technical
+      business: business
+      legal: legal
+      privacy: privacy
+      other: other
+      organizational: organizational
+      financial: financial
+      physical: physical
+  label:
+    title: Title
+    inherent_risk: Inherent Risk
+  field:
+    title: Title
+    score: Score
+    level: Risk Level
+    treatment_strategy: Treatment Strategy
+    status: Status
+    asset: Asset
+    description: Description
+    threat: Threat
+    threat_intelligence: Linked threat intelligence
+    vulnerability: Vulnerability
+    linked_vulnerability: Linked vulnerability (CVE)
+    involves_personal_data: Involves Personal Data
+    involves_special_category_data: Involves Special Category Data
+    legal_basis: Legal Basis
+    processing_scale: Processing Scale
+    requires_dpia: Requires DPIA
+    data_subject_impact: Data Subject Impact
+    probability: Probability
+    impact: Impact
+    residual_probability: Residual Probability
+    residual_impact: Residual Impact
+    risk_owner: Risk Owner
+    risk_owner_person: Risk Owner (Person from master data)
+    risk_owner_deputies: Deputies (Persons)
+    treatment_description: Treatment Description
+    acceptance_approved_by: Acceptance Approved By
+    acceptance_approved_at: Acceptance Approved At
+    acceptance_justification: Acceptance Justification
+    acceptance_expiry_date: Acceptance Valid Until
+    created: Created
+    last_review: Last Review
+    next_review: Next Review
+    review_date: Review Date
+    inherent_risk: Inherent Risk
+    residual_risk: Residual Risk
+    risk_reduction: Risk Reduction
+    linked_controls: Linked Controls
+    category: Risk Category
+    person: Affected Person
+    location: Affected Location
+    supplier: Affected Supplier
+    acceptance_approved_by_legacy: Acceptance approved by (free text, legacy)
+    likelihood_justification: Likelihood Justification
+    impact_justification: Impact Justification
+    decision_approved_by_user: Decision Approved By
+    decision_approval_date: Decision Approval Date
+    decision_rationale: Decision Rationale
+  confirm:
+    delete: Delete
+  edit: Edit
+  update: Update
+  delete_warning: Delete Warning
+  action:
+    quick_new: Quick entry
+  quick_form:
+    title: Quick risk entry
+    subtitle: 7 fields -- for a quick start
+    switch_to_full: Switch to full form
+  new: New
+  create: Create
+  guidance:
+    scale: Rating Scale
+    description: Description
     probability:
-        rare: Rare
-        unlikely: Unlikely
-        possible: Possible
-        likely: Likely
-        almost_certain: Almost Certain
+      very_unlikely: Very Unlikely (1)
+      very_unlikely_desc: Occurs at most once in 10 years
+      unlikely: Unlikely (2)
+      unlikely_desc: Occurs approximately once in 5 years
+      possible: Possible (3)
+      possible_desc: Occurs approximately once per year
+      likely: Likely (4)
+      likely_desc: Occurs multiple times per year
+      very_likely: Very Likely (5)
+      very_likely_desc: Occurs frequently or almost certainly
     impact:
-        negligible: Negligible
-        minor: Minor
-        moderate: Moderate
-        major: Major
-        severe: Severe
+      negligible: Negligible (1)
+      negligible_desc: Minimal impact, no significant consequences
+      minor: Minor (2)
+      minor_desc: Low impact, limited consequences
+      moderate: Moderate (3)
+      moderate_desc: Noticeable impact, considerable consequences
+      major: Major (4)
+      major_desc: Severe impact, significant consequences
+      catastrophic: Catastrophic (5)
+      catastrophic_desc: Existential impact, catastrophic consequences
+    title: Assessment Guidance
+    intro: Use these guidelines for consistent risk assessment according to ISO 27005
+    probability_title: Probability of Occurrence (1-5)
+    impact_title: Impact Severity (1-5)
+    tip: 'Tip: Inherent risk is calculated as Probability × Impact'
+  section:
+    assessment: Risk Assessment
+    basic_info: Basic Information
+    gdpr_assessment: GDPR Assessment
+    inherent_risk: Inherent Risk
+    residual_risk: Residual Risk
+    treatment: Treatment
+    acceptance: Acceptance
+    details: Details
+    description: Description
+    treatment_strategy: Treatment Strategy
+    risk_owner: Risk Owner
+    mitigating_controls: Mitigating Controls
+    realization_history: Realization History
+    risk_subject: Risk Subject
+    history: History
+    ict_dependencies: ICT Asset Dependencies
+    ict_dependencies_help: 'Which IT systems/services are directly or indirectly affected by this risk (DORA Art. 8 + ISO 27001 A.5.9).'
+    treatment_plans: Treatment Plans
+    treatment_plans_help: 'Concrete mitigation plans for this risk (ISO 27005:2022 + ISO 27001 Cl. 6.1.3).'
+    # V3 W2-FV-2 — Unified Asset-overview on Risk-Show
+    all_linked_assets: All linked assets
+    all_linked_assets_help: 'Unified overview combining the primary risk subject with ICT asset dependencies, including each asset’s maximum CIA protection requirement.'
+  help:
+    title: Unique designation of the risk for internal reference
+    category: Categorization of the risk (financial, operational, compliance, etc.)
+    asset: The asset affected by this risk (hardware, software, data, process)
+    person: The person affected by this risk
+    location: The location affected by this risk
+    supplier: The supplier affected by this risk
+    description: Detailed description of the risk scenario and possible consequences
+    threat: The threat or hazard (e.g., cyberattack, natural disaster, human error)
+    threat_intelligence: Link to a structured Threat Intelligence entry (optional,
+      complements free text).
+    vulnerability: The vulnerability that could be exploited by the threat
+    linked_vulnerability: Link to a tracked vulnerability/CVE (optional, complements
+      free text).
+    gdpr_section: Does this risk apply to processing of personal data? (GDPR-relevant)
+    involves_personal_data: Is personal data being processed? (Name, email, IP address,
+      etc.)
+    involves_special_category_data: 'Are special categories processed? (Art. 9 GDPR:
+      Health, biometric data, etc.)'
+    legal_basis: 'Legal basis for data processing (Art. 6 GDPR: Consent, contract,
+      legitimate interest, etc.)'
+    processing_scale: Scale of data processing (number of data subjects, data volume)
+    requires_dpia: 'When checked, a Data Protection Impact Assessment should be created under Privacy/GDPR → DPIA. This does NOT auto-create a DPIA — create it separately and link it.'
+    data_subject_impact: Impact on the rights and freedoms of data subjects
+    inherent: The inherent risk (gross risk) before applying measures
+    probability: 'Probability: How likely is it that this risk will occur? (1-5)'
+    impact: 'Impact: How severe would the consequences be if it occurs? (1-5)'
+    residual: The remaining residual risk (net risk) after applying measures
+    residual_probability: 'Probability AFTER treatment (residual risk). Example: Inherent=4,
+      after firewall+SIEM=2.'
+    residual_impact: 'Impact AFTER treatment (residual risk). Example: Inherent=5,
+      after backup+incident response=3.'
+    treatment_strategy: Risk treatment strategy (Avoid, Mitigate, Transfer, Accept)
+    treatment: Risk treatment strategy
+    risk_owner: Person responsible for risk monitoring and treatment
+    risk_owner_person: 'Select a person without a system login as risk owner. Priority&#58; User &gt; Person.'
+    risk_owner_deputies: Additional persons sharing risk ownership or deputising. Multiple selection possible.
+    treatment_description: Detailed description of planned or implemented treatment
+      measures
+    acceptance_approved_by: Person who formally accepted the residual risk (required
+      for risk acceptance)
+    acceptance_approved_at: Date of formal risk acceptance by the responsible person
+    acceptance_justification: Justification for why the residual risk is accepted
+    acceptance_expiry_date: 'ISO 27001 Cl. 8.3 — Date until which this risk acceptance is valid; after that, the acceptance must be re-evaluated. Required by audit, otherwise the acceptance is treated as indefinite (audit finding).'
+    review_date: Date of the next planned risk review
+    acceptance_approved_by_user: Person who approved risk acceptance.
+    likelihood_justification: 'ISO 27001:2022 Cl. 6.1.2.d — Justify why this likelihood score was assigned (audit-required evidence).'
+    impact_justification: 'ISO 27001:2022 Cl. 6.1.2.d — Justify why this impact score was assigned (audit-required evidence).'
+    decision_rationale: 'ISO 31000 §6.5.4 — Rationale for the chosen risk treatment decision (Mitigate / Accept / Transfer / Avoid).'
+    decision_approved_by_user: 'Person who formally approved the risk treatment decision (ROLE_MANAGER or higher required).'
+    decision_approval_date: Date of formal approval of the risk treatment decision.
+  tooltip:
+    probability: '<strong>🎲 How likely is this to happen?</strong><br><em>Question:
+      How often could this risk occur?</em><br><br><strong>1</strong> = Very rare
+      (1× in 10+ years)<br><em>e.g. earthquake, plane crash</em><br><strong>2</strong>
+      = Rare (1× in 5 years)<br><em>e.g. major fire, severe cyberattack</em><br><strong>3</strong>
+      = Occasional (1× per year)<br><em>e.g. power outage, data breach</em><br><strong>4</strong>
+      = Frequent (multiple times/year)<br><em>e.g. phishing attempts, staff turnover</em><br><strong>5</strong>
+      = Very frequent (monthly+)<br><em>e.g. spam, failed login attempts</em>'
+    impact: '<strong>💥 How severe would the damage be?</strong><br><em>Question: What
+      happens if this risk occurs?</em><br><br><strong>1</strong> = Minimal (&lt;€1,000,
+      no downtime)<br><em>e.g. single PC failure</em><br><strong>2</strong> = Minor
+      (€1,000-10,000, hours of downtime)<br><em>e.g. server restart needed</em><br><strong>3</strong>
+      = Moderate (€10,000-100,000, days of downtime)<br><em>e.g. department offline</em><br><strong>4</strong>
+      = Major (€100,000-1M, weeks of downtime)<br><em>e.g. ransomware, data leak</em><br><strong>5</strong>
+      = Catastrophic (&gt;€1M, existential threat)<br><em>e.g. complete data loss,
+      bankruptcy</em>'
+    residual_probability: '<strong>📉 Residual Probability After Controls</strong><br><em>Question:
+      How likely is the risk AFTER you implement controls?</em><br><br>Example: Phishing
+      risk<br>• Before: 4 (frequent)<br>• After training + spam filter: 2 (rare)<br><br><em>Tip:
+      Be realistic - zero is not possible!</em>'
+    residual_impact: '<strong>📉 Residual Impact After Controls</strong><br><em>Question:
+      How severe would damage be AFTER you implement controls?</em><br><br>Example:
+      Data loss<br>• Before: 5 (catastrophic)<br>• After backup strategy: 2 (minor,
+      only 1 day lost)<br><br><em>Tip: Controls often reduce impact more than probability!</em>'
+    treatment_strategy: <strong>🛡️ How will you handle this risk?</strong><br><br><strong>Avoid</strong><br>Stop
+      the activity, eliminate risk source<br><em>e.g. stop using insecure software</em><br><br><strong>Mitigate</strong>
+      (most common)<br>Implement controls<br><em>e.g. firewall, training, backups</em><br><br><strong>Transfer</strong><br>Pass
+      risk to third party<br><em>e.g. insurance, outsourcing</em><br><br><strong>Accept</strong><br>Consciously
+      tolerate (with justification!)<br><em>e.g. control cost > potential damage</em>
+    category: <strong>📁 Risk Category</strong><br><em>Helps with classification and
+      reporting</em><br><br><strong>Technical</strong><br>IT systems, software, hardware<br><em>e.g.
+      server failure, software bug</em><br><br><strong>Organizational</strong><br>Processes,
+      personnel, know-how<br><em>e.g. knowledge loss, human error</em><br><br><strong>Physical</strong><br>Buildings,
+      infrastructure<br><em>e.g. break-in, water damage</em><br><br><strong>Compliance</strong><br>Laws,
+      contracts, regulations<br><em>e.g. GDPR violation, audit findings</em>
+    involves_personal_data: '<strong>🔒 Personal Data Involved?</strong><br><em>Enable
+      this option if the risk affects personal data (e.g. customer data, employee data).</em><br><br>Relevant
+      for: GDPR Art. 5, 24, 32<br><em>Examples: data breach, unauthorized access to
+      CRM, loss of USB stick with customer data</em>'
+    requires_dpia: '<strong>📋 Data Protection Impact Assessment (DPIA) Required?</strong><br><em>A
+      DPIA is required under GDPR Art. 35 for high-risk processing activities.</em><br><br>Typical
+      cases:<br>• Systematic monitoring of individuals<br>• Processing of special categories
+      (health, biometrics)<br>• Large-scale processing<br><em>Tip: Consult your Data
+      Protection Officer (DPO)</em>'
+    legal_basis: '<strong>⚖️ Legal Basis for Processing</strong><br><em>Every processing
+      of personal data requires a legal basis (GDPR Art. 6).</em><br><br><strong>Consent</strong>
+      – freely given, specific, informed<br><strong>Contract</strong> – necessary for
+      contract performance<br><strong>Legal obligation</strong> – required by law<br><strong>Vital
+      interests</strong> – protection of life<br><strong>Public task</strong> – official
+      authority<br><strong>Legitimate interests</strong> – balanced interest (Art. 6(1)(f))'
+    processing_scale: '<strong>📊 Processing Scale</strong><br><em>Describes the magnitude
+      of data subjects and volume of data processed.</em><br><br><strong>Small</strong>
+      – a few dozen individuals, internal use<br><strong>Medium</strong> – hundreds
+      of individuals, cross-departmental<br><strong>Large</strong> – thousands of individuals
+      or continuous processing<br><strong>Very large</strong> – mass processing, national/European
+      reach<br><em>Relevant for GDPR Art. 35 (DPIA required for large-scale processing)</em>'
+    data_subject_impact: '<strong>👤 Impact on Data Subjects</strong><br><em>Describes
+      the potential harm to the individuals affected if the risk materialises.</em><br><br><strong>Low</strong>
+      – minor inconvenience, easily remedied<br><strong>Medium</strong> – financial
+      loss, discrimination, reputational damage<br><strong>High</strong> – significant
+      restrictions, identity theft, physical harm<br><strong>Very high</strong> – irreversible
+      damage, threat to life and safety<br><em>Basis: GDPR Art. 83, EDPB Guidelines
+      on DPIA</em>'
+  delete:
+    confirm_message: Confirm Message
+  not_reviewed: Not Reviewed
+  assessment:
+    inherent_risk: Inherent Risk
+    probability: Probability
+    impact: Impact
+    level: Level
+    score: Score
+    residual_risk: Residual Risk
+  incidents: Incidents
+  realization:
+    warning: Warning
+    review_suggestion: Review Suggestion
+  subject:
+    asset:
+      monetary_value_hint: Monetary Value Hint
+    location:
+      city_country: City Country
+  matrix:
+    title: Title
+    back_to_risks: Back To Risks
+    header: Header
+    description: Description
+    impact: Impact
+    probability: Probability
+    legend_title: Legend Title
     level:
-        low: Low Risk
-        medium: Medium Risk
-        high: High Risk
-        critical: Critical Risk
-    presets: Quick Presets
-    preset:
-        low: Set Low Risk
-        medium: Set Medium Risk
-        high: Set High Risk
-        critical: Set Critical Risk
-    show_matrix: Show Risk Matrix
-    matrix_help: Click on a cell to set probability and impact directly
+      critical: Critical
+      high: High
+      medium: Medium
+      low: Low
+      minor: Minor
+    risks_total: 'Risks total'
+    cell_title: 'Risk Level: %level% (%count% risks)'
+    likelihood:
+      1: 'Very rare'
+      2: 'Rare'
+      3: 'Occasional'
+      4: 'Probable'
+      5: 'Very probable'
+    impact_label:
+      1: 'Negligible'
+      2: 'Minor'
+      3: 'Moderate'
+      4: 'High'
+      5: 'Critical'
+  acceptance:
+    title: Title
+    request: Request
+    justification_label: Justification Label
+    justification_help: Justification Help
+    submit_request: Submit Request
+    required_approval_level: Required Approval Level
+    approval_threshold_info: Approval Threshold Info
+    approval_levels:
+      automatic: Automatic Approval
+      manager: Manager Approval Required
+      executive: Executive Approval Required
+    error:
+      wrong_strategy: 'Risk acceptance is only available for risks with the "Accept" treatment strategy.'
+      already_accepted: 'This risk has already been formally accepted.'
+      justification_required: 'Justification is required (ISO 27005:2022 Cl. 8.4.4).'
+      reason_required: 'A rejection reason is required.'
+    success:
+      auto_accepted: 'Risk has been auto-accepted (below the approval threshold).'
+      approval_requested: 'Acceptance request submitted. Approval required from %approver% (level: %level%).'
+      approved: 'Risk acceptance has been approved.'
+      rejected: 'Risk acceptance has been rejected.'
+  residual_assessment: Residual Assessment
+  status:
+    open: Open
+    in_progress: In Progress
+    mitigated: Mitigated
+    closed: Closed
+    identified: Identified
+    assessed: Assessed
+    treated: Treated
+    monitored: Monitored
+    accepted: Accepted
+  category:
+    financial: Financial
+    operational: Operational
+    compliance: Compliance
+    strategic: Strategic
+    reputational: Reputational
+    security: Security
+    technical: Technical
+    organizational: Organizational
+    physical: Physical
+  legal_basis:
+    consent: Art. 6(1)(a) Consent
+    contract: Art. 6(1)(b) Contract performance
+    legal_obligation: Art. 6(1)(c) Legal obligation
+    vital_interests: Art. 6(1)(d) Vital interests
+    public_task: Art. 6(1)(e) Public interest
+    legitimate_interests: Art. 6(1)(f) Legitimate interests
+  processing_scale:
+    small: Small (few data subjects)
+    medium: Medium (moderate)
+    large_scale: Large scale (many data subjects)
+  treatment:
+    mitigate: Mitigate
+    transfer: Transfer
+    accept: Accept
+    avoid: Avoid
+  placeholder:
+    title: e.g. Data loss due to ransomware attack
+    category: -- Select category --
+    treatment_strategy: -- Select treatment strategy (can be added later) --
+    legal_basis: -- Select legal basis --
+    processing_scale: -- Select processing scale --
+    data_subject_impact: Describe the potential impact on data subjects...
+    description: Detailed description of the risk scenario...
+    threat: Describe the threat (e.g., cyberattack, natural disaster)...
+    threat_intelligence: -- Select a threat intelligence entry --
+    vulnerability: Describe the vulnerability that could be exploited...
+    linked_vulnerability: -- Select a vulnerability/CVE --
+    asset: -- Select asset --
+    person: -- Select person --
+    location: -- Select location --
+    supplier: -- Select supplier --
+    risk_owner: -- Select risk owner --
+    risk_owner_person: -- Person from master data --
+    treatment_description: Describe the planned treatment measures...
+    acceptance_approved_by: Name of approving person
+    acceptance_justification: Justification for accepting the residual risk...
+    acceptance_approved_by_user: -- Select approver --
+    likelihood_justification: 'e.g. Based on historical incidents and current threat landscape...'
+    impact_justification: 'e.g. In case of occurrence, customer data, availability and reputation would be affected...'
+    decision_approved_by_user: '-- Select approving person --'
+    decision_rationale: 'Rationale for the chosen treatment strategy...'
+  probability:
+    rare: Rare
+    unlikely: Unlikely
+    possible: Possible
+    likely: Likely
+    almost_certain: Almost Certain
+  impact:
+    negligible: Negligible
+    minor: Minor
+    moderate: Moderate
+    major: Major
+    severe: Severe
+  level:
+    low: Low Risk
+    medium: Medium Risk
+    high: High Risk
+    critical: Critical Risk
+  presets: Quick Presets
+  preset:
+    low: Set Low Risk
+    medium: Set Medium Risk
+    high: Set High Risk
+    critical: Set Critical Risk
+  show_matrix: Show Risk Matrix
+  matrix_help: Click on a cell to set probability and impact directly
+  error:
+    owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+    subject_required: 'Risk subject: at least one of asset, person, location, or supplier must be linked (ISO 27001 Cl. 6.1.2 c).'
+  validation:
+    likelihood_justification_required: 'Likelihood justification is required (ISO 27001:2022 Cl. 6.1.2.d).'
+    impact_justification_required: 'Impact justification is required (ISO 27001:2022 Cl. 6.1.2.d).'
 iso_9001_bridge:
     threat: 'In ISO 9001 a "Threat" maps to an external cause under Clause 8.5.6 (Control of Changes) or to risks in the context of process control (6.1).'
+    vulnerability: 'In ISO 9001 a "Vulnerability" maps to a weakness identified by the Lessons-Learned process (10.2 — Nonconformity and Corrective Action).'
+    treatment_strategy: 'ISO 9001 calls this "risk treatment in the context of process control" (Clause 6.1.2 — Actions to address risks).'
+
+severity_choice:
+    aria_label: 'Risk severity'
+    low:
+        label: 'Low'
+        definition: 'Risk is below risk appetite, no treatment plan strictly required. Example: single employee awareness gap without sensitive data access.'
+    medium:
+        label: 'Medium'
+        definition: 'Risk between appetite and tolerance threshold. Treatment plan recommended, monitoring mandatory. Example: missing MFA on secondary apps.'
+    high:
+        label: 'High'
+        definition: 'Risk above tolerance threshold. Treatment plan mandatory, escalation to risk owner and CISO. Example: unpatched production servers with internet exposure.'
+    critical:
+        label: 'Critical'
+        definition: 'Risk endangers business continuity or compliance. Immediate treatment measures, reporting to the board. Example: unprotected crown-jewel data store, missing contingency plan for critical processes.'
+dora:
+  field:
+    ict_risk_category: ICT Risk Category (DORA Art. 6(8))
+    critical_or_important_function: Critical or Important Function (DORA Art. 6(2))
+    ict_third_party_concentration: ICT Third-Party Concentration Risk (DORA Art. 28+29)
+    ict_asset_dependency: ICT Asset Dependencies
+    ict_incident_history: ICT Incident History (DORA Art. 17-19)
+    data_resilience_requirement: Data Resilience Requirements (RTO/RPO, Art. 11)
+    tlpt_scope: TLPT Scope (DORA Art. 26-27)
+    regulatory_reporting_required: Regulatory Reporting Required (DORA Art. 19 + NIS2 Art. 23)
+    board_escalation_required: Board Escalation Required (DORA Art. 5(2))
+    lessons_learned_documented: Lessons Learned Documented (DORA Art. 13)
+  placeholder:
+    ict_risk_category: '-- Select ICT category --'
+    data_resilience_requirement: 'RTO: 4h, RPO: 1h — restore test every 12 months'
+  help:
+    ict_risk_category: Classification per DORA Art. 6(8) ICT risk categories
+    critical_or_important_function: Does this risk concern a critical or important function under DORA Art. 6(2) and Annex?
+    ict_third_party_concentration: Concentration risk from ICT third-party service provider dependency (DORA Art. 28+29)
+    ict_asset_dependency: ICT assets this risk depends on (multiple selection)
+    ict_incident_history: Prior ICT incidents related to this risk (DORA Art. 17-19)
+    data_resilience_requirement: Recovery Time Objective (RTO) and Recovery Point Objective (RPO) per DORA Art. 11(2)(c)
+    tlpt_scope: Scope for Threat-Led Penetration Tests per DORA Art. 26-27
+    regulatory_reporting_required: Reporting obligation to regulators per DORA Art. 19 and NIS2 Art. 23
+    board_escalation_required: Escalation to management board required per DORA Art. 5(2)
+    lessons_learned_documented: Lessons-learned report documented per DORA Art. 13
+  ict_category:
+    cyber: Cyber Risk
+    operations: Operational Risk
+    third_party_ict: ICT Third-Party Risk
+    concentration: Concentration Risk
+    data_integrity: Data Integrity Risk
+# ── FAIR Quantitative Risk module fields (gated: quantitative_risk) ────────
+fair:
+  field:
+    lef_min: 'Loss Event Frequency — Min (LEF)'
+    lef_max: 'Loss Event Frequency — Max (LEF)'
+    lef_mode: 'Loss Event Frequency — Mode (LEF)'
+    tef_min: 'Threat Event Frequency — Min (TEF)'
+    tef_max: 'Threat Event Frequency — Max (TEF)'
+    tef_mode: 'Threat Event Frequency — Mode (TEF)'
+    vulnerability_probability: 'Vulnerability Probability (%)'
+    plm_min: 'Primary Loss Magnitude — Min (€)'
+    plm_max: 'Primary Loss Magnitude — Max (€)'
+    plm_mode: 'Primary Loss Magnitude — Mode (€)'
+    slm_min: 'Secondary Loss Magnitude — Min (€)'
+    slm_max: 'Secondary Loss Magnitude — Max (€)'
+    slm_mode: 'Secondary Loss Magnitude — Mode (€)'
+  help:
+    lef: 'FAIR: Loss Event Frequency — how many times per year a loss event is expected to occur (min/max/mode).'
+    tef: 'FAIR: Threat Event Frequency — how many times per year a threat agent acts against an asset (min/max/mode).'
+    vulnerability_probability: 'FAIR: Probability (0.0–1.0) that a threat event results in a loss event.'
+    plm: 'FAIR: Primary Loss Magnitude — direct financial impact in € (min/max/mode).'
+    slm: 'FAIR: Secondary Loss Magnitude — indirect impact in € including reputational damage and regulatory fines (min/max/mode).'
+  link_incident:
+    section_title: 'Linked Incidents'
+    add_link: 'Link Incident'
+    submit: 'Link'
+    empty: 'No incidents are linked to this risk yet.'
+    linked: 'Incident linked successfully.'
+    unlinked: 'Incident link removed.'
+    csrf_invalid: 'Security token invalid — please reload the page and try again.'
+    incident_not_found: 'Incident not found.'
+    link_not_found: 'Link not found or does not belong to this risk.'
+    unlink: 'Remove link'
+    unlink_confirm: 'Remove this incident link?'
+    field:
+      incident: 'Incident'
+      link_type: 'Link Type'
+      notes: 'Notes'
+    placeholder:
+      incident: 'Select an incident…'
+      notes: 'Optional context or observation…'
+    link_type:
+      materialized: 'Materialized'
+      suspected: 'Suspected'
+      related: 'Related'
+      mitigation_failed: 'Mitigation Failed'
+
+risk_management:
+  title: Title
+  description: Description
+  high_risks: High Risks
+  risk_value_threshold: Risk Value Threshold
+  total_identified: Total Identified

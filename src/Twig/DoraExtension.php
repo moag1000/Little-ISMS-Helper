@@ -16,7 +16,7 @@ use Twig\Attribute\AsTwigFunction;
  *                        (doraEntityCategory !== 'none'). Use to gate DORA-specific
  *                        UI sections, nav entries, KPI tiles, and route access.
  */
-class DoraExtension
+final class DoraExtension
 {
     public function __construct(
         private readonly TenantContext $tenantContext,

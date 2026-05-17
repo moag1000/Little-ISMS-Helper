@@ -38,7 +38,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * NIS2 Compliance: Art. 21.2.b (Multi-Factor Authentication)
  * ISO 27001:2022: A.8.5 (Secure Authentication)
  */
-class MfaEnforcerSubscriber implements EventSubscriberInterface
+final class MfaEnforcerSubscriber implements EventSubscriberInterface
 {
     /**
      * Path prefixes that are always allowed while MFA is pending.

@@ -30,7 +30,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Disabled when {@see QuickFixGuard::fallbackUiEnabled()} returns false —
  * audit-critical environments fall back to the standard 500.
  */
-class SchemaExceptionSubscriber implements EventSubscriberInterface
+final class SchemaExceptionSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly QuickFixGuard $guard,

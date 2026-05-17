@@ -52,7 +52,7 @@ use Doctrine\ORM\Events;
 #[AsDoctrineListener(event: Events::preUpdate)]
 #[AsDoctrineListener(event: Events::postUpdate)]
 #[AsDoctrineListener(event: Events::postRemove)]
-class AuditLogSubscriber
+final class AuditLogSubscriber
 {
     private array $pendingUpdates = [];
 

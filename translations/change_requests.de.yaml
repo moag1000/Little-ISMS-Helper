@@ -9,6 +9,7 @@ change_request:
         create: 'Neuen Änderungsantrag erstellen'
         view: Anzeigen
         edit: Bearbeiten
+        update: Aktualisieren
     statistics:
         total: Gesamt‑Anträge
         pending_approval: 'Ausstehende Freigaben'
@@ -51,13 +52,34 @@ change_request:
         closure: 'Abschluss und Lessons Learned'
         affected_assets: 'Betroffene Assets'
         affected_controls: 'Betroffene Controls (ISO 27001)'
+        affected_risks: 'Betroffene Risiken'
     field:
+        change_number: Antrags‑Nr.
+        title: Titel
+        change_type: Änderungstyp
+        description: Beschreibung
+        justification: Begründung
         requested_by: 'Beantragt von'
         requested_date: 'Beantragt am'
+        priority: Priorität
+        status: Status
+        isms_impact: ISMS‑Auswirkung
+        risk_assessment: Risikobewertung
+        implementation_plan: Umsetzungsplan
+        rollback_plan: Rollback‑Plan
+        testing_requirements: Testanforderungen
+        planned_implementation_date: 'Geplantes Umsetzungsdatum'
+        actual_implementation_date: 'Tatsächliches Umsetzungsdatum'
         implemented_by: 'Umgesetzt von'
+        implementation_notes: Umsetzungsnotizen
         approved_by: 'Freigegeben von'
+        approved_date: 'Freigegeben am'
+        approval_comments: Freigabe‑Bemerkungen
         verified_by: 'Verifiziert von'
+        verified_date: 'Verifiziert am'
+        verification_results: Verifikationsergebnisse
         closed_date: Abschlussdatum
+        closure_notes: Abschlussnotizen
         complexity_score: 'Komplexitätsbewertung (1-10)'
         planned_implementation: 'Geplantes Umsetzungsdatum'
         approval_date: Freigabedatum
@@ -66,6 +88,11 @@ change_request:
         notes: 'Notizen und zusätzliche Informationen'
         verification_date: 'Datum der Verifikation'
         results: 'Ergebnisse und Resultate'
+        clause_reference: 'Klauselreferenz'
+    placeholder:
+        clause_reference: 'z.B. ISO 27001 §6.3, DORA Art. 6'
+    help:
+        clause_reference: 'Optionales ISO 27001 / DORA / NIS2 Klausel-Tag für §6.3 geplante Änderungen oder §8.1 operative Maßnahmen-Differenzierung'
     edit: Bearbeiten
     confirm:
         delete: Löschen
@@ -98,3 +125,9 @@ change_request:
         closed: 'Abgeschlossen'
         cancelled: 'Abgebrochen'
         not_scheduled: 'Nicht eingeplant'
+    tooltip:
+        risk_assessment: 'Bewerten Sie potenzielle Risiken, die durch diese Änderung entstehen könnten (z. B. Datenverlust, Serviceausfall, Sicherheitslücken). Nutzen Sie die ISMS-Risikobewertungsmethodik.'
+        rollback_plan: 'Beschreiben Sie die konkreten Schritte, um die Änderung rückgängig zu machen, falls sie fehlschlägt. Ein Rollback-Plan ist Pflicht für alle Änderungen mit mittlerem bis hohem Risiko.'
+        isms_impact: 'Analysieren Sie, welche ISMS-Komponenten von dieser Änderung betroffen sind: Vertraulichkeit, Integrität, Verfügbarkeit, bestehende Controls, Richtlinien oder den ISMS-Geltungsbereich.'
+        priority: 'Legen Sie die Dringlichkeit der Änderung fest. Kritisch: sofortiger Handlungsbedarf. Hoch: innerhalb einer Woche. Mittel: innerhalb eines Monats. Niedrig: nach Plan.'
+        change_type: 'Klassifizieren Sie die Art der Änderung, um den richtigen Freigabe- und Testprozess auszuwählen. ISMS-Richtlinie und ISMS-Geltungsbereich erfordern besondere Prüfung durch den ISB.'

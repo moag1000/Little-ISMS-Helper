@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Handles 404 errors when Tenant entities are not found
  * Provides user-friendly error messages and redirects
  */
-class TenantNotFoundSubscriber implements EventSubscriberInterface
+final class TenantNotFoundSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,

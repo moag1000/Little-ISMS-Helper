@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * This prevents unauthorized access to the setup wizard after initial configuration.
  */
-class SetupSecuritySubscriber implements EventSubscriberInterface
+final class SetupSecuritySubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly SetupAccessChecker $setupAccessChecker,

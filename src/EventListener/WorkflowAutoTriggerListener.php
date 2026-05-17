@@ -34,7 +34,7 @@ use Psr\Log\LoggerInterface;
 #[AsEntityListener(event: Events::postUpdate, entity: Incident::class)]
 #[AsEntityListener(event: Events::postPersist, entity: RiskTreatmentPlan::class)]
 #[AsEntityListener(event: Events::postPersist, entity: Document::class)]
-class WorkflowAutoTriggerListener
+final class WorkflowAutoTriggerListener
 {
     public function __construct(
         private readonly WorkflowAutoTriggerService $workflowAutoTriggerService,

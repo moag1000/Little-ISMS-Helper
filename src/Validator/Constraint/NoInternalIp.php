@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraint;
  *  - DNS-resolution failures (defense against DNS-pinning attacks)
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
-class NoInternalIp extends Constraint
+final class NoInternalIp extends Constraint
 {
     public string $message = 'security.url.no_internal_ip';
 }

@@ -34,7 +34,7 @@ use Symfony\Component\RateLimiter\RateLimiterFactory;
  * - Limiter: apiLimiter (configured in rate_limiter.yaml)
  * - Strategy: Token bucket with 100 tokens/minute
  */
-class ApiRateLimitSubscriber implements EventSubscriberInterface
+final class ApiRateLimitSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly RateLimiterFactory $rateLimiterFactory

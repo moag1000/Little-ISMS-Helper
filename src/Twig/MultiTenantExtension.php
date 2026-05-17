@@ -8,7 +8,7 @@ use App\Service\MultiTenantCheckService;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 
-class MultiTenantExtension extends AbstractExtension implements GlobalsInterface
+final class MultiTenantExtension extends AbstractExtension implements GlobalsInterface
 {
     public function __construct(
         private readonly MultiTenantCheckService $multiTenantCheckService

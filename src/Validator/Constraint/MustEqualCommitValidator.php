@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
  * Accepts any case variant of "commit" (e.g. "Commit", "COMMIT", "commit").
  * Empty and null values are rejected — the field is required.
  */
-class MustEqualCommitValidator extends ConstraintValidator
+final class MustEqualCommitValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void
     {

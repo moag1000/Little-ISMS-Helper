@@ -22,25 +22,46 @@ tenant:
         inactive: Inaktiv
     field:
         code: Mandanten-Code
+        code_help: 'Eindeutiger alphanumerischer Code (nur a-z, 0-9, _, -)'
         code_auto_generated: 'Wird automatisch aus dem Namen generiert'
         name: Name
+        name_help: 'Vollständiger Name der Organisation'
         description: Beschreibung
+        description_help: 'Optionale Beschreibung des Mandanten'
         logo: Logo
+        logo_help: 'Mandanten-Logo (max. 2MB, JPG/PNG/GIF/WebP)'
         azure_tenant_id: Azure-Mandanten-ID
+        azure_tenant_id_help: 'Azure AD Tenant ID (UUID-Format) für SSO-Integration'
+        is_active: Aktiv
+        is_active_help: 'Nur aktive Mandanten können sich anmelden'
         settings: 'Einstellungen (JSON)'
+        settings_help: 'Mandantenspezifische Einstellungen im JSON-Format'
         users: Benutzer
         status: Status
         created: Erstellt
         updated: Aktualisiert
         parent: Muttergesellschaft
         corporate_notes: Konzernhinweise
+    placeholder:
+        code: 'z.B. acme-corp'
+        name: 'z.B. ACME Corporation'
+        description: 'Beschreibung des Mandanten...'
+        azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
+    validation:
+        code_format: 'Der Code darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten'
+        azure_tenant_id_format: 'Die Azure Tenant ID muss im UUID-Format vorliegen'
+        logo_format: 'Das Logo muss im Format JPG, PNG, GIF oder WebP vorliegen'
     status:
         active: Aktiv
         inactive: Inaktiv
     action:
         create: 'Neuen Mandanten erstellen'
         create_first: 'Ersten Mandanten erstellen'
+        edit: Bearbeiten
         delete: Löschen
+        activate: Aktivieren
+        deactivate: Deaktivieren
     section:
         information: Mandanten-Informationen
         users: Benutzer
@@ -59,9 +80,27 @@ tenant:
         add_help: 'Geben Sie die E-Mail-Adresse eines existierenden Benutzers ein, um ihn diesem Mandanten zuzuordnen'
         current_users: 'Aktuelle Benutzer'
         confirm_remove: 'Möchten Sie den Benutzer %email% wirklich aus diesem Mandanten entfernen?'
+        flash:
+            email_required: 'E-Mail-Adresse ist erforderlich'
+            user_not_found: 'Benutzer mit dieser E-Mail-Adresse wurde nicht gefunden'
+            already_assigned: 'Benutzer ist bereits diesem Mandanten zugeordnet'
+            user_added: 'Benutzer erfolgreich zum Mandanten hinzugefügt'
+            user_removed: 'Benutzer erfolgreich vom Mandanten entfernt'
+            not_assigned: 'Benutzer ist nicht diesem Mandanten zugeordnet'
+            error: 'Fehler bei der Benutzer-Verwaltung'
     form:
         create_title: 'Neuen Mandanten anlegen'
         edit_title: 'Mandant bearbeiten'
+    flash:
+        created: 'Mandant erfolgreich erstellt'
+        updated: 'Mandant erfolgreich aktualisiert'
+        deleted: 'Mandant erfolgreich gelöscht'
+        activated: 'Mandant erfolgreich aktiviert'
+        deactivated: 'Mandant erfolgreich deaktiviert'
+        error: 'Fehler beim Speichern des Mandanten'
+        has_users: 'Mandant kann nicht gelöscht werden, da er noch Benutzer hat'
+        organisation_context_updated: 'Organisationsprofil erfolgreich aktualisiert'
+        organisation_context_error: 'Fehler beim Aktualisieren des Organisationsprofils'
     confirm:
         delete: 'Sind Sie sicher, dass Sie diesen Mandanten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.'
         toggle: 'Möchten Sie den Status dieses Mandanten wirklich ändern?'
@@ -106,6 +145,11 @@ tenant:
     setup_progress:
         title: 'Einrichtungsfortschritt'
         org_profile: 'Organisationsprofil konfiguriert'
+        isms_context: 'ISMS-Kontext angelegt'
+        context_complete: 'ISMS-Kontext mindestens 50% ausgefuellt'
+    link:
+        view: 'Mandant anzeigen'
+        back_to_tenant: 'Zurück zum Mandanten'
     info:
         title: 'Über Mandanten'
         text: 'Mandanten ermöglichen es, mehrere Organisationen in einer Instanz zu verwalten. Jeder Benutzer gehört zu einem Mandanten.'
@@ -145,6 +189,9 @@ tenant:
             from_address: 'Absender-E-Mail-Adresse'
             logo_url: 'Logo-URL (HTTPS)'
             support_address: 'Support-E-Mail-Adresse'
+        logo_url:
+            https_only: 'Nur HTTPS-URLs erlaubt (sonst Mixed-Content in HTML-E-Mails).'
+        saved: 'E-Mail-Branding gespeichert.'
 corporate:
     view:
         own_only: 'Nur eigene'
@@ -178,9 +225,37 @@ corporate:
         actions: Aktionen
         subsidiary: Tochtergesellschaft
         parent: Muttergesellschaft
+        parent_help: 'Übergeordnete Muttergesellschaft (Holding). Frei lassen für Einzel-Tenants.'
         governance_model: Governance-Modell
         hierarchy_depth: Hierarchietiefe
         subsidiaries: Tochtergesellschaften
+        is_corporate_parent: 'Holding-Tenant (Konzern-Wurzel)'
+        is_corporate_parent_help: 'Markiert diesen Tenant als Holding-Knoten für Group-CISO-Sichten und Baseline-Vererbung.'
+        corporate_notes: 'Konzern-Notizen'
+        corporate_notes_help: 'Optionale Freitext-Hinweise zur Konzernstruktur.'
+        legal_name: 'Rechtspersonenname'
+        legal_name_help: 'Formeller Name der Rechtsperson (kann vom Anzeigenamen abweichen). Relevant für NIS2-Registrierung.'
+        legal_form: Rechtsform
+        legal_form_help: 'z. B. GmbH, AG, SE, KG.'
+        nace_code: 'NACE-Code'
+        nace_code_help: 'Wirtschaftszweig-Klassifikation, z. B. 62.03 (Betrieb von Datenverarbeitungseinrichtungen).'
+        nis2_classification: 'NIS2-Klassifikation'
+        nis2_classification_help: 'Nach BSIG §28 pro Rechtsperson zu bestimmen — NICHT konzernweit konsolidiert.'
+        nis2_sector: 'NIS2-Sektor'
+        nis2_sector_help: 'BSI-Sektor-Label, z. B. "Digitale Infrastruktur", "Energie", "Gesundheit".'
+        nis2_contact_point: 'BSI-Meldekontakt'
+        nis2_contact_point_help: 'Person oder Funktion, die beim BSI als Kontaktstelle registriert ist.'
+        nis2_registered_at: 'BSI-Registrierung am'
+        nis2_registered_at_help: 'Datum der Registrierung beim BSI-Meldeportal.'
+    placeholder:
+        parent: '— Keine Muttergesellschaft —'
+        corporate_notes: 'Optionale Hinweise zur Konzernstruktur ...'
+        nis2_classification: '— Noch nicht bewertet —'
+    nis2:
+        essential: 'Besonders wichtige Einrichtung (Anhang I)'
+        important: 'Wichtige Einrichtung (Anhang II)'
+        not_regulated: 'Nicht NIS2-reguliert'
+        unknown: 'Unbekannt / noch zu bewerten'
     action:
         set_parent: 'Muttergesellschaft zuordnen'
         update_governance: 'Governance aktualisieren'
@@ -235,3 +310,27 @@ corporate:
             delete: Löschen
     title.edit: 'Mandant bearbeiten'
     title.create: 'Neuer Mandant'
+    email:
+        title: 'E-Mail-Branding'
+        subtitle: 'Absender, Logo und Footer für E-Mails pro Mandant. Leere Felder erben vom Holding-Parent, dann SystemSettings, dann Default.'
+        section:
+            branding: 'Branding-Einstellungen'
+            effective: 'Effektive Werte (nach Fallback-Kaskade)'
+        effective_hint: 'Diese Werte werden aktuell beim Versand verwendet — wenn eigene Felder leer sind, kommen sie aus Parent-Mandant oder SystemSettings.'
+        field:
+            from_name: 'Absender-Name'
+            from_address: 'Absender-E-Mail-Adresse'
+            logo_url: 'Logo-URL (HTTPS)'
+            footer_text: 'Footer-Text'
+            support_address: 'Support-E-Mail-Adresse'
+        help:
+            from_name: 'Erscheint im „Von"-Feld. Beispiel: ACME GmbH Compliance.'
+            from_address: 'Absender-Adresse. Muss im E-Mail-Server freigeschaltet sein (SPF/DKIM).'
+            logo_url: 'Vollständige HTTPS-URL zum Logo (erscheint oben in HTML-E-Mails).'
+            footer_text: 'Rechtliche Hinweise / Unterschrift unter der E-Mail. Max. 2000 Zeichen, einfacher Text.'
+            support_address: 'Reply-To bzw. Support-Kontakt — kann sich von Absender unterscheiden.'
+        hint:
+            fallback: 'Leeres Feld → Parent-Mandant → SystemSettings (category=email) → Hardcoded-Default.'
+        logo_url:
+            https_only: 'Nur HTTPS-URLs erlaubt (sonst Mixed-Content in HTML-E-Mails).'
+        saved: 'E-Mail-Branding gespeichert.'

@@ -32,7 +32,7 @@ use Doctrine\ORM\Events;
  * Blocked by: TenantPolicySetting + RiskMatrixConfig entities (Sprint 9+).
  */
 #[AsEntityListener(event: Events::postPersist, entity: Tenant::class)]
-class TenantCreatedSeedListener
+final class TenantCreatedSeedListener
 {
     public function postPersist(Tenant $tenant): void
     {

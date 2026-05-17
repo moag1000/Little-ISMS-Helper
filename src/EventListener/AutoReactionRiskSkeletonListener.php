@@ -30,7 +30,7 @@ use Psr\Log\LoggerInterface;
  */
 #[AsEntityListener(event: Events::postPersist, entity: Vulnerability::class)]
 #[AsEntityListener(event: Events::postUpdate, entity: Vulnerability::class)]
-class AutoReactionRiskSkeletonListener
+final class AutoReactionRiskSkeletonListener
 {
     public function __construct(
         private readonly AutoReactionService $reactions,

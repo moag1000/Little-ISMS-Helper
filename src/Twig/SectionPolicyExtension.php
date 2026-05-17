@@ -28,7 +28,7 @@ use Twig\Attribute\AsTwigFunction;
  *   list to be empty; the template emits a deprecation warning in dev-env
  *   if any unmapped fields slip through.
  */
-class SectionPolicyExtension
+final class SectionPolicyExtension
 {
     /**
      * Resolve the section-map for a Symfony form.

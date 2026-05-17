@@ -35,7 +35,7 @@ use Psr\Log\LoggerInterface;
  * stays silent too.
  */
 #[AsEntityListener(event: Events::postUpdate, entity: Asset::class)]
-class AssetSchutzbedarfDpiaListener
+final class AssetSchutzbedarfDpiaListener
 {
     public function __construct(
         private readonly AutoReactionService $reactions,

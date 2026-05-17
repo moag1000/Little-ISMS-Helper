@@ -34,7 +34,7 @@ use Psr\Log\NullLogger;
  */
 #[AsEntityListener(event: Events::postPersist, entity: Incident::class)]
 #[AsEntityListener(event: Events::postUpdate, entity: Incident::class)]
-class IncidentFollowUpListener
+final class IncidentFollowUpListener
 {
     private bool $registered = false;
 

@@ -13,7 +13,7 @@ use Twig\Attribute\AsTwigFunction;
  * single source of truth (the PHP enum) instead of redeclaring values in
  * the template. Prevents drift between FormType choices and filter UIs.
  */
-class EnumExtension
+final class EnumExtension
 {
     /**
      * Return cases of a backed enum as `[value => name]` pairs ready for

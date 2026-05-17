@@ -33,5 +33,9 @@ security_reports:
         p2: 'Mittlere Priorität – innerhalb 1 Monat'
     legend:
         title: Severity‑Legende
+        critical: 'Kritisch (P0)'
+        high: 'Hoch (P1)'
+        medium: 'Mittel (P2)'
+        low: 'Niedrig (P3)'
 app:
     title: 'Sicherheitsberichte'

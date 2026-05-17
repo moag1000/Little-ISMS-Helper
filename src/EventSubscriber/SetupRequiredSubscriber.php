@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * This ensures that users are automatically redirected to the setup wizard
  * when the application is first deployed and the database tables don't exist yet.
  */
-class SetupRequiredSubscriber implements EventSubscriberInterface
+final class SetupRequiredSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly SetupAccessChecker $setupAccessChecker,

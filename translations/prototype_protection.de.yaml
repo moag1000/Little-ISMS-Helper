@@ -33,9 +33,18 @@ prototype_protection:
         supplier: 'Lieferant'
         location: 'Standort'
         assessor: 'Assessor / Prüfer'
+        assessor_person: 'Assessor (Person)'
+        assessor_deputy_persons: 'Vertretungen Assessor (Personen)'
         assessment_date: 'Bewertungsdatum'
         next_assessment_due: 'Nächste Bewertung fällig'
         overall_result: 'Gesamtergebnis'
+    placeholder:
+        assessor_person: '-- Person aus Stammdaten --'
+    help:
+        scope: 'Programm, Baureihe, Fahrzeugvariante oder Event, auf das sich dieses Assessment bezieht.'
+        required_labels: 'Mehrfachauswahl — alle für den Scope anwendbaren Prototype-Labels.'
+        assessor_person: 'Person ohne System-Login als Assessor. Reihenfolge: User > Person > leer.'
+        assessor_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Assessment.'
     status:
         draft: 'Entwurf'
         in_review: 'In Prüfung'
@@ -53,6 +62,8 @@ prototype_protection:
         prototype_vehicles: 'Prototypen-Fahrzeuge'
         test_vehicles: 'Erprobungsträger'
         events_and_shoots: 'Events / Shootings'
+    value:
+        na: 'n/v'
     sections:
         heading: 'Abschnitte nach VDA ISA 6 Kap. 8'
         description: 'Je Abschnitt Ergebnis + Anmerkungen erfassen. "Gesamtergebnis" wird automatisch aus dem schlechtesten Abschnitt berechnet und kann vor der Freigabe manuell überschrieben werden.'
@@ -93,3 +104,8 @@ prototype_protection:
         created: 'Prototype-Protection-Assessment erstellt.'
         updated: 'Prototype-Protection-Assessment aktualisiert.'
         deleted: 'Prototype-Protection-Assessment gelöscht.'
+    validation:
+        title_required: 'Bitte geben Sie eine Bezeichnung für das Assessment an.'
+        level_invalid: 'TISAX-Level muss AL2 oder AL3 sein.'
+    error:
+        owner_required_user_or_person: 'Gutachter: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

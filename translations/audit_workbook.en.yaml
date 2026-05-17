@@ -26,16 +26,32 @@ audit_workbook:
         soa:
             title: 'Statement of Applicability'
             description: 'ISO 27001 Annex A — statement of applicability with implementation status per control'
+            icon: 'shield-check'
         control_implementation:
             title: 'Control Implementation'
             description: 'Full tenant control register including responsible parties and maturity levels'
+            icon: 'list-check'
         compliance_fulfillment:
             title: 'Compliance Fulfillment'
             description: 'Framework requirements with fulfillment status and linked evidence documents'
+            icon: 'patch-check'
         risk_register:
             title: 'Risk Register'
             description: 'Full tenant risk register including treatment options and residual risks'
+            icon: 'exclamation-triangle'
+
     action:
         download: 'Download'
         export_xlsx: 'Export audit workbook (.xlsx)'
 
+    error:
+        no_tenant: 'No tenant context active. Please log in again.'
+        framework_not_found: 'The requested compliance framework was not found or is not active.'
+        generation_failed: 'Workbook generation failed. Please try again.'
+
+    audit_log:
+        soa_exported: 'SoA workbook downloaded for framework "%name%" (ID %id%)'
+        control_implementation_exported: 'Control implementation workbook downloaded'
+        compliance_fulfillment_exported: 'Compliance fulfillment workbook downloaded for framework "%name%" (ID %id%)'
+        risk_register_exported: 'Risk register workbook downloaded'
+        generation_failed: 'Workbook generation failed'

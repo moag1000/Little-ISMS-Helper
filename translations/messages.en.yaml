@@ -16,6 +16,8 @@ alva:
         warning: 'Alva signals a warning'
         celebrating: 'Alva is celebrating a success'
         sleeping: 'Alva is sleeping'
+breadcrumb:
+    home: Home
 login:
     title: Login
     eyebrow: 'Sign in'
@@ -30,6 +32,8 @@ login:
         email: 'Use your business email address'
     remember_me: 'Remember Me'
     submit: Login
+    azure_oauth: 'Sign in with Microsoft Azure (OAuth)'
+    azure_saml: 'Sign in with Microsoft Azure (SAML)'
     no_account_message: "Don't have an account yet? Contact your administrator."
     placeholder:
         email: ''
@@ -40,8 +44,17 @@ auth:
     alva:
         default_line: 'Welcome back.'
         default_sub: ''
+logout: Logout
+email: Email
+password: Password
+forgot_password: 'Forgot Password'
+remember_me: 'Remember Me'
+login_title: Login
+welcome_back: 'Welcome Back'
 home:
+    _default: Home
     welcome: Welcome
+    title: Overview
     description: 'Manage your Information Security Management System'
     modules: Modules
     module:
@@ -53,14 +66,23 @@ home:
             title: Risks
             description: 'Identify and assess security risks'
             action: 'Go to Risks'
+        incidents:
+            title: Incidents
+            description: 'Record and manage security incidents'
+            action: 'Go to Incidents'
         compliance:
             title: Compliance
             description: 'Manage compliance frameworks and requirements'
             action: 'Go to Compliance'
+        dashboard:
+            title: Dashboard
+            description: 'Overview of current security status'
+            action: 'Go to Dashboard'
         documents:
             title: Documents
             description: 'Manage policies and documentation'
             action: 'Go to Documents'
+    development_notice: 'This feature is under development'
     go_to_dashboard: 'Go to Dashboard'
     tagline: 'Information Security according to ISO 27001 made easy'
     quick_start: 'Quick Start'
@@ -84,13 +106,35 @@ home:
 assets: Assets
 risks: Risks
 controls: Controls
+incidents: Incidents
+audits: Audits
+compliance_label: Compliance
+users: Users
+settings: Settings
+profile: Profile
+administration: Administration
+create: Create
+edit: Edit
+delete: Delete
+save: Save
+cancel: Cancel
+search: Search
 filter:
+    _default: Filter
     remove_chip: 'Remove filter "%label%"'
     clear_all: 'Clear all filters'
+export: Export
+import: Import
+view: View
+details: Details
+close: Close
 confirm:
+    _default: Confirm
     typing_hint: 'Type "%keyword%" to confirm:'
+back: Back
 common:
     module_not_active: 'Module "%module%" is not active. Please activate via Setup → Modules.'
+    please_select: 'Please select...'
     next: Next
     yes: 'Yes'
     no: 'No'
@@ -110,6 +154,9 @@ common:
     section:
         other: 'Other Fields'
     link_matrix:
+        title_vulnerability: 'Linked Entities (Vulnerability)'
+        title_risk: 'Linked Entities (Risk)'
+        title_incident: 'Linked Entities (Incident)'
         description: 'One-click links between incidents, risks, and vulnerabilities. Use the derivation buttons to keep the GRC chain intact.'
         related_risks: 'Related Risks'
         related_vulnerabilities: 'Related Vulnerabilities'
@@ -127,6 +174,7 @@ common:
     today: 'Today'
     yesterday: 'Yesterday'
     days_ago: '%days% days ago'
+    overview: Overview
     name: Name
     description: Description
     status: Status
@@ -155,16 +203,21 @@ common:
     view_details: 'View Details'
     view_all: 'View All'
     edit: Edit
+    show_all: 'Show All'
     active: Active
     not_active: 'Not Active'
+    skip: Skip
     glossary_link: 'Look up in glossary'
     more: More
     confirm_delete_entity: 'Do you really want to delete this %entity%?'
     all: All
+    selected: Selected
     category: Category
     create: Create
     danger_zone: 'Danger Zone'
     dashboard: Dashboard
+    date_from: 'Date From'
+    date_to: 'Date To'
     details: Details
     download: Download
     error: Error
@@ -180,11 +233,16 @@ common:
     filter: Filter
     filters: Filters
     clear: Clear
+    from: From
     help: Help
+    history: History
     id: ID
     inactive: Inactive
+    last_updated: 'Last Updated'
     loading: Loading...
+    never: Never
     entries: Entries
+    not_applicable: 'Not Applicable'
     not_approved: 'Not Approved'
     not_assigned: 'Not Assigned'
     not_completed: 'Not Completed'
@@ -192,8 +250,12 @@ common:
     not_started: 'Not Started'
     refresh: Refresh
     search: Search
+    subsidiaries: Subsidiaries
     success: Success
+    to: To
     size: Size
+    seconds: Seconds
+    minutes: Minutes
     days: Days
     roles: Roles
     close: Close
@@ -204,14 +266,18 @@ common:
     verifying: 'Verifying...'
     downloaded: Downloaded
     generated: Generated
+    generating: 'Generating...'
+    generating_report: 'Generating report...'
     generating_reports: 'Generating reports...'
     saving: 'Saving...'
+    processing: 'Processing...'
     copy_failed: 'Copy failed'
     apply: Apply
     system_info: 'System Information'
     activate: Activate
     deactivate: Deactivate
     duplicate: Duplicate
+    quick_actions: 'Quick Actions'
     select: Select
     last_30_days: 'Last 30 Days'
     last_90_days: 'Last 90 Days'
@@ -223,6 +289,7 @@ common:
     responsible: Responsible
     target_date: 'Target Date'
     export_pdf: 'Export as PDF'
+    select_all: 'Select All'
     retry: 'Retry'
     optional: '(optional)'
     tooltip:
@@ -241,7 +308,9 @@ common:
     reload: ''
     info: ''
     activities: ''
+    no_items_found: ''
     items: ''
+    pdf_export: ''
     placeholder:
         case_number_from_authority: ''
         explain_deadline_exceeded: ''
@@ -251,6 +320,7 @@ common:
     consistency: ''
     audit_evidence: ''
     informed_decisions: ''
+    search_processes: ''
     data_reuse: ''
     confirm_delete: ''
     roles_and_responsibilities: ''
@@ -259,8 +329,37 @@ common:
 framework: Framework
 requirement: Requirement
 bia: 'Business Impact Analysis'
+kpi:
+    registered_assets: 'Registered Assets'
+    identified_risks: 'Identified Risks'
+    open_incidents: 'Open Incidents'
+    compliance_status: 'Compliance Status'
+    unit_pieces: Items
+    unit_percent: '%'
+activity:
+    asset_added: 'Asset added'
+    risk_identified: 'Risk identified'
+    recently: recently
+    minutes_ago: '%d minutes'
+    system: System
+    security_team: 'Security Team'
+    new_risk: 'New Risk'
 person:
     title: ''
+    name: Person
+    full_name: 'Full Name'
+    person_type: 'Person Type'
+    badge_id: 'Badge ID'
+    company: Company
+    email: Email
+    phone: Phone
+    department: Department
+    job_title: 'Job Title'
+    linked_user: 'Linked User'
+    active: Active
+    notes: Notes
+    access_valid_from: 'Access Valid From'
+    access_valid_until: 'Access Valid Until'
     description:
         overview: 'Manage employees, contractors, visitors, and other people in your organization.'
     action:
@@ -280,8 +379,10 @@ person:
         consultant: Consultant
         other: Other
     field:
+        full_name: 'Full Name'
         name: Name
         type: Type
+        person_type: 'Person Type'
         email: Email
         phone: Phone
         badge_id: 'Badge ID'
@@ -298,6 +399,11 @@ person:
         additional: 'Additional Information'
     message:
         no_persons: 'No people yet. Create the first person.'
+    placeholder:
+        name: 'e.g. John Doe'
+        badge: 'e.g. BADGE-12345'
+    help:
+        badge: 'Unique badge identifier for physical access control'
     confirm:
         delete: 'Are you sure you want to delete this person?'
     success:
@@ -334,6 +440,31 @@ role:
         updated: 'Role successfully updated.'
         deleted: 'Role successfully deleted.'
         created_from_template: "Role '%role%' successfully created from template"
+    action:
+        compare: 'Compare Roles'
+        templates: Templates
+    compare:
+        title: 'Role Comparison'
+        select_roles: 'Select roles to compare'
+        permission_matrix: 'Permission Matrix'
+        has_permission: 'Has Permission'
+        no_permission: 'No Permission'
+        select_label: 'Select Roles'
+        select_hint: 'Select at least two roles to compare'
+        submit: 'Compare'
+        legend_title: 'Legend'
+    templates:
+        title: 'Role Templates'
+        description: 'Create a new role based on a template'
+        select: 'Select Template'
+        apply: 'Apply Template'
+        custom_name: 'Custom Name (optional)'
+        auditor: Auditor
+        risk_manager: 'Risk Manager'
+        compliance_officer: 'Compliance Officer'
+        incident_manager: 'Incident Manager'
+        asset_manager: 'Asset Manager'
+        readonly: 'Read-Only User'
 messages:
     csrf:
         invalid: 'Invalid CSRF token.'
@@ -342,6 +473,7 @@ error:
     generic:
         title: Error
         heading: Oops!
+        subheading: 'Something Went Wrong'
         message: 'We encountered an error while processing your request.'
         help: 'Please try again or contact support if the problem persists.'
         alva_line: 'Something went wrong.'
@@ -386,6 +518,7 @@ error:
     action:
         homepage: 'Go to Homepage'
         back: 'Go Back'
+        login: Login
         retry: 'Try again'
 email_notification:
     footer:
@@ -405,6 +538,7 @@ preferences:
         import_failed: 'Error importing settings'
 permission:
     title: Permissions
+    list: 'Permission List'
     show: 'Permission Details'
     category: Category
     action: Action
@@ -419,17 +553,220 @@ permission:
         categories: Categories
     subtitle: ''
 data:
+    title: 'Data Management'
+    backup:
+        title: 'Database Backup'
+        create: 'Create Backup'
+        list: 'Available Backups'
+        filename: Filename
+        date: Date
+        size: Size
+        actions: Actions
+        download: Download
+        delete: Delete
+        retention_policy: 'Retention Policy: Only the last 7 backups are kept automatically'
+        location: 'Backup Location'
+        method: 'Backup Method: PostgreSQL pg_dump (SQL format)'
+        how_to_restore: 'How to Restore a Backup'
+        restore_warning: 'Warning: Restoring a backup will overwrite all current data!'
+        success:
+            created: 'Backup successfully created: %filename%'
+            deleted: 'Backup successfully deleted'
+        error:
+            invalid_token: 'Invalid CSRF token'
+            create_failed: 'Backup failed: %error%'
+            not_found: 'Backup file not found'
     export:
+        title: 'Data Export'
+        configure: 'Configure Export'
+        format: 'Export Format'
+        select_entities: 'Select Entities to Export'
+        select_all: 'Select All'
+        deselect_all: 'Deselect All'
+        execute: 'Export Selected Entities'
+        about: 'About Data Export'
+        about_text: 'Export your data in JSON or CSV format. You can select specific entities or export all data.'
+        format_json: 'JSON format preserves data types and is recommended for re-import'
+        format_csv: 'CSV is better for spreadsheet applications'
+        success:
+            exported: 'Data successfully exported'
         error:
             invalid_token: 'Invalid CSRF token'
             no_entities: 'No entities selected'
     import:
+        title: 'Data Import'
+        upload: 'Upload Import File'
+        preview: 'Import Preview'
+        execute: 'Execute Import'
+        select_file: 'Select JSON File'
+        upload_and_preview: 'Upload and Preview'
+        process: 'Import Process'
+        requirements: 'Import Requirements'
+        file_format: 'File Format'
+        before_importing: 'Before Importing'
+        limitations: Limitations
         warning:
+            critical: 'Critical Warning: Data import can overwrite existing data!'
+            backup_first: 'Always create a backup before importing'
+            preview_mode: 'This feature is currently in preview mode'
             not_implemented: 'Import functionality is not yet fully implemented'
+        stats:
+            total_entities: 'Total Entities'
+            total_records: 'Total Records'
+            status: Status
         error:
             invalid_token: 'Invalid CSRF token'
             no_file: 'No file uploaded'
             invalid_file: 'Invalid file: %error%'
+    setup:
+        title: 'Setup Wizard'
+        link: 'Link to existing Deployment Wizard'
+        progress:
+            title: 'Setup Progress'
+            step: 'Step %current% of %total%'
+        navigation:
+            back: Back
+            next: Continue
+        welcome:
+            title: Welcome
+            header: 'Little ISMS Helper - Setup Wizard'
+            greeting: 'Welcome to the Setup Wizard'
+            description: 'This wizard will guide you through setting up your ISMS system in just a few steps'
+            steps: { title: 'What will be set up?', database: 'Configure database', admin: 'Create administrator account', requirements: 'Check system requirements', modules: 'Select modules', migrations: 'Create database schema', base_data: 'Import base data', sample_data: 'Optional: Load sample data' }
+            requirements: { title: 'Duration & Requirements', duration: '~5-10 minutes', database: 'Database access required', php: 'PHP 8.2+ and extensions', permissions: 'Write permissions for directories' }
+            info: { title: 'Important Notes', description: 'The setup wizard helps you with initial configuration', point1: 'The database will be created automatically (if it does not exist)', point2: 'You will create an administrator account for first access', point3: 'All base data will be imported automatically' }
+            start_button: 'Start Setup'
+        database:
+            title: 'Database Configuration'
+            header: 'Step 1: Configure Database'
+            description: 'Configure your database connection. The database will be created automatically if it does not exist.'
+            type: 'Database Type'
+            type_help: 'Select your database type'
+            name: 'Database Name'
+            name_help: 'Name of the database to create or use'
+            name_invalid: 'The database name may only contain letters, numbers, and underscores'
+            host: Host
+            host_help: 'Hostname or IP address of the database server'
+            port: Port
+            port_help: 'Database server port (default: MySQL 3306, PostgreSQL 5432)'
+            user: Username
+            user_help: 'Database username'
+            password: Password
+            password_help: 'Database password (special characters are automatically escaped)'
+            server_version: 'Server Version'
+            server_version_help: 'Version number of the database server (e.g. 8.0 for MySQL, 14 for PostgreSQL)'
+            test_button: 'Test Connection'
+            info: { title: 'Database Configuration Notes', mysql: 'MySQL/MariaDB: Default port 3306, recommended for production', postgresql: 'PostgreSQL: Default port 5432, good performance for large datasets', sqlite: 'SQLite: File-based, no installation needed, ideal for development and small installations', special_chars: 'Special characters in passwords are automatically escaped' }
+            test: { success: 'Database connection successful', failed: 'Database connection failed', create_needed: 'The database does not exist yet and will be created automatically in the next step' }
+            write_failed: 'Error writing configuration: %error%. %hint%'
+            existing_tables: 'Warning: The database already contains %count% tables: %tables%'
+            config_saved: 'Database configuration saved successfully'
+            config_failed: 'Error saving database configuration'
+        admin:
+            title: 'Create Administrator'
+            header: 'Step 2: Create Administrator Account'
+            description: 'Create the first administrator account for your ISMS system. This account will have full access rights.'
+            first_name: 'First Name'
+            last_name: 'Last Name'
+            email: 'Email Address'
+            email_help: 'This email address will be used for login'
+            first_name_placeholder: 'John'
+            last_name_placeholder: 'Doe'
+            password: Password
+            password_confirm: 'Confirm Password'
+            password_requirements: { title: 'Password Requirements', length: 'At least 8 characters', uppercase: 'At least one uppercase letter', lowercase: 'At least one lowercase letter', number: 'At least one digit' }
+            security_note: { title: 'Security Note', message: 'Use a secure password and keep your credentials in a safe place.' }
+            next_steps: { title: 'Next Steps', description: 'After creating the administrator account, system requirements will be checked and the database will be initialized.' }
+            first_name_required: 'First name is required'
+            first_name_min: 'First name must be at least 2 characters long'
+            first_name_max: 'First name may not exceed 50 characters'
+            last_name_required: 'Last name is required'
+            last_name_min: 'Last name must be at least 2 characters long'
+            last_name_max: 'Last name may not exceed 50 characters'
+            email_required: 'Email address is required'
+            email_invalid: 'Invalid email address'
+            password_required: 'Password is required'
+            password_min: 'Password must be at least 8 characters long'
+            password_max: 'Password may not exceed 255 characters'
+            password_strength: 'Password must contain at least one uppercase letter, one lowercase letter, and one digit'
+            password_mismatch: 'The passwords do not match'
+            migration_failed: 'Error executing database migrations'
+            creation_failed: 'Error creating administrator account'
+            user_created: 'Administrator account created successfully'
+        state:
+            recovery_detected: 'Note: An incomplete installation was detected. You can continue from here.'
+        error:
+            configure_database_first: 'Please configure the database first'
+            create_admin_first: 'Please create an administrator first'
+        email:
+            title: 'Email Configuration'
+            header: 'Step 3: Email Configuration (Optional)'
+            optional: { title: 'This step is optional', message: 'You can configure email settings later in the system settings.' }
+            transport: 'Transport Method'
+            transport_help: 'Select the method for sending emails'
+            transport_types: { smtp: 'SMTP Server', sendmail: Sendmail, native: 'PHP mail()' }
+            host: 'SMTP Host'
+            host_help: 'Hostname or IP address of the SMTP server'
+            port: 'SMTP Port'
+            port_help: 'SMTP server port (default: 587 for TLS, 465 for SSL)'
+            encryption: Encryption
+            encryption_help: 'Select the encryption method'
+            encryption_types: { none: None, tls: 'TLS (recommended)', ssl: SSL }
+            username: Username
+            username_help: 'SMTP username (usually the email address)'
+            password: Password
+            password_help: 'SMTP password'
+            from_address: 'Sender Address'
+            from_address_help: 'Email address of the sender'
+            from_name: 'Sender Name'
+            from_name_help: 'Name of the sender'
+            from_name_placeholder: 'Little ISMS Helper'
+            sender_info: 'Sender Information'
+            skip_button: Skip
+            skipped: 'Email configuration skipped'
+            config_saved: 'Email configuration saved successfully'
+            config_failed: 'Error saving email configuration'
+            info: { title: 'What is email used for?', description: 'The email configuration enables the system to:', notifications: 'Send notifications to users', reminders: 'Send reminders for due tasks', reports: 'Send automated reports' }
+        organisation:
+            title: 'Organisation Information'
+            header: 'Step 4: Organisation Information'
+            intro: 'Provide information about your organisation. This will be used for compliance reports and scope definition.'
+            name: 'Organisation Name'
+            name_required: 'Organisation name is required'
+            name_min: 'Organisation name must be at least 2 characters long'
+            name_max: 'Organisation name may not exceed 255 characters'
+            name_help: 'Official name of your organisation'
+            industry: Industry
+            industry_required: 'Please select an industry'
+            industry_help: "Select your organisation's industry"
+            industry_options: { select: '-- Select Industry --', automotive: Automotive, financial_services: 'Financial Services', healthcare: Healthcare, manufacturing: Manufacturing, it_services: 'IT Services', energy: Energy, telecommunications: Telecommunications, retail: Retail, public_sector: 'Public Sector', education: Education, other: Other }
+            employee_count: 'Employee Count'
+            employee_count_required: 'Please select the employee count'
+            employee_count_help: 'Approximate number of employees'
+            employee_count_options: { select: '-- Select Employee Count --' }
+            country: Country
+            country_help: 'Main location of your organisation'
+            description: Description
+            description_help: 'Brief description of your organisation and business activities'
+            name_placeholder: 'Example Ltd.'
+            description_placeholder: 'Brief description of the organisation and business activities...'
+            info_saved: 'Organisation information saved successfully'
+            info_failed: 'Error saving organisation information'
+            usage: { title: 'Use of this Information', message: 'This information will be used to provide industry-specific recommendations and compliance requirements.' }
+            compliance_info: { title: 'Why is this information important?', description: 'Based on your input, we can:', scope: 'Better define the scope of your ISMS', reporting: 'Automatically adapt compliance reports', recommendations: 'Provide industry-specific recommendations' }
+        compliance:
+            title: 'Compliance Frameworks'
+            header: 'Step 7: Select Compliance Frameworks'
+            description: 'Select the compliance frameworks that are relevant to your organisation. You can add more frameworks later.'
+            recommended: { title: 'Recommended Frameworks for Your Industry', description: 'Based on your organisation information, we recommend the following frameworks:' }
+            mandatory: { title: 'ISO 27001 is Mandatory', message: 'ISO 27001:2022 is the foundation of this ISMS and cannot be deselected.' }
+            select_frameworks: 'Select Your Compliance Frameworks'
+            recommended_badge: Recommended
+            mandatory_badge: Mandatory
+            frameworks_saved: '%count% compliance frameworks selected'
+            note: { title: 'Important Note', message: 'You can add or remove frameworks at any time. The selection affects which requirements and controls are available in your ISMS.' }
+            details: { title: 'Framework Details', description: 'Overview of all available frameworks' }
+            critical_infrastructure: { title: 'Critical Infrastructure Notice', message: 'Your organisation belongs to critical infrastructure (energy/telecommunications). NIS2 may be relevant even for smaller companies, as the directive can cover critical sectors regardless of size.' }
 setup:
     welcome:
         title: 'Welcome to Little ISMS Helper'
@@ -709,6 +1046,8 @@ setup:
             title: 'Help & Documentation'
             description: 'For questions or issues, please consult the documentation or contact support. All features can be accessed via the main menu.'
 status:
+    in_progress: 'In Progress'
+    not_started: 'Not Started'
     approved: ''
 action:
     new_asset: 'New Asset'
@@ -724,7 +1063,25 @@ action:
     view_all: ''
 form:
     automatic_value: 'This field was automatically filled by the Cyberpunk Fairy.'
+    complete_asset_inventory: 'Complete asset inventory'
+    conduct_risk_analysis: 'Conduct risk analysis'
+    document_policies: 'Document policies'
+    plan_awareness_training: 'Plan awareness training'
     required: 'Required field'
+    required_field: 'Required field'
+    optional: Optional
+    action:
+        save: Save
+        cancel: Cancel
+        submit: Submit
+        delete: Delete
+        edit: Edit
+        create: Create
+    validation:
+        required_field: 'This field is required'
+        invalid_format: 'Invalid format'
+        too_short: 'Too short (min. %min% characters)'
+        too_long: 'Too long (max. %max% characters)'
     section:
         overview: 'Overview'
         recovery: 'Recovery'
@@ -742,20 +1099,123 @@ form:
             unmapped_title: 'Notice (dev only):'
             unmapped_body: 'The following fields are not covered by any section and fall through to the catch-all bucket: %fields%. Update the SectionPolicy on the FormType class.'
 corporate:
+    title: 'Corporate Structure'
+    subtitle: 'Management of parent companies and subsidiaries'
+    role:
+        parent: 'Parent Company'
+        subsidiary: Subsidiary
+    section:
+        groups: 'Corporate Groups'
+        standalone: 'Standalone Tenants'
+        structure: 'Corporate Structure'
     stats:
+        standalone: Standalone
+        total: 'Total Tenants'
+        own: Own
+        inherited: Inherited
+        subsidiaries: Subsidiaries
         breakdown: 'Own: %own% | Inherited: %inherited% | Subs: %subsidiaries%'
+        groups: 'Corporate Groups'
     view:
         own_only: 'Own Only'
         including_inherited: 'Incl. Inherited'
         including_subsidiaries: 'Incl. Subsidiaries'
+    field:
+        actions: Actions
+        subsidiaries: Subsidiaries
+        parent: 'Parent Company'
+        parent_help: 'Assign this tenant to a parent company to model corporate structures'
+        subsidiary: Subsidiary
+        is_corporate_parent: 'Is Corporate Parent'
+        is_corporate_parent_help: 'Enable if this tenant is a parent company with subsidiaries'
+        corporate_notes: 'Corporate Notes'
+        corporate_notes_help: 'Additional information about corporate structure and relationships'
+        governance_model: 'Governance Model'
+        hierarchy_depth: 'Hierarchy Depth'
+    select:
+        parent: 'Select parent company...'
+        governance: 'Select governance model...'
+    action:
+        set_parent: 'Set Parent Company'
+        update_governance: 'Update Governance'
+        remove_parent: 'Remove Parent Company'
+        view_structure: 'View Structure'
+    info:
+        title: 'Corporate Structure Information'
+        text: 'Here you can manage hierarchical relationships between tenants'
+    modal:
+        set_parent:
+            title: 'Set Parent Company'
+        update_governance:
+            title: 'Update Governance Model'
+    confirm:
+        remove_parent: 'Do you really want to remove the connection to the parent company?'
+    single_tenant:
+        title: 'Single Tenant'
+        message: 'There is only one tenant in the system'
+        hint: 'Corporate structures only become relevant when you manage multiple tenants'
+    flash:
+        text: 'Here you can manage relationships between parent companies and subsidiaries. The governance model determines how ISMS responsibilities are divided between parent and subsidiary companies.'
+        error: 'Error processing corporate structure'
+    level: 'Level %level%'
+    placeholder:
+        parent: 'No parent (standalone)'
+        corporate_notes: 'e.g., Holding structure, responsibilities, etc.'
+        hint: 'Corporate structures become relevant when you manage multiple tenants.'
+    granular:
+        title: 'Granular Governance Rules'
+        subtitle: 'Specific governance rules for individual areas'
+        loading: 'Loading governance rules...'
+        add_rule: 'Add Rule'
+        no_rules: 'No governance rules defined yet'
+        modal:
+            title: 'Edit Governance Rule'
+        field:
+            notes: Notes
+            scope: Scope
+            scope_id: 'Scope ID'
+        scope:
+            control: Control
+            isms_context: 'ISMS Context'
+            risk: Risk
+            asset: Asset
+            process: 'Business Process'
+        help:
+            control: Control
+            risk: Risk
+            asset: Asset
+            process: Process
+            default: Default
+            delete: 'Delete Rule'
+            scope_id: 'ID of the specific item (optional)'
+        confirm:
+            delete: 'Do you really want to delete this governance rule?'
+        flash:
+            saved: 'Governance rule saved'
+            deleted: 'Governance rule deleted'
+            error: 'Error saving governance rule'
     inheritance:
+        title: Inheritance
+        subtitle: 'Effective ISMS context for this tenant'
+        organization: Organization
+        propagate: 'Propagate to Subsidiaries'
+        from: From
+        edit_at_parent: 'To modify this context, please edit it at the parent company.'
         cannot_edit_inherited: 'Inherited contexts cannot be edited'
         cannot_edit_inherited_long: 'This ISMS context is inherited from parent company "%parent%" and cannot be edited here. Please edit the context at the parent company.'
         cannot_delete_inherited: 'Inherited entries cannot be deleted'
         view_only_title: 'View Only - Inherited Entry'
+        risk_inherited_message: 'This risk is inherited from the parent company and cannot be edited here.'
         asset_inherited_message: 'This asset is inherited from the parent company and cannot be edited here.'
         document_inherited_message: 'This document is inherited from the parent company and cannot be edited here.'
         supplier_inherited_message: 'This supplier is inherited from the parent company and cannot be edited here.'
+        isms_context_inherited: 'This ISMS context is inherited'
+        no_context: 'No ISMS context available'
+        inherited_from: 'Inherited from'
+        own_context: 'Own Context'
+        load_error: 'Error loading inherited data'
+        confirm_propagate: 'Do you really want to distribute these changes to all subsidiaries?'
+        propagate_error: 'Error distributing changes'
     inherited: Inherited
 governance:
     hierarchical: Hierarchical
@@ -852,6 +1312,7 @@ nis2:
             view_vulnerabilities: 'View Vulnerabilities'
             view_patches: 'View Patches'
             manage_mfa: 'Manage MFA'
+    article: 'NIS2 Art. %article%'
     not_installed: ''
     not_active: ''
     report_not_available: ''
@@ -859,6 +1320,7 @@ nis2:
 bsi_check:
     title: 'BSI IT-Grundschutz Check'
     description: 'Soll/Ist-Vergleich per Baustein with MUSS/SOLLTE/KANN weighting. Values are derived from ComplianceRequirement inventory and mapped controls — no duplicate entry.'
+    framework: 'Framework'
     filter:
         absicherungs_stufe: 'Absicherungsstufe'
         all: 'All stufen'
@@ -892,6 +1354,32 @@ bsi_check:
     empty:
         title: 'No requirements found'
         message: 'No BSI IT-Grundschutz requirements are loaded for the selected Absicherungsstufe. Try a different filter or load the Kompendium data with app:load-bsi-grundschutz-requirements and app:load-bsi-kompendium-delta.'
+Customer: Customer
+Shareholder: Shareholder
+Employee: Employee
+Regulator: Regulator
+Supplier: Supplier
+Partner: Partner
+Public: Public
+Media: Media
+Government: Government
+Competitor: Competitor
+Other: Other
+Critical: Critical
+High: High
+Medium: Medium
+Low: Low
+Daily: Daily
+Weekly: Weekly
+Monthly: Monthly
+Yearly: Annually
+Quarterly: Quarterly
+Annually: Annually
+'As Needed': 'As Needed'
+Active: Active
+Inactive: Inactive
+Evaluation: Evaluation
+Terminated: Terminated
 vulnerability:
     success:
         created: ''
@@ -906,6 +1394,19 @@ processing_activity:
     marked_for_review: ''
     review_completed: ''
     cloned: ''
+    alert:
+        compliance_issues: 'Compliance issues have been detected. Please review the affected entries.'
+    stat:
+        completeness: Completeness
+        status: Status
+        risk_level: 'Risk Level'
+        dpia_status: 'DPIA Status'
+    dpia:
+        required: 'DPIA required'
+        not_required: 'No DPIA required'
+    compliance:
+        pass: Compliant
+        fail: 'Non-compliant'
 business_continuity_plan:
     success:
         created: ''
@@ -940,6 +1441,9 @@ security:
         saml_login_error: ''
         saml_logout_error: ''
     csrf_token_invalid: ''
+    url:
+        no_internal_ip: 'Internal IP addresses are not permitted for security reasons (SSRF protection). Please use a public URL.'
+        dns_resolution_failed: 'Hostname could not be resolved (potential DNS-pinning attack blocked).'
 location:
     success:
         created: ''
@@ -1006,11 +1510,34 @@ admin:
         select_asset: ''
         asset_not_found: ''
         select_risk: ''
+    data_export:
+        configure_title: 'Configure Export'
+        select_entities: 'Select Entities to Export'
+        select_all: 'Select All'
+        deselect_all: 'Deselect All'
+        format: 'Format'
+        format_help: 'Choose the export format'
+        format_selection: 'Format Selection'
+        submit: 'Export'
+business_process:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
 asset:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
     bulk_delete:
         success: ''
         no_items: ''
 training:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+interested_party:
     success:
         created: ''
         updated: ''
@@ -1023,6 +1550,9 @@ objective:
         created: ''
         updated: ''
         deleted: ''
+control:
+    success:
+        updated: ''
 audit:
     success:
         created: ''
@@ -1066,9 +1596,22 @@ risk:
         high: 'High'
         medium: 'Medium'
         low: 'Low'
+        very_low: 'Very Low'
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
     acceptance:
+        error:
+            wrong_strategy: ''
+            already_accepted: ''
+            justification_required: ''
+            reason_required: ''
         success:
+            auto_accepted: ''
+            approval_requested: ''
             approved: ''
+            rejected: ''
 risk_appetite:
     success:
         created: ''
@@ -1155,6 +1698,7 @@ pdf:
         define_content_block: ''
     risk_report:
         distribution_by_level: ''
+        distribution_by_status: ''
     data_reuse:
         recommendations_title: ''
     transitive_compliance:
@@ -1167,9 +1711,12 @@ bulk_actions:
     export: 'Export'
     add_tag: 'Add tag'
     assign: 'Assign'
+    assign_owner: 'Assign owner'
+    tag: 'Tag'
     approve: 'Approve'
     delete: 'Delete'
     deselect: 'Clear selection'
+    close: 'Clear selection'
     toolbar: 'Bulk actions'
     applicable_change:
         label: 'Set applicability'
@@ -1177,6 +1724,8 @@ bulk_actions:
         set_not_applicable: 'N/A (not applicable)'
         default_reason: 'Bulk action via SoA table'
 
+aria:
+    notifications: 'Notifications'
 not_assigned: ''
 page:
     title: ''
@@ -1193,6 +1742,24 @@ notifications:
 # PWA (Progressive Web App) - Phase 8A
 pwa:
     install: 'Install App'
+    install_prompt: 'Install ISMS Helper as an app?'
+    install_description: 'Install the app for faster access and offline use.'
+    offline: 'You are offline'
+    online: 'Connection restored'
+    notifications:
+        enabled: 'Push notifications enabled'
+        disabled: 'Push notifications disabled'
+        permission_denied: 'Notifications blocked'
+        subscribe: 'Enable notifications'
+        unsubscribe: 'Disable notifications'
+        test: 'Send test notification'
+    sync:
+        pending: '%count% pending syncs'
+        syncing: 'Syncing...'
+        success: 'Successfully synced'
+        error: 'Sync failed'
+
+# Share Target API - Phase 8A
 share:
     title: 'Share Content'
     content_preview: 'Shared Content'
@@ -1204,6 +1771,17 @@ share:
         text: 'Text'
         url: 'URL'
         files: 'Files'
+    action:
+        save_note: 'Save as Note'
+        note_desc: 'Quick save for later'
+        create_incident: 'Create Incident'
+        incident_desc: 'Report as security incident'
+        create_risk: 'Create Risk'
+        risk_desc: 'Record as new risk'
+        create_document: 'Create Document'
+        document_desc: 'Save as document'
+
+# Loader Fixer flash messages
 loader_fixer:
     flash:
         single: 'Loader issue fixed successfully'
@@ -1286,6 +1864,10 @@ action.preview: 'Preview'
 action.use_template: 'Use template'
 
 # Empty state
+empty:
+    no_reports: 'No reports available'
+
+# Form keys
 form.category: 'Category'
 form.description: 'Description'
 form.description_placeholder: 'Enter description...'
@@ -1295,17 +1877,144 @@ form.name: 'Name'
 form.name_placeholder: 'Enter name...'
 
 # Layout keys
+layout:
+    dashboard: 'Dashboard'
+    single: 'Single'
+    two_column: 'Two Column'
+
+# New
+new:
+    subtitle: 'Create new entry'
+
+# Section keys
+section:
+    favorites: 'Favorites'
+    my_reports: 'My Reports'
+    quick_start: 'Quick Start'
+    recently_used: 'Recently Used'
+    shared_templates: 'Shared Templates'
+
+# Table keys
+table:
+    actions: 'Actions'
+    category: 'Category'
+    layout: 'Layout'
+    name: 'Name'
+    updated: 'Updated'
+
+# Uses
+uses: 'Uses'
+
+# DORA Dashboard
+dora:
+    dashboard:
+        overall_compliance: 'DORA Overall Compliance'
+    articles: 'DORA Articles'
+    pillar:
+        ict_risk: 'ICT Risk Management'
+        incidents: 'Incident Reporting'
+        testing: 'Resilience Testing'
+        third_party: 'Third-Party Risk'
+        information_sharing: 'Information Sharing'
+    metric:
+        ict_assets: 'ICT Assets'
+        ict_risks: 'ICT Risks'
+        high_critical_risks: 'High/Critical Risks'
+        risk_treatment_rate: 'Risk Treatment Rate'
+        asset_classification: 'Asset Classification'
+        control_implementation: 'Control Implementation'
+        total_incidents: 'Total Incidents'
+        open_major_incidents: 'Open Major Incidents'
+        major_incidents_ytd: 'Major Incidents (YTD)'
+        mttr: 'MTTR (Mean Time To Recover)'
+        4h_reporting: '4h Reporting'
+        exercises: 'Exercises'
+        bc_plans: 'BC Plans'
+        bc_coverage: 'BC Coverage'
+        resilience_trainings: 'Resilience Trainings'
+        ict_providers: 'ICT Providers'
+        critical_providers: 'Critical Providers'
+        assessment_rate: 'Assessment Rate'
+        overdue_assessments: 'Overdue Assessments'
+        concentration_risk: 'Concentration Risk'
+        exit_strategies: 'Exit Strategies'
+        implementation_rate: 'Implementation Rate'
+    article_19_hint: 'Art. 19 - Reporting of ICT-related incidents'
+    testing_requirement: 'Resilience testing requirement per DORA'
+    high_dependency_providers: 'High Dependency Providers'
+    information_sharing_desc: 'Information sharing on cyber threats and vulnerabilities'
+    controls_implemented: 'Controls Implemented'
+    quick_actions: 'Quick Actions'
+    action:
+        manage_risks: 'Manage Risks'
+        manage_incidents: 'Manage Incidents'
+        plan_exercises: 'Plan Exercises'
+        manage_suppliers: 'Manage Suppliers'
+
+# Wizard (Compliance Assessment)
 wizard:
     step_counter: 'Step %current% / %total%'
     companion: 'Alva — companion'
     companion_short: 'companion'
     skip_typewriter: '» Skip'
     navigation: 'Wizard navigation'
+    actions: 'Actions'
+    active_modules: 'Active Modules'
+    assessed_at: 'Assessed At'
+    assessment_scope: 'Assessment Scope'
+    assessment_scope_desc: 'Scope of the compliance assessment'
+    average_compliance: 'Average Compliance'
+    best_framework: 'Best Framework'
+    category: 'Category'
+    category_comparison: 'Category Comparison'
+    category_summary: 'Category Summary'
+    check_name: 'Check Name'
+    checks: 'Checks'
+    critical_gaps: 'Critical Gaps'
+    data_sources_info: 'Data Sources Information'
+    detailed_checks: 'Detailed Checks'
+    duration_hint: 'Estimated assessment duration'
+    export_hint: 'Export the results as PDF'
+    export_pdf: 'Export PDF'
+    gap_hint: 'Hint about identified gaps'
+    gaps: 'Gaps'
+    gaps_identified: 'Gaps Identified'
+    gaps_to_address: 'Gaps to Address'
+    go_to_module: 'Go to Module'
+    insights: 'Insights'
+    needs_attention: 'Needs Attention'
+    overall: 'Overall'
+    rec_improve_controls: 'Recommendation: Improve controls'
+    rec_priority_framework: 'Recommendation: Priority framework'
+    rec_regular_assessment: 'Recommendation: Regular assessment'
+    recommendations: 'Recommendations'
+    recommended_action: 'Recommended Action'
+    run_again: 'Run Again'
+    score: 'Score'
+    score_hint: 'Compliance score based on implemented controls'
+    select_frameworks: 'Select Frameworks'
     status:
         compliant: 'Compliant'
         in_progress: 'In Progress'
         not_started: 'Not Started'
         partial: 'Partial'
+    status_label: 'Status'
+    total_checks: 'Total Checks'
+    update_comparison: 'Update Comparison'
+    view_details: 'View Details'
+    what_to_expect: 'What to Expect'
+    missing_recommended_title: 'Recommended modules not activated'
+    missing_recommended_desc: 'Some modules recommended for this framework are not yet activated. Activate them to improve the compliance assessment.'
+    activate_modules: 'Activate Modules'
+
+# Four Eyes Principle
+four_eyes:
+    title: 'Four Eyes Principle'
+    required: 'Four-eyes approval required'
+    approved_by: 'Approved by'
+    pending: 'Approval pending'
+    approve: 'Approve'
+    reject: 'Reject'
 reuse:
     page:
         title: 'Data-Reuse Hub'
@@ -1378,6 +2087,11 @@ data_breach:
         hours_left: '%hours% hrs remaining'
         table_title: 'Data breaches'
 
+file_upload:
+    validation:
+        mime_type_invalid: 'File type not permitted. Allowed types: %types%'
+        max_size_exceeded: 'File too large (max %limit%).'
+
 pdf_switch:
     also_available: 'Also available in'
 
@@ -1390,3 +2104,40 @@ comments:
     submit: 'Send'
 
 # SSO admin / approvals UI
+sso:
+    action:
+        approve: 'Approve'
+        reject: 'Reject'
+        enable: 'Enable'
+        disable: 'Disable'
+    admin:
+        col:
+            name: 'Name'
+            slug: 'Slug'
+            type: 'Type'
+            scope: 'Scope'
+            status: 'Status'
+            domains: 'Domains'
+            actions: 'Actions'
+    approvals:
+        col:
+            email: 'Email'
+            provider: 'Provider'
+            tenant: 'Tenant'
+            claims: 'Claims'
+            requested_at: 'Requested at'
+            actions: 'Actions'
+        show_claims: 'Show claims'
+    field:
+        auto_approve: 'Auto approve'
+    prompt:
+        reject_reason: 'Please provide a rejection reason'
+    scope:
+        global: 'Global'
+    status:
+        enabled: 'Enabled'
+        disabled: 'Disabled'
+
+# Owner-Picker — Tri-State Owner Slot Component (S4 P-1)
+owner_picker:
+    legacy_hint: 'Legacy free-text from historical records. Please select a user or person above; this field is read-only and serves as a migration hint.'

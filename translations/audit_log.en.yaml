@@ -46,6 +46,7 @@ audit_log:
     pagination:
         prev: '« Previous'
         next: 'Next »'
+        page_counter: 'Page %current% of %total%'
     message:
         no_entries: 'No log entries found.'
         no_entries_filtered: 'No audit log entries found for the selected filter.'
@@ -60,6 +61,7 @@ audit_log:
         about_title: 'About Audit Log'
         about_text: 'The audit log tracks all significant actions in the system including create, update, and delete operations. This provides a complete audit trail for compliance and security purposes.'
         module_link: 'Audit Log module'
+        entries: audit_log
     showing_recent: 'Showing Recent'
     entries: Entries
     view_all: 'View All'
@@ -89,6 +91,11 @@ audit_log:
             days: 'Retention Period (days)'
             help: 'Between %min% and %max% days. Default: %default% (equals 2 years, ISO 27001 Clause 9.1).'
         warning: 'Change only after consultation with Data Protection / Compliance. GDPR Art. 5.1(e) requires minimization; NIS2 Art. 21.2 requires at least 365 days.'
+        saved: 'Retention period saved.'
+        csrf_invalid: 'Security token invalid. Please try again.'
+        error:
+            min: 'Retention period must be at least 365 days (NIS2 Art. 21.2).'
+            max: 'Retention period must not exceed 3650 days (10 years).'
         compliance_title: 'Regulatory Basis'
         compliance:
             gdpr: 'Storage limitation — personal data must not be kept longer than necessary.'

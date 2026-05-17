@@ -37,7 +37,7 @@ use Psr\Log\LoggerInterface;
  * cannot reference this user (FK guard).
  */
 #[AsEntityListener(event: Events::postUpdate, entity: User::class)]
-class AssetOwnerSyncListener
+final class AssetOwnerSyncListener
 {
     public function __construct(
         private readonly LoggerInterface $logger,

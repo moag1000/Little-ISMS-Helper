@@ -37,7 +37,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * - Only enabled on HTTPS requests
  * - Note: Consider includeSubDomains after testing all subdomains support HTTPS
  */
-class SecurityHeadersSubscriber implements EventSubscriberInterface
+final class SecurityHeadersSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly string $environment
