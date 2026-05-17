@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\WizardRunStatus;
 use App\Repository\WizardRunRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -267,10 +268,18 @@ class WizardRun
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(WizardRunStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?WizardRunStatus
+    {
+        return WizardRunStatus::tryFrom($this->status);
     }
 
     /** @return array<int, int>|null */
