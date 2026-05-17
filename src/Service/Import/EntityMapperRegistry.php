@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Import;
 
+use App\Exception\Import\ImportFailedException;
 use App\Service\Import\Mapper\EntityMapperInterface;
 
 /**
@@ -29,7 +30,7 @@ final class EntityMapperRegistry
     /**
      * Return the mapper responsible for $entityType.
      *
-     * @throws \InvalidArgumentException when no mapper supports the requested type
+     * @throws ImportFailedException when no mapper supports the requested type
      */
     public function getMapperFor(string $entityType): EntityMapperInterface
     {
@@ -39,12 +40,13 @@ final class EntityMapperRegistry
             }
         }
 
-        throw new \InvalidArgumentException(sprintf(
-            'No import mapper registered for entity type "%s". '
-            . 'Supported types: %s.',
+        throw ImportFailedException::forType(
             $entityType,
-            implode(', ', $this->getSupportedEntityTypes()),
-        ));
+            sprintf(
+                'No import mapper registered. Supported types: %s.',
+                implode(', ', $this->getSupportedEntityTypes()),
+            ),
+        );
     }
 
     /**

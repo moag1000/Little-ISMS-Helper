@@ -6,6 +6,7 @@ namespace App\Controller\Import;
 
 use App\Entity\BulkImportBatch;
 use App\Entity\User;
+use App\Exception\Import\ImportFailedException;
 use App\Form\Import\ColumnMappingType;
 use App\Form\Import\PreviewConfirmType;
 use App\Form\Import\UploadStepType;
@@ -485,7 +486,7 @@ final class BulkImportController extends AbstractController
         $uploadDir = $this->projectDir . '/var/import-uploads';
 
         if (!is_dir($uploadDir)) {
-            throw new \RuntimeException(sprintf('Upload directory not found: %s', $uploadDir));
+            throw new ImportFailedException(sprintf('Upload directory not found: %s', $uploadDir));
         }
 
         $fileHash = $batch->getSourceFileHash();
@@ -497,7 +498,7 @@ final class BulkImportController extends AbstractController
             }
         }
 
-        throw new \RuntimeException(sprintf(
+        throw new ImportFailedException(sprintf(
             'Import source file not found for batch #%d (hash: %s).',
             $batch->getId(),
             $fileHash,

@@ -7,6 +7,7 @@ namespace App\Service\Import;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
+use App\Exception\Import\ImportFailedException;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -197,7 +198,7 @@ final class CrossFrameworkMappingImporter
     {
         $handle = fopen('php://temp', 'w+');
         if ($handle === false) {
-            throw new \RuntimeException('Unable to open temp stream for CSV parsing.');
+            throw new ImportFailedException('Unable to open temp stream for CSV parsing.');
         }
         fwrite($handle, $csv);
         rewind($handle);
