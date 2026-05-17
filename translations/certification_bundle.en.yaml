@@ -2,7 +2,6 @@ certification_bundle:
     title: 'Certification Document Bundle'
     subtitle: 'All ISMS documents in a single ZIP archive for the auditor'
     generate: 'Generate Bundle'
-    generating: 'Generating...'
     preview:
         organization: 'Organization'
         framework: 'Framework'
@@ -26,8 +25,6 @@ certification_bundle:
         desc_metadata: 'Export metadata with SHA-256 integrity hash'
         note_generation: 'Generation may take a few seconds depending on data volume.'
     warning_gaps: 'There are still %count% open gaps — the bundle will be generated anyway.'
-    success: 'Certification document bundle was generated successfully.'
-
     konzern_export:
         title: 'Group Bundle (Holding)'
         subtitle: 'Aggregates the certification bundles of all subsidiary tenants into a single ZIP — with a shared INDEX.csv, GROUP-OVERVIEW and RACI summary for holding-level audits.'
@@ -38,19 +35,10 @@ certification_bundle:
         subsidiaries_help: 'Leave empty to include all subsidiaries. The holding root is always included.'
         generate: 'Generate Group Bundle'
         note: 'Generation may take longer depending on the group size (one bundle per subsidiary).'
-        success: 'Group certification bundle was generated successfully.'
-        error:
-            not_a_holding: 'The current tenant has no subsidiaries — no group bundle possible.'
-
-    # PDF-specific translations
     pdf:
         generated: 'Generated'
         organization: 'Organization'
         confidential: 'CONFIDENTIAL'
-        total: 'Total'
-        total_colon: 'Total'
-        and_separator: '|'
-
         asset_register:
             title: 'Asset Register'
             total_assets: 'Total assets'

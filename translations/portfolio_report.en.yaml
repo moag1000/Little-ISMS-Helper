@@ -44,9 +44,6 @@ portfolio_report:
     pdf:
         footer: 'Confidential – Cross-Framework Portfolio Report | Little ISMS Helper'
 
-    flash:
-        no_tenant: 'No tenant is active for the portfolio report.'
-
     inheritance:
         title: 'Inheritance rate per framework (WS-1)'
         rate: 'Rate'

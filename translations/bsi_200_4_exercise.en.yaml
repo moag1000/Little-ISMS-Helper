@@ -23,22 +23,14 @@ rating:
 
 field:
     exercise_type: Exercise Type
-    template: BSI-200-4 Template
     scenario_summary: Scenario Summary
     objectives: Exercise Objectives
-    objectives_placeholder: 'Enter each objective on a new line'
-    objectives_help: 'One objective per line. Example: "Achieve RTO of 4 hours"'
     participants: Participants
-    participants_placeholder: 'Separate names by comma'
     lessons_learned: Lessons Learned
     overall_rating: Overall Rating
-    rating_placeholder: '— Select rating —'
     improvement_action_description: Action Description
-    improvement_action_owner: Owner (User ID)
     improvement_action_due_date: Due Date
     improvement_action_completed: Completed
-    owner_user_id_placeholder: 'User ID (optional)'
-
 section:
     actions_before: Actions Before Exercise
     actions_during: Actions During Exercise
@@ -54,9 +46,6 @@ action:
 error:
     log_already_exists: 'A log already exists for this exercise.'
     invalid_token: 'Invalid CSRF token. Please reload the page.'
-    not_submitted: 'The log must be submitted before it can be confirmed.'
-    already_confirmed: 'The log has already been confirmed.'
-
 nav:
     exercise_log: BSI-200-4 Exercise Log
     exercise_log_calendar: Exercise Plan Calendar
