@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use App\Entity\DataSubjectRequest;
 use App\Entity\Tenant;
 use App\Exception\Tenant\TenantOrphanException;
+use App\Exception\Workflow\InvalidStatusTransitionException;
 use App\Repository\DataSubjectRequestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -181,7 +182,12 @@ final class DataSubjectRequestService
     public function extend(DataSubjectRequest $request, string $reason): void
     {
         if (in_array($request->getStatus(), ['completed', 'rejected'], true)) {
-            throw new RuntimeException('Cannot extend a completed or rejected request');
+            throw new InvalidStatusTransitionException(
+                (string) $request->getStatus(),
+                'extended',
+                DataSubjectRequest::class,
+                'Cannot extend a completed or rejected request',
+            );
         }
 
         if ($request->getExtendedDeadlineAt() !== null) {
