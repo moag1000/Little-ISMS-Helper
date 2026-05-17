@@ -1,0 +1,48 @@
+framework:
+    workflows:
+        incident_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                # Enum-bridge: Incident uses typed IncidentStatus enum; the string-bridge
+                # methods (getStatusValue/setStatusValue) allow the workflow marking_store
+                # to coerce between string and enum transparently.
+                property: statusValue
+            supports:
+                - App\Entity\Incident
+            initial_marking: reported
+            places:
+                - reported
+                - in_investigation
+                - in_resolution
+                - resolved
+                - closed
+            transitions:
+                start_investigation:
+                    from: reported
+                    to: in_investigation
+                    metadata:
+                        roles: [ROLE_CISO]
+                resolve:
+                    from: in_investigation
+                    to: in_resolution
+                    metadata:
+                        roles: [ROLE_CISO]
+                close:
+                    from: resolved
+                    to: closed
+                    metadata:
+                        roles: [ROLE_CISO]
+                        four_eyes: true
+                        reason_required: true
+                false_positive:
+                    from: reported
+                    to: closed
+                    metadata:
+                        roles: [ROLE_CISO]
+                        reason_required: true
+                mark_resolved:
+                    from: in_resolution
+                    to: resolved
+                    metadata:
+                        roles: [ROLE_CISO]

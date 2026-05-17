@@ -104,6 +104,10 @@ class DataBreach
     #[Assert\Choice(choices: ['draft', 'under_assessment', 'authority_notified', 'subjects_notified', 'closed'])]
     private string $status = 'draft';
 
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     /**
      * Severity of the breach: low, medium, high, critical
      */
@@ -626,6 +630,11 @@ class DataBreach
     {
         $this->status = $status;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getSeverity(): ?string

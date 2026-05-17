@@ -390,6 +390,10 @@ class DataProtectionImpactAssessment
     #[Assert\Choice(choices: ['draft', 'in_review', 'approved', 'rejected', 'requires_revision'])]
     private string $status = 'draft';
 
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     /**
      * Person responsible for conducting the DPIA
      */
@@ -1149,6 +1153,11 @@ class DataProtectionImpactAssessment
     {
         $this->status = $status;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getConductor(): ?User

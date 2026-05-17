@@ -1,0 +1,60 @@
+framework:
+    workflows:
+        risk_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                # Enum-bridge: Risk uses typed RiskStatus enum; the string-bridge
+                # methods (getStatusValue/setStatusValue) allow the workflow marking_store
+                # to coerce between string and enum transparently.
+                property: statusValue
+            supports:
+                - App\Entity\Risk
+            initial_marking: identified
+            places:
+                - identified
+                - assessed
+                - in_treatment
+                - treated
+                - monitored
+                - closed
+                - accepted
+            transitions:
+                assess:
+                    from: identified
+                    to: assessed
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER]
+                treat:
+                    from: assessed
+                    to: in_treatment
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER]
+                complete_treatment:
+                    from: in_treatment
+                    to: treated
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER]
+                monitor:
+                    from: treated
+                    to: monitored
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER]
+                close:
+                    from: monitored
+                    to: closed
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER]
+                accept:
+                    from: assessed
+                    to: accepted
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_RISK_MANAGER]
+                        four_eyes: true
+                        reason_required: true
+                reopen:
+                    from: closed
+                    to: in_treatment
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER]
+                        reason_required: true

@@ -53,7 +53,7 @@ final class DataBreachService
         $dataBreach = new DataBreach();
         $dataBreach->setTenant($tenant);
         $dataBreach->setReferenceNumber($referenceNumber);
-        $dataBreach->setStatus('draft');
+        $dataBreach->setStatus('draft'); // FIXME: migrate to LifecycleService (initial state)
         // Defaults to false - user decides based on risk assessment
         $dataBreach->setRequiresAuthorityNotification(false);
         $dataBreach->setRequiresSubjectNotification(false);

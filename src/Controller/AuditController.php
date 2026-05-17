@@ -388,7 +388,7 @@ class AuditController extends AbstractController
         $currentUser = $this->getCurrentUserOrThrow();
         $oldStatus = (string) $internalAudit->getStatus();
 
-        $internalAudit->setStatus('reported');
+        $internalAudit->setStatus('reported'); // FIXME: migrate to LifecycleService::transition($internalAudit, 'internal_audit_lifecycle', 'report')
         $internalAudit->setReportedBy($currentUser);
         $internalAudit->setReportedAt(new DateTimeImmutable());
         $internalAudit->setUpdatedAt(new DateTimeImmutable());
@@ -435,7 +435,7 @@ class AuditController extends AbstractController
             return $this->redirectToRoute('app_audit_show', ['id' => $internalAudit->getId()]);
         }
 
-        $internalAudit->setStatus('approved');
+        $internalAudit->setStatus('approved'); // FIXME: migrate to LifecycleService::transition($internalAudit, 'internal_audit_lifecycle', 'approve')
         $internalAudit->setApprovedBy($currentUser);
         $internalAudit->setApprovedAt(new DateTimeImmutable());
         // Clear any previous rejection reason — the report is now approved.
@@ -483,7 +483,7 @@ class AuditController extends AbstractController
 
         $currentUser = $this->getCurrentUserOrThrow();
 
-        $internalAudit->setStatus('rejected');
+        $internalAudit->setStatus('rejected'); // FIXME: migrate to LifecycleService::transition($internalAudit, 'internal_audit_lifecycle', 'reject')
         $internalAudit->setRejectionReason($reason);
         // approvedBy/approvedAt stay null — a rejection is not an approval.
         $internalAudit->setUpdatedAt(new DateTimeImmutable());
@@ -523,7 +523,7 @@ class AuditController extends AbstractController
         $currentUser = $this->getCurrentUserOrThrow();
         $oldStatus = (string) $internalAudit->getStatus();
 
-        $internalAudit->setStatus('reported');
+        $internalAudit->setStatus('reported'); // FIXME: migrate to LifecycleService::transition($internalAudit, 'internal_audit_lifecycle', 'rework' then 'report')
         $internalAudit->setReportedBy($currentUser);
         $internalAudit->setReportedAt(new DateTimeImmutable());
         $internalAudit->setUpdatedAt(new DateTimeImmutable());
@@ -561,7 +561,7 @@ class AuditController extends AbstractController
 
         $currentUser = $this->getCurrentUserOrThrow();
 
-        $internalAudit->setStatus('closed');
+        $internalAudit->setStatus('closed'); // FIXME: migrate to LifecycleService::transition($internalAudit, 'internal_audit_lifecycle', 'close')
         $internalAudit->setClosedBy($currentUser);
         $internalAudit->setClosedAt(new DateTimeImmutable());
         $internalAudit->setUpdatedAt(new DateTimeImmutable());

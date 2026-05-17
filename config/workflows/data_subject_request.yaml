@@ -1,0 +1,36 @@
+framework:
+    workflows:
+        data_subject_request_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\DataSubjectRequest
+            initial_marking: received
+            places:
+                - received
+                - in_progress
+                - completed
+                - rejected
+            transitions:
+                process:
+                    from: received
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_DPO]
+                        module: privacy
+                complete:
+                    from: in_progress
+                    to: completed
+                    metadata:
+                        roles: [ROLE_DPO]
+                        module: privacy
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_DPO]
+                        four_eyes: true
+                        reason_required: true
+                        module: privacy
