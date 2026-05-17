@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\EvidenceReverificationTaskStatus;
 use App\Repository\EvidenceReverificationTaskRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -186,17 +187,26 @@ class EvidenceReverificationTask
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(EvidenceReverificationTaskStatus|string $status): static
     {
-        if (!in_array($status, self::VALID_STATUSES, true)) {
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $value = is_string($status) ? $status : $status->value;
+        if (!in_array($value, self::VALID_STATUSES, true)) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid EvidenceReverificationTask status "%s". Valid: %s',
-                $status,
+                $value,
                 implode(', ', self::VALID_STATUSES),
             ));
         }
-        $this->status = $status;
+        $this->status = $value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): EvidenceReverificationTaskStatus
+    {
+        return EvidenceReverificationTaskStatus::from($this->status);
     }
 
     public function getCompletedAt(): ?DateTimeImmutable

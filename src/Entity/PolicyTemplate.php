@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\PolicyTemplateStatus;
 use App\Repository\PolicyTemplateRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -608,11 +609,19 @@ class PolicyTemplate
      * existing code that reads isActive; callers should prefer setStatus()
      * over setIsActive() when the lifecycle is involved.
      */
-    public function setStatus(string $status): self
+    public function setStatus(PolicyTemplateStatus|string $status): self
     {
-        $this->status = $status;
-        $this->isActive = ($status === 'published');
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
+        $this->isActive = ($this->status === 'published');
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): PolicyTemplateStatus
+    {
+        return PolicyTemplateStatus::from($this->status);
     }
 
     public function getLockVersion(): int

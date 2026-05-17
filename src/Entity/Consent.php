@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\ConsentStatus;
 use App\Repository\ConsentRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -449,10 +450,18 @@ class Consent
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(ConsentStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?ConsentStatus
+    {
+        return $this->status === null ? null : ConsentStatus::from($this->status);
     }
 
     public function getLockVersion(): int
