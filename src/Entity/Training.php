@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Enum\TrainingStatus;
 use App\Repository\TrainingRepository;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -359,10 +360,18 @@ public function __construct()
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(TrainingStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?TrainingStatus
+    {
+        return $this->status === null ? null : TrainingStatus::tryFrom($this->status);
     }
 
     public function getDeliveryMethod(): ?string

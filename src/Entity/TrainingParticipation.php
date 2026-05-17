@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\TrainingParticipationStatus;
 use App\Repository\TrainingParticipationRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -140,17 +141,26 @@ class TrainingParticipation
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(TrainingParticipationStatus|string $status): static
     {
-        if (!in_array($status, self::ALLOWED_STATUSES, true)) {
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $value = is_string($status) ? $status : $status->value;
+        if (!in_array($value, self::ALLOWED_STATUSES, true)) {
             throw new \InvalidArgumentException(sprintf(
                 'Invalid TrainingParticipation status "%s". Allowed: %s',
-                $status,
+                $value,
                 implode(', ', self::ALLOWED_STATUSES),
             ));
         }
-        $this->status = $status;
+        $this->status = $value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?TrainingParticipationStatus
+    {
+        return TrainingParticipationStatus::tryFrom($this->status);
     }
 
     public function getAssignedAt(): ?DateTimeInterface

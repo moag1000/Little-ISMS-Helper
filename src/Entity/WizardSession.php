@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\WizardSessionStatus;
 use App\Repository\WizardSessionRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -209,10 +210,18 @@ class WizardSession
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(WizardSessionStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?WizardSessionStatus
+    {
+        return WizardSessionStatus::tryFrom($this->status);
     }
 
     public function getCurrentStep(): int

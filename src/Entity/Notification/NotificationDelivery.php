@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity\Notification;
 
 use App\Entity\Tenant;
+use App\Enum\NotificationDeliveryStatus;
 use App\Repository\Notification\NotificationDeliveryRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -78,7 +79,19 @@ class NotificationDelivery
     public function setChannel(?NotificationChannel $channel): static { $this->channel = $channel; return $this; }
 
     public function getStatus(): string { return $this->status; }
-    public function setStatus(string $status): static { $this->status = $status; return $this; }
+    public function setStatus(NotificationDeliveryStatus|string $status): static
+    {
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
+        return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?NotificationDeliveryStatus
+    {
+        return NotificationDeliveryStatus::tryFrom($this->status);
+    }
 
     public function getRetries(): int { return $this->retries; }
     public function setRetries(int $retries): static { $this->retries = $retries; return $this; }
