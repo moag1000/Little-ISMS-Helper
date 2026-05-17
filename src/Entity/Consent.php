@@ -178,6 +178,10 @@ class Consent
     )]
     private ?string $status = 'pending_verification';
 
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     /**
      * DPO verification flag
      */
@@ -449,6 +453,11 @@ class Consent
     {
         $this->status = $status;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function isVerifiedByDpo(): bool

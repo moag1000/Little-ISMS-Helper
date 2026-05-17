@@ -43,6 +43,10 @@ final class EntityTypeRegistry
             'class' => \App\Entity\AuditFinding::class,
             'workflow' => 'audit_finding_lifecycle',
         ],
+        'consent' => [
+            'class' => \App\Entity\Consent::class,
+            'workflow' => 'consent_lifecycle',
+        ],
     ];
 
     /** @return array{class: class-string, workflow: string}|null */

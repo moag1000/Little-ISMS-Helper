@@ -5,3 +5,4 @@ imports:
     - { resource: '../workflows/policy_template.yaml' }
     - { resource: '../workflows/asset.yaml' }
     - { resource: '../workflows/audit_finding.yaml' }
+    - { resource: '../workflows/consent.yaml' }
