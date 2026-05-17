@@ -11,39 +11,47 @@ use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
 use App\Entity\RiskAppetite;
+use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Repository\RiskAppetiteRepository;
 use App\Service\Notification\SlaDeadlineFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use DateTimeImmutable;
 
 /**
- * Workflow Auto-Progression Service
+ * @deprecated since v3.8 — use {@see \App\Lifecycle\EventListener\FieldCompletionAutoTransition} listener instead.
+ *             Logic has been migrated to the YAML-driven
+ *             `lifecycle.auto_transition_rules` config in
+ *             `config/packages/lifecycle.yaml`. This class is now a thin
+ *             wrapper that delegates to the listener for the field-completion
+ *             path and retains the legacy approval-chain path for backward
+ *             compatibility with the 14 call-sites that still inject WAPS.
+ *             Will be removed in v4.0.
  *
- * Automatically advances workflow steps based on entity field completion.
- * This enables event-driven workflows where completing specific fields
- * (e.g., DPO filling out DataBreach severity) automatically approves the step.
+ * Workflow Auto-Progression Service (DEPRECATED WRAPPER)
  *
- * Workflow Step Metadata Structure:
- * {
- *   "autoProgressConditions": {
- *     "type": "field_completion",
- *     "entity": "DataBreach",
- *     "fields": ["severity", "affectedDataSubjectsCount"],
- *     "condition": "severity >= high"  // Optional additional condition
- *   }
- * }
+ * The original role of this class was to automatically advance workflow steps
+ * based on entity field completion. That responsibility now lives in
+ * FieldCompletionAutoTransition, which fires automatically on Doctrine
+ * postUpdate events for entities declared in lifecycle.auto_transition_rules.
  *
- * Example Usage:
- * - DPO saves DataBreach with severity, affectedDataSubjectsCount filled
- * - Auto-progression service checks active workflow for DataBreach
- * - Current step requires ["severity", "affectedDataSubjectsCount"]
- * - All fields are filled → step auto-approved → move to next step
+ * Callers that still inject this service do NOT need to change for v3.x:
+ *   - The checkAndProgressWorkflow() method fires the FieldCompletionAutoTransition
+ *     listener via a synthetic PostUpdateEventArgs, producing identical behaviour.
+ *   - The legacy approval-chain path (WorkflowStep.metadata.autoProgressConditions)
+ *     is preserved for WorkflowInstances not yet migrated to YAML-based config.
  *
- * This follows the regulatory requirement that workflows should progress
- * naturally with user activities in modules (nicht-invasiv).
+ * Migration guide for callers:
+ *   1. Remove the WAPS constructor argument.
+ *   2. Remove explicit checkAndProgressWorkflow() calls — Doctrine fires the
+ *      listener automatically after every flush().
+ *   3. If the entity was not yet in lifecycle.auto_transition_rules, add it.
+ *
+ * @see \App\Lifecycle\EventListener\FieldCompletionAutoTransition
+ * @see config/packages/lifecycle.yaml  lifecycle.auto_transition_rules
  */
 class WorkflowAutoProgressionService
 {
@@ -53,257 +61,239 @@ class WorkflowAutoProgressionService
         private readonly WorkflowService $workflowService,
         private readonly LoggerInterface $logger,
         private readonly RiskAppetiteRepository $riskAppetiteRepository,
+        private readonly FieldCompletionAutoTransitionInterface $fieldCompletionAutoTransition,
         private readonly ?SlaDeadlineFactory $slaDeadlineFactory = null,
     ) {}
 
     /**
-     * Check and auto-progress workflow for an entity
+     * Check and auto-progress workflow for an entity.
      *
-     * Called after entity save/update to check if workflow step can auto-progress
+     * @deprecated since v3.8 — Doctrine fires {@see \App\Lifecycle\EventListener\FieldCompletionAutoTransition}
+     *             automatically on postUpdate; explicit calls are no longer needed.
      *
      * @param object $entity The entity that was updated (e.g., DataBreach, Incident)
-     * @param User $user The user who made the update
-     * @return bool True if workflow was auto-progressed, false otherwise
+     * @param User   $user   The user who made the update
+     * @return bool True if auto-progression was triggered, false otherwise
      */
     public function checkAndProgressWorkflow(object $entity, User $user): bool
     {
-        // Get entity type and ID
-        $entityType = $this->getEntityShortName($entity);
-        $entityId = $this->propertyAccessor->getValue($entity, 'id');
-
-        if (!$entityId) {
-            return false; // Entity not persisted yet
+        // ── Step 1: delegate to the new YAML-driven listener (side-effect) ───
+        // Fire the FieldCompletionAutoTransition listener synthetically so all
+        // lifecycle.auto_transition_rules entries are evaluated. This covers
+        // entities that have been migrated to the YAML-based config.
+        // The listener is best-effort and does not report whether it transitioned;
+        // the return value of THIS method is determined by the legacy path only,
+        // preserving backward-compat for all 14 call-sites.
+        try {
+            $syntheticArgs = new PostUpdateEventArgs($entity, $this->entityManager);
+            $this->fieldCompletionAutoTransition->postUpdate($syntheticArgs);
+        } catch (\Throwable $e) {
+            $this->logger->warning('[WAPS] FieldCompletionAutoTransition delegate threw unexpectedly', [
+                'entity' => $this->getEntityShortName($entity),
+                'error'  => $e->getMessage(),
+            ]);
         }
 
-        // Get active workflow instance for this entity
+        // ── Step 2: legacy approval-chain path ───────────────────────────────
+        // For WorkflowInstances whose steps still carry autoProgressConditions
+        // metadata (not yet migrated to YAML), retain the original behaviour.
+        // Return value reflects whether the legacy chain progressed.
+        return $this->legacyCheckAndProgress($entity, $user);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Legacy approval-chain code — preserved for backward compat.
+    // This section mirrors the original implementation and will be removed in v4.0.
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /**
+     * Legacy field-completion + risk_appetite check against WorkflowStep metadata.
+     *
+     * @deprecated since v3.8 — internal use only; will be removed with the class.
+     */
+    private function legacyCheckAndProgress(object $entity, User $user): bool
+    {
+        $entityType = $this->getEntityShortName($entity);
+        $entityId   = $this->propertyAccessor->getValue($entity, 'id');
+
+        if (!$entityId) {
+            return false;
+        }
+
         $workflowInstance = $this->workflowService->getWorkflowInstance($entityType, $entityId);
 
         if (!$workflowInstance || $workflowInstance->getStatus() !== 'in_progress') {
-            return false; // No active workflow
+            return false;
         }
 
         $currentStep = $workflowInstance->getCurrentStep();
         if (!$currentStep) {
-            return false; // No current step
+            return false;
         }
 
-        // Check if step can auto-progress
         if (!$this->canAutoProgress($currentStep, $entity)) {
             return false;
         }
 
-        // Auto-approve the step
         $this->autoApproveStep($workflowInstance, $currentStep, $user, $entity);
 
-        // Spawn SLA deadline monitor when an entity transitions into an SLA-governed step
         $this->maybeSpawnSlaMonitor($entity, $currentStep);
 
-        $this->logger->info('Workflow auto-progressed', [
+        $this->logger->info('[WAPS legacy] Workflow auto-progressed via step metadata', [
             'workflow_instance_id' => $workflowInstance->getId(),
-            'step_id' => $currentStep->getId(),
-            'step_name' => $currentStep->getName(),
-            'entity_type' => $entityType,
-            'entity_id' => $entityId,
-            'user_id' => $user->getId(),
+            'step_id'              => $currentStep->getId(),
+            'step_name'            => $currentStep->getName(),
+            'entity_type'          => $entityType,
+            'entity_id'            => $entityId,
+            'user_id'              => $user->getId(),
         ]);
 
         return true;
     }
 
-    /**
-     * Check if a workflow step can auto-progress based on entity state
-     */
     private function canAutoProgress(WorkflowStep $step, object $entity): bool
     {
         $metadata = $step->getMetadata();
         if (!$metadata || !isset($metadata['autoProgressConditions'])) {
-            return false; // No auto-progression configured
+            return false;
         }
 
         $conditions = $metadata['autoProgressConditions'];
 
-        // Check auto-progression type
         if (!isset($conditions['type'])) {
             return false;
         }
 
         return match ($conditions['type']) {
             'field_completion' => $this->checkFieldCompletion($conditions, $entity),
-            'auto' => $this->checkAutoCondition($conditions, $entity),
-            'risk_appetite' => $this->checkRiskAppetite($conditions, $entity),
-            default => false,
+            'auto'             => $this->checkAutoCondition($conditions, $entity),
+            'risk_appetite'    => $this->checkRiskAppetite($conditions, $entity),
+            default            => false,
         };
     }
 
-    /**
-     * Check if required fields are completed
-     */
     private function checkFieldCompletion(array $conditions, object $entity): bool
     {
         if (!isset($conditions['fields']) || !is_array($conditions['fields'])) {
             return false;
         }
 
-        // Check if entity type matches
         if (isset($conditions['entity'])) {
-            $expectedType = $conditions['entity'];
-            $actualType = $this->getEntityShortName($entity);
-            if ($expectedType !== $actualType) {
-                return false; // Entity type mismatch
+            if ($conditions['entity'] !== $this->getEntityShortName($entity)) {
+                return false;
             }
         }
 
-        // Check all required fields are filled
         foreach ($conditions['fields'] as $fieldName) {
             try {
                 $value = $this->propertyAccessor->getValue($entity, $fieldName);
-
-                // Check if field is empty (null, empty string, empty array)
                 if ($value === null || $value === '' || (is_array($value) && $value === [])) {
-                    return false; // Field not filled
+                    return false;
                 }
             } catch (Exception $e) {
-                $this->logger->warning('Could not access field for auto-progression', [
+                $this->logger->warning('[WAPS legacy] Could not access field', [
                     'entity' => $this->getEntityShortName($entity),
-                    'field' => $fieldName,
-                    'error' => $e->getMessage(),
+                    'field'  => $fieldName,
+                    'error'  => $e->getMessage(),
                 ]);
-                return false; // Field doesn't exist
+                return false;
             }
         }
 
-        // Check optional additional condition (e.g., "severity >= high")
         if (isset($conditions['condition'])) {
             return $this->evaluateCondition($conditions['condition'], $entity);
         }
 
-        return true; // All fields filled
+        return true;
     }
 
-    /**
-     * Check auto-progression condition (for notification steps)
-     */
     private function checkAutoCondition(array $conditions, object $entity): bool
     {
-        // Auto-type steps progress immediately (notification steps)
-        // Optional condition can gate the progression
         if (isset($conditions['condition'])) {
             return $this->evaluateCondition($conditions['condition'], $entity);
         }
-
-        return true; // Auto-progress unconditionally
+        return true;
     }
 
-    /**
-     * Check Risk Appetite for automatic approval
-     *
-     * ISO 27005:2022 - Risk Treatment Auto-Approval
-     * Automatically approve risk treatment if residual risk is within risk appetite
-     *
-     * Metadata example:
-     * {
-     *   "type": "risk_appetite",
-     *   "entity": "Risk",
-     *   "riskScoreField": "residualRisk",
-     *   "categoryField": "category"  // Optional - for category-specific appetite
-     * }
-     */
     private function checkRiskAppetite(array $conditions, object $entity): bool
     {
-        // Only applicable for Risk entities
         if (!isset($conditions['entity']) || $conditions['entity'] !== 'Risk') {
             return false;
         }
 
-        $entityType = $this->getEntityShortName($entity);
-        if ($entityType !== 'Risk') {
-            return false; // Entity type mismatch
+        if ($this->getEntityShortName($entity) !== 'Risk') {
+            return false;
         }
 
-        // Get risk score field (default: residualRisk)
         $riskScoreField = $conditions['riskScoreField'] ?? 'residualRisk';
 
         try {
             $riskScore = $this->propertyAccessor->getValue($entity, $riskScoreField);
 
             if ($riskScore === null) {
-                return false; // Risk not yet assessed
+                return false;
             }
 
-            // Get risk category (if specified) for category-specific appetite
             $category = null;
             if (isset($conditions['categoryField'])) {
                 $category = $this->propertyAccessor->getValue($entity, $conditions['categoryField']);
             }
 
-            // Get applicable risk appetite
             $riskAppetite = $this->getApplicableRiskAppetite($entity, $category);
 
             if (!$riskAppetite) {
-                $this->logger->warning('No active risk appetite found - cannot auto-approve based on appetite', [
-                    'entity' => $entityType,
+                $this->logger->warning('[WAPS legacy] No active risk appetite — cannot auto-approve', [
+                    'entity'     => $this->getEntityShortName($entity),
                     'risk_score' => $riskScore,
-                    'category' => $category,
+                    'category'   => $category,
                 ]);
-                return false; // No appetite defined, cannot auto-approve
+                return false;
             }
 
-            // Check if risk is within appetite
             $isAcceptable = $riskAppetite->isRiskAcceptable($riskScore);
 
-            $this->logger->info('Risk appetite check for workflow auto-progression', [
-                'entity' => $entityType,
-                'risk_score' => $riskScore,
+            $this->logger->info('[WAPS legacy] Risk appetite check', [
+                'entity'         => $this->getEntityShortName($entity),
+                'risk_score'     => $riskScore,
                 'max_acceptable' => $riskAppetite->getMaxAcceptableRisk(),
-                'category' => $category,
-                'is_acceptable' => $isAcceptable,
+                'category'       => $category,
+                'is_acceptable'  => $isAcceptable,
             ]);
 
             return $isAcceptable;
         } catch (Exception $e) {
-            $this->logger->error('Error checking risk appetite for workflow auto-progression', [
-                'entity' => $entityType,
-                'error' => $e->getMessage(),
+            $this->logger->error('[WAPS legacy] Error in risk appetite check', [
+                'entity' => $this->getEntityShortName($entity),
+                'error'  => $e->getMessage(),
             ]);
             return false;
         }
     }
 
-    /**
-     * Get applicable risk appetite for an entity
-     *
-     * Priority:
-     * 1. Category-specific appetite (if category provided)
-     * 2. Global appetite (category = null)
-     */
     private function getApplicableRiskAppetite(object $entity, ?string $category): ?RiskAppetite
     {
-        // Get tenant from entity
         $tenant = null;
         try {
             $tenant = $this->propertyAccessor->getValue($entity, 'tenant');
-        } catch (Exception $e) {
+        } catch (Exception) {
             // Entity may not have tenant field
         }
 
-        // Try category-specific appetite first
         if ($category !== null && $tenant !== null) {
             $categoryAppetite = $this->riskAppetiteRepository->findOneBy([
-                'tenant' => $tenant,
+                'tenant'   => $tenant,
                 'category' => $category,
                 'isActive' => true,
             ]);
-
             if ($categoryAppetite) {
                 return $categoryAppetite;
             }
         }
 
-        // Fallback to global appetite
         if ($tenant !== null) {
             return $this->riskAppetiteRepository->findOneBy([
-                'tenant' => $tenant,
-                'category' => null, // Global appetite
+                'tenant'   => $tenant,
+                'category' => null,
                 'isActive' => true,
             ]);
         }
@@ -311,249 +301,169 @@ class WorkflowAutoProgressionService
         return null;
     }
 
-    /**
-     * Evaluate a condition expression
-     * Supports:
-     * - Simple: "field >= value", "field = value", "field != value"
-     * - AND/OR: "(severity >= high AND affectedCount > 100) OR notificationRequired = true"
-     */
     private function evaluateCondition(string $condition, object $entity): bool
     {
-        // Check for AND/OR operators (advanced logic)
         if (str_contains($condition, ' AND ') || str_contains($condition, ' OR ')) {
             return $this->evaluateComplexCondition($condition, $entity);
         }
 
-        // Simple condition evaluation
-        // Parse simple conditions like "severity >= high" or "notificationRequired = true"
         if (preg_match('/^(\w+)\s*(>=|<=|>|<|=|!=)\s*(.+)$/', $condition, $matches)) {
-            $fieldName = $matches[1];
-            $operator = $matches[2];
+            $fieldName     = $matches[1];
+            $operator      = $matches[2];
             $expectedValue = trim($matches[3]);
 
             try {
                 $actualValue = $this->propertyAccessor->getValue($entity, $fieldName);
 
-                // Handle null comparisons
                 if ($expectedValue === 'null') {
-                    if ($operator === '!=') {
-                        return $actualValue !== null;
-                    } elseif ($operator === '=') {
-                        return $actualValue === null;
-                    }
+                    return $operator === '!=' ? $actualValue !== null : $actualValue === null;
                 }
 
-                // Handle boolean values
                 if ($expectedValue === 'true') {
                     $expectedValue = true;
                 } elseif ($expectedValue === 'false') {
                     $expectedValue = false;
                 }
 
-                // Handle numeric comparisons
                 if (is_numeric($actualValue) && is_numeric($expectedValue)) {
-                    return $this->compareValues($actualValue, $operator, (float)$expectedValue);
+                    return $this->compareValues($actualValue, $operator, (float) $expectedValue);
                 }
 
-                // Handle string comparisons
                 return $this->compareValues($actualValue, $operator, $expectedValue);
             } catch (Exception $e) {
-                $this->logger->warning('Could not evaluate condition for auto-progression', [
+                $this->logger->warning('[WAPS legacy] Could not evaluate condition', [
                     'condition' => $condition,
-                    'error' => $e->getMessage(),
+                    'error'     => $e->getMessage(),
                 ]);
                 return false;
             }
         }
 
-        return false; // Could not parse condition
+        return false;
     }
 
-    /**
-     * Evaluate complex conditions with AND/OR logic
-     * Example: "(severity >= high AND affectedCount > 100) OR notificationRequired = true"
-     */
     private function evaluateComplexCondition(string $condition, object $entity): bool
     {
-        // Remove outer parentheses if present
         $condition = trim($condition);
         if (str_starts_with($condition, '(') && str_ends_with($condition, ')')) {
             $condition = substr($condition, 1, -1);
         }
 
-        // Split by OR first (lower precedence)
         if (str_contains($condition, ' OR ')) {
             $orParts = explode(' OR ', $condition);
             foreach ($orParts as $orPart) {
                 if ($this->evaluateComplexCondition(trim($orPart), $entity)) {
-                    return true; // OR: any true → whole expression true
+                    return true;
                 }
             }
             return false;
         }
 
-        // Split by AND (higher precedence)
         if (str_contains($condition, ' AND ')) {
             $andParts = explode(' AND ', $condition);
             foreach ($andParts as $andPart) {
                 if (!$this->evaluateComplexCondition(trim($andPart), $entity)) {
-                    return false; // AND: any false → whole expression false
+                    return false;
                 }
             }
             return true;
         }
 
-        // Remove parentheses and evaluate as simple condition
         $condition = trim($condition, '()');
         return $this->evaluateCondition($condition, $entity);
     }
 
-    /**
-     * Compare values based on operator
-     */
-    private function compareValues($actual, string $operator, $expected): bool
+    private function compareValues(mixed $actual, string $operator, mixed $expected): bool
     {
         return match ($operator) {
             '>=' => $actual >= $expected,
             '<=' => $actual <= $expected,
-            '>' => $actual > $expected,
-            '<' => $actual < $expected,
-            '=' => $actual == $expected,
+            '>'  => $actual > $expected,
+            '<'  => $actual < $expected,
+            '='  => $actual == $expected,
             '!=' => $actual != $expected,
             default => false,
         };
     }
 
-    /**
-     * Auto-approve a workflow step
-     */
     private function autoApproveStep(
         WorkflowInstance $workflowInstance,
         WorkflowStep $step,
         User $user,
         object $entity,
-        int $depth = 0
+        int $depth = 0,
     ): void {
         if ($depth >= 20) {
-            $this->logger->warning('Auto-progression recursion limit reached', [
+            $this->logger->warning('[WAPS legacy] Auto-progression recursion limit reached', [
                 'workflow_instance_id' => $workflowInstance->getId(),
-                'step_id' => $step->getId(),
-                'depth' => $depth,
+                'step_id'              => $step->getId(),
+                'depth'                => $depth,
             ]);
             return;
         }
 
-        // Add to approval history
         $workflowInstance->addApprovalHistoryEntry([
-            'step_id' => $step->getId(),
-            'step_name' => $step->getName(),
-            'action' => 'auto_approved',
-            'approver_id' => $user->getId(),
-            'approver_name' => $user->getFirstName() . ' ' . $user->getLastName(),
-            'comments' => 'Step automatically approved based on field completion',
-            'timestamp' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
+            'step_id'          => $step->getId(),
+            'step_name'        => $step->getName(),
+            'action'           => 'auto_approved',
+            'approver_id'      => $user->getId(),
+            'approver_name'    => $user->getFirstName() . ' ' . $user->getLastName(),
+            'comments'         => 'Step automatically approved based on field completion',
+            'timestamp'        => new DateTimeImmutable()->format('Y-m-d H:i:s'),
             'auto_progression' => true,
-            'trigger_entity' => $this->getEntityShortName($entity),
+            'trigger_entity'   => $this->getEntityShortName($entity),
         ]);
 
-        // Mark step as completed
         $workflowInstance->addCompletedStep($step->getId());
 
-        // Move to next step using WorkflowService
         $nextStep = $this->workflowService->moveToNextStep($workflowInstance);
 
-        // Handle next step (could also auto-progress if notification step)
         if ($nextStep instanceof WorkflowStep) {
-            // Check if next step can also auto-progress (e.g., notification steps)
             if ($this->canAutoProgress($nextStep, $entity)) {
                 $this->autoApproveStep($workflowInstance, $nextStep, $user, $entity, $depth + 1);
             } else {
-                // Send assignment notification for next step
                 $this->workflowService->handleStepAssignment($workflowInstance, $nextStep);
             }
         } else {
-            // Workflow completed - check for feedback loops
             $this->handleWorkflowCompletion($workflowInstance, $entity, $user);
         }
 
         $this->entityManager->flush();
     }
 
-    /**
-     * Handle workflow completion - trigger feedback loops
-     *
-     * Called when workflow has no next step (completed)
-     * Triggers entity-specific feedback loops (e.g., Incident→Risk)
-     */
     private function handleWorkflowCompletion(WorkflowInstance $workflowInstance, object $entity, User $user): void
     {
         $entityType = $this->getEntityShortName($entity);
 
-        $this->logger->info('Workflow completed - checking for feedback loops', [
+        $this->logger->info('[WAPS legacy] Workflow completed — checking for feedback loops', [
             'workflow_id' => $workflowInstance->getId(),
             'entity_type' => $entityType,
-            'entity_id' => $this->propertyAccessor->getValue($entity, 'id'),
+            'entity_id'   => $this->propertyAccessor->getValue($entity, 'id'),
         ]);
 
-        // Incident→Risk Feedback Loop (ISO 27001:2022 Clause 6.1.2c)
         if ($entityType === 'Incident') {
             $this->triggerIncidentRiskFeedback($entity, $user);
         }
-
-        // Future feedback loops can be added here:
-        // - DataBreach→ProcessingActivity updates
-        // - Control failure→Risk reassessment
-        // - Audit finding→Control effectiveness review
     }
 
-    /**
-     * Trigger Incident→Risk feedback loop
-     *
-     * ISO 27001:2022 Clause 6.1.2 (c): "take into account past experience of security incidents"
-     */
     private function triggerIncidentRiskFeedback(object $incident, User $user): void
     {
         try {
-            // Get IncidentRiskFeedbackService from container
-            // We use late binding to avoid circular dependency
-            $feedbackService = $this->entityManager->getRepository('App\Entity\Incident')
-                ->getEntityManager()
-                ->getConnection()
-                ->getConfiguration();
-
-            // For now, log that feedback should be triggered
-            // The actual triggering will be done via event listener or manual call
-            $this->logger->info('Incident workflow completed - risk feedback should be triggered', [
-                'incident_id' => $this->propertyAccessor->getValue($incident, 'id'),
-                'incident_number' => $this->propertyAccessor->getValue($incident, 'incidentNumber'),
-                'status' => $this->propertyAccessor->getValue($incident, 'status'),
-            ]);
-
-            // BACKLOG: Trigger IncidentRiskFeedback via Symfony event system.
-            // Architectural decision: a direct call to IncidentRiskFeedbackService here
-            // creates a circular dependency (WorkflowAutoProgressionService →
-            // IncidentRiskFeedbackService → WorkflowService → WorkflowAutoProgressionService).
-            // Resolution: dispatch an IncidentClosedEvent from IncidentController when
+            // BACKLOG: Dispatch an IncidentClosedEvent from IncidentController when
             // status changes to 'closed', and handle feedback in a dedicated EventSubscriber.
-            // The dead code above (getRepository().getEntityManager().getConnection()...) is
-            // intentionally left in place — it does nothing and can be removed when the
-            // event-based approach is implemented.
+            // See original implementation comment for rationale (circular-dependency avoidance).
+            $this->logger->info('[WAPS legacy] Incident workflow completed — risk feedback deferred to event', [
+                'incident_id'     => $this->propertyAccessor->getValue($incident, 'id'),
+                'incident_number' => $this->propertyAccessor->getValue($incident, 'incidentNumber'),
+                'status'          => $this->propertyAccessor->getValue($incident, 'status'),
+            ]);
         } catch (Exception $e) {
-            $this->logger->error('Error triggering incident→risk feedback', [
+            $this->logger->error('[WAPS legacy] Error in incident→risk feedback', [
                 'error' => $e->getMessage(),
             ]);
         }
     }
 
-    /**
-     * Spawn an SLA deadline monitor when a workflow step transition is SLA-governed.
-     *
-     * A workflow step declares SLA spawning via its metadata:
-     * { "slaDeadline": { "type": "gdpr_72h" } }
-     *
-     * If no such metadata is set, or if the SlaDeadlineFactory is not wired,
-     * this method is a no-op.
-     */
     private function maybeSpawnSlaMonitor(object $entity, WorkflowStep $step): void
     {
         if ($this->slaDeadlineFactory === null) {
@@ -562,17 +472,17 @@ class WorkflowAutoProgressionService
 
         $metadata = $step->getMetadata();
         if (!isset($metadata['slaDeadline'])) {
-            return; // No SLA spawning configured for this step
+            return;
         }
 
         try {
             $entityType = $this->getEntityShortName($entity);
 
             match ($entityType) {
-                'DataBreach' => $entity instanceof DataBreach
+                'DataBreach'   => $entity instanceof DataBreach
                     ? $this->slaDeadlineFactory->createForDataBreach($entity)
                     : null,
-                'Incident'   => $entity instanceof Incident
+                'Incident'     => $entity instanceof Incident
                     ? $this->slaDeadlineFactory->createForIncident(
                         $entity,
                         $entity->getSeverity()?->value ?? 'low',
@@ -581,16 +491,15 @@ class WorkflowAutoProgressionService
                 'AuditFinding' => $entity instanceof AuditFinding
                     ? $this->slaDeadlineFactory->createForCorrectiveAction($entity)
                     : null,
-                default      => null,
+                default        => null,
             };
 
-            $this->logger->info('SLA deadline monitor spawned on workflow step transition', [
+            $this->logger->info('[WAPS legacy] SLA deadline monitor spawned on workflow step transition', [
                 'entity_type' => $entityType,
                 'step'        => $step->getName(),
             ]);
         } catch (Exception $e) {
-            // Never block workflow progression due to SLA monitor failure
-            $this->logger->error('Failed to spawn SLA deadline monitor', [
+            $this->logger->error('[WAPS legacy] Failed to spawn SLA deadline monitor', [
                 'error'       => $e->getMessage(),
                 'entity_type' => $this->getEntityShortName($entity),
                 'step'        => $step->getName(),
@@ -598,14 +507,10 @@ class WorkflowAutoProgressionService
         }
     }
 
-    /**
-     * Get entity short name (class name without namespace)
-     */
     private function getEntityShortName(object $entity): string
     {
         $className = get_class($entity);
 
-        // Handle Doctrine proxies
         if (str_contains($className, 'Proxies\\__CG__\\')) {
             $className = substr($className, strlen('Proxies\\__CG__\\'));
         }
