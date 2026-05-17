@@ -148,8 +148,10 @@ incident:
     detection_reporting: Detection Reporting
     affected_systems: Affected Systems
     analysis: Analysis
-    nis2_reporting: Nis2 Reporting
-    nis2_info: Nis2 Info
+    nis2_reporting: NIS2 Reporting
+    nis2_info: NIS2 Info
+    classification_containment: Classification & Containment (ISO 27001 A.5.24–A.5.28)
+    dora_reporting: DORA ICT Incident Reporting (Art. 17-19)
     history: History
     closure: Closure
     root_cause: Root Cause Analysis
