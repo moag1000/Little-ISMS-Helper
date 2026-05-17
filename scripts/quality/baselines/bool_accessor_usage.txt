@@ -1,0 +1,2 @@
+# check_bool_accessor_usage.py baseline
+# Format: <relative-path>:<line>
