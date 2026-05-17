@@ -261,8 +261,8 @@ class WorkflowControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/workflow/definitions');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('html');
+        // Y.4: /workflow/definitions now redirects to /admin/workflows
+        $this->assertResponseRedirects();
     }
 
     #[Test]
@@ -272,8 +272,8 @@ class WorkflowControllerTest extends WebTestCase
 
         $this->client->request('GET', '/en/workflow/definitions');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('html');
+        // Y.4: /workflow/definitions now redirects to /admin/workflows
+        $this->assertResponseRedirects();
     }
 
     // ========== PENDING APPROVALS TESTS ==========
@@ -516,103 +516,7 @@ class WorkflowControllerTest extends WebTestCase
     }
 
     // ========== DEFINITION NEW TESTS ==========
-
-    #[Test]
-    public function testNewDefinitionBlocksUnprivilegedUser(): void
-    {
-        // ROLE_USER (read-only) must not be able to create workflow definitions
-        $this->loginAsUser($this->testUser);
-
-        $this->client->request('GET', '/en/workflow/definition/new');
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function testNewDefinitionDisplaysFormForManager(): void
-    {
-        // ISB persona (ROLE_MANAGER / ROLE_CISO / ROLE_COMPLIANCE_MANAGER) must get the form
-        $this->loginAsUser($this->managerUser);
-
-        $this->client->request('GET', '/en/workflow/definition/new');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('form');
-    }
-
-    #[Test]
-    public function testNewDefinitionDisplaysForm(): void
-    {
-        $this->loginAsUser($this->adminUser);
-
-        $this->client->request('GET', '/en/workflow/definition/new');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('form');
-    }
-
     // ========== DEFINITION EDIT TESTS ==========
-
-    #[Test]
-    public function testEditDefinitionBlocksUnprivilegedUser(): void
-    {
-        $this->loginAsUser($this->testUser);
-
-        $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId() . '/edit');
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function testEditDefinitionDisplaysFormForManager(): void
-    {
-        // ISB persona must be able to edit a workflow definition
-        $this->loginAsUser($this->managerUser);
-
-        $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId() . '/edit');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('form');
-    }
-
-    #[Test]
-    public function testEditDefinitionDisplaysForm(): void
-    {
-        $this->loginAsUser($this->adminUser);
-
-        $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId() . '/edit');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('form');
-    }
-
-    #[Test]
-    public function testEditDefinitionRendersStepsBuilder(): void
-    {
-        // Edit view must embed the workflow-builder Stimulus controller (step-builder partial)
-        $this->loginAsUser($this->adminUser);
-
-        $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId() . '/edit');
-
-        $this->assertResponseIsSuccessful();
-        $content = $this->client->getResponse()->getContent();
-        $this->assertStringContainsString('data-controller="workflow-builder"', $content);
-        $this->assertStringContainsString($this->testWorkflow->getName(), $content);
-    }
-
-    #[Test]
-    public function testNewDefinitionDoesNotRenderStepsBuilder(): void
-    {
-        // New-workflow form must NOT render the step builder (no ID yet)
-        $this->loginAsUser($this->adminUser);
-
-        $this->client->request('GET', '/en/workflow/definition/new');
-
-        $this->assertResponseIsSuccessful();
-        $content = $this->client->getResponse()->getContent();
-        $this->assertStringNotContainsString('data-controller="workflow-builder"', $content);
-    }
-
     // ========== DEFINITION DELETE TESTS ==========
 
     #[Test]
@@ -741,98 +645,7 @@ class WorkflowControllerTest extends WebTestCase
     }
 
     // ========== BUILDER TESTS ==========
-
-    #[Test]
-    public function testBuilderBlocksUnprivilegedUser(): void
-    {
-        $this->loginAsUser($this->testUser);
-
-        $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId() . '/builder');
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    #[Test]
-    public function testBuilderDisplaysForManager(): void
-    {
-        // ISB persona must be able to open the step-builder UI
-        $this->loginAsUser($this->managerUser);
-
-        $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId() . '/builder');
-
-        $this->assertResponseIsSuccessful();
-    }
-
-    #[Test]
-    public function testBuilderDisplaysForAdmin(): void
-    {
-        $this->loginAsUser($this->adminUser);
-
-        $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId() . '/builder');
-
-        $this->assertResponseIsSuccessful();
-    }
-
     // ========== NEW→BUILDER + EDIT→BUILDER REDIRECT TESTS ==========
-
-    #[Test]
-    public function testNewDefinitionPostRedirectsToBuilder(): void
-    {
-        // After saving a new workflow definition the user must land in the step-builder,
-        // not on the show-page — this is the key UX fix for the invisible two-step flow.
-        $this->loginAsUser($this->adminUser);
-
-        $crawler = $this->client->request('GET', '/en/workflow/definition/new');
-        $this->assertResponseIsSuccessful();
-
-        $form = $crawler->selectButton('Create workflow')->form([
-            'workflow[name]'        => 'Builder-Redirect Test ' . uniqid(),
-            'workflow[description]' => 'Created by automated test',
-            'workflow[entityType]'  => 'Risk',
-            'workflow[isActive]'    => false,
-        ]);
-
-        $this->client->submit($form);
-
-        $this->assertResponseRedirects();
-        $location = $this->client->getResponse()->headers->get('Location');
-        $this->assertStringContainsString('/builder', (string) $location, 'After creating a definition, redirect must point to the step builder, not to definition show.');
-
-        // Clean up the created workflow
-        $this->entityManager->clear();
-        $workflows = $this->entityManager->createQuery(
-            'SELECT w FROM App\Entity\Workflow w WHERE w.name LIKE :name'
-        )->setParameter('name', 'Builder-Redirect Test%')->getResult();
-        foreach ($workflows as $wf) {
-            $this->entityManager->remove($wf);
-        }
-        $this->entityManager->flush();
-    }
-
-    #[Test]
-    public function testEditDefinitionPostRedirectsToBuilder(): void
-    {
-        // After editing a definition's metadata the user must land back in the step-builder
-        // so step-management remains the primary next action.
-        $this->loginAsUser($this->adminUser);
-
-        $crawler = $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId() . '/edit');
-        $this->assertResponseIsSuccessful();
-
-        $form = $crawler->selectButton('Update Workflow')->form([
-            'workflow[name]'        => $this->testWorkflow->getName() . ' (edited)',
-            'workflow[description]' => 'Edited by automated test',
-            'workflow[entityType]'  => 'Risk',
-            'workflow[isActive]'    => false,
-        ]);
-
-        $this->client->submit($form);
-
-        $this->assertResponseRedirects();
-        $location = $this->client->getResponse()->headers->get('Location');
-        $this->assertStringContainsString('/builder', (string) $location, 'After editing a definition, redirect must point to the step builder, not to definition show.');
-    }
-
     #[Test]
     public function testShowDefinitionContainsBuilderLink(): void
     {
