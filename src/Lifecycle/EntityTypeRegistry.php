@@ -79,6 +79,11 @@ final class EntityTypeRegistry
             'class' => \App\Entity\Vulnerability::class,
             'workflow' => 'vulnerability_lifecycle',
         ],
+        // Sprint Y.0 — WorkflowInstance approval-chain state-machine
+        'workflow-instance' => [
+            'class' => \App\Entity\WorkflowInstance::class,
+            'workflow' => 'workflow_instance_lifecycle',
+        ],
     ];
 
     /** @return array{class: class-string, workflow: string}|null */
