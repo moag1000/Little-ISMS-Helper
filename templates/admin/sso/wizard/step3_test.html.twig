@@ -29,7 +29,7 @@
         {% if discoveryStatus == 'ok' %}
             {{ fa_alert({ variant: 'success', body: 'sso.wizard.step3.discovery_ok'|trans, class: 'mb-3' }) }}
         {% elseif discoveryStatus != null %}
-            {{ fa_alert({ variant: 'warning', body: 'sso.wizard.step3.discovery_failed'|trans({'%error%': discoveryStatus}), class: 'mb-3' }) }}
+            {{ fa_alert({ variant: 'warning', body: 'sso.wizard.step3.discovery_failed'|trans({'%error%': discoveryStatus}, 'sso'), class: 'mb-3' }) }}
         {% else %}
             {{ fa_alert({ variant: 'info', body: 'sso.wizard.step3.no_discovery_url'|trans, class: 'mb-3' }) }}
         {% endif %}

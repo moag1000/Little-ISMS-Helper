@@ -12,134 +12,24 @@ admin:
         search_label: 'Module durchsuchen'
         no_results: 'Keine Module gefunden — Suchbegriff anpassen.'
         coming_soon: 'in Vorbereitung'
-        group:
-            organisation:
-                label: 'Organisation'
-                desc: 'Mandanten, Konzernstruktur, Standorte'
-            identity:
-                label: 'Zugriff & Identität'
-                desc: 'Benutzer, Rollen, Berechtigungen, SSO, Sitzungen, MFA'
-            isms_data:
-                label: 'ISMS-Daten'
-                desc: 'Frameworks, Mappings, Branchen-Baselines, Tags'
-            audit_compliance:
-                label: 'Audit & Compliance'
-                desc: 'Audit-Log, Retention, Compliance-Policy, Risk-Approval-Schwellen'
-            integrations:
-                label: 'Integrationen'
-                desc: 'Compliance-Imports, GSTool, Sample-Data, Import-Historie'
-            system:
-                label: 'System'
-                desc: 'Health, Module-Aktivierung, Quick-Fix-Settings, KPI-Schwellen, Lizenz'
-            branding_ux:
-                label: 'Branding & UX'
-                desc: 'Lieferanten-Kritikalität, Tour-Inhalte, Alva-Hint-Statistik'
-            notifications:
-                label: 'Benachrichtigungen'
-                desc: 'Regeln, Kanäle, Vorlagen und Präferenzen für ausgehende Benachrichtigungen'
-        module:
-            tenants: { label: 'Mandanten', desc: 'Kunden-Organisationen verwalten' }
-            corporate_structure: { label: 'Konzernstruktur', desc: 'Hierarchie aus Mutter- und Tochtergesellschaften' }
-            locations: { label: 'Standorte', desc: 'Physische Locations für Asset-Zuordnung' }
-            tenant_branding: { label: 'Mandanten-Branding', desc: 'E-Mail-Logos und Absender pro Mandant' }
-            tenant_compliance_settings: { label: 'Compliance-Einstellungen', desc: 'Locale, TLP, DPO, Risk-Methodik, Eskalation, JSON-Defaults' }
-            policy_style: { label: 'Policy-Optik', desc: 'Layout, Wasserzeichen und Typografie für Richtlinien-Dokumente' }
-            report_style: { label: 'Report-Optik', desc: 'Cover-Muster, Audience-Default, Watermark, Diagramm-Farben pro Mandant' }
-            users: { label: 'Benutzer', desc: 'Konten, Status, Sperrungen' }
-            roles: { label: 'Rollen', desc: 'Tenant-Rollen und Vorlagen' }
-            permissions: { label: 'Berechtigungen', desc: 'Permission-Matrix Modul × Rolle' }
-            sso: { label: 'SSO', desc: 'OIDC-Provider, Approvals, Domain-Bindings' }
-            sessions: { label: 'Sitzungen', desc: 'Aktive Sessions, Force-Logout' }
-            mfa: { label: 'MFA-Tokens', desc: 'TOTP / Backup-Codes verwalten' }
-            frameworks: { label: 'Compliance-Frameworks', desc: 'ISO, BSI, NIS2, DORA aktivieren / laden' }
-            mappings: { label: 'Cross-Framework-Mappings', desc: 'Anforderungs-Verknüpfungen zwischen Frameworks' }
-            mapping_quality: { label: 'Mapping-Quality-Score', desc: 'Review-Pipeline für Mapping-Vorschläge' }
-            industry_baselines: { label: 'Branchen-Baselines', desc: 'Vorbefüllte Risk-/Asset-/Control-Sets pro NACE' }
-            tags: { label: 'Tags', desc: 'Framework-Tags + Bulk-Apply-Aktionen' }
-            audit_log: { label: 'Audit-Log', desc: 'Tamper-evident Activity-Trail' }
-            audit_retention: { label: 'Retention-Policy', desc: 'Aufbewahrungsfristen Audit-Log' }
-            compliance_policy: { label: 'Compliance-Policy', desc: 'Inheritance-Regeln, Review-Pflichten' }
-            risk_approval_config: { label: 'Risk-Approval-Schwellen', desc: 'Eskalationsstufen für Risiko-Akzeptanz' }
-            incident_sla: { label: 'Incident-SLAs', desc: 'Reaktionszeiten pro Severity' }
-            audit_log_monitoring: { label: 'Audit-Log-Monitoring', desc: 'Live-Stream + Anomalie-Filter' }
-            workflow_definitions: { label: 'Workflow-Definitionen', desc: 'Genehmigungs-Workflows entwerfen und aktivieren' }
-            scheduled_reports: { label: 'Geplante Reports', desc: 'Wiederkehrende Report-Versendung verwalten' }
-            compliance_import: { label: 'Compliance-Import', desc: 'CSV/YAML-Bulk-Import von Anforderungen' }
-            gstool_import: { label: 'GSTool-Import', desc: 'BSI-IT-Grundschutz aus GSTool-Export' }
-            sample_data: { label: 'Sample-Data', desc: 'Demo-Datensätze laden / entfernen' }
-            import_history: { label: 'Import-Historie', desc: 'Letzte Importe + Rollback' }
-            library_importer: { label: 'BSI / TISAX Library', desc: 'Frameworks aus YAML-Fixtures importieren und exportieren (BSI Kompendium 2024, TISAX ISA 6.0)' }
-            system_health: { label: 'System-Health', desc: 'Service-Status, Disk, Cache, Logs' }
-            modules: { label: 'Module', desc: 'Aktive ISMS-Module verwalten' }
-            data_repair: { label: 'Daten-Reparatur', desc: 'Orphans, Tenant-Mismatches, Schema-Reconcile' }
-            quick_fix_settings: { label: 'Quick-Fix-Settings', desc: 'Auto-Fallback-UI Konfiguration' }
-            kpi_threshold: { label: 'KPI-Schwellen', desc: 'Ampel-Grenzen für Dashboard-KPIs' }
-            fte_tracking: { label: 'FTE-Tracking', desc: 'Aufwands-Einsparungen durch Automatisierung messen und berichten' }
-            loader_fixer: { label: 'Loader-Fixer', desc: 'Compliance-Loader-Diff-Repair' }
-            monitoring_performance: { label: 'Performance-Monitor', desc: 'Request-Times, Slow-Query-Log' }
-            licensing: { label: 'Lizenz', desc: 'Plan, Limits, Lizenz-Report' }
-            application_settings: { label: 'Application-Settings', desc: 'Application, Security, Features' }
-            data_backup: { label: 'Backup & Restore', desc: 'Datensicherungen erstellen, validieren, wiederherstellen' }
-            monitoring_errors: { label: 'Fehler-Monitoring', desc: 'Application-Errors, Stacktraces, Häufigkeiten' }
-            api_doc: { label: 'API-Dokumentation', desc: 'OpenAPI / Swagger-UI für integrationen' }
-            setup_wizard: { label: 'Setup-Wizard', desc: 'Erst-Einrichtung erneut durchlaufen' }
-            supplier_criticality: { label: 'Lieferanten-Kritikalitäten', desc: 'Eigene Levels für Supplier-Klassifikation' }
-            tour_content: { label: 'Guided-Tour-Inhalte', desc: 'Schritt-Texte und Reihenfolge bearbeiten' }
-            tour_completion: { label: 'Tour-Completion', desc: 'Abschluss-Quoten + Reset-Werkzeuge' }
-            alva_hint_stats: { label: 'Alva-Hint-Statistik', desc: 'Render / Dismiss / Dismiss-Rate pro Hint' }
-            # Sprint 6b — Notifications
-            notification_rules: { label: 'Benachrichtigungsregeln', desc: 'Ereignis-Regeln definieren und Kanäle zuweisen' }
-            notification_channels: { label: 'Benachrichtigungskanäle', desc: 'E-Mail-, Webhook- und In-App-Kanäle konfigurieren' }
-            notification_templates: { label: 'Vorlagen-Galerie', desc: 'Tier-1-Vorlagen für häufige Compliance-Szenarien übernehmen' }
-            notification_preferences: { label: 'Benachrichtigungs-Einstellungen', desc: 'Globale Zustellpräferenzen und Schwellenwerte' }
-            # Sprint 8 — EU-Behörden-Meldungen
-            authority_hub: { label: 'EU-Behörden-Hub', desc: 'Meldepflichten und Exportvorlagen für EU-Aufsichtsbehörden' }
-            nis2_registration: { label: 'NIS-2-BSI-Registrierung', desc: 'Jährliche Stammdaten-Registrierung beim BSI-Meldeportal' }
-            dora_roi: { label: 'DORA RoI XBRL-Export', desc: 'Register-of-Information XBRL/CSV-Export für die BaFin-Meldung' }
-            # Sprint 6 System-Settings Folgeseiten
-            api_rate_limits: { label: 'API-Rate-Limits', desc: 'Request-Limits pro Route und Token-Klasse' }
-            backup_settings: { label: 'Backup-Einstellungen', desc: 'Aufbewahrungsdauer und automatische Backup-Planung' }
-            fiscal_year: { label: 'Geschäftsjahr', desc: 'Startmonat und Steuerjahr für Reports und KPIs' }
-            data_retention_settings: { label: 'Aufbewahrungsfristen', desc: 'DSGVO-Löschfristen pro Datenkategorie' }
-            workflow_sla_defaults: { label: 'Workflow-SLA-Defaults', desc: 'Standardfristen für Genehmigungsschritte' }
     section:
         overview: Übersicht
         user_access: 'Benutzer & Zugriff'
         system_config: Systemkonfiguration
-        modules: 'Module & Features'
-        monitoring: 'Überwachung & Logs'
-        navigation: Navigation
         data_management: Daten-Verwaltung
         integration_operations: 'Integration & Betrieb'
-        licensing: Lizenzierung
         platform:
-            users_access: 'Platform · Benutzer & Zugriff'
             configuration: 'Platform · Konfiguration'
-            data_ops: 'Platform · Daten & Betrieb'
         compliance:
             frameworks: 'Compliance · Frameworks'
-            imports: 'Compliance · Importe'
-        # V3 W2-H6: Quick-jump sub-sections in mega-menu (max 4 items each).
-        # Full directory lives in AdminHubCatalog.
-        quick:
-            user_mgmt: 'User-Mgmt'
-            tenant_mgmt: 'Tenant-Mgmt'
-            module_config: 'Module-Config'
-            settings: Settings
     nav:
         tenants: Mandanten
-        users: Benutzer
         roles: Rollen
         settings: Einstellungen
-        compliance: Compliance-Frameworks
-        audit_log: 'Audit Log'
-        back_to_app: 'Zurück zur Anwendung'
         dashboard: Dashboard
-        corporate_structure: Unternehmensstrukturen
         permissions: Berechtigungen
         sessions: Sitzungen
         mfa: 'MFA Verwaltung'
-        sso: 'SSO Identity-Provider'
         module_management: Modul-Verwaltung
         compliance_management: Compliance-Verwaltung
         compliance_policy: Compliance-Policy-Einstellungen
@@ -150,45 +40,27 @@ admin:
         export: Export
         import: Import
         data_repair: Daten-Reparatur
-        sample_data: Beispieldaten
-        mapping_quality: 'Mapping-Qualität'
         licensing: Lizenzierung
-        license_management: Lizenz-Verwaltung
         kpi_thresholds: 'KPI-Schwellwerte'
         tags: 'Tags'
         compliance_import: 'Compliance-Import-Wizard'
-        tour_completion: 'Tour-Einweisungsstand'
-        tour_content: 'Tour-Texte anpassen'
-    alert:
-        inactive_users: 'Inaktive Benutzer'
-        unverified_users: 'Unverifizierte Benutzer'
-        large_database: 'Datenbank-Größe (GB)'
-        annex_a_missing: 'ISO 27001 Annex A Controls fehlen für diesen Tenant'
-        annex_a_missing_fix: 'Jetzt laden'
     dashboard:
         title: 'Admin Dashboard'
         subtitle: 'Zentrale Verwaltung und Systemübersicht'
         alerts:
             title: Systemhinweise
-            item: Element
-            items: Elemente
             view: Ansehen
         stats:
             users: Benutzer
             active: Aktiv
             inactive: Inaktiv
-            manage: Verwalten
             active_sessions: 'Aktive Sitzungen'
             last_24h: 'Letzte 24 Stunden'
-            database: Datenbankgröße
-            total_records: Gesamt-Datensätze
-            across_modules: 'Über alle Module'
             frameworks: 'Frameworks (aktiv/katalog)'
             mappings_count: '%count% Cross-Framework-Mappings'
             unreviewed_mappings: 'Ungeprüfte Seed-Mappings'
             workflows_open: '%count% offene Workflows'
             workflows_none: 'Keine offenen Workflows'
-            review_now: 'Jetzt prüfen'
         modules:
             title: 'Module Übersicht'
             module: Modul
@@ -204,7 +76,6 @@ admin:
         quick_actions:
             title: Schnellaktionen
             add_user: 'Benutzer anlegen'
-            add_role: 'Rolle hinzufügen'
             view_logs: 'Logs ansehen'
             manage_compliance: 'Compliance verwalten'
             manage_tenants: 'Mandanten verwalten'
@@ -236,7 +107,6 @@ admin:
     data_management:
         title: Daten-Verwaltung
     settings:
-        required_for_iso27001: 'Erforderlich für ISO 27001'
         title: Systemeinstellungen
         subtitle: 'Konfiguration von Anwendungsparametern und Systemverhalten'
         application:
@@ -246,17 +116,7 @@ admin:
             timezone: Zeitzone
             items_per_page: 'Einträge pro Seite'
             locale_settings: Spracheinstellungen
-            default_locale: Standard-Sprache
-            default_locale_help: 'Standard-Sprache für neue Benutzer und Systemausgaben'
-            supported_locales: 'Unterstützte Sprachen'
-            supported_locales_help: 'Sprachen, die Benutzer auswählen können (de, en)'
             display_settings: Anzeigeeinstellungen
-            items_per_page_help: 'Anzahl der Einträge pro Seite in Tabellen (Standard: 25)'
-            timezone_help: 'Zeitzone für Datumsanzeigen (z.B. Europe/Berlin)'
-            date_format: Datumsformat
-            date_format_help: 'Format für Datumsanzeigen (z.B. d.m.Y für 31.12.2024)'
-            datetime_format: Datum-/Zeitformat
-            datetime_format_help: 'Format für Datum und Uhrzeit (z.B. d.m.Y H:i für 31.12.2024 14:30)'
             help_text: 'Diese Einstellungen wirken sich global auf alle Mandanten und Benutzer aus'
         configure: 'Einstellungen konfigurieren'
         security:
@@ -264,20 +124,11 @@ admin:
             description: 'Konfiguration von Authentifizierung, Session-Management und Passwortrichtlinien (ISO 27001 Anhang A 5.17, 5.18)'
             2fa_settings: 'Zwei-Faktor-Authentifizierung Einstellungen'
             session_lifetime: Session-Laufzeit
-            max_login_attempts: 'Max. Anmeldeversuche'
             require_2fa: 'MFA erzwingen'
             session_settings: Session-Einstellungen
-            session_lifetime_help: 'Session-Laufzeit in Minuten (Standard: 1440 = 24 Stunden)'
-            remember_me_lifetime: 'Remember-Me Laufzeit'
-            remember_me_help: 'Dauer des "Angemeldet bleiben"-Cookies in Tagen (Standard: 30)'
             password_settings: Passwortrichtlinien
             password_min_length: 'Min. Passwortlänge'
-            password_min_length_help: 'Minimale Anzahl Zeichen für Passwörter (Standard: 12, empfohlen: 12-16)'
             auth_settings: Authentifizierungseinstellungen
-            max_login_attempts_help: 'Anzahl fehlgeschlagener Anmeldeversuche vor Account-Sperre (Standard: 5)'
-            lockout_duration: Sperrdauer
-            lockout_duration_help: 'Dauer der Account-Sperre in Minuten nach zu vielen Fehlversuchen (Standard: 15)'
-            require_2fa_help: 'Multi-Faktor-Authentifizierung für alle Benutzer erzwingen (NIS2-konform, Art. 21.2.b)'
             warning: 'Warnung: Änderungen an Sicherheitseinstellungen können bestehende Sessions ungültig machen'
         features:
             title: Feature-Einstellungen
@@ -287,13 +138,6 @@ admin:
             global_search: 'Globale Suche'
             audit_log: 'Audit Log'
             intro: Einführungs-Tutorial
-            dark_mode_help: 'Dark Mode für alle Benutzer aktivieren'
-            global_search_help: 'Globale Volltextsuche über alle Entities aktivieren'
-            quick_view: 'Quick View'
-            quick_view_help: 'Schnellansicht-Modals für Entities aktivieren'
-            notifications: Benachrichtigungen
-            notifications_help: 'System-Benachrichtigungen für Benutzer aktivieren'
-            audit_log_help: 'Audit-Protokollierung aller Benutzeraktionen (ISO 27001 Anhang A 8.15)'
             info_text: 'Feature-Flags ermöglichen das selektive Aktivieren von Funktionalitäten'
         info_title: 'Systemeinstellungen Hilfe'
         info_text: 'Änderungen werden sofort wirksam und betreffen alle Mandanten'
@@ -481,8 +325,6 @@ admin:
     data_repair:
         title: 'Daten-Reparatur & Integrität'
         description: 'Datenintegritätsprobleme, Mandantenzuweisungen und defekte Referenzen erkennen und beheben'
-        additional_orphans: 'Weitere Entity-Typen mit tenant-losen Einträgen'
-        additional_orphans_hint: 'Werden automatisch erkannt, sobald sie einer Doctrine-Entity mit tenant-Assoziation angehören. „Alle Orphans zuweisen" oben reassigniert auch diese.'
         total_orphans: 'insgesamt %count% Einträge über alle Entity-Typen'
         safety:
             title: 'Achtung — Live-Daten-Änderungen'
@@ -505,29 +347,16 @@ admin:
         orphaned_entities: 'Verwaiste Entities'
         no_orphans: 'Keine verwaisten Entities gefunden - alle Daten korrekt zugewiesen!'
         orphans_found: 'Entities ohne Mandantenzuordnung gefunden, die behoben werden müssen'
-        orphaned_assets: 'Verwaiste Assets'
-        orphaned_risks: 'Verwaiste Risiken'
-        orphaned_incidents: 'Verwaiste Vorfälle'
         assign_to_tenant: 'Mandanten zuweisen'
         select_tenant: 'Mandant auswählen'
         all_orphans: 'Alle verwaisten'
-        assets_only: 'Nur Assets'
-        risks_only: 'Nur Risiken'
-        incidents_only: 'Nur Vorfälle'
         assign_orphans: 'Verwaiste zuweisen'
-        assigned_count: '%count% Entities erfolgreich %tenant% zugewiesen'
-        partial_assignment: 'Teilzuordnung abgeschlossen — %count% Entities Mandant %tenant% zugewiesen. Der Entity-Manager wurde nach einem Fehler geschlossen; bitte die Seite neu laden, um den finalen Stand zu prüfen.'
         fixed_all_orphans: '%count% verwaiste Entities erfolgreich %tenant% zugewiesen'
         bulk_blocked_multi_tenant: 'Bulk-Zuweisung blockiert: %count% Mandanten in dieser Instanz. In Multi-Tenant-Setups darf keine einzige Aktion Entitäten mandantenübergreifend umhängen. Bitte die Einzel-Zuweisungen pro Entity-Typ nutzen.'
-        bulk_confirm_hash_mismatch: 'Bulk-Zuweisung abgebrochen: Anzahl der verwaisten Entitäten hat sich geändert, seit die Vorschau gezeigt wurde (erwartet: %expected%). Seite neu laden und erneut bestätigen.'
         fixed_mismatches: '%count% Mandanten-Diskrepanzen erfolgreich behoben'
         reason_required: 'Mandanten-Diskrepanz-Fix abgelehnt: Begründung mit mindestens %min% Zeichen ist Pflicht (aktuell %actual%).'
         reason_label: 'Begründung für Mandanten-Zuweisung'
         reason_help: 'Mindestens 20 Zeichen. Wird im Audit-Log pro betroffenem Datensatz gespeichert.'
-        tenant_not_found: 'Gewählter Mandant nicht gefunden'
-        entity_not_found: 'Entity nicht gefunden'
-        entity_reassigned: '%entity% erfolgreich %tenant% zugewiesen'
-        asset_not_found: 'Asset nicht gefunden'
         orphaned_assets_list: 'Liste verwaister Assets'
         orphaned_risks_list: 'Liste verwaister Risiken'
         orphaned_incidents_list: 'Liste verwaister Vorfälle'
@@ -543,7 +372,6 @@ admin:
         controls_without_assets_desc: 'Diese Maßnahmen sind anwendbar, aber schützen keine Assets. Maßnahmen sollten angeben, welche Assets sie schützen.'
         broken_references: 'Defekte Referenzen'
         broken_references_desc: 'Diese Entities verweisen auf nicht existierende oder ungültige Daten. Dies kann Systemfehler verursachen und muss behoben werden.'
-        invalid_entity_type: 'Ungültiger Entity-Typ ausgewählt'
         schema:
             migrations: Migrationen
             drift: Schema-Drift
@@ -666,20 +494,10 @@ admin:
     tenant_settings:
         title: 'Compliance-Einstellungen'
         subtitle: 'Tier-1 Compliance Settings — Locale, Audit-Window, DPO-Kontakt, TLP, Aufsichtsbehoerden, Aufbewahrungsfristen'
-        no_tenant_in_context: 'Kein Mandanten-Kontext aktiv — bitte zuerst Mandant in der Liste waehlen.'
         section_tenant: 'Tenant-spezifisch'
         section_global: 'System-Default (alle Tenants)'
         global_help: 'Globale Sicherheits-Defaults — Aenderung via System-Settings.'
-        locale: 'Sprache + Region'
-        timezone: 'Zeitzone'
-        financial_year_start: 'Geschaeftsjahr-Start'
-        tlp_default: 'TLP-Default fuer Incident-Sharing'
-        tlp_default_help: 'Traffic Light Protocol — Standard-Klassifikation fuer Incidents im Information-Sharing nach NIS2.'
-        dpo_name: 'DPO-Kontakt (Name)'
-        dpo_email: 'DPO-Kontakt (E-Mail)'
-        dpo_help: 'Datenschutzbeauftragter (DPO) gemaess DSGVO Art. 37 — separat vom NIS2-Contact.'
         save: 'Speichern'
-        saved: 'Compliance-Einstellungen gespeichert.'
         mfa_roles: 'MFA-pflichtige Rollen'
         password_min_length: 'Min. Passwortlaenge'
         password_complexity: 'Komplexitaet erzwingen'
@@ -693,32 +511,12 @@ admin:
         no_rotation: 'Keine Rotation (NIST 800-63B)'
         edit_globals: 'Globale Settings bearbeiten'
         section_operational: 'Operativ — Risk-Methodik + Wizard-Default'
-        risk_methodology: 'Risk-Methodologie'
-        risk_methodology_help: 'Standard fuer Risikoanalyse — beeinflusst Default-Felder + Reports.'
-        risk_matrix_size: 'Risk-Matrix-Groesse'
-        risk_matrix_size_help: '3x3 schnell + KMU-tauglich; 5x5 ist ISO-27005-Standard.'
-        wizard_maturity_target: 'Default Wizard-Reife-Ziel'
-        wizard_maturity_target_help: 'Wird in jedem Wizard-Result als Soll-Reife angezeigt.'
         section_api: 'API-Limits'
         section_json: 'Strukturierte JSON-Felder (Aufsichtsbehoerden / Aufbewahrung / Notifications / CSIRT / Krisenstab-Rotation)'
         json_help: 'Eingabe als JSON-Objekt. Leer = Default. Beispiel-Templates in der Doku.'
-        api_rate_limit: 'API-Rate-Limit (Requests/Minute)'
-        api_rate_limit_help: '0 = unlimitiert. 600 = 10/Sek. Default fuer fairen Multi-Tenant-Betrieb.'
-        dora_entity_category: 'DORA-Verpflichtungsstatus (Art. 2)'
-        dora_entity_category_help: 'Bestimmt, ob dieser Mandant der EU-DORA-Verordnung unterliegt. Blendet DORA-spezifische Funktionen ein oder aus.'
         dora_entity_category.none: 'Nicht DORA-pflichtig (Standard)'
         dora_entity_category.financial_entity: 'Finanzunternehmen (DORA Art. 2 Abs. 2) — Bank / Versicherer / Investment-Firm'
         dora_entity_category.critical_ict_third_party: 'Kritischer IKT-Drittanbieter (CTPP per ESAs, DORA Art. 31)'
-        supervisory_authorities: 'Aufsichtsbehoerden (JSON)'
-        supervisory_authorities_help: 'JSON-Map: { "BSI": { name, email, phone, scope } }'
-        data_retention_policies: 'DSGVO-Aufbewahrungsfristen (JSON)'
-        data_retention_policies_help: 'JSON-Map: { "crm": { years, basis } }'
-        notification_preferences: 'Benachrichtigungs-Einstellungen (JSON)'
-        notification_preferences_help: 'JSON-Map: { "incident": { email: true, slack: false } }'
-        csirt_endpoints: 'CSIRT-Endpunkte (JSON)'
-        csirt_endpoints_help: 'JSON-Map: { "BSI-CERT": { url, contact, auth_type } }'
-        crisis_team_on_call: 'Krisenstab On-Call-Rotation (JSON)'
-        crisis_team_on_call_help: 'JSON-Array: [ { date, primary, deputy } ]'
         backup_schedule: 'Backup-Schedule'
         backup_retention: 'Backup-Aufbewahrung'
         environment_label: 'Environment'
@@ -728,8 +526,6 @@ admin:
     notification_preferences:
         title: 'Benachrichtigungseinstellungen'
         subtitle: 'Mandantenweite Benachrichtigungsstandards und Zustellungseinstellungen konfigurieren.'
-        saved: 'Benachrichtigungseinstellungen erfolgreich gespeichert.'
-        csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         help_text: 'Diese Einstellungen legen fest, wie und wann Benachrichtigungen an Benutzer in diesem Mandanten zugestellt werden. Einzelne Benutzer können ihre eigenen Präferenzen in ihrem Profil anpassen.'
         digest_enabled:
             label: 'Benachrichtigungs-Digest aktivieren'
@@ -751,8 +547,6 @@ admin:
     api_rate_limits:
         title: 'API-Ratenbegrenzung'
         subtitle: 'Maximale API-Anfragen pro Minute für diesen Mandanten steuern.'
-        saved: 'API-Ratenbegrenzung erfolgreich gespeichert.'
-        csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         help_text: 'Ratenbegrenzungen schützen die Plattform vor Missbrauch und sichern faire Ressourcenteilung. 0 = unbegrenzt (in der Produktion nicht empfohlen).'
         rate_limit_per_minute:
             label: 'Anfragen pro Minute'
@@ -768,8 +562,6 @@ admin:
     backups:
         title: 'Backup-Einstellungen'
         subtitle: 'Automatisierten Backup-Zeitplan und Datenhaltungsdauer konfigurieren.'
-        saved: 'Backup-Einstellungen erfolgreich gespeichert.'
-        csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         help_text: 'Diese Einstellungen steuern, wie lange Backup-Dateien aufbewahrt werden und ob automatisierte Backups nach einem Zeitplan laufen. Die Jetzt-Ausführen-Funktion und der Messenger-Dispatch kommen in Welle 2.'
         settings_title: 'Backup-Konfiguration'
         wave2_note:
@@ -792,8 +584,6 @@ admin:
     fiscal_year:
         title: 'Geschäftsjahrs-Konfiguration'
         subtitle: 'Startmonat des Geschäftsjahres und Berichts-Rhythmus für diesen Mandanten festlegen.'
-        saved: 'Geschäftsjahrs-Konfiguration erfolgreich gespeichert.'
-        csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
         help_text: 'Der Startmonat des Geschäftsjahres steuert, wie KPI-Dashboards, Management-Berichte und Compliance-Reviews gruppiert werden. Änderungen wirken sich bei der nächsten Berichtsgenerierung aus.'
         start_month:
             label: 'Startmonat des Geschäftsjahres'
@@ -825,18 +615,12 @@ admin:
     data_retention:
         title: 'Datenhaltungsrichtlinien'
         subtitle: 'Aufbewahrungsfristen und automatische Löschregeln je Entitätstyp konfigurieren.'
-        saved: 'Datenhaltungsrichtlinien erfolgreich gespeichert.'
-        csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
-        gdpr_cap_applied: 'Einer oder mehrere Aufbewahrungswerte überschritten das DSGVO-Maximum und wurden automatisch begrenzt.'
         warning:
             title: 'Änderungen betreffen tatsächliche Datenlöschung'
             body: 'Das Aktivieren der automatischen Löschung führt dazu, dass Datensätze, die älter als der angegebene Zeitraum sind, durch den täglichen Cron-Job (Welle 2) dauerhaft entfernt werden. Prüfen Sie jede Einstellung sorgfältig vor dem Speichern. DSGVO-relevante Datenkategorien sind auf ihr gesetzliches Maximum begrenzt.'
         policies_title: 'Aufbewahrungsrichtlinien nach Entitätstyp'
         col:
-            entity_type: 'Entitätstyp'
-            retention_days: 'Aufbewahrung (Tage)'
             auto_delete: 'Automatisch löschen'
-            gdpr_cap: 'DSGVO-Max.'
         entity:
             asset: 'Assets'
             risk: 'Risiken'
@@ -851,19 +635,12 @@ admin:
     workflow_slas:
         title: 'Workflow-SLA-Standards'
         subtitle: 'Standard-SLA-Dauern (Stunden) für jeden Workflow-Ereignistyp festlegen.'
-        saved: 'Workflow-SLA-Standards erfolgreich gespeichert.'
-        csrf_invalid: 'Ungültiges Sicherheitstoken. Bitte erneut versuchen.'
-        regulatory_minimum_enforced: 'Einer oder mehrere SLA-Werte lagen unter dem regulatorischen Minimum und wurden automatisch angepasst.'
         help_text: 'Diese SLA-Standards werden vom Sprint-6b SlaDeadlineMonitor (Welle 2) genutzt, um Fristenwarnungen und Eskalationen zu erzeugen. Regulatorische Minima (DSGVO Art. 33, ISO 27035) können nicht unterschritten werden.'
         defaults_title: 'SLA-Standards nach Ereignistyp'
         regulatory_badge: 'Regulatorisch'
         wave2_note:
             title: 'Welle-2-Hinweis'
             body: 'Der SlaDeadlineMonitor, der diese Werte auswertet, ist für Welle 2 geplant. Speichern Sie jetzt Ihre Einstellungen — sie werden automatisch aktiviert, sobald der Monitor verfügbar ist.'
-        col:
-            event_type: 'Workflow-Ereignis'
-            sla_hours: 'SLA (Stunden)'
-            regulatory_basis: 'Regulatorische Grundlage'
         event:
             data_breach: 'Datenpanne-Meldung'
             incident_high: 'Vorfall (Hoch/Kritisch)'
@@ -900,46 +677,12 @@ admin:
             footer: 'Fußzeile'
             advanced: 'Erweitert'
         field:
-            font_family: 'Schriftart'
-            cover_pattern: 'Deckblatt-Muster'
-            cover_logo_size: 'Logo-Größe (Cover)'
-            page_margin: 'Seitenrand'
-            watermark_enabled: 'Wasserzeichen aktiviert'
             watermark_opacity: 'Wasserzeichen-Deckkraft'
-            signature_lines: 'Anzahl Signatur-Felder'
-            show_toc: 'Inhaltsverzeichnis anzeigen'
-            show_history: 'Versionshistorie anzeigen'
-            show_annex_a_refs: 'Annex-A-Referenzen einblenden'
-            footer_text: 'Eigener Footer-Text'
-            custom_css: 'Benutzerdefiniertes CSS (Override)'
         help:
-            font_family: 'Wirkt sich auf alle Texte im PDF-Export aus. Inter ist die ISMS-Default-Wahl.'
-            cover_pattern: '"Branded" für Marketing-Linie, "Auditor-Formal" für Zertifizierungs-Audits, "Engineering" für DevSecOps.'
-            page_margin: 'Kompakt = mehr Inhalt pro Seite; Wide = mehr Lesbarkeit für Approval-Reviews.'
-            watermark_enabled: 'Wenn aktiv, wird die Klassifizierung diagonal als Wasserzeichen über jeder Seite gerendert.'
             watermark_opacity: '0 % unsichtbar, 8 % ist Default, > 25 % stört das Lesen.'
-            signature_lines: 'Anzahl der vorbereiteten Unterschriftsfelder auf der Signatur-Seite (1–6).'
-            footer_text: 'Wenn leer, wird der Default-Footer mit Tenant-Name + Klassifikation verwendet.'
-            custom_css: 'Wird |raw in <style>-Block des Policy-Doc gerendert. Nur ROLE_ADMIN. Falsches CSS kann die PDF-Generierung brechen.'
-        cover:
-            minimal: 'Minimal — Cover ohne Logo-Flächen, neutraler Look'
-            branded: 'Branded — Logo prominent, Primärfarbe als Akzent'
-            auditor_formal: 'Auditor-Formal — Serif, gedämpfte Farben, Zertifizierungs-Ton'
-            engineering: 'Engineering — Monospace-Akzente, DevSecOps-Look'
-        size:
-            small: 'Klein (40 px)'
-            medium: 'Mittel (64 px)'
-            large: 'Groß (88 px)'
-        margin:
-            compact: 'Kompakt (12 mm)'
-            standard: 'Standard (20 mm)'
-            wide: 'Großzügig (28 mm)'
         save: 'Speichern'
         reset: 'Auf Defaults zurücksetzen'
         reset_confirm: 'Alle Policy-Optik-Einstellungen wirklich auf Defaults zurücksetzen?'
-        flash:
-            saved: 'Policy-Optik gespeichert. Neue Policy-PDFs verwenden ab sofort die aktualisierten Einstellungen.'
-            reset: 'Policy-Optik wurde auf Defaults zurückgesetzt.'
         preview:
             eyebrow: 'Information-Security-Management-System'
             version: 'Version'
@@ -961,9 +704,6 @@ admin:
         save: 'Speichern'
         reset: 'Auf Defaults zurücksetzen'
         reset_confirm: 'Wirklich alle 12 Felder auf Default zurücksetzen?'
-        flash:
-            saved: 'Report-Style aktualisiert.'
-            reset: 'Report-Style auf Defaults zurückgesetzt.'
         section:
             form: 'Konfiguration'
             form_subtitle: 'Aurora-Defaults sind sinnvoll. Anpassen pro Audience (Vorstand/Auditor/Aufsicht) erleichtert Stakeholder-spezifische Reports.'
@@ -978,45 +718,9 @@ admin:
             footer: 'Footer-Disclaimer'
             advanced: 'Erweitert (Custom CSS)'
         field:
-            cover_pattern: 'Cover-Muster'
-            default_audience: 'Default-Zielgruppe'
-            font_family: 'Schriftart'
-            page_orientation: 'Seitenausrichtung'
-            chart_color_scheme: 'Diagramm-Farbschema'
-            watermark_enabled: 'Wasserzeichen aktiv'
             watermark_opacity: 'Wasserzeichen-Deckkraft'
-            show_exec_summary: 'Executive-Summary anzeigen'
-            show_appendix: 'Anhang anzeigen'
-            show_distribution_list: 'Verteiler anzeigen'
-            footer_disclaimer: 'Footer-Disclaimer (überschreibt Default)'
-            custom_css: 'Custom CSS (paste-only)'
         help:
-            cover_pattern: 'Visuelles Setting für die Titelseite — von minimal (klar) bis Auditor-formal (Serif).'
-            default_audience: 'Bestimmt Default-Zielgruppe neuer Reports — Layout und Watermark passen sich an.'
-            font_family: 'Wirkt im Cover und Body. Inter ist neutral; Merriweather erzeugt Audit-/Behörden-Anmutung.'
-            page_orientation: 'Auto wählt je nach Inhalt; portrait für Text-Reports, landscape für Daten-Tabellen.'
-            chart_color_scheme: 'Aurora ist farbintensiv; Audit/Print-friendly für s/w-Druck; Colorblind-safe für Barrierefreiheit.'
-            watermark_enabled: 'Wasserzeichen mit Klassifizierung (z. B. TLP:AMBER) als diagonaler Schriftzug.'
             watermark_opacity: 'Niedrige Werte (5–10 %) sind dezent; höher fürs Sichtbar-Markieren von Drafts.'
-            show_exec_summary: 'Vorstand-Reports haben sie typischerweise; Auditor-Reports nicht zwingend.'
-            show_appendix: 'Detail-Tabellen, Methodik-Hinweise. Aufsichts-Reports brauchen sie meistens.'
-            show_distribution_list: 'Im Anhang. Pflicht für Aufsichtsbehörden, optional für interne Reports.'
-            footer_disclaimer: 'Überschreibt den Default-Footer mit Mandant-Name. Max. 1.000 Zeichen.'
-            custom_css: 'Wird im Export per |raw eingebettet. Vorsicht: Layout kann brechen. Nur ROLE_ADMIN.'
-        cover:
-            minimal: 'Minimal (clean, keine Akzente)'
-            branded: 'Branded (Mandant-Primary-Color)'
-            board_formal: 'Vorstand-formal (zentriert, Serif-Titel)'
-            auditor_formal: 'Auditor-formal (Serif, Uppercase-Headings)'
-        audience:
-            vorstand: 'Vorstand / C-Level'
-            auditor: 'Auditor (intern/extern)'
-            aufsicht: 'Aufsichtsbehörde (BaFin, BSI)'
-            internal: 'Intern (CISO/ISB-Team)'
-        orientation:
-            portrait: 'Hochformat'
-            landscape: 'Querformat'
-            auto: 'Auto (je nach Inhalt)'
         chart:
             aurora: 'Aurora (cyan/violet/grün/amber/rot)'
             audit: 'Audit (Graustufen, dezent)'
@@ -1135,12 +839,6 @@ data_management:
             stat_errors: 'Fehler'
             page_reload: 'Die Seite wird in 3 Sekunden neu geladen...'
         confirm_delete: 'Möchten Sie das Backup "%filename%" wirklich löschen?'
-        bootstrap_error: 'Bootstrap konnte nicht geladen werden nach %attempts% Versuchen'
-    export:
-        includes_all_records: 'Enthält alle Datensätze Ihres Tenants'
-        sensitive_data_warning: 'Warnung: Dieser Export kann sensible Daten enthalten. Bitte sicher aufbewahren.'
-        large_exports_warning: 'Hinweis: Große Datenmengen können einige Zeit zum Export benötigen.'
-        relationships_warning: 'Info: Beziehungen zwischen Entitäten werden als IDs exportiert.'
 setup:
     # Database configuration choices
     database:
@@ -1225,12 +923,6 @@ kpi_threshold:
         good_threshold: 'Good-Schwelle (≥)'
         warning_threshold: 'Warning-Schwelle (≥)'
         updated_at: 'Aktualisiert'
-    placeholder:
-        kpi_key: '-- KPI auswählen --'
-    help:
-        kpi_key: 'Welche KPI soll eine abweichende Schwelle erhalten?'
-        good_threshold: 'Ab diesem Wert gilt die KPI als "good" (grün). 0-100.'
-        warning_threshold: 'Ab diesem Wert gilt die KPI als "warning" (gelb). Darunter: "danger". 0-100.'
     hint:
         thresholds: 'Good-Schwelle muss ≥ Warning-Schwelle sein. Werte unterhalb Warning werden als "danger" eingestuft.'
     key:
@@ -1243,13 +935,6 @@ kpi_threshold:
         bia_coverage: 'BIA-Abdeckung'
         implementation_readiness: 'ISMS Implementation-Readiness'
         isms_health_score: 'ISMS Health Score'
-    flash:
-        created: 'Schwellwert erstellt.'
-        updated: 'Schwellwert aktualisiert.'
-        deleted: 'Schwellwert gelöscht.'
-        duplicate_key: 'Für diesen KPI existiert bereits ein Schwellwert.'
-        good_below_warning: 'Good-Schwelle muss ≥ Warning-Schwelle sein.'
-        no_tenant: 'Kein Mandant zugeordnet.'
     message:
         no_configs: 'Keine Schwellwerte konfiguriert — Defaults werden verwendet.'
     confirm:

@@ -30,7 +30,7 @@
     {% if channel.verifiedAt %}
         <div class="alert alert-success mb-3">
             <i class="fa-icon fa-icon--shield-check" aria-hidden="true"></i>
-            {{ 'notification.channel.show.verified_at'|trans({'%date%': channel.verifiedAt|date('Y-m-d H:i')}) }}
+            {{ 'notification.channel.show.verified_at'|trans({'%date%': channel.verifiedAt|date('Y-m-d H:i')}, 'notification') }}
         </div>
     {% else %}
         <div class="alert alert-warning mb-3">

@@ -33,9 +33,5 @@ security_reports:
         p2: 'Medium priority – fix within 1 month'
     legend:
         title: 'Severity Legend'
-        critical: 'Critical (P0)'
-        high: 'High (P1)'
-        medium: 'Medium (P2)'
-        low: 'Low (P3)'
 app:
     title: 'Security Reports'

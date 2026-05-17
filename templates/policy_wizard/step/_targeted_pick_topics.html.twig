@@ -37,7 +37,7 @@
         {% endblock %}
     {% endembed %}
 
-    <p class="text-muted small mb-3">{{ 'policy_wizard.step.targeted.pick.hint_max_ten'|trans({'%count%': max_topics}) }}</p>
+    <p class="text-muted small mb-3">{{ 'policy_wizard.step.targeted.pick.hint_max_ten'|trans({'%count%': max_topics}, 'policy_wizard') }}</p>
 
     <div class="fa-table-wrap">
         <table class="fa-table fa-table--hover align-middle"
@@ -77,7 +77,7 @@
                                     {% endfor %}
                                     {% if documents|length > 3 %}
                                         <li class="fst-italic">
-                                            {{ 'policy_wizard.step.targeted.pick.more_documents'|trans({'%count%': documents|length - 3}) }}
+                                            {{ 'policy_wizard.step.targeted.pick.more_documents'|trans({'%count%': documents|length - 3}, 'policy_wizard') }}
                                         </li>
                                     {% endif %}
                                 </ul>

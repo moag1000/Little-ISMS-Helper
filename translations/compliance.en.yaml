@@ -464,9 +464,9 @@ compliance:
             title: __compliance.framework.new.title
             heading: __compliance.framework.new.heading
         help:
-            code: { title: __compliance.framework.help.code.title, text: __compliance.framework.help.code.text }
-            mandatory: { title: __compliance.framework.help.mandatory.title, text: __compliance.framework.help.mandatory.text }
-            active: { title: __compliance.framework.help.active.title, text: __compliance.framework.help.active.text }
+            code: {title: __compliance.framework.help.code.title, text: __compliance.framework.help.code.text}
+            mandatory: {title: __compliance.framework.help.mandatory.title, text: __compliance.framework.help.mandatory.text}
+            active: {title: __compliance.framework.help.active.title, text: __compliance.framework.help.active.text}
         action:
             dashboard: __compliance.framework.action.dashboard
             new: __compliance.framework.action.new
@@ -888,65 +888,6 @@ compliance:
                 total: 'Total:'
                 days_at_8h: 'days at an 8-hour work day'
                 tracking: 'Tracking'
-compliance_mapping:
-    mapping_type:
-        weak: 'Weak (0-49%)'
-        partial: 'Partial (50-99%)'
-        full: 'Full (100%)'
-        exceeds: 'Exceeds (101-150%)'
-    confidence:
-        low: Low
-        medium: Medium
-        high: High
-compliance_requirement:
-    field:
-        framework: Framework
-        requirement_id: 'Requirement ID'
-        title: Title
-        description: Description
-        category: Category
-        priority: Priority
-        requirement_type: 'Requirement Type'
-        parent_requirement: 'Parent Requirement'
-    placeholder:
-        requirement_id: 'e.g. A.5.1 or REQ-001'
-        title: 'e.g. Information Security Policies'
-        description: 'Describe the requirement in detail...'
-        category: 'e.g. Organizational, Technical, Physical'
-    help:
-        framework: 'Select the compliance framework this requirement belongs to'
-        requirement_id: 'Unique identifier of the requirement according to the framework (e.g. A.5.1 for ISO 27001)'
-        category: 'Optional categorization for better overview (e.g. Organizational, Technical)'
-        requirement_type: 'Core = Main requirement, Detailed = Specification, Sub-requirement = Part of a parent requirement'
-        parent_requirement: 'For sub-requirements: Select the parent requirement'
-    validation:
-        framework_required: 'Please select a framework'
-        requirement_id_required: 'Please provide a requirement ID'
-        requirement_id_max_length: 'The requirement ID must not exceed 50 characters'
-        title_required: 'Please provide a title'
-        title_max_length: 'The title must not exceed 255 characters'
-        description_required: 'Please provide a description'
-        category_max_length: 'The category must not exceed 100 characters'
-        priority_required: 'Please select a priority'
-        requirement_type_required: 'Please select a requirement type'
-    priority:
-        critical: Critical
-        high: High
-        medium: Medium
-        low: Low
-    requirement_type:
-        core: 'Core requirement'
-        detailed: 'Detailed requirement'
-        sub_requirement: Sub-requirement
-    message:
-        no_gaps: 'No gaps found'
-        no_gaps_desc: 'No implementation gaps were identified for the selected framework.'
-        no_opportunities: 'No reuse opportunities found.'
-        no_data_elements: 'No data elements available.'
-        no_frameworks: 'No frameworks available.'
-    badge:
-        overdue: Overdue
-        reusable: reusable
 mapping_review:
     title: 'Mapping Review'
     subtitle: 'Detailed analysis and review'
@@ -960,7 +901,6 @@ mapping_review:
         percentages: 'Percentages'
         quality_confidence: 'Quality & Confidence'
         similarity_scores: 'Similarity Scores'
-        gaps: 'Identified Gaps'
         perform_review: 'Perform Review'
         metadata: 'Metadata'
     field:
@@ -1013,40 +953,6 @@ mapping_review:
         created: 'Created'
         updated: 'Updated'
 
-compliance_framework:
-    industry:
-        all_sectors: 'All Sectors'
-        automotive: Automotive
-        financial_services: 'Financial Services'
-        healthcare: Healthcare
-        telecommunications: Telecommunications
-        pharmaceutical: Pharmaceutical
-        cloud_services: 'Cloud Services'
-        critical_infrastructure: 'Critical Infrastructure'
-        energy: Energy
-        manufacturing: Manufacturing
-        retail: Retail
-        transportation: Transportation
-        public_sector: 'Public Sector'
-        education: Education
-        insurance: Insurance
-    maturity:
-        title: 'Maturity portfolio (CMMI level per framework)'
-        hint: 'Level 1 Initial → 5 Optimizing — based on coverage, cross-framework mappings, audit activity and KPI history.'
-        framework: 'Framework'
-        level: 'Maturity'
-        coverage: 'Coverage'
-        mappings: 'Cross-mappings'
-        missing: 'Next level requires'
-        none_missing: 'Maximum level reached'
-        label:
-            n/a: 'not tracked'
-            initial: 'Initial'
-            managed: 'Managed'
-            defined: 'Defined'
-            quantitatively_managed: 'Quant. Managed'
-            optimizing: 'Optimizing'
-
 admin:
     compliance:
         applicability:
@@ -1055,20 +961,6 @@ admin:
             conditional: 'Industry/size-dependent'
             voluntary: 'Voluntary'
             applies_when: 'Mandatory when'
-            condition:
-                tisax: 'Automotive supplier with OEM business (VDA requirement, not a law — but market access depends on it).'
-                dora: 'Financial entity per DORA Art. 2 (banks, payment services, crypto, insurance, critical ICT third parties).'
-                nis2: 'Essential or important entity in a NIS2 sector (Annex I+II) **and** ≥ 50 employees or ≥ 10 M€ annual revenue.'
-                nis2umsucg: 'Same thresholds as NIS2 + based in Germany. Additionally: operators of especially important entities per BSI catalog.'
-                bsi_grundschutz: 'German federal authorities (mandatory via UP Bund), state authorities with federal link, suppliers of public contracting authorities.'
-                kritis: 'Operators of critical infrastructure per BSI KRITIS Regulation (sectors: energy, water, food, ICT, health, finance, transport, waste).'
-                kritis_health: 'Hospitals with ≥ 30,000 inpatient cases/year, care facilities, and emergency services per KHZG/§75c SGB V.'
-                digav: 'Providers or distributors of digital health applications (DiGA) with BfArM approval (prescription apps).'
-                tkg: 'Operators of public telecommunications networks and services per §§164–167 TKG (mobile/fixed-line providers, ISPs, VoIP).'
-                gxp: 'Manufacturers, distributors, or service providers for pharmaceuticals, medical devices, or their IT systems (GMP/GxP-regulated industries).'
-                bdsg: 'Controllers or processors established in or processing PII in Germany.'
-                eu_ai_act: 'Providers or deployers of AI systems classified as High-Risk per EU AI Act Annex III.'
-
 fulfillment:
     field:
         responsible_person_user: 'Responsible person (user)'
@@ -1086,19 +978,6 @@ fulfillment:
         attestation_owner_person: 'Person who formally signs off the yearly compliance attestation. Distinct from the day-to-day responsible owner — typically CISO, Compliance Officer, or external Auditor.'
 
     # V3 B6 / EF-4: Inverse-Coverage Impact Analysis
-    coverage:
-        impact:
-            title:
-                asset: 'Compliance impact of this asset'
-                control: 'Compliance impact of this control'
-                risk: 'Compliance impact of this risk'
-            help:
-                asset: 'If this asset is deactivated or reclassified, it affects the following framework requirements.'
-                control: 'If this control is modified or deactivated, it affects the following framework requirements — they may lose their fulfilment.'
-                risk: 'This risk relates to the following framework requirements (via mapped controls or data-source mapping).'
-            view_modal: 'View details'
-
-# Top-level coverage alias for templates using coverage.impact.* directly
 coverage:
     impact:
         view_modal: 'View details'

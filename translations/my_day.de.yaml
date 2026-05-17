@@ -48,35 +48,6 @@ section:
     wizard_overdue: 'Wizard-Assessments — gestoppt (90+ Tage)'
     framework_gaps_critical: 'Framework-Coverage-Gaps — kritisch (< 60 %)'
 
-bucket:
-    risk_acceptance_expiring:
-        title: 'Risiko-Akzeptanz läuft ab'
-        empty: 'Keine Risiko-Akzeptanzen laufen in den nächsten 30 Tagen ab.'
-    documents_review_overdue:
-        title: 'Dokumente: Review überfällig'
-        empty: 'Keine überfälligen Dokument-Reviews.'
-    trainings_pending:
-        title: 'Trainings (mir zugewiesen)'
-        empty: 'Aktuell keine offenen Trainings.'
-    incidents_open_assigned:
-        title: 'Incidents (mir zugewiesen)'
-        empty: 'Keine offenen Incidents auf deinem Tisch.'
-    data_breaches_72h_ticking:
-        title: 'Datenpannen — 72h-Frist läuft'
-        empty: 'Keine offenen Datenpannen mit laufender 72h-Frist.'
-    vulnerabilities_critical_unpatched:
-        title: 'Schwachstellen — kritisch / ungepatcht'
-        empty: 'Keine kritischen Schwachstellen offen.'
-    audit_checklist_due:
-        title: 'Audit-Checkliste — fällig'
-        empty: 'Keine Audit-Checklisten-Items in den nächsten 7 Tagen fällig.'
-    change_requests_pending_approval:
-        title: 'Change Requests — warten auf Freigabe'
-        empty: 'Keine Change Requests warten auf Freigabe.'
-    management_review_upcoming:
-        title: 'Management-Review — anstehend'
-        empty: 'Keine Management-Reviews in den nächsten 90 Tagen geplant.'
-
 empty:
     title: 'Alles erledigt'
     text: 'Aktuell keine offenen Aufgaben für dich. Gute Arbeit!'

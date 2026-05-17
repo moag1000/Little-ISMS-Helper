@@ -13,7 +13,7 @@
     {{ _fa_page_header.render({
         badge:    { icon: 'nav-inbox', label: 'badge'|trans },
         title:    'title'|trans,
-        subtitle: 'subtitle'|trans({'%generated_at%': inbox.generated_at|date('d.m.Y H:i')}),
+        subtitle: 'subtitle'|trans({'%generated_at%': inbox.generated_at|date('d.m.Y H:i')}, 'my_day'),
         actions: [
             { label: 'action.standard_dashboard'|trans, variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
         ]

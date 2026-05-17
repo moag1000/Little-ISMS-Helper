@@ -28,30 +28,18 @@ nav:
     certification_bundle: 'Certification Bundle'
     treatment_plans: 'Treatment Plans'
     roles: 'Roles & Permissions'
-    tenants: Tenants
-    data_repair: 'Data Repair'
     management_reviews: 'Management Reviews'
     bc_plans: 'BC Plans'
     bc_exercises: 'BC Exercises'
     incidents: Incidents
     audits: Audits
     compliance: Compliance
-    audit_log: 'Audit Log'
-    nis2_dashboard: 'NIS2 Dashboard'
     vulnerabilities: Vulnerabilities
     patches: Patches
     users: Users
     documents: Documents
     evidence: Evidence
-    evidence_coverage: 'Evidence Coverage'
-    assets_risk_hub: 'Assets & Risks'
     risk_matrix: 'Risk Matrix'
-    bcm_hub: 'BCM Hub'
-    compliance_overview: Overview
-    frameworks: Frameworks
-    tools: Tools
-    cross_framework: Cross-Framework
-    compare: Compare
     mapping_hub: 'Mapping Hub'
     mapping_quality: 'Mapping Quality'
     mris_kpis: 'MRIS KPIs'
@@ -68,10 +56,6 @@ nav:
     workflows: Workflows
     workflow_definitions: 'Workflow Definitions'
     training: Training
-    management_review: 'Management Review'
-    admin_portal: 'Admin Portal'
-    privacy_hub: 'Privacy Hub'
-    vvt: 'RoPA (Art. 30)'
     dpia: 'DPIA (Art. 35)'
     data_breaches: 'Data Breaches (Art. 33/34)'
     consents: 'Consents (Art. 7)'
@@ -117,9 +101,6 @@ nav:
             documents: 'Document Management'
             security_ops: 'Security Operations'
             auditing: 'Auditing & Training'
-            frameworks: 'Compliance Frameworks'
-            user_management: 'User Management'
-            system: 'System Administration'
             help_resources: 'Help & Resources'
             shortcuts: Shortcuts
             # Audit-V3 ME-*: Discovery sections.
@@ -205,11 +186,6 @@ nav:
             group_report: 'Corporate tree + NIS2 registration matrix (Group-CISO)'
             management_reports: 'Board One-Pager, Executive Summary, Risk/BCM/Compliance reports (PDF + Excel)'
             certification_bundle: 'All ISMS documents in one ZIP archive for certification audits'
-            users: 'User account management'
-            roles: 'Roles and permissions'
-            tenants: 'Multi-tenant administration'
-            data_repair: 'Data integrity tools'
-            audit_log: 'System audit trail'
             iso9001_bridge: 'Conceptual translation: CAPA ↔ risk treatment, process map ↔ SoA'
             glossary: 'ISMS terms explained — from Asset to Vulnerability'
             keyboard_shortcuts: 'All keyboard shortcuts at a glance'
@@ -232,14 +208,6 @@ nav:
 
     evidence_reviewer_queue: 'Evidence Reviewer Queue'
 
-    section:
-        isms_core: 'ISMS Core'
-        assets_risk: 'Assets & Risk'
-        bcm: 'Business Continuity'
-        privacy: Privacy
-        operations: Operations
-        compliance: Compliance
-        admin: Admin
     admin: Administration
     privacy: Privacy
     crisis_teams: 'Crisis Teams'

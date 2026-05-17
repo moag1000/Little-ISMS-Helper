@@ -1,211 +1,75 @@
 bc_plans:
-  page:
-    title: Business-Continuity-Pläne
-    header: Business-Continuity-Pläne
-    subtitle: ISO 22301:2019 Business Continuity Management
-  action:
-    add_new: Neuen BC‑Plan anlegen
-    create_first: Ersten BC‑Plan anlegen
-  empty:
-    title: Noch keine Business-Continuity-Pläne hinterlegt
-    body: 'BC-Pläne sichern die Wiederanlauffähigkeit kritischer Geschäftsprozesse. Pro Prozess dokumentieren Sie Aktivierungskriterien, Wiederanlaufverfahren, Team und Kommunikationsplan — Voraussetzung für ISO 22301 §8.4.'
-  alert:
-    overdue_tests: ⚠️ Überfällige BC‑Plan‑Tests
-    overdue_reviews: ⚠️ Überfällige BC‑Plan‑Reviews
-  section:
-    details: BC‑Plan Details
-    testing_review: Tests & Reviews
-    review_notes: Review‑Notizen
-    communication_plan: Kommunikationsplan
-    alternative_site: Alternativstandort
-    related_risks: Zugehörige Risiken
-    basic_info: Grundinformationen
-    team: BC-Team
-    activation: Aktivierung
-    communication: Kommunikation
-    backup_recovery: Backup und Wiederherstellung
-    version_review: Versionsüberprüfung
-  table:
-    name: Name
-    business_process: Geschäftsprozess
-    owner: Verantwortlich
-    status: Status
-    readiness: Bereitschaft
-    last_tested: Zuletzt getestet
-    actions: Aktionen
-  field:
-    business_process: Geschäftsprozess
-    plan_owner: Verantwortlich
-    version: Version
-    last_tested: Zuletzt getestet
-    next_test: Nächster Test
-    last_review: Letztes Review
-    next_review: Nächstes Review
-    address: Adresse
-    capacity: Kapazität
-    name: Name
-    description: Beschreibung
-    status: Status
-    bc_team: BC-Team
-    activation_criteria: Aktivierungskriterien
-    roles_and_responsibilities: Rollen und Verantwortlichkeiten
-    roles_responsibilities: Rollen und Verantwortlichkeiten
-    recovery_procedures: Wiederherstellungsverfahren
-    communication_plan: Kommunikationsplan
-    internal_communication: Interne Kommunikation
-    external_communication: Externe Kommunikation
-    alternative_site: Alternativstandort
-    alternative_site_address: Adresse Alternativstandort
-    alternative_site_capacity: Kapazität Alternativstandort
-    backup_procedures: Backup-Verfahren
-    restore_procedures: Wiederherstellungsverfahren
-    next_test_date: Datum nächster Test
-    last_review_date: Datum letztes Review
-    next_review_date: Datum nächstes Review
-    review_notes: Review-Notizen
-    plan_owner_legacy: Verantwortlich (freitext, veraltet)
-    plan_owner_person: Verantwortlich (Person aus Stammdaten)
-    plan_owner_deputies: Vertretungen (Personen)
-    response_team_members: 'Reaktionsteam-Mitglieder (strukturiert)'
-    required_resources: 'Erforderliche Ressourcen (strukturiert)'
-    escalation_levels: 'Eskalationsstufen'
-    crisis_teams: 'Krisenstäbe'
-    rto: 'Recovery Time Objective (Stunden)'
-    rpo: 'Recovery Point Objective (Stunden)'
-    critical_assets: 'Geschäftskritische Assets'
-  status:
-    draft: Entwurf
-    under_review: In Überprüfung
-    active: Aktiv
-    archived: Archiviert
-  badge:
-    overdue: ÜBERFÄLLIG
-  message:
-    not_scheduled: Nicht geplant
-    never: Nie
-    no_plans: Keine BC‑Pläne gefunden.
-    create_first: Erstellen Sie Ihren ersten BC‑Plan
-    readiness_score: 'Bereitschafts‑Score: %score%%'
-  help:
-    empty_link: /de/help/glossary#glossary-bc-plan
-    name: Eindeutige Bezeichnung des BC-Plans
-    business_process: Geschäftsprozess, der durch diesen Plan geschützt wird (ISO
-      22301)
-    description: Detaillierte Beschreibung des Plans und seines Umfangs
-    plan_owner: Verantwortliche Person für die Pflege und Umsetzung des Plans
-    status: Aktueller Status des Plans (Entwurf, Aktiv, Archiviert)
-    bc_team: Personen, die bei Aktivierung des Plans einbezogen werden (BC-Team gemäß
-      ISO 22301)
-    activation_criteria: Bedingungen, unter denen dieser Plan aktiviert werden soll
-      (z.B. Serverausfall > 4h)
-    roles_responsibilities: Rollen und Verantwortlichkeiten der Teammitglieder während
-      einer BC-Situation
-    recovery_procedures: Schrittweise Verfahren zur Wiederherstellung des Geschäftsbetriebs
-    communication_plan: Kommunikationsstrategie während der Kontinuitätssituation
-    internal_communication: Kommunikation mit internen Stakeholdern (Mitarbeiter,
-      Management)
-    external_communication: Kommunikation mit externen Stakeholdern (Kunden, Lieferanten,
-      Behörden)
-    alternative_site: Alternativstandort für den Notbetrieb (falls physischer Standort
-      nicht verfügbar)
-    alternative_site_address: Vollständige Adresse des Alternativstandorts
-    alternative_site_capacity: Kapazität und Ressourcen am Alternativstandort (Arbeitsplätze,
-      Technik)
-    backup_procedures: Verfahren zur Datensicherung (Backup-Strategie, Frequenz, Speicherorte)
-    restore_procedures: Verfahren zur Datenwiederherstellung (Restore-Prozess, Priorisierung)
-    version: Aktuelle Versionsnummer des BC-Plans
-    last_tested: Datum des letzten BC-Plan-Tests (Übungen gemäß ISO 22301:2019 Klausel
-      8.5)
-    next_test_date: Datum des nächsten geplanten BC-Plan-Tests
-    last_review_date: Datum der letzten Planüberprüfung
-    next_review_date: Datum der nächsten geplanten Überprüfung (mindestens jährlich
-      gemäß ISO 22301)
-    review_notes: Notizen aus der letzten Planüberprüfung (Änderungsbedarf, Verbesserungen)
-    plan_owner_user: Verantwortliche Person aus der Benutzerverwaltung.
-    plan_owner_person: 'Person ohne System-Login als Planverantwortliche wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
-    plan_owner_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
-    response_team_members_json: 'JSON-Array mit Reaktionsteam-Rollen gemäß ISO 22301 §8.5.3. Rollen: incident_commander, comms_lead, recovery_lead, technical_lead.'
-    required_resources_json: 'JSON-Objekt mit Ressourcenbedarf: {"personnel": [], "equipment": [], "supplies": []}. ISO 22301 §8.1.'
-    escalation_levels_json: 'JSON-Array mit Eskalationsstufen gemäß BSI 200-4 §6.2: [{"level":1,"trigger":"...","responder":"...","escalateAfter":"15min"}].'
-    crisis_teams: 'Krisenstäbe, die für diesen Plan zuständig sind (ISO 22301 §8.4.2). Mehrfachauswahl möglich.'
-    rto: 'ISO 22301 Cl. 8.4.2 — maximal akzeptable Wiederherstellungszeit nach Ausfall, in Stunden. Beispiele: kritisch=1, hoch=4, mittel=24, niedrig=72.'
-    rpo: 'ISO 22301 Cl. 8.4.2 — maximal tolerierbarer Datenverlust, gemessen in Stunden zwischen letztem konsistentem Backup und Eintritt der Störung.'
-    critical_assets: 'Assets, die für die Wiederherstellung dieses Geschäftsprozesses essentiell sind. Mehrfachauswahl möglich.'
-  placeholder:
-    plan_owner_user: -- Verantwortliche Person --
-    plan_owner_person: -- Person aus Stammdaten --
-    response_team_members: '[{"role":"incident_commander","userId":null,"name":"Max Mustermann","contact":"+49 123 456789","responsibilities":"Gesamtverantwortung"}]'
-  tooltip:
-    activation_criteria: 'Vordefinierte Bedingungen, bei deren Eintreten der Plan aktiviert wird (z. B. Serverausfall > 4h, Gebäudeevakuierung). Messbare Schwellenwerte erleichtern die Entscheidung im Krisenfall.'
-    recovery_procedures: 'Schritt-für-Schritt-Anleitung zur Wiederherstellung des Geschäftsbetriebs. Jeder Schritt sollte Verantwortliche, Zeitvorgaben und Prüfkriterien enthalten (ISO 22301 Kl. 8.4).'
-    communication_plan: 'Kommunikationsstrategie während einer Unterbrechungssituation: Wer informiert wen, über welchen Kanal, in welcher Reihenfolge? Enthält Eskalationswege und Backup-Kommunikationskanäle.'
-    alternative_site: 'Ausweichstandort für den Notbetrieb, falls der primäre Standort nicht verfügbar ist. Beschreiben Sie Kapazität, vorhandene Infrastruktur und Aktivierungsdauer.'
-    required_resources: 'Mindestressourcen, die für den Notbetrieb benötigt werden: Personal, IT-Systeme, Kommunikationsmittel, Räumlichkeiten und kritische Drittdienstleister (ISO 22301 Kl. 8.1).'
-  error:
-    owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
-    rto_range: 'RTO muss zwischen 0 und 8760 Stunden (= 1 Jahr) liegen.'
-    rpo_range: 'RPO muss zwischen 0 und 8760 Stunden (= 1 Jahr) liegen.'
-  team_role:
-    incident_commander: 'Vorfalls-Koordinator (Incident Commander)'
-    comms_lead: 'Kommunikations-Lead'
-    recovery_lead: 'Wiederanlauf-Lead'
-    technical_lead: 'Technischer Lead'
-    other: 'Sonstige Rolle'
-  team_role_builder:
-    aria: 'Reaktionsteam — strukturierter Editor'
-    add: 'Rolle hinzufügen'
-    remove: 'Rolle entfernen'
-    empty: 'Noch keine Teammitglieder erfasst. Klicken Sie „Rolle hinzufügen", um Ihr Reaktionsteam aufzubauen.'
-    col:
-      role: 'Rolle'
-      name: 'Name'
-      contact: 'Kontakt'
-      responsibilities: 'Verantwortlichkeiten'
-      actions: 'Aktionen'
-    placeholder:
-      name: 'Max Mustermann'
-      contact: '+49 123 456789'
-      responsibilities: 'Gesamtkoordination im Notfall'
-  resource_list:
-    aria: 'Erforderliche Ressourcen — strukturierter Editor'
-    tab:
-      personnel: 'Personal'
-      equipment: 'Ausstattung'
-      supplies: 'Verbrauchsmaterial'
+    page:
+        title: Business-Continuity-Pläne
+        header: Business-Continuity-Pläne
+        subtitle: ISO 22301:2019 Business Continuity Management
+    action:
+        add_new: Neuen BC‑Plan anlegen
+        create_first: Ersten BC‑Plan anlegen
     empty:
-      personnel: 'Noch kein Personalbedarf erfasst.'
-      equipment: 'Noch keine Ausstattung erfasst.'
-      supplies: 'Noch kein Verbrauchsmaterial erfasst.'
-    placeholder:
-      personnel: 'z. B. 2 SysAdmins, 1 Backup-Operator'
-      equipment: 'z. B. Laptop, USB-LTE-Stick, Funkgerät'
-      supplies: 'z. B. Notfall-USB, Papierausdruck Telefonliste'
-    add: 'Hinzufügen'
-    remove: 'Eintrag entfernen'
-  escalation_chain:
-    aria: 'Eskalationsstufen — BSI 200-4 §6.2'
-    add: 'Stufe hinzufügen'
-    remove: 'Stufe entfernen'
-    empty: 'Noch keine Eskalationsstufen definiert.'
-    level: 'Stufe'
-    col:
-      level: 'Stufe'
-      trigger: 'Auslöser'
-      responder: 'Verantwortlich'
-      escalate_after: 'Eskalation nach'
-    placeholder:
-      trigger: 'z. B. Service-Ausfall > 30 Min.'
-      responder: 'z. B. ISB / Krisenstab'
-      escalate_after: 'z. B. 15min, 1h, 4h'
-    help: 'Definieren Sie die Eskalations-Kaskade nach BSI 200-4 §6.2: pro Stufe Auslöser, Verantwortlicher und Zeitschwelle.'
-  json_builder:
-    raw_toggle: 'Als JSON bearbeiten'
-    raw_label: 'Roh-JSON (Power-User)'
-    raw_help: 'Achtung: Roh-Editing kann Daten beschädigen. Schema muss zur Entity-Definition passen.'
+        title: Noch keine Business-Continuity-Pläne hinterlegt
+        body: 'BC-Pläne sichern die Wiederanlauffähigkeit kritischer Geschäftsprozesse. Pro Prozess dokumentieren Sie Aktivierungskriterien, Wiederanlaufverfahren, Team und Kommunikationsplan — Voraussetzung für ISO 22301 §8.4.'
+    alert:
+        overdue_tests: ⚠️ Überfällige BC‑Plan‑Tests
+        overdue_reviews: ⚠️ Überfällige BC‑Plan‑Reviews
+    section:
+        details: BC‑Plan Details
+        testing_review: Tests & Reviews
+        review_notes: Review‑Notizen
+        communication_plan: Kommunikationsplan
+        alternative_site: Alternativstandort
+        related_risks: Zugehörige Risiken
+        basic_info: Grundinformationen
+        team: BC-Team
+        activation: Aktivierung
+        communication: Kommunikation
+        backup_recovery: Backup und Wiederherstellung
+        version_review: Versionsüberprüfung
+    table:
+        name: Name
+        business_process: Geschäftsprozess
+        owner: Verantwortlich
+        status: Status
+        readiness: Bereitschaft
+        last_tested: Zuletzt getestet
+        actions: Aktionen
+    field:
+        business_process: Geschäftsprozess
+        plan_owner: Verantwortlich
+        version: Version
+        last_tested: Zuletzt getestet
+        next_test: Nächster Test
+        last_review: Letztes Review
+        next_review: Nächstes Review
+        address: Adresse
+        capacity: Kapazität
+    status:
+        draft: Entwurf
+        under_review: In Überprüfung
+        active: Aktiv
+        archived: Archiviert
+    badge:
+        overdue: ÜBERFÄLLIG
+    message:
+        not_scheduled: Nicht geplant
+        never: Nie
+        readiness_score: 'Bereitschafts‑Score: %score%%'
+    help:
+        empty_link: /de/help/glossary#glossary-bc-plan
+    resource_list:
+        tab:
+            personnel: 'Personal'
+            equipment: 'Ausstattung'
+            supplies: 'Verbrauchsmaterial'
+        empty:
+            personnel: 'Noch kein Personalbedarf erfasst.'
+            equipment: 'Noch keine Ausstattung erfasst.'
+            supplies: 'Noch kein Verbrauchsmaterial erfasst.'
+        placeholder:
+            personnel: 'z. B. 2 SysAdmins, 1 Backup-Operator'
+            equipment: 'z. B. Laptop, USB-LTE-Stick, Funkgerät'
+            supplies: 'z. B. Notfall-USB, Papierausdruck Telefonliste'
 bcm:
-  field:
-    activation_criteria: Aktivierungskriterien
-    recovery_plan: Wiederherstellung Plan
-iso_9001_bridge:
-    recovery: 'In der neuen Edition von ISO 9001 (Entwurf) ist das Klausel 8.5.5 "Notfallplanung". Die quantitativen Recovery-Ziele RTO/RPO werden in der ISO 9001 nicht explizit gefordert — sie sind ISO-22301-spezifisch.'
-    bc_plan: 'In ISO 9001 ist BC-Planung Teil der Risikobehandlung (6.1.2). Ein separater Plan ist in der 9001 nicht zwingend, in ISO 22301 schon.'
+    field:
+        activation_criteria: Aktivierungskriterien
+        recovery_plan: Wiederherstellung Plan

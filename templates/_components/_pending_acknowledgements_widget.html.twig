@@ -21,7 +21,7 @@
                     {{ 'policy_ack.widget.title'|trans }}
                 </h5>
                 <p class="mb-0 text-muted">
-                    {{ 'policy_ack.inbox.pending_count'|trans({ '%count%': pending_count }) }}
+                    {{ 'policy_ack.inbox.pending_count'|trans({ '%count%': pending_count }, 'policy_wizard') }}
                 </p>
             </div>
             <a href="{{ path('app_policy_ack_inbox') }}"

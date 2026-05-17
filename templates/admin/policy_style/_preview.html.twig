@@ -156,7 +156,7 @@
         {% if _footer %}
             {{ _footer }}
         {% else %}
-            {{ 'admin.policy_style.preview.default_footer'|trans({ '%tenant%': sample.tenant_name|default(tenant.name) }) }}
+            {{ 'admin.policy_style.preview.default_footer'|trans({ '%tenant%': sample.tenant_name|default(tenant.name) }, 'admin') }}
         {% endif %}
     </footer>
 </div>

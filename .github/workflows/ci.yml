@@ -101,6 +101,9 @@ jobs:
           # Build schema directly from entity-metadata (no migrations, no drift).
           php bin/console doctrine:schema:create --env=test
 
+          # Initialize the doctrine_migration_versions table (schema:create skips it).
+          php bin/console doctrine:migrations:sync-metadata-storage --no-interaction --env=test
+
           # Mark all migrations as already-executed so any code path that triggers
           # `migrations:migrate` during tests sees "no pending" and skips silently.
           php bin/console doctrine:migrations:version --add --all --no-interaction --env=test

@@ -7,7 +7,3 @@ asset:
         availability: Availability
         data_classification: 'Data classification'
         is_dora_relevant: 'DORA-relevant (Art. 28 ICT-Asset)'
-    help:
-        is_dora_relevant: 'This asset qualifies as an ICT asset under DORA Art. 28 and will be included in the Register of Information XBRL export. Only flagged assets appear in the export.'
-    message:
-        inherited_asset: 'Inherited Asset'

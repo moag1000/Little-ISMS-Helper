@@ -4,7 +4,6 @@ evidence:
     upload: 'Nachweis hochladen'
     upload_success: 'Nachweis erfolgreich hochgeladen und verknüpft.'
     upload_hint: 'Max. 10 MB. Erlaubte Formate: PDF, Office, Bilder, Text, ZIP.'
-    link: 'Bestehendes Dokument verknüpfen'
     unlink: 'Verknüpfung aufheben'
     unlink_confirm: 'Soll die Verknüpfung zu diesem Nachweis wirklich aufgehoben werden?'
     recent_uploads: 'Letzte Uploads'

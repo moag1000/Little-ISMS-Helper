@@ -47,8 +47,6 @@ supplier:
         related_assets: 'Zugeordnete Assets'
         related_risks: 'Zugeordnete Risiken'
     field:
-        name: Name
-        description: Beschreibung
         service_provided: 'Erbrachte Leistung'
         criticality: Kritikalität
         status: Status
@@ -58,45 +56,20 @@ supplier:
         address: Adresse
         security_score: Sicherheits‑Score
         last_assessment: 'Letzte Bewertung'
-        last_security_assessment: 'Letzte Sicherheitsbewertung'
         next_assessment: 'Nächste Bewertung'
-        next_assessment_date: 'Nächstes Bewertungsdatum'
         assessment_findings: Bewertungsergebnisse
         non_conformities: Nichtkonformitäten
         iso27001_certified: 'ISO 27001 zertifiziert'
         iso22301_certified: 'ISO 22301 zertifiziert'
-        has_iso27001: 'ISO 27001 Zertifizierung'
-        has_iso22301: 'ISO 22301 Zertifizierung'
-        certifications: 'Weitere Zertifizierungen'
         dpa: 'Auftragsverarbeitungsvertrag (AVV)'
-        has_dpa: 'AVV vorhanden'
         dpa_signed_date: 'AVV unterschrieben am'
         other_certifications: 'Weitere Zertifizierungen'
         contract_start: Vertragsbeginn
-        contract_start_date: Vertragsbeginn
         contract_end: Vertragsende
-        contract_end_date: Vertragsende
         security_requirements: Sicherheitsanforderungen
         contact: Kontaktinformationen
         risk_level: 'Risikostufe (ISO 27001 Anhang A 5.19: Lieferantenbeziehungen)'
-        nace_code: 'NACE-Code (Rev.2)'
-        country_of_head_office: 'Hauptsitz (ISO-3166)'
-        # DORA (Digital Operational Resilience Act) — Art. 28 Register of Information
         is_dora_relevant: 'DORA-relevant (Art. 28 ICT-Drittdienstleister)'
-        lei_code: 'LEI-Code (ISO 17442)'
-        ict_criticality: 'ICT-Kritikalität (DORA)'
-        ict_function_type: 'ICT-Funktionstyp'
-        substitutability: 'Austauschbarkeit'
-        has_exit_strategy: 'Exit-Strategie dokumentiert'
-        has_subcontractors: 'Nutzt Unterauftragsverarbeiter'
-        subcontractor_chain: 'Unterauftragnehmer-Kette'
-        processing_locations: 'Verarbeitungsstandorte (ISO-3166)'
-        last_dora_audit_date: 'Letztes DORA-Audit'
-        # DSGVO (GDPR) — Art. 28 Auftragsverarbeitung
-        gdpr_processor_status: 'Datenschutz-Rolle (DSGVO Art. 28)'
-        gdpr_av_contract_signed: 'AVV unterzeichnet (DSGVO Art. 28)'
-        gdpr_av_contract_date: 'AVV unterzeichnet am'
-        gdpr_transfer_mechanism: 'Datenübermittlungs-Mechanismus (Drittland)'
         lksg_reporting_obligation: 'LkSG-pflichtig'
         lksg_risk_category: 'LkSG-Risikoklasse'
         lksg_human_rights_risk_score: 'Menschenrechts-Risiko-Score (0–100)'
@@ -110,82 +83,6 @@ supplier:
         high: 'Hoch'
         critical: 'Kritisch'
     # Enum-Werte für DORA/DSGVO-Felder (FormType choice_translation_domain => 'suppliers')
-    ict_criticality:
-        critical: 'Kritisch (DORA Art. 28.2)'
-        important: 'Wichtig (DORA)'
-        non_ict: 'Nicht-ICT-Dienst'
-    substitutability:
-        easy: 'Leicht ersetzbar'
-        medium: 'Mittel ersetzbar'
-        hard: 'Schwer ersetzbar'
-    gdpr_processor_status:
-        controller: 'Verantwortlicher (Art. 4 Nr. 7 DSGVO)'
-        processor: 'Auftragsverarbeiter (Art. 28 DSGVO)'
-        joint_controller: 'Gemeinsam Verantwortlicher (Art. 26 DSGVO)'
-        none: 'Keine personenbezogenen Daten'
-    tooltip:
-        security_score: 'Sicherheitsbewertung 0–100 (siehe Bewertungsrahmen).'
-        criticality: 'Kritikalität des Lieferanten für Ihren Geschäftsbetrieb.'
-    help:
-        name: 'Offizieller Name des Lieferanten oder Dienstleisters.'
-        description: 'Kurze Beschreibung des Lieferanten und seiner Rolle für Ihr Unternehmen.'
-        contact_person: 'Hauptansprechpartner beim Lieferanten für Sicherheitsfragen.'
-        email: 'E-Mail-Adresse des Ansprechpartners.'
-        phone: 'Telefonnummer des Ansprechpartners.'
-        address: 'Geschäftsadresse des Lieferanten.'
-        service_provided: 'Welche Leistungen erbringt dieser Lieferant für Ihr Unternehmen?'
-        criticality: 'Wie kritisch ist dieser Lieferant für Ihren Geschäftsbetrieb? (ISO 27001 A.5.19)'
-        status: 'Aktueller Status der Lieferantenbeziehung.'
-        security_score: 'Sicherheitsbewertung von 0 (schlecht) bis 100 (exzellent), basierend auf dem letzten Audit.'
-        last_assessment: 'Wann wurde die letzte Sicherheitsbewertung durchgeführt?'
-        next_assessment: 'Wann ist die nächste Sicherheitsbewertung geplant?'
-        assessment_findings: 'Zusammenfassung der Ergebnisse aus der letzten Sicherheitsbewertung.'
-        non_conformities: 'Offene Nichtkonformitäten, die beim letzten Audit festgestellt wurden.'
-        contract_start: 'Beginn des Vertrags mit dem Lieferanten.'
-        contract_end: 'Ende des Vertrags – wichtig für Vertragsverlängerungen und Neuverhandlungen.'
-        security_requirements: 'Sicherheitsanforderungen, die der Lieferant erfüllen muss (z.B. Verschlüsselung, Zugangskontrollen).'
-        has_iso27001: 'Ist der Lieferant nach ISO 27001 zertifiziert?'
-        has_iso22301: 'Ist der Lieferant nach ISO 22301 (Business Continuity) zertifiziert?'
-        certifications: 'Weitere Zertifizierungen des Lieferanten (z.B. SOC 2, TISAX).'
-        has_dpa: 'Liegt ein Auftragsverarbeitungsvertrag (AVV) nach DSGVO Art. 28 vor?'
-        dpa_signed: 'Datum, an dem der AVV unterzeichnet wurde.'
-        is_dora_relevant: 'Dieser Lieferant ist als ICT-Drittdienstleister gemäß DORA Art. 28 im Register of Information zu führen. Nur markierte Lieferanten werden in den XBRL-Export aufgenommen.'
-        lei_code: 'Legal Entity Identifier (20 Zeichen, ISO 17442) – Pflicht für DORA-ICT-Drittdienstleister.'
-        nace_code: 'EU NACE Rev.2 Branchencode des ICT-Drittdienstleisters (z.B. 62.01).'
-        country_of_head_office: 'ISO-3166 alpha-2 Ländercode des Hauptsitzes (z.B. DE, IE, US).'
-        ict_criticality: 'DORA-Einstufung des ICT-Dienstes. Kritisch = Ausfall beeinträchtigt operative Kontinuität.'
-        ict_function_type: 'Art des ICT-Dienstes (z.B. Cloud, SaaS, Managed Service, Datenzentrum).'
-        substitutability: 'Wie leicht kann der Lieferant kurzfristig ersetzt werden? Relevant für DORA Exit-Strategie.'
-        has_subcontractors: 'Setzt der Lieferant Unterauftragnehmer ein (Supply-Chain-Risiko nach DORA Art. 28.6)?'
-        subcontractor_chain: 'Liste aller Subunternehmer in der Lieferkette, eine pro Zeile.'
-        processing_locations: 'Länder/Regionen, in denen Daten verarbeitet werden (DSGVO Art. 44 ff. Drittlandsübermittlung).'
-        last_dora_audit_date: 'Datum der letzten DORA-Compliance-Prüfung dieses Lieferanten.'
-        has_exit_strategy: 'Liegt eine dokumentierte Exit-Strategie vor (DORA Art. 28.8 Pflicht für kritische Dienste)?'
-        gdpr_processor_status: 'Rolle des Lieferanten nach DSGVO Art. 4 (Auftragsverarbeiter, Verantwortlicher, gemeinsam Verantwortlich).'
-        gdpr_transfer_mechanism: 'Rechtlicher Mechanismus für Datentransfer in Drittland (SCC, Angemessenheitsbeschluss, BCR).'
-        gdpr_av_contract_signed: 'Ist ein Auftragsverarbeitungsvertrag nach DSGVO Art. 28.3 unterzeichnet?'
-        gdpr_av_contract_date: 'Datum der Unterzeichnung des Auftragsverarbeitungsvertrags.'
-        lksg_reporting_obligation: 'Lieferant fällt in Sorgfaltspflicht des LkSG (Tenant ≥ 1000 MA, ab 2024 ≥ 250 MA absehbar).'
-        lksg_risk_category: 'Aggregierte LkSG-Risikoklasse (low/medium/high/critical) — Ergebnis der Risikoanalyse.'
-        lksg_human_rights_risk_score: 'Menschenrechtsbezogener Risiko-Score 0–100 (höher = mehr Risiko).'
-        lksg_environmental_risk_score: 'Umweltbezogener Risiko-Score 0–100 (höher = mehr Risiko).'
-        lksg_risk_analysis_date: 'Datum der letzten dokumentierten LkSG-Risikoanalyse für diesen Lieferanten.'
-        lksg_complaint_mechanism: 'Beschwerdekanal (Beschreibung oder URL) gemäß § 8 LkSG.'
-        lksg_prevention_measures: 'Beschreibung der Präventions- und Abhilfemaßnahmen (§ 6/7 LkSG); ergänzende Belege als Documents verlinken.'
-    placeholder:
-        name: 'z.B. Acme IT Services GmbH'
-        description: 'Beschreiben Sie den Lieferanten und seine Dienste...'
-        contact_person: 'Name des Ansprechpartners'
-        email: 'kontakt@lieferant.de'
-        phone: '+49 123 456789'
-        address: 'Straße, PLZ Ort, Land'
-        service_provided: 'Beschreiben Sie die erbrachten Leistungen...'
-        security_score: '0-100'
-        assessment_findings: 'Dokumentieren Sie die Ergebnisse der Sicherheitsbewertung...'
-        non_conformities: 'Auflistung festgestellter Nichtkonformitäten...'
-        security_requirements: 'Definieren Sie die Sicherheitsanforderungen an den Lieferanten...'
-        certifications: 'z.B. SOC 2 Type II, TISAX, etc.'
-        lksg_risk_category: '— bitte wählen —'
     criticality:
         critical: Kritisch
         high: Hoch
@@ -198,29 +95,10 @@ supplier:
         country: Land
         service: Dienstleistung
         criticality: Kritikalität
-        critical: 'Kritisch (DORA Art. 28)'
-        critical_help: 'Als kritisch im Sinne von DORA Art. 28 markieren — Subunternehmer mit wesentlicher Funktion.'
-        indent: 'Tier erhöhen (verschachteln)'
-        outdent: 'Tier reduzieren (ausrücken)'
         add: 'Subunternehmer hinzufügen'
         empty: 'Noch keine Subunternehmer erfasst. Klicken Sie „Hinzufügen", um eine neue Ebene anzulegen.'
         none: 'Keine Unterauftragnehmer erfasst.'
         tree: 'Sub-Outsourcing-Baum'
-        placeholder:
-            name: 'z. B. Acme Hosting GmbH'
-            service: 'z. B. Cloud Hosting, Backup-Service'
-    subcontractor_chain:
-        aria: 'Subunternehmer-Kette — strukturierter Editor (DORA Art. 28, max. 4 Stufen)'
-        help: 'Erfassen Sie die Sub-Outsourcing-Kette nach DORA Art. 28. Maximale Verschachtelungstiefe: 4 Stufen. Markieren Sie kritische Subunternehmer für das Konzentrations-Reporting.'
-        remove: 'Subunternehmer entfernen'
-        raw_toggle: 'Als JSON bearbeiten'
-        raw_label: 'Roh-JSON (Power-User)'
-        raw_help: 'Achtung: Roh-Editing kann Daten beschädigen. Schema muss zur Entity-Definition passen.'
-    status:
-        active: Aktiv
-        inactive: Inaktiv
-        evaluation: 'In Evaluierung'
-        terminated: Beendet
     badge:
         overdue: Überfällig
     value:
@@ -289,79 +167,3 @@ supplier:
             processor: Auftragsverarbeiter
             joint_controller: 'Gemeinsam Verantwortlicher'
             none: 'Keine personenbezogenen Daten'
-corporate:
-    stats:
-        standalone: Eigenständig
-        total: 'Alle Tenants'
-        own: Eigene
-        inherited: Vererbt
-        subsidiaries: Töchter
-        breakdown: 'Eigene: %own% | Geerbt: %inherited% | Töchter: %subsidiaries%'
-        groups: Konzerngruppen
-    tooltip:
-        security_score: '<strong>🔒 Sicherheitsbewertung (0-100)</strong><br><em>Frage: Wie gut ist die Informationssicherheit des Lieferanten?</em><br><br><strong>90-100</strong> = Exzellent (ISO 27001 zertifiziert)<br><strong>70-89</strong> = Gut (solide Sicherheitsmaßnahmen)<br><strong>50-69</strong> = Ausreichend (Verbesserungen nötig)<br><strong>30-49</strong> = Mangelhaft (erhöhtes Risiko)<br><strong>0-29</strong> = Kritisch (sofortige Maßnahmen!)<br><br><em>Tipp: Basiert auf letztem Sicherheitsaudit</em>'
-        criticality: '<strong>⚡ Kritikalität des Lieferanten</strong><br><em>Frage: Wie wichtig ist dieser Lieferant für Ihr Unternehmen?</em><br><br><strong>Kritisch</strong> = Geschäftsunterbrechung bei Ausfall<br><strong>Hoch</strong> = Erhebliche Beeinträchtigung<br><strong>Mittel</strong> = Spürbare Auswirkungen<br><strong>Niedrig</strong> = Leicht ersetzbar<br><br><em>Tipp: Cloud-Provider, ERP-Anbieter sind meist kritisch</em>'
-
-    # ── WS-3 DORA ROI + DSGVO Art. 28 (2026-04-17) ─────────────────────────
-    field:
-        lei_code: 'LEI-Code (Legal Entity Identifier)'
-        ict_criticality: 'ICT-Kritikalität (DORA)'
-        ict_function_type: 'ICT-Funktionstyp'
-        substitutability: 'Substituierbarkeit'
-        has_subcontractors: 'Hat Subunternehmer'
-        subcontractor_chain: 'Subunternehmer-Kette'
-        processing_locations: 'Verarbeitungsstandorte (Länder)'
-        last_dora_audit_date: 'Letzte DORA-Prüfung'
-        has_exit_strategy: 'Exit-Strategie vorhanden'
-        exit_strategy_document: 'Exit-Strategie-Dokument'
-        gdpr_processor_status: 'Rolle nach DSGVO Art. 28'
-        gdpr_transfer_mechanism: 'Transfer-Mechanismus (Drittlandsübermittlung)'
-        gdpr_av_contract_signed: 'AV-Vertrag unterzeichnet'
-        gdpr_av_contract_date: 'AV-Vertrag Datum'
-    ict_criticality:
-        non_ict: 'Nicht-ICT-Dienst'
-        important: 'Wichtig'
-        critical: 'Kritisch'
-    substitutability:
-        easy: 'Leicht ersetzbar'
-        medium: 'Mittel'
-        hard: 'Schwer ersetzbar'
-    gdpr_processor_status:
-        controller: 'Verantwortlicher'
-        processor: 'Auftragsverarbeiter'
-        joint_controller: 'Gemeinsam Verantwortlicher'
-        none: 'Keine personenbezogenen Daten'
-    value:
-        na: '— nicht zutreffend —'
-    section:
-        dora: 'DORA Register of Information (Art. 28)'
-        privacy: 'Datenschutz (DSGVO Art. 28)'
-        marisk: 'MaRisk Auslagerungsmanagement'
-    marisk:
-        field:
-            outsourcing_classification: Auslagerungsklassifikation (MaRisk AT 9.1)
-            outsourcing_due_diligence_completed: Due Diligence abgeschlossen
-            outsourcing_due_diligence_date: Datum der Due Diligence
-            outsourcing_exit_strategy: Exit-Strategie (MaRisk AT 9.6)
-            bafin_notification_required: BaFin-Meldung erforderlich (AT 9.7 + KWG § 24)
-            bafin_notification_date: Datum der BaFin-Meldung
-            risk_bearing_capacity_impact: Auswirkung auf Risikotragfähigkeit (AT 4.1)
-            board_level_risk_acceptance: Vorstandsebene Risikoakzeptanz (AT 4.3)
-            compliance_function_involvement: Compliance-Funktion einbezogen (AT 4.4.2)
-            internal_audit_function_involvement: Interne Revision einbezogen (AT 4.4.3)
-        placeholder:
-            outsourcing_classification: '-- Klassifikation wählen --'
-        help:
-            outsourcing_classification: 'Wesentliche Auslagerung (AT 9.1) — separat von DORA-Klassifikation "critical or important"'
-            outsourcing_due_diligence_completed: Wurde vor Vertragsschluss eine angemessene Risikoprüfung durchgeführt?
-            outsourcing_due_diligence_date: Datum, an dem die Due-Diligence-Prüfung abgeschlossen wurde
-            outsourcing_exit_strategy: Ausstiegsplan für die Auslagerungsbeziehung inkl. Übergangsmaßnahmen (MaRisk AT 9.6)
-            bafin_notification_required: 'Ist die Auslagerung der BaFin meldepflichtig? (MaRisk AT 9.7 + § 24 Abs. 1 Nr. 12 KWG)'
-            bafin_notification_date: Datum der Anzeige an die BaFin
-            risk_bearing_capacity_impact: Mögliche Auswirkung auf die Risikotragfähigkeit des Instituts (MaRisk AT 4.1)
-            board_level_risk_acceptance: Hat die Geschäftsleitung dieses Auslagerungsrisiko explizit akzeptiert? (MaRisk AT 4.3)
-            compliance_function_involvement: Wurde die Compliance-Funktion bei der Risikobeurteilung einbezogen? (MaRisk AT 4.4.2)
-            internal_audit_function_involvement: Wurde die Interne Revision einbezogen? (MaRisk AT 4.4.3)
-        outsourcing_classification:
-            substantial: Wesentliche Auslagerung
-            non_substantial: Nicht-wesentliche Auslagerung

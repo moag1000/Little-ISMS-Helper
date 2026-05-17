@@ -4,7 +4,6 @@ evidence:
     upload: 'Upload Evidence'
     upload_success: 'Evidence uploaded and linked successfully.'
     upload_hint: 'Max. 10 MB. Allowed formats: PDF, Office, images, text, ZIP.'
-    link: 'Link Existing Document'
     unlink: 'Unlink'
     unlink_confirm: 'Are you sure you want to unlink this evidence document?'
     recent_uploads: 'Recent Uploads'

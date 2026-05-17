@@ -33,18 +33,9 @@ prototype_protection:
         supplier: 'Supplier'
         location: 'Location'
         assessor: 'Assessor'
-        assessor_person: 'Assessor (Person)'
-        assessor_deputy_persons: 'Assessor Deputies (Persons)'
         assessment_date: 'Assessment date'
         next_assessment_due: 'Next assessment due'
         overall_result: 'Overall result'
-    placeholder:
-        assessor_person: '-- Person from master data --'
-    help:
-        scope: 'Program, model series, vehicle variant or event this assessment applies to.'
-        required_labels: 'Multi-select — all prototype labels applicable to the scope.'
-        assessor_person: 'Person without system login as assessor. Order: User > Person > empty.'
-        assessor_deputy_persons: 'Additional persons with deputy role for the assessment.'
     status:
         draft: 'Draft'
         in_review: 'In review'
@@ -62,8 +53,6 @@ prototype_protection:
         prototype_vehicles: 'Prototype vehicles'
         test_vehicles: 'Test vehicles'
         events_and_shoots: 'Events / shoots'
-    value:
-        na: 'n/a'
     sections:
         heading: 'Sections per VDA ISA 6 Ch. 8'
         description: 'Capture result + notes per section. "Overall result" is computed from the worst section and can be overridden manually before approval.'
@@ -104,8 +93,3 @@ prototype_protection:
         created: 'Prototype-protection assessment created.'
         updated: 'Prototype-protection assessment updated.'
         deleted: 'Prototype-protection assessment deleted.'
-    validation:
-        title_required: 'Please provide a title for the assessment.'
-        level_invalid: 'TISAX level must be AL2 or AL3.'
-    error:
-        owner_required_user_or_person: 'Assessor: User or master-data Person required (free-text alone is not sufficient).'
