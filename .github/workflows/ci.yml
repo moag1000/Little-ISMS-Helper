@@ -175,7 +175,7 @@ jobs:
       - name: Run PHPStan
         run: |
           if [ -f vendor/bin/phpstan ]; then
-            vendor/bin/phpstan analyse src --level=1 || true
+            vendor/bin/phpstan analyse --configuration phpstan.dist.neon --no-progress
           else
             echo "PHPStan not available, skipping"
           fi
