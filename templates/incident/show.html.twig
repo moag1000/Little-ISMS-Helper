@@ -2,6 +2,9 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_deadline_counter.html.twig' as _fa_deadline_counter %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
 {% trans_default_domain 'incident' %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 {% import '_components/_status_pill.html.twig' as pill %}
@@ -45,6 +48,12 @@
             {{ _fa_alva_hint.render(_hint) }}
         {% endif %}
     {% endif %}
+
+    {# Lifecycle X.3b — status chip + transition dropdown #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Incident', status_key: incident.status.value|default(incident.status) }) }}
+        {{ _lifecycle_actions.dropdown(incident, 'incident', 'incident_lifecycle') }}
+    </div>
 
     {# NIS2 MUS-export dropdown + POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if (is_nis2_active() and incident.requiresNis2Reporting) or is_granted('ROLE_ADMIN') %}
@@ -621,6 +630,9 @@
         formAction: path('app_comment_post', {entityType: 'Incident', entityId: incident.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
+
+    {# Lifecycle X.3b — transition history tab #}
+    {{ _lifecycle_history.history('incident', incident.id) }}
 </div>
 
 <style>

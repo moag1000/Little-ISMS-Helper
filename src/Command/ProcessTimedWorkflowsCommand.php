@@ -22,8 +22,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Process Time-Based Workflow Auto-Progression
  *
- * This command checks for workflow steps that should auto-progress based on time delays.
- * Run this via cron job for time-based automation.
+ * This command handles two concerns:
+ *
+ * 1. Time-based auto-progression: workflow steps with `autoProgressConditions.type = "time_based"`
+ *    are progressed once their configured delay (e.g. "24 hours") has elapsed since the step
+ *    became active. The field-completion auto-progression (Doctrine-event-driven) is handled
+ *    automatically by {@see \App\Lifecycle\EventListener\FieldCompletionAutoTransition} on every
+ *    flush(); this command is only needed for the time-delay variant.
+ *
+ * 2. SLA deadline monitoring: ticks {@see \App\Service\Notification\SlaDeadlineWatcher} to fire
+ *    approaching-deadline and missed-deadline notifications across all tenants.
+ *
+ * Note (Y.1): The {@see \App\Service\WorkflowAutoProgressionService} injected here is the
+ * deprecated wrapper; it now delegates field-completion checks to FieldCompletionAutoTransition
+ * internally. For time-based steps this path is still the correct code path. When the legacy
+ * WorkflowStep.metadata approval-chain is fully migrated (Sprint Y.2+), this command will only
+ * need to tick the SLA watcher.
  *
  * Example workflow step metadata:
  * {
