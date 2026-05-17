@@ -36,6 +36,7 @@ class TenantManagementController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
+        private readonly \App\Repository\UserRepository $userRepository,
         private readonly CorporateGovernanceRepository $corporateGovernanceRepository,
         private readonly LoggerInterface $logger,
         private readonly AuditLogger $auditLogger,
@@ -83,6 +84,7 @@ class TenantManagementController extends AbstractController
             'totalCount' => count($this->tenantRepository->findAll()),
             'activeCount' => count($this->tenantRepository->findBy(['isActive' => true])),
             'inactiveCount' => count($this->tenantRepository->findBy(['isActive' => false])),
+            'orphanUserCount' => $this->userRepository->countOrphan(),
         ]);
     }
     #[Route('/admin/tenants/new', name: 'tenant_management_new', methods: ['GET', 'POST'])]
