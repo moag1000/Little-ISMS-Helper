@@ -8,7 +8,6 @@ use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\EntityTypeRegistry;
 use App\Lifecycle\Exception\ReasonRequiredException;
 use App\Lifecycle\InvalidTransitionException;
-use App\Lifecycle\LifecycleRegistry;
 use App\Lifecycle\LifecycleService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
@@ -17,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
+use Symfony\Component\Workflow\Registry;
 
 class LifecycleController extends AbstractController
 {
@@ -25,7 +25,7 @@ class LifecycleController extends AbstractController
         private readonly EntityManagerInterface $em,
         private readonly LifecycleService $lifecycle,
         private readonly LifecycleConfigResolverInterface $resolver,
-        private readonly LifecycleRegistry $lifecycleRegistry,
+        private readonly Registry $workflowRegistry,
     ) {}
 
     #[Route('/lifecycle/{entityType}/{id}/transition', name: 'app_lifecycle_transition', methods: ['POST'])]
@@ -60,7 +60,7 @@ class LifecycleController extends AbstractController
         }
 
         try {
-            $this->lifecycle->transition($entity, $transitionName, $this->getUser(), is_string($reason) ? $reason : null);
+            $this->lifecycle->transition($entity, $mapping['workflow'], $transitionName, $this->getUser(), is_string($reason) ? $reason : null);
         } catch (ReasonRequiredException $e) {
             return $this->jsonError(422, 'reason_required', $e->getMessage());
         } catch (InvalidTransitionException $e) {
@@ -69,7 +69,8 @@ class LifecycleController extends AbstractController
             return $this->jsonError(409, 'version_conflict', 'Entity wurde gleichzeitig editiert — neu laden.');
         }
 
-        $allowedNext = $this->lifecycleRegistry->getAllowedTransitions($mapping['class'], (string) $entity->getStatus());
+        $workflow = $this->workflowRegistry->get($entity, $mapping['workflow']);
+        $allowedNext = array_map(static fn ($t) => $t->getName(), $workflow->getEnabledTransitions($entity));
 
         return new JsonResponse([
             'status' => $entity->getStatus(),
@@ -111,7 +112,7 @@ class LifecycleController extends AbstractController
                 continue;
             }
             try {
-                $this->lifecycle->transition($entity, $transitionName, $this->getUser(), is_string($reason) ? $reason : null);
+                $this->lifecycle->transition($entity, $mapping['workflow'], $transitionName, $this->getUser(), is_string($reason) ? $reason : null);
                 $succeeded[] = (int) $id;
             } catch (\Throwable $e) {
                 $failed[(string) $id] = substr($e->getMessage(), 0, 200);
@@ -138,19 +139,20 @@ class LifecycleController extends AbstractController
             return $this->jsonError(404, 'not_found', 'Entity nicht gefunden.');
         }
 
+        $workflow = $this->workflowRegistry->get($entity, $mapping['workflow']);
         $current = (string) $entity->getStatus();
-        $candidates = $this->lifecycleRegistry->getAllowedTransitions($mapping['class'], $current);
+        $candidates = $workflow->getEnabledTransitions($entity);
 
         $allowed = [];
-        foreach ($candidates as $transitionName) {
-            $attr = sprintf('lifecycle.%s.%s', $mapping['workflow'], $transitionName);
+        foreach ($candidates as $t) {
+            $attr = sprintf('lifecycle.%s.%s', $mapping['workflow'], $t->getName());
             if (!$this->isGranted($attr, $entity)) {
                 continue;
             }
-            $effective = $this->resolver->resolve($entity, $mapping['workflow'], $transitionName);
+            $effective = $this->resolver->resolve($entity, $mapping['workflow'], $t->getName());
             $allowed[] = [
-                'name' => $transitionName,
-                'to' => $transitionName,
+                'name' => $t->getName(),
+                'to' => $t->getTos()[0] ?? null,
                 'reason_required' => (bool) ($effective['reason_required'] ?? false),
             ];
         }

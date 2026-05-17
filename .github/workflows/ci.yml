@@ -305,6 +305,12 @@ jobs:
       #   // @legacy-freetext: <reason>.
       - name: "Gate 13: Freetext-legacy heuristic (P-15)"
         run: python3 scripts/quality/check_freetext_legacy.py --baseline scripts/quality/baselines/freetext_legacy.txt --strict --quiet
+
+      # Gate 14 — Workflow configs valid (lifecycle-foundation, BLOCKING)
+      #   Runs cache:clear --env=test (catches unsupported supports-class errors)
+      #   then workflow:dump for every config/workflows/*.yaml state-machine.
+      - name: "Gate 14: Workflow configs valid"
+        run: ./scripts/quality/check_workflow_configs.sh
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting
