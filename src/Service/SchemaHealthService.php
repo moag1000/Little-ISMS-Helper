@@ -81,7 +81,7 @@ class SchemaHealthService
      * pending SQL against the live DB. Every execution is audit-logged with
      * a SHA-256 of the executed SQL bundle so audit can reconcile the row.
      *
-     * @return array{success:bool, executed_sql:list<string>, sql_hash:?string, error:?string, blocked:?string}
+     * @return array{success:bool, executed_sql:list<string>, sql_hash:?string, error:?string, blocked:?string, dropped_fks:list<array{table:string,fk:string,sql_that_triggered:string}>}
      */
     public function applyUpdate(string $actor = 'system', bool $bypassMigrationGate = false): array
     {
@@ -128,18 +128,12 @@ class SchemaHealthService
 
         $sqlHash = hash('sha256', implode(";\n", $sql));
 
+        $conn = $this->entityManager->getConnection();
+        $droppedFks = [];
+
         try {
-            // Wrap DDL in FK-check disable/enable envelope so SchemaTool ALTER
-            // statements do not fail with 1832 "used in a foreign key constraint"
-            // when the order of generated statements would otherwise require
-            // dropping a referencing FK first. MySQL-specific but safe for
-            // DDL-only reconcile: SchemaTool never INSERTs or DELETEs rows here.
-            $conn = $this->entityManager->getConnection();
-            $conn->executeStatement('SET FOREIGN_KEY_CHECKS=0');
-            try {
-                $tool->updateSchema($metadata);
-            } finally {
-                $conn->executeStatement('SET FOREIGN_KEY_CHECKS=1');
+            foreach ($sql as $statement) {
+                $this->executeStatementFkAware($conn, $statement, $droppedFks);
             }
         } catch (\Throwable $e) {
             $this->auditLogger->logCustom(
@@ -151,6 +145,7 @@ class SchemaHealthService
                     'error' => $e->getMessage(),
                     'sql_count' => count($sql),
                     'sql_hash' => $sqlHash,
+                    'dropped_fks' => $droppedFks,
                 ],
                 sprintf('Schema update failed by %s: %s', $actor, $e->getMessage()),
             );
@@ -160,6 +155,7 @@ class SchemaHealthService
                 'sql_hash' => $sqlHash,
                 'error' => $e->getMessage(),
                 'blocked' => null,
+                'dropped_fks' => $droppedFks,
             ];
         }
 
@@ -172,13 +168,15 @@ class SchemaHealthService
                 'statements' => count($sql),
                 'sql_hash' => $sqlHash,
                 'bypass_migration_gate' => $bypassMigrationGate,
+                'dropped_fks' => $droppedFks,
             ],
             sprintf(
-                'Schema update applied by %s (%d statements, sha256=%s%s)',
+                'Schema update applied by %s (%d statements, sha256=%s%s%s)',
                 $actor,
                 count($sql),
                 substr($sqlHash, 0, 16),
                 $bypassMigrationGate ? ', migration-gate BYPASSED' : '',
+                $droppedFks !== [] ? sprintf(', %d FK(s) temporarily dropped+recreated', count($droppedFks)) : '',
             ),
         );
 
@@ -188,7 +186,136 @@ class SchemaHealthService
             'sql_hash' => $sqlHash,
             'error' => null,
             'blocked' => null,
+            'dropped_fks' => $droppedFks,
         ];
+    }
+
+    /**
+     * Execute a single DDL statement, recovering from MySQL error 1832
+     * (Cannot change column because it is used in a foreign key constraint)
+     * by dropping the blocking FK, retrying the ALTER, and re-adding the FK.
+     *
+     * @param array<int, array{table: string, fk: string, sql_that_triggered: string}> $droppedFks
+     *        Accumulates metadata about every FK that was temporarily removed.
+     */
+    private function executeStatementFkAware(Connection $conn, string $sql, array &$droppedFks, int $depth = 0): void
+    {
+        if ($depth > 3) {
+            throw new \RuntimeException(sprintf(
+                'FK-aware reconcile recursion limit reached for: %s',
+                substr($sql, 0, 100),
+            ));
+        }
+
+        try {
+            $conn->executeStatement($sql);
+        } catch (\Doctrine\DBAL\Exception\DriverException $e) {
+            $msg = $e->getMessage();
+
+            // Pattern: SQLSTATE[HY000]: General error: 1832 Cannot change column 'col':
+            //          used in a foreign key constraint 'fk_name'
+            if (preg_match(
+                "/1832 Cannot change column '([^']+)': used in a foreign key constraint '([^']+)'/",
+                $msg,
+                $m,
+            )) {
+                $columnName = $m[1];
+                $fkName = $m[2];
+
+                if (!preg_match('/ALTER TABLE [`"]?(\w+)[`"]?/i', $sql, $tm)) {
+                    throw $e; // can't determine table — bubble
+                }
+                $tableName = $tm[1];
+
+                $fkDef = $this->captureForeignKeyDefinition($conn, $tableName, $fkName);
+                if ($fkDef === null) {
+                    throw $e; // could not introspect — bubble
+                }
+
+                // Step 1: drop the blocking FK
+                $conn->executeStatement(sprintf('ALTER TABLE `%s` DROP FOREIGN KEY `%s`', $tableName, $fkName));
+
+                // Step 2: retry the original statement (depth-guarded)
+                $this->executeStatementFkAware($conn, $sql, $droppedFks, $depth + 1);
+
+                // Step 3: re-add the FK
+                $conn->executeStatement(sprintf(
+                    'ALTER TABLE `%s` ADD CONSTRAINT `%s` %s',
+                    $tableName,
+                    $fkName,
+                    $fkDef,
+                ));
+
+                $droppedFks[] = [
+                    'table' => $tableName,
+                    'fk' => $fkName,
+                    'sql_that_triggered' => substr($sql, 0, 200),
+                ];
+
+                $this->auditLogger->logCustom(
+                    'admin.schema.fk_aware_recovery',
+                    'Doctrine',
+                    null,
+                    null,
+                    ['table' => $tableName, 'fk' => $fkName],
+                    sprintf(
+                        'FK-aware reconcile: dropped+recreated %s.%s to apply ALTER on column %s',
+                        $tableName,
+                        $fkName,
+                        $columnName,
+                    ),
+                );
+                return;
+            }
+
+            // Other DriverException — bubble
+            throw $e;
+        }
+    }
+
+    /**
+     * Introspects information_schema to reconstruct a FOREIGN KEY clause string
+     * so the constraint can be re-added after a blocking ALTER COLUMN.
+     * Returns null when the FK is not found in the schema.
+     */
+    private function captureForeignKeyDefinition(Connection $conn, string $tableName, string $fkName): ?string
+    {
+        $cols = $conn->fetchAllAssociative(
+            "SELECT COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
+             FROM information_schema.KEY_COLUMN_USAGE
+             WHERE CONSTRAINT_SCHEMA = DATABASE()
+               AND TABLE_NAME = ? AND CONSTRAINT_NAME = ?
+             ORDER BY ORDINAL_POSITION",
+            [$tableName, $fkName],
+        );
+
+        if ($cols === []) {
+            return null;
+        }
+
+        $localCols = implode(', ', array_map(fn (array $r): string => "`{$r['COLUMN_NAME']}`", $cols));
+        $refTable = $cols[0]['REFERENCED_TABLE_NAME'];
+        $refCols = implode(', ', array_map(fn (array $r): string => "`{$r['REFERENCED_COLUMN_NAME']}`", $cols));
+
+        $rules = $conn->fetchAssociative(
+            "SELECT DELETE_RULE, UPDATE_RULE
+             FROM information_schema.REFERENTIAL_CONSTRAINTS
+             WHERE CONSTRAINT_SCHEMA = DATABASE()
+               AND TABLE_NAME = ? AND CONSTRAINT_NAME = ?",
+            [$tableName, $fkName],
+        );
+
+        $deleteRule = (is_array($rules) && isset($rules['DELETE_RULE'])) ? $rules['DELETE_RULE'] : 'RESTRICT';
+        $updateRule = (is_array($rules) && isset($rules['UPDATE_RULE'])) ? $rules['UPDATE_RULE'] : 'RESTRICT';
+
+        return sprintf(
+            'FOREIGN KEY (%s) REFERENCES `%s` (%s) ON DELETE %s ON UPDATE %s',
+            $localCols,
+            $refTable,
+            $refCols,
+            $deleteRule,
+            $updateRule,
+        );
     }
 
     /**
