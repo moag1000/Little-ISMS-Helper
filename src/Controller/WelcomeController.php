@@ -120,7 +120,7 @@ class WelcomeController extends AbstractController
         $modules[] = [
             'key' => 'core',
             'name_key' => 'welcome.module.core',
-            'icon' => 'bi-shield-check',
+            'icon' => 'shield-check',
             'color' => 'primary',
             'count' => null,
             'route' => 'app_context_index',
@@ -133,7 +133,7 @@ class WelcomeController extends AbstractController
             $modules[] = [
                 'key' => 'assets',
                 'name_key' => 'welcome.module.assets',
-                'icon' => 'bi-server',
+                'icon' => 'asset-server',
                 'color' => 'info',
                 'count' => $count,
                 'route' => 'app_asset_index',
@@ -148,7 +148,7 @@ class WelcomeController extends AbstractController
             $modules[] = [
                 'key' => 'risks',
                 'name_key' => 'welcome.module.risks',
-                'icon' => 'bi-exclamation-triangle',
+                'icon' => 'status-warning',
                 'color' => 'warning',
                 'count' => $count,
                 'route' => 'app_risk_index',
@@ -164,7 +164,7 @@ class WelcomeController extends AbstractController
             $modules[] = [
                 'key' => 'controls',
                 'name_key' => 'welcome.module.controls',
-                'icon' => 'bi-list-check',
+                'icon' => 'nav-list-check',
                 'color' => 'success',
                 'count' => $implemented . '/' . $total,
                 'route' => 'app_soa_index',
@@ -178,7 +178,7 @@ class WelcomeController extends AbstractController
             $modules[] = [
                 'key' => 'incidents',
                 'name_key' => 'welcome.module.incidents',
-                'icon' => 'bi-exclamation-circle',
+                'icon' => 'status-critical',
                 'color' => 'danger',
                 'count' => $count,
                 'route' => 'app_incident_index',
@@ -192,7 +192,7 @@ class WelcomeController extends AbstractController
             $modules[] = [
                 'key' => 'bcm',
                 'name_key' => 'welcome.module.bcm',
-                'icon' => 'bi-arrow-repeat',
+                'icon' => 'util-refresh',
                 'color' => 'secondary',
                 'count' => null,
                 'route' => 'app_bcm_index',
@@ -205,7 +205,7 @@ class WelcomeController extends AbstractController
             $modules[] = [
                 'key' => 'compliance',
                 'name_key' => 'welcome.module.compliance',
-                'icon' => 'bi-patch-check',
+                'icon' => 'nav-patch-check',
                 'color' => 'purple',
                 'count' => null,
                 'route' => 'app_compliance_index',
@@ -218,7 +218,7 @@ class WelcomeController extends AbstractController
             $modules[] = [
                 'key' => 'audits',
                 'name_key' => 'welcome.module.audits',
-                'icon' => 'bi-clipboard-check',
+                'icon' => 'nav-clipboard-check',
                 'color' => 'dark',
                 'count' => null,
                 'route' => 'app_audit_index',
@@ -249,7 +249,7 @@ class WelcomeController extends AbstractController
 
             $task = [
                 'type' => 'overdue_reviews',
-                'icon' => 'bi-calendar-x',
+                'icon' => 'nav-calendar',
                 'color' => 'warning',
                 'title' => 'welcome.tasks.overdue_reviews',
                 'count' => count($overdueReviews),
@@ -273,7 +273,7 @@ class WelcomeController extends AbstractController
 
             $task = [
                 'type' => 'overdue_treatment_plans',
-                'icon' => 'bi-exclamation-triangle-fill',
+                'icon' => 'status-warning',
                 'color' => 'danger',
                 'title' => 'welcome.tasks.overdue_treatment_plans',
                 'count' => count($overduePlans),
@@ -300,7 +300,7 @@ class WelcomeController extends AbstractController
 
             $task = [
                 'type' => 'approaching_deadlines',
-                'icon' => 'bi-clock-history',
+                'icon' => 'nav-clock-history',
                 'color' => 'warning',
                 'title' => 'welcome.tasks.approaching_deadlines',
                 'count' => count($approachingPlans),
@@ -324,7 +324,7 @@ class WelcomeController extends AbstractController
 
                 $tasks[] = [
                     'type' => 'pending_workflows',
-                    'icon' => 'bi-hourglass-split',
+                    'icon' => 'status-pending',
                     'color' => 'info',
                     'title' => 'welcome.tasks.pending_workflows',
                     'count' => count($pendingWorkflows),
@@ -347,7 +347,7 @@ class WelcomeController extends AbstractController
 
             $task = [
                 'type' => 'overdue_workflows',
-                'icon' => 'bi-exclamation-circle-fill',
+                'icon' => 'status-critical',
                 'color' => 'danger',
                 'title' => 'welcome.tasks.overdue_workflows',
                 'count' => count($overdueWorkflows),
