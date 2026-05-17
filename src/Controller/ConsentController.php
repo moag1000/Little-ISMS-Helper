@@ -120,7 +120,7 @@ class ConsentController extends AbstractController
                     $consent->setVerifiedAt(new DateTimeImmutable());
                     $consent->setStatus('active'); // FIXME: migrate to LifecycleService::transition($consent, 'consent_lifecycle', 'verify')
                 } else {
-                    $consent->setStatus('pending_verification'); // FIXME: migrate to LifecycleService (initial state, no transition needed)
+                    $consent->setStatus('pending_verification'); // FIXME: migrate to LifecycleService (initial state)
                 }
 
                 $this->entityManager->persist($consent);

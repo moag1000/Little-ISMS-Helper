@@ -47,6 +47,38 @@ final class EntityTypeRegistry
             'class' => \App\Entity\Consent::class,
             'workflow' => 'consent_lifecycle',
         ],
+        'corrective-action' => [
+            'class' => \App\Entity\CorrectiveAction::class,
+            'workflow' => 'corrective_action_lifecycle',
+        ],
+        'data-breach' => [
+            'class' => \App\Entity\DataBreach::class,
+            'workflow' => 'data_breach_lifecycle',
+        ],
+        'data-subject-request' => [
+            'class' => \App\Entity\DataSubjectRequest::class,
+            'workflow' => 'data_subject_request_lifecycle',
+        ],
+        'dpia' => [
+            'class' => \App\Entity\DataProtectionImpactAssessment::class,
+            'workflow' => 'dpia_lifecycle',
+        ],
+        'incident' => [
+            'class' => \App\Entity\Incident::class,
+            'workflow' => 'incident_lifecycle',
+        ],
+        'internal-audit' => [
+            'class' => \App\Entity\InternalAudit::class,
+            'workflow' => 'internal_audit_lifecycle',
+        ],
+        'risk' => [
+            'class' => \App\Entity\Risk::class,
+            'workflow' => 'risk_lifecycle',
+        ],
+        'vulnerability' => [
+            'class' => \App\Entity\Vulnerability::class,
+            'workflow' => 'vulnerability_lifecycle',
+        ],
     ];
 
     /** @return array{class: class-string, workflow: string}|null */

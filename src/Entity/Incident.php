@@ -135,6 +135,10 @@ class Incident
     #[Assert\NotNull(message: 'Status is required')]
     private ?IncidentStatus $status = IncidentStatus::Reported;
 
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\NotNull(message: 'Detection date is required')]
@@ -436,6 +440,27 @@ class Incident
     public function setStatus(?IncidentStatus $status): static
     {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
+    }
+
+    /**
+     * String-based status accessor for Symfony Workflow marking_store compatibility.
+     * The Workflow component calls setStatusValue(string) — this bridge coerces
+     * the string back to the typed IncidentStatus enum.
+     */
+    public function getStatusValue(): string
+    {
+        return $this->status?->value ?? IncidentStatus::Reported->value;
+    }
+
+    public function setStatusValue(string $statusValue): static
+    {
+        $this->status = IncidentStatus::from($statusValue);
         return $this;
     }
 

@@ -19,7 +19,7 @@ use Symfony\Component\Workflow\Registry;
  * `config/workflows/*.yaml`. The marking_store is `method`, so the
  * entity must expose `getStatus()/setStatus()`.
  */
-final class LifecycleService
+final class LifecycleService implements LifecycleTransitionInterface
 {
     public function __construct(
         private readonly Registry $workflowRegistry,

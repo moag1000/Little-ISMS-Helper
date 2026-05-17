@@ -93,7 +93,7 @@ final class DataSubjectRequestService
         }
 
         $oldStatus = $request->getStatus();
-        $request->setStatus($newStatus);
+        $request->setStatus($newStatus); // FIXME: migrate to LifecycleService::transition($request, 'data_subject_request_lifecycle', '<transition>')
 
         $this->entityManager->flush();
 
@@ -121,7 +121,7 @@ final class DataSubjectRequestService
             throw new RuntimeException('Request is already in a terminal state');
         }
 
-        $request->setStatus('completed');
+        $request->setStatus('completed'); // FIXME: migrate to LifecycleService::transition($request, 'data_subject_request_lifecycle', 'complete')
         $request->setCompletedAt(new DateTimeImmutable());
         $request->setResponseDescription($responseDescription);
 
@@ -154,7 +154,7 @@ final class DataSubjectRequestService
             throw new RuntimeException('Request is already in a terminal state');
         }
 
-        $request->setStatus('rejected');
+        $request->setStatus('rejected'); // FIXME: migrate to LifecycleService::transition($request, 'data_subject_request_lifecycle', 'reject')
         $request->setRejectionReason($reason);
         $request->setCompletedAt(new DateTimeImmutable());
 
@@ -197,7 +197,7 @@ final class DataSubjectRequestService
         $extendedDeadline = $request->getReceivedAt()->modify('+90 days');
         $request->setExtendedDeadlineAt($extendedDeadline);
         $request->setExtensionReason($reason);
-        $request->setStatus('extended');
+        $request->setStatus('extended'); // FIXME: 'extended' is not in the lifecycle places — needs workflow extension or separate field
 
         $this->entityManager->flush();
 

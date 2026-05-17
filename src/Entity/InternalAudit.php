@@ -249,6 +249,10 @@ class InternalAudit
     )]
     private ?string $status = 'planned';
 
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
     private ?string $findings = null;
@@ -661,6 +665,11 @@ public function __construct()
     {
         $this->status = $status;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getFindings(): ?string

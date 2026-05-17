@@ -1,0 +1,47 @@
+framework:
+    workflows:
+        dpia_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\DataProtectionImpactAssessment
+            initial_marking: draft
+            places:
+                - draft
+                - in_review
+                - approved
+                - rejected
+                - requires_revision
+            transitions:
+                submit:
+                    from: draft
+                    to: in_review
+                    metadata:
+                        roles: [ROLE_DPO]
+                approve:
+                    from: in_review
+                    to: approved
+                    metadata:
+                        roles: [ROLE_CISO]
+                        four_eyes: true
+                        module: privacy
+                reject:
+                    from: in_review
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_CISO]
+                        reason_required: true
+                        module: privacy
+                request_revision:
+                    from: in_review
+                    to: requires_revision
+                    metadata:
+                        roles: [ROLE_CISO]
+                        reason_required: true
+                resubmit:
+                    from: requires_revision
+                    to: draft
+                    metadata:
+                        roles: [ROLE_DPO]

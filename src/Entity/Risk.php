@@ -249,6 +249,10 @@ class Risk
     #[Assert\NotNull(message: 'Status is required')]
     private ?RiskStatus $status = RiskStatus::Identified;
 
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
     private ?DateTimeInterface $reviewDate = null;
@@ -654,6 +658,27 @@ class Risk
     public function setStatus(?RiskStatus $status): static
     {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
+    }
+
+    /**
+     * String-based status accessor for Symfony Workflow marking_store compatibility.
+     * The Workflow component calls setStatusValue(string) — this bridge coerces
+     * the string back to the typed RiskStatus enum.
+     */
+    public function getStatusValue(): string
+    {
+        return $this->status?->value ?? RiskStatus::Identified->value;
+    }
+
+    public function setStatusValue(string $statusValue): static
+    {
+        $this->status = RiskStatus::from($statusValue);
         return $this;
     }
 

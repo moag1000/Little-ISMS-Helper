@@ -1,0 +1,47 @@
+framework:
+    workflows:
+        data_breach_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\DataBreach
+            initial_marking: draft
+            places:
+                - draft
+                - under_assessment
+                - authority_notified
+                - subjects_notified
+                - closed
+            transitions:
+                assess:
+                    from: draft
+                    to: under_assessment
+                    metadata:
+                        roles: [ROLE_DPO]
+                notify_authority:
+                    from: under_assessment
+                    to: authority_notified
+                    metadata:
+                        roles: [ROLE_DPO, ROLE_CISO]
+                        four_eyes: true
+                        module: privacy
+                        reason_required: true
+                notify_subjects:
+                    from: authority_notified
+                    to: subjects_notified
+                    metadata:
+                        roles: [ROLE_DPO]
+                        module: privacy
+                close:
+                    from: subjects_notified
+                    to: closed
+                    metadata:
+                        roles: [ROLE_DPO]
+                reopen:
+                    from: closed
+                    to: under_assessment
+                    metadata:
+                        roles: [ROLE_DPO]
+                        reason_required: true

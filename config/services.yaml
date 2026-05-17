@@ -552,7 +552,23 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
-    # ── Lifecycle Foundation (Task 13) — interface alias ─────────────────────
+    # ── Lifecycle Foundation (Task 13) — interface aliases ───────────────────
     App\Lifecycle\Config\LifecycleConfigResolverInterface:
         alias: App\Lifecycle\Config\LifecycleConfigResolver
+
+    App\Lifecycle\LifecycleTransitionInterface:
+        alias: App\Lifecycle\LifecycleService
+
+    # ── Lifecycle X.4 — automation listeners ─────────────────────────────────
+    # FieldCompletionAutoTransition: auto-fires lifecycle transition when all
+    # configured required_fields become non-empty on postUpdate.
+    App\Lifecycle\EventListener\FieldCompletionAutoTransition:
+        arguments:
+            $rules: '%lifecycle.auto_transition_rules%'
+
+    # WorkflowAutoProgressionBridge: when a WorkflowInstance reaches 'approved',
+    # fires the parent entity's configured lifecycle transition.
+    App\Lifecycle\EventListener\WorkflowAutoProgressionBridge:
+        arguments:
+            $bridges: '%lifecycle.approval_bridges%'
 
