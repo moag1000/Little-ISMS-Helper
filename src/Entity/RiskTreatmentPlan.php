@@ -7,6 +7,7 @@ namespace App\Entity;
 use DateTimeInterface;
 use DateTimeImmutable;
 use DateTime;
+use App\Enum\RiskTreatmentPlanStatus;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -252,10 +253,18 @@ class RiskTreatmentPlan
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(RiskTreatmentPlanStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?RiskTreatmentPlanStatus
+    {
+        return $this->status !== null ? RiskTreatmentPlanStatus::tryFrom($this->status) : null;
     }
 
     public function getPriority(): ?string

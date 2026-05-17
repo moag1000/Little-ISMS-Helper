@@ -21,16 +21,17 @@ asset.type	2
 audit.scope_type	3
 audit.status	3
 audit_finding.severity	3
-audit_finding.status	3
+audit_finding.status	4
 audit_finding.type	2
 audit_freeze.purpose	3
+audits.status	1
 authority.bundesland	1
 bc_exercises.exercise_type	2
-bc_exercises.status	2
+bc_exercises.status	3
 bc_plans.resource_list.empty	1
 bc_plans.resource_list.placeholder	1
 bc_plans.resource_list.tab	1
-bc_plans.status	2
+bc_plans.status	3
 bcm.criticality	4
 bcm.level	2
 bsi_check.stufe	1
@@ -41,7 +42,7 @@ cert_bundle.preflight.warning	1
 cert_readiness.recommendation	1
 change_request.change_type	1
 change_request.priority	1
-change_request.status	1
+change_request.status	2
 compliance	2
 compliance.framework.flash	1
 compliance.industry	2
@@ -71,7 +72,7 @@ diff.change_type	1
 diff.section	1
 document.evidence.source	1
 document.evidence.type	1
-document.status	2
+document.status	3
 dora.status	1
 dpia.risk_level	2
 dpia.status	2
@@ -116,7 +117,8 @@ management_reports.report	1
 management_review.dora_category	1
 management_review.pdf.input	1
 management_review.pdf.output	1
-management_review.status	3
+management_review.status	4
+mapping_gap_item.status	1
 mfa.token_type	1
 mfa_token.type	2
 nis2.dashboard.letter	1
@@ -125,7 +127,7 @@ notification.channel.type	2
 notification.event_type	1
 notification.severity	3
 notification.template.desc	1
-objective.status	2
+objective.status	3
 patch.priority	1
 patch.status	2
 patch.type	2
@@ -179,7 +181,7 @@ risk.matrix.probability_label	1
 risk.modern.status	1
 risk.treatment	1
 risk_treatment_plan.priority	3
-risk_treatment_plan.status	3
+risk_treatment_plan.status	4
 role_management.permissions.action	1
 role_management.permissions.category	1
 role_management.permissions.module	1
@@ -203,6 +205,7 @@ supplier.gdpr.processor_status	1
 supplier.lksg_risk	1
 tags.type	1
 template	2
+tlpt.status	1
 training.delivery	2
 training.status	2
 training.type	2
