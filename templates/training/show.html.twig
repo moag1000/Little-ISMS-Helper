@@ -60,14 +60,14 @@
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">{{ 'training.type_label'|trans({}, 'training')}}</div>
                             <p>
-                                {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'fs-6', content: ('training.type.' ~ training.trainingType)|trans({}, 'training') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('training.type.' ~ training.trainingType)|trans({}, 'training') } %}
                             </p>
                         </div>
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">{{ 'training.delivery_method'|trans({}, 'training')}}</div>
                             <p>
                                 {% if training.deliveryMethod %}
-                                {% include '_components/_badge.html.twig' with { variant: 'info', class: 'fs-6', content: ('training.delivery.' ~ training.deliveryMethod)|trans({}, 'training') } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'info', content: ('training.delivery.' ~ training.deliveryMethod)|trans({}, 'training') } %}
                                 {% else %}
                                 <span class="text-muted">-</span>
                                 {% endif %}
