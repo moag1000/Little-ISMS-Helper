@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -127,12 +128,9 @@ class EvidenceController extends AbstractController
      * Link an existing document to an entity (AJAX).
      */
     #[Route('/link', name: 'link', methods: ['POST'])]
+    #[IsCsrfTokenValid('evidence_link')]
     public function link(Request $request): JsonResponse
     {
-        if (!$this->isCsrfTokenValid('evidence_link', $request->request->get('_token'))) {
-            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
-        }
-
         $documentId = (int) $request->request->get('document_id');
         $entityType = $request->request->get('entity_type');
         $entityId = (int) $request->request->get('entity_id');
@@ -154,12 +152,9 @@ class EvidenceController extends AbstractController
      * Unlink a document from an entity (AJAX).
      */
     #[Route('/unlink', name: 'unlink', methods: ['POST'])]
+    #[IsCsrfTokenValid('evidence_unlink')]
     public function unlink(Request $request): JsonResponse
     {
-        if (!$this->isCsrfTokenValid('evidence_unlink', $request->request->get('_token'))) {
-            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
-        }
-
         $documentId = (int) $request->request->get('document_id');
         $entityType = $request->request->get('entity_type');
         $entityId = (int) $request->request->get('entity_id');

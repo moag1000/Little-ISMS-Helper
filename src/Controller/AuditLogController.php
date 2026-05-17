@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_ADMIN')]
@@ -27,13 +28,9 @@ class AuditLogController extends AbstractController
      * Auditor's classic question "manipulationssicher?" → click & see green/red.
      */
     #[Route('/admin/audit-log/verify', name: 'app_audit_log_verify', methods: ['POST'])]
+    #[IsCsrfTokenValid('audit_log_verify')]
     public function verifyChain(Request $request): Response
     {
-        if (!$this->isCsrfTokenValid('audit_log_verify', (string) $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_audit_log_index');
-        }
-
         if ($this->integrityService === null || !$this->integrityService->isEnabled()) {
             $this->addFlash('warning', 'Audit-log integrity verification is disabled (APP_AUDIT_HMAC_KEY missing).');
             return $this->redirectToRoute('app_audit_log_index');
