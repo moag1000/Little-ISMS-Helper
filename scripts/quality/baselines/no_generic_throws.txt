@@ -24,7 +24,7 @@ src/Entity/DocumentSection.php:204
 src/Entity/DocumentSection.php:314
 src/Entity/EvidenceReverificationTask.php:192
 src/Entity/PolicyAcknowledgement.php:171
-src/Entity/PolicyTemplate.php:410
+src/Entity/PolicyTemplate.php:434
 src/Entity/Tenant.php:507
 src/Entity/Tenant.php:510
 src/Entity/TenantBranding.php:310
