@@ -85,6 +85,7 @@ class AuditLogger
         private readonly RequestStack $requestStack,
         private readonly Security $security,
         private readonly ?AuditLogIntegrityService $integrityService = null,
+        private readonly ?\App\Service\TenantContext $tenantContext = null,
     ) {}
 
     /**
@@ -254,6 +255,18 @@ class AuditLogger
         // Set user information (use provided userName or get from security context)
         $userName ??= $this->getCurrentUserName();
         $auditLog->setUserName($userName);
+
+        // Symfony-BP audit #5: capture tenant at write time. Future user-rename
+        // or re-tenancy cannot leak this row across boundaries. Falls back to
+        // the acting user's tenant if the context is empty (e.g. system actions).
+        $tenant = $this->tenantContext?->getCurrentTenant();
+        if ($tenant === null) {
+            $user = $this->security->getUser();
+            if ($user instanceof \App\Entity\User) {
+                $tenant = $user->getTenant();
+            }
+        }
+        $auditLog->setTenant($tenant);
 
         // ISB Sprint-2 gate: capture actor's highest role at time of action.
         $auditLog->setActorRole($this->getCurrentActorRole());
