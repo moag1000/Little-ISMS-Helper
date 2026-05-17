@@ -32,7 +32,8 @@
      data-controller="aurora-banner">
     <div class="fa-global-banner__inner">
         {% if icon is defined and icon %}
-            <i class="bi {{ icon }} fa-global-banner__icon" aria-hidden="true"></i>
+            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+            <i class="fa-icon fa-icon--{{ (icon starts with 'bi-') ? icon[3:] : icon }} fa-global-banner__icon" aria-hidden="true"></i>
         {% endif %}
         <span class="fa-global-banner__message">{{ message|raw }}</span>
         {% if cta is defined and cta %}

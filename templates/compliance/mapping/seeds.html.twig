@@ -38,7 +38,8 @@
                         <div class="d-flex align-items-start justify-content-between mb-2">
                             <div class="flex-grow-1">
                                 <div class="h5 mb-1">
-                                    <i class="bi {{ seed.icon }}" aria-hidden="true"></i>
+                                    {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                                    <i class="fa-icon fa-icon--{{ (seed.icon starts with 'bi-') ? seed.icon[3:] : seed.icon }}" aria-hidden="true"></i>
                                     {{ seed.source_label }}
                                 </div>
                                 <div class="small text-muted">

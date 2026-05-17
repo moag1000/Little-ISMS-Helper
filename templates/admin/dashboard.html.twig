@@ -32,7 +32,8 @@
                 </h2>
                 {% for alert in alerts %}
                     <div class="fa-alert fa-alert--{{ alert.type }}" role="alert">
-                        <i class="bi {{ alert.icon }}" aria-hidden="true"></i>
+                        {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                        <i class="fa-icon fa-icon--{{ (alert.icon starts with 'bi-') ? alert.icon[3:] : alert.icon }}" aria-hidden="true"></i>
                         <strong>{{ alert.message|trans({}, 'admin') }}</strong>
                         {% if alert.count is defined %}
                             - {{ alert.count }}

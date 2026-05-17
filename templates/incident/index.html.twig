@@ -135,7 +135,8 @@
                 <div class="col-md-3 mb-3">
                     <div class="status-card status-{{ status }}">
                         <div class="status-icon text-{{ data.color }}" aria-hidden="true">
-                            <i class="bi {{ data.icon }}" aria-hidden="true"></i>
+                            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                            <i class="fa-icon fa-icon--{{ (data.icon starts with 'bi-') ? data.icon[3:] : data.icon }}" aria-hidden="true"></i>
                         </div>
                         <div class="status-info">
                             <div class="status-label">{{ data.label }}</div>

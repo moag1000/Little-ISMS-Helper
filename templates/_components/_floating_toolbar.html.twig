@@ -23,7 +23,8 @@
             <a href="{{ primaryAction.url }}"
                class="btn btn-{{ primaryAction.variant|default('primary') }}"
                {% if primaryAction.turbo is defined and primaryAction.turbo == false %}data-turbo="false"{% else %}data-turbo-action="advance"{% endif %}>
-                <i class="bi {{ primaryAction.icon }}"></i>
+                {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                <i class="fa-icon fa-icon--{{ (primaryAction.icon starts with 'bi-') ? primaryAction.icon[3:] : primaryAction.icon }}" aria-hidden="true"></i>
                 {{ primaryAction.label }}
                 {% if primaryAction.shortcut is defined %}
                     <kbd class="shortcut-hint">{{ primaryAction.shortcut }}</kbd>
@@ -53,7 +54,8 @@
                                    {% else %}
                                        data-turbo-action="advance"
                                    {% endif %}>
-                                    <i class="bi {{ action.icon }}"></i>
+                                    {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                                    <i class="fa-icon fa-icon--{{ (action.icon starts with 'bi-') ? action.icon[3:] : action.icon }}" aria-hidden="true"></i>
                                     {{ action.label }}
                                     {% if action.shortcut is defined %}
                                         <kbd class="ms-auto">{{ action.shortcut }}</kbd>

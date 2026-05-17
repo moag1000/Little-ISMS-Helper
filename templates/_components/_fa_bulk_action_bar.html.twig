@@ -66,7 +66,8 @@
                             class="{{ btnClass }}"
                             {% if action.dataAction is defined %}data-action="{{ action.dataAction }}"{% endif %}
                             {% if action.ariaLabel is defined %}aria-label="{{ action.ariaLabel }}"{% endif %}>
-                        {% if action.icon is defined %}<i class="bi {{ action.icon }}" aria-hidden="true"></i>{% endif %}
+                        {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                        {% if action.icon is defined %}<i class="fa-icon fa-icon--{{ (action.icon starts with 'bi-') ? action.icon[3:] : action.icon }}" aria-hidden="true"></i>{% endif %}
                         {{ action.label }}
                     </button>
                 {% endfor %}
