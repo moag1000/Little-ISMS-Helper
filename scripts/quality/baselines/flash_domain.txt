@@ -41,9 +41,6 @@ src/Controller/AssetController.php:327
 src/Controller/AssetController.php:328
 src/Controller/AssetController.php:409
 src/Controller/AssetController.php:463
-src/Controller/AuditController.php:101
-src/Controller/AuditController.php:212
-src/Controller/AuditController.php:363
 src/Controller/BCExerciseController.php:70
 src/Controller/BCExerciseController.php:102
 src/Controller/BCExerciseController.php:121

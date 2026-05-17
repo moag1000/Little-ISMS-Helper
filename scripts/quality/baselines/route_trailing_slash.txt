@@ -23,7 +23,7 @@ src/Controller/ISMSObjectiveController.php:29:/objective/
 src/Controller/ComplianceController.php:48:/compliance/
 src/Controller/MappingQualityController.php:37:/compliance/mapping-quality/
 src/Controller/StatementOfApplicabilityController.php:52:/soa/
-src/Controller/AuditController.php:44:/audit/
+src/Controller/AuditController.php:46:/audit/
 src/Controller/DocumentController.php:76:/document/
 src/Controller/ThreatIntelligenceController.php:31:/threat-intelligence/
 src/Controller/CrisisTeamController.php:36:/crisis-team/

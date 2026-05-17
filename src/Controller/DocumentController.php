@@ -940,7 +940,7 @@ class DocumentController extends AbstractController
 
         if ($this->isCsrfTokenValid('delete'.$document->getId(), $request->request->get('_token'))) {
             // Mark as deleted instead of actually removing
-            $document->setStatus('deleted');
+            $document->setStatus('deleted'); // @phpstan-ignore lifecycle.directSetStatus (soft-delete terminal state; 'deleted' is outside document_lifecycle transitions; lifecycle migration tracked in X.6)
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('document.success.deleted'));

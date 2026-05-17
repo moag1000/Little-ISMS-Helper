@@ -78,7 +78,7 @@ final class AutoReactionDpiaSuggestListener
                 $activity->getName() ?? 'Processing-Activity',
                 (new \DateTimeImmutable())->format('Y-m-d'),
             ));
-            $dpia->setStatus('draft');
+            $dpia->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist DPIA skeleton)
             if (method_exists($dpia, 'setProcessingDescription')) {
                 $dpia->setProcessingDescription(
                     'Auto-generated DPIA skeleton based on high-risk indicators (special categories / automated decision-making / large scale). Review and complete required sections (Art. 35 (7) GDPR).'

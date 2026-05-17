@@ -68,7 +68,7 @@ final class IndustryBaselineApplier
             if ($existingRisk !== null) {
                 continue;
             }
-            $risk = (new Risk())
+            $risk = (new Risk()) // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist Risk from industry baseline; 'identified' is the risk_lifecycle initial_marking)
                 ->setTenant($tenant)
                 ->setTitle($title)
                 ->setCategory((string) ($data['category'] ?? 'operational'))

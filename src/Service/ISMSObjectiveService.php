@@ -168,7 +168,7 @@ final class ISMSObjectiveService
                 );
             } else {
                 // Fallback: direct assignment (e.g. not in_progress yet, or no Workflow).
-                $ismsObjective->setStatus('achieved');
+                $ismsObjective->setStatus('achieved'); // @phpstan-ignore lifecycle.directSetStatus (fallback path when Workflow guard rejects transition; primary path uses LifecycleService above)
             }
             $ismsObjective->setAchievedDate(new DateTime());
         }

@@ -10,6 +10,7 @@ use App\Entity\DataSubjectRequest;
 use App\Entity\Tenant;
 use App\Exception\Tenant\TenantOrphanException;
 use App\Exception\Workflow\InvalidStatusTransitionException;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DataSubjectRequestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -28,6 +29,7 @@ final class DataSubjectRequestService
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
+        private readonly LifecycleTransitionInterface $lifecycleService,
     ) {
     }
 
@@ -93,7 +95,7 @@ final class DataSubjectRequestService
         }
 
         $oldStatus = $request->getStatus();
-        $request->setStatus($newStatus); // FIXME: migrate to LifecycleService::transition($request, 'data_subject_request_lifecycle', '<transition>')
+        $request->setStatus($newStatus); // @phpstan-ignore lifecycle.directSetStatus (updateStatus covers identity_verification/extended states absent from DSR workflow YAML; needs workflow extension in X.6)
 
         $this->entityManager->flush();
 
@@ -121,11 +123,11 @@ final class DataSubjectRequestService
             throw new RuntimeException('Request is already in a terminal state');
         }
 
-        $request->setStatus('completed'); // FIXME: migrate to LifecycleService::transition($request, 'data_subject_request_lifecycle', 'complete')
         $request->setCompletedAt(new DateTimeImmutable());
         $request->setResponseDescription($responseDescription);
 
         $this->entityManager->flush();
+        $this->lifecycleService->transition($request, 'data_subject_request_lifecycle', 'complete');
 
         $this->auditLogger->logCustom(
             'data_subject_request.completed',
@@ -154,11 +156,11 @@ final class DataSubjectRequestService
             throw new RuntimeException('Request is already in a terminal state');
         }
 
-        $request->setStatus('rejected'); // FIXME: migrate to LifecycleService::transition($request, 'data_subject_request_lifecycle', 'reject')
         $request->setRejectionReason($reason);
         $request->setCompletedAt(new DateTimeImmutable());
 
         $this->entityManager->flush();
+        $this->lifecycleService->transition($request, 'data_subject_request_lifecycle', 'reject', null, $reason);
 
         $this->auditLogger->logCustom(
             'data_subject_request.rejected',
@@ -197,7 +199,7 @@ final class DataSubjectRequestService
         $extendedDeadline = $request->getReceivedAt()->modify('+90 days');
         $request->setExtendedDeadlineAt($extendedDeadline);
         $request->setExtensionReason($reason);
-        $request->setStatus('extended'); // FIXME: 'extended' is not in the lifecycle places — needs workflow extension or separate field
+        $request->setStatus('extended'); // @phpstan-ignore lifecycle.directSetStatus ('extended' is not a workflow place in data_subject_request_lifecycle; needs workflow YAML extension in X.6)
 
         $this->entityManager->flush();
 

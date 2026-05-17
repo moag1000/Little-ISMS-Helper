@@ -205,7 +205,7 @@ class LoadConnectedDemoDataCommand
 
         if ($existing instanceof Asset) {
             if ($update) {
-                $existing->setAssetType($assetType)
+                $existing->setAssetType($assetType) // @phpstan-ignore lifecycle.directSetStatus (demo data seeder — update path; 'active' is the asset_lifecycle initial_marking)
                     ->setDescription($description)
                     ->setConfidentialityValue($confidentiality)
                     ->setIntegrityValue($integrity)
@@ -223,7 +223,7 @@ class LoadConnectedDemoDataCommand
         }
 
         $asset = new Asset();
-        $asset->setTenant($tenant)
+        $asset->setTenant($tenant) // @phpstan-ignore lifecycle.directSetStatus (demo data seeder — initial state setup outside lifecycle flow)
             ->setName($name)
             ->setAssetType($assetType)
             ->setDescription($description)
@@ -334,7 +334,7 @@ class LoadConnectedDemoDataCommand
         }
 
         $risk = new Risk();
-        $risk->setTenant($tenant)
+        $risk->setTenant($tenant) // @phpstan-ignore lifecycle.directSetStatus (demo data seeder — initial state setup outside lifecycle flow)
             ->setTitle($title)
             ->setDescription($description)
             ->setThreat($threat)
