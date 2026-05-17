@@ -11,6 +11,7 @@ use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
 use App\Exception\Workflow\InvalidStatusTransitionException;
+use App\Lifecycle\LifecycleService;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -29,7 +30,8 @@ final class DataProtectionImpactAssessmentService
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
         private readonly AuditLogger $auditLogger,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
+        private readonly LifecycleService $lifecycleService,
     ) {}
 
     // ============================================================================
@@ -271,8 +273,8 @@ final class DataProtectionImpactAssessmentService
             throw new RuntimeException('DPIA must be complete before submission');
         }
 
-        $dataProtectionImpactAssessment->setStatus('in_review'); // FIXME: migrate to LifecycleService::transition($dpia, 'dpia_lifecycle', 'submit')
         $this->entityManager->flush();
+        $this->lifecycleService->transition($dataProtectionImpactAssessment, 'dpia_lifecycle', 'submit');
 
         $this->auditLogger->logCustom(
             'dpia.submitted_for_review',
@@ -301,7 +303,6 @@ final class DataProtectionImpactAssessmentService
             );
         }
 
-        $dataProtectionImpactAssessment->setStatus('approved'); // FIXME: migrate to LifecycleService::transition($dpia, 'dpia_lifecycle', 'approve')
         $dataProtectionImpactAssessment->setApprover($user);
         $dataProtectionImpactAssessment->setApprovalDate(new DateTime());
         $dataProtectionImpactAssessment->setApprovalComments($comments);
@@ -314,6 +315,7 @@ final class DataProtectionImpactAssessmentService
         }
 
         $this->entityManager->flush();
+        $this->lifecycleService->transition($dataProtectionImpactAssessment, 'dpia_lifecycle', 'approve', $user);
 
         $this->auditLogger->logCustom(
             'dpia.approved',
@@ -350,11 +352,11 @@ final class DataProtectionImpactAssessmentService
             );
         }
 
-        $dataProtectionImpactAssessment->setStatus('rejected'); // FIXME: migrate to LifecycleService::transition($dpia, 'dpia_lifecycle', 'reject')
         $dataProtectionImpactAssessment->setApprover($user);
         $dataProtectionImpactAssessment->setRejectionReason($reason);
 
         $this->entityManager->flush();
+        $this->lifecycleService->transition($dataProtectionImpactAssessment, 'dpia_lifecycle', 'reject', $user, $reason);
 
         $this->auditLogger->logCustom(
             'dpia.rejected',
@@ -384,11 +386,11 @@ final class DataProtectionImpactAssessmentService
             );
         }
 
-        $dataProtectionImpactAssessment->setStatus('requires_revision'); // FIXME: migrate to LifecycleService::transition($dpia, 'dpia_lifecycle', 'request_revision')
         $dataProtectionImpactAssessment->setRejectionReason($reason);
         $dataProtectionImpactAssessment->setReviewRequired(true);
 
         $this->entityManager->flush();
+        $this->lifecycleService->transition($dataProtectionImpactAssessment, 'dpia_lifecycle', 'request_revision', null, $reason);
 
         $this->auditLogger->logCustom(
             'dpia.revision_requested',
@@ -417,10 +419,10 @@ final class DataProtectionImpactAssessmentService
             );
         }
 
-        $dataProtectionImpactAssessment->setStatus('draft'); // FIXME: migrate to LifecycleService::transition($dpia, 'dpia_lifecycle', 'resubmit')
         $dataProtectionImpactAssessment->setRejectionReason(null);
 
         $this->entityManager->flush();
+        $this->lifecycleService->transition($dataProtectionImpactAssessment, 'dpia_lifecycle', 'resubmit');
 
         $this->auditLogger->logCustom(
             'dpia.reopened',
@@ -773,8 +775,8 @@ final class DataProtectionImpactAssessmentService
             $clone->addImplementedControl($implementedControl);
         }
 
-        // Set as draft
-        $clone->setStatus('draft'); // FIXME: migrate to LifecycleService (initial state for clone)
+        // Set as draft — 'draft' is the workflow initial_marking; no transition needed for a new entity
+        $clone->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on new pre-persist clone; Symfony Workflow will take over after persist)
         $clone->setConductor($user);
         $clone->setCreatedBy($user);
         $clone->setUpdatedBy($user);
