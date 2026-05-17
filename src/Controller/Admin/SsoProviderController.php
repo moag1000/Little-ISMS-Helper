@@ -8,6 +8,7 @@ use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\IdentityProvider;
 use App\Entity\IdentityProviderRoleMapping;
 use App\Entity\SsoUserApproval;
+use App\Entity\User;
 use App\Form\IdentityProviderType;
 use App\Repository\AuditLogRepository;
 use App\Repository\IdentityProviderRepository;
@@ -26,6 +27,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -345,8 +347,10 @@ final class SsoProviderController extends AbstractController
 
     #[Route('/approvals/{id}/approve', name: 'approval_approve', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsCsrfTokenValid('sso_approval')]
-    public function approve(SsoUserApproval $approval): Response
-    {
+    public function approve(
+        SsoUserApproval $approval,
+        #[CurrentUser] User $reviewer,
+    ): Response {
         if ($redirect = $this->checkModuleActive('authentication')) {
             return $redirect;
         }
@@ -354,7 +358,7 @@ final class SsoProviderController extends AbstractController
         $this->assertCanReview($approval);
         $user = $this->flow->provisionFromApproval($approval);
         $approval->setStatus(SsoUserApproval::STATUS_APPROVED);
-        $approval->setReviewedBy($this->getUser() instanceof \App\Entity\User ? $this->getUser() : null);
+        $approval->setReviewedBy($reviewer);
         $approval->setReviewedAt(new \DateTimeImmutable());
         $this->em->flush();
         $this->audit->logCustom('sso.approval.approve', 'SsoUserApproval', $approval->getId(), null, [
@@ -368,8 +372,11 @@ final class SsoProviderController extends AbstractController
 
     #[Route('/approvals/{id}/reject', name: 'approval_reject', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsCsrfTokenValid('sso_approval')]
-    public function reject(SsoUserApproval $approval, Request $request): Response
-    {
+    public function reject(
+        SsoUserApproval $approval,
+        Request $request,
+        #[CurrentUser] User $reviewer,
+    ): Response {
         if ($redirect = $this->checkModuleActive('authentication')) {
             return $redirect;
         }
@@ -378,7 +385,7 @@ final class SsoProviderController extends AbstractController
         $reason = trim((string) $request->request->get('reason', ''));
         $approval->setStatus(SsoUserApproval::STATUS_REJECTED);
         $approval->setRejectReason($reason !== '' ? $reason : null);
-        $approval->setReviewedBy($this->getUser() instanceof \App\Entity\User ? $this->getUser() : null);
+        $approval->setReviewedBy($reviewer);
         $approval->setReviewedAt(new \DateTimeImmutable());
         $this->em->flush();
         $this->audit->logCustom('sso.approval.reject', 'SsoUserApproval', $approval->getId(), null, [

@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -119,8 +120,10 @@ class SampleDataController extends AbstractController
 
     #[Route('/admin/sample-data/import', name: 'admin_sample_data_import', methods: ['POST'])]
     #[IsCsrfTokenValid('sample_data_import', tokenKey: '_token')]
-    public function import(Request $request): Response
-    {
+    public function import(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
             $this->addFlash('error', $this->translator->trans('admin.sample_data.no_tenant', [], 'admin'));
@@ -134,8 +137,6 @@ class SampleDataController extends AbstractController
         }
 
         $activeModules = $this->moduleConfigurationService->getActiveModules();
-        /** @var User|null $user */
-        $user = $this->getUser();
 
         $result = $this->dataImportService->importSampleData($selectedSamples, $activeModules, $tenant, $user);
 
