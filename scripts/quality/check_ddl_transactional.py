@@ -31,7 +31,17 @@ DDL_KEYWORDS = re.compile(
     re.IGNORECASE,
 )
 RE_IS_TRANSACTIONAL_FALSE = re.compile(
-    r"public\s+function\s+isTransactional\s*\([^)]*\)\s*:\s*bool\s*\{\s*return\s+false\s*;\s*\}",
+    # Multi-line + inline-comment tolerant:
+    # public function isTransactional(): bool
+    # {
+    #     return false; // any trailing comment
+    # }
+    r"public\s+function\s+isTransactional\s*\([^)]*\)\s*:\s*bool\s*\{"
+    r"(?:\s*//[^\n]*)*"
+    r"\s*return\s+false\s*;"
+    r"(?:\s*//[^\n]*)?"
+    r"\s*\}",
+    re.MULTILINE,
 )
 
 
