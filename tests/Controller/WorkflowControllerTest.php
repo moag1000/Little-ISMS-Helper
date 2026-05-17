@@ -724,7 +724,7 @@ class WorkflowControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/workflow/start/Risk/1');
+        $this->client->request('POST', '/en/workflow/start/Risk/1');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -734,7 +734,7 @@ class WorkflowControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('GET', '/en/workflow/start/Risk/999?workflow=test');
+        $this->client->request('POST', '/en/workflow/start/Risk/999?workflow=test');
 
         // Should redirect (either to new instance or with error)
         $this->assertResponseRedirects();

@@ -125,6 +125,20 @@ incident:
         medium: Mittel
         high: Hoch
         critical: Kritisch
+    severity_choice:
+        aria_label: 'Schweregrad-Auswahl'
+        low:
+            label: Niedrig
+            definition: 'Lokaler Effekt, manuell handhabbar, keine SLA-Auswirkung. Beispiel: einzelne verschlüsselte Spam-Mail, isolierter Druckerausfall.'
+        medium:
+            label: Mittel
+            definition: 'Mehrere Nutzer betroffen, Workaround verfügbar, SLA nicht verletzt. Beispiel: Datei-Server kurzfristig down, mehrere Phishing-Mails in einer Abteilung.'
+        high:
+            label: Hoch
+            definition: 'Geschäftsprozess gestört, Workaround eingeschränkt, SLA gefährdet. Eskalation an ISB Pflicht. Beispiel: produktiver Datenbankserver instabil, gezielter Angriffsversuch erkannt.'
+        critical:
+            label: Kritisch
+            definition: 'Geschäftsfortführung gefährdet, Personal- oder Compliance-Risiko, externes Reporting möglich. Sofort-Eskalation an CISO/Vorstand. Beispiel: bestätigter Datenabfluss, Ransomware-Verschlüsselung.'
     filter:
         all_status: Alle Status
         all_severity: Alle Schweregrade
