@@ -43,7 +43,8 @@
             <a href="{{ path(framework.route, framework.route_params) }}"
                class="d-flex align-items-center justify-content-between p-2 rounded mb-2 text-decoration-none border-start border-3 border-{{ framework.color }} bg-{{ framework.color }}-subtle">
                 <div class="d-flex align-items-center">
-                    <i class="bi {{ framework.icon }} me-2 text-{{ framework.color }}" aria-hidden="true"></i>
+                    {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                    <i class="fa-icon fa-icon--{{ (framework.icon starts with 'bi-') ? framework.icon[3:] : framework.icon }} me-2 text-{{ framework.color }}" aria-hidden="true"></i>
                     <span class="fw-medium">{{ framework.code }}</span>
                 </div>
                 <div class="d-flex align-items-center">

@@ -39,7 +39,8 @@
                 {% for categoryKey, category in widget_library %}
                 <div class="mb-3">
                     <h3 class="small text-muted text-uppercase mb-2">
-                        <i class="bi {{ category.icon }}" aria-hidden="true"></i> {{ category.label }}
+                        {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                        <i class="fa-icon fa-icon--{{ (category.icon starts with 'bi-') ? category.icon[3:] : category.icon }}" aria-hidden="true"></i> {{ category.label }}
                     </h3>
                     <div class="widget-list">
                         {% for widgetKey, widget in category.widgets %}
@@ -49,7 +50,8 @@
                              data-action="dragstart->report-designer#dragStart">
                             <div class="card-body p-2">
                                 <div class="d-flex align-items-center">
-                                    <i class="bi {{ widget.icon }} me-2 text-primary" aria-hidden="true"></i>
+                                    {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                                    <i class="fa-icon fa-icon--{{ (widget.icon starts with 'bi-') ? widget.icon[3:] : widget.icon }} me-2 text-primary" aria-hidden="true"></i>
                                     <div>
                                         <div class="small fw-bold">{{ widget.label }}</div>
                                         <div class="text-muted" style="font-size: 0.7rem;">{{ widget.description|default('')|slice(0, 40) }}</div>

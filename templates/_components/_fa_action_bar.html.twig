@@ -76,7 +76,8 @@
                         <a class="fa-filter-chip{% if f.active|default(false) %} is-active{% endif %}"
                            href="{{ f.href|default('#') }}"
                            {% if f.active|default(false) %}aria-current="true"{% endif %}>
-                            {% if f.icon is defined %}<i class="bi {{ f.icon }}" aria-hidden="true"></i> {% endif %}
+                            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                            {% if f.icon is defined %}<i class="fa-icon fa-icon--{{ (f.icon starts with 'bi-') ? f.icon[3:] : f.icon }}" aria-hidden="true"></i> {% endif %}
                             {{ f.label }}
                         </a>
                     {% endfor %}
@@ -92,7 +93,8 @@
                        {% if action.target is defined %}target="{{ action.target }}"{% endif %}
                        {% if action.dataAction is defined %}data-action="{{ action.dataAction }}"{% endif %}
                        {% if action.ariaLabel is defined %}aria-label="{{ action.ariaLabel }}"{% endif %}>
-                        {% if action.icon is defined %}<i class="bi {{ action.icon }}" aria-hidden="true"></i> {% endif %}
+                        {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                        {% if action.icon is defined %}<i class="fa-icon fa-icon--{{ (action.icon starts with 'bi-') ? action.icon[3:] : action.icon }}" aria-hidden="true"></i> {% endif %}
                         {{ action.label }}
                     </a>
                 {% endfor %}
@@ -106,7 +108,8 @@
                    class="{{ _pcls }}"
                    {% if _p.dataAction is defined %}data-action="{{ _p.dataAction }}"{% endif %}
                    {% if _p.ariaLabel is defined %}aria-label="{{ _p.ariaLabel }}"{% endif %}>
-                    {% if _p.icon is defined %}<i class="bi {{ _p.icon }}" aria-hidden="true"></i> {% endif %}
+                    {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+                    {% if _p.icon is defined %}<i class="fa-icon fa-icon--{{ (_p.icon starts with 'bi-') ? _p.icon[3:] : _p.icon }}" aria-hidden="true"></i> {% endif %}
                     {{ _p.label }}
                 </a>
             {% endif %}

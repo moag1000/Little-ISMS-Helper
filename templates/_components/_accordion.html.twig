@@ -28,7 +28,8 @@
 {% macro item(title, id = null, props = {}) %}
     <details class="fa-accordion__item" {% if id %}id="{{ id }}"{% endif %} {% if props.open|default(false) %}open{% endif %}>
         <summary class="fa-accordion__summary">
-            {% if props.icon is defined %}<i class="bi {{ props.icon }} fa-accordion__icon" aria-hidden="true"></i>{% endif %}
+            {# Auto-strip legacy bi- prefix so DB/YAML values keep working. #}
+            {% if props.icon is defined %}<i class="fa-icon fa-icon--{{ (props.icon starts with 'bi-') ? props.icon[3:] : props.icon }} fa-accordion__icon" aria-hidden="true"></i>{% endif %}
             <span class="fa-accordion__title">{{ title }}</span>
             {% if props.badge is defined %}<span class="fa-accordion__badge">{{ props.badge }}</span>{% endif %}
             <span class="fa-accordion__chevron" aria-hidden="true">▾</span>
