@@ -333,6 +333,7 @@ class ControlType extends AbstractType
             'translation_domain' => 'control',
             'constraints' => [
                 new Callback([$this, 'validateResponsibleSlot']),
+                new Callback([$this, 'validateJustificationWhenNotApplicable']),
             ],
         ]);
     }
@@ -345,6 +346,24 @@ class ControlType extends AbstractType
         if ($entity->getResponsiblePersonUser() === null && $entity->getResponsiblePersonRef() === null) {
             $context->buildViolation('control.error.owner_required_user_or_person')
                 ->atPath('responsiblePersonUser')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * ISO 27001 6.1.3 d / 8.3 b — SoA must document a justification for every
+     * non-applicable control. Junior-ISB-audit P0-01: the help-text says the
+     * field is mandatory but the form previously allowed empty submissions.
+     * This callback closes the help-vs-code gap.
+     */
+    public function validateJustificationWhenNotApplicable(?Control $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getApplicable() === false && trim((string) $entity->getJustification()) === '') {
+            $context->buildViolation('control.error.justification_required_when_not_applicable')
+                ->atPath('justification')
                 ->addViolation();
         }
     }

@@ -146,6 +146,7 @@ control:
       updated: 'Updated %count% control(s) to %status%.'
   error:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+    justification_required_when_not_applicable: 'Justification is required when the control is marked as "not applicable" (ISO 27001 6.1.3 d).'
 inverse_coverage:
   total: 'Covers %count% requirement(s) across %frameworks% framework(s)'
   document:

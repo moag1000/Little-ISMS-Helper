@@ -150,6 +150,10 @@ control:
         title: 'Applicable control without links'
         body: 'Control marked applicable but linked to neither risks nor compliance requirements. SoA gap per ISO 27001 Cl. 6.1.3 b/c.'
         action: 'Review links'
+    soa_justification_missing:
+        title: 'Non-applicable control without justification — major-NC risk'
+        body: 'This control is marked "not applicable" but the SoA carries no written justification. ISO 27001 Cl. 6.1.3 d / 8.3 b require a documented justification for every exclusion — otherwise this is a Major Nonconformity at external certification audit.'
+        action: 'Add justification'
 
 dpia:
     sdm_incomplete:
