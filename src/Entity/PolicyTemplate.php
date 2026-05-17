@@ -244,6 +244,30 @@ class PolicyTemplate
     #[ORM\JoinColumn(name: 'superseded_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?self $supersededBy = null;
 
+    /**
+     * Lifecycle status for the standard 5-stage state-machine.
+     *
+     * Canonical stages: draft → in_review → approved → published → archived.
+     *
+     * One-way sync: setStatus() keeps isActive in sync (status → isActive).
+     * Existing isActive setters remain for backward-compat but do NOT
+     * feed back into status; callers that need both updated should use
+     * setStatus() instead.
+     */
+    #[ORM\Column(length: 32)]
+    private string $status = 'draft';
+
+    /**
+     * Optimistic-locking version counter. Incremented by Doctrine on each
+     * flush. The LifecycleService reads this before transition and returns
+     * HTTP 409 if it has changed (concurrent edit detected).
+     *
+     * No setter — Doctrine manages the value exclusively.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private bool $isActive = true;
 
@@ -569,6 +593,31 @@ class PolicyTemplate
     {
         $this->requiresWorksCouncilEvidence = $required;
         return $this;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * Sets the lifecycle status and keeps isActive in sync.
+     *
+     * isActive is set to true only when status is 'published', false otherwise.
+     * This one-way sync (status → isActive) preserves backward-compat with
+     * existing code that reads isActive; callers should prefer setStatus()
+     * over setIsActive() when the lifecycle is involved.
+     */
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+        $this->isActive = ($status === 'published');
+        return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function isActive(): bool

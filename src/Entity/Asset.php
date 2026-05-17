@@ -252,10 +252,21 @@ class Asset
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotBlank(message: 'Status is required')]
     #[Assert\Choice(
-        choices: ['active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'],
+        choices: ['draft', 'active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'],
         message: 'Status must be one of: { choices }'
     )]
     private ?string $status = 'active';
+
+    /**
+     * Optimistic locking version counter.
+     * Required by LifecycleService to detect concurrent transition conflicts (HTTP 409).
+     *
+     * @see LifecycleService::transition()
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    #[Groups(['asset:read'])]
+    private int $lockVersion = 0;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['asset:read'])]
@@ -533,6 +544,11 @@ class Asset
     {
         $this->status = $status;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     /**
