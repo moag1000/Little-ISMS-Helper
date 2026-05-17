@@ -34,7 +34,7 @@ src/Entity/TenantBranding.php:462
 src/Entity/TenantBranding.php:476
 src/Entity/TenantBranding.php:561
 src/Entity/TenantBranding.php:575
-src/Entity/TrainingParticipation.php:146
+src/Entity/TrainingParticipation.php:150
 src/Entity/User.php:657
 src/Entity/WorkflowStep.php:80
 src/Entity/WorkflowStep.php:83
