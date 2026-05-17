@@ -148,7 +148,7 @@
         <fieldset class="mb-3">
             <legend class="h6">{{ 'policy_wizard.step.welcome.subtitle'|trans }}</legend>
             <div class="form-text mb-2">
-                {{ 'policy_wizard.message.generate_preview'|trans({'%count%': (selected_standards|length * 4)}) }}
+                {{ 'policy_wizard.message.generate_preview'|trans({'%count%': (selected_standards|length * 4)}, 'policy_wizard') }}
             </div>
 
             {% for code in ['iso27001', 'bsi', 'dora', 'gdpr', 'bcm', 'iso27701', 'nis2', 'tisax', 'soc2', 'c5'] %}

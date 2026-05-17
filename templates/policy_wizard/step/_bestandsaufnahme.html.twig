@@ -379,7 +379,7 @@
                 {{ _fa_alert.render({
                     variant: 'info',
                     title: 'policy_wizard.step.bestandsaufnahme.preview.no_pdf_title'|trans,
-                    body: 'policy_wizard.step.bestandsaufnahme.preview.no_pdf_body'|trans({'%mime%': '__MIME__'})|replace({'__MIME__': '<code data-bestandsaufnahme-drawer-target="mimeNote"></code>'})
+                    body: 'policy_wizard.step.bestandsaufnahme.preview.no_pdf_body'|trans({'%mime%': '__MIME__'}, 'policy_wizard')|replace({'__MIME__': '<code data-bestandsaufnahme-drawer-target="mimeNote"></code>'})
                 }) }}
             </div>
 

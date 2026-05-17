@@ -24,7 +24,7 @@
     <div class="mb-3">
         <div class="d-flex justify-content-between align-items-center mb-1">
             <span class="small fw-semibold">
-                {{ 'policy_wizard.progress.label'|trans({'%current%': _step_n, '%total%': _ts}) }}
+                {{ 'policy_wizard.progress.label'|trans({'%current%': _step_n, '%total%': _ts}, 'policy_wizard') }}
             </span>
             <span class="small text-muted">{{ step_title_key|trans }}</span>
         </div>
@@ -213,12 +213,12 @@
                         <div class="mb-3">
                             <strong class="d-block mb-1">{{ 'policy_wizard.step.review_generate.confirm_box.intervals_heading'|trans }}</strong>
                             <div>
-                                {{ 'policy_wizard.step.review_generate.confirm_box.default_interval'|trans({'%count%': _gc.default_review_interval_months}) }}
+                                {{ 'policy_wizard.step.review_generate.confirm_box.default_interval'|trans({'%count%': _gc.default_review_interval_months}, 'policy_wizard') }}
                             </div>
                             {% if _gc.per_policy_intervals|length > 0 %}
                                 <ul class="mb-0 ps-3 mt-1">
                                     {% for tplKey, months in _gc.per_policy_intervals %}
-                                        <li><code>{{ tplKey }}</code>: {{ 'policy_wizard.step.review_generate.confirm_box.interval_months'|trans({'%count%': months}) }}</li>
+                                        <li><code>{{ tplKey }}</code>: {{ 'policy_wizard.step.review_generate.confirm_box.interval_months'|trans({'%count%': months}, 'policy_wizard') }}</li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}
@@ -227,7 +227,7 @@
                         {# Document-count estimate. #}
                         <div class="mb-3">
                             <strong>{{ 'policy_wizard.step.review_generate.confirm_box.docs_heading'|trans }}:</strong>
-                            {{ 'policy_wizard.step.review_generate.confirm_box.docs_count'|trans({'%count%': _gc.expected_document_count}) }}
+                            {{ 'policy_wizard.step.review_generate.confirm_box.docs_count'|trans({'%count%': _gc.expected_document_count}, 'policy_wizard') }}
                         </div>
 
                         {# Mandatory confirmation checkbox. #}
@@ -257,7 +257,7 @@
                                        data-action="change->policy-wizard-generate#toggle"
                                        required>
                                 <label class="form-check-label fw-semibold text-warning-emphasis" for="acknowledgeWarnings">
-                                    {{ 'policy_wizard.step.review_generate.acknowledge_warnings.label'|trans({'%count%': consistency_warnings|length}) }}
+                                    {{ 'policy_wizard.step.review_generate.acknowledge_warnings.label'|trans({'%count%': consistency_warnings|length}, 'policy_wizard') }}
                                 </label>
                             </div>
                         {% endif %}
