@@ -136,6 +136,14 @@ class ISMSObjective
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
 
+    /**
+     * Optimistic locking version — Lifecycle X.1.
+     * Prevents concurrent status-transition conflicts (409 response).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
 public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
@@ -351,5 +359,10 @@ public function __construct()
     {
         $this->measurementMethod = $measurementMethod;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }
