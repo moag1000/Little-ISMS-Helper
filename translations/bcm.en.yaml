@@ -15,17 +15,10 @@ bcm:
     description:
         critical: 'Overview of critical assets and processes including RTO/RPO and action needs'
         data_reuse_insights: 'How BCM data enhances asset protection requirements'
-        critical_level: 'Immediate business outage in case of loss or failure. Highest priority for emergency actions.'
-        high_level: 'Significant business impact within a short time. Rapid recovery planning required.'
-        medium_level: 'Noticeable impact with buffer. Mid-term measures sufficient.'
-        action_items: 'Recommended actions to improve recoverability and reduce downtime.'
     action:
         add_process: 'Add Process'
         data_reuse: 'Data Reuse'
-        view_insights: 'View insights'
         view_bia: 'View BIA'
-        export: Export
-        plan: 'Recovery plan'
     section:
         protection_analysis: 'Protection Requirements Analysis'
         business_processes: 'Business Processes'
@@ -49,7 +42,6 @@ bcm:
         rpo: RPO
     message:
         no_processes: 'No business processes assigned'
-        no_matching_processes: 'No matching processes found'
         rto_tooltip: 'Recovery Time Objective - Maximum time to restore business operations'
         rpo_tooltip: 'Recovery Point Objective - Maximum acceptable data loss (time period)'
         mtd_tooltip: 'Maximum Tolerable Downtime - Maximum tolerable outage duration'
@@ -99,95 +91,8 @@ business_process:
         delete: 'Are you sure you want to delete this business process?'
     action:
         bia_view: 'BIA View'
-    warning:
-        critical_assets_count: '%count% critical assets identified'
-        critical_message: 'Please review RTO/RPO, recovery plans and test status of these assets.'
-    stats:
-        high_priority: 'High Priority'
-        critical_assets: 'Critical Assets'
-        critical_processes: 'Critical Processes'
-        avg_rto: 'Avg. RTO'
-        missing_recovery_plans: 'Missing Recovery Plans'
-    section:
-        protection_analysis: 'Protection Requirements Analysis'
-        business_processes: 'Business Processes'
-        asset_details: 'Asset Details'
-        rto_legend: 'RTO Legend'
-        criticality_overview: 'Criticality Overview'
-        critical_assets_list: 'List of Critical Assets'
-        critical_processes: 'Critical Business Processes'
-        action_items: 'Action Items'
-    field:
-        confidentiality: Confidentiality
-        integrity: Integrity
-        availability: Availability
-        overall_protection_level: 'Overall Protection Level'
-        reputational_impact: 'Reputational Impact'
-        regulatory_impact: 'Regulatory Impact'
-        operational_impact: 'Operational Impact'
-        mtpd: 'MTPD (Maximum Tolerable Period of Disruption)'
-        supporting_assets: 'Supporting Assets'
-        assets: Assets
-        asset_name: 'Asset Name'
-        type: Type
-        criticality: Criticality
-        rto: RTO
-        rpo: RPO
-        recovery_plan: 'Recovery Plan'
-        last_tested: 'Last tested'
-        process_name: 'Process Name'
-        department: Department
-        dependent_assets: 'Dependent Assets'
-        mtd: MTD
-        maximum_tolerable_downtime: 'Maximum tolerable downtime'
-        impact_of_loss: 'Impact of loss'
-        avg_rto: 'Avg. RTO'
-    badge:
-        urgent: Urgent
-        no_recovery_plan: 'No recovery plan'
-        immediate: Immediate
-        exists: exists
-        missing: missing
-        test_overdue: 'Test overdue'
-    message:
-        no_processes: 'No business processes assigned'
-        no_critical_processes_desc: 'There are currently no critical processes defined'
-        never_tested: 'Never tested'
-        no_critical_assets: 'No critical assets — well done!'
-        no_critical_processes: 'No critical processes'
-        no_matching_processes: 'No matching processes found'
-        rto_tooltip: 'Recovery Time Objective - Maximum time to restore business operations'
-        rpo_tooltip: 'Recovery Point Objective - Maximum acceptable data loss (time period)'
-        mtd_tooltip: 'Maximum Tolerable Downtime - Maximum tolerable outage duration'
-        bcm_influences_asset_ratings: 'BCM assessments influence asset risk ratings'
-    type:
-        information: Information
-        software: Software
-        hardware: Hardware
-        service: Service
-        personnel: Personnel
-        physical: Physical
     criticality:
         critical: Critical
         high: High
         medium: Medium
         low: Low
-    impact:
-        critical: Critical
-        high: High
-        medium: Medium
-        low: Low
-    priority:
-        high: High
-        medium: Medium
-        low: Low
-    rto:
-        standard: Standard
-        flexible: Flexible
-    data_reuse:
-        asset_recommendations_title: 'Asset Recommendations from BCM Analysis'
-        benefits_title: 'Benefits of Data Reuse'
-        benefit_efficiency: 'Efficiency: No duplicate data entry required'
-        benefit_consistency: 'Consistency: Unified data across all modules'
-        benefit_compliance: 'Compliance: Automatic linking to requirements'
-        benefit_quality: 'Quality: Verified data from validated source'

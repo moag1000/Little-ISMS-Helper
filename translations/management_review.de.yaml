@@ -49,44 +49,10 @@ management_review:
         tenant: 'Organisation'
         dora_obligation: 'DORA-Verpflichtungsstatus'
         generated_at: 'Erstellt am'
-        title: Titel
         review_date: Bewertungsdatum
         reviewed_by: 'Durchgeführt von'
-        reviewed_by_person: 'Durchgeführt von (Person)'
-        reviewed_by_deputy_persons: 'Vertretungen (Personen)'
         participants: Teilnehmende
-        person_participants: 'Teilnehmende (Personen)'
         status: Status
-        changes_relevant_to_isms: 'Änderungen mit Relevanz für das ISMS'
-        feedback_from_interested_parties: 'Rückmeldungen interessierter Parteien'
-        audit_results: 'Ergebnisse von Audits'
-        performance_evaluation: 'Leistung des ISMS (Ziele, Indikatoren)'
-        previous_review_actions: 'Status früherer Maßnahmen'
-        non_conformities_status: 'Status von Nichtkonformitäten'
-        corrective_actions_status: 'Status der Korrekturmaßnahmen'
-        nonconformities_review: 'Bewertung von Nichtkonformitäten'
-        incidents_review: 'Bewertung von Vorfällen'
-        risks_review: 'Bewertung von Risiken'
-        objectives_review: 'Bewertung der Ziele'
-        context_changes: 'Kontextänderungen'
-        improvement_opportunities: 'Verbesserungschancen'
-        opportunities_for_improvement: Verbesserungsmöglichkeiten
-        resource_needs: Ressourcenbedarf
-        decisions: Beschlüsse/Entscheidungen
-        action_items: Maßnahmenliste
-        summary: Zusammenfassung
-        top_management_attended: 'Anwesenheit Top-Management'
-        next_review_date: 'Nächstes Bewertungsdatum'
-        meeting_minutes_document: 'Protokoll-Dokument'
-        risk_treatment_effectiveness: 'Wirksamkeit der Risikobehandlung'
-        policy_review_outcome: 'Ergebnis der Richtlinienüberprüfung (§5.2)'
-        framework_compliance_status: 'Framework-Compliance-Status'
-        action_items_with_deadlines: 'Maßnahmen mit Fristen (strukturiert)'
-    status_values:
-        planned: Geplant
-        in_progress: 'In Bearbeitung'
-        completed: Abgeschlossen
-        cancelled: Abgebrochen
     status:
         planned: Geplant
         in_progress: 'In Bearbeitung'
@@ -136,46 +102,6 @@ management_review:
             action_items: 'Action Items (Maßnahmenplan)'
             summary: 'Zusammenfassung'
     edit: Bearbeiten
-    placeholder:
-        title: 'z.B. Management Review Q1 2025'
-        reviewed_by_person: '-- Person aus Stammdaten --'
-        meeting_minutes_document: '-- Protokoll-Dokument auswählen --'
-        risk_treatment_effectiveness: 'z.B. Firewall-Upgrade hat Angriffsfläche um 40% reduziert; Patch-Management SLA zu 92% eingehalten ...'
-        policy_review_outcome: 'z.B. ISMS-Leitlinie angepasst an neue Cloud-Nutzung; keine wesentlichen Änderungen an §5.2-Anforderungen ...'
-        framework_compliance_status: '[{"framework":"ISO 27001:2022","status":"konform","letzte_prüfung":"2025-01-15"},{"framework":"NIS2","status":"in Umsetzung","offene_punkte":3}]'
-        action_items_with_deadlines: '[{"action":"Risikobewertung aktualisieren","owner":"CISO","deadline":"2025-06-30","status":"open"}]'
-    help:
-        reviewed_by: 'Üblicherweise ein Mitglied des Top-Managements'
-        reviewed_by_person: 'Person ohne System-Login als Reviewer. Reihenfolge: User > Person > leer.'
-        reviewed_by_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
-        person_participants: 'Externe Teilnehmende (Beirat, Auditoren, Berater) ohne System-Login. Ergänzt die Anwender-Teilnahme aus dem Feld "Teilnehmende".'
-        performance_evaluation: 'Bewertung der ISMS-Performance und KPIs'
-        changes_relevant_to_isms: 'Änderungen, die für das ISMS relevant sind (z.B. gesetzliche, organisatorische, technologische)'
-        feedback_from_interested_parties: 'Rückmeldungen interessierter Parteien (Kunden, Partner, Behörden, Mitarbeitende)'
-        audit_results: 'Ergebnisse interner/externer Audits seit dem letzten Review'
-        nonconformities_review: 'Status offener Nichtkonformitäten aus Audits'
-        incidents_review: 'Analyse von Sicherheitsvorfällen seit letztem Review'
-        risks_review: 'Änderungen im Risikoprofil'
-        objectives_review: 'Status der ISMS-Ziele und Zielerreichung'
-        context_changes: 'Änderungen in internen/externen Anforderungen'
-        previous_review_actions: 'Status der Maßnahmen aus dem vorherigen Management Review'
-        non_conformities_status: 'Übersicht offener Nichtkonformitäten und deren Bearbeitungsstand'
-        corrective_actions_status: 'Status der Korrekturmaßnahmen (geplant, in Bearbeitung, abgeschlossen)'
-        improvement_opportunities: 'Identifizierte Chancen zur Verbesserung des ISMS'
-        opportunities_for_improvement: 'Verbesserungsmöglichkeiten (Alias-Feld, kompatibel mit bestehendem Template)'
-        decisions: 'Getroffene Entscheidungen und Maßnahmen'
-        action_items: 'Konkrete Maßnahmen mit Verantwortlichkeiten und Fristen'
-        resource_needs: 'Budget, Personal oder sonstige Ressourcen'
-        summary: 'Executive Summary des Management Reviews'
-        top_management_attended: 'Bestätigt, dass mindestens ein Mitglied des Top-Managements persönlich anwesend war (ISO 27001 §9.3 Pflicht).'
-        next_review_date: 'Datum für das nächste geplante Management Review (≥1× pro Jahr gemäß §9.3).'
-        meeting_minutes_document: 'Offizielles Protokoll-Dokument aus dem Dokumentenarchiv (§7.5.3).'
-        risk_treatment_effectiveness: 'Bewertung, ob die umgesetzten Risikobehandlungsmaßnahmen wirksam sind (Treatment-ROI; ergänzt risksReview).'
-        policy_review_outcome: 'Ergebnis der Überprüfung der Informationssicherheitsrichtlinie gemäß §5.2.'
-        framework_compliance_status: 'JSON-Snapshot des aktuellen Compliance-Status über alle relevanten Frameworks (DORA, NIS2, ISO 27001, BaFin-Anforderungen). Nur sichtbar wenn Compliance-Modul aktiv.'
-        action_items_with_deadlines: 'Strukturierte Maßnahmen mit Verantwortlichen und Fristen. JSON-Format: [{action, owner, deadline (ISO-Datum), status: open|in_progress|done}]'
-    error:
-        owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
     auto_collect:
         title: 'Aus aktueller Datenlage generieren'
         title_prefix: 'Management-Review (auto-generiert)'
