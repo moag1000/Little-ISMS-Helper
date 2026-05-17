@@ -4,6 +4,9 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 {% import '_components/_status_pill.html.twig' as pill %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
 
 {% block title %}{{ 'privacy.data_breach.show.page_title'|trans({'%ref%': breach.referenceNumber}, 'privacy') }}{% endblock %}
 
@@ -31,6 +34,12 @@
         ]
     }) }}
     {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_data_breach_export_pdf', route_params: {id: breach.id}} only %}
+
+    {# Lifecycle X.3b — status chip + transition dropdown #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\DataBreach', status_key: breach.status }) }}
+        {{ _lifecycle_actions.dropdown(breach, 'data-breach', 'data_breach_lifecycle') }}
+    </div>
 
     {# CRITICAL: 72-Hour Deadline Alert #}
     {% if breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
@@ -380,6 +389,9 @@
         formAction: path('app_comment_post', {entityType: 'DataBreach', entityId: breach.id}),
         csrfToken: csrf_token('isms-comment')
     } only %}
+
+    {# Lifecycle X.3b — transition history tab #}
+    {{ _lifecycle_history.history('data-breach', breach.id) }}
 </div>
 
 {# Notify Supervisory Authority Modal #}

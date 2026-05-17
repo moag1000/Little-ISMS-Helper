@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+{% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
 
 {% block title %}{{ finding.title }}{% endblock %}
 
@@ -26,6 +29,12 @@
             { label: 'corrective_action.action.new'|trans({}, 'audits'),        variant: 'primary', icon: 'plus',   href: path('app_corrective_action_new', {findingId: finding.id}) }
         ]
     }) }}
+
+    {# Lifecycle X.3b — status chip + transition dropdown #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\AuditFinding', status_key: finding.status }) }}
+        {{ _lifecycle_actions.dropdown(finding, 'audit-finding', 'audit_finding_lifecycle') }}
+    </div>
 
     <div class="row g-3 mb-4">
         <div class="col-md-3"><strong>{{ 'audit_finding.field.type'|trans({}, 'audits') }}:</strong> {{ ('audit_finding.type.' ~ finding.type)|trans({}, 'audits') }}</div>
@@ -125,5 +134,8 @@
             <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
         </button>
     </form>
+
+    {# Lifecycle X.3b — transition history tab #}
+    {{ _lifecycle_history.history('audit-finding', finding.id) }}
 </div>
 {% endblock %}
