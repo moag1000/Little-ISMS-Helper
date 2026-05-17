@@ -178,7 +178,9 @@ class LifecycleController extends AbstractController
     {
         // Auth must precede entity lookup — otherwise unknown/missing entities
         // leak as 404 to anonymous callers instead of being refused with 403.
-        if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
+        // IS_AUTHENTICATED_REMEMBERED covers both fresh-login + remember-me cookie,
+        // matching the parent show-page's auth tier.
+        if (!$this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             return $this->jsonError(403, 'forbidden', 'Authentifizierung erforderlich.');
         }
 
