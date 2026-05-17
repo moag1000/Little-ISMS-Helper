@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
+use App\Enum\SupplierStatus;
 use App\Repository\SupplierRepository;
 use App\State\TenantAwareStateProcessor;
 use App\Entity\Document;
@@ -373,10 +374,18 @@ class Supplier
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(SupplierStatus|string $status): static
     {
-        $this->status = $status;
+        // Accept both enum and string so new code can pass the typed enum while
+        // existing string-passing callers keep working unchanged.
+        $this->status = is_string($status) ? $status : $status->value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): ?SupplierStatus
+    {
+        return $this->status === null ? null : SupplierStatus::tryFrom($this->status);
     }
 
     /**
