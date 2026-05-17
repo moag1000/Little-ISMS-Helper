@@ -6,6 +6,7 @@ namespace App\Controller\Authority;
 
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Authority\DoraRegisterOfInformation;
+use App\Entity\User;
 use App\Repository\Authority\DoraRegisterOfInformationRepository;
 use App\Security\Voter\Authority\DoraRoiVoter;
 use App\Service\AuditLogger;
@@ -18,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -164,8 +166,11 @@ class DoraRoiController extends AbstractController
     #[Route('/{id}/mark-submitted', name: 'mark_submitted', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     #[IsCsrfTokenValid('dora_roi_mark_submitted_{id}')]
-    public function markSubmitted(int $id, Request $request): Response
-    {
+    public function markSubmitted(
+        int $id,
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         if ($redirect = $this->checkModuleActive('nis2_dora')) {
             return $redirect;
         }
@@ -202,7 +207,7 @@ class DoraRoiController extends AbstractController
         }
 
         $record->setSubmittedAt(new DateTimeImmutable());
-        $record->setSubmittedBy($this->getUser());
+        $record->setSubmittedBy($user);
         $record->setConfirmationNumber($confirmationNumber);
         $this->entityManager->flush();
 
@@ -212,7 +217,7 @@ class DoraRoiController extends AbstractController
             entityId: $record->getId(),
             description: sprintf(
                 'DORA RoI marked as submitted by %s — confirmation: %s',
-                $this->getUser()?->getUserIdentifier() ?? 'unknown',
+                $user->getUserIdentifier(),
                 $confirmationNumber
             ),
         );
