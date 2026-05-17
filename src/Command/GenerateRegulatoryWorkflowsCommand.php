@@ -75,6 +75,21 @@ HELP
         $specificWorkflow = $input->getOption('workflow');
 
         $io->title('Regulatory Workflow Generator');
+
+        // Sprint Y.2 — deprecation notice.
+        // As of Sprint Y.2, all 15 regulatory workflows are defined as YAML files under
+        // config/workflows/regulatory/*.yaml. This command remains as a backwards-compat
+        // DB seeder (creates/updates rows in the `workflows` + `workflow_steps` tables
+        // so WorkflowInstance.workflow_id FK is satisfied and legacy display works).
+        // It will be removed in a future release once the WorkflowInstance.workflow_id
+        // FK is made nullable (Sprint Y.4).
+        $io->warning([
+            '[DEPRECATED since Y.2] app:generate-regulatory-workflows',
+            'Regulatory workflow definitions are now YAML-first (config/workflows/regulatory/).',
+            'This command only seeds the DB mirror rows for legacy FK compatibility.',
+            'It will be removed in a future release.',
+        ]);
+
         $io->text('Generating workflows based on GDPR, ISO 27001, and BSI IT-Grundschutz requirements');
 
         $workflows = $this->getWorkflowDefinitions();

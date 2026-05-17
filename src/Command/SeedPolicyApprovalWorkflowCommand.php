@@ -33,10 +33,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * Run as one-off after deploy:
  *   php bin/console app:seed-policy-approval-workflow
+ *
+ * @deprecated since Sprint Y.2 — policy-approval workflow steps should be migrated
+ *   to config/workflows/regulatory/document_review.yaml.
+ *   This command will be removed in a future release.
  */
 #[AsCommand(
     name: 'app:seed-policy-approval-workflow',
-    description: 'Seeds the 6-step policy-approval workflow (Phase 4-C / W3-C).',
+    description: '[DEPRECATED] Seeds the 6-step policy-approval workflow — use app:generate-regulatory-workflows instead',
 )]
 class SeedPolicyApprovalWorkflowCommand extends Command
 {

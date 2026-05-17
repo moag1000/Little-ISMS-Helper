@@ -1,0 +1,108 @@
+framework:
+    workflows:
+        dpia:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\WorkflowInstance
+            initial_marking: pending
+            places:
+                - pending
+                - in_progress
+                - approved
+                - rejected
+                - cancelled
+            transitions:
+                start:
+                    from: pending
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_progress
+                    to: approved
+                    metadata:
+                        roles: [ROLE_DPO, ROLE_MANAGER]
+                        four_eyes: true
+                        tone_target: success
+                        module: privacy
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_DPO, ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: danger
+                        module: privacy
+                cancel:
+                    from: pending
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+            metadata:
+                regulatory_metadata:
+                    standard: "GDPR Art. 35/36"
+                    sla_hours: null
+                    escalation_threshold_hours: null
+                    escalation_role: ROLE_DPO
+                    module: privacy
+                steps:
+                    -   name: "DPIA Creation (Data Owner)"
+                        description: "Systematic description of processing, necessity assessment, risk evaluation"
+                        order: 1
+                        approver_role: ROLE_DATA_OWNER
+                        step_type: approval
+                        days_to_complete: 14
+                        is_required: true
+                    -   name: "DPO Review"
+                        description: "DPO reviews completeness and GDPR compliance"
+                        order: 2
+                        approver_role: ROLE_DPO
+                        step_type: approval
+                        days_to_complete: 7
+                        is_required: true
+                    -   name: "Technical Security Review (CISO)"
+                        description: "CISO evaluates technical security measures and protection level"
+                        order: 3
+                        approver_role: ROLE_CISO
+                        step_type: approval
+                        days_to_complete: 5
+                        is_required: true
+                    -   name: "Risk Assessment"
+                        description: "Risk manager evaluates residual risk and acceptance criteria"
+                        order: 4
+                        approver_role: ROLE_RISK_MANAGER
+                        step_type: approval
+                        days_to_complete: 5
+                        is_required: true
+                    -   name: "Management Approval"
+                        description: "Management approves or rejects DPIA and allocates budget for measures"
+                        order: 5
+                        approver_role: ROLE_MANAGER
+                        step_type: approval
+                        days_to_complete: 3
+                        is_required: true
+                    -   name: "DPO Final Check & Supervisory Authority Consultation"
+                        description: "DPO performs final check. If high residual risk remains, initiate prior consultation with supervisory authority (GDPR Art. 36)"
+                        order: 6
+                        approver_role: ROLE_DPO
+                        step_type: approval
+                        days_to_complete: 2
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: DataProtectionImpactAssessment
+                            fields: [residualRiskLevel]
+                            condition: "(residualRiskLevel = low OR residualRiskLevel = medium) OR ((residualRiskLevel = high OR residualRiskLevel = critical) AND supervisoryConsultationDate != null)"
