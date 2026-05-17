@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\DocumentSectionStatus;
 use App\Repository\DocumentSectionRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -198,17 +199,26 @@ class DocumentSection
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(DocumentSectionStatus|string $status): static
     {
-        if (!in_array($status, self::ALLOWED_STATUSES, true)) {
+        // Accept both enum and string so new code can pass the typed enum
+        // while existing string-passing callers keep working unchanged.
+        $value = is_string($status) ? $status : $status->value;
+        if (!in_array($value, self::ALLOWED_STATUSES, true)) {
             throw new \InvalidArgumentException(sprintf(
                 'Invalid DocumentSection status "%s". Allowed: %s',
-                $status,
+                $value,
                 implode(', ', self::ALLOWED_STATUSES),
             ));
         }
-        $this->status = $status;
+        $this->status = $value;
         return $this;
+    }
+
+    /** Typed status surface for enum-aware code. */
+    public function getStatusEnum(): DocumentSectionStatus
+    {
+        return DocumentSectionStatus::from($this->status);
     }
 
     public function getContentSnapshot(): ?string
