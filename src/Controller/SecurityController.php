@@ -29,7 +29,7 @@ class SecurityController extends AbstractController
         private readonly TenantContext $tenantContext,
     ) {}
 
-    #[Route('/login', name: 'app_login', methods: ['GET'])]
+    #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         // Security: Rate limit login attempts to prevent brute force attacks

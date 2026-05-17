@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Workflow\Registry;
 
 class LifecycleController extends AbstractController
@@ -130,6 +131,7 @@ class LifecycleController extends AbstractController
     }
 
     #[Route('/lifecycle/{entityType}/{id}/allowed-transitions', name: 'app_lifecycle_allowed', methods: ['GET'])]
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
     public function allowedTransitions(string $entityType, int $id): JsonResponse
     {
         $mapping = $this->entityRegistry->lookup($entityType);
