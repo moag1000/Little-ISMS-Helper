@@ -509,6 +509,7 @@ risk:
     zu setzen
   error:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+    subject_required: 'Risiko-Bezug: Mindestens eines von Asset, Person, Standort oder Lieferant muss verknüpft sein (ISO 27001 Cl. 6.1.2 c).'
   validation:
     likelihood_justification_required: 'Begründung der Eintrittswahrscheinlichkeit ist erforderlich (ISO 27001:2022 Kl. 6.1.2.d).'
     impact_justification_required: 'Begründung der Schadensauswirkung ist erforderlich (ISO 27001:2022 Kl. 6.1.2.d).'

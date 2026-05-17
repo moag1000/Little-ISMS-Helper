@@ -368,6 +368,7 @@ class RiskType extends AbstractType
             'translation_domain' => 'risk',
             'constraints' => [
                 new Callback([$this, 'validateRiskOwnerSlot']),
+                new Callback([$this, 'validateRiskSubjectSlot']),
             ],
         ]);
     }
@@ -380,6 +381,32 @@ class RiskType extends AbstractType
         if ($entity->getRiskOwner() === null && $entity->getRiskOwnerPerson() === null) {
             $context->buildViolation('risk.error.owner_required_user_or_person')
                 ->atPath('riskOwner')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * ISO 27001 Cl. 6.1.2 c — risks MUST be tied to identifiable assets,
+     * persons, locations, suppliers, or business processes. A risk
+     * "in general" without subject is a textbook Major-NC at external
+     * audit: the auditor's first question is "which asset/process?" and
+     * "weiss nicht" wins them their finding.
+     *
+     * Junior-ISB-audit P0-02: the form previously let users save risks
+     * with no subject reference at all. This callback closes that hole.
+     */
+    public function validateRiskSubjectSlot(?Risk $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getAsset() === null
+            && $entity->getPerson() === null
+            && $entity->getLocation() === null
+            && $entity->getSupplier() === null
+        ) {
+            $context->buildViolation('risk.error.subject_required')
+                ->atPath('asset')
                 ->addViolation();
         }
     }

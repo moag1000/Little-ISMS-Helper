@@ -23,6 +23,7 @@ class RiskControllerTest extends WebTestCase
     private ?Tenant $testTenant = null;
     private ?User $testUser = null;
     private ?Risk $testRisk = null;
+    private ?Asset $testAsset = null;
 
     protected function setUp(): void
     {
@@ -149,6 +150,7 @@ class RiskControllerTest extends WebTestCase
         $testAsset->setIntegrityValue(3);
         $testAsset->setAvailabilityValue(3);
         $this->entityManager->persist($testAsset);
+        $this->testAsset = $testAsset;
 
         // Create test risk
         $this->testRisk = new Risk();
@@ -328,11 +330,11 @@ class RiskControllerTest extends WebTestCase
             'risk[category]' => 'financial',
             'risk[description]' => 'New risk description',
             'risk[probability]' => 3,
-            
             'risk[impact]' => 3,
             'risk[treatmentStrategy]' => 'mitigate',
             'risk[status]' => 'identified',
             'risk[riskOwner]' => $this->testUser->getId(),
+            'risk[asset]' => (string) $this->testAsset->getId(),
         ]);
 
         $this->client->submit($form);
@@ -363,11 +365,11 @@ class RiskControllerTest extends WebTestCase
             'risk[category]' => 'security',
             'risk[description]' => 'Testing tenant assignment',
             'risk[probability]' => 2,
-            
             'risk[impact]' => 2,
             'risk[treatmentStrategy]' => 'mitigate',
             'risk[status]' => 'identified',
             'risk[riskOwner]' => $this->testUser->getId(),
+            'risk[asset]' => (string) $this->testAsset->getId(),
         ]);
 
         $this->client->submit($form);
