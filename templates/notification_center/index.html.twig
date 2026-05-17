@@ -90,7 +90,7 @@
             {% if severity != 'other' %}
                 <div id="tab-{{ severity }}" class="d-none">
                     {% if items is empty %}
-                        <p class="text-muted fst-italic">{{ 'notification.center.empty.severity'|trans({'%severity%': ('notification.severity.' ~ severity)|trans}) }}</p>
+                        <p class="text-muted fst-italic">{{ 'notification.center.empty.severity'|trans({'%severity%': ('notification.severity.' ~ severity)|trans({}, 'notification')}, 'notification') }}</p>
                     {% else %}
                         {% for delivery in items %}
                             {% set payload = delivery.responsePayload ?? {} %}

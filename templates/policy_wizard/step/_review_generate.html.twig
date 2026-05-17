@@ -82,7 +82,7 @@
                 <div>
                     <div>{{ w.message_key|trans(w.params|default({})) }}</div>
                     <small class="text-muted d-block mt-1">
-                        {{ 'policy_wizard.warning.click_to_jump'|trans({'%step%': step_title}) }}
+                        {{ 'policy_wizard.warning.click_to_jump'|trans({'%step%': step_title}, 'policy_wizard') }}
                     </small>
                 </div>
             </div>
@@ -151,15 +151,15 @@
                                         {{ pill.render('policy_wizard.review.value.no'|trans, 'neutral', {size: 'sm', icon: 'status-critical'}) }}
                                     {% endif %}
                                 {% elseif row.value_type == 'count' %}
-                                    {{ 'policy_wizard.review.value.count'|trans({'%count%': row.value}) }}
+                                    {{ 'policy_wizard.review.value.count'|trans({'%count%': row.value}, 'policy_wizard') }}
                                 {% elseif row.value_type == 'count_of' %}
                                     {{ 'policy_wizard.review.value.count_of'|trans(
                                         (row.params|default({}))|merge({'%count%': row.value})
                                     ) }}
                                 {% elseif row.value_type == 'hours' %}
-                                    {{ 'policy_wizard.review.value.hours'|trans({'%count%': row.value}) }}
+                                    {{ 'policy_wizard.review.value.hours'|trans({'%count%': row.value}, 'policy_wizard') }}
                                 {% elseif row.value_type == 'months' %}
-                                    {{ 'policy_wizard.review.value.months'|trans({'%count%': row.value}) }}
+                                    {{ 'policy_wizard.review.value.months'|trans({'%count%': row.value}, 'policy_wizard') }}
                                 {% elseif row.value_type == 'months_with_label' %}
                                     {{ 'policy_wizard.review.value.months'|trans({'%count%': row.value}) }}
                                     {% if row.value == 12 %}
@@ -191,7 +191,7 @@
  # with wizard run id + approver names + timestamp. ISO 27001 Clause 7.5.3. #}
 <p class="text-muted small mt-3 d-flex align-items-start gap-2">
     <i class="fa-icon fa-icon--compliance-shield mt-1 flex-shrink-0" aria-hidden="true"></i>
-    <span>{{ 'policy_wizard.step.review_generate.audit_trail_hint'|trans({'%run_id%': run.id}) }}</span>
+    <span>{{ 'policy_wizard.step.review_generate.audit_trail_hint'|trans({'%run_id%': run.id}, 'policy_wizard') }}</span>
 </p>
 
 <p class="text-muted small mt-2">{{ 'policy_wizard.step.review_generate.generate_hint'|trans }}</p>

@@ -82,7 +82,7 @@
                                     {% if framework.covered_refs|length > 0 %}
                                         <details class="mt-2">
                                             <summary class="small text-muted">
-                                                {{ 'policy_wizard.result.cross_coverage.show_refs'|trans({'%count%': framework.covered_refs|length}) }}
+                                                {{ 'policy_wizard.result.cross_coverage.show_refs'|trans({'%count%': framework.covered_refs|length}, 'policy_wizard') }}
                                             </summary>
                                             <div class="mt-2 d-flex flex-wrap gap-1">
                                                 {% for ref in framework.covered_refs|slice(0, 30) %}

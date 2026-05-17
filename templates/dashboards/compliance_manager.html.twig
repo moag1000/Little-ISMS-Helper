@@ -166,7 +166,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                         <div class="ms-2 me-auto">
                             <div class="fw-bold">{{ fw.name|default(fw.code|default('—')) }}</div>
-                            <small class="text-muted">{{ 'compliance_manager.lowest.coverage_hint'|trans({'%coverage%': fw.compliance|default(0)}) }}</small>
+                            <small class="text-muted">{{ 'compliance_manager.lowest.coverage_hint'|trans({'%coverage%': fw.compliance|default(0)}, 'dashboards') }}</small>
                         </div>
                         {% set _knownWizards = ['iso27001','nis2','dora','tisax','gdpr','iso22301','iso27701','iso27017','iso27018','iso42001','bsi_grundschutz','bsi_c5','bsi_c5_2026','bsi_grundschutz_standard','bsi_grundschutz_kern','nist_csf','kritis','pci_dss','soc2','eu_ai_act','eucs','cra'] %}
                         {% if fw.code is defined and fw.code and (fw.code|lower) in _knownWizards %}

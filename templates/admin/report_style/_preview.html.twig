@@ -159,7 +159,7 @@
         {% if _disclaimer %}
             {{ _disclaimer }}
         {% else %}
-            {{ 'admin.report_style.preview.default_footer'|trans({ '%tenant%': sample.tenant_name|default(tenant.name) }) }}
+            {{ 'admin.report_style.preview.default_footer'|trans({ '%tenant%': sample.tenant_name|default(tenant.name) }, 'admin') }}
         {% endif %}
     </footer>
 </div>
