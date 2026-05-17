@@ -9,6 +9,7 @@ use DateTimeInterface;
 use RuntimeException;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
+use App\Lifecycle\LifecycleService;
 use App\Repository\ProcessingActivityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -27,7 +28,8 @@ final class ProcessingActivityService
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
         private readonly AuditLogger $auditLogger,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
+        private readonly ?LifecycleService $lifecycleService = null,
     ) {}
 
     /**
@@ -457,7 +459,13 @@ final class ProcessingActivityService
     }
 
     /**
-     * Activate a draft processing activity
+     * Activate a draft processing activity (draft → published via lifecycle).
+     *
+     * Lifecycle X.1: delegates to LifecycleService::transition() using the
+     * `activate` transition (direct draft→published shortcut in
+     * processing_activity_lifecycle, ROLE_MANAGER only). Falls back to
+     * direct setStatus() when LifecycleService is unavailable (e.g. tests
+     * that don't boot the Workflow component).
      */
     public function activate(ProcessingActivity $processingActivity): void
     {
@@ -469,11 +477,24 @@ final class ProcessingActivityService
             );
         }
 
-        // S3 P-4: canonical 5-stage lifecycle — legacy 'active' is now 'published'.
-        $processingActivity->setStatus('published');
         $processingActivity->setStartDate(new DateTime());
 
-        $this->entityManager->flush();
+        $user = $this->security->getUser();
+        $lifecycleUser = $user instanceof User ? $user : null;
+
+        if ($this->lifecycleService !== null) {
+            // S3 P-4 / Lifecycle X.1: canonical transition via Symfony Workflow.
+            $this->lifecycleService->transition(
+                $processingActivity,
+                'processing_activity_lifecycle',
+                'activate',
+                $lifecycleUser,
+            );
+        } else {
+            // Fallback (e.g. unit tests without Workflow component).
+            $processingActivity->setStatus('published');
+            $this->entityManager->flush();
+        }
 
         $this->auditLogger->logCustom(
             'processing_activity.activated',
@@ -484,14 +505,32 @@ final class ProcessingActivityService
     }
 
     /**
-     * Archive a processing activity (when processing ends)
+     * Archive a processing activity (when processing ends).
+     *
+     * Lifecycle X.1: delegates to LifecycleService::transition() using the
+     * `archive` transition (published→archived) in processing_activity_lifecycle.
+     * Falls back to direct setStatus() when LifecycleService is unavailable.
      */
     public function archive(ProcessingActivity $processingActivity): void
     {
-        $processingActivity->setStatus('archived');
         $processingActivity->setEndDate(new DateTime());
 
-        $this->entityManager->flush();
+        $user = $this->security->getUser();
+        $lifecycleUser = $user instanceof User ? $user : null;
+
+        if ($this->lifecycleService !== null) {
+            // Lifecycle X.1: canonical transition via Symfony Workflow.
+            $this->lifecycleService->transition(
+                $processingActivity,
+                'processing_activity_lifecycle',
+                'archive',
+                $lifecycleUser,
+            );
+        } else {
+            // Fallback (e.g. unit tests without Workflow component).
+            $processingActivity->setStatus('archived');
+            $this->entityManager->flush();
+        }
 
         $this->auditLogger->logCustom(
             'processing_activity.archived',
