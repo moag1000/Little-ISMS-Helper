@@ -1,0 +1,125 @@
+framework:
+    workflows:
+        gdpr_data_breach:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\WorkflowInstance
+            initial_marking: pending
+            places:
+                - pending
+                - in_progress
+                - approved
+                - rejected
+                - cancelled
+            transitions:
+                start:
+                    from: pending
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_progress
+                    to: approved
+                    metadata:
+                        roles: [ROLE_DPO, ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                        tone_target: success
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_DPO, ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        tone_target: danger
+                cancel:
+                    from: pending
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+            metadata:
+                regulatory_metadata:
+                    standard: "GDPR Art. 33/34"
+                    sla_hours: 72
+                    escalation_threshold_hours: 60
+                    escalation_role: ROLE_ADMIN
+                    module: privacy
+                steps:
+                    -   name: "Initial Assessment (DPO)"
+                        description: "Data Protection Officer assesses breach severity, affected data subjects, and notification requirements (GDPR Art. 33/34)"
+                        order: 1
+                        approver_role: ROLE_DPO
+                        step_type: approval
+                        days_to_complete: 1
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: DataBreach
+                            fields: [severity, affectedDataSubjectsCount, dataCategories, notificationRequired]
+                    -   name: "Technical Assessment (CISO)"
+                        description: "Technical analysis of breach cause, scope, containment, and recovery measures"
+                        order: 2
+                        approver_role: ROLE_CISO
+                        step_type: approval
+                        days_to_complete: 1
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: DataBreach
+                            fields: [rootCause, affectedSystems, containmentMeasures, recoveryMeasures]
+                    -   name: "Management Information"
+                        description: "Notify executive management of high-risk breach for budget approval and PR strategy"
+                        order: 3
+                        approver_role: ROLE_MANAGER
+                        step_type: notification
+                        days_to_complete: 0
+                        is_required: false
+                        auto_progress_conditions:
+                            type: auto
+                            condition: "severity >= high"
+                    -   name: "Supervisory Authority Notification (DPO)"
+                        description: "File official notification with supervisory authority within 72h deadline (GDPR Art. 33)"
+                        order: 4
+                        approver_role: ROLE_DPO
+                        step_type: approval
+                        days_to_complete: 1
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: DataBreach
+                            fields: [authorityNotificationDate, authorityNotificationMethod]
+                    -   name: "Data Subject Notification (DPO)"
+                        description: "Notify affected data subjects if high risk (GDPR Art. 34)"
+                        order: 5
+                        approver_role: ROLE_DPO
+                        step_type: approval
+                        days_to_complete: 1
+                        is_required: false
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: DataBreach
+                            fields: [dataSubjectNotificationDate, dataSubjectNotificationMethod]
+                            condition: "dataSubjectNotificationRequired = true"
+                    -   name: "Final Documentation (DPO)"
+                        description: "Complete breach documentation and lessons learned (GDPR Art. 33 Abs. 5)"
+                        order: 6
+                        approver_role: ROLE_DPO
+                        step_type: approval
+                        days_to_complete: 7
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: DataBreach
+                            fields: [lessonsLearned, processImprovements]

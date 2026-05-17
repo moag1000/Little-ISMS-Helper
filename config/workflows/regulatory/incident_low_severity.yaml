@@ -1,0 +1,85 @@
+framework:
+    workflows:
+        incident_low_severity:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\WorkflowInstance
+            initial_marking: pending
+            places:
+                - pending
+                - in_progress
+                - approved
+                - rejected
+                - cancelled
+            transitions:
+                start:
+                    from: pending
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_progress
+                    to: approved
+                    metadata:
+                        roles: [ROLE_SECURITY_MANAGER, ROLE_MANAGER]
+                        tone_target: success
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_SECURITY_MANAGER, ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: danger
+                cancel:
+                    from: pending
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+            metadata:
+                regulatory_metadata:
+                    standard: "ISO 27001:2022 Cl. 5.24-5.28"
+                    sla_hours: 168
+                    escalation_threshold_hours: 120
+                    escalation_role: ROLE_CISO
+                steps:
+                    -   name: "Triage (Security Analyst)"
+                        description: "Classify incident, perform initial containment, escalate if needed"
+                        order: 1
+                        approver_role: ROLE_SECURITY_ANALYST
+                        step_type: approval
+                        days_to_complete: 0
+                        is_required: true
+                    -   name: "Investigation (Security Team)"
+                        description: "Root cause analysis, identify affected systems, plan remediation"
+                        order: 2
+                        approver_role: ROLE_SECURITY_MANAGER
+                        step_type: approval
+                        days_to_complete: 1
+                        is_required: true
+                    -   name: "Remediation (IT Operations)"
+                        description: "Fix vulnerability, apply patches, document changes"
+                        order: 3
+                        approver_role: ROLE_IT_MANAGER
+                        step_type: approval
+                        days_to_complete: 3
+                        is_required: true
+                    -   name: "Review (Security Manager)"
+                        description: "Lessons learned, process improvement recommendations"
+                        order: 4
+                        approver_role: ROLE_SECURITY_MANAGER
+                        step_type: approval
+                        days_to_complete: 7
+                        is_required: true

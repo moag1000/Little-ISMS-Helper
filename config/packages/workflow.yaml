@@ -15,3 +15,19 @@ imports:
     - { resource: '../workflows/internal_audit.yaml' }
     - { resource: '../workflows/risk.yaml' }
     - { resource: '../workflows/vulnerability.yaml' }
+    # Sprint Y.2 — Regulatory approval-chain workflows (WorkflowInstance-based)
+    - { resource: '../workflows/regulatory/gdpr_data_breach.yaml' }
+    - { resource: '../workflows/regulatory/incident_high_severity.yaml' }
+    - { resource: '../workflows/regulatory/incident_low_severity.yaml' }
+    - { resource: '../workflows/regulatory/risk_treatment.yaml' }
+    - { resource: '../workflows/regulatory/dpia.yaml' }
+    - { resource: '../workflows/regulatory/dsr.yaml' }
+    - { resource: '../workflows/regulatory/capa.yaml' }
+    - { resource: '../workflows/regulatory/change_request.yaml' }
+    - { resource: '../workflows/regulatory/management_review.yaml' }
+    - { resource: '../workflows/regulatory/control_verification.yaml' }
+    - { resource: '../workflows/regulatory/supplier_assessment.yaml' }
+    - { resource: '../workflows/regulatory/training_verification.yaml' }
+    - { resource: '../workflows/regulatory/bc_plan_activation.yaml' }
+    - { resource: '../workflows/regulatory/document_review.yaml' }
+    - { resource: '../workflows/regulatory/incident_post_mortem.yaml' }

@@ -1,0 +1,107 @@
+framework:
+    workflows:
+        risk_treatment:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\WorkflowInstance
+            initial_marking: pending
+            places:
+                - pending
+                - in_progress
+                - approved
+                - rejected
+                - cancelled
+            transitions:
+                start:
+                    from: pending
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_progress
+                    to: approved
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        tone_target: success
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: danger
+                cancel:
+                    from: pending
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+            metadata:
+                regulatory_metadata:
+                    standard: "ISO 27001:2022 Cl. 6.1.3 / ISO 27005:2022"
+                    sla_hours: null
+                    escalation_threshold_hours: null
+                    escalation_role: ROLE_ADMIN
+                steps:
+                    -   name: "Risk Owner Approval"
+                        description: "Risk owner reviews and approves proposed treatment plan"
+                        order: 1
+                        approver_role: ROLE_RISK_OWNER
+                        step_type: approval
+                        days_to_complete: 7
+                        is_required: true
+                        auto_progress_conditions:
+                            type: risk_appetite
+                            entity: Risk
+                            risk_score_field: residualRisk
+                    -   name: "CISO Technical Review"
+                        description: "CISO evaluates technical security measures and implementation feasibility"
+                        order: 2
+                        approver_role: ROLE_CISO
+                        step_type: approval
+                        days_to_complete: 3
+                        is_required: false
+                    -   name: "DPO Privacy Impact Review"
+                        description: "Data Protection Officer assesses privacy implications if personal data involved"
+                        order: 3
+                        approver_role: ROLE_DPO
+                        step_type: approval
+                        days_to_complete: 2
+                        is_required: false
+                    -   name: "CFO Budget Approval"
+                        description: "CFO approves budget for risk treatment measures"
+                        order: 4
+                        approver_role: ROLE_CFO
+                        step_type: approval
+                        days_to_complete: 3
+                        is_required: false
+                    -   name: "CEO/Board Approval"
+                        description: "Executive approval for high-value risk treatment plans"
+                        order: 5
+                        approver_role: ROLE_CEO
+                        step_type: approval
+                        days_to_complete: 3
+                        is_required: false
+                    -   name: "Audit Committee Notification"
+                        description: "Notify audit committee of approved high-risk treatment"
+                        order: 6
+                        approver_role: ROLE_AUDITOR
+                        step_type: notification
+                        days_to_complete: 0
+                        is_required: false
+                        auto_progress_conditions:
+                            type: auto
+                            condition: "residualRisk >= high"

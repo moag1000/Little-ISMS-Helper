@@ -1,0 +1,87 @@
+framework:
+    workflows:
+        incident_post_mortem:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\WorkflowInstance
+            initial_marking: pending
+            places:
+                - pending
+                - in_progress
+                - approved
+                - rejected
+                - cancelled
+            transitions:
+                start:
+                    from: pending
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                approve:
+                    from: in_progress
+                    to: approved
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        tone_target: success
+                reject:
+                    from: in_progress
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: danger
+                cancel:
+                    from: pending
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        tone_target: warning
+            metadata:
+                regulatory_metadata:
+                    standard: "ISO 27001:2022 Cl. 5.24-5.28"
+                    sla_hours: null
+                    escalation_threshold_hours: null
+                    escalation_role: ROLE_CISO
+                    opt_in: true
+                steps:
+                    -   name: "Schedule Post-Mortem"
+                        description: "Schedule post-mortem review within 5 days after incident closure"
+                        order: 1
+                        approver_role: ROLE_CISO
+                        step_type: approval
+                        days_to_complete: 5
+                        is_required: true
+                    -   name: "Conduct Review"
+                        description: "Execute post-mortem: timeline, root cause, what went well, improvement areas"
+                        order: 2
+                        approver_role: ROLE_CISO
+                        step_type: approval
+                        days_to_complete: 7
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: Incident
+                            fields: [rootCause, lessonsLearned]
+                    -   name: "Create Improvement Actions"
+                        description: "Document corrective/preventive actions with owners and deadlines"
+                        order: 3
+                        approver_role: ROLE_CISO
+                        step_type: approval
+                        days_to_complete: 7
+                        is_required: true
+                        auto_progress_conditions:
+                            type: field_completion
+                            entity: Incident
+                            fields: [correctiveActions, preventiveActions]
