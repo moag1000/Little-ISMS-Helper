@@ -15,17 +15,10 @@ bcm:
     description:
         critical: 'Übersicht über kritische Assets und Prozesse inklusive RTO/RPO und Handlungsbedarf'
         data_reuse_insights: 'Wie BCM-Daten die Asset-Schutzbedarfsanforderungen verbessern'
-        critical_level: 'Sofortiger Geschäftsausfall bei Verlust oder Ausfall. Höchste Priorität für Notfallmaßnahmen.'
-        high_level: 'Erhebliche Geschäftsbeeinträchtigung innerhalb kurzer Zeit. Schnelle Wiederanlaufplanung erforderlich.'
-        medium_level: 'Spürbare Beeinträchtigung, jedoch mit Puffer. Mittelfristige Maßnahmen ausreichend.'
-        action_items: 'Empfohlene Maßnahmen zur Verbesserung der Wiederherstellungsfähigkeit und Reduktion der Ausfallzeiten.'
     action:
         add_process: 'Prozess hinzufügen'
         data_reuse: 'Daten wiederverwenden'
-        view_insights: 'Insights anzeigen'
         view_bia: 'BIA anzeigen'
-        export: Exportieren
-        plan: Wiederherstellungsplan
     section:
         protection_analysis: Schutzbedarfsanalyse
         business_processes: Geschäftsprozesse
@@ -49,7 +42,6 @@ bcm:
         rpo: RPO
     message:
         no_processes: 'Keine Geschäftsprozesse zugeordnet'
-        no_matching_processes: 'Keine übereinstimmenden Prozesse gefunden'
         rto_tooltip: 'Recovery Time Objective - Maximale Zeit bis zur Wiederherstellung des Geschäftsbetriebs'
         rpo_tooltip: 'Recovery Point Objective - Maximaler akzeptabler Datenverlust (Zeitraum)'
         mtd_tooltip: 'Maximum Tolerable Downtime - Maximale tolerierbare Ausfallzeit'
@@ -99,99 +91,11 @@ business_process:
         delete: 'Möchten Sie diesen Geschäftsprozess wirklich löschen?'
     action:
         bia_view: 'BIA Ansicht'
-    warning:
-        critical_assets_count: '%count% kritische Assets identifiziert'
-        critical_message: 'Bitte prüfen Sie RTO/RPO, Wiederherstellungspläne und Teststände dieser Assets.'
-    stats:
-        high_priority: 'Hohe Priorität'
-        critical_assets: 'Kritische Assets'
-        critical_processes: 'Kritische Prozesse'
-        avg_rto: 'Ø RTO'
-        missing_recovery_plans: 'Fehlende Wiederherstellungspläne'
-    section:
-        protection_analysis: Schutzbedarfsanalyse
-        business_processes: Geschäftsprozesse
-        asset_details: Asset-Details
-        rto_legend: RTO-Legende
-        criticality_overview: 'Übersicht Geschäfts­kritikalität'
-        critical_assets_list: 'Liste kritischer Assets'
-        critical_processes: 'Kritische Geschäftsprozesse'
-        action_items: Maßnahmen
-    field:
-        confidentiality: Vertraulichkeit
-        integrity: Integrität
-        availability: Verfügbarkeit
-        overall_protection_level: Gesamtschutzbedarf
-        reputational_impact: Reputationsschaden
-        regulatory_impact: 'Regulatorische Auswirkungen'
-        operational_impact: 'Operative Auswirkungen'
-        mtpd: 'MTPD (Maximum Tolerable Period of Disruption)'
-        supporting_assets: 'Unterstützende Assets'
-        assets: Assets
-        asset_name: Asset-Name
-        type: Typ
-        criticality: Kritikalität
-        rto: RTO
-        rpo: RPO
-        recovery_plan: Wiederherstellungsplan
-        last_tested: 'Zuletzt getestet'
-        process_name: Prozessname
-        department: Abteilung
-        dependent_assets: 'Abhängige Assets'
-        mtd: MTD
-        maximum_tolerable_downtime: 'Maximale tolerierbare Ausfallzeit'
-        impact_of_loss: 'Auswirkungsgrad bei Ausfall'
-        avg_rto: 'Ø RTO'
-    badge:
-        urgent: Dringend
-        no_recovery_plan: 'Kein Wiederherstellungsplan'
-        immediate: Sofort
-        exists: vorhanden
-        missing: fehlt
-        test_overdue: 'Test überfällig'
-    message:
-        no_processes: 'Keine Geschäftsprozesse zugeordnet'
-        no_critical_processes_desc: 'Es sind derzeit keine kritischen Prozesse definiert'
-        never_tested: 'Nie getestet'
-        no_critical_assets: 'Keine kritischen Assets vorhanden – gute Arbeit!'
-        no_critical_processes: 'Keine kritischen Prozesse vorhanden'
-        no_matching_processes: 'Keine übereinstimmenden Prozesse gefunden'
-        rto_tooltip: 'Recovery Time Objective - Maximale Zeit bis zur Wiederherstellung des Geschäftsbetriebs'
-        rpo_tooltip: 'Recovery Point Objective - Maximaler akzeptabler Datenverlust (Zeitraum)'
-        mtd_tooltip: 'Maximum Tolerable Downtime - Maximale tolerierbare Ausfallzeit'
-        bcm_influences_asset_ratings: 'BCM-Bewertungen beeinflussen die Risikoeinstufung von Assets'
-    type:
-        information: Information
-        software: Software
-        hardware: Hardware
-        service: Dienst
-        personnel: Personal
-        physical: Physisch
     criticality:
         critical: Kritisch
         high: Hoch
         medium: Mittel
         low: Niedrig
-    impact:
-        critical: Kritisch
-        high: Hoch
-        medium: Mittel
-        low: Niedrig
-    priority:
-        high: Hoch
-        medium: Mittel
-        low: Niedrig
-    rto:
-        standard: Standard
-        flexible: Flexibel
-    data_reuse:
-        asset_recommendations_title: 'Asset-Empfehlungen aus BCM-Analyse'
-        benefits_title: 'Vorteile der Datenwiederverwendung'
-        benefit_efficiency: 'Effizienz: Keine doppelte Dateneingabe erforderlich'
-        benefit_consistency: 'Konsistenz: Einheitliche Daten in allen Modulen'
-        benefit_compliance: 'Compliance: Automatische Verknüpfung mit Anforderungen'
-        benefit_quality: 'Qualität: Geprüfte Daten aus validierter Quelle'
-
 bc_exercises:
     exercise_type:
         tabletop: Tabletop-Übung
