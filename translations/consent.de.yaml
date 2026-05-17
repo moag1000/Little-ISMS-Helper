@@ -52,9 +52,6 @@ consent:
         status: 'Status'
         verified: 'Verifiziert'
         revocation_reason: 'Widerrufsgrund'
-        withdrawn_at: 'Widerrufen am'
-        withdrawal_reason: 'Widerrufsgrund'
-        withdrawal_channel: 'Widerrufs-Kanal'
         created_at: 'Erstellt am'
         updated_at: 'Aktualisiert am'
 
@@ -158,22 +155,6 @@ consent:
         already_revoked: 'Diese Einwilligung ist bereits widerrufen.'
 
     # Withdrawal — GDPR Art. 7(3)
-    help:
-        withdrawn_at: 'Zeitpunkt des Widerrufs durch betroffene Person (DSGVO Art. 7(3))'
-    placeholder:
-        withdrawal_reason: 'Optional: Begründung des Widerrufs'
-        withdrawal_channel: 'Bitte wählen…'
-    withdrawal_channel:
-        web: 'Web-Formular'
-        email: 'E-Mail'
-        phone: 'Telefon'
-        letter: 'Brief'
-        in_person: 'Persönlich'
-    validation:
-        withdrawal_reason_required_when_withdrawn: 'Bei Widerruf muss eine Begründung erfasst werden.'
-        withdrawal_channel_required_when_withdrawn: 'Bei Widerruf muss der Kanal des Widerrufs erfasst werden.'
-
-    # Seitenleiste kontextbezogene Hilfe
     sidebar:
         title: 'DSGVO-Einwilligungsleitfaden (Art. 7)'
         valid_title: 'Wirksame Einwilligung (Art. 7)'
@@ -189,51 +170,3 @@ consent:
         proof_text: 'Gemaess Rechenschaftspflicht muessen Sie nachweisen koennen, dass die Einwilligung eingeholt wurde. Erfassen Sie Methode, Kanal, Datum und den genauen Text, der der betroffenen Person zum Zeitpunkt der Einwilligung angezeigt wurde.'
 
     # Form-Builder labels (used by ConsentType.php)
-    form:
-        consent_channel: 'Einwilligungs-Kanal'
-        consent_channel_options:
-            email: 'E-Mail'
-            in_person: 'Persoenlich'
-            other: 'Sonstige'
-            paper_form: 'Papier-Formular'
-            phone: 'Telefon'
-            website: 'Website'
-        consent_method: 'Einwilligungs-Methode'
-        consent_method_options:
-            checkbox: 'Checkbox / Opt-In'
-            double_opt_in: 'Double-Opt-In (E-Mail-Bestaetigung)'
-            email: 'Per E-Mail'
-            oral: 'Muendlich'
-            other: 'Sonstige'
-            written_form: 'Schriftliches Formular'
-        consent_text: 'Einwilligungs-Text'
-        consent_text_help: 'Exakter Wortlaut, der der betroffenen Person zum Einwilligungs-Zeitpunkt angezeigt wurde — Pflicht fuer Nachweis nach Art. 5(2) DSGVO'
-        consent_text_placeholder: 'Ich willige ein, dass meine E-Mail-Adresse fuer den Empfang des monatlichen Newsletters gespeichert und verarbeitet wird ...'
-        data_subject_identifier: 'Identifikator der betroffenen Person'
-        data_subject_identifier_help: 'Eindeutige Kennung — z.B. E-Mail, Kundennummer, Pseudonym. Vermeiden Sie Klartext-Namen wenn pseudonyme Kennung ausreicht.'
-        data_subject_identifier_placeholder: 'z.B. anna.muster@example.com oder K-12345'
-        expires_at: 'Gueltig bis'
-        expires_at_help: 'Optional. Leer lassen fuer unbefristete Einwilligung. Bei zeitbeschraenkten Verarbeitungs-Zwecken (z.B. Gewinnspiel) Pflicht.'
-        granted_at: 'Erteilt am'
-        granted_at_help: 'Datum + Uhrzeit der erteilten Einwilligung. Wichtig fuer Nachweis (Art. 7 Abs. 1 DSGVO).'
-        identifier_type_label: 'Typ der Kennung'
-        identifier_type_options:
-            customer_id: 'Kundennummer'
-            email: 'E-Mail-Adresse'
-            other: 'Sonstige'
-            phone: 'Telefonnummer'
-            pseudonym: 'Pseudonym'
-        notes: 'Anmerkungen'
-        notes_placeholder: 'Interne Notizen, Kontext der Einwilligung, Hinweise zur Erteilung ...'
-        processing_activity: 'Verarbeitungstaetigkeit'
-        processing_activity_help: 'Verknuepft die Einwilligung mit der konkreten Verarbeitung im Verarbeitungsverzeichnis (Art. 30 DSGVO).'
-        proof_document: 'Nachweis-Dokument'
-        proof_document_help: 'Optional. Verknuepfe ein hochgeladenes Dokument (z.B. Screenshot des Opt-In-Formulars, Scan einer Unterschrift) als zusaetzlichen Nachweis.'
-        purposes: 'Zwecke der Einwilligung'
-        purposes_help: 'Pflicht: konkrete Zwecke fuer die die Einwilligung gilt. Eine Einwilligung darf NUR fuer die angegebenen Zwecke genutzt werden (Zweckbindung Art. 5(1)(b)).'
-        purposes_options:
-            analytics: 'Web-Analytics / Statistik'
-            marketing: 'Marketing-Kommunikation'
-            newsletter: 'Newsletter / Mailinglisten'
-            personalization: 'Personalisierte Inhalte'
-            profiling: 'Profiling / Verhaltensanalyse'

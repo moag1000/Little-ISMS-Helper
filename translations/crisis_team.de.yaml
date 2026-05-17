@@ -19,59 +19,16 @@ crisis_team:
         team_type: Team-Typ
         is_active: Aktiv
         team_leader: Teamleiter
-        team_leader_person: 'Teamleiter (Person)'
-        team_leader_deputy_persons: 'Vertretungen Teamleiter (Personen)'
-        deputy_leader: Stellvertreter
-        deputy_leader_person: 'Stellvertreter (Person)'
-        deputy_leader_deputy_persons: 'Vertretungen Stellvertreter (Personen)'
-        primary_phone: 'Primäre Telefonnummer'
-        primary_email: 'Primäre E-Mail'
-        meeting_location: Versammlungsort
-        backup_meeting_location: 'Alternativer Versammlungsort'
-        virtual_meeting_url: 'Virtuelle Meeting-URL'
-        alert_procedures: Alarmierungsverfahren
-        decision_authority: Entscheidungsbefugnisse
-        communication_protocols: Kommunikationsprotokolle
-        training_schedule: Trainingsplan
-        last_training_at: 'Letztes Training'
-        next_training_at: 'Nächstes Training'
-        business_continuity_plans: 'Business Continuity Pläne'
-        person_members: 'Krisenstab-Mitglieder (Personen)'
-        notes: Notizen
-        escalation_matrix: 'Eskalationsmatrix externe Partner'
-        activation_count: 'Anzahl Aktivierungen'
-        last_activated_at: 'Zuletzt aktiviert am'
     type:
         operational: 'Operativer Krisenstab'
         strategic: 'Strategischer Krisenstab'
         technical: 'Technischer Krisenstab'
         communication: Kommunikationsstab
-    placeholder:
-        team_name: 'z.B. Operativer Krisenstab IT'
-        description: 'Aufgaben und Verantwortlichkeiten des Krisenstabs'
-        team_leader: 'Leiter des Krisenstabs auswählen'
-        team_leader_person: '-- Person aus Stammdaten --'
-        deputy_leader: 'Stellvertretenden Leiter auswählen'
-        deputy_leader_person: '-- Person aus Stammdaten --'
-        primary_phone: '+49 123 456789'
-        primary_email: 'crisis@company.com'
-        meeting_location: 'z.B. Konferenzraum 1, Gebäude A'
-        backup_meeting_location: 'z.B. Konferenzraum 2, Gebäude B'
-        virtual_meeting_url: 'https://teams.microsoft.com/...'
-        alert_procedures: 'Beschreibung des Alarmierungsverfahrens'
-        decision_authority: 'Wer darf welche Entscheidungen treffen?'
-        communication_protocols: 'Wie kommuniziert der Krisenstab intern und extern?'
-        training_schedule: 'Wann finden Trainings und Übungen statt?'
-        escalation_matrix: '[{"trigger":"Cyberangriff","externalPartner":"CERT-Bund","contactInfo":"https://www.bsi.bund.de","escalateAfter":"1h"}]'
     help:
         team_name: 'Bezeichnung des Krisenstabs'
         team_type: 'Art des Krisenstabs nach BSI 200-4'
         team_leader: 'Leiter des Krisenstabs'
-        team_leader_person: 'Person ohne System-Login als Teamleiter. Reihenfolge: User > Person > leer.'
-        team_leader_deputy_persons: 'Weitere Personen mit Vertretungsfunktion für den Teamleiter.'
         deputy_leader: 'Stellvertreter bei Abwesenheit des Leiters'
-        deputy_leader_person: 'Person ohne System-Login als Stellvertreter. Reihenfolge: User > Person > leer.'
-        deputy_leader_deputy_persons: 'Weitere Personen mit Vertretungsfunktion für den Stellvertreter.'
         primary_phone: 'Zentrale Rufnummer für Krisenstab'
         meeting_location: 'Physischer Treffpunkt bei Krisen'
         virtual_meeting_url: 'Teams, Zoom, etc. für virtuelle Treffen'
@@ -81,15 +38,3 @@ crisis_team:
         training_schedule: 'Regelmäßige Trainings und Übungen'
         next_training_at: 'Wann findet das nächste Training statt?'
         business_continuity_plans: 'Zugeordnete BCPs'
-        person_members: 'Strukturierte Mitgliederliste — Stammdaten-Personen, ergänzend zur JSON-Liste mit Rollen/Kontakt. Externe Berater oder Auditoren können hier ohne System-Login geführt werden.'
-        escalation_matrix_json: 'JSON-Array mit externen Eskalationspartnern gemäß BSI 200-4 §6.2 und NIS2 Art. 23. Partner: BSI, Police, CERT-Bund, etc.'
-        activation_count: 'Gesamtanzahl der realen Aktivierungen dieses Krisenstabs (BSI 200-4 §7.2). Wird typisch automatisch erhöht.'
-        last_activated_at: 'Datum und Uhrzeit der letzten realen Aktivierung (BSI 200-4 §7.2 Einsatz-Tracking).'
-    success:
-        created: 'Krisenstab erfolgreich erstellt.'
-        updated: 'Krisenstab erfolgreich aktualisiert.'
-        deleted: 'Krisenstab erfolgreich gelöscht.'
-        activated: 'Krisenstab erfolgreich aktiviert.'
-    error:
-        owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
-        deputy_required_user_or_person: 'Stellvertretung: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

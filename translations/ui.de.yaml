@@ -1,20 +1,4 @@
 ui:
-    location: Standort
-    responsible: Verantwortlich
-    contact: Kontakt
-    details: Details
-    overview: Übersicht
-    new: Neu
-    add: Hinzufügen
-    remove: Entfernen
-    select: Auswählen
-    none: Keine
-    all: Alle
-    'true': Ja
-    'false': Nein
-    optional: Optional
-    required: Erforderlich
-    n_a: N/A
     command_palette:
         placeholder: 'Suche nach Befehlen oder Navigation...'
         no_results: 'Keine Befehle gefunden'
@@ -50,17 +34,10 @@ ui:
         trigger_title: 'Suche (Cmd+K)'
         tip: 'Tipp: Drücke <kbd>Cmd</kbd>+<kbd>K</kbd> um die Suche zu öffnen'
     theme:
-        toggle_title: 'Dark Mode umschalten (Aktuell: %current%)'
         switch_title: 'Farbmodus wechseln'
         light: 'Light'
         dark: 'Dark'
         system: 'System'
-    system:
-        status:
-            operational: 'Operational'
-            degraded: 'Eingeschränkt'
-            down: 'Ausfall'
-            maintenance: 'Wartung'
     keyboard:
         navigation: Navigation
         select: Auswählen
@@ -69,51 +46,15 @@ ui:
             title: 'Tastenkürzel'
             tip: 'Tipp: Drücken Sie <kbd>?</kbd> um diese Hilfe jederzeit anzuzeigen'
             trigger_title: 'Tastenkürzel (?)'
-    bulk_actions:
-        entity_label: 'Einträge'
-        delete_success: '%count% %entity% erfolgreich gelöscht'
-        delete_error: 'Fehler beim Löschen: '
-        export_success: 'Export erfolgreich'
-        export_error: 'Fehler beim Export'
-        tag_prompt: 'Tag hinzufügen:'
-        tag_success: 'Tag hinzugefügt'
-        tag_error: 'Fehler beim Taggen'
-    button_loading:
-        saving: 'Speichere...'
-        deleting: 'Lösche...'
-        sending: 'Sende...'
-        loading: 'Lade...'
-        creating: 'Erstelle...'
-        updating: 'Aktualisiere...'
-        importing: 'Importiere...'
-        exporting: 'Exportiere...'
-        processing: 'Verarbeite...'
-    file_upload:
-        file_too_large: 'Datei "%name%" ist zu groß. Maximum: %size%'
-        invalid_file_type: 'Datei "%name%" hat einen ungültigen Dateityp.'
-        no_files_selected: 'Keine Dateien ausgewählt'
-        upload_success: 'Dateien erfolgreich hochgeladen!'
-        upload_error: 'Fehler beim Hochladen der Dateien.'
-    quick_view:
-        loading: 'Lade Vorschau...'
-        error_title: 'Fehler beim Laden der Vorschau'
-        error_subtitle: 'Bitte versuchen Sie es erneut'
-        close: 'Schließen'
     common:
         show_details: 'Details anzeigen'
         hide_details: 'Details ausblenden'
-        expand: 'Erweitern'
-        collapse: 'Einklappen'
-        more_info: 'Mehr Informationen'
-        less_info: 'Weniger Informationen'
     filter:
         search_label: 'Suchen'
         search_placeholder: 'Suchen nach Name, ID, Owner …'
         search_aria_label: 'Suchen'
         advanced_filters: 'Erweiterte Filter'
-        advanced_filters_hint: 'Klicken, um weitere Filter zu öffnen'
         apply: 'Filter anwenden'
         reset: 'Filter zurücksetzen'
         reset_aria_label: 'Alle aktiven Filter entfernen'
-        active_filters: 'Aktive Filter'
         shareable_hint: 'Diese URL enthält die aktuellen Filter und kann geteilt oder als Lesezeichen gespeichert werden.'

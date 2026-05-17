@@ -52,9 +52,6 @@ consent:
         status: 'Status'
         verified: 'Verified'
         revocation_reason: 'Revocation Reason'
-        withdrawn_at: 'Withdrawn At'
-        withdrawal_reason: 'Withdrawal Reason'
-        withdrawal_channel: 'Withdrawal Channel'
         created_at: 'Created At'
         updated_at: 'Updated At'
 
@@ -158,22 +155,6 @@ consent:
         already_revoked: 'This consent is already revoked.'
 
     # Withdrawal — GDPR Art. 7(3)
-    help:
-        withdrawn_at: 'Timestamp when consent was withdrawn by the data subject (GDPR Art. 7(3))'
-    placeholder:
-        withdrawal_reason: 'Optional: reason for withdrawal'
-        withdrawal_channel: 'Please select…'
-    withdrawal_channel:
-        web: 'Web Form'
-        email: 'Email'
-        phone: 'Phone'
-        letter: 'Letter'
-        in_person: 'In Person'
-    validation:
-        withdrawal_reason_required_when_withdrawn: 'Withdrawal requires a reason to be recorded.'
-        withdrawal_channel_required_when_withdrawn: 'Withdrawal requires the channel to be recorded.'
-
-    # Sidebar contextual help
     sidebar:
         title: 'GDPR Consent Guide (Art. 7)'
         valid_title: 'Valid Consent (Art. 7)'
@@ -190,51 +171,3 @@ consent:
 
 
     # Form-Builder labels (used by ConsentType.php)
-    form:
-        consent_channel: 'Consent channel'
-        consent_channel_options:
-            email: 'E-mail'
-            in_person: 'In person'
-            other: 'Other'
-            paper_form: 'Paper form'
-            phone: 'Phone'
-            website: 'Website'
-        consent_method: 'Consent method'
-        consent_method_options:
-            checkbox: 'Checkbox / opt-in'
-            double_opt_in: 'Double opt-in (e-mail confirmation)'
-            email: 'Via e-mail'
-            oral: 'Oral'
-            other: 'Other'
-            written_form: 'Written form'
-        consent_text: 'Consent text'
-        consent_text_help: 'Exact wording shown to the data subject at the time of consent — mandatory for proof per GDPR Art. 5(2)'
-        consent_text_placeholder: 'I consent to my e-mail address being stored and processed for receipt of the monthly newsletter ...'
-        data_subject_identifier: 'Data subject identifier'
-        data_subject_identifier_help: 'Unique identifier — e.g. e-mail, customer number, pseudonym. Prefer pseudonymous identifiers over clear-text names where possible.'
-        data_subject_identifier_placeholder: 'e.g. anna.example@example.com or C-12345'
-        expires_at: 'Valid until'
-        expires_at_help: 'Optional. Leave empty for indefinite consent. Required for time-limited processing purposes (e.g. raffle).'
-        granted_at: 'Granted at'
-        granted_at_help: 'Date and time the consent was granted. Required as proof per GDPR Art. 7(1).'
-        identifier_type_label: 'Identifier type'
-        identifier_type_options:
-            customer_id: 'Customer number'
-            email: 'E-mail address'
-            other: 'Other'
-            phone: 'Phone number'
-            pseudonym: 'Pseudonym'
-        notes: 'Notes'
-        notes_placeholder: 'Internal notes, context of the consent, comments on how it was obtained ...'
-        processing_activity: 'Processing activity'
-        processing_activity_help: 'Links the consent to the concrete processing activity in the records of processing (GDPR Art. 30).'
-        proof_document: 'Proof document'
-        proof_document_help: 'Optional. Link an uploaded document (e.g. screenshot of opt-in form, signature scan) as additional proof.'
-        purposes: 'Purposes of the consent'
-        purposes_help: 'Required: concrete purposes the consent applies to. A consent may ONLY be used for the listed purposes (purpose limitation, GDPR Art. 5(1)(b)).'
-        purposes_options:
-            analytics: 'Web analytics / statistics'
-            marketing: 'Marketing communication'
-            newsletter: 'Newsletter / mailing lists'
-            personalization: 'Personalised content'
-            profiling: 'Profiling / behavioural analysis'
