@@ -130,6 +130,9 @@ src/Controller/AuditController.php:362
 src/Controller/AuditController.php:363
 src/Controller/AuditController.php:397
 src/Controller/AuditController.php:446
+src/Controller/AuditController.php:504
+src/Controller/AuditController.php:544
+src/Controller/AuditController.php:583
 src/Controller/AuditFindingController.php:133
 src/Controller/AuditFindingController.php:168
 src/Controller/AuditFindingController.php:169
