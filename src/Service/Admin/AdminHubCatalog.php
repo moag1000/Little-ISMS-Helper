@@ -520,6 +520,7 @@ final class AdminHubCatalog
                         'label' => 'admin.hub.module.data_backup.label',
                         'description' => 'admin.hub.module.data_backup.desc',
                         'route' => 'data_backup_index',
+                        'requiredRole' => 'ROLE_SUPER_ADMIN',
                     ],
                     [
                         'key' => 'monitoring_errors',

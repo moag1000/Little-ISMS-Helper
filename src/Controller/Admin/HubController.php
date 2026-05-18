@@ -37,6 +37,12 @@ class HubController extends AbstractController
 
         $known = $this->knownRouteNames();
         foreach ($groups as &$group) {
+            // Filter out modules the current user lacks the required role for
+            // — keeps the hub honest (no broken links to 403-walled pages).
+            $group['modules'] = array_values(array_filter(
+                $group['modules'],
+                fn(array $m): bool => empty($m['requiredRole']) || $this->isGranted($m['requiredRole']),
+            ));
             foreach ($group['modules'] as &$module) {
                 if ($module['route'] !== null && !isset($known[$module['route']])) {
                     $module['coming_soon'] = true;
