@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\ManagementReview;
 use App\Entity\Tenant;
+use App\Enum\ManagementReviewStatus;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -66,7 +67,7 @@ class ManagementReviewRepository extends ServiceEntityRepository
             ->andWhere('m.reviewDate IS NOT NULL')
             ->andWhere('m.reviewDate BETWEEN :today AND :deadline')
             ->setParameter('tenant', $tenant)
-            ->setParameter('status', 'planned')
+            ->setParameter('status', ManagementReviewStatus::Planned->value)
             ->setParameter('today', $today)
             ->setParameter('deadline', $deadline)
             ->orderBy('m.reviewDate', 'ASC')

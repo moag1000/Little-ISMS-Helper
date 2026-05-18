@@ -13,13 +13,13 @@ src/Controller/ContextController.php:30:/context/
 src/Controller/ComplianceMappingController.php:66:/compliance/mapping/
 src/Controller/DeploymentWizardController.php:80:/setup/
 src/Controller/DPIAController.php:49:/dpia/
-src/Controller/ReportController.php:43:/reports/
+src/Controller/ReportController.php:44:/reports/
 src/Controller/BCMController.php:23:/bcm/
 src/Controller/BusinessProcessController.php:40:/bcm/business-process/
 src/Controller/AssetController.php:69:/asset/
 src/Controller/TrainingController.php:37:/training/
 src/Controller/InterestedPartyController.php:41:/interested-party/
-src/Controller/ISMSObjectiveController.php:29:/objective/
+src/Controller/ISMSObjectiveController.php:30:/objective/
 src/Controller/ComplianceController.php:48:/compliance/
 src/Controller/MappingQualityController.php:37:/compliance/mapping-quality/
 src/Controller/StatementOfApplicabilityController.php:52:/soa/
@@ -28,7 +28,7 @@ src/Controller/DocumentController.php:76:/document/
 src/Controller/ThreatIntelligenceController.php:31:/threat-intelligence/
 src/Controller/CrisisTeamController.php:36:/crisis-team/
 src/Controller/BCExerciseController.php:33:/bc-exercise/
-src/Controller/ManagementReviewController.php:33:/management-review/
+src/Controller/ManagementReviewController.php:34:/management-review/
 src/Controller/IncidentController.php:66:/incident/
 src/Controller/RiskController.php:84:/risk/
 src/Controller/RiskAppetiteController.php:30:/risk-appetite/

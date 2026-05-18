@@ -7,8 +7,10 @@ namespace App\Service;
 use App\Entity\Asset;
 use App\Entity\Risk;
 use App\Entity\Tenant;
+use App\Enum\AuditFindingStatus;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
+use App\Enum\InternalAuditStatus;
 use App\Enum\RiskStatus;
 use App\Repository\AssetRepository;
 use App\Repository\BCExerciseRepository;
@@ -209,7 +211,7 @@ class DashboardStatisticsService
 
         // Audit findings resolved — no open AuditFinding
         $openFindings = $this->entityManager()->getRepository(\App\Entity\AuditFinding::class)
-            ->count(['tenant' => $tenant, 'status' => \App\Entity\AuditFinding::STATUS_OPEN]);
+            ->count(['tenant' => $tenant, 'status' => AuditFindingStatus::Open->value]);
         if ($openFindings === 0) {
             $checklist['audit_findings_resolved'] = 1;
         }
@@ -1478,7 +1480,7 @@ class DashboardStatisticsService
             $allAudits,
             fn($a): bool => $a->getPlannedDate() !== null && $a->getPlannedDate()->format('Y') === $thisYear
         );
-        $completedAudits = array_filter($auditsThisYear, fn($a): bool => $a->getStatus() === 'completed');
+        $completedAudits = array_filter($auditsThisYear, fn($a): bool => $a->getStatus() === InternalAuditStatus::Completed->value);
 
         // Count open findings (assuming audits have a method for findings)
         $openFindings = 0;

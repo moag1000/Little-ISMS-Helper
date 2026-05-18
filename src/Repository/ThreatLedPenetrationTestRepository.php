@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Tenant;
 use App\Entity\ThreatLedPenetrationTest;
+use App\Enum\ThreatLedPenetrationTestStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,7 +27,7 @@ class ThreatLedPenetrationTestRepository extends ServiceEntityRepository
             ->andWhere('t.tenant = :tenant')
             ->andWhere('t.status NOT IN (:closed)')
             ->setParameter('tenant', $tenant)
-            ->setParameter('closed', [ThreatLedPenetrationTest::STATUS_CLOSED, ThreatLedPenetrationTest::STATUS_CANCELLED])
+            ->setParameter('closed', [ThreatLedPenetrationTestStatus::Closed->value, ThreatLedPenetrationTestStatus::Cancelled->value])
             ->orderBy('t.plannedStartDate', 'ASC')
             ->getQuery()
             ->getResult();

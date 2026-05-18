@@ -11,6 +11,7 @@ use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\Risk;
 use App\Entity\User;
+use App\Enum\BusinessContinuityPlanStatus;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\CorrectiveActionRepository;
 use App\Repository\DataBreachRepository;
@@ -140,7 +141,7 @@ final class ReviewReminderService
      */
     public function getOverdueBcPlanReviews(): array
     {
-        $bcPlans = $this->bcPlanRepository->findBy(['status' => 'active']);
+        $bcPlans = $this->bcPlanRepository->findBy(['status' => BusinessContinuityPlanStatus::Active->value]);
 
         return array_filter($bcPlans, function (BusinessContinuityPlan $plan): bool {
             return $plan->isReviewOverdue() || $plan->isTestOverdue();
@@ -441,7 +442,7 @@ final class ReviewReminderService
 
     private function getUpcomingBcPlanReviews(DateTime $now, DateTime $threshold): array
     {
-        $plans = $this->bcPlanRepository->findBy(['status' => 'active']);
+        $plans = $this->bcPlanRepository->findBy(['status' => BusinessContinuityPlanStatus::Active->value]);
 
         return array_filter($plans, function (BusinessContinuityPlan $plan) use ($now, $threshold): bool {
             $nextReview = $plan->getNextReviewDate();

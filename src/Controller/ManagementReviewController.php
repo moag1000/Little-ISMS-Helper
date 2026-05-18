@@ -7,6 +7,7 @@ namespace App\Controller;
 use DateTimeInterface;
 use DateTimeImmutable;
 use App\Entity\ManagementReview;
+use App\Enum\ManagementReviewStatus;
 use App\Form\ManagementReviewType;
 use App\Repository\ManagementReviewRepository;
 use App\Service\ManagementReportService;
@@ -38,8 +39,8 @@ class ManagementReviewController extends AbstractController
         // Calculate statistics
         $statistics = [
             'total' => count($reviews),
-            'planned' => count($this->managementReviewRepository->findBy(['status' => 'planned'])),
-            'completed' => count($this->managementReviewRepository->findBy(['status' => 'completed'])),
+            'planned' => count($this->managementReviewRepository->findBy(['status' => ManagementReviewStatus::Planned->value])),
+            'completed' => count($this->managementReviewRepository->findBy(['status' => ManagementReviewStatus::Completed->value])),
             'this_year' => count(array_filter($reviews, fn(ManagementReview $review): bool => $review->getReviewDate() instanceof DateTimeInterface &&
                    $review->getReviewDate()->format('Y') === date('Y'))),
         ];

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Tenant;
+use App\Enum\BCExerciseStatus;
+use App\Enum\BusinessContinuityPlanStatus;
 use App\Repository\BCExerciseRepository;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\BusinessProcessRepository;
@@ -142,9 +144,9 @@ final class BCMService
 
         foreach ($plans as $plan) {
             match ($plan->getStatus()) {
-                'active' => $active++,
-                'draft' => $draft++,
-                'under_review' => $underReview++,
+                BusinessContinuityPlanStatus::Active->value => $active++,
+                BusinessContinuityPlanStatus::Draft->value => $draft++,
+                BusinessContinuityPlanStatus::UnderReview->value => $underReview++,
                 default => null,
             };
 
@@ -202,7 +204,7 @@ final class BCMService
 
             // Completed this year
             if (
-                $exercise->getStatus() === 'completed'
+                $exercise->getStatus() === BCExerciseStatus::Completed->value
                 && $exerciseDate !== null
                 && $exerciseDate >= $startOfYear
                 && $exerciseDate <= $now
@@ -214,7 +216,7 @@ final class BCMService
             if (
                 $exerciseDate !== null
                 && $exerciseDate >= $now
-                && in_array($exercise->getStatus(), ['planned', 'in_progress'], true)
+                && in_array($exercise->getStatus(), [BCExerciseStatus::Planned->value, BCExerciseStatus::InProgress->value], true)
             ) {
                 $upcoming[] = $exercise;
             }
@@ -223,7 +225,7 @@ final class BCMService
             if (
                 $exerciseDate !== null
                 && $exerciseDate < $now
-                && $exercise->getStatus() === 'planned'
+                && $exercise->getStatus() === BCExerciseStatus::Planned->value
             ) {
                 $overdue[] = $exercise;
             }

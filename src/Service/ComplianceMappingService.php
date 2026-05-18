@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
+use App\Enum\InternalAuditStatus;
 use App\Repository\AssetRepository;
 use App\Repository\BusinessProcessRepository;
 use App\Repository\ControlRepository;
@@ -207,7 +208,7 @@ class ComplianceMappingService
     private function analyzeAuditContribution(): array
     {
         $auditCount = $this->internalAuditRepository->count([]);
-        $completedAudits = $this->internalAuditRepository->count(['status' => 'completed']);
+        $completedAudits = $this->internalAuditRepository->count(['status' => InternalAuditStatus::Completed->value]);
 
         return [
             'total_audits' => $auditCount,

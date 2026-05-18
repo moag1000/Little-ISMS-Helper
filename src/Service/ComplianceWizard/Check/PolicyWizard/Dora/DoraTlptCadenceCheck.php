@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\ComplianceWizard\Check\PolicyWizard\Dora;
 
 use App\Entity\Tenant;
+use App\Enum\BCExerciseStatus;
 use App\Repository\BCExerciseRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
@@ -99,7 +100,7 @@ final class DoraTlptCadenceCheck implements PolicyWizardCheckInterface
             $status = $exercise->getStatus();
             $date = $exercise->getExerciseDate();
             // Future or in-progress exercises count as "scheduled" per Art. 26.1.
-            if (in_array($status, ['planned', 'in_progress'], true)) {
+            if (in_array($status, [BCExerciseStatus::Planned->value, BCExerciseStatus::InProgress->value], true)) {
                 return new PolicyWizardCheckResult(
                     checkId: self::CHECK_ID,
                     score: 100.0,

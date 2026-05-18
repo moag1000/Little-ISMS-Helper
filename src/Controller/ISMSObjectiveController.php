@@ -7,6 +7,7 @@ namespace App\Controller;
 use DateTime;
 use DateTimeImmutable;
 use App\Entity\ISMSObjective;
+use App\Enum\ISMSObjectiveStatus;
 use App\Form\ISMSObjectiveType;
 use App\Repository\ISMSObjectiveRepository;
 use App\Service\TenantContext;
@@ -35,8 +36,8 @@ class ISMSObjectiveController extends AbstractController
         $statistics = [
             'total' => count($objectives),
             'active' => count($active),
-            'achieved' => count($this->ismsObjectiveRepository->findBy(['status' => 'achieved'])),
-            'delayed' => count(array_filter($objectives, fn(ISMSObjective $obj): bool => $obj->getStatus() === 'in_progress' &&
+            'achieved' => count($this->ismsObjectiveRepository->findBy(['status' => ISMSObjectiveStatus::Achieved->value])),
+            'delayed' => count(array_filter($objectives, fn(ISMSObjective $obj): bool => $obj->getStatus() === ISMSObjectiveStatus::InProgress->value &&
                    $obj->getTargetDate() < new DateTime() &&
                    !$obj->getAchievedDate())),
         ];
@@ -91,7 +92,7 @@ class ISMSObjectiveController extends AbstractController
             $ismsObjective->setUpdatedAt(new DateTimeImmutable());
 
             // Automatically set achieved date when status changes to achieved
-            if ($ismsObjective->getStatus() === 'achieved' && !$ismsObjective->getAchievedDate()) {
+            if ($ismsObjective->getStatus() === ISMSObjectiveStatus::Achieved->value && !$ismsObjective->getAchievedDate()) {
                 $ismsObjective->setAchievedDate(new DateTime());
             }
 
