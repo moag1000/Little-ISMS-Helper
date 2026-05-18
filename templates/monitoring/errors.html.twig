@@ -60,16 +60,55 @@
         {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
             {% block card_body %}
                 <form method="get" class="row g-3">
-                    <div class="col-auto">
-                        <label for="limit" class="col-form-label">{{ 'monitoring.show_entries'|trans({}, 'monitoring')}}</label>
-                    </div>
-                    <div class="col-auto">
-                        <select name="limit" id="limit" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <div class="col-md-2">
+                        <label for="limit" class="form-label small">{{ 'monitoring.show_entries'|trans({}, 'monitoring')}}</label>
+                        <select name="limit" id="limit" class="form-select fa-cyber-input__field">
                             <option value="50" {{ app.request.query.get('limit') == 50 ? 'selected' : '' }}>50</option>
                             <option value="100" {{ app.request.query.get('limit') == 100 or not app.request.query.get('limit') ? 'selected' : '' }}>100</option>
                             <option value="200" {{ app.request.query.get('limit') == 200 ? 'selected' : '' }}>200</option>
                             <option value="500" {{ app.request.query.get('limit') == 500 ? 'selected' : '' }}>500</option>
+                            <option value="1000" {{ app.request.query.get('limit') == 1000 ? 'selected' : '' }}>1000</option>
                         </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="level" class="form-label small">{{ 'monitoring.errors.filter.level'|trans({}, 'monitoring') }}</label>
+                        <select name="level[]" id="level" class="form-select fa-cyber-input__field" multiple size="4">
+                            {% for level in available_levels %}
+                                <option value="{{ level }}" {{ level in filters.levels ? 'selected' : '' }}>{{ level }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="channel" class="form-label small">{{ 'monitoring.errors.filter.channel'|trans({}, 'monitoring') }}</label>
+                        <select name="channel[]" id="channel" class="form-select fa-cyber-input__field" multiple size="4">
+                            {% for channel in available_channels %}
+                                <option value="{{ channel }}" {{ channel in filters.channels ? 'selected' : '' }}>{{ channel }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="since" class="form-label small">{{ 'monitoring.errors.filter.since'|trans({}, 'monitoring') }}</label>
+                        <select name="since" id="since" class="form-select fa-cyber-input__field">
+                            <option value="" {{ filters.since == '' ? 'selected' : '' }}>{{ 'monitoring.errors.filter.since_all'|trans({}, 'monitoring') }}</option>
+                            <option value="1h" {{ filters.since == '1h' ? 'selected' : '' }}>{{ 'monitoring.errors.filter.since_1h'|trans({}, 'monitoring') }}</option>
+                            <option value="24h" {{ filters.since == '24h' ? 'selected' : '' }}>{{ 'monitoring.errors.filter.since_24h'|trans({}, 'monitoring') }}</option>
+                            <option value="7d" {{ filters.since == '7d' ? 'selected' : '' }}>{{ 'monitoring.errors.filter.since_7d'|trans({}, 'monitoring') }}</option>
+                            <option value="30d" {{ filters.since == '30d' ? 'selected' : '' }}>{{ 'monitoring.errors.filter.since_30d'|trans({}, 'monitoring') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="search" class="form-label small">{{ 'monitoring.errors.filter.search'|trans({}, 'monitoring') }}</label>
+                        <input type="search" name="search" id="search" class="form-control fa-cyber-input__field" value="{{ filters.search }}" placeholder="{{ 'monitoring.errors.filter.search_placeholder'|trans({}, 'monitoring') }}">
+                    </div>
+                    <div class="col-12 d-flex gap-2">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
+                            {{ 'monitoring.errors.filter.apply'|trans({}, 'monitoring') }}
+                        </button>
+                        <a href="{{ path('monitoring_errors') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                            {{ 'monitoring.errors.filter.reset'|trans({}, 'monitoring') }}
+                        </a>
                     </div>
                 </form>
             {% endblock %}
