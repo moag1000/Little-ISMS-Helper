@@ -41,7 +41,6 @@ class AdminBackupController extends AbstractController
     }
 
     #[Route('/admin/data/backup', name: 'data_backup_index', methods: ['GET'])]
-    #[IsGranted('ROLE_SUPER_ADMIN')]
     public function index(): Response
     {
         $backups = $this->backupService->listBackups();
