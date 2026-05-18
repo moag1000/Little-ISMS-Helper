@@ -645,19 +645,5 @@ class WorkflowControllerTest extends WebTestCase
     }
 
     // ========== BUILDER TESTS ==========
-    // ========== NEW→BUILDER + EDIT→BUILDER REDIRECT TESTS ==========
-    #[Test]
-    public function testShowDefinitionContainsBuilderLink(): void
-    {
-        // The show page must always expose a prominent CTA that links to the step builder.
-        $this->loginAsUser($this->adminUser);
-
-        $crawler = $this->client->request('GET', '/en/workflow/definition/' . $this->testWorkflow->getId());
-
-        $this->assertResponseIsSuccessful();
-
-        $builderPath = '/en/workflow/definition/' . $this->testWorkflow->getId() . '/builder';
-        $builderLinks = $crawler->filter('a[href*="/builder"]');
-        $this->assertGreaterThan(0, $builderLinks->count(), 'Show page must contain at least one link to the step builder.');
-    }
+    // Y.4: builder + edit removed — see /admin/workflows for tenant overrides instead.
 }
