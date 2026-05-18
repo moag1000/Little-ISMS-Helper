@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Entity\MappingGapItem;
+use App\Enum\MappingGapItemStatus;
 
 /**
  * Service for automated gap analysis between compliance requirements
@@ -128,7 +129,7 @@ final class AutomatedGapAnalysisService
         $mappingGapItem->setEstimatedEffort((int) ceil($effort));
 
         $mappingGapItem->setIdentificationSource('algorithm');
-        $mappingGapItem->setStatus('identified');
+        $mappingGapItem->setStatus(MappingGapItemStatus::Identified);
 
         return $mappingGapItem;
     }
@@ -166,7 +167,7 @@ final class AutomatedGapAnalysisService
 
         $mappingGapItem->setEstimatedEffort((int) round((1 - $textualSimilarity) * 10));
         $mappingGapItem->setIdentificationSource('algorithm');
-        $mappingGapItem->setStatus('identified');
+        $mappingGapItem->setStatus(MappingGapItemStatus::Identified);
 
         return $mappingGapItem;
     }
@@ -206,7 +207,7 @@ final class AutomatedGapAnalysisService
 
         $mappingGapItem->setEstimatedEffort(4);
         $mappingGapItem->setIdentificationSource('algorithm');
-        $mappingGapItem->setStatus('identified');
+        $mappingGapItem->setStatus(MappingGapItemStatus::Identified);
 
         return $mappingGapItem;
     }
@@ -256,7 +257,7 @@ final class AutomatedGapAnalysisService
 
             $mappingGapItem->setEstimatedEffort((int) ceil(count($uniqueKeywords) * 0.5));
             $mappingGapItem->setIdentificationSource('algorithm');
-            $mappingGapItem->setStatus('identified');
+            $mappingGapItem->setStatus(MappingGapItemStatus::Identified);
 
             return $mappingGapItem;
         }
@@ -306,7 +307,7 @@ final class AutomatedGapAnalysisService
 
         $mappingGapItem->setEstimatedEffort(3);
         $mappingGapItem->setIdentificationSource('algorithm');
-        $mappingGapItem->setStatus('identified');
+        $mappingGapItem->setStatus(MappingGapItemStatus::Identified);
 
         return $mappingGapItem;
     }

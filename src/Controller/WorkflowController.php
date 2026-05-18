@@ -8,6 +8,7 @@ use App\Entity\WorkflowStep;
 use DateTimeImmutable;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
+use App\Enum\WorkflowInstanceStatus;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\AuditLogger;
@@ -78,7 +79,7 @@ class WorkflowController extends AbstractController
             $currentStep = $instance->getCurrentStep();
             $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
             // Check if step has eligible approvers (for warning display)
-            if ($currentStep && $instance->getStatus() === 'in_progress') {
+            if ($currentStep && $instance->getStatus() === WorkflowInstanceStatus::InProgress->value) {
                 $hasEligibleApprovers[$instance->getId()] = $this->workflowService->hasEligibleApprovers($currentStep);
             } else {
                 $hasEligibleApprovers[$instance->getId()] = true;
@@ -134,7 +135,7 @@ class WorkflowController extends AbstractController
         // Check if the current step has eligible approvers (for warning display)
         $hasEligibleApprovers = true;
         $eligibleApprovers = [];
-        if ($currentStep instanceof WorkflowStep && $workflowInstance->getStatus() === 'in_progress') {
+        if ($currentStep instanceof WorkflowStep && $workflowInstance->getStatus() === WorkflowInstanceStatus::InProgress->value) {
             $hasEligibleApprovers = $this->workflowService->hasEligibleApprovers($currentStep);
             if (!$hasEligibleApprovers) {
                 $eligibleApprovers = $this->workflowService->getEligibleApprovers($currentStep);

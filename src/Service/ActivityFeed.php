@@ -8,6 +8,7 @@ use App\Entity\Document;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
+use App\Enum\WorkflowInstanceStatus;
 use App\Repository\AuditLogRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\RiskRepository;
@@ -120,8 +121,8 @@ final class ActivityFeed
                 }
             }
             $items[] = [
-                'tone'      => $instance->getStatus() === 'rejected' ? 'danger'
-                    : ($instance->getStatus() === 'approved' ? 'success' : 'warning'),
+                'tone'      => $instance->getStatus() === WorkflowInstanceStatus::Rejected->value ? 'danger'
+                    : ($instance->getStatus() === WorkflowInstanceStatus::Approved->value ? 'success' : 'warning'),
                 'icon'      => 'fa-icon--ui-circle',
                 'title'     => sprintf('Workflow %s — %s',
                     $instance->getWorkflow()?->getName() ?? '?',

@@ -10,6 +10,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WizardRun;
 use App\Entity\WorkflowInstance;
+use App\Enum\WorkflowInstanceStatus;
 use App\Repository\DocumentSectionRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
@@ -455,7 +456,7 @@ final class PolicySectionApprovalService
         }
 
         $previousStatus = $hostInstance->getStatus();
-        $hostInstance->setStatus('approved');
+        $hostInstance->setStatus(WorkflowInstanceStatus::Approved);
         $hostInstance->setCompletedAt(new DateTimeImmutable());
         $hostInstance->addApprovalHistoryEntry([
             'event'      => 'privacy_section_gate_released',
@@ -472,7 +473,7 @@ final class PolicySectionApprovalService
             entityId: $hostInstance->getId(),
             oldValues: ['status' => $previousStatus],
             newValues: [
-                'status'       => 'approved',
+                'status'       => WorkflowInstanceStatus::Approved->value,
                 'document_id'  => $document->getId(),
                 'next_state'   => 'published',
                 'tag'          => self::AUDIT_TAG,

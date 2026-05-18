@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
+use App\Enum\WorkflowInstanceStatus;
 use App\Repository\WorkflowInstanceRepository;
 use App\Service\Notification\SlaDeadlineWatcher;
 use App\Service\WorkflowAutoProgressionService;
@@ -123,7 +124,7 @@ HELP
 
         // Get all active workflow instances
         $activeWorkflows = $this->workflowInstanceRepository->findBy([
-            'status' => 'in_progress',
+            'status' => WorkflowInstanceStatus::InProgress->value,
         ]);
 
         if (empty($activeWorkflows)) {

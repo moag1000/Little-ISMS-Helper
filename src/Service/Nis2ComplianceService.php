@@ -6,7 +6,7 @@ namespace App\Service;
 
 use App\Entity\Incident;
 use App\Entity\Tenant;
-use App\Enum\BusinessContinuityPlanStatus;
+use App\Enum\TrainingStatus;
 use App\Repository\AssetRepository;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\ComplianceFrameworkRepository;
@@ -212,7 +212,7 @@ final class Nis2ComplianceService
                     $totalAssigned += is_array($attendees) ? count($attendees) : 1;
                 }
             }
-            if (method_exists($training, 'getStatus') && $training->getStatus() === 'completed') {
+            if (method_exists($training, 'getStatus') && $training->getStatus() === TrainingStatus::Completed->value) {
                 $completed++;
             }
         }
@@ -276,7 +276,7 @@ final class Nis2ComplianceService
         if ($this->bcPlanRepository === null) {
             return $this->metricNa('21.2.j', 'Business continuity');
         }
-        $activePlans = $this->bcPlanRepository->count(['status' => BusinessContinuityPlanStatus::Active->value]);
+        $activePlans = $this->bcPlanRepository->count(['status' => 'active']);
         $allPlans = $this->bcPlanRepository->count([]);
         $rate = $allPlans > 0 ? round(($activePlans / $allPlans) * 100, 1) : null;
         return $this->metric(

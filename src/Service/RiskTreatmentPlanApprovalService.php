@@ -9,6 +9,7 @@ use Exception;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
 use App\Entity\RiskTreatmentPlan;
+use App\Enum\WorkflowInstanceStatus;
 use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
 
@@ -70,7 +71,7 @@ class RiskTreatmentPlanApprovalService
             $riskTreatmentPlan->getId()
         );
 
-        if ($existingWorkflow instanceof WorkflowInstance && in_array($existingWorkflow->getStatus(), ['pending', 'in_progress'])) {
+        if ($existingWorkflow instanceof WorkflowInstance && in_array($existingWorkflow->getStatus(), [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])) {
             $this->logger->info('Active workflow already exists for treatment plan', [
                 'plan_id' => $riskTreatmentPlan->getId(),
                 'workflow_id' => $existingWorkflow->getId(),

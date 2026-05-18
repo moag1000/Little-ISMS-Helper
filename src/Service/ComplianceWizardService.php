@@ -6,7 +6,7 @@ namespace App\Service;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
-use App\Enum\InternalAuditStatus;
+use App\Enum\RiskTreatmentPlanStatus;
 use App\Repository\AssetRepository;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\BusinessProcessRepository;
@@ -1063,7 +1063,7 @@ final class ComplianceWizardService
         $openCriticalFindings = [];
 
         foreach ($audits as $audit) {
-            if ($audit->getStatus() === InternalAuditStatus::Completed->value) {
+            if ($audit->getStatus() === 'completed') {
                 $completed++;
             }
 
@@ -1202,7 +1202,7 @@ final class ComplianceWizardService
         $overdue = [];
 
         foreach ($plans as $plan) {
-            if ($plan->getStatus() === 'completed') {
+            if ($plan->getStatus() === RiskTreatmentPlanStatus::Completed->value) {
                 $completed++;
             } elseif ($plan->getTargetCompletionDate() && $plan->getTargetCompletionDate() < new \DateTime()) {
                 $overdue[] = [

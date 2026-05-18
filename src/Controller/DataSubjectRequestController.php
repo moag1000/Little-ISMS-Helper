@@ -7,6 +7,7 @@ namespace App\Controller;
 use RuntimeException;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\DataSubjectRequest;
+use App\Enum\DataSubjectRequestStatus;
 use App\Form\DataSubjectRequestType;
 use App\Repository\CommentRepository;
 use App\Service\DataSubjectRequestService;
@@ -126,7 +127,7 @@ class DataSubjectRequestController extends AbstractController
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
-        if (in_array($dsr->getStatus(), ['completed', 'rejected'], true)) {
+        if (in_array($dsr->getStatus(), [DataSubjectRequestStatus::Completed->value, DataSubjectRequestStatus::Rejected->value], true)) {
             $this->addFlash('error', 'dsr.flash.cannot_edit_terminal');
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
         }
