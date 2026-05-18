@@ -1,14 +1,5 @@
 # check_raw_json_textarea.py baseline
 # Format: <FormType-path>:<line>:<property>
-#
-# Remaining cases need shape-specific structured editors, not JsonTagsType.
-# Each is a list-of-objects, map, or rule-set — JsonTagsType only fits
-# list-of-strings. Migration plan (follow-up PRs):
-#   - list-of-objects → Symfony CollectionType + dedicated EntryType
-#   - IF/THEN rules   → CollectionType + ConditionBuilderType (notification-rule pattern)
-#   - admin k/v config (Tenant.settings) → schema-aware per-key UI
-#
-# Drop the matching line once the migration ships.
 src/Form/TenantType.php:204:settings
 src/Form/SupplierType.php:440:subcontractorChain
 src/Form/SupplierType.php:447:processingLocations
