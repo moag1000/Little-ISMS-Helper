@@ -71,33 +71,61 @@ final class DataSubjectRequestService
     }
 
     /**
-     * Update status with validation of allowed transitions
+     * Update status with validation of allowed transitions.
+     *
+     * X.6: Delegates to LifecycleService::transition() using named transitions
+     * from data_subject_request_lifecycle (extended with identity_verification +
+     * extended places in X.6). The transition name is resolved from the
+     * (currentStatus, newStatus) pair via a canonical map.
      */
-    public function updateStatus(DataSubjectRequest $request, string $newStatus): void
+    public function updateStatus(DataSubjectRequest $request, string $newStatus, ?string $reason = null): void
     {
         $currentStatus = $request->getStatus();
 
-        $allowedTransitions = [
-            'received' => ['identity_verification', 'in_progress', 'rejected'],
-            'identity_verification' => ['in_progress', 'rejected'],
-            'in_progress' => ['completed', 'rejected', 'extended'],
-            'extended' => ['completed', 'rejected', 'in_progress'],
+        // Transition map: [fromStatus][toStatus] => transitionName
+        // Mirrors the data_subject_request_lifecycle YAML transitions (X.6 extended).
+        $transitionMap = [
+            'received' => [
+                'identity_verification' => 'verify_identity',
+                'in_progress' => 'process',
+                'rejected' => 'reject',
+            ],
+            'identity_verification' => [
+                'in_progress' => 'confirm_identity',
+                'rejected' => 'reject',
+            ],
+            'in_progress' => [
+                'completed' => 'complete',
+                'rejected' => 'reject',
+                'extended' => 'extend_deadline',
+            ],
+            'extended' => [
+                'completed' => 'complete',
+                'rejected' => 'reject',
+                'in_progress' => 'resume_processing',
+            ],
         ];
 
-        $allowed = $allowedTransitions[$currentStatus] ?? [];
-        if (!in_array($newStatus, $allowed, true)) {
+        $transitionName = $transitionMap[$currentStatus][$newStatus] ?? null;
+        if ($transitionName === null) {
+            $allowed = array_keys($transitionMap[$currentStatus] ?? []);
             throw new RuntimeException(sprintf(
-                'Cannot transition from "%s" to "%s". Allowed: %s',
+                'Cannot transition from "%s" to "%s". Allowed targets: %s',
                 $currentStatus,
                 $newStatus,
-                implode(', ', $allowed)
+                $allowed === [] ? '<none>' : implode(', ', $allowed),
             ));
         }
 
-        $oldStatus = $request->getStatus();
-        $request->setStatus($newStatus); // @phpstan-ignore lifecycle.directSetStatus (updateStatus covers identity_verification/extended states absent from DSR workflow YAML; needs workflow extension in X.6)
-
-        $this->entityManager->flush();
+        $oldStatus = $currentStatus;
+        // X.6: LifecycleService::transition() handles setStatus + flush + audit-log hook.
+        $this->lifecycleService->transition(
+            $request,
+            'data_subject_request_lifecycle',
+            $transitionName,
+            null, // user not available at this call-site; callers with User context should pass it
+            $reason,
+        );
 
         $this->auditLogger->logCustom(
             'data_subject_request.status_changed',
@@ -199,9 +227,18 @@ final class DataSubjectRequestService
         $extendedDeadline = $request->getReceivedAt()->modify('+90 days');
         $request->setExtendedDeadlineAt($extendedDeadline);
         $request->setExtensionReason($reason);
-        $request->setStatus('extended'); // @phpstan-ignore lifecycle.directSetStatus ('extended' is not a workflow place in data_subject_request_lifecycle; needs workflow YAML extension in X.6)
-
-        $this->entityManager->flush();
+        // X.6: extend_deadline transition — data_subject_request_lifecycle extended with
+        // 'extended' place in X.6 (config/workflows/data_subject_request.yaml).
+        // Works from received / identity_verification / in_progress.
+        $this->lifecycleService->transition(
+            $request,
+            'data_subject_request_lifecycle',
+            'extend_deadline',
+            null,
+            $reason,
+        );
+        // Note: LifecycleService::transition() flushes internally.
+        // setExtendedDeadlineAt() + setExtensionReason() mutations above are included.
 
         $this->auditLogger->logCustom(
             'data_subject_request.extended',
