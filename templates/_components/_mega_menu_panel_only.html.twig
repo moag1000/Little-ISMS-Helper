@@ -470,12 +470,12 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.workflows'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
-                        {% if is_granted('ROLE_MANAGER') %}
-                        <li><a href="{{ path('app_workflow_definitions') }}" class="{% if current_route starts with 'app_workflow_definition' %}active{% endif %}" data-turbo-action="advance">
-                            <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i>
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('admin_workflow_overlay_index') }}" class="{% if current_route starts with 'admin_workflow_overlay' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
-                                <span class="mega-menu-link-title">{{ 'nav.workflow_definitions'|trans({}, 'nav') }}</span>
-                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.workflow_definitions'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-title">{{ 'nav.workflow_overlay'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.workflow_overlay'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
                         {% endif %}

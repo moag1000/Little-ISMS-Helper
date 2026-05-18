@@ -84,8 +84,9 @@ CLI nur fuer destructive-edge-cases wenn UI-Auto-Recovery scheitert. Doku:
 - `AuditLogger` - Compliance audit trail
 - `BackupService`, `RestoreService` - Data backup/restore
 - `TenantContext` - Multi-tenant scoping
-- `WorkflowService` - Workflow instance management
-- `WorkflowAutoProgressionService` - Event-driven workflow progression
+- `WorkflowService` - Workflow instance management (facade — stable public API)
+- `FieldCompletionAutoTransition` - Event-driven auto-progression listener (canonical since Y.1)
+- ~~`WorkflowAutoProgressionService`~~ - @deprecated since Y.1; bridges to FieldCompletionAutoTransition
 - `ModuleConfigurationService` - Module activation check (per tenant)
 
 **Core Entities:** Asset, Risk, Control (93 ISO 27001 controls), Incident, Document, ComplianceFramework, User, Tenant, Role, Permission, Workflow, WorkflowInstance, WorkflowStep, DataBreach
@@ -243,57 +244,68 @@ $lifecycleService->transition($entity, 'foo_lifecycle', 'approve', $user, 'reaso
 
 ## Workflow System (Event-Driven Approvals)
 
+> **Y.4 (2026-06):** YAML is the canonical source of truth for all regulatory
+> workflow definitions. `App\Entity\Workflow` and `App\Entity\WorkflowStep` are
+> `@deprecated`. The PHPStan rule `tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php`
+> prevents new instantiations in `src/` outside Repository/Command namespaces.
+> ADR: `docs/decisions/2026-05-17-workflow-yaml-unification.md`
+
+**Source of Truth:** `config/workflows/regulatory/*.yaml` (15 files)
+
 **Overview:**
-Event-driven workflow system where workflows automatically progress based on user actions. Instead of explicit approvals, workflows advance when relevant entity fields are completed.
+Event-driven workflow system where workflows automatically progress based on user actions.
+Auto-progression is handled by `FieldCompletionAutoTransition` (Doctrine `postUpdate` listener)
+— no explicit service calls needed in entity services or controllers.
 
-**Generate Regulatory Workflows:**
-```bash
-# Generate all pre-configured regulatory workflows
-php bin/console app:generate-regulatory-workflows
+**Available Regulatory Workflows** (YAML definitions in `config/workflows/regulatory/`):
+- **GDPR Data Breach** — `gdpr_data_breach.yaml` — Art. 33/34, 6 steps, 72h SLA
+- **Incident Response High/Critical** — `incident_high_severity.yaml` — ISO 27001, 6 steps
+- **Incident Response Low/Medium** — `incident_low_severity.yaml` — ISO 27001, 4 steps
+- **Risk Treatment** — `risk_treatment.yaml` — ISO 27001 Cl. 6.1.3, 6 steps
+- **DPIA** — `dpia.yaml` — GDPR Art. 35/36, 6 steps
+- Plus 10 further workflows: DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC Plan Activation, Document Review, Incident Post-Mortem
 
-# Generate specific workflow (data-breach, incident-high, incident-low, risk-treatment, dpia)
-php bin/console app:generate-regulatory-workflows --workflow=data-breach
+**Auto-Progression (canonical pattern since Y.1):**
+Auto-progression fires automatically via Doctrine event listener when entity fields are saved.
+Define conditions in the YAML step metadata — no code changes needed:
+
+```yaml
+# config/workflows/regulatory/my_workflow.yaml
+metadata:
+    regulatory_metadata:
+        steps:
+            - name: "Initial Assessment"
+              approver_role: ROLE_DPO
+              auto_progress_conditions:
+                  type: field_completion
+                  entity: DataBreach
+                  fields: [severity, affectedDataSubjectsCount, notificationRequired]
 ```
 
-**Available Workflows:**
-- **GDPR Data Breach** (Art. 33/34) - 72h notification deadline, 6 steps with auto-progression
-- **Incident Response** (High/Critical) - ISO 27001, 6 steps from CISO response to post-incident review
-- **Incident Response** (Low/Medium) - ISO 27001, 4 steps standard incident handling
-- **Risk Treatment** - ISO 27001 Clause 6.1.3, multi-tier approval based on risk value
-- **DPIA** - GDPR Art. 35/36, 6-step data protection impact assessment
+**Verification CLI:**
+```bash
+# Verify all 15 DB workflow rows have YAML equivalents (report-only, safe)
+php bin/console app:migrate-legacy-workflows
 
-**Auto-Progression:**
-Workflows auto-progress when entity fields are completed:
-
-```php
-// Example: DPO fills DataBreach fields
-$dataBreach->setSeverity('high');
-$dataBreach->setAffectedDataSubjectsCount(150);
-$dataBreach->setDataCategories(['PII']);
-$dataBreach->setNotificationRequired(true);
-
-// On save → Step 1 "DPO Assessment" auto-approves
-// → Workflow moves to Step 2 "Technical Assessment (CISO)"
+# Archive obsolete DB rows with no YAML counterpart (opt-in)
+php bin/console app:migrate-legacy-workflows --archive
 ```
 
 **Advanced Features** (✅ Implemented):
 - ✅ **AND/OR Logic**: Complex conditions like `(severity >= high AND count > 100) OR required = true`
-- ✅ **Time-Based**: Auto-progress after time delay (e.g., "24 hours", "7 days")
+- ✅ **Time-Based**: Auto-progress after time delay via `app:process-timed-workflows` cron
 - ✅ **Entity Coverage**: DataBreach, Incident, Risk, Asset, Control, DPIA, ProcessingActivity
-- ✅ **Cron Support**: `app:process-timed-workflows` for time-based automation
+- ✅ **15 canonical workflows**: All defined in `config/workflows/regulatory/*.yaml`
 
-**Adding Auto-Progression to Entities:**
-
-1. Inject `WorkflowAutoProgressionService` into service/controller
-2. Call after entity update:
-   ```php
-   $this->workflowAutoProgressionService->checkAndProgressWorkflow($entity, $user);
-   ```
-3. Define conditions in workflow step metadata (see command or docs)
+**Do NOT:**
+- Create `new Workflow()` or `new WorkflowStep()` in `src/` outside Repository/Command (PHPStan blocks this)
+- Inject `WorkflowAutoProgressionService` in new code (deprecated — use listener pattern)
+- Edit DB `workflow_steps` rows directly (read-only since Y.4)
 
 **Documentation:**
-- `docs/WORKFLOW_REQUIREMENTS.md` - Regulatory requirements and SLAs
-- `docs/WORKFLOW_AUTO_PROGRESSION.md` - Complete auto-progression guide
+- `docs/WORKFLOW_AUTO_PROGRESSION.md` - Complete auto-progression guide (updated for Y.4)
+- `docs/decisions/2026-05-17-workflow-yaml-unification.md` - ADR with deprecation deadlines
+- `config/workflows/regulatory/` - Canonical YAML definitions
 
 ## Module-Awareness
 

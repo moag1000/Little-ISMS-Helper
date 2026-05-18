@@ -2,6 +2,14 @@
 
 > User-facing workflow inbox view (Risk-Owner perspective): [Sichtwechsel — Risk-Owner](sichtwechsel/risk-owner-business.md)
 
+> **Y.4 Update (2026-06):** Auto-progression is now handled by the
+> `FieldCompletionAutoTransition` Doctrine event listener
+> (`src/Lifecycle/EventListener/FieldCompletionAutoTransition.php`).
+> `WorkflowAutoProgressionService` is `@deprecated` — it remains as a
+> bridge facade for one release but will be removed. Do NOT inject it in
+> new code. Workflow definitions live in `config/workflows/regulatory/*.yaml`.
+> See: `docs/decisions/2026-05-17-workflow-yaml-unification.md`
+
 ## Overview
 
 The Workflow Auto-Progression System enables **event-driven workflows** where workflow steps automatically progress based on user actions in modules. This creates a non-invasive approval process that aligns with natural user workflows.
@@ -14,15 +22,22 @@ The Workflow Auto-Progression System enables **event-driven workflows** where wo
 
 ### Components
 
-1. **WorkflowAutoProgressionService** (`src/Service/WorkflowAutoProgressionService.php`)
-   - Core service that checks if workflow steps can auto-progress
-   - Evaluates field completion conditions
+1. **FieldCompletionAutoTransition** (`src/Lifecycle/EventListener/FieldCompletionAutoTransition.php`) — **canonical since Y.1**
+   - Doctrine `postUpdate` listener that evaluates auto-progression rules
+   - Evaluates field_completion, auto, risk_appetite rule types
+   - Supports AND/OR condition DSL
    - Automatically approves steps when conditions are met
+   - Rules are configured in `config/workflows/regulatory/*.yaml` step metadata
 
-2. **WorkflowStep Metadata** (`src/Entity/WorkflowStep.php`)
-   - New `metadata` JSON field stores auto-progression conditions
-   - Defines which fields must be completed for auto-progression
-   - Supports conditional logic (e.g., "severity >= high")
+2. ~~**WorkflowAutoProgressionService**~~ (`src/Service/WorkflowAutoProgressionService.php`) — **@deprecated since Y.1**
+   - Kept as a bridge facade for backward compatibility
+   - Do NOT inject in new code — use `FieldCompletionAutoTransition` via Symfony event system instead
+   - Will be removed in a future major release
+
+3. **WorkflowStep Metadata** (YAML) — **canonical since Y.2**
+   - Step definitions live in `config/workflows/regulatory/*.yaml`
+   - The `metadata.steps[].auto_progress_conditions` key replaces the DB `metadata` JSON field
+   - DB `workflow_steps.metadata` column preserved read-only for historical display
 
 3. **Integration Points**
    - `DataBreachService::update()` - Checks auto-progression after DataBreach updates
@@ -160,20 +175,29 @@ php bin/console app:generate-regulatory-workflows --overwrite
 
 ## Integration Guide
 
-### Adding Auto-Progression to an Entity
+### Adding Auto-Progression to an Entity (Y.4 Canonical Pattern)
 
-**Step 1**: Add `WorkflowAutoProgressionService` to entity service
+Auto-progression is now **automatic via Doctrine event listener**. You do NOT need to
+inject any service or call `checkAndProgressWorkflow()` explicitly.
 
-```php
-// src/Service/IncidentService.php
-public function __construct(
-    private readonly EntityManagerInterface $entityManager,
-    private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
-    // ... other services
-) {}
+**Step 1**: Define step conditions in the workflow YAML
+
+```yaml
+# config/workflows/regulatory/my_workflow.yaml
+metadata:
+    regulatory_metadata:
+        steps:
+            - name: "Initial Assessment"
+              order: 1
+              approver_role: ROLE_MANAGER
+              days_to_complete: 3
+              auto_progress_conditions:
+                  type: field_completion
+                  entity: Incident
+                  fields: [rootCause, containmentMeasures]
 ```
 
-**Step 2**: Call auto-progression after entity update
+**Step 2**: Save the entity — auto-progression fires automatically
 
 ```php
 public function update(Incident $incident, User $user): Incident
@@ -181,17 +205,33 @@ public function update(Incident $incident, User $user): Incident
     // ... existing update logic ...
 
     $this->entityManager->flush();
-
-    // Check and auto-progress workflow
-    $this->workflowAutoProgressionService->checkAndProgressWorkflow($incident, $user);
+    // FieldCompletionAutoTransition listener fires automatically via Doctrine postUpdate.
+    // No explicit call needed.
 
     return $incident;
 }
 ```
 
-**Step 3**: Define auto-progression conditions in workflow definition
+**Step 3**: Verify via audit log
+
+The `WorkflowInstance.approvalHistory` JSON will contain entries with
+`"action": "auto_approved"` when steps auto-progress.
+
+---
+
+### Legacy Pattern (deprecated — do not use in new code)
 
 ```php
+// DEPRECATED — remove from existing code when possible
+$this->workflowAutoProgressionService->checkAndProgressWorkflow($incident, $user);
+```
+
+---
+
+### Old DB-based condition definition (preserved for reference only)
+
+```php
+// DEPRECATED — conditions now live in config/workflows/regulatory/*.yaml
 // When creating WorkflowStep
 $step->setMetadata([
     'autoProgressConditions' => [
