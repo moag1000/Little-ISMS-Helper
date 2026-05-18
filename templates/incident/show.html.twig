@@ -406,34 +406,15 @@
             {% if auditLogs is defined and auditLogs|length > 0 %}
                 <div class="detail-section">
                     <h3 class="h5"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'incident.section.history'|trans({}, 'incident') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
-                    <div class="audit-log-list">
+                    <div class="fa-audit-feed">
                         {% for log in auditLogs %}
-                        <div class="audit-log-entry">
-                            <div class="audit-log-header">
-                                {{ pill.render(log.action|upper, pill_tone_action(log.action)) }}
-                                <span class="text-muted">
-                                    {{ log.userName|default('System') }}
-                                    &bull; {{ log.createdAt|date('d.m.Y H:i:s') }}
-                                </span>
-                            </div>
-                            {% if log.action == 'update' %}
-                                {% set oldValues = log.oldValuesArray %}
-                                {% set newValues = log.newValuesArray %}
-                                {% if oldValues and newValues %}
-                                    <div class="audit-log-changes">
-                                        {% for field, newValue in newValues %}
-                                            {% if oldValues[field] is defined and oldValues[field] != newValue %}
-                                                <div class="change-item">
-                                                    <strong>{{ field }}:</strong>
-                                                    <span class="text-danger">{{ oldValues[field] }}</span>
-                                                    &rarr;
-                                                    <span class="text-success">{{ newValue }}</span>
-                                                </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            {% endif %}
+                        <div class="fa-audit-row{% if log.isSealed is defined and log.isSealed %} fa-audit-row--sealed{% endif %}">
+                            <span class="fa-audit-row__ts">{{ log.createdAt|date('Y-m-d H:i:s') }}</span>
+                            <span class="fa-audit-row__sev fa-audit-row__sev--{% if log.action in ['create', 'read'] %}info{% elseif log.action == 'update' %}warning{% elseif log.action in ['error', 'failed'] %}danger{% else %}critical{% endif %}"></span>
+                            <span class="fa-audit-row__actor">{{ log.userName|default('System') }}</span>
+                            <span class="fa-audit-row__action">{{ log.action|upper }}</span>
+                            <span class="fa-audit-row__target">{{ log.entityType|default('Incident') }}#{{ log.entityId|default('') }}</span>
+                            <span class="fa-audit-row__hash">{{ log.hash is defined ? log.hash|slice(0,12) : '' }}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -882,44 +863,7 @@
 /* .alert and .alert-* — handled centrally in fairy-aurora-components.css */
 /* .badge-risk-* removed: dead code, never referenced in markup */
 
-/* Audit Log Styles */
-.audit-log-list {
-    margin-top: 1rem;
-}
-
-.audit-log-entry {
-    border-left: 3px solid var(--bs-border-color);
-    padding-left: 1rem;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--bs-border-color);
-}
-
-.audit-log-entry:last-child {
-    border-bottom: none;
-}
-
-.audit-log-header {
-    margin-bottom: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.audit-log-changes {
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-    padding-left: 1rem;
-}
-
-.change-item {
-    margin-bottom: 0.25rem;
-}
-
-.change-item strong {
-    color: var(--fg);
-}
+/* Audit log styles: .fa-audit-feed / .fa-audit-row — handled centrally in fairy-aurora-components.css */
 
 .text-danger {
     color: var(--danger);

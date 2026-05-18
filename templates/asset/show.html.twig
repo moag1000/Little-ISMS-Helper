@@ -541,32 +541,15 @@
             {% if auditLogs is defined and auditLogs|length > 0 %}
                 <div class="detail-section">
                     <h3>{{ 'asset.section.history'|trans({}, 'asset') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
-                    <div class="audit-log-list">
+                    <div class="fa-audit-feed">
                         {% for log in auditLogs %}
-                            <div class="audit-log-item">
-                                <div class="audit-log-header">
-                                    {{ pill.render(log.action|upper, pill_tone_action(log.action)) }}
-                                    <small class="text-muted">{{ log.createdAt|date('Y-m-d H:i:s') }}</small>
-                                </div>
-                                <div class="audit-log-details">
-                                    <strong>{{ log.userName }}</strong>
-                                    {% set oldValues = log.oldValuesArray %}
-                                    {% set newValues = log.newValuesArray %}
-                                    {% if newValues %}
-                                        <div class="audit-log-changes">
-                                            {% for field, newValue in newValues %}
-                                                <div class="change-item">
-                                                    <span class="field-name">{{ field }}:</span>
-                                                    {% if oldValues and oldValues[field] is defined %}
-                                                        <span class="old-value">{{ oldValues[field] }}</span>
-                                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                                    {% endif %}
-                                                    <span class="new-value">{{ newValue }}</span>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
+                            <div class="fa-audit-row{% if log.isSealed is defined and log.isSealed %} fa-audit-row--sealed{% endif %}">
+                                <span class="fa-audit-row__ts">{{ log.createdAt|date('Y-m-d H:i:s') }}</span>
+                                <span class="fa-audit-row__sev fa-audit-row__sev--{% if log.action in ['create', 'read'] %}info{% elseif log.action == 'update' %}warning{% elseif log.action in ['error', 'failed'] %}danger{% else %}critical{% endif %}"></span>
+                                <span class="fa-audit-row__actor">{{ log.userName|default('System') }}</span>
+                                <span class="fa-audit-row__action">{{ log.action|upper }}</span>
+                                <span class="fa-audit-row__target">{{ log.entityType|default('Asset') }}#{{ log.entityId|default('') }}</span>
+                                <span class="fa-audit-row__hash">{{ log.hash is defined ? log.hash|slice(0,12) : '' }}</span>
                             </div>
                         {% endfor %}
                     </div>
@@ -632,42 +615,7 @@
     gap: 0.5rem;
 }
 /* Badge styles now handled by BadgeExtension helper functions */
-/* Audit Log Styles */
-.audit-log-list { display: flex; flex-direction: column; gap: 0.75rem; }
-.audit-log-item {
-    padding: 1rem;
-    background: var(--bs-tertiary-bg);
-    color: var(--bs-body-color);
-    border-left: 3px solid var(--accent);
-    border-radius: 4px;
-}
-.audit-log-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-.audit-log-details { margin-top: 0.5rem; }
-.audit-log-changes {
-    margin-top: 0.5rem;
-    padding-left: 1rem;
-    font-size: 0.875rem;
-}
-.change-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0.25rem 0;
-}
-.field-name { font-weight: bold; color: var(--bs-secondary-color); }
-.old-value {
-    text-decoration: line-through;
-    color: var(--danger);
-}
-.new-value {
-    color: var(--success);
-    font-weight: 500;
-}
+/* Audit log styles: .fa-audit-feed / .fa-audit-row — handled centrally in fairy-aurora-components.css */
 /* .badge-action-* removed: dead code. */
 
 /* Protection Analysis Styles */
