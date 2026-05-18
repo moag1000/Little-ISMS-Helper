@@ -66,7 +66,7 @@
     {% endif %}
 
     {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="filter"{% endblock %}
+        {% block card_attrs %}data-controller="bulk-actions filter" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/business-continuity-plan"{% endblock %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2 class="mb-0">{{ 'bc_plans.page.header'|trans({}, 'bc_plans') }} ({{ bc_plans|length }})</h2>
@@ -86,6 +86,13 @@
             } %}
                 {% block table_head %}
                     <tr>
+                        <th scope="col" class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                        </th>
                         <th scope="col">{{ 'bc_plans.table.name'|trans({}, 'bc_plans') }}</th>
                         <th scope="col">{{ 'bc_plans.table.business_process'|trans({}, 'bc_plans') }}</th>
                         <th scope="col">{{ 'bc_plans.table.owner'|trans({}, 'bc_plans') }}</th>
@@ -98,6 +105,14 @@
                 {% block table_body %}
                     {% for plan in bc_plans %}
                     <tr data-filter-target="filterableRow">
+                        <td class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-bulk-actions-target="item"
+                                   data-action="bulk-actions#selectItem"
+                                   value="{{ plan.id }}"
+                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ plan.name }}">
+                        </td>
                         <td><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></td>
                         <td>{{ plan.businessProcess ? plan.businessProcess.name : '-' }}</td>
                         <td>{{ plan.effectivePlanOwner }}</td>
@@ -121,6 +136,11 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
+
+            {# Bulk Action Bar #}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['export', 'delete']
+            } %}
             {% else %}
             {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
             {{ _fa_empty_state.render({

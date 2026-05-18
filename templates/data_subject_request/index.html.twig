@@ -113,7 +113,7 @@
 
     {# Requests Table #}
     {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="filter"{% endblock %}
+        {% block card_attrs %}data-controller="bulk-actions filter" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/data-subject-request"{% endblock %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2 class="mb-0">{{ 'dsr.table.title'|trans({}, 'data_subject_request') }} ({{ requests|length }})</h2>
@@ -131,6 +131,13 @@
                 {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
                     {% block table_head %}
                         <tr>
+                            <th scope="col" class="bulk-select-column fa-table__th">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       data-action="bulk-actions#selectAll"
+                                       data-bulk-actions-target="selectAllCheckbox"
+                                       aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                            </th>
                             <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="id" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'dsr.table.id'|trans({}, 'data_subject_request') }}</th>
                             <th scope="col" class="fa-table__th">{{ 'dsr.table.type'|trans({}, 'data_subject_request') }}</th>
                             <th scope="col" class="fa-table__th">{{ 'dsr.table.data_subject'|trans({}, 'data_subject_request') }}</th>
@@ -144,6 +151,14 @@
                     {% block table_body %}
                         {% for dsr in requests %}
                             <tr class="fa-table__row" data-filter-target="filterableRow">
+                                <td class="bulk-select-column fa-table__cell">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           data-bulk-actions-target="item"
+                                           data-action="bulk-actions#selectItem"
+                                           value="{{ dsr.id }}"
+                                           aria-label="{{ 'common.select'|trans({}, 'messages') }} #{{ dsr.id }}">
+                                </td>
                                 <td class="fa-table__cell" data-sort-value="{{ dsr.id }}">
                                     <a href="{{ path('app_data_subject_request_show', {id: dsr.id}) }}">
                                         #{{ dsr.id }}
@@ -218,6 +233,11 @@
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
+
+                {# Bulk Action Bar #}
+                {% include '_components/_bulk_action_bar.html.twig' with {
+                    actions: ['export', 'delete']
+                } %}
             {% else %}
                 {% include '_components/_empty_state.html.twig' with {
                     icon: 'ui-person',

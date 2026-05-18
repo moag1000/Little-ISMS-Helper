@@ -10,7 +10,10 @@ use App\Form\ChangeRequestType;
 use App\Repository\ChangeRequestRepository;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -23,7 +26,8 @@ class ChangeRequestController extends AbstractController
         private readonly ChangeRequestRepository $changeRequestRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly Security $security,
     ) {}
     #[Route('/change-request/', name: 'app_change_request_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -105,5 +109,50 @@ class ChangeRequestController extends AbstractController
         }
 
         return $this->redirectToRoute('app_change_request_index');
+    }
+
+    #[Route('/change-request/bulk-delete', name: 'app_change_request_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $changeRequest = $this->changeRequestRepository->find($id);
+                if (!$changeRequest) {
+                    $errors[] = "ChangeRequest ID $id not found";
+                    continue;
+                }
+                if ($tenant && $changeRequest->getTenant() !== $tenant) {
+                    $errors[] = "ChangeRequest ID $id does not belong to your organization";
+                    continue;
+                }
+                $this->entityManager->remove($changeRequest);
+                $deleted++;
+            } catch (Exception $e) {
+                $errors[] = "Error deleting ChangeRequest ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        return $this->json([
+            'success' => $deleted > 0,
+            'deleted' => $deleted,
+            'errors' => $errors,
+            'message' => "$deleted change requests deleted successfully",
+        ]);
     }
 }

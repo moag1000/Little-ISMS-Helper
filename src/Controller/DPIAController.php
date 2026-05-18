@@ -13,6 +13,7 @@ use App\Entity\Risk;
 use App\Enum\DpiaStatus;
 use App\Form\DataProtectionImpactAssessmentType;
 use App\Repository\CommentRepository;
+use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Service\DataProtectionImpactAssessmentService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
@@ -20,7 +21,10 @@ use App\Service\PreFiller\DpiaPreFiller;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -39,6 +43,8 @@ class DPIAController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly Security $security,
+        private readonly ?DataProtectionImpactAssessmentRepository $dpiaRepository = null,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?DpiaPreFiller $dpiaPreFiller = null,
         private readonly ?RoleDashboardService $roleDashboardService = null,
@@ -608,6 +614,51 @@ class DPIAController extends AbstractController
             'errors' => $errors,
             'completeness_percentage' => $dataProtectionImpactAssessment->getCompletenessPercentage(),
             'is_complete' => $dataProtectionImpactAssessment->isComplete(),
+        ]);
+    }
+
+    #[Route('/dpia/bulk-delete', name: 'app_dpia_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        if ($this->checkModuleActive('privacy') instanceof Response) {
+            return $this->json(['error' => 'Privacy module not active'], 403);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $dpia = $this->dpiaRepository?->find($id);
+                if (!$dpia) {
+                    $errors[] = "DPIA ID $id not found";
+                    continue;
+                }
+                if ($tenant && $dpia->getTenant() !== $tenant) {
+                    $errors[] = "DPIA ID $id does not belong to your organization";
+                    continue;
+                }
+                $this->dataProtectionImpactAssessmentService->delete($dpia);
+                $deleted++;
+            } catch (Exception $e) {
+                $errors[] = "Error deleting DPIA ID $id: " . $e->getMessage();
+            }
+        }
+
+        return $this->json([
+            'success' => $deleted > 0,
+            'deleted' => $deleted,
+            'errors' => $errors,
+            'message' => "$deleted DPIAs deleted successfully",
         ]);
     }
 }

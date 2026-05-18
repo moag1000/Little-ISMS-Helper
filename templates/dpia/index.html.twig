@@ -126,6 +126,7 @@
 
     {# DPIA Table #}
     {% embed '_components/_card.html.twig' with {noPadding: true} %}
+        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/dpia"{% endblock %}
         {% block card_header %}
             <div class="card-header"><h2 class="h5 mb-0"><i class="fa-icon fa-icon--evidence" aria-hidden="true"></i> {{ 'dpia.index.dpias_list'|trans({}, 'privacy') }} ({{ dpias|length }})</h2></div>
         {% endblock %}
@@ -137,6 +138,13 @@
                 } %}
                     {% block table_head %}
                         <tr>
+                            <th scope="col" class="bulk-select-column">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       data-action="bulk-actions#selectAll"
+                                       data-bulk-actions-target="selectAllCheckbox"
+                                       aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                            </th>
                             <th scope="col">{{ 'dpia.index.reference'|trans({}, 'privacy') }}</th>
                             <th scope="col">{{ 'dpia.index.title_col'|trans({}, 'privacy') }}</th>
                             <th scope="col">{{ 'dpia.index.status'|trans({}, 'privacy') }}</th>
@@ -151,6 +159,14 @@
                         {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                         {% for dpia in dpias %}
                             <tr>
+                                <td class="bulk-select-column">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           data-bulk-actions-target="item"
+                                           data-action="bulk-actions#selectItem"
+                                           value="{{ dpia.id }}"
+                                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ dpia.referenceNumber }}">
+                                </td>
                                 <td>
                                     <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">
                                         {{ dpia.referenceNumber }}
@@ -229,6 +245,11 @@
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
+
+                {# Bulk Action Bar #}
+                {% include '_components/_bulk_action_bar.html.twig' with {
+                    actions: ['export', 'delete']
+                } %}
             {% else %}
                 {{ _fa_empty_state.render({
                     mood: 'sleeping',

@@ -79,7 +79,7 @@
     {% endif %}
 
     {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="filter"{% endblock %}
+        {% block card_attrs %}data-controller="bulk-actions filter" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/bc-exercise"{% endblock %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2 class="mb-0">{{ 'bc_exercises.page.header'|trans({}, 'bc_exercises') }} ({{ bc_exercises|length }})</h2>
@@ -100,6 +100,13 @@
             } %}
                 {% block table_head %}
                     <tr>
+                        <th scope="col" class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                        </th>
                         <th scope="col">{{ 'bc_exercises.table.name'|trans({}, 'bc_exercises') }}</th>
                         <th scope="col">{{ 'bc_exercises.table.type'|trans({}, 'bc_exercises') }}</th>
                         <th scope="col">{{ 'bc_exercises.table.date'|trans({}, 'bc_exercises') }}</th>
@@ -111,6 +118,14 @@
                 {% block table_body %}
                     {% for exercise in bc_exercises %}
                     <tr data-filter-target="filterableRow">
+                        <td class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-bulk-actions-target="item"
+                                   data-action="bulk-actions#selectItem"
+                                   value="{{ exercise.id }}"
+                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ exercise.name }}">
+                        </td>
                         <td><a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a></td>
                         <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') } %}</td>
                         <td>{{ exercise.exerciseDate|locale_date }}</td>
@@ -130,6 +145,11 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
+
+            {# Bulk Action Bar #}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['export', 'delete']
+            } %}
             {% else %}
             {{ _fa_empty_state.render({
                 mood: 'sleeping',

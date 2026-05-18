@@ -9,8 +9,10 @@ use App\Entity\Patch;
 use App\Form\PatchType;
 use App\Repository\PatchRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -187,5 +189,50 @@ class PatchController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
+    }
+
+    #[Route('/patch/bulk-delete', name: 'app_patch_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $patch = $this->patchRepository->find($id);
+                if (!$patch) {
+                    $errors[] = "Patch ID $id not found";
+                    continue;
+                }
+                if ($tenant && $patch->getTenant() !== $tenant) {
+                    $errors[] = "Patch ID $id does not belong to your organization";
+                    continue;
+                }
+                $this->entityManager->remove($patch);
+                $deleted++;
+            } catch (Exception $e) {
+                $errors[] = "Error deleting Patch ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        return $this->json([
+            'success' => $deleted > 0,
+            'deleted' => $deleted,
+            'errors' => $errors,
+            'message' => "$deleted patches deleted successfully",
+        ]);
     }
 }

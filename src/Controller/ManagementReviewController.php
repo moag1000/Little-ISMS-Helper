@@ -14,7 +14,10 @@ use App\Service\ManagementReportService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -30,6 +33,7 @@ class ManagementReviewController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly PdfExportService $pdfExportService,
         private readonly ManagementReportService $managementReportService,
+        private readonly Security $security,
     ) {}
     #[Route('/management-review/', name: 'app_management_review_index', methods: ['GET'])]
     public function index(): Response
@@ -172,5 +176,50 @@ class ManagementReviewController extends AbstractController
         }
 
         return $this->redirectToRoute('app_management_review_index');
+    }
+
+    #[Route('/management-review/bulk-delete', name: 'app_management_review_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $review = $this->managementReviewRepository->find($id);
+                if (!$review) {
+                    $errors[] = "ManagementReview ID $id not found";
+                    continue;
+                }
+                if ($tenant && $review->getTenant() !== $tenant) {
+                    $errors[] = "ManagementReview ID $id does not belong to your organization";
+                    continue;
+                }
+                $this->entityManager->remove($review);
+                $deleted++;
+            } catch (Exception $e) {
+                $errors[] = "Error deleting ManagementReview ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        return $this->json([
+            'success' => $deleted > 0,
+            'deleted' => $deleted,
+            'errors' => $errors,
+            'message' => "$deleted management reviews deleted successfully",
+        ]);
     }
 }

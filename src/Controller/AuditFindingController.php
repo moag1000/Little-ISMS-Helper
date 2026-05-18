@@ -13,7 +13,10 @@ use App\Service\AuditLogger;
 use App\Service\Nonconformity\AutoTaskCreator;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -32,6 +35,7 @@ class AuditFindingController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly AutoTaskCreator $autoTaskCreator,
+        private readonly Security $security,
         private readonly ?CommentRepository $commentRepository = null,
     ) {
     }
@@ -176,5 +180,50 @@ class AuditFindingController extends AbstractController
                 throw $this->createAccessDeniedException('Finding belongs to a different tenant.');
             }
         }
+    }
+
+    #[Route('/bulk-delete', name: 'bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $finding = $this->repository->find($id);
+                if (!$finding) {
+                    $errors[] = "AuditFinding ID $id not found";
+                    continue;
+                }
+                if ($tenant && $finding->getTenant() !== $tenant) {
+                    $errors[] = "AuditFinding ID $id does not belong to your organization";
+                    continue;
+                }
+                $this->entityManager->remove($finding);
+                $deleted++;
+            } catch (Exception $e) {
+                $errors[] = "Error deleting AuditFinding ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        return $this->json([
+            'success' => $deleted > 0,
+            'deleted' => $deleted,
+            'errors' => $errors,
+            'message' => "$deleted audit findings deleted successfully",
+        ]);
     }
 }
