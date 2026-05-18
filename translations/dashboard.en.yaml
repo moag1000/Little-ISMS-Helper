@@ -210,10 +210,10 @@ dashboard:
     title: My Tasks Today
     all_done: No tasks — you're all caught up!
     type_treatment_plan: Treatment Plan
-    type_workflow: Workflow Approval
+    type_workflow: Lifecycle Approval
     type_risk_review: Risk Review
     days_overdue: d overdue
-    workflow_approval: Workflow Approval
+    workflow_approval: Lifecycle Approval
   urgent_items: urgent items require attention
   reuse_fte:
     title: 'Data-Reuse Efficiency — FTE Days Saved'
@@ -224,8 +224,8 @@ dashboard:
     overdue_reviews: Overdue Reviews
     overdue_treatment_plans: Overdue Plans
     approaching_deadlines: Approaching Deadlines
-    pending_workflows: Pending Workflows
-    overdue_workflows: Overdue Workflows
+    pending_workflows: Pending Lifecycles
+    overdue_workflows: Overdue Lifecycles
   # Legacy first_steps keys removed — replaced by journey.{de,en}.yaml (AP 1/AP 2)
   create_first_asset: Create first asset
   create_first_risk: Create first risk

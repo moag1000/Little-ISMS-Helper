@@ -92,7 +92,7 @@ privacy:
             subjects: Betroffene
             unknown: Unbekannt
         section:
-            status_workflow: 'Status & Workflow'
+            status_workflow: 'Status & Lifecycle'
             linked_incident: 'Verknüpfter Sicherheitsvorfall'
             detection_links: 'Erkennung & Verknüpfungen'
             authority: 'Art. 33 - Aufsichtsbehörde'
@@ -936,7 +936,7 @@ dpia:
         section_measures: 'Art. 35(7)(d) - Maßnahmen zur Bewältigung der Risiken'
         section_consultation: 'Konsultation von Interessenträgern (Art. 35(4), 35(9))'
         section_supervisory: 'Konsultation der Aufsichtsbehörde (Art. 36)'
-        section_workflow: 'Workflow & Überprüfung'
+        section_workflow: 'Lifecycle & Überprüfung'
         button_create: 'DSFA erstellen'
         button_cancel_bottom: 'Abbrechen'
     index:
@@ -1099,7 +1099,7 @@ dpia:
         cancel_button: 'Abbrechen'
         page_title: 'DSFA - %ref%'
         section:
-            status_workflow: 'Status & Workflow'
+            status_workflow: 'Status & Lifecycle'
             risk_assessment: 'Risikobewertung'
             consultations: 'Konsultationen'
         field:

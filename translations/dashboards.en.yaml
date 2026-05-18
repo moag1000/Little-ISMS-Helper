@@ -79,7 +79,7 @@ risk_manager:
         untreated_risks: 'Untreated Risks'
         overdue_treatments: 'Overdue Treatments'
         pending_approvals: 'Pending Approvals'
-        lifecycle_stuck: 'Overdue Workflows'
+        lifecycle_stuck: 'Overdue Lifecycles'
     pipeline:
         total: 'Total'
         treated: 'Treated'
@@ -99,7 +99,7 @@ risk_manager:
     no_overdue: 'No overdue treatments'
     target_date: 'Target Date'
     no_pending_approvals: 'No pending approvals'
-    no_lifecycle_stuck: 'No overdue workflows'
+    no_lifecycle_stuck: 'No overdue lifecycles'
 
 # Auditor Dashboard
 auditor:
@@ -167,7 +167,7 @@ compliance_manager:
         quick_actions: 'Quick actions'
         dora_status: 'DORA obligation status'
         pending_approvals: 'Pending Approvals'
-        lifecycle_stuck: 'Overdue Workflows'
+        lifecycle_stuck: 'Overdue Lifecycles'
     table:
         framework: 'Framework'
         coverage: 'Coverage'
@@ -301,7 +301,7 @@ dpo:
         quick_actions: 'Quick Actions'
         dora_status: 'DORA obligation status'
         pending_approvals: 'Pending Approvals'
-        lifecycle_stuck: 'Overdue Workflows'
+        lifecycle_stuck: 'Overdue Lifecycles'
     empty:
         no_breaches_title: 'No Open Data Breaches'
         no_breaches_text: 'There are currently no open data breaches to handle.'

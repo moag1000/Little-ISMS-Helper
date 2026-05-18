@@ -417,7 +417,7 @@ approval:
 # Z.0 — Lifecycle Pending Banner (entity show-pages)
 lifecycle:
     pending_banner:
-        pending_title: 'Action required — workflow awaiting your approval'
-        stuck_title: 'Workflow overdue — deadline exceeded'
-        workflow_label: 'Workflow'
+        pending_title: 'Action required — lifecycle awaiting your approval'
+        stuck_title: 'Lifecycle overdue — deadline exceeded'
+        workflow_label: 'Lifecycle'
         due: 'Due by'
