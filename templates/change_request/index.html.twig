@@ -81,6 +81,7 @@
     {% endif %}
 
     {% embed '_components/_card.html.twig' %}
+        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/change-request"{% endblock %}
         {% block card_header %}
             <div class="card-header">
                 {%- set requestCount = change_requests|length -%}
@@ -96,6 +97,13 @@
             } %}
                 {% block table_head %}
                     <tr>
+                        <th scope="col" class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                        </th>
                         <th scope="col">{{ 'change_request.table.change_number'|trans({}, 'change_requests') }}</th>
                         <th scope="col">{{ 'change_request.table.title'|trans({}, 'change_requests') }}</th>
                         <th scope="col">{{ 'change_request.table.type'|trans({}, 'change_requests') }}</th>
@@ -109,6 +117,14 @@
                 {% block table_body %}
                     {% for change in change_requests %}
                     <tr>
+                        <td class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-bulk-actions-target="item"
+                                   data-action="bulk-actions#selectItem"
+                                   value="{{ change.id }}"
+                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ change.changeNumber }}">
+                        </td>
                         <td><a href="{{ path('app_change_request_show', {id: change.id}) }}">{{ change.changeNumber }}</a></td>
                         <td>{{ change.title|slice(0, 40) }}...</td>
                         <td><span class="badge badge-{{ change.changeType }}">{{ ('change_request.change_type.' ~ change.changeType)|trans({}, 'change_requests') }}</span></td>
@@ -124,6 +140,11 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
+
+            {# Bulk Action Bar #}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['export', 'delete']
+            } %}
             {% else %}
             {{ _fa_empty_state.render({
                 mood: 'sleeping',
