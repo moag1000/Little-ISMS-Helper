@@ -191,6 +191,20 @@ final class AdminHubCatalog
                         'route' => 'admin_industry_baselines_index',
                     ],
                     [
+                        'key' => 'industry_preset',
+                        'icon' => 'fa-icon--nav-boxes',
+                        'label' => 'admin.hub.module.industry_preset.label',
+                        'description' => 'admin.hub.module.industry_preset.desc',
+                        'route' => 'app_admin_industry_preset_index',
+                    ],
+                    [
+                        'key' => 'compliance_mapping_seeds',
+                        'icon' => 'fa-icon--nav-link',
+                        'label' => 'admin.hub.module.compliance_mapping_seeds.label',
+                        'description' => 'admin.hub.module.compliance_mapping_seeds.desc',
+                        'route' => 'app_compliance_mapping_seeds_index',
+                    ],
+                    [
                         'key' => 'tags',
                         'icon' => 'fa-icon--nav-tags',
                         'label' => 'admin.hub.module.tags.label',
@@ -255,10 +269,9 @@ final class AdminHubCatalog
                         'description' => 'admin.hub.module.workflow_definitions.desc',
                         'route' => 'app_workflow_definitions',
                     ],
-                    // Sprint Y.3 — Workflow overlay editor
                     [
                         'key' => 'workflow_overlay',
-                        'icon' => 'fa-icon--nav-workflow',
+                        'icon' => 'fa-icon--nav-process',
                         'label' => 'admin.hub.module.workflow_overlay.label',
                         'description' => 'admin.hub.module.workflow_overlay.desc',
                         'route' => 'admin_workflow_overlay_index',
@@ -496,7 +509,7 @@ final class AdminHubCatalog
                     ],
                     [
                         'key' => 'lifecycle_overrides',
-                        'icon' => 'fa-icon--nav-workflow',
+                        'icon' => 'fa-icon--nav-process',
                         'label' => 'admin.hub.module.lifecycle_overrides.label',
                         'description' => 'admin.hub.module.lifecycle_overrides.desc',
                         'route' => 'admin_lifecycle_overrides_index',
