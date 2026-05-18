@@ -10,7 +10,9 @@ framework:
             initial_marking: received
             places:
                 - received
+                - identity_verification
                 - in_progress
+                - extended
                 - completed
                 - rejected
             transitions:
@@ -21,16 +23,46 @@ framework:
                         roles: [ROLE_DPO]
                         module: privacy
                 complete:
-                    from: in_progress
+                    from: [in_progress, extended]
                     to: completed
                     metadata:
                         roles: [ROLE_DPO]
                         module: privacy
                 reject:
-                    from: in_progress
+                    from: [in_progress, identity_verification, extended]
                     to: rejected
                     metadata:
                         roles: [ROLE_DPO]
                         four_eyes: true
                         reason_required: true
+                        module: privacy
+                # X.6: identity verification step — GDPR Art. 12(6), DPO may request
+                # proof of identity before processing. Inserted between received → in_progress.
+                verify_identity:
+                    from: received
+                    to: identity_verification
+                    metadata:
+                        roles: [ROLE_DPO]
+                        module: privacy
+                # X.6: confirm identity verified, proceed to processing
+                confirm_identity:
+                    from: identity_verification
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_DPO]
+                        module: privacy
+                # X.6: extend deadline per GDPR Art. 12(3) — 30 → 90 days, reason required.
+                extend_deadline:
+                    from: [received, identity_verification, in_progress]
+                    to: extended
+                    metadata:
+                        roles: [ROLE_DPO]
+                        reason_required: true
+                        module: privacy
+                # X.6: resume processing after extension
+                resume_processing:
+                    from: extended
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_DPO]
                         module: privacy

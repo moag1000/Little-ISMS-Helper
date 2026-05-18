@@ -58,3 +58,12 @@ framework:
                     metadata:
                         roles: [ROLE_RISK_MANAGER]
                         reason_required: true
+                # X.6: reject acceptance — returns risk to assessed state for re-evaluation.
+                # Called by RiskAcceptanceWorkflowService::rejectAcceptance() and
+                # createManualApprovalRequest() (keep-in-assessed fallback).
+                revert_to_assessed:
+                    from: accepted
+                    to: assessed
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_RISK_MANAGER]
+                        reason_required: true
