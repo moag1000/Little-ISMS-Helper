@@ -44,7 +44,6 @@ src/Entity/WorkflowStep.php:168
 src/Entity/WorkflowStep.php:198
 src/Entity/WorkflowStep.php:201
 src/Form/DatabaseConfigurationType.php:53
-src/Lifecycle/LifecycleService.php:40
 src/Security/SetupAccessChecker.php:74
 src/Service/Audit/AuditWorkbookGenerator.php:59
 src/Service/AuditFreezeService.php:49
