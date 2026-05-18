@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Repository\TenantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Tenant Context Service
@@ -236,5 +237,117 @@ class TenantContext
             return true;
         }
         return $candidate->isChildOf($current);
+    }
+
+    /**
+     * Resolve the tenant scope for an admin operation.
+     *
+     * Consolidates the inline "SUPER vs ADMIN-with-tenant-check" branches
+     * that are duplicated across ~20 admin controllers
+     * (see `AdminBackupController::resolveTenantScopeForBackup()` for the
+     * reference shape).
+     *
+     * Behaviour:
+     *  - `null`, `''`, `'global'`  → ROLE_SUPER_ADMIN gets `null` (global
+     *                                scope); ROLE_ADMIN falls back to their
+     *                                own current tenant. Any other caller
+     *                                triggers AccessDeniedException.
+     *  - Tenant instance           → SUPER_ADMIN: returned as-is.
+     *                                ROLE_ADMIN: returned when
+     *                                `canAccessTenant()` is true, else
+     *                                AccessDeniedException.
+     *  - int / numeric-string id   → resolved via TenantRepository; same
+     *                                rules as Tenant-instance once resolved.
+     *                                Unknown id throws AccessDeniedException
+     *                                (treat as cross-tenant attempt).
+     *
+     * @param Tenant|int|string|null $requested
+     *
+     * @throws AccessDeniedException on cross-tenant or unauthenticated access
+     */
+    public function resolveAdminScope(mixed $requested): ?Tenant
+    {
+        $user = $this->security->getUser();
+        if (!$user instanceof User) {
+            throw new AccessDeniedException('Authenticated user required to resolve admin scope.');
+        }
+
+        // Global / no-scope request
+        if ($requested === null || $requested === '' || $requested === 'global') {
+            if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
+                return null;
+            }
+            if ($this->security->isGranted('ROLE_ADMIN')) {
+                $current = $this->getCurrentTenant();
+                if (!$current instanceof Tenant) {
+                    throw new AccessDeniedException(
+                        'No active tenant context for admin scope fallback.'
+                    );
+                }
+                return $current;
+            }
+            throw new AccessDeniedException('Role is not permitted to request global scope.');
+        }
+
+        // Specific tenant requested — resolve to a Tenant instance
+        $tenant = $this->coerceToTenant($requested);
+        if (!$tenant instanceof Tenant) {
+            throw new AccessDeniedException('Requested tenant could not be resolved.');
+        }
+
+        if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
+            return $tenant;
+        }
+        if ($this->security->isGranted('ROLE_ADMIN') && $this->canAccessTenant($tenant)) {
+            return $tenant;
+        }
+
+        throw new AccessDeniedException('Cross-tenant admin operation is not permitted.');
+    }
+
+    /**
+     * True when the current user may administer $target.
+     *
+     * - ROLE_SUPER_ADMIN: always true.
+     * - ROLE_ADMIN: true only when $target is within
+     *   {@see getAccessibleTenants()} (own tenant + descendants).
+     * - All other roles: false.
+     *
+     * `$target = null` means "no specific tenant" — true for SUPER_ADMIN
+     * and for ROLE_ADMIN when an active tenant context exists.
+     */
+    public function canAdminister(?Tenant $target): bool
+    {
+        if (!$this->security->getUser() instanceof User) {
+            return false;
+        }
+        if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
+            return true;
+        }
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            return false;
+        }
+        if ($target === null) {
+            return $this->hasTenant();
+        }
+        return $this->canAccessTenant($target);
+    }
+
+    /**
+     * Coerce a Tenant|int|string into a managed Tenant instance.
+     */
+    private function coerceToTenant(mixed $value): ?Tenant
+    {
+        if ($value instanceof Tenant) {
+            return $value;
+        }
+        if (is_int($value) && $value > 0) {
+            return $this->tenantRepository->find($value);
+        }
+        if (is_string($value) && ctype_digit($value)) {
+            $id = (int) $value;
+            return $id > 0 ? $this->tenantRepository->find($id) : null;
+        }
+        return null;
     }
 }
