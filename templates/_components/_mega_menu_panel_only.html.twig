@@ -381,7 +381,7 @@
                         </a></li>
                         {% endif %}
                         {# F25: Verfahrensverzeichnis-Export (Art. 30 DSGVO) — BfDI-Muster #}
-                        {% if is_module_active('privacy') and is_granted('ROLE_DPO') %}
+                        {% if is_module_active('privacy') and is_granted('PERSONA_DPO') %}
                         <li><a href="{{ path('app_vvt_export_xlsx') }}" class="{% if current_route starts with 'app_vvt_export_' %}active{% endif %}" data-turbo="false" data-turbo-prefetch="false">
                             <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -604,11 +604,11 @@
                 {# V3 W2-H2: Compliance-Manager-Dashboard (C2) — was implemented but
                    never linked from the mega-menu. Surfaced here behind the
                    compliance-module-gate. #}
-                {% if is_module_active('compliance') or is_granted('ROLE_CISO') or is_granted('ROLE_RISK_MANAGER') or is_granted('ROLE_AUDITOR') %}
+                {% if is_module_active('compliance') or is_granted('PERSONA_CISO') or is_granted('PERSONA_RISK') or is_granted('ROLE_AUDITOR') %}
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.persona_dashboards'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
-                        {% if is_granted('ROLE_COMPLIANCE_MANAGER') and is_module_active('compliance') %}
+                        {% if is_granted('PERSONA_COMPLIANCE') and is_module_active('compliance') %}
                         <li><a href="{{ path('app_dashboard_compliance_manager') }}" class="{% if current_route == 'app_dashboard_compliance_manager' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -617,7 +617,7 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        {% if is_granted('ROLE_CISO') %}
+                        {% if is_granted('PERSONA_CISO') %}
                         <li><a href="{{ path('app_dashboard_ciso') }}" class="{% if current_route == 'app_dashboard_ciso' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-shield" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -626,7 +626,7 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        {% if is_granted('ROLE_RISK_MANAGER') %}
+                        {% if is_granted('PERSONA_RISK') %}
                         <li><a href="{{ path('app_dashboard_risk_manager') }}" class="{% if current_route == 'app_dashboard_risk_manager' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-target" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -644,7 +644,7 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        {% if is_granted('ROLE_CISO') %}
+                        {% if is_granted('PERSONA_CISO') %}
                         <li><a href="{{ path('app_dashboard_board') }}" class="{% if current_route == 'app_dashboard_board' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -653,7 +653,7 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        {% if is_granted('ROLE_DPO') and is_module_active('privacy') %}
+                        {% if is_granted('PERSONA_DPO') and is_module_active('privacy') %}
                         <li><a href="{{ path('app_dashboard_dpo') }}" class="{% if current_route == 'app_dashboard_dpo' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-shield" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">

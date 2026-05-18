@@ -10,6 +10,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\InternalAuditRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
@@ -49,7 +50,7 @@ class ComplianceManagerDashboardController extends AbstractController
     }
 
     #[Route('/compliance-manager', name: 'compliance_manager', methods: ['GET'])]
-    #[IsGranted('ROLE_COMPLIANCE_MANAGER')]
+    #[IsGranted(TenantScopedAdminVoter::PERSONA_COMPLIANCE)]
     public function index(): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -147,7 +148,7 @@ class ComplianceManagerDashboardController extends AbstractController
      * Route: GET /dashboards/cm-heatmap-drill?framework=ISO27001&section=A.5
      */
     #[Route('/cm-heatmap-drill', name: 'cm_heatmap_drill', methods: ['GET'])]
-    #[IsGranted('ROLE_COMPLIANCE_MANAGER')]
+    #[IsGranted(TenantScopedAdminVoter::PERSONA_COMPLIANCE)]
     public function heatmapDrill(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
