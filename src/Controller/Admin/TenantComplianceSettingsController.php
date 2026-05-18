@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\Tenant;
 use App\Form\Admin\TenantComplianceSettingsType;
 use App\Repository\SystemSettingsRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,8 +20,16 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Tier-1 Compliance Settings UI — combines tenant-specific fields
  * (locale, TZ, financial year, DPO contact, TLP) and global security
  * defaults (MFA, password, session) on a single admin page.
+ *
+ * Phase 4c role-scope migration (spec
+ * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
+ * class-level `ADMIN_OWN_TENANT` enforces "ROLE_ADMIN configures own
+ * tenant; SUPER_ADMIN configures any". The edit action resolves the
+ * `tenantId` path param via {@see TenantContext::resolveAdminScope()}
+ * so cross-tenant attempts surface as a standard 403 instead of
+ * inline duplication of the SUPER-vs-ADMIN branch.
  */
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class TenantComplianceSettingsController extends AbstractController
 {
     public function __construct(
@@ -59,7 +68,10 @@ final class TenantComplianceSettingsController extends AbstractController
     )]
     public function edit(int $tenantId, Request $request): Response
     {
-        $tenant = $this->em->getRepository(Tenant::class)->find($tenantId);
+        // Resolves cross-tenant attempts to AccessDeniedException; SUPER_ADMIN
+        // gets the requested tenant, ROLE_ADMIN only when it's within their
+        // accessible tenant tree.
+        $tenant = $this->tenantContext->resolveAdminScope($tenantId);
         if (!$tenant instanceof Tenant) {
             throw $this->createNotFoundException();
         }

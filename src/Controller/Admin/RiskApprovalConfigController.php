@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\Admin\RiskApprovalConfigType;
 use App\Repository\RiskApprovalConfigRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\RiskApprovalConfigResolver;
 use App\Service\TenantContext;
@@ -22,9 +23,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * Phase 8L.F1 — Admin-UI für Approval-Schwellwerte pro Tenant.
+ *
+ * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
+ * SUPER_ADMIN any. The optional `tenant_id` POST param lets
+ * SUPER_ADMIN target an arbitrary tenant via
+ * {@see TenantContext::resolveAdminScope()}.
  */
 #[Route('/admin/risk-governance/approval-thresholds')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class RiskApprovalConfigController extends AbstractController
 {
     public function __construct(
@@ -39,7 +45,7 @@ class RiskApprovalConfigController extends AbstractController
     #[Route('', name: 'app_admin_risk_approval_config', methods: ['GET', 'POST'])]
     public function edit(Request $request): Response
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
         if (!$tenant instanceof Tenant) {
             throw $this->createNotFoundException('No tenant context.');
         }

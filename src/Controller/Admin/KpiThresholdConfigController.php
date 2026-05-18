@@ -8,6 +8,7 @@ use App\Entity\KpiThresholdConfig;
 use App\Entity\Tenant;
 use App\Form\KpiThresholdConfigType;
 use App\Repository\KpiThresholdConfigRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -18,7 +19,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_ADMIN')]
+/**
+ * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
+ * SUPER_ADMIN any. Tenant scope resolves via
+ * {@see TenantContext::resolveAdminScope()} — replaces the inline
+ * SUPER-vs-ADMIN branch in {@see self::denyIfWrongTenant()}.
+ */
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 #[Route('/admin/kpi-thresholds', name: 'admin_kpi_threshold_')]
 class KpiThresholdConfigController extends AbstractController
 {
@@ -30,9 +37,16 @@ class KpiThresholdConfigController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        // SUPER_ADMIN may request global view (tenant_id=global) and see all rows;
+        // ROLE_ADMIN always falls back to their own tenant.
+        $requested = $request->query->get('tenant_id');
+        try {
+            $tenant = $this->tenantContext->resolveAdminScope($requested);
+        } catch (\Throwable) {
+            $tenant = $this->tenantContext->getCurrentTenant();
+        }
         $configs = $tenant instanceof Tenant
             ? $this->repository->findBy(['tenant' => $tenant], ['kpiKey' => 'ASC'])
             : $this->repository->findAll();
@@ -46,7 +60,7 @@ class KpiThresholdConfigController extends AbstractController
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
         if (!$tenant instanceof Tenant) {
             $this->addFlash('error', 'kpi_threshold.flash.no_tenant');
             return $this->redirectToRoute('admin_kpi_threshold_index');
@@ -119,11 +133,8 @@ class KpiThresholdConfigController extends AbstractController
 
     private function denyIfWrongTenant(KpiThresholdConfig $config): void
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant instanceof Tenant || $config->getTenant()?->getId() !== $tenant->getId()) {
-            if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
-                throw $this->createAccessDeniedException('Config belongs to a different tenant.');
-            }
-        }
+        // resolveAdminScope throws AccessDeniedException for cross-tenant
+        // attempts; SUPER_ADMIN is allowed on any tenant.
+        $this->tenantContext->resolveAdminScope($config->getTenant()?->getId());
     }
 }

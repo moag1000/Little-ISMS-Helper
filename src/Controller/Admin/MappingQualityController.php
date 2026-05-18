@@ -8,6 +8,7 @@ use App\Entity\ComplianceFramework;
 use App\Entity\User;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\MappingLifecycleService;
 use App\Service\MappingQualityScoreService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,8 +25,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Mapping-Quality-Dashboard.
  * Übersicht aller Cross-Framework-Mappings mit MQS-Score, Lifecycle-State,
  * Coverage und Confidence-Verteilung. Filter nach State, Score-Range, Framework.
+ *
+ * Phase 4c role-scope migration:
+ *  - Class-level `ADMIN_OWN_TENANT` lets tenant-admins inspect mappings.
+ *  - {@see self::recompute()} bumps to `ADMIN_GLOBAL_OP` because it
+ *    iterates EVERY mapping row in the DB (cross-tenant), which only
+ *    SUPER_ADMIN is allowed to do.
  */
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class MappingQualityController extends AbstractController
 {
     public function __construct(
@@ -117,6 +124,7 @@ class MappingQualityController extends AbstractController
 
     #[Route('/admin/mapping-quality/recompute', name: 'admin_mapping_quality_recompute', methods: ['POST'])]
     #[IsCsrfTokenValid('mapping_quality_recompute', tokenKey: '_token')]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function recompute(): Response
     {
         $count = 0;

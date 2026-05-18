@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Repository\SystemSettingsRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,9 +20,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * Globales Setting (kein Tenant-Override, weil ISO 27001 Clause 9.1 + NIS2
  * Art. 21.2 + DSGVO Art. 5.1(e) organisations-einheitlich gelten).
+ *
+ * Phase 4c role-scope migration: class-level guard switched from the
+ * unknown legacy `ADMIN_EDIT` attribute (flagged by the Phase-7 baseline
+ * as `wrong:ADMIN_EDIT`) to `ADMIN_OWN_TENANT`. Tenant-admins manage
+ * retention for their org, SUPER_ADMIN may operate on any tenant context.
  */
 #[Route('/admin/audit-log/retention')]
-#[IsGranted('ADMIN_EDIT')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class AuditRetentionController extends AbstractController
 {
     private const int MIN_DAYS = 365;   // NIS2 Art. 21.2

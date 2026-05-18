@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\Admin\LifecycleOverrideType;
 use App\Repository\LifecycleConfigRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -26,9 +27,13 @@ use Symfony\Component\Workflow\Registry;
  * Allows ROLE_ADMIN to override workflow transition metadata (roles,
  * reason_required, four_eyes, module) without changing YAML source files.
  * All changes are tenant-scoped and audit-logged.
+ *
+ * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
+ * SUPER_ADMIN any. Tenant scope resolves via
+ * {@see TenantContext::resolveAdminScope()}.
  */
 #[Route('/admin/lifecycle-overrides')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class LifecycleOverridesController extends AbstractController
 {
     /** Keys that can be overridden via this UI. */
@@ -43,9 +48,9 @@ final class LifecycleOverridesController extends AbstractController
     ) {}
 
     #[Route('', name: 'admin_lifecycle_overrides_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->resolveTenant($request);
         if (!$tenant instanceof Tenant) {
             return $this->render('admin/lifecycle_overrides/no_tenant.html.twig');
         }
@@ -65,9 +70,9 @@ final class LifecycleOverridesController extends AbstractController
     }
 
     #[Route('/{workflowName}', name: 'admin_lifecycle_overrides_show', methods: ['GET'], requirements: ['workflowName' => '[a-z][a-z0-9_]*_lifecycle'])]
-    public function show(string $workflowName): Response
+    public function show(Request $request, string $workflowName): Response
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->resolveTenant($request);
         if (!$tenant instanceof Tenant) {
             return $this->render('admin/lifecycle_overrides/no_tenant.html.twig');
         }
@@ -96,7 +101,7 @@ final class LifecycleOverridesController extends AbstractController
     #[Route('/{workflowName}/{transitionName}/edit', name: 'admin_lifecycle_overrides_edit', methods: ['GET', 'POST'], requirements: ['workflowName' => '[a-z][a-z0-9_]*_lifecycle', 'transitionName' => '[a-z][a-z0-9_]*'])]
     public function edit(Request $request, string $workflowName, string $transitionName): Response
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->resolveTenant($request);
         if (!$tenant instanceof Tenant) {
             return $this->render('admin/lifecycle_overrides/no_tenant.html.twig');
         }
@@ -204,7 +209,7 @@ final class LifecycleOverridesController extends AbstractController
             return $this->redirectToRoute('admin_lifecycle_overrides_show', ['workflowName' => $workflowName]);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->resolveTenant($request);
         if (!$tenant instanceof Tenant) {
             throw $this->createNotFoundException('No tenant context.');
         }
@@ -228,6 +233,20 @@ final class LifecycleOverridesController extends AbstractController
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
+
+    /**
+     * Resolve the tenant for the current admin operation.
+     *
+     * Phase 4c contract: delegates to {@see TenantContext::resolveAdminScope()}
+     * so SUPER_ADMIN can pass an explicit `tenant_id` (POST or query) to
+     * target another tenant. ROLE_ADMIN falls back to their own active
+     * tenant. Throws AccessDeniedException for cross-tenant attempts.
+     */
+    private function resolveTenant(Request $request): ?Tenant
+    {
+        $requested = $request->request->get('tenant_id') ?? $request->query->get('tenant_id');
+        return $this->tenantContext->resolveAdminScope($requested);
+    }
 
     private function upsertOverride(
         Tenant $tenant,
