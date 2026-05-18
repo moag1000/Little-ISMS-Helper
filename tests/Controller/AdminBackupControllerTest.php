@@ -31,8 +31,10 @@ class AdminBackupControllerTest extends WebTestCase
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
+    private ?Tenant $foreignTenant = null;
     private ?User $testUser = null;
     private ?User $adminUser = null;
+    private ?User $tenantAdminUser = null;
 
     protected function setUp(): void
     {
@@ -67,9 +69,31 @@ class AdminBackupControllerTest extends WebTestCase
             }
         }
 
+        if ($this->tenantAdminUser) {
+            try {
+                $user = $this->entityManager->find(User::class, $this->tenantAdminUser->getId());
+                if ($user) {
+                    $this->entityManager->remove($user);
+                }
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+
         if ($this->testTenant) {
             try {
                 $tenant = $this->entityManager->find(Tenant::class, $this->testTenant->getId());
+                if ($tenant) {
+                    $this->entityManager->remove($tenant);
+                }
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+
+        if ($this->foreignTenant) {
+            try {
+                $tenant = $this->entityManager->find(Tenant::class, $this->foreignTenant->getId());
                 if ($tenant) {
                     $this->entityManager->remove($tenant);
                 }
@@ -96,6 +120,13 @@ class AdminBackupControllerTest extends WebTestCase
         $this->testTenant->setCode('test_tenant_' . $uniqueId);
         $this->entityManager->persist($this->testTenant);
 
+        // Sibling tenant outside testTenant's tree — used by the Role-Scope
+        // cross-tenant tests (Phase 3 of the role-scope architecture rollout).
+        $this->foreignTenant = new Tenant();
+        $this->foreignTenant->setName('Foreign Tenant ' . $uniqueId);
+        $this->foreignTenant->setCode('foreign_tenant_' . $uniqueId);
+        $this->entityManager->persist($this->foreignTenant);
+
         $this->testUser = new User();
         $this->testUser->setEmail('testuser_' . $uniqueId . '@example.com');
         $this->testUser->setFirstName('Test');
@@ -110,13 +141,26 @@ class AdminBackupControllerTest extends WebTestCase
         $this->adminUser->setEmail('admin_' . $uniqueId . '@example.com');
         $this->adminUser->setFirstName('Admin');
         $this->adminUser->setLastName('User');
-        // SUPER_ADMIN needed because backup index/download/upload/validate/preview/delete
-        // all require ROLE_SUPER_ADMIN (global-data operations per 04bae7acf + Prio-C).
+        // SUPER_ADMIN baseline — backup index, export, import etc. still rely
+        // on the class-level fence. Phase 3 (role-scope) widens the per-tenant
+        // backup endpoints to ROLE_ADMIN (see TenantScopedAdminVoter).
         $this->adminUser->setRoles(['ROLE_SUPER_ADMIN']);
         $this->adminUser->setPassword('hashed_password');
         $this->adminUser->setTenant($this->testTenant);
         $this->adminUser->setIsActive(true);
         $this->entityManager->persist($this->adminUser);
+
+        // Tenant-level admin (NOT SUPER_ADMIN) — exercises the
+        // ADMIN_OWN_TENANT voter path on backup endpoints.
+        $this->tenantAdminUser = new User();
+        $this->tenantAdminUser->setEmail('tenantadmin_' . $uniqueId . '@example.com');
+        $this->tenantAdminUser->setFirstName('Tenant');
+        $this->tenantAdminUser->setLastName('Admin');
+        $this->tenantAdminUser->setRoles(['ROLE_ADMIN']);
+        $this->tenantAdminUser->setPassword('hashed_password');
+        $this->tenantAdminUser->setTenant($this->testTenant);
+        $this->tenantAdminUser->setIsActive(true);
+        $this->entityManager->persist($this->tenantAdminUser);
 
         $this->entityManager->flush();
     }
@@ -205,6 +249,35 @@ class AdminBackupControllerTest extends WebTestCase
         $this->sameOriginRequest('POST', '/en/admin/data/backup/create');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
+    }
+
+    // ========== ROLE-SCOPE PHASE 3 — TENANT-SCOPED BACKUP TESTS ==========
+
+    #[Test]
+    public function testCreateBackupSucceedsForRoleAdminOnOwnTenant(): void
+    {
+        // ROLE_ADMIN (non-SUPER) creating a backup for their own tenant —
+        // canonical "happy path" for the new TenantScopedAdminVoter +
+        // TenantContext::resolveAdminScope() pairing.
+        $this->loginAsUser($this->tenantAdminUser);
+        $this->sameOriginRequest('POST', '/en/admin/data/backup/create', [
+            'tenant_id' => (string) $this->testTenant->getId(),
+        ]);
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'application/json');
+    }
+
+    #[Test]
+    public function testCreateBackupForbiddenForRoleAdminOnForeignTenant(): void
+    {
+        // ROLE_ADMIN trying to backup a sibling tenant they don't own —
+        // resolveAdminScope() must throw AccessDeniedException, which
+        // Symfony maps to 403.
+        $this->loginAsUser($this->tenantAdminUser);
+        $this->sameOriginRequest('POST', '/en/admin/data/backup/create', [
+            'tenant_id' => (string) $this->foreignTenant->getId(),
+        ]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     // ========== UPLOAD BACKUP TESTS ==========
