@@ -23,11 +23,9 @@
             </h1>
         </div>
         <div>
-            <a href="{{ path('app_workflow_definition_builder', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--success">
-                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'workflow.action.builder'|trans({}, 'workflows') }}
-            </a>
-            <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'workflows') }}
+            {# Y.4: builder + edit removed — YAML is source of truth. Use /admin/workflows for tenant overrides. #}
+            <a href="{{ path('admin_workflow_overlay_index') }}" class="fa-cyber-btn fa-cyber-btn--primary">
+                <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> {{ 'workflow.action.manage_overlays'|trans({}, 'workflows') }}
             </a>
             <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">

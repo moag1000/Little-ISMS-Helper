@@ -27,6 +27,7 @@ workflow:
         delete_definition: 'Delete Definition'
         builder: 'Workflow Builder'
         edit: Edit
+        manage_overlays: 'Manage tenant overrides'
         deactivate: Deactivate
         activate: Activate
         delete: Delete

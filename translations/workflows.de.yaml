@@ -27,6 +27,7 @@ workflow:
         delete_definition: 'Definition löschen'
         builder: Workflow-Builder
         edit: Bearbeiten
+        manage_overlays: 'Mandanten-Overrides verwalten'
         deactivate: Deaktivieren
         activate: Aktivieren
         delete: Löschen
