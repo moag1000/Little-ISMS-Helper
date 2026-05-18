@@ -131,11 +131,31 @@ class SchemaHealthService
         $conn = $this->entityManager->getConnection();
         $droppedFks = [];
 
+        // Disable FK checks for the duration of the reconcile. SchemaTool can
+        // emit CREATE TABLE / ALTER TABLE statements in an order that violates
+        // FK dependency order (errno 150 "Foreign key constraint is incorrectly
+        // formed"). Disabling FK checks lets ordering-sensitive DDL succeed;
+        // we re-enable + validate constraints after the batch completes.
+        $fkChecksWereEnabled = false;
+        try {
+            $current = $conn->fetchOne('SELECT @@SESSION.foreign_key_checks');
+            $fkChecksWereEnabled = ((int) $current) === 1;
+            if ($fkChecksWereEnabled) {
+                $conn->executeStatement('SET SESSION foreign_key_checks = 0');
+            }
+        } catch (\Throwable) {
+            // Non-MySQL driver — skip toggle silently
+        }
+
         try {
             foreach ($sql as $statement) {
                 $this->executeStatementFkAware($conn, $statement, $droppedFks);
             }
         } catch (\Throwable $e) {
+            // Restore FK checks even on failure
+            if ($fkChecksWereEnabled) {
+                try { $conn->executeStatement('SET SESSION foreign_key_checks = 1'); } catch (\Throwable) {}
+            }
             $this->auditLogger->logCustom(
                 'admin.schema.update.failed',
                 'Doctrine',
@@ -157,6 +177,11 @@ class SchemaHealthService
                 'blocked' => null,
                 'dropped_fks' => $droppedFks,
             ];
+        }
+
+        // Re-enable FK checks after successful batch
+        if ($fkChecksWereEnabled) {
+            try { $conn->executeStatement('SET SESSION foreign_key_checks = 1'); } catch (\Throwable) {}
         }
 
         $this->auditLogger->logCustom(
