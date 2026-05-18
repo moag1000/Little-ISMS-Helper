@@ -107,4 +107,137 @@ class AdminHubCatalogTest extends TestCase
             }
         }
     }
+
+    // ----------------------------------------------------------------
+    // Role-Scope Architecture Phase 2 — requiredAttribute annotations
+    // ----------------------------------------------------------------
+
+    #[Test]
+    public function everyModuleCarriesARequiredAttribute(): void
+    {
+        $missing = [];
+        foreach ($this->catalog->getGroups() as $group) {
+            foreach ($group['modules'] as $module) {
+                if (empty($module['requiredAttribute']) && empty($module['requiredRole'])) {
+                    $missing[] = $group['key'] . '.' . $module['key'];
+                }
+            }
+        }
+        $this->assertSame(
+            [],
+            $missing,
+            'Phase 2: every hub module must declare requiredAttribute or requiredRole. Missing: '
+                . implode(', ', $missing),
+        );
+    }
+
+    #[Test]
+    public function requiredAttributeValuesAreSupportedVoterAttributes(): void
+    {
+        $allowed = [
+            'ADMIN_OWN_TENANT',
+            'ADMIN_ANY_TENANT',
+            'ADMIN_GLOBAL_OP',
+            'ADMIN_HOLDING_READ',
+            'PERSONA_CISO',
+            'PERSONA_RISK',
+            'PERSONA_DPO',
+            'PERSONA_COMPLIANCE',
+        ];
+        foreach ($this->catalog->getGroups() as $group) {
+            foreach ($group['modules'] as $module) {
+                if (!empty($module['requiredAttribute'])) {
+                    $this->assertContains(
+                        $module['requiredAttribute'],
+                        $allowed,
+                        sprintf(
+                            'Module "%s" (group "%s") has unknown requiredAttribute "%s".',
+                            $module['key'],
+                            $group['key'],
+                            $module['requiredAttribute'],
+                        ),
+                    );
+                }
+            }
+        }
+    }
+
+    #[Test]
+    public function knownGlobalOnlyModulesAreFlaggedAsGlobalOp(): void
+    {
+        $expectedGlobal = [
+            'tour_content',
+            'tour_completion',
+            'licensing',
+            'setup_wizard',
+            'api_rate_limits',
+            'data_retention_settings',
+            'workflow_sla_defaults',
+            'lifecycle_overrides',
+            'industry_baselines',
+            'monitoring_performance',
+            'monitoring_errors',
+            'system_health',
+            'loader_fixer',
+        ];
+        $byKey = [];
+        foreach ($this->catalog->getGroups() as $group) {
+            foreach ($group['modules'] as $module) {
+                $byKey[$module['key']] = $module;
+            }
+        }
+        foreach ($expectedGlobal as $key) {
+            $this->assertArrayHasKey($key, $byKey, sprintf('Catalog must still contain module "%s".', $key));
+            $this->assertSame(
+                'ADMIN_GLOBAL_OP',
+                $byKey[$key]['requiredAttribute'] ?? null,
+                sprintf('Module "%s" must be flagged ADMIN_GLOBAL_OP.', $key),
+            );
+        }
+    }
+
+    #[Test]
+    public function knownOwnTenantModulesAreFlaggedAsOwnTenant(): void
+    {
+        $expectedOwn = [
+            'tenants',
+            'users',
+            'roles',
+            'sso',
+            'frameworks',
+            'mappings',
+            'industry_preset',
+            'data_backup',
+            'data_repair',
+            'kpi_threshold',
+            'modules',
+            'tenant_compliance_settings',
+            'compliance_policy',
+            'risk_approval_config',
+            'incident_sla',
+            'audit_log',
+            'audit_retention',
+            'workflow_overlay',
+            'notification_rules',
+            'notification_channels',
+            'notification_templates',
+            'compliance_import',
+            'gstool_import',
+            'sample_data',
+        ];
+        $byKey = [];
+        foreach ($this->catalog->getGroups() as $group) {
+            foreach ($group['modules'] as $module) {
+                $byKey[$module['key']] = $module;
+            }
+        }
+        foreach ($expectedOwn as $key) {
+            $this->assertArrayHasKey($key, $byKey, sprintf('Catalog must still contain module "%s".', $key));
+            $this->assertSame(
+                'ADMIN_OWN_TENANT',
+                $byKey[$key]['requiredAttribute'] ?? null,
+                sprintf('Module "%s" must be flagged ADMIN_OWN_TENANT.', $key),
+            );
+        }
+    }
 }
