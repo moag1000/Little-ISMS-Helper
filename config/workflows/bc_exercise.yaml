@@ -1,0 +1,57 @@
+framework:
+    workflows:
+        bc_exercise_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\BCExercise
+            initial_marking: planned
+            # ISO 22301 Cl. 8.5 (Exercise programme) — BC exercises must be
+            # planned, executed, and formally completed with documented
+            # results (audit evidence for ISO 22301 surveillance audits).
+            # 4-eyes enforced on `complete` because completion locks the
+            # results / lessons-learned record that auditors will sample.
+            places:
+                - planned
+                - in_progress
+                - completed
+                - cancelled
+            transitions:
+                start:
+                    from: planned
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                        module: bcm
+                complete:
+                    from: in_progress
+                    to: completed
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                        reason_required: false
+                        module: bcm
+                cancel_planned:
+                    from: planned
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: bcm
+                cancel_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: bcm
+                reopen:
+                    from: completed
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_CISO]
+                        reason_required: true
+                        module: bcm

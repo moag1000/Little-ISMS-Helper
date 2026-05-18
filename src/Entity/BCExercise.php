@@ -227,6 +227,15 @@ class BCExercise
     private ?string $status = 'planned';
 
     /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on
+     * bc_exercise_lifecycle (Sprint Y.5 PR B).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * Results and observations
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -663,6 +672,22 @@ class BCExercise
     public function getStatusEnum(): ?BCExerciseStatus
     {
         return $this->status !== null ? BCExerciseStatus::tryFrom($this->status) : null;
+    }
+
+    /**
+     * Optimistic-lock version, managed by Doctrine on each flush.
+     * Used by Symfony Workflow / LifecycleService to detect concurrent
+     * status-transitions on the bc_exercise_lifecycle.
+     */
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
+    }
+
+    public function setLockVersion(int $lockVersion): static
+    {
+        $this->lockVersion = $lockVersion;
+        return $this;
     }
 
     public function getResults(): ?string

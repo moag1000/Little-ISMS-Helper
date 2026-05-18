@@ -2,6 +2,7 @@
 {% trans_default_domain 'bc_exercises' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 
 {% block title %}{{ bc_exercise.name }}{% endblock %}
 
@@ -24,6 +25,12 @@
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', href: path('app_bc_exercise_index') }
         ]
     }) }}
+
+    {# Lifecycle Y.5 PR B — status chip + transition dropdown (bc_exercise_lifecycle) #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        <span class="badge badge-{{ bc_exercise.status }}">{{ ('bc_exercises.status.' ~ bc_exercise.status)|trans({}, 'bc_exercises') }}</span>
+        {{ _lifecycle_actions.dropdown(bc_exercise, 'bc-exercise', 'bc_exercise_lifecycle') }}
+    </div>
 
     {# Inline POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if is_granted('ROLE_ADMIN') %}

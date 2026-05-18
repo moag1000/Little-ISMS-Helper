@@ -14,6 +14,8 @@ namespace App\Lifecycle;
  * Sprint X.2 batch adds 10 custom-stage entities (AuditFinding, Consent,
  * CorrectiveAction, DataBreach, DataSubjectRequest, DPIA, Incident,
  * InternalAudit, Risk, Vulnerability).
+ * Sprint Y.5 PR B adds 3 BCM/TISAX entities (BusinessContinuityPlan,
+ * BCExercise, PrototypeProtectionAssessment).
  */
 final class EntityTypeRegistry
 {
@@ -83,6 +85,22 @@ final class EntityTypeRegistry
         'workflow-instance' => [
             'class' => \App\Entity\WorkflowInstance::class,
             'workflow' => 'workflow_instance_lifecycle',
+        ],
+        // Sprint Y.5 PR B — BCM/TISAX bundle
+        // ISO 22301 Cl. 8.4 + BSI 200-4
+        'business-continuity-plan' => [
+            'class' => \App\Entity\BusinessContinuityPlan::class,
+            'workflow' => 'business_continuity_plan_lifecycle',
+        ],
+        // ISO 22301 Cl. 8.5
+        'bc-exercise' => [
+            'class' => \App\Entity\BCExercise::class,
+            'workflow' => 'bc_exercise_lifecycle',
+        ],
+        // TISAX / VDA-ISA 6.0 Kapitel 8
+        'prototype-protection-assessment' => [
+            'class' => \App\Entity\PrototypeProtectionAssessment::class,
+            'workflow' => 'prototype_protection_assessment_lifecycle',
         ],
     ];
 

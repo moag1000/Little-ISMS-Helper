@@ -70,6 +70,11 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 ],
                 'choice_translation_domain' => 'bc_plans',
                 'required' => true,
+                // Lifecycle Y.5 PR B — status is managed by business_continuity_plan_lifecycle
+                // (Symfony Workflow). Free-edit via the form is blocked; transitions go
+                // through the LifecycleService facade rendered as a fa-menu dropdown on
+                // the show page.
+                'disabled' => true,
                 'help' => 'bc_plans.help.status',
             ])
             ->add('activationCriteria', TextareaType::class, [

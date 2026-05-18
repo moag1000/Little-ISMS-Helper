@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 
 {% block title %}{{ assessment.title }}{% endblock %}
 
@@ -38,6 +39,15 @@
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_prototype_protection_index') }
         ]
     }) }}
+
+    {# Lifecycle Y.5 PR B — status chip + transition dropdown (prototype_protection_assessment_lifecycle) #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        {% include '_components/_badge.html.twig' with {
+            variant: status_variant[assessment.status] ?? 'secondary',
+            content: ('prototype_protection.status.' ~ assessment.status)|trans({}, 'prototype_protection')
+        } %}
+        {{ _lifecycle_actions.dropdown(assessment, 'prototype-protection-assessment', 'prototype_protection_assessment_lifecycle') }}
+    </div>
 
     {# Optional secondary status (overall result) + PDF locale switch kept below header #}
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">

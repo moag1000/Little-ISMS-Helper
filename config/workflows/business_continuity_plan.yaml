@@ -1,0 +1,66 @@
+framework:
+    workflows:
+        business_continuity_plan_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\BusinessContinuityPlan
+            initial_marking: draft
+            # ISO 22301 Cl. 8.4 (Business continuity plans and procedures) +
+            # BSI 200-4 (BCM) — plans MUST traverse a controlled review-and-
+            # activation cycle. Direct activation without review is a finding.
+            # 4-eyes enforced on `activate` (going live) and `archive`
+            # (retiring a live plan) per BSI 200-4 — both are auditable
+            # operational decisions affecting recovery readiness.
+            places:
+                - draft
+                - under_review
+                - active
+                - archived
+            transitions:
+                submit_for_review:
+                    from: draft
+                    to: under_review
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                        module: bcm
+                request_changes:
+                    from: under_review
+                    to: draft
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: bcm
+                activate:
+                    from: under_review
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                        reason_required: false
+                        module: bcm
+                send_back_for_revision:
+                    from: active
+                    to: under_review
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: bcm
+                archive:
+                    from: active
+                    to: archived
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                        reason_required: true
+                        module: bcm
+                restore:
+                    from: archived
+                    to: under_review
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: bcm

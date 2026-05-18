@@ -1,0 +1,73 @@
+framework:
+    workflows:
+        prototype_protection_assessment_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\PrototypeProtectionAssessment
+            initial_marking: draft
+            # TISAX / VDA-ISA 6.0 Kapitel 8 (Prototype Protection) — a TISAX
+            # assessment must traverse draft → in_review → approved before
+            # the prototype-protection label is issued. `rejected` and
+            # `expired` are terminal states. 4-eyes enforced on `approve`
+            # because the approved assessment is the audit-evidence that
+            # underpins the TISAX prototype-protection label claim.
+            places:
+                - draft
+                - in_review
+                - approved
+                - rejected
+                - expired
+            transitions:
+                submit_for_review:
+                    from: draft
+                    to: in_review
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        tone_target: info
+                        module: prototype_protection
+                approve:
+                    from: in_review
+                    to: approved
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                        reason_required: false
+                        module: prototype_protection
+                reject:
+                    from: in_review
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: prototype_protection
+                request_changes:
+                    from: in_review
+                    to: draft
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: prototype_protection
+                expire_approved:
+                    from: approved
+                    to: expired
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: prototype_protection
+                reopen_rejected:
+                    from: rejected
+                    to: draft
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: prototype_protection
+                renew_expired:
+                    from: expired
+                    to: draft
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                        module: prototype_protection

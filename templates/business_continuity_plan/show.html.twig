@@ -2,6 +2,7 @@
 {% trans_default_domain 'bc_plans' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 
 {% block title %}{{ bc_plan.name }}{% endblock %}
 
@@ -27,6 +28,12 @@
             { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_bc_plan_index') }
         ]
     }) }}
+
+    {# Lifecycle Y.5 PR B — status chip + transition dropdown (business_continuity_plan_lifecycle) #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        <span class="{{ badge_status(bc_plan.status) }}">{{ ('bc_plans.status.' ~ bc_plan.status)|trans({}, 'bc_plans') }}</span>
+        {{ _lifecycle_actions.dropdown(bc_plan, 'business-continuity-plan', 'business_continuity_plan_lifecycle') }}
+    </div>
 
     {# Inline POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if is_granted('ROLE_ADMIN') %}

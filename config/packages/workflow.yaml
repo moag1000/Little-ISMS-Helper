@@ -15,6 +15,10 @@ imports:
     - { resource: '../workflows/internal_audit.yaml' }
     - { resource: '../workflows/risk.yaml' }
     - { resource: '../workflows/vulnerability.yaml' }
+    # Sprint Y.5 PR B — BCM/TISAX bundle (state-machine lifecycles)
+    - { resource: '../workflows/business_continuity_plan.yaml' }
+    - { resource: '../workflows/bc_exercise.yaml' }
+    - { resource: '../workflows/prototype_protection_assessment.yaml' }
     # Sprint Y.2 — Regulatory approval-chain workflows (WorkflowInstance-based)
     - { resource: '../workflows/regulatory/gdpr_data_breach.yaml' }
     - { resource: '../workflows/regulatory/incident_high_severity.yaml' }

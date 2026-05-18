@@ -41,6 +41,10 @@ final class NoDirectSetStatusRule implements Rule
         'App\\Entity\\Vulnerability',
         'App\\Entity\\DataSubjectRequest',
         'App\\Entity\\Consent',
+        // Sprint Y.5 PR B — BCM/TISAX bundle
+        'App\\Entity\\BusinessContinuityPlan',
+        'App\\Entity\\BCExercise',
+        'App\\Entity\\PrototypeProtectionAssessment',
     ];
 
     private const ALLOWED_FILE_PATTERNS = [

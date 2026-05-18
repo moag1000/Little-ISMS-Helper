@@ -57,6 +57,12 @@ final class PrototypeProtectionAssessmentType extends AbstractType
                     'prototype_protection.status.rejected' => PrototypeProtectionAssessmentStatus::Rejected->value,
                     'prototype_protection.status.expired' => PrototypeProtectionAssessmentStatus::Expired->value,
                 ],
+                // Lifecycle Y.5 PR B — status is managed by
+                // prototype_protection_assessment_lifecycle (Symfony Workflow).
+                // Free-edit via the form is blocked; transitions go through
+                // the LifecycleService facade rendered as a fa-menu dropdown on
+                // the show page.
+                'disabled' => true,
             ])
             // @no-module-gate-required: PrototypeProtectionAssessment form is TISAX-scoped
             //   (only rendered behind prototype_protection module).

@@ -94,12 +94,21 @@ class BusinessContinuityPlan
     private ?string $bcTeam = null;
 
     /**
-     * Status: draft, active, under_review, archived
+     * Status: draft, under_review, active, archived
      */
     #[ORM\Column(length: 50)]
     #[Assert\Choice(choices: ['draft', 'active', 'under_review', 'archived'])]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $status = 'draft';
+
+    /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on
+     * business_continuity_plan_lifecycle (Sprint Y.5 PR B).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
 
     /**
      * Activation criteria - when to activate this plan
@@ -436,6 +445,22 @@ class BusinessContinuityPlan
     public function getStatusEnum(): ?BusinessContinuityPlanStatus
     {
         return $this->status !== null ? BusinessContinuityPlanStatus::tryFrom($this->status) : null;
+    }
+
+    /**
+     * Optimistic-lock version, managed by Doctrine on each flush.
+     * Used by Symfony Workflow / LifecycleService to detect concurrent
+     * status-transitions on the business_continuity_plan_lifecycle.
+     */
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
+    }
+
+    public function setLockVersion(int $lockVersion): static
+    {
+        $this->lockVersion = $lockVersion;
+        return $this;
     }
 
     public function getActivationCriteria(): ?string
