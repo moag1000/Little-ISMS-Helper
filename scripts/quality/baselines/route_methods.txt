@@ -51,11 +51,11 @@ src/Controller/Bsi2004ExerciseLogController.php:27
 src/Controller/CertificationBundleController.php:31
 src/Controller/ComplianceInheritanceController.php:25
 src/Controller/ComplianceWizardController.php:43
-src/Controller/ConsentController.php:25
+src/Controller/ConsentController.php:26
 src/Controller/CorrectiveActionController.php:27
 src/Controller/Dashboard/ComplianceManagerDashboardController.php:36
 src/Controller/Dashboard/DpoDashboardController.php:30
-src/Controller/DataBreachController.php:27
+src/Controller/DataBreachController.php:28
 src/Controller/DataSubjectRequestController.php:23
 src/Controller/DeltaAssessmentController.php:29
 src/Controller/EvidenceController.php:29
