@@ -13,7 +13,7 @@ src/Controller/Admin/IndustryPresetController.php:34
 src/Controller/Admin/KpiThresholdConfigController.php:29
 src/Controller/Admin/Library/LibraryImporterController.php:42
 src/Controller/Admin/LifecycleOverridesController.php:35
-src/Controller/Admin/LoaderFixerController.php:23
+src/Controller/Admin/LoaderFixerController.php:29
 src/Controller/Admin/MappingQualityController.php:180
 src/Controller/Admin/MappingQualityController.php:48
 src/Controller/Admin/MappingQualityController.php:76

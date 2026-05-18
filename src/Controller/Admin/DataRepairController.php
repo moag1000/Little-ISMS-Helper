@@ -12,6 +12,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\TenantRepository;
 use App\Repository\ControlRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\DataIntegrityService;
 use App\Service\SchemaMaintenanceService;
@@ -24,7 +25,20 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[IsGranted('ROLE_ADMIN')]
+/**
+ * Admin UI for data repair / integrity / schema operations.
+ *
+ * Role-Scope (Phase 4e — system-settings cluster):
+ *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — tenant
+ *    admins repair orphans / duplicates / tenant-mismatches inside their
+ *    own tenant tree (`W own orphans/dupes` per spec §3.1).
+ *  - Schema-level routes (`/schema/migrations`, `/schema/reconcile`) AND
+ *    cross-tenant duplicate merging are upgraded to
+ *    {@see TenantScopedAdminVoter::ADMIN_GLOBAL_OP} / ROLE_SUPER_ADMIN
+ *    — these touch global DDL or merge records across tenants and must
+ *    not be reachable by a tenant-scoped admin.
+ */
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class DataRepairController extends AbstractController
 {
     public function __construct(
@@ -775,6 +789,7 @@ class DataRepairController extends AbstractController
      * {@see SchemaMaintenanceService::executePendingMigrations()}.
      */
     #[Route('/admin/data-repair/schema/migrations', name: 'admin_data_repair_migrations_execute', methods: ['POST'])]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function executeMigrations(
         Request $request,
         #[CurrentUser] User $user,
@@ -992,6 +1007,7 @@ class DataRepairController extends AbstractController
      * but the service still audit-logs every executed statement bundle.
      */
     #[Route('/admin/data-repair/schema/reconcile', name: 'admin_data_repair_schema_reconcile', methods: ['POST'])]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function reconcileSchema(
         Request $request,
         #[CurrentUser] User $user,
