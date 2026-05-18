@@ -220,12 +220,38 @@ class SchemaMaintenanceService
         // them as executed so the operator does not have to click through
         // each one. Idempotent: markMigrationAsExecuted() skips already-executed.
         $autoMarked = [];
+        $autoMarkFailed = [];
         if ($result['success']) {
             foreach ($this->listPendingMigrationVersionsFromFileSystem() as $version) {
                 $r = $this->markMigrationAsExecuted($version);
                 if ($r['success']) {
                     $autoMarked[] = $version;
+                } else {
+                    $autoMarkFailed[$version] = (string) ($r['error'] ?? 'unknown');
                 }
+            }
+            if ($autoMarkFailed !== []) {
+                $this->auditLogger->logCustom(
+                    'admin.schema.reconcile.auto_mark_failed',
+                    'Doctrine',
+                    null,
+                    null,
+                    [
+                        'failed_count' => count($autoMarkFailed),
+                        'marked_count' => count($autoMarked),
+                        'first_5_errors' => array_slice($autoMarkFailed, 0, 5, true),
+                    ],
+                    sprintf(
+                        'Reconcile auto-mark partial: %d marked, %d failed. First errors: %s',
+                        count($autoMarked),
+                        count($autoMarkFailed),
+                        implode(' | ', array_slice(array_map(
+                            fn($v, $e) => "$v: $e",
+                            array_keys($autoMarkFailed),
+                            array_values($autoMarkFailed),
+                        ), 0, 3)),
+                    ),
+                );
             }
         }
 
@@ -233,6 +259,7 @@ class SchemaMaintenanceService
             'success' => $result['success'],
             'executed' => count($result['executed_sql']),
             'auto_marked' => $autoMarked,
+            'auto_mark_failed' => $autoMarkFailed,
             'error' => $result['error'],
             'blocked' => $result['blocked'],
         ];
