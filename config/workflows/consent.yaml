@@ -13,6 +13,7 @@ framework:
                 - active
                 - revoked
                 - expired
+                - rejected
             transitions:
                 verify:
                     from: pending_verification
@@ -20,6 +21,13 @@ framework:
                     metadata:
                         roles: [ROLE_USER]
                         module: privacy
+                reject:
+                    from: pending_verification
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_USER, ROLE_DPO]
+                        module: privacy
+                        reason_required: true
                 revoke:
                     from: active
                     to: revoked

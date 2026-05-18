@@ -10,6 +10,7 @@ document:
         approved: 'Approved'
         published: 'Published'
         archived: 'Archived'
+        deleted: 'Deleted'
         superseded: 'Superseded'
         active: 'Active (legacy)'
     action:

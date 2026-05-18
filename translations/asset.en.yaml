@@ -213,6 +213,7 @@ asset:
         controls: Controls
         actions: Actions
   status:
+    draft: Draft
     active: Active
     inactive: Inactive
     in_use: In Use

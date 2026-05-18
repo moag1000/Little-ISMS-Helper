@@ -31,11 +31,12 @@ enum InternalAuditStatus: string
 
     /**
      * Translation-key for the human-readable status label.
-     * Used by Twig: `{{ audit.statusEnum.label|trans({}, 'audits') }}`.
+     * Used by Twig: `{{ audit.statusEnum.label|trans({}, 'audit') }}`.
+     * Keys live under the `audit:` root in `translations/audit.{de,en}.yaml`.
      */
     public function label(): string
     {
-        return 'audits.status.' . $this->value;
+        return 'audit.status.' . $this->value;
     }
 
     /**

@@ -216,6 +216,7 @@ asset:
         controls: Maßnahmen
         actions: Aktionen
   status:
+    draft: Entwurf
     active: Aktiv
     inactive: Inaktiv
     in_use: In Verwendung

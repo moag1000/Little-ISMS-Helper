@@ -1,0 +1,3 @@
+# check_status_enum_yaml_parity.py baseline
+# Format: <relative-yaml-path>::<workflow-name>::<kind>
+# Drop a line and ship the PR after reconciling that workflow's places with its enum's cases.
