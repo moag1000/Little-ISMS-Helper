@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
 use App\Entity\Tenant;
+use App\Enum\CorrectiveActionStatus;
 use App\Form\CorrectiveActionType;
 use App\Repository\CommentRepository;
 use App\Repository\CorrectiveActionRepository;
@@ -89,7 +90,7 @@ class CorrectiveActionController extends AbstractController
                     $prev->getId() ?? 0,
                     (string) $prev->getTitle(),
                 ));
-                $action->setStatus(CorrectiveAction::STATUS_PLANNED); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'planned' is the corrective_action_lifecycle initial_marking)
+                $action->setStatus(CorrectiveActionStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'planned' is the corrective_action_lifecycle initial_marking)
             }
         }
 

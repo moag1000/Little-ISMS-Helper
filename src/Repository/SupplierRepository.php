@@ -7,6 +7,7 @@ namespace App\Repository;
 use DateTime;
 use App\Entity\Tenant;
 use App\Entity\Supplier;
+use App\Enum\SupplierStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -29,7 +30,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->where('s.nextAssessmentDate < :now')
             ->orWhere('s.lastSecurityAssessment IS NULL AND s.status = :active')
             ->setParameter('now', new DateTime())
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->orderBy('s.criticality', 'DESC')
             ->getQuery()
             ->getResult();
@@ -44,7 +45,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->where('s.criticality IN (:criticalities)')
             ->andWhere('s.status = :active')
             ->setParameter('criticalities', ['critical', 'high'])
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->orderBy('s.criticality', 'DESC')
             ->getQuery()
             ->getResult();
@@ -60,7 +61,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('s.status = :active')
             ->andWhere('s.criticality IN (:criticalities)')
             ->setParameter('false', false)
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->setParameter('criticalities', ['critical', 'high'])
             ->getQuery()
             ->getResult();
@@ -75,7 +76,7 @@ class SupplierRepository extends ServiceEntityRepository
 
         $total = $queryBuilder->select('COUNT(s.id)')
             ->where('s.status = :active')
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -84,7 +85,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->where('s.criticality = :critical')
             ->andWhere('s.status = :active')
             ->setParameter('critical', 'critical')
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -93,7 +94,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->where('s.hasISO27001 = :true')
             ->andWhere('s.status = :active')
             ->setParameter('true', true)
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -101,7 +102,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->select('COUNT(s.id)')
             ->where('s.nextAssessmentDate < :now OR (s.lastSecurityAssessment IS NULL AND s.status = :active)')
             ->setParameter('now', new DateTime())
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -111,7 +112,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('s.status = :active')
             ->andWhere('s.criticality IN (:criticalities)')
             ->setParameter('false', false)
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->setParameter('criticalities', ['critical', 'high'])
             ->getQuery()
             ->getSingleScalarResult();
@@ -286,7 +287,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->where('s.tenant = :tenant')
             ->andWhere('s.status = :active')
             ->setParameter('tenant', $tenant)
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -297,7 +298,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('s.status = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('critical', 'critical')
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -308,7 +309,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('s.status = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('true', true)
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -318,7 +319,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('(s.nextAssessmentDate < :now OR (s.lastSecurityAssessment IS NULL AND s.status = :active))')
             ->setParameter('tenant', $tenant)
             ->setParameter('now', new DateTime())
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -330,7 +331,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('s.criticality IN (:criticalities)')
             ->setParameter('tenant', $tenant)
             ->setParameter('false', false)
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->setParameter('criticalities', ['critical', 'high'])
             ->getQuery()
             ->getSingleScalarResult();
@@ -359,7 +360,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('s.status = :active')
             ->setParameter('tenant', $tenant)
             ->setParameter('criticalities', ['critical', 'high'])
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->orderBy('s.criticality', 'DESC')
             ->getQuery()
             ->getResult();
@@ -378,7 +379,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('(s.nextAssessmentDate < :now OR (s.lastSecurityAssessment IS NULL AND s.status = :active))')
             ->setParameter('tenant', $tenant)
             ->setParameter('now', new DateTime())
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->orderBy('s.criticality', 'DESC')
             ->getQuery()
             ->getResult();
@@ -399,7 +400,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->andWhere('s.criticality IN (:criticalities)')
             ->setParameter('tenant', $tenant)
             ->setParameter('false', false)
-            ->setParameter('active', 'active')
+            ->setParameter('active', SupplierStatus::Active->value)
             ->setParameter('criticalities', ['critical', 'high'])
             ->getQuery()
             ->getResult();

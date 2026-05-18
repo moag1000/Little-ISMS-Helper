@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Enum\FourEyesApprovalRequestStatus;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,7 +34,7 @@ class FourEyesApprovalRequestRepository extends ServiceEntityRepository
             ->andWhere('r.requestedApprover = :user OR r.requestedApprover IS NULL')
             ->andWhere('r.requestedBy != :user')
             ->setParameter('tenant', $tenant)
-            ->setParameter('status', FourEyesApprovalRequest::STATUS_PENDING)
+            ->setParameter('status', FourEyesApprovalRequestStatus::Pending->value)
             ->setParameter('now', new DateTimeImmutable())
             ->setParameter('user', $approver)
             ->orderBy('r.createdAt', 'ASC')
@@ -48,8 +49,8 @@ class FourEyesApprovalRequestRepository extends ServiceEntityRepository
             ->set('r.status', ':expired')
             ->where('r.status = :pending')
             ->andWhere('r.expiresAt <= :now')
-            ->setParameter('expired', FourEyesApprovalRequest::STATUS_EXPIRED)
-            ->setParameter('pending', FourEyesApprovalRequest::STATUS_PENDING)
+            ->setParameter('expired', FourEyesApprovalRequestStatus::Expired->value)
+            ->setParameter('pending', FourEyesApprovalRequestStatus::Pending->value)
             ->setParameter('now', new DateTimeImmutable())
             ->getQuery()
             ->execute();
