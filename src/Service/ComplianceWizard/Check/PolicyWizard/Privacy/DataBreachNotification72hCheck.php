@@ -6,6 +6,7 @@ namespace App\Service\ComplianceWizard\Check\PolicyWizard\Privacy;
 
 use App\Entity\IncidentSlaConfig;
 use App\Entity\Tenant;
+use App\Enum\DocumentStatus;
 use App\Repository\DocumentRepository;
 use App\Repository\IncidentSlaConfigRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
@@ -73,7 +74,7 @@ final class DataBreachNotification72hCheck implements PolicyWizardCheckInterface
             ->andWhere('t.standard = :standard')
             ->andWhere('t.topic = :topic')
             ->setParameter('tenant', $tenant)
-            ->setParameter('statuses', ['published', 'approved'])
+            ->setParameter('statuses', [DocumentStatus::Published->value, DocumentStatus::Approved->value])
             ->setParameter('standard', self::STANDARD)
             ->setParameter('topic', self::TOPIC)
             ->getQuery()

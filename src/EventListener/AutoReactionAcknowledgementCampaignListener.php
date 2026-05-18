@@ -7,6 +7,7 @@ namespace App\EventListener;
 use App\Entity\Document;
 use App\Entity\PolicyAcknowledgement;
 use App\Entity\User;
+use App\Enum\DocumentStatus;
 use App\Repository\UserRepository;
 use App\Service\AutoReactionService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
@@ -53,7 +54,7 @@ final class AutoReactionAcknowledgementCampaignListener
             return;
         }
 
-        if ($document->getStatus() !== 'approved') {
+        if ($document->getStatus() !== DocumentStatus::Approved->value) {
             return;
         }
         // V3 W2-Bug2: getRequiresAcknowledgement() / getVersion() now live

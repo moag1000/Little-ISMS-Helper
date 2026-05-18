@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Tenant;
 use App\Entity\Document;
 use App\Entity\User;
+use App\Enum\DocumentStatus;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -227,7 +228,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->andWhere('d.isArchived = false')
             ->andWhere('d.status = :status')
             ->setParameter('tenant', $tenant)
-            ->setParameter('status', 'in_review')
+            ->setParameter('status', DocumentStatus::InReview->value)
             ->orderBy('d.id', 'ASC')
             ->getQuery()
             ->getResult();

@@ -9,6 +9,7 @@ use DateTimeInterface;
 use RuntimeException;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
+use App\Enum\ProcessingActivityStatus;
 use App\Lifecycle\LifecycleService;
 use App\Repository\ProcessingActivityRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -492,7 +493,7 @@ final class ProcessingActivityService
             );
         } else {
             // Fallback (e.g. unit tests without Workflow component).
-            $processingActivity->setStatus('published'); // @phpstan-ignore lifecycle.directSetStatus (fallback path when Symfony Workflow not available; primary path uses LifecycleService above)
+            $processingActivity->setStatus(ProcessingActivityStatus::Published); // @phpstan-ignore lifecycle.directSetStatus (fallback path when Symfony Workflow not available; primary path uses LifecycleService above)
             $this->entityManager->flush();
         }
 
@@ -528,7 +529,7 @@ final class ProcessingActivityService
             );
         } else {
             // Fallback (e.g. unit tests without Workflow component).
-            $processingActivity->setStatus('archived'); // @phpstan-ignore lifecycle.directSetStatus (fallback path when Symfony Workflow not available; primary path uses LifecycleService above)
+            $processingActivity->setStatus(ProcessingActivityStatus::Archived); // @phpstan-ignore lifecycle.directSetStatus (fallback path when Symfony Workflow not available; primary path uses LifecycleService above)
             $this->entityManager->flush();
         }
 
@@ -584,7 +585,7 @@ final class ProcessingActivityService
         }
 
         // Set status to draft
-        $clone->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist clone; Symfony Workflow takes over after persist)
+        $clone->setStatus(ProcessingActivityStatus::Draft); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist clone; Symfony Workflow takes over after persist)
 
         return $this->create($clone);
     }

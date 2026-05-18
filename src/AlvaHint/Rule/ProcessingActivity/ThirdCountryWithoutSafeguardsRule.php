@@ -8,6 +8,7 @@ use App\AlvaHint\AbstractAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
+use App\Enum\ProcessingActivityStatus;
 
 /**
  * Tier-1 hint: GDPR Art. 44–49 third-country transfer without
@@ -42,7 +43,7 @@ final class ThirdCountryWithoutSafeguardsRule extends AbstractAlvaHintRule
         if (!$entity->getHasThirdCountryTransfer()) {
             return false;
         }
-        if ($entity->getStatus() === 'draft') {
+        if ($entity->getStatus() === ProcessingActivityStatus::Draft->value) {
             return false;
         }
 

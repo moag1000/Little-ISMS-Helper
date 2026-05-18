@@ -10,6 +10,7 @@ use DateTimeInterface;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
+use App\Enum\DpiaStatus;
 use App\Exception\Workflow\InvalidStatusTransitionException;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DataProtectionImpactAssessmentRepository;
@@ -260,10 +261,10 @@ final class DataProtectionImpactAssessmentService
      */
     public function submitForReview(DataProtectionImpactAssessment $dataProtectionImpactAssessment): DataProtectionImpactAssessment
     {
-        if ($dataProtectionImpactAssessment->getStatus() !== 'draft') {
+        if ($dataProtectionImpactAssessment->getStatus() !== DpiaStatus::Draft->value) {
             throw new InvalidStatusTransitionException(
                 (string) $dataProtectionImpactAssessment->getStatus(),
-                'in_review',
+                DpiaStatus::InReview->value,
                 DataProtectionImpactAssessment::class,
                 'Only draft DPIAs can be submitted for review',
             );
@@ -294,10 +295,10 @@ final class DataProtectionImpactAssessmentService
      */
     public function approve(DataProtectionImpactAssessment $dataProtectionImpactAssessment, User $user, ?string $comments = null): DataProtectionImpactAssessment
     {
-        if ($dataProtectionImpactAssessment->getStatus() !== 'in_review') {
+        if ($dataProtectionImpactAssessment->getStatus() !== DpiaStatus::InReview->value) {
             throw new InvalidStatusTransitionException(
                 (string) $dataProtectionImpactAssessment->getStatus(),
-                'approved',
+                DpiaStatus::Approved->value,
                 DataProtectionImpactAssessment::class,
                 'Only DPIAs in review can be approved',
             );
@@ -343,10 +344,10 @@ final class DataProtectionImpactAssessmentService
      */
     public function reject(DataProtectionImpactAssessment $dataProtectionImpactAssessment, User $user, string $reason): DataProtectionImpactAssessment
     {
-        if ($dataProtectionImpactAssessment->getStatus() !== 'in_review') {
+        if ($dataProtectionImpactAssessment->getStatus() !== DpiaStatus::InReview->value) {
             throw new InvalidStatusTransitionException(
                 (string) $dataProtectionImpactAssessment->getStatus(),
-                'rejected',
+                DpiaStatus::Rejected->value,
                 DataProtectionImpactAssessment::class,
                 'Only DPIAs in review can be rejected',
             );
@@ -377,10 +378,10 @@ final class DataProtectionImpactAssessmentService
      */
     public function requestRevision(DataProtectionImpactAssessment $dataProtectionImpactAssessment, string $reason): DataProtectionImpactAssessment
     {
-        if (!in_array($dataProtectionImpactAssessment->getStatus(), ['in_review', 'approved'])) {
+        if (!in_array($dataProtectionImpactAssessment->getStatus(), [DpiaStatus::InReview->value, DpiaStatus::Approved->value], true)) {
             throw new InvalidStatusTransitionException(
                 (string) $dataProtectionImpactAssessment->getStatus(),
-                'requires_revision',
+                DpiaStatus::RequiresRevision->value,
                 DataProtectionImpactAssessment::class,
                 'DPIA must be in review or approved to request revision',
             );
@@ -410,10 +411,10 @@ final class DataProtectionImpactAssessmentService
      */
     public function reopen(DataProtectionImpactAssessment $dataProtectionImpactAssessment): DataProtectionImpactAssessment
     {
-        if ($dataProtectionImpactAssessment->getStatus() !== 'requires_revision') {
+        if ($dataProtectionImpactAssessment->getStatus() !== DpiaStatus::RequiresRevision->value) {
             throw new InvalidStatusTransitionException(
                 (string) $dataProtectionImpactAssessment->getStatus(),
-                'draft',
+                DpiaStatus::Draft->value,
                 DataProtectionImpactAssessment::class,
                 'Only DPIAs requiring revision can be reopened',
             );
@@ -627,7 +628,7 @@ final class DataProtectionImpactAssessmentService
         }
 
         // Art. 35(4) - DPO consultation warning
-        if ($dataProtectionImpactAssessment->getStatus() === 'in_review' && !$dataProtectionImpactAssessment->getDpoConsultationDate()) {
+        if ($dataProtectionImpactAssessment->getStatus() === DpiaStatus::InReview->value && !$dataProtectionImpactAssessment->getDpoConsultationDate()) {
             $errors[] = 'DPO should be consulted before approval (Art. 35(4))';
         }
 
@@ -641,7 +642,7 @@ final class DataProtectionImpactAssessmentService
             $errors[] = 'Residual risk assessment is required after defining mitigation measures';
         }
 
-        if (!$dataProtectionImpactAssessment->isResidualRiskAcceptable() && $dataProtectionImpactAssessment->getStatus() === 'approved') {
+        if (!$dataProtectionImpactAssessment->isResidualRiskAcceptable() && $dataProtectionImpactAssessment->getStatus() === DpiaStatus::Approved->value) {
             $errors[] = 'Cannot approve DPIA with high/critical residual risk without supervisory consultation (Art. 36)';
         }
 
@@ -687,7 +688,7 @@ final class DataProtectionImpactAssessmentService
         $completenessScore = ($completeCount / $totalCount) * 100;
 
         // Approval: approved DPIAs / total DPIAs
-        $approvedCount = count(array_filter($all, fn($dpia): bool => $dpia->getStatus() === 'approved'));
+        $approvedCount = count(array_filter($all, fn($dpia): bool => $dpia->getStatus() === DpiaStatus::Approved->value));
         $approvalScore = ($approvedCount / $totalCount) * 100;
 
         // Review compliance: DPIAs not overdue for review
@@ -776,7 +777,7 @@ final class DataProtectionImpactAssessmentService
         }
 
         // Set as draft — 'draft' is the workflow initial_marking; no transition needed for a new entity
-        $clone->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on new pre-persist clone; Symfony Workflow will take over after persist)
+        $clone->setStatus(DpiaStatus::Draft); // @phpstan-ignore lifecycle.directSetStatus (initial state on new pre-persist clone; Symfony Workflow will take over after persist)
         $clone->setConductor($user);
         $clone->setCreatedBy($user);
         $clone->setUpdatedBy($user);

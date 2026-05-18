@@ -387,7 +387,7 @@ class ProcessingActivityServiceTest extends TestCase
         $processingActivity->method('getId')->willReturn(1);
         $processingActivity->method('getName')->willReturn('Archived');
 
-        $processingActivity->expects($this->once())->method('setStatus')->with('archived');
+        $processingActivity->expects($this->once())->method('setStatus')->with(\App\Enum\ProcessingActivityStatus::Archived);
         $processingActivity->expects($this->once())->method('setEndDate');
 
         $this->entityManager->expects($this->once())->method('flush');

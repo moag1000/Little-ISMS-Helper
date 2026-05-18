@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Document;
 use App\Entity\User;
+use App\Enum\DocumentStatus;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DocumentRepository;
 use App\Security\Voter\PolicyWizardVoter;
@@ -110,7 +111,7 @@ final class PolicyDiffController extends AbstractController
         $previous->setUpdatedAt(new DateTimeImmutable());
         // Approved → published-equivalent in this codebase. Only restore if previous
         // was archived; non-archived states are left as-is to avoid unintended elevation.
-        if ($previous->getStatus() === 'archived') {
+        if ($previous->getStatus() === DocumentStatus::Archived->value) {
             // X.6: restore_to_approved: archived → approved (policy supersession restore).
             $this->lifecycleService->transition(
                 $previous,

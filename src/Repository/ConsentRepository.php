@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Consent;
 use App\Entity\Tenant;
 use App\Entity\ProcessingActivity;
+use App\Enum\ConsentStatus;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,7 +34,7 @@ class ConsentRepository extends ServiceEntityRepository
             ->andWhere('c.status = :status')
             ->andWhere('c.isRevoked = :revoked')
             ->setParameter('activity', $processingActivity)
-            ->setParameter('status', 'active')
+            ->setParameter('status', ConsentStatus::Active->value)
             ->setParameter('revoked', false)
             ->orderBy('c.grantedAt', 'DESC')
             ->getQuery()
@@ -50,7 +51,7 @@ class ConsentRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c')
             ->where('c.status = :status')
             ->andWhere('c.isVerifiedByDpo = :verified')
-            ->setParameter('status', 'pending_verification')
+            ->setParameter('status', ConsentStatus::PendingVerification->value)
             ->setParameter('verified', false)
             ->orderBy('c.documentedAt', 'ASC');
 
@@ -82,7 +83,7 @@ class ConsentRepository extends ServiceEntityRepository
             ->andWhere('c.isRevoked = :revoked')
             ->setParameter('now', $now)
             ->setParameter('future', $futureDate)
-            ->setParameter('status', 'active')
+            ->setParameter('status', ConsentStatus::Active->value)
             ->setParameter('revoked', false)
             ->orderBy('c.expiresAt', 'ASC');
 
@@ -127,11 +128,11 @@ class ConsentRepository extends ServiceEntityRepository
                 SUM(CASE WHEN c.isRevoked = :revoked_true THEN 1 ELSE 0 END) as revoked_total,
                 SUM(CASE WHEN c.status = :expired THEN 1 ELSE 0 END) as expired
             ')
-            ->setParameter('active', 'active')
-            ->setParameter('pending', 'pending_verification')
+            ->setParameter('active', ConsentStatus::Active->value)
+            ->setParameter('pending', ConsentStatus::PendingVerification->value)
             ->setParameter('verified', true)
             ->setParameter('revoked_true', true)
-            ->setParameter('expired', 'expired');
+            ->setParameter('expired', ConsentStatus::Expired->value);
 
         if ($tenant !== null) {
             $qb->where('c.tenant = :tenant')
@@ -181,7 +182,7 @@ class ConsentRepository extends ServiceEntityRepository
             ->andWhere('c.isRevoked = :revoked')
             ->andWhere('c.isVerifiedByDpo = :verified')
             ->setParameter('activity', $processingActivity)
-            ->setParameter('status', 'active')
+            ->setParameter('status', ConsentStatus::Active->value)
             ->setParameter('revoked', false)
             ->setParameter('verified', true)
             ->getQuery()

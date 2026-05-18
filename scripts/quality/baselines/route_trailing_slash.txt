@@ -12,7 +12,7 @@ src/Controller/ModuleManagementController.php:24:/modules/
 src/Controller/ContextController.php:30:/context/
 src/Controller/ComplianceMappingController.php:66:/compliance/mapping/
 src/Controller/DeploymentWizardController.php:80:/setup/
-src/Controller/DPIAController.php:49:/dpia/
+src/Controller/DPIAController.php:50:/dpia/
 src/Controller/ReportController.php:44:/reports/
 src/Controller/BCMController.php:23:/bcm/
 src/Controller/BusinessProcessController.php:40:/bcm/business-process/
@@ -24,7 +24,7 @@ src/Controller/ComplianceController.php:48:/compliance/
 src/Controller/MappingQualityController.php:37:/compliance/mapping-quality/
 src/Controller/StatementOfApplicabilityController.php:52:/soa/
 src/Controller/AuditController.php:46:/audit/
-src/Controller/DocumentController.php:76:/document/
+src/Controller/DocumentController.php:77:/document/
 src/Controller/ThreatIntelligenceController.php:31:/threat-intelligence/
 src/Controller/CrisisTeamController.php:36:/crisis-team/
 src/Controller/BCExerciseController.php:33:/bc-exercise/
