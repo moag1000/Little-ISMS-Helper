@@ -268,6 +268,24 @@ class SchemaHealthService
                 return;
             }
 
+            // Pattern: SQLSTATE[42000] 1091/1176 — Can't DROP / Key doesn't exist.
+            // Happens when a prior partial reconcile or out-of-band migration
+            // already dropped the FK/index. Reconcile is idempotent so swallow.
+            if (preg_match(
+                "/(1091|1176).+(doesn't exist|Can't DROP)/i",
+                $msg,
+            )) {
+                $this->auditLogger->logCustom(
+                    'admin.schema.fk_aware_skip_absent',
+                    'Doctrine',
+                    null,
+                    null,
+                    ['sql' => substr($sql, 0, 200), 'error' => substr($msg, 0, 200)],
+                    sprintf('FK-aware reconcile: skipped already-absent DROP (sql=%s)', substr($sql, 0, 80)),
+                );
+                return;
+            }
+
             // Other DriverException — bubble
             throw $e;
         }
