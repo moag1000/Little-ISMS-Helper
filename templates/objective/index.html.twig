@@ -50,6 +50,7 @@
     </turbo-frame>
 
     {% embed '_components/_card.html.twig' %}
+        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/objective"{% endblock %}
         {% block card_header %}
             <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--nav-target" aria-hidden="true"></i> {{ 'objective.list.title'|trans({'%count%': objectives|length}, 'objective') }}</h2></div>
         {% endblock %}
@@ -69,6 +70,15 @@
             } %}
                 {% block table_head %}
                     <tr>
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <th scope="col" class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                        </th>
+                        {% endif %}
                         <th scope="col">{{ 'objective.table.title'|trans({}, 'objective') }}</th>
                         <th scope="col">{{ 'objective.table.category'|trans({}, 'objective') }}</th>
                         <th scope="col">{{ 'objective.table.target_date'|trans({}, 'objective') }}</th>
@@ -81,6 +91,16 @@
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% for objective in objectives %}
                     <tr>
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <td class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-bulk-actions-target="item"
+                                   data-action="bulk-actions#selectItem"
+                                   value="{{ objective.id }}"
+                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ objective.title }}">
+                        </td>
+                        {% endif %}
                         <td><strong>{{ objective.title }}</strong></td>
                         <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: objective.category } %}</td>
                         <td>{{ objective.targetDate|date('d.m.Y') }}</td>
@@ -98,6 +118,13 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
+
+            {% if is_granted('ROLE_ADMIN') %}
+            {# Bulk Action Bar #}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['delete']
+            } %}
+            {% endif %}
             {% endif %}
         {% endblock %}
     {% endembed %}
