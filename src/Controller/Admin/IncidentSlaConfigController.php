@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\Admin\IncidentSlaConfigType;
 use App\Repository\IncidentSlaConfigRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\IncidentSlaConfigResolver;
 use App\Service\TenantContext;
@@ -22,9 +23,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * Phase 8L.F2 — Admin-UI für Incident-SLAs pro Severity.
+ *
+ * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
+ * SUPER_ADMIN any. Tenant scope resolves via
+ * {@see TenantContext::resolveAdminScope()} (optional `tenant_id`
+ * POST param for SUPER_ADMIN cross-tenant).
  */
 #[Route('/admin/incident-sla')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class IncidentSlaConfigController extends AbstractController
 {
     public function __construct(
@@ -37,9 +43,9 @@ class IncidentSlaConfigController extends AbstractController
     }
 
     #[Route('', name: 'app_admin_incident_sla_config', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $tenant = $this->requireTenant();
+        $tenant = $this->requireTenant($request);
 
         // Defaults ggf. anlegen (Idempotent) — falls Migration für neuen Tenant noch nicht lief.
         // Repository persists ohne flush → wir flushen hier selbst.
@@ -65,10 +71,16 @@ class IncidentSlaConfigController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_incident_sla_config_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, IncidentSlaConfig $config): Response
     {
-        $tenant = $this->requireTenant();
-        if ($config->getTenant()?->getId() !== $tenant->getId()) {
+        $tenant = $this->requireTenant($request);
+        // Resolve scope of the loaded config and let SUPER_ADMIN /
+        // tenant-admin authority decide if it's accessible.
+        $configTenant = $this->tenantContext->resolveAdminScope($config->getTenant()?->getId());
+        if ($configTenant?->getId() !== $config->getTenant()?->getId()) {
             throw $this->createAccessDeniedException('Config belongs to different tenant.');
         }
+        // For the resolver and audit log we keep the tenant of the
+        // config (SUPER_ADMIN may legitimately edit another tenant's row).
+        $tenant = $configTenant;
 
         $oldValues = [
             'response_hours' => $config->getResponseHours(),
@@ -113,9 +125,9 @@ class IncidentSlaConfigController extends AbstractController
         ]);
     }
 
-    private function requireTenant(): Tenant
+    private function requireTenant(Request $request): Tenant
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
         if (!$tenant instanceof Tenant) {
             throw $this->createNotFoundException('No tenant context.');
         }
