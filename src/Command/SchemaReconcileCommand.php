@@ -159,8 +159,25 @@ class SchemaReconcileCommand
         // Gefilterte SQLs einzeln ausführen (nicht $tool->updateSchema,
         // weil das die Filter umgehen würde).
         $conn = $this->entityManager->getConnection();
+        $skipped = 0;
         foreach ($sqls as $sql) {
-            $conn->executeStatement($sql);
+            try {
+                $conn->executeStatement($sql);
+            } catch (\Doctrine\DBAL\Exception $e) {
+                // MySQL 1091 (Can't DROP) + 1176 (Key doesn't exist) — FK/INDEX
+                // already absent from prior partial run. Reconcile is idempotent
+                // so we skip + log instead of aborting the whole reconcile.
+                $msg = $e->getMessage();
+                if (preg_match("/(1091|1176|doesn't exist|check that .+ exists)/i", $msg)) {
+                    $skipped++;
+                    $io?->warning(sprintf('Skipped (already-absent): %s — %s', substr($sql, 0, 80), substr($msg, 0, 120)));
+                    continue;
+                }
+                throw $e;
+            }
+        }
+        if ($skipped > 0) {
+            $io?->note(sprintf('Reconcile completed with %d idempotent skips (FK/INDEX already absent).', $skipped));
         }
 
         // Phantom-Drift-Detection: DBAL 4.x + MariaDB emittiert für JSON-
