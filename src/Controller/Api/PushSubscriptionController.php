@@ -33,7 +33,7 @@ class PushSubscriptionController extends AbstractController
      * Get VAPID public key for client-side subscription
      */
     #[Route('/vapid-public-key', name: 'api_push_vapid_key', methods: ['GET'])]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
     public function getVapidPublicKey(): JsonResponse
     {
         $publicKey = $this->webPushService->getVapidPublicKey();
@@ -53,7 +53,7 @@ class PushSubscriptionController extends AbstractController
      * Subscribe to push notifications
      */
     #[Route('/subscribe', name: 'api_push_subscribe', methods: ['POST'])]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
     public function subscribe(
         Request $request,
         #[CurrentUser] User $user,
@@ -114,7 +114,7 @@ class PushSubscriptionController extends AbstractController
      * Unsubscribe from push notifications
      */
     #[Route('/unsubscribe', name: 'api_push_unsubscribe', methods: ['POST'])]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
     public function unsubscribe(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
