@@ -7,6 +7,7 @@ namespace App\Repository;
 use DateTime;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
+use App\Enum\ProcessingActivityStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,7 +48,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
             ->where('pa.tenant = :tenant')
             ->andWhere('pa.status = :status')
             ->setParameter('tenant', $tenant)
-            ->setParameter('status', 'published')
+            ->setParameter('status', ProcessingActivityStatus::Published->value)
             ->orderBy('pa.name', 'ASC')
             ->getQuery()
             ->getResult();
@@ -145,7 +146,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
         // after canonical 5-stage migration (legacy 'active' → 'published').
         $active = (clone $queryBuilder)
             ->andWhere('pa.status = :status')
-            ->setParameter('status', 'published')
+            ->setParameter('status', ProcessingActivityStatus::Published->value)
             ->select('COUNT(pa.id)')
             ->getQuery()
             ->getSingleScalarResult();

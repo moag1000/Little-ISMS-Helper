@@ -9,6 +9,7 @@ use DateTime;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\DataBreach;
 use App\Entity\Incident;
+use App\Enum\DataBreachStatus;
 use App\Form\DataBreachType;
 use App\Repository\CommentRepository;
 use App\Repository\IncidentRepository;
@@ -204,7 +205,7 @@ class DataBreachController extends AbstractController
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
-        if (!in_array($dataBreach->getStatus(), ['draft', 'under_assessment'])) {
+        if (!in_array($dataBreach->getStatus(), [DataBreachStatus::Draft->value, DataBreachStatus::UnderAssessment->value], true)) {
             $this->addFlash('error', 'Cannot edit data breach in current status.');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }

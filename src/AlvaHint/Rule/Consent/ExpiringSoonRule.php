@@ -8,6 +8,7 @@ use App\AlvaHint\AbstractAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\Consent;
 use App\Entity\User;
+use App\Enum\ConsentStatus;
 use DateTimeImmutable;
 
 /**
@@ -41,7 +42,7 @@ final class ExpiringSoonRule extends AbstractAlvaHintRule
         if ($entity->isRevoked()) {
             return false;
         }
-        if ($entity->getStatus() !== 'active') {
+        if ($entity->getStatus() !== ConsentStatus::Active->value) {
             return false;
         }
 

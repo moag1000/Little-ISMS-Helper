@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\ComplianceWizard\Check\PolicyWizard\Privacy;
 
 use App\Entity\Tenant;
+use App\Enum\DocumentStatus;
 use App\Repository\DocumentRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
@@ -61,7 +62,7 @@ final class DpiaMethodologyPresentCheck implements PolicyWizardCheckInterface
             ->andWhere('t.standard = :standard')
             ->andWhere('t.topic = :topic')
             ->setParameter('tenant', $tenant)
-            ->setParameter('statuses', ['published', 'approved'])
+            ->setParameter('statuses', [DocumentStatus::Published->value, DocumentStatus::Approved->value])
             ->setParameter('standard', self::STANDARD)
             ->setParameter('topic', self::TOPIC)
             ->getQuery()

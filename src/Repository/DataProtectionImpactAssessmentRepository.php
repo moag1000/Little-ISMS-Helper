@@ -8,6 +8,7 @@ use DateTime;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
+use App\Enum\DpiaStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -180,7 +181,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->andWhere('dpia.status IN (:statuses)')
             ->andWhere('dpia.dpoConsultationDate IS NULL')
             ->setParameter('tenant', $tenant)
-            ->setParameter('statuses', ['draft', 'in_review'])
+            ->setParameter('statuses', [DpiaStatus::Draft->value, DpiaStatus::InReview->value])
             ->orderBy('dpia.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
@@ -241,21 +242,21 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
 
         $approved = (clone $queryBuilder)
             ->andWhere('dpia.status = :status')
-            ->setParameter('status', 'approved')
+            ->setParameter('status', DpiaStatus::Approved->value)
             ->select('COUNT(dpia.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
         $inReview = (clone $queryBuilder)
             ->andWhere('dpia.status = :status')
-            ->setParameter('status', 'in_review')
+            ->setParameter('status', DpiaStatus::InReview->value)
             ->select('COUNT(dpia.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
         $draft = (clone $queryBuilder)
             ->andWhere('dpia.status = :status')
-            ->setParameter('status', 'draft')
+            ->setParameter('status', DpiaStatus::Draft->value)
             ->select('COUNT(dpia.id)')
             ->getQuery()
             ->getSingleScalarResult();
@@ -278,7 +279,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
         $awaitingDPO = (clone $queryBuilder)
             ->andWhere('dpia.status IN (:statuses)')
             ->andWhere('dpia.dpoConsultationDate IS NULL')
-            ->setParameter('statuses', ['draft', 'in_review'])
+            ->setParameter('statuses', [DpiaStatus::Draft->value, DpiaStatus::InReview->value])
             ->select('COUNT(dpia.id)')
             ->getQuery()
             ->getSingleScalarResult();

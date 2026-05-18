@@ -7,6 +7,7 @@ namespace App\Service\PolicyWizard;
 use App\Entity\Document;
 use App\Entity\DocumentSection;
 use App\Entity\Tenant;
+use App\Enum\DocumentStatus;
 use App\Repository\DocumentRepository;
 use App\Repository\DocumentSectionRepository;
 use App\Service\AuditLogger;
@@ -89,12 +90,12 @@ final class GdprToggleOffCleanupService
             if ($id === null) {
                 continue;
             }
-            if ($document->isArchived() || $document->getStatus() === 'archived') {
+            if ($document->isArchived() || $document->getStatus() === DocumentStatus::Archived->value) {
                 $report['already_archived_documents'][] = $id;
                 continue;
             }
             $document->setIsArchived(true);
-            $document->setStatus('archived'); // @phpstan-ignore lifecycle.directSetStatus (GDPR module deactivation — bulk archival; lifecycle migration deferred to X.6)
+            $document->setStatus(DocumentStatus::Archived); // @phpstan-ignore lifecycle.directSetStatus (GDPR module deactivation — bulk archival; lifecycle migration deferred to X.6)
             $this->entityManager->persist($document);
             $report['archived_documents'][] = $id;
         }

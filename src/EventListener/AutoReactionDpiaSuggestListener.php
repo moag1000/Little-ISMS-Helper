@@ -6,6 +6,7 @@ namespace App\EventListener;
 
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
+use App\Enum\DpiaStatus;
 use App\Repository\UserRepository;
 use App\Service\AutoReactionService;
 use App\Service\EmailNotificationService;
@@ -78,7 +79,7 @@ final class AutoReactionDpiaSuggestListener
                 $activity->getName() ?? 'Processing-Activity',
                 (new \DateTimeImmutable())->format('Y-m-d'),
             ));
-            $dpia->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist DPIA skeleton)
+            $dpia->setStatus(DpiaStatus::Draft); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist DPIA skeleton)
             if (method_exists($dpia, 'setProcessingDescription')) {
                 $dpia->setProcessingDescription(
                     'Auto-generated DPIA skeleton based on high-risk indicators (special categories / automated decision-making / large scale). Review and complete required sections (Art. 35 (7) GDPR).'
