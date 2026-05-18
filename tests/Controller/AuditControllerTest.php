@@ -483,7 +483,10 @@ class AuditControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="internal_audit"]')->form();
 
         $form['internal_audit[title]'] = 'Updated Audit Title';
-        $form['internal_audit[status]'] = 'in_progress';
+        // Status is intentionally NOT submitted: InternalAuditType marks `status`
+        // as `disabled => true` (Lifecycle-bypass fix). Status changes flow through
+        // LifecycleService::transition() via dedicated /audit/{id}/submit-report,
+        // /approve, /reject etc. endpoints — not via the generic edit form.
 
         // Re-authenticate before form submission to ensure session persists
         $this->loginAsUser($this->testUser);
@@ -496,7 +499,9 @@ class AuditControllerTest extends WebTestCase
         $updatedAudit = $auditRepository->find($this->testAudit->getId());
         $this->assertNotNull($updatedAudit);
         $this->assertEquals('Updated Audit Title', $updatedAudit->getTitle());
-        $this->assertEquals('in_progress', $updatedAudit->getStatus());
+        // Status MUST remain at the seed value — proves the form's disabled-status
+        // field cannot be used to bypass the lifecycle.
+        $this->assertEquals('planned', $updatedAudit->getStatus());
     }
 
     #[Test]

@@ -439,9 +439,11 @@ class RiskControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/edit');
+        // Status is intentionally NOT submitted: RiskType marks `status` as
+        // `disabled => true` (Lifecycle-bypass fix). Status transitions flow
+        // through LifecycleService::transition() — not via the edit form.
         $form = $crawler->filter('form[name="risk"]')->form([
             'risk[title]' => 'Updated Risk Title',
-            'risk[status]' => 'assessed',
         ]);
 
         $this->client->submit($form);
@@ -452,7 +454,9 @@ class RiskControllerTest extends WebTestCase
         $riskRepository = $this->entityManager->getRepository(Risk::class);
         $updatedRisk = $riskRepository->find($this->testRisk->getId());
         $this->assertEquals('Updated Risk Title', $updatedRisk->getTitle());
-        $this->assertEquals(\App\Enum\RiskStatus::Assessed, $updatedRisk->getStatus());
+        // Status MUST remain at the seed value — proves the form's disabled-status
+        // field cannot be used to bypass the lifecycle.
+        $this->assertEquals(\App\Enum\RiskStatus::Identified, $updatedRisk->getStatus());
     }
 
     #[Test]
