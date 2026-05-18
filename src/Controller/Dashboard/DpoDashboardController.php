@@ -7,6 +7,7 @@ namespace App\Controller\Dashboard;
 use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Repository\ProcessingActivityRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,10 +26,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *   - Processing activities with third-country transfers
  *   - Quick actions (VVT export, DPIA list, data breaches)
  *
- * Module gate: 'privacy'. Role gate: ROLE_DPO.
+ * Module gate: 'privacy'. Role gate: PERSONA_DPO (Role-Scope Phase 6 —
+ * resolves to ROLE_DPO via TenantScopedAdminVoter).
  */
 #[Route('/dashboards/dpo', name: 'app_dashboard_dpo')]
-#[IsGranted('ROLE_DPO')]
+#[IsGranted(TenantScopedAdminVoter::PERSONA_DPO)]
 final class DpoDashboardController extends AbstractController
 {
     public function __construct(

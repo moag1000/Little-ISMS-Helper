@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\RoleDashboardService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,6 +17,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * Phase 7D: Provides specialized dashboards for different user roles.
  * Each dashboard shows KPIs and information most relevant to the role.
+ *
+ * Role-Scope Architecture Phase 6 (spec
+ * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`): persona
+ * dashboards are guarded via `TenantScopedAdminVoter::PERSONA_*` attributes
+ * (module-visibility filter). Semantic equivalent of `#[IsGranted('ROLE_X')]`
+ * — the voter resolves PERSONA_CISO → ROLE_CISO etc — but consistent with
+ * the hub-catalog `requiredAttribute` convention.
  */
 #[Route('/dashboards')]
 class RoleDashboardController extends AbstractController
@@ -52,7 +60,7 @@ class RoleDashboardController extends AbstractController
      * and pending approvals requiring attention.
      */
     #[Route('/ciso', name: 'app_dashboard_ciso', methods: ['GET'])]
-    #[IsGranted('ROLE_CISO')]
+    #[IsGranted(TenantScopedAdminVoter::PERSONA_CISO)]
     public function cisoDashboard(): Response
     {
         $data = $this->roleDashboardService->getCisoDashboard();
@@ -69,7 +77,7 @@ class RoleDashboardController extends AbstractController
      * and mitigation effectiveness tracking.
      */
     #[Route('/risk-manager', name: 'app_dashboard_risk_manager', methods: ['GET'])]
-    #[IsGranted('ROLE_RISK_MANAGER')]
+    #[IsGranted(TenantScopedAdminVoter::PERSONA_RISK)]
     public function riskManagerDashboard(): Response
     {
         $data = $this->roleDashboardService->getRiskManagerDashboard();
@@ -103,7 +111,7 @@ class RoleDashboardController extends AbstractController
      * and top critical items requiring board attention.
      */
     #[Route('/board', name: 'app_dashboard_board', methods: ['GET'])]
-    #[IsGranted('ROLE_CISO')]
+    #[IsGranted(TenantScopedAdminVoter::PERSONA_CISO)]
     public function boardDashboard(): Response
     {
         $data = $this->roleDashboardService->getBoardDashboard();
@@ -119,7 +127,7 @@ class RoleDashboardController extends AbstractController
      * API: Get CISO dashboard data
      */
     #[Route('/api/ciso', name: 'app_dashboard_api_ciso', methods: ['GET'])]
-    #[IsGranted('ROLE_CISO')]
+    #[IsGranted(TenantScopedAdminVoter::PERSONA_CISO)]
     public function getCisoDashboardData(): JsonResponse
     {
         return new JsonResponse($this->roleDashboardService->getCisoDashboard());
@@ -129,7 +137,7 @@ class RoleDashboardController extends AbstractController
      * API: Get Risk Manager dashboard data
      */
     #[Route('/api/risk-manager', name: 'app_dashboard_api_risk_manager', methods: ['GET'])]
-    #[IsGranted('ROLE_RISK_MANAGER')]
+    #[IsGranted(TenantScopedAdminVoter::PERSONA_RISK)]
     public function getRiskManagerDashboardData(): JsonResponse
     {
         return new JsonResponse($this->roleDashboardService->getRiskManagerDashboard());
@@ -149,7 +157,7 @@ class RoleDashboardController extends AbstractController
      * API: Get Board dashboard data
      */
     #[Route('/api/board', name: 'app_dashboard_api_board', methods: ['GET'])]
-    #[IsGranted('ROLE_CISO')]
+    #[IsGranted(TenantScopedAdminVoter::PERSONA_CISO)]
     public function getBoardDashboardData(): JsonResponse
     {
         return new JsonResponse($this->roleDashboardService->getBoardDashboard());
