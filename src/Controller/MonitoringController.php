@@ -392,9 +392,18 @@ class MonitoringController extends AbstractController
         $errors = [];
         $errorStats = [];
 
+        $filters = [
+            'levels' => array_map('strtoupper', (array) $request->query->all('level')),
+            'channels' => (array) $request->query->all('channel'),
+            'search' => trim((string) $request->query->get('search', '')),
+            'since' => (string) $request->query->get('since', ''),
+        ];
+        $availableLevels = [];
+        $availableChannels = [];
+
         if (file_exists($logFile)) {
             $limit = (int) $request->query->get('limit', 100);
-            $errors = $this->parseLogFile($logFile, $limit);
+            $errors = $this->parseLogFile($logFile, $limit, $filters, $availableLevels, $availableChannels);
 
             // Calculate statistics
             $errorLevels = [];
@@ -414,11 +423,17 @@ class MonitoringController extends AbstractController
             ];
         }
 
+        sort($availableLevels);
+        sort($availableChannels);
+
         return $this->render('monitoring/errors.html.twig', [
             'errors' => $errors,
             'error_stats' => $errorStats,
             'log_file' => $logFile,
             'has_log' => file_exists($logFile),
+            'filters' => $filters,
+            'available_levels' => $availableLevels,
+            'available_channels' => $availableChannels,
         ]);
     }
     #[Route('/admin/monitoring/audit-log', name: 'monitoring_audit_log', methods: ['GET'])]
@@ -456,8 +471,27 @@ class MonitoringController extends AbstractController
     /**
      * Parse log file and extract errors
      */
-    private function parseLogFile(string $logFile, int $limit = 100): array
+    /**
+     * @param array{levels?: array<string>, channels?: array<string>, search?: string, since?: string} $filters
+     * @param array<string> $availableLevels populated for facet rendering
+     * @param array<string> $availableChannels populated for facet rendering
+     */
+    private function parseLogFile(string $logFile, int $limit = 100, array $filters = [], array &$availableLevels = [], array &$availableChannels = []): array
     {
+        $sinceTs = null;
+        if (!empty($filters['since'])) {
+            $sinceTs = match ($filters['since']) {
+                '1h' => time() - 3600,
+                '24h' => time() - 86400,
+                '7d' => time() - 604800,
+                '30d' => time() - 2592000,
+                default => null,
+            };
+        }
+        $searchLower = strtolower($filters['search'] ?? '');
+        $levelsFilter = $filters['levels'] ?? [];
+        $channelsFilter = $filters['channels'] ?? [];
+
         $errors = [];
         $handle = fopen($logFile, 'r');
 
@@ -496,10 +530,37 @@ class MonitoringController extends AbstractController
             // Simple regex to match Symfony log format
             // Format: [2024-01-01 12:00:00] app.LEVEL: message {"context":"data"}
             if (preg_match('/\[(.*?)\]\s+(\w+)\.(\w+):\s+(.*)/', $line, $matches)) {
+                $level = strtoupper($matches[3]);
+                $channel = $matches[2];
+
+                // facet collection (pre-filter so user sees all options)
+                if (!in_array($level, $availableLevels, true)) {
+                    $availableLevels[] = $level;
+                }
+                if (!in_array($channel, $availableChannels, true)) {
+                    $availableChannels[] = $channel;
+                }
+
+                if ($levelsFilter !== [] && !in_array($level, $levelsFilter, true)) {
+                    continue;
+                }
+                if ($channelsFilter !== [] && !in_array($channel, $channelsFilter, true)) {
+                    continue;
+                }
+                if ($searchLower !== '' && !str_contains(strtolower($matches[4]), $searchLower)) {
+                    continue;
+                }
+                if ($sinceTs !== null) {
+                    $entryTs = strtotime($matches[1]);
+                    if ($entryTs !== false && $entryTs < $sinceTs) {
+                        continue;
+                    }
+                }
+
                 $errors[] = [
                     'timestamp' => $matches[1],
-                    'channel' => $matches[2],
-                    'level' => strtoupper($matches[3]),
+                    'channel' => $channel,
+                    'level' => $level,
                     'message' => $matches[4],
                     'raw' => $line,
                 ];

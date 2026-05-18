@@ -126,6 +126,19 @@ monitoring:
         no_log_file_text: 'The log file <code>%file%</code> does not exist yet. Errors will be logged here once they occur.'
         show_full: 'Show full log entry'
         important_notes: 'Important Notes'
+        filter:
+            level: Level
+            channel: Channel
+            since: 'Time range'
+            since_all: All
+            since_1h: 'Last hour'
+            since_24h: 'Last 24 hours'
+            since_7d: 'Last 7 days'
+            since_30d: 'Last 30 days'
+            search: Search
+            search_placeholder: 'Error text...'
+            apply: Apply
+            reset: Reset
     audit_log:
         title: 'Audit Log'
         total_entries: 'Total Entries'
