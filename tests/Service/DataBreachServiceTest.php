@@ -9,6 +9,7 @@ use App\Entity\Incident;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DataBreachRepository;
 use App\Service\AuditLogger;
 use App\Service\DataBreachService;
@@ -32,6 +33,7 @@ class DataBreachServiceTest extends TestCase
     private MockObject $auditLogger;
     private MockObject $logger;
     private MockObject $workflowAutoProgressionService;
+    private MockObject $lifecycleService;
     private DataBreachService $service;
     private MockObject $tenant;
 
@@ -43,6 +45,8 @@ class DataBreachServiceTest extends TestCase
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
+        // X.6: LifecycleService mock — transition() is a no-op in unit tests.
+        $this->lifecycleService = $this->createMock(LifecycleTransitionInterface::class);
 
         $this->tenant = $this->createMock(Tenant::class);
         $this->tenant->method('getId')->willReturn(1);
@@ -53,8 +57,37 @@ class DataBreachServiceTest extends TestCase
             $this->tenantContext,
             $this->auditLogger,
             $this->logger,
-            $this->workflowAutoProgressionService
+            $this->workflowAutoProgressionService,
+            $this->lifecycleService,
         );
+    }
+
+    #[Test]
+    public function testSubmitForAssessmentCallsLifecycleTransitionAssess(): void
+    {
+        $dataBreach = $this->createMock(DataBreach::class);
+        $dataBreach->method('getId')->willReturn(1);
+        $dataBreach->method('getStatus')->willReturn('draft');
+        $dataBreach->method('isComplete')->willReturn(true);
+        $dataBreach->method('getReferenceNumber')->willReturn('DB-2026-001');
+
+        $user = $this->createMock(User::class);
+        $user->method('getEmail')->willReturn('assessor@example.test');
+
+        $this->entityManager->expects($this->once())->method('flush');
+
+        // X.6: verify LifecycleService::transition() is called with the 'assess' transition.
+        $this->lifecycleService->expects($this->once())->method('transition')->with(
+            $dataBreach,
+            'data_breach_lifecycle',
+            'assess',
+            $user,
+            $this->stringContains('Art. 33'),
+        );
+
+        $result = $this->service->submitForAssessment($dataBreach, $user);
+
+        $this->assertSame($dataBreach, $result);
     }
 
     #[Test]
