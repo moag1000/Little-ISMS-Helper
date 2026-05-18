@@ -6,6 +6,12 @@
 
 {% block body %}
 <div class="container">
+    {# Lifecycle Y.5 — status transition dropdown (threat_intelligence_lifecycle) #}
+    {% include '_components/_lifecycle_toolbar.html.twig' with {
+        entity: threat,
+        entity_type: 'threat-intelligence',
+        workflow_name: 'threat_intelligence_lifecycle'
+    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'threat.title.index'|trans({}, 'threat'), url: path('app_threat_intelligence_index'), icon: 'nav-shield-alert' },

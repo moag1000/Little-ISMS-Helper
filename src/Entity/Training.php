@@ -139,6 +139,14 @@ class Training
     )]
     private ?string $status = 'planned';
 
+    /**
+     * Optimistic-locking version field for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on training_lifecycle.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
     private ?string $materials = null;
@@ -702,4 +710,8 @@ public function __construct()
         return $this;
     }
 
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
+    }
 }

@@ -1,0 +1,53 @@
+framework:
+    workflows:
+        training_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\Training
+            initial_marking: planned
+            places:
+                - planned
+                - scheduled
+                - in_progress
+                - completed
+                - cancelled
+            transitions:
+                schedule:
+                    from: planned
+                    to: scheduled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: training
+                start:
+                    from: scheduled
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: training
+                complete:
+                    from: in_progress
+                    to: completed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: training
+                cancel_from_planned:
+                    from: planned
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                cancel_from_scheduled:
+                    from: scheduled
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                cancel_from_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true

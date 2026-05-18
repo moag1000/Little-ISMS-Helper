@@ -1,0 +1,110 @@
+framework:
+    workflows:
+        change_request_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\ChangeRequest
+            initial_marking: draft
+            places:
+                - draft
+                - submitted
+                - under_review
+                - approved
+                - rejected
+                - scheduled
+                - implemented
+                - verified
+                - closed
+                - cancelled
+            transitions:
+                # ISO 27001 A.8.32 — Change-Management. Approve, Implemented und
+                # Closed sind die drei kritischen SoD-Gates: jeweils 4-Augen.
+                submit:
+                    from: draft
+                    to: submitted
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_USER]
+                        module: change_requests
+                start_review:
+                    from: submitted
+                    to: under_review
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        module: change_requests
+                approve:
+                    from: under_review
+                    to: approved
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        module: change_requests
+                reject:
+                    from: under_review
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: change_requests
+                schedule:
+                    from: approved
+                    to: scheduled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: change_requests
+                implement:
+                    from: scheduled
+                    to: implemented
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        module: change_requests
+                verify:
+                    from: implemented
+                    to: verified
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_AUDITOR]
+                        module: change_requests
+                close:
+                    from: verified
+                    to: closed
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        module: change_requests
+                cancel_from_draft:
+                    from: draft
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_USER]
+                        reason_required: true
+                        module: change_requests
+                cancel_from_submitted:
+                    from: submitted
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        module: change_requests
+                cancel_from_approved:
+                    from: approved
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: change_requests
+                cancel_from_scheduled:
+                    from: scheduled
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: change_requests
+                rework:
+                    from: rejected
+                    to: draft
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: change_requests

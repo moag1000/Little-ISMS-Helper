@@ -367,7 +367,9 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
             'business_continuity_plan[businessProcess]' => $this->testProcess->getId(),
             'business_continuity_plan[planOwner]' => 'New Owner',
             'business_continuity_plan[planOwnerUser]' => (string) $this->testUser->getId(),
-            'business_continuity_plan[status]' => 'draft',
+            // Status is intentionally NOT submitted: BusinessContinuityPlanType marks
+            // `status` as `disabled => true` (Lifecycle-bypass fix, Sprint Y.5). Status
+            // changes flow through LifecycleService::transition() only.
             'business_continuity_plan[activationCriteria]' => 'When systems fail',
             'business_continuity_plan[recoveryProcedures]' => 'Step 1: Do something',
             'business_continuity_plan[rto]' => '4',

@@ -297,7 +297,9 @@ class SupplierControllerTest extends WebTestCase
             'supplier[contactPerson]' => 'New Contact',
             'supplier[address]' => '456 New Street',
             'supplier[criticality]' => 'medium',
-            'supplier[status]' => 'active',
+            // Status is intentionally NOT submitted: SupplierType marks `status`
+            // as `disabled => true` (Lifecycle-bypass fix, Sprint Y.5). Status
+            // changes flow through LifecycleService::transition() only.
             'supplier[serviceProvided]' => 'Security monitoring services',
         ]);
 

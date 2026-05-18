@@ -74,7 +74,7 @@ class SeedBcPlanTemplatesCommand
             $plan->setDescription($data['description']);
             $plan->setPlanOwner($data['plan_owner']);
             $plan->setBcTeam($data['bc_team']);
-            $plan->setStatus(BusinessContinuityPlanStatus::Draft);
+            $plan->setStatus(BusinessContinuityPlanStatus::Draft); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist seed entity; 'draft' is the business_continuity_plan_lifecycle initial_marking)
             $plan->setActivationCriteria($data['activation_criteria']);
             $plan->setRolesAndResponsibilities($data['roles']);
             $plan->setRecoveryProcedures($data['recovery']);

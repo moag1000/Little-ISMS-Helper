@@ -1,0 +1,72 @@
+framework:
+    workflows:
+        threat_intelligence_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\ThreatIntelligence
+            initial_marking: new
+            places:
+                - new
+                - analyzing
+                - mitigated
+                - monitoring
+                - closed
+            transitions:
+                # NIS2 Art. 21(2)e + ISO 27001 A.5.7 — Threat-Intel-Lifecycle.
+                # Operativer Workflow, kein SoD-Zwang. `closed` braucht reason
+                # damit die Quelle dokumentiert ist.
+                start_analysis:
+                    from: new
+                    to: analyzing
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        module: threat
+                mark_mitigated:
+                    from: analyzing
+                    to: mitigated
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        module: threat
+                start_monitoring_from_analyzing:
+                    from: analyzing
+                    to: monitoring
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        module: threat
+                start_monitoring_from_mitigated:
+                    from: mitigated
+                    to: monitoring
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        module: threat
+                close_from_analyzing:
+                    from: analyzing
+                    to: closed
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: threat
+                close_from_mitigated:
+                    from: mitigated
+                    to: closed
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: threat
+                close_from_monitoring:
+                    from: monitoring
+                    to: closed
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: threat
+                reopen:
+                    from: closed
+                    to: analyzing
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: threat

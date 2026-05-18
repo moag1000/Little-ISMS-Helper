@@ -128,6 +128,15 @@ class ChangeRequest
     private ?string $status = 'draft';
 
     /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on change_request_lifecycle
+     * (ISO 27001 A.8.32 — change-management audit-trail).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * Optional ISO 27001 / DORA / NIS2 clause tag for §6.3/§8.1 differentiation.
      * Examples: "ISO 27001 §6.3", "ISO 27001 §8.1", "DORA Art. 6"
      */
@@ -845,5 +854,10 @@ class ChangeRequest
             'rejected', 'cancelled' => 'danger',
             default => 'secondary'
         };
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }

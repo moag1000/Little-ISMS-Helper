@@ -7,6 +7,12 @@
 {% block body %}
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 <div class="container">
+    {# Lifecycle Y.5 — status transition dropdown (risk_treatment_plan_lifecycle) #}
+    {% include '_components/_lifecycle_toolbar.html.twig' with {
+        entity: plan,
+        entity_type: 'risk-treatment-plan',
+        workflow_name: 'risk_treatment_plan_lifecycle'
+    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index') },

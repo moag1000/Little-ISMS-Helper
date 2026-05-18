@@ -1,0 +1,29 @@
+{#
+ # Aurora v4 — Lifecycle Toolbar (Sprint Y.5)
+ #
+ # Lightweight wrapper around the lifecycle-actions dropdown. Use this on
+ # entity show-pages where a separate status-chip is not yet wired (the
+ # 10 Sprint-Y.5 entities — Training, RiskTreatmentPlan, Supplier,
+ # PrototypeProtectionAssessment, BusinessContinuityPlan, Patch,
+ # ManagementReview, ChangeRequest, ThreatIntelligence, BCExercise).
+ #
+ # Usage:
+ #   {% include '_components/_lifecycle_toolbar.html.twig' with {
+ #       entity: training,
+ #       entity_type: 'training',
+ #       workflow_name: 'training_lifecycle'
+ #   } only %}
+ #
+ # Params:
+ #   entity         object  Entity with .id + .status
+ #   entity_type    string  URL slug registered in EntityTypeRegistry
+ #   workflow_name  string  Workflow name (must match YAML)
+ #}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
+<div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+    <span class="fa-cyber-badge fa-cyber-badge--neutral" data-testid="lifecycle-status">
+        <i class="fa-icon fa-icon--ui-flag me-1" aria-hidden="true"></i>
+        {{ entity.status is iterable ? entity.status.value|default('') : (entity.status|default('')) }}
+    </span>
+    {{ _lifecycle_actions.dropdown(entity, entity_type, workflow_name) }}
+</div>

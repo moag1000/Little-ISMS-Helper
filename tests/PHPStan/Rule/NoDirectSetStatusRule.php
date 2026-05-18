@@ -41,6 +41,17 @@ final class NoDirectSetStatusRule implements Rule
         'App\\Entity\\Vulnerability',
         'App\\Entity\\DataSubjectRequest',
         'App\\Entity\\Consent',
+        // Sprint Y.5 — 10 additional lifecycle-managed entities
+        'App\\Entity\\Training',
+        'App\\Entity\\RiskTreatmentPlan',
+        'App\\Entity\\Supplier',
+        'App\\Entity\\PrototypeProtectionAssessment',
+        'App\\Entity\\BusinessContinuityPlan',
+        'App\\Entity\\Patch',
+        'App\\Entity\\ManagementReview',
+        'App\\Entity\\ChangeRequest',
+        'App\\Entity\\ThreatIntelligence',
+        'App\\Entity\\BCExercise',
     ];
 
     private const ALLOWED_FILE_PATTERNS = [

@@ -944,7 +944,7 @@ final class ManagementReportService
             $referenceDate->format('Y-m-d')
         ));
         $review->setReviewDate($referenceDate instanceof \DateTime ? $referenceDate : new \DateTime($referenceDate->format('Y-m-d')));
-        $review->setStatus('draft');
+        $review->setStatus('planned'); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'planned' is the management_review_lifecycle initial_marking, replacing legacy 'draft' value which was never a valid management_review status)
         $review->setCreatedAt(new DateTimeImmutable());
 
         // §9.3 (a) — Status of actions from previous management reviews

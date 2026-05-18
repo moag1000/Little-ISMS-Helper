@@ -110,13 +110,20 @@ final class ManagementReviewType extends AbstractType
                     'data-controller' => 'tom-select',
                 ],
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // Owned by `management_review_lifecycle`. ISO 27001 Cl. 9.3 —
+            // 4-eyes auf `complete` (Aufzeichnungs-Integrität). Transitions
+            // via LifecycleService::transition() only.
             ->add('status', ChoiceType::class, [
                 'label' => 'management_review.field.status',
+                'help' => 'management_review.help.status_readonly',
                 'choices' => [
                     'management_review.status.planned' => 'planned',
                     'management_review.status.completed' => 'completed',
                     'management_review.status.follow_up_required' => 'follow_up_required',
                 ],
+                'required' => false,
+                'disabled' => true,
                 'choice_translation_domain' => 'management_review',
             ])
             ->add('performanceEvaluation', TextareaType::class, [
