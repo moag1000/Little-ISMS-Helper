@@ -16,6 +16,7 @@ use App\Repository\IdentityProviderRoleMappingRepository;
 use App\Repository\SsoUserApprovalRepository;
 use App\Security\Voter\IdentityProviderVoter;
 use App\Security\Voter\SsoConfigVoter;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\Sso\OidcAuthenticationFlow;
@@ -32,8 +33,25 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * SSO Identity-Provider admin controller.
+ *
+ * Role-Scope Architecture (Phase 4a, spec
+ * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
+ *
+ * Authorization model:
+ *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} is the
+ *    baseline fence — Tenant-Admins configure SSO inside their own tenant
+ *    tree, SUPER_ADMIN transparently across any tenant.
+ *  - Cross-tenant attempts (modify/review entities belonging to a different
+ *    tenant) are rejected by passing the entity's tenant as the voter
+ *    subject — replaces the previously duplicated inline
+ *    `assertCanModify()` / `assertCanReview()` logic.
+ *  - Global IdPs (tenant == null) require SUPER_ADMIN — the voter rejects
+ *    `null` subjects for non-SUPER callers.
+ */
 #[Route('/admin/sso', name: 'admin_sso_')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class SsoProviderController extends AbstractController
 {
     use ModuleGatedControllerTrait;
@@ -312,18 +330,22 @@ final class SsoProviderController extends AbstractController
         return $out;
     }
 
+    /**
+     * Tenant-scope guard for IdentityProvider mutations.
+     *
+     * Global IdPs (tenant == null) require SUPER_ADMIN, enforced via
+     * {@see TenantScopedAdminVoter::ADMIN_GLOBAL_OP}. Tenant IdPs are
+     * gated by {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} against
+     * the provider's tenant — SUPER passes any, ROLE_ADMIN only within
+     * its accessible tenant tree.
+     */
     private function assertCanModify(IdentityProvider $provider): void
     {
         if ($provider->isGlobal()) {
-            $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+            $this->denyAccessUnlessGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP);
             return;
         }
-        $current = $this->tenantContext->getCurrentTenant();
-        $providerTenantId = $provider->getTenant()?->getId();
-        $currentTenantId = $current?->getId();
-        if (!$this->isGranted('ROLE_SUPER_ADMIN') && $providerTenantId !== $currentTenantId) {
-            throw $this->createAccessDeniedException('Cannot modify provider of another tenant.');
-        }
+        $this->denyAccessUnlessGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT, $provider->getTenant());
     }
 
     // ----------------------------- Approval Queue --------------------------------
@@ -396,16 +418,20 @@ final class SsoProviderController extends AbstractController
         return $this->redirectToRoute('admin_sso_approvals');
     }
 
+    /**
+     * Tenant-scope guard for SSO user-approval mutations.
+     *
+     * Mirrors {@see self::assertCanModify()}: global-tenant approvals
+     * require SUPER_ADMIN, tenant-scoped approvals require either
+     * SUPER_ADMIN or ROLE_ADMIN with access to the approval's tenant.
+     */
     private function assertCanReview(SsoUserApproval $approval): void
     {
         $tenant = $approval->getTenant();
         if ($tenant === null) {
-            $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
+            $this->denyAccessUnlessGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP);
             return;
         }
-        $current = $this->tenantContext->getCurrentTenant();
-        if (!$this->isGranted('ROLE_SUPER_ADMIN') && $tenant->getId() !== $current?->getId()) {
-            throw $this->createAccessDeniedException('Cannot review approvals of another tenant.');
-        }
+        $this->denyAccessUnlessGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT, $tenant);
     }
 }

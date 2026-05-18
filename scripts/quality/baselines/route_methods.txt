@@ -22,8 +22,8 @@ src/Controller/Admin/Notification/NotificationRuleController.php:32
 src/Controller/Admin/Notification/NotificationTemplateController.php:30
 src/Controller/Admin/QuickFixSettingsController.php:25
 src/Controller/Admin/RiskApprovalConfigController.php:26
-src/Controller/Admin/SsoProviderController.php:35
-src/Controller/Admin/SsoWizardController.php:36
+src/Controller/Admin/SsoProviderController.php:53
+src/Controller/Admin/SsoWizardController.php:44
 src/Controller/Admin/SupplierCriticalityController.php:23
 src/Controller/Admin/SystemSettings/ApiRateLimitsController.php:22
 src/Controller/Admin/SystemSettings/BackupSettingsController.php:22
