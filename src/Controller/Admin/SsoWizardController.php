@@ -10,6 +10,7 @@ use App\Form\Step\Sso\SsoDiscoveryStepType;
 use App\Form\Step\Sso\SsoPresetStepType;
 use App\Form\Step\Sso\SsoTestStepType;
 use App\Repository\IdentityProviderRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\Sso\OidcDiscoveryService;
@@ -32,9 +33,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Step 3: Test connection + domain bindings + activate
  *
  * The wizard builds a session-backed draft IdentityProvider, persisting only on step 3 confirm.
+ *
+ * Role-Scope Architecture (Phase 4a, spec
+ * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`): class-level
+ * {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} restricts the wizard to
+ * Tenant-Admins acting in their own tenant tree (SUPER_ADMIN sees all). The
+ * draft provider is implicitly scoped to the current tenant via
+ * {@see self::getDraftProvider()} unless SUPER_ADMIN opts for a global IdP.
  */
 #[Route('/admin/sso/wizard', name: 'admin_sso_wizard_')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class SsoWizardController extends AbstractController
 {
     use ModuleGatedControllerTrait;
