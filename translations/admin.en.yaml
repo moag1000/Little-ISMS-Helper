@@ -39,6 +39,8 @@ admin:
             mappings: { label: 'Cross-framework mappings', desc: 'Requirement links between frameworks' }
             mapping_quality: { label: 'Mapping quality score', desc: 'Review pipeline for mapping suggestions' }
             industry_baselines: { label: 'Industry baselines', desc: 'Pre-filled risk/asset/control sets per NACE' }
+            industry_preset: { label: 'Industry presets', desc: 'Create a demo tenant from an industry bundle' }
+            compliance_mapping_seeds: { label: 'Mapping seeds', desc: 'Pre-filled cross-framework mapping suggestions' }
             tags: { label: 'Tags', desc: 'Framework tags + bulk-apply actions' }
             audit_log: { label: 'Audit log', desc: 'Tamper-evident activity trail' }
             audit_retention: { label: 'Retention policy', desc: 'Audit-log retention windows' }
