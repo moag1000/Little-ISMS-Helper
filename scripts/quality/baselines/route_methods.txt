@@ -56,7 +56,7 @@ src/Controller/CorrectiveActionController.php:26
 src/Controller/Dashboard/ComplianceManagerDashboardController.php:36
 src/Controller/Dashboard/DpoDashboardController.php:30
 src/Controller/DataBreachController.php:28
-src/Controller/DataSubjectRequestController.php:22
+src/Controller/DataSubjectRequestController.php:23
 src/Controller/DeltaAssessmentController.php:29
 src/Controller/EvidenceController.php:29
 src/Controller/Export/FilteredExportController.php:27
