@@ -434,7 +434,7 @@
 
     {# FairyAurora v4.0 — Alva Companion Dock (Phase 4)
        Shown to authenticated users on non-setup routes who have the companion enabled. #}
-    {% if is_granted('IS_AUTHENTICATED_FULLY')
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED')
         and app.user is not null
         and not is_setup_route
         and app.user.alvaCompanionEnabled is defined

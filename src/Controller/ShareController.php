@@ -34,7 +34,7 @@ class ShareController extends AbstractController
      * Handle shared content from Web Share Target API
      */
     #[Route('/share', name: 'app_share_target', methods: ['GET', 'POST'])]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
     public function handleShare(Request $request): Response
     {
         $title = $request->request->get('title') ?? $request->query->get('title', '');
@@ -82,7 +82,7 @@ class ShareController extends AbstractController
      * Process the shared content into a specific entity
      */
     #[Route('/share/process', name: 'app_share_process', methods: ['POST'])]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
     public function processShare(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('share_process', $request->request->get('_token'))) {
