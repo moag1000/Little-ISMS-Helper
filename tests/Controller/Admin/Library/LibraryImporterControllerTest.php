@@ -62,15 +62,22 @@ final class LibraryImporterControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
+        // Library import is `W global` per Role-Scope spec §3.1 — writes global
+        // ComplianceFramework rows shared across all tenants. Restricted to
+        // ROLE_SUPER_ADMIN via TenantScopedAdminVoter::ADMIN_GLOBAL_OP since
+        // Phase 4b. Prefer a SUPER user fixture; fall back to the legacy admin
+        // user (skipped when neither is present so the test stays clean on
+        // empty fixtures).
         /** @var \App\Repository\UserRepository $userRepo */
         $userRepo = static::getContainer()->get('App\Repository\UserRepository');
-        $adminUser = $userRepo->findOneBy(['email' => 'admin@example.com']);
+        $superUser = $userRepo->findOneBy(['email' => 'superadmin@example.com'])
+            ?? $userRepo->findOneBy(['email' => 'admin@example.com']);
 
-        if ($adminUser === null) {
+        if ($superUser === null) {
             self::markTestSkipped('No admin user found in test database.');
         }
 
-        $client->loginUser($adminUser);
+        $client->loginUser($superUser);
         $client->request('POST', '/de/admin/library/import?type=bsi');
 
         // Import may succeed or show partial result — both are 200

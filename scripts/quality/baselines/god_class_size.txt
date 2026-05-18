@@ -19,7 +19,7 @@ src/Controller/Admin/DataRepairController.php:LOC=1043 deps=0
 src/Controller/QuickFixController.php:LOC=961 deps=0
 src/Controller/UserManagementController.php:LOC=927 deps=0
 src/Controller/TenantManagementController.php:LOC=915 deps=0
-src/Controller/Admin/ComplianceImportController.php:LOC=913 deps=0
+src/Controller/Admin/ComplianceImportController.php:LOC=922 deps=0
 src/Controller/IncidentController.php:LOC=830 deps=0
 src/Controller/ComplianceWizardController.php:LOC=761 deps=0
 src/Controller/MonitoringController.php:LOC=727 deps=0
