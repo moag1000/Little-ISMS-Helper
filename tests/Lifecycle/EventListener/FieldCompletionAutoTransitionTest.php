@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Lifecycle\EventListener;
 
 use App\Lifecycle\EventListener\FieldCompletionAutoTransition;
+use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Lifecycle\LifecycleTransitionInterface;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use PHPUnit\Framework\Attributes\Test;
@@ -130,6 +131,22 @@ final class FieldCompletionAutoTransitionTest extends TestCase
         // Must not propagate the exception
         $listener->postUpdate($this->makeEvent($entity));
         self::assertTrue(true); // reached without throw
+    }
+
+    #[Test]
+    public function implementsFieldCompletionAutoTransitionInterface(): void
+    {
+        // Y.1 gap: verify the concrete listener satisfies the interface so that
+        // test doubles and service-container bindings can use the interface type.
+        $registry = $this->createMock(Registry::class);
+        $lifecycleService = $this->createMock(LifecycleTransitionInterface::class);
+        $listener = new FieldCompletionAutoTransition(
+            workflowRegistry: $registry,
+            lifecycleService: $lifecycleService,
+            propertyAccessor: PropertyAccess::createPropertyAccessor(),
+        );
+
+        self::assertInstanceOf(FieldCompletionAutoTransitionInterface::class, $listener);
     }
 
     // ── helpers ───────────────────────────────────────────────────────────────
