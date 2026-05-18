@@ -11,6 +11,7 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Service\ComplianceAnalyticsService;
+use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,6 +44,7 @@ class ComplianceManagerDashboardController extends AbstractController
         private readonly DocumentRepository $documentRepo,
         private readonly TenantContext $tenantContext,
         private readonly ComplianceRequirementRepository $requirementRepo,
+        private readonly RoleDashboardService $roleDashboardService,
     ) {
     }
 
@@ -114,6 +116,10 @@ class ComplianceManagerDashboardController extends AbstractController
         // Cross-framework mapping coverage (best-effort summary)
         $mappingCoverage = $frameworkComparison['summary']['cross_mapping_coverage'] ?? null;
 
+        // Z.0 — workflow transparency
+        $pendingApprovals = $this->roleDashboardService->getPendingApprovals();
+        $lifecycleStuck   = $this->roleDashboardService->getLifecycleStuck();
+
         return $this->render('dashboards/compliance_manager.html.twig', [
             'dashboard' => [
                 'frameworks'         => $frameworks,
@@ -126,6 +132,8 @@ class ComplianceManagerDashboardController extends AbstractController
                 'frameworks_active'  => count($frameworks),
                 'avg_compliance'     => $frameworkComparison['summary']['average_compliance'] ?? 0,
                 'at_risk_count'      => $frameworkComparison['summary']['at_risk'] ?? 0,
+                'pending_approvals'  => $pendingApprovals,
+                'lifecycle_stuck'    => $lifecycleStuck,
             ],
         ]);
     }

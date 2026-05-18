@@ -6,6 +6,7 @@
 {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
+{% import '_components/_lifecycle_pending_banner.html.twig' as _lifecycle_pending_banner %}
 
 {% block title %}{{ risk.title }}{% endblock %}
 
@@ -58,6 +59,9 @@
     {% if isInherited is defined and isInherited %}
         {{ _fa_alert.render({ variant: 'info', class: 'mb-3', title: 'corporate.inheritance.view_only_title'|trans({}, 'tenant'), body: 'corporate.inheritance.risk_inherited_message'|trans({}, 'tenant') }) }}
     {% endif %}
+
+    {# Z.0 — Workflow pending action banner #}
+    {{ _lifecycle_pending_banner.render(workflow_info|default({})) }}
 
     {# Lifecycle X.3b — status chip + transition dropdown #}
     <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">

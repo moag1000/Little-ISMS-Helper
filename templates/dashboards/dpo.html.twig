@@ -180,6 +180,54 @@
         </div>
     </section>
 
+    {# Z.0 — Workflow Transparency: Pending Approvals + Stuck Workflows #}
+    {% if dashboard.pending_approvals is defined and dashboard.pending_approvals|length > 0 %}
+    <section class="fa-section mb-4" id="pending-approvals">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'dpo.section.pending_approvals'|trans({}, 'dashboards') }}</h2>
+        </div>
+        <div class="fa-section__body">
+            <div class="list-group">
+                {% for approval in dashboard.pending_approvals %}
+                    <a href="{{ path('app_workflow_instance_show', {id: approval.id}) }}"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ approval.title }}</strong>
+                            <small class="d-block text-muted">{{ approval.entity_type }}</small>
+                        </div>
+                        {% if approval.due_date %}
+                            <span class="badge bg-warning text-dark">{{ approval.due_date|date('d.m.Y') }}</span>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if dashboard.lifecycle_stuck is defined and dashboard.lifecycle_stuck|length > 0 %}
+    <section class="fa-section mb-4" id="lifecycle-stuck">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'dpo.section.lifecycle_stuck'|trans({}, 'dashboards') }}</h2>
+        </div>
+        <div class="fa-section__body">
+            <div class="list-group">
+                {% for instance in dashboard.lifecycle_stuck %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ instance.workflow ? instance.workflow.name : 'Workflow' }}</strong>
+                            <small class="d-block text-muted">{{ instance.entityType }} #{{ instance.entityId }}</small>
+                        </div>
+                        {% if instance.dueDate %}
+                            <span class="badge bg-danger">{{ instance.dueDate|date('d.m.Y') }}</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
     {# DORA Obligation status — only for DORA-obligated tenants (CTPP/financial entity) #}
     {% if is_module_active('nis2_dora') and is_dora_obligated() %}
     <section class="mt-4">

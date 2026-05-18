@@ -316,6 +316,89 @@
         </div>
     </div>
 
+    {# Z.0 — Workflow Transparency: Pending Approvals + Stuck Workflows #}
+    <div class="row g-4 mt-2">
+        {# Pending Approvals #}
+        <div class="col-lg-6">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fa-icon fa-icon--nav-workflow me-2" aria-hidden="true"></i>
+                            {{ 'risk_manager.section.pending_approvals'|trans({}, 'dashboards') }}
+                        </h5>
+                        {% include '_components/_badge.html.twig' with { variant: dashboard.pending_approvals|length > 0 ? 'warning' : 'success', content: dashboard.pending_approvals|length } %}
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+                    {% if dashboard.pending_approvals|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for approval in dashboard.pending_approvals %}
+                        <a href="{{ path('app_workflow_instance_show', {id: approval.id}) }}" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ approval.title }}</h6>
+                                    <small class="text-muted">{{ approval.entity_type }}</small>
+                                </div>
+                                {% if approval.due_date %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: approval.due_date|date('d.m.Y') } %}
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ _fa_empty_state.render({
+                        mood: 'happy',
+                        title: 'risk_manager.no_pending_approvals'|trans({}, 'dashboards')
+                    }) }}
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+
+        {# Lifecycle Stuck #}
+        <div class="col-lg-6">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fa-icon fa-icon--status-warning text-danger me-2" aria-hidden="true"></i>
+                            {{ 'risk_manager.section.lifecycle_stuck'|trans({}, 'dashboards') }}
+                        </h5>
+                        {% include '_components/_badge.html.twig' with { variant: dashboard.lifecycle_stuck|length > 0 ? 'danger' : 'success', content: dashboard.lifecycle_stuck|length } %}
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+                    {% if dashboard.lifecycle_stuck|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for instance in dashboard.lifecycle_stuck %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ instance.workflow ? instance.workflow.name : 'Workflow' }}</h6>
+                                    <small class="text-muted">{{ instance.entityType }} #{{ instance.entityId }}</small>
+                                </div>
+                                {% if instance.dueDate %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: instance.dueDate|date('d.m.Y') } %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ _fa_empty_state.render({
+                        mood: 'celebrating',
+                        title: 'risk_manager.no_lifecycle_stuck'|trans({}, 'dashboards')
+                    }) }}
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
         </div>{# /skeleton-content #}
     </div>{# /skeleton-controller #}
 </main>

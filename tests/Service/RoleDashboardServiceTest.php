@@ -121,6 +121,60 @@ class RoleDashboardServiceTest extends TestCase
         $this->assertArrayHasKey('risk_appetite', $result);
         $this->assertArrayHasKey('risk_velocity', $result);
         $this->assertArrayHasKey('untreated_risks', $result);
+        // Z.0 — workflow transparency keys must be present
+        $this->assertArrayHasKey('pending_approvals', $result);
+        $this->assertArrayHasKey('lifecycle_stuck', $result);
+    }
+
+    #[Test]
+    public function testGetPendingApprovalsIsPublicAndReturnsArray(): void
+    {
+        // Z.0 — getPendingApprovals() must be public and return array
+        $this->security->method('getUser')->willReturn(null);
+        $service = $this->createService();
+
+        $result = $service->getPendingApprovals();
+
+        $this->assertIsArray($result);
+        $this->assertEmpty($result, 'No approvals when user is null');
+    }
+
+    #[Test]
+    public function testGetLifecycleStuckReturnsEmptyWhenNoTenant(): void
+    {
+        // Z.0 — getLifecycleStuck() returns [] when no tenant context
+        $this->tenantContext->method('getCurrentTenant')->willReturn(null);
+        $service = $this->createService();
+
+        $result = $service->getLifecycleStuck();
+
+        $this->assertIsArray($result);
+        $this->assertEmpty($result, 'No stuck workflows when tenant is null');
+    }
+
+    #[Test]
+    public function testGetWorkflowInfoForEntityReturnsEmptyWhenNoInstances(): void
+    {
+        // Z.0 — getWorkflowInfoForEntity() returns [] when no active instances
+        $this->workflowInstanceRepository->method('findByEntity')->willReturn([]);
+        $service = $this->createService();
+
+        $result = $service->getWorkflowInfoForEntity('Risk', 42);
+
+        $this->assertIsArray($result);
+        $this->assertEmpty($result, 'Empty dict when no pending workflow instances for entity');
+    }
+
+    #[Test]
+    public function testGetWorkflowInfoForEntityReturnsEmptyWhenEntityIdNull(): void
+    {
+        // Z.0 — null entityId is gracefully handled
+        $service = $this->createService();
+
+        $result = $service->getWorkflowInfoForEntity('Risk', null);
+
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
     }
 
     #[Test]
@@ -387,6 +441,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->incidentRepository->method('findAll')->willReturn([]);
         $this->controlRepository->method('findApplicableControls')->willReturn([]);
         $this->workflowInstanceRepository->method('findPendingForUser')->willReturn([]);
+        $this->workflowInstanceRepository->method('findOverdueForTenant')->willReturn([]);
         $this->security->method('getUser')->willReturn(null);
     }
 
@@ -467,6 +522,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->incidentRepository->method('findAll')->willReturn([]);
         $this->controlRepository->method('findApplicableControls')->willReturn([]);
         $this->workflowInstanceRepository->method('findPendingForUser')->willReturn([]);
+        $this->workflowInstanceRepository->method('findOverdueForTenant')->willReturn([]);
         $this->security->method('getUser')->willReturn(null);
     }
 
@@ -547,6 +603,7 @@ class RoleDashboardServiceTest extends TestCase
         $this->riskRepository->method('findAll')->willReturn([]);
         $this->incidentRepository->method('findAll')->willReturn([]);
         $this->workflowInstanceRepository->method('findPendingForUser')->willReturn([]);
+        $this->workflowInstanceRepository->method('findOverdueForTenant')->willReturn([]);
         $this->security->method('getUser')->willReturn(null);
     }
 

@@ -5,9 +5,10 @@ tests/Controller/CertificationBundleControllerKonzernTest.php:175
 tests/Controller/CertificationBundleControllerKonzernTest.php:194
 tests/Controller/CommentControllerTest.php:182
 tests/Controller/ComplianceControllerTest.php:163
-tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:115
-tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:145
-tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:177
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:122
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:152
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:184
+tests/Controller/Dashboard/ComplianceManagerDashboardControllerTest.php:207
 tests/Controller/DocumentControllerTest.php:357
 tests/Controller/DocumentControllerTest.php:428
 tests/Controller/DocumentControllerTest.php:486

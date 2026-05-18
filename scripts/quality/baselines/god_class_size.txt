@@ -9,7 +9,7 @@ src/Service/PolicyWizard/DocumentGenerator.php:LOC=1869 deps=15
 src/Service/DashboardStatisticsService.php:LOC=1804 deps=25
 src/Service/Export/CertificationBundleExporter.php:LOC=1580 deps=19
 src/Controller/PolicyWizardController.php:LOC=1419 deps=0
-src/Controller/RiskController.php:LOC=1304 deps=0
+src/Controller/RiskController.php:LOC=1311 deps=0
 src/Controller/ManagementReportController.php:LOC=1293 deps=0
 src/Controller/DocumentController.php:LOC=1164 deps=0
 src/Service/DataIntegrityService.php:LOC=1861 deps=26
@@ -27,7 +27,7 @@ src/Controller/MonitoringController.php:LOC=666 deps=0
 src/Controller/AnalyticsController.php:LOC=651 deps=0
 src/Controller/AuditController.php:LOC=641 deps=0
 src/Service/ScheduledReportService.php:LOC=619 deps=22
+src/Controller/DPIAController.php:LOC=612 deps=0
 src/Controller/AssetController.php:LOC=603 deps=0
-src/Controller/DPIAController.php:LOC=603 deps=0
 src/Service/ComplianceFrameworkLoaderService.php:LOC=537 deps=26
 src/Service/ComplianceLoaderFixerService.php:LOC=256 deps=28

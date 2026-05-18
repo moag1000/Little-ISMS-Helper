@@ -1,0 +1,52 @@
+{#
+ # FairyAurora v4 — Lifecycle Pending Action Banner (Z.0 Workflow Transparency)
+ #
+ # Renders an info/warning banner on entity show-pages when the current user
+ # has a pending workflow approval action for that entity.
+ #
+ # Data shape of workflow_info (pre-computed by controller — NO N+1 here):
+ #   workflow_info = {
+ #     id:           int|null,     WorkflowInstance id
+ #     workflow_id:  int|null,     Workflow definition id
+ #     title:        string,       Workflow name
+ #     status:       string,       'pending' | 'in_progress'
+ #     due_date:     DateTimeImmutable|null,
+ #     step_name:    string|null,  Current step label (optional)
+ #     stuck:        bool,         true when past due_date
+ #   }
+ #
+ # Usage (entity show-page):
+ #   {% import '_components/_lifecycle_pending_banner.html.twig' as _lifecycle_pending_banner %}
+ #   {{ _lifecycle_pending_banner.render(workflow_info) }}
+ #
+ # Only renders when workflow_info is not empty.
+ # Translation domain: 'workflows'
+ #}
+
+{% macro render(workflow_info) %}
+{% if workflow_info is not empty and workflow_info.id is defined and workflow_info.id %}
+    {%- set _stuck = workflow_info.stuck|default(false) -%}
+    {%- set _variant = _stuck ? 'warning' : 'info' -%}
+    {%- set _icon = _stuck ? 'status-warning' : 'nav-workflow' -%}
+    <div class="fa-alert fa-alert--{{ _variant }} mb-3" role="alert" data-testid="lifecycle-pending-banner">
+        <i class="fa-icon fa-icon--{{ _icon }} fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body">
+            <div class="fa-alert__title">
+                {%- if _stuck -%}
+                    {{ 'lifecycle.pending_banner.stuck_title'|trans({}, 'workflows') }}
+                {%- else -%}
+                    {{ 'lifecycle.pending_banner.pending_title'|trans({}, 'workflows') }}
+                {%- endif -%}
+            </div>
+            <p class="fa-alert__message">
+                {{ 'lifecycle.pending_banner.workflow_label'|trans({}, 'workflows') }}:
+                <strong>{{ workflow_info.title }}</strong>
+                {%- if workflow_info.step_name is defined and workflow_info.step_name %} — {{ workflow_info.step_name }}{%- endif -%}
+                {%- if workflow_info.due_date is defined and workflow_info.due_date -%}
+                    &nbsp;·&nbsp;{{ 'lifecycle.pending_banner.due'|trans({}, 'workflows') }}: <strong>{{ workflow_info.due_date|date('d.m.Y H:i') }}</strong>
+                {%- endif -%}
+            </p>
+        </div>
+    </div>
+{% endif %}
+{% endmacro %}

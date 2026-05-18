@@ -12,7 +12,7 @@ src/Controller/ModuleManagementController.php:24:/modules/
 src/Controller/ContextController.php:30:/context/
 src/Controller/ComplianceMappingController.php:66:/compliance/mapping/
 src/Controller/DeploymentWizardController.php:80:/setup/
-src/Controller/DPIAController.php:47:/dpia/
+src/Controller/DPIAController.php:49:/dpia/
 src/Controller/ReportController.php:43:/reports/
 src/Controller/BCMController.php:23:/bcm/
 src/Controller/BusinessProcessController.php:40:/bcm/business-process/
@@ -30,7 +30,7 @@ src/Controller/CrisisTeamController.php:36:/crisis-team/
 src/Controller/BCExerciseController.php:33:/bc-exercise/
 src/Controller/ManagementReviewController.php:33:/management-review/
 src/Controller/IncidentController.php:66:/incident/
-src/Controller/RiskController.php:82:/risk/
+src/Controller/RiskController.php:84:/risk/
 src/Controller/RiskAppetiteController.php:30:/risk-appetite/
 src/Controller/PatchController.php:30:/patch/
 src/Controller/SupplierController.php:38:/supplier/
