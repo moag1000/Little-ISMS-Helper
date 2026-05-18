@@ -263,7 +263,10 @@ class SchemaHealthService
 
         try {
             $conn->executeStatement($sql);
-        } catch (\Doctrine\DBAL\Exception\DriverException $e) {
+        } catch (\Doctrine\DBAL\Exception $e) {
+            // Broadened from DriverException to base Exception so we catch
+            // errno 1822/1005 which DBAL 4.x may surface as generic
+            // \Doctrine\DBAL\Exception (not the DriverException subclass).
             $msg = $e->getMessage();
 
             // Pattern: SQLSTATE[HY000]: General error: 1832/1833 Cannot change
