@@ -1015,11 +1015,20 @@ class DataRepairController extends AbstractController
                 'admin',
             ));
         } elseif ($result['success']) {
-            $this->addFlash('success', $this->translator->trans(
+            $autoMarkedCount = count($result['auto_marked'] ?? []);
+            $message = $this->translator->trans(
                 'admin.data_repair.schema.reconcile_applied',
                 ['%count%' => $result['executed']],
                 'admin',
-            ));
+            );
+            if ($autoMarkedCount > 0) {
+                $message .= ' · ' . $this->translator->trans(
+                    'admin.data_repair.schema.auto_marked_migrations',
+                    ['%count%' => $autoMarkedCount],
+                    'admin',
+                );
+            }
+            $this->addFlash('success', $message);
         } else {
             $this->addFlash('error', $this->translator->trans(
                 'admin.data_repair.schema.reconcile_failed',

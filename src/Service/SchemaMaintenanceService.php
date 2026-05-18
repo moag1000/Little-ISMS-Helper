@@ -251,15 +251,15 @@ class SchemaMaintenanceService
      */
     public function forceSchemaUpdate(string $actor = 'system'): array
     {
-        /** @var EntityManagerInterface $em */
-        $em = $this->managerRegistry->getManager();
-        $metadata = $em->getMetadataFactory()->getAllMetadata();
-        $tool = new SchemaTool($em);
-        $sql = $tool->getUpdateSchemaSql($metadata, true); // saveMode=true
+        // Delegate to applyUpdate's FK-aware envelope which handles
+        // errno 1091/1176/1832/1833/1822/150 + multi-pass convergence +
+        // phantom-drift detection. Force = bypass migration gate so the
+        // operator can recover even with pending migrations.
+        $result = $this->schemaHealthService->applyUpdate($actor, bypassMigrationGate: true);
 
-        $statementsCount = count($sql);
+        $statementsCount = count($result['executed_sql']);
 
-        if ($statementsCount === 0) {
+        if ($statementsCount === 0 && $result['success']) {
             $this->auditLogger->logCustom(
                 'admin.schema.force_update.noop',
                 'Doctrine',
@@ -271,24 +271,16 @@ class SchemaMaintenanceService
             return ['success' => true, 'statements_executed' => 0, 'error' => null];
         }
 
-        try {
-            $conn = $em->getConnection();
-            $conn->executeStatement('SET FOREIGN_KEY_CHECKS=0');
-            try {
-                $tool->updateSchema($metadata, true); // saveMode=true
-            } finally {
-                $conn->executeStatement('SET FOREIGN_KEY_CHECKS=1');
-            }
-        } catch (\Throwable $e) {
+        if (!$result['success']) {
             $this->auditLogger->logCustom(
                 'admin.schema.force_update.failed',
                 'Doctrine',
                 null,
                 null,
-                ['error' => $e->getMessage(), 'sql_count' => $statementsCount, 'actor' => $actor],
-                sprintf('Schema force-update FAILED by %s: %s', $actor, $e->getMessage()),
+                ['error' => $result['error'], 'sql_count' => $statementsCount, 'actor' => $actor],
+                sprintf('Schema force-update FAILED by %s: %s', $actor, (string) $result['error']),
             );
-            return ['success' => false, 'statements_executed' => 0, 'error' => $e->getMessage()];
+            return ['success' => false, 'statements_executed' => 0, 'error' => $result['error']];
         }
 
         $this->auditLogger->logCustom(
