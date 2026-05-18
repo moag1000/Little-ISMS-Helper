@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Tenant;
 use App\Entity\Asset;
+use App\Enum\AssetStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,7 +40,7 @@ class AssetRepository extends ServiceEntityRepository
             ->where('a.tenant = :tenant')
             ->andWhere('a.status = :status')
             ->setParameter('tenant', $tenant)
-            ->setParameter('status', 'active')
+            ->setParameter('status', AssetStatus::Active->value)
             ->orderBy('a.name', 'ASC')
             ->getQuery()
             ->getResult();
@@ -57,7 +58,7 @@ class AssetRepository extends ServiceEntityRepository
             ->where('a.tenant = :tenant')
             ->andWhere('a.status = :status')
             ->setParameter('tenant', $tenant)
-            ->setParameter('status', 'active')
+            ->setParameter('status', AssetStatus::Active->value)
             ->groupBy('a.assetType')
             ->getQuery()
             ->getResult();
@@ -151,7 +152,7 @@ class AssetRepository extends ServiceEntityRepository
             ->where('a.tenant = :tenant')
             ->andWhere('a.status = :status')
             ->setParameter('tenant', $tenant)
-            ->setParameter('status', 'active')
+            ->setParameter('status', AssetStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -174,7 +175,7 @@ class AssetRepository extends ServiceEntityRepository
             ->where('a.tenant = :tenant')
             ->andWhere('a.status = :status')
             ->setParameter('tenant', $tenant)
-            ->setParameter('status', 'active')
+            ->setParameter('status', AssetStatus::Active->value)
             ->orderBy('a.name', 'ASC')
             ->getQuery()
             ->getResult();

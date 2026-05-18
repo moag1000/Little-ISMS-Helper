@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use DateTimeImmutable;
 use App\Entity\ComplianceRequirement;
+use App\Enum\ComplianceRequirementFulfillmentStatus;
 use App\Form\ComplianceRequirementType;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceFrameworkRepository;
@@ -304,11 +305,11 @@ class ComplianceRequirementController extends AbstractController
 
             // Auto-update status based on percentage
             if ($fulfillmentPercentage >= 100) {
-                $fulfillment->setStatus('implemented');
+                $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::Implemented);
             } elseif ($fulfillmentPercentage > 0) {
-                $fulfillment->setStatus('in_progress');
+                $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::InProgress);
             } else {
-                $fulfillment->setStatus('not_started');
+                $fulfillment->setStatus(ComplianceRequirementFulfillmentStatus::NotStarted);
             }
         }
 

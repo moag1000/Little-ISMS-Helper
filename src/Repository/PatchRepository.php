@@ -8,6 +8,7 @@ use DateMalformedStringException;
 use DateTimeImmutable;
 use App\Entity\Tenant;
 use App\Entity\Patch;
+use App\Enum\PatchStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,7 +46,7 @@ class PatchRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.status IN (:statuses)')
-            ->setParameter('statuses', ['pending', 'testing', 'approved'])
+            ->setParameter('statuses', [PatchStatus::Pending->value, PatchStatus::Testing->value, PatchStatus::Approved->value])
             ->orderBy('p.priority', 'DESC')
             ->addOrderBy('p.releaseDate', 'ASC')
             ->getQuery()
@@ -64,7 +65,7 @@ class PatchRepository extends ServiceEntityRepository
             ->andWhere('p.deploymentDeadline < :now')
             ->andWhere('p.status NOT IN (:statuses)')
             ->setParameter('now', new DateTimeImmutable())
-            ->setParameter('statuses', ['deployed', 'not_applicable'])
+            ->setParameter('statuses', [PatchStatus::Deployed->value, PatchStatus::NotApplicable->value])
             ->orderBy('p.deploymentDeadline', 'ASC')
             ->getQuery()
             ->getResult();
@@ -81,7 +82,7 @@ class PatchRepository extends ServiceEntityRepository
             ->where('p.priority = :priority')
             ->andWhere('p.status != :deployed')
             ->setParameter('priority', $priority)
-            ->setParameter('deployed', 'deployed')
+            ->setParameter('deployed', PatchStatus::Deployed->value)
             ->orderBy('p.releaseDate', 'DESC')
             ->getQuery()
             ->getResult();
@@ -104,7 +105,7 @@ class PatchRepository extends ServiceEntityRepository
             ->andWhere('p.status NOT IN (:statuses)')
             ->setParameter('priorities', ['critical', 'high'])
             ->setParameter('deadline', $deadline)
-            ->setParameter('statuses', ['deployed', 'not_applicable'])
+            ->setParameter('statuses', [PatchStatus::Deployed->value, PatchStatus::NotApplicable->value])
             ->orderBy('p.deploymentDeadline', 'ASC')
             ->getQuery()
             ->getResult();
@@ -159,7 +160,7 @@ class PatchRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.status = :status')
             ->andWhere('p.deployedDate >= :since')
-            ->setParameter('status', 'deployed')
+            ->setParameter('status', PatchStatus::Deployed->value)
             ->setParameter('since', $since)
             ->orderBy('p.deployedDate', 'DESC')
             ->getQuery()

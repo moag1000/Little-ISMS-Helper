@@ -6,6 +6,7 @@ namespace App\EventListener;
 
 use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
+use App\Enum\CorrectiveActionStatus;
 use App\Repository\SystemSettingsRepository;
 use App\Repository\UserRepository;
 use App\Service\AutoReactionService;
@@ -111,7 +112,7 @@ final class AutoReactionCorrectiveActionListener
                 $ca->setPlannedCompletionDate(new DateTimeImmutable('+' . $dueDays . ' days'));
             }
             if (method_exists($ca, 'setStatus')) {
-                $ca->setStatus(CorrectiveAction::STATUS_PLANNED); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist entity)
+                $ca->setStatus(CorrectiveActionStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (auto-reaction listener — initial state on new pre-persist entity)
             }
 
             $em->persist($ca);

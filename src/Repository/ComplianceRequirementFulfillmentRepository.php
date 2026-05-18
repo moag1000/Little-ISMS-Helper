@@ -9,6 +9,7 @@ use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceFramework;
+use App\Enum\ComplianceRequirementFulfillmentStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -174,8 +175,8 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
             ])
             ->where('f.tenant = :tenant')
             ->setParameter('tenant', $tenant)
-            ->setParameter('in_progress', 'in_progress')
-            ->setParameter('not_started', 'not_started')
+            ->setParameter('in_progress', ComplianceRequirementFulfillmentStatus::InProgress->value)
+            ->setParameter('not_started', ComplianceRequirementFulfillmentStatus::NotStarted->value)
             ->getQuery()
             ->getSingleResult();
 

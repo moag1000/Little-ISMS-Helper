@@ -1,8 +1,8 @@
 # check_route_trailing_slash.py baseline
-src/Controller/VulnerabilityController.php:35:/vulnerability/
+src/Controller/VulnerabilityController.php:36:/vulnerability/
 src/Controller/ProcessingActivityController.php:45:/processing-activity/
 src/Controller/BusinessContinuityPlanController.php:33:/business-continuity-plan/
-src/Controller/ComplianceRequirementController.php:43:/compliance/requirement/
+src/Controller/ComplianceRequirementController.php:44:/compliance/requirement/
 src/Controller/PersonController.php:31:/person/
 src/Controller/ChangeRequestController.php:28:/change-request/
 src/Controller/WorkflowController.php:67:/workflow/
@@ -16,7 +16,7 @@ src/Controller/DPIAController.php:50:/dpia/
 src/Controller/ReportController.php:44:/reports/
 src/Controller/BCMController.php:23:/bcm/
 src/Controller/BusinessProcessController.php:40:/bcm/business-process/
-src/Controller/AssetController.php:69:/asset/
+src/Controller/AssetController.php:70:/asset/
 src/Controller/TrainingController.php:38:/training/
 src/Controller/InterestedPartyController.php:41:/interested-party/
 src/Controller/ISMSObjectiveController.php:30:/objective/
@@ -25,7 +25,7 @@ src/Controller/MappingQualityController.php:37:/compliance/mapping-quality/
 src/Controller/StatementOfApplicabilityController.php:52:/soa/
 src/Controller/AuditController.php:46:/audit/
 src/Controller/DocumentController.php:77:/document/
-src/Controller/ThreatIntelligenceController.php:31:/threat-intelligence/
+src/Controller/ThreatIntelligenceController.php:32:/threat-intelligence/
 src/Controller/CrisisTeamController.php:36:/crisis-team/
 src/Controller/BCExerciseController.php:33:/bc-exercise/
 src/Controller/ManagementReviewController.php:34:/management-review/

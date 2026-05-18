@@ -9,6 +9,7 @@ use App\Entity\BusinessProcess;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Enum\AssetStatus;
 use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
 use DateTimeImmutable;
@@ -211,7 +212,7 @@ class LoadConnectedDemoDataCommand
                     ->setIntegrityValue($integrity)
                     ->setAvailabilityValue($availability)
                     ->setDataClassification($dataClassification)
-                    ->setStatus('active')
+                    ->setStatus(AssetStatus::Active)
                     ->setUpdatedAt(new DateTimeImmutable());
                 $stats['updated']++;
                 $io->text(sprintf('  Updated Asset: %s', $name));
@@ -232,7 +233,7 @@ class LoadConnectedDemoDataCommand
             ->setIntegrityValue($integrity)
             ->setAvailabilityValue($availability)
             ->setDataClassification($dataClassification)
-            ->setStatus('active');
+            ->setStatus(AssetStatus::Active);
 
         $this->entityManager->persist($asset);
         $stats['created']++;

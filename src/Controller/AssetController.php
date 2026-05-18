@@ -7,6 +7,7 @@ namespace App\Controller;
 use Exception;
 use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Asset;
+use App\Enum\AssetStatus;
 use App\Form\AssetQuickType;
 use App\Form\AssetType;
 use App\Repository\AssetRepository;
@@ -126,7 +127,7 @@ class AssetController extends AbstractController
         if ($status === null || $status === '') {
             $assets = array_filter(
                 $assets,
-                fn(Asset $asset): bool => !in_array($asset->getStatus(), ['retired', 'disposed'], true)
+                fn(Asset $asset): bool => !in_array($asset->getStatus(), [AssetStatus::Retired->value, AssetStatus::Disposed->value], true)
             );
         }
 
@@ -583,10 +584,10 @@ class AssetController extends AbstractController
             if ($tenant) {
                 $assets = $this->assetRepository->findBy([
                     'tenant' => $tenant,
-                    'status' => 'active'
+                    'status' => AssetStatus::Active->value
                 ]);
             } else {
-                $assets = $this->assetRepository->findBy(['status' => 'active']);
+                $assets = $this->assetRepository->findBy(['status' => AssetStatus::Active->value]);
             }
         } else {
             $assets = $this->assetRepository->findBy(['id' => $ids]);

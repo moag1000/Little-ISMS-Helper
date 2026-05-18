@@ -7,6 +7,7 @@ namespace App\Service\Nonconformity;
 use App\Entity\AuditFinding;
 use App\Entity\ComplianceRequirement;
 use App\Entity\CorrectiveAction;
+use App\Enum\CorrectiveActionStatus;
 use App\Service\AuditLogger;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -85,7 +86,7 @@ final class AutoTaskCreator
         $action->setTenant($finding->getTenant());
         $action->setFinding($finding);
         $action->setActionType(CorrectiveAction::ACTION_TYPE_CORRECTIVE);
-        $action->setStatus(CorrectiveAction::STATUS_PLANNED); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist CorrectiveAction; 'planned' is the corrective_action_lifecycle initial_marking)
+        $action->setStatus(CorrectiveActionStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist CorrectiveAction; 'planned' is the corrective_action_lifecycle initial_marking)
         $action->setTitle(sprintf(
             '[Auto] %s — %s (%s)',
             $finding->getTitle() ?? 'Audit Finding',

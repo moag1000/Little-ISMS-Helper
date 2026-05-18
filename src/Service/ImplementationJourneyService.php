@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
 use App\Entity\Tenant;
+use App\Enum\CorrectiveActionStatus;
 use App\Model\JourneyPhase;
 use App\Model\JourneyProgress;
 use App\Repository\AssetRepository;
@@ -239,7 +240,7 @@ final class ImplementationJourneyService
             ->where('ca.tenant = :tenant')
             ->andWhere('ca.status IN (:statuses)')
             ->setParameter('tenant', $tenant)
-            ->setParameter('statuses', [CorrectiveAction::STATUS_PLANNED, CorrectiveAction::STATUS_IN_PROGRESS])
+            ->setParameter('statuses', [CorrectiveActionStatus::Planned->value, CorrectiveActionStatus::InProgress->value])
             ->getQuery()
             ->getSingleScalarResult();
 

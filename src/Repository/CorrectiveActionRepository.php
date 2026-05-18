@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\CorrectiveAction;
 use App\Entity\Tenant;
+use App\Enum\CorrectiveActionStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -29,7 +30,7 @@ class CorrectiveActionRepository extends ServiceEntityRepository
             ->andWhere('a.status IN (:active)')
             ->setParameter('tenant', $tenant)
             ->setParameter('now', new \DateTimeImmutable())
-            ->setParameter('active', [CorrectiveAction::STATUS_PLANNED, CorrectiveAction::STATUS_IN_PROGRESS])
+            ->setParameter('active', [CorrectiveActionStatus::Planned->value, CorrectiveActionStatus::InProgress->value])
             ->getQuery()
             ->getResult();
     }
