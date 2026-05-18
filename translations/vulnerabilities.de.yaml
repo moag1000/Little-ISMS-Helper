@@ -66,6 +66,8 @@ vulnerability:
         info: Informativ
     status:
         open: Offen
+        in_triage: 'In Triage'
+        in_remediation: 'In Behebung'
         in_progress: 'In Bearbeitung'
         patched: Gepatcht
         mitigated: Mitigiert

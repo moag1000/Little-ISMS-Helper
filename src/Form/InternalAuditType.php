@@ -10,11 +10,13 @@ use App\Entity\ComplianceFramework;
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Enum\InternalAuditStatus;
 use App\Repository\TenantRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -89,16 +91,16 @@ final class InternalAuditType extends AbstractType
                 'widget' => 'single_text',
                 'help' => 'audit.help.actual_date',
             ])
-            ->add('status', ChoiceType::class, [
+            ->add('status', EnumType::class, [
                 'label' => 'audit.field.status',
-                'choices' => [
-                    'audit.status.planned' => 'planned',
-                    'audit.status.in_progress' => 'in_progress',
-                    'audit.status.completed' => 'completed',
-                    'audit.status.postponed' => 'postponed',
-                    'audit.status.cancelled' => 'cancelled',
-                ],
-                    'choice_translation_domain' => 'audit',
+                'class' => InternalAuditStatus::class,
+                'choice_label' => fn(InternalAuditStatus $s): string => 'audit.status.' . $s->value,
+                // Status is stored as VARCHAR (?string) on the entity; accept either
+                // an enum case OR its raw string value so EnumType can resolve the
+                // currently-selected option from both Doctrine hydration paths.
+                'choice_value' => fn(InternalAuditStatus|string|null $c): ?string =>
+                    $c instanceof InternalAuditStatus ? $c->value : $c,
+                'choice_translation_domain' => 'audit',
             ])
             // P-15 DataReuse: Pattern A dual-state lead auditor — structured
             // User/Person preferred over legacy `leadAuditor` free-text. Legacy

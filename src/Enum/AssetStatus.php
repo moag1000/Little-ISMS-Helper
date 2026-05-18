@@ -16,6 +16,7 @@ namespace App\Enum;
  */
 enum AssetStatus: string
 {
+    case Draft = 'draft';
     case Active = 'active';
     case Inactive = 'inactive';
     case InUse = 'in_use';
@@ -31,6 +32,7 @@ enum AssetStatus: string
     public function pillVariant(): string
     {
         return match ($this) {
+            self::Draft    => 'neutral',
             self::Active   => 'success',
             self::Inactive => 'neutral',
             self::InUse    => 'info',

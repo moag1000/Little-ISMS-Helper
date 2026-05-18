@@ -56,10 +56,10 @@ translations/alva.en.yaml:158:dpia
 translations/alva.en.yaml:164:incident
 translations/alva.en.yaml:174:policy_wizard
 translations/alva.en.yaml:318:alva_hint
-translations/asset.de.yaml:372:qr
-translations/asset.de.yaml:390:asset_management
-translations/asset.en.yaml:368:qr
-translations/asset.en.yaml:386:asset_management
+translations/asset.de.yaml:373:qr
+translations/asset.de.yaml:391:asset_management
+translations/asset.en.yaml:369:qr
+translations/asset.en.yaml:387:asset_management
 translations/assets.de.yaml:1:asset
 translations/assets.en.yaml:1:asset
 translations/audit.de.yaml:219:audit_log
@@ -126,7 +126,7 @@ translations/audits.de.yaml:194:checklist
 translations/audits.de.yaml:211:pdf
 translations/audits.de.yaml:250:audit_finding
 translations/audits.de.yaml:345:corrective_action
-translations/audits.de.yaml:412:iso_9001_bridge
+translations/audits.de.yaml:413:iso_9001_bridge
 translations/audits.en.yaml:27:title
 translations/audits.en.yaml:28:description
 translations/audits.en.yaml:29:planned_audits
@@ -180,7 +180,7 @@ translations/audits.en.yaml:270:checklist
 translations/audits.en.yaml:287:pdf
 translations/audits.en.yaml:326:audit_finding
 translations/audits.en.yaml:421:corrective_action
-translations/audits.en.yaml:488:iso_9001_bridge
+translations/audits.en.yaml:489:iso_9001_bridge
 translations/aurora_components.de.yaml:5:reports
 translations/aurora_components.en.yaml:5:reports
 translations/bc_exercises.de.yaml:173:bc_plans
@@ -301,8 +301,8 @@ translations/data_management.de.yaml:1:data
 translations/data_management.en.yaml:1:data
 translations/data_subject_request.de.yaml:5:dsr
 translations/data_subject_request.en.yaml:5:dsr
-translations/document.de.yaml:236:iso_9001_bridge
-translations/document.en.yaml:233:iso_9001_bridge
+translations/document.de.yaml:237:iso_9001_bridge
+translations/document.en.yaml:234:iso_9001_bridge
 translations/eu_authorities.de.yaml:228:authority
 translations/eu_authorities.en.yaml:228:authority
 translations/four_eyes.de.yaml:6:action

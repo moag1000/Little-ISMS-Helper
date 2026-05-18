@@ -21,6 +21,7 @@ enum CorrectiveActionStatus: string
     case Completed = 'completed';
     case VerifiedEffective = 'verified_effective';
     case VerifiedIneffective = 'verified_ineffective';
+    case Cancelled = 'cancelled';
 
     public function label(): string
     {
@@ -35,6 +36,7 @@ enum CorrectiveActionStatus: string
             self::Completed            => 'warning',
             self::VerifiedEffective    => 'success',
             self::VerifiedIneffective  => 'danger',
+            self::Cancelled            => 'neutral',
         };
     }
 }

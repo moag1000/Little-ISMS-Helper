@@ -38,8 +38,13 @@ vulnerability:
         low: Low
     status:
         open: Open
+        in_triage: 'In triage'
+        in_remediation: 'In remediation'
         in_progress: 'In Progress'
+        patched: Patched
         mitigated: Mitigated
+        accepted: 'Risk accepted'
+        false_positive: 'False positive'
         resolved: Resolved
         closed: Closed
     edit: Edit

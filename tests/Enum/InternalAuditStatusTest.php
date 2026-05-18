@@ -29,8 +29,11 @@ final class InternalAuditStatusTest extends TestCase
     #[Test]
     public function labelReturnsTranslationKey(): void
     {
-        self::assertSame('audits.status.planned', InternalAuditStatus::Planned->label());
-        self::assertSame('audits.status.closed', InternalAuditStatus::Closed->label());
+        // Keys live under `audit:` in translations/audit.{de,en}.yaml.
+        // The previous `audits.status.*` prefix pointed at a non-existent
+        // translation tree — fixed in the status-enum drift reconciliation.
+        self::assertSame('audit.status.planned', InternalAuditStatus::Planned->label());
+        self::assertSame('audit.status.closed', InternalAuditStatus::Closed->label());
     }
 
     #[Test]

@@ -458,6 +458,7 @@ corrective_action:
         completed: 'Completed'
         verified_effective: 'Verified Effective'
         verified_ineffective: 'Verified Ineffective — new action required'
+        cancelled: 'Cancelled'
     section:
         description: 'Description & Root Cause'
         verification: 'Effectiveness Verification'

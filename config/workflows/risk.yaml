@@ -19,6 +19,12 @@ framework:
                 - monitored
                 - closed
                 - accepted
+                # Legacy buckets retained as places to satisfy RiskStatus enum
+                # cases stored in historical rows. No transitions are wired
+                # for them — they are read-only carryover from pre-lifecycle
+                # data and exist purely so YAML↔Enum parity holds.
+                - mitigated
+                - open
             transitions:
                 assess:
                     from: identified
