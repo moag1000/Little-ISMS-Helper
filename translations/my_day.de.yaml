@@ -7,8 +7,8 @@ action:
     standard_dashboard: 'Standard-Dashboard'
 
 kpi:
-    workflows_pending: 'Workflows offen'
-    workflows_overdue: 'Workflows überfällig'
+    workflows_pending: 'Lifecycles offen'
+    workflows_overdue: 'Lifecycles überfällig'
     four_eyes: '4-Augen-Anfragen'
     acknowledgements: 'Policy-Ack ausstehend'
     findings: 'Findings (mir)'
@@ -28,8 +28,8 @@ kpi:
     framework_gaps_critical: 'Framework-Gaps kritisch'
 
 section:
-    workflows_pending: 'Workflows offen'
-    workflows_overdue: 'Workflows überfällig'
+    workflows_pending: 'Lifecycles offen'
+    workflows_overdue: 'Lifecycles überfällig'
     four_eyes: '4-Augen-Approval'
     acknowledgements: 'Policy-Acknowledgements'
     findings: 'Audit-Findings (mir zugewiesen)'

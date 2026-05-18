@@ -21,7 +21,7 @@ welcome:
         overdue_treatment_plans: "%count% overdue treatment plans"
         approaching_deadlines: "%count% deadlines in the next 7 days"
         pending_workflows: "%count% pending approvals"
-        overdue_workflows: "%count% overdue workflows"
+        overdue_workflows: "%count% overdue lifecycles"
 
     module:
         core: "Core ISMS"

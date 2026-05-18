@@ -212,10 +212,10 @@ dashboard:
     title: Meine Aufgaben heute
     all_done: Keine Aufgaben — alles erledigt!
     type_treatment_plan: Behandlungsplan
-    type_workflow: Workflow-Freigabe
+    type_workflow: Lifecycle-Freigabe
     type_risk_review: Risikobewertung
     days_overdue: T überfällig
-    workflow_approval: Workflow-Freigabe
+    workflow_approval: Lifecycle-Freigabe
   urgent_items: dringende Punkte erfordern Aufmerksamkeit
   reuse_fte:
     title: 'Data-Reuse-Effizienz — FTE-Tage eingespart'
@@ -226,8 +226,8 @@ dashboard:
     overdue_reviews: Überfällige Bewertungen
     overdue_treatment_plans: Überfällige Pläne
     approaching_deadlines: Nahende Deadlines
-    pending_workflows: Ausstehende Workflows
-    overdue_workflows: Überfällige Workflows
+    pending_workflows: Ausstehende Lifecycles
+    overdue_workflows: Überfällige Lifecycles
   # Legacy first_steps keys removed — replaced by journey.{de,en}.yaml (AP 1/AP 2)
   create_first_asset: Erstes Asset anlegen
   create_first_risk: Erstes Risiko erfassen
