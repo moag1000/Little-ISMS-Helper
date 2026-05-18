@@ -204,64 +204,40 @@
 
     {# Tab Content #}
     <div class="tab-content mt-md">
-        {# Table View #}
+        {# Table View — fa-audit-feed (CRUD change-log per #480 canonical pattern) #}
         <div class="tab-pane fade show active" id="table-view" role="tabpanel">
-            {% embed '_components/_table.html.twig' with {
-                'class': 'table-full'
-            } %}
-                {% block table_head %}
-                    <tr>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.timestamp'|trans({}, 'audit_log') }}</th>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.action'|trans({}, 'audit_log') }}</th>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.entity'|trans({}, 'audit_log') }}</th>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.user'|trans({}, 'audit_log') }}</th>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.description'|trans({}, 'audit_log') }}</th>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.details'|trans({}, 'audit_log') }}</th>
-                    </tr>
-                {% endblock %}
-                {% block table_body %}
-                    {% for log in auditLogs %}
-                    {# Calculate age for fairy styling #}
-                    {% set ageMinutes = (date().timestamp - log.createdAt.timestamp) / 60 %}
-                    {% set isFresh = ageMinutes < 5 %}
-                    {% set isRecent = ageMinutes >= 5 and ageMinutes < 30 %}
-                    <tr{% if isFresh %} class="fairy-fresh-entry"{% endif %}>
-                        <td class="table-cell small">
-                            <span{% if isFresh %} class="fairy-timestamp-fresh"{% elseif isRecent %} class="fairy-timestamp-recent"{% endif %}>
-                                {{ log.createdAt|date('d.m.Y H:i:s') }}
-                            </span>
-                        </td>
-                        <td class="table-cell">
-                            <span class="badge badge-{{ log.action }}">{{ log.action|capitalize }}</span>
-                        </td>
-                        <td class="table-cell">
-                            {{ log.entityType }}
-                            {% if log.entityId %}
-                                <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}"
-                                   class="link-primary">
-                                    (#{{ log.entityId }})
-                                </a>
-                            {% endif %}
-                        </td>
-                        <td class="table-cell">
-                            <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}"
-                               class="link-primary">
-                                {{ log.userName }}
-                            </a>
-                        </td>
-                        <td class="table-cell small">
-                            {{ log.description|default('-') }}
-                        </td>
-                        <td class="table-cell">
-                            <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
-                               class="link-primary">
-                                {{ 'audit_log.table.view_details'|trans({}, 'audit_log') }}
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                {% endblock %}
-            {% endembed %}
+            <div class="fa-audit-feed">
+                {% for log in auditLogs %}
+                    {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'
+                        : (log.action in ['error', 'failed'] ? 'danger'
+                        : (log.action in ['update', 'login_failed'] ? 'warning'
+                        : 'info')) -%}
+                    {{ _fa_audit_row.render({
+                        ts:     log.createdAt|date('Y-m-d H:i:s'),
+                        sev:    sev,
+                        actor:  log.userName|default('system'),
+                        action: log.action,
+                        target: log.entityType ~ (log.entityId ? '#' ~ log.entityId : ''),
+                        pill:   log.description|default('')|slice(0, 60),
+                        hash:   log.id|default('')|slice(0, 12)
+                    }) }}
+                    {# Actor + entity + detail links per row #}
+                    <div class="small ps-1 pb-1 d-flex gap-3">
+                        <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}" class="link-primary">
+                            <i class="fa-icon fa-icon--nav-users" aria-hidden="true"></i>
+                            {{ log.userName }}
+                        </a>
+                        {% if log.entityId %}
+                        <a href="{{ path('app_audit_log_entity', {entityType: log.entityType, entityId: log.entityId}) }}" class="link-primary">
+                            {{ log.entityType }} #{{ log.entityId }}
+                        </a>
+                        {% endif %}
+                        <a href="{{ path('app_audit_log_detail', {id: log.id}) }}" class="link-primary">
+                            {{ 'audit_log.table.view_details'|trans({}, 'audit_log') }}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
 
         {# Timeline View #}
