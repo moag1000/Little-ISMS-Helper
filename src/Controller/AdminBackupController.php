@@ -64,7 +64,13 @@ class AdminBackupController extends AbstractController
     #[Route('/admin/data/backup', name: 'data_backup_index', methods: ['GET'])]
     public function index(): Response
     {
-        $backups = $this->backupService->listBackups();
+        // Phase 5: service-layer tenant filtering — SUPER_ADMIN sees all backups,
+        // ROLE_ADMIN sees only backups whose embedded tenant_scope intersects with
+        // their own tenant tree. Pass null for SUPER to bypass the filter.
+        $scope = $this->isGranted('ROLE_SUPER_ADMIN')
+            ? null
+            : $this->tenantContext->resolveAdminScope(null);
+        $backups = $this->backupService->listBackups($scope);
 
         return $this->render('data_management/backup.html.twig', [
             'backups' => $backups,
@@ -225,6 +231,10 @@ class AdminBackupController extends AbstractController
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 
+        // Phase 5: resolve caller scope so validateBackup() can reject cross-tenant
+        // attempts with AccessDeniedException (Symfony maps to 403).
+        $callerScope = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
+
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
@@ -238,9 +248,9 @@ class AdminBackupController extends AbstractController
                 throw new InvalidArgumentException('Backup file not found');
             }
 
-            // Load and validate backup
+            // Load and validate backup (with tenant-scope rejection for non-SUPER callers)
             $backup = $this->backupService->loadBackupFromFile($filepath);
-            $validation = $this->restoreService->validateBackup($backup);
+            $validation = $this->restoreService->validateBackup($backup, $callerScope);
 
             return new JsonResponse([
                 'success' => $validation['valid'],

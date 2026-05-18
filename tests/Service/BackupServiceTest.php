@@ -826,6 +826,120 @@ class BackupServiceTest extends TestCase
         $this->assertSame($sensitiveValue, $decrypted);
     }
 
+    /**
+     * Phase 5 — SUPER_ADMIN (scope=null) sees all backups regardless of
+     * embedded tenant_scope (own-tenant, foreign-tenant, legacy without scope).
+     */
+    #[Test]
+    public function testListBackupsSuperAdminSeesAllScopes(): void
+    {
+        $backupDir = $this->projectDir . '/var/backups';
+        mkdir($backupDir, 0755, true);
+
+        // Tenant 1 backup
+        file_put_contents(
+            $backupDir . '/backup_2026-05-18_10-00-00.json',
+            (string) json_encode([
+                'metadata' => ['version' => '2.0', 'tenant_scope' => [1]],
+                'data'     => [],
+            ])
+        );
+        // Tenant 2 backup
+        file_put_contents(
+            $backupDir . '/backup_2026-05-18_11-00-00.json',
+            (string) json_encode([
+                'metadata' => ['version' => '2.0', 'tenant_scope' => [2]],
+                'data'     => [],
+            ])
+        );
+        // Legacy backup without tenant_scope
+        file_put_contents(
+            $backupDir . '/backup_2026-05-18_12-00-00.json',
+            (string) json_encode([
+                'metadata' => ['version' => '1.0'],
+                'data'     => [],
+            ])
+        );
+
+        $backups = $this->service->listBackups(null);
+
+        $this->assertCount(3, $backups, 'SUPER_ADMIN must see all 3 backups including legacy');
+    }
+
+    /**
+     * Phase 5 — ROLE_ADMIN (scope=Tenant 1) sees only own-tenant backups.
+     * Foreign-tenant + legacy (no scope) backups are excluded.
+     */
+    #[Test]
+    public function testListBackupsTenantAdminSeesOwnScopeOnly(): void
+    {
+        $backupDir = $this->projectDir . '/var/backups';
+        mkdir($backupDir, 0755, true);
+
+        // Tenant 1 backup (own)
+        file_put_contents(
+            $backupDir . '/backup_2026-05-18_10-00-00.json',
+            (string) json_encode([
+                'metadata' => ['version' => '2.0', 'tenant_scope' => [1]],
+                'data'     => [],
+            ])
+        );
+        // Tenant 2 backup (foreign)
+        file_put_contents(
+            $backupDir . '/backup_2026-05-18_11-00-00.json',
+            (string) json_encode([
+                'metadata' => ['version' => '2.0', 'tenant_scope' => [2]],
+                'data'     => [],
+            ])
+        );
+        // Legacy without scope info
+        file_put_contents(
+            $backupDir . '/backup_2026-05-18_12-00-00.json',
+            (string) json_encode([
+                'metadata' => ['version' => '1.0'],
+                'data'     => [],
+            ])
+        );
+
+        $tenant1 = $this->createMock(Tenant::class);
+        $tenant1->method('getId')->willReturn(1);
+        $tenant1->method('getAllSubsidiaries')->willReturn([]);
+
+        $backups = $this->service->listBackups($tenant1);
+
+        $this->assertCount(1, $backups, 'Tenant-admin must see only own-scope backup');
+        $this->assertSame('backup_2026-05-18_10-00-00.json', $backups[0]['filename']);
+        $this->assertSame([1], $backups[0]['tenant_scope_ids']);
+    }
+
+    /**
+     * Phase 5 — Opportunistic sidecar caching: after first listBackups() call,
+     * a `<filename>.meta.json` sidecar is written so subsequent calls hit the
+     * fast path without re-reading the (potentially compressed) backup payload.
+     */
+    #[Test]
+    public function testListBackupsWritesSidecarForLegacyDetection(): void
+    {
+        $backupDir = $this->projectDir . '/var/backups';
+        mkdir($backupDir, 0755, true);
+
+        $backupFile = $backupDir . '/backup_2026-05-18_10-00-00.json';
+        file_put_contents(
+            $backupFile,
+            (string) json_encode([
+                'metadata' => ['version' => '2.0', 'tenant_scope' => [42]],
+                'data'     => [],
+            ])
+        );
+
+        $this->service->listBackups(null);
+
+        $sidecar = $backupFile . '.meta.json';
+        $this->assertFileExists($sidecar, 'Sidecar must be created on first detection');
+        $payload = json_decode((string) file_get_contents($sidecar), true);
+        $this->assertSame([42], $payload['tenant_scope']);
+    }
+
     #[Test]
     public function testSystemSettingsWithNonSensitiveKeyIsNotEncrypted(): void
     {

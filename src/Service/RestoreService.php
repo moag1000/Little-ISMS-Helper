@@ -23,6 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class RestoreService
 {
@@ -68,17 +69,57 @@ class RestoreService
      *  - format version supported (major-version check)
      *  - schema_version warning if present and different from current
      *  - data section present and valid per entity
+     *  - (when $callerScope is given) backup's tenant_scope intersects with caller-scope tree
      *
      * Legacy backups (version missing) are assumed to be format 1.0 and accepted
      * with a warning so old JSON-only backups remain restoreable.
      *
-     * @param array $backup Backup data to validate
+     * @param array       $backup      Backup data to validate
+     * @param Tenant|null $callerScope When set, rejects cross-tenant restore attempts
+     *                                 (ROLE_ADMIN restoring a backup of a foreign tenant).
+     *                                 SUPER_ADMIN passes null and bypasses the check.
      * @return array Validation result with 'valid' boolean and 'errors' array
+     *
+     * @throws AccessDeniedException When $callerScope is set and the backup's
+     *                               recorded tenant_scope has no overlap with
+     *                               the caller's accessible tree.
      */
-    public function validateBackup(array $backup): array
+    public function validateBackup(array $backup, ?Tenant $callerScope = null): array
     {
         $this->validationErrors = [];
         $this->warnings = [];
+
+        // Tenant-scope guard (Phase 5): reject cross-tenant attempts before anything else.
+        if ($callerScope !== null) {
+            $callerScopeIds = $this->resolveTenantScopeIds($callerScope);
+            $backupScopeIds = $backup['metadata']['tenant_scope'] ?? null;
+
+            // A backup without any recorded tenant_scope is treated as legacy/global.
+            // Non-SUPER callers must not be allowed to restore such a backup — it
+            // potentially contains data from foreign tenants.
+            if ($backupScopeIds === null || !is_array($backupScopeIds)) {
+                throw new AccessDeniedException(
+                    'Cross-tenant restore denied: backup has no recorded tenant_scope (legacy/global backup).'
+                );
+            }
+
+            $backupScopeIds = array_map(static fn($v): int => (int) $v, $backupScopeIds);
+
+            // Empty array = global backup (created without tenant scope). Only SUPER may restore.
+            if ($backupScopeIds === []) {
+                throw new AccessDeniedException(
+                    'Cross-tenant restore denied: backup was created with global scope.'
+                );
+            }
+
+            if (array_intersect($backupScopeIds, $callerScopeIds) === []) {
+                throw new AccessDeniedException(sprintf(
+                    'Cross-tenant restore denied: backup tenant_scope [%s] does not overlap with caller scope [%s].',
+                    implode(',', $backupScopeIds),
+                    implode(',', $callerScopeIds)
+                ));
+            }
+        }
 
         // Check metadata
         if (!isset($backup['metadata'])) {
@@ -287,7 +328,15 @@ class RestoreService
             'best_effort' => false,          // P5: opt-in — skip failing rows instead of aborting
         ], $options);
 
-        // Validate first (this resets $this->warnings internally)
+        // Validate first (this resets $this->warnings internally).
+        //
+        // Note: we intentionally do NOT pass $targetTenantScope here. The strict
+        // cross-tenant rejection in validateBackup() is reserved for the explicit
+        // pre-restore call from AdminBackupController::validateBackup() (Phase 5).
+        // restoreFromBackup() keeps the legacy soft-warn behaviour (the
+        // "Cross-Tenant-Restore" warning collected above), because callers may
+        // legitimately restore filtered subsets (the entity-level filter
+        // {@see filterEntitiesByScope()} handles row-level scoping).
         $validation = $this->validateBackup($backup);
         if (!$validation['valid']) {
             throw new InvalidArgumentException('Invalid backup: ' . implode(', ', $validation['errors']));

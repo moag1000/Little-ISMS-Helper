@@ -510,11 +510,25 @@ class BackupService
     }
 
     /**
-     * Get list of available backups
+     * Get list of available backups.
      *
-     * @return array List of backup files with metadata
+     * When $scope is null, all backups are returned (SUPER_ADMIN behaviour).
+     * When $scope is a Tenant, the listing is filtered to backups whose embedded
+     * tenant_scope intersects with the scope's accessible tree (self + subsidiaries).
+     *
+     * Detection order for each file:
+     *   1. Sidecar `<filename>.meta.json` (preferred — fast, no decompression)
+     *   2. Read metadata from backup payload (ZIP/gz/json) — opportunistically writes a sidecar
+     *   3. Legacy filename without metadata → tenant_scope is null
+     *
+     * Legacy backups without detectable scope are EXCLUDED from non-SUPER listings
+     * (safer default). SUPER (scope=null) always sees them.
+     *
+     * @param Tenant|null $scope When set, restricts the listing to backups in scope's tree
+     * @return array List of backup files with metadata (filename, path, size, created_at,
+     *               tenant_scope_ids, scope_type)
      */
-    public function listBackups(): array
+    public function listBackups(?Tenant $scope = null): array
     {
         $backupDir = $this->projectDir . '/var/backups';
 
@@ -523,7 +537,9 @@ class BackupService
         }
 
         // Include both created backups (backup_*) and uploaded files (uploaded_*)
-        // Support compressed (.gz), uncompressed (.json), and ZIP (.zip) files
+        // Support compressed (.gz), uncompressed (.json), and ZIP (.zip) files.
+        // Sidecar `*.meta.json` files match the `backup_*.json` glob too, so
+        // they are filtered out below.
         $files = array_merge(
             glob($backupDir . '/backup_*.zip') ?: [],
             glob($backupDir . '/backup_*.json.gz') ?: [],
@@ -533,14 +549,39 @@ class BackupService
             glob($backupDir . '/uploaded_*.json') ?: [],
             glob($backupDir . '/uploaded_*.gz') ?: []
         );
+
+        // Strip Phase-5 sidecar files (`*.meta.json`) from the listing.
+        $files = array_values(array_filter(
+            $files,
+            static fn(string $f): bool => !str_ends_with($f, '.meta.json')
+        ));
+
+        $accessibleIds = $this->resolveScopeIds($scope);
         $backups = [];
 
         foreach ($files as $file) {
+            $tenantScopeIds = $this->detectBackupTenantScope($file);
+
+            // Apply tenant filter when a scope is active
+            if ($scope !== null) {
+                if ($tenantScopeIds === null) {
+                    // Legacy backup without scope info — exclude from non-SUPER listings
+                    continue;
+                }
+                if ($tenantScopeIds !== [] && array_intersect($tenantScopeIds, $accessibleIds) === []) {
+                    continue;
+                }
+            }
+
             $backups[] = [
-                'filename' => basename($file),
-                'path' => $file,
-                'size' => filesize($file),
-                'created_at' => date('Y-m-d H:i:s', filemtime($file)),
+                'filename'         => basename($file),
+                'path'             => $file,
+                'size'             => filesize($file),
+                'created_at'       => date('Y-m-d H:i:s', filemtime($file)),
+                'tenant_scope_ids' => $tenantScopeIds,
+                'scope_type'       => $tenantScopeIds === null
+                    ? 'unknown'
+                    : ($tenantScopeIds === [] ? 'global' : 'tenant'),
             ];
         }
 
@@ -548,6 +589,113 @@ class BackupService
         usort($backups, fn(array $a, array $b): int => $b['created_at'] <=> $a['created_at']);
 
         return $backups;
+    }
+
+    /**
+     * Detect the tenant_scope embedded in a backup file.
+     *
+     * Returns:
+     *  - array of tenant IDs (possibly empty = global backup) when detectable
+     *  - null when not detectable (legacy filename without sidecar / unreadable metadata)
+     *
+     * Performs opportunistic sidecar caching: when scope is detected from the
+     * backup payload (slow path), a `<filename>.meta.json` is written alongside
+     * so subsequent listBackups() calls hit the fast path without decompression.
+     *
+     * @return int[]|null
+     */
+    private function detectBackupTenantScope(string $filepath): ?array
+    {
+        $sidecarPath = $filepath . '.meta.json';
+
+        // Fast path: sidecar file
+        if (is_file($sidecarPath)) {
+            $sidecar = @json_decode((string) @file_get_contents($sidecarPath), true);
+            if (is_array($sidecar) && array_key_exists('tenant_scope', $sidecar)) {
+                $scope = $sidecar['tenant_scope'];
+                return is_array($scope)
+                    ? array_values(array_map(static fn($v): int => (int) $v, $scope))
+                    : null;
+            }
+        }
+
+        // Slow path: read metadata from the backup payload
+        $metadata = $this->readBackupMetadata($filepath);
+        if ($metadata === null) {
+            return null;
+        }
+
+        $scope = $metadata['tenant_scope'] ?? null;
+        if ($scope === null) {
+            // Backup metadata present but no tenant_scope — treat as unknown (legacy/global)
+            return null;
+        }
+
+        $scopeIds = is_array($scope)
+            ? array_values(array_map(static fn($v): int => (int) $v, $scope))
+            : [];
+
+        // Opportunistic sidecar write (best-effort — silent on failure)
+        @file_put_contents(
+            $sidecarPath,
+            (string) json_encode(['tenant_scope' => $scopeIds, 'detected_at' => date('c')])
+        );
+
+        return $scopeIds;
+    }
+
+    /**
+     * Read the `metadata` section of a backup file without restoring data.
+     *
+     * Supports .zip (reads backup.json), .json.gz, .gz, and .json.
+     * Returns null on any failure (corrupt file, missing extension support, …).
+     *
+     * @return array<string, mixed>|null
+     */
+    private function readBackupMetadata(string $filepath): ?array
+    {
+        try {
+            if ($this->isZipFile($filepath)) {
+                if (!class_exists(ZipArchive::class)) {
+                    return null;
+                }
+                $zip = new ZipArchive();
+                if ($zip->open($filepath) !== true) {
+                    return null;
+                }
+                $json = $zip->getFromName('backup.json');
+                $zip->close();
+                if ($json === false) {
+                    return null;
+                }
+            } elseif (str_ends_with($filepath, '.gz')) {
+                if (!extension_loaded('zlib')) {
+                    return null;
+                }
+                $raw = @file_get_contents($filepath);
+                if ($raw === false) {
+                    return null;
+                }
+                $json = @gzdecode($raw);
+                if ($json === false) {
+                    return null;
+                }
+            } else {
+                $json = @file_get_contents($filepath);
+                if ($json === false) {
+                    return null;
+                }
+            }
+
+            $decoded = json_decode($json, true);
+            if (!is_array($decoded) || !isset($decoded['metadata']) || !is_array($decoded['metadata'])) {
+                return null;
+            }
+
+            return $decoded['metadata'];
+        } catch (Exception) {
+            return null;
+        }
     }
 
     /**
