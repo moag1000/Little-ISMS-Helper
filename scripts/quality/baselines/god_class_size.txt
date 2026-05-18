@@ -26,7 +26,7 @@ src/Controller/MonitoringController.php:LOC=727 deps=0
 src/Controller/AdminBackupController.php:LOC=696 deps=0
 src/Controller/DPIAController.php:LOC=664 deps=0
 src/Controller/AnalyticsController.php:LOC=651 deps=0
-src/Controller/AuditController.php:LOC=641 deps=0
+src/Controller/AuditController.php:LOC=653 deps=0
 src/Service/ScheduledReportService.php:LOC=619 deps=22
 src/Controller/AssetController.php:LOC=604 deps=0
 src/Service/ComplianceFrameworkLoaderService.php:LOC=537 deps=26
