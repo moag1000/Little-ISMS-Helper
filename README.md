@@ -11,10 +11,11 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
 
-![Entities](https://img.shields.io/badge/Entities-80-informational)
+![Version](https://img.shields.io/badge/Version-v3.7-informational)
+![Entities](https://img.shields.io/badge/Entities-113-informational)
 ![Frameworks](https://img.shields.io/badge/Frameworks-25_komplett-informational)
 ![Controls](https://img.shields.io/badge/ISO%2027001%20Controls-93-informational)
-![Tests](https://img.shields.io/badge/Tests-4%2C300%2B-informational)
+![Tests](https://img.shields.io/badge/Tests-816%20Dateien-informational)
 ![Mappings](https://img.shields.io/badge/Cross--Framework--Mappings-3%2C543-informational)
 ![Wizards](https://img.shields.io/badge/Compliance--Wizards-22-informational)
 ![BSI-Bausteine](https://img.shields.io/badge/BSI--Bausteine-106-informational)
@@ -92,24 +93,26 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 
 ---
 
-## Was ist neu in v3.5?
+## Was ist neu in v3.7?
 
 | Bereich | Neuerung |
 |---|---|
-| **22 Compliance-Wizards** | 4 neue Wizards (BSI C5:2026, EUCS, EU CRA, MRIS v1.5); WizardSession 22 Slots |
-| **Wizard-History-Diff-View** | Zwei Snapshots vergleichen, Compare-PDF-Export |
+| **Role-Scope-Architektur** | `TenantScopedAdminVoter` -- `ROLE_ADMIN` ist auf den eigenen Tenant beschraenkt, `ROLE_SUPER_ADMIN` tenant-uebergreifend; Persona-Rollen (`ROLE_CISO`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`) gaten je eigenes Dashboard unter `/dashboards/<persona>` |
+| **Lifecycle-Foundation (Symfony Workflow)** | `LifecycleService::transition()`-Facade als Pflicht-Einstieg; 5 produktive Workflows (`document`, `processing_activity`, `isms_objective`, `policy_template`, `asset`) + 11 weitere YAML-Definitionen in `config/workflows/`; Tenant-Overrides via `/admin/lifecycle-overrides` |
+| **40+ Status-Enums** | Erste-Klasse-Status-Lifecycle: `DocumentStatus`, `IncidentStatus`, `RiskStatus`, `DataBreachStatus`, etc.; Server-erzwungene 5-Transition-Matrix; bulk-status-change-Support via canonical `_bulk_action_bar.html.twig` |
+| **15 YAML-Workflows** | Regulatorische Workflows als YAML-Source-of-Truth (`config/workflows/regulatory/*.yaml`) -- GDPR Data Breach, Incident Response, Risk Treatment, DPIA, DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC-Plan Activation, Document Review, Incident Post-Mortem; Event-getriebene Auto-Progression via Doctrine-Listener |
+| **Module-Awareness (43 Module)** | `config/modules.yaml` -- pro Tenant aktivierbare Frameworks/Funktionen; FormType-Trait `ModuleAwareFormTrait`, Controller-Trait `ModuleGatedControllerTrait`, Twig-Funktion `is_module_active()` -- saubere Trennung zwischen Pflicht- und Optional-Feldern |
+| **AlvaHint Foundation** | Rules-Engine fuer kontextuelle Hilfetexte (`src/AlvaHint/Rule/`) mit Tier-System, `requiredModules`/`requiredRoles`-Gating und Render-/Dismiss-Telemetrie |
+| **22 Compliance-Wizards** | 4 neue Wizards (BSI C5:2026, EUCS, EU CRA, MRIS v1.5); WizardSession 22 Slots; Wizard-History-Diff-View mit Compare-PDF-Export |
 | **Industry-Preset Express-Path** | Tag-1-Onboarding in 3 Fragen -- Module und Baselines werden automatisch aktiviert |
 | **106 BSI IT-Grundschutz-Bausteine** | Vollstaendiger Baustein-Katalog (vorher 15 Beispiel-Bausteine) |
 | **3.543 Cross-Framework-Mappings** | 56 kuratierte YAML-Bibliotheken; Lex-Specialis-Markierungen |
-| **5 Persona-Dashboards** | CISO, Risk-Manager, DPO, Compliance-Manager, Auditor -- rollenspezifisch verkabelt |
-| **19-Bucket Mein-Tag-Inbox** | Vollstaendige Inbox-Aggregation aus allen Modulen (vorher 7 Buckets) |
-| **Activity-Feed** | Neue Vollansicht `/de/activity-feed` mit Scope-Filter, CSV-Export, HMAC-Verknuepfung |
+| **Persona-Dashboards** | CISO, Risk-Manager, DPO, Compliance-Manager, Auditor, Board -- rollenspezifisch verkabelt |
+| **19-Bucket Mein-Tag-Inbox** | Vollstaendige Inbox-Aggregation aus allen Modulen |
+| **Activity-Feed** | Vollansicht `/de/activity-feed` mit Scope-Filter, CSV-Export, HMAC-Verknuepfung |
 | **Quick-Fix-Operator-UI** | Web-UI fuer Migrationen, Schema-Reconcile und Daten-Repair ohne CLI |
-| **14 neue Operational Modules** | BCM-Plan, Krisenstab, BC-Uebungen, Patch, Vuln, Threat-Intel, Change-Requests, Physical-Access, Crypto, Prototype-Protection, Monitoring, Scheduled-Reports, Supplier, Locations |
-| **5 Auto-Reaction-Listener** | DPIA / Training / Risk-Skeleton / Corrective-Action / Acknowledgement -- Workflow-Schritt-Abschluss loest Folgeobjekte aus |
 | **CSRF-Haertung** | 16 Forms + 6 Controller gehaertet; CommentController mit Cross-Tenant-Validation |
-| **Tenant-Scope-Guard Workflow** | Auto-Progression prueft Tenant-Zugehoerigkeit vor Ausfuehrung |
-| **180 Uebersetzungsdateien / 90 Domaenen** | Vollstaendige i18n-Abdeckung aller neuen Features (DE + EN) |
+| **276 Uebersetzungsdateien / 138 Domaenen** | Vollstaendige i18n-Abdeckung aller neuen Features (DE + EN) |
 
 ---
 
@@ -154,9 +157,12 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 
 ### Workflow-System
 
-- **Event-getriebene Auto-Progression** -- Workflows schreiten automatisch fort, wenn relevante Felder befuellt werden
-- **Vorkonfigurierte Workflows** -- GDPR Data Breach (72h), Incident Response (hoch/niedrig), Risikobehandlung, DPIA
-- **AND/OR-Logik** -- Komplexe Bedingungen fuer Workflow-Schritte
+- **15 regulatorische Workflows als YAML** -- `config/workflows/regulatory/*.yaml` als Single Source of Truth (GDPR Data Breach 72h, Incident Response hoch/niedrig, Risk Treatment, DPIA, DSR, CAPA, Change Request, Management Review, Control Verification, Supplier Assessment, Training Verification, BC-Plan Activation, Document Review, Incident Post-Mortem)
+- **Event-getriebene Auto-Progression** -- `FieldCompletionAutoTransition`-Doctrine-Listener triggert Workflows automatisch beim Speichern relevanter Felder -- keine Service-Aufrufe noetig
+- **Symfony-Workflow-Lifecycle** -- 5 produktive Entity-Lifecycles (`document`, `processing_activity`, `isms_objective`, `policy_template`, `asset`) via `LifecycleService::transition()`-Facade mit RBAC, Audit-Log und Tenant-Guard
+- **Status-Enum-Foundation** -- 40+ erste-Klasse-Status-Enums mit server-erzwungener 5-Transition-Matrix (`draft -> in_review -> approved -> published -> archived`)
+- **Bulk-Status-Change** -- Canonical `_bulk_action_bar.html.twig` mit `actions: ['status_change', 'approve']` fuer Listen-Views
+- **AND/OR-Logik** -- Komplexe Bedingungen fuer Workflow-Schritte (z.B. `severity >= high AND count > 100 OR notification_required = true`)
 - **Zeitbasierte Schritte** -- Automatische Progression nach konfigurierbarer Wartezeit
 - **Cron-Integration** -- `app:process-timed-workflows` fuer vollautomatische Verarbeitung
 
@@ -187,7 +193,8 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 
 ### Sicherheit und Administration
 
-- **RBAC** -- USER, AUDITOR, MANAGER, ADMIN, SUPER_ADMIN plus Holding-Rollen ROLE_GROUP_CISO und ROLE_KONZERN_AUDITOR (50+ Permissions)
+- **RBAC** -- USER, AUDITOR, MANAGER, ADMIN, SUPER_ADMIN plus Holding-Rollen ROLE_GROUP_CISO und ROLE_KONZERN_AUDITOR plus Persona-Rollen ROLE_CISO / ROLE_RISK_MANAGER / ROLE_DPO / ROLE_COMPLIANCE_MANAGER (50+ Permissions)
+- **Tenant-Scoped Admin** -- `TenantScopedAdminVoter` schraenkt `ROLE_ADMIN` strikt auf den eigenen Tenant ein; nur `ROLE_SUPER_ADMIN` darf tenant-uebergreifend agieren
 - **Multi-Auth** -- Lokale Anmeldung, Azure OAuth, SAML, Generic-SSO (OIDC/OAuth2 mit PKCE, JWKS-Verifikation, JIT-Provisioning + Approval-Queue, Domain-Bindung, AEAD-verschluesselte Client-Secrets)
 - **MFA** -- TOTP mit Backup-Codes
 - **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform
@@ -196,8 +203,9 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 
 ### Persona-Dashboards und Workflow-Inbox
 
-- **5 Persona-Rollen** -- CISO, Risk-Manager, DPO, Compliance-Manager, Auditor mit je eigenem rollenspezifischen Dashboard
+- **6 Persona-Dashboards** -- CISO, Risk-Manager, DPO, Compliance-Manager, Auditor und Board, je per Persona-Rolle (`ROLE_CISO`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`) gegated unter `/dashboards/<persona>`
 - **Board-Dashboard** -- Druckoptimierte Management-Ansicht (PDF-Export) fuer Geschaeftsfuehrung und Aufsichtsgremien
+- **AlvaHint-Engine** -- Kontextuelle Hilfetexte mit Rules-Engine (Tier-System, Modul-/Rollen-Gating, Render-/Dismiss-Telemetrie)
 - **Activity-Feed** -- Chronologische Event-Uebersicht aus allen Modulen; `?scope=compliance` filtert auf Compliance-relevante Events
 - **Workflow-Inbox-Aggregation** -- Alle offenen Workflow-Schritte aller Typen in einer Ansicht
 
@@ -206,7 +214,7 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 - **FairyAurora v4** -- Cyberpunk-Design-System mit Alva-Maskottchen (9 Stimmungen)
 - **Dark Mode** -- Vollstaendige Theme-Unterstuetzung
 - **WCAG 2.2 AA** -- ARIA, Keyboard-Navigation, Focus-Management, Skip-Links
-- **i18n** -- Deutsch und Englisch, 180 Uebersetzungsdateien in 90 Domaenen
+- **i18n** -- Deutsch und Englisch, 276 Uebersetzungsdateien in 138 Domaenen
 
 ---
 
@@ -330,17 +338,27 @@ Der Setup-Wizard fuehrt durch Tenant-Erstellung, Framework-Auswahl und Branchen-
 
 ```
 src/
-  Entity/          78 Doctrine-Entities (alle mit tenant_id)
-  Controller/     123 HTTP-Controller
-  Service/        143 Business-Logic-Services
-  Command/         91 Console-Commands
-  Security/Voter/     Authorization-Voter
+  Entity/         113 Doctrine-Entities (alle mit tenant_id)
+  Controller/     183 HTTP-Controller
+  Service/        352 Business-Logic-Services (inkl. Sub-Packages)
+  Command/        141 Console-Commands
+  Enum/            43 Status-Enums (DocumentStatus, IncidentStatus, ...)
+  Lifecycle/          LifecycleService-Facade + EntityTypeRegistry
+  AlvaHint/           Rules-Engine fuer kontextuelle Hilfetexte
+  Security/Voter/     Authorization-Voter (inkl. TenantScopedAdminVoter)
 
 templates/        Twig-Templates mit Aurora v4 Macros
-translations/     180 YAML-Dateien (90 Domaenen x 2 Sprachen)
-tests/            ~8.290 Testmethoden (Unit + WebTestCase)
-config/           Symfony-Konfiguration, Module, Active Modules
+translations/     276 YAML-Dateien (138 Domaenen x 2 Sprachen)
+tests/            816 Testdateien (Unit + WebTestCase + Lifecycle)
+config/
+  modules.yaml             43 Module-Definitionen
+  active_modules.yaml      Per-Tenant-Aktivierungs-Overrides
+  workflows/               16 Lifecycle-Workflows (Symfony Workflow)
+  workflows/regulatory/    15 regulatorische YAML-Workflows
 ```
+
+Vollstaendiger Entwickler-Guide -- inklusive Patterns, Pre-Commit-Checks und
+Common Pitfalls -- siehe [`CLAUDE.md`](CLAUDE.md).
 
 ### Kern-Services
 
@@ -348,18 +366,22 @@ config/           Symfony-Konfiguration, Module, Active Modules
 |---|---|
 | `TenantContext` | Multi-Tenant-Scoping |
 | `RiskService`, `AssetService`, `ControlService` | ISMS-Kern-CRUD |
-| `WorkflowService` | Workflow-Instanzverwaltung |
-| `WorkflowAutoProgressionService` | Event-getriebene Workflow-Progression |
-| `AuditLogger` | Tamper-evidenter Audit-Trail |
-| `BackupService`, `RestoreService` | Backup/Restore mit Verschluesselung |
+| `LifecycleService` | Symfony-Workflow-Lifecycle-Facade (`transition()` als kanonischer Einstieg) |
+| `WorkflowService` | Workflow-Instanzverwaltung (stabile Public-API-Fassade) |
+| `FieldCompletionAutoTransition` | Event-Listener fuer YAML-Workflow-Auto-Progression (canonical) |
+| `ModuleConfigurationService` | Pro-Tenant-Modul-Aktivierungspruefung |
+| `AuditLogger` | Tamper-evidenter Audit-Trail (HMAC-SHA256-Chain) |
+| `BackupService`, `RestoreService` | Backup/Restore mit AES-256-GCM-Verschluesselung |
 | `ComplianceMappingService` | Cross-Framework-Mapping und Data Reuse |
 
 ### Wichtige Patterns
 
-- **Multi-Tenancy:** Jede Entity traegt `tenant_id`. `TenantContext` filtert automatisch.
-- **RBAC:** 7 Rollen (USER bis SUPER_ADMIN plus ROLE_GROUP_CISO und ROLE_KONZERN_AUDITOR), 50+ granulare Permissions via Voter.
+- **Multi-Tenancy:** Jede Entity traegt `tenant_id`. `TenantContext` filtert automatisch. `TenantScopedAdminVoter` haelt `ROLE_ADMIN` strikt auf den eigenen Tenant.
+- **RBAC:** USER bis SUPER_ADMIN + Holding-Rollen (ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR) + Persona-Rollen (ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER), 50+ granulare Permissions via Voter.
+- **Lifecycle-Foundation:** Status-Uebergaenge ueber `LifecycleService::transition()`-Facade. YAML-Baseline unter `config/workflows/<entity>.yaml`, per-Tenant-Overrides via `/admin/lifecycle-overrides`. Direkte `setStatus()`-Aufrufe sind anti-pattern.
+- **Module-Awareness:** Optional-Features werden ueber `config/modules.yaml` (43 Module) gegated. FormType-Trait `ModuleAwareFormTrait`, Controller-Trait `ModuleGatedControllerTrait`, Twig-Funktion `is_module_active()`. Vollstaendige Referenz: [`docs/MODULE_GATING_GUIDE.md`](docs/MODULE_GATING_GUIDE.md).
 - **Data Reuse:** Ein Nachweis wird ueber Cross-Framework-Mappings mehreren Frameworks zugeordnet. Review-Pflicht bei Uebernahme.
-- **Workflow Auto-Progression:** Entity-Aenderungen triggern automatische Workflow-Schritte (AND/OR-Logik, zeitbasiert).
+- **Workflow Auto-Progression:** YAML-Workflows in `config/workflows/regulatory/*.yaml`. Doctrine-Listener triggert Schritte automatisch bei Feldaenderungen (AND/OR-Logik, zeitbasiert).
 
 ---
 
@@ -390,13 +412,13 @@ php bin/console isms:load-annex-a-controls --env=test
 
 | Metrik | Wert |
 |---|---|
-| Testmethoden | 3.919 |
-| Testdateien | 267 |
+| Testdateien | 816 |
 | Test-LOC | ~75.500 |
 | Controller-Tests | ~1.100 |
 | Service-Tests | ~900 |
 | Repository-Tests | ~400 |
 | Entity-Tests | ~128 |
+| Lifecycle-Tests | unter `tests/Lifecycle/` |
 
 ---
 
@@ -407,7 +429,7 @@ php bin/console isms:load-annex-a-controls --env=test
 | Dokument | Thema |
 |---|---|
 | [Quickstart](docs/QUICKSTART.md) | Vom Klon zum laufenden ISMS in 30 Min — Setup-Wizard 11 Schritte mit Screenshots |
-| [Sichtwechsel](docs/sichtwechsel/README.md) | Sechs Persona-Perspektiven aufs Tool — ISB, CISO, Compliance-Manager, Junior, Risk-Owner, Auditor |
+| [Sichtwechsel](docs/sichtwechsel/README.md) | Sieben Persona-Perspektiven aufs Tool — ISB, CISO, Compliance-Manager, Junior, Risk-Owner, Auditor, Tool-Tester |
 | [Junior-Walkthrough](docs/JUNIOR_IMPLEMENTER_WALKTHROUGH.md) | Detail-Walkthrough aus 9001-Quereinsteiger-Sicht |
 
 ### Benutzerhandbuecher (v3.5 neu)
