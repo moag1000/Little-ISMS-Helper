@@ -33,6 +33,7 @@ final class DataRepairControllerTest extends WebTestCase
     private EntityManagerInterface $em;
     private ?Tenant $tenantA = null;
     private ?User $adminUser = null;
+    private ?User $superUser = null;
 
     protected function setUp(): void
     {
@@ -60,6 +61,17 @@ final class DataRepairControllerTest extends WebTestCase
             ->setIsActive(true);
         $this->em->persist($this->adminUser);
 
+        $this->superUser = (new User())
+            ->setEmail('repair-super-' . $suffix . '@example.test')
+            ->setFirstName('Repair')
+            ->setLastName('Super')
+            ->setRoles(['ROLE_SUPER_ADMIN'])
+            ->setPassword('hashed_password')
+            ->setTenant($this->tenantA)
+            ->setAuthProvider('local')
+            ->setIsActive(true);
+        $this->em->persist($this->superUser);
+
         $this->em->flush();
     }
 
@@ -67,7 +79,7 @@ final class DataRepairControllerTest extends WebTestCase
     {
         if (isset($this->em) && $this->em->isOpen()) {
             try {
-                foreach ([$this->adminUser, $this->tenantA] as $e) {
+                foreach ([$this->adminUser, $this->superUser, $this->tenantA] as $e) {
                     if ($e && method_exists($e, 'getId') && $e->getId() !== null) {
                         $reload = $this->em->find($e::class, $e->getId());
                         if ($reload) {
@@ -180,7 +192,7 @@ final class DataRepairControllerTest extends WebTestCase
     #[Test]
     public function testSchemaMigrationsExecuteRejectsInvalidCsrf(): void
     {
-        $this->client->loginUser($this->adminUser);
+        $this->client->loginUser($this->superUser);
         $this->client->request('POST', '/de/admin/data-repair/schema/migrations', [
             '_token' => 'ignored-invalid',
         ]);
@@ -194,7 +206,7 @@ final class DataRepairControllerTest extends WebTestCase
     #[Test]
     public function testSchemaReconcileRejectsInvalidCsrf(): void
     {
-        $this->client->loginUser($this->adminUser);
+        $this->client->loginUser($this->superUser);
         $this->client->request('POST', '/de/admin/data-repair/schema/reconcile', [
             '_token' => 'ignored-invalid',
         ]);

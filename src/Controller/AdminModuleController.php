@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Symfony\Component\Yaml\Yaml;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\DataImportService;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,9 +16,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Admin wrapper for Module Management
- * Integrates existing /modules functionality into admin panel
+ * Admin wrapper for Module Management.
+ *
+ * Role-Scope: class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT}
+ * (Phase 4e — system-settings cluster). Tenant admins activate / deactivate
+ * modules for their own tenant; SUPER_ADMIN passes through transparently.
+ * Existing method-level `MODULE_VIEW`/`MODULE_MANAGE` permission attributes
+ * remain authoritative for read vs. write granularity.
  */
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class AdminModuleController extends AbstractController
 {
     public function __construct(

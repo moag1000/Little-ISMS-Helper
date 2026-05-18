@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\ComplianceLoaderFixerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,9 +20,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Admin UI for re-running framework requirement loaders idempotently.
  * Picks up requirements that were added to loader code after the initial seed,
  * without touching existing records.
+ *
+ * Role-Scope (Phase 4e — system-settings cluster): class-level
+ * {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — tenant admins re-run
+ * loaders inside their own tenant tree (`W own` per spec §3.1).
+ * SUPER_ADMIN passes through and may additionally run schema-level fixers.
  */
 #[Route('/admin/loader-fixer', name: 'admin_loader_fixer_')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class LoaderFixerController extends AbstractController
 {
     public function __construct(

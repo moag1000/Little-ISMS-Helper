@@ -8,6 +8,7 @@ use Exception;
 use App\Entity\MfaToken;
 use App\Entity\User;
 use App\Repository\MfaTokenRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\MfaService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,6 +20,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Admin UI for MFA-Token management (TOTP / WebAuthn / Backup codes).
+ *
+ * Role-Scope: class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT}
+ * (Phase 4e — system-settings cluster). Tenant admins manage MFA tokens for
+ * their own users; SUPER_ADMIN passes through transparently. Existing
+ * method-level `MFA_VIEW`/`MFA_SETUP`/`MFA_MANAGE`/`MFA_DELETE` permission
+ * attributes stay authoritative for fine-grained access.
+ */
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class MfaTokenController extends AbstractController
 {
     public function __construct(
