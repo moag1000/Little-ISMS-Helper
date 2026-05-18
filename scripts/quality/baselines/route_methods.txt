@@ -17,9 +17,9 @@ src/Controller/Admin/LoaderFixerController.php:23
 src/Controller/Admin/MappingQualityController.php:41
 src/Controller/Admin/MappingQualityController.php:69
 src/Controller/Admin/MappingQualityController.php:172
-src/Controller/Admin/Notification/NotificationChannelController.php:39
-src/Controller/Admin/Notification/NotificationRuleController.php:32
-src/Controller/Admin/Notification/NotificationTemplateController.php:30
+src/Controller/Admin/Notification/NotificationChannelController.php:46
+src/Controller/Admin/Notification/NotificationRuleController.php:38
+src/Controller/Admin/Notification/NotificationTemplateController.php:41
 src/Controller/Admin/QuickFixSettingsController.php:25
 src/Controller/Admin/RiskApprovalConfigController.php:26
 src/Controller/Admin/SsoProviderController.php:53

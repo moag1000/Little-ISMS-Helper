@@ -12,6 +12,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Smoke tests for NotificationChannelController.
+ *
+ * Post-Phase-4d: class-level guard is ADMIN_OWN_TENANT — fixture user is
+ * ROLE_ADMIN to verify the positive-auth path.
  */
 final class NotificationChannelControllerTest extends WebTestCase
 {
@@ -24,32 +27,32 @@ final class NotificationChannelControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function indexRendersForManager(): void
+    public function indexRendersForAdmin(): void
     {
         $client = static::createClient();
-        $client->loginUser($this->getOrCreateManagerUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->request('GET', '/de/admin/notification/channel');
         $statusCode = $client->getResponse()->getStatusCode();
         self::assertContains($statusCode, [200, 302, 403]);
     }
 
     #[Test]
-    public function newPageRendersForManager(): void
+    public function newPageRendersForAdmin(): void
     {
         $client = static::createClient();
-        $client->loginUser($this->getOrCreateManagerUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->request('GET', '/de/admin/notification/channel/new');
         $statusCode = $client->getResponse()->getStatusCode();
         self::assertContains($statusCode, [200, 302, 403]);
     }
 
-    private function getOrCreateManagerUser(mixed $client): User
+    private function getOrCreateAdminUser(mixed $client): User
     {
         /** @var EntityManagerInterface $em */
         $em   = $client->getContainer()->get(EntityManagerInterface::class);
         $repo = $em->getRepository(User::class);
 
-        $email = 'notif-channel-manager@test.test';
+        $email = 'notif-channel-admin@test.test';
         $user  = $repo->findOneBy(['email' => $email]);
         if ($user !== null) {
             return $user;
@@ -65,8 +68,8 @@ final class NotificationChannelControllerTest extends WebTestCase
         $user = (new User())
             ->setEmail($email)
             ->setFirstName('Channel')
-            ->setLastName('Manager')
-            ->setRoles(['ROLE_USER', 'ROLE_MANAGER'])
+            ->setLastName('Admin')
+            ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
             ->setPassword('hashed_password')
             ->setTenant($tenant)
             ->setAuthProvider('local')

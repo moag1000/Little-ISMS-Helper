@@ -12,6 +12,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Smoke tests for NotificationTemplateController gallery.
+ *
+ * Post-Phase-4d: class-level guard is ADMIN_OWN_TENANT — fixture user is
+ * ROLE_ADMIN to verify the positive-auth path.
  */
 final class NotificationTemplateControllerTest extends WebTestCase
 {
@@ -24,22 +27,22 @@ final class NotificationTemplateControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function galleryRendersForManager(): void
+    public function galleryRendersForAdmin(): void
     {
         $client = static::createClient();
-        $client->loginUser($this->getOrCreateManagerUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->request('GET', '/de/admin/notification/template');
         $statusCode = $client->getResponse()->getStatusCode();
         self::assertContains($statusCode, [200, 302, 403]);
     }
 
-    private function getOrCreateManagerUser(mixed $client): User
+    private function getOrCreateAdminUser(mixed $client): User
     {
         /** @var EntityManagerInterface $em */
         $em   = $client->getContainer()->get(EntityManagerInterface::class);
         $repo = $em->getRepository(User::class);
 
-        $email = 'notif-tpl-manager@test.test';
+        $email = 'notif-tpl-admin@test.test';
         $user  = $repo->findOneBy(['email' => $email]);
         if ($user !== null) {
             return $user;
@@ -55,8 +58,8 @@ final class NotificationTemplateControllerTest extends WebTestCase
         $user = (new User())
             ->setEmail($email)
             ->setFirstName('Template')
-            ->setLastName('Manager')
-            ->setRoles(['ROLE_USER', 'ROLE_MANAGER'])
+            ->setLastName('Admin')
+            ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
             ->setPassword('hashed_password')
             ->setTenant($tenant)
             ->setAuthProvider('local')
