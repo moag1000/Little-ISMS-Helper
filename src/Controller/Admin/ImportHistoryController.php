@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\ImportSession;
 use App\Repository\ImportRowEventRepository;
 use App\Repository\ImportSessionRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,13 +23,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * {@see ImportRowEventRepository} for the per-session row detail view
  * (filterable by decision / target entity type).
  *
- * RBAC: the plan asks for ROLE_MANAGER. The application-wide firewall
- * (config/packages/security.yaml) requires ROLE_ADMIN for every `/admin/*`
- * path, so the effective gate is ROLE_ADMIN (which inherits ROLE_MANAGER
- * via role_hierarchy). The #[IsGranted] keeps intent explicit for readers
- * and protects sub-routes should the firewall be relaxed in future.
+ * RBAC: Role-Scope Phase 4 follow-up — migrated to
+ * {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT}. Auditors review their
+ * own tenant's import audit trail; SUPER_ADMIN sees any (handled by voter
+ * inheritance). Application-wide firewall still requires ROLE_ADMIN on
+ * /admin/* paths.
  */
-#[IsGranted('ROLE_MANAGER')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 #[Route(
     path: '/admin/import/history',
     name: 'admin_import_history_'
