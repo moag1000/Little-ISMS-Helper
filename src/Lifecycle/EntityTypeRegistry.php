@@ -84,6 +84,48 @@ final class EntityTypeRegistry
             'class' => \App\Entity\WorkflowInstance::class,
             'workflow' => 'workflow_instance_lifecycle',
         ],
+        // Sprint Y.5 — 10 additional entity lifecycles closing the FormType-bypass surface.
+        // See ADR 2026-05-18-formtype-status-hijack-and-lifecycle-extension.
+        'training' => [
+            'class' => \App\Entity\Training::class,
+            'workflow' => 'training_lifecycle',
+        ],
+        'risk-treatment-plan' => [
+            'class' => \App\Entity\RiskTreatmentPlan::class,
+            'workflow' => 'risk_treatment_plan_lifecycle',
+        ],
+        'supplier' => [
+            'class' => \App\Entity\Supplier::class,
+            'workflow' => 'supplier_lifecycle',
+        ],
+        'prototype-protection-assessment' => [
+            'class' => \App\Entity\PrototypeProtectionAssessment::class,
+            'workflow' => 'prototype_protection_assessment_lifecycle',
+        ],
+        'business-continuity-plan' => [
+            'class' => \App\Entity\BusinessContinuityPlan::class,
+            'workflow' => 'business_continuity_plan_lifecycle',
+        ],
+        'patch' => [
+            'class' => \App\Entity\Patch::class,
+            'workflow' => 'patch_lifecycle',
+        ],
+        'management-review' => [
+            'class' => \App\Entity\ManagementReview::class,
+            'workflow' => 'management_review_lifecycle',
+        ],
+        'change-request' => [
+            'class' => \App\Entity\ChangeRequest::class,
+            'workflow' => 'change_request_lifecycle',
+        ],
+        'threat-intelligence' => [
+            'class' => \App\Entity\ThreatIntelligence::class,
+            'workflow' => 'threat_intelligence_lifecycle',
+        ],
+        'bc-exercise' => [
+            'class' => \App\Entity\BCExercise::class,
+            'workflow' => 'bc_exercise_lifecycle',
+        ],
     ];
 
     /** @return array{class: class-string, workflow: string}|null */

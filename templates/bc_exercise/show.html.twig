@@ -7,6 +7,12 @@
 
 {% block body %}
 <div class="container">
+    {# Lifecycle Y.5 — status transition dropdown (bc_exercise_lifecycle) #}
+    {% include '_components/_lifecycle_toolbar.html.twig' with {
+        entity: bc_exercise,
+        entity_type: 'bc-exercise',
+        workflow_name: 'bc_exercise_lifecycle'
+    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },

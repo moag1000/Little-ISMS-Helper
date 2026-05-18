@@ -89,6 +89,15 @@ class PrototypeProtectionAssessment
     ])]
     private string $status = self::STATUS_DRAFT;
 
+    /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on
+     * prototype_protection_assessment_lifecycle.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     /** TISAX Assessment Level — AL2 for standard, AL3 for high-protection prototypes. */
     #[ORM\Column(length: 5, nullable: true)]
     #[Assert\Choice(choices: ['AL2', 'AL3'], message: 'prototype_protection.validation.level_invalid')]
@@ -366,5 +375,10 @@ class PrototypeProtectionAssessment
             }
         }
         return $worst;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }

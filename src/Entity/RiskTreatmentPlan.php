@@ -83,6 +83,14 @@ class RiskTreatmentPlan
     private ?string $status = 'planned';
 
     /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on risk_treatment_plan_lifecycle.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * Priority level for implementation
      */
     #[ORM\Column(length: 20)]
@@ -583,5 +591,10 @@ class RiskTreatmentPlan
     {
         $this->evidenceDocuments->removeElement($document);
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }

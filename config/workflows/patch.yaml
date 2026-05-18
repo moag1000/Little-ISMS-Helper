@@ -1,0 +1,90 @@
+framework:
+    workflows:
+        patch_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\Patch
+            initial_marking: pending
+            places:
+                - pending
+                - testing
+                - approved
+                - deployed
+                - failed
+                - rolled_back
+                - not_applicable
+            transitions:
+                # ISO 27001 A.8.32 (Change-Mgmt) + A.8.8 (Vulnerability-Mgmt).
+                # Patch-Approve und -Deploy sind Prod-Eingriffe → 4-Augen Pflicht.
+                start_testing:
+                    from: pending
+                    to: testing
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: patches
+                approve:
+                    from: testing
+                    to: approved
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        module: patches
+                deploy:
+                    from: approved
+                    to: deployed
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        module: patches
+                fail_from_testing:
+                    from: testing
+                    to: failed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        module: patches
+                fail_from_approved:
+                    from: approved
+                    to: failed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        module: patches
+                fail_from_deployed:
+                    from: deployed
+                    to: failed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        module: patches
+                rollback:
+                    from: deployed
+                    to: rolled_back
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        reason_required: true
+                        module: patches
+                mark_not_applicable_from_pending:
+                    from: pending
+                    to: not_applicable
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        module: patches
+                mark_not_applicable_from_testing:
+                    from: testing
+                    to: not_applicable
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        module: patches
+                retry_after_failure:
+                    from: failed
+                    to: pending
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: patches

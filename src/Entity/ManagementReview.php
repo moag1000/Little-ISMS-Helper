@@ -87,6 +87,15 @@ class ManagementReview
     #[ORM\Column(length: 50)]
     private ?string $status = 'planned';
 
+    /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on
+     * management_review_lifecycle (ISO 27001 Cl. 9.3 audit-trail integrity).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeInterface $createdAt = null;
 
@@ -687,5 +696,10 @@ public function __construct()
     {
         $this->actionItemsWithDeadlines = $actionItemsWithDeadlines;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }

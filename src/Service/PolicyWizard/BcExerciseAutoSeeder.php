@@ -190,7 +190,7 @@ final class BcExerciseAutoSeeder
         $exercise->setExerciseDate(DateTime::createFromImmutable($plannedDate));
         $exercise->setParticipants('TBD — Crisis Team + BCM Officer + Process Owners.');
         $exercise->setFacilitator('BCM Officer');
-        $exercise->setStatus(BCExerciseStatus::Planned);
+        $exercise->setStatus(BCExerciseStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist entity; 'planned' is the bc_exercise_lifecycle initial_marking)
         $exercise->setReportCompleted(false);
 
         return $exercise;

@@ -15,6 +15,17 @@ imports:
     - { resource: '../workflows/internal_audit.yaml' }
     - { resource: '../workflows/risk.yaml' }
     - { resource: '../workflows/vulnerability.yaml' }
+    # Sprint Y.5 — 10 additional entity lifecycles (close FormType-bypass surface)
+    - { resource: '../workflows/training.yaml' }
+    - { resource: '../workflows/risk_treatment_plan.yaml' }
+    - { resource: '../workflows/supplier.yaml' }
+    - { resource: '../workflows/prototype_protection_assessment.yaml' }
+    - { resource: '../workflows/business_continuity_plan.yaml' }
+    - { resource: '../workflows/patch.yaml' }
+    - { resource: '../workflows/management_review.yaml' }
+    - { resource: '../workflows/change_request.yaml' }
+    - { resource: '../workflows/threat_intelligence.yaml' }
+    - { resource: '../workflows/bc_exercise.yaml' }
     # Sprint Y.2 — Regulatory approval-chain workflows (WorkflowInstance-based)
     - { resource: '../workflows/regulatory/gdpr_data_breach.yaml' }
     - { resource: '../workflows/regulatory/incident_high_severity.yaml' }

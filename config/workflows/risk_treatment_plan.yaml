@@ -1,0 +1,61 @@
+framework:
+    workflows:
+        risk_treatment_plan_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\RiskTreatmentPlan
+            initial_marking: planned
+            places:
+                - planned
+                - in_progress
+                - completed
+                - cancelled
+                - on_hold
+            transitions:
+                start:
+                    from: planned
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER, ROLE_MANAGER]
+                # ISO 27001 Cl. 6.1.3 — Risk-Treatment-Effektivität muss verifiziert
+                # werden bevor ein Plan "completed" gilt. Two-person rule schützt
+                # vor Selbst-Abnahme durch den ausführenden Risk-Owner.
+                complete:
+                    from: in_progress
+                    to: completed
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_RISK_MANAGER]
+                        four_eyes: true
+                        reason_required: true
+                pause:
+                    from: in_progress
+                    to: on_hold
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER, ROLE_MANAGER]
+                        reason_required: true
+                resume:
+                    from: on_hold
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER, ROLE_MANAGER]
+                cancel_from_planned:
+                    from: planned
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER, ROLE_MANAGER]
+                        reason_required: true
+                cancel_from_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_RISK_MANAGER]
+                        reason_required: true
+                cancel_from_on_hold:
+                    from: on_hold
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_RISK_MANAGER]
+                        reason_required: true

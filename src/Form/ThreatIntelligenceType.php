@@ -106,8 +106,12 @@ final class ThreatIntelligenceType extends AbstractType
                     'placeholder' => 'placeholder.cve_id',
                 ],
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // Owned by `threat_intelligence_lifecycle`. NIS2 Art. 21(2)e +
+            // ISO 27001 A.5.7. Transitions via LifecycleService only.
             ->add('status', ChoiceType::class, [
                 'label' => 'field.status',
+                'help' => 'field.status_readonly',
                 'choices' => [
                     'status_type.new' => 'new',
                     'status_type.analyzing' => 'analyzing',
@@ -115,7 +119,8 @@ final class ThreatIntelligenceType extends AbstractType
                     'status_type.monitoring' => 'monitoring',
                     'status_type.closed' => 'closed',
                 ],
-                'required' => true,
+                'required' => false,
+                'disabled' => true,
                 'choice_translation_domain' => 'threat',
             ])
             ->add('detectionDate', DateType::class, [

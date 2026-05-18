@@ -1,0 +1,47 @@
+framework:
+    workflows:
+        bc_exercise_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\BCExercise
+            initial_marking: planned
+            places:
+                - planned
+                - in_progress
+                - completed
+                - cancelled
+            transitions:
+                # ISO 22301 Cl. 8.5 — BC-Exercise als Audit-Evidenz für die
+                # Krisenfähigkeit. `complete` versiegelt die Übungs-Aufzeichnung
+                # → 4-Augen Pflicht.
+                start:
+                    from: planned
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        module: bcm
+                complete:
+                    from: in_progress
+                    to: completed
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        reason_required: true
+                        module: bcm
+                cancel_from_planned:
+                    from: planned
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                        module: bcm
+                cancel_from_in_progress:
+                    from: in_progress
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: bcm

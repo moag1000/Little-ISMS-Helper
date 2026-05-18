@@ -1,0 +1,57 @@
+framework:
+    workflows:
+        supplier_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\Supplier
+            initial_marking: evaluation
+            places:
+                - evaluation
+                - active
+                - inactive
+                - terminated
+            transitions:
+                # ISO 27001 A.5.19-A.5.22 — Supplier-Lifecycle. Onboarding endet
+                # mit `activate` (Vertrag unterschrieben). Termination ist
+                # irreversibel → 4-Augen + reason.
+                activate:
+                    from: evaluation
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                suspend:
+                    from: active
+                    to: inactive
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                reactivate:
+                    from: inactive
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                # Terminate ist Vertragsende — Audit-relevant. 4-Augen Pflicht.
+                terminate_from_active:
+                    from: active
+                    to: terminated
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        reason_required: true
+                terminate_from_inactive:
+                    from: inactive
+                    to: terminated
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        reason_required: true
+                terminate_from_evaluation:
+                    from: evaluation
+                    to: terminated
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true

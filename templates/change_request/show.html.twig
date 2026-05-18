@@ -7,6 +7,12 @@
 
 {% block body %}
 <div class="container">
+    {# Lifecycle Y.5 — status transition dropdown (change_request_lifecycle) #}
+    {% include '_components/_lifecycle_toolbar.html.twig' with {
+        entity: change_request,
+        entity_type: 'change-request',
+        workflow_name: 'change_request_lifecycle'
+    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.change_requests'|trans({}, 'nav'), url: path('app_change_request_index') },
