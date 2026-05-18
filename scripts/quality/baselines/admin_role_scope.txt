@@ -1,4 +1,3 @@
 # check_admin_role_scope.py baseline
 # Format: <relative-path>:<line>:<kind>
 # Drop a line and ship the PR after migrating that controller to a TenantScopedAdminVoter attribute.
-src/Controller/Admin/ImportHistoryController.php:36:wrong:ROLE_MANAGER
