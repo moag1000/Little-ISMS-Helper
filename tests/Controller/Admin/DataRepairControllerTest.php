@@ -79,7 +79,7 @@ final class DataRepairControllerTest extends WebTestCase
     {
         if (isset($this->em) && $this->em->isOpen()) {
             try {
-                foreach ([$this->adminUser, $this->tenantA] as $e) {
+                foreach ([$this->adminUser, $this->superUser, $this->tenantA] as $e) {
                     if ($e && method_exists($e, 'getId') && $e->getId() !== null) {
                         $reload = $this->em->find($e::class, $e->getId());
                         if ($reload) {
