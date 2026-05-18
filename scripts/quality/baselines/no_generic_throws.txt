@@ -183,7 +183,7 @@ src/Service/ScheduledReportService.php:320
 src/Service/ScheduledReportService.php:411
 src/Service/ScheduledTaskService.php:42
 src/Service/ScheduledTaskService.php:91
-src/Service/SchemaHealthService.php:245
+src/Service/SchemaHealthService.php:258
 src/Service/SecurityAuditService.php:24
 src/Service/Setup/SetupJobStatusService.php:133
 src/Service/Sso/OidcAuthenticationFlow.php:169
