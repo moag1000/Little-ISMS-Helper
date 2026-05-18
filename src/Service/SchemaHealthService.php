@@ -151,6 +151,22 @@ class SchemaHealthService
             foreach ($sql as $statement) {
                 $this->executeStatementFkAware($conn, $statement, $droppedFks);
             }
+
+            // Multi-pass convergence: after the first pass, FKs that previously
+            // failed (referenced table not yet created) may now succeed because
+            // dependent tables exist. Re-run schema diff up to 2 additional
+            // passes. Each pass executes only the remaining diff.
+            for ($pass = 2; $pass <= 3; $pass++) {
+                $passSql = $tool->getUpdateSchemaSql(
+                    $this->entityManager->getMetadataFactory()->getAllMetadata(),
+                );
+                if ($passSql === []) {
+                    break;
+                }
+                foreach ($passSql as $statement) {
+                    $this->executeStatementFkAware($conn, $statement, $droppedFks);
+                }
+            }
         } catch (\Throwable $e) {
             // Restore FK checks even on failure
             if ($fkChecksWereEnabled) {
@@ -307,6 +323,40 @@ class SchemaHealthService
                     null,
                     ['sql' => substr($sql, 0, 200), 'error' => substr($msg, 0, 200)],
                     sprintf('FK-aware reconcile: skipped already-absent DROP (sql=%s)', substr($sql, 0, 80)),
+                );
+                return;
+            }
+
+            // Pattern: SQLSTATE[HY000] 1822 — Failed to add the foreign key
+            // constraint. Missing index for constraint 'X' in the referenced
+            // table 'Y'. InnoDB enforces this even with foreign_key_checks=0.
+            // On a drifted DB the referenced table may not exist yet OR the
+            // referenced column index will be created later in the batch.
+            // Swallow + log: subsequent reconcile run will succeed once tables
+            // are present. Better partial reconcile than total abort.
+            if (preg_match('/1822\s.*Failed to add the foreign key constraint/i', $msg)) {
+                $this->auditLogger->logCustom(
+                    'admin.schema.fk_aware_skip_missing_index',
+                    'Doctrine',
+                    null,
+                    null,
+                    ['sql' => substr($sql, 0, 200), 'error' => substr($msg, 0, 200)],
+                    sprintf('FK-aware reconcile: skipped FK with missing referenced index (sql=%s) — re-run after referenced table is created', substr($sql, 0, 80)),
+                );
+                return;
+            }
+
+            // Pattern: SQLSTATE[HY000] 1005 errno 150 — generic "FK constraint
+            // is incorrectly formed". Same recovery: swallow, audit-log, expect
+            // operator to re-run after dependent tables exist.
+            if (preg_match('/1005\s.*errno:\s*150/i', $msg)) {
+                $this->auditLogger->logCustom(
+                    'admin.schema.fk_aware_skip_errno_150',
+                    'Doctrine',
+                    null,
+                    null,
+                    ['sql' => substr($sql, 0, 200), 'error' => substr($msg, 0, 200)],
+                    sprintf('FK-aware reconcile: skipped CREATE-TABLE with errno 150 (incorrect FK form, likely forward-reference) (sql=%s)', substr($sql, 0, 80)),
                 );
                 return;
             }
