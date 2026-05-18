@@ -78,6 +78,8 @@ risk_manager:
         forecast: 'Risikovorhersage'
         untreated_risks: 'Unbehandelte Risiken'
         overdue_treatments: 'Überfällige Behandlungen'
+        pending_approvals: 'Ausstehende Freigaben'
+        lifecycle_stuck: 'Überfällige Workflows'
     pipeline:
         total: 'Gesamt'
         treated: 'Behandelt'
@@ -96,6 +98,8 @@ risk_manager:
     all_treated: 'Alle Risiken sind behandelt'
     no_overdue: 'Keine überfälligen Behandlungen'
     target_date: 'Zieldatum'
+    no_pending_approvals: 'Keine ausstehenden Freigaben'
+    no_lifecycle_stuck: 'Keine überfälligen Workflows'
 
 # Auditor Dashboard
 auditor:
@@ -162,6 +166,8 @@ compliance_manager:
         approval_queue: 'Dokument-Approval-Queue'
         quick_actions: 'Quick-Actions'
         dora_status: 'DORA-Verpflichtungsstatus'
+        pending_approvals: 'Ausstehende Freigaben'
+        lifecycle_stuck: 'Überfällige Workflows'
     table:
         framework: 'Framework'
         coverage: 'Coverage'
@@ -294,6 +300,8 @@ dpo:
         activities_needing_dpia: 'Verarbeitungsverfahren ohne DSFA'
         quick_actions: 'Schnellzugriff'
         dora_status: 'DORA-Verpflichtungsstatus'
+        pending_approvals: 'Ausstehende Freigaben'
+        lifecycle_stuck: 'Überfällige Workflows'
     empty:
         no_breaches_title: 'Keine offenen Datenpannen'
         no_breaches_text: 'Aktuell sind keine offenen Datenpannen zu bearbeiten.'

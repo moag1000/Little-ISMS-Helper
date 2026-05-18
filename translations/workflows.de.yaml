@@ -411,3 +411,11 @@ approval:
         question_placeholder: 'z.B. "In Abschnitt 3 ist mir unklar, ob das auch für externe Dienstleister gilt."'
         cancel: 'Abbrechen'
         submit: 'Rückfrage senden'
+
+# Z.0 — Lifecycle Pending Banner (entity show-pages)
+lifecycle:
+    pending_banner:
+        pending_title: 'Aktion erforderlich — Workflow wartet auf Ihre Freigabe'
+        stuck_title: 'Workflow überfällig — Deadline überschritten'
+        workflow_label: 'Workflow'
+        due: 'Fällig bis'

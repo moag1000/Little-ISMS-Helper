@@ -412,3 +412,11 @@ approval:
         question_placeholder: 'e.g. "In section 3, it is unclear whether this also applies to external service providers."'
         cancel: 'Cancel'
         submit: 'Send question'
+
+# Z.0 — Lifecycle Pending Banner (entity show-pages)
+lifecycle:
+    pending_banner:
+        pending_title: 'Action required — workflow awaiting your approval'
+        stuck_title: 'Workflow overdue — deadline exceeded'
+        workflow_label: 'Workflow'
+        due: 'Due by'

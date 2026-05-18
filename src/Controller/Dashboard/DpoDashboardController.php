@@ -7,6 +7,7 @@ namespace App\Controller\Dashboard;
 use App\Repository\DataBreachRepository;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use App\Repository\ProcessingActivityRepository;
+use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,6 +36,7 @@ final class DpoDashboardController extends AbstractController
         private readonly DataBreachRepository $dataBreachRepo,
         private readonly DataProtectionImpactAssessmentRepository $dpiaRepo,
         private readonly ProcessingActivityRepository $processingActivityRepo,
+        private readonly RoleDashboardService $roleDashboardService,
     ) {
     }
 
@@ -66,6 +68,10 @@ final class DpoDashboardController extends AbstractController
         // Processing activities with third-country transfers (Art. 44-49 GDPR)
         $thirdCountryTransfers = $this->processingActivityRepo->findWithThirdCountryTransfers($tenant);
 
+        // Z.0 — workflow transparency
+        $pendingApprovals = $this->roleDashboardService->getPendingApprovals();
+        $lifecycleStuck   = $this->roleDashboardService->getLifecycleStuck();
+
         return $this->render('dashboards/dpo.html.twig', [
             'dashboard' => [
                 'open_breaches'            => $openBreaches,
@@ -76,6 +82,8 @@ final class DpoDashboardController extends AbstractController
                 'activities_needing_dpia'  => $activitiesNeedingDpia,
                 'activities_due_review'    => $activitiesDueReview,
                 'third_country_transfers'  => $thirdCountryTransfers,
+                'pending_approvals'        => $pendingApprovals,
+                'lifecycle_stuck'          => $lifecycleStuck,
             ],
         ]);
     }

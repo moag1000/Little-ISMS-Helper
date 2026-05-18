@@ -15,6 +15,7 @@ use App\Repository\IncidentRepository;
 use App\Service\DataBreachService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
+use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,6 +38,7 @@ class DataBreachController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?IncidentRepository $incidentRepository = null,
+        private readonly ?RoleDashboardService $roleDashboardService = null,
     ) {
     }
 
@@ -180,9 +182,16 @@ class DataBreachController extends AbstractController
             $comments = $this->commentRepository->findThread($tenant, 'DataBreach', $dataBreach->getId());
         }
 
+        // Z.0 — Workflow transparency: pre-compute pending banner for this entity
+        $workflowInfo = $this->roleDashboardService?->getWorkflowInfoForEntity(
+            'DataBreach',
+            $dataBreach->getId()
+        ) ?? [];
+
         return $this->render('data_breach/show.html.twig', [
             'breach' => $dataBreach,
             'comments' => $comments,
+            'workflow_info' => $workflowInfo,
         ]);
     }
 
