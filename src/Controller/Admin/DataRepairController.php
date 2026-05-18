@@ -42,7 +42,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DataRepairController extends AbstractController
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly IncidentRepository $incidentRepository,
@@ -53,7 +53,23 @@ class DataRepairController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly AuditLogger $auditLogger,
         private readonly SchemaMaintenanceService $schemaMaintenanceService,
+        private readonly \Doctrine\Persistence\ManagerRegistry $managerRegistry,
     ) {
+    }
+
+    /**
+     * Reset the EM if a prior flush closed it. Used between bulk-repair
+     * iterations so a single constraint violation doesn't kill the whole loop.
+     */
+    private function resetEntityManagerIfClosed(): void
+    {
+        if (!$this->entityManager->isOpen()) {
+            $this->managerRegistry->resetManager();
+            $em = $this->managerRegistry->getManager();
+            if ($em instanceof EntityManagerInterface) {
+                $this->entityManager = $em;
+            }
+        }
     }
 
     /**
@@ -593,7 +609,8 @@ class DataRepairController extends AbstractController
         // Render und Submit ändern können (z.B. neue Imports) und der Nutzer
         // dann aus einer gültigen Aktion ausgeschlossen wird.
         $totalFixed = 0;
-        $this->withoutTenantFilter(function () use ($tenant, &$totalFixed): void {
+        $totalSkipped = 0;
+        $this->withoutTenantFilter(function () use ($tenant, &$totalFixed, &$totalSkipped): void {
             $orphaned = $this->dataIntegrityService->findAllOrphanedEntities();
 
             foreach ($orphaned as $className => $entities) {
@@ -601,26 +618,48 @@ class DataRepairController extends AbstractController
                     if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
                         continue;
                     }
-                    $entity->setTenant($tenant);
-                    $this->auditLogger->logCustom(
-                        'admin.data_repair.orphan_reassigned',
-                        $className,
-                        (int) $entity->getId(),
-                        ['tenant_id' => null],
-                        ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
-                        sprintf('Orphan %s#%d reassigned to tenant %s', $className, (int) $entity->getId(), $tenant->getName()),
-                    );
-                    $totalFixed++;
+                    // Guard: if a previous iteration's flush closed the EM
+                    // (e.g. constraint violation), reset before continuing so
+                    // remaining orphans can still be processed.
+                    $this->resetEntityManagerIfClosed();
+                    // Re-fetch tenant via repository so the entity attaches to
+                    // the (possibly reset) EM. tenantRepository is autowired
+                    // and resolves via the active EM.
+                    $tenant = $this->tenantRepository->find($tenant->getId());
+                    if (!$tenant) {
+                        return;
+                    }
+                    try {
+                        $entity->setTenant($tenant);
+                        $this->auditLogger->logCustom(
+                            'admin.data_repair.orphan_reassigned',
+                            $className,
+                            (int) $entity->getId(),
+                            ['tenant_id' => null],
+                            ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
+                            sprintf('Orphan %s#%d reassigned to tenant %s', $className, (int) $entity->getId(), $tenant->getName()),
+                        );
+                        $this->entityManager->flush();
+                        $totalFixed++;
+                    } catch (\Throwable $e) {
+                        $totalSkipped++;
+                        // EM may be closed after constraint violation; next
+                        // iteration's guard above will reset it.
+                    }
                 }
             }
-
-            $this->entityManager->flush();
         });
 
-        $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_all_orphans', [
+        $message = $this->translator->trans('admin.data_repair.fixed_all_orphans', [
             '%count%' => $totalFixed,
             '%tenant%' => $tenant->getName(),
-        ], 'admin'));
+        ], 'admin');
+        if ($totalSkipped > 0) {
+            $message .= ' · ' . $this->translator->trans('admin.data_repair.orphans_skipped', [
+                '%count%' => $totalSkipped,
+            ], 'admin');
+        }
+        $this->addFlash($totalSkipped > 0 ? 'warning' : 'success', $message);
 
         return $this->redirectToRoute('admin_data_repair_index');
     }
