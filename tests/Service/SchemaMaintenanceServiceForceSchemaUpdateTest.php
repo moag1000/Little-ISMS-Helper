@@ -78,16 +78,17 @@ class SchemaMaintenanceServiceForceSchemaUpdateTest extends TestCase
     #[Test]
     public function forceSchemaUpdate_whenSchemaAlreadyInSync_returnsSuccessWithZeroStatements(): void
     {
-        // Arrange: metadata factory returns empty list → SchemaTool emits 0 SQL
-        $metadataFactory = $this->createMock(ClassMetadataFactory::class);
-        $metadataFactory->method('getAllMetadata')->willReturn([]);
-
-        $this->entityManager
-            ->method('getMetadataFactory')
-            ->willReturn($metadataFactory);
-
-        // FK check statements are NOT expected when 0 SQL → no connection calls
-        $this->connection->expects(self::never())->method('executeStatement');
+        // Arrange: schemaHealthService returns empty executed_sql (already in sync)
+        $this->schemaHealthService
+            ->method('applyUpdate')
+            ->with('test-actor', true)
+            ->willReturn([
+                'success' => true,
+                'executed_sql' => [],
+                'sql_hash' => null,
+                'error' => null,
+                'blocked' => null,
+            ]);
 
         // Audit log fires with noop event
         $this->auditLogger
@@ -173,15 +174,16 @@ class SchemaMaintenanceServiceForceSchemaUpdateTest extends TestCase
     #[Test]
     public function forceSchemaUpdate_onSuccess_callsAuditLogWithAppliedEvent(): void
     {
-        // Arrange: empty metadata → noop path; audit log fires with noop event.
-        // The "applied" event would require real SQL being emitted — tested
-        // here by verifying the audit contract shape via noop (0 statements).
-        $metadataFactory = $this->createMock(ClassMetadataFactory::class);
-        $metadataFactory->method('getAllMetadata')->willReturn([]);
-
-        $this->entityManager
-            ->method('getMetadataFactory')
-            ->willReturn($metadataFactory);
+        // Arrange: schemaHealthService returns empty executed_sql → noop path
+        $this->schemaHealthService
+            ->method('applyUpdate')
+            ->willReturn([
+                'success' => true,
+                'executed_sql' => [],
+                'sql_hash' => null,
+                'error' => null,
+                'blocked' => null,
+            ]);
 
         $capturedEvent = null;
         $this->auditLogger

@@ -156,6 +156,12 @@ class SchemaHealthService
             // failed (referenced table not yet created) may now succeed because
             // dependent tables exist. Re-run schema diff up to 2 additional
             // passes. Each pass executes only the remaining diff.
+            //
+            // Phantom-drift detection: DBAL 4.x + MariaDB emit no-op statements
+            // for JSON↔LONGTEXT introspection and DEFAULT NULL diff. If pass N
+            // emits identical statements to pass N-1, the schema IS in sync;
+            // stop iterating and treat as success.
+            $previousPassHash = hash('sha256', implode(";\n", $sql));
             for ($pass = 2; $pass <= 3; $pass++) {
                 $passSql = $tool->getUpdateSchemaSql(
                     $this->entityManager->getMetadataFactory()->getAllMetadata(),
@@ -163,6 +169,13 @@ class SchemaHealthService
                 if ($passSql === []) {
                     break;
                 }
+                $currentHash = hash('sha256', implode(";\n", $passSql));
+                if ($currentHash === $previousPassHash) {
+                    // Phantom drift — same statements re-emitted. Schema is
+                    // already in sync; stop iterating.
+                    break;
+                }
+                $previousPassHash = $currentHash;
                 foreach ($passSql as $statement) {
                     $this->executeStatementFkAware($conn, $statement, $droppedFks);
                 }
@@ -253,43 +266,54 @@ class SchemaHealthService
         } catch (\Doctrine\DBAL\Exception\DriverException $e) {
             $msg = $e->getMessage();
 
-            // Pattern: SQLSTATE[HY000]: General error: 1832 Cannot change column 'col':
-            //          used in a foreign key constraint 'fk_name'
+            // Pattern: SQLSTATE[HY000]: General error: 1832/1833 Cannot change
+            //          column 'col': used in a foreign key constraint 'fk_name'
+            // 1832 = FK referenced from same table, 1833 = FK referenced from
+            //        another table. Both need same recovery: drop+alter+re-add.
             if (preg_match(
-                "/1832 Cannot change column '([^']+)': used in a foreign key constraint '([^']+)'/",
+                "/(1832|1833) Cannot change column '([^']+)': used in a foreign key constraint '([^']+)'/",
                 $msg,
                 $m,
             )) {
-                $columnName = $m[1];
-                $fkName = $m[2];
+                $columnName = $m[2];
+                $fkName = $m[3];
 
                 if (!preg_match('/ALTER TABLE [`"]?(\w+)[`"]?/i', $sql, $tm)) {
                     throw $e; // can't determine table — bubble
                 }
                 $tableName = $tm[1];
 
-                $fkDef = $this->captureForeignKeyDefinition($conn, $tableName, $fkName);
+                // For errno 1833, the blocking FK lives on a DIFFERENT table
+                // that REFERENCES $tableName. Look up the actual owner.
+                $fkOwnerTable = $this->findForeignKeyOwnerTable($conn, $fkName);
+                if ($fkOwnerTable === null) {
+                    // Fall back to same-table lookup (1832 path)
+                    $fkOwnerTable = $tableName;
+                }
+
+                $fkDef = $this->captureForeignKeyDefinition($conn, $fkOwnerTable, $fkName);
                 if ($fkDef === null) {
                     throw $e; // could not introspect — bubble
                 }
 
-                // Step 1: drop the blocking FK
-                $conn->executeStatement(sprintf('ALTER TABLE `%s` DROP FOREIGN KEY `%s`', $tableName, $fkName));
+                // Step 1: drop the blocking FK from its actual owner table
+                $conn->executeStatement(sprintf('ALTER TABLE `%s` DROP FOREIGN KEY `%s`', $fkOwnerTable, $fkName));
 
                 // Step 2: retry the original statement (depth-guarded)
                 $this->executeStatementFkAware($conn, $sql, $droppedFks, $depth + 1);
 
-                // Step 3: re-add the FK
+                // Step 3: re-add the FK on its owner table
                 $conn->executeStatement(sprintf(
                     'ALTER TABLE `%s` ADD CONSTRAINT `%s` %s',
-                    $tableName,
+                    $fkOwnerTable,
                     $fkName,
                     $fkDef,
                 ));
 
                 $droppedFks[] = [
-                    'table' => $tableName,
+                    'table' => $fkOwnerTable,
                     'fk' => $fkName,
+                    'altered_table' => $tableName,
                     'sql_that_triggered' => substr($sql, 0, 200),
                 ];
 
@@ -371,6 +395,28 @@ class SchemaHealthService
      * so the constraint can be re-added after a blocking ALTER COLUMN.
      * Returns null when the FK is not found in the schema.
      */
+    /**
+     * For errno 1833: find which TABLE owns a given FK constraint, regardless
+     * of which table currently being altered. Returns null when not found.
+     */
+    private function findForeignKeyOwnerTable(Connection $conn, string $fkName): ?string
+    {
+        try {
+            $owner = $conn->fetchOne(
+                "SELECT TABLE_NAME
+                 FROM information_schema.TABLE_CONSTRAINTS
+                 WHERE CONSTRAINT_SCHEMA = DATABASE()
+                   AND CONSTRAINT_TYPE = 'FOREIGN KEY'
+                   AND CONSTRAINT_NAME = :fk
+                 LIMIT 1",
+                ['fk' => $fkName],
+            );
+            return is_string($owner) && $owner !== '' ? $owner : null;
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
     private function captureForeignKeyDefinition(Connection $conn, string $tableName, string $fkName): ?string
     {
         $cols = $conn->fetchAllAssociative(
