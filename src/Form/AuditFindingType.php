@@ -78,8 +78,12 @@ final class AuditFindingType extends AbstractType
                 'choice_translation_domain' => 'audits',
                 'required' => true,
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
+            // Owned by `audit_finding_lifecycle`. Transitions via
+            // LifecycleService::transition() only.
             ->add('status', ChoiceType::class, [
                 'label' => 'audit_finding.field.status',
+                'help' => 'audit_finding.help.status_readonly',
                 'choices' => [
                     'audit_finding.status.open' => AuditFindingStatus::Open->value,
                     'audit_finding.status.in_progress' => AuditFindingStatus::InProgress->value,
@@ -88,7 +92,8 @@ final class AuditFindingType extends AbstractType
                     'audit_finding.status.closed' => AuditFindingStatus::Closed->value,
                 ],
                 'choice_translation_domain' => 'audits',
-                'required' => true,
+                'required' => false,
+                'disabled' => true,
             ])
             ->add('source', ChoiceType::class, [
                 'label' => 'audits.field.finding_source',

@@ -113,12 +113,13 @@ class InternalAuditApprovalWorkflowTest extends WebTestCase
         $this->auditorUser->setIsActive(true);
         $this->entityManager->persist($this->auditorUser);
 
-        // Approver — different user with ROLE_AUDITOR to satisfy 4-eyes.
+        // Approver — different user with ROLE_CISO to satisfy 4-eyes
+        // (YAML `internal_audit.yaml` requires the approver to carry ROLE_CISO).
         $this->approverUser = new User();
         $this->approverUser->setEmail('approver_' . $uniqueId . '@example.com');
         $this->approverUser->setFirstName('App');
         $this->approverUser->setLastName('Rover');
-        $this->approverUser->setRoles(['ROLE_AUDITOR']);
+        $this->approverUser->setRoles(['ROLE_CISO']);
         $this->approverUser->setPassword('hashed_password');
         $this->approverUser->setTenant($this->testTenant);
         $this->approverUser->setIsActive(true);

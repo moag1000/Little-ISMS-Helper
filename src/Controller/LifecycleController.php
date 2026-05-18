@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Lifecycle\Config\LifecycleConfigResolverInterface;
 use App\Lifecycle\EntityTypeRegistry;
+use App\Lifecycle\Exception\FourEyesRequiredException;
 use App\Lifecycle\Exception\ReasonRequiredException;
 use App\Lifecycle\InvalidTransitionException;
 use App\Lifecycle\LifecycleService;
 use App\Repository\AuditLogRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,6 +33,7 @@ class LifecycleController extends AbstractController
         private readonly LifecycleConfigResolverInterface $resolver,
         private readonly Registry $workflowRegistry,
         private readonly AuditLogRepository $auditLogRepository,
+        private readonly UserRepository $userRepository,
     ) {}
 
     #[Route('/lifecycle/{entityType}/{id}/transition', name: 'app_lifecycle_transition', methods: ['POST'])]
@@ -50,6 +54,7 @@ class LifecycleController extends AbstractController
         $transitionName = (string) ($payload['transition'] ?? '');
         $reason = $payload['reason'] ?? null;
         $clientVersion = $payload['lock_version'] ?? null;
+        $fourEyesApproverId = $payload['four_eyes_approver_id'] ?? null;
 
         if (method_exists($entity, 'getLockVersion') && $clientVersion !== null
             && (int) $entity->getLockVersion() !== (int) $clientVersion) {
@@ -63,10 +68,29 @@ class LifecycleController extends AbstractController
             return $this->jsonError(403, 'forbidden', sprintf('Berechtigung fehlt für Transition "%s".', $transitionName));
         }
 
+        $approver = null;
+        if ($fourEyesApproverId !== null) {
+            $approver = $this->userRepository->find((int) $fourEyesApproverId);
+            if (!$approver instanceof User) {
+                return $this->jsonError(422, 'four_eyes_approver_not_found', sprintf('Approver-User #%s nicht gefunden.', (string) $fourEyesApproverId));
+            }
+        }
+
         try {
-            $this->lifecycle->transition($entity, $mapping['workflow'], $transitionName, $this->getUser(), is_string($reason) ? $reason : null);
+            $this->lifecycle->transition(
+                $entity,
+                $mapping['workflow'],
+                $transitionName,
+                $this->getUser(),
+                is_string($reason) ? $reason : null,
+                $approver,
+            );
         } catch (ReasonRequiredException $e) {
             return $this->jsonError(422, 'reason_required', $e->getMessage());
+        } catch (FourEyesRequiredException $e) {
+            return $this->jsonError(422, 'four_eyes_required', $e->getMessage(), [
+                'reason_code' => $e->reasonCode,
+            ]);
         } catch (InvalidTransitionException $e) {
             return $this->jsonError(422, 'invalid_transition', $e->getMessage(), ['allowed' => $e->allowedTransitions ?? []]);
         } catch (OptimisticLockException) {
@@ -96,9 +120,18 @@ class LifecycleController extends AbstractController
         $transitionName = (string) ($payload['transition'] ?? '');
         $ids = $payload['ids'] ?? [];
         $reason = $payload['reason'] ?? null;
+        $fourEyesApproverId = $payload['four_eyes_approver_id'] ?? null;
 
         if (!is_array($ids) || $ids === []) {
             return $this->jsonError(422, 'no_ids', 'Mindestens eine ID erforderlich.');
+        }
+
+        $approver = null;
+        if ($fourEyesApproverId !== null) {
+            $approver = $this->userRepository->find((int) $fourEyesApproverId);
+            if (!$approver instanceof User) {
+                return $this->jsonError(422, 'four_eyes_approver_not_found', sprintf('Approver-User #%s nicht gefunden.', (string) $fourEyesApproverId));
+            }
         }
 
         $succeeded = [];
@@ -116,7 +149,14 @@ class LifecycleController extends AbstractController
                 continue;
             }
             try {
-                $this->lifecycle->transition($entity, $mapping['workflow'], $transitionName, $this->getUser(), is_string($reason) ? $reason : null);
+                $this->lifecycle->transition(
+                    $entity,
+                    $mapping['workflow'],
+                    $transitionName,
+                    $this->getUser(),
+                    is_string($reason) ? $reason : null,
+                    $approver,
+                );
                 $succeeded[] = (int) $id;
             } catch (\Throwable $e) {
                 $failed[(string) $id] = substr($e->getMessage(), 0, 200);
@@ -159,6 +199,8 @@ class LifecycleController extends AbstractController
                 'name' => $t->getName(),
                 'to' => $t->getTos()[0] ?? null,
                 'reason_required' => (bool) ($effective['reason_required'] ?? false),
+                'four_eyes_required' => (bool) ($effective['four_eyes'] ?? false),
+                'roles' => $effective['roles'] ?? [],
             ];
         }
 

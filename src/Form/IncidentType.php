@@ -140,11 +140,16 @@ final class IncidentType extends AbstractType
                     'data-controller' => 'tom-select',
                 ],
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
+            // Owned by `incident_lifecycle`. YAML 4-eyes on `close`.
+            // Transitions via LifecycleService::transition() only.
             ->add('status', EnumType::class, [
                 'label' => 'incident.field.status',
+                'help' => 'incident.help.status_readonly',
                 'class' => IncidentStatus::class,
                 'choice_label' => fn(IncidentStatus $s): string => 'incident.status.' . $s->value,
-                'required' => true,
+                'required' => false,
+                'disabled' => true,
                 'choice_translation_domain' => 'incident',
             ])
             ->add('affectedSystems', TextareaType::class, [

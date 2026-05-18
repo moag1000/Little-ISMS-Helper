@@ -228,6 +228,17 @@ final class AssetType extends AbstractType
                 'widget' => 'single_text',
                 'help' => 'asset.help.return_date',
             ])
+            // ── Status field is READ-ONLY in the form (Lifecycle-bypass fix) ──
+            // The `asset_lifecycle` Symfony Workflow owns this column. Status
+            // transitions go EXCLUSIVELY through LifecycleService::transition()
+            // (lifecycle-actions dropdown on show-pages, or bulk-status-change
+            // action bar). That path enforces the YAML transition matrix, 4-eyes
+            // on `dispose`, RBAC, audit-log + tenant-guard.
+            //
+            // `disabled => true` makes Symfony Forms ignore submitted values
+            // and preserve the entity's current status. Pre-fix the field was
+            // editable — a single POST could move an Asset from `in_use`
+            // directly to `disposed`, bypassing the 4-eyes guard.
             ->add('status', EnumType::class, [
                 'label' => 'asset.field.status',
                 'class' => AssetStatus::class,
@@ -237,8 +248,9 @@ final class AssetType extends AbstractType
                 // currently-selected option from both Doctrine hydration paths.
                 'choice_value' => fn(AssetStatus|string|null $c): ?string =>
                     $c instanceof AssetStatus ? $c->value : $c,
-                'required' => true,
-                'help' => 'asset.help.status',
+                'required' => false,
+                'disabled' => true,
+                'help' => 'asset.help.status_readonly',
                 'choice_translation_domain' => 'asset',
             ])
         ;

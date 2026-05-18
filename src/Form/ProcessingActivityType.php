@@ -491,9 +491,12 @@ final class ProcessingActivityType extends AbstractType
             // S3 P-4: migrated from legacy 3-stage (draft/active/archived) to canonical
             // 5-stage lifecycle per LifecycleRegistry::STANDARD_5_STAGE. Legacy `active`
             // values were UPDATEd to `published` by the consolidated data-migration.
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
+            // Owned by `processing_activity_lifecycle`. Transitions via
+            // LifecycleService::transition() only.
             ->add('status', ChoiceType::class, [
                 'label' => 'processing_activity.form.status',
-                'help' => 'processing_activity.help.status',
+                'help' => 'processing_activity.help.status_readonly',
                 'choices' => [
                     'processing_activity.status.draft'     => 'draft',
                     'processing_activity.status.in_review' => 'in_review',
@@ -501,7 +504,8 @@ final class ProcessingActivityType extends AbstractType
                     'processing_activity.status.published' => 'published',
                     'processing_activity.status.archived'  => 'archived',
                 ],
-                'required' => true,
+                'required' => false,
+                'disabled' => true,
                 'choice_translation_domain' => 'privacy',
             ])
             ->add('startDate', DateType::class, [
