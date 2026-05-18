@@ -384,8 +384,8 @@ translations/loader_fixer.en.yaml:29:result
 translations/loader_fixer.en.yaml:38:flash
 translations/locations.de.yaml:1:location
 translations/locations.en.yaml:1:location
-translations/management_reports.de.yaml:516:cert_readiness
-translations/management_reports.en.yaml:516:cert_readiness
+translations/management_reports.de.yaml:523:cert_readiness
+translations/management_reports.en.yaml:523:cert_readiness
 translations/mfa.de.yaml:148:mfa_token
 translations/mfa.en.yaml:147:mfa_token
 translations/mris.de.yaml:125:ai_agent

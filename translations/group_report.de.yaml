@@ -10,6 +10,7 @@ group_report:
         title: 'NIS2-Registrierungsmatrix'
         subtitle: 'Pro Rechtsperson in %root% — Klassifizierung und BSI-Meldestatus.'
         intro: 'NIS2 (BSIG §28) reguliert <strong>einzelne Rechtspersonen</strong>, nicht Konzerne. Diese Matrix zeigt je Tochter: Klassifizierung (besonders wichtig / wichtig / nicht reguliert / unbekannt), Branchen-Sektor, NACE-Code, registrierter Meldekontakt und Registrierungsdatum. Pflegen im Tenant-Edit.'
+        methodology: '<p>NIS2-Klassifizierung gemäß EU-Richtlinie 2022/2555 Art. 3. Besonders wichtig = große Einheit in kritischen Sektoren; Wichtig = mittlere Einheit oder spezifische Sektoren. Registrierung verpflichtend gemäß Art. 3(3).</p>'
         stat:
             total: 'Tenants'
             registered: 'Beim BSI registriert'

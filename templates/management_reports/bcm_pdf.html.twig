@@ -173,7 +173,7 @@
         },
     ],
     appendix: {
-        methodology: '<p>BCM data sourced from BcPlanRepository, BcExerciseRepository, BusinessProcessRepository, and BIA records. ISO 22301 compliance threshold: ≥2 exercises per 12 months.</p>',
+        methodology: 'management_reports.bcm.methodology'|trans({}, 'management_reports'),
         sources: [
             { label: 'BcPlanRepository', detail: 'findByTenant() — all BC plans' },
             { label: 'BcExerciseRepository', detail: 'findByTenant() — exercises last 12 months' },

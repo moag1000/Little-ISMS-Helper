@@ -3,7 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block admin_title %}{{ 'admin.workflows.edit.title'|trans({ '%workflow%': workflowName, '%step%': stepIndex + 1 }) }}{% endblock %}
+{% block admin_title %}{{ 'admin.workflows.edit.title'|trans({ '%workflow%': workflowName, '%step%': stepIndex + 1 }, 'admin') }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item">
@@ -13,14 +13,14 @@
         <a href="{{ path('admin_workflow_overlay_show', {name: workflowName}) }}">{{ workflowName }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        {{ 'admin.workflows.edit.breadcrumb'|trans({ '%step%': stepIndex + 1 }) }}
+        {{ 'admin.workflows.edit.breadcrumb'|trans({ '%step%': stepIndex + 1 }, 'admin') }}
     </li>
 {% endblock %}
 
 {% block admin_content %}
     {{ _fa_page_header.render({
         badge: { icon: 'nav-workflow', label: 'Step ' ~ (stepIndex + 1) },
-        title: 'admin.workflows.edit.title'|trans({ '%workflow%': workflowName, '%step%': stepIndex + 1 }),
+        title: 'admin.workflows.edit.title'|trans({ '%workflow%': workflowName, '%step%': stepIndex + 1 }, 'admin'),
         subtitle: yamlStep.name ?? ('admin.workflows.step.unnamed'|trans),
     }) }}
 

@@ -1484,6 +1484,8 @@ pdf:
         distribution_by_status: 'Verteilung nach Status'
     data_reuse:
         recommendations_title: 'Empfehlungen zur Daten-Wiederverwendung'
+        no_quick_wins: 'Keine Quick Wins mit ≥80% Wiederverwendung + hoher Konfidenz gefunden. Fokus auf mittelfristige Potenziale (50-80%).'
+        methodology: '<p>Die Daten-Wiederverwendungsanalyse bewertet jede Framework-Anforderung auf mögliche Überschneidungen mit bestehenden ISMS-Daten, Maßnahmen und Dokumentation. Wiederverwendungs-Quote = wiederverwendbare Datenpunkte / gesamt erforderliche Datenpunkte. Konfidenzlevel (niedrig/mittel/hoch) spiegeln die Mapping-Qualität wider. Zeitersparnis wird auf Basis historischer Compliance-Aufwand-Baselines geschätzt.</p>'
     transitive_compliance:
         from_framework: 'Von Framework'
         to_framework: 'Zu Framework'

@@ -1701,6 +1701,8 @@ pdf:
         distribution_by_status: ''
     data_reuse:
         recommendations_title: ''
+        no_quick_wins: 'No Quick Wins with ≥80% Reuse + High Confidence found. Focus on mid-term potentials (50-80%).'
+        methodology: '<p>Data reuse analysis evaluates each framework requirement for potential overlap with existing ISMS data, controls, and documentation. Reuse percentage = reusable data points / total required data points. Confidence levels (low/medium/high) reflect mapping quality. Time savings estimated from historical compliance effort baselines.</p>'
     transitive_compliance:
         from_framework: ''
         to_framework: ''

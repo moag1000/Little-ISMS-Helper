@@ -10,6 +10,7 @@ group_report:
         title: 'NIS2 registration matrix'
         subtitle: 'Per legal entity in %root% — classification and BSI registration status.'
         intro: 'NIS2 (German BSIG §28) regulates <strong>individual legal entities</strong>, not corporate groups. This matrix shows per subsidiary: classification (essential / important / not regulated / unknown), industry sector, NACE code, registered reporting contact, and registration date. Maintain the fields via tenant edit.'
+        methodology: '<p>NIS2 classification per EU Directive 2022/2555 Art. 3. Essential = large entity in critical sectors; Important = medium entity or specific sectors. Registration mandatory per Art. 3(3).</p>'
         stat:
             total: 'Tenants'
             registered: 'Registered with BSI'
