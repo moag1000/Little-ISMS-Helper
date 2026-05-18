@@ -400,3 +400,23 @@
 .fa-icon--util-download { --fa-icon: url("../icons/nav-download.svg"); }
 .fa-icon--util-refresh { --fa-icon: url("../icons/ui-refresh.svg"); }
 .fa-icon--util-trash { --fa-icon: url("../icons/ui-trash.svg"); }
+
+/* Dynamic-icon macro-param aliases (icon: 'X' in _fa_empty_state etc.) — audit 2026-05-18 */
+.fa-icon--arrow-left { --fa-icon: url("../icons/util-arrow-left.svg"); }
+.fa-icon--arrow-repeat { --fa-icon: url("../icons/ui-refresh.svg"); }
+.fa-icon--bank { --fa-icon: url("../icons/nav-building.svg"); }
+.fa-icon--check-circle-fill { --fa-icon: url("../icons/status-ok.svg"); }
+.fa-icon--clock-fill { --fa-icon: url("../icons/ui-clock.svg"); }
+.fa-icon--exclamation-circle { --fa-icon: url("../icons/status-warning.svg"); }
+.fa-icon--exclamation-triangle { --fa-icon: url("../icons/ui-exclamation-triangle.svg"); }
+.fa-icon--exclamation-triangle-fill { --fa-icon: url("../icons/ui-exclamation-triangle.svg"); }
+.fa-icon--file-earmark-spreadsheet { --fa-icon: url("../icons/nav-file-earmark-spreadsheet.svg"); }
+.fa-icon--file-earmark-text { --fa-icon: url("../icons/nav-file-earmark-text.svg"); }
+.fa-icon--globe { --fa-icon: url("../icons/ui-globe.svg"); }
+.fa-icon--pencil { --fa-icon: url("../icons/ui-edit.svg"); }
+.fa-icon--plus-lg { --fa-icon: url("../icons/ui-plus.svg"); }
+.fa-icon--shield-exclamation { --fa-icon: url("../icons/nav-shield-alert.svg"); }
+.fa-icon--toggles { --fa-icon: url("../icons/nav-sliders.svg"); }
+.fa-icon--toggles-on { --fa-icon: url("../icons/nav-sliders.svg"); }
+.fa-icon--ui-arrow-left { --fa-icon: url("../icons/util-arrow-left.svg"); }
+.fa-icon--x-circle { --fa-icon: url("../icons/ui-close.svg"); }
