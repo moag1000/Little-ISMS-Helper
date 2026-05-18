@@ -550,6 +550,7 @@ admin:
             migrations_applied: '%count% migration(s) executed successfully.'
             migrations_failed: 'Migrations failed: %error%'
             reconcile_applied: 'Schema reconcile applied (%count% statements executed).'
+            auto_marked_migrations: '%count% migration(s) auto-marked as executed.'
             reconcile_failed: 'Schema reconcile failed: %error%'
             reconcile_blocked: 'Schema reconcile blocked (%reason%). Please execute pending migrations first.'
         duplicates_merged: '%count% duplicate %type% record(s) removed (oldest kept).'

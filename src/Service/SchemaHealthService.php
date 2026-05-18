@@ -156,6 +156,12 @@ class SchemaHealthService
             // failed (referenced table not yet created) may now succeed because
             // dependent tables exist. Re-run schema diff up to 2 additional
             // passes. Each pass executes only the remaining diff.
+            //
+            // Phantom-drift detection: DBAL 4.x + MariaDB emit no-op statements
+            // for JSON↔LONGTEXT introspection and DEFAULT NULL diff. If pass N
+            // emits identical statements to pass N-1, the schema IS in sync;
+            // stop iterating and treat as success.
+            $previousPassHash = hash('sha256', implode(";\n", $sql));
             for ($pass = 2; $pass <= 3; $pass++) {
                 $passSql = $tool->getUpdateSchemaSql(
                     $this->entityManager->getMetadataFactory()->getAllMetadata(),
@@ -163,6 +169,13 @@ class SchemaHealthService
                 if ($passSql === []) {
                     break;
                 }
+                $currentHash = hash('sha256', implode(";\n", $passSql));
+                if ($currentHash === $previousPassHash) {
+                    // Phantom drift — same statements re-emitted. Schema is
+                    // already in sync; stop iterating.
+                    break;
+                }
+                $previousPassHash = $currentHash;
                 foreach ($passSql as $statement) {
                     $this->executeStatementFkAware($conn, $statement, $droppedFks);
                 }
