@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\WorkflowStep;
-use App\Form\WorkflowType;
 use DateTimeImmutable;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
@@ -99,11 +98,11 @@ class WorkflowController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function definitions(): Response
     {
-        $workflows = $this->workflowRepository->findAll();
-
-        return $this->render('workflow/definitions.html.twig', [
-            'workflows' => $workflows,
-        ]);
+        // Y.4: YAML workflows are now the source of truth. The Admin Workflow
+        // Overlay Editor at /admin/workflows is the canonical UI for inspecting
+        // and overriding workflow steps. Keep this route as a permanent redirect
+        // for bookmarks; DB Workflow rows remain in place for audit-trail.
+        return $this->redirectToRoute('admin_workflow_overlay_index');
     }
 
     #[Route('/workflow/pending', name: 'app_workflow_pending', methods: ['GET'])]
@@ -402,68 +401,13 @@ class WorkflowController extends AbstractController
             10
         );
 
+        // Y.4: Show YAML-registered workflow data side-by-side with DB historical data.
+        // New workflows are defined in config/workflows/regulatory/*.yaml.
+        // DB rows are preserved read-only for historical display.
         return $this->render('workflow/definition_show.html.twig', [
             'workflow' => $workflow,
             'recent_instances' => $instances,
-        ]);
-    }
-
-    #[Route('/workflow/definition/{id}/builder', name: 'app_workflow_definition_builder', requirements: ['id' => '\d+'], methods: ['GET'])]
-    #[IsGranted('ROLE_MANAGER')]
-    public function builder(Workflow $workflow): Response
-    {
-        return $this->render('workflow/builder.html.twig', [
-            'workflow' => $workflow,
-            'api_base_url' => '/api/workflow',
-        ]);
-    }
-
-    #[Route('/workflow/definition/new', name: 'app_workflow_definition_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_MANAGER')]
-    public function newDefinition(Request $request): Response
-    {
-        $workflow = new Workflow();
-        $workflow->setTenant($this->tenantContext->getCurrentTenant());
-
-        $form = $this->createForm(WorkflowType::class, $workflow);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($workflow);
-            $this->entityManager->flush();
-
-            $this->addFlash('success', $this->translator->trans('workflow.success.definition_created'));
-
-            return $this->redirectToRoute('app_workflow_definition_builder', ['id' => $workflow->getId()]);
-        }
-
-        return $this->render('workflow/definition_form.html.twig', [
-            'workflow' => $workflow,
-            'form' => $form,
-            'is_edit' => false,
-        ]);
-    }
-
-    #[Route('/workflow/definition/{id}/edit', name: 'app_workflow_definition_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_MANAGER')]
-    public function editDefinition(Request $request, Workflow $workflow): Response
-    {
-        $form = $this->createForm(WorkflowType::class, $workflow);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $workflow->setUpdatedAt(new DateTimeImmutable());
-            $this->entityManager->flush();
-
-            $this->addFlash('success', $this->translator->trans('workflow.success.definition_updated'));
-
-            return $this->redirectToRoute('app_workflow_definition_builder', ['id' => $workflow->getId()]);
-        }
-
-        return $this->render('workflow/definition_form.html.twig', [
-            'workflow' => $workflow,
-            'form' => $form,
-            'is_edit' => true,
+            'yaml_is_canonical' => true, // signals template to show YAML-source notice
         ]);
     }
 

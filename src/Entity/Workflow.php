@@ -12,6 +12,20 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @deprecated since 2026-06 — use config/workflows/regulatory/*.yaml instead.
+ *
+ * This entity represents the legacy DB-backed workflow definition system. New
+ * workflows MUST be defined as YAML files under config/workflows/regulatory/.
+ * Existing rows are preserved read-only for historical audit-trail display.
+ * Schema removal is planned no earlier than 2027-06 (see ADR 2026-05-17-workflow-yaml-unification.md).
+ *
+ * DO NOT create new instances of this class in production code.
+ * The PHPStan rule tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php enforces this.
+ *
+ * @see config/workflows/regulatory/
+ * @see docs/decisions/2026-05-17-workflow-yaml-unification.md
+ */
 #[ORM\Entity(repositoryClass: WorkflowRepository::class)]
 #[ORM\Table(name: 'workflows')]
 class Workflow

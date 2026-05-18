@@ -5,7 +5,7 @@ src/Controller/BusinessContinuityPlanController.php:33:/business-continuity-plan
 src/Controller/ComplianceRequirementController.php:43:/compliance/requirement/
 src/Controller/PersonController.php:31:/person/
 src/Controller/ChangeRequestController.php:28:/change-request/
-src/Controller/WorkflowController.php:67:/workflow/
+src/Controller/WorkflowController.php:66:/workflow/
 src/Controller/AuditLogController.php:55:/admin/audit-log/
 src/Controller/LocationController.php:28:/location/
 src/Controller/ModuleManagementController.php:24:/modules/

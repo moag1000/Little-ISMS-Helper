@@ -9,6 +9,20 @@ use App\Entity\Tenant;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @deprecated since 2026-06 — use config/workflows/regulatory/*.yaml step metadata instead.
+ *
+ * WorkflowStep rows are preserved read-only for historical WorkflowInstance display.
+ * New approval-chain step definitions MUST live in the regulatory YAML files under
+ * config/workflows/regulatory/ in the metadata.steps block.
+ * Schema removal is planned no earlier than 2027-06 (see ADR 2026-05-17-workflow-yaml-unification.md).
+ *
+ * DO NOT create new instances of this class in production code.
+ * The PHPStan rule tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php enforces this.
+ *
+ * @see config/workflows/regulatory/
+ * @see docs/decisions/2026-05-17-workflow-yaml-unification.md
+ */
 #[ORM\Entity]
 #[ORM\Table(name: 'workflow_steps')]
 class WorkflowStep
