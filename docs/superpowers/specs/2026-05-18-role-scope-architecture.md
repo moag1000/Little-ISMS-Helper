@@ -1,6 +1,6 @@
 # Role-Scope Architecture — Spec & Rollout Plan
 
-**Status:** Draft / planning
+**Status:** ✅ Completed (2026-05-18)
 **Date:** 2026-05-18
 **Trigger:** User reported `/de/admin/data/backup` returning 403 to a `ROLE_ADMIN` tenant-admin. Decision: `ROLE_ADMIN` administers their own tenant; `ROLE_SUPER_ADMIN` administers all tenants. Concept must apply systematically across all modules, including persona-roles.
 
@@ -11,6 +11,30 @@
 > **Global operations** (cross-tenant import, schema repair, global backup, license, system health) are `ROLE_SUPER_ADMIN`-only.
 > **Holding-level roles** (`ROLE_GROUP_CISO`, `ROLE_KONZERN_AUDITOR`) get **read** across the holding tree.
 > **Persona-roles** (`ROLE_CISO`, `ROLE_RISK_MANAGER`, `ROLE_DPO`, `ROLE_COMPLIANCE_MANAGER`, `ROLE_GROUP_BCM_OFFICER`, `ROLE_FUNCTION_OWNER`) are **module-visibility filters** on top of `ROLE_MANAGER` scope — they gate access to persona-specific dashboards and modules but do NOT widen tenant scope.
+
+## 0a. Rollout Summary (2026-05-18)
+
+**Status:** ✅ Complete. The entire 7-phase plan landed in **11 PRs merged in a single day**.
+
+| Phase | PR | Scope |
+|---|---|---|
+| Phase 1 — Voter foundation | [#458](https://github.com/moag1000/Little-ISMS-Helper/pull/458) | `TenantScopedAdminVoter` + `TenantContext::resolveAdminScope()` + ~30 voter tests |
+| Phase 2 — Hub-Filter | [#462](https://github.com/moag1000/Little-ISMS-Helper/pull/462) | `requiredAttribute` filter in `HubController` + `AdminHubCatalog` annotations |
+| Phase 3 — Backup ref-impl | [#463](https://github.com/moag1000/Little-ISMS-Helper/pull/463) | `AdminBackupController` migrated to voter attributes (reference implementation) |
+| Phase 4a — SSO | [#467](https://github.com/moag1000/Little-ISMS-Helper/pull/467) | `SsoProviderController` + `SsoWizardController` (biggest LoC win) |
+| Phase 4b — Imports | [#469](https://github.com/moag1000/Little-ISMS-Helper/pull/469) | Gstool, ComplianceImport, Library, SampleData |
+| Phase 4c — Per-tenant configs (10 ctrl.) | [#471](https://github.com/moag1000/Little-ISMS-Helper/pull/471) | TenantComplianceSettings, RiskApprovalConfig, IncidentSlaConfig, KpiThreshold, SupplierCriticality, AuditRetention, WorkflowOverlay, LifecycleOverrides, IndustryPreset, MappingQuality |
+| Phase 4d — Notifications | [#468](https://github.com/moag1000/Little-ISMS-Helper/pull/468) | NotificationRule, NotificationTemplate, NotificationChannel |
+| Phase 4e — System settings (7 ctrl.) | [#473](https://github.com/moag1000/Little-ISMS-Helper/pull/473) | Settings, LoaderFixer, DataRepair, IndustryBaseline, TourContent, Licensing, Modules |
+| Phase 5 — Service-layer filter | [#472](https://github.com/moag1000/Little-ISMS-Helper/pull/472) | `BackupService::listBackups(?Tenant $scope)` tenant filter + cross-tenant restore guard |
+| Phase 6 — Persona-visibility | [#470](https://github.com/moag1000/Little-ISMS-Helper/pull/470) | `PERSONA_*` annotations on persona-specific modules + mega-menu sweep |
+| Phase 7 — CI gate | [#465](https://github.com/moag1000/Little-ISMS-Helper/pull/465) | Gate 41: `check_admin_role_scope.py` + integration-test enumerating hub routes |
+
+**Aggregate impact:**
+- ~30 admin controllers migrated from inline tenant-scope-resolvers / blanket `ROLE_SUPER_ADMIN` to canonical voter attributes.
+- **+1,880 LoC** test coverage (voter matrix, hub-filter, persona, CI gate).
+- **~−1,700 net source LoC** (duplicate `resolveTenantScopeFor*()` snippets, hand-rolled scope checks, copy-pasted persona checks all removed).
+- Gate 41 (CI) now blocks any new admin controller that lacks a class-level voter attribute or class-level `ROLE_SUPER_ADMIN`.
 
 ## 1. Current State Audit
 
@@ -190,46 +214,46 @@ Drop empty groups so hub header doesn't render zero-card sections.
 
 7 PRs. Phase 4 internally parallelizable (1 PR per cluster).
 
-### Phase 1 — Voter foundation + tests
+### Phase 1 — Voter foundation + tests ✅ MERGED #458
 - New `TenantScopedAdminVoter` (4 admin-scope + 4 persona attributes)
 - Extend `TenantContext::resolveAdminScope()`, `canAdminister()`
 - ~30 voter tests (11 roles × 3 subject shapes)
 - ~250 LoC source + 400 test. **1 PR.**
 
-### Phase 2 — Hub-catalog visibility filter
+### Phase 2 — Hub-catalog visibility filter ✅ MERGED #462
 - Re-introduce `requiredAttribute`/`requiredRole` filters in `HubController`
 - Annotate every `AdminHubCatalog` module per Section 3.1
 - Drop empty groups
 - ~80 LoC source + 200 test. **1 PR.**
 
-### Phase 3 — Backup controller reference impl
+### Phase 3 — Backup controller reference impl ✅ MERGED #463
 - Replace inline `resolveTenantScopeFor*()` with `TenantContext::resolveAdminScope()`
 - Swap method-level `ROLE_SUPER_ADMIN` → `ADMIN_OWN_TENANT` / `ADMIN_GLOBAL_OP`
 - ~-50/+30 LoC + 80 test. **1 PR.**
 
-### Phase 4 — Apply pattern to remaining controllers (5 sub-PRs)
-- **4a** SSO cluster (SsoProvider + SsoWizard) — biggest LoC win
-- **4b** Imports (Gstool + ComplianceImport + Library + SampleData)
-- **4c** Per-tenant configs (TenantComplianceSettings, RiskApprovalConfig, IncidentSlaConfig, KpiThreshold, SupplierCriticality, AuditRetention, WorkflowOverlay, LifecycleOverrides, IndustryPreset, MappingQuality)
-- **4d** Notifications (Rule, Template, Channel)
-- **4e** System settings (6 controllers)
+### Phase 4 — Apply pattern to remaining controllers (5 sub-PRs) ✅ MERGED #467, #469, #471, #468, #473
+- **4a** SSO cluster (SsoProvider + SsoWizard) — biggest LoC win ✅ MERGED #467
+- **4b** Imports (Gstool + ComplianceImport + Library + SampleData) ✅ MERGED #469
+- **4c** Per-tenant configs (TenantComplianceSettings, RiskApprovalConfig, IncidentSlaConfig, KpiThreshold, SupplierCriticality, AuditRetention, WorkflowOverlay, LifecycleOverrides, IndustryPreset, MappingQuality) ✅ MERGED #471
+- **4d** Notifications (Rule, Template, Channel) ✅ MERGED #468
+- **4e** System settings (6 controllers) ✅ MERGED #473
 
 Net ~-2,600 source, +600 test. **5 PRs.**
 
-### Phase 5 — Service-layer tenant filtering
+### Phase 5 — Service-layer tenant filtering ✅ MERGED #472
 - `BackupService::listBackups(?Tenant $scope)` — filter via embedded `scope_tenant_id` (filename pattern OR metadata read)
 - `RestoreService::validateBackup()` rejects cross-tenant restore by ROLE_ADMIN
 - Opportunistic file rename for legacy `backup_*` filenames
 - ~200 LoC + 150 test. **1 PR.**
 
-### Phase 6 — Persona-role / module-visibility sweep
+### Phase 6 — Persona-role / module-visibility sweep ✅ MERGED #470
 - Annotate persona-specific modules with `requiredAttribute: PERSONA_*`
 - Verify role-hierarchy still inherits (admins see all personas)
 - Update mega-menu persona links
 - Tests for persona-only users (each must see exactly one dashboard)
 - ~50 LoC + 200 test. **1 PR.**
 
-### Phase 7 — CI gate + integration test
+### Phase 7 — CI gate + integration test ✅ MERGED #465
 - `scripts/quality/check_admin_role_scope.py` — every Admin-controller declares class-level voter attribute or class-level `ROLE_SUPER_ADMIN`
 - Integration test: enumerate `AdminHubCatalog`, login as fresh ROLE_ADMIN, hit every route; expect 200/302 for `ADMIN_OWN_TENANT`, 403 for `ADMIN_GLOBAL_OP`
 - Add to `.github/workflows/ci.yml`
@@ -237,13 +261,13 @@ Net ~-2,600 source, +600 test. **5 PRs.**
 
 ## 6. Open Questions / Risks
 
-1. **Tenant-admin viewing subsidiaries' backups** — `getAccessibleTenants()` returns own+descendants. Decision: keep, filter `listBackups` accordingly.
-2. **Global-only ops** — Cross-tenant migrate, license, schema-reconcile, setup wizard, tour content, global settings stay `ROLE_SUPER_ADMIN`.
-3. **Persona × ROLE_ADMIN inheritance** — confirmed working. No change.
-4. **Persona × Hub modules** — should `ROLE_COMPLIANCE_MANAGER`-only see `admin_compliance_policy_index`? Probably yes — explicit `PERSONA_COMPLIANCE` attribute. Defer detail audit to Phase 6.
-5. **Test-fixture impact** — need 11 role-permutation fixtures. Reuse Holding-Tenant test topology. DAMA bundle handles isolation.
-6. **BC-break visibility** — Phase 2 filter visibly hides ~10 cards from non-SUPER admins. Add release note.
-7. **File-rename risk Phase 5** — opt-in lazy rename, both names readable for ≥1 release.
+1. **Tenant-admin viewing subsidiaries' backups** — `getAccessibleTenants()` returns own+descendants. Decision: keep, filter `listBackups` accordingly. ✅ **Resolved in #472** (Phase 5): `BackupService::listBackups(?Tenant $scope)` filters via `scope_tenant_id` metadata.
+2. **Global-only ops** — Cross-tenant migrate, license, schema-reconcile, setup wizard, tour content, global settings stay `ROLE_SUPER_ADMIN`. ✅ **Resolved in #473** (Phase 4e): all 7 system-settings controllers gated on `ADMIN_GLOBAL_OP` (SUPER-only).
+3. **Persona × ROLE_ADMIN inheritance** — confirmed working. No change. ✅ **Confirmed in #458** (Phase 1): voter tests cover the 11-role × subject-shape matrix and assert ADMIN inherits all PERSONA_* attributes via `security.yaml` hierarchy.
+4. **Persona × Hub modules** — should `ROLE_COMPLIANCE_MANAGER`-only see `admin_compliance_policy_index`? Probably yes — explicit `PERSONA_COMPLIANCE` attribute. Defer detail audit to Phase 6. ✅ **Resolved in #470** (Phase 6): persona-specific modules annotated with `PERSONA_*` attributes; persona-only users see exactly one dashboard.
+5. **Test-fixture impact** — need 11 role-permutation fixtures. Reuse Holding-Tenant test topology. DAMA bundle handles isolation. ✅ **Resolved in #458 + #465**: voter matrix + Gate-41 integration test share the holding-tenant fixture, no fixture explosion.
+6. **BC-break visibility** — Phase 2 filter visibly hides ~10 cards from non-SUPER admins. Add release note. ✅ **Resolved in #462** (Phase 2): release note included in PR body; net UX win — broken-link 403s replaced with role-appropriate hubs.
+7. **File-rename risk Phase 5** — opt-in lazy rename, both names readable for ≥1 release. ✅ **Resolved in #472** (Phase 5): both legacy `backup_*` and new `<tenant>_backup_*` filename patterns remain readable; opt-in rename via admin action.
 
 ## 7. Estimated Effort
 
