@@ -126,6 +126,19 @@ monitoring:
         no_log_file_text: 'Die Protokolldatei <code>%file%</code> existiert noch nicht. Fehler werden hier protokolliert, sobald sie auftreten.'
         show_full: 'Vollständigen Eintrag anzeigen'
         important_notes: 'Wichtige Hinweise'
+        filter:
+            level: Stufe
+            channel: Channel
+            since: Zeitraum
+            since_all: Alle
+            since_1h: 'Letzte 1 Stunde'
+            since_24h: 'Letzte 24 Stunden'
+            since_7d: 'Letzte 7 Tage'
+            since_30d: 'Letzte 30 Tage'
+            search: Suche
+            search_placeholder: 'Fehlertext...'
+            apply: Anwenden
+            reset: Zurücksetzen
     audit_log:
         title: Audit-Protokoll
         total_entries: 'Einträge gesamt'
