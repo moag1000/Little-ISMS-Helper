@@ -35,6 +35,7 @@ final class LifecycleService implements LifecycleTransitionInterface
         string $transitionName,
         ?User $user = null,
         ?string $reason = null,
+        ?User $fourEyesApprover = null,
     ): void {
         if (!method_exists($entity, 'getStatus') || !method_exists($entity, 'setStatus')) {
             throw new \LogicException(sprintf(
@@ -50,6 +51,7 @@ final class LifecycleService implements LifecycleTransitionInterface
             $workflow->apply($entity, $transitionName, [
                 'user' => $user,
                 'reason' => $reason,
+                'four_eyes_approver' => $fourEyesApprover,
             ]);
         } catch (NotEnabledTransitionException $e) {
             $allowed = array_map(

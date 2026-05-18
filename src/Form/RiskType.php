@@ -244,11 +244,16 @@ final class RiskType extends AbstractType
                 'required' => false,
                 'help' => 'risk.help.acceptance_expiry_date',
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
+            // Owned by `risk_lifecycle`. YAML 4-eyes on `accept`.
+            // Transitions via LifecycleService::transition() only.
             ->add('status', EnumType::class, [
                 'label' => 'risk.field.status',
+                'help' => 'risk.help.status_readonly',
                 'class' => RiskStatus::class,
                 'choice_label' => fn(RiskStatus $s): string => 'risk.status.' . $s->value,
-                'required' => true,
+                'required' => false,
+                'disabled' => true,
                 'choice_translation_domain' => 'risk',
             ])
             ->add('reviewDate', DateType::class, [

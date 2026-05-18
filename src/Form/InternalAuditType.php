@@ -91,8 +91,12 @@ final class InternalAuditType extends AbstractType
                 'widget' => 'single_text',
                 'help' => 'audit.help.actual_date',
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
+            // Owned by `internal_audit_lifecycle`. YAML 4-eyes on `approve`.
+            // Transitions via LifecycleService::transition() only.
             ->add('status', EnumType::class, [
                 'label' => 'audit.field.status',
+                'help' => 'audit.help.status_readonly',
                 'class' => InternalAuditStatus::class,
                 'choice_label' => fn(InternalAuditStatus $s): string => 'audit.status.' . $s->value,
                 // Status is stored as VARCHAR (?string) on the entity; accept either
@@ -100,6 +104,8 @@ final class InternalAuditType extends AbstractType
                 // currently-selected option from both Doctrine hydration paths.
                 'choice_value' => fn(InternalAuditStatus|string|null $c): ?string =>
                     $c instanceof InternalAuditStatus ? $c->value : $c,
+                'required' => false,
+                'disabled' => true,
                 'choice_translation_domain' => 'audit',
             ])
             // P-15 DataReuse: Pattern A dual-state lead auditor — structured

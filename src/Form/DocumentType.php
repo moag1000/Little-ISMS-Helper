@@ -81,12 +81,14 @@ final class DocumentType extends AbstractType
                 'required' => true,
                     'choice_translation_domain' => 'document',
             ])
-            // S3 P-4: removed legacy 'active' status — migrated to 'published' per
-            // LifecycleRegistry::STANDARD_5_STAGE. Legacy `active` rows were UPDATEd
-            // to 'published' by the consolidated data-migration.
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
+            // Owned by `document_lifecycle` Symfony Workflow. Transitions via
+            // LifecycleService::transition() only — direct form edits are
+            // ignored (`disabled => true`). YAML enforces 4-eyes on `publish`,
+            // RBAC, audit-log + tenant-guard.
             ->add('status', EnumType::class, [
                 'label' => 'document.field.status',
-                'help' => 'document.help.status',
+                'help' => 'document.help.status_readonly',
                 'class' => DocumentStatus::class,
                 // Deleted is a terminal soft-delete state reached only via the
                 // `soft_delete` workflow transition — never user-pickable.
@@ -101,6 +103,7 @@ final class DocumentType extends AbstractType
                 'choice_value' => fn(DocumentStatus|string|null $c): ?string =>
                     $c instanceof DocumentStatus ? $c->value : $c,
                 'required' => false,
+                'disabled' => true,
                 'placeholder' => false,
                 'choice_translation_domain' => 'document',
             ])
