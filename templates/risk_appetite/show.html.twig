@@ -260,37 +260,15 @@
         </div>
     {% endblock %}
     {% block card_body %}
-        <div class="audit-log-list">
+        <div class="fa-audit-feed">
             {% for log in auditLogs %}
-            <div class="audit-log-entry">
-                <div class="audit-log-header">
-                    {% include '_components/_badge.html.twig' with {
-                        variant: log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger'),
-                        content: log.action|upper
-                    } %}
-                    <span class="text-muted">
-                        {{ log.userName|default('System') }}
-                        &bull; {{ log.createdAt|date('Y-m-d H:i:s') }}
-                    </span>
-                </div>
-                {% if log.action == 'update' %}
-                    {% set oldValues = log.oldValuesArray %}
-                    {% set newValues = log.newValuesArray %}
-                    {% if oldValues and newValues %}
-                        <div class="audit-log-changes">
-                            {% for field, newValue in newValues %}
-                                {% if oldValues[field] is defined and oldValues[field] != newValue %}
-                                    <div class="change-item">
-                                        <strong>{{ field }}:</strong>
-                                        <span class="text-danger">{{ oldValues[field] }}</span>
-                                        &rarr;
-                                        <span class="text-success">{{ newValue }}</span>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                {% endif %}
+            <div class="fa-audit-row{% if log.isSealed is defined and log.isSealed %} fa-audit-row--sealed{% endif %}">
+                <span class="fa-audit-row__ts">{{ log.createdAt|date('Y-m-d H:i:s') }}</span>
+                <span class="fa-audit-row__sev fa-audit-row__sev--{% if log.action in ['create', 'read'] %}info{% elseif log.action == 'update' %}warning{% elseif log.action in ['error', 'failed'] %}danger{% else %}critical{% endif %}"></span>
+                <span class="fa-audit-row__actor">{{ log.userName|default('System') }}</span>
+                <span class="fa-audit-row__action">{{ log.action|upper }}</span>
+                <span class="fa-audit-row__target">{{ log.entityType|default('RiskAppetite') }}#{{ log.entityId|default('') }}</span>
+                <span class="fa-audit-row__hash">{{ log.hash is defined ? log.hash|slice(0,12) : '' }}</span>
             </div>
             {% endfor %}
         </div>
@@ -378,27 +356,7 @@
     margin-bottom: var(--spacing-md);
 }
 
-.audit-log-entry {
-    border-left: 3px solid var(--border);
-    padding-left: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-}
-
-.audit-log-header {
-    margin-bottom: var(--spacing-xs);
-    display: flex;
-    gap: var(--spacing-sm);
-    align-items: center;
-}
-
-.audit-log-changes {
-    font-size: 0.875rem;
-    margin-top: var(--spacing-xs);
-}
-
-.change-item {
-    margin-bottom: var(--spacing-xs);
-}
+/* Audit log styles: .fa-audit-feed / .fa-audit-row — handled centrally in fairy-aurora-components.css */
 
 .mb-4 {
     margin-bottom: var(--spacing-xl);
