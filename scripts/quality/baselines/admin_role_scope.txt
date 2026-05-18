@@ -3,9 +3,6 @@
 # Drop a line and ship the PR after migrating that controller to a TenantScopedAdminVoter attribute.
 src/Controller/Admin/AuditRetentionController.php:25:wrong:ADMIN_EDIT
 src/Controller/Admin/ImportHistoryController.php:36:wrong:ROLE_MANAGER
-src/Controller/Admin/Notification/NotificationChannelController.php:41:wrong:ROLE_MANAGER
-src/Controller/Admin/Notification/NotificationRuleController.php:34:wrong:ROLE_MANAGER
-src/Controller/Admin/Notification/NotificationTemplateController.php:32:wrong:ROLE_MANAGER
 src/Controller/AdminComplianceController.php:25:missing
 src/Controller/AdminLicensingController.php:20:missing
 src/Controller/AdminModuleController.php:21:missing

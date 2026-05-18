@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Form\Notification\NotificationChannelType;
 use App\Repository\Notification\NotificationChannelRepository;
 use App\Security\Voter\Notification\NotificationChannelVoter;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\Notification\Channel\EmailChannel;
@@ -30,14 +31,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * CRUD controller for NotificationChannel admin UI.
  *
  * Module-gate: notifications
- * Role-gate:   ROLE_MANAGER
+ * Role-gate:   {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — ROLE_ADMIN
+ *              (own-tenant) + ROLE_SUPER_ADMIN (any tenant). Channel
+ *              configuration carries secrets (encrypted-at-rest webhook
+ *              tokens / SMTP credentials) and is reserved for tenant admins.
+ *
+ * Migrated from `ROLE_MANAGER` in Phase 4d of the Role-Scope Architecture
+ * rollout (spec: `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
  *
  * The `verify` action sends a test ping via the appropriate channel service.
  * config JSON from the form textarea is parsed and stored in NotificationChannel::config.
  * secretPlain (unmapped) is encrypted via SecretEncryptionInterface before persist.
  */
 #[Route('/admin/notification/channel', name: 'admin_notification_channel_')]
-#[IsGranted('ROLE_MANAGER')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class NotificationChannelController extends AbstractController
 {
     use ModuleGatedControllerTrait;

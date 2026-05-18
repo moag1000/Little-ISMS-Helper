@@ -567,8 +567,8 @@
                     </ul>
                 </div>
                 {% endif %}
-                {# Sprint-6b F3: Notification admin links (ROLE_MANAGER + notifications module) #}
-                {% if is_granted('ROLE_MANAGER') and is_module_active('notifications') %}
+                {# Sprint-6b F3 / Phase 4d: Notification admin links (ADMIN_OWN_TENANT + notifications module) #}
+                {% if is_granted('ADMIN_OWN_TENANT') and is_module_active('notifications') %}
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'notification.rule.index.title'|trans({}, 'notification') }}</h3>
                     <ul class="mega-menu-links">
