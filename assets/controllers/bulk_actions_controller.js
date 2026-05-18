@@ -76,26 +76,29 @@ export default class extends Controller {
     };
 
     connect() {
-        // Teleport the action-bar to <body> so position:fixed escapes any
-        // ancestor transform/filter/will-change stacking-context (e.g. card
-        // hover-translateY would otherwise make the bar appear at page-bottom
-        // instead of floating in the viewport). Stimulus target-resolution
-        // by ID/data-attr survives the DOM move.
+        // Teleport bar to <body> so position:fixed escapes ancestor stacking-
+        // contexts (card hover transform etc.). Stimulus targets resolve only
+        // INSIDE controller scope — after the move the target lookup returns
+        // null, so we cache the element ref here and use this._bar in
+        // show/hide instead of the target.
         const bar = this.hasActionBarTarget ? this.actionBarTarget : (this.hasBarTarget ? this.barTarget : null);
-        if (bar && bar.parentElement !== document.body) {
-            this._barOriginalParent = bar.parentElement;
-            document.body.appendChild(bar);
+        if (bar) {
+            this._bar = bar;
+            if (bar.parentElement !== document.body) {
+                this._barOriginalParent = bar.parentElement;
+                document.body.appendChild(bar);
+            }
         }
         this.updateActionBar();
     }
 
     disconnect() {
-        // Restore bar to original parent so Turbo navigations don't leave
-        // an orphan bar in <body>.
-        const bar = this.hasActionBarTarget ? this.actionBarTarget : (this.hasBarTarget ? this.barTarget : null);
-        if (bar && this._barOriginalParent && bar.parentElement === document.body) {
-            this._barOriginalParent.appendChild(bar);
+        // Restore bar to original parent so Turbo navigations don't orphan it.
+        if (this._bar && this._barOriginalParent && this._bar.parentElement === document.body) {
+            this._barOriginalParent.appendChild(this._bar);
         }
+        this._bar = null;
+        this._barOriginalParent = null;
     }
 
     selectAll(event) {
@@ -130,10 +133,12 @@ export default class extends Controller {
     }
 
     /**
-     * Resolve the bar element — supports canonical `bar` target alias and
-     * legacy `actionBar` target. Returns null if neither is wired.
+     * Resolve the bar element. Prefer cached ref (set in connect() before the
+     * body-teleport, since Stimulus targets resolve only inside controller
+     * scope). Fallback to live target lookup for callers before connect().
      */
     _barElement() {
+        if (this._bar) return this._bar;
         if (this.hasBarTarget) return this.barTarget;
         if (this.hasActionBarTarget) return this.actionBarTarget;
         return null;
