@@ -15,7 +15,6 @@ use App\Form\Type\JsonTagsType;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -284,36 +283,11 @@ final class AssetType extends AbstractType
             $this->addAiAgentFields($builder);
         }
 
-        // Array <-> textarea (one entry per line) transformers for the two
-        // JSON columns. Empty input persists as null; otherwise lines are
-        // trimmed and empty lines dropped.
-        $arrayTransformer = new CallbackTransformer(
-            // model (?array) -> view (string)
-            static function (?array $value): string {
-                if ($value === null || $value === []) {
-                    return '';
-                }
-
-                return implode("\n", $value);
-            },
-            // view (?string) -> model (?array)
-            static function (?string $value): ?array {
-                if ($value === null) {
-                    return null;
-                }
-                $lines = preg_split('/\r\n|\r|\n/', $value) ?: [];
-                $cleaned = array_values(array_filter(array_map('trim', $lines), static fn(string $l): bool => $l !== ''));
-
-                return $cleaned === [] ? null : $cleaned;
-            }
-        );
-
-        if ($builder->has('aiAgentCapabilityScope')) {
-            $builder->get('aiAgentCapabilityScope')->addModelTransformer($arrayTransformer);
-        }
-        if ($builder->has('aiAgentExtensionAllowlist')) {
-            $builder->get('aiAgentExtensionAllowlist')->addModelTransformer($arrayTransformer);
-        }
+        // Note: aiAgentCapabilityScope + aiAgentExtensionAllowlist used to
+        // get a CallbackTransformer here (textarea-as-newline-list ↔ ?array).
+        // Both fields now use JsonTagsType which ships its own array↔CSV
+        // DataTransformer + tom-select chip-input UX. Adding a second
+        // transformer would double-encode and break form submission.
     }
 
     /**
