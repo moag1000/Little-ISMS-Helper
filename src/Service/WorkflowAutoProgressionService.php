@@ -11,6 +11,7 @@ use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
 use App\Entity\RiskAppetite;
+use App\Enum\WorkflowInstanceStatus;
 use App\Lifecycle\FieldCompletionAutoTransitionInterface;
 use App\Repository\RiskAppetiteRepository;
 use App\Service\Notification\SlaDeadlineFactory;
@@ -122,7 +123,7 @@ class WorkflowAutoProgressionService
 
         $workflowInstance = $this->workflowService->getWorkflowInstance($entityType, $entityId);
 
-        if (!$workflowInstance || $workflowInstance->getStatus() !== 'in_progress') {
+        if (!$workflowInstance || $workflowInstance->getStatus() !== WorkflowInstanceStatus::InProgress->value) {
             return false;
         }
 

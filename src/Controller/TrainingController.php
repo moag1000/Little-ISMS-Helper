@@ -7,6 +7,7 @@ namespace App\Controller;
 use Exception;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
+use App\Enum\TrainingStatus;
 use App\Entity\User;
 use App\Form\TrainingType;
 use App\Repository\TrainingParticipationRepository;
@@ -61,7 +62,7 @@ class TrainingController extends AbstractController
         $statistics = [
             'total' => count($trainings),
             'upcoming' => count($upcoming),
-            'completed' => count(array_filter($trainings, fn(Training $training): bool => $training->getStatus() === 'completed')),
+            'completed' => count(array_filter($trainings, fn(Training $training): bool => $training->getStatus() === TrainingStatus::Completed->value)),
             'mandatory' => count(array_filter($trainings, fn(Training $training): bool => $training->isMandatory())),
         ];
 

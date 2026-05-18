@@ -6,8 +6,9 @@ namespace App\Service;
 
 use App\Entity\Tenant;
 use App\Entity\WorkflowInstance;
-use App\Enum\InternalAuditStatus;
+use App\Enum\RiskTreatmentPlanStatus;
 use App\Enum\TreatmentStrategy;
+use App\Enum\WorkflowInstanceStatus;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
@@ -586,7 +587,7 @@ class RoleDashboardService
         $now = new \DateTimeImmutable();
 
         foreach ($instances as $instance) {
-            if (!in_array($instance->getStatus(), ['pending', 'in_progress'], true)) {
+            if (!in_array($instance->getStatus(), [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value], true)) {
                 continue;
             }
             $dueDate = $instance->getDueDate();
@@ -692,7 +693,7 @@ class RoleDashboardService
 
         $overdue = array_filter($plans, fn($p) => $p->getTargetCompletionDate() !== null
             && $p->getTargetCompletionDate() < $now
-            && $p->getStatus() !== 'completed'
+            && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value
         );
 
         return array_map(fn($p) => [
@@ -733,13 +734,13 @@ class RoleDashboardService
         $thisYear = (new \DateTime())->format('Y');
         $now = new \DateTime();
 
-        $completedThisYear = count(array_filter($audits, fn($a) => $a->getStatus() === InternalAuditStatus::Completed->value
+        $completedThisYear = count(array_filter($audits, fn($a) => $a->getStatus() === 'completed'
             && $a->getPlannedDate()?->format('Y') === $thisYear
         ));
 
         $upcoming = array_filter($audits, fn($a) => $a->getPlannedDate() !== null
             && $a->getPlannedDate() > $now
-            && $a->getStatus() !== InternalAuditStatus::Completed->value
+            && $a->getStatus() !== 'completed'
         );
 
         usort($upcoming, fn($a, $b) => $a->getPlannedDate() <=> $b->getPlannedDate());

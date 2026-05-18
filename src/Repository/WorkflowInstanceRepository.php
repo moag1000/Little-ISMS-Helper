@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use DateTimeInterface;
 use App\Entity\WorkflowInstance;
+use App\Enum\WorkflowInstanceStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,7 +41,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('wi')
             ->where('wi.status IN (:statuses)')
-            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
             ->orderBy('wi.startedAt', 'DESC')
             ->getQuery()
             ->getResult();
@@ -59,7 +60,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->andWhere('wi.tenant = :tenant')
             ->andWhere('wi.status IN (:statuses)')
             ->setParameter('tenant', $tenant)
-            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
             ->orderBy('wi.startedAt', 'DESC')
             ->getQuery()
             ->getResult();
@@ -75,7 +76,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('wi')
             ->where('wi.status IN (:statuses)')
             ->andWhere('wi.dueDate < :now')
-            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
             ->setParameter('now', new DateTimeImmutable())
             ->orderBy('wi.dueDate', 'ASC')
             ->getQuery()
@@ -96,7 +97,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->andWhere('wi.status IN (:statuses)')
             ->andWhere('wi.dueDate < :now')
             ->setParameter('tenant', $tenant)
-            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
             ->setParameter('now', new DateTimeImmutable())
             ->orderBy('wi.dueDate', 'ASC')
             ->getQuery()
@@ -133,11 +134,11 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
 
         return [
             'total' => $queryBuilder->select('COUNT(wi.id)')->getQuery()->getSingleScalarResult(),
-            'pending' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'pending')->getQuery()->getSingleScalarResult(),
-            'in_progress' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'in_progress')->getQuery()->getSingleScalarResult(),
-            'approved' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'approved')->getQuery()->getSingleScalarResult(),
-            'rejected' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'rejected')->getQuery()->getSingleScalarResult(),
-            'cancelled' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'cancelled')->getQuery()->getSingleScalarResult(),
+            'pending' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', WorkflowInstanceStatus::Pending->value)->getQuery()->getSingleScalarResult(),
+            'in_progress' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', WorkflowInstanceStatus::InProgress->value)->getQuery()->getSingleScalarResult(),
+            'approved' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', WorkflowInstanceStatus::Approved->value)->getQuery()->getSingleScalarResult(),
+            'rejected' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', WorkflowInstanceStatus::Rejected->value)->getQuery()->getSingleScalarResult(),
+            'cancelled' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', WorkflowInstanceStatus::Cancelled->value)->getQuery()->getSingleScalarResult(),
         ];
     }
 
@@ -157,7 +158,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder('wi')
             ->leftJoin('wi.currentStep', 'step')
             ->where('wi.status IN (:statuses)')
-            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
             ->orderBy('wi.dueDate', 'ASC');
 
         // Build OR conditions for user matching
@@ -197,7 +198,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->where('wi.status IN (:statuses)')
             ->andWhere('wi.dueDate IS NOT NULL')
             ->andWhere('wi.dueDate BETWEEN :now AND :within')
-            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->setParameter('statuses', [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])
             ->setParameter('now', new DateTimeImmutable())
             ->setParameter('within', $within)
             ->orderBy('wi.dueDate', 'ASC')

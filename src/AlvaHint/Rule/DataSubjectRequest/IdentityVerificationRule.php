@@ -8,6 +8,7 @@ use App\AlvaHint\AbstractAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\DataSubjectRequest;
 use App\Entity\User;
+use App\Enum\DataSubjectRequestStatus;
 
 /**
  * Tier-1 hint: GDPR Art. 12(6) identity verification before disclosure.
@@ -47,7 +48,7 @@ final class IdentityVerificationRule extends AbstractAlvaHintRule
             return false;
         }
 
-        return in_array($entity->getStatus(), ['received', 'in_progress'], true);
+        return in_array($entity->getStatus(), [DataSubjectRequestStatus::Received->value, DataSubjectRequestStatus::InProgress->value], true);
     }
 
     public function build(object $entity, User $user): AlvaHint
