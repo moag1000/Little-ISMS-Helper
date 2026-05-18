@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\ComplianceFramework;
 use App\Entity\Control;
 use App\Entity\Document;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -25,9 +26,13 @@ use Symfony\Component\Yaml\Yaml;
  * tenant-admins can apply them without dropping to the CLI. Each preset
  * activates modules (active_modules.yaml), flips frameworks active=true,
  * and persists initial Control / Document skeletons.
+ *
+ * Phase 4c role-scope migration: ROLE_ADMIN applies presets in their own
+ * tenant, SUPER_ADMIN may target any via the `tenant_id` POST param.
+ * Tenant scope resolves via {@see TenantContext::resolveAdminScope()}.
  */
 #[Route('/admin/industry-presets', name: 'app_admin_industry_preset_')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class IndustryPresetController extends AbstractController
 {
     private const PRESET_DIR = __DIR__ . '/../../../fixtures/library/presets';
@@ -82,7 +87,7 @@ class IndustryPresetController extends AbstractController
             return $this->redirectToRoute('app_admin_industry_preset_index');
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
         if ($tenant === null) {
             $this->addFlash('error', 'Tenant context required.');
             return $this->redirectToRoute('app_admin_industry_preset_index');

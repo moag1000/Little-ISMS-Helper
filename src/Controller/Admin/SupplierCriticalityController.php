@@ -8,6 +8,7 @@ use App\Entity\SupplierCriticalityLevel;
 use App\Entity\Tenant;
 use App\Form\Admin\SupplierCriticalityLevelType;
 use App\Repository\SupplierCriticalityLevelRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,9 +20,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * Phase 8QW-5 — Admin-UI für Supplier-Kritikalitätsstufen pro Tenant.
+ *
+ * Phase 4c role-scope migration: ROLE_ADMIN configures own tenant,
+ * SUPER_ADMIN any. Tenant scope resolves via
+ * {@see TenantContext::resolveAdminScope()}.
  */
 #[Route('/admin/supplier-criticality')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class SupplierCriticalityController extends AbstractController
 {
     public function __construct(
@@ -33,9 +38,9 @@ class SupplierCriticalityController extends AbstractController
     }
 
     #[Route('', name: 'app_admin_supplier_criticality_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $tenant = $this->requireTenant();
+        $tenant = $this->requireTenant($request);
 
         // Lazy-Seeding für Tenants ohne Defaults (z.B. nach Migration-Backfill
         // übersehen oder in Tests). Idempotent — persist() ohne flush im Repo,
@@ -53,7 +58,7 @@ class SupplierCriticalityController extends AbstractController
     #[Route('/new', name: 'app_admin_supplier_criticality_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
-        $tenant = $this->requireTenant();
+        $tenant = $this->requireTenant($request);
         $level = new SupplierCriticalityLevel();
         $level->setTenant($tenant);
 
@@ -151,9 +156,9 @@ class SupplierCriticalityController extends AbstractController
         return $this->redirectToRoute('app_admin_supplier_criticality_index');
     }
 
-    private function requireTenant(): Tenant
+    private function requireTenant(Request $request): Tenant
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
         if (!$tenant instanceof Tenant) {
             throw $this->createNotFoundException('No tenant context.');
         }
@@ -162,9 +167,8 @@ class SupplierCriticalityController extends AbstractController
 
     private function requireTenantOwnership(SupplierCriticalityLevel $level): void
     {
-        $tenant = $this->requireTenant();
-        if ($level->getTenant() !== $tenant) {
-            throw $this->createAccessDeniedException('Level does not belong to current tenant.');
-        }
+        // resolveAdminScope() throws AccessDeniedException for cross-tenant
+        // edits by ROLE_ADMIN; SUPER_ADMIN passes through.
+        $this->tenantContext->resolveAdminScope($level->getTenant()?->getId());
     }
 }

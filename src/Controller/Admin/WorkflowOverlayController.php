@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\Admin\WorkflowStepOverlayType;
 use App\Repository\LifecycleConfigRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -37,7 +38,7 @@ use Symfony\Component\Yaml\Yaml;
  * Cross-link: links to admin_lifecycle_overrides_index for transition-level overrides.
  */
 #[Route('/admin/workflows')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class WorkflowOverlayController extends AbstractController
 {
     /** Step-level keys that can be overridden via this UI. */
@@ -62,9 +63,9 @@ final class WorkflowOverlayController extends AbstractController
      * List all known workflows (lifecycle + regulatory) with their step-override counts.
      */
     #[Route('', name: 'admin_workflow_overlay_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->resolveTenant($request);
         if (!$tenant instanceof Tenant) {
             return $this->render('admin/lifecycle_overrides/no_tenant.html.twig');
         }
@@ -102,9 +103,9 @@ final class WorkflowOverlayController extends AbstractController
      * Show YAML structure (read-only) + tenant step overrides for a workflow.
      */
     #[Route('/{name}', name: 'admin_workflow_overlay_show', methods: ['GET'], requirements: ['name' => '[a-z][a-z0-9_]*'])]
-    public function show(string $name): Response
+    public function show(Request $request, string $name): Response
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->resolveTenant($request);
         if (!$tenant instanceof Tenant) {
             return $this->render('admin/lifecycle_overrides/no_tenant.html.twig');
         }
@@ -140,7 +141,7 @@ final class WorkflowOverlayController extends AbstractController
     #[Route('/{name}/{stepIndex}/edit', name: 'admin_workflow_overlay_edit', methods: ['GET', 'POST'], requirements: ['name' => '[a-z][a-z0-9_]*', 'stepIndex' => '\d+'])]
     public function edit(Request $request, string $name, int $stepIndex): Response
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->resolveTenant($request);
         if (!$tenant instanceof Tenant) {
             return $this->render('admin/lifecycle_overrides/no_tenant.html.twig');
         }
@@ -291,7 +292,7 @@ final class WorkflowOverlayController extends AbstractController
             return $this->redirectToRoute('admin_workflow_overlay_show', ['name' => $name]);
         }
 
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $tenant = $this->resolveTenant($request);
         if (!$tenant instanceof Tenant) {
             throw $this->createNotFoundException('No tenant context.');
         }
@@ -315,6 +316,20 @@ final class WorkflowOverlayController extends AbstractController
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
+
+    /**
+     * Resolve the tenant for the current admin operation.
+     *
+     * Phase 4c contract: delegates to {@see TenantContext::resolveAdminScope()}
+     * so SUPER_ADMIN can pass an explicit `tenant_id` (query or POST) to
+     * target another tenant. ROLE_ADMIN falls back to their own active
+     * tenant. Throws AccessDeniedException for cross-tenant attempts.
+     */
+    private function resolveTenant(Request $request): ?Tenant
+    {
+        $requested = $request->request->get('tenant_id') ?? $request->query->get('tenant_id');
+        return $this->tenantContext->resolveAdminScope($requested);
+    }
 
     /**
      * Load steps for a workflow name.
