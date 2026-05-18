@@ -157,9 +157,12 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // Owned by `bc_exercise_lifecycle`. ISO 22301 Cl. 8.5 — 4-eyes
+            // auf `complete` (Audit-Evidenz). Transitions via LifecycleService.
             ->add('status', ChoiceType::class, [
                 'label' => 'bc_exercises.field.status',
-                'help' => 'bc_exercises.help.status',
+                'help' => 'bc_exercises.help.status_readonly',
                 'choices' => [
                     'bc_exercises.status.planned' => 'planned',
                     'bc_exercises.status.in_progress' => 'in_progress',
@@ -167,7 +170,8 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
                     'bc_exercises.status.cancelled' => 'cancelled',
                 ],
                 'choice_translation_domain' => 'bc_exercises',
-                'required' => true,
+                'required' => false,
+                'disabled' => true,
             ])
             ->add('results', TextareaType::class, [
                 'label' => 'bc_exercises.field.results',

@@ -5,6 +5,12 @@
 {% block body %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container">
+    {# Lifecycle Y.5 — status transition dropdown (patch_lifecycle) #}
+    {% include '_components/_lifecycle_toolbar.html.twig' with {
+        entity: patch,
+        entity_type: 'patch',
+        workflow_name: 'patch_lifecycle'
+    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.patches'|trans({}, 'nav'), url: path('app_patch_index') },

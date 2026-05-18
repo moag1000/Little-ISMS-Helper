@@ -227,6 +227,15 @@ class BCExercise
     private ?string $status = 'planned';
 
     /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on bc_exercise_lifecycle
+     * (ISO 22301 Cl. 8.5 — BC-Übung als Audit-Evidenz).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * Results and observations
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -958,5 +967,10 @@ class BCExercise
     public function hasExerciseLog(): bool
     {
         return $this->exerciseLog !== null;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }

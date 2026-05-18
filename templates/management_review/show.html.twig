@@ -7,6 +7,12 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {# Lifecycle Y.5 — status transition dropdown (management_review_lifecycle) #}
+    {% include '_components/_lifecycle_toolbar.html.twig' with {
+        entity: review,
+        entity_type: 'management-review',
+        workflow_name: 'management_review_lifecycle'
+    } only %}
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">

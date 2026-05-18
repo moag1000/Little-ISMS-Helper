@@ -21,6 +21,12 @@
 
 {% block body %}
 <div class="container-fluid">
+    {# Lifecycle Y.5 — status transition dropdown (prototype_protection_assessment_lifecycle) #}
+    {% include '_components/_lifecycle_toolbar.html.twig' with {
+        entity: assessment,
+        entity_type: 'prototype-protection-assessment',
+        workflow_name: 'prototype_protection_assessment_lifecycle'
+    } only %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'prototype_protection.page.index_title'|trans({}, 'prototype_protection'), url: path('app_prototype_protection_index') },

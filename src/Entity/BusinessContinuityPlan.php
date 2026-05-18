@@ -102,6 +102,15 @@ class BusinessContinuityPlan
     private ?string $status = 'draft';
 
     /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on
+     * business_continuity_plan_lifecycle.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * Activation criteria - when to activate this plan
      */
     #[ORM\Column(type: Types::TEXT)]
@@ -1070,4 +1079,8 @@ class BusinessContinuityPlan
         );
     }
 
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
+    }
 }

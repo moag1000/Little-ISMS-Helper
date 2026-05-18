@@ -1,0 +1,52 @@
+framework:
+    workflows:
+        business_continuity_plan_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\BusinessContinuityPlan
+            initial_marking: draft
+            places:
+                - draft
+                - under_review
+                - active
+                - archived
+            transitions:
+                submit_for_review:
+                    from: draft
+                    to: under_review
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: bcm
+                # ISO 22301 Cl. 8.4 — BCP-Activation ist krisenrelevant.
+                # 4-Augen-Pflicht: BC-Plan geht produktiv, hat Auswirkung auf
+                # Geschäftsbetrieb und Audit-Evidenz.
+                activate:
+                    from: under_review
+                    to: active
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
+                        module: bcm
+                send_back_to_draft:
+                    from: under_review
+                    to: draft
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: bcm
+                archive:
+                    from: active
+                    to: archived
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        reason_required: true
+                        module: bcm
+                reactivate:
+                    from: archived
+                    to: under_review
+                    metadata:
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        module: bcm

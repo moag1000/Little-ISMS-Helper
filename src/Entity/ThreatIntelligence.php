@@ -103,6 +103,14 @@ class ThreatIntelligence
     #[Assert\Choice(choices: ['new', 'analyzing', 'mitigated', 'monitoring', 'closed'])]
     private ?string $status = 'new';
 
+    /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on threat_intelligence_lifecycle.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['threat:read', 'threat:write'])]
     private ?DateTimeInterface $detectionDate = null;
@@ -628,5 +636,10 @@ class ThreatIntelligence
     {
         $this->sharedExternally = $sharedExternally;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }

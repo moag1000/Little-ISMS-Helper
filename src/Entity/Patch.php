@@ -118,6 +118,14 @@ class Patch
     private string $status = 'pending';
 
     /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on patch_lifecycle.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * Date patch was released by vendor
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
@@ -609,5 +617,10 @@ public function __construct()
     {
         $this->tenant = $tenant;
         return $this;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 }

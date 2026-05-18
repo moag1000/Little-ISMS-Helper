@@ -139,8 +139,12 @@ final class TrainingType extends AbstractType
                     'min' => 0,
                 ],
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // Owned by `training_lifecycle`. Transitions via
+            // LifecycleService::transition() only.
             ->add('status', ChoiceType::class, [
                 'label' => 'training.field.status',
+                'help' => 'training.help.status_readonly',
                 'choices' => [
                     'training.statuses.planned' => 'planned',
                     'training.statuses.scheduled' => 'scheduled',
@@ -148,6 +152,8 @@ final class TrainingType extends AbstractType
                     'training.statuses.completed' => 'completed',
                     'training.statuses.cancelled' => 'cancelled',
                 ],
+                'required' => false,
+                'disabled' => true,
                 'choice_translation_domain' => 'training',
             ])
             ->add('mandatory', ChoiceType::class, [

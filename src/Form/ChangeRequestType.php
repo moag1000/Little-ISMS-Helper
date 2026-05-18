@@ -75,8 +75,13 @@ final class ChangeRequestType extends AbstractType
                 'required' => true,
                     'choice_translation_domain' => 'change_requests',
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // Owned by `change_request_lifecycle`. ISO 27001 A.8.32 —
+            // 4-eyes auf `approve`, `implement`, `close`. Transitions via
+            // LifecycleService::transition() only.
             ->add('status', ChoiceType::class, [
                 'label' => 'change_request.field.status',
+                'help' => 'change_request.help.status_readonly',
                 'choices' => [
                     'change_request.status.draft' => 'draft',
                     'change_request.status.submitted' => 'submitted',
@@ -89,8 +94,9 @@ final class ChangeRequestType extends AbstractType
                     'change_request.status.closed' => 'closed',
                     'change_request.status.cancelled' => 'cancelled',
                 ],
-                'required' => true,
-                    'choice_translation_domain' => 'change_requests',
+                'required' => false,
+                'disabled' => true,
+                'choice_translation_domain' => 'change_requests',
             ])
             ->add('clauseReference', TextType::class, [
                 'label' => 'change_request.field.clause_reference',

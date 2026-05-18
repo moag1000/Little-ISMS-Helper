@@ -138,6 +138,14 @@ class Supplier
     private ?string $status = 'evaluation';
 
     /**
+     * Optimistic-locking version for Symfony Workflow / LifecycleService.
+     * Required for safe concurrent status-transitions on supplier_lifecycle.
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * Security assessment score (0-100)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
@@ -1222,4 +1230,8 @@ class Supplier
         return $this;
     }
 
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
+    }
 }

@@ -81,3 +81,6 @@ fix_specific_headings.php
 # Ignore XLIFF translation files - we only use YAML
 translations/*.xlf
 translations/*+intl-icu.*.yaml
+
+# Claude Code worktrees (isolated workspaces)
+/.claude/worktrees/

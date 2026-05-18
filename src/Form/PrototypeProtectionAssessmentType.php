@@ -48,8 +48,13 @@ final class PrototypeProtectionAssessmentType extends AbstractType
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // Owned by `prototype_protection_assessment_lifecycle`. TISAX
+            // VDA-ISA 6.0 4-eyes auf `approve`. Transitions via
+            // LifecycleService::transition() only.
             ->add('status', ChoiceType::class, [
                 'label' => 'prototype_protection.field.status',
+                'help' => 'prototype_protection.help.status_readonly',
                 'choices' => [
                     'prototype_protection.status.draft' => PrototypeProtectionAssessmentStatus::Draft->value,
                     'prototype_protection.status.in_review' => PrototypeProtectionAssessmentStatus::InReview->value,
@@ -57,6 +62,8 @@ final class PrototypeProtectionAssessmentType extends AbstractType
                     'prototype_protection.status.rejected' => PrototypeProtectionAssessmentStatus::Rejected->value,
                     'prototype_protection.status.expired' => PrototypeProtectionAssessmentStatus::Expired->value,
                 ],
+                'required' => false,
+                'disabled' => true,
             ])
             // @no-module-gate-required: PrototypeProtectionAssessment form is TISAX-scoped
             //   (only rendered behind prototype_protection module).

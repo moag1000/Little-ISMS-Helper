@@ -60,8 +60,12 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 'attr' => ['rows' => 3],
                 'help' => 'bc_plans.help.bc_team',
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // Owned by `business_continuity_plan_lifecycle`. ISO 22301 Cl. 8.4
+            // 4-eyes auf `activate`. Transitions via LifecycleService only.
             ->add('status', ChoiceType::class, [
                 'label' => 'bc_plans.field.status',
+                'help' => 'bc_plans.help.status_readonly',
                 'choices' => [
                     'bc_plans.status.draft' => 'draft',
                     'bc_plans.status.under_review' => 'under_review',
@@ -69,8 +73,8 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                     'bc_plans.status.archived' => 'archived',
                 ],
                 'choice_translation_domain' => 'bc_plans',
-                'required' => true,
-                'help' => 'bc_plans.help.status',
+                'required' => false,
+                'disabled' => true,
             ])
             ->add('activationCriteria', TextareaType::class, [
                 'label' => 'bc_plans.field.activation_criteria',

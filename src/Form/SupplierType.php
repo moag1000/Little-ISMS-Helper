@@ -108,9 +108,12 @@ final class SupplierType extends AbstractType
                 'choice_translation_domain' => false, // Labels already translated via getLabel()
                 'required' => true,
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // Owned by `supplier_lifecycle`. ISO 27001 A.5.19-A.5.22, 4-eyes
+            // on `terminate`. Transitions via LifecycleService only.
             ->add('status', ChoiceType::class, [
                 'label' => 'supplier.field.status',
-                'help' => 'supplier.help.status',
+                'help' => 'supplier.help.status_readonly',
                 'choices' => [
                     'supplier.status.active' => 'active',
                     'supplier.status.inactive' => 'inactive',
@@ -118,7 +121,8 @@ final class SupplierType extends AbstractType
                     'supplier.status.terminated' => 'terminated',
                 ],
                 'choice_translation_domain' => 'suppliers',
-                'required' => true,
+                'required' => false,
+                'disabled' => true,
             ])
             ->add('securityScore', IntegerType::class, [
                 'label' => 'supplier.field.security_score',

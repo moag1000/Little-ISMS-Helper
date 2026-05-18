@@ -64,8 +64,12 @@ final class RiskTreatmentPlanType extends AbstractType
                     new Assert\NotBlank(message: 'risk_treatment_plan.validation.description_required')
                 ]
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix, Sprint Y.5) ──
+            // Owned by `risk_treatment_plan_lifecycle`. ISO 27001 Cl. 6.1.3
+            // 4-eyes auf `complete`. Transitions via LifecycleService only.
             ->add('status', ChoiceType::class, [
                 'label' => 'risk_treatment_plan.field.status',
+                'help' => 'risk_treatment_plan.help.status_readonly',
                 'choices' => [
                     'risk_treatment_plan.status.planned' => 'planned',
                     'risk_treatment_plan.status.in_progress' => 'in_progress',
@@ -73,8 +77,8 @@ final class RiskTreatmentPlanType extends AbstractType
                     'risk_treatment_plan.status.cancelled' => 'cancelled',
                     'risk_treatment_plan.status.on_hold' => 'on_hold',
                 ],
-                'required' => true,
-                                'help' => 'risk_treatment_plan.help.status',
+                'required' => false,
+                'disabled' => true,
                 'choice_translation_domain' => 'risk_treatment_plan',
             ])
             ->add('priority', ChoiceType::class, [
