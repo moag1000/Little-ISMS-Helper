@@ -83,7 +83,20 @@ final class FourEyesValidator implements EventSubscriberInterface
         // approver omitted) on the condition that a reason is supplied.
         // The audit-log will reflect the same user as initiator + approver,
         // making the offline counter-signature traceable.
-        if ($this->isSingleApproverTenant($initiator, $requiredRoles)) {
+        //
+        // The escape ONLY kicks in when the caller did NOT supply a distinct
+        // approver. If a different valid approver is present, fall through to
+        // the standard checks (approver-role + initiator≠approver) — those
+        // succeed exactly when 4-eyes is genuinely satisfied. Without this
+        // guard, two-step workflows where the controller already paired
+        // (reporter → approver) would be falsely treated as single-user
+        // setups and demand a reason they have no place to provide.
+        $approverIsInitiator = $approver instanceof User
+            && $initiator instanceof User
+            && $initiator->getId() === $approver->getId();
+        $approverOmitted = !($approver instanceof User);
+        if (($approverOmitted || $approverIsInitiator)
+            && $this->isSingleApproverTenant($initiator, $requiredRoles)) {
             $reason = $context['reason'] ?? null;
             if (!is_string($reason) || trim($reason) === '') {
                 // Force the user to document the offline-sign-off in the reason.
