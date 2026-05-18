@@ -521,8 +521,8 @@ final class DataIntegrityService
             }
         }
 
-        // Risk status validation
-        $validRiskStatuses = \App\Enum\RiskStatus::cases();
+        // Risk status validation — pass enum values (strings) to DQL, not enum cases.
+        $validRiskStatuses = array_map(static fn(\App\Enum\RiskStatus $s): string => $s->value, \App\Enum\RiskStatus::cases());
         try {
             $invalidRiskStatuses = $this->riskRepository->createQueryBuilder('r')
                 ->where('r.status NOT IN (:valid)')->setParameter('valid', $validRiskStatuses)
@@ -961,7 +961,7 @@ final class DataIntegrityService
             $risksZeroValues = $this->riskRepository->createQueryBuilder('r')
                 ->where('(r.probability = 0 OR r.probability IS NULL)')
                 ->andWhere('r.status NOT IN (:excludedStatuses)')
-                ->setParameter('excludedStatuses', [\App\Enum\RiskStatus::Closed])
+                ->setParameter('excludedStatuses', [\App\Enum\RiskStatus::Closed->value])
                 ->orderBy('r.id', 'ASC')
                 ->getQuery()
                 ->getResult();
@@ -1838,7 +1838,9 @@ final class DataIntegrityService
 
             $unknown = [];
             foreach ($rows as $row) {
-                $value = (string) ($row['status'] ?? '');
+                $raw = $row['status'] ?? null;
+                // Doctrine returns BackedEnum for entities with enumType: mapping.
+                $value = $raw instanceof \BackedEnum ? $raw->value : (string) ($raw ?? '');
                 if ($value === '' || isset($allowed[$value])) {
                     continue;
                 }
