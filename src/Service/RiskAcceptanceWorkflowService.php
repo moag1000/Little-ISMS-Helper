@@ -15,6 +15,7 @@ use App\Entity\User;
 use App\Entity\Tenant;
 use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\UserRepository;
 use App\Service\RiskApprovalConfigResolver;
 use App\Service\RiskApprovalConfigView;
@@ -57,6 +58,7 @@ class RiskAcceptanceWorkflowService
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
         private readonly RiskApprovalConfigResolver $approvalConfigResolver,
+        private readonly LifecycleTransitionInterface $lifecycleService,
     ) {}
 
     /**
@@ -216,10 +218,19 @@ class RiskAcceptanceWorkflowService
         $risk->setFormallyAccepted(true);
         $risk->setAcceptanceApprovedBy($user->getFullName() . ' (automatic)');
         $risk->setAcceptanceApprovedAt($now);
-        $risk->setStatus(RiskStatus::Accepted); // @phpstan-ignore lifecycle.directSetStatus (risk acceptance workflow uses its own approval flow; LifecycleService migration deferred to X.6)
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
+
+        // X.6: accept transition (assessed → accepted) via risk_lifecycle.
+        // Risk must be in 'assessed' state; validateRiskForAcceptance() guards this path.
+        $this->lifecycleService->transition(
+            $risk,
+            'risk_lifecycle',
+            'accept',
+            $user,
+            'Automatically accepted (score ≤ threshold)',
+        );
 
         // Log acceptance
         $this->auditLogger->logRiskAcceptance(
@@ -300,9 +311,10 @@ class RiskAcceptanceWorkflowService
      */
     private function createManualApprovalRequest(Risk $risk, User $user, string $approvalLevel): array
     {
-        // Set status to indicate pending approval
-        $risk->setStatus(RiskStatus::Assessed); // @phpstan-ignore lifecycle.directSetStatus (risk acceptance workflow uses its own approval flow; LifecycleService migration deferred to X.6; keep in assessed until approved)
-
+        // X.6: Risk is already in 'assessed' state (guaranteed by validateRiskForAcceptance()).
+        // No transition needed here — keep in assessed while manual approval is pending.
+        // The explicit setStatus(Assessed) was a defensive no-op that bypassed LifecycleService;
+        // removed as part of X.6 migration.
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
 
@@ -378,10 +390,20 @@ class RiskAcceptanceWorkflowService
         $risk->setFormallyAccepted(true);
         $risk->setAcceptanceApprovedBy($user->getFullName());
         $risk->setAcceptanceApprovedAt($now);
-        $risk->setStatus(RiskStatus::Accepted); // @phpstan-ignore lifecycle.directSetStatus (risk acceptance workflow uses its own approval flow; LifecycleService migration deferred to X.6)
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
+
+        // X.6: accept transition (assessed → accepted) via risk_lifecycle.
+        // approveAcceptance() is called after manager/executive approval; risk stays
+        // in 'assessed' during pending phase (createManualApprovalRequest does not change it).
+        $this->lifecycleService->transition(
+            $risk,
+            'risk_lifecycle',
+            'accept',
+            $user,
+            'Risk acceptance approved: ' . ($comments !== '' ? $comments : 'no comments'),
+        );
 
         // Log approval
         $this->auditLogger->logRiskAcceptanceApproved(
@@ -428,11 +450,20 @@ class RiskAcceptanceWorkflowService
      */
     public function rejectAcceptance(Risk $risk, User $user, string $reason): array
     {
-        $risk->setStatus(RiskStatus::Assessed); // @phpstan-ignore lifecycle.directSetStatus (risk acceptance workflow uses its own approval flow; LifecycleService migration deferred to X.6; return to assessed status)
         $risk->setFormallyAccepted(false);
 
         $this->entityManager->persist($risk);
         $this->entityManager->flush();
+
+        // X.6: revert_to_assessed transition (accepted → assessed) via risk_lifecycle.
+        // Added to config/workflows/risk.yaml in X.6. Reverts acceptance decision.
+        $this->lifecycleService->transition(
+            $risk,
+            'risk_lifecycle',
+            'revert_to_assessed',
+            $user,
+            'Risk acceptance rejected: ' . $reason,
+        );
 
         // Log rejection
         $this->auditLogger->logRiskAcceptanceRejected(
