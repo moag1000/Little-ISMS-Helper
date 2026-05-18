@@ -33,6 +33,7 @@ src/Controller/Admin/SystemSettings/NotificationPreferencesController.php:21
 src/Controller/Admin/SystemSettings/WorkflowSlaDefaultsController.php:22
 src/Controller/Admin/TagController.php:30
 src/Controller/Admin/TenantEmailBrandingController.php:22
+src/Controller/Admin/WorkflowOverlayController.php:39
 src/Controller/AlvaHintInboxController.php:23
 src/Controller/Analytics/FteTrackingDashboardController.php:38
 src/Controller/AnalyticsController.php:34
@@ -52,9 +53,9 @@ src/Controller/ComplianceInheritanceController.php:25
 src/Controller/ComplianceWizardController.php:43
 src/Controller/ConsentController.php:25
 src/Controller/CorrectiveActionController.php:26
-src/Controller/Dashboard/ComplianceManagerDashboardController.php:35
-src/Controller/Dashboard/DpoDashboardController.php:29
-src/Controller/DataBreachController.php:26
+src/Controller/Dashboard/ComplianceManagerDashboardController.php:36
+src/Controller/Dashboard/DpoDashboardController.php:30
+src/Controller/DataBreachController.php:27
 src/Controller/DataSubjectRequestController.php:22
 src/Controller/DeltaAssessmentController.php:29
 src/Controller/EvidenceController.php:29
@@ -77,4 +78,3 @@ src/Controller/RoleDashboardController.php:20
 src/Controller/ScheduledReportController.php:24
 src/Controller/Setup/ExistingFrameworksController.php:22
 src/Controller/SystemTemplateApplyController.php:33
-src/Controller/Admin/WorkflowOverlayController.php:39
