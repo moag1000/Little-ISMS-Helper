@@ -136,6 +136,7 @@ supplier:
         service_provided: 'Welche Leistungen erbringt dieser Lieferant für Ihr Unternehmen?'
         criticality: 'Wie kritisch ist dieser Lieferant für Ihren Geschäftsbetrieb? (ISO 27001 A.5.19)'
         status: 'Aktueller Status der Lieferantenbeziehung.'
+        status_lifecycle_managed: 'Status wird über den Lieferanten-Lifecycle gesteuert (ISO 27001 A.5.19–A.5.22). Statusänderungen erfolgen über das Lifecycle-Menü auf der Detailseite — mit Audit-Log, Rollenprüfung und 4-Augen-Prinzip bei Beendigung.'
         security_score: 'Sicherheitsbewertung von 0 (schlecht) bis 100 (exzellent), basierend auf dem letzten Audit.'
         last_assessment: 'Wann wurde die letzte Sicherheitsbewertung durchgeführt?'
         next_assessment: 'Wann ist die nächste Sicherheitsbewertung geplant?'

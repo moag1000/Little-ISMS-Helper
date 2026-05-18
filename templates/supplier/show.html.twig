@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% trans_default_domain 'suppliers' %}
 
 {% block title %}{{ supplier.name }}{% endblock %}
@@ -91,6 +93,12 @@
                 {% include '_components/_badge.html.twig' with { variant: 'info', class: 'me-1', icon: 'privileged', content: 'GDPR Art. 28' } %}
             {% endif %}
         {% endif %}
+    </div>
+
+    {# Lifecycle PR C — status chip + transition dropdown (supplier_lifecycle: 4 places, 6 transitions) #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        {{ _fa_status_chip.render({ entity_class: 'App\\Entity\\Supplier', status_key: supplier.status }) }}
+        {{ _lifecycle_actions.dropdown(supplier, 'supplier', 'supplier_lifecycle') }}
     </div>
 
     {% if isInherited is defined and isInherited %}

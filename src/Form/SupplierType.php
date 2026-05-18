@@ -110,7 +110,13 @@ final class SupplierType extends AbstractType
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'supplier.field.status',
-                'help' => 'supplier.help.status',
+                // Lifecycle PR C: status is managed by supplier_lifecycle workflow
+                // (see config/workflows/supplier.yaml). Form keeps field visible
+                // for context but disables editing — transitions happen via the
+                // lifecycle dropdown on the show page, which routes through
+                // LifecycleService::transition() (audit-logged, RBAC, four-eyes
+                // on terminate per ISO 27001 A.5.20).
+                'help' => 'supplier.help.status_lifecycle_managed',
                 'choices' => [
                     'supplier.status.active' => 'active',
                     'supplier.status.inactive' => 'inactive',
@@ -119,6 +125,7 @@ final class SupplierType extends AbstractType
                 ],
                 'choice_translation_domain' => 'suppliers',
                 'required' => true,
+                'disabled' => true,
             ])
             ->add('securityScore', IntegerType::class, [
                 'label' => 'supplier.field.security_score',

@@ -75,6 +75,10 @@ final class EntityTypeRegistry
             'class' => \App\Entity\Risk::class,
             'workflow' => 'risk_lifecycle',
         ],
+        'supplier' => [
+            'class' => \App\Entity\Supplier::class,
+            'workflow' => 'supplier_lifecycle',
+        ],
         'vulnerability' => [
             'class' => \App\Entity\Vulnerability::class,
             'workflow' => 'vulnerability_lifecycle',

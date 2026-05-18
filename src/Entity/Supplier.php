@@ -247,6 +247,17 @@ class Supplier
     #[Groups(['supplier:read'])]
     private ?DateTimeInterface $updatedAt = null;
 
+    /**
+     * Optimistic locking version counter.
+     * Required by LifecycleService to detect concurrent transition conflicts (HTTP 409).
+     *
+     * @see LifecycleService::transition()
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    #[Groups(['supplier:read'])]
+    private int $lockVersion = 0;
+
     public function __construct()
     {
         $this->supportedAssets = new ArrayCollection();
@@ -1220,6 +1231,15 @@ class Supplier
     {
         $this->internalAuditFunctionInvolvement = $internalAuditFunctionInvolvement;
         return $this;
+    }
+
+    /**
+     * Optimistic locking version (incremented by Doctrine on each update).
+     * Used by LifecycleService to detect concurrent lifecycle transitions.
+     */
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
 }

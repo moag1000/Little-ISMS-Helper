@@ -109,6 +109,10 @@ lifecycle:
     revoked: Widerrufen
     expired: Abgelaufen
 
+    # Supplier lifecycle places (ISO 27001 A.5.19–A.5.22)
+    evaluation: 'In Bewertung'
+    terminated: Beendet
+
     # AuditFinding / CorrectiveAction discovery-style lifecycle
     in_progress: 'In Bearbeitung'
 
@@ -225,6 +229,11 @@ lifecycle:
         expire: 'Ablaufen lassen'
         # Objective transitions
         cancel_in_progress: 'Im Verlauf abbrechen'
+        # Supplier transitions (ISO 27001 A.5.19–A.5.22)
+        evaluation_passed: 'Bewertung bestanden'
+        evaluation_failed: 'Bewertung nicht bestanden'
+        request_evaluation: 'Bewertung anfordern'
+        terminate: 'Vertragsbeziehung beenden'
         # Retry
         retry: Wiederholen
 

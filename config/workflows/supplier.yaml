@@ -1,0 +1,60 @@
+framework:
+    workflows:
+        supplier_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\Supplier
+            initial_marking: evaluation
+            places:
+                - active
+                - inactive
+                - evaluation
+                - terminated
+            transitions:
+                # ISO 27001 A.5.19 — supplier relationship is established (post-evaluation).
+                evaluation_passed:
+                    from: evaluation
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        module: suppliers
+                # ISO 27001 A.5.19 — supplier failed initial evaluation, parked as inactive.
+                evaluation_failed:
+                    from: evaluation
+                    to: inactive
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                # ISO 27001 A.5.22 — request a re-evaluation of an active supplier.
+                request_evaluation:
+                    from: active
+                    to: evaluation
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                # Deactivate an operational supplier (e.g. paused engagement).
+                deactivate:
+                    from: active
+                    to: inactive
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                # Reactivate a paused supplier (no reason required — re-engagement).
+                reactivate:
+                    from: inactive
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                # ISO 27001 A.5.20 — terminate contractual relationship. Terminal +
+                # irreversible: requires four-eyes + reason. Allowed from active,
+                # inactive, evaluation.
+                terminate:
+                    from: [active, inactive, evaluation]
+                    to: terminated
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                        reason_required: true

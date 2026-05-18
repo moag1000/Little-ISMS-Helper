@@ -14,6 +14,7 @@ imports:
     - { resource: '../workflows/incident.yaml' }
     - { resource: '../workflows/internal_audit.yaml' }
     - { resource: '../workflows/risk.yaml' }
+    - { resource: '../workflows/supplier.yaml' }
     - { resource: '../workflows/vulnerability.yaml' }
     # Sprint Y.2 — Regulatory approval-chain workflows (WorkflowInstance-based)
     - { resource: '../workflows/regulatory/gdpr_data_breach.yaml' }

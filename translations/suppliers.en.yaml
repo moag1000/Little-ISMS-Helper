@@ -135,6 +135,7 @@ supplier:
         service_provided: 'What services does this supplier provide to your organization?'
         criticality: 'How critical is this supplier to your business operations? (ISO 27001 A.5.19)'
         status: 'Current status of the supplier relationship.'
+        status_lifecycle_managed: 'Status is managed via the supplier lifecycle (ISO 27001 A.5.19–A.5.22). Use the lifecycle menu on the detail page to change status — audit-logged, role-checked, with four-eyes review on termination.'
         security_score: 'Security rating from 0 (poor) to 100 (excellent), based on the last audit.'
         last_assessment: 'When was the last security assessment conducted?'
         next_assessment: 'When is the next security assessment scheduled?'
