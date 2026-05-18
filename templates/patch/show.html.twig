@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% trans_default_domain 'patches' %}
 {% block title %}{{ patch.title }} - {{ parent() }}{% endblock %}
 {% block body %}
@@ -24,6 +25,11 @@
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'util-arrow-left', href: path('app_patch_index') }
         ]
     }) }}
+
+    {# Lifecycle Y.5 PR-A — status + transition dropdown #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        {{ _lifecycle_actions.dropdown(patch, 'patch', 'patch_lifecycle') }}
+    </div>
 
     {# Status badges (priority/status/overdue) kept below header — multi-badge title row not supported by macro #}
     <div class="d-flex flex-wrap gap-2 mb-3">

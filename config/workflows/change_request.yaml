@@ -1,0 +1,76 @@
+framework:
+    workflows:
+        change_request_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\ChangeRequest
+            initial_marking: draft
+            places:
+                - draft
+                - submitted
+                - under_review
+                - approved
+                - rejected
+                - scheduled
+                - implemented
+                - verified
+                - closed
+                # legacy bucket — accepted as a place to satisfy entity Choice constraint;
+                # no transitions wired (read-only legacy data)
+                - cancelled
+            transitions:
+                # ISO 27001 A.8.32 — Change Management; DORA Art. 16
+                submit:
+                    from: draft
+                    to: submitted
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                start_review:
+                    from: submitted
+                    to: under_review
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                approve:
+                    from: under_review
+                    to: approved
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                reject:
+                    from: under_review
+                    to: rejected
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                schedule:
+                    from: approved
+                    to: scheduled
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                implemented:
+                    from: scheduled
+                    to: implemented
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        four_eyes: true
+                verified:
+                    from: implemented
+                    to: verified
+                    metadata:
+                        roles: [ROLE_AUDITOR, ROLE_CISO]
+                        four_eyes: true
+                close:
+                    from: verified
+                    to: closed
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                # Rework path — rejected back to draft for resubmission
+                rework:
+                    from: rejected
+                    to: draft
+                    metadata:
+                        roles: [ROLE_USER, ROLE_MANAGER]
+                        reason_required: true

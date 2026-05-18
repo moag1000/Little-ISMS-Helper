@@ -81,6 +81,7 @@ risk_treatment_plan:
         risk: 'Wählen Sie das Risiko, für das dieser Behandlungsplan gilt'
         description: 'Detaillierte Beschreibung der geplanten Behandlungsmaßnahmen'
         status: 'Aktueller Status des Behandlungsplans'
+        status_lifecycle: 'Status wird über die Lebenszyklus-Aktionen oben rechts geändert (ISO 27001 Cl. 6.1.3).'
         priority: 'Priorität basierend auf Risikoschwere und Dringlichkeit'
         start_date: 'Geplanter oder tatsächlicher Start der Behandlungsmaßnahmen'
         target_completion_date: 'Geplantes Datum für den Abschluss aller Maßnahmen'

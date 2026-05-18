@@ -83,6 +83,18 @@ class RiskTreatmentPlan
     private ?string $status = 'planned';
 
     /**
+     * Optimistic-locking version field.
+     *
+     * Required by LifecycleService to detect concurrent transition conflicts (HTTP 409).
+     *
+     * @see LifecycleService::transition()
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    #[Groups(['treatment_plan:read'])]
+    private int $lockVersion = 0;
+
+    /**
      * Priority level for implementation
      */
     #[ORM\Column(length: 20)]
@@ -265,6 +277,11 @@ class RiskTreatmentPlan
     public function getStatusEnum(): ?RiskTreatmentPlanStatus
     {
         return $this->status !== null ? RiskTreatmentPlanStatus::tryFrom($this->status) : null;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getPriority(): ?string

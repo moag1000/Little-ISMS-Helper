@@ -128,6 +128,18 @@ class ChangeRequest
     private ?string $status = 'draft';
 
     /**
+     * Optimistic-locking version field.
+     *
+     * Required by LifecycleService to detect concurrent transition conflicts (HTTP 409).
+     *
+     * @see LifecycleService::transition()
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    #[Groups(['change_request:read'])]
+    private int $lockVersion = 0;
+
+    /**
      * Optional ISO 27001 / DORA / NIS2 clause tag for §6.3/§8.1 differentiation.
      * Examples: "ISO 27001 §6.3", "ISO 27001 §8.1", "DORA Art. 6"
      */
@@ -426,6 +438,11 @@ class ChangeRequest
     public function getStatusEnum(): ?ChangeRequestStatus
     {
         return $this->status !== null ? ChangeRequestStatus::tryFrom($this->status) : null;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getClauseReference(): ?string

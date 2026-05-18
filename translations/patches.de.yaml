@@ -67,6 +67,7 @@ patch:
         rollback_plan: 'Schritte zur Rücknahme des Patches...'
         known_issues: 'Bekannte Probleme oder Einschränkungen...'
     help:
+        status_lifecycle: 'Status wird über die Lebenszyklus-Aktionen oben rechts geändert (ISO 27001 A.8.32 / NIS2 Art. 21(2)(e)).'
         patch_id: 'Eindeutige Kennung des Patches (KB-Nummer, CVE-Fix, etc.)'
         patch_type: 'Art des Patches'
         priority: 'Dringlichkeit der Patch-Installation'

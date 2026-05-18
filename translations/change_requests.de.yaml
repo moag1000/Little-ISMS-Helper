@@ -93,6 +93,7 @@ change_request:
         clause_reference: 'z.B. ISO 27001 §6.3, DORA Art. 6'
     help:
         clause_reference: 'Optionales ISO 27001 / DORA / NIS2 Klausel-Tag für §6.3 geplante Änderungen oder §8.1 operative Maßnahmen-Differenzierung'
+        status_lifecycle: 'Status wird über die Lebenszyklus-Aktionen oben rechts geändert (ISO 27001 A.8.32 / DORA Art. 16).'
     edit: Bearbeiten
     confirm:
         delete: Löschen

@@ -87,6 +87,17 @@ class ManagementReview
     #[ORM\Column(length: 50)]
     private ?string $status = 'planned';
 
+    /**
+     * Optimistic-locking version field.
+     *
+     * Required by LifecycleService to detect concurrent transition conflicts (HTTP 409).
+     *
+     * @see LifecycleService::transition()
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeInterface $createdAt = null;
 
@@ -434,6 +445,11 @@ public function __construct()
     public function getStatusEnum(): ?ManagementReviewStatus
     {
         return $this->status !== null ? ManagementReviewStatus::tryFrom($this->status) : null;
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getCreatedAt(): ?DateTimeInterface

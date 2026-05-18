@@ -14,6 +14,8 @@ namespace App\Lifecycle;
  * Sprint X.2 batch adds 10 custom-stage entities (AuditFinding, Consent,
  * CorrectiveAction, DataBreach, DataSubjectRequest, DPIA, Incident,
  * InternalAudit, Risk, Vulnerability).
+ * Sprint Y.5 PR-A adds 4 compliance-critical entities (ChangeRequest, Patch,
+ * ManagementReview, RiskTreatmentPlan).
  */
 final class EntityTypeRegistry
 {
@@ -83,6 +85,23 @@ final class EntityTypeRegistry
         'workflow-instance' => [
             'class' => \App\Entity\WorkflowInstance::class,
             'workflow' => 'workflow_instance_lifecycle',
+        ],
+        // Sprint Y.5 PR-A — Compliance-critical lifecycle extension
+        'change-request' => [
+            'class' => \App\Entity\ChangeRequest::class,
+            'workflow' => 'change_request_lifecycle',
+        ],
+        'patch' => [
+            'class' => \App\Entity\Patch::class,
+            'workflow' => 'patch_lifecycle',
+        ],
+        'management-review' => [
+            'class' => \App\Entity\ManagementReview::class,
+            'workflow' => 'management_review_lifecycle',
+        ],
+        'risk-treatment-plan' => [
+            'class' => \App\Entity\RiskTreatmentPlan::class,
+            'workflow' => 'risk_treatment_plan_lifecycle',
         ],
     ];
 

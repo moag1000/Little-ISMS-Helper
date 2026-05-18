@@ -81,6 +81,7 @@ risk_treatment_plan:
         risk: 'Select the risk this treatment plan applies to'
         description: 'Detailed description of the planned treatment measures'
         status: 'Current status of the treatment plan'
+        status_lifecycle: 'Status is changed via the Lifecycle actions in the top toolbar (ISO 27001 Cl. 6.1.3).'
         priority: 'Priority based on risk severity and urgency'
         start_date: 'Planned or actual start of treatment measures'
         target_completion_date: 'Planned date for completion of all measures'

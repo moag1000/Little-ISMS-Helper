@@ -1,0 +1,55 @@
+framework:
+    workflows:
+        risk_treatment_plan_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\RiskTreatmentPlan
+            initial_marking: planned
+            places:
+                - planned
+                - in_progress
+                - completed
+                - cancelled
+                - on_hold
+            transitions:
+                # ISO 27001 Cl. 6.1.3 — Risk Treatment
+                start:
+                    from: planned
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER, ROLE_MANAGER]
+                complete:
+                    from: in_progress
+                    to: completed
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                        reason_required: true
+                cancel:
+                    from: [planned, in_progress, on_hold]
+                    to: cancelled
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                        reason_required: true
+                hold:
+                    from: in_progress
+                    to: on_hold
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER, ROLE_MANAGER]
+                        reason_required: true
+                resume:
+                    from: on_hold
+                    to: in_progress
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER, ROLE_MANAGER]
+                # Rework — restart cancelled plan back to planned
+                rework:
+                    from: cancelled
+                    to: planned
+                    metadata:
+                        roles: [ROLE_RISK_MANAGER, ROLE_CISO]
+                        reason_required: true

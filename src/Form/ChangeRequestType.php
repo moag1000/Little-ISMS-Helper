@@ -90,7 +90,11 @@ final class ChangeRequestType extends AbstractType
                     'change_request.status.cancelled' => 'cancelled',
                 ],
                 'required' => true,
-                    'choice_translation_domain' => 'change_requests',
+                'choice_translation_domain' => 'change_requests',
+                // Lifecycle Y.5 PR-A — status managed by LifecycleService (change_request_lifecycle).
+                // Field stays visible for UX but is disabled — transitions go via dropdown.
+                'disabled' => true,
+                'help' => 'change_request.help.status_lifecycle',
             ])
             ->add('clauseReference', TextType::class, [
                 'label' => 'change_request.field.clause_reference',

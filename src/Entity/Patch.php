@@ -118,6 +118,17 @@ class Patch
     private string $status = 'pending';
 
     /**
+     * Optimistic-locking version field.
+     *
+     * Required by LifecycleService to detect concurrent transition conflicts (HTTP 409).
+     *
+     * @see LifecycleService::transition()
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
+
+    /**
      * Date patch was released by vendor
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
@@ -365,6 +376,11 @@ public function __construct()
     public function getStatusEnum(): ?PatchStatus
     {
         return PatchStatus::tryFrom($this->status);
+    }
+
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     public function getReleaseDate(): ?DateTimeImmutable

@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% trans_default_domain 'change_requests' %}
 
 {% block title %}{{ change_request.changeNumber }}{% endblock %}
@@ -22,6 +23,12 @@
             { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', href: path('app_change_request_index') }
         ]
     }) }}
+
+    {# Lifecycle Y.5 PR-A — status + transition dropdown #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        <span class="badge bg-info">{{ ('change_request.status.' ~ change_request.status)|trans({}, 'change_requests') }}</span>
+        {{ _lifecycle_actions.dropdown(change_request, 'change-request', 'change_request_lifecycle') }}
+    </div>
 
     {# Inline POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     {% if is_granted('ROLE_ADMIN') %}

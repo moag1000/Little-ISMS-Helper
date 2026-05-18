@@ -129,7 +129,11 @@ final class PatchType extends AbstractType
                     'patch.status.not_applicable' => 'not_applicable',
                 ],
                 'required' => true,
-                    'choice_translation_domain' => 'patches',
+                'choice_translation_domain' => 'patches',
+                // Lifecycle Y.5 PR-A — status managed by LifecycleService (patch_lifecycle).
+                // Field stays visible for UX but is disabled — transitions go via dropdown.
+                'disabled' => true,
+                'help' => 'patch.help.status_lifecycle',
             ])
             ->add('releaseDate', DateType::class, [
                 'label' => 'patch.field.release_date',

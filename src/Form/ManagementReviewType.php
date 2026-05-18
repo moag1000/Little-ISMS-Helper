@@ -118,6 +118,10 @@ final class ManagementReviewType extends AbstractType
                     'management_review.status.follow_up_required' => 'follow_up_required',
                 ],
                 'choice_translation_domain' => 'management_review',
+                // Lifecycle Y.5 PR-A — status managed by LifecycleService (management_review_lifecycle).
+                // Field stays visible for UX but is disabled — transitions go via dropdown.
+                'disabled' => true,
+                'help' => 'management_review.help.status_lifecycle',
             ])
             ->add('performanceEvaluation', TextareaType::class, [
                 'label' => 'management_review.field.performance_evaluation',

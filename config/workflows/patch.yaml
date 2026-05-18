@@ -1,0 +1,64 @@
+framework:
+    workflows:
+        patch_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\Patch
+            initial_marking: pending
+            places:
+                - pending
+                - testing
+                - approved
+                - deployed
+                - failed
+                - rolled_back
+                # legacy bucket — accepted as a place to satisfy entity Choice constraint;
+                # no transitions wired (read-only legacy data)
+                - not_applicable
+            transitions:
+                # ISO 27001 A.8.32 + A.8.8; NIS2 Art. 21(2)(e)
+                start_testing:
+                    from: pending
+                    to: testing
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                approve:
+                    from: testing
+                    to: approved
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                fail_testing:
+                    from: testing
+                    to: failed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                deploy:
+                    from: approved
+                    to: deployed
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        four_eyes: true
+                fail_deploy:
+                    from: approved
+                    to: failed
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true
+                rollback:
+                    from: deployed
+                    to: rolled_back
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                # Retry path — failed back to pending for re-test
+                retry:
+                    from: failed
+                    to: pending
+                    metadata:
+                        roles: [ROLE_MANAGER]
+                        reason_required: true

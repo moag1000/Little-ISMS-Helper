@@ -74,8 +74,11 @@ final class RiskTreatmentPlanType extends AbstractType
                     'risk_treatment_plan.status.on_hold' => 'on_hold',
                 ],
                 'required' => true,
-                                'help' => 'risk_treatment_plan.help.status',
+                'help' => 'risk_treatment_plan.help.status_lifecycle',
                 'choice_translation_domain' => 'risk_treatment_plan',
+                // Lifecycle Y.5 PR-A — status managed by LifecycleService (risk_treatment_plan_lifecycle).
+                // Field stays visible for UX but is disabled — transitions go via dropdown.
+                'disabled' => true,
             ])
             ->add('priority', ChoiceType::class, [
                 'label' => 'risk_treatment_plan.field.priority',

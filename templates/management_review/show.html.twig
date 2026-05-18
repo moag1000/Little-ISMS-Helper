@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% trans_default_domain 'management_review' %}
 
 {% block title %}{{ review.title }} - {{ parent() }}{% endblock %}
@@ -22,6 +23,12 @@
         badge: { icon: 'nav-clipboard-check', label: 'management_review.title'|trans({}, 'management_review') },
         title: review.title
     }) }}
+
+    {# Lifecycle Y.5 PR-A — status + transition dropdown #}
+    <div class="d-flex align-items-center gap-2 mb-3" data-testid="lifecycle-toolbar">
+        <span class="badge bg-info">{{ ('management_review.status.' ~ review.status)|trans({}, 'management_review') }}</span>
+        {{ _lifecycle_actions.dropdown(review, 'management-review', 'management_review_lifecycle') }}
+    </div>
 
     <div class="row">
         <div class="col-lg-8">

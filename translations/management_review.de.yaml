@@ -145,6 +145,7 @@ management_review:
         framework_compliance_status: '[{"framework":"ISO 27001:2022","status":"konform","letzte_prüfung":"2025-01-15"},{"framework":"NIS2","status":"in Umsetzung","offene_punkte":3}]'
         action_items_with_deadlines: '[{"action":"Risikobewertung aktualisieren","owner":"CISO","deadline":"2025-06-30","status":"open"}]'
     help:
+        status_lifecycle: 'Status wird über die Lebenszyklus-Aktionen oben rechts geändert (ISO 27001 Cl. 9.3).'
         reviewed_by: 'Üblicherweise ein Mitglied des Top-Managements'
         reviewed_by_person: 'Person ohne System-Login als Reviewer. Reihenfolge: User > Person > leer.'
         reviewed_by_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
