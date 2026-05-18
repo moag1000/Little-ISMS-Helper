@@ -10,6 +10,7 @@ use App\Entity\Incident;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Document;
 use App\Entity\Risk;
+use App\Enum\RiskTreatmentPlanStatus;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -96,7 +97,7 @@ class WorkflowAutoTriggerService
         $results = [];
 
         // Only trigger approval workflow for new plans in 'planned' status
-        if ($riskTreatmentPlan->getStatus() === 'planned') {
+        if ($riskTreatmentPlan->getStatus() === RiskTreatmentPlanStatus::Planned->value) {
             try {
                 $approvalResult = $this->riskTreatmentPlanApprovalService->requestApproval($riskTreatmentPlan);
                 $results['approval'] = $approvalResult;
@@ -213,7 +214,7 @@ class WorkflowAutoTriggerService
 
         // RiskTreatmentPlan: trigger on creation with 'planned' status
         if ($entity instanceof RiskTreatmentPlan) {
-            return $entity->getStatus() === 'planned';
+            return $entity->getStatus() === RiskTreatmentPlanStatus::Planned->value;
         }
 
         // Document: trigger for policy/procedure documents
@@ -257,7 +258,7 @@ class WorkflowAutoTriggerService
             }
         }
 
-        if ($entity instanceof RiskTreatmentPlan && $entity->getStatus() === 'planned') {
+        if ($entity instanceof RiskTreatmentPlan && $entity->getStatus() === RiskTreatmentPlanStatus::Planned->value) {
             $workflows[] = [
                 'type' => 'treatment_plan_approval',
                 'trigger' => 'automatic',

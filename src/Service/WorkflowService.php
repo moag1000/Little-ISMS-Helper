@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
+use App\Enum\WorkflowInstanceStatus;
 use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
@@ -147,7 +148,7 @@ class WorkflowService
         $workflowInstance->setWorkflow($workflow);
         $workflowInstance->setEntityType($entityType);
         $workflowInstance->setEntityId($entityId);
-        $workflowInstance->setStatus('pending'); // @lifecycle-initial-state — seeds SM
+        $workflowInstance->setStatus(WorkflowInstanceStatus::Pending); // @lifecycle-initial-state — seeds SM
         $workflowInstance->setInitiatedBy($this->security->getUser());
 
         $this->entityManager->persist($workflowInstance);
@@ -206,7 +207,7 @@ class WorkflowService
      */
     public function approveStep(WorkflowInstance $workflowInstance, User $user, ?string $comments = null): bool
     {
-        if ($workflowInstance->getStatus() !== 'in_progress') {
+        if ($workflowInstance->getStatus() !== WorkflowInstanceStatus::InProgress->value) {
             return false;
         }
 
@@ -255,7 +256,7 @@ class WorkflowService
      */
     public function rejectStep(WorkflowInstance $workflowInstance, User $user, string $reason): bool
     {
-        if ($workflowInstance->getStatus() !== 'in_progress') {
+        if ($workflowInstance->getStatus() !== WorkflowInstanceStatus::InProgress->value) {
             return false;
         }
 
@@ -304,7 +305,7 @@ class WorkflowService
         $workflowInstance->setComments($reason);
 
         // Choose cancel vs cancel_in_progress depending on current state
-        $transitionName = $workflowInstance->getStatus() === 'pending' ? 'cancel' : 'cancel_in_progress';
+        $transitionName = $workflowInstance->getStatus() === WorkflowInstanceStatus::Pending->value ? 'cancel' : 'cancel_in_progress';
 
         // Transition → cancelled via Symfony state-machine (includes flush)
         $this->lifecycleService->transition(
@@ -537,7 +538,7 @@ class WorkflowService
     public function getPendingApprovals(User $user): array
     {
         $tenant = $user->getTenant();
-        $criteria = ['status' => 'in_progress'];
+        $criteria = ['status' => WorkflowInstanceStatus::InProgress->value];
         if ($tenant !== null) {
             $criteria['tenant'] = $tenant;
         }

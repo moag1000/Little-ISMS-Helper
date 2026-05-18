@@ -12,6 +12,8 @@ use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Enum\InternalAuditStatus;
 use App\Enum\RiskStatus;
+use App\Enum\RiskTreatmentPlanStatus;
+use App\Enum\TrainingStatus;
 use App\Repository\AssetRepository;
 use App\Repository\BCExerciseRepository;
 use App\Repository\BusinessContinuityPlanRepository;
@@ -833,7 +835,7 @@ class DashboardStatisticsService
         $oldestOverdueDays = 0;
         if ($tenant !== null && $this->treatmentPlanRepository !== null) {
             foreach ($this->treatmentPlanRepository->findAll() as $plan) {
-                if ($plan->getStatus() === 'completed') {
+                if ($plan->getStatus() === RiskTreatmentPlanStatus::Completed->value) {
                     continue;
                 }
                 $days = $plan->getDaysOverdue();
@@ -881,7 +883,7 @@ class DashboardStatisticsService
             if ($this->treatmentPlanRepository !== null) {
                 foreach ($this->treatmentPlanRepository->findAll() as $plan) {
                     $due = $plan->getTargetCompletionDate();
-                    if ($due === null || $plan->getStatus() === 'completed') { continue; }
+                    if ($due === null || $plan->getStatus() === RiskTreatmentPlanStatus::Completed->value) { continue; }
                     if ($due < $now) { $overdue++; } elseif ($due <= $horizon) { $upcoming++; }
                 }
             }
@@ -1169,7 +1171,7 @@ class DashboardStatisticsService
         $overdueTreatments = 0;
         if ($this->treatmentPlanRepository !== null) {
             $allPlans = $this->treatmentPlanRepository->findAll();
-            $overdueTreatments = count(array_filter($allPlans, fn($p): bool => $p->getTargetCompletionDate() !== null && $p->getTargetCompletionDate() < new \DateTime() && $p->getStatus() !== 'completed'
+            $overdueTreatments = count(array_filter($allPlans, fn($p): bool => $p->getTargetCompletionDate() !== null && $p->getTargetCompletionDate() < new \DateTime() && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value
             ));
         }
 
@@ -1439,10 +1441,10 @@ class DashboardStatisticsService
         }
 
         $allTrainings = $this->trainingRepository->findAll();
-        $completedTrainings = array_filter($allTrainings, fn($t): bool => $t->getStatus() === 'completed');
+        $completedTrainings = array_filter($allTrainings, fn($t): bool => $t->getStatus() === TrainingStatus::Completed->value);
         $overdueTrainings = array_filter(
             $allTrainings,
-            fn($t): bool => $t->getScheduledDate() !== null && $t->getScheduledDate() < new \DateTime() && $t->getStatus() !== 'completed'
+            fn($t): bool => $t->getScheduledDate() !== null && $t->getScheduledDate() < new \DateTime() && $t->getStatus() !== TrainingStatus::Completed->value
         );
 
         $completionRate = count($allTrainings) > 0

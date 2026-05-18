@@ -8,6 +8,7 @@ use RuntimeException;
 use DateTimeImmutable;
 use App\Entity\DataSubjectRequest;
 use App\Entity\Tenant;
+use App\Enum\DataSubjectRequestStatus;
 use App\Exception\Tenant\TenantOrphanException;
 use App\Exception\Workflow\InvalidStatusTransitionException;
 use App\Lifecycle\LifecycleTransitionInterface;
@@ -147,7 +148,7 @@ final class DataSubjectRequestService
      */
     public function complete(DataSubjectRequest $request, string $responseDescription): void
     {
-        if (in_array($request->getStatus(), ['completed', 'rejected'], true)) {
+        if (in_array($request->getStatus(), [DataSubjectRequestStatus::Completed->value, DataSubjectRequestStatus::Rejected->value], true)) {
             throw new RuntimeException('Request is already in a terminal state');
         }
 
@@ -180,7 +181,7 @@ final class DataSubjectRequestService
      */
     public function reject(DataSubjectRequest $request, string $reason): void
     {
-        if (in_array($request->getStatus(), ['completed', 'rejected'], true)) {
+        if (in_array($request->getStatus(), [DataSubjectRequestStatus::Completed->value, DataSubjectRequestStatus::Rejected->value], true)) {
             throw new RuntimeException('Request is already in a terminal state');
         }
 
@@ -211,7 +212,7 @@ final class DataSubjectRequestService
      */
     public function extend(DataSubjectRequest $request, string $reason): void
     {
-        if (in_array($request->getStatus(), ['completed', 'rejected'], true)) {
+        if (in_array($request->getStatus(), [DataSubjectRequestStatus::Completed->value, DataSubjectRequestStatus::Rejected->value], true)) {
             throw new InvalidStatusTransitionException(
                 (string) $request->getStatus(),
                 'extended',

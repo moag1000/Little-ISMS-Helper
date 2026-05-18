@@ -10,6 +10,7 @@ use App\Entity\SoaSnapshot;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
+use App\Enum\WorkflowInstanceStatus;
 use App\Repository\ControlRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\SoaSnapshotRepository;
@@ -397,7 +398,7 @@ final class SoaSnapshotService
             if (!$instance instanceof WorkflowInstance) {
                 continue;
             }
-            if ($instance->getStatus() !== 'approved') {
+            if ($instance->getStatus() !== WorkflowInstanceStatus::Approved->value) {
                 continue;
             }
             $completedAt = $instance->getCompletedAt();

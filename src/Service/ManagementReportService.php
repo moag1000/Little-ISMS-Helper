@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Enum\BusinessContinuityPlanStatus;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
-use App\Enum\InternalAuditStatus;
+use App\Enum\RiskTreatmentPlanStatus;
 use DateTime;
 use DateTimeImmutable;
 use App\Entity\Risk;
@@ -137,7 +136,7 @@ final class ManagementReportService
             ],
             'audit_summary' => [
                 'total_audits' => $this->auditRepository->count([]),
-                'completed_this_year' => count($this->auditRepository->findBy(['status' => InternalAuditStatus::Completed->value])),
+                'completed_this_year' => count($this->auditRepository->findBy(['status' => 'completed'])),
             ],
             'training_summary' => [
                 'total_trainings' => $this->trainingRepository->count([]),
@@ -204,8 +203,8 @@ final class ManagementReportService
 
         // Treatment plan summary
         $treatmentPlans = $this->riskTreatmentPlanRepository->findAll();
-        $activePlans = array_filter($treatmentPlans, fn($p): bool => $p->getStatus() === 'in_progress');
-        $overduePlans = array_filter($treatmentPlans, fn($p): bool => $p->getTargetDate() !== null && $p->getTargetDate() < new DateTime() && $p->getStatus() !== 'completed');
+        $activePlans = array_filter($treatmentPlans, fn($p): bool => $p->getStatus() === RiskTreatmentPlanStatus::InProgress->value);
+        $overduePlans = array_filter($treatmentPlans, fn($p): bool => $p->getTargetDate() !== null && $p->getTargetDate() < new DateTime() && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value);
 
         return [
             'generated_at' => new DateTime(),
@@ -450,7 +449,7 @@ final class ManagementReportService
         ];
 
         foreach ($audits as $audit) {
-            $status = $audit->getStatus() ?? InternalAuditStatus::Planned->value;
+            $status = $audit->getStatus() ?? 'planned';
             if (isset($byStatus[$status])) {
                 $byStatus[$status][] = $audit;
             }
@@ -819,8 +818,8 @@ final class ManagementReportService
 
         // Treatment plan data
         $treatmentPlans = $this->riskTreatmentPlanRepository->findAll();
-        $activePlans = array_filter($treatmentPlans, fn($p): bool => $p->getStatus() === 'in_progress');
-        $overduePlans = array_filter($treatmentPlans, fn($p): bool => $p->getTargetDate() !== null && $p->getTargetDate() < new DateTime() && $p->getStatus() !== 'completed');
+        $activePlans = array_filter($treatmentPlans, fn($p): bool => $p->getStatus() === RiskTreatmentPlanStatus::InProgress->value);
+        $overduePlans = array_filter($treatmentPlans, fn($p): bool => $p->getTargetDate() !== null && $p->getTargetDate() < new DateTime() && $p->getStatus() !== RiskTreatmentPlanStatus::Completed->value);
 
         return [
             'generated_at' => new DateTime(),

@@ -9,6 +9,7 @@ use Exception;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
 use App\Entity\Document;
+use App\Enum\WorkflowInstanceStatus;
 use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -90,7 +91,7 @@ class DocumentApprovalService
             $document->getId()
         );
 
-        if ($existingWorkflow instanceof WorkflowInstance && in_array($existingWorkflow->getStatus(), ['pending', 'in_progress'])) {
+        if ($existingWorkflow instanceof WorkflowInstance && in_array($existingWorkflow->getStatus(), [WorkflowInstanceStatus::Pending->value, WorkflowInstanceStatus::InProgress->value])) {
             $this->logger->info('Active workflow already exists for document', [
                 'document_id' => $document->getId(),
                 'workflow_id' => $existingWorkflow->getId(),

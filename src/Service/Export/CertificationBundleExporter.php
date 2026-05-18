@@ -9,6 +9,7 @@ use App\Entity\SoaSnapshot;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
+use App\Enum\WorkflowInstanceStatus;
 use App\Repository\AssetRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
@@ -1218,7 +1219,7 @@ final class CertificationBundleExporter
                     if (!$instance instanceof WorkflowInstance) {
                         continue;
                     }
-                    if ($instance->getStatus() !== 'approved') {
+                    if ($instance->getStatus() !== WorkflowInstanceStatus::Approved->value) {
                         continue;
                     }
                     if ($best === null || ($instance->getCompletedAt() !== null

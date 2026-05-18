@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
+use App\Enum\WorkflowInstanceStatus;
 use App\Repository\EntityTagRepository;
 use App\Repository\UserRepository;
 use App\Repository\WorkflowRepository;
@@ -121,7 +122,7 @@ final class ApprovalKickoffService
         $instance->setEntityId((int) $document->getId());
         $instance->setInitiatedBy($initiator);
         $instance->setStartedAt(new DateTimeImmutable());
-        $instance->setStatus('in_progress');
+        $instance->setStatus(WorkflowInstanceStatus::InProgress);
         $instance->setTenant($document->getTenant());
 
         // §9.1: instance enters at `prepared` (auto), then immediately

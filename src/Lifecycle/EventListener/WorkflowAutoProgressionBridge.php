@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Lifecycle\EventListener;
 
 use App\Entity\WorkflowInstance;
+use App\Enum\WorkflowInstanceStatus;
 use App\Lifecycle\LifecycleTransitionInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
@@ -47,7 +48,7 @@ final class WorkflowAutoProgressionBridge
             return;
         }
 
-        if ($entity->getStatus() !== 'approved') {
+        if ($entity->getStatus() !== WorkflowInstanceStatus::Approved->value) {
             return;
         }
 
