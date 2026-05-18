@@ -45,6 +45,7 @@
                                 {% trans_default_domain 'admin' %}
                                 <tr>
                                     <th class="fa-table__th">{{ 'admin.lifecycle_overrides.col.transition'|trans }}</th>
+                                    <th class="fa-table__th">{{ 'admin.lifecycle_overrides.col.description'|trans }}</th>
                                     <th class="fa-table__th">{{ 'admin.lifecycle_overrides.col.overridden_keys'|trans }}</th>
                                     <th class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                                 </tr>
@@ -53,9 +54,19 @@
                                 {% trans_default_domain 'admin' %}
                                 {% for transition in transitions %}
                                     {% set tOverrides = overrideMap[transition] ?? {} %}
+                                    {% set t_desc_key = 'lifecycle.transition_desc.' ~ workflowName ~ '.' ~ transition %}
+                                    {% set t_desc = t_desc_key|trans({}, 'lifecycle') %}
+                                    {% if t_desc == t_desc_key %}
+                                        {% set t_gen_key = 'lifecycle.transition_desc._generic.' ~ transition %}
+                                        {% set t_gen = t_gen_key|trans({}, 'lifecycle') %}
+                                        {% set t_desc = t_gen != t_gen_key ? t_gen : null %}
+                                    {% endif %}
                                     <tr class="fa-table__row">
                                         <td class="fa-table__cell">
                                             <code class="text-body">{{ transition }}</code>
+                                        </td>
+                                        <td class="fa-table__cell fa-table__cell--muted small">
+                                            {{ t_desc ?? '—' }}
                                         </td>
                                         <td class="fa-table__cell">
                                             {% if tOverrides is not empty %}

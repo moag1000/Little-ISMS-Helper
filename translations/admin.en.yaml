@@ -1099,6 +1099,7 @@ admin:
             help: 'Help'
         col:
             workflow: 'Workflow'
+            description: 'Description'
             overrides: 'Active Overrides'
             transition: 'Transition'
             overridden_keys: 'Overridden Keys'

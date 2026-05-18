@@ -1,4 +1,83 @@
 lifecycle:
+    # Workflow descriptions — shown in /admin/lifecycle-overrides tables
+    workflow_desc:
+        asset_lifecycle: 'Asset-Lebenszyklus von der Inbetriebnahme bis Außerdienststellung. 4-Augen-Prinzip bei Disposal.'
+        audit_finding_lifecycle: 'Audit-Befund-Bearbeitung (open → in_progress → resolved → verified → closed).'
+        consent_lifecycle: 'GDPR-Consent-Lebenszyklus (pending_verification → active → withdrawn → expired).'
+        corrective_action_lifecycle: 'CAPA-Maßnahmen-Status (planned → in_progress → implemented → verified → closed).'
+        data_breach_lifecycle: 'Datenschutzvorfall nach GDPR Art. 33/34 (reported → under_assessment → notified → resolved).'
+        data_subject_request_lifecycle: 'DSGVO-Betroffenenrechte-Antrag (pending → identity_verified → in_progress → completed/rejected).'
+        document_lifecycle: 'Dokumenten-Lebenszyklus (draft → in_review → approved → published → archived). Kanonisches 5-Stage-Pattern.'
+        dpia_lifecycle: 'Datenschutz-Folgenabschätzung (draft → in_review → approved/requires_revision → published).'
+        incident_lifecycle: 'Sicherheitsvorfall nach ISO 27001 (reported → triaged → investigating → contained → resolved → closed).'
+        internal_audit_lifecycle: 'Internes Audit (planned → in_progress/conducted → reported → approved → closed).'
+        isms_objective_lifecycle: 'ISMS-Ziel nach ISO 27001 Kl. 6.2 (planned → in_progress → achieved/delayed/cancelled).'
+        policy_template_lifecycle: 'Policy-Vorlagen-Lebenszyklus mit isActive-Sync auf publish/archive.'
+        processing_activity_lifecycle: 'Verarbeitungstätigkeit nach GDPR Art. 30 — gated durch privacy-Modul.'
+        risk_lifecycle: 'Risiko nach ISO 27005 (identified → assessed → treated → accepted → reviewed → closed).'
+        vulnerability_lifecycle: 'Schwachstellen (discovered → triaged → in_remediation → resolved → verified).'
+        workflow_instance_lifecycle: 'Workflow-Instanz-Approval-Chain (pending → in_progress → approved/rejected/cancelled).'
+
+    # Status/place descriptions
+    status_desc:
+        draft: 'Entwurf — in Bearbeitung, noch nicht zur Prüfung freigegeben.'
+        in_review: 'In Prüfung — wartet auf Reviewer-Entscheidung.'
+        approved: 'Genehmigt — bereit zur Publikation, noch nicht aktiv.'
+        published: 'Veröffentlicht — aktiv und tenant-weit sichtbar.'
+        archived: 'Archiviert — inaktiv, lesbar für Audit-Zwecke.'
+        active: 'Aktiv — in Nutzung.'
+        inactive: 'Inaktiv — pausiert, reaktivierbar.'
+        pending: 'Ausstehend — wartet auf Aktion oder Verifikation.'
+        cancelled: 'Abgebrochen — terminal, kein Folgeschritt.'
+        rejected: 'Abgelehnt — zurück zu Draft oder Überarbeitung.'
+        accepted: 'Akzeptiert — Risiko/Maßnahme bestätigt, kein Treatment nötig.'
+        requires_revision: 'Überarbeitung erforderlich — Reviewer hat Mängel festgestellt.'
+        planned: 'Geplant — Termin festgelegt, noch nicht begonnen.'
+        completed: 'Abgeschlossen — Maßnahme/Aufgabe vollendet.'
+        verified: 'Verifiziert — durch zweiten Reviewer bestätigt.'
+        in_use: 'In Nutzung — Asset aktiv beim Endnutzer.'
+        returned: 'Zurückgegeben — Asset im Lager, nicht in Nutzung.'
+        retired: 'Außer Dienst — Asset ausgemustert.'
+        disposed: 'Entsorgt — Asset aus Bestand entfernt.'
+        identified: 'Identifiziert — Risiko erkannt, nicht bewertet.'
+        assessed: 'Bewertet — Wahrscheinlichkeit + Auswirkung erfasst.'
+        treated: 'Behandelt — Risikobehandlungsplan umgesetzt.'
+        reported: 'Gemeldet — initialer Meldungseingang.'
+        triaged: 'Triaged — Schweregrad eingestuft.'
+        investigating: 'Untersuchung — Root-Cause-Analyse läuft.'
+        contained: 'Eingedämmt — Schaden begrenzt.'
+        resolved: 'Behoben — wieder normal.'
+        closed: 'Geschlossen — terminal, Lessons-Learned dokumentiert.'
+        identity_verified: 'Identität verifiziert nach GDPR Art. 12 (6).'
+        pending_verification: 'Verifikation ausstehend — DPO muss prüfen.'
+        withdrawn: 'Widerrufen — Einwilligung zurückgezogen.'
+        expired: 'Abgelaufen — Aufbewahrungsfrist überschritten.'
+        discovered: 'Entdeckt — neu, nicht priorisiert.'
+        in_remediation: 'In Behebung — Patch/Mitigation läuft.'
+        achieved: 'Erreicht — Ziel erfüllt.'
+        delayed: 'Verzögert — Termin überschritten.'
+
+    # Transition descriptions — per-workflow + generic fallback
+    transition_desc:
+        document_lifecycle:
+            submit_for_review: 'Entwurf zur Überprüfung einreichen — verlangt Vollständigkeit.'
+            approve: 'Reviewer genehmigt — bereit zur Publikation. 4-Augen-Prinzip empfohlen.'
+            reject: 'Reviewer lehnt ab — zurück zu Draft. Begründung erforderlich.'
+            publish: 'Veröffentlichen — tenant-weit aktiv und sichtbar.'
+            archive: 'Archivieren — inaktiv, bleibt lesbar.'
+            republish: 'Archivierte Version wieder veröffentlichen.'
+        asset_lifecycle:
+            commission: 'In Betrieb nehmen — Asset aktiv genutzt.'
+            return: 'Zurückgeben — temporär nicht in Nutzung.'
+            retire: 'Außerdienststellen — Asset ausgemustert.'
+            dispose: 'Entsorgen — finaler Schritt, 4-Augen erforderlich.'
+        _generic:
+            submit: 'Einreichen — Status nach vorne.'
+            approve: 'Genehmigen — Freigabe erteilen.'
+            reject: 'Ablehnen — zurück zu vorherigem Status.'
+            cancel: 'Abbrechen — Workflow stoppen.'
+            archive: 'Archivieren — Status auf inaktiv setzen.'
+
     # Standard 5-stage flow (CLAUDE.md canonical matrix)
     draft: Entwurf
     in_review: 'In Prüfung'
