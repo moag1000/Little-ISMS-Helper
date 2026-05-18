@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Enum\BusinessContinuityPlanStatus;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
+use App\Enum\InternalAuditStatus;
 use DateTime;
 use DateTimeImmutable;
 use App\Entity\Risk;
@@ -135,7 +137,7 @@ final class ManagementReportService
             ],
             'audit_summary' => [
                 'total_audits' => $this->auditRepository->count([]),
-                'completed_this_year' => count($this->auditRepository->findBy(['status' => 'completed'])),
+                'completed_this_year' => count($this->auditRepository->findBy(['status' => InternalAuditStatus::Completed->value])),
             ],
             'training_summary' => [
                 'total_trainings' => $this->trainingRepository->count([]),
@@ -448,7 +450,7 @@ final class ManagementReportService
         ];
 
         foreach ($audits as $audit) {
-            $status = $audit->getStatus() ?? 'planned';
+            $status = $audit->getStatus() ?? InternalAuditStatus::Planned->value;
             if (isset($byStatus[$status])) {
                 $byStatus[$status][] = $audit;
             }

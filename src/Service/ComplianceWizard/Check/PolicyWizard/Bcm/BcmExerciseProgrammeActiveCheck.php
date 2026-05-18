@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\ComplianceWizard\Check\PolicyWizard\Bcm;
 
 use App\Entity\Tenant;
+use App\Enum\BCExerciseStatus;
 use App\Repository\BCExerciseRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
@@ -82,10 +83,10 @@ final class BcmExerciseProgrammeActiveCheck implements PolicyWizardCheckInterfac
             if ($date === null) {
                 continue;
             }
-            if ($date <= $now && $status === 'completed') {
+            if ($date <= $now && $status === BCExerciseStatus::Completed->value) {
                 $completedRecent++;
             }
-            if ($date >= $now && in_array($status, ['planned', 'in_progress'], true)) {
+            if ($date >= $now && in_array($status, [BCExerciseStatus::Planned->value, BCExerciseStatus::InProgress->value], true)) {
                 $planned++;
             }
         }

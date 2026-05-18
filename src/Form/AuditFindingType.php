@@ -10,6 +10,7 @@ use App\Entity\Control;
 use App\Entity\InternalAudit;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Enum\AuditFindingStatus;
 use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -80,11 +81,11 @@ final class AuditFindingType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'label' => 'audit_finding.field.status',
                 'choices' => [
-                    'audit_finding.status.open' => AuditFinding::STATUS_OPEN,
-                    'audit_finding.status.in_progress' => AuditFinding::STATUS_IN_PROGRESS,
-                    'audit_finding.status.resolved' => AuditFinding::STATUS_RESOLVED,
-                    'audit_finding.status.verified' => AuditFinding::STATUS_VERIFIED,
-                    'audit_finding.status.closed' => AuditFinding::STATUS_CLOSED,
+                    'audit_finding.status.open' => AuditFindingStatus::Open->value,
+                    'audit_finding.status.in_progress' => AuditFindingStatus::InProgress->value,
+                    'audit_finding.status.resolved' => AuditFindingStatus::Resolved->value,
+                    'audit_finding.status.verified' => AuditFindingStatus::Verified->value,
+                    'audit_finding.status.closed' => AuditFindingStatus::Closed->value,
                 ],
                 'choice_translation_domain' => 'audits',
                 'required' => true,

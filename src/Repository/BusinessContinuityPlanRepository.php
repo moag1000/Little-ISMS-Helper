@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use DateTime;
 use App\Entity\BusinessContinuityPlan;
+use App\Enum\BusinessContinuityPlanStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -27,7 +28,7 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->where('p.nextTestDate < :now OR (p.lastTested IS NULL AND p.status = :active)')
             ->setParameter('now', new DateTime())
-            ->setParameter('active', 'active')
+            ->setParameter('active', BusinessContinuityPlanStatus::Active->value)
             ->orderBy('p.nextTestDate', 'ASC')
             ->getQuery()
             ->getResult();
@@ -53,7 +54,7 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.status = :active')
-            ->setParameter('active', 'active')
+            ->setParameter('active', BusinessContinuityPlanStatus::Active->value)
             ->getQuery()
             ->getResult();
     }
@@ -71,7 +72,7 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
         $active = $this->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->where('p.status = :active')
-            ->setParameter('active', 'active')
+            ->setParameter('active', BusinessContinuityPlanStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -79,7 +80,7 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
             ->select('COUNT(p.id)')
             ->where('p.nextTestDate < :now OR (p.lastTested IS NULL AND p.status = :active)')
             ->setParameter('now', new DateTime())
-            ->setParameter('active', 'active')
+            ->setParameter('active', BusinessContinuityPlanStatus::Active->value)
             ->getQuery()
             ->getSingleScalarResult();
 

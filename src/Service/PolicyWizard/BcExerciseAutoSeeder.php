@@ -7,6 +7,7 @@ namespace App\Service\PolicyWizard;
 use App\Entity\BCExercise;
 use App\Entity\Tenant;
 use App\Entity\WizardRun;
+use App\Enum\BCExerciseStatus;
 use App\Service\AuditLogger;
 use DateInterval;
 use DateTime;
@@ -189,7 +190,7 @@ final class BcExerciseAutoSeeder
         $exercise->setExerciseDate(DateTime::createFromImmutable($plannedDate));
         $exercise->setParticipants('TBD — Crisis Team + BCM Officer + Process Owners.');
         $exercise->setFacilitator('BCM Officer');
-        $exercise->setStatus('planned');
+        $exercise->setStatus(BCExerciseStatus::Planned);
         $exercise->setReportCompleted(false);
 
         return $exercise;

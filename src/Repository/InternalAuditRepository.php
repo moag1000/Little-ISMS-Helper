@@ -7,6 +7,7 @@ namespace App\Repository;
 use DateTime;
 use App\Entity\Tenant;
 use App\Entity\InternalAudit;
+use App\Enum\InternalAuditStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,7 +40,7 @@ class InternalAuditRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->where('a.status = :status')
             ->andWhere('a.plannedDate >= :today')
-            ->setParameter('status', 'planned')
+            ->setParameter('status', InternalAuditStatus::Planned->value)
             ->setParameter('today', new DateTime())
             ->orderBy('a.plannedDate', 'ASC')
             ->getQuery()

@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
+use App\Enum\InternalAuditStatus;
 use App\Repository\AssetRepository;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\BusinessProcessRepository;
@@ -1062,7 +1063,7 @@ final class ComplianceWizardService
         $openCriticalFindings = [];
 
         foreach ($audits as $audit) {
-            if ($audit->getStatus() === 'completed') {
+            if ($audit->getStatus() === InternalAuditStatus::Completed->value) {
                 $completed++;
             }
 

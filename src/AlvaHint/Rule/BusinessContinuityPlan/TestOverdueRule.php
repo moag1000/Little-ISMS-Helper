@@ -8,6 +8,7 @@ use App\AlvaHint\AbstractAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\User;
+use App\Enum\BusinessContinuityPlanStatus;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -38,7 +39,7 @@ final class TestOverdueRule extends AbstractAlvaHintRule
         if (!$entity instanceof BusinessContinuityPlan) {
             return false;
         }
-        if ($entity->getStatus() !== 'active') {
+        if ($entity->getStatus() !== BusinessContinuityPlanStatus::Active->value) {
             return false;
         }
 

@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\ComplianceFramework;
 use App\Entity\InternalAudit;
 use App\Entity\Tenant;
+use App\Enum\InternalAuditStatus;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -121,7 +122,7 @@ final class InternalAuditCloner
 
         $clone->setPlannedDate($plannedDate ?? $source->getPlannedDate() ?? new DateTimeImmutable());
         if (method_exists($clone, 'setStatus')) {
-            $clone->setStatus('planned'); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist InternalAudit clone; 'planned' is the internal_audit_lifecycle initial_marking)
+            $clone->setStatus(InternalAuditStatus::Planned); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist InternalAudit clone; 'planned' is the internal_audit_lifecycle initial_marking)
         }
 
         $this->entityManager->persist($clone);

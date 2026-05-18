@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use DateTime;
 use DateTimeInterface;
 use App\Entity\ISMSObjective;
+use App\Enum\ISMSObjectiveStatus;
 use App\Lifecycle\LifecycleService;
 use App\Repository\ISMSObjectiveRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,7 +40,7 @@ final class ISMSObjectiveService
         $ismsObjective->setUpdatedAt(new DateTimeImmutable());
 
         // Automatically set achieved date when status changes to achieved
-        if ($ismsObjective->getStatus() === 'achieved' && !$ismsObjective->getAchievedDate()) {
+        if ($ismsObjective->getStatus() === ISMSObjectiveStatus::Achieved->value && !$ismsObjective->getAchievedDate()) {
             $ismsObjective->setAchievedDate(new DateTime());
         }
 
@@ -66,8 +67,8 @@ final class ISMSObjectiveService
         return [
             'total' => count($objectives),
             'active' => count($active),
-            'achieved' => count($this->ismsObjectiveRepository->findBy(['status' => 'achieved'])),
-            'delayed' => count(array_filter($objectives, fn(ISMSObjective $obj): bool => $obj->getStatus() === 'in_progress' &&
+            'achieved' => count($this->ismsObjectiveRepository->findBy(['status' => ISMSObjectiveStatus::Achieved->value])),
+            'delayed' => count(array_filter($objectives, fn(ISMSObjective $obj): bool => $obj->getStatus() === ISMSObjectiveStatus::InProgress->value &&
                    $obj->getTargetDate() < new DateTime() &&
                    !$obj->getAchievedDate())),
             'at_risk' => $this->countAtRiskObjectives($objectives),
@@ -81,7 +82,7 @@ final class ISMSObjectiveService
     {
         $thirtyDaysFromNow = new DateTime()->modify('+30 days');
 
-        return count(array_filter($objectives, fn($obj): bool => $obj->getStatus() === 'in_progress' &&
+        return count(array_filter($objectives, fn($obj): bool => $obj->getStatus() === ISMSObjectiveStatus::InProgress->value &&
                $obj->getTargetDate() <= $thirtyDaysFromNow &&
                $obj->getTargetDate() >= new DateTime()));
     }
@@ -159,7 +160,7 @@ final class ISMSObjectiveService
 
         // Check if objective is now achieved; delegate to Lifecycle X.1 if available.
         if ($ismsObjective->getTargetValue() && $currentValue >= (float)$ismsObjective->getTargetValue()) {
-            if ($this->lifecycleService !== null && $ismsObjective->getStatus() === 'in_progress') {
+            if ($this->lifecycleService !== null && $ismsObjective->getStatus() === ISMSObjectiveStatus::InProgress->value) {
                 // Lifecycle X.1: canonical `achieve` transition (in_progress → achieved).
                 $this->lifecycleService->transition(
                     $ismsObjective,
@@ -168,7 +169,7 @@ final class ISMSObjectiveService
                 );
             } else {
                 // Fallback: direct assignment (e.g. not in_progress yet, or no Workflow).
-                $ismsObjective->setStatus('achieved'); // @phpstan-ignore lifecycle.directSetStatus (fallback path when Workflow guard rejects transition; primary path uses LifecycleService above)
+                $ismsObjective->setStatus(ISMSObjectiveStatus::Achieved); // @phpstan-ignore lifecycle.directSetStatus (fallback path when Workflow guard rejects transition; primary path uses LifecycleService above)
             }
             $ismsObjective->setAchievedDate(new DateTime());
         }

@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\BusinessProcess;
 use App\Entity\Tenant;
+use App\Enum\BusinessContinuityPlanStatus;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Argument;
@@ -73,7 +74,7 @@ class SeedBcPlanTemplatesCommand
             $plan->setDescription($data['description']);
             $plan->setPlanOwner($data['plan_owner']);
             $plan->setBcTeam($data['bc_team']);
-            $plan->setStatus('draft');
+            $plan->setStatus(BusinessContinuityPlanStatus::Draft);
             $plan->setActivationCriteria($data['activation_criteria']);
             $plan->setRolesAndResponsibilities($data['roles']);
             $plan->setRecoveryProcedures($data['recovery']);

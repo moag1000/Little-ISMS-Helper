@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\AuditFinding;
 use App\Entity\Tenant;
+use App\Enum\AuditFindingStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,7 +27,7 @@ class AuditFindingRepository extends ServiceEntityRepository
             ->andWhere('f.tenant = :tenant')
             ->andWhere('f.status NOT IN (:closed)')
             ->setParameter('tenant', $tenant)
-            ->setParameter('closed', [AuditFinding::STATUS_CLOSED, AuditFinding::STATUS_VERIFIED])
+            ->setParameter('closed', [AuditFindingStatus::Closed->value, AuditFindingStatus::Verified->value])
             ->orderBy('f.severity', 'ASC')
             ->addOrderBy('f.createdAt', 'DESC')
             ->getQuery()
@@ -43,7 +44,7 @@ class AuditFindingRepository extends ServiceEntityRepository
             ->andWhere('f.status NOT IN (:closed)')
             ->setParameter('tenant', $tenant)
             ->setParameter('now', new \DateTimeImmutable())
-            ->setParameter('closed', [AuditFinding::STATUS_CLOSED, AuditFinding::STATUS_VERIFIED, AuditFinding::STATUS_RESOLVED])
+            ->setParameter('closed', [AuditFindingStatus::Closed->value, AuditFindingStatus::Verified->value, AuditFindingStatus::Resolved->value])
             ->getQuery()
             ->getResult();
     }

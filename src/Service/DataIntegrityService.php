@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Notification\NotificationTemplate;
 use App\Entity\Tenant;
 use App\Enum\IncidentStatus;
+use App\Enum\InternalAuditStatus;
 use App\Enum\TreatmentStrategy;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AssetRepository;
@@ -499,7 +500,7 @@ final class DataIntegrityService
         // Audits with completed status but no actual completion date
         $audits = $this->auditRepository->findAll();
         foreach ($audits as $audit) {
-            if (in_array($audit->getStatus(), ['completed', 'reported']) && !$audit->getActualDate()) {
+            if (in_array($audit->getStatus(), [InternalAuditStatus::Completed->value, InternalAuditStatus::Reported->value]) && !$audit->getActualDate()) {
                 $inconsistent['audits_completed_without_date'][] = $audit;
             }
         }
