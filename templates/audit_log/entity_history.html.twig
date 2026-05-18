@@ -1,5 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'audit_log' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_audit_row.html.twig' as _fa_audit_row %}
 
 {% block admin_title %}{{ 'entity_history.title'|trans({}, 'messages') }}{% endblock %}
 {% block admin_subtitle %}
@@ -24,36 +26,32 @@
 <div class="mt-4">
     <h2>{{ 'entity_history.section'|trans({}, 'messages') }}</h2>
 
-    {# Aurora ISMS-Trail Timeline (per docs/design_system/sections/isms-patterns.html § Audit-Trail) #}
-    <div class="isms-trail mt-4">
+    {# Aurora fa-audit-feed (CRUD change-log per #480 canonical pattern) #}
+    <div class="fa-audit-feed mt-4">
         {% for log in auditLogs %}
-            {% set tone = log.action == 'create' ? 'success'
-                : (log.action == 'delete' ? 'danger'
-                : (log.action in ['update', 'modify', 'change'] ? 'warning' : 'neutral')) %}
-            {% set icon = log.action == 'create' ? 'fa-icon--ui-plus'
-                : (log.action == 'delete' ? 'fa-icon--ui-delete'
-                : (log.action in ['update', 'modify', 'change'] ? 'fa-icon--ui-edit'
-                : (log.action == 'login' ? 'fa-icon--ui-lock' : 'fa-icon--ui-circle'))) %}
-            <article class="isms-trail__entry">
-                <span class="isms-trail__dot isms-trail__dot--{{ tone }}" aria-hidden="true">
-                    <i class="fa-icon {{ icon }}"></i>
-                </span>
-                <div class="isms-trail__head">
-                    <span class="isms-trail__title">{{ log.action|capitalize }}</span>
-                    <span class="isms-trail__meta">{{ log.createdAt|date('d.m.Y H:i:s') }}</span>
-                </div>
-                <div class="isms-trail__body">
-                    <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}" class="isms-trail__actor">
-                        <i class="fa-icon fa-icon--nav-users" aria-hidden="true"></i>
-                        {{ log.userName }}
-                    </a>
-                    {{ log.description|default('—') }}
-                    <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
-                       class="ms-2 link-primary small">
-                        {{ 'entity_history.show_details'|trans({}, 'messages') }}
-                    </a>
-                </div>
-            </article>
+            {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'
+                : (log.action in ['error', 'failed'] ? 'danger'
+                : (log.action in ['update', 'modify', 'change', 'login_failed'] ? 'warning'
+                : 'info')) -%}
+            {{ _fa_audit_row.render({
+                ts:     log.createdAt|date('Y-m-d H:i:s'),
+                sev:    sev,
+                actor:  log.userName,
+                action: log.action,
+                target: log.entityType ~ '#' ~ log.entityId,
+                pill:   log.description|default('')|slice(0, 60),
+                hash:   log.id|default('')|slice(0, 12)
+            }) }}
+            {# Actor profile + detail navigation rendered below each row #}
+            <div class="small ps-1 pb-1 d-flex gap-3">
+                <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}" class="link-primary">
+                    <i class="fa-icon fa-icon--nav-users" aria-hidden="true"></i>
+                    {{ log.userName }}
+                </a>
+                <a href="{{ path('app_audit_log_detail', {id: log.id}) }}" class="link-primary">
+                    {{ 'entity_history.show_details'|trans({}, 'messages') }}
+                </a>
+            </div>
         {% endfor %}
     </div>
 </div>
