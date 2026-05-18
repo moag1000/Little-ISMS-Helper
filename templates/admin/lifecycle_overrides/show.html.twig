@@ -3,7 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block admin_title %}{{ 'admin.lifecycle_overrides.show.title'|trans({ '%workflow%': workflowName }) }}{% endblock %}
+{% block admin_title %}{{ 'admin.lifecycle_overrides.show.title'|trans({ '%workflow%': workflowName }, 'admin') }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item">

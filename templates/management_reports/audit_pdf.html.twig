@@ -182,7 +182,7 @@
         },
     ],
     appendix: {
-        methodology: '<p>Audit data sourced from AuditRepository. ISO 27001 Clause 9.2/9.3 compliance assessed by annual audit/review count ≥ 1.</p>',
+        methodology: 'management_reports.audit.methodology'|trans({}, 'management_reports'),
         sources: [
             { label: 'AuditRepository', detail: 'findByTenant() — all audits' },
             { label: 'ManagementReviewRepository', detail: 'findByTenant() — current year' },

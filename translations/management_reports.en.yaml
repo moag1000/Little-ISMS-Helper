@@ -84,6 +84,7 @@ management_reports:
     executive:
         title: 'Executive Summary Report'
         subtitle: 'ISMS Management Dashboard'
+        methodology: '<p>Executive summary aggregates key ISMS metrics: assets, risks (by level), control implementation, and incident status. Risk score = L × I (1-25). Compliance rate = implemented / applicable controls.</p>'
         assets: 'Assets'
         risks: 'Risks'
         compliance: 'Compliance'
@@ -192,6 +193,7 @@ management_reports:
     bcm:
         title: 'BCM Report'
         full_title: 'Business Continuity Management Report'
+        methodology: '<p>BCM data sourced from BcPlanRepository, BcExerciseRepository, BusinessProcessRepository, and BIA records. ISO 22301 compliance threshold: ≥2 exercises per 12 months.</p>'
         total_plans: 'Total BC Plans'
         active_plans: 'Active Plans'
         draft_plans: 'Draft Plans'
@@ -282,6 +284,7 @@ management_reports:
     # Audit Report
     audit:
         title: 'Audit Management Report'
+        methodology: '<p>Audit data sourced from AuditRepository. ISO 27001 Clause 9.2/9.3 compliance assessed by annual audit/review count ≥ 1.</p>'
         total_audits: 'Total Audits'
         this_year: 'This Year'
         total_reviews: 'Reviews'
@@ -319,6 +322,7 @@ management_reports:
     # Assets Report
     assets:
         title: 'Asset Inventory'
+        methodology: '<p>Asset inventory sourced from AssetRepository. Classification per ISO 27001 Annex A. Showing all assets.</p>'
         total: 'Total Assets'
         by_type: 'By Type'
         by_classification: 'By Classification'
@@ -342,6 +346,7 @@ management_reports:
     gdpr:
         title: 'Data Breach Report'
         subtitle: 'GDPR / DSGVO Compliance'
+        methodology: '<p>GDPR Art. 33/34 data breach register. Notification required = risk to rights/freedoms of individuals (Art. 33 threshold). 72h deadline from breach discovery.</p>'
         total_breaches: 'Total Breaches'
         this_year: 'This Year'
         notified: 'Notified'
@@ -437,6 +442,7 @@ management_reports:
     # Management Review Output (ISO 27001 Clause 9.3)
     review_output:
         title: 'Management Review Output'
+        methodology: '<p>ISO 27001 Clause 9.3 Management Review structured output. Covers: previous review actions, internal/external changes, performance monitoring, objectives, interested parties, risks, and improvement opportunities.</p>'
         subtitle: 'ISO 27001:2022 Clause 9.3 - Management Review'
         pdf_title: 'ISO 27001 Clause 9.3 Management Review Output Report'
         generated_at: 'Generated'
@@ -489,6 +495,7 @@ management_reports:
     # Quarterly Trend Comparison
     quarterly_trend:
         title: 'Quarterly Trend Comparison'
+        methodology: '<p>Quarterly comparison uses last full quarter vs. previous quarter. Delta = current - previous. Trend direction: better/worse based on higher_is_better metric flag.</p>'
         subtitle: 'Period-over-Period ISMS Performance Analysis'
         current_quarter: 'Current Quarter'
         previous_quarter: 'Previous Quarter'
