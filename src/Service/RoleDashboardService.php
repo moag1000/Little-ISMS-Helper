@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Tenant;
 use App\Entity\WorkflowInstance;
+use App\Enum\InternalAuditStatus;
 use App\Enum\TreatmentStrategy;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
@@ -732,13 +733,13 @@ class RoleDashboardService
         $thisYear = (new \DateTime())->format('Y');
         $now = new \DateTime();
 
-        $completedThisYear = count(array_filter($audits, fn($a) => $a->getStatus() === 'completed'
+        $completedThisYear = count(array_filter($audits, fn($a) => $a->getStatus() === InternalAuditStatus::Completed->value
             && $a->getPlannedDate()?->format('Y') === $thisYear
         ));
 
         $upcoming = array_filter($audits, fn($a) => $a->getPlannedDate() !== null
             && $a->getPlannedDate() > $now
-            && $a->getStatus() !== 'completed'
+            && $a->getStatus() !== InternalAuditStatus::Completed->value
         );
 
         usort($upcoming, fn($a, $b) => $a->getPlannedDate() <=> $b->getPlannedDate());

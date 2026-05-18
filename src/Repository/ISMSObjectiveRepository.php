@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\ISMSObjective;
+use App\Enum\ISMSObjectiveStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -36,7 +37,7 @@ class ISMSObjectiveRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('o')
             ->where('o.status IN (:statuses)')
-            ->setParameter('statuses', ['in_progress', 'not_started'])
+            ->setParameter('statuses', [ISMSObjectiveStatus::InProgress->value, ISMSObjectiveStatus::NotStarted->value])
             ->orderBy('o.targetDate', 'ASC')
             ->getQuery()
             ->getResult();

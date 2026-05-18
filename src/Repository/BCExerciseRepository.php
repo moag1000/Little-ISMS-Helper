@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use DateTime;
 use App\Entity\BCExercise;
+use App\Enum\BCExerciseStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -28,7 +29,7 @@ class BCExerciseRepository extends ServiceEntityRepository
             ->where('e.exerciseDate >= :now')
             ->andWhere('e.status IN (:statuses)')
             ->setParameter('now', new DateTime())
-            ->setParameter('statuses', ['planned', 'in_progress'])
+            ->setParameter('statuses', [BCExerciseStatus::Planned->value, BCExerciseStatus::InProgress->value])
             ->orderBy('e.exerciseDate', 'ASC')
             ->getQuery()
             ->getResult();
@@ -42,7 +43,7 @@ class BCExerciseRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
             ->where('e.status = :completed')
             ->andWhere('e.reportCompleted = :false')
-            ->setParameter('completed', 'completed')
+            ->setParameter('completed', BCExerciseStatus::Completed->value)
             ->setParameter('false', false)
             ->orderBy('e.exerciseDate', 'DESC')
             ->getQuery()
@@ -62,14 +63,14 @@ class BCExerciseRepository extends ServiceEntityRepository
         $completed = $this->createQueryBuilder('e')
             ->select('COUNT(e.id)')
             ->where('e.status = :completed')
-            ->setParameter('completed', 'completed')
+            ->setParameter('completed', BCExerciseStatus::Completed->value)
             ->getQuery()
             ->getSingleScalarResult();
 
         $planned = $this->createQueryBuilder('e')
             ->select('COUNT(e.id)')
             ->where('e.status = :planned')
-            ->setParameter('planned', 'planned')
+            ->setParameter('planned', BCExerciseStatus::Planned->value)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -77,7 +78,7 @@ class BCExerciseRepository extends ServiceEntityRepository
             ->select('AVG(e.successRating)')
             ->where('e.status = :completed')
             ->andWhere('e.successRating IS NOT NULL')
-            ->setParameter('completed', 'completed')
+            ->setParameter('completed', BCExerciseStatus::Completed->value)
             ->getQuery()
             ->getSingleScalarResult();
 

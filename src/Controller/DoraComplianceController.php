@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\BCExerciseStatus;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Enum\TreatmentStrategy;
@@ -313,7 +314,7 @@ class DoraComplianceController extends AbstractController
         $allExercises = $this->bcExerciseRepository->findAll();
         $exercisesThisYear = array_filter($allExercises, fn($e) => $e->getExerciseDate() !== null && $e->getExerciseDate()->format('Y') === $thisYear
         );
-        $completedExercises = array_filter($exercisesThisYear, fn($e) => $e->getStatus() === 'completed');
+        $completedExercises = array_filter($exercisesThisYear, fn($e) => $e->getStatus() === BCExerciseStatus::Completed->value);
 
         // BC Plans coverage
         $allPlans = $this->bcPlanRepository->findAll();
