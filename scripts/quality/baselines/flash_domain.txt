@@ -28,7 +28,7 @@ src/Controller/Admin/DataRepairController.php:783
 src/Controller/Admin/DataRepairController.php:830
 src/Controller/Admin/DataRepairController.php:915
 src/Controller/Admin/DataRepairController.php:1000
-src/Controller/Admin/SampleDataController.php:159
+src/Controller/Admin/SampleDataController.php:168
 src/Controller/AdminBackupController.php:456
 src/Controller/AdminBackupController.php:464
 src/Controller/AdminBackupController.php:515
