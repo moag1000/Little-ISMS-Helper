@@ -983,5 +983,63 @@ class BackupServiceTest extends TestCase
         );
         $this->assertSame($nonSensitiveValue, $row['value']);
     }
+
+    /**
+     * Reflection-based guarantee: every entity class file under src/Entity/
+     * must be either in BackupService::PRODUCTIVE_ENTITIES or in
+     * BackupService::EXCLUDED_FROM_BACKUP. Equivalent to Gate 43 but
+     * runnable as part of the PHPUnit suite, catching regressions inside
+     * developer pre-commit cycles without needing Python.
+     *
+     * Implicit-coverage entities (AuditLog, UserSession) are accepted
+     * because BackupService backs them up via dedicated parameters.
+     */
+    #[Test]
+    public function testEveryEntityIsCoveredByBackupOrExcludedExplicitly(): void
+    {
+        $entityDir = dirname(__DIR__, 2) . '/src/Entity';
+        $this->assertDirectoryExists($entityDir);
+
+        $entityNames = [];
+        foreach (glob($entityDir . '/*.php') as $file) {
+            $entityNames[] = basename($file, '.php');
+        }
+        sort($entityNames);
+        $this->assertNotEmpty($entityNames, 'Expected non-empty entity directory.');
+
+        $reflection = new \ReflectionClass(BackupService::class);
+        $productive = (array) $reflection->getConstant('PRODUCTIVE_ENTITIES');
+        $excluded   = (array) $reflection->getConstant('EXCLUDED_FROM_BACKUP');
+
+        $this->assertNotEmpty($productive, 'PRODUCTIVE_ENTITIES constant missing/empty.');
+
+        // EXCLUDED_FROM_BACKUP is keyed by entity name => reason.
+        $excludedKeys = array_keys($excluded);
+        $implicit     = ['AuditLog', 'UserSession'];
+        $covered      = array_unique(array_merge($productive, $excludedKeys, $implicit));
+
+        $missing = array_values(array_diff($entityNames, $covered));
+        $this->assertSame(
+            [],
+            $missing,
+            sprintf(
+                "The following entities are not covered by the backup whitelist or the\n"
+                . "explicit exclude list:\n  - %s\n\n"
+                . "Fix: add each entity to BackupService::PRODUCTIVE_ENTITIES (preferred)\n"
+                . "or to BackupService::EXCLUDED_FROM_BACKUP with an inline reason string.",
+                implode("\n  - ", $missing)
+            )
+        );
+
+        // Every EXCLUDED_FROM_BACKUP entry must have a non-empty rationale.
+        foreach ($excluded as $name => $reason) {
+            $this->assertIsString($reason, "EXCLUDED_FROM_BACKUP['$name'] must map to a string reason.");
+            $this->assertNotSame(
+                '',
+                trim($reason),
+                "EXCLUDED_FROM_BACKUP['$name'] must have a non-empty rationale."
+            );
+        }
+    }
 }
 

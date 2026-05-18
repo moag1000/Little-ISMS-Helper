@@ -130,6 +130,31 @@ return 'single';
 
 `BackupService::PRODUCTIVE_ENTITIES` defines which entities are backed up and in which order. This order is also used as the basis for `RestoreService::orderEntitiesByDependency()`.
 
+### Completeness Promise (Gate 43, since 2026-05)
+
+**Every entity class file under `src/Entity/*.php` MUST be either listed in `BackupService::PRODUCTIVE_ENTITIES` or in `BackupService::EXCLUDED_FROM_BACKUP` (with an inline rationale).** This invariant is enforced by:
+
+- `scripts/quality/check_backup_entity_coverage.py` (Gate 43 in `.github/workflows/ci.yml`)
+- `tests/Quality/CheckBackupEntityCoverageTest.php` (PHPUnit smoke test)
+- A reflection-based assertion inside `tests/Service/BackupServiceTest.php`
+
+When you add a new entity in `src/Entity/`, the CI gate will fail until you have explicitly classified it. There is no "default include" or "default exclude" — the decision must be explicit, which prevents silent backup gaps.
+
+**EXCLUDED_FROM_BACKUP** (entities deliberately skipped, with reason):
+
+| Entity | Reason |
+|---|---|
+| `IndustryBaseline` | Global seeded catalogue, re-loadable via `LoadIndustryBaseline*` commands |
+| `IndustryPresetBundle` | Global seeded catalogue (no tenant_id) — wizard preset bundles |
+| `ElementaryThreat` | Global BSI threat catalogue, re-loadable via `LoadElementaryThreats` command |
+| `PortfolioSnapshot` | Derived trend-cache, re-computable from primary entities |
+| `ReuseTrendSnapshot` | Derived trend-cache, re-computable from primary entities |
+
+**Implicit-coverage** (handled outside PRODUCTIVE_ENTITIES via dedicated flags):
+
+- `AuditLog` — backed up via `$includeAuditLog` parameter
+- `UserSession` — backed up via `$includeUserSessions` parameter
+
 ### Complete Entity List (as of 2026-04-24)
 
 | Priority Group | Entity | Notes |
