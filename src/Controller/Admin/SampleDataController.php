@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Repository\SampleDataImportRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\DataImportService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -22,8 +23,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Admin UI für Beispieldaten-Import/-Entfernung.
  * Jedes Sample-Dataset lässt sich nach Import gezielt wieder entfernen,
  * ohne User-Daten zu gefährden (tracked via SampleDataImport).
+ *
+ * Authorization (Phase 4b of Role-Scope Architecture, spec
+ * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
+ *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} —
+ *    ROLE_ADMIN seeds sample data into their own tenant; SUPER_ADMIN
+ *    passes transparently. Tenant always comes from
+ *    {@see TenantContext::getCurrentTenant()} (no cross-tenant form
+ *    field exposed).
  */
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class SampleDataController extends AbstractController
 {
     public function __construct(

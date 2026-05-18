@@ -15,6 +15,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ImportSessionRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\CompliancePolicyService;
 use App\Service\FileUploadSecurityService;
 use App\Service\Import\BsiProfileXmlImporter;
@@ -42,8 +43,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * var/uploads/compliance-import/ and tracked via a session-scoped
  * preview record. Only a preview (no DB writes) is produced before the
  * explicit commit step.
+ *
+ * Authorization (Phase 4b of Role-Scope Architecture, spec
+ * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
+ *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} —
+ *    ROLE_ADMIN imports inside their own tenant tree (ImportSession is
+ *    tagged with the current tenant); ROLE_SUPER_ADMIN passes
+ *    transparently. The catalog frameworks/requirements themselves are
+ *    global, but the audit trail is tenant-scoped.
  */
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 #[Route(
     path: '/admin/import/compliance',
     name: 'admin_compliance_import_'

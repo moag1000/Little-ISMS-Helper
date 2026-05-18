@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Form\Admin\GstoolImportUploadType;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\FileUploadSecurityService;
 use App\Service\Import\GstoolXmlImporter;
 use App\Service\TenantContext;
@@ -27,8 +28,16 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * The actual parsing and persistence is delegated to GstoolXmlImporter.
  * See docs/features/GSTOOL_IMPORT.md for the supported schema and the
  * roadmap to Phase 3+ (Bausteine, Maßnahmen, Risikoanalyse).
+ *
+ * Authorization (Phase 4b of Role-Scope Architecture, spec
+ * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
+ *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} —
+ *    ROLE_ADMIN imports into their own tenant; ROLE_SUPER_ADMIN passes
+ *    transparently for any tenant.
+ *  - The actual tenant is taken from {@see TenantContext::getCurrentTenant()}
+ *    (no `tenant_id` form field exposed in the upload form).
  */
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 #[Route(
     path: '/admin/import/gstool',
     name: 'admin_gstool_import_',

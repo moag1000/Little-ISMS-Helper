@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin\Library;
 
 use App\Repository\ComplianceFrameworkRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\Library\BsiKompendiumImporter;
 use App\Service\Library\LibraryRoundtripService;
@@ -26,9 +27,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *  GET  /admin/library/export/{id}/csv   — download CSV export
  *
  * Module gate: 'compliance' module (existing — no new key needed).
- * All routes are admin-only via class-level #[IsGranted].
+ *
+ * Authorization (Phase 4b of Role-Scope Architecture, spec
+ * `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`):
+ *  - Class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} as
+ *    baseline (ROLE_ADMIN reads/imports for own tenant; SUPER_ADMIN
+ *    passes transparently).
+ *  - {@see import()} is `W global` per spec §3.1 — it writes global
+ *    library frameworks (BSI / TISAX) that are shared across tenants —
+ *    so the method-level guard is tightened to
+ *    {@see TenantScopedAdminVoter::ADMIN_GLOBAL_OP} (SUPER_ADMIN only).
  */
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 #[Route('/admin/library', name: 'admin_library_')]
 class LibraryImporterController extends AbstractController
 {
@@ -62,8 +72,12 @@ class LibraryImporterController extends AbstractController
      *
      * POST ?type=bsi   — imports bsi-it-grundschutz-2024.yaml
      * POST ?type=tisax — imports vda-isa-tisax-v6.yaml
+     *
+     * Global op: writes global ComplianceFramework rows shared across all
+     * tenants. Restricted to ROLE_SUPER_ADMIN per spec §3.1.
      */
     #[Route('/import', name: 'import', methods: ['POST'])]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
     public function import(Request $request): Response
     {
         $type = $request->query->getString('type', 'bsi');
