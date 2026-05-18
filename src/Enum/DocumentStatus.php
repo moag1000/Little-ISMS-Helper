@@ -22,6 +22,14 @@ enum DocumentStatus: string
     case Approved = 'approved';
     case Published = 'published';
     case Archived = 'archived';
+    /**
+     * Terminal soft-delete state. Reached via the `soft_delete` workflow
+     * transition (ROLE_ADMIN, reason required). Listed here so the
+     * FormType / Symfony-Workflow / Enum sources of truth stay in sync —
+     * the form widget filters this case out so users cannot pick "deleted"
+     * directly; the transition path is the only legitimate writer.
+     */
+    case Deleted = 'deleted';
 
     /**
      * Translation-key for the human-readable status label.
@@ -44,6 +52,7 @@ enum DocumentStatus: string
             self::Approved  => 'warning',
             self::Published => 'success',
             self::Archived  => 'neutral',
+            self::Deleted   => 'danger',
         };
     }
 }

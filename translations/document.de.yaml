@@ -10,6 +10,7 @@ document:
         approved: 'Freigegeben'
         published: 'Veröffentlicht'
         archived: 'Archiviert'
+        deleted: 'Gelöscht'
         superseded: 'Ersetzt'
         active: 'Aktiv (Legacy)'
     action:

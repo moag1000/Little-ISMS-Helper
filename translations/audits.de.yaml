@@ -382,6 +382,7 @@ corrective_action:
         completed: 'Umgesetzt'
         verified_effective: 'Wirksam bestätigt'
         verified_ineffective: 'Unwirksam — neue Maßnahme nötig'
+        cancelled: 'Abgebrochen'
     section:
         description: 'Beschreibung & Ursachenanalyse'
         verification: 'Wirksamkeitsbewertung'

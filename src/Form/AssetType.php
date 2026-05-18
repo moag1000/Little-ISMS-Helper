@@ -9,6 +9,7 @@ use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
+use App\Enum\AssetStatus;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
 use App\Form\Type\JsonTagsType;
@@ -16,6 +17,7 @@ use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -226,16 +228,15 @@ final class AssetType extends AbstractType
                 'widget' => 'single_text',
                 'help' => 'asset.help.return_date',
             ])
-            ->add('status', ChoiceType::class, [
+            ->add('status', EnumType::class, [
                 'label' => 'asset.field.status',
-                'choices' => [
-                    'asset.status.active' => 'active',
-                    'asset.status.inactive' => 'inactive',
-                    'asset.status.in_use' => 'in_use',
-                    'asset.status.returned' => 'returned',
-                    'asset.status.retired' => 'retired',
-                    'asset.status.disposed' => 'disposed',
-                ],
+                'class' => AssetStatus::class,
+                'choice_label' => fn(AssetStatus $s): string => 'asset.status.' . $s->value,
+                // Status is stored as VARCHAR (?string) on the entity; accept either
+                // an enum case OR its raw string value so EnumType can resolve the
+                // currently-selected option from both Doctrine hydration paths.
+                'choice_value' => fn(AssetStatus|string|null $c): ?string =>
+                    $c instanceof AssetStatus ? $c->value : $c,
                 'required' => true,
                 'help' => 'asset.help.status',
                 'choice_translation_domain' => 'asset',

@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Document;
+use App\Enum\DocumentStatus;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Repository\SystemSettingsRepository;
 use App\Service\ModuleConfigurationService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -82,18 +84,24 @@ final class DocumentType extends AbstractType
             // S3 P-4: removed legacy 'active' status — migrated to 'published' per
             // LifecycleRegistry::STANDARD_5_STAGE. Legacy `active` rows were UPDATEd
             // to 'published' by the consolidated data-migration.
-            ->add('status', ChoiceType::class, [
+            ->add('status', EnumType::class, [
                 'label' => 'document.field.status',
                 'help' => 'document.help.status',
+                'class' => DocumentStatus::class,
+                // Deleted is a terminal soft-delete state reached only via the
+                // `soft_delete` workflow transition — never user-pickable.
+                'choices' => array_filter(
+                    DocumentStatus::cases(),
+                    static fn(DocumentStatus $s): bool => $s !== DocumentStatus::Deleted,
+                ),
+                'choice_label' => fn(DocumentStatus $s): string => 'document.status.' . $s->value,
+                // Status is stored as VARCHAR (?string) on the entity; accept either
+                // an enum case OR its raw string value so EnumType can resolve the
+                // currently-selected option from both Doctrine hydration paths.
+                'choice_value' => fn(DocumentStatus|string|null $c): ?string =>
+                    $c instanceof DocumentStatus ? $c->value : $c,
                 'required' => false,
                 'placeholder' => false,
-                'choices' => [
-                    'document.status.draft'      => 'draft',
-                    'document.status.in_review'  => 'in_review',
-                    'document.status.approved'   => 'approved',
-                    'document.status.published'  => 'published',
-                    'document.status.archived'   => 'archived',
-                ],
                 'choice_translation_domain' => 'document',
             ])
             // V3 W2-Bug2 — version label + acknowledgement-requirement.
