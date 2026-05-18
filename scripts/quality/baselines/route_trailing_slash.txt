@@ -5,7 +5,7 @@ src/Controller/BusinessContinuityPlanController.php:33:/business-continuity-plan
 src/Controller/ComplianceRequirementController.php:44:/compliance/requirement/
 src/Controller/PersonController.php:31:/person/
 src/Controller/ChangeRequestController.php:28:/change-request/
-src/Controller/WorkflowController.php:67:/workflow/
+src/Controller/WorkflowController.php:66:/workflow/
 src/Controller/AuditLogController.php:55:/admin/audit-log/
 src/Controller/LocationController.php:28:/location/
 src/Controller/ModuleManagementController.php:24:/modules/
@@ -17,7 +17,7 @@ src/Controller/ReportController.php:44:/reports/
 src/Controller/BCMController.php:23:/bcm/
 src/Controller/BusinessProcessController.php:40:/bcm/business-process/
 src/Controller/AssetController.php:70:/asset/
-src/Controller/TrainingController.php:38:/training/
+src/Controller/TrainingController.php:37:/training/
 src/Controller/InterestedPartyController.php:41:/interested-party/
 src/Controller/ISMSObjectiveController.php:30:/objective/
 src/Controller/ComplianceController.php:48:/compliance/
