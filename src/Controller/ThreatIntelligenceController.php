@@ -11,8 +11,10 @@ use App\Repository\ThreatIntelligenceRepository;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -154,5 +156,50 @@ class ThreatIntelligenceController extends AbstractController
         }
 
         return $this->redirectToRoute('app_threat_intelligence_index');
+    }
+
+    #[Route('/threat-intelligence/bulk-delete', name: 'app_threat_intelligence_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $threat = $this->repository->find($id);
+                if (!$threat) {
+                    $errors[] = "ThreatIntelligence ID $id not found";
+                    continue;
+                }
+                if ($tenant && $threat->getTenant() !== $tenant) {
+                    $errors[] = "ThreatIntelligence ID $id does not belong to your organization";
+                    continue;
+                }
+                $this->entityManager->remove($threat);
+                $deleted++;
+            } catch (Exception $e) {
+                $errors[] = "Error deleting ThreatIntelligence ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        return $this->json([
+            'success' => $deleted > 0,
+            'deleted' => $deleted,
+            'errors' => $errors,
+            'message' => "$deleted threat intelligence items deleted successfully",
+        ]);
     }
 }

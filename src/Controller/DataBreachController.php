@@ -18,7 +18,10 @@ use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\RoleDashboardService;
 use App\Service\TenantContext;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -37,6 +40,7 @@ class DataBreachController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly Security $security,
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?IncidentRepository $incidentRepository = null,
         private readonly ?RoleDashboardService $roleDashboardService = null,
@@ -479,6 +483,51 @@ class DataBreachController extends AbstractController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+        ]);
+    }
+
+    #[Route('/bulk-delete', name: 'bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        if ($this->checkModuleActive('privacy') instanceof Response) {
+            return $this->json(['error' => 'Privacy module not active'], 403);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $breach = $this->dataBreachService->findById((int) $id);
+                if (!$breach) {
+                    $errors[] = "DataBreach ID $id not found";
+                    continue;
+                }
+                if ($tenant && $breach->getTenant() !== $tenant) {
+                    $errors[] = "DataBreach ID $id does not belong to your organization";
+                    continue;
+                }
+                $this->dataBreachService->delete($breach);
+                $deleted++;
+            } catch (Exception $e) {
+                $errors[] = "Error deleting DataBreach ID $id: " . $e->getMessage();
+            }
+        }
+
+        return $this->json([
+            'success' => $deleted > 0,
+            'deleted' => $deleted,
+            'errors' => $errors,
+            'message' => "$deleted data breaches deleted successfully",
         ]);
     }
 }

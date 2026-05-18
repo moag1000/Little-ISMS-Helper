@@ -142,6 +142,7 @@
 
     {# Processing Activities Table #}
     {% embed '_components/_card.html.twig' with {noPadding: true} %}
+        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/processing-activity"{% endblock %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2 class="mb-0 h5"><i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i> {{ 'processing_activity.table.title'|trans({}, 'privacy')}}</h2>
@@ -155,6 +156,13 @@
                 } %}
                     {% block table_head %}
                         <tr>
+                            <th scope="col" class="bulk-select-column">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       data-action="bulk-actions#selectAll"
+                                       data-bulk-actions-target="selectAllCheckbox"
+                                       aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                            </th>
                             <th scope="col">{{ 'processing_activity.table.name'|trans({}, 'privacy') }}</th>
                             <th scope="col">{{ 'processing_activity.table.legal_basis'|trans({}, 'privacy') }}</th>
                             <th scope="col">{{ 'processing_activity.table.data_subjects'|trans({}, 'privacy') }}</th>
@@ -169,6 +177,14 @@
     {% import '_components/_fa_status_chip.html.twig' as _fa_status_chip %}
                         {% for pa in processing_activities %}
                             <tr>
+                                <td class="bulk-select-column">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           data-bulk-actions-target="item"
+                                           data-action="bulk-actions#selectItem"
+                                           value="{{ pa.id }}"
+                                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ pa.name }}">
+                                </td>
                                 <td>
                                     <strong>{{ pa.name }}</strong><br>
                                     <small class="text-muted">
@@ -235,6 +251,11 @@
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
+
+                {# Bulk Action Bar #}
+                {% include '_components/_bulk_action_bar.html.twig' with {
+                    actions: ['export', 'delete', 'status_change']
+                } %}
             {% else %}
                 {% if current_filter is defined and current_filter != 'all' and current_filter is not empty %}
                     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'm-4' } } %}

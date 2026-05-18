@@ -123,6 +123,7 @@
 
     {# Management Reviews List #}
     {% embed '_components/_card.html.twig' %}
+        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/{{ app.request.locale }}/management-review"{% endblock %}
         {% block card_header %}
             <div class="card-header">
                 <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'management_review.all_reviews'|trans({}, 'management_review') }}</h2>
@@ -147,6 +148,13 @@
             } %}
                 {% block table_head %}
                     <tr>
+                        <th scope="col" class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-action="bulk-actions#selectAll"
+                                   data-bulk-actions-target="selectAllCheckbox"
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
+                        </th>
                         <th scope="col">{{ 'management_review.title'|trans({}, 'management_review') }}</th>
                         <th scope="col">{{ 'management_review.field.review_date'|trans({}, 'management_review') }}</th>
                         <th scope="col">{{ 'management_review.field.status'|trans({}, 'management_review') }}</th>
@@ -157,6 +165,14 @@
                 {% block table_body %}
                     {% for review in reviews %}
                     <tr>
+                        <td class="bulk-select-column">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   data-bulk-actions-target="item"
+                                   data-action="bulk-actions#selectItem"
+                                   value="{{ review.id }}"
+                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ review.title }}">
+                        </td>
                         <td>
                             <strong>{{ review.title }}</strong>
                         </td>
@@ -207,6 +223,13 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
+
+            {# Bulk Action Bar — admin-only delete #}
+            {% if is_granted('ROLE_ADMIN') %}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['delete']
+            } %}
+            {% endif %}
             {% endif %}
         {% endblock %}
     {% endembed %}
