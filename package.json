@@ -3,7 +3,7 @@
     "private": true,
     "devDependencies": {
         "js-yaml": "^4.1.1",
-        "playwright": "^1.59.1",
+        "playwright": "^1.60.0",
         "stylelint": "^17.11.1",
         "stylelint-config-standard": "^40.0.0"
     },
