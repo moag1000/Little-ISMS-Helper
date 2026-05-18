@@ -6,7 +6,7 @@ src/Controller/Admin/AuditRetentionController.php:29
 src/Controller/Admin/ComplianceImportController.php:56
 src/Controller/Admin/CompliancePolicyController.php:27
 src/Controller/Admin/GstoolImportController.php:41
-src/Controller/Admin/ImportHistoryController.php:32
+src/Controller/Admin/ImportHistoryController.php:33
 src/Controller/Admin/IncidentSlaConfigController.php:32
 src/Controller/Admin/IndustryBaselineController.php:25
 src/Controller/Admin/IndustryPresetController.php:34
