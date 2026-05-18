@@ -11,6 +11,7 @@ use App\Form\Notification\NotificationRuleType;
 use App\Repository\Notification\NotificationDeliveryRepository;
 use App\Repository\Notification\NotificationRuleRepository;
 use App\Security\Voter\Notification\NotificationRuleVoter;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,10 +28,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * CRUD controller for NotificationRule admin UI.
  *
  * Module-gate: notifications
- * Role-gate:   ROLE_MANAGER
+ * Role-gate:   {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — ROLE_ADMIN
+ *              (own-tenant) + ROLE_SUPER_ADMIN (any tenant). ROLE_MANAGER has
+ *              dashboard-read access elsewhere but cannot configure rules.
+ *
+ * Migrated from `ROLE_MANAGER` in Phase 4d of the Role-Scope Architecture
+ * rollout (spec: `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
  */
 #[Route('/admin/notification/rule', name: 'admin_notification_rule_')]
-#[IsGranted('ROLE_MANAGER')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class NotificationRuleController extends AbstractController
 {
     use ModuleGatedControllerTrait;

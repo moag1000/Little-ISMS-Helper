@@ -8,6 +8,7 @@ use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Notification\NotificationTemplate;
 use App\Entity\User;
 use App\Repository\Notification\NotificationTemplateRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\ModuleConfigurationService;
 use App\Service\Notification\TemplateInstantiator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,9 +27,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Index — shows all global templates available to the current tenant.
  * Apply  — instantiates the selected template as a new NotificationRule
  *           via TemplateInstantiator, then redirects to the rule-edit page.
+ *
+ * Module-gate: notifications
+ * Role-gate:   {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — ROLE_ADMIN
+ *              (own-tenant) + ROLE_SUPER_ADMIN (any tenant). The gallery is
+ *              read-only at this level; `apply` materializes a tenant rule.
+ *              The underlying global template library itself is curated via a
+ *              separate global-op surface (out of scope for Phase 4d).
+ *
+ * Migrated from `ROLE_MANAGER` in Phase 4d of the Role-Scope Architecture
+ * rollout (spec: `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
  */
 #[Route('/admin/notification/template', name: 'admin_notification_template_')]
-#[IsGranted('ROLE_MANAGER')]
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class NotificationTemplateController extends AbstractController
 {
     use ModuleGatedControllerTrait;

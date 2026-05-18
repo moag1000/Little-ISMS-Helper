@@ -13,8 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 /**
  * Smoke tests for NotificationRuleController.
  *
- * Verifies that the index renders for a ROLE_MANAGER user and that
- * an unauthenticated request is redirected.
+ * Verifies that the index renders for a ROLE_ADMIN user (post-Phase-4d
+ * ADMIN_OWN_TENANT gate) and that an unauthenticated request is redirected.
  */
 final class NotificationRuleControllerTest extends WebTestCase
 {
@@ -27,10 +27,10 @@ final class NotificationRuleControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function indexRendersForManager(): void
+    public function indexRendersForAdmin(): void
     {
         $client = static::createClient();
-        $client->loginUser($this->getOrCreateManagerUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->request('GET', '/de/admin/notification/rule');
         // 200 = rendered, 302 = module inactive redirect, 403 = access denied (module gated at security level)
         $statusCode = $client->getResponse()->getStatusCode();
@@ -38,22 +38,22 @@ final class NotificationRuleControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function newPageRendersForManager(): void
+    public function newPageRendersForAdmin(): void
     {
         $client = static::createClient();
-        $client->loginUser($this->getOrCreateManagerUser($client));
+        $client->loginUser($this->getOrCreateAdminUser($client));
         $client->request('GET', '/de/admin/notification/rule/new');
         $statusCode = $client->getResponse()->getStatusCode();
         self::assertContains($statusCode, [200, 302, 403]);
     }
 
-    private function getOrCreateManagerUser(mixed $client): User
+    private function getOrCreateAdminUser(mixed $client): User
     {
         /** @var EntityManagerInterface $em */
         $em   = $client->getContainer()->get(EntityManagerInterface::class);
         $repo = $em->getRepository(User::class);
 
-        $email = 'notif-rule-manager@test.test';
+        $email = 'notif-rule-admin@test.test';
         $user  = $repo->findOneBy(['email' => $email]);
         if ($user !== null) {
             return $user;
@@ -69,8 +69,8 @@ final class NotificationRuleControllerTest extends WebTestCase
         $user = (new User())
             ->setEmail($email)
             ->setFirstName('Notif')
-            ->setLastName('Manager')
-            ->setRoles(['ROLE_USER', 'ROLE_MANAGER'])
+            ->setLastName('Admin')
+            ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
             ->setPassword('hashed_password')
             ->setTenant($tenant)
             ->setAuthProvider('local')
