@@ -3,7 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block admin_title %}{{ 'admin.workflows.show.title'|trans({ '%workflow%': workflowName }) }}{% endblock %}
+{% block admin_title %}{{ 'admin.workflows.show.title'|trans({ '%workflow%': workflowName }, 'admin') }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item">
@@ -58,7 +58,7 @@
                             {{ 'admin.workflows.section.steps'|trans }}
                         </h2>
                         <p class="fa-section__desc text-muted small mb-0">
-                            {{ 'admin.workflows.section.steps_desc'|trans({ '%count%': steps|length }) }}
+                            {{ 'admin.workflows.section.steps_desc'|trans({ '%count%': steps|length }, 'admin') }}
                         </p>
                     </div>
                     <div class="fa-section__body">

@@ -102,9 +102,40 @@ class TranslationChecker:
         default_domain_match = re.search(r"{%\s*trans_default_domain\s+['\"](\w+)['\"]\s*%}", content)
         has_default_domain = default_domain_match is not None
 
+        # Track multi-line Twig comments {# ... #}. A line is "in comment" if a {# was
+        # opened on a previous line and the matching #} has not yet been seen.
+        in_comment = False
+
         for line_num, line in enumerate(lines, 1):
-            # Skip empty lines and comments
-            if not line.strip() or line.strip().startswith('{#'):
+            stripped = line.strip()
+
+            # State-machine: walk {# / #} delimiters on this line to know whether any
+            # code outside comments remains for inspection, and update in_comment for
+            # the next line.
+            scan_pos = 0
+            line_has_code_outside_comment = False
+            while scan_pos < len(line):
+                if in_comment:
+                    end_idx = line.find('#}', scan_pos)
+                    if end_idx == -1:
+                        scan_pos = len(line)
+                    else:
+                        in_comment = False
+                        scan_pos = end_idx + 2
+                else:
+                    start_idx = line.find('{#', scan_pos)
+                    if start_idx == -1:
+                        if line[scan_pos:].strip():
+                            line_has_code_outside_comment = True
+                        scan_pos = len(line)
+                    else:
+                        if line[scan_pos:start_idx].strip():
+                            line_has_code_outside_comment = True
+                        in_comment = True
+                        scan_pos = start_idx + 2
+
+            # Skip empty lines, single-line comments, or lines fully inside a multi-line comment
+            if not stripped or stripped.startswith('{#') or not line_has_code_outside_comment:
                 continue
 
             # Check for various issues

@@ -226,7 +226,7 @@
     ],
     sections: _sections,
     appendix: {
-        methodology: '<p>Executive summary aggregates key ISMS metrics: assets, risks (by level), control implementation, and incident status. Risk score = L × I (1-25). Compliance rate = implemented / applicable controls.</p>',
+        methodology: 'management_reports.executive.methodology'|trans({}, 'management_reports'),
         sources: [
             { label: 'ManagementReportService', detail: 'getExecutiveSummary() — aggregated cross-module KPIs' },
         ],

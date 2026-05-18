@@ -147,7 +147,7 @@
         },
     ],
     appendix: {
-        methodology: '<p>Quarterly comparison uses last full quarter vs. previous quarter. Delta = current - previous. Trend direction: better/worse based on higher_is_better metric flag.</p>',
+        methodology: 'management_reports.quarterly_trend.methodology'|trans({}, 'management_reports'),
         sources: [
             { label: 'ManagementReportService', detail: 'getQuarterlyTrendMetrics() — aggregated KPIs per quarter' },
         ],

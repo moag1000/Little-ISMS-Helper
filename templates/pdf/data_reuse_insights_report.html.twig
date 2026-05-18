@@ -186,7 +186,7 @@
 {% else %}
     {% set _sections = _sections|merge([{
         heading: 'Quick Wins - Immediate Reuse Opportunities',
-        body_html: '<p>No Quick Wins with ≥80% Reuse + High Confidence found. Focus on mid-term potentials (50-80%).</p>',
+        body_html: '<p>' ~ ('pdf.data_reuse.no_quick_wins'|trans({}, 'messages')) ~ '</p>',
     }]) %}
 {% endif %}
 
@@ -256,7 +256,7 @@
     ],
     sections: _sections,
     appendix: {
-        methodology: '<p>Data reuse analysis evaluates each framework requirement for potential overlap with existing ISMS data, controls, and documentation. Reuse percentage = reusable data points / total required data points. Confidence levels (low/medium/high) reflect mapping quality. Time savings estimated from historical compliance effort baselines.</p>',
+        methodology: 'pdf.data_reuse.methodology'|trans({}, 'messages'),
         sources: [
             { label: 'DataReuseAnalysisService', detail: 'analyzeFrameworkReuse() — per-requirement reuse potential' },
         ],

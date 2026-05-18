@@ -201,7 +201,7 @@
     ],
     sections: _sections,
     appendix: {
-        methodology: '<p>GDPR Art. 33/34 data breach register. Notification required = risk to rights/freedoms of individuals (Art. 33 threshold). 72h deadline from breach discovery.</p>',
+        methodology: 'management_reports.gdpr.methodology'|trans({}, 'management_reports'),
         sources: [
             { label: 'DataBreachRepository', detail: 'findByTenant() — all breach records with notification status' },
         ],
