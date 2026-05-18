@@ -164,8 +164,9 @@ class FourEyesValidatorTest extends TestCase
         // Force the id via reflection (entity uses auto-increment).
         $ref = new \ReflectionProperty(User::class, 'id');
         $ref->setValue($u, $id);
-        // User entity exposes setRoles(array) — no addRole() helper.
-        $u->setRoles($roles);
+        foreach ($roles as $role) {
+            $u->addRole($role);
+        }
         $tenant = new Tenant();
         $tenantRef = new \ReflectionProperty(Tenant::class, 'id');
         $tenantRef->setValue($tenant, 1);
