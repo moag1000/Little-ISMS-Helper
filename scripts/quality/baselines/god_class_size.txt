@@ -6,7 +6,7 @@ src/Controller/DeploymentWizardController.php:LOC=2705 deps=0
 src/Controller/ComplianceController.php:LOC=2607 deps=0
 src/Service/RestoreService.php:LOC=2175 deps=7
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1869 deps=15
-src/Service/DataIntegrityService.php:LOC=1861 deps=26
+src/Service/DataIntegrityService.php:LOC=1863 deps=26
 src/Service/DashboardStatisticsService.php:LOC=1804 deps=25
 src/Service/Export/CertificationBundleExporter.php:LOC=1580 deps=19
 src/Controller/PolicyWizardController.php:LOC=1419 deps=0
