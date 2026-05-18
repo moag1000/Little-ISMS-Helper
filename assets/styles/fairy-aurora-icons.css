@@ -400,3 +400,10 @@
 .fa-icon--util-download { --fa-icon: url("../icons/nav-download.svg"); }
 .fa-icon--util-refresh { --fa-icon: url("../icons/ui-refresh.svg"); }
 .fa-icon--util-trash { --fa-icon: url("../icons/ui-trash.svg"); }
+
+/* Lifecycle UI aliases (fix 5 broken icons audited 2026-05-18) */
+.fa-icon--nav-flow { --fa-icon: url("../icons/nav-workflow.svg"); }
+.fa-icon--nav-chat-quote { --fa-icon: url("../icons/ui-chat.svg"); }
+.fa-icon--nav-eye { --fa-icon: url("../icons/ui-eye.svg"); }
+.fa-icon--ui-chevron-down { --fa-icon: url("../icons/util-chevron-down.svg"); }
+.fa-icon--ui-arrows-expand-vertical { --fa-icon: url("../icons/util-drag-handle.svg"); }
