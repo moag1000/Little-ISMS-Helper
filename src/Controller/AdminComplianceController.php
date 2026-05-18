@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use Exception;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ModuleConfigurationService;
 use Psr\Log\LoggerInterface;
@@ -20,8 +21,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * Admin wrapper for Compliance Framework Management
- * Integrates existing compliance framework functionality into admin panel
+ * Integrates existing compliance framework functionality into admin panel.
+ *
+ * Role-Scope: class-level {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT}
+ * (Phase 4e — system-settings cluster). Existing method-level
+ * `COMPLIANCE_VIEW`/`COMPLIANCE_MANAGE` permission attributes remain in force
+ * and are evaluated on top of the class-level guard.
  */
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class AdminComplianceController extends AbstractController
 {
     public function __construct(

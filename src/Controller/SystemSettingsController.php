@@ -8,12 +8,24 @@ use App\Form\ApplicationSettingsType;
 use App\Form\FeatureSettingsType;
 use App\Form\SecuritySettingsType;
 use App\Repository\SystemSettingsRepository;
+use App\Security\Voter\TenantScopedAdminVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * System Settings — application / security / feature flags.
+ *
+ * Role-Scope (Phase 4e — system-settings cluster): class-level
+ * {@see TenantScopedAdminVoter::ADMIN_OWN_TENANT} — tenant admins configure
+ * the settings scoped to their own tenant; SUPER_ADMIN passes through and
+ * may additionally configure cross-tenant defaults. Existing method-level
+ * `ADMIN_VIEW`/`ADMIN_EDIT` permission attributes stay authoritative for
+ * read vs. write granularity.
+ */
+#[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class SystemSettingsController extends AbstractController
 {
     public function __construct(
