@@ -39,10 +39,10 @@ src/Controller/AdminModuleController.php:110
 src/Controller/AdminModuleController.php:126
 src/Controller/AdminModuleController.php:162
 src/Controller/AdminModuleController.php:167
-src/Controller/AssetController.php:327
 src/Controller/AssetController.php:328
-src/Controller/AssetController.php:409
-src/Controller/AssetController.php:463
+src/Controller/AssetController.php:329
+src/Controller/AssetController.php:410
+src/Controller/AssetController.php:464
 src/Controller/BCExerciseController.php:70
 src/Controller/BCExerciseController.php:102
 src/Controller/BCExerciseController.php:121
@@ -195,9 +195,9 @@ src/Controller/UserManagementController.php:682
 src/Controller/UserManagementController.php:733
 src/Controller/UserManagementController.php:819
 src/Controller/UserManagementController.php:827
-src/Controller/VulnerabilityController.php:133
-src/Controller/VulnerabilityController.php:166
-src/Controller/VulnerabilityController.php:183
+src/Controller/VulnerabilityController.php:134
+src/Controller/VulnerabilityController.php:167
+src/Controller/VulnerabilityController.php:184
 src/Controller/WorkflowController.php:157
 src/Controller/WorkflowController.php:165
 src/Controller/WorkflowController.php:167

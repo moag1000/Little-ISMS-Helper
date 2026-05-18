@@ -121,10 +121,10 @@ src/Service/Export/EntityListExporter.php:74
 src/Service/Export/EntityListExporter.php:77
 src/Service/Export/EntityListExporter.php:92
 src/Service/Export/LksgAnnualReportExporter.php:33
-src/Service/FourEyesApprovalService.php:49
-src/Service/FourEyesApprovalService.php:96
-src/Service/FourEyesApprovalService.php:100
-src/Service/FourEyesApprovalService.php:134
+src/Service/FourEyesApprovalService.php:50
+src/Service/FourEyesApprovalService.php:97
+src/Service/FourEyesApprovalService.php:101
+src/Service/FourEyesApprovalService.php:135
 src/Service/IndustryBaselineService.php:126
 src/Service/IndustryBaselineService.php:136
 src/Service/IndustryBaselineService.php:186

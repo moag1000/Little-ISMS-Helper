@@ -9,6 +9,7 @@ use App\Entity\Person;
 use App\Entity\PrototypeProtectionAssessment;
 use App\Entity\Supplier;
 use App\Entity\User;
+use App\Enum\PrototypeProtectionAssessmentStatus;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -50,11 +51,11 @@ final class PrototypeProtectionAssessmentType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'label' => 'prototype_protection.field.status',
                 'choices' => [
-                    'prototype_protection.status.draft' => PrototypeProtectionAssessment::STATUS_DRAFT,
-                    'prototype_protection.status.in_review' => PrototypeProtectionAssessment::STATUS_IN_REVIEW,
-                    'prototype_protection.status.approved' => PrototypeProtectionAssessment::STATUS_APPROVED,
-                    'prototype_protection.status.rejected' => PrototypeProtectionAssessment::STATUS_REJECTED,
-                    'prototype_protection.status.expired' => PrototypeProtectionAssessment::STATUS_EXPIRED,
+                    'prototype_protection.status.draft' => PrototypeProtectionAssessmentStatus::Draft->value,
+                    'prototype_protection.status.in_review' => PrototypeProtectionAssessmentStatus::InReview->value,
+                    'prototype_protection.status.approved' => PrototypeProtectionAssessmentStatus::Approved->value,
+                    'prototype_protection.status.rejected' => PrototypeProtectionAssessmentStatus::Rejected->value,
+                    'prototype_protection.status.expired' => PrototypeProtectionAssessmentStatus::Expired->value,
                 ],
             ])
             // @no-module-gate-required: PrototypeProtectionAssessment form is TISAX-scoped

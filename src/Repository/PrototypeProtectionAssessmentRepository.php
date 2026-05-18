@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\PrototypeProtectionAssessment;
 use App\Entity\Tenant;
+use App\Enum\PrototypeProtectionAssessmentStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -53,7 +54,7 @@ class PrototypeProtectionAssessmentRepository extends ServiceEntityRepository
             ->andWhere('a.nextAssessmentDue IS NOT NULL')
             ->andWhere('a.nextAssessmentDue <= :cutoff')
             ->setParameter('t', $tenant)
-            ->setParameter('s', PrototypeProtectionAssessment::STATUS_APPROVED)
+            ->setParameter('s', PrototypeProtectionAssessmentStatus::Approved->value)
             ->setParameter('cutoff', $cutoff)
             ->orderBy('a.nextAssessmentDue', 'ASC')
             ->getQuery()

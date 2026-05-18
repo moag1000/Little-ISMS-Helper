@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use DateTime;
 use App\Entity\CryptographicOperation;
+use App\Enum\CryptographicOperationStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,7 +40,7 @@ class CryptographicOperationRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.status = :status')
-            ->setParameter('status', 'failure')
+            ->setParameter('status', CryptographicOperationStatus::Failure->value)
             ->orderBy('c.timestamp', 'DESC')
             ->getQuery()
             ->getResult();

@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\User;
+use App\Enum\FourEyesApprovalRequestStatus;
 use App\Exception\Tenant\TenantOrphanException;
 use App\Exception\Workflow\InvalidStatusTransitionException;
 use App\Repository\FourEyesApprovalRequestRepository;
@@ -61,7 +62,7 @@ class FourEyesApprovalService
             ->setRequestedBy($requester)
             ->setRequestedApprover($specificApprover)
             ->setExpiresAt((new \DateTimeImmutable())->modify(sprintf('+%d days', max(1, $this->expiryDays()))))
-            ->setStatus(FourEyesApprovalRequest::STATUS_PENDING);
+            ->setStatus(FourEyesApprovalRequestStatus::Pending);
 
         $this->entityManager->persist($request);
         $this->entityManager->flush();
@@ -100,7 +101,7 @@ class FourEyesApprovalService
             throw new InvalidArgumentException('Only the designated approver can approve this request.');
         }
 
-        $request->setStatus(FourEyesApprovalRequest::STATUS_APPROVED)
+        $request->setStatus(FourEyesApprovalRequestStatus::Approved)
             ->setApprovedBy($approver)
             ->setApprovedAt(new DateTimeImmutable());
 
@@ -134,7 +135,7 @@ class FourEyesApprovalService
             throw new InvalidArgumentException(sprintf('Rejection reason requires at least %d characters.', $minLen));
         }
 
-        $request->setStatus(FourEyesApprovalRequest::STATUS_REJECTED)
+        $request->setStatus(FourEyesApprovalRequestStatus::Rejected)
             ->setApprovedBy($approver)
             ->setApprovedAt(new DateTimeImmutable())
             ->setRejectionReason($reason);

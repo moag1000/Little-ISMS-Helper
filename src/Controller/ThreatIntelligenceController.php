@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\ThreatIntelligence;
+use App\Enum\ThreatIntelligenceStatus;
 use App\Form\ThreatIntelligenceType;
 use App\Repository\ThreatIntelligenceRepository;
 use App\Service\TenantContext;
@@ -75,7 +76,7 @@ class ThreatIntelligenceController extends AbstractController
             'total'    => count($threats),
             'critical' => count(array_filter($threats, fn(ThreatIntelligence $t): bool => $t->getSeverity() === 'critical')),
             'high'     => count(array_filter($threats, fn(ThreatIntelligence $t): bool => $t->getSeverity() === 'high')),
-            'open'     => count(array_filter($threats, fn(ThreatIntelligence $t): bool => !in_array($t->getStatus(), ['closed', 'mitigated'], true))),
+            'open'     => count(array_filter($threats, fn(ThreatIntelligence $t): bool => !in_array($t->getStatus(), [ThreatIntelligenceStatus::Closed->value, ThreatIntelligenceStatus::Mitigated->value], true))),
         ];
 
         return $this->render('threat_intelligence/index.html.twig', [

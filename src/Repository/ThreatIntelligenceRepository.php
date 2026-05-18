@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\ThreatIntelligence;
+use App\Enum\ThreatIntelligenceStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -25,7 +26,7 @@ class ThreatIntelligenceRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.status != :status')
-            ->setParameter('status', 'closed')
+            ->setParameter('status', ThreatIntelligenceStatus::Closed->value)
             ->orderBy('t.severity', 'ASC')
             ->addOrderBy('t.detectionDate', 'DESC')
             ->getQuery()
@@ -55,7 +56,7 @@ class ThreatIntelligenceRepository extends ServiceEntityRepository
             ->andWhere('t.severity IN (:severities)')
             ->setParameter('severities', ['critical', 'high'])
             ->andWhere('t.status != :status')
-            ->setParameter('status', 'closed')
+            ->setParameter('status', ThreatIntelligenceStatus::Closed->value)
             ->orderBy('t.detectionDate', 'DESC')
             ->getQuery()
             ->getResult();

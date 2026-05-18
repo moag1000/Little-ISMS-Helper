@@ -8,6 +8,7 @@ use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Enum\CorrectiveActionStatus;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -52,11 +53,11 @@ final class CorrectiveActionType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'label' => 'corrective_action.field.status',
                 'choices' => [
-                    'corrective_action.status.planned' => CorrectiveAction::STATUS_PLANNED,
-                    'corrective_action.status.in_progress' => CorrectiveAction::STATUS_IN_PROGRESS,
-                    'corrective_action.status.completed' => CorrectiveAction::STATUS_COMPLETED,
-                    'corrective_action.status.verified_effective' => CorrectiveAction::STATUS_VERIFIED_EFFECTIVE,
-                    'corrective_action.status.verified_ineffective' => CorrectiveAction::STATUS_VERIFIED_INEFFECTIVE,
+                    'corrective_action.status.planned' => CorrectiveActionStatus::Planned->value,
+                    'corrective_action.status.in_progress' => CorrectiveActionStatus::InProgress->value,
+                    'corrective_action.status.completed' => CorrectiveActionStatus::Completed->value,
+                    'corrective_action.status.verified_effective' => CorrectiveActionStatus::VerifiedEffective->value,
+                    'corrective_action.status.verified_ineffective' => CorrectiveActionStatus::VerifiedIneffective->value,
                 ],
                 'choice_translation_domain' => 'audits',
                 'required' => true,
@@ -161,8 +162,8 @@ final class CorrectiveActionType extends AbstractType
         // duplicating the guard at the form level makes the error visible
         // inline instead of as a 500.
         $verifyStatuses = [
-            CorrectiveAction::STATUS_VERIFIED_EFFECTIVE,
-            CorrectiveAction::STATUS_VERIFIED_INEFFECTIVE,
+            CorrectiveActionStatus::VerifiedEffective->value,
+            CorrectiveActionStatus::VerifiedIneffective->value,
         ];
         if (in_array($entity->getStatus(), $verifyStatuses, true)) {
             $evidence = $entity->getEffectivenessEvidence();
