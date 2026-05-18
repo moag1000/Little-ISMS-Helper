@@ -603,4 +603,137 @@ class DataIntegrityServiceTest extends TestCase
             );
         }
     }
+
+    // ========== Extended-Coverage Smoke Tests (2026-05) ==========
+    // file orphans, cascade cleanup, JSON schema, audit-log integrity,
+    // status-enum drift. Tests are smoke-level: confirm shape of return
+    // value when repositories/EM are empty mocks. Full integration coverage
+    // lives in WebTestCase-backed controller tests.
+
+    #[Test]
+    public function testFindOrphanedUploadsReturnsEmptyStructureWhenProjectDirMissing(): void
+    {
+        // Default constructor in setUp() passes no projectDir → null path.
+        $result = $this->service->findOrphanedUploads();
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('files', $result);
+        $this->assertArrayHasKey('scanned', $result);
+        $this->assertArrayHasKey('referenced', $result);
+        $this->assertArrayHasKey('uploads_dir', $result);
+        $this->assertSame([], $result['files']);
+        $this->assertSame(0, $result['scanned']);
+        $this->assertNull($result['uploads_dir']);
+    }
+
+    #[Test]
+    public function testFindCascadeOrphansReturnsAllFiveCategories(): void
+    {
+        // No EM data → every bucket should be empty but present.
+        $qb = $this->createMock(QueryBuilder::class);
+        $query = $this->createMock(Query::class);
+        $qb->method('select')->willReturnSelf();
+        $qb->method('from')->willReturnSelf();
+        $qb->method('where')->willReturnSelf();
+        $qb->method('setParameter')->willReturnSelf();
+        $qb->method('getQuery')->willReturn($query);
+        $query->method('getArrayResult')->willReturn([]);
+        $query->method('getResult')->willReturn([]);
+        $this->entityManager->method('createQueryBuilder')->willReturn($qb);
+
+        $result = $this->service->findCascadeOrphans();
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('workflow_instances', $result);
+        $this->assertArrayHasKey('mfa_tokens', $result);
+        $this->assertArrayHasKey('sso_user_approvals', $result);
+        $this->assertArrayHasKey('evidence_tasks', $result);
+        $this->assertArrayHasKey('notification_deliveries', $result);
+        foreach ($result as $category => $items) {
+            $this->assertSame([], $items, sprintf('Bucket %s should be empty', $category));
+        }
+    }
+
+    #[Test]
+    public function testFindJsonSchemaViolationsReturnsFourCategories(): void
+    {
+        $this->tenantRepository->method('findAll')->willReturn([]);
+
+        $qb = $this->createMock(QueryBuilder::class);
+        $query = $this->createMock(Query::class);
+        $qb->method('select')->willReturnSelf();
+        $qb->method('from')->willReturnSelf();
+        $qb->method('getQuery')->willReturn($query);
+        $query->method('getArrayResult')->willReturn([]);
+        $query->method('getResult')->willReturn([]);
+        $this->entityManager->method('createQueryBuilder')->willReturn($qb);
+
+        $result = $this->service->findJsonSchemaViolations();
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('tenant_settings', $result);
+        $this->assertArrayHasKey('tenant_policy_settings', $result);
+        $this->assertArrayHasKey('notification_rule_conditions', $result);
+        $this->assertArrayHasKey('workflow_step_metadata', $result);
+    }
+
+    #[Test]
+    public function testFindAuditLogIntegrityIssuesReturnsExpectedShape(): void
+    {
+        // Failing-connection scenario: every nested fetch throws → method
+        // must still return the three-key structure with empty arrays.
+        $connection = $this->createMock(\Doctrine\DBAL\Connection::class);
+        $connection->method('fetchAllAssociative')->willThrowException(new \RuntimeException('no audit_log table in unit-test'));
+        $connection->method('fetchOne')->willThrowException(new \RuntimeException('no audit_log table'));
+        $this->entityManager->method('getConnection')->willReturn($connection);
+
+        $result = $this->service->findAuditLogIntegrityIssues();
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('bulk_batch_mismatches', $result);
+        $this->assertArrayHasKey('day_gaps', $result);
+        $this->assertArrayHasKey('null_tenant_entries', $result);
+        $this->assertSame([], $result['bulk_batch_mismatches']);
+        $this->assertSame([], $result['day_gaps']);
+        $this->assertSame([], $result['null_tenant_entries']);
+    }
+
+    #[Test]
+    public function testFindStatusEnumDriftIssuesReturnsListWhenNoData(): void
+    {
+        // Mock MetadataFactory: getMetadataFor throws → method continues to next entity.
+        // This simulates the case where entity FQCNs in the explicit map are not
+        // registered with this EntityManager (typical for narrow unit-test mocks).
+        $metadataFactory = $this->getMockBuilder(\Doctrine\ORM\Mapping\ClassMetadataFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $metadataFactory->method('getMetadataFor')->willThrowException(new \RuntimeException('not mapped in unit test'));
+        $this->entityManager->method('getMetadataFactory')->willReturn($metadataFactory);
+
+        $result = $this->service->findStatusEnumDriftIssues();
+
+        $this->assertIsArray($result);
+        // No entities have a 'status' field per the mock → empty result list.
+        $this->assertSame([], $result);
+    }
+
+    #[Test]
+    public function testRunFullIntegrityCheckIncludesExtendedCoverageKeys(): void
+    {
+        $this->setupEmptyRepositoryMocks();
+
+        // Connection mock for findAuditLogIntegrityIssues.
+        $connection = $this->createMock(\Doctrine\DBAL\Connection::class);
+        $connection->method('fetchAllAssociative')->willReturn([]);
+        $connection->method('fetchOne')->willReturn(0);
+        $this->entityManager->method('getConnection')->willReturn($connection);
+
+        $result = $this->service->runFullIntegrityCheck();
+
+        $this->assertArrayHasKey('orphaned_uploads', $result);
+        $this->assertArrayHasKey('cascade_orphans', $result);
+        $this->assertArrayHasKey('json_schema_violations', $result);
+        $this->assertArrayHasKey('audit_log_integrity', $result);
+        $this->assertArrayHasKey('status_enum_drift', $result);
+    }
 }
