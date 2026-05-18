@@ -404,6 +404,85 @@ class DataBreachServiceTest extends TestCase
         $this->service->recordNotificationDelay($dataBreach, 'Some reason');
     }
 
+    // -------------------------------------------------------------------------
+    // X.6 gap tests: 3 remaining setStatus → LifecycleService migrations
+    // -------------------------------------------------------------------------
+
+    #[Test]
+    public function testNotifySupervisoryAuthorityCallsLifecycleTransitionNotifyAuthority(): void
+    {
+        $dataBreach = $this->createMock(DataBreach::class);
+        $dataBreach->method('getId')->willReturn(1);
+        $dataBreach->method('getRequiresAuthorityNotification')->willReturn(true);
+        $dataBreach->method('getSupervisoryAuthorityNotifiedAt')->willReturn(null);
+        $dataBreach->method('isAuthorityNotificationOverdue')->willReturn(false);
+        $dataBreach->method('getHoursUntilAuthorityDeadline')->willReturn(24);
+        $dataBreach->method('getReferenceNumber')->willReturn('DB-2026-002');
+
+        // X.6: verify LifecycleService::transition() is called with the 'notify_authority' transition.
+        $this->lifecycleService->expects($this->once())->method('transition')->with(
+            $dataBreach,
+            'data_breach_lifecycle',
+            'notify_authority',
+            null,
+            $this->stringContains('Art. 33'),
+        );
+
+        $result = $this->service->notifySupervisoryAuthority($dataBreach, 'BfDI', 'email');
+
+        $this->assertSame($dataBreach, $result);
+    }
+
+    #[Test]
+    public function testNotifyDataSubjectsCallsLifecycleTransitionNotifySubjects(): void
+    {
+        $dataBreach = $this->createMock(DataBreach::class);
+        $dataBreach->method('getId')->willReturn(2);
+        $dataBreach->method('getRequiresSubjectNotification')->willReturn(true);
+        $dataBreach->method('getDataSubjectsNotifiedAt')->willReturn(null);
+        $dataBreach->method('getReferenceNumber')->willReturn('DB-2026-003');
+
+        // X.6: verify LifecycleService::transition() is called with the 'notify_subjects' transition.
+        $this->lifecycleService->expects($this->once())->method('transition')->with(
+            $dataBreach,
+            'data_breach_lifecycle',
+            'notify_subjects',
+            null,
+            $this->stringContains('Art. 34'),
+        );
+
+        $result = $this->service->notifyDataSubjects($dataBreach, 'email', 500);
+
+        $this->assertSame($dataBreach, $result);
+    }
+
+    #[Test]
+    public function testCloseCallsLifecycleTransitionClose(): void
+    {
+        $dataBreach = $this->createMock(DataBreach::class);
+        $dataBreach->method('getId')->willReturn(3);
+        $dataBreach->method('getStatus')->willReturn('subjects_notified');
+        $dataBreach->method('getRequiresAuthorityNotification')->willReturn(false);
+        $dataBreach->method('getRequiresSubjectNotification')->willReturn(false);
+        $dataBreach->method('getReferenceNumber')->willReturn('DB-2026-004');
+
+        $user = $this->createMock(User::class);
+        $user->method('getEmail')->willReturn('dpo@example.test');
+
+        // X.6: verify LifecycleService::transition() is called with the 'close' transition.
+        $this->lifecycleService->expects($this->once())->method('transition')->with(
+            $dataBreach,
+            'data_breach_lifecycle',
+            'close',
+            $user,
+            $this->stringContains('closed'),
+        );
+
+        $result = $this->service->close($dataBreach, $user);
+
+        $this->assertSame($dataBreach, $result);
+    }
+
     #[Test]
     public function testFindAllReturnsEmptyArrayWithoutTenant(): void
     {

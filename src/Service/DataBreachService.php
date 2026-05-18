@@ -336,9 +336,15 @@ final class DataBreachService
             $this->logger->warning('Supervisory authority notification is OVERDUE', $logContext);
         }
 
-        $dataBreach->setStatus('authority_notified'); // @phpstan-ignore lifecycle.directSetStatus (DataBreachService manages its own role/guard checks per GDPR Art.33; LifecycleService migration deferred to X.6)
-
-        $this->entityManager->flush();
+        // X.6: notify_authority transition (under_assessment → authority_notified) via data_breach_lifecycle.
+        // reason_required=true on this transition; authority name is the GDPR Art.33 reason.
+        $this->lifecycleService->transition(
+            $dataBreach,
+            'data_breach_lifecycle',
+            'notify_authority',
+            null,
+            sprintf('Supervisory authority "%s" notified per GDPR Art. 33', $authorityName),
+        );
 
         $this->auditLogger->logCustom(
             'data_breach.authority_notified',
@@ -415,9 +421,15 @@ final class DataBreachService
         $dataBreach->setSubjectNotificationMethod($notificationMethod);
         $dataBreach->setSubjectsNotified($subjectsNotified);
         $dataBreach->setSubjectNotificationDocuments($documents);
-        $dataBreach->setStatus('subjects_notified'); // @phpstan-ignore lifecycle.directSetStatus (DataBreachService manages its own role/guard checks per GDPR Art.33; LifecycleService migration deferred to X.6)
-
-        $this->entityManager->flush();
+        // X.6: notify_subjects transition (authority_notified → subjects_notified) via data_breach_lifecycle.
+        // lifecycleService->transition() calls flush internally; entity mutations above are included.
+        $this->lifecycleService->transition(
+            $dataBreach,
+            'data_breach_lifecycle',
+            'notify_subjects',
+            null,
+            sprintf('%d data subjects notified per GDPR Art. 34', $subjectsNotified),
+        );
 
         $this->auditLogger->logCustom(
             'data_breach.subjects_notified',
@@ -490,10 +502,16 @@ final class DataBreachService
             throw new RuntimeException('Data subject notification required before closing');
         }
 
-        $dataBreach->setStatus('closed'); // @phpstan-ignore lifecycle.directSetStatus (DataBreachService manages its own role/guard checks per GDPR Art.33; LifecycleService migration deferred to X.6)
         $dataBreach->setUpdatedBy($user);
 
-        $this->entityManager->flush();
+        // X.6: close transition ([authority_notified|subjects_notified] → closed) via data_breach_lifecycle.
+        $this->lifecycleService->transition(
+            $dataBreach,
+            'data_breach_lifecycle',
+            'close',
+            $user,
+            'Data breach investigation closed',
+        );
 
         $this->auditLogger->logCustom(
             'data_breach.closed',

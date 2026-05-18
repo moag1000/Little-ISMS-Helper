@@ -35,7 +35,7 @@ framework:
                         roles: [ROLE_DPO]
                         module: privacy
                 close:
-                    from: subjects_notified
+                    from: [authority_notified, subjects_notified]
                     to: closed
                     metadata:
                         roles: [ROLE_DPO]
