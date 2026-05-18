@@ -92,7 +92,7 @@ privacy:
             subjects: Subjects
             unknown: Unknown
         section:
-            status_workflow: 'Status & Workflow'
+            status_workflow: 'Status & Lifecycle'
             linked_incident: 'Linked Security Incident'
             detection_links: 'Detection & Links'
             authority: 'Art. 33 - Supervisory Authority'
@@ -776,7 +776,7 @@ dpia:
         section_measures: 'Art. 35(7)(d) - Measures to Address Risks'
         section_consultation: 'Stakeholder Consultation (Art. 35(4), 35(9))'
         section_supervisory: 'Supervisory Authority Consultation (Art. 36)'
-        section_workflow: 'Workflow & Review'
+        section_workflow: 'Lifecycle & Review'
         button_create: 'Create DPIA'
         button_cancel_bottom: 'Cancel'
     index:
@@ -939,7 +939,7 @@ dpia:
         cancel_button: Cancel
         page_title: 'DPIA - %ref%'
         section:
-            status_workflow: 'Status & Workflow'
+            status_workflow: 'Status & Lifecycle'
             risk_assessment: 'Risk Assessment'
             consultations: 'Consultations'
         field:

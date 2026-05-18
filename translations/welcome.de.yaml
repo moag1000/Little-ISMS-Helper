@@ -21,7 +21,7 @@ welcome:
         overdue_treatment_plans: "%count% überfällige Maßnahmenpläne"
         approaching_deadlines: "%count% Deadlines in den nächsten 7 Tagen"
         pending_workflows: "%count% ausstehende Genehmigungen"
-        overdue_workflows: "%count% überfällige Workflows"
+        overdue_workflows: "%count% überfällige Lifecycles"
 
     module:
         core: "Kern-ISMS"

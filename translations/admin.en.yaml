@@ -48,7 +48,7 @@ admin:
             risk_approval_config: { label: 'Risk approval thresholds', desc: 'Escalation tiers for risk acceptance' }
             incident_sla: { label: 'Incident SLAs', desc: 'Response times per severity' }
             audit_log_monitoring: { label: 'Audit-log monitoring', desc: 'Live stream + anomaly filter' }
-            workflow_definitions: { label: 'Workflow definitions', desc: 'Design and activate approval workflows' }
+            workflow_definitions: { label: 'Workflow definitions', desc: 'Design and activate approval lifecycles' }
             scheduled_reports: { label: 'Scheduled reports', desc: 'Manage recurring report delivery' }
             compliance_import: { label: 'Compliance import', desc: 'CSV/YAML bulk import of requirements' }
             gstool_import: { label: 'GSTool import', desc: 'BSI IT-Grundschutz from GSTool export' }
@@ -70,7 +70,7 @@ admin:
             api_doc: { label: 'API documentation', desc: 'OpenAPI / Swagger UI for integrations' }
             setup_wizard: { label: 'Setup wizard', desc: 'Re-run initial configuration' }
             lifecycle_overrides: { label: 'Lifecycle Overrides', desc: 'Configure workflow transition metadata per tenant' }
-            workflow_overlay: { label: 'Workflow Step Editor', desc: 'Edit per-tenant step-level overrides for regulatory approval workflows' }
+            workflow_overlay: { label: 'Workflow Step Editor', desc: 'Edit per-tenant step-level overrides for regulatory approval lifecycles' }
             supplier_criticality: { label: 'Supplier criticalities', desc: 'Custom levels for supplier classification' }
             tour_content: { label: 'Guided-tour content', desc: 'Edit step texts and order' }
             tour_completion: { label: 'Tour completion', desc: 'Completion rates + reset tools' }
@@ -89,7 +89,7 @@ admin:
             backup_settings: { label: 'Backup settings', desc: 'Retention windows and automated backup scheduling' }
             fiscal_year: { label: 'Fiscal year', desc: 'Start month and fiscal year for reports and KPIs' }
             data_retention_settings: { label: 'Retention periods', desc: 'GDPR deletion schedules per data category' }
-            workflow_sla_defaults: { label: 'Workflow SLA defaults', desc: 'Default deadlines for approval steps' }
+            workflow_sla_defaults: { label: 'Lifecycle SLA defaults', desc: 'Default deadlines for approval steps' }
     section:
         overview: Overview
         user_access: 'Users & Access'
@@ -174,8 +174,8 @@ admin:
             frameworks: 'Frameworks (active/catalog)'
             mappings_count: '%count% cross-framework mappings'
             unreviewed_mappings: 'Unreviewed seed mappings'
-            workflows_open: '%count% open workflows'
-            workflows_none: 'No open workflows'
+            workflows_open: '%count% open lifecycles'
+            workflows_none: 'No open lifecycles'
             review_now: 'Review now'
         modules:
             title: 'Modules Overview'
@@ -611,7 +611,7 @@ admin:
             title: 'Data Quality (Tier 3 — Operational Gaps)'
             all_ok: 'No data quality issues found — all operational data is complete and up to date.'
             issues_found: '%count% data quality issue(s) found. Please review and correct.'
-            workflows_stuck: 'Workflows Stuck (>30 Days)'
+            workflows_stuck: 'Lifecycles Stuck (>30 Days)'
             workflows_stuck_hint: 'These workflow instances have been in progress for more than 30 days. Review their current step, reassign if necessary, or close and re-open to restart the process.'
             risks_zero_values: 'Risks With No Probability/Impact'
             risks_zero_values_hint: 'These active risks have no probability or impact value set. Without these values, the risk score cannot be calculated. Open each risk and set the probability and impact fields.'
@@ -892,11 +892,11 @@ admin:
             workflow_instance: 'Workflow Instances'
         gdpr_cap: 'Max %days% days'
 
-    # ── Workflow SLA Defaults ─────────────────────────────────────────────────────
+    # ── Lifecycle SLA Defaults ────────────────────────────────────────────────────
     workflow_slas:
-        title: 'Workflow SLA Defaults'
-        subtitle: 'Set default SLA durations (hours) for each workflow event type.'
-        saved: 'Workflow SLA defaults saved successfully.'
+        title: 'Lifecycle SLA Defaults'
+        subtitle: 'Set default SLA durations (hours) for each lifecycle event type.'
+        saved: 'Lifecycle SLA defaults saved successfully.'
         csrf_invalid: 'Invalid security token. Please try again.'
         regulatory_minimum_enforced: 'One or more SLA values were below the regulatory minimum and were automatically adjusted.'
         help_text: 'These SLA defaults will be used by the Sprint-6b SlaDeadlineMonitor (Wave 2) to generate deadline warnings and escalations. Regulatory minimums (GDPR Art. 33, ISO 27035) cannot be undercut.'
@@ -906,7 +906,7 @@ admin:
             title: 'Wave 2 note'
             body: 'The SlaDeadlineMonitor that evaluates these values is planned for Wave 2. Save your settings now — they will be activated automatically once the monitor is deployed.'
         col:
-            event_type: 'Workflow event'
+            event_type: 'Lifecycle event'
             sla_hours: 'SLA (hours)'
             regulatory_basis: 'Regulatory basis'
         event:
@@ -1398,10 +1398,10 @@ industry_preset:
 
     workflows:
         title: 'Workflow Step Editor'
-        subtitle: 'Edit per-tenant step-level overrides for regulatory and lifecycle approval workflows'
+        subtitle: 'Edit per-tenant step-level overrides for regulatory approval lifecycles and lifecycle configurations'
         no_regulatory: 'No regulatory workflow configuration files found.'
-        no_lifecycle: 'No lifecycle workflow configuration files found.'
-        no_steps: 'No steps defined for this workflow. Lifecycle workflows use transition-level overrides.'
+        no_lifecycle: 'No lifecycle configuration files found.'
+        no_steps: 'No steps defined for this workflow. Lifecycle configurations use transition-level overrides.'
         no_yaml_baseline: 'No YAML baseline data available for this step.'
         yaml_baseline: 'YAML baseline'
         yaml_value: 'YAML value'
@@ -1412,7 +1412,7 @@ industry_preset:
         section:
             regulatory: 'Regulatory Workflows'
             regulatory_desc: 'Approval chain workflows with per-step overrides for roles, SLA, and auto-progress conditions.'
-            lifecycle: 'Lifecycle Workflows'
+            lifecycle: 'Lifecycle Configurations'
             lifecycle_desc: 'Entity status state machines — configure transition-level overrides via the Lifecycle Overrides editor.'
             steps: 'Approval Steps'
             steps_desc: '%count% steps defined in YAML'
@@ -1463,8 +1463,8 @@ industry_preset:
             enable_override: 'Enable override'
         hint:
             yaml_baseline: 'Missing overrides automatically use the YAML baseline value from the workflow configuration.'
-            lifecycle_redirect: 'Lifecycle workflows use transition-level overrides. Click "Transition overrides" to configure them.'
-            lifecycle_has_transitions: 'This is a lifecycle workflow. Use the Lifecycle Overrides editor to configure transition-level metadata.'
+            lifecycle_redirect: 'Lifecycle configurations use transition-level overrides. Click "Transition overrides" to configure them.'
+            lifecycle_has_transitions: 'This is a lifecycle configuration. Use the Lifecycle Overrides editor to configure transition-level metadata.'
         validation:
             days_non_negative: 'Days to complete must be 0 or greater.'
             conditions_invalid_json: 'Auto-progress conditions must be valid JSON.'
