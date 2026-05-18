@@ -14,7 +14,10 @@ use App\Repository\CorrectiveActionRepository;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -32,6 +35,7 @@ class CorrectiveActionController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
+        private readonly Security $security,
         private readonly ?CommentRepository $commentRepository = null,
     ) {
     }
@@ -198,5 +202,50 @@ class CorrectiveActionController extends AbstractController
                 throw $this->createAccessDeniedException('Action belongs to a different tenant.');
             }
         }
+    }
+
+    #[Route('/bulk-delete', name: 'bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $action = $this->repository->find($id);
+                if (!$action) {
+                    $errors[] = "CorrectiveAction ID $id not found";
+                    continue;
+                }
+                if ($tenant && $action->getTenant() !== $tenant) {
+                    $errors[] = "CorrectiveAction ID $id does not belong to your organization";
+                    continue;
+                }
+                $this->entityManager->remove($action);
+                $deleted++;
+            } catch (Exception $e) {
+                $errors[] = "Error deleting CorrectiveAction ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        return $this->json([
+            'success' => $deleted > 0,
+            'deleted' => $deleted,
+            'errors' => $errors,
+            'message' => "$deleted corrective actions deleted successfully",
+        ]);
     }
 }
