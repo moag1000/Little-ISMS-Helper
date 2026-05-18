@@ -76,7 +76,26 @@ export default class extends Controller {
     };
 
     connect() {
+        // Teleport the action-bar to <body> so position:fixed escapes any
+        // ancestor transform/filter/will-change stacking-context (e.g. card
+        // hover-translateY would otherwise make the bar appear at page-bottom
+        // instead of floating in the viewport). Stimulus target-resolution
+        // by ID/data-attr survives the DOM move.
+        const bar = this.hasActionBarTarget ? this.actionBarTarget : (this.hasBarTarget ? this.barTarget : null);
+        if (bar && bar.parentElement !== document.body) {
+            this._barOriginalParent = bar.parentElement;
+            document.body.appendChild(bar);
+        }
         this.updateActionBar();
+    }
+
+    disconnect() {
+        // Restore bar to original parent so Turbo navigations don't leave
+        // an orphan bar in <body>.
+        const bar = this.hasActionBarTarget ? this.actionBarTarget : (this.hasBarTarget ? this.barTarget : null);
+        if (bar && this._barOriginalParent && bar.parentElement === document.body) {
+            this._barOriginalParent.appendChild(bar);
+        }
     }
 
     selectAll(event) {
