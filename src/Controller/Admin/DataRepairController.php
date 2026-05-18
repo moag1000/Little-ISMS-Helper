@@ -1016,6 +1016,7 @@ class DataRepairController extends AbstractController
             ));
         } elseif ($result['success']) {
             $autoMarkedCount = count($result['auto_marked'] ?? []);
+            $autoMarkFailedCount = count($result['auto_mark_failed'] ?? []);
             $message = $this->translator->trans(
                 'admin.data_repair.schema.reconcile_applied',
                 ['%count%' => $result['executed']],
@@ -1025,6 +1026,18 @@ class DataRepairController extends AbstractController
                 $message .= ' · ' . $this->translator->trans(
                     'admin.data_repair.schema.auto_marked_migrations',
                     ['%count%' => $autoMarkedCount],
+                    'admin',
+                );
+            }
+            if ($autoMarkFailedCount > 0) {
+                $firstError = '';
+                foreach ($result['auto_mark_failed'] as $version => $err) {
+                    $firstError = sprintf('%s: %s', $version, $err);
+                    break;
+                }
+                $message .= ' · ' . $this->translator->trans(
+                    'admin.data_repair.schema.auto_mark_failed',
+                    ['%count%' => $autoMarkFailedCount, '%first%' => $firstError],
                     'admin',
                 );
             }

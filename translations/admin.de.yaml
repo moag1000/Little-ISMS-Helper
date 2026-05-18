@@ -567,6 +567,7 @@ admin:
             migrations_failed: 'Migrationen fehlgeschlagen: %error%'
             reconcile_applied: 'Schema-Reconcile erfolgreich (%count% Statements ausgeführt).'
             auto_marked_migrations: '%count% Migration(en) automatisch als ausgeführt markiert.'
+            auto_mark_failed: '%count% Migration(en) konnten NICHT markiert werden (erste: %first%).'
             reconcile_failed: 'Schema-Reconcile fehlgeschlagen: %error%'
             reconcile_blocked: 'Schema-Reconcile blockiert (%reason%). Bitte zuerst die ausstehenden Migrationen ausführen.'
         duplicates_merged: '%count% doppelter %type%-Datensatz/-Datensätze entfernt (ältester behalten).'
