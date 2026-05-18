@@ -9,7 +9,7 @@ use App\Entity\SoaSnapshot;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
-use App\Enum\WorkflowInstanceStatus;
+use App\Enum\DocumentStatus;
 use App\Repository\AssetRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
@@ -1025,7 +1025,7 @@ final class CertificationBundleExporter
             if ($template === null) {
                 continue;
             }
-            if ($doc->isArchived() || $doc->getStatus() === 'archived') {
+            if ($doc->isArchived() || $doc->getStatus() === DocumentStatus::Archived->value) {
                 continue;
             }
 
@@ -1129,7 +1129,7 @@ final class CertificationBundleExporter
                 $idx = 1;
 
                 foreach ($evidence as $doc) {
-                    if ($doc->isArchived() || $doc->getStatus() === 'archived') {
+                    if ($doc->isArchived() || $doc->getStatus() === DocumentStatus::Archived->value) {
                         continue;
                     }
                     if ($doc->getGeneratedFromTemplate() !== null) {
@@ -1219,7 +1219,7 @@ final class CertificationBundleExporter
                     if (!$instance instanceof WorkflowInstance) {
                         continue;
                     }
-                    if ($instance->getStatus() !== WorkflowInstanceStatus::Approved->value) {
+                    if ($instance->getStatus() !== 'approved') {
                         continue;
                     }
                     if ($best === null || ($instance->getCompletedAt() !== null
@@ -1246,7 +1246,7 @@ final class CertificationBundleExporter
         }
 
         // 2) Wizard-policy edit signal — locked + edited == approved-by-editor.
-        if ($doc->getStatus() === 'approved') {
+        if ($doc->getStatus() === DocumentStatus::Approved->value) {
             $editor = $doc->getPolicyBodyEditedBy();
             $editedAt = $doc->getPolicyBodyEditedAt();
             if ($editor !== null && $editedAt !== null) {
@@ -1261,7 +1261,7 @@ final class CertificationBundleExporter
         // 3) Upload fallback — only treat as "approved by uploader" when
         // status actually says approved. Otherwise we leave it blank so
         // the auditor sees the gap rather than a misleading identity.
-        if ($doc->getStatus() === 'approved') {
+        if ($doc->getStatus() === DocumentStatus::Approved->value) {
             $uploader = $doc->getUploadedBy();
             $uploadedAt = $doc->getUploadedAt();
             if ($uploader !== null) {
@@ -1379,7 +1379,7 @@ final class CertificationBundleExporter
             }
 
             foreach ($evidence as $doc) {
-                if ($doc->isArchived() || $doc->getStatus() === 'archived') {
+                if ($doc->isArchived() || $doc->getStatus() === DocumentStatus::Archived->value) {
                     continue;
                 }
 

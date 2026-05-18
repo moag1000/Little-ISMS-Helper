@@ -7,10 +7,9 @@ namespace App\Service;
 use App\Entity\Asset;
 use App\Entity\Risk;
 use App\Entity\Tenant;
-use App\Enum\AuditFindingStatus;
+use App\Enum\DocumentStatus;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
-use App\Enum\InternalAuditStatus;
 use App\Enum\RiskStatus;
 use App\Enum\RiskTreatmentPlanStatus;
 use App\Enum\TrainingStatus;
@@ -213,7 +212,7 @@ class DashboardStatisticsService
 
         // Audit findings resolved — no open AuditFinding
         $openFindings = $this->entityManager()->getRepository(\App\Entity\AuditFinding::class)
-            ->count(['tenant' => $tenant, 'status' => AuditFindingStatus::Open->value]);
+            ->count(['tenant' => $tenant, 'status' => \App\Entity\AuditFinding::STATUS_OPEN]);
         if ($openFindings === 0) {
             $checklist['audit_findings_resolved'] = 1;
         }
@@ -1482,7 +1481,7 @@ class DashboardStatisticsService
             $allAudits,
             fn($a): bool => $a->getPlannedDate() !== null && $a->getPlannedDate()->format('Y') === $thisYear
         );
-        $completedAudits = array_filter($auditsThisYear, fn($a): bool => $a->getStatus() === InternalAuditStatus::Completed->value);
+        $completedAudits = array_filter($auditsThisYear, fn($a): bool => $a->getStatus() === 'completed');
 
         // Count open findings (assuming audits have a method for findings)
         $openFindings = 0;
@@ -1592,7 +1591,8 @@ class DashboardStatisticsService
         $allDocuments = $this->documentRepository->findAll();
         $activeDocuments = array_filter(
             $allDocuments,
-            fn($d): bool => method_exists($d, 'getStatus') && ($d->getStatus() === 'approved' || $d->getStatus() === 'active' || $d->getStatus() === null)
+            // 'active' is a legacy/pre-migration value kept for backward-compat; not a DocumentStatus enum case.
+            fn($d): bool => method_exists($d, 'getStatus') && ($d->getStatus() === DocumentStatus::Approved->value || $d->getStatus() === 'active' || $d->getStatus() === null)
         );
 
         // Documents needing review (> 12 months since last review)

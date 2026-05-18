@@ -11,7 +11,8 @@ use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\Risk;
 use App\Entity\User;
-use App\Enum\BusinessContinuityPlanStatus;
+use App\Enum\DpiaStatus;
+use App\Enum\ProcessingActivityStatus;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\CorrectiveActionRepository;
 use App\Repository\DataBreachRepository;
@@ -141,7 +142,7 @@ final class ReviewReminderService
      */
     public function getOverdueBcPlanReviews(): array
     {
-        $bcPlans = $this->bcPlanRepository->findBy(['status' => BusinessContinuityPlanStatus::Active->value]);
+        $bcPlans = $this->bcPlanRepository->findBy(['status' => 'active']);
 
         return array_filter($bcPlans, function (BusinessContinuityPlan $plan): bool {
             return $plan->isReviewOverdue() || $plan->isTestOverdue();
@@ -157,7 +158,7 @@ final class ReviewReminderService
     {
         $now = new DateTime();
         // S3 P-4: canonical 5-stage lifecycle — legacy 'active' → 'published'.
-        $activities = $this->processingActivityRepository->findBy(['status' => 'published']);
+        $activities = $this->processingActivityRepository->findBy(['status' => ProcessingActivityStatus::Published->value]);
 
         return array_filter($activities, function (ProcessingActivity $activity) use ($now): bool {
             $nextReview = $activity->getNextReviewDate();
@@ -173,7 +174,7 @@ final class ReviewReminderService
     public function getOverdueDpiaReviews(): array
     {
         $now = new DateTime();
-        $dpias = $this->dpiaRepository->findBy(['status' => 'approved']);
+        $dpias = $this->dpiaRepository->findBy(['status' => DpiaStatus::Approved->value]);
 
         return array_filter($dpias, function (DataProtectionImpactAssessment $dpia) use ($now): bool {
             $nextReview = $dpia->getNextReviewDate();
@@ -442,7 +443,7 @@ final class ReviewReminderService
 
     private function getUpcomingBcPlanReviews(DateTime $now, DateTime $threshold): array
     {
-        $plans = $this->bcPlanRepository->findBy(['status' => BusinessContinuityPlanStatus::Active->value]);
+        $plans = $this->bcPlanRepository->findBy(['status' => 'active']);
 
         return array_filter($plans, function (BusinessContinuityPlan $plan) use ($now, $threshold): bool {
             $nextReview = $plan->getNextReviewDate();
@@ -458,7 +459,7 @@ final class ReviewReminderService
     private function getUpcomingProcessingActivityReviews(DateTime $now, DateTime $threshold): array
     {
         // S3 P-4: canonical 5-stage lifecycle — legacy 'active' → 'published'.
-        $activities = $this->processingActivityRepository->findBy(['status' => 'published']);
+        $activities = $this->processingActivityRepository->findBy(['status' => ProcessingActivityStatus::Published->value]);
 
         return array_filter($activities, function (ProcessingActivity $activity) use ($now, $threshold): bool {
             $nextReview = $activity->getNextReviewDate();
@@ -468,7 +469,7 @@ final class ReviewReminderService
 
     private function getUpcomingDpiaReviews(DateTime $now, DateTime $threshold): array
     {
-        $dpias = $this->dpiaRepository->findBy(['status' => 'approved']);
+        $dpias = $this->dpiaRepository->findBy(['status' => DpiaStatus::Approved->value]);
 
         return array_filter($dpias, function (DataProtectionImpactAssessment $dpia) use ($now, $threshold): bool {
             $nextReview = $dpia->getNextReviewDate();

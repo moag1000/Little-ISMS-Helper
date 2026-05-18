@@ -7,6 +7,7 @@ namespace App\Controller;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
 use App\Entity\Document;
+use App\Enum\DocumentStatus;
 use App\Form\DocumentType;
 use App\Entity\DocumentVersion;
 use App\Repository\CommentRepository;
@@ -125,7 +126,7 @@ class DocumentController extends AbstractController
         if ($currentStatus === 'archived') {
             $documents = array_filter(
                 $allDocuments,
-                static fn(Document $document): bool => $document->getStatus() === 'archived',
+                static fn(Document $document): bool => $document->getStatus() === DocumentStatus::Archived->value,
             );
         } else {
             $documents = array_filter($allDocuments, fn(Document $document): bool => $document->isOperational());
@@ -172,8 +173,8 @@ class DocumentController extends AbstractController
             ? array_filter($allDocuments, fn(Document $d): bool => $d->isOperational())
             : $documents;
 
-        $kpiDrafts   = count(array_filter($kpiPool, static fn(Document $d): bool => $d->getStatus() === 'draft'));
-        $kpiInReview = count(array_filter($kpiPool, static fn(Document $d): bool => $d->getStatus() === 'in_review'));
+        $kpiDrafts   = count(array_filter($kpiPool, static fn(Document $d): bool => $d->getStatus() === DocumentStatus::Draft->value));
+        $kpiInReview = count(array_filter($kpiPool, static fn(Document $d): bool => $d->getStatus() === DocumentStatus::InReview->value));
 
         // Calculate detailed statistics based on origin
         if ($tenant) {

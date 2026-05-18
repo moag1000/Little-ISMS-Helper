@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Consent;
 use App\Entity\User;
+use App\Enum\ConsentStatus;
 use App\Form\ConsentType;
 use App\Lifecycle\LifecycleService;
 use App\Repository\ConsentRepository;
@@ -159,7 +160,7 @@ class ConsentController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         // Only allow editing if pending or active
-        if (!in_array($consent->getStatus(), ['pending_verification', 'active'], true)) {
+        if (!in_array($consent->getStatus(), [ConsentStatus::PendingVerification->value, ConsentStatus::Active->value], true)) {
             $this->addFlash('error', $this->translator->trans('consent.error.cannot_edit_status', [], 'consent'));
             return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);
         }

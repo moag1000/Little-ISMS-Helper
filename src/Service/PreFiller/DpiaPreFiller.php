@@ -6,6 +6,7 @@ namespace App\Service\PreFiller;
 
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\Risk;
+use App\Enum\DpiaStatus;
 
 /**
  * Sprint-2 P-7 Wave-2 — DPIA Pre-Filler from a Risk source.
@@ -66,7 +67,7 @@ final readonly class DpiaPreFiller
         }
 
         // Always start in 'draft' so the DPO can iterate before submission.
-        $dpia->setStatus('draft'); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist DPIA; 'draft' is the dpia_lifecycle initial_marking)
+        $dpia->setStatus(DpiaStatus::Draft); // @phpstan-ignore lifecycle.directSetStatus (initial state on pre-persist DPIA; 'draft' is the dpia_lifecycle initial_marking)
 
         return $dpia;
     }

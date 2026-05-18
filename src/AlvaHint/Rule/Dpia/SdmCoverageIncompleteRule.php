@@ -8,6 +8,7 @@ use App\AlvaHint\AbstractAlvaHintRule;
 use App\AlvaHint\AlvaHint;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\User;
+use App\Enum\DpiaStatus;
 
 /**
  * Tier-3 hint: SDM 3.1 (Standard-Datenschutzmodell der DSK) demands
@@ -37,7 +38,8 @@ final class SdmCoverageIncompleteRule extends AbstractAlvaHintRule
         if (!$entity instanceof DataProtectionImpactAssessment) {
             return false;
         }
-        if (in_array($entity->getStatus(), ['draft', 'archived'], true)) {
+        // Note: 'archived' is not a DpiaStatus enum case but kept as a legacy/defensive value.
+        if (in_array($entity->getStatus(), [DpiaStatus::Draft->value, 'archived'], true)) {
             return false;
         }
 

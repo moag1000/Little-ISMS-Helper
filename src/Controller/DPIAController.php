@@ -10,6 +10,7 @@ use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Asset;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\Risk;
+use App\Enum\DpiaStatus;
 use App\Form\DataProtectionImpactAssessmentType;
 use App\Repository\CommentRepository;
 use App\Service\DataProtectionImpactAssessmentService;
@@ -139,7 +140,7 @@ class DPIAController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         // Only draft and requires_revision can be edited
-        if (!in_array($dataProtectionImpactAssessment->getStatus(), ['draft', 'requires_revision'])) {
+        if (!in_array($dataProtectionImpactAssessment->getStatus(), [DpiaStatus::Draft->value, DpiaStatus::RequiresRevision->value], true)) {
             $this->addFlash('warning', 'Only draft or revision-required DPIAs can be edited');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
         }
