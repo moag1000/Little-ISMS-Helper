@@ -16,6 +16,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Exception\Tenant\TenantOrphanException;
 use App\Exception\Workflow\InvalidStatusTransitionException;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\DataBreachRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -34,6 +35,7 @@ final class DataBreachService
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
+        private readonly LifecycleTransitionInterface $lifecycleService,
     ) {
     }
 
@@ -249,10 +251,18 @@ final class DataBreachService
             ));
         }
 
-        $dataBreach->setStatus('under_assessment'); // @phpstan-ignore lifecycle.directSetStatus (DataBreachService manages its own role/guard checks per GDPR Art.33; LifecycleService migration deferred to X.6)
         $dataBreach->setAssessor($user);
-
         $this->entityManager->flush();
+
+        // X.6: assess transition (draft → under_assessment) via data_breach_lifecycle.
+        // data_breach_lifecycle already had this transition; migrated from direct setStatus().
+        $this->lifecycleService->transition(
+            $dataBreach,
+            'data_breach_lifecycle',
+            'assess',
+            $user,
+            'Submitted for assessment per GDPR Art. 33',
+        );
 
         $this->auditLogger->logCustom(
             'data_breach.submitted_for_assessment',

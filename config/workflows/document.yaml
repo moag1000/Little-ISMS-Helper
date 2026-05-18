@@ -14,6 +14,7 @@ framework:
                 - approved
                 - published
                 - archived
+                - deleted
             transitions:
                 submit_for_review:
                     from: draft
@@ -51,4 +52,28 @@ framework:
                     to: published
                     metadata:
                         roles: [ROLE_MANAGER]
+                        reason_required: true
+                # X.6: policy supersession — archive the current (approved or published) doc
+                # when a previous version is restored. Reason required for audit trail.
+                archive_on_supersession:
+                    from: [draft, in_review, approved, published, archived]
+                    to: archived
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                # X.6: restore archived policy doc back to approved state (not published).
+                # Used by PolicyDiffController::restorePrevious when supersession is undone.
+                restore_to_approved:
+                    from: archived
+                    to: approved
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: true
+                # X.6: soft-delete terminal state — ADMIN only, reason required, irreversible.
+                # Replaces direct setStatus('deleted') in DocumentController::delete().
+                soft_delete:
+                    from: [draft, in_review, approved, published, archived]
+                    to: deleted
+                    metadata:
+                        roles: [ROLE_ADMIN]
                         reason_required: true

@@ -9,6 +9,7 @@ use App\Entity\RiskAppetite;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\EmailNotificationService;
@@ -33,6 +34,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
     private MockObject $userRepository;
     private MockObject $auditLogger;
     private MockObject $logger;
+    private MockObject $lifecycleService;
     private RiskAcceptanceWorkflowService $service;
 
     protected function setUp(): void
@@ -44,6 +46,8 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        // X.6: LifecycleService mock — transition() is a no-op in unit tests.
+        $this->lifecycleService = $this->createMock(LifecycleTransitionInterface::class);
 
         // Phase 8L.F1: neuer Resolver-Dependency. Default-View (3/7/25)
         // reicht für Tests — Verhalten identisch zu den alten Const-Werten.
@@ -60,6 +64,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
             $this->auditLogger,
             $this->logger,
             $approvalResolver,
+            $this->lifecycleService,
         );
     }
 
@@ -260,10 +265,19 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $risk->expects($this->once())->method('setFormallyAccepted')->with(true);
         $risk->expects($this->once())->method('setAcceptanceApprovedBy')->with('John Doe');
         $risk->expects($this->once())->method('setAcceptanceApprovedAt');
-        $risk->expects($this->once())->method('setStatus')->with(\App\Enum\RiskStatus::Accepted);
+        // X.6: setStatus() is now called via LifecycleService::transition('accept') instead
+        // of directly. The mock transition() is a no-op; verify the surrounding logic is correct.
 
         $this->entityManager->expects($this->once())->method('persist')->with($risk);
         $this->entityManager->expects($this->once())->method('flush');
+        // Verify LifecycleService::transition() is called with the 'accept' transition name.
+        $this->lifecycleService->expects($this->once())->method('transition')->with(
+            $risk,
+            'risk_lifecycle',
+            'accept',
+            $user,
+            $this->stringContains('approved'),
+        );
 
         $result = $this->service->approveAcceptance($risk, $user, 'Approved');
 
@@ -283,8 +297,16 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $user->method('getFullName')->willReturn('Jane Doe');
         $user->method('getEmail')->willReturn('jane@example.com');
 
-        $risk->expects($this->once())->method('setStatus')->with(\App\Enum\RiskStatus::Assessed);
         $risk->expects($this->once())->method('setFormallyAccepted')->with(false);
+        // X.6: setStatus(Assessed) is now called via LifecycleService::transition('revert_to_assessed')
+        // instead of directly. Verify transition is invoked with the correct transition name.
+        $this->lifecycleService->expects($this->once())->method('transition')->with(
+            $risk,
+            'risk_lifecycle',
+            'revert_to_assessed',
+            $user,
+            $this->stringContains('Needs more mitigation'),
+        );
 
         $this->entityManager->expects($this->once())->method('persist')->with($risk);
         $this->entityManager->expects($this->once())->method('flush');

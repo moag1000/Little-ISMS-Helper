@@ -939,9 +939,23 @@ class DocumentController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete'.$document->getId(), $request->request->get('_token'))) {
-            // Mark as deleted instead of actually removing
-            $document->setStatus('deleted'); // @phpstan-ignore lifecycle.directSetStatus (soft-delete terminal state; 'deleted' is outside document_lifecycle transitions; lifecycle migration tracked in X.6)
-            $this->entityManager->flush();
+            // X.6: soft_delete transition — terminal state, ROLE_ADMIN only, reason required.
+            // Replaces direct setStatus('deleted'). document_lifecycle extended with
+            // 'deleted' place + 'soft_delete' transition (X.6, config/workflows/document.yaml).
+            if ($this->lifecycleService !== null) {
+                $lifecycleUser = $user instanceof User ? $user : null;
+                $this->lifecycleService->transition(
+                    $document,
+                    'document_lifecycle',
+                    'soft_delete',
+                    $lifecycleUser,
+                    'Document soft-deleted by admin',
+                );
+            } else {
+                // Fallback: direct setter if lifecycle service unavailable (should not happen in prod).
+                $document->setStatus('deleted'); // @phpstan-ignore lifecycle.directSetStatus (LifecycleService unavailable fallback — guarded by null-check)
+                $this->entityManager->flush();
+            }
 
             $this->addFlash('success', $this->translator->trans('document.success.deleted'));
         }

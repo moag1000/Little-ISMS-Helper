@@ -10,10 +10,10 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Lifecycle X.2 — Unit tests for DataSubjectRequest custom lifecycle (privacy-gated).
+ * Lifecycle X.2 + X.6 — Unit tests for DataSubjectRequest custom lifecycle (privacy-gated).
  *
- * Places: received → in_progress → completed | rejected
- * GDPR Art. 12-23: 30-day SLA for data subject rights requests.
+ * Places (X.6 extended): received → identity_verification | in_progress → extended | completed | rejected
+ * GDPR Art. 12-23: 30-day SLA for data subject rights requests; Art. 12(3) extension to 90 days.
  * Module gate: privacy.
  */
 final class DataSubjectRequestWorkflowTest extends TestCase
@@ -47,6 +47,35 @@ final class DataSubjectRequestWorkflowTest extends TestCase
         $entity = new DataSubjectRequest();
         $places = ['received', 'in_progress', 'completed', 'rejected'];
         foreach ($places as $place) {
+            $entity->setStatus($place);
+            $this->assertSame($place, $entity->getStatus(), "setStatus('$place') should round-trip");
+        }
+    }
+
+    /**
+     * X.6: Verify the two new places added to data_subject_request_lifecycle are round-trippable.
+     * identity_verification and extended are now workflow places (GDPR Art. 12(3)/(6)).
+     */
+    #[Test]
+    public function statusAcceptsX6ExtendedPlaces(): void
+    {
+        $entity = new DataSubjectRequest();
+        $x6Places = ['identity_verification', 'extended'];
+        foreach ($x6Places as $place) {
+            $entity->setStatus($place);
+            $this->assertSame($place, $entity->getStatus(), "setStatus('$place') should round-trip after X.6 extension");
+        }
+    }
+
+    /**
+     * X.6: Verify all 6 workflow places are round-trippable (combined regression test).
+     */
+    #[Test]
+    public function statusAcceptsAllSixWorkflowPlaces(): void
+    {
+        $entity = new DataSubjectRequest();
+        $allPlaces = ['received', 'identity_verification', 'in_progress', 'extended', 'completed', 'rejected'];
+        foreach ($allPlaces as $place) {
             $entity->setStatus($place);
             $this->assertSame($place, $entity->getStatus(), "setStatus('$place') should round-trip");
         }
