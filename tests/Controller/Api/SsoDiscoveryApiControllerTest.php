@@ -92,27 +92,27 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
         self::assertStringContainsString('Connection refused', $data['error']);
     }
 
+    /**
+     * Returns a dedicated SSO-discovery admin tied to a dedicated tenant.
+     *
+     * Anti-pattern guard (post-#473 incident): we deliberately do NOT
+     * `findAll()` on the User repo and pick the first admin — that pattern
+     * is vulnerable to fixture-leaks from other tests (e.g. a SUPER_ADMIN
+     * persisted in another test class's setUp() that wasn't cleaned up in
+     * tearDown). Use a stable, test-specific email + tenant-code instead.
+     */
     private function getOrCreateAdminUser(mixed $client): User
     {
         $em = $client->getContainer()->get(EntityManagerInterface::class);
         $repo = $em->getRepository(User::class);
 
-        // Try existing admin first
-        $users = $repo->findAll();
-        foreach ($users as $u) {
-            if (in_array('ROLE_ADMIN', $u->getRoles(), true) || in_array('ROLE_SUPER_ADMIN', $u->getRoles(), true)) {
-                return $u;
-            }
-        }
-
-        // No fixture users — create a minimal one for this test run
         $email = 'sso-discovery-test-admin@test.test';
         $existing = $repo->findOneBy(['email' => $email]);
         if ($existing !== null) {
             return $existing;
         }
 
-        $tenant = $em->getRepository(Tenant::class)->findOneBy([]) ?? $this->createTenant($em);
+        $tenant = $this->getOrCreateTenant($em);
 
         $user = new User();
         $user->setEmail($email);
@@ -128,11 +128,21 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
         return $user;
     }
 
-    private function createTenant(EntityManagerInterface $em): Tenant
+    /**
+     * Returns a dedicated tenant for the SSO-discovery test family.
+     * Looked up by deterministic code (NOT findOneBy([])) to avoid picking
+     * up a leaked tenant from another test class.
+     */
+    private function getOrCreateTenant(EntityManagerInterface $em): Tenant
     {
+        $code = 'SDT-FIXED';
+        $tenant = $em->getRepository(Tenant::class)->findOneBy(['code' => $code]);
+        if ($tenant !== null) {
+            return $tenant;
+        }
         $tenant = new Tenant();
         $tenant->setName('SsoDiscoveryTest');
-        $tenant->setCode('SDT' . substr(uniqid(), -5));
+        $tenant->setCode($code);
         $em->persist($tenant);
         $em->flush();
         return $tenant;
