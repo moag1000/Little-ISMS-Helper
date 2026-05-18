@@ -444,7 +444,19 @@ class AuditController extends AbstractController
         $internalAudit->setUpdatedAt(new DateTimeImmutable());
 
         $this->entityManager->flush();
-        $this->lifecycleService->transition($internalAudit, 'internal_audit_lifecycle', 'approve', $currentUser);
+        // 4-eyes context: the prior reporter is the workflow-chain initiator,
+        // $currentUser is the second pair of eyes (the approver). The controller
+        // already enforced reporter ≠ currentUser above; passing them as
+        // (user, four_eyes_approver) lets FourEyesValidator confirm the
+        // approver-role requirement from `config/workflows/internal_audit.yaml`.
+        $this->lifecycleService->transition(
+            $internalAudit,
+            'internal_audit_lifecycle',
+            'approve',
+            $reporter instanceof User ? $reporter : $currentUser,
+            null,
+            $currentUser,
+        );
 
         $this->auditLogger->logCustom(
             action: 'audit.report.approved',

@@ -151,8 +151,12 @@ final class ISMSObjectiveType extends AbstractType
                 ],
                 'help' => 'objective.help.target_date'
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
+            // Owned by `isms_objective_lifecycle`. Transitions via
+            // LifecycleService::transition() only.
             ->add('status', ChoiceType::class, [
                 'label' => 'objective.field.status',
+                'help' => 'objective.help.status_readonly',
                 'choices' => [
                     'objective.status.not_started' => 'not_started',
                     'objective.status.in_progress' => 'in_progress',
@@ -160,10 +164,9 @@ final class ISMSObjectiveType extends AbstractType
                     'objective.status.delayed' => 'delayed',
                     'objective.status.cancelled' => 'cancelled',
                 ],
-                                'constraints' => [
-                    new Assert\NotBlank(message: 'objective.validation.status_required')
-                ],
-                    'choice_translation_domain' => 'objective',
+                'required' => false,
+                'disabled' => true,
+                'choice_translation_domain' => 'objective',
             ])
             ->add('progressNotes', TextareaType::class, [
                 'label' => 'objective.field.progress_notes',

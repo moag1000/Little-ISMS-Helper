@@ -55,8 +55,12 @@ final class WorkflowInstanceType extends AbstractType
                 ],
                 'help' => 'workflow_instance.help.entity_id'
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
+            // Owned by `workflow_instance_lifecycle`. YAML 4-eyes on `approve`.
+            // Transitions via LifecycleService::transition() only.
             ->add('status', ChoiceType::class, [
                 'label' => 'workflow_instance.field.status',
+                'help' => 'workflow_instance.help.status_readonly',
                 'choices' => [
                     'workflow_instance.status.pending' => 'pending',
                     'workflow_instance.status.in_progress' => 'in_progress',
@@ -64,9 +68,8 @@ final class WorkflowInstanceType extends AbstractType
                     'workflow_instance.status.rejected' => 'rejected',
                     'workflow_instance.status.cancelled' => 'cancelled',
                 ],
-                                'constraints' => [
-                    new Assert\NotBlank(message: 'workflow_instance.validation.status_required')
-                ],
+                'required' => false,
+                'disabled' => true,
                 'choice_translation_domain' => 'workflows',
             ])
             ->add('initiatedBy', EntityType::class, [

@@ -35,8 +35,10 @@ final class LifecycleService implements LifecycleTransitionInterface
         string $transitionName,
         ?User $user = null,
         ?string $reason = null,
+        ?User $fourEyesApprover = null,
     ): void {
         if (!method_exists($entity, 'getStatus') || !method_exists($entity, 'setStatus')) {
+            // @intentional-assertion: programmer-error guard — entity wired into a workflow without getStatus()/setStatus() is a config-time mistake, not a runtime domain failure.
             throw new \LogicException(sprintf(
                 'Entity %s lacks getStatus()/setStatus() and cannot be lifecycle-managed.',
                 $entity::class,
@@ -50,6 +52,7 @@ final class LifecycleService implements LifecycleTransitionInterface
             $workflow->apply($entity, $transitionName, [
                 'user' => $user,
                 'reason' => $reason,
+                'four_eyes_approver' => $fourEyesApprover,
             ]);
         } catch (NotEnabledTransitionException $e) {
             $allowed = array_map(

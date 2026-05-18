@@ -16,7 +16,13 @@ use App\Entity\User;
 interface LifecycleTransitionInterface
 {
     /**
+     * @param  User|null $fourEyesApprover Required when the transition declares
+     *                                     `four_eyes: true` in YAML metadata.
+     *                                     Enforced by FourEyesValidator subscriber.
+     *
      * @throws InvalidTransitionException
+     * @throws \App\Lifecycle\Exception\ReasonRequiredException
+     * @throws \App\Lifecycle\Exception\FourEyesRequiredException
      */
     public function transition(
         object $entity,
@@ -24,5 +30,6 @@ interface LifecycleTransitionInterface
         string $transitionName,
         ?User $user = null,
         ?string $reason = null,
+        ?User $fourEyesApprover = null,
     ): void;
 }

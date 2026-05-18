@@ -50,8 +50,12 @@ final class CorrectiveActionType extends AbstractType
                 'attr' => ['rows' => 4],
                 'help' => 'corrective_action.help.root_cause_analysis',
             ])
+            // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
+            // Owned by `corrective_action_lifecycle`. YAML 4-eyes on
+            // `verify_effective`. Transitions via LifecycleService only.
             ->add('status', ChoiceType::class, [
                 'label' => 'corrective_action.field.status',
+                'help' => 'corrective_action.help.status_readonly',
                 'choices' => [
                     'corrective_action.status.planned' => CorrectiveActionStatus::Planned->value,
                     'corrective_action.status.in_progress' => CorrectiveActionStatus::InProgress->value,
@@ -60,7 +64,8 @@ final class CorrectiveActionType extends AbstractType
                     'corrective_action.status.verified_ineffective' => CorrectiveActionStatus::VerifiedIneffective->value,
                 ],
                 'choice_translation_domain' => 'audits',
-                'required' => true,
+                'required' => false,
+                'disabled' => true,
             ])
             ->add('actionType', ChoiceType::class, [
                 'label' => 'audits.field.action_type',
