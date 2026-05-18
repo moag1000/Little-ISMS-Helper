@@ -69,16 +69,23 @@ Checkbox: "Ich bestatige destructive Aenderungen (DROP TABLE / TRUNCATE)"
 
 ### 3. Daten-Integritaet pruefen und reparieren
 
-Drei Aktionen sind verfuegbar:
+Die folgenden Aktionen sind verfuegbar:
 
 | Aktion | Beschreibung |
 |---|---|
 | **Orphans bereinigen** | Entfernt Datensaetze ohne Elterntenant (z. B. nach fehlgeschlagenem Tenant-Delete) |
 | **Tenant-Mismatches korrigieren** | Setzt `tenant_id` auf Basis des naechsten erreichbaren Elternobjekts (Asset --> Risk-Link etc.) |
 | **Duplikate zusammenfuehren** | Fasst identische Eintraege (gleicher Name + gleicher Tenant) zu einem zusammen; behaelt den aeltesten Datensatz |
+| **Verwaiste Datei-Uploads in Quarantaene** | Verschiebt Dateien aus `public/uploads/`, die in keiner Doctrine-Entity referenziert werden, nach `var/quarantine/<datum>/`. Niemals direkt `unlink`. |
+| **Cascade-Cleanup** | Loescht dangling Referenzen (WorkflowInstance ohne Ziel, abgelaufene MfaToken, SsoUserApproval ohne Reviewer, EvidenceReverificationTask ohne Anker, NotificationDelivery ohne Rule) unter einem Audit-Batch. Begruendung >= 20 Zeichen erforderlich. |
+| **JSON-Schema-Validierung** | Nur Erkennung — listet Tenant.settings / TenantPolicySetting.value / NotificationRule.conditions / WorkflowStep.metadata-Verletzungen. Keine Auto-Reparatur. |
+| **Audit-Log-Integritaet** | Nur Erkennung — Bulk-Batch-Mismatches, Tages-Luecken im AuditLog, NULL-Tenant-Eintraege. Keine Auto-Reparatur. |
+| **Status-Enum-Drift** | Nur Erkennung — DB-Statuswerte, die nicht im neuen `App\Enum\<Entity>Status` enthalten sind. Manuelle Triage erforderlich. |
 
 Jede Aktion zeigt zuerst einen Vorschau-Bericht an. Sie muessen den Bericht
-bestaetigen, bevor Aenderungen gespeichert werden.
+bestaetigen, bevor Aenderungen gespeichert werden. Die letzten drei
+Kategorien sind detection-only — eine versteckte automatische Reparatur
+koennte echte Lifecycle-Bugs verbergen.
 
 ---
 

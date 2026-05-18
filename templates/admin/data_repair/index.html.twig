@@ -2016,5 +2016,282 @@
         </div>
     </section>
 
+    {# =================================================================
+     # Extended-coverage sections (2026-05): file orphans, cascade
+     # cleanup, JSON-schema, audit-log integrity, status-enum drift.
+     # ================================================================= #}
+
+    {# 1. Orphaned upload files — disk-vs-DB cross-check. #}
+    {% set _uploads_count = orphanedUploads.files|length %}
+    <section class="fa-section {{ 'mt-4 border-' ~ (_uploads_count > 0 ? 'warning' : 'success') }}">
+        <div class="fa-section__header">
+            <h2 class="mb-0">
+                <i class="fa-icon fa-icon--nav-archive" aria-hidden="true"></i>
+                {{ 'admin.data_repair.uploads.title'|trans({}, 'admin') }}
+                <span class="badge {{ _uploads_count > 0 ? 'bg-warning' : 'bg-success' }} ms-2">
+                    {{ _uploads_count }}{% if orphanedUploads.scanned > 0 %} / {{ orphanedUploads.scanned }}{% endif %}
+                </span>
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            <p class="text-muted small mb-2">{{ 'admin.data_repair.uploads.description'|trans({}, 'admin') }}</p>
+            {% if orphanedUploads.uploads_dir is null %}
+                {{ _fa_alert.render({ variant: 'info', body: 'admin.data_repair.uploads.unavailable'|trans({}, 'admin') }) }}
+            {% elseif _uploads_count == 0 %}
+                {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.uploads.all_ok'|trans({}, 'admin') }) }}
+            {% else %}
+                <div class="table-responsive mb-3">
+                    <table class="fa-table fa-table--sm">
+                        <thead class="fa-table__head"><tr>
+                            <th class="fa-table__cell">{{ 'admin.data_repair.uploads.col_path'|trans({}, 'admin') }}</th>
+                            <th class="fa-table__cell">{{ 'admin.data_repair.uploads.col_size'|trans({}, 'admin') }}</th>
+                            <th class="fa-table__cell">{{ 'admin.data_repair.uploads.col_mtime'|trans({}, 'admin') }}</th>
+                        </tr></thead>
+                        <tbody class="fa-table__body">
+                            {% for file in orphanedUploads.files|slice(0, 20) %}
+                                <tr>
+                                    <td class="fa-table__cell"><code class="small">{{ file.relative }}</code></td>
+                                    <td class="fa-table__cell">{{ (file.size / 1024)|round(1) }} KB</td>
+                                    <td class="fa-table__cell"><small class="text-muted">{{ file.mtime|date('Y-m-d H:i') }}</small></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if _uploads_count > 20 %}
+                        <p class="small text-muted mb-0">… {{ _uploads_count - 20 }} {{ 'admin.data_repair.uploads.more'|trans({}, 'admin') }}</p>
+                    {% endif %}
+                </div>
+
+                <form method="post" action="{{ path('admin_data_repair_quarantine_uploads') }}"
+                      onsubmit="return confirm('{{ 'admin.data_repair.uploads.confirm_quarantine'|trans({'%count%': _uploads_count}, 'admin')|e('js') }}');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('quarantine_uploads') }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">
+                        <i class="fa-icon fa-icon--nav-archive" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.uploads.action_quarantine'|trans({'%count%': _uploads_count}, 'admin') }}
+                    </button>
+                    <span class="small text-muted ms-2">{{ 'admin.data_repair.uploads.action_hint'|trans({}, 'admin') }}</span>
+                </form>
+            {% endif %}
+        </div>
+    </section>
+
+    {# 2. Cascade cleanup — 5 buckets. #}
+    {% set _cascade_total = 0 %}
+    {% for items in cascadeOrphans %}{% set _cascade_total = _cascade_total + items|length %}{% endfor %}
+    <section class="fa-section {{ 'mt-4 border-' ~ (_cascade_total > 0 ? 'warning' : 'success') }}">
+        <div class="fa-section__header">
+            <h2 class="mb-0">
+                <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
+                {{ 'admin.data_repair.cascade.title'|trans({}, 'admin') }}
+                <span class="badge {{ _cascade_total > 0 ? 'bg-warning' : 'bg-success' }} ms-2">{{ _cascade_total }}</span>
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            <p class="text-muted small mb-3">{{ 'admin.data_repair.cascade.description'|trans({}, 'admin') }}</p>
+            {% if _cascade_total == 0 %}
+                {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.cascade.all_ok'|trans({}, 'admin') }) }}
+            {% else %}
+                <div class="row g-3 mb-3">
+                    {% for category, items in cascadeOrphans %}
+                        <div class="col-md-4">
+                            <div class="fa-feature-card h-100">
+                                <div class="fa-feature-card__body">
+                                    <h4 class="fa-feature-card__value">{{ items|length }}</h4>
+                                    <p class="fa-feature-card__label">{{ ('admin.data_repair.cascade.category.' ~ category)|trans({}, 'admin') }}</p>
+                                    {% if items|length > 0 %}
+                                        <details class="small mt-2">
+                                            <summary>{{ 'admin.data_repair.cascade.show_examples'|trans({}, 'admin') }}</summary>
+                                            <ul class="mt-2 mb-0 small">
+                                                {% for item in items|slice(0, 5) %}
+                                                    <li>{{ item.label }}</li>
+                                                {% endfor %}
+                                                {% if items|length > 5 %}
+                                                    <li><em>… {{ items|length - 5 }} {{ 'admin.data_repair.cascade.more'|trans({}, 'admin') }}</em></li>
+                                                {% endif %}
+                                            </ul>
+                                        </details>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <form method="post" action="{{ path('admin_data_repair_cleanup_dangling_refs') }}"
+                      onsubmit="return confirm('{{ 'admin.data_repair.cascade.confirm_cleanup'|trans({'%count%': _cascade_total}, 'admin')|e('js') }}');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('cleanup_dangling_refs') }}">
+                    <div class="mb-2">
+                        <label for="cascade-reason" class="form-label small">{{ 'admin.data_repair.reason_label'|trans({}, 'admin') }}</label>
+                        <input type="text" id="cascade-reason" name="reason" class="form-control fa-cyber-input__field"
+                               minlength="20" required
+                               placeholder="{{ 'admin.data_repair.reason_help'|trans({}, 'admin') }}">
+                    </div>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">
+                        <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.cascade.action_cleanup'|trans({'%count%': _cascade_total}, 'admin') }}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </section>
+
+    {# 3. JSON-schema violations — detection only, surfaced as manual-review. #}
+    {% set _json_total = 0 %}
+    {% for items in jsonSchemaViolations %}{% set _json_total = _json_total + items|length %}{% endfor %}
+    <section class="fa-section {{ 'mt-4 border-' ~ (_json_total > 0 ? 'danger' : 'success') }}">
+        <div class="fa-section__header">
+            <h2 class="mb-0">
+                <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
+                {{ 'admin.data_repair.json_schema.title'|trans({}, 'admin') }}
+                <span class="badge {{ _json_total > 0 ? 'bg-danger' : 'bg-success' }} ms-2">{{ _json_total }}</span>
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            <p class="text-muted small mb-2">{{ 'admin.data_repair.json_schema.description'|trans({}, 'admin') }}</p>
+            {% if _json_total == 0 %}
+                {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.json_schema.all_ok'|trans({}, 'admin') }) }}
+            {% else %}
+                {{ _fa_alert.render({ variant: 'info', body: 'admin.data_repair.json_schema.detection_only'|trans({}, 'admin') }) }}
+                {% for category, items in jsonSchemaViolations %}
+                    {% if items|length > 0 %}
+                        <h4 class="h6 mt-3">{{ ('admin.data_repair.json_schema.category.' ~ category)|trans({}, 'admin') }} <span class="badge bg-danger">{{ items|length }}</span></h4>
+                        <div class="table-responsive">
+                            <table class="fa-table fa-table--sm">
+                                <thead class="fa-table__head"><tr>
+                                    <th class="fa-table__cell">ID</th>
+                                    <th class="fa-table__cell">{{ 'admin.data_repair.json_schema.col_error'|trans({}, 'admin') }}</th>
+                                </tr></thead>
+                                <tbody class="fa-table__body">
+                                    {% for item in items|slice(0, 20) %}
+                                        <tr>
+                                            <td class="fa-table__cell">{{ item.id }}{% if item.tenant is defined and item.tenant %} <small class="text-muted">({{ item.tenant }})</small>{% endif %}</td>
+                                            <td class="fa-table__cell"><code class="small">{{ item.error }}</code></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </section>
+
+    {# 4. AuditLog integrity gaps — detection only. #}
+    {% set _audit_total = auditLogIntegrity.bulk_batch_mismatches|length + auditLogIntegrity.day_gaps|length + auditLogIntegrity.null_tenant_entries|length %}
+    <section class="fa-section {{ 'mt-4 border-' ~ (_audit_total > 0 ? 'warning' : 'success') }}">
+        <div class="fa-section__header">
+            <h2 class="mb-0">
+                <i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i>
+                {{ 'admin.data_repair.audit_integrity.title'|trans({}, 'admin') }}
+                <span class="badge {{ _audit_total > 0 ? 'bg-warning' : 'bg-success' }} ms-2">{{ _audit_total }}</span>
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            <p class="text-muted small mb-3">{{ 'admin.data_repair.audit_integrity.description'|trans({}, 'admin') }}</p>
+
+            {% if _audit_total == 0 %}
+                {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.audit_integrity.all_ok'|trans({}, 'admin') }) }}
+            {% else %}
+                {{ _fa_alert.render({ variant: 'info', body: 'admin.data_repair.json_schema.detection_only'|trans({}, 'admin') }) }}
+
+                {% if auditLogIntegrity.bulk_batch_mismatches|length > 0 %}
+                    <h4 class="h6 mt-3">{{ 'admin.data_repair.audit_integrity.bulk_mismatches'|trans({}, 'admin') }} <span class="badge bg-danger">{{ auditLogIntegrity.bulk_batch_mismatches|length }}</span></h4>
+                    <div class="table-responsive mb-3">
+                        <table class="fa-table fa-table--sm">
+                            <thead class="fa-table__head"><tr>
+                                <th class="fa-table__cell">batch_id</th>
+                                <th class="fa-table__cell">expected</th>
+                                <th class="fa-table__cell">actual</th>
+                            </tr></thead>
+                            <tbody class="fa-table__body">
+                                {% for row in auditLogIntegrity.bulk_batch_mismatches|slice(0, 20) %}
+                                    <tr>
+                                        <td class="fa-table__cell"><code class="small">{{ row.batch_id }}</code></td>
+                                        <td class="fa-table__cell">{{ row.expected }}</td>
+                                        <td class="fa-table__cell"><span class="text-danger">{{ row.actual }}</span></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+
+                {% if auditLogIntegrity.day_gaps|length > 0 %}
+                    <h4 class="h6 mt-3">{{ 'admin.data_repair.audit_integrity.day_gaps'|trans({}, 'admin') }} <span class="badge bg-warning">{{ auditLogIntegrity.day_gaps|length }}</span></h4>
+                    <p class="small">
+                        {% for gap in auditLogIntegrity.day_gaps|slice(0, 15) %}
+                            <code class="me-2">{{ gap.date }}</code>
+                        {% endfor %}
+                        {% if auditLogIntegrity.day_gaps|length > 15 %}<em>+{{ auditLogIntegrity.day_gaps|length - 15 }}</em>{% endif %}
+                    </p>
+                {% endif %}
+
+                {% if auditLogIntegrity.null_tenant_entries|length > 0 %}
+                    <h4 class="h6 mt-3">{{ 'admin.data_repair.audit_integrity.null_tenants'|trans({}, 'admin') }} <span class="badge bg-warning">{{ auditLogIntegrity.null_tenant_entries|length }}</span></h4>
+                    <div class="table-responsive">
+                        <table class="fa-table fa-table--sm">
+                            <thead class="fa-table__head"><tr>
+                                <th class="fa-table__cell">ID</th>
+                                <th class="fa-table__cell">action</th>
+                                <th class="fa-table__cell">entity_type</th>
+                            </tr></thead>
+                            <tbody class="fa-table__body">
+                                {% for row in auditLogIntegrity.null_tenant_entries|slice(0, 20) %}
+                                    <tr>
+                                        <td class="fa-table__cell">{{ row.id }}</td>
+                                        <td class="fa-table__cell"><code class="small">{{ row.action }}</code></td>
+                                        <td class="fa-table__cell"><code class="small">{{ row.entity_type }}</code></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </section>
+
+    {# 5. Status-Enum drift — detection only. #}
+    <section class="fa-section {{ 'mt-4 border-' ~ (statusEnumDrift|length > 0 ? 'warning' : 'success') }}">
+        <div class="fa-section__header">
+            <h2 class="mb-0">
+                <i class="fa-icon fa-icon--nav-tags" aria-hidden="true"></i>
+                {{ 'admin.data_repair.status_enum_drift.title'|trans({}, 'admin') }}
+                <span class="badge {{ statusEnumDrift|length > 0 ? 'bg-warning' : 'bg-success' }} ms-2">{{ statusEnumDrift|length }}</span>
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            <p class="text-muted small mb-3">{{ 'admin.data_repair.status_enum_drift.description'|trans({}, 'admin') }}</p>
+            {% if statusEnumDrift|length == 0 %}
+                {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.status_enum_drift.all_ok'|trans({}, 'admin') }) }}
+            {% else %}
+                {{ _fa_alert.render({ variant: 'info', body: 'admin.data_repair.json_schema.detection_only'|trans({}, 'admin') }) }}
+                <div class="table-responsive">
+                    <table class="fa-table fa-table--sm">
+                        <thead class="fa-table__head"><tr>
+                            <th class="fa-table__cell">{{ 'admin.data_repair.status_enum_drift.col_entity'|trans({}, 'admin') }}</th>
+                            <th class="fa-table__cell">{{ 'admin.data_repair.status_enum_drift.col_enum'|trans({}, 'admin') }}</th>
+                            <th class="fa-table__cell">{{ 'admin.data_repair.status_enum_drift.col_unknown_values'|trans({}, 'admin') }}</th>
+                        </tr></thead>
+                        <tbody class="fa-table__body">
+                            {% for row in statusEnumDrift %}
+                                <tr>
+                                    <td class="fa-table__cell"><strong>{{ row.entity }}</strong></td>
+                                    <td class="fa-table__cell"><code class="small">{{ row.enum }}</code></td>
+                                    <td class="fa-table__cell">
+                                        {% for value, count in row.unknown_values %}
+                                            <span class="badge bg-warning me-1"><code>{{ value }}</code> × {{ count }}</span>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
 </div>
 {% endblock %}

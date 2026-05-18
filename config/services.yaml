@@ -101,6 +101,11 @@ services:
             $projectDir: '%kernel.project_dir%'
         tags: ['twig.extension']
 
+    # Data-Repair file-orphan scanner needs projectDir to find public/uploads/.
+    App\Service\DataIntegrityService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     # MRIS-Hilfetexte aus fixtures/mris/help-texts.yaml fuer Tooltip-Integration
     App\Twig\MrisHelpTextExtension:
         arguments:

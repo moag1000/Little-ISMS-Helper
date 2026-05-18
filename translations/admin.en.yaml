@@ -622,6 +622,63 @@ admin:
             col_started: 'Started At'
             col_treatment: 'Treatment Plan'
             col_risk: 'Risk'
+        # Extended coverage (2026-05) — file orphans, cascade cleanup,
+        # JSON schema, audit-log integrity, status-enum drift.
+        uploads:
+            title: 'Orphaned File Uploads'
+            description: 'Files in the upload directory (public/uploads/) that are not referenced by any Doctrine entity. Quarantine moves files to var/quarantine/ — never direct delete.'
+            all_ok: 'No orphaned upload files detected — filesystem is consistent with the database.'
+            unavailable: 'Upload directory not accessible (project path missing or public/uploads/ does not exist).'
+            col_path: 'Path'
+            col_size: 'Size'
+            col_mtime: 'Modified'
+            more: 'more files'
+            confirm_quarantine: 'Really move %count% orphaned file(s) to quarantine? You can manually restore from var/quarantine/ if needed.'
+            action_quarantine: 'Quarantine %count% file(s)'
+            action_hint: 'Files are moved to var/quarantine/<date>/, never unlinked.'
+            quarantined: '%count% file(s) successfully moved to %dir%.'
+            nothing_to_quarantine: 'No files queued for quarantine.'
+            quarantine_dir_failed: 'Quarantine directory could not be created: %dir%'
+        cascade:
+            title: 'Cascade Cleanup (Dangling References)'
+            description: 'Entities whose ManyToOne target was deleted but cascade never fired. Five categories cleaned under one audit-batch.'
+            all_ok: 'No dangling references — all cascade targets are consistent.'
+            show_examples: 'Show examples'
+            more: 'more'
+            confirm_cleanup: 'Really delete %count% dangling entries? This action is not reversible and is logged under one batch_id in the audit-log.'
+            action_cleanup: 'Cleanup %count% dangling reference(s)'
+            cleaned: '%count% dangling reference(s) successfully cleaned up.'
+            category:
+                workflow_instances: 'Workflow instances (target missing)'
+                mfa_tokens: 'MFA tokens (expired, never used)'
+                sso_user_approvals: 'SSO approvals (reviewer deleted)'
+                evidence_tasks: 'Evidence tasks (no anchor)'
+                notification_deliveries: 'Notification deliveries (rule deleted)'
+        json_schema:
+            title: 'JSON Schema Validation'
+            description: 'Validate JSON columns against expected shape (Tenant.settings, TenantPolicySetting.value, NotificationRule.conditions, WorkflowStep.metadata). Detection only — no auto-repair.'
+            all_ok: 'No JSON schema violations detected.'
+            detection_only: 'Detection only — please review and repair each row manually. There is no auto-repair button for this risk.'
+            col_error: 'Error'
+            category:
+                tenant_settings: 'Tenant.settings (k/v object expected)'
+                tenant_policy_settings: 'TenantPolicySetting.value (JSON decode error)'
+                notification_rule_conditions: 'NotificationRule.conditions (list of {field, op, value})'
+                workflow_step_metadata: 'WorkflowStep.metadata (object, opt. auto_progression)'
+        audit_integrity:
+            title: 'Audit Log Integrity'
+            description: 'Structural anomalies the HMAC chain alone cannot detect: bulk-batch mismatches, day-gaps, NULL-tenant entries.'
+            all_ok: 'Audit-log integrity OK — no bulk mismatches, day-gaps or NULL-tenant entries.'
+            bulk_mismatches: 'Bulk-batch mismatches (per_entity_count > actual)'
+            day_gaps: 'Day-gaps (last 30 days)'
+            null_tenants: 'Entries with tenant_id IS NULL'
+        status_enum_drift:
+            title: 'Status Enum Drift'
+            description: 'DB status values that are not present in the new App\\Enum\\<Entity>Status case-set. Manual triage required — auto-repair would mask real lifecycle bugs.'
+            all_ok: 'All status values match the defined enum cases — no drift.'
+            col_entity: 'Entity'
+            col_enum: 'Enum'
+            col_unknown_values: 'Unknown values × count'
     modules:
         title: Title
         dependency_graph: 'Dependency Graph'

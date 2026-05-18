@@ -83,7 +83,13 @@ final class DataIntegrityService
         private readonly ?CorrectiveActionRepository $correctiveActionRepository = null,
         private readonly ?ManagementReviewRepository $managementReviewRepository = null,
         private readonly ?WorkflowInstanceRepository $workflowInstanceRepository = null,
-        private readonly ?RiskTreatmentPlanRepository $riskTreatmentPlanRepository = null
+        private readonly ?RiskTreatmentPlanRepository $riskTreatmentPlanRepository = null,
+        /**
+         * %kernel.project_dir% — needed for filesystem-orphan scan (uploads-vs-DB).
+         * Optional with default null so existing constructor call-sites + unit-tests
+         * keep compiling; downstream methods handle the null case gracefully.
+         */
+        private readonly ?string $projectDir = null,
     ) {
     }
 
@@ -110,6 +116,15 @@ final class DataIntegrityService
             'missing_relationships' => $this->findMissingRelationships(),
             'inconsistent_data' => $this->findInconsistentData(),
             'entity_counts' => $this->getEntityCountsByTenant(),
+            // Extended coverage (2026-05): file-orphans, cascade orphans,
+            // JSON-schema violations, AuditLog integrity gaps, status-enum drift.
+            // All detection-only except the first two — repair paths live
+            // in DataRepairController.
+            'orphaned_uploads' => $this->findOrphanedUploads(),
+            'cascade_orphans' => $this->findCascadeOrphans(),
+            'json_schema_violations' => $this->findJsonSchemaViolations(),
+            'audit_log_integrity' => $this->findAuditLogIntegrityIssues(),
+            'status_enum_drift' => $this->findStatusEnumDriftIssues(),
         ];
     }
 
@@ -1138,5 +1153,709 @@ final class DataIntegrityService
         $healthScore = max(0, 100 - (($totalIssues / $maxPossibleIssues) * 100));
 
         return (int) round($healthScore);
+    }
+
+    // ====================================================================
+    // Extended coverage (2026-05) — file-orphans, cascade orphans,
+    // JSON-schema violations, AuditLog integrity gaps, status-enum drift.
+    // Detection only; repair-paths (where they exist) live in
+    // DataRepairController. Designed to be safe on bare unit-test mocks:
+    // every method that touches the DB or filesystem wraps the call in
+    // a try/catch and returns an empty result when the dependency is
+    // unavailable (e.g. when ProjectDir is null in a constructor-mock test).
+    // ====================================================================
+
+    /**
+     * Scans the filesystem under {projectDir}/public/uploads/ and cross-checks
+     * every regular file against the set of file-paths actually referenced
+     * by Doctrine entities (Document.filePath, DocumentVersion.filePath,
+     * Tenant.logoPath, User.profilePicture). Reports files present on disk
+     * with no DB owner.
+     *
+     * Repair path: {@see DataRepairController::quarantineOrphanedUploads()}
+     * — soft move to `var/quarantine/<date>/`, never `unlink`.
+     *
+     * @return array{
+     *     files: list<array{path: string, relative: string, size: int, mtime: int}>,
+     *     scanned: int,
+     *     referenced: int,
+     *     uploads_dir: string|null,
+     * }
+     */
+    public function findOrphanedUploads(): array
+    {
+        $empty = ['files' => [], 'scanned' => 0, 'referenced' => 0, 'uploads_dir' => null];
+        if ($this->projectDir === null) {
+            return $empty;
+        }
+        $uploadsDir = $this->projectDir . '/public/uploads';
+        if (!is_dir($uploadsDir)) {
+            return $empty;
+        }
+
+        // 1. Collect referenced file paths from entity columns.
+        $referenced = $this->collectReferencedUploadPaths();
+
+        // 2. Walk the uploads/ tree and flag every regular file that is
+        //    NOT in the referenced-set. Skip .gitkeep and dot-files.
+        $orphans = [];
+        $scanned = 0;
+        try {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($uploadsDir, \FilesystemIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::LEAVES_ONLY,
+            );
+        } catch (\Throwable) {
+            return $empty;
+        }
+
+        $basePath = rtrim((string) realpath($uploadsDir), '/');
+        foreach ($iterator as $fileInfo) {
+            if (!$fileInfo instanceof \SplFileInfo || !$fileInfo->isFile()) {
+                continue;
+            }
+            $name = $fileInfo->getFilename();
+            if ($name === '.gitkeep' || str_starts_with($name, '.')) {
+                continue;
+            }
+            $scanned++;
+
+            $realPath = (string) $fileInfo->getRealPath();
+            if ($realPath === '' || !str_starts_with($realPath, $basePath)) {
+                continue;
+            }
+            // Build the relative path the way entities store it (with or without leading slash).
+            $relative = '/uploads' . substr($realPath, strlen($basePath));
+            $relativeNoSlash = ltrim($relative, '/');
+
+            if (isset($referenced[$relative]) || isset($referenced[$relativeNoSlash])) {
+                continue;
+            }
+            // tenants/ and users/ logos can be stored either with or without
+            // the `uploads/` prefix — the BackupService comments document this.
+            $logoStyle = preg_replace('#^/uploads/#', '', $relative);
+            if (is_string($logoStyle) && isset($referenced[$logoStyle])) {
+                continue;
+            }
+
+            $orphans[] = [
+                'path' => $realPath,
+                'relative' => $relative,
+                'size' => (int) $fileInfo->getSize(),
+                'mtime' => (int) $fileInfo->getMTime(),
+            ];
+        }
+
+        // Cap the response list — typical orphan counts after a few backup
+        // restores can reach thousands; the template only needs the top N.
+        usort($orphans, static fn(array $a, array $b): int => $b['size'] <=> $a['size']);
+
+        return [
+            'files' => array_slice($orphans, 0, 500),
+            'scanned' => $scanned,
+            'referenced' => count($referenced),
+            'uploads_dir' => $uploadsDir,
+        ];
+    }
+
+    /**
+     * Builds the set of file-paths currently referenced by Doctrine entities.
+     * Returns an associative array keyed by path (both `/uploads/...` and
+     * `uploads/...` styles are present where the entity stores either form).
+     *
+     * @return array<string, true>
+     */
+    private function collectReferencedUploadPaths(): array
+    {
+        $set = [];
+        $columnMap = [
+            // FQCN => property name
+            \App\Entity\Document::class => 'filePath',
+            \App\Entity\DocumentVersion::class => 'filePath',
+            \App\Entity\Tenant::class => 'logoPath',
+            \App\Entity\User::class => 'profilePicture',
+        ];
+
+        $factory = $this->entityManager->getMetadataFactory();
+        foreach ($columnMap as $fqcn => $property) {
+            try {
+                $metadata = $factory->getMetadataFor($fqcn);
+            } catch (\Throwable) {
+                continue;
+            }
+            if (!$metadata->hasField($property)) {
+                continue;
+            }
+            try {
+                $rows = $this->entityManager->createQueryBuilder()
+                    ->select('e.' . $property . ' AS path')
+                    ->from($fqcn, 'e')
+                    ->where('e.' . $property . ' IS NOT NULL')
+                    ->getQuery()
+                    ->getScalarResult();
+            } catch (\Throwable) {
+                continue;
+            }
+            foreach ($rows as $row) {
+                $path = (string) ($row['path'] ?? '');
+                if ($path === '') {
+                    continue;
+                }
+                $set[$path] = true;
+                // Also store the "other" form to be tolerant of mixed storage.
+                if (str_starts_with($path, '/')) {
+                    $set[ltrim($path, '/')] = true;
+                } else {
+                    $set['/' . $path] = true;
+                }
+            }
+        }
+        return $set;
+    }
+
+    /**
+     * Cross-entity cascade cleanup detection: entities whose ManyToOne target
+     * was deleted but the cascade didn't fire. The five buckets each have
+     * a distinct repair-path:
+     *   - workflow_instances : target entity-class+id no longer resolves
+     *   - mfa_tokens         : `expires_at` < NOW() and the token never logged a usage
+     *   - sso_user_approvals : `reviewed_by` user no longer exists
+     *   - evidence_tasks     : referenced DocumentVersion + Control are both NULL
+     *   - notification_deliveries : NotificationRule that owned the delivery is gone
+     *
+     * The detection is read-only. Repair runs through
+     * {@see DataRepairController::cleanupDanglingRefs()} under a single
+     * AuditLogger::logBulk() batch (one batch_id covers all five categories).
+     *
+     * @return array<string, list<array{id: int, label: string, hint?: string}>>
+     */
+    public function findCascadeOrphans(): array
+    {
+        $result = [
+            'workflow_instances' => [],
+            'mfa_tokens' => [],
+            'sso_user_approvals' => [],
+            'evidence_tasks' => [],
+            'notification_deliveries' => [],
+        ];
+
+        // 1. WorkflowInstance — entity_type + entity_id pointing nowhere.
+        try {
+            $rows = $this->entityManager->createQueryBuilder()
+                ->select('wi.id, wi.entityType, wi.entityId')
+                ->from(\App\Entity\WorkflowInstance::class, 'wi')
+                ->where('wi.entityType IS NOT NULL AND wi.entityId IS NOT NULL')
+                ->getQuery()
+                ->getArrayResult();
+            foreach ($rows as $row) {
+                $type = (string) ($row['entityType'] ?? '');
+                $id = (int) ($row['entityId'] ?? 0);
+                if ($type === '' || $id === 0 || !class_exists($type)) {
+                    continue;
+                }
+                $target = $this->entityManager->find($type, $id);
+                if ($target === null) {
+                    $result['workflow_instances'][] = [
+                        'id' => (int) $row['id'],
+                        'label' => sprintf('WorkflowInstance#%d → %s#%d (missing target)', (int) $row['id'], $type, $id),
+                    ];
+                }
+            }
+        } catch (\Throwable) {
+            // Pre-flush state or missing table — skip silently.
+        }
+
+        // 2. MfaToken — past expiry, never re-used.
+        try {
+            $now = new \DateTimeImmutable();
+            $rows = $this->entityManager->createQueryBuilder()
+                ->select('m.id, m.tokenType, m.expiresAt, m.lastUsedAt')
+                ->from(\App\Entity\MfaToken::class, 'm')
+                ->where('m.expiresAt IS NOT NULL AND m.expiresAt < :now')
+                ->setParameter('now', $now)
+                ->getQuery()
+                ->getArrayResult();
+            foreach ($rows as $row) {
+                // Only flag tokens that were never used after expiry — used tokens
+                // are kept for forensic audit-trail.
+                $lastUsed = $row['lastUsedAt'] ?? null;
+                if ($lastUsed instanceof \DateTimeInterface && $lastUsed > ($row['expiresAt'] ?? $now)) {
+                    continue;
+                }
+                $result['mfa_tokens'][] = [
+                    'id' => (int) $row['id'],
+                    'label' => sprintf('MfaToken#%d (%s) expired %s', (int) $row['id'], (string) ($row['tokenType'] ?? 'unknown'), $row['expiresAt'] instanceof \DateTimeInterface ? $row['expiresAt']->format('Y-m-d') : 'unknown'),
+                ];
+            }
+        } catch (\Throwable) {
+            // Skip.
+        }
+
+        // 3. SsoUserApproval where reviewer User was deleted.
+        try {
+            $rows = $this->entityManager->createQueryBuilder()
+                ->select('s.id, s.email, IDENTITY(s.reviewedBy) AS reviewerId')
+                ->from(\App\Entity\SsoUserApproval::class, 's')
+                ->where('s.reviewedBy IS NOT NULL')
+                ->getQuery()
+                ->getArrayResult();
+            foreach ($rows as $row) {
+                $reviewerId = (int) ($row['reviewerId'] ?? 0);
+                if ($reviewerId === 0) {
+                    continue;
+                }
+                $reviewer = $this->entityManager->find(\App\Entity\User::class, $reviewerId);
+                if ($reviewer === null) {
+                    $result['sso_user_approvals'][] = [
+                        'id' => (int) $row['id'],
+                        'label' => sprintf('SsoUserApproval#%d (%s) → User#%d (deleted)', (int) $row['id'], (string) ($row['email'] ?? ''), $reviewerId),
+                    ];
+                }
+            }
+        } catch (\Throwable) {
+            // Skip.
+        }
+
+        // 4. EvidenceReverificationTask where BOTH targets (DocumentVersion + Control)
+        //    were deleted — the task has no anchor.
+        try {
+            $rows = $this->entityManager->createQueryBuilder()
+                ->select('t.id, IDENTITY(t.documentVersion) AS dvId, IDENTITY(t.control) AS ctrlId, IDENTITY(t.complianceFulfillment) AS cfId')
+                ->from(\App\Entity\EvidenceReverificationTask::class, 't')
+                ->getQuery()
+                ->getArrayResult();
+            foreach ($rows as $row) {
+                $dvId = (int) ($row['dvId'] ?? 0);
+                $ctrlId = (int) ($row['ctrlId'] ?? 0);
+                $cfId = (int) ($row['cfId'] ?? 0);
+                if ($dvId === 0 && $ctrlId === 0 && $cfId === 0) {
+                    $result['evidence_tasks'][] = [
+                        'id' => (int) $row['id'],
+                        'label' => sprintf('EvidenceReverificationTask#%d (no anchor)', (int) $row['id']),
+                    ];
+                }
+            }
+        } catch (\Throwable) {
+            // Skip.
+        }
+
+        // 5. NotificationDelivery whose owning NotificationRule was deleted.
+        try {
+            $rows = $this->entityManager->createQueryBuilder()
+                ->select('d.id, IDENTITY(d.rule) AS ruleId')
+                ->from(\App\Entity\Notification\NotificationDelivery::class, 'd')
+                ->getQuery()
+                ->getArrayResult();
+            foreach ($rows as $row) {
+                $ruleId = (int) ($row['ruleId'] ?? 0);
+                if ($ruleId === 0) {
+                    $result['notification_deliveries'][] = [
+                        'id' => (int) $row['id'],
+                        'label' => sprintf('NotificationDelivery#%d (rule missing)', (int) $row['id']),
+                    ];
+                    continue;
+                }
+                $rule = $this->entityManager->find(\App\Entity\Notification\NotificationRule::class, $ruleId);
+                if ($rule === null) {
+                    $result['notification_deliveries'][] = [
+                        'id' => (int) $row['id'],
+                        'label' => sprintf('NotificationDelivery#%d → Rule#%d (deleted)', (int) $row['id'], $ruleId),
+                    ];
+                }
+            }
+        } catch (\Throwable) {
+            // Skip.
+        }
+
+        return $result;
+    }
+
+    /**
+     * Decodes JSON columns and validates their minimal shape. NO auto-repair —
+     * surfaces every violation as a manual-review row in the template.
+     *
+     * Targets:
+     *   - Tenant.settings           : object/null, free-form k/v
+     *   - TenantPolicySetting.value : any JSON-decodable value (object/scalar/array)
+     *   - NotificationRule.conditions : list<{field:string, op:string, value:mixed}>
+     *   - WorkflowStep.metadata     : object with optional auto_progression shape
+     *
+     * @return array<string, list<array{id: int, tenant?: ?string, error: string}>>
+     */
+    public function findJsonSchemaViolations(): array
+    {
+        $result = [
+            'tenant_settings' => [],
+            'tenant_policy_settings' => [],
+            'notification_rule_conditions' => [],
+            'workflow_step_metadata' => [],
+        ];
+
+        // 1. Tenant.settings — null OR associative object expected.
+        try {
+            $tenants = $this->tenantRepository->findAll();
+            foreach ($tenants as $tenant) {
+                $value = $tenant->getSettings();
+                if ($value === null) {
+                    continue;
+                }
+                if (!is_array($value)) {
+                    $result['tenant_settings'][] = [
+                        'id' => (int) $tenant->getId(),
+                        'tenant' => $tenant->getName(),
+                        'error' => 'settings is not an array/object (got ' . gettype($value) . ')',
+                    ];
+                    continue;
+                }
+                // Reject pure list-shape — `settings` is supposed to be a k/v map.
+                if ($value !== [] && array_is_list($value)) {
+                    $result['tenant_settings'][] = [
+                        'id' => (int) $tenant->getId(),
+                        'tenant' => $tenant->getName(),
+                        'error' => 'settings is a list, expected k/v object',
+                    ];
+                }
+            }
+        } catch (\Throwable) {
+            // Skip.
+        }
+
+        // 2. TenantPolicySetting.value — must be JSON-decodable (Doctrine stores
+        //    it as JSON; if the column contains corrupted UTF-8 the load throws).
+        try {
+            $rows = $this->entityManager->createQueryBuilder()
+                ->select('p.id, p.key, IDENTITY(p.tenant) AS tenantId')
+                ->from(\App\Entity\TenantPolicySetting::class, 'p')
+                ->getQuery()
+                ->getArrayResult();
+            foreach ($rows as $row) {
+                $id = (int) ($row['id'] ?? 0);
+                try {
+                    $entity = $this->entityManager->find(\App\Entity\TenantPolicySetting::class, $id);
+                    if ($entity === null) {
+                        continue;
+                    }
+                    $value = $entity->getValue();
+                    // Just touching the property triggers the JSON-decode path —
+                    // a corrupted column throws on hydration.
+                    if (is_object($value)) {
+                        $result['tenant_policy_settings'][] = [
+                            'id' => $id,
+                            'error' => sprintf('value for key "%s" hydrated to unexpected object', (string) ($row['key'] ?? '')),
+                        ];
+                    }
+                } catch (\Throwable $e) {
+                    $result['tenant_policy_settings'][] = [
+                        'id' => $id,
+                        'error' => sprintf('value for key "%s" failed to decode: %s', (string) ($row['key'] ?? ''), $e->getMessage()),
+                    ];
+                }
+            }
+        } catch (\Throwable) {
+            // Skip.
+        }
+
+        // 3. NotificationRule.conditions — expect list<{field, op, value}>.
+        try {
+            $rules = $this->entityManager->createQueryBuilder()
+                ->select('r')
+                ->from(\App\Entity\Notification\NotificationRule::class, 'r')
+                ->getQuery()
+                ->getResult();
+            foreach ((array) $rules as $rule) {
+                $conds = $rule->getConditions();
+                if ($conds === []) {
+                    continue;
+                }
+                if (!array_is_list($conds)) {
+                    $result['notification_rule_conditions'][] = [
+                        'id' => (int) $rule->getId(),
+                        'error' => 'conditions is not a list',
+                    ];
+                    continue;
+                }
+                foreach ($conds as $idx => $item) {
+                    if (!is_array($item)) {
+                        $result['notification_rule_conditions'][] = [
+                            'id' => (int) $rule->getId(),
+                            'error' => sprintf('conditions[%d] is not an object', $idx),
+                        ];
+                        continue 2;
+                    }
+                    foreach (['field', 'op'] as $required) {
+                        if (!array_key_exists($required, $item) || !is_string($item[$required])) {
+                            $result['notification_rule_conditions'][] = [
+                                'id' => (int) $rule->getId(),
+                                'error' => sprintf('conditions[%d] missing required string key "%s"', $idx, $required),
+                            ];
+                            continue 3;
+                        }
+                    }
+                    if (!array_key_exists('value', $item)) {
+                        $result['notification_rule_conditions'][] = [
+                            'id' => (int) $rule->getId(),
+                            'error' => sprintf('conditions[%d] missing key "value"', $idx),
+                        ];
+                    }
+                }
+            }
+        } catch (\Throwable) {
+            // Skip.
+        }
+
+        // 4. WorkflowStep.metadata — null OR object; if auto_progression key
+        //    is set, it must itself be an object with `conditions` list.
+        try {
+            $steps = $this->entityManager->createQueryBuilder()
+                ->select('s')
+                ->from(\App\Entity\WorkflowStep::class, 's')
+                ->getQuery()
+                ->getResult();
+            foreach ((array) $steps as $step) {
+                $meta = $step->getMetadata();
+                if ($meta === null) {
+                    continue;
+                }
+                if (!is_array($meta)) {
+                    $result['workflow_step_metadata'][] = [
+                        'id' => (int) $step->getId(),
+                        'error' => 'metadata is not an array/object',
+                    ];
+                    continue;
+                }
+                if ($meta !== [] && array_is_list($meta)) {
+                    $result['workflow_step_metadata'][] = [
+                        'id' => (int) $step->getId(),
+                        'error' => 'metadata is a list, expected k/v object',
+                    ];
+                    continue;
+                }
+                if (array_key_exists('auto_progression', $meta) && $meta['auto_progression'] !== null) {
+                    $ap = $meta['auto_progression'];
+                    if (!is_array($ap) || (isset($ap['conditions']) && !is_array($ap['conditions']))) {
+                        $result['workflow_step_metadata'][] = [
+                            'id' => (int) $step->getId(),
+                            'error' => 'metadata.auto_progression must be object with conditions list',
+                        ];
+                    }
+                }
+            }
+        } catch (\Throwable) {
+            // Skip.
+        }
+
+        return $result;
+    }
+
+    /**
+     * AuditLog integrity gap detection.
+     * The AuditLog is append-only and HMAC-chained (see AuditLogger).
+     * This method surfaces structural anomalies the chain alone cannot catch:
+     *
+     *   - bulk_batch_mismatches : ACTION_BULK row recorded `per_entity_count = N`
+     *                             but fewer per-entity rows actually carry the batch_id
+     *   - day_gaps              : days with zero AuditLog entries between days with entries
+     *                             over the last 30 days (suspicious in production)
+     *   - null_tenant_entries   : rows with tenant_id IS NULL (post-merge backfill leak)
+     *
+     * Detection-only.
+     *
+     * @return array{
+     *     bulk_batch_mismatches: list<array{batch_id: string, expected: int, actual: int}>,
+     *     day_gaps: list<array{date: string}>,
+     *     null_tenant_entries: list<array{id: int, action: string, entity_type: string}>,
+     * }
+     */
+    public function findAuditLogIntegrityIssues(): array
+    {
+        $result = [
+            'bulk_batch_mismatches' => [],
+            'day_gaps' => [],
+            'null_tenant_entries' => [],
+        ];
+
+        $connection = $this->entityManager->getConnection();
+
+        // 1. bulk-batch row-count mismatch. We pull every ACTION_BULK row from
+        //    the last 90 days, extract batch_id + per_entity_count from new_values,
+        //    then count actual rows carrying _batch_id=<X> in new_values.
+        try {
+            $cutoff = (new \DateTimeImmutable('-90 days'))->format('Y-m-d H:i:s');
+            $batchRows = $connection->fetchAllAssociative(
+                'SELECT id, new_values FROM audit_log WHERE action = :a AND created_at >= :c',
+                ['a' => 'bulk', 'c' => $cutoff],
+            );
+            foreach ($batchRows as $row) {
+                $newValues = $row['new_values'] ?? null;
+                if (!is_string($newValues) || $newValues === '') {
+                    continue;
+                }
+                $decoded = json_decode($newValues, true);
+                if (!is_array($decoded)) {
+                    continue;
+                }
+                $batchId = (string) ($decoded['batch_id'] ?? '');
+                $expected = (int) ($decoded['per_entity_count'] ?? 0);
+                if ($batchId === '' || $expected === 0) {
+                    continue;
+                }
+                // Count actual per-entity rows.
+                $actual = (int) $connection->fetchOne(
+                    "SELECT COUNT(*) FROM audit_log WHERE action <> :bulk AND new_values LIKE :like",
+                    ['bulk' => 'bulk', 'like' => '%"_batch_id":"' . $batchId . '"%'],
+                );
+                if ($actual < $expected) {
+                    $result['bulk_batch_mismatches'][] = [
+                        'batch_id' => $batchId,
+                        'expected' => $expected,
+                        'actual' => $actual,
+                    ];
+                }
+            }
+        } catch (\Throwable) {
+            // Table missing in tests — skip.
+        }
+
+        // 2. day-gaps in the last 30 days. SELECT DISTINCT DATE(created_at);
+        //    detect gaps where a day with entries was followed/preceded by a
+        //    day with 0 entries inside the active window.
+        try {
+            $days = $connection->fetchAllAssociative(
+                "SELECT DATE(created_at) AS d, COUNT(*) AS c FROM audit_log WHERE created_at >= :c GROUP BY DATE(created_at) ORDER BY d",
+                ['c' => (new \DateTimeImmutable('-30 days'))->format('Y-m-d 00:00:00')],
+            );
+            if (count($days) >= 2) {
+                $first = new \DateTimeImmutable((string) $days[0]['d']);
+                $last = new \DateTimeImmutable((string) end($days)['d']);
+                $observed = [];
+                foreach ($days as $d) {
+                    $observed[(string) $d['d']] = (int) $d['c'];
+                }
+                $cursor = $first;
+                while ($cursor <= $last) {
+                    $key = $cursor->format('Y-m-d');
+                    if (!isset($observed[$key])) {
+                        $result['day_gaps'][] = ['date' => $key];
+                    }
+                    $cursor = $cursor->modify('+1 day');
+                }
+            }
+        } catch (\Throwable) {
+            // Skip.
+        }
+
+        // 3. null tenant_id entries (post-merge backfill leak).
+        try {
+            $nullRows = $connection->fetchAllAssociative(
+                "SELECT id, action, entity_type FROM audit_log WHERE tenant_id IS NULL ORDER BY id DESC LIMIT 100",
+            );
+            foreach ($nullRows as $row) {
+                $result['null_tenant_entries'][] = [
+                    'id' => (int) $row['id'],
+                    'action' => (string) ($row['action'] ?? ''),
+                    'entity_type' => (string) ($row['entity_type'] ?? ''),
+                ];
+            }
+        } catch (\Throwable) {
+            // Skip.
+        }
+
+        return $result;
+    }
+
+    /**
+     * Status-Enum drift detection (Item-5 Phase-1 follow-up).
+     * For each `App\Enum\<Entity>Status` enum, query the DISTINCT values
+     * actually stored in the entity's `status` column and report any value
+     * not present in the enum's case-set.
+     *
+     * Detection-only. Repair is a manual triage decision (rename/migrate
+     * legacy values via a one-off SQL or a dedicated console command) —
+     * automated repair would risk hiding a real lifecycle bug.
+     *
+     * @return list<array{
+     *     entity: string,
+     *     enum: string,
+     *     unknown_values: array<string, int>,
+     * }>
+     */
+    public function findStatusEnumDriftIssues(): array
+    {
+        $result = [];
+        // Mapping is intentionally explicit (rather than guessing entity-FQCN
+        // from enum-FQCN) because not every *Status enum is paired with the
+        // identically-named entity (e.g. BCExerciseStatus → BCExercise).
+        $pairs = [
+            \App\Entity\Asset::class => \App\Enum\AssetStatus::class,
+            \App\Entity\Risk::class => \App\Enum\RiskStatus::class,
+            \App\Entity\Incident::class => \App\Enum\IncidentStatus::class,
+            \App\Entity\Document::class => \App\Enum\DocumentStatus::class,
+            \App\Entity\InternalAudit::class => \App\Enum\InternalAuditStatus::class,
+            \App\Entity\AuditFinding::class => \App\Enum\AuditFindingStatus::class,
+            \App\Entity\CorrectiveAction::class => \App\Enum\CorrectiveActionStatus::class,
+            \App\Entity\BusinessContinuityPlan::class => \App\Enum\BusinessContinuityPlanStatus::class,
+            \App\Entity\DataBreach::class => \App\Enum\DataBreachStatus::class,
+            \App\Entity\ProcessingActivity::class => \App\Enum\ProcessingActivityStatus::class,
+            \App\Entity\Supplier::class => \App\Enum\SupplierStatus::class,
+            \App\Entity\RiskTreatmentPlan::class => \App\Enum\RiskTreatmentPlanStatus::class,
+            \App\Entity\SsoUserApproval::class => \App\Enum\SsoUserApprovalStatus::class,
+            \App\Entity\EvidenceReverificationTask::class => \App\Enum\EvidenceReverificationTaskStatus::class,
+            \App\Entity\ChangeRequest::class => \App\Enum\ChangeRequestStatus::class,
+            \App\Entity\ManagementReview::class => \App\Enum\ManagementReviewStatus::class,
+            \App\Entity\Training::class => \App\Enum\TrainingStatus::class,
+        ];
+
+        $factory = $this->entityManager->getMetadataFactory();
+        foreach ($pairs as $entityFqcn => $enumFqcn) {
+            if (!class_exists($entityFqcn) || !enum_exists($enumFqcn)) {
+                continue;
+            }
+            try {
+                $metadata = $factory->getMetadataFor($entityFqcn);
+            } catch (\Throwable) {
+                continue;
+            }
+            if (!$metadata->hasField('status')) {
+                continue;
+            }
+
+            $allowed = [];
+            foreach ($enumFqcn::cases() as $case) {
+                $allowed[(string) $case->value] = true;
+            }
+
+            try {
+                $rows = $this->entityManager->createQueryBuilder()
+                    ->select('e.status AS status, COUNT(e.id) AS cnt')
+                    ->from($entityFqcn, 'e')
+                    ->where('e.status IS NOT NULL')
+                    ->groupBy('e.status')
+                    ->getQuery()
+                    ->getArrayResult();
+            } catch (\Throwable) {
+                continue;
+            }
+
+            $unknown = [];
+            foreach ($rows as $row) {
+                $value = (string) ($row['status'] ?? '');
+                if ($value === '' || isset($allowed[$value])) {
+                    continue;
+                }
+                $unknown[$value] = (int) ($row['cnt'] ?? 0);
+            }
+
+            if ($unknown !== []) {
+                $shortEntity = substr($entityFqcn, strrpos($entityFqcn, '\\') + 1);
+                $shortEnum = substr($enumFqcn, strrpos($enumFqcn, '\\') + 1);
+                $result[] = [
+                    'entity' => $shortEntity,
+                    'enum' => $shortEnum,
+                    'unknown_values' => $unknown,
+                ];
+            }
+        }
+
+        return $result;
     }
 }
