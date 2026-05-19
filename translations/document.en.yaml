@@ -231,6 +231,71 @@ document:
             policy_document: 'Policy'
             procedure_document: 'Procedure'
             record: 'Record'
+    # Document Versions — versioned file storage (ISO 27001 Cl. 7.5.3)
+    version:
+        label: 'Version'
+        number: 'Version'
+        uploaded_at: 'Uploaded'
+        uploaded_by: 'Uploaded by'
+        size: 'Size'
+        hash: 'SHA-256 hash'
+        hash_label: 'SHA-256 hash'
+        status: 'Status'
+        current: Current
+        current_label: 'Current version'
+        published: Published
+        draft: Draft
+        history:
+            title: 'Version History'
+            empty: 'No previous versions on file yet.'
+    # Undo recently-applied destructive actions within the undo window
+    undo:
+        title: 'Undo last action'
+        body: 'Revert the most recent change to this document. Available within the undo window.'
+        action: 'Undo'
+        success: 'Action successfully reverted.'
+        error:
+            invalid_token: 'Undo token is invalid or expired.'
+            window_expired: 'The undo window has expired. Manual recovery required.'
+            service_unavailable: 'Undo service is unavailable. Please try again later.'
+    # Document Reuse — show consumers of a document across the ISMS
+    reuse:
+        used_by: 'Used by'
+# Evidence Reverification — ISO 27001 Cl. 9.1 (controls evidence still valid?)
+evidence_reverification:
+    title: 'Evidence Reverification'
+    badge: 'Cl. 9.1'
+    subtitle: 'Recheck whether evidence is still current and aligned with the linked controls.'
+    overdue: 'Reverification overdue'
+    due: 'Due'
+    assigned_to: 'Assigned to'
+    empty:
+        title: 'No reverifications pending'
+        body: 'All evidence is up to date.'
+    linked:
+        control: 'Linked control'
+        fulfillment: 'Linked fulfillment'
+    action:
+        complete: 'Mark as reverified'
+        skip: 'Skip this cycle'
+    success:
+        completed: 'Evidence marked as reverified.'
+        skipped: 'Reverification cycle skipped — next cycle will be scheduled automatically.'
+    error:
+        invalid_token: 'Reverification token is invalid or expired.'
+    show:
+        title: 'Reverification details'
+        details: 'Details'
+        document: 'Document'
+        status: 'Status'
+        linked_control: 'Linked control'
+        linked_fulfillment: 'Linked fulfillment'
+        assigned_to: 'Assigned to'
+        due_date: 'Due date'
+        notes: 'Notes'
+        notes_label: 'Notes'
+        completed_at: 'Completed at'
+        skip_reason: 'Skip reason'
 iso_9001_bridge:
     policy: 'Identical to ISO 9001 Clause 7.5 "Control of documented information" — policies, procedures and records are versioned and released under the same control scheme.'
     procedure: 'In ISO 9001 this is a "documented procedure" (7.5.1) — process description with roles, inputs/outputs and measurement criteria.'

@@ -297,3 +297,7 @@ global:
         title: 'Authority report overdue (GDPR Art. 33)'
         body: '%count% severe data breach(es) without authority export for > 24h. GDPR Art. 33 — 72h deadline.'
         action: 'Open authority export'
+
+# Top-level flash for DORA applicability gate (used by DoraComplianceController / DoraRoiController)
+dora:
+    not_applicable_to_tenant: 'DORA does not apply to this tenant. Set the DORA obligation status under Tenant Settings.'

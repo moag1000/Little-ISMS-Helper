@@ -1,77 +1,82 @@
-compliance_wizard:
-    # V4-EF-3: Diff View — Snapshot-Vergleich
-    diff:
-        title: 'Snapshot-Vergleich'
-        subtitle: 'Vergleich von %from% → %to%'
-        from_snapshot: 'Ausgangssnapshot (Vorher)'
-        to_snapshot: 'Zielsnapshot (Nachher)'
-        from_label: 'Vorher'
-        to_label: 'Nachher'
-        score_delta: 'Score-Änderung'
-        legend: 'Legende'
-        empty: 'Keine Unterschiede gefunden'
-        empty_desc: 'Beide Snapshots enthalten identische Assessment-Daten oder keine Checks.'
-        unavailable: 'Diff-Service nicht verfügbar — Service-Konfiguration prüfen.'
-        wizard_mismatch: 'Die gewählten Snapshots gehören zu unterschiedlichen Wizard-Typen.'
-        select_different: 'Bitte zwei verschiedene Snapshots auswählen.'
-        summary:
-            added: 'Neu hinzugekommen'
-            changed: 'Geändert'
-            removed: 'Entfernt'
-            unchanged: 'Unverändert'
-        action:
-            compare: 'Snapshots vergleichen'
-        section:
-            unchanged_badge: 'unverändert'
-    delta:
-        title: 'Delta-Assessment'
-        sheet:
-            summary: 'Zusammenfassung'
-            detail: 'Detail-Delta'
-            mapping: 'Mapping-Inventar'
-        summary:
-            tenant: 'Mandant'
-            target: 'Ziel-Framework'
-            baseline: 'Baseline-Framework'
-            reporting_date: 'Stichtag'
-            total: 'Anforderungen gesamt'
-            inherited: 'Aus Baseline vererbt'
-            direct: 'Direkt erfüllt'
-            gap: 'Anforderungen mit Lücke (<50%)'
-            avg_fulfillment: 'Durchschnittliche Erfüllung'
-            fte_saved: 'Geschätzte FTE-Tage eingespart'
-            pre_fill_rate: 'Pre-Fill-Rate Ziel %target%%%, aktuell %actual%%%'
-            pre_fill_rate_ok: 'ZIEL ERREICHT'
-            pre_fill_rate_miss: 'UNTER ZIEL — Mapping-Abdeckung prüfen'
-        detail:
-            col:
-                requirement_id: 'Anforderungs-ID'
-                title: 'Titel'
-                category: 'Kategorie'
-                priority: 'Priorität'
-                fulfillment_pct: 'Aktuelle Erfüllung %'
-                status: 'Status'
-                source_mappings: 'Quell-Mappings'
-                inheritance_state: 'Vererbungsstatus'
-                applicability_justification: 'Anwendbarkeits-Begründung'
-                gap_estimation: 'Gap-Schätzung (Tage)'
-                action_required: 'Erforderliche Maßnahme'
-        mapping:
-            col:
-                source_requirement: 'Quell-Anforderung'
-                target_requirement: 'Ziel-Anforderung'
-                mapping_percentage: 'Mapping %'
-                confidence: 'Konfidenz'
-                bidirectional: 'Bidirektional'
-                source: 'Herkunft'
-                valid_from: 'Gültig ab'
-                valid_until: 'Gültig bis'
-        action:
-            no_action: 'keine Maßnahme'
-            review_pending: 'Review offen'
-            new_assessment: 'Neubewertung erforderlich'
-            gap_close: 'Gap schließen'
-            download_excel: 'Delta-Assessment exportieren (Excel)'
-            baseline_required: 'Baseline-Framework benötigt (kein anderes aktives Framework im Mandanten)'
-        flash:
-            no_baseline_selected: 'Kein Baseline-Framework gewählt — es wird nur der Zustand des Ziel-Frameworks gezeigt.'
+compliance_wizard: 'Compliance-Wizard'
+# V4-EF-3: Diff View — Snapshot-Vergleich
+diff:
+    title: 'Snapshot-Vergleich'
+    subtitle: 'Vergleich von %from% → %to%'
+    from_snapshot: 'Ausgangssnapshot (Vorher)'
+    to_snapshot: 'Zielsnapshot (Nachher)'
+    from_label: 'Vorher'
+    to_label: 'Nachher'
+    score_delta: 'Score-Änderung'
+    legend: 'Legende'
+    empty: 'Keine Unterschiede gefunden'
+    empty_desc: 'Beide Snapshots enthalten identische Assessment-Daten oder keine Checks.'
+    unavailable: 'Diff-Service nicht verfügbar — Service-Konfiguration prüfen.'
+    wizard_mismatch: 'Die gewählten Snapshots gehören zu unterschiedlichen Wizard-Typen.'
+    select_different: 'Bitte zwei verschiedene Snapshots auswählen.'
+    summary:
+        added: 'Neu hinzugekommen'
+        changed: 'Geändert'
+        removed: 'Entfernt'
+        unchanged: 'Unverändert'
+    action:
+        compare: 'Snapshots vergleichen'
+    section:
+        unchanged_badge: 'unverändert'
+delta:
+    title: 'Delta-Assessment'
+    sheet:
+        summary: 'Zusammenfassung'
+        detail: 'Detail-Delta'
+        mapping: 'Mapping-Inventar'
+    summary:
+        tenant: 'Mandant'
+        target: 'Ziel-Framework'
+        baseline: 'Baseline-Framework'
+        reporting_date: 'Stichtag'
+        total: 'Anforderungen gesamt'
+        inherited: 'Aus Baseline vererbt'
+        direct: 'Direkt erfüllt'
+        gap: 'Anforderungen mit Lücke (<50%)'
+        avg_fulfillment: 'Durchschnittliche Erfüllung'
+        fte_saved: 'Geschätzte FTE-Tage eingespart'
+        pre_fill_rate: 'Pre-Fill-Rate Ziel %target%%%, aktuell %actual%%%'
+        pre_fill_rate_ok: 'ZIEL ERREICHT'
+        pre_fill_rate_miss: 'UNTER ZIEL — Mapping-Abdeckung prüfen'
+    detail:
+        col:
+            requirement_id: 'Anforderungs-ID'
+            title: 'Titel'
+            category: 'Kategorie'
+            priority: 'Priorität'
+            fulfillment_pct: 'Aktuelle Erfüllung %'
+            status: 'Status'
+            source_mappings: 'Quell-Mappings'
+            inheritance_state: 'Vererbungsstatus'
+            applicability_justification: 'Anwendbarkeits-Begründung'
+            gap_estimation: 'Gap-Schätzung (Tage)'
+            action_required: 'Erforderliche Maßnahme'
+    mapping:
+        col:
+            source_requirement: 'Quell-Anforderung'
+            target_requirement: 'Ziel-Anforderung'
+            mapping_percentage: 'Mapping %'
+            confidence: 'Konfidenz'
+            bidirectional: 'Bidirektional'
+            source: 'Herkunft'
+            valid_from: 'Gültig ab'
+            valid_until: 'Gültig bis'
+    action:
+        no_action: 'keine Maßnahme'
+        review_pending: 'Review offen'
+        new_assessment: 'Neubewertung erforderlich'
+        gap_close: 'Gap schließen'
+        download_excel: 'Delta-Assessment exportieren (Excel)'
+        baseline_required: 'Baseline-Framework benötigt (kein anderes aktives Framework im Mandanten)'
+    flash:
+        no_baseline_selected: 'Kein Baseline-Framework gewählt — es wird nur der Zustand des Ziel-Frameworks gezeigt.'
+
+# Aliases — einige Aufrufer nutzen den Legacy `compliance_wizard.*`-Flat-Key-Pfad
+'compliance_wizard.delta.summary.pre_fill_rate': 'Pre-Fill-Rate Ziel %target%%%, aktuell %actual%%%'
+'compliance_wizard.delta.action.download_excel': 'Delta-Assessment exportieren (Excel)'
+'compliance_wizard.delta.action.baseline_required': 'Baseline-Framework benötigt (kein anderes aktives Framework im Mandanten)'

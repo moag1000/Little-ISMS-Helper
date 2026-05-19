@@ -546,3 +546,12 @@ risk_approval_config:
 gstool_import:
     upload:
         file_type_error: 'Please upload an XML file.'
+
+# Form / Assert\Range / Assert\Regex / file-upload validator messages
+'admin.workflows.validation.conditions_invalid_json': 'Auto-progress conditions must be valid JSON.'
+'import.error.must_equal_commit': 'Please type COMMIT to confirm the import.'
+'import.upload.invalid_mime_type': 'Invalid file type. Please upload an XLSX, CSV, or JSON file.'
+'import.upload.file_too_large': 'File too large. Maximum size is {{ limit }} {{ suffix }}.'
+'bc_plans.error.rto_range': 'RTO (Recovery Time Objective) must be between {{ min }} and {{ max }} hours.'
+'bc_plans.error.rpo_range': 'RPO (Recovery Point Objective) must be between {{ min }} and {{ max }} hours.'
+'Must be a valid ROLE_ constant.': 'Must be a valid ROLE_ constant (e.g. ROLE_USER, ROLE_ADMIN).'

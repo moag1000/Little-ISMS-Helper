@@ -131,6 +131,7 @@ admin:
             module_config: 'Module-Config'
             settings: Settings
     nav:
+        admin: Administration
         tenants: Mandanten
         users: Benutzer
         roles: Rollen
@@ -1198,6 +1199,154 @@ admin:
             ready: "Export bereit. Klicken Sie auf Download, um die Datei zu speichern."
             file_not_found: "Export-Datei nicht gefunden (möglicherweise bereits heruntergeladen oder abgelaufen)."
 
+    workflows:
+        title: 'Workflow-Schritt-Editor'
+        subtitle: 'Mandantenspezifische Schritt-Overrides für regulatorische Genehmigungs-Lifecycles und Lifecycle-Konfigurationen bearbeiten'
+        no_regulatory: 'Keine regulatorischen Workflow-Konfigurationsdateien gefunden.'
+        no_lifecycle: 'Keine Lifecycle-Konfigurationsdateien gefunden.'
+        no_steps: 'Für diesen Workflow sind keine Schritte definiert. Lifecycle-Konfigurationen verwenden Transitions-Overrides.'
+        no_yaml_baseline: 'Keine YAML-Baseline-Daten für diesen Schritt verfügbar.'
+        yaml_baseline: 'YAML-Baseline'
+        yaml_value: 'YAML-Wert'
+        current_override: 'Aktueller Override'
+        save_success: 'Workflow-Schritt-Override gespeichert.'
+        reset_success: 'Workflow-Schritt-Override zurückgesetzt — YAML-Baseline wird wieder verwendet.'
+        reset_confirm: 'Wirklich alle Overrides für diesen Schritt zurücksetzen?'
+        section:
+            regulatory: 'Regulatorische Workflows'
+            regulatory_desc: 'Genehmigungsketten-Workflows mit schrittweisen Overrides für Rollen, SLA und Auto-Progress-Bedingungen.'
+            lifecycle: 'Lifecycle-Konfigurationen'
+            lifecycle_desc: 'Entitäts-Status-Automaten — Transitions-Overrides über den Lifecycle-Overrides-Editor konfigurieren.'
+            steps: 'Genehmigungsschritte'
+            steps_desc: '%count% Schritte in YAML definiert'
+            override_fields: 'Override-Felder'
+            yaml_baseline: 'YAML-Baseline'
+            help: 'Hilfe'
+        col:
+            name: 'Workflow'
+            steps: 'Schritte'
+            overrides: 'Aktive Overrides'
+            step_name: 'Schritt'
+            approver_role: 'Genehmiger-Rolle'
+            days: 'Tage'
+            overridden_keys: 'Überschriebene Felder'
+        step:
+            unnamed: '(unbenannter Schritt)'
+            overridden: 'überschrieben'
+            override_active: 'Override aktiv'
+        show:
+            title: 'Workflow: %workflow%'
+            subtitle: 'Schrittstruktur und Mandanten-Overrides'
+        edit:
+            title: 'Schritt %step% bearbeiten — %workflow%'
+            breadcrumb: 'Schritt %step%'
+            hint: 'Leere Felder verwenden den YAML-Baseline-Wert. Nur befüllte Felder werden in der Datenbank gespeichert.'
+        action:
+            show: 'Schritte verwalten'
+            back: 'Zurück'
+            reset: 'Zurücksetzen'
+            transition_overrides: 'Transitions-Overrides'
+            edit_transitions: 'Transitions-Overrides bearbeiten'
+            lifecycle_overrides: 'Lifecycle-Overrides'
+        form:
+            approver_role: 'Genehmiger-Rolle'
+            approver_role_help: 'ROLE_*-Wert, der die YAML-Genehmiger-Rolle für diesen Schritt überschreibt. Leer lassen für YAML-Standard.'
+            approver_users: 'Genehmiger (JSON)'
+            approver_users_help: 'JSON-Array mit Benutzer-IDs, z.B. [42, 57]. Leer lassen für YAML-Standard.'
+            days_to_complete: 'Tage bis Abschluss'
+            days_to_complete_help: 'SLA-Tage-Override. Leer lassen für YAML-Standard.'
+            auto_progress_conditions: 'Auto-Progress-Bedingungen (JSON)'
+            auto_progress_conditions_help: 'JSON-Bedingungsobjekt für automatische Schrittgenehmigung. Leer lassen für YAML-Standard.'
+            reason_required: 'Begründung erforderlich'
+            reason_required_value: 'Begründung verlangen'
+            four_eyes: 'Vier-Augen-Prinzip'
+            four_eyes_value: 'Vier-Augen aktivieren'
+            module: 'Modul-Gate'
+            module_help: 'Modul-Schlüssel (z.B. privacy, documents). Leer für keine Einschränkung.'
+            enable_override: 'Override aktivieren'
+        hint:
+            yaml_baseline: 'Fehlende Overrides verwenden automatisch den YAML-Baseline-Wert aus der Workflow-Konfiguration.'
+            lifecycle_redirect: 'Lifecycle-Konfigurationen verwenden Transitions-Overrides. Klicken Sie auf "Transitions-Overrides" zur Konfiguration.'
+            lifecycle_has_transitions: 'Dies ist eine Lifecycle-Konfiguration. Verwenden Sie den Lifecycle-Overrides-Editor für Transitions-Metadaten.'
+        validation:
+            days_non_negative: 'Tage bis Abschluss muss 0 oder größer sein.'
+            conditions_invalid_json: 'Auto-Progress-Bedingungen müssen gültiges JSON sein.'
+        help:
+            approver_role:
+                title: 'Genehmiger-Rolle'
+                body: 'Überschreibt die ROLE_*-Anforderung für diesen Schritt. Hat Vorrang vor der YAML-Definition.'
+            days_to_complete:
+                title: 'Tage bis Abschluss'
+                body: 'Überschreibt die SLA-Frist für diesen Schritt. Beeinflusst den Überfälligkeits-Cron-Job.'
+            auto_progress:
+                title: 'Auto-Progress-Bedingungen'
+                body: 'Wenn alle Bedingungen zutreffen (field_completion / risk_appetite / auto), wird der Schritt ohne Benutzeraktion genehmigt.'
+            four_eyes:
+                title: 'Vier-Augen-Prinzip'
+                body: 'Wenn aktiviert, muss eine zweite Person die Transition bestätigen.'
+    queue:
+        title: 'Queue-Status'
+        badge: 'Async-Worker'
+        subtitle: 'Heartbeat, Queue-Tiefe, zuletzt verarbeitete Jobs und manueller Notfall-Trigger für Shared-Hosting-Deployments.'
+        status:
+            green:
+                message: 'Worker aktiv — letzter Heartbeat vor %age% s, Warteschlange %depth% Nachrichten.'
+            yellow:
+                message: 'Worker reagiert verzögert (Heartbeat vor %age% s). Cron könnte langsam takten — drainiert sich meist im nächsten Lauf.'
+            red:
+                message: 'Worker offline — kein Heartbeat seit %age% s. %depth% Nachrichten stauen sich. Cron-Eintrag prüfen oder „Jetzt verarbeiten" klicken.'
+            unknown:
+                message: 'Noch kein Heartbeat aufgezeichnet. Sobald der Worker das erste Mal läuft, wird die Ampel aktiv.'
+        kpi:
+            heartbeat:
+                label: 'Heartbeat'
+                hint: 'Sekunden seit letztem Worker-Tick'
+                never: 'nie'
+            queue_depth:
+                label: 'Queue-Tiefe'
+                hint: 'Wartende Async-Nachrichten'
+            pending:
+                label: 'Pending Jobs'
+                hint: 'Job-Dateien im Status „pending"'
+            failed:
+                label: 'Fehlgeschlagen (24 h)'
+                hint: 'Messenger-Fehler-Queue letzte 24 h'
+        process_now:
+            title: 'Queue jetzt verarbeiten'
+            description: 'Sicheres Notfall-Drain: bis zu 5 Nachrichten in maximal 25 Sekunden — bleibt unter dem PHP-FPM-Timeout. Mehrfach klicken bei voller Queue.'
+            button: 'Jetzt verarbeiten'
+            fineprint: 'CSRF-geschützt, Audit-Log-pflichtig.'
+            success: 'Queue-Drain erfolgreich abgeschlossen (%duration% s).'
+            partial: 'Worker-Lauf endete mit Exit-Code %exit% nach %duration% s. Logs prüfen.'
+            error: 'Queue-Drain konnte nicht starten: %error%'
+        cron:
+            title: 'Cron-Eintrag für dauerhaften Worker'
+            description: 'Im Hosting-Panel (cPanel, Plesk, ISPConfig) als 1-Minuten-Cron einrichten. Details in der Hosting-Worker-Anleitung.'
+            see_guide: 'Vollständige Anleitung: docs/user-guide/HOSTING_WORKER.md'
+        recent:
+            title: 'Zuletzt verarbeitete Jobs'
+            col:
+                job: 'Job'
+                status: 'Status'
+                progress: 'Fortschritt'
+                updated: 'Aktualisiert'
+            empty:
+                title: 'Noch keine Jobs verarbeitet'
+                description: 'Sobald der Worker (Cron oder Manuell) Async-Jobs ausführt, erscheinen sie hier.'
+        job_status:
+            pending: 'Pending'
+            running: 'Läuft'
+            succeeded: 'Erfolgreich'
+            failed: 'Fehlgeschlagen'
+            unknown: 'Unbekannt'
+        banner:
+            title: 'Async-Worker offline.'
+            message: 'Kein Heartbeat seit %age% s, %depth% Nachrichten stauen sich. Admin-Jobs (Backup, Daten-Reparatur, Exports) bleiben hängen, bis der Worker wieder läuft.'
+            link: 'Queue-Status öffnen →'
+        hub:
+            label: 'Queue-Status'
+            desc: 'Worker-Health, Heartbeat, manueller Drain'
+
 
 data_management:
     backup:
@@ -1458,152 +1607,4 @@ industry_preset:
             activate: 'Aktivieren'
             optional: 'optional'
 
-
-    workflows:
-        title: 'Workflow-Schritt-Editor'
-        subtitle: 'Mandantenspezifische Schritt-Overrides für regulatorische Genehmigungs-Lifecycles und Lifecycle-Konfigurationen bearbeiten'
-        no_regulatory: 'Keine regulatorischen Workflow-Konfigurationsdateien gefunden.'
-        no_lifecycle: 'Keine Lifecycle-Konfigurationsdateien gefunden.'
-        no_steps: 'Für diesen Workflow sind keine Schritte definiert. Lifecycle-Konfigurationen verwenden Transitions-Overrides.'
-        no_yaml_baseline: 'Keine YAML-Baseline-Daten für diesen Schritt verfügbar.'
-        yaml_baseline: 'YAML-Baseline'
-        yaml_value: 'YAML-Wert'
-        current_override: 'Aktueller Override'
-        save_success: 'Workflow-Schritt-Override gespeichert.'
-        reset_success: 'Workflow-Schritt-Override zurückgesetzt — YAML-Baseline wird wieder verwendet.'
-        reset_confirm: 'Wirklich alle Overrides für diesen Schritt zurücksetzen?'
-        section:
-            regulatory: 'Regulatorische Workflows'
-            regulatory_desc: 'Genehmigungsketten-Workflows mit schrittweisen Overrides für Rollen, SLA und Auto-Progress-Bedingungen.'
-            lifecycle: 'Lifecycle-Konfigurationen'
-            lifecycle_desc: 'Entitäts-Status-Automaten — Transitions-Overrides über den Lifecycle-Overrides-Editor konfigurieren.'
-            steps: 'Genehmigungsschritte'
-            steps_desc: '%count% Schritte in YAML definiert'
-            override_fields: 'Override-Felder'
-            yaml_baseline: 'YAML-Baseline'
-            help: 'Hilfe'
-        col:
-            name: 'Workflow'
-            steps: 'Schritte'
-            overrides: 'Aktive Overrides'
-            step_name: 'Schritt'
-            approver_role: 'Genehmiger-Rolle'
-            days: 'Tage'
-            overridden_keys: 'Überschriebene Felder'
-        step:
-            unnamed: '(unbenannter Schritt)'
-            overridden: 'überschrieben'
-            override_active: 'Override aktiv'
-        show:
-            title: 'Workflow: %workflow%'
-            subtitle: 'Schrittstruktur und Mandanten-Overrides'
-        edit:
-            title: 'Schritt %step% bearbeiten — %workflow%'
-            breadcrumb: 'Schritt %step%'
-            hint: 'Leere Felder verwenden den YAML-Baseline-Wert. Nur befüllte Felder werden in der Datenbank gespeichert.'
-        action:
-            show: 'Schritte verwalten'
-            back: 'Zurück'
-            reset: 'Zurücksetzen'
-            transition_overrides: 'Transitions-Overrides'
-            edit_transitions: 'Transitions-Overrides bearbeiten'
-            lifecycle_overrides: 'Lifecycle-Overrides'
-        form:
-            approver_role: 'Genehmiger-Rolle'
-            approver_role_help: 'ROLE_*-Wert, der die YAML-Genehmiger-Rolle für diesen Schritt überschreibt. Leer lassen für YAML-Standard.'
-            approver_users: 'Genehmiger (JSON)'
-            approver_users_help: 'JSON-Array mit Benutzer-IDs, z.B. [42, 57]. Leer lassen für YAML-Standard.'
-            days_to_complete: 'Tage bis Abschluss'
-            days_to_complete_help: 'SLA-Tage-Override. Leer lassen für YAML-Standard.'
-            auto_progress_conditions: 'Auto-Progress-Bedingungen (JSON)'
-            auto_progress_conditions_help: 'JSON-Bedingungsobjekt für automatische Schrittgenehmigung. Leer lassen für YAML-Standard.'
-            reason_required: 'Begründung erforderlich'
-            reason_required_value: 'Begründung verlangen'
-            four_eyes: 'Vier-Augen-Prinzip'
-            four_eyes_value: 'Vier-Augen aktivieren'
-            module: 'Modul-Gate'
-            module_help: 'Modul-Schlüssel (z.B. privacy, documents). Leer für keine Einschränkung.'
-            enable_override: 'Override aktivieren'
-        hint:
-            yaml_baseline: 'Fehlende Overrides verwenden automatisch den YAML-Baseline-Wert aus der Workflow-Konfiguration.'
-            lifecycle_redirect: 'Lifecycle-Konfigurationen verwenden Transitions-Overrides. Klicken Sie auf "Transitions-Overrides" zur Konfiguration.'
-            lifecycle_has_transitions: 'Dies ist eine Lifecycle-Konfiguration. Verwenden Sie den Lifecycle-Overrides-Editor für Transitions-Metadaten.'
-        validation:
-            days_non_negative: 'Tage bis Abschluss muss 0 oder größer sein.'
-            conditions_invalid_json: 'Auto-Progress-Bedingungen müssen gültiges JSON sein.'
-        help:
-            approver_role:
-                title: 'Genehmiger-Rolle'
-                body: 'Überschreibt die ROLE_*-Anforderung für diesen Schritt. Hat Vorrang vor der YAML-Definition.'
-            days_to_complete:
-                title: 'Tage bis Abschluss'
-                body: 'Überschreibt die SLA-Frist für diesen Schritt. Beeinflusst den Überfälligkeits-Cron-Job.'
-            auto_progress:
-                title: 'Auto-Progress-Bedingungen'
-                body: 'Wenn alle Bedingungen zutreffen (field_completion / risk_appetite / auto), wird der Schritt ohne Benutzeraktion genehmigt.'
-            four_eyes:
-                title: 'Vier-Augen-Prinzip'
-                body: 'Wenn aktiviert, muss eine zweite Person die Transition bestätigen.'
-    queue:
-        title: 'Queue-Status'
-        badge: 'Async-Worker'
-        subtitle: 'Heartbeat, Queue-Tiefe, zuletzt verarbeitete Jobs und manueller Notfall-Trigger für Shared-Hosting-Deployments.'
-        status:
-            green:
-                message: 'Worker aktiv — letzter Heartbeat vor %age% s, Warteschlange %depth% Nachrichten.'
-            yellow:
-                message: 'Worker reagiert verzögert (Heartbeat vor %age% s). Cron könnte langsam takten — drainiert sich meist im nächsten Lauf.'
-            red:
-                message: 'Worker offline — kein Heartbeat seit %age% s. %depth% Nachrichten stauen sich. Cron-Eintrag prüfen oder „Jetzt verarbeiten" klicken.'
-            unknown:
-                message: 'Noch kein Heartbeat aufgezeichnet. Sobald der Worker das erste Mal läuft, wird die Ampel aktiv.'
-        kpi:
-            heartbeat:
-                label: 'Heartbeat'
-                hint: 'Sekunden seit letztem Worker-Tick'
-                never: 'nie'
-            queue_depth:
-                label: 'Queue-Tiefe'
-                hint: 'Wartende Async-Nachrichten'
-            pending:
-                label: 'Pending Jobs'
-                hint: 'Job-Dateien im Status „pending"'
-            failed:
-                label: 'Fehlgeschlagen (24 h)'
-                hint: 'Messenger-Fehler-Queue letzte 24 h'
-        process_now:
-            title: 'Queue jetzt verarbeiten'
-            description: 'Sicheres Notfall-Drain: bis zu 5 Nachrichten in maximal 25 Sekunden — bleibt unter dem PHP-FPM-Timeout. Mehrfach klicken bei voller Queue.'
-            button: 'Jetzt verarbeiten'
-            fineprint: 'CSRF-geschützt, Audit-Log-pflichtig.'
-            success: 'Queue-Drain erfolgreich abgeschlossen (%duration% s).'
-            partial: 'Worker-Lauf endete mit Exit-Code %exit% nach %duration% s. Logs prüfen.'
-            error: 'Queue-Drain konnte nicht starten: %error%'
-        cron:
-            title: 'Cron-Eintrag für dauerhaften Worker'
-            description: 'Im Hosting-Panel (cPanel, Plesk, ISPConfig) als 1-Minuten-Cron einrichten. Details in der Hosting-Worker-Anleitung.'
-            see_guide: 'Vollständige Anleitung: docs/user-guide/HOSTING_WORKER.md'
-        recent:
-            title: 'Zuletzt verarbeitete Jobs'
-            col:
-                job: 'Job'
-                status: 'Status'
-                progress: 'Fortschritt'
-                updated: 'Aktualisiert'
-            empty:
-                title: 'Noch keine Jobs verarbeitet'
-                description: 'Sobald der Worker (Cron oder Manuell) Async-Jobs ausführt, erscheinen sie hier.'
-        job_status:
-            pending: 'Pending'
-            running: 'Läuft'
-            succeeded: 'Erfolgreich'
-            failed: 'Fehlgeschlagen'
-            unknown: 'Unbekannt'
-        banner:
-            title: 'Async-Worker offline.'
-            message: 'Kein Heartbeat seit %age% s, %depth% Nachrichten stauen sich. Admin-Jobs (Backup, Daten-Reparatur, Exports) bleiben hängen, bis der Worker wieder läuft.'
-            link: 'Queue-Status öffnen →'
-        hub:
-            label: 'Queue-Status'
-            desc: 'Worker-Health, Heartbeat, manueller Drain'
 

@@ -3,6 +3,10 @@ incident_management:
   description: Record, classify and manage security incidents and NIS2 notifications.
   open_incidents: Open Incidents
   total_recorded: Total Recorded
+# Top-level deadline_counter keys for fa-deadline-counter component (no `incident.` prefix)
+deadline_counter:
+    remaining: '%hours%h remaining'
+    overdue: '%hours%h overdue'
 incident:
   prefill:
     title_from_risk: 'Incident for risk: %title%'

@@ -234,6 +234,71 @@ document:
             policy_document: 'Richtlinie'
             procedure_document: 'Verfahrensanweisung'
             record: 'Nachweis'
+    # Dokumenten-Versionen — versionierte Datei-Ablage (ISO 27001 Kl. 7.5.3)
+    version:
+        label: 'Version'
+        number: 'Version'
+        uploaded_at: 'Hochgeladen'
+        uploaded_by: 'Hochgeladen von'
+        size: 'Größe'
+        hash: 'SHA-256-Hash'
+        hash_label: 'SHA-256-Hash'
+        status: 'Status'
+        current: Aktuell
+        current_label: 'Aktuelle Version'
+        published: Veröffentlicht
+        draft: Entwurf
+        history:
+            title: 'Versionsverlauf'
+            empty: 'Bisher keine früheren Versionen archiviert.'
+    # Letzte destruktive Aktion innerhalb des Undo-Fensters rückgängig machen
+    undo:
+        title: 'Letzte Aktion rückgängig machen'
+        body: 'Letzte Änderung an diesem Dokument zurücknehmen. Innerhalb des Undo-Fensters verfügbar.'
+        action: 'Rückgängig'
+        success: 'Aktion erfolgreich zurückgenommen.'
+        error:
+            invalid_token: 'Undo-Token ist ungültig oder abgelaufen.'
+            window_expired: 'Das Undo-Fenster ist abgelaufen. Manuelle Wiederherstellung erforderlich.'
+            service_unavailable: 'Undo-Service nicht verfügbar. Bitte später erneut versuchen.'
+    # Dokumenten-Wiederverwendung — zeigt Verwender eines Dokuments im ISMS
+    reuse:
+        used_by: 'Verwendet von'
+# Nachweis-Reverifikation — ISO 27001 Kl. 9.1 (Sind Nachweise noch gültig?)
+evidence_reverification:
+    title: 'Nachweis-Reverifikation'
+    badge: 'Kl. 9.1'
+    subtitle: 'Prüfen, ob Nachweise weiterhin aktuell sind und zu den verknüpften Controls passen.'
+    overdue: 'Reverifikation überfällig'
+    due: 'Fällig'
+    assigned_to: 'Zugewiesen an'
+    empty:
+        title: 'Keine Reverifikationen offen'
+        body: 'Alle Nachweise sind aktuell.'
+    linked:
+        control: 'Verknüpftes Control'
+        fulfillment: 'Verknüpfte Erfüllung'
+    action:
+        complete: 'Als reverifiziert markieren'
+        skip: 'Diesen Zyklus überspringen'
+    success:
+        completed: 'Nachweis als reverifiziert markiert.'
+        skipped: 'Reverifikations-Zyklus übersprungen — der nächste Zyklus wird automatisch geplant.'
+    error:
+        invalid_token: 'Reverifikations-Token ist ungültig oder abgelaufen.'
+    show:
+        title: 'Reverifikations-Details'
+        details: 'Details'
+        document: 'Dokument'
+        status: 'Status'
+        linked_control: 'Verknüpftes Control'
+        linked_fulfillment: 'Verknüpfte Erfüllung'
+        assigned_to: 'Zugewiesen an'
+        due_date: 'Fälligkeitsdatum'
+        notes: 'Notizen'
+        notes_label: 'Notizen'
+        completed_at: 'Abgeschlossen am'
+        skip_reason: 'Grund für Überspringen'
 iso_9001_bridge:
     policy: 'Identisch mit ISO 9001 Klausel 7.5 "Lenkung dokumentierter Information" — Richtlinien, Verfahrensanweisungen und Aufzeichnungen werden nach demselben Lenkungsschema versioniert und freigegeben.'
     procedure: 'In ISO 9001 ist das eine "dokumentierte Verfahrensanweisung" (7.5.1) — Prozessbeschreibung mit Rollen, Ein-/Ausgang und Mess-Kriterien.'
