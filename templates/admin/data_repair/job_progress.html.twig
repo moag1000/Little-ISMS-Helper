@@ -1,0 +1,46 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ jobLabel|default('Data Repair Job') }} — {{ 'admin.data_repair.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block admin_title %}
+    <i class="fa-icon fa-icon--threat" aria-hidden="true"></i> {{ jobLabel|default('Data Repair Job') }}
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'admin.data_repair.title'|trans({}, 'admin'), url: path('admin_data_repair_index') },
+            { label: jobLabel|default('Async job') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-tools', label: 'admin.data_repair.job.badge'|trans({}, 'admin') },
+        title: jobLabel|default('Async Data Repair Job'),
+        subtitle: jobSubtitle|default('admin.data_repair.job.generic_subtitle'|trans({}, 'admin')),
+    }) }}
+
+    {# Turbo cache disabled — live status changes every 3 s #}
+    <meta name="turbo-cache-control" content="no-cache">
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-8 col-xl-6">
+            {% include '_components/_async_job_progress.html.twig' with {
+                job_id:    jobId,
+                job_name:  jobName,
+                job_label: jobLabel,
+                cancel_url: cancelUrl,
+            } %}
+
+            <div class="mt-3 text-center text-muted small">
+                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                {{ 'admin.job.worker_hint'|trans({}, 'admin') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

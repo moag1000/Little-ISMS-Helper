@@ -700,6 +700,18 @@ admin:
             col_entity: 'Entity'
             col_enum: 'Enum'
             col_unknown_values: 'Unbekannte Werte × Anzahl'
+        # Async-Datenreparatur-Fortschrittsseiten (Phase-2-Rollout)
+        job:
+            badge: 'Datenreparatur'
+            generic_subtitle: 'Läuft im Hintergrund, damit PHP-FPM antwortbereit bleibt.'
+            fix_tenant_mismatches_label: 'Mandanten-Fehlzuordnungen beheben'
+            fix_tenant_mismatches_subtitle: 'Richtet Kind-Mandanten im Hintergrund am Parent (Asset) aus…'
+            merge_duplicates_label: 'Duplikate zusammenführen — %type%'
+            merge_duplicates_subtitle: 'Behält den ältesten Eintrag, entfernt neuere Duplikate im Hintergrund…'
+            execute_migrations_label: 'Ausstehende Migrationen anwenden'
+            execute_migrations_subtitle: 'Führt den Doctrine-Migration-Plan im Hintergrund aus…'
+            reconcile_schema_label: 'Schema reconcilen'
+            reconcile_schema_subtitle: 'Gleicht das Live-Datenbank-Schema im Hintergrund mit den Entity-Metadaten ab…'
     modules:
         title: Modul-Verwaltung
         dependency_graph: Abhängigkeitsgraph

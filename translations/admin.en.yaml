@@ -684,6 +684,18 @@ admin:
             col_entity: 'Entity'
             col_enum: 'Enum'
             col_unknown_values: 'Unknown values × count'
+        # Async data-repair job progress pages (Phase 2 rollout)
+        job:
+            badge: 'Data Repair'
+            generic_subtitle: 'Running in the background to keep PHP-FPM responsive.'
+            fix_tenant_mismatches_label: 'Fix Tenant Mismatches'
+            fix_tenant_mismatches_subtitle: 'Aligning child entity tenants with their parent (Asset) in the background…'
+            merge_duplicates_label: 'Merge Duplicates — %type%'
+            merge_duplicates_subtitle: 'Keeping the oldest entry, deleting newer duplicates in the background…'
+            execute_migrations_label: 'Execute Pending Migrations'
+            execute_migrations_subtitle: 'Running the Doctrine migration plan in the background…'
+            reconcile_schema_label: 'Reconcile Schema'
+            reconcile_schema_subtitle: 'Aligning live database schema with entity metadata in the background…'
     modules:
         title: Title
         dependency_graph: 'Dependency Graph'
