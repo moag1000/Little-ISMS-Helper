@@ -19,11 +19,17 @@ use App\Service\ComplianceAnalyticsService;
 use App\Service\ControlEffectivenessService;
 use App\Service\RiskForecastService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Analytics Controller
@@ -237,6 +243,98 @@ class AnalyticsController extends AbstractController
             'incidents' => $incidentTrend
         ]);
     }
+    /**
+     * Async wrapper around {@see self::exportData()}: dispatches an
+     * {@see \App\Job\ExportAnalyticsJob} that writes the analytics CSV
+     * (risks / assets / compliance slice) to var/exports/<jobId>.csv in
+     * the background and renders a polling progress page with a Download
+     * CTA once the worker reports succeeded.
+     *
+     * The legacy sync GET route is kept for back-compat (bookmarks, links
+     * embedded in saved reports). New UI traffic should use this dispatch
+     * endpoint to avoid PHP-FPM timeouts on large datasets.
+     *
+     * Phase 3 of the async admin-jobs rollout.
+     */
+    #[Route('/export/{type}/dispatch', name: 'app_analytics_export_dispatch', methods: ['POST'])]
+    #[IsCsrfTokenValid('analytics_export_dispatch')]
+    public function exportDataDispatch(
+        string $type,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+    ): Response {
+        if (!in_array($type, ['risks', 'assets', 'compliance'], true)) {
+            throw $this->createNotFoundException(sprintf('Unsupported analytics export type "%s".', $type));
+        }
+
+        $jobId = $jobStatusService->create('analytics.export', ['type' => $type]);
+
+        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
+            jobClass: \App\Job\ExportAnalyticsJob::class,
+            args: ['type' => $type],
+            jobId: $jobId,
+        ));
+
+        return $this->render('analytics/export_progress.html.twig', [
+            'jobId' => $jobId,
+            'type' => $type,
+            'cancelUrl' => $this->generateUrl('app_analytics_dashboard'),
+            'downloadUrl' => $this->generateUrl('app_analytics_export_download', ['id' => $jobId, 'type' => $type]),
+        ]);
+    }
+
+    /**
+     * Streams the file produced by {@see \App\Job\ExportAnalyticsJob} and
+     * removes it from disk afterwards. The job ID UUID-v4 is the canonical
+     * filename stem so we can derive the path without any user-controlled
+     * string.
+     */
+    #[Route('/export/{type}/download/{id}', name: 'app_analytics_export_download', methods: ['GET'])]
+    public function exportDownload(
+        string $type,
+        string $id,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        KernelInterface $kernel,
+        TranslatorInterface $translator,
+    ): Response {
+        if (!in_array($type, ['risks', 'assets', 'compliance'], true)) {
+            throw $this->createNotFoundException('Unsupported analytics export type.');
+        }
+        if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {
+            throw $this->createNotFoundException('Invalid export ID.');
+        }
+        if (!$jobStatusService->exists($id)) {
+            throw $this->createNotFoundException(
+                $translator->trans('analytics.export.file_not_found', [], 'analytics'),
+            );
+        }
+        $record = $jobStatusService->read($id);
+        if (($record['status'] ?? '') !== 'succeeded') {
+            throw $this->createNotFoundException(
+                $translator->trans('analytics.export.file_not_found', [], 'analytics'),
+            );
+        }
+
+        $path = $kernel->getProjectDir() . '/var/exports/' . $id . '.csv';
+        if (!is_file($path)) {
+            throw $this->createNotFoundException(
+                $translator->trans('analytics.export.file_not_found', [], 'analytics'),
+            );
+        }
+
+        $filename = sprintf('analytics_%s_%s.csv', $type, date('Y-m-d'));
+
+        $response = new BinaryFileResponse($path);
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename,
+        );
+        $response->deleteFileAfterSend(true);
+
+        return $response;
+    }
+
     #[Route('/api/export/{type}', name: 'app_analytics_export', methods: ['GET'])]
     public function exportData(Request $request, string $type): Response
     {
