@@ -37,7 +37,12 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <form method="post" action="{{ path('data_export_execute') }}"
+            {# Async-first (Phase 2.5): the form submits to the dispatch route,
+             # which queues an ExportDataJob and renders a polling progress page.
+             # On success the user sees a "Download" CTA that pulls the file from
+             # the worker-written var/exports/<jobId>.<ext>. The legacy sync route
+             # ('data_export_execute') is still wired for any external automation. #}
+            <form method="post" action="{{ path('data_export_dispatch') }}"
                   data-controller="wizard-busy"
                   data-wizard-busy-message-value="{{ 'data.alva.busy.export'|trans({}, 'data_management') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('data_export') }}">

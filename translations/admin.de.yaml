@@ -237,6 +237,9 @@ admin:
         submit: 'Ausgewählte Entitäten exportieren'
         notes_title: 'Wichtige Hinweise'
         backup_link: 'Für ein vollständiges System-Backup nutzen Sie die <a href="%url%" class="alert-link">Datenbank-Backup</a> Funktion'
+        error:
+            no_entities: 'Bitte mindestens eine Entität auswählen.'
+            invalid_token: 'Ungültiges CSRF-Token. Bitte Seite neu laden und erneut versuchen.'
     data_management:
         title: Daten-Verwaltung
     settings:

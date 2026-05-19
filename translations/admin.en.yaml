@@ -221,6 +221,9 @@ admin:
         submit: 'Export Selected Entities'
         notes_title: 'Important Notes'
         backup_link: 'For complete system backup, use the <a href="%url%" class="alert-link">Database Backup</a> function'
+        error:
+            no_entities: 'Please select at least one entity.'
+            invalid_token: 'Invalid CSRF token. Please reload the page and try again.'
     data_management:
         title: 'Data Management'
     settings:
