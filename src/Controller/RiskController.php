@@ -370,6 +370,105 @@ class RiskController extends AbstractController
 
         return $response;
     }
+
+    /**
+     * Async wrapper around {@see self::export()}: dispatches an
+     * {@see \App\Job\ExportRisksJob} that writes the filtered register to
+     * var/exports/<jobId>.csv and renders a polling progress page with a
+     * Download CTA once the worker reports succeeded.
+     *
+     * The legacy sync GET route is kept for browser bookmarks and any
+     * integration that already targets it; new UI traffic should use this
+     * dispatch endpoint to avoid PHP-FPM timeout on large registers.
+     *
+     * Phase 2.5 of the async admin-jobs rollout.
+     */
+    #[Route('/risk/export/dispatch', name: 'app_risk_export_dispatch', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function exportDispatch(
+        Request $request,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        \Symfony\Component\Messenger\MessageBusInterface $messageBus,
+    ): Response {
+        if (!$this->isCsrfTokenValid('risk_export_dispatch', $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
+            return $this->redirectToRoute('app_risk_index');
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user instanceof User ? $user->getTenant() : null;
+
+        $args = [
+            'tenantId' => $tenant?->getId(),
+            'userId' => $user instanceof User ? $user->getId() : null,
+            'level' => $request->request->get('level') ?? $request->query->get('level'),
+            'status' => $request->request->get('status') ?? $request->query->get('status'),
+            'treatment' => $request->request->get('treatment') ?? $request->query->get('treatment'),
+            'owner' => $request->request->get('owner') ?? $request->query->get('owner'),
+        ];
+
+        $jobId = $jobStatusService->create('risk.export', $args);
+
+        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
+            jobClass: \App\Job\ExportRisksJob::class,
+            args: $args,
+            jobId: $jobId,
+        ));
+
+        return $this->render('risk/export_progress.html.twig', [
+            'jobId' => $jobId,
+            'cancelUrl' => $this->generateUrl('app_risk_index'),
+            'downloadUrl' => $this->generateUrl('app_risk_export_download', ['id' => $jobId]),
+        ]);
+    }
+
+    /**
+     * Streams the file produced by {@see \App\Job\ExportRisksJob} and removes
+     * it from disk afterwards. The job ID UUID-v4 is the canonical filename
+     * stem so we can derive the path without any user-controlled string.
+     */
+    #[Route('/risk/export/download/{id}', name: 'app_risk_export_download', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function exportDownload(
+        string $id,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        \Symfony\Component\HttpKernel\KernelInterface $kernel,
+    ): Response {
+        if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {
+            throw $this->createNotFoundException('Invalid export ID.');
+        }
+        if (!$jobStatusService->exists($id)) {
+            throw $this->createNotFoundException(
+                $this->translator->trans('risk.export.file_not_found', [], 'risk'),
+            );
+        }
+        $record = $jobStatusService->read($id);
+        if (($record['status'] ?? '') !== 'succeeded') {
+            throw $this->createNotFoundException(
+                $this->translator->trans('risk.export.file_not_found', [], 'risk'),
+            );
+        }
+
+        $path = $kernel->getProjectDir() . '/var/exports/' . $id . '.csv';
+        if (!is_file($path)) {
+            throw $this->createNotFoundException(
+                $this->translator->trans('risk.export.file_not_found', [], 'risk'),
+            );
+        }
+
+        $filename = sprintf('risk_export_%s.csv', date('Y-m-d_His'));
+
+        $response = new \Symfony\Component\HttpFoundation\BinaryFileResponse($path);
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->setContentDisposition(
+            \Symfony\Component\HttpFoundation\ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename,
+        );
+        $response->deleteFileAfterSend(true);
+
+        return $response;
+    }
+
     #[Route('/risk/export/excel', name: 'app_risk_export_excel', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function exportExcel(Request $request): Response

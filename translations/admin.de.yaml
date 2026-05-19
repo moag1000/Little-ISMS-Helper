@@ -237,6 +237,9 @@ admin:
         submit: 'Ausgewählte Entitäten exportieren'
         notes_title: 'Wichtige Hinweise'
         backup_link: 'Für ein vollständiges System-Backup nutzen Sie die <a href="%url%" class="alert-link">Datenbank-Backup</a> Funktion'
+        error:
+            no_entities: 'Bitte mindestens eine Entität auswählen.'
+            invalid_token: 'Ungültiges CSRF-Token. Bitte Seite neu laden und erneut versuchen.'
     data_management:
         title: Daten-Verwaltung
     settings:
@@ -712,6 +715,15 @@ admin:
             execute_migrations_subtitle: 'Führt den Doctrine-Migration-Plan im Hintergrund aus…'
             reconcile_schema_label: 'Schema reconcilen'
             reconcile_schema_subtitle: 'Gleicht das Live-Datenbank-Schema im Hintergrund mit den Entity-Metadaten ab…'
+            run_integrity_check_label: 'Voller Integritäts-Scan'
+            run_integrity_check_subtitle: 'Prüft Orphans, Duplikate, defekte Referenzen, fehlende Relationen und Schema-Drift im Hintergrund…'
+        integrity_check:
+            title: 'Asynchroner Integritäts-Scan'
+            description: 'Bei großen Datenbeständen kann der Scan auf dieser Seite das PHP-FPM-Limit überschreiten. Starten Sie ihn alternativ als Hintergrund-Job — das Ergebnis wird zwischengespeichert und hier als Banner angezeigt.'
+            run_now: 'Async-Scan starten'
+            last_run: 'Letzter Async-Scan: %when% (Dauer: %duration% s)'
+            last_counts: '%orphans% Orphans, %duplicates% Duplikat-Gruppen, %broken% defekte Referenzen — Health-Score %health%'
+            never_run: 'Noch nie ausgeführt. Der Banner zeigt nach dem ersten Lauf eine Zusammenfassung.'
     modules:
         title: Modul-Verwaltung
         dependency_graph: Abhängigkeitsgraph
@@ -1179,6 +1191,12 @@ admin:
         completed: "Job erfolgreich abgeschlossen."
         id_label: "Job-ID"
         worker_hint: "Der Job läuft im Hintergrund. Diese Seite aktualisiert sich automatisch alle 3 Sekunden."
+        download: "Datei herunterladen"
+        export:
+            data_label: "CSV-Export — alle Entitäten"
+            data_subtitle: "Sammelt die ausgewählten Entitäten in eine Datei im Hintergrund…"
+            ready: "Export bereit. Klicken Sie auf Download, um die Datei zu speichern."
+            file_not_found: "Export-Datei nicht gefunden (möglicherweise bereits heruntergeladen oder abgelaufen)."
 
 
 data_management:

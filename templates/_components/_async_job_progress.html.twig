@@ -14,14 +14,20 @@
  #   } %}
  #
  # Variables:
- #   job_id     (string)  UUID returned by JobStatusService::create()
- #   job_name   (string)  Internal slug, shown in small text
- #   job_label  (string)  Human-readable title shown as card heading
- #   cancel_url (string)  Optional URL for a "Back" link once done
- #   status_url (string)  Optional override of the polling endpoint URL.
- #                        Used by the QuickFix flow to swap the locale-prefixed
- #                        admin endpoint for the public /quick-fix/jobs/{id}/status
- #                        route (different auth model — see QuickFixGuard).
+ #   job_id        (string)  UUID returned by JobStatusService::create()
+ #   job_name      (string)  Internal slug, shown in small text
+ #   job_label     (string)  Human-readable title shown as card heading
+ #   cancel_url    (string)  Optional URL for a "Back" link once done
+ #   status_url    (string)  Optional override of the polling endpoint URL.
+ #                           Used by the QuickFix flow to swap the locale-prefixed
+ #                           admin endpoint for the public /quick-fix/jobs/{id}/status
+ #                           route (different auth model — see QuickFixGuard).
+ #   download_url  (string)  Optional. If set, a "Download" CTA is revealed
+ #                           inside the success box once the job reports
+ #                           status='succeeded'. Used by exports that write
+ #                           a file to var/exports/<uuid>.<ext> and serve it
+ #                           via a separate download endpoint.
+ #   download_label (string) Optional label override for the download button.
  #}
 {% trans_default_domain 'admin' %}
 
@@ -79,6 +85,17 @@
         <div class="alert alert-success d-none" data-async-job-target="successBox">
             <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
             <span data-async-job-target="successMessage">{{ 'admin.job.completed'|trans({}, 'admin') }}</span>
+            {% if download_url is defined and download_url %}
+                <div class="mt-3">
+                    <a href="{{ download_url }}"
+                       class="fa-cyber-btn fa-cyber-btn--primary"
+                       data-async-job-target="downloadLink"
+                       download>
+                        <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                        {{ download_label|default('admin.job.download'|trans({}, 'admin')) }}
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
 
