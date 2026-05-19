@@ -107,7 +107,12 @@ async function captureOne(browser, persona, theme, screen, viewport) {
         // Redact local-environment leaks before screenshot:
         //   - DB-username / -host fields in the deployment wizard show whatever
         //     was parsed from .env.local (typical: developer's mac username).
-        //   - Override common sensitive inputs with neutral placeholders.
+        //   - Sweep all rendered text nodes for filesystem paths, real e-mail
+        //     domains, and the developer's OS user name so monitoring pages
+        //     do not leak `/Users/<name>/…` into public docs.
+        //   - Server-side a `path_relative` Twig filter performs the same
+        //     sanitisation; this is belt-and-suspenders for content rendered
+        //     before the filter is wired into a given template.
         await page.evaluate(() => {
             const REDACT = [
                 ['input[name*="[user]"], input[name="setup_db_user"], input[name="DATABASE_USER"]', 'isms_user'],
@@ -121,6 +126,48 @@ async function captureOne(browser, persona, theme, screen, viewport) {
                     el.value = val;
                     el.setAttribute('value', val);
                 });
+            }
+
+            // PII / environment sweep across all text nodes.
+            // Patterns we strip:
+            //   1. Absolute home paths: /Users/<x>/..., /home/<x>/...
+            //   2. Real-domain e-mail addresses (allowlist example.com/.test/.local/.localhost)
+            //   3. Local OS-username literal (`michaelbanda`, `banda`, etc.) outside paths
+            const PATH_RE = /\/(?:Users|home)\/[^/\s<>"']+\/[^\s<>"']*/g;
+            const EMAIL_RE = /\b[A-Za-z0-9._%+-]+@(?!example\.com\b|local\.test\b|localhost\b|.*\.local\b|.*\.test\b)[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g;
+            const USERNAME_LITERALS = [
+                /\bmichaelbanda\b/g,
+                /\bbanda\b/g,
+            ];
+
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+            const nodes = [];
+            let n;
+            while ((n = walker.nextNode())) nodes.push(n);
+            for (const node of nodes) {
+                let text = node.nodeValue;
+                if (!text || text.length < 4) continue;
+                let dirty = false;
+                if (PATH_RE.test(text)) {
+                    text = text.replace(PATH_RE, (m) => {
+                        // Keep the suffix after the project name so var/cache/dev
+                        // remains visible — useful information, not PII.
+                        const tail = m.replace(/^\/(?:Users|home)\/[^/]+\/(?:[^/]+\/)*/, '');
+                        return tail ? `~/${tail}` : '~/';
+                    });
+                    dirty = true;
+                }
+                if (EMAIL_RE.test(text)) {
+                    text = text.replace(EMAIL_RE, 'redacted@example.com');
+                    dirty = true;
+                }
+                for (const ure of USERNAME_LITERALS) {
+                    if (ure.test(text)) {
+                        text = text.replace(ure, 'user');
+                        dirty = true;
+                    }
+                }
+                if (dirty) node.nodeValue = text;
             }
         }).catch(() => {});
         await page.screenshot({
