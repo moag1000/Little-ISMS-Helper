@@ -33,11 +33,17 @@ class BackupService
      * or relative paths under public/ (Tenant logo).
      */
     private const array FILE_REFERENCE_FIELDS = [
-        'Document' => 'filePath',   // stored as '/uploads/documents/foo.pdf'
-        'Tenant'   => 'logoPath',   // stored as 'uploads/tenants/logo.png'
+        'Document'        => 'filePath',   // stored as '/uploads/documents/foo.pdf'
+        'DocumentVersion' => 'filePath',   // version-specific upload (history)
+        'Tenant'          => 'logoPath',   // stored as 'uploads/tenants/logo.png'
+        'TenantBranding'  => 'logoPath',   // separate branding overrides (subsidiaries)
     ];
     // Entities that contain productive user data
-    // Order matters: entities with foreign keys must come after their dependencies
+    // Order matters: entities with foreign keys must come after their dependencies.
+    //
+    // EVERY entity class in `src/Entity/` MUST be either listed here OR in
+    // EXCLUDED_FROM_BACKUP below — enforced by Gate 43
+    // (`scripts/quality/check_backup_entity_coverage.py`).
     private const array PRODUCTIVE_ENTITIES = [
         // Core entities (no dependencies)
         'Tenant',
@@ -48,6 +54,18 @@ class BackupService
         'Location',
         'Supplier',
         'SystemSettings',
+
+        // Tenant-level overrides / branding
+        'TenantBranding',           // FK: Tenant, User (has logoPath upload)
+        'TenantPolicySetting',      // FK: Tenant, User
+        'TenantPolicySettingChangeAttempt', // FK: Tenant, User (audit-trail)
+        'LifecycleConfig',          // FK: Tenant, User — per-tenant lifecycle override
+
+        // SSO / Identity (after User + Role + Tenant)
+        'IdentityProvider',                  // FK: Tenant
+        'IdentityProviderRoleMapping',       // FK: Tenant, IdentityProvider, Role
+        'IdentityProviderUserMapping',       // FK: Tenant, IdentityProvider, User
+        'SsoUserApproval',                   // FK: Tenant, IdentityProvider, User
 
         // Configuration entities (Phase 8 / QW-5)
         'RiskApprovalConfig',       // Phase 8L.F1 — FK: Tenant, User
@@ -64,6 +82,7 @@ class BackupService
         'RiskAppetite',
         'RiskTreatmentPlan',
         'Incident',
+        'RiskIncidentLink',         // FK: Tenant, Risk, Incident, User
         'Vulnerability',
         'Patch',
         'ThreatIntelligence',
@@ -72,6 +91,7 @@ class BackupService
         'BusinessProcess',
         'BusinessContinuityPlan',
         'BCExercise',
+        'Bsi2004ExerciseLog',       // FK: Tenant, BCExercise, User — BSI-200-4 evidence
         'CrisisTeam',
 
         // Compliance
@@ -79,6 +99,7 @@ class BackupService
         'ComplianceRequirement',
         'ComplianceMapping',
         'ComplianceRequirementFulfillment',
+        'FulfillmentInheritanceLog', // FK: Tenant, ComplianceRequirementFulfillment, ComplianceMapping, User — audit-trail
         'MappingGapItem',
 
         // GDPR/Privacy (CRITICAL - was missing!)
@@ -88,9 +109,21 @@ class BackupService
         'Consent',
         'DataSubjectRequest',       // DSGVO Art. 15-22 — FK: Tenant, User, ProcessingActivity
 
+        // Policies & templates (global PolicyTemplate, tenant-scoped acknowledgements)
+        'PolicyTemplate',           // GLOBAL (no tenant_id) — productive catalogue with custom edits
+        'AuthorityTemplate',        // FK: Tenant — TISAX / authority template
+        'PolicyAcknowledgement',    // FK: Tenant, Document, User — sign-offs
+
         // Documents & Training
         'Document',
+        'DocumentVersion',          // FK: Tenant, Document, User (has filePath upload)
+        'DocumentSection',          // FK: Tenant, Document, User — review/approve flow
+        'DocumentControlLink',      // FK: Document, Control — link table
         'Training',
+        'TrainingParticipation',    // FK: Tenant, Training, User — sign-offs
+
+        // Comments (polymorphic, after all target entities)
+        'Comment',                  // FK: Tenant, User — polymorphic threads
 
         // Audit & Reviews
         'InternalAudit',
@@ -109,11 +142,15 @@ class BackupService
         'InterestedParty',
         'CorporateGovernance',
 
+        // TISAX / Prototype Protection
+        'PrototypeProtectionAssessment', // FK: Tenant, Supplier, Location, User, Person
+
         // Operations
         'ChangeRequest',
         'CryptographicOperation',
         'PhysicalAccessLog',
         'FourEyesApprovalRequest',  // FK: Tenant, User (requester/approver/reviewer)
+        'EvidenceReverificationTask', // FK: Tenant, DocumentVersion, Control, ComplianceRequirementFulfillment, User
 
         // Workflows
         'Workflow',
@@ -125,11 +162,58 @@ class BackupService
         'CustomReport',             // FK: User (tenantId as raw int)
         'AppliedBaseline',          // FK: Tenant, User
         'KpiSnapshot',              // FK: Tenant
+        'SoaSnapshot',              // FK: Tenant, User — productive ISO 27001 SoA snapshot
+
+        // Import audit-trail (after target entities + Document)
+        'BulkImportBatch',          // FK: Tenant, Document, User — bulk-import receipts
+        'BulkImportRow',            // FK: BulkImportBatch
+        'ImportSession',            // FK: Tenant, User — OSCAL/CSV session
+        'ImportRowEvent',           // FK: ImportSession
+        'SampleDataImport',         // FK: Tenant, User — sample-data origin marker (kept for re-run idempotency)
+
+        // Wizards
+        'WizardRun',                // FK: Tenant, User — productive wizard run
+        'WizardSession',            // FK: Tenant, User — wizard checkpoint state
 
         // User Preferences (optional but useful)
         'DashboardLayout',
         'MfaToken',
         'ScheduledTask',
+        'PushSubscription',         // FK: Tenant, User — Web-Push endpoints (auth-token)
+
+        // Alva-Hint user state + telemetry
+        'AlvaHintDismissal',        // FK: Tenant, User — per-user dismiss state
+        'AlvaHintRenderCount',      // FK: Tenant — telemetry (kept for trend continuity)
+
+        // Misc tenant customizations
+        'GuidedTourStepOverride',   // FK: Tenant — tour customizations
+    ];
+
+    /**
+     * Entities deliberately excluded from backup with rationale.
+     *
+     * These entities are intentionally NOT in PRODUCTIVE_ENTITIES because they
+     * fall into one of three categories:
+     *   1) Global seeded catalogues that are re-loaded via console commands
+     *      (no tenant data, no productive value in backup).
+     *   2) Derived/cache rows that are re-computed on demand from primary data.
+     *   3) Transient/ephemeral state that is rebuilt on next login/use.
+     *
+     * Entities listed here are skipped silently by the backup but accepted by
+     * Gate 43 (`scripts/quality/check_backup_entity_coverage.py`).
+     *
+     * When ADDING a new entity to this list, you MUST include a one-line
+     * rationale comment — Gate 43 enforces presence of inline reasoning.
+     */
+    private const array EXCLUDED_FROM_BACKUP = [
+        // Global seeded catalogues (re-loadable via App\Command\Load*Command)
+        'IndustryBaseline'      => 'global seeded catalogue, re-loadable via LoadIndustryBaseline commands',
+        'IndustryPresetBundle'  => 'global seeded catalogue (no tenant_id) — wizard W4-B preset bundles',
+        'ElementaryThreat'      => 'global BSI threat catalogue, re-loadable via LoadElementaryThreats command',
+
+        // Derived / re-computable snapshots
+        'PortfolioSnapshot'     => 'derived trend-cache, re-computable from primary entities',
+        'ReuseTrendSnapshot'    => 'derived trend-cache, re-computable from primary entities',
     ];
 
     // Fields to exclude from backup (sensitive or regeneratable)
@@ -876,9 +960,11 @@ class BackupService
 
                 // Derive a safe ZIP entry path based on entity type
                 $zipEntry = match ($entityName) {
-                    'Document' => 'documents/' . basename($absPath),
-                    'Tenant'   => 'tenant_logos/' . basename($absPath),
-                    default    => $entityName . '/' . basename($absPath),
+                    'Document'        => 'documents/' . basename($absPath),
+                    'DocumentVersion' => 'document_versions/' . basename($absPath),
+                    'Tenant'          => 'tenant_logos/' . basename($absPath),
+                    'TenantBranding'  => 'tenant_logos/' . basename($absPath),
+                    default           => $entityName . '/' . basename($absPath),
                 };
 
                 $refs[$zipEntry] = $absPath;
