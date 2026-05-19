@@ -9,9 +9,9 @@ use InvalidArgumentException;
 use DateTimeInterface;
 use App\Job\CreateBackupJob;
 use App\Job\RestoreBackupJob;
-use App\Message\Job\ExecuteJobMessage;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\BackupService;
+use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\RestoreService;
 use App\Service\TenantContext;
@@ -24,7 +24,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -64,7 +63,7 @@ class AdminBackupController extends AbstractController
         private readonly LoggerInterface $logger,
         private readonly TenantContext $tenantContext,
         private readonly JobStatusService $jobStatusService,
-        private readonly MessageBusInterface $messageBus,
+        private readonly JobDispatcher $jobDispatcher,
     ) {
     }
 
@@ -116,15 +115,11 @@ class AdminBackupController extends AbstractController
             ],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: CreateBackupJob::class,
-            args: [
-                'includeAuditLog'     => $includeAuditLog,
-                'includeUserSessions' => $includeUserSessions,
-                'tenantId'            => $tenantScope?->getId(),
-            ],
-            jobId: $jobId,
-        ));
+        $args = [
+            'includeAuditLog'     => $includeAuditLog,
+            'includeUserSessions' => $includeUserSessions,
+            'tenantId'            => $tenantScope?->getId(),
+        ];
 
         // Safety net: when the page's inline JS fails to attach the submit
         // listener (e.g. transient parse error in a third-party module),
@@ -133,21 +128,32 @@ class AdminBackupController extends AbstractController
         // so we redirect to the progress page server-side instead. Detect
         // the AJAX path via `X-Requested-With` (set explicitly by the page
         // fetch() call) — XHR clients still receive the JsonResponse.
+        //
+        // Build the response BEFORE dispatch so InRequestJobRunner can flush
+        // it and detach the connection before running the long backup job.
         if (!$request->isXmlHttpRequest()) {
-            return $this->redirectToRoute('data_backup_progress', ['id' => $jobId]);
+            $response = $this->redirectToRoute('data_backup_progress', ['id' => $jobId]);
+        } else {
+            // Frontend JS reads `async` + `jobId` + `progressUrl` and redirects
+            // to the progress page; legacy fields (`success`, `message`) are
+            // kept for backward-compat with any third-party callers.
+            $response = new JsonResponse([
+                'success'      => true,
+                'async'        => true,
+                'message'      => 'Backup-Job gestartet — Fortschritt wird auf der Status-Seite angezeigt.',
+                'jobId'        => $jobId,
+                'progressUrl'  => $this->generateUrl('data_backup_progress', ['id' => $jobId]),
+                'statusUrl'    => $this->generateUrl('admin_job_status', ['id' => $jobId]),
+            ]);
         }
 
-        // Frontend JS reads `async` + `jobId` + `progressUrl` and redirects
-        // to the progress page; legacy fields (`success`, `message`) are kept
-        // for backward-compat with any third-party callers.
-        return new JsonResponse([
-            'success'      => true,
-            'async'        => true,
-            'message'      => 'Backup-Job gestartet — Fortschritt wird auf der Status-Seite angezeigt.',
-            'jobId'        => $jobId,
-            'progressUrl'  => $this->generateUrl('data_backup_progress', ['id' => $jobId]),
-            'statusUrl'    => $this->generateUrl('admin_job_status', ['id' => $jobId]),
-        ]);
+        return $this->jobDispatcher->dispatch(
+            CreateBackupJob::class,
+            $args,
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     /**
@@ -382,7 +388,7 @@ class AdminBackupController extends AbstractController
 
     #[Route('/admin/data/backup/restore/{filename}', name: 'data_backup_restore', methods: ['POST'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
-    public function restoreBackup(string $filename, Request $request): JsonResponse
+    public function restoreBackup(string $filename, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('data_backup_restore', $request->request->get('_token'))) {
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
@@ -437,17 +443,16 @@ class AdminBackupController extends AbstractController
             ],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: RestoreBackupJob::class,
-            args: [
-                'filepath'        => $filepath,
-                'options'         => $options,
-                'targetTenantId'  => $targetTenantScope?->getId(),
-            ],
-            jobId: $jobId,
-        ));
+        $args = [
+            'filepath'        => $filepath,
+            'options'         => $options,
+            'targetTenantId'  => $targetTenantScope?->getId(),
+        ];
 
-        return new JsonResponse([
+        // Build the JSON envelope BEFORE dispatch — the in-request runner
+        // flushes it to the browser then keeps running the restore in this
+        // same PHP-FPM worker.
+        $response = new JsonResponse([
             'success'      => true,
             'async'        => true,
             'message'      => $options['dry_run']
@@ -459,6 +464,14 @@ class AdminBackupController extends AbstractController
             'tenant_scope' => $targetTenantScope?->getId(),
             'dry_run'      => $options['dry_run'],
         ]);
+
+        return $this->jobDispatcher->dispatch(
+            RestoreBackupJob::class,
+            $args,
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     #[Route('/admin/data/backup/delete/{filename}', name: 'data_backup_delete', methods: ['POST', 'DELETE'])]
