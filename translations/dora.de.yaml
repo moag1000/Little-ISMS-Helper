@@ -79,6 +79,18 @@ dora:
         button: "Register of Information exportieren (ITS-konform)"
         download_name: "dora-register-of-information"
         aria: "Register of Information als ITS-konforme CSV-Datei herunterladen"
+        badge: "DORA-ROI-Export"
+        progress_title: "Register of Information wird generiert"
+        progress_subtitle: "Der Export läuft im Hintergrund. Diese Seite aktualisiert sich automatisch."
+        download_button: "CSV herunterladen"
+        file_not_found: "Export-Datei nicht gefunden (möglicherweise bereits heruntergeladen oder abgelaufen)."
+        modal:
+            title: "DORA Register of Information exportieren"
+            body: "Erstellt eine ITS-konforme CSV-Datei (EBA/EIOPA/ESMA Final Draft, Art. 28 DORA) für den aktuellen Mandanten. Der Export läuft im Hintergrund."
+            start: "Export starten"
+
+    breadcrumb:
+        dora: "DORA Compliance"
 
     # MINOR-6: zusätzliche Supplier-Felder für ITS-ROI-Konformität
     supplier:
