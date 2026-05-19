@@ -4,6 +4,10 @@ incident_management:
     NIS2‑Meldungen.
   open_incidents: Offene Vorfälle
   total_recorded: Insgesamt erfasste Vorfälle
+# Top-level deadline_counter keys for fa-deadline-counter component (no `incident.` prefix)
+deadline_counter:
+    remaining: '%hours%h verbleibend'
+    overdue: '%hours%h überfällig'
 incident:
   prefill:
     title_from_risk: 'Vorfall zu Risiko: %title%'

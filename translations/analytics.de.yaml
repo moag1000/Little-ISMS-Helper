@@ -8,6 +8,14 @@ analytics:
         export_assets_csv: 'Assets als CSV exportieren'
         export_compliance_csv: 'Compliance als CSV exportieren'
         print_dashboard: 'Dashboard drucken'
+        view_dashboard: 'Dashboard öffnen'
+        back_to_basic: 'Zurück zur Basis-Ansicht'
+        back_to_advanced: 'Zurück zur erweiterten Ansicht'
+        filter: Filter
+        refresh: Aktualisieren
+        export_png: 'PNG exportieren'
+        reset_filters: 'Filter zurücksetzen'
+        add_assets: 'Assets hinzufügen'
     export:
         progress_title: 'Analytics-Export'
         progress_subtitle: 'Der Export läuft im Hintergrund. Diese Seite aktualisiert sich automatisch.'
