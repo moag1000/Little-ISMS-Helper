@@ -68,6 +68,15 @@ parameters:
     app.backup_notifier.from_email: 'noreply@little-isms-helper.local'
     app.backup_notifier.subject_prefix: '[ISMS Backup]'
 
+    # Async-job execution strategy. Default 'in_request' works on commodity
+    # shared hosting (PHP-FPM / LiteSpeed) with no worker daemon — the job
+    # runs in the same worker as the triggering request via
+    # fastcgi_finish_request(). Set to 'messenger' for multi-server /
+    # systemd-managed-worker deployments (requires `messenger:consume async`).
+    # Override via env: APP_ASYNC_JOB_RUNNER=messenger
+    app.async_job.runner: '%env(default:default_async_job_runner:APP_ASYNC_JOB_RUNNER)%'
+    default_async_job_runner: 'in_request'
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -152,9 +161,18 @@ services:
         App\Template\TemplateProviderInterface:
             tags: ['system_template.provider']
         # Async admin jobs — all AsyncJobInterface implementations auto-register
-        # so ExecuteJobHandler's #[TaggedLocator('app.async_job')] can resolve them.
+        # so ExecuteJobHandler's + InRequestJobRunner's #[TaggedLocator('app.async_job')]
+        # can resolve them.
         App\Job\AsyncJobInterface:
             tags: ['app.async_job']
+
+    # Async-job dispatch facade. Selects between InRequestJobRunner (shared
+    # hosting default) and MessengerJobRunner (opt-in for worker daemons)
+    # based on the app.async_job.runner parameter. Controllers inject this
+    # service instead of MessageBusInterface directly.
+    App\Service\Job\JobDispatcher:
+        arguments:
+            $strategy: '%app.async_job.runner%'
 
     # F40 — Audit-Workbook orchestrator: receives all tagged generators.
     App\Service\Audit\AuditWorkbookGenerator:
