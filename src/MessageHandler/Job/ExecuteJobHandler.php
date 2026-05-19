@@ -69,6 +69,7 @@ final class ExecuteJobHandler
     private function resolveJob(string $jobClass): AsyncJobInterface
     {
         if (!class_exists($jobClass)) {
+            // @intentional-assertion: programmer error — invalid job class dispatched
             throw new \InvalidArgumentException(sprintf(
                 'Job class "%s" does not exist.',
                 $jobClass,
@@ -76,6 +77,7 @@ final class ExecuteJobHandler
         }
 
         if (!is_a($jobClass, AsyncJobInterface::class, true)) {
+            // @intentional-assertion: programmer error — wrong interface
             throw new \InvalidArgumentException(sprintf(
                 'Job class "%s" must implement %s.',
                 $jobClass,
@@ -89,6 +91,7 @@ final class ExecuteJobHandler
             return $job;
         }
 
+        // @intentional-assertion: programmer error — missing app.async_job tag
         throw new \RuntimeException(sprintf(
             'Job class "%s" is not registered. Ensure it implements AsyncJobInterface and is tagged with app.async_job.',
             $jobClass,

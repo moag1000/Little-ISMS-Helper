@@ -198,6 +198,7 @@ final class JobStatusService
     {
         // Accept UUID v4 (rfc4122) format
         if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {
+            // @intentional-assertion: programmer error — invalid UUID v4 input
             throw new \InvalidArgumentException('Invalid job ID (must be UUID v4): ' . $id);
         }
     }

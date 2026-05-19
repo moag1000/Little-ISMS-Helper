@@ -138,6 +138,7 @@ final class SetupJobStatusService
     private function path(string $job): string
     {
         if (preg_match('/^[a-z0-9_]+$/', $job) !== 1) {
+            // @intentional-assertion: programmer error — invalid job key
             throw new \InvalidArgumentException('Invalid job key: ' . $job);
         }
         return $this->kernel->getProjectDir() . '/var/cache/setup_jobs/' . $job . '.json';

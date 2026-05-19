@@ -49,6 +49,7 @@ final class FixAllOrphansJob implements AsyncJobInterface
             ->getSingleScalarResult();
 
         if ($tenantCount > 1) {
+            // @intentional-assertion: multi-tenant safety guard (job invariant)
             throw new \RuntimeException(sprintf(
                 'Bulk orphan reassign is blocked: %d tenants exist. Use per-entity routes for multi-tenant deployments.',
                 $tenantCount,
@@ -57,11 +58,13 @@ final class FixAllOrphansJob implements AsyncJobInterface
 
         $tenantId = $ctx->arg('tenantId');
         if ($tenantId === null) {
+            // @intentional-assertion: programmer error — required job arg missing
             throw new \RuntimeException('Missing required arg "tenantId" in FixAllOrphansJob.');
         }
 
         $tenant = $this->tenantRepository->find((int) $tenantId);
         if ($tenant === null) {
+            // @intentional-assertion: job arg references nonexistent tenant
             throw new \RuntimeException(sprintf('Target tenant #%d not found.', $tenantId));
         }
 
