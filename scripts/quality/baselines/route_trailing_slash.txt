@@ -36,4 +36,4 @@ src/Controller/PatchController.php:32:/patch/
 src/Controller/SupplierController.php:38:/supplier/
 src/Controller/RiskTreatmentPlanController.php:30:/risk-treatment-plan/
 src/Controller/ComplianceFrameworkController.php:33:/compliance/framework/
-src/Controller/Admin/DataRepairController.php:102:/admin/data-repair/
+src/Controller/Admin/DataRepairController.php:118:/admin/data-repair/
