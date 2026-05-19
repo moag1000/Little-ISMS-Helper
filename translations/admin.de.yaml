@@ -726,6 +726,10 @@ admin:
             scan_broken_refs_subtitle: 'Sucht im Hintergrund nach defekten FK-Referenzen, Cascade-Orphans und verwaisten Upload-Dateien…'
             scan_health_label: 'Health-Issues scannen'
             scan_health_subtitle: 'Führt im Hintergrund die vier Health-Checks (Risk / Compliance / Operational / Data-Quality) aus…'
+            assign_orphans_label: 'Verwaiste Entities zuweisen → %tenant%'
+            assign_orphans_subtitle: 'Weist verwaiste Entities (tenant_id IS NULL) im Hintergrund dem Ziel-Mandanten zu. Audit-Log wird je Entity geschrieben, Flushes laufen in Batches.'
+            reassign_entity_label: 'Reassign %type%#%id%'
+            reassign_entity_subtitle: 'Weist die Entity im Hintergrund dem Mandanten "%tenant%" zu und aktualisiert anschließend den Orphan-Cache.'
         # Inventur-Vorschau auf der Übersichtsseite (Cache-getrieben, kein DB-Roundtrip)
         inventory:
             title: 'Was kann bereinigt werden?'

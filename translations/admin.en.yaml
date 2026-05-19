@@ -710,6 +710,10 @@ admin:
             scan_broken_refs_subtitle: 'Scanning broken FK references, cascade orphans and orphaned uploads in the background…'
             scan_health_label: 'Scan Health Issues'
             scan_health_subtitle: 'Running the four health-check buckets (risk / compliance / operational / data-quality) in the background…'
+            assign_orphans_label: 'Assign Orphans → %tenant%'
+            assign_orphans_subtitle: 'Assigning orphaned entities (tenant_id IS NULL) to the target tenant in the background. Audit log written per entity, flushes batched.'
+            reassign_entity_label: 'Reassign %type%#%id%'
+            reassign_entity_subtitle: 'Reassigning the entity to tenant "%tenant%" in the background, then refreshing the orphan cache.'
         # Inventory preview on the overview page (cache-driven, no DB roundtrip)
         inventory:
             title: 'What needs cleaning up?'

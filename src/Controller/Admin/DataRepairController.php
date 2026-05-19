@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Job\AssignOrphansJob;
 use App\Job\ExecutePendingMigrationsJob;
 use App\Job\FixAllOrphansJob;
 use App\Job\FixTenantMismatchesJob;
 use App\Job\MergeDuplicatesJob;
+use App\Job\ReassignEntityJob;
 use App\Job\ReconcileSchemaJob;
 use App\Job\RunFullIntegrityCheckJob;
 use App\Job\ScanBrokenReferencesJob;
@@ -428,155 +430,132 @@ class DataRepairController extends AbstractController
         );
     }
 
+    /**
+     * Bulk-assigns orphaned entities (tenant_id IS NULL) to a target tenant.
+     *
+     * Was synchronous and looped {@see AuditLogger::logCustom()} per entity
+     * (each call flushes the EM). On tenants with thousands of orphans this
+     * exceeded the PHP-FPM 30 s timeout and the operator saw a blank page.
+     *
+     * Now dispatches {@see AssignOrphansJob} via {@see JobDispatcher} — the
+     * worker batches flushes (50 entities per commit) and the polling page
+     * surfaces live progress without blocking PHP-FPM.
+     */
     #[Route('/admin/data-repair/assign-orphans', name: 'admin_data_repair_assign_orphans', methods: ['POST'])]
-    public function assignOrphans(Request $request): Response
-    {
-        $tenantId = $request->request->get('tenant_id');
-        $entityType = $request->request->get('entity_type');
-
+    public function assignOrphans(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         if (!$this->isCsrfTokenValid('assign_orphans', $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
-            return $this->redirectToRoute('admin_data_repair_index');
+            return $this->redirectToRoute('admin_data_repair_orphans');
         }
+
+        $tenantId = (int) ($request->request->get('tenant_id') ?? 0);
+        $entityType = (string) ($request->request->get('entity_type') ?? 'all');
 
         $tenant = $this->tenantRepository->find($tenantId);
-        if (!$tenant) {
+        if ($tenant === null) {
             $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found', [], 'admin'));
-            return $this->redirectToRoute('admin_data_repair_index');
+            return $this->redirectToRoute('admin_data_repair_orphans');
         }
 
-        $count = 0;
+        $jobId = $this->jobStatusService->create(
+            'admin.data_repair.assign_orphans',
+            ['tenantId' => $tenantId, 'tenantName' => $tenant->getName(), 'entityType' => $entityType],
+        );
 
-        // Audit-log each reassignment per entity (ISB MAJOR-1). The per-entity
-        // granularity lets an auditor answer "who moved entity X into tenant Y"
-        // without reverse-engineering a diff.
-        $assignFn = function (object $entity, string $className) use ($tenant, &$count): void {
-            if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
-                return;
-            }
-            $entity->setTenant($tenant);
-            $this->auditLogger->logCustom(
-                'admin.data_repair.orphan_reassigned',
-                $className,
-                (int) $entity->getId(),
-                ['tenant_id' => null],
-                ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
-                sprintf('Orphan %s#%d reassigned to tenant %s', $className, (int) $entity->getId(), $tenant->getName()),
-            );
-            $count++;
-        };
-
-        // Generisch: Service liefert bereits alle Orphans keyed by entity-type.
-        // 'all' iteriert komplett, sonst nur die gewählte Kategorie.
-        $errorFlashKey = null;
-        $this->withoutTenantFilter(function () use ($entityType, &$assignFn, &$errorFlashKey): void {
-            $allOrphans = $this->dataIntegrityService->findAllOrphanedEntities();
-            if ($entityType === 'all') {
-                foreach ($allOrphans as $entities) {
-                    foreach ($entities as $entity) {
-                        $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
-                    }
-                }
-            } elseif (isset($allOrphans[$entityType])) {
-                foreach ($allOrphans[$entityType] as $entity) {
-                    $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
-                }
-            } else {
-                $errorFlashKey = 'admin.data_repair.invalid_entity_type';
-            }
-        });
-
-        if ($errorFlashKey !== null) {
-            $this->addFlash('error', $this->translator->trans($errorFlashKey));
-            return $this->redirectToRoute('admin_data_repair_index');
-        }
-
-        // AuditLogger::logCustom flushes per call. If one of those flushes
-        // tripped (constraint violation, savepoint after DDL, etc.) the EM
-        // closed and the audit-log was swallowed best-effort. Detect that
-        // here and surface a clean message instead of bombing with HTTP 500.
-        // CLAUDE.md Common-Pitfalls #1.
-        if (!$this->entityManager->isOpen()) {
-            $this->addFlash('warning', $this->translator->trans('admin.data_repair.partial_assignment', [
-                '%count%' => $count,
+        $response = $this->render('admin/data_repair/job_progress.html.twig', [
+            'jobId' => $jobId,
+            'jobName' => 'admin.data_repair.assign_orphans',
+            'jobLabel' => $this->translator->trans('admin.data_repair.job.assign_orphans_label', [
                 '%tenant%' => $tenant->getName(),
-            ]));
-            return $this->redirectToRoute('admin_data_repair_index');
-        }
+            ], 'admin'),
+            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.assign_orphans_subtitle', [], 'admin'),
+            'cancelUrl' => $this->generateUrl('admin_data_repair_orphans'),
+        ]);
 
-        $this->entityManager->flush();
-
-        $this->addFlash('success', $this->translator->trans('admin.data_repair.assigned_count', [
-            '%count%' => $count,
-            '%tenant%' => $tenant->getName(),
-        ]));
-
-        return $this->redirectToRoute('admin_data_repair_index');
+        return $this->jobDispatcher->dispatch(
+            AssignOrphansJob::class,
+            [
+                'tenantId' => $tenantId,
+                'entityType' => $entityType,
+                'userId' => $user->getId(),
+            ],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
+    /**
+     * Reassign a single orphan entity to a tenant.
+     *
+     * Was synchronous: one flush + one audit-log flush per request. On slow
+     * shared-hosting MySQL (fsync-heavy disk) the operator could still wait
+     * 10–30 s, which felt indistinguishable from the bulk-assign timeout.
+     *
+     * Now dispatches {@see ReassignEntityJob} — the polling page renders
+     * immediately and the job refreshes the orphan-cache so the index page
+     * reflects the new state when the operator returns.
+     */
     #[Route('/admin/data-repair/reassign-entity/{type}/{id}', name: 'admin_data_repair_reassign_entity', methods: ['POST'])]
-    public function reassignEntity(Request $request, string $type, int $id): Response
-    {
-        $tenantId = $request->request->get('tenant_id');
-
+    public function reassignEntity(
+        Request $request,
+        string $type,
+        int $id,
+        #[CurrentUser] User $user,
+    ): Response {
         if (!$this->isCsrfTokenValid('reassign_entity_' . $id, $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
-            return $this->redirectToRoute('admin_data_repair_index');
+            return $this->redirectToRoute('admin_data_repair_orphans');
         }
 
+        $tenantId = (int) ($request->request->get('tenant_id') ?? 0);
         $tenant = $this->tenantRepository->find($tenantId);
-        if (!$tenant) {
+        if ($tenant === null) {
             $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found', [], 'admin'));
-            return $this->redirectToRoute('admin_data_repair_index');
+            return $this->redirectToRoute('admin_data_repair_orphans');
         }
 
-        // Generischer Reassign — findet Entity per Doctrine-Metadata statt
-        // fixer Repository-Auswahl. Damit funktionieren auch Controls,
-        // Workflows, Suppliers usw.
-        [$entity, $entityName, $className] = $this->withoutTenantFilter(function () use ($type, $id): array {
-            $fqcn = $this->resolveEntityClassForType($type);
-            if ($fqcn === null) {
-                return [null, '', ''];
-            }
-            $found = $this->entityManager->find($fqcn, $id);
-            $name = '';
-            if ($found !== null) {
-                if (method_exists($found, 'getName')) {
-                    $name = (string) $found->getName();
-                } elseif (method_exists($found, 'getTitle')) {
-                    $name = (string) $found->getTitle();
-                } else {
-                    $name = '#' . $id;
-                }
-            }
-            return [$found, $name, $found ? (new \ReflectionClass($found))->getShortName() : ''];
-        });
-
-        if (!$entity) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found', [], 'admin'));
-            return $this->redirectToRoute('admin_data_repair_index');
+        // Verify the entity type slug maps to a real Doctrine entity before
+        // dispatching — saves the operator a round-trip to the job-progress
+        // page if they submitted a garbage URL.
+        if ($this->resolveEntityClassForType($type) === null) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type', [], 'admin'));
+            return $this->redirectToRoute('admin_data_repair_orphans');
         }
 
-        // ISB MAJOR-1: capture previous tenant before mutation for audit diff.
-        $previousTenant = method_exists($entity, 'getTenant') ? $entity->getTenant() : null;
-        $previousTenantId = $previousTenant instanceof \App\Entity\Tenant ? $previousTenant->getId() : null;
-        $entity->setTenant($tenant);
-        $this->auditLogger->logCustom(
-            'admin.data_repair.entity_reassigned',
-            $className,
-            $id,
-            ['tenant_id' => $previousTenantId],
-            ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
-            sprintf('%s#%d "%s" reassigned to tenant %s', $className, $id, $entityName, $tenant->getName()),
+        $jobId = $this->jobStatusService->create(
+            'admin.data_repair.reassign_entity',
+            ['type' => $type, 'id' => $id, 'tenantId' => $tenantId, 'tenantName' => $tenant->getName()],
         );
-        $this->entityManager->flush();
 
-        $this->addFlash('success', $this->translator->trans('admin.data_repair.entity_reassigned', [
-            '%entity%' => $entityName,
-            '%tenant%' => $tenant->getName(),
-        ]));
+        $response = $this->render('admin/data_repair/job_progress.html.twig', [
+            'jobId' => $jobId,
+            'jobName' => 'admin.data_repair.reassign_entity',
+            'jobLabel' => $this->translator->trans('admin.data_repair.job.reassign_entity_label', [
+                '%type%' => $type,
+                '%id%' => $id,
+            ], 'admin'),
+            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.reassign_entity_subtitle', [
+                '%tenant%' => $tenant->getName(),
+            ], 'admin'),
+            'cancelUrl' => $this->generateUrl('admin_data_repair_orphans'),
+        ]);
 
-        return $this->redirectToRoute('admin_data_repair_index');
+        return $this->jobDispatcher->dispatch(
+            ReassignEntityJob::class,
+            [
+                'entityType' => $type,
+                'entityId' => $id,
+                'tenantId' => $tenantId,
+                'userId' => $user->getId(),
+            ],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     #[Route('/admin/data-repair/assign-asset/{type}/{id}', name: 'admin_data_repair_assign_asset', methods: ['POST'])]
