@@ -67,6 +67,66 @@ Self-hosted-Operator hat `/quick-fix` als Web-UI fuer:
 CLI nur fuer destructive-edge-cases wenn UI-Auto-Recovery scheitert. Doku:
 `docs/user-guide/QUICK_FIX.md`.
 
+## Async Admin Jobs (Symfony Messenger)
+
+Long-running admin tasks (> PHP-FPM 30s limit) run via Symfony Messenger.
+Status is persisted in `var/jobs/<uuid>.json` — survives PHP-FPM restarts.
+Frontend polls `GET /admin/jobs/{uuid}/status` every 3s (Stimulus `async-job` controller).
+
+**Worker start (dev):**
+```bash
+php bin/console messenger:consume async --time-limit=300 -vv
+```
+
+**Worker start (production — systemd unit example):**
+```ini
+# /etc/systemd/system/isms-worker.service
+[Unit]
+Description=Little ISMS Helper Messenger Worker
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/var/www/isms-helper
+ExecStart=/usr/bin/php bin/console messenger:consume async --time-limit=3600 -vv
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+```bash
+systemctl enable isms-worker && systemctl start isms-worker
+```
+
+**Adding a new async admin job:**
+1. Create `src/Job/MyJob.php` implementing `App\Job\AsyncJobInterface`
+2. Inject services via constructor (autowired automatically)
+3. Implement `run(JobContext $ctx)` — call `$ctx->progress()` and `$ctx->message()`
+4. In the controller:
+   ```php
+   $jobId = $this->jobStatusService->create('admin.my_job', $payload);
+   $this->messageBus->dispatch(new ExecuteJobMessage(MyJob::class, ['myArg' => $val], $jobId));
+   return $this->render('...progress.html.twig', ['jobId' => $jobId, 'cancelUrl' => '...']);
+   ```
+5. Include `_async_job_progress.html.twig` in the progress template
+
+**Phase 2 follow-up candidates (not yet converted):**
+- `schema-reconcile` — long ALTER TABLE sequences on large DBs
+- `bulk-data-repair` (tenant mismatch fix) — large row counts
+- `restore` — backup restore (currently uses detachAndContinue pattern)
+- `large-export` — report exports on 10k+ row datasets
+- `compliance-import` commit phase (already has BulkImportMessage but no progress page)
+
+**Key files:**
+- `src/Service/Job/JobStatusService.php` — status store
+- `src/Job/AsyncJobInterface.php` + `JobContext.php` — contract + context
+- `src/Message/Job/ExecuteJobMessage.php` — Messenger message
+- `src/MessageHandler/Job/ExecuteJobHandler.php` — worker handler
+- `src/Controller/Admin/JobStatusController.php` — polling endpoint
+- `templates/_components/_async_job_progress.html.twig` — progress partial
+- `assets/controllers/async_job_controller.js` — Stimulus polling controller
+
 ## Architecture Quick Guide
 
 **Directory Layout:**
