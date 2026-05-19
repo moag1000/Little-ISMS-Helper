@@ -150,7 +150,7 @@ class QuickFixControllerTest extends WebTestCase
     // =========================================================================
 
     #[Test]
-    public function testRepairOrphansWithValidCsrfRedirectsToIndex(): void
+    public function testRepairOrphansWithValidCsrfRendersProgressPage(): void
     {
         $this->client->loginUser($this->testUser);
         $token = $this->generateCsrfToken('quick_fix_repair_orphans');
@@ -159,7 +159,11 @@ class QuickFixControllerTest extends WebTestCase
             '_token' => $token,
         ]);
 
-        $this->assertResponseRedirects('/quick-fix?fixed=1');
+        // Async-jobs Phase 2: controller dispatches a Messenger job and
+        // renders the standalone progress page (sync transport in test env
+        // executes the handler inline — see config/packages/test/messenger.yaml).
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', 'Repair Orphans');
     }
 
     #[Test]
@@ -180,7 +184,7 @@ class QuickFixControllerTest extends WebTestCase
     // =========================================================================
 
     #[Test]
-    public function testRepairTenantMismatchesWithValidCsrfRedirectsToIndex(): void
+    public function testRepairTenantMismatchesWithValidCsrfRendersProgressPage(): void
     {
         $this->client->loginUser($this->testUser);
         $token = $this->generateCsrfToken('quick_fix_repair_mismatches');
@@ -189,7 +193,8 @@ class QuickFixControllerTest extends WebTestCase
             '_token' => $token,
         ]);
 
-        $this->assertResponseRedirects('/quick-fix?fixed=1');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', 'Repair Tenant Mismatches');
     }
 
     // =========================================================================
@@ -197,7 +202,7 @@ class QuickFixControllerTest extends WebTestCase
     // =========================================================================
 
     #[Test]
-    public function testRepairDuplicatesKnownTypeRedirectsToIndex(): void
+    public function testRepairDuplicatesKnownTypeRendersProgressPage(): void
     {
         $this->client->loginUser($this->testUser);
         $token = $this->generateCsrfToken('quick_fix_repair_duplicates');
@@ -206,7 +211,8 @@ class QuickFixControllerTest extends WebTestCase
             '_token' => $token,
         ]);
 
-        $this->assertResponseRedirects('/quick-fix?fixed=1');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', 'Repair Duplicates');
     }
 
     #[Test]
@@ -228,7 +234,7 @@ class QuickFixControllerTest extends WebTestCase
     // =========================================================================
 
     #[Test]
-    public function testRepairAllChainsAllOperationsAndRedirects(): void
+    public function testRepairAllChainsAllOperationsAndRendersProgressPage(): void
     {
         $this->client->loginUser($this->testUser);
         $token = $this->generateCsrfToken('quick_fix_repair_all');
@@ -237,8 +243,12 @@ class QuickFixControllerTest extends WebTestCase
             '_token' => $token,
         ]);
 
-        // Must redirect to quick-fix with fixed=1 after running all repairs
-        $this->assertResponseRedirects('/quick-fix?fixed=1');
+        // Async-jobs Phase 2: returns the progress page; sync transport in
+        // test env runs the QuickFixRepairAllJob inline so the regression
+        // assertions in testRepairAllDoesNotMutateGlobalNotificationTemplates
+        // still observe the effects of the chained orphan + mismatch + dup steps.
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', 'Repair All');
     }
 
     #[Test]
@@ -295,11 +305,14 @@ class QuickFixControllerTest extends WebTestCase
             $token = $this->generateCsrfToken('quick_fix_repair_all');
 
             // This must NOT throw a UniqueConstraintViolationException.
+            // The sync transport in test env executes QuickFixRepairAllJob
+            // inline so the assertions below observe its effects on the
+            // seeded NotificationTemplate rows.
             $this->client->request('POST', '/quick-fix/repair/all', [
                 '_token' => $token,
             ]);
 
-            $this->assertResponseRedirects('/quick-fix?fixed=1');
+            $this->assertResponseIsSuccessful();
 
             // Reload and verify tenant_id is still NULL on both templates.
             $this->entityManager->clear();
