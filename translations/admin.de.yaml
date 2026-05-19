@@ -1251,6 +1251,9 @@ admin:
         id_label: "Job-ID"
         worker_hint: "Der Job läuft im Hintergrund. Diese Seite aktualisiert sich automatisch alle 3 Sekunden."
         download: "Datei herunterladen"
+        progress_page_title: "Job-Fortschritt"
+        progress_subtitle_generic: "Der Vorgang wird im Hintergrund ausgeführt. Sobald er abgeschlossen ist, wird hier ein Status angezeigt."
+        badge: "Async-Job"
         export:
             data_label: "CSV-Export — alle Entitäten"
             data_subtitle: "Sammelt die ausgewählten Entitäten in eine Datei im Hintergrund…"

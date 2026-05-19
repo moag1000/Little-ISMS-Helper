@@ -356,8 +356,10 @@ class DataRepairController extends AbstractController
 
     /**
      * Shared dispatch shim for the four section-scan refresh routes.
-     * Creates a JobStatusService row, renders the standard async-progress
-     * shell and hands the job off to the configured JobDispatcher.
+     * Creates a JobStatusService row with payload-embedded UI metadata
+     * (label/subtitle) and redirects (303) to the shared progress page —
+     * the PRG pattern required by Hotwire Turbo. JobDispatcher flushes
+     * the redirect before running the job in-request.
      *
      * @param class-string<\App\Job\AsyncJobInterface> $jobClass
      */
@@ -369,15 +371,15 @@ class DataRepairController extends AbstractController
         string $jobSubtitleKey,
         string $cancelUrl,
     ): Response {
-        $jobId = $this->jobStatusService->create($jobName, []);
-
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => $jobName,
-            'jobLabel' => $this->translator->trans($jobLabelKey, [], 'admin'),
-            'jobSubtitle' => $this->translator->trans($jobSubtitleKey, [], 'admin'),
-            'cancelUrl' => $cancelUrl,
+        $jobId = $this->jobStatusService->create($jobName, [
+            '_label' => $this->translator->trans($jobLabelKey, [], 'admin'),
+            '_subtitle' => $this->translator->trans($jobSubtitleKey, [], 'admin'),
         ]);
+
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $cancelUrl,
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             $jobClass,
@@ -410,16 +412,21 @@ class DataRepairController extends AbstractController
 
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.run_integrity_check',
-            [],
+            [
+                '_label' => $this->translator->trans('admin.data_repair.job.run_integrity_check_label', [], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.run_integrity_check_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.run_integrity_check',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.run_integrity_check_label', [], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.run_integrity_check_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — required for Turbo.
+        // InRequestJobRunner flushes the redirect BEFORE running the job, and
+        // markRunning() is called inside dispatch() before detach() — so by
+        // the time the browser GETs /admin/jobs/{id}/progress, status is
+        // already `running` and the polling card never flashes `pending`.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             RunFullIntegrityCheckJob::class,
@@ -462,18 +469,22 @@ class DataRepairController extends AbstractController
 
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.assign_orphans',
-            ['tenantId' => $tenantId, 'tenantName' => $tenant->getName(), 'entityType' => $entityType],
+            [
+                'tenantId' => $tenantId,
+                'tenantName' => $tenant->getName(),
+                'entityType' => $entityType,
+                '_label' => $this->translator->trans('admin.data_repair.job.assign_orphans_label', [
+                    '%tenant%' => $tenant->getName(),
+                ], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.assign_orphans_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.assign_orphans',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.assign_orphans_label', [
-                '%tenant%' => $tenant->getName(),
-            ], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.assign_orphans_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_orphans'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_orphans'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             AssignOrphansJob::class,
@@ -528,21 +539,26 @@ class DataRepairController extends AbstractController
 
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.reassign_entity',
-            ['type' => $type, 'id' => $id, 'tenantId' => $tenantId, 'tenantName' => $tenant->getName()],
+            [
+                'type' => $type,
+                'id' => $id,
+                'tenantId' => $tenantId,
+                'tenantName' => $tenant->getName(),
+                '_label' => $this->translator->trans('admin.data_repair.job.reassign_entity_label', [
+                    '%type%' => $type,
+                    '%id%' => $id,
+                ], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.reassign_entity_subtitle', [
+                    '%tenant%' => $tenant->getName(),
+                ], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.reassign_entity',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.reassign_entity_label', [
-                '%type%' => $type,
-                '%id%' => $id,
-            ], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.reassign_entity_subtitle', [
-                '%tenant%' => $tenant->getName(),
-            ], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_orphans'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_orphans'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             ReassignEntityJob::class,
@@ -762,14 +778,27 @@ class DataRepairController extends AbstractController
         // Create job status record and dispatch
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.fix_all_orphans',
-            ['tenantId' => $tenantId, 'tenantName' => $tenant->getName()],
+            [
+                'tenantId' => $tenantId,
+                'tenantName' => $tenant->getName(),
+                '_label' => sprintf(
+                    '%s — %s',
+                    $this->translator->trans('admin.data_repair.job.fix_all_orphans_label', [], 'admin'),
+                    $tenant->getName(),
+                ),
+                '_subtitle' => $this->translator->trans(
+                    'admin.data_repair.job.fix_all_orphans_subtitle',
+                    ['%tenant%' => $tenant->getName()],
+                    'admin',
+                ),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/fix_all_orphans_progress.html.twig', [
-            'jobId' => $jobId,
-            'tenantName' => $tenant->getName(),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             FixAllOrphansJob::class,
@@ -916,16 +945,18 @@ class DataRepairController extends AbstractController
 
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.fix_tenant_mismatches',
-            ['reason_length' => mb_strlen($reason)],
+            [
+                'reason_length' => mb_strlen($reason),
+                '_label' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_label', [], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.fix_tenant_mismatches',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_label', [], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             FixTenantMismatchesJob::class,
@@ -969,16 +1000,19 @@ class DataRepairController extends AbstractController
 
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.merge_duplicates',
-            ['entityType' => $entityType, 'actor' => $actor],
+            [
+                'entityType' => $entityType,
+                'actor' => $actor,
+                '_label' => $this->translator->trans('admin.data_repair.job.merge_duplicates_label', ['%type%' => $entityType], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.merge_duplicates_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.merge_duplicates',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.merge_duplicates_label', ['%type%' => $entityType], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.merge_duplicates_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             MergeDuplicatesJob::class,
@@ -1012,16 +1046,18 @@ class DataRepairController extends AbstractController
 
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.execute_migrations',
-            ['actor' => $actor],
+            [
+                'actor' => $actor,
+                '_label' => $this->translator->trans('admin.data_repair.job.execute_migrations_label', [], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.execute_migrations_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.execute_migrations',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.execute_migrations_label', [], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.execute_migrations_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             ExecutePendingMigrationsJob::class,
@@ -1225,16 +1261,19 @@ class DataRepairController extends AbstractController
         // page — the UX here is "apply both buttons explicitly".
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.reconcile_schema',
-            ['actor' => $actor, 'bypassMigrationGate' => true],
+            [
+                'actor' => $actor,
+                'bypassMigrationGate' => true,
+                '_label' => $this->translator->trans('admin.data_repair.job.reconcile_schema_label', [], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.reconcile_schema_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.reconcile_schema',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.reconcile_schema_label', [], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.reconcile_schema_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             ReconcileSchemaJob::class,

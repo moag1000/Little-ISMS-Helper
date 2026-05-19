@@ -1235,6 +1235,9 @@ admin:
         id_label: "Job ID"
         worker_hint: "The job is running in the background. This page auto-refreshes every 3 seconds."
         download: "Download file"
+        progress_page_title: "Job progress"
+        progress_subtitle_generic: "The operation is running in the background. A status will appear here once it completes."
+        badge: "Async job"
         export:
             data_label: "CSV export — all entities"
             data_subtitle: "Collecting selected entities into a file in the background…"

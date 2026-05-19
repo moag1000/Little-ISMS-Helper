@@ -178,6 +178,7 @@ final class PolicyExportController extends AbstractController
         Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
         MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
@@ -203,7 +204,14 @@ final class PolicyExportController extends AbstractController
             'exportedBy' => $this->getUser() instanceof User ? $this->getUser()->getEmail() : 'unknown',
         ];
 
-        $jobId = $jobStatusService->create('policy_wizard.tenant_zip', $args);
+        $jobId = $jobStatusService->create('policy_wizard.tenant_zip', $args + [
+            '_label' => $translator->trans('policy_wizard.export.progress_title', [], 'policy_wizard'),
+            '_subtitle' => $translator->trans('policy_wizard.export.progress_subtitle', [], 'policy_wizard'),
+            '_download_label' => $translator->trans('policy_wizard.export.download_button', [], 'policy_wizard'),
+        ]);
+        $jobStatusService->updatePayload($jobId, [
+            '_download_url' => $this->generateUrl('app_policy_export_tenant_zip_download', ['id' => $jobId]),
+        ]);
 
         $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
             jobClass: \App\Job\ExportPolicyTenantZipJob::class,
@@ -211,11 +219,11 @@ final class PolicyExportController extends AbstractController
             jobId: $jobId,
         ));
 
-        return $this->render('policy_wizard/export_progress.html.twig', [
-            'jobId' => $jobId,
-            'cancelUrl' => $this->generateUrl('app_dashboard'),
-            'downloadUrl' => $this->generateUrl('app_policy_export_tenant_zip_download', ['id' => $jobId]),
-        ]);
+        // PRG: 303 redirect — see DataRepairController::runIntegrityCheck() for rationale.
+        return $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('app_dashboard'),
+        ], Response::HTTP_SEE_OTHER);
     }
 
     /**

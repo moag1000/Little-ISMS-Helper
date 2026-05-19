@@ -85,20 +85,29 @@ final class DataExportAsyncController extends AbstractController
             return $this->redirectToRoute('data_export_index');
         }
 
+        // Create the job-status row first WITHOUT the download URL — we
+        // need the UUID to build the URL. Then patch the payload via
+        // JobStatusService::updatePayload() so the shared progress page
+        // sees the download CTA on success.
         $jobId = $this->jobStatusService->create(
             'admin.data_export.dispatch',
-            ['entities' => $selectedEntities, 'format' => $format],
+            [
+                'entities' => $selectedEntities,
+                'format' => $format,
+                '_label' => $this->translator->trans('admin.job.export.data_label', [], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.job.export.data_subtitle', [], 'admin'),
+                '_download_label' => $this->translator->trans('admin.job.download', [], 'admin') . ' (' . strtoupper($format) . ')',
+            ],
         );
-
-        // Render the progress page BEFORE dispatch so the rendered HTML is
-        // in the Response object — InRequestJobRunner flushes it to the
-        // browser, then runs the export in this same PHP-FPM worker.
-        $response = $this->render('data_management/export_progress.html.twig', [
-            'jobId' => $jobId,
-            'format' => $format,
-            'cancelUrl' => $this->generateUrl('data_export_index'),
-            'downloadUrl' => $this->generateUrl('data_export_download', ['id' => $jobId]),
+        $this->jobStatusService->updatePayload($jobId, [
+            '_download_url' => $this->generateUrl('data_export_download', ['id' => $jobId]),
         ]);
+
+        // PRG: 303 redirect — see runIntegrityCheck() in DataRepairController for rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('data_export_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             ExportDataJob::class,
