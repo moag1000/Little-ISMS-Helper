@@ -85,7 +85,12 @@ class InRequestJobRunner
         @set_time_limit(0);
         @ignore_user_abort(true);
         @ini_set('max_execution_time', '0');
-        @ini_set('memory_limit', '512M');
+        // memory_limit raise-only: never reduce env-configured limit
+        // (would crash long-running PHPUnit / CLI runs that need >512M).
+        $currentMem = $this->memoryLimitBytes((string) ini_get('memory_limit'));
+        if ($currentMem !== -1 && $currentMem < 512 * 1024 * 1024) {
+            @ini_set('memory_limit', '512M');
+        }
 
         // Release the session write-lock so the polling request (which also
         // touches the session) is not serialised behind the long-running job.
@@ -128,6 +133,26 @@ class InRequestJobRunner
         }
 
         return $response;
+    }
+
+    /**
+     * Parse a php.ini memory-style value (`"512M"`, `"1G"`, `"-1"`) to bytes.
+     * Returns -1 for "unlimited".
+     */
+    private function memoryLimitBytes(string $value): int
+    {
+        $v = trim($value);
+        if ($v === '' || $v === '-1') {
+            return -1;
+        }
+        $unit = strtolower(substr($v, -1));
+        $num = (int) $v;
+        return match ($unit) {
+            'g' => $num * 1024 * 1024 * 1024,
+            'm' => $num * 1024 * 1024,
+            'k' => $num * 1024,
+            default => $num,
+        };
     }
 
     /**
