@@ -696,6 +696,15 @@ admin:
             execute_migrations_subtitle: 'Running the Doctrine migration plan in the background…'
             reconcile_schema_label: 'Reconcile Schema'
             reconcile_schema_subtitle: 'Aligning live database schema with entity metadata in the background…'
+            run_integrity_check_label: 'Full Integrity Scan'
+            run_integrity_check_subtitle: 'Scanning orphans, duplicates, broken references, missing relationships and schema drift in the background…'
+        integrity_check:
+            title: 'Async Integrity Scan'
+            description: 'On large datasets the inline scan on this page can exceed PHP-FPM''s timeout. Run it as a background job instead — the result is cached and surfaced here as a banner.'
+            run_now: 'Run async scan'
+            last_run: 'Last async scan: %when% (duration: %duration% s)'
+            last_counts: '%orphans% orphans, %duplicates% duplicate groups, %broken% broken references — health score %health%'
+            never_run: 'Has never run. The banner will show a summary after the first run.'
     modules:
         title: Title
         dependency_graph: 'Dependency Graph'
@@ -1163,6 +1172,12 @@ admin:
         completed: "Job completed successfully."
         id_label: "Job ID"
         worker_hint: "The job is running in the background. This page auto-refreshes every 3 seconds."
+        download: "Download file"
+        export:
+            data_label: "CSV export — all entities"
+            data_subtitle: "Collecting selected entities into a file in the background…"
+            ready: "Export ready. Click Download to save the file."
+            file_not_found: "Export file not found (already downloaded or expired)."
 
 
 data_management:

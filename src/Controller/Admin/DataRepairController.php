@@ -11,6 +11,7 @@ use App\Job\FixAllOrphansJob;
 use App\Job\FixTenantMismatchesJob;
 use App\Job\MergeDuplicatesJob;
 use App\Job\ReconcileSchemaJob;
+use App\Job\RunFullIntegrityCheckJob;
 use App\Message\Job\ExecuteJobMessage;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
@@ -20,6 +21,7 @@ use App\Repository\ControlRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
+use App\Service\DataIntegrityResultCache;
 use App\Service\DataIntegrityService;
 use App\Service\Job\JobStatusService;
 use App\Service\SchemaMaintenanceService;
@@ -64,6 +66,7 @@ class DataRepairController extends AbstractController
         private readonly \Doctrine\Persistence\ManagerRegistry $managerRegistry,
         private readonly MessageBusInterface $messageBus,
         private readonly JobStatusService $jobStatusService,
+        private readonly DataIntegrityResultCache $integrityResultCache,
     ) {
     }
 
@@ -235,6 +238,52 @@ class DataRepairController extends AbstractController
             'jsonSchemaViolations' => $integrityCheck['json_schema_violations'] ?? [],
             'auditLogIntegrity' => $integrityCheck['audit_log_integrity'] ?? ['bulk_batch_mismatches' => [], 'day_gaps' => [], 'null_tenant_entries' => []],
             'statusEnumDrift' => $integrityCheck['status_enum_drift'] ?? [],
+
+            // Async-integrity-check (Phase 2.5): scalar summary written by
+            // RunFullIntegrityCheckJob to var/data_integrity/last.json.
+            // Surfaced as a banner so admins can verify whether the slow
+            // page-load scan and the recent async run agree.
+            'integrityResultCache' => $this->integrityResultCache->read(),
+        ]);
+    }
+
+    /**
+     * Dispatches the full integrity check as an async job.
+     *
+     * Originally part of {@see self::index()} — running synchronously on every
+     * GET could push past PHP-FPM's 30 s limit on large tenant trees because
+     * `runFullIntegrityCheck()` loads every Doctrine-mapped entity that owns
+     * a tenant_id column plus all duplicate / broken-ref / file-orphan /
+     * JSON-schema / audit-integrity / status-enum-drift checks.
+     *
+     * The worker persists a scalar summary via {@see DataIntegrityResultCache};
+     * the index page reads it on subsequent visits.
+     */
+    #[Route('/admin/data-repair/run-integrity-check', name: 'admin_data_repair_run_integrity_check', methods: ['POST'])]
+    public function runIntegrityCheck(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('run_integrity_check', $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $jobId = $this->jobStatusService->create(
+            'admin.data_repair.run_integrity_check',
+            [],
+        );
+
+        $this->messageBus->dispatch(new ExecuteJobMessage(
+            jobClass: RunFullIntegrityCheckJob::class,
+            args: [],
+            jobId: $jobId,
+        ));
+
+        return $this->render('admin/data_repair/job_progress.html.twig', [
+            'jobId' => $jobId,
+            'jobName' => 'admin.data_repair.run_integrity_check',
+            'jobLabel' => $this->translator->trans('admin.data_repair.job.run_integrity_check_label', [], 'admin'),
+            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.run_integrity_check_subtitle', [], 'admin'),
+            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
         ]);
     }
 
