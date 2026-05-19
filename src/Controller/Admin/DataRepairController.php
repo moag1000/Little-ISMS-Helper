@@ -241,13 +241,13 @@ class DataRepairController extends AbstractController
         $entityType = $request->request->get('entity_type');
 
         if (!$this->isCsrfTokenValid('assign_orphans', $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         $tenant = $this->tenantRepository->find($tenantId);
         if (!$tenant) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -326,13 +326,13 @@ class DataRepairController extends AbstractController
         $tenantId = $request->request->get('tenant_id');
 
         if (!$this->isCsrfTokenValid('reassign_entity_' . $id, $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         $tenant = $this->tenantRepository->find($tenantId);
         if (!$tenant) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -359,7 +359,7 @@ class DataRepairController extends AbstractController
         });
 
         if (!$entity) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -391,7 +391,7 @@ class DataRepairController extends AbstractController
         $assetId = $request->request->get('asset_id');
 
         if (!$this->isCsrfTokenValid('assign_asset_' . $id, $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -412,7 +412,7 @@ class DataRepairController extends AbstractController
             case 'risk':
                 $entity = $this->riskRepository->find($id);
                 if (!$entity) {
-                    $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+                    $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found', [], 'admin'));
                     return $this->redirectToRoute('admin_data_repair_index');
                 }
                 $previousAsset = $entity->getAsset();
@@ -432,7 +432,7 @@ class DataRepairController extends AbstractController
             case 'incident':
                 $entity = $this->incidentRepository->find($id);
                 if (!$entity) {
-                    $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+                    $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found', [], 'admin'));
                     return $this->redirectToRoute('admin_data_repair_index');
                 }
                 // Incidents have ManyToMany relationship with assets
@@ -452,7 +452,7 @@ class DataRepairController extends AbstractController
                 break;
 
             default:
-                $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type'));
+                $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type', [], 'admin'));
                 return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -473,24 +473,24 @@ class DataRepairController extends AbstractController
         $riskId = $request->request->get('risk_id');
 
         if (!$this->isCsrfTokenValid('assign_risk_' . $id, $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         if (!$riskId) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.select_risk'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.select_risk', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         $control = $this->controlRepository->find($id);
         if (!$control) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         $risk = $this->riskRepository->find($riskId);
         if (!$risk) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -522,24 +522,24 @@ class DataRepairController extends AbstractController
         $assetId = $request->request->get('asset_id');
 
         if (!$this->isCsrfTokenValid('assign_asset_to_control_' . $id, $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         if (!$assetId) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.select_asset'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.select_asset', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         $control = $this->controlRepository->find($id);
         if (!$control) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         $asset = $this->assetRepository->find($assetId);
         if (!$asset) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.asset_not_found'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.asset_not_found', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -576,13 +576,13 @@ class DataRepairController extends AbstractController
     public function fixAllOrphansAsync(Request $request, int $tenantId): Response
     {
         if (!$this->isCsrfTokenValid('fix_all_orphans', $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         $tenant = $this->tenantRepository->find($tenantId);
         if (!$tenant) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -626,7 +626,7 @@ class DataRepairController extends AbstractController
     public function fixAllOrphans(Request $request, int $tenantId): Response
     {
         if (!$this->isCsrfTokenValid('fix_all_orphans', $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -646,7 +646,7 @@ class DataRepairController extends AbstractController
 
         $tenant = $this->tenantRepository->find($tenantId);
         if (!$tenant) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -721,7 +721,7 @@ class DataRepairController extends AbstractController
     public function fixTenantMismatches(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('fix_tenant_mismatches', $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -833,12 +833,12 @@ class DataRepairController extends AbstractController
         $allowedTypes = ['audits', 'assets', 'risks', 'incidents', 'documents'];
 
         if (!$this->isCsrfTokenValid('fix_duplicates_' . $entityType, $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
         if (!in_array($entityType, $allowedTypes, true)) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type'));
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type', [], 'admin'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -880,7 +880,7 @@ class DataRepairController extends AbstractController
         #[CurrentUser] User $user,
     ): Response {
         if (!$this->isCsrfTokenValid('migrations_execute', (string) $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -927,7 +927,7 @@ class DataRepairController extends AbstractController
     public function quarantineOrphanedUploads(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('quarantine_uploads', (string) $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -1012,7 +1012,7 @@ class DataRepairController extends AbstractController
     public function cleanupDanglingRefs(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('cleanup_dangling_refs', (string) $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
@@ -1098,7 +1098,7 @@ class DataRepairController extends AbstractController
         #[CurrentUser] User $user,
     ): Response {
         if (!$this->isCsrfTokenValid('schema_reconcile', (string) $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
