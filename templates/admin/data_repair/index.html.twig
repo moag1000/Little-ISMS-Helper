@@ -318,6 +318,384 @@
         </div>
     </div>
 
+    {# ====================================================================
+       Inventory previews — render cached scan results inline so the admin
+       can SEE what's cleanable without clicking through to the sub-pages.
+       Each section card reads from SectionScanResultCache (fast file read,
+       no DB roundtrip on this page) and shows the first ~10 items + a
+       "View all" link when more remain. Cache-empty cards render an
+       Aurora empty-state with a "Scan now" CTA pointing to the section.
+    ==================================================================== #}
+    <h2 class="mt-5 mb-3">
+        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+        {{ 'admin.data_repair.inventory.title'|trans({}, 'admin') }}
+    </h2>
+
+    {# Orphans inventory card #}
+    <section class="fa-section mb-4 {{ orphCache is null ? 'border-primary' : (orphTotal > 0 ? 'border-warning' : 'border-success') }}">
+        <div class="fa-section__header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h3 class="mb-0 fs-5">
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.orphans'|trans({}, 'admin') }}
+                    {% if orphCache is not null %}
+                        <span class="fa-status-pill fa-status-pill--{{ orphTotal > 0 ? 'warning' : 'success' }} ms-2">
+                            {{ orphTotal }}
+                        </span>
+                    {% endif %}
+                </h3>
+                <div class="d-flex gap-2 align-items-center small text-muted">
+                    {% if orphCache is not null %}
+                        <span>
+                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': orphCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                        </span>
+                    {% endif %}
+                    <form method="post" action="{{ path('admin_data_repair_orphans_refresh') }}" class="d-inline-block m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_orphans') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="fa-section__body">
+            {% if orphCache is null %}
+                {{ _fa_alert.render({
+                    variant: 'info',
+                    body: 'admin.data_repair.inventory.never_scanned'|trans({}, 'admin'),
+                }) }}
+            {% elseif orphTotal == 0 %}
+                {{ _fa_alert.render({
+                    variant: 'success',
+                    body: 'admin.data_repair.no_orphans'|trans({}, 'admin'),
+                }) }}
+            {% else %}
+                {% set orphPreview = orphCache.payload.preview_by_type|default({}) %}
+                {% set orphCounts = orphCache.payload.counts_by_type|default({}) %}
+                <p class="small text-muted mb-3">
+                    {{ 'admin.data_repair.section.orphans_summary'|trans({
+                        '%total%': orphTotal,
+                        '%types%': orphCounts|length,
+                    }, 'admin') }}
+                </p>
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--compact fa-table--hover">
+                        <thead class="fa-table__head"><tr>
+                            <th scope="col" class="fa-table__th">{{ 'admin.data_repair.inventory.col_type'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">ID</th>
+                            <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                        </tr></thead>
+                        <tbody class="fa-table__body">
+                            {% set rowsShown = 0 %}
+                            {% set maxRows = 15 %}
+                            {% for typeKey, rows in orphPreview %}
+                                {% for row in rows %}
+                                    {% if rowsShown < maxRows %}
+                                        <tr class="fa-table__row">
+                                            <td class="fa-table__cell">
+                                                <span class="fa-status-pill fa-status-pill--neutral">{{ typeKey|replace({'_': ' '})|title }}</span>
+                                            </td>
+                                            <td class="fa-table__cell">{{ row.id ?? '—' }}</td>
+                                            <td class="fa-table__cell">{{ row.label ?? '—' }}</td>
+                                        </tr>
+                                        {% set rowsShown = rowsShown + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if orphTotal > rowsShown %}
+                    <p class="small text-muted mt-2 mb-0">
+                        {{ 'admin.data_repair.inventory.more_items'|trans({'%count%': orphTotal - rowsShown}, 'admin') }}
+                    </p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ path('admin_data_repair_orphans') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.inventory.show_all'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    {# Duplicates inventory card #}
+    <section class="fa-section mb-4 {{ dupCache is null ? 'border-primary' : (dupTotal > 0 ? 'border-warning' : 'border-success') }}">
+        <div class="fa-section__header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h3 class="mb-0 fs-5">
+                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.duplicates'|trans({}, 'admin') }}
+                    {% if dupCache is not null %}
+                        <span class="fa-status-pill fa-status-pill--{{ dupTotal > 0 ? 'warning' : 'success' }} ms-2">
+                            {{ dupTotal }}
+                        </span>
+                    {% endif %}
+                </h3>
+                <div class="d-flex gap-2 align-items-center small text-muted">
+                    {% if dupCache is not null %}
+                        <span>
+                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': dupCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                        </span>
+                    {% endif %}
+                    <form method="post" action="{{ path('admin_data_repair_duplicates_refresh') }}" class="d-inline-block m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_duplicates') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="fa-section__body">
+            {% if dupCache is null %}
+                {{ _fa_alert.render({
+                    variant: 'info',
+                    body: 'admin.data_repair.inventory.never_scanned'|trans({}, 'admin'),
+                }) }}
+            {% elseif dupTotal == 0 %}
+                {{ _fa_alert.render({
+                    variant: 'success',
+                    body: 'admin.data_repair.duplicates.all_ok'|trans({}, 'admin'),
+                }) }}
+            {% else %}
+                {% set dupPreview = dupCache.payload.preview_by_type|default({}) %}
+                {% set dupGroups = dupCache.payload.groups_by_type|default({}) %}
+                <p class="small text-muted mb-3">
+                    {{ 'admin.data_repair.section.duplicates_summary'|trans({
+                        '%groups%': dupTotal,
+                        '%types%': dupGroups|length,
+                    }, 'admin') }}
+                </p>
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--compact fa-table--hover">
+                        <thead class="fa-table__head"><tr>
+                            <th scope="col" class="fa-table__th">{{ 'admin.data_repair.inventory.col_type'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'admin.data_repair.inventory.col_group'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'admin.data_repair.inventory.col_count'|trans({}, 'admin') }}</th>
+                        </tr></thead>
+                        <tbody class="fa-table__body">
+                            {% set rowsShown = 0 %}
+                            {% set maxRows = 15 %}
+                            {% for typeKey, groups in dupPreview %}
+                                {% for grp in groups %}
+                                    {% if rowsShown < maxRows %}
+                                        <tr class="fa-table__row">
+                                            <td class="fa-table__cell">
+                                                <span class="fa-status-pill fa-status-pill--neutral">{{ typeKey|replace({'_': ' '})|title }}</span>
+                                            </td>
+                                            <td class="fa-table__cell">{{ grp.label ?? '—' }}</td>
+                                            <td class="fa-table__cell">
+                                                <span class="fa-status-pill fa-status-pill--warning">{{ grp.count ?? 0 }}</span>
+                                            </td>
+                                        </tr>
+                                        {% set rowsShown = rowsShown + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if dupTotal > rowsShown %}
+                    <p class="small text-muted mt-2 mb-0">
+                        {{ 'admin.data_repair.inventory.more_groups'|trans({'%count%': dupTotal - rowsShown}, 'admin') }}
+                    </p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ path('admin_data_repair_duplicates_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.inventory.show_all'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    {# Broken-references inventory card #}
+    <section class="fa-section mb-4 {{ brCache is null ? 'border-primary' : (brTotal > 0 ? 'border-danger' : 'border-success') }}">
+        <div class="fa-section__header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h3 class="mb-0 fs-5">
+                    <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.broken_references'|trans({}, 'admin') }}
+                    {% if brCache is not null %}
+                        <span class="fa-status-pill fa-status-pill--{{ brTotal > 0 ? 'danger' : 'success' }} ms-2">
+                            {{ brTotal }}
+                        </span>
+                    {% endif %}
+                </h3>
+                <div class="d-flex gap-2 align-items-center small text-muted">
+                    {% if brCache is not null %}
+                        <span>
+                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': brCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                        </span>
+                    {% endif %}
+                    <form method="post" action="{{ path('admin_data_repair_broken_refs_refresh') }}" class="d-inline-block m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_broken_refs') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="fa-section__body">
+            {% if brCache is null %}
+                {{ _fa_alert.render({
+                    variant: 'info',
+                    body: 'admin.data_repair.inventory.never_scanned'|trans({}, 'admin'),
+                }) }}
+            {% elseif brTotal == 0 %}
+                {{ _fa_alert.render({
+                    variant: 'success',
+                    body: 'admin.data_repair.section.no_broken_refs'|trans({}, 'admin'),
+                }) }}
+            {% else %}
+                {% set brokenTotal = brCache.payload.broken_total|default(0) %}
+                {% set cascadeTotal = brCache.payload.cascade_total|default(0) %}
+                {% set uploadsTotal = brCache.payload.uploads_total|default(0) %}
+                <p class="small text-muted mb-3">
+                    {{ 'admin.data_repair.section.broken_refs_summary'|trans({
+                        '%broken%': brokenTotal,
+                        '%cascade%': cascadeTotal,
+                        '%uploads%': uploadsTotal,
+                    }, 'admin') }}
+                </p>
+
+                {% set brokenByBucket = brCache.payload.broken_by_bucket|default({}) %}
+                {% set cascadeByBucket = brCache.payload.cascade_by_bucket|default({}) %}
+                <div class="row g-3">
+                    {% if brokenByBucket|length > 0 %}
+                        <div class="col-md-6">
+                            <h4 class="fs-6 mb-2">{{ 'admin.data_repair.inventory.broken_refs_header'|trans({}, 'admin') }}</h4>
+                            <ul class="list-unstyled small mb-0">
+                                {% for bucket, count in brokenByBucket %}
+                                    <li class="mb-1">
+                                        <span class="fa-status-pill fa-status-pill--danger">{{ count }}</span>
+                                        {{ bucket|replace({'_': ' '})|title }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    {% if cascadeByBucket|length > 0 %}
+                        <div class="col-md-6">
+                            <h4 class="fs-6 mb-2">{{ 'admin.data_repair.inventory.cascade_orphans_header'|trans({}, 'admin') }}</h4>
+                            <ul class="list-unstyled small mb-0">
+                                {% for bucket, count in cascadeByBucket %}
+                                    <li class="mb-1">
+                                        <span class="fa-status-pill fa-status-pill--warning">{{ count }}</span>
+                                        {{ bucket|replace({'_': ' '})|title }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if uploadsTotal > 0 %}
+                    <p class="small text-muted mt-3 mb-0">
+                        <i class="fa-icon fa-icon--nav-hdd" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.inventory.orphaned_uploads_summary'|trans({'%count%': uploadsTotal}, 'admin') }}
+                    </p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ path('admin_data_repair_broken_refs_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.inventory.show_all'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    {# Health-issues inventory card #}
+    <section class="fa-section mb-4 {{ healthCache is null ? 'border-primary' : (healthTotal > 0 ? 'border-warning' : 'border-success') }}">
+        <div class="fa-section__header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h3 class="mb-0 fs-5">
+                    <i class="fa-icon fa-icon--nav-heart-pulse" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.health'|trans({}, 'admin') }}
+                    {% if healthCache is not null %}
+                        <span class="fa-status-pill fa-status-pill--{{ healthTotal > 0 ? 'warning' : 'success' }} ms-2">
+                            {{ healthTotal }}
+                        </span>
+                    {% endif %}
+                </h3>
+                <div class="d-flex gap-2 align-items-center small text-muted">
+                    {% if healthCache is not null %}
+                        <span>
+                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': healthCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                        </span>
+                    {% endif %}
+                    <form method="post" action="{{ path('admin_data_repair_health_refresh') }}" class="d-inline-block m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_health') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="fa-section__body">
+            {% if healthCache is null %}
+                {{ _fa_alert.render({
+                    variant: 'info',
+                    body: 'admin.data_repair.inventory.never_scanned'|trans({}, 'admin'),
+                }) }}
+            {% elseif healthTotal == 0 %}
+                {{ _fa_alert.render({
+                    variant: 'success',
+                    body: 'admin.data_repair.section.health_all_ok'|trans({}, 'admin'),
+                }) }}
+            {% else %}
+                {% set healthBuckets = healthCache.payload.buckets|default({}) %}
+                <div class="row g-3">
+                    {% for bucketKey, bucket in healthBuckets %}
+                        {% if (bucket.total|default(0)) > 0 %}
+                            <div class="col-md-6 col-lg-3">
+                                <div class="fa-section h-100 border-warning">
+                                    <div class="fa-section__header">
+                                        <h4 class="mb-0 fs-6">
+                                            {{ bucketKey|replace({'_': ' '})|title }}
+                                            <span class="fa-status-pill fa-status-pill--warning ms-1">{{ bucket.total }}</span>
+                                        </h4>
+                                    </div>
+                                    <div class="fa-section__body">
+                                        {% set byCheck = bucket.by_check|default({}) %}
+                                        <ul class="list-unstyled small mb-0">
+                                            {% for checkKey, count in byCheck %}
+                                                <li class="mb-1">
+                                                    <span class="fa-status-pill fa-status-pill--neutral">{{ count }}</span>
+                                                    {{ checkKey|replace({'_': ' '})|title }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="mt-3">
+                    <a href="{{ path('admin_data_repair_health_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.inventory.show_all'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
     {{ _fa_alert.render({
         variant: 'info',
         class: 'mt-3',

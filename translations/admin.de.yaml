@@ -726,6 +726,19 @@ admin:
             scan_broken_refs_subtitle: 'Sucht im Hintergrund nach defekten FK-Referenzen, Cascade-Orphans und verwaisten Upload-Dateien…'
             scan_health_label: 'Health-Issues scannen'
             scan_health_subtitle: 'Führt im Hintergrund die vier Health-Checks (Risk / Compliance / Operational / Data-Quality) aus…'
+        # Inventur-Vorschau auf der Übersichtsseite (Cache-getrieben, kein DB-Roundtrip)
+        inventory:
+            title: 'Was kann bereinigt werden?'
+            never_scanned: 'Dieser Bereich wurde noch nie gescannt. Klick auf „Jetzt neu scannen", um einen Hintergrund-Scan zu starten.'
+            show_all: 'Alle anzeigen'
+            more_items: '… und %count% weitere Einträge'
+            more_groups: '… und %count% weitere Gruppen'
+            col_type: 'Typ'
+            col_group: 'Gruppe / Wert'
+            col_count: 'Anzahl'
+            broken_refs_header: 'Defekte FK-Referenzen'
+            cascade_orphans_header: 'Cascade-Orphans'
+            orphaned_uploads_summary: '%count% verwaiste Upload-Datei(en) im Filesystem'
         # Untermenüs + Cache-Banner (Async-Render-Refactor 2026-05)
         sections_title: 'Reparatur-Bereiche'
         section:
