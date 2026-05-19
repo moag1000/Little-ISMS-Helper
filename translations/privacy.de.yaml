@@ -307,6 +307,16 @@ processing_activity:
         export_pdf: 'PDF exportieren'
         export_csv: 'CSV exportieren'
         new: 'Neue Verarbeitungstätigkeit'
+    export:
+        badge: 'VVT-Export'
+        progress_title: 'VVT als CSV exportieren'
+        progress_subtitle: 'Der Export läuft im Hintergrund. Diese Seite aktualisiert sich automatisch.'
+        download_button: 'VVT-Export herunterladen'
+        file_not_found: 'Export-Datei nicht gefunden (möglicherweise bereits heruntergeladen oder abgelaufen).'
+        modal:
+            title: 'VVT als CSV exportieren'
+            body: 'Erstellt eine CSV-Datei mit allen Verarbeitungstätigkeiten (Art. 30 DSGVO). Der Export läuft im Hintergrund.'
+            start: 'Export starten'
     confirm:
         clone: 'Möchten Sie diese Verarbeitungstätigkeit duplizieren?'
     stat:

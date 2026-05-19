@@ -315,7 +315,7 @@ src/Controller/PersonController.php:75
 src/Controller/PersonController.php:130
 src/Controller/PersonController.php:146
 src/Controller/PersonController.php:147
-src/Controller/ProcessingActivityController.php:529
+src/Controller/ProcessingActivityController.php:612
 src/Controller/ProfileController.php:104
 src/Controller/ProfileController.php:168
 src/Controller/ProfileController.php:191

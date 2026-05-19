@@ -310,6 +310,16 @@ processing_activity:
         export_pdf: 'Export PDF'
         export_csv: 'Export CSV'
         new: 'New Processing Activity'
+    export:
+        badge: 'VVT export'
+        progress_title: 'Export RoPA / VVT as CSV'
+        progress_subtitle: 'The export runs in the background. This page refreshes automatically.'
+        download_button: 'Download RoPA CSV'
+        file_not_found: 'Export file not found (likely already downloaded or expired).'
+        modal:
+            title: 'Export RoPA / VVT as CSV'
+            body: 'Generates a CSV file with all processing activities (GDPR Art. 30). The export runs in the background.'
+            start: 'Start export'
     confirm:
         clone: 'Do you want to clone this processing activity?'
     stat:
