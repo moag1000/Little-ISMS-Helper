@@ -479,6 +479,14 @@
 
                     const result = await response.json();
 
+                    // Async-job path (Phase 2): backend dispatched a worker
+                    // job and returned a progress-page URL — redirect there
+                    // immediately so the operator sees live progress.
+                    if (result.async === true && result.progressUrl) {
+                        window.location.href = result.progressUrl;
+                        return;
+                    }
+
                     if (result.success) {
                         createBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--success" role="alert">
@@ -840,6 +848,14 @@
                     });
 
                     const result = await response.json();
+
+                    // Async-job path (Phase 2): backend dispatched a worker
+                    // job and returned a progress-page URL — redirect there
+                    // immediately so the operator sees live progress.
+                    if (result.async === true && result.progressUrl) {
+                        window.location.href = result.progressUrl;
+                        return;
+                    }
 
                     if (result.success) {
                         const isDryRun = result.dry_run === true;

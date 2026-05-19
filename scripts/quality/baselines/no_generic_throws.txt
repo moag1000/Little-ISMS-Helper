@@ -2,15 +2,13 @@
 # Format: <relative-path>:<line>
 src/AlvaHint/AlvaHint.php:63
 src/AlvaHint/AlvaHint.php:66
-src/Controller/AdminBackupController.php:241
-src/Controller/AdminBackupController.php:248
-src/Controller/AdminBackupController.php:282
-src/Controller/AdminBackupController.php:289
-src/Controller/AdminBackupController.php:329
-src/Controller/AdminBackupController.php:336
-src/Controller/AdminBackupController.php:399
-src/Controller/AdminBackupController.php:406
-src/Controller/AdminBackupController.php:541
+src/Controller/AdminBackupController.php:270
+src/Controller/AdminBackupController.php:277
+src/Controller/AdminBackupController.php:311
+src/Controller/AdminBackupController.php:318
+src/Controller/AdminBackupController.php:434
+src/Controller/AdminBackupController.php:441
+src/Controller/AdminBackupController.php:576
 src/Controller/AuditFreezeController.php:167
 src/Controller/AuditFreezeController.php:173
 src/Controller/ManagementReportController.php:965
@@ -184,7 +182,6 @@ src/Service/ScheduledTaskService.php:42
 src/Service/ScheduledTaskService.php:91
 src/Service/SchemaHealthService.php:258
 src/Service/SecurityAuditService.php:24
-src/Service/Setup/SetupJobStatusService.php:133
 src/Service/Sso/OidcAuthenticationFlow.php:169
 src/Service/Sso/OidcAuthenticationFlow.php:193
 src/Service/Sso/OidcDiscoveryService.php:43

@@ -4,16 +4,26 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Job\QuickFixApplyMigrationsJob;
+use App\Job\QuickFixForceSchemaUpdateJob;
+use App\Job\QuickFixReconcileSchemaJob;
+use App\Job\QuickFixRepairAllJob;
+use App\Job\QuickFixRepairDuplicatesJob;
+use App\Job\QuickFixRepairOrphansJob;
+use App\Job\QuickFixRepairTenantMismatchesJob;
+use App\Message\Job\ExecuteJobMessage;
 use App\Service\AuditLogger;
 use App\Service\DataIntegrityService;
+use App\Service\Job\JobStatusService;
 use App\Service\QuickFixGuard;
 use App\Service\SchemaMaintenanceService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Public-fallback Quick-Fix UI: lets self-hosted operators apply pending
@@ -193,7 +203,9 @@ class QuickFixController extends AbstractController
     public function apply(
         Request $request,
         QuickFixGuard $guard,
-        SchemaMaintenanceService $maintenance,
+        JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
             return $this->render('quick_fix/locked.html.twig', [
@@ -201,87 +213,22 @@ class QuickFixController extends AbstractController
             ], new Response('', Response::HTTP_FORBIDDEN));
         }
 
-        $migrationResult = $maintenance->executePendingMigrations('quick-fix');
+        // Clearing the session keys early: if the previous failure was rooted
+        // in a Doctrine plan that now applies cleanly, the recovery card on
+        // the index page should not linger after the worker drains the job.
+        $request->getSession()->remove('quick_fix.last_phantom_diff');
+        $request->getSession()->remove('quick_fix.last_apply_failure');
 
-        if ($migrationResult['success']) {
-            $request->getSession()->remove('quick_fix.last_phantom_diff');
-            $request->getSession()->remove('quick_fix.last_apply_failure');
-        }
-
-        if (!$migrationResult['success']) {
-            $diagnosis = $migrationResult['diagnosis'] ?? null;
-            if (is_array($diagnosis) && ($diagnosis['category'] ?? 'unknown') !== 'unknown') {
-                $this->addFlash('error', sprintf(
-                    'Migration failed [%s]: %s — %s',
-                    $diagnosis['category'],
-                    $diagnosis['message'] ?? '',
-                    $diagnosis['suggested_action'] ?? '',
-                ));
-
-                // Store the failure payload for ANY error category so the index
-                // page can surface recovery options (skip-single, skip-all,
-                // force-schema-update) regardless of error type.
-                $offendingVersion = $diagnosis['offending_version'] ?? null;
-                if ($offendingVersion !== null) {
-                    $request->getSession()->set('quick_fix.last_apply_failure', [
-                        'version' => $offendingVersion,
-                        'category' => $diagnosis['category'] ?? 'unknown',
-                        'message' => $diagnosis['message'] ?? '',
-                        'suggested_action' => $diagnosis['suggested_action'] ?? '',
-                    ]);
-                }
-
-                // Keep the existing phantom-diff session key as a backward-compat
-                // alias so callers that already read it continue to work.
-                if (
-                    ($diagnosis['category'] ?? '') === 'phantom_diff_migration'
-                    && $offendingVersion !== null
-                ) {
-                    $request->getSession()->set('quick_fix.last_phantom_diff', [
-                        'version' => $offendingVersion,
-                        'message' => $diagnosis['message'] ?? '',
-                    ]);
-                }
-            } else {
-                $this->addFlash('error', sprintf('Migration failed: %s', $migrationResult['error'] ?? 'unknown error'));
-            }
-            return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
-        }
-
-        // Auto-chain: after migrations land, re-check schema-drift. If
-        // non-destructive drift remains (entity-metadata vs DB), run
-        // reconcile in the same click. Destructive drift still requires
-        // manual review via CLI.
-        $reconcileExecuted = 0;
-        $reconcileError = null;
-        try {
-            $status = $maintenance->getMaintenanceStatus();
-            $driftCount = (int) ($status['schema_drift']['count'] ?? 0);
-            $destructive = $status['schema_drift']['destructive'] ?? [];
-
-            if ($driftCount > 0 && $destructive === []) {
-                $reconcileResult = $maintenance->reconcileSchema('quick-fix');
-                if ($reconcileResult['success']) {
-                    $reconcileExecuted = (int) $reconcileResult['executed'];
-                } else {
-                    $reconcileError = $reconcileResult['error'] ?? $reconcileResult['blocked'] ?? 'unknown error';
-                }
-            }
-        } catch (\Throwable $e) {
-            $reconcileError = $e->getMessage();
-        }
-
-        $this->addFlash('success', sprintf(
-            '%d Migration(en) angewendet%s.',
-            $migrationResult['executed'],
-            $reconcileExecuted > 0 ? sprintf(' + %d Schema-Statement(s) reconciled', $reconcileExecuted) : '',
-        ));
-
-        if ($reconcileError !== null) {
-            $this->addFlash('error', sprintf('Auto-Reconcile fehlgeschlagen: %s', $reconcileError));
-        }
-
-        return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
+        return $this->dispatchJobProgress(
+            $jobStatusService,
+            $messageBus,
+            $translator,
+            QuickFixApplyMigrationsJob::class,
+            'quick_fix.apply',
+            'quick_fix.job.apply_label',
+            'quick_fix.job.apply_subtitle',
+            [],
+        );
     }
 
     #[IsCsrfTokenValid('quick_fix_reconcile')]
@@ -289,6 +236,9 @@ class QuickFixController extends AbstractController
         Request $request,
         QuickFixGuard $guard,
         SchemaMaintenanceService $maintenance,
+        JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
             return $this->render('quick_fix/locked.html.twig', [
@@ -297,8 +247,9 @@ class QuickFixController extends AbstractController
         }
 
         // Destructive drift (DROP/TRUNCATE) requires explicit confirm-checkbox.
-        // No more CLI-only escape hatch — operator can apply via UI when they
-        // ticked the risk-acceptance checkbox in the form.
+        // The status check still runs synchronously here — it's cheap and we
+        // want to reject the form submit BEFORE dispatching a long-running job
+        // that would just fail mid-flight.
         try {
             $status = $maintenance->getMaintenanceStatus();
             $destructive = $status['schema_drift']['destructive'] ?? [];
@@ -313,52 +264,16 @@ class QuickFixController extends AbstractController
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
-        // First attempt: standard reconcile (will block on pending_migrations
-        // if SchemaHealthService sees file-system-discovered migrations that
-        // haven't run yet).
-        $result = $maintenance->reconcileSchema('quick-fix');
-
-        // Auto-recovery: if blocked by pending_migrations, try to apply them
-        // via the Doctrine MigrationPlanCalculator first (which may differ
-        // from SchemaHealth's file-system-list — see CLAUDE.md pitfall #6
-        // PREPARE/EXECUTE silently-failing migrations leave file/DB-list
-        // inconsistent). After applying, retry reconcile with bypass=true.
-        if (!$result['success'] && ($result['blocked'] ?? null) === 'pending_migrations') {
-            $applyResult = $maintenance->executePendingMigrations('quick-fix');
-            if ($applyResult['success']) {
-                // Retry with bypass — the file-system-list may still hold
-                // entries for migrations that recorded as executed but
-                // never ran their DDL. The user already opted-in via
-                // checkbox if there's destructive drift.
-                $result = $maintenance->reconcileSchema('quick-fix', true);
-            } else {
-                $diagnosis = $applyResult['diagnosis'] ?? null;
-                $diagnosisMsg = (is_array($diagnosis) && ($diagnosis['category'] ?? 'unknown') !== 'unknown')
-                    ? sprintf('[%s] %s', $diagnosis['category'], $diagnosis['suggested_action'] ?? $diagnosis['message'] ?? '')
-                    : ($applyResult['error'] ?? 'unknown error');
-                $this->addFlash('error', sprintf(
-                    'Reconcile blockiert: %d pending Migration(en) — Apply fehlgeschlagen: %s',
-                    count($maintenance->listPendingMigrationVersionsFromFileSystem()),
-                    $diagnosisMsg,
-                ));
-                return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
-            }
-        }
-
-        if (!$result['success']) {
-            $this->addFlash('error', sprintf('Schema-Reconcile fehlgeschlagen: %s', $result['error'] ?? ($result['blocked'] ?? 'unbekannter Fehler')));
-            return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
-        }
-
-        $autoMarkedCount = count($result['auto_marked'] ?? []);
-        $this->addFlash('success', sprintf(
-            '%d Schema-Statement(s) erfolgreich angewendet%s.',
-            $result['executed'],
-            $autoMarkedCount > 0
-                ? sprintf(' + %d ausstehende Migration(en) automatisch als ausgeführt markiert', $autoMarkedCount)
-                : '',
-        ));
-        return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
+        return $this->dispatchJobProgress(
+            $jobStatusService,
+            $messageBus,
+            $translator,
+            QuickFixReconcileSchemaJob::class,
+            'quick_fix.reconcile',
+            'quick_fix.job.reconcile_label',
+            'quick_fix.job.reconcile_subtitle',
+            [],
+        );
     }
 
     // =========================================================================
@@ -530,9 +445,9 @@ class QuickFixController extends AbstractController
     public function repairOrphans(
         Request $request,
         QuickFixGuard $guard,
-        DataIntegrityService $dataIntegrity,
-        EntityManagerInterface $em,
-        AuditLogger $auditLogger,
+        JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
             return $this->render('quick_fix/locked.html.twig', [
@@ -540,98 +455,16 @@ class QuickFixController extends AbstractController
             ], new Response('', Response::HTTP_FORBIDDEN));
         }
 
-        // Disable tenant filter so orphans are actually visible.
-        $filters = $em->getFilters();
-        $wasEnabled = $filters->isEnabled('tenant_filter');
-        if ($wasEnabled) {
-            $filters->disable('tenant_filter');
-        }
-
-        $fixed = 0;
-        $skippedGlobal = 0;
-        $perEntityErrors = [];
-        try {
-            // Pick the first tenant as target — in single-tenant deployments
-            // this is always the correct one. In multi-tenant we still assign
-            // to the first to make the data visible; admins can re-assign via
-            // the full admin/data-repair UI once the app is accessible again.
-            $tenantRepo = $em->getRepository(\App\Entity\Tenant::class);
-            /** @var \App\Entity\Tenant|null $targetTenant */
-            $targetTenant = $tenantRepo->findOneBy([]);
-
-            if ($targetTenant !== null) {
-                // GLOBAL_CATALOGUE_ENTITIES have tenant_id=NULL by design (e.g.
-                // NotificationTemplate). findAllOrphanedEntities() already
-                // excludes them, but we also count any that slip through so we
-                // can surface a "skipped: N global catalogue rows" message.
-                $globalClasses = $dataIntegrity->getGlobalCatalogueEntityClasses();
-
-                $orphaned = $dataIntegrity->findAllOrphanedEntities();
-                foreach ($orphaned as $type => $entities) {
-                    foreach ($entities as $entity) {
-                        if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
-                            continue;
-                        }
-
-                        // Safety guard: skip any globally-scoped entity.
-                        if (in_array($entity::class, $globalClasses, true)) {
-                            $skippedGlobal++;
-                            continue;
-                        }
-
-                        try {
-                            $entity->setTenant($targetTenant);
-                            $auditLogger->logCustom(
-                                'quick_fix.repair.orphan_assigned',
-                                (new \ReflectionClass($entity))->getShortName(),
-                                (int) $entity->getId(),
-                                ['tenant_id' => null],
-                                ['tenant_id' => $targetTenant->getId(), 'tenant_name' => $targetTenant->getName()],
-                                sprintf(
-                                    'QuickFix: orphan %s#%d assigned to tenant %s',
-                                    (new \ReflectionClass($entity))->getShortName(),
-                                    (int) $entity->getId(),
-                                    $targetTenant->getName(),
-                                ),
-                            );
-                            $fixed++;
-                        } catch (\Throwable $e) {
-                            // Roll back this entity's change so the EM stays clean.
-                            // A prior failure may have closed the EM; refresh would re-throw.
-                            if ($em->isOpen()) {
-                                try { $em->refresh($entity); } catch (\Throwable) {}
-                            }
-                            $perEntityErrors[] = sprintf(
-                                '%s#%d: %s',
-                                (new \ReflectionClass($entity))->getShortName(),
-                                (int) $entity->getId(),
-                                $e->getMessage(),
-                            );
-                        }
-                    }
-                }
-                if ($fixed > 0 && $em->isOpen()) {
-                    try { $em->flush(); } catch (\Throwable $e) {
-                        $this->addFlash('warning', 'Flush nach Orphan-Repair partial: ' . $e->getMessage());
-                    }
-                }
-            }
-        } finally {
-            if ($wasEnabled) {
-                $filters->enable('tenant_filter');
-            }
-        }
-
-        $this->addFlash('success', sprintf(
-            '%d verwaiste Entität(en) dem Standard-Mandanten zugewiesen%s.',
-            $fixed,
-            $skippedGlobal > 0 ? sprintf(' (%d globale Katalog-Einträge übersprungen)', $skippedGlobal) : '',
-        ));
-
-        foreach ($perEntityErrors as $errMsg) {
-            $this->addFlash('warning', 'Orphan-Repair übersprungen: ' . $errMsg);
-        }
-        return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
+        return $this->dispatchJobProgress(
+            $jobStatusService,
+            $messageBus,
+            $translator,
+            QuickFixRepairOrphansJob::class,
+            'quick_fix.repair_orphans',
+            'quick_fix.job.repair_orphans_label',
+            'quick_fix.job.repair_orphans_subtitle',
+            [],
+        );
     }
 
     /**
@@ -642,9 +475,9 @@ class QuickFixController extends AbstractController
     public function repairTenantMismatches(
         Request $request,
         QuickFixGuard $guard,
-        DataIntegrityService $dataIntegrity,
-        EntityManagerInterface $em,
-        AuditLogger $auditLogger,
+        JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
             return $this->render('quick_fix/locked.html.twig', [
@@ -652,60 +485,16 @@ class QuickFixController extends AbstractController
             ], new Response('', Response::HTTP_FORBIDDEN));
         }
 
-        $filters = $em->getFilters();
-        $wasEnabled = $filters->isEnabled('tenant_filter');
-        if ($wasEnabled) {
-            $filters->disable('tenant_filter');
-        }
-
-        $fixed = 0;
-        try {
-            $broken = $dataIntegrity->findBrokenReferences();
-            foreach ($broken as $ref) {
-                $entityClass = $ref['entity_class'] ?? null;
-                $entityId = $ref['entity_id'] ?? null;
-                $parentTenant = $ref['expected_tenant'] ?? null;
-
-                if ($entityClass === null || $entityId === null || $parentTenant === null) {
-                    continue;
-                }
-
-                $entity = $em->find($entityClass, $entityId);
-                if ($entity === null || !method_exists($entity, 'setTenant') || !method_exists($entity, 'getTenant')) {
-                    continue;
-                }
-
-                $previousTenant = $entity->getTenant();
-                $entity->setTenant($parentTenant);
-                $auditLogger->logCustom(
-                    'quick_fix.repair.tenant_mismatch_fixed',
-                    (new \ReflectionClass($entity))->getShortName(),
-                    (int) $entityId,
-                    ['tenant_id' => $previousTenant?->getId()],
-                    ['tenant_id' => $parentTenant->getId(), 'tenant_name' => $parentTenant->getName()],
-                    sprintf(
-                        'QuickFix: %s#%d tenant aligned to parent (tenant %d → %d)',
-                        (new \ReflectionClass($entity))->getShortName(),
-                        (int) $entityId,
-                        (int) ($previousTenant?->getId() ?? 0),
-                        (int) $parentTenant->getId(),
-                    ),
-                );
-                $fixed++;
-            }
-            if ($em->isOpen()) {
-                try { $em->flush(); } catch (\Throwable $e) {
-                    $this->addFlash('warning', 'Flush nach Mismatch-Repair partial: ' . $e->getMessage());
-                }
-            }
-        } finally {
-            if ($wasEnabled) {
-                $filters->enable('tenant_filter');
-            }
-        }
-
-        $this->addFlash('success', sprintf('%d Mandant-Fehlzuordnung(en) behoben.', $fixed));
-        return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
+        return $this->dispatchJobProgress(
+            $jobStatusService,
+            $messageBus,
+            $translator,
+            QuickFixRepairTenantMismatchesJob::class,
+            'quick_fix.repair_tenant_mismatches',
+            'quick_fix.job.repair_mismatches_label',
+            'quick_fix.job.repair_mismatches_subtitle',
+            [],
+        );
     }
 
     /**
@@ -717,9 +506,9 @@ class QuickFixController extends AbstractController
     public function repairDuplicates(
         Request $request,
         QuickFixGuard $guard,
-        DataIntegrityService $dataIntegrity,
-        EntityManagerInterface $em,
-        AuditLogger $auditLogger,
+        JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
         string $entityType,
     ): Response {
         if (!$guard->mayAccess($request)) {
@@ -734,31 +523,16 @@ class QuickFixController extends AbstractController
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
-        $filters = $em->getFilters();
-        $wasEnabled = $filters->isEnabled('tenant_filter');
-        if ($wasEnabled) {
-            $filters->disable('tenant_filter');
-        }
-
-        $deleted = 0;
-        try {
-            $deleted = $dataIntegrity->mergeDuplicates($entityType);
-            $auditLogger->logCustom(
-                'quick_fix.repair.duplicates_merged',
-                $entityType,
-                0,
-                [],
-                ['entity_type' => $entityType, 'deleted_count' => $deleted],
-                sprintf('QuickFix: merged duplicates for %s — %d record(s) deleted.', $entityType, $deleted),
-            );
-        } finally {
-            if ($wasEnabled) {
-                $filters->enable('tenant_filter');
-            }
-        }
-
-        $this->addFlash('success', sprintf('%d Duplikat(e) aus "%s" bereinigt.', $deleted, $entityType));
-        return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
+        return $this->dispatchJobProgress(
+            $jobStatusService,
+            $messageBus,
+            $translator,
+            QuickFixRepairDuplicatesJob::class,
+            'quick_fix.repair_duplicates',
+            'quick_fix.job.repair_duplicates_label',
+            'quick_fix.job.repair_duplicates_subtitle',
+            ['entityType' => $entityType],
+        );
     }
 
     /**
@@ -770,9 +544,9 @@ class QuickFixController extends AbstractController
     public function repairAll(
         Request $request,
         QuickFixGuard $guard,
-        DataIntegrityService $dataIntegrity,
-        EntityManagerInterface $em,
-        AuditLogger $auditLogger,
+        JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
             return $this->render('quick_fix/locked.html.twig', [
@@ -780,136 +554,16 @@ class QuickFixController extends AbstractController
             ], new Response('', Response::HTTP_FORBIDDEN));
         }
 
-        $filters = $em->getFilters();
-        $wasEnabled = $filters->isEnabled('tenant_filter');
-        if ($wasEnabled) {
-            $filters->disable('tenant_filter');
-        }
-
-        $totalOrphans = 0;
-        $totalMismatches = 0;
-        $totalDuplicates = 0;
-        $totalSkippedGlobal = 0;
-        $allEntityErrors = [];
-
-        try {
-            // Step 1 — Orphans
-            $tenantRepo = $em->getRepository(\App\Entity\Tenant::class);
-            /** @var \App\Entity\Tenant|null $targetTenant */
-            $targetTenant = $tenantRepo->findOneBy([]);
-            if ($targetTenant !== null) {
-                // Entities with tenant_id=NULL by design (global catalogues) must
-                // never be reassigned — doing so causes UniqueConstraintViolationException
-                // when multiple seeded rows share the same unique key.
-                $globalClasses = $dataIntegrity->getGlobalCatalogueEntityClasses();
-
-                $orphaned = $dataIntegrity->findAllOrphanedEntities();
-                foreach ($orphaned as $type => $entities) {
-                    foreach ($entities as $entity) {
-                        if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
-                            continue;
-                        }
-
-                        // Safety guard: skip globally-scoped catalogue entities.
-                        if (in_array($entity::class, $globalClasses, true)) {
-                            $totalSkippedGlobal++;
-                            continue;
-                        }
-
-                        try {
-                            $entity->setTenant($targetTenant);
-                            $auditLogger->logCustom(
-                                'quick_fix.repair.orphan_assigned',
-                                (new \ReflectionClass($entity))->getShortName(),
-                                (int) $entity->getId(),
-                                ['tenant_id' => null],
-                                ['tenant_id' => $targetTenant->getId()],
-                                sprintf('QuickFix/all: orphan %s#%d → tenant %d', (new \ReflectionClass($entity))->getShortName(), (int) $entity->getId(), (int) $targetTenant->getId()),
-                            );
-                            $totalOrphans++;
-                        } catch (\Throwable $e) {
-                            $em->refresh($entity);
-                            $allEntityErrors[] = sprintf(
-                                '%s#%d: %s',
-                                (new \ReflectionClass($entity))->getShortName(),
-                                (int) $entity->getId(),
-                                $e->getMessage(),
-                            );
-                        }
-                    }
-                }
-                if ($totalOrphans > 0 && $em->isOpen()) {
-                    try { $em->flush(); } catch (\Throwable $e) {
-                        $allEntityErrors[] = 'Flush partial: ' . $e->getMessage();
-                    }
-                }
-            }
-
-            // Step 2 — Tenant mismatches
-            $broken = $dataIntegrity->findBrokenReferences();
-            foreach ($broken as $ref) {
-                $entityClass = $ref['entity_class'] ?? null;
-                $entityId = $ref['entity_id'] ?? null;
-                $parentTenant = $ref['expected_tenant'] ?? null;
-                if ($entityClass === null || $entityId === null || $parentTenant === null) {
-                    continue;
-                }
-                $entity = $em->find($entityClass, $entityId);
-                if ($entity === null || !method_exists($entity, 'setTenant') || !method_exists($entity, 'getTenant')) {
-                    continue;
-                }
-                $previousTenant = $entity->getTenant();
-                $entity->setTenant($parentTenant);
-                $auditLogger->logCustom(
-                    'quick_fix.repair.tenant_mismatch_fixed',
-                    (new \ReflectionClass($entity))->getShortName(),
-                    (int) $entityId,
-                    ['tenant_id' => $previousTenant?->getId()],
-                    ['tenant_id' => $parentTenant->getId()],
-                    sprintf('QuickFix/all: mismatch fix %s#%d', (new \ReflectionClass($entity))->getShortName(), (int) $entityId),
-                );
-                $totalMismatches++;
-            }
-            $em->flush();
-
-            // Step 3 — Duplicates for all supported types
-            foreach (['audits', 'assets', 'risks', 'incidents', 'documents'] as $type) {
-                $deleted = $dataIntegrity->mergeDuplicates($type);
-                $totalDuplicates += $deleted;
-                if ($deleted > 0) {
-                    $auditLogger->logCustom(
-                        'quick_fix.repair.duplicates_merged',
-                        $type,
-                        0,
-                        [],
-                        ['deleted_count' => $deleted],
-                        sprintf('QuickFix/all: merged %d duplicate(s) for %s', $deleted, $type),
-                    );
-                }
-            }
-        } finally {
-            if ($wasEnabled) {
-                $filters->enable('tenant_filter');
-            }
-        }
-
-        $globalNote = $totalSkippedGlobal > 0
-            ? sprintf(', %d globale Katalog-Einträge übersprungen', $totalSkippedGlobal)
-            : '';
-
-        $this->addFlash('success', sprintf(
-            'Alle Repairs abgeschlossen: %d Orphan(s) zugewiesen, %d Mismatch(es) behoben, %d Duplikat(e) bereinigt%s.',
-            $totalOrphans,
-            $totalMismatches,
-            $totalDuplicates,
-            $globalNote,
-        ));
-
-        foreach ($allEntityErrors as $errMsg) {
-            $this->addFlash('warning', 'Orphan-Repair übersprungen: ' . $errMsg);
-        }
-
-        return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
+        return $this->dispatchJobProgress(
+            $jobStatusService,
+            $messageBus,
+            $translator,
+            QuickFixRepairAllJob::class,
+            'quick_fix.repair_all',
+            'quick_fix.job.repair_all_label',
+            'quick_fix.job.repair_all_subtitle',
+            [],
+        );
     }
 
     // =========================================================================
@@ -931,7 +585,9 @@ class QuickFixController extends AbstractController
     public function forceSchemaUpdate(
         Request $request,
         QuickFixGuard $guard,
-        SchemaMaintenanceService $maintenance,
+        JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
             return $this->render('quick_fix/locked.html.twig', [
@@ -945,17 +601,55 @@ class QuickFixController extends AbstractController
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
-        $result = $maintenance->forceSchemaUpdate('quick-fix');
+        return $this->dispatchJobProgress(
+            $jobStatusService,
+            $messageBus,
+            $translator,
+            QuickFixForceSchemaUpdateJob::class,
+            'quick_fix.force_schema_update',
+            'quick_fix.job.force_schema_label',
+            'quick_fix.job.force_schema_subtitle',
+            [],
+        );
+    }
 
-        if ($result['success']) {
-            $this->addFlash('success', sprintf(
-                'Schema-Update erfolgreich: %d Statement(s) angewendet.',
-                $result['statements_executed'],
-            ));
-        } else {
-            $this->addFlash('error', sprintf('Schema-Update erzwingen fehlgeschlagen: %s', $result['error'] ?? 'unbekannter Fehler'));
-        }
+    /**
+     * Shared dispatch helper for every QuickFix async action.
+     *
+     * Creates a job-status record, dispatches the Messenger message, then
+     * renders the standalone progress template that polls the public
+     * /quick-fix/jobs/{id}/status endpoint.
+     *
+     * @param class-string $jobClass    FQCN of the {@see \App\Job\AsyncJobInterface}
+     * @param string       $statusName  Internal slug stored on the status record
+     * @param string       $labelKey    quick_fix.* translation key for the title
+     * @param string       $subtitleKey quick_fix.* translation key for the subtitle
+     * @param array<string, mixed> $args Args forwarded to the job context
+     */
+    private function dispatchJobProgress(
+        JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
+        string $jobClass,
+        string $statusName,
+        string $labelKey,
+        string $subtitleKey,
+        array $args,
+    ): Response {
+        $jobId = $jobStatusService->create($statusName, $args);
 
-        return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
+        $messageBus->dispatch(new ExecuteJobMessage(
+            jobClass: $jobClass,
+            args: $args,
+            jobId: $jobId,
+        ));
+
+        return $this->render('quick_fix/job_progress.html.twig', [
+            'jobId' => $jobId,
+            'jobLabel' => $translator->trans($labelKey, [], 'quick_fix'),
+            'jobSubtitle' => $translator->trans($subtitleKey, [], 'quick_fix'),
+            'cancelUrl' => $this->generateUrl('app_quick_fix_index'),
+            'statusUrl' => $this->generateUrl('app_quick_fix_job_status', ['id' => $jobId]),
+        ]);
     }
 }
