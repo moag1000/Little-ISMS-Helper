@@ -277,7 +277,7 @@
                     </dd>
 
                     <dt class="col-sm-4">{{ 'monitoring.cache.directory'|trans({}, 'monitoring') }}:</dt>
-                    <dd class="col-sm-8"><code class="small">{{ health_checks.cache.directory }}</code></dd>
+                    <dd class="col-sm-8"><code class="small">{{ health_checks.cache.directory|path_relative }}</code></dd>
 
                     <dt class="col-sm-4">{{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">
@@ -328,7 +328,7 @@
                     </dd>
 
                     <dt class="col-sm-4">{{ 'monitoring.logs.directory'|trans({}, 'monitoring') }}:</dt>
-                    <dd class="col-sm-8"><code class="small">{{ health_checks.logs.directory }}</code></dd>
+                    <dd class="col-sm-8"><code class="small">{{ health_checks.logs.directory|path_relative }}</code></dd>
 
                     <dt class="col-sm-4">{{ 'monitoring.logs.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-8">
@@ -585,7 +585,7 @@
                     <dd class="col-sm-7"><code>{{ health_checks.sessions.handler }}</code></dd>
 
                     <dt class="col-sm-5">Save Path:</dt>
-                    <dd class="col-sm-7"><code class="small">{{ health_checks.sessions.save_path }}</code></dd>
+                    <dd class="col-sm-7"><code class="small">{{ health_checks.sessions.save_path|path_relative }}</code></dd>
 
                     <dt class="col-sm-5">{{ 'monitoring.cache.writable'|trans({}, 'monitoring') }}:</dt>
                     <dd class="col-sm-7">
@@ -621,7 +621,7 @@
             {% set uploads_content %}
                 <dl class="row mb-0">
                     <dt class="col-sm-5">{{ 'monitoring.cache.directory'|trans({}, 'monitoring') }}:</dt>
-                    <dd class="col-sm-7"><code class="small">{{ health_checks.uploads.directory }}</code></dd>
+                    <dd class="col-sm-7"><code class="small">{{ health_checks.uploads.directory|path_relative }}</code></dd>
 
                     <dt class="col-sm-5">Current Size:</dt>
                     <dd class="col-sm-7">{{ health_checks.uploads.size }}</dd>
