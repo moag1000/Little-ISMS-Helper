@@ -23,7 +23,7 @@
 
 <div class="card border-0 shadow-sm"
      data-controller="async-job"
-     data-async-job-status-url-value="{{ path('admin_job_status', {id: job_id}) }}"
+     data-async-job-status-url-value="{{ path('admin_job_status', {id: job_id, _locale: app.request.locale}) }}"
      data-async-job-poll-interval-value="3000"
      data-async-job-job-id-value="{{ job_id }}"
      data-async-job-cancel-url-value="{{ cancel_url ?? '' }}">
