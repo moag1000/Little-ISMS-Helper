@@ -101,6 +101,13 @@ services:
             $projectDir: '%kernel.project_dir%'
         tags: ['twig.extension']
 
+    # `path_relative` filter strips kernel.project_dir from displayed paths
+    # so monitoring/health does not leak the deployment user's home directory.
+    App\Twig\PathExtension:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+        tags: ['twig.extension']
+
     # Data-Repair file-orphan scanner needs projectDir to find public/uploads/.
     App\Service\DataIntegrityService:
         arguments:
