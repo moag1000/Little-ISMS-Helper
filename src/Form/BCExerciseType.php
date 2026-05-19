@@ -8,8 +8,8 @@ use App\Entity\BCExercise;
 use App\Entity\Person;
 use App\Entity\User;
 use App\Entity\BusinessContinuityPlan;
-use App\Form\DataTransformer\JsonArrayTransformer;
 use App\Form\SectionMapInterface;
+use App\Form\Type\JsonStructuredType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -234,7 +234,8 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
             ])
             // TODO(s5-json-objects): replace with CollectionType + SuccessCriterionEntryType
             // (shape: {rtoMet, rpoMet, communicationEffective, teamPrepared}).
-            ->add('successCriteria', TextareaType::class, [
+            // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
+            ->add('successCriteria', JsonStructuredType::class, [
                 'label' => 'bc_exercises.field.success_criteria',
                 'required' => false,
                 'attr' => ['rows' => 4],
@@ -268,7 +269,8 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
             ])
             // TODO(s5-json-objects): replace with CollectionType + EvidenceArtifactEntryType
             // (shape: [{type:photo|log|report|screenshot, reference, description}]).
-            ->add('evidenceArtifacts', TextareaType::class, [
+            // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
+            ->add('evidenceArtifacts', JsonStructuredType::class, [
                 'label' => 'bc_exercises.field.evidence_artifacts',
                 'required' => false,
                 'attr' => ['rows' => 4],
@@ -276,8 +278,7 @@ final class BCExerciseType extends AbstractType implements SectionMapInterface
             ])
         ;
 
-        $builder->get('successCriteria')->addModelTransformer(new JsonArrayTransformer());
-        $builder->get('evidenceArtifacts')->addModelTransformer(new JsonArrayTransformer());
+        // JsonArrayTransformer now applied automatically by JsonStructuredType.
     }
 
     public function configureOptions(OptionsResolver $resolver): void
