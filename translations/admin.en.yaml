@@ -1485,3 +1485,12 @@ industry_preset:
             four_eyes:
                 title: 'Four-eyes principle'
                 body: 'When enabled, a second person must confirm the transition (four-eyes principle).'
+
+# Async admin jobs
+job:
+    queued: "Job queued and will be processed shortly…"
+    progress: "Progress"
+    error: "Error"
+    completed: "Job completed successfully."
+    id_label: "Job ID"
+    worker_hint: "The job is running in the background. This page auto-refreshes every 3 seconds."

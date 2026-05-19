@@ -6,6 +6,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\Control;
 use App\Entity\User;
+use App\Job\FixAllOrphansJob;
+use App\Message\Job\ExecuteJobMessage;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
@@ -15,11 +17,13 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\DataIntegrityService;
+use App\Service\Job\JobStatusService;
 use App\Service\SchemaMaintenanceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -54,6 +58,8 @@ class DataRepairController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly SchemaMaintenanceService $schemaMaintenanceService,
         private readonly \Doctrine\Persistence\ManagerRegistry $managerRegistry,
+        private readonly MessageBusInterface $messageBus,
+        private readonly JobStatusService $jobStatusService,
     ) {
     }
 
@@ -557,6 +563,46 @@ class DataRepairController extends AbstractController
         ));
 
         return $this->redirectToRoute('admin_data_repair_index');
+    }
+
+    /**
+     * Dispatches the fix-all-orphans job asynchronously via Symfony Messenger.
+     *
+     * Returns immediately with a progress-polling page. The actual work runs in
+     * the worker process (messenger:consume async), avoiding PHP-FPM timeout.
+     * CSRF-protected identically to the sync route.
+     */
+    #[Route('/admin/data-repair/fix-all-orphans-async/{tenantId}', name: 'admin_data_repair_fix_all_orphans_async', methods: ['POST'])]
+    public function fixAllOrphansAsync(Request $request, int $tenantId): Response
+    {
+        if (!$this->isCsrfTokenValid('fix_all_orphans', $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $tenant = $this->tenantRepository->find($tenantId);
+        if (!$tenant) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        // Create job status record and dispatch the message
+        $jobId = $this->jobStatusService->create(
+            'admin.data_repair.fix_all_orphans',
+            ['tenantId' => $tenantId, 'tenantName' => $tenant->getName()],
+        );
+
+        $this->messageBus->dispatch(new ExecuteJobMessage(
+            jobClass: FixAllOrphansJob::class,
+            args: ['tenantId' => $tenantId],
+            jobId: $jobId,
+        ));
+
+        return $this->render('admin/data_repair/fix_all_orphans_progress.html.twig', [
+            'jobId' => $jobId,
+            'tenantName' => $tenant->getName(),
+            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
+        ]);
     }
 
     /**
