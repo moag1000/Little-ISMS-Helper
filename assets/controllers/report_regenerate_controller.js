@@ -14,6 +14,7 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static values = {
         url: String,
+        csrfToken: { type: String, default: '' },
         loadingText: { type: String, default: 'Generating...' },
         successText: { type: String, default: 'Report regenerated!' },
         errorText: { type: String, default: 'Error regenerating report' }
@@ -29,12 +30,17 @@ export default class extends Controller {
         button.innerHTML = `<i class="fa-icon fa-icon--ui-refresh spinner-border spinner-border-sm me-1" aria-hidden="true"></i>${this.loadingTextValue}`;
 
         try {
+            const headers = {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            };
+            if (this.csrfTokenValue) {
+                headers['X-CSRF-Token'] = this.csrfTokenValue;
+            }
+
             const response = await fetch(this.urlValue, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                headers: headers
             });
 
             const data = await response.json();

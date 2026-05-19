@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -54,6 +55,7 @@ class PushSubscriptionController extends AbstractController
      */
     #[Route('/subscribe', name: 'api_push_subscribe', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
+    #[IsCsrfTokenValid('push_subscribe', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function subscribe(
         Request $request,
         #[CurrentUser] User $user,
@@ -115,6 +117,7 @@ class PushSubscriptionController extends AbstractController
      */
     #[Route('/unsubscribe', name: 'api_push_unsubscribe', methods: ['POST'])]
     #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
+    #[IsCsrfTokenValid('push_unsubscribe', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function unsubscribe(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -138,6 +141,7 @@ class PushSubscriptionController extends AbstractController
      */
     #[Route('/test', name: 'api_push_test', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
+    #[IsCsrfTokenValid('push_test', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function testPush(
         #[CurrentUser] User $user,
     ): JsonResponse {

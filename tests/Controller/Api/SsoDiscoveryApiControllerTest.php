@@ -40,12 +40,13 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $client->loginUser($this->getOrCreateAdminUser($client));
+        $csrfToken = $this->generateCsrfToken($client, 'sso_validate_discovery');
         $client->request(
             'POST',
             '/de/api/sso/validate-discovery',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X-CSRF-Token' => $csrfToken],
             json_encode(['discoveryUrl' => ''])
         );
         self::assertResponseStatusCodeSame(422);
@@ -58,12 +59,13 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $client->loginUser($this->getOrCreateAdminUser($client));
+        $csrfToken = $this->generateCsrfToken($client, 'sso_validate_discovery');
         $client->request(
             'POST',
             '/de/api/sso/validate-discovery',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X-CSRF-Token' => $csrfToken],
             json_encode(['discoveryUrl' => 'http://insecure.example.com'])
         );
         self::assertResponseStatusCodeSame(422);
@@ -79,17 +81,33 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
         $client->getContainer()->set(OidcDiscoveryService::class, $mockDiscovery);
 
         $client->loginUser($this->getOrCreateAdminUser($client));
+        $csrfToken = $this->generateCsrfToken($client, 'sso_validate_discovery');
         $client->request(
             'POST',
             '/de/api/sso/validate-discovery',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_X-CSRF-Token' => $csrfToken],
             json_encode(['discoveryUrl' => 'https://fail.example.com/.well-known/openid-configuration'])
         );
         $data = json_decode((string) $client->getResponse()->getContent(), true);
         self::assertFalse($data['ok']);
         self::assertStringContainsString('Connection refused', $data['error']);
+    }
+
+    /**
+     * Bootstrap session via GET, set token in the SAME session, save+close.
+     * Returns the token value to include via X-CSRF-Token header.
+     */
+    private function generateCsrfToken(mixed $client, string $tokenId): string
+    {
+        $client->request('GET', '/de/');
+        $session = $client->getRequest()->getSession();
+        $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
+        $tokenValue = $tokenGenerator->generateToken();
+        $session->set('_csrf/' . $tokenId, $tokenValue);
+        $session->save();
+        return $tokenValue;
     }
 
     /**

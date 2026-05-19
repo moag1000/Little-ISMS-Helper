@@ -27,6 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ComplianceController extends AbstractController
@@ -1128,6 +1129,7 @@ class ComplianceController extends AbstractController
         ]);
     }
     #[Route('/compliance/framework/{id}/assess', name: 'app_compliance_assess', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsCsrfTokenValid('assess_framework', tokenKey: '_token')]
     public function assessFramework(int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);

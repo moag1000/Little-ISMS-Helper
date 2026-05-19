@@ -49,6 +49,7 @@
                                         <code>{{ lib.filename }}.yaml</code>
                                     </p>
                                     <form method="post" action="{{ path('admin_library_import', { type: lib.type }) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('library_import') }}">
                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary">
                                             <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
                                             {{ 'library.action.import'|trans({}, 'library') }}

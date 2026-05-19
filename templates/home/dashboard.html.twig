@@ -10,7 +10,8 @@
 {% block body %}
 <div class="container-fluid"
      data-controller="dashboard-customizer"
-     data-dashboard-customizer-api-url-value="{{ path('app_dashboard_layout_get') }}">
+     data-dashboard-customizer-api-url-value="{{ path('app_dashboard_layout_get') }}"
+     data-dashboard-customizer-csrf-token-value="{{ csrf_token('dashboard_layout_save') }}">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
