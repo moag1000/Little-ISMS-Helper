@@ -8,6 +8,14 @@ analytics:
         export_assets_csv: 'Export assets CSV'
         export_compliance_csv: 'Export compliance CSV'
         print_dashboard: 'Print dashboard'
+        view_dashboard: 'View dashboard'
+        back_to_basic: 'Back to basic view'
+        back_to_advanced: 'Back to advanced view'
+        filter: Filter
+        refresh: Refresh
+        export_png: 'Export PNG'
+        reset_filters: 'Reset filters'
+        add_assets: 'Add assets'
     export:
         progress_title: 'Analytics export'
         progress_subtitle: 'The export runs in the background. This page refreshes automatically.'

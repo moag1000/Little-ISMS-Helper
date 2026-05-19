@@ -297,3 +297,7 @@ global:
         title: 'Behörden-Meldung ausstehend (DSGVO Art. 33)'
         body: '%count% schwere Datenpanne(n) ohne Behörden-Export seit > 24h. DSGVO Art. 33 — 72h-Frist.'
         action: 'Behörden-Export öffnen'
+
+# Top-level Flash für DORA-Anwendbarkeits-Gate (genutzt von DoraComplianceController / DoraRoiController)
+dora:
+    not_applicable_to_tenant: 'DORA gilt für diesen Mandanten nicht. Den DORA-Verpflichtungsstatus unter Mandanten-Einstellungen setzen.'

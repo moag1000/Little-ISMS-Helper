@@ -134,6 +134,7 @@ confirm:
 back: Back
 common:
     module_not_active: 'Module "%module%" is not active. Please activate via Setup → Modules.'
+    tenant_not_found: 'No active tenant — please log in to a workspace before using this feature.'
     please_select: 'Please select...'
     next: Next
     yes: 'Yes'
@@ -2145,3 +2146,8 @@ sso:
 # Owner-Picker — Tri-State Owner Slot Component (S4 P-1)
 owner_picker:
     legacy_hint: 'Legacy free-text from historical records. Please select a user or person above; this field is read-only and serves as a migration hint.'
+
+# Flash messages cross-cutting (DeploymentWizard, DataRepair) — keys referenced with `messages` domain
+'setup.preset.applied': 'Industry preset "%preset%" applied. %modules% module(s) activated, %frameworks% framework(s) unlocked.'
+'setup.preset.error.unknown': 'Unknown industry preset.'
+'admin.data_repair.partial_assignment': 'Partial assignment — %assigned% of %total% orphaned records assigned. Review remaining items manually.'
