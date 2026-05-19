@@ -1263,6 +1263,11 @@ data_management:
             page_reload: 'Page will reload in 3 seconds...'
         confirm_delete: 'Do you really want to delete the backup "%filename%"?'
         bootstrap_error: 'Bootstrap could not be loaded after %attempts% attempts'
+        # Async-job progress page (Phase 2 rollout) — shared by create and restore.
+        progress:
+            badge: 'Backup'
+            title: 'Backup job in progress'
+            subtitle: 'Running in the background to avoid PHP-FPM timeouts on large datasets.'
     export:
         includes_all_records: 'Includes all records from your tenant'
         sensitive_data_warning: 'Warning: This export may contain sensitive data. Please store securely.'

@@ -7,8 +7,12 @@ namespace App\Controller;
 use Exception;
 use InvalidArgumentException;
 use DateTimeInterface;
+use App\Job\CreateBackupJob;
+use App\Job\RestoreBackupJob;
+use App\Message\Job\ExecuteJobMessage;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\BackupService;
+use App\Service\Job\JobStatusService;
 use App\Service\RestoreService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +24,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -58,6 +63,8 @@ class AdminBackupController extends AbstractController
         private readonly RestoreService $restoreService,
         private readonly LoggerInterface $logger,
         private readonly TenantContext $tenantContext,
+        private readonly JobStatusService $jobStatusService,
+        private readonly MessageBusInterface $messageBus,
     ) {
     }
 
@@ -85,46 +92,68 @@ class AdminBackupController extends AbstractController
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 
-        // Resolve tenant scope BEFORE the try/catch so cross-tenant attempts
-        // surface as Symfony's standard 403 instead of being absorbed into the
-        // generic "backup failed" 500 path below.
+        // Resolve tenant scope BEFORE dispatch so cross-tenant attempts
+        // surface as Symfony's standard 403 instead of running for several
+        // minutes in a worker only to fail at write-time.
         $tenantScope = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
 
-        try {
-            $includeAuditLog = $request->request->getBoolean('include_audit_log', true);
-            $includeUserSessions = $request->request->getBoolean('include_user_sessions', false);
+        $includeAuditLog = $request->request->getBoolean('include_audit_log', true);
+        $includeUserSessions = $request->request->getBoolean('include_user_sessions', false);
 
-            $this->logger->info('Creating backup', [
-                'user'                 => $this->getUser()?->getUserIdentifier(),
-                'include_audit_log'    => $includeAuditLog,
-                'include_user_sessions' => $includeUserSessions,
-                'tenant_scope'         => $tenantScope?->getId(),
-            ]);
+        $this->logger->info('Dispatching async backup job', [
+            'user'                  => $this->getUser()?->getUserIdentifier(),
+            'include_audit_log'     => $includeAuditLog,
+            'include_user_sessions' => $includeUserSessions,
+            'tenant_scope'          => $tenantScope?->getId(),
+        ]);
 
-            // Create backup
-            $backup = $this->backupService->createBackup($includeAuditLog, $includeUserSessions, true, $tenantScope);
+        $jobId = $this->jobStatusService->create(
+            'admin.backup.create',
+            [
+                'includeAuditLog'     => $includeAuditLog,
+                'includeUserSessions' => $includeUserSessions,
+                'tenantId'            => $tenantScope?->getId(),
+            ],
+        );
 
-            // Save to file
-            $filepath = $this->backupService->saveBackupToFile($backup);
+        $this->messageBus->dispatch(new ExecuteJobMessage(
+            jobClass: CreateBackupJob::class,
+            args: [
+                'includeAuditLog'     => $includeAuditLog,
+                'includeUserSessions' => $includeUserSessions,
+                'tenantId'            => $tenantScope?->getId(),
+            ],
+            jobId: $jobId,
+        ));
 
-            return new JsonResponse([
-                'success'    => true,
-                'message'    => 'Backup erfolgreich erstellt',
-                'filename'   => basename($filepath),
-                'statistics' => $backup['statistics'],
-                'scope_type' => $backup['metadata']['scope_type'],
-            ]);
-        } catch (Exception $e) {
-            $this->logger->error('Backup creation failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+        // Frontend JS reads `async` + `jobId` + `progressUrl` and redirects
+        // to the progress page; legacy fields (`success`, `message`) are kept
+        // for backward-compat with any third-party callers.
+        return new JsonResponse([
+            'success'      => true,
+            'async'        => true,
+            'message'      => 'Backup-Job gestartet — Fortschritt wird auf der Status-Seite angezeigt.',
+            'jobId'        => $jobId,
+            'progressUrl'  => $this->generateUrl('data_backup_progress', ['id' => $jobId]),
+            'statusUrl'    => $this->generateUrl('admin_job_status', ['id' => $jobId]),
+        ]);
+    }
 
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Fehler beim Erstellen des Backups: ' . $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+    /**
+     * Progress page for the async backup-create / restore jobs.
+     *
+     * Renders the shared {@see _async_job_progress.html.twig} partial,
+     * which polls /admin/jobs/{id}/status every 3 seconds and surfaces
+     * progress / success / failure to the operator.
+     */
+    #[Route('/admin/data/backup/progress/{id}', name: 'data_backup_progress', methods: ['GET'])]
+    #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+    public function backupProgress(string $id): Response
+    {
+        return $this->render('data_management/backup_progress.html.twig', [
+            'jobId' => $id,
+            'cancelUrl' => $this->generateUrl('data_backup_index'),
+        ]);
     }
 
     #[Route('/admin/data/backup/download/{filename}', name: 'data_backup_download', methods: ['GET'])]
@@ -318,71 +347,77 @@ class AdminBackupController extends AbstractController
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 
-        // Resolve tenant scope BEFORE the try/catch so a cross-tenant restore
+        // Resolve tenant scope BEFORE dispatch so a cross-tenant restore
         // attempt by ROLE_ADMIN surfaces as Symfony's standard 403 instead of
-        // being swallowed by the generic "restore failed" 500 path.
+        // running for several minutes in a worker only to fail at flush-time.
         $targetTenantScope = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
 
-        try {
-            // Validate filename
-            if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
-                throw new InvalidArgumentException('Invalid backup filename');
-            }
-
-            $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
-            $filepath = $backupDir . '/' . $filename;
-
-            if (!file_exists($filepath)) {
-                throw new InvalidArgumentException('Backup file not found');
-            }
-
-            // Get restore options from request
-            $options = [
-                'missing_field_strategy' => $request->request->get('missing_field_strategy', RestoreService::STRATEGY_USE_DEFAULT),
-                'existing_data_strategy' => $request->request->get('existing_data_strategy', RestoreService::EXISTING_UPDATE),
-                'skip_entities' => $request->request->all('skip_entities') ?? [],
-                'dry_run' => $request->request->getBoolean('dry_run', false),
-                'clear_before_restore' => $request->request->getBoolean('clear_before_restore', false),
-                'best_effort' => $request->request->getBoolean('best_effort', false),
-                'admin_password' => $request->request->get('admin_password', ''),
-            ];
-
-            $this->logger->info('Starting restore', [
-                'user'         => $this->getUser()?->getUserIdentifier(),
-                'filename'     => $filename,
-                'tenant_scope' => $targetTenantScope?->getId(),
-                'options'      => array_diff_key($options, ['admin_password' => '']), // Don't log password
-            ]);
-
-            // Load backup
-            $backup = $this->backupService->loadBackupFromFile($filepath);
-
-            // Perform restore (tenant-scoped if applicable)
-            $result = $this->restoreService->restoreFromBackup($backup, $options, $targetTenantScope);
-
-            return new JsonResponse([
-                'success'      => $result['success'],
-                'message'      => $options['dry_run']
-                    ? 'Testlauf erfolgreich abgeschlossen (keine Daten wurden geändert)'
-                    : 'Wiederherstellung erfolgreich abgeschlossen',
-                'statistics'   => $result['statistics'],
-                'warnings'     => $result['warnings'],
-                'failures'     => $result['failures'] ?? [],
-                'dry_run'      => $result['dry_run'],
-                'tenant_scope' => $targetTenantScope?->getId(),
-            ]);
-        } catch (Exception $e) {
-            $this->logger->error('Restore failed', [
-                'filename' => $filename,
-                'error'    => $e->getMessage(),
-                'trace'    => $e->getTraceAsString(),
-            ]);
-
+        if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Fehler bei der Wiederherstellung: ' . $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'message' => 'Invalid backup filename',
+            ], Response::HTTP_BAD_REQUEST);
         }
+
+        $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
+        $filepath = $backupDir . '/' . $filename;
+
+        if (!file_exists($filepath)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Backup file not found',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $options = [
+            'missing_field_strategy' => $request->request->get('missing_field_strategy', RestoreService::STRATEGY_USE_DEFAULT),
+            'existing_data_strategy' => $request->request->get('existing_data_strategy', RestoreService::EXISTING_UPDATE),
+            'skip_entities' => $request->request->all('skip_entities') ?? [],
+            'dry_run' => $request->request->getBoolean('dry_run', false),
+            'clear_before_restore' => $request->request->getBoolean('clear_before_restore', false),
+            'best_effort' => $request->request->getBoolean('best_effort', false),
+            'admin_password' => $request->request->get('admin_password', ''),
+        ];
+
+        $this->logger->info('Dispatching async restore job', [
+            'user'         => $this->getUser()?->getUserIdentifier(),
+            'filename'     => $filename,
+            'tenant_scope' => $targetTenantScope?->getId(),
+            'options'      => array_diff_key($options, ['admin_password' => '']), // Don't log password
+        ]);
+
+        $jobId = $this->jobStatusService->create(
+            'admin.backup.restore',
+            [
+                'filename'       => $filename,
+                'tenantId'       => $targetTenantScope?->getId(),
+                'dry_run'        => $options['dry_run'],
+                // admin_password intentionally NOT persisted to the status payload
+            ],
+        );
+
+        $this->messageBus->dispatch(new ExecuteJobMessage(
+            jobClass: RestoreBackupJob::class,
+            args: [
+                'filepath'        => $filepath,
+                'options'         => $options,
+                'targetTenantId'  => $targetTenantScope?->getId(),
+            ],
+            jobId: $jobId,
+        ));
+
+        return new JsonResponse([
+            'success'      => true,
+            'async'        => true,
+            'message'      => $options['dry_run']
+                ? 'Test-Restore-Job gestartet — Fortschritt wird auf der Status-Seite angezeigt.'
+                : 'Restore-Job gestartet — Fortschritt wird auf der Status-Seite angezeigt.',
+            'jobId'        => $jobId,
+            'progressUrl'  => $this->generateUrl('data_backup_progress', ['id' => $jobId]),
+            'statusUrl'    => $this->generateUrl('admin_job_status', ['id' => $jobId]),
+            'tenant_scope' => $targetTenantScope?->getId(),
+            'dry_run'      => $options['dry_run'],
+        ]);
     }
 
     #[Route('/admin/data/backup/delete/{filename}', name: 'data_backup_delete', methods: ['POST', 'DELETE'])]

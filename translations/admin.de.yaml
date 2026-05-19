@@ -1279,6 +1279,11 @@ data_management:
             page_reload: 'Die Seite wird in 3 Sekunden neu geladen...'
         confirm_delete: 'Möchten Sie das Backup "%filename%" wirklich löschen?'
         bootstrap_error: 'Bootstrap konnte nicht geladen werden nach %attempts% Versuchen'
+        # Async-Job-Fortschrittsseite (Phase-2-Rollout) — gemeinsam für Create + Restore.
+        progress:
+            badge: 'Backup'
+            title: 'Backup-Job läuft'
+            subtitle: 'Läuft im Hintergrund, um PHP-FPM-Timeouts bei großen Datenmengen zu vermeiden.'
     export:
         includes_all_records: 'Enthält alle Datensätze Ihres Tenants'
         sensitive_data_warning: 'Warnung: Dieser Export kann sensible Daten enthalten. Bitte sicher aufbewahren.'
