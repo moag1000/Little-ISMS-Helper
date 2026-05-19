@@ -17,9 +17,12 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Translation\LocaleSwitcher;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Certification Bundle Controller
@@ -155,6 +158,117 @@ class CertificationBundleController extends AbstractController
         $response->deleteFileAfterSend(true);
 
         $this->addFlash('success', 'certification_bundle.success');
+
+        return $response;
+    }
+
+    /**
+     * Async wrapper around {@see self::export()}: dispatches an
+     * {@see \App\Job\ExportCertificationBundleJob} that builds the bundle
+     * ZIP under var/exports/<jobId>.zip and renders a polling progress
+     * page with a Download CTA once the worker reports succeeded.
+     *
+     * The legacy sync POST route is kept for back-compat (existing
+     * automation + the integrationless certification_bundle/preflight
+     * green-path); new UI traffic should use this dispatch endpoint to
+     * avoid PHP-FPM timeouts on big document trees.
+     *
+     * Phase 3 of the async admin-jobs rollout.
+     */
+    #[Route('/export/dispatch', name: 'export_dispatch', methods: ['POST'])]
+    public function exportDispatch(
+        Request $request,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+    ): Response {
+        $submittedToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('certification_bundle_export_dispatch', $submittedToken)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        if ($tenant === null) {
+            throw $this->createAccessDeniedException('No tenant context available.');
+        }
+
+        $activeFrameworks = $this->frameworkRepository->findActiveFrameworks();
+        $selectedCodes = $this->resolveFrameworkCodes($request, $activeFrameworks);
+
+        $asOfDate = null;
+        $rawAsOf = trim((string) $request->request->get('as_of_date', ''));
+        if ($rawAsOf !== '') {
+            $parsed = \DateTimeImmutable::createFromFormat('Y-m-d', $rawAsOf);
+            if ($parsed instanceof \DateTimeImmutable && $parsed <= new \DateTimeImmutable()) {
+                $asOfDate = $parsed;
+            }
+        }
+
+        $args = [
+            'tenantId' => $tenant->getId(),
+            'frameworks' => $selectedCodes,
+            'asOfDate' => $asOfDate?->format('Y-m-d'),
+            'locale' => $this->resolvePdfLocale($request),
+        ];
+
+        $jobId = $jobStatusService->create('certification_bundle.export', $args);
+
+        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
+            jobClass: \App\Job\ExportCertificationBundleJob::class,
+            args: $args,
+            jobId: $jobId,
+        ));
+
+        return $this->render('certification_bundle/export_progress.html.twig', [
+            'jobId' => $jobId,
+            'cancelUrl' => $this->generateUrl('app_certification_bundle_index'),
+            'downloadUrl' => $this->generateUrl('app_certification_bundle_export_download', ['id' => $jobId]),
+            'isKonzern' => false,
+        ]);
+    }
+
+    /**
+     * Streams the file produced by {@see \App\Job\ExportCertificationBundleJob}
+     * (or its Konzern sibling) and removes it from disk afterwards. The
+     * job ID UUID-v4 is the canonical filename stem.
+     */
+    #[Route('/export/download/{id}', name: 'export_download', methods: ['GET'])]
+    public function exportDownload(
+        string $id,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        KernelInterface $kernel,
+        TranslatorInterface $translator,
+    ): Response {
+        if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {
+            throw $this->createNotFoundException('Invalid export ID.');
+        }
+        if (!$jobStatusService->exists($id)) {
+            throw $this->createNotFoundException(
+                $translator->trans('certification_bundle.export.file_not_found', [], 'certification_bundle'),
+            );
+        }
+        $record = $jobStatusService->read($id);
+        if (($record['status'] ?? '') !== 'succeeded') {
+            throw $this->createNotFoundException(
+                $translator->trans('certification_bundle.export.file_not_found', [], 'certification_bundle'),
+            );
+        }
+
+        $path = $kernel->getProjectDir() . '/var/exports/' . $id . '.zip';
+        if (!is_file($path)) {
+            throw $this->createNotFoundException(
+                $translator->trans('certification_bundle.export.file_not_found', [], 'certification_bundle'),
+            );
+        }
+
+        $filename = sprintf('ISMS_Certification_Bundle_%s.zip', date('Y-m-d'));
+
+        $response = new BinaryFileResponse($path);
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename,
+        );
+        $response->deleteFileAfterSend(true);
 
         return $response;
     }
@@ -313,5 +427,91 @@ class CertificationBundleController extends AbstractController
         $this->addFlash('success', 'certification_bundle.konzern_export.success');
 
         return $response;
+    }
+
+    /**
+     * Async wrapper around {@see self::konzernExport()}: dispatches an
+     * {@see \App\Job\ExportKonzernCertificationBundleJob}.
+     *
+     * Holding-level bundles aggregate per-subsidiary ZIPs and are the
+     * largest export the application produces — most likely to trip
+     * PHP-FPM 30s timeout in the sync path.
+     *
+     * Phase 3 of the async admin-jobs rollout.
+     */
+    #[Route('/konzern-export/dispatch', name: 'konzern_export_dispatch', methods: ['POST'])]
+    #[IsGranted(new \Symfony\Component\ExpressionLanguage\Expression(
+        "is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_KONZERN_AUDITOR')"
+    ))]
+    public function konzernExportDispatch(
+        Request $request,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+    ): Response {
+        $submittedToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('certification_bundle_konzern_export_dispatch', $submittedToken)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        if (!$tenant instanceof Tenant) {
+            throw $this->createAccessDeniedException('No tenant context available.');
+        }
+
+        if ($tenant->getSubsidiaries()->count() === 0) {
+            $this->addFlash('warning', 'certification_bundle.konzern_export.error.not_a_holding');
+            return $this->redirectToRoute('app_certification_bundle_index');
+        }
+
+        $activeFrameworks = $this->frameworkRepository->findActiveFrameworks();
+        $selectedCodes = $this->resolveFrameworkCodes($request, $activeFrameworks);
+
+        $asOfRaw = (string) $request->request->get('as_of_date', '');
+        $asOfDate = null;
+        if ($asOfRaw !== '') {
+            try {
+                $asOfDate = (new DateTimeImmutable($asOfRaw))->format('Y-m-d');
+            } catch (\Throwable) {
+                $asOfDate = null;
+            }
+        }
+
+        $subsidiaryIds = null;
+        $rawSubsidiaryIds = $request->request->all('subsidiary_ids');
+        if (is_array($rawSubsidiaryIds) && $rawSubsidiaryIds !== []) {
+            $subsidiaryIds = [];
+            foreach ($rawSubsidiaryIds as $id) {
+                $intId = (int) $id;
+                if ($intId > 0) {
+                    $subsidiaryIds[] = $intId;
+                }
+            }
+            if ($subsidiaryIds === []) {
+                $subsidiaryIds = null;
+            }
+        }
+
+        $args = [
+            'tenantId' => $tenant->getId(),
+            'frameworks' => $selectedCodes,
+            'asOfDate' => $asOfDate,
+            'subsidiaryIds' => $subsidiaryIds,
+            'locale' => $this->resolvePdfLocale($request),
+        ];
+
+        $jobId = $jobStatusService->create('certification_bundle.konzern_export', $args);
+
+        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
+            jobClass: \App\Job\ExportKonzernCertificationBundleJob::class,
+            args: $args,
+            jobId: $jobId,
+        ));
+
+        return $this->render('certification_bundle/export_progress.html.twig', [
+            'jobId' => $jobId,
+            'cancelUrl' => $this->generateUrl('app_certification_bundle_index'),
+            'downloadUrl' => $this->generateUrl('app_certification_bundle_export_download', ['id' => $jobId]),
+            'isKonzern' => true,
+        ]);
     }
 }

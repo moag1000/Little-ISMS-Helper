@@ -18,6 +18,7 @@ admin.report_style.chart	1
 admin.workflow_slas.basis	1
 admin.workflow_slas.event	1
 alva.mood	1
+analytics.export.badge	1
 asset.classification	6
 asset.field	1
 asset.status	3

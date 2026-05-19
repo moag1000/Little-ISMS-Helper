@@ -222,10 +222,10 @@
                 </p>
 
                 <form method="post"
-                      action="{{ path('app_certification_bundle_konzern_export') }}"
+                      action="{{ path('app_certification_bundle_konzern_export_dispatch') }}"
                       data-turbo="false"
                       id="konzern-export-form">
-                    <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_konzern_export') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_konzern_export_dispatch') }}">
 
                     {# Frameworks (multi). Default: ISO27001 stays primary. #}
                     <div class="mb-3">
@@ -318,12 +318,13 @@
         {% endembed %}
     {% endif %}
 
-    {# Generate Button — data-turbo="false" weil Server BinaryFileResponse (ZIP) returnt.
+    {# Generate Button — POSTs to async dispatch route (Phase 3 async-jobs rollout).
+       data-turbo="false" so the dispatch redirect to the progress page survives.
        Audit-V3 EF-3: hidden #cert-bundle-framework-input mirrors the dropdown above
        (kept in sync via inline onchange) so POST carries the chosen framework code. #}
     <div class="text-center">
-        <form method="post" action="{{ path('app_certification_bundle_export') }}" data-turbo="false" id="cert-bundle-export-form">
-            <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export') }}">
+        <form method="post" action="{{ path('app_certification_bundle_export_dispatch') }}" data-turbo="false" id="cert-bundle-export-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export_dispatch') }}">
             <input type="hidden" name="framework" id="cert-bundle-framework-input" value="{{ selected_framework_code|default('ISO27001') }}">
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                 <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>

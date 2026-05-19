@@ -22,7 +22,8 @@
     { label: 'supplier.action.add_new'|trans({}, 'suppliers'), variant: 'primary', icon: 'plus', href: path('app_supplier_new') }
 ] %}
 {% if doraActive ?? false %}
-    {% set supplierActions = [{ label: 'dora.register_export.button'|trans({}, 'dora'), variant: 'ghost', icon: 'download', href: path('app_dora_register_export_csv') }] | merge(supplierActions) %}
+    {# Async DORA ROI export — opens dispatch modal (Phase 3 async-jobs rollout) #}
+    {% set supplierActions = [{ label: 'dora.register_export.button'|trans({}, 'dora'), variant: 'ghost', icon: 'download', href: '#', attrs: { 'data-bs-toggle': 'modal', 'data-bs-target': '#doraRegisterExportModal' } }] | merge(supplierActions) %}
 {% endif %}
 {% if is_granted('ROLE_MANAGER') %}
     {% set supplierActions = [{ label: 'supplier.action.lksg_export'|trans({}, 'suppliers'), variant: 'ghost', icon: 'download', href: path('app_supplier_lksg_annual_report_csv') }] | merge(supplierActions) %}
@@ -33,6 +34,34 @@
     title: 'supplier.page.title'|trans({}, 'suppliers'),
     actions: supplierActions
 }) }}
+
+{% if doraActive ?? false %}
+{# Async DORA ROI export dispatch modal #}
+<div class="modal fade" id="doraRegisterExportModal" tabindex="-1" aria-labelledby="doraRegisterExportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title h5" id="doraRegisterExportModalLabel">{{ 'dora.register_export.modal.title'|trans({}, 'dora') }}</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">{{ 'dora.register_export.modal.body'|trans({}, 'dora') }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <form method="post" action="{{ path('app_dora_register_export_csv_dispatch') }}" data-turbo="false" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('dora_register_export_dispatch') }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                        <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                        {{ 'dora.register_export.modal.start'|trans({}, 'dora') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% set _global_hints = alva_hints('supplier_index') %}
 {% if _global_hints|length > 0 %}
     {% for _h in _global_hints %}

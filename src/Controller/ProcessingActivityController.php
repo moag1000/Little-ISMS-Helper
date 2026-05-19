@@ -18,9 +18,14 @@ use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -293,6 +298,84 @@ class ProcessingActivityController extends AbstractController
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
             'Content-Length' => (string) strlen($pdf),
         ]);
+    }
+
+    /**
+     * Async wrapper around {@see self::exportCsv()}: dispatches an
+     * {@see \App\Job\ExportProcessingActivityVvtJob} that writes the VVT
+     * CSV to var/exports/<jobId>.csv in the background and renders a
+     * polling progress page.
+     *
+     * Phase 3 of the async admin-jobs rollout.
+     */
+    #[Route('/processing-activity/export/csv/dispatch', name: 'app_processing_activity_export_csv_dispatch', methods: ['POST'])]
+    #[IsCsrfTokenValid('processing_activity_export_csv_dispatch')]
+    public function exportCsvDispatch(
+        \App\Service\Job\JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+    ): Response {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
+        $jobId = $jobStatusService->create('processing_activity.vvt_export', []);
+
+        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
+            jobClass: \App\Job\ExportProcessingActivityVvtJob::class,
+            args: [],
+            jobId: $jobId,
+        ));
+
+        return $this->render('processing_activity/export_progress.html.twig', [
+            'jobId' => $jobId,
+            'cancelUrl' => $this->generateUrl('app_processing_activity_index'),
+            'downloadUrl' => $this->generateUrl('app_processing_activity_export_csv_download', ['id' => $jobId]),
+        ]);
+    }
+
+    /**
+     * Streams the file produced by {@see \App\Job\ExportProcessingActivityVvtJob}
+     * and removes it from disk afterwards.
+     */
+    #[Route('/processing-activity/export/csv/download/{id}', name: 'app_processing_activity_export_csv_download', methods: ['GET'])]
+    public function exportCsvDownload(
+        string $id,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        KernelInterface $kernel,
+    ): Response {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
+        if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {
+            throw $this->createNotFoundException('Invalid export ID.');
+        }
+        if (!$jobStatusService->exists($id)) {
+            throw $this->createNotFoundException(
+                $this->translator->trans('processing_activity.export.file_not_found', [], 'privacy'),
+            );
+        }
+        $record = $jobStatusService->read($id);
+        if (($record['status'] ?? '') !== 'succeeded') {
+            throw $this->createNotFoundException(
+                $this->translator->trans('processing_activity.export.file_not_found', [], 'privacy'),
+            );
+        }
+
+        $path = $kernel->getProjectDir() . '/var/exports/' . $id . '.csv';
+        if (!is_file($path)) {
+            throw $this->createNotFoundException(
+                $this->translator->trans('processing_activity.export.file_not_found', [], 'privacy'),
+            );
+        }
+
+        $filename = sprintf('VVT-Export-%s.csv', date('Y-m-d'));
+
+        $response = new BinaryFileResponse($path);
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename,
+        );
+        $response->deleteFileAfterSend(true);
+
+        return $response;
     }
 
     /**

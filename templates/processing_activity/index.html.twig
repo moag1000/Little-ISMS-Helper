@@ -15,7 +15,8 @@
         ]
     } %}
 
-    {# TODO: export actions (PDF/CSV) use plain href links; data-turbo-disabled is not available in fa-cyber-btn #}
+    {# TODO: export actions (PDF/CSV) use plain href links; data-turbo-disabled is not available in fa-cyber-btn.
+       CSV export is now async (Phase 3 async-jobs) — opens dispatch modal that POSTs to job dispatch route. #}
     {{ _fa_page_header.render({
         badge: { icon: 'nav-file-earmark-text', label: 'processing_activity.breadcrumb.vvt'|trans({}, 'privacy') },
         title: 'processing_activity.title'|trans({}, 'privacy'),
@@ -23,10 +24,35 @@
         actions: [
             { label: 'processing_activity.button.dashboard'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-dashboard', href: path('app_processing_activity_dashboard') },
             { label: 'processing_activity.button.export_pdf'|trans({}, 'privacy'), variant: 'ghost', icon: 'nav-file-pdf', href: path('app_processing_activity_export_pdf') },
-            { label: 'processing_activity.button.export_csv'|trans({}, 'privacy'), variant: 'ghost', icon: 'filetype-csv', href: path('app_processing_activity_export_csv') },
+            { label: 'processing_activity.button.export_csv'|trans({}, 'privacy'), variant: 'ghost', icon: 'filetype-csv', href: '#', attrs: { 'data-bs-toggle': 'modal', 'data-bs-target': '#vvtExportModal' } },
             { label: 'processing_activity.button.new'|trans({}, 'privacy'), variant: 'primary', icon: 'plus', href: path('app_processing_activity_new') }
         ]
     }) }}
+
+    {# Async VVT-Export dispatch modal — POSTs to /processing-activity/export/csv/dispatch #}
+    <div class="modal fade" id="vvtExportModal" tabindex="-1" aria-labelledby="vvtExportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="vvtExportModalLabel">{{ 'processing_activity.export.modal.title'|trans({}, 'privacy') }}</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">{{ 'processing_activity.export.modal.body'|trans({}, 'privacy') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                    <form method="post" action="{{ path('app_processing_activity_export_csv_dispatch') }}" data-turbo="false" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('processing_activity_export_csv_dispatch') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                            {{ 'processing_activity.export.modal.start'|trans({}, 'privacy') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {# F25: BfDI-Export button group — only visible for ROLE_DPO and when privacy module is active #}
     {% if is_module_active('privacy') and is_granted('ROLE_DPO') %}

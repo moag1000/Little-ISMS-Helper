@@ -17,9 +17,35 @@
     badge: { icon: 'nav-people', label: 'nav.users'|trans({}, 'nav') },
     title: 'user.page.title'|trans({}, 'user'),
     actions: [
+        { label: 'user.action.export_csv'|trans({}, 'user'), variant: 'ghost', icon: 'nav-download', href: '#', attrs: { 'data-bs-toggle': 'modal', 'data-bs-target': '#userExportModal' } },
         { label: 'user.action.new_user'|trans({}, 'user'), variant: 'primary', icon: 'ui-person', href: path('user_management_new') }
     ]
 }) }}
+
+{# Async-export dispatch modal — minimal confirm dialog with embedded CSRF #}
+<div class="modal fade" id="userExportModal" tabindex="-1" aria-labelledby="userExportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title h5" id="userExportModalLabel">{{ 'user.export.modal.title'|trans({}, 'user') }}</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">{{ 'user.export.modal.body'|trans({}, 'user') }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <form method="post" action="{{ path('user_management_export_dispatch') }}" data-turbo="false" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('user_management_export_dispatch') }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                        <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                        {{ 'user.export.modal.start'|trans({}, 'user') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <main class="fa-aurora-surface">
 <div class="container-fluid">

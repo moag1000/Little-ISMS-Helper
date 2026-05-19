@@ -1332,6 +1332,8 @@ policy_wizard:
     csrf:
         invalid: 'Invalid CSRF token. Please reload the page.'
 
+    breadcrumb: 'Policy Wizard'
+
     # W7-A — PDF + ZIP export (TenantBranding letterhead, audit pack).
     export:
         pdf:
@@ -1341,6 +1343,11 @@ policy_wizard:
             title: 'Audit pack (ZIP)'
             download_button: 'Download audit pack'
             confirm: 'Generate the audit-pack ZIP including all selected standards?'
+        badge: 'Audit-pack export'
+        progress_title: 'Building audit pack'
+        progress_subtitle: 'The ZIP is being generated in the background. This page refreshes automatically.'
+        download_button: 'Download audit-pack ZIP'
+        file_not_found: 'Audit pack not found (likely already downloaded or expired).'
         cover:
             title: 'Title'
             standard: 'Standard'

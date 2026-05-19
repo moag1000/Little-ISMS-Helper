@@ -8,6 +8,15 @@ analytics:
         export_assets_csv: 'Export assets CSV'
         export_compliance_csv: 'Export compliance CSV'
         print_dashboard: 'Print dashboard'
+    export:
+        progress_title: 'Analytics export'
+        progress_subtitle: 'The export runs in the background. This page refreshes automatically.'
+        download_button: 'Download CSV'
+        file_not_found: 'Export file not found (likely already downloaded or expired).'
+        badge:
+            risks: 'Risks export'
+            assets: 'Assets export'
+            compliance: 'Compliance export'
         filter: Filter
         refresh: Refresh
         export_png: 'Export as PNG'

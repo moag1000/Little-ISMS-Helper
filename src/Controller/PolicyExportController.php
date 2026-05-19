@@ -14,11 +14,16 @@ use App\Service\PolicyWizard\Export\PolicyPdfExporter;
 use App\Service\PolicyWizard\Export\PolicyZipExporter;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Policy-Wizard W7-A — PDF + ZIP export endpoints.
@@ -152,5 +157,119 @@ final class PolicyExportController extends AbstractController
             'Content-Length'      => (string) strlen($zip),
             'X-Robots-Tag'        => 'noindex',
         ]);
+    }
+
+    /**
+     * Async wrapper around {@see self::exportTenantZip()}: dispatches an
+     * {@see \App\Job\ExportPolicyTenantZipJob} that builds the audit-pack
+     * ZIP under var/exports/<jobId>.zip and renders a polling progress
+     * page with a Download CTA once the worker reports succeeded.
+     *
+     * The legacy sync POST route is kept for back-compat; new UI traffic
+     * should use this dispatch endpoint to avoid PHP-FPM timeouts on big
+     * policy + evidence document trees.
+     *
+     * Phase 3 of the async admin-jobs rollout.
+     */
+    #[Route('/tenant/zip/dispatch', name: 'tenant_zip_dispatch', methods: ['POST'])]
+    #[IsGranted(PolicyWizardVoter::EXPORT)]
+    #[IsCsrfTokenValid('policy_export_tenant_zip_dispatch', tokenKey: '_token')]
+    public function exportTenantZipDispatch(
+        Request $request,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+    ): Response {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            throw $this->createAccessDeniedException('No tenant in scope.');
+        }
+
+        $standardsRaw = $request->request->all('standards');
+        $standards = [];
+        foreach ($standardsRaw as $candidate) {
+            if (is_string($candidate) && $candidate !== '') {
+                $standards[] = $candidate;
+            }
+        }
+        if ($standards === []) {
+            $standards = ExportOptions::DEFAULT_STANDARDS;
+        }
+
+        $args = [
+            'tenantId' => $tenant->getId(),
+            'standards' => $standards,
+            'includeArchived' => $request->request->getBoolean('include_archived', false),
+            'includeEvidence' => $request->request->getBoolean('include_evidence', true),
+            'exportedBy' => $this->getUser() instanceof User ? $this->getUser()->getEmail() : 'unknown',
+        ];
+
+        $jobId = $jobStatusService->create('policy_wizard.tenant_zip', $args);
+
+        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
+            jobClass: \App\Job\ExportPolicyTenantZipJob::class,
+            args: $args,
+            jobId: $jobId,
+        ));
+
+        return $this->render('policy_wizard/export_progress.html.twig', [
+            'jobId' => $jobId,
+            'cancelUrl' => $this->generateUrl('app_dashboard'),
+            'downloadUrl' => $this->generateUrl('app_policy_export_tenant_zip_download', ['id' => $jobId]),
+        ]);
+    }
+
+    /**
+     * Streams the file produced by {@see \App\Job\ExportPolicyTenantZipJob}
+     * and removes it from disk afterwards. The job ID UUID-v4 is the
+     * canonical filename stem.
+     */
+    #[Route('/tenant/zip/download/{id}', name: 'tenant_zip_download', methods: ['GET'])]
+    #[IsGranted(PolicyWizardVoter::EXPORT)]
+    public function exportTenantZipDownload(
+        string $id,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        KernelInterface $kernel,
+        TranslatorInterface $translator,
+    ): Response {
+        if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {
+            throw $this->createNotFoundException('Invalid export ID.');
+        }
+        if (!$jobStatusService->exists($id)) {
+            throw $this->createNotFoundException(
+                $translator->trans('policy_wizard.export.file_not_found', [], 'policy_wizard'),
+            );
+        }
+        $record = $jobStatusService->read($id);
+        if (($record['status'] ?? '') !== 'succeeded') {
+            throw $this->createNotFoundException(
+                $translator->trans('policy_wizard.export.file_not_found', [], 'policy_wizard'),
+            );
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $path = $kernel->getProjectDir() . '/var/exports/' . $id . '.zip';
+        if (!is_file($path)) {
+            throw $this->createNotFoundException(
+                $translator->trans('policy_wizard.export.file_not_found', [], 'policy_wizard'),
+            );
+        }
+
+        $filename = sprintf(
+            '%s-%s.zip',
+            preg_replace('/[^A-Za-z0-9_.-]+/', '-', (string) ($tenant?->getCode() ?? $tenant?->getName() ?? 'tenant')),
+            (new \DateTimeImmutable())->format('Y-m-d'),
+        );
+
+        $response = new BinaryFileResponse($path);
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('X-Robots-Tag', 'noindex');
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename,
+        );
+        $response->deleteFileAfterSend(true);
+
+        return $response;
     }
 }
