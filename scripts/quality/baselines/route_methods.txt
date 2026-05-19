@@ -36,7 +36,7 @@ src/Controller/Admin/TenantEmailBrandingController.php:22
 src/Controller/Admin/WorkflowOverlayController.php:40
 src/Controller/AlvaHintInboxController.php:23
 src/Controller/Analytics/FteTrackingDashboardController.php:38
-src/Controller/AnalyticsController.php:34
+src/Controller/AnalyticsController.php:40
 src/Controller/Api/PushSubscriptionController.php:23
 src/Controller/Api/SsoDiscoveryApiController.php:22
 src/Controller/Audit/AuditWorkbookController.php:32
@@ -48,7 +48,7 @@ src/Controller/Authority/DoraRoiController.php:38
 src/Controller/Authority/Nis2RegistrationController.php:39
 src/Controller/Authority/VvtExportController.php:32
 src/Controller/Bsi2004ExerciseLogController.php:27
-src/Controller/CertificationBundleController.php:31
+src/Controller/CertificationBundleController.php:34
 src/Controller/ComplianceInheritanceController.php:25
 src/Controller/ComplianceWizardController.php:43
 src/Controller/ConsentController.php:26
@@ -69,7 +69,7 @@ src/Controller/KonzernRollupController.php:38
 src/Controller/ManagementReportController.php:36
 src/Controller/Notification/InAppNotificationCenterController.php:34
 src/Controller/PolicyAcknowledgementController.php:35
-src/Controller/PolicyExportController.php:39
+src/Controller/PolicyExportController.php:44
 src/Controller/PolicyWizardController.php:47
 src/Controller/PortfolioReportController.php:35
 src/Controller/PrototypeProtectionAssessmentController.php:28
