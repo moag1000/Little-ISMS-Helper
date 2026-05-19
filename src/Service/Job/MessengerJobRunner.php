@@ -27,7 +27,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
  * @see \App\Service\Job\JobDispatcher — facade that chooses between the two
  *      runners based on `app.async_job.runner` parameter.
  */
-final class MessengerJobRunner
+// NOT `final` — JobDispatcherTest mocks this class.
+class MessengerJobRunner
 {
     public function __construct(
         private readonly MessageBusInterface $messageBus,

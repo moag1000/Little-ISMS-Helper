@@ -42,7 +42,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  * @see \App\Service\Job\JobDispatcher — facade that chooses between the two
  *      runners based on `app.async_job.runner` parameter.
  */
-final class InRequestJobRunner
+// NOT `final` — JobDispatcherTest mocks this class.
+class InRequestJobRunner
 {
     public function __construct(
         private readonly JobStatusService $jobStatusService,
