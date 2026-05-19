@@ -354,6 +354,11 @@
         <main id="main-content" class="app-main" role="main">
             <div class="container" data-controller="turbo">
                 <div class="content">
+                    {# Worker-down banner (admin-only, RED state only) #}
+                    {% if not is_setup_route %}
+                        {% include '_components/_worker_status_banner.html.twig' %}
+                    {% endif %}
+
                     {# Flash Messages — Aurora-styled alerts with Alva-avatar #}
                     {% import '_components/_alert.html.twig' as faAlert %}
                     {% set flashToneMap = {

@@ -12,6 +12,8 @@ admin.data_repair.json_schema.category	1
 admin.data_repair.operational_health	1
 admin.data_repair.risk_health	1
 admin.data_retention.entity	1
+admin.queue.job_status	1
+admin.queue.status	1
 admin.report_style.chart	1
 admin.workflow_slas.basis	1
 admin.workflow_slas.event	1
@@ -21,12 +23,11 @@ asset.field	1
 asset.status	3
 asset.type	2
 audit.scope_type	3
-audit.status	3
+audit.status	4
 audit_finding.severity	3
 audit_finding.status	4
 audit_finding.type	2
 audit_freeze.purpose	3
-audits.status	1
 authority.bundesland	1
 bc_exercises.exercise_type	2
 bc_exercises.status	3

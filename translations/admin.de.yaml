@@ -1544,4 +1544,66 @@ industry_preset:
             four_eyes:
                 title: 'Vier-Augen-Prinzip'
                 body: 'Wenn aktiviert, muss eine zweite Person die Transition bestätigen.'
+    queue:
+        title: 'Queue-Status'
+        badge: 'Async-Worker'
+        subtitle: 'Heartbeat, Queue-Tiefe, zuletzt verarbeitete Jobs und manueller Notfall-Trigger für Shared-Hosting-Deployments.'
+        status:
+            green:
+                message: 'Worker aktiv — letzter Heartbeat vor %age% s, Warteschlange %depth% Nachrichten.'
+            yellow:
+                message: 'Worker reagiert verzögert (Heartbeat vor %age% s). Cron könnte langsam takten — drainiert sich meist im nächsten Lauf.'
+            red:
+                message: 'Worker offline — kein Heartbeat seit %age% s. %depth% Nachrichten stauen sich. Cron-Eintrag prüfen oder „Jetzt verarbeiten" klicken.'
+            unknown:
+                message: 'Noch kein Heartbeat aufgezeichnet. Sobald der Worker das erste Mal läuft, wird die Ampel aktiv.'
+        kpi:
+            heartbeat:
+                label: 'Heartbeat'
+                hint: 'Sekunden seit letztem Worker-Tick'
+                never: 'nie'
+            queue_depth:
+                label: 'Queue-Tiefe'
+                hint: 'Wartende Async-Nachrichten'
+            pending:
+                label: 'Pending Jobs'
+                hint: 'Job-Dateien im Status „pending"'
+            failed:
+                label: 'Fehlgeschlagen (24 h)'
+                hint: 'Messenger-Fehler-Queue letzte 24 h'
+        process_now:
+            title: 'Queue jetzt verarbeiten'
+            description: 'Sicheres Notfall-Drain: bis zu 5 Nachrichten in maximal 25 Sekunden — bleibt unter dem PHP-FPM-Timeout. Mehrfach klicken bei voller Queue.'
+            button: 'Jetzt verarbeiten'
+            fineprint: 'CSRF-geschützt, Audit-Log-pflichtig.'
+            success: 'Queue-Drain erfolgreich abgeschlossen (%duration% s).'
+            partial: 'Worker-Lauf endete mit Exit-Code %exit% nach %duration% s. Logs prüfen.'
+            error: 'Queue-Drain konnte nicht starten: %error%'
+        cron:
+            title: 'Cron-Eintrag für dauerhaften Worker'
+            description: 'Im Hosting-Panel (cPanel, Plesk, ISPConfig) als 1-Minuten-Cron einrichten. Details in der Hosting-Worker-Anleitung.'
+            see_guide: 'Vollständige Anleitung: docs/user-guide/HOSTING_WORKER.md'
+        recent:
+            title: 'Zuletzt verarbeitete Jobs'
+            col:
+                job: 'Job'
+                status: 'Status'
+                progress: 'Fortschritt'
+                updated: 'Aktualisiert'
+            empty:
+                title: 'Noch keine Jobs verarbeitet'
+                description: 'Sobald der Worker (Cron oder Manuell) Async-Jobs ausführt, erscheinen sie hier.'
+        job_status:
+            pending: 'Pending'
+            running: 'Läuft'
+            succeeded: 'Erfolgreich'
+            failed: 'Fehlgeschlagen'
+            unknown: 'Unbekannt'
+        banner:
+            title: 'Async-Worker offline.'
+            message: 'Kein Heartbeat seit %age% s, %depth% Nachrichten stauen sich. Admin-Jobs (Backup, Daten-Reparatur, Exports) bleiben hängen, bis der Worker wieder läuft.'
+            link: 'Queue-Status öffnen →'
+        hub:
+            label: 'Queue-Status'
+            desc: 'Worker-Health, Heartbeat, manueller Drain'
 
