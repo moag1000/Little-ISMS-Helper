@@ -86,7 +86,8 @@ class WorkflowStepApiController extends AbstractController
             return $this->json(['success' => false, 'error' => 'Empty or invalid request body'], Response::HTTP_BAD_REQUEST);
         }
 
-        // @phpstan-ignore app.deprecatedWorkflowEntityInstantiation (legacy workflow-builder UI, see class-level @deprecated)
+        // NOTE: NoNewWorkflowOrWorkflowStepRule exempts App\Controller\Api\ namespace —
+        // legacy workflow-builder UI, see class-level @deprecated.
         $workflowStep = new WorkflowStep();
         $workflowStep->setWorkflow($workflow);
 
@@ -305,7 +306,8 @@ class WorkflowStepApiController extends AbstractController
             return $this->json(['success' => false, 'error' => 'Workflow not found'], Response::HTTP_NOT_FOUND);
         }
 
-        // @phpstan-ignore app.deprecatedWorkflowEntityInstantiation (legacy workflow-builder UI, see class-level @deprecated)
+        // NOTE: NoNewWorkflowOrWorkflowStepRule exempts App\Controller\Api\ namespace —
+        // legacy workflow-builder UI, see class-level @deprecated.
         $newStep = new WorkflowStep();
         $newStep->setWorkflow($workflow);
         $newStep->setName($workflowStep->getName() . ' (Copy)');
@@ -481,7 +483,8 @@ class WorkflowStepApiController extends AbstractController
             // Apply template steps (starting from 1)
             $startOrder = $workflow->getSteps()->count() + 1;
             foreach ($template['steps'] as $index => $stepData) {
-                // @phpstan-ignore app.deprecatedWorkflowEntityInstantiation (legacy workflow-builder UI, see class-level @deprecated)
+                // NOTE: NoNewWorkflowOrWorkflowStepRule exempts App\Controller\Api\ namespace —
+                // legacy workflow-builder UI, see class-level @deprecated.
                 $workflowStep = new WorkflowStep();
                 $workflowStep->setWorkflow($workflow);
                 $workflowStep->setStepOrder($startOrder + $index);
