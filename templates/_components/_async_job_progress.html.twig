@@ -1,0 +1,90 @@
+{#
+ # Async Admin Job Progress Partial
+ #
+ # Renders a polling progress card for an async admin job dispatched via
+ # Symfony Messenger + ExecuteJobMessage. Reuses the existing
+ # import_progress Stimulus controller (extended with job-status semantics).
+ #
+ # Usage:
+ #   {% include '_components/_async_job_progress.html.twig' with {
+ #       job_id:    jobId,
+ #       job_name:  'admin.data_repair.fix_all_orphans',
+ #       job_label: 'Fix All Orphans',
+ #       cancel_url: path('admin_data_repair_index'),
+ #   } %}
+ #
+ # Variables:
+ #   job_id    (string)  UUID returned by JobStatusService::create()
+ #   job_name  (string)  Internal slug, shown in small text
+ #   job_label (string)  Human-readable title shown as card heading
+ #   cancel_url (string) Optional URL for a "Back" link once done
+ #}
+{% trans_default_domain 'admin' %}
+
+<div class="card border-0 shadow-sm"
+     data-controller="async-job"
+     data-async-job-status-url-value="{{ path('admin_job_status', {id: job_id}) }}"
+     data-async-job-poll-interval-value="3000"
+     data-async-job-job-id-value="{{ job_id }}"
+     data-async-job-cancel-url-value="{{ cancel_url ?? '' }}">
+
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
+        <strong>{{ job_label ?? 'Job' }}</strong>
+        <small class="text-muted ms-auto font-monospace" data-async-job-target="jobName">{{ job_name }}</small>
+    </div>
+
+    <div class="card-body">
+        {# Status badge row #}
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <span class="fa-entity-badge fa-entity-badge--audit" data-async-job-target="statusBadge">
+                pending
+            </span>
+            <span class="text-muted small" data-async-job-target="statusMessage">
+                {{ 'admin.job.queued'|trans({}, 'admin') }}
+            </span>
+        </div>
+
+        {# Progress bar (visible when progress_total > 0) #}
+        <div class="mb-3" data-async-job-target="progressWrapper" style="display: none;">
+            <div class="d-flex justify-content-between small mb-1">
+                <span data-async-job-target="progressLabel">{{ 'admin.job.progress'|trans({}, 'admin') }}</span>
+                <span data-async-job-target="progressNumbers">0 / 0</span>
+            </div>
+            <div class="progress" style="height: 8px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     role="progressbar"
+                     style="width: 0%"
+                     data-async-job-target="progressBar"
+                     aria-valuenow="0"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                </div>
+            </div>
+        </div>
+
+        {# Error trace (visible on failure) #}
+        <div class="alert alert-danger d-none" data-async-job-target="errorBox">
+            <strong>{{ 'admin.job.error'|trans({}, 'admin') }}</strong>
+            <pre class="mt-2 mb-0 small" data-async-job-target="errorTrace" style="white-space: pre-wrap; max-height: 200px; overflow-y: auto;"></pre>
+        </div>
+
+        {# Success box #}
+        <div class="alert alert-success d-none" data-async-job-target="successBox">
+            <i class="fa-icon fa-icon--status-verified" aria-hidden="true"></i>
+            <span data-async-job-target="successMessage">{{ 'admin.job.completed'|trans({}, 'admin') }}</span>
+        </div>
+    </div>
+
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <small class="text-muted">
+            {{ 'admin.job.id_label'|trans({}, 'admin') }}:
+            <code class="font-monospace">{{ job_id }}</code>
+        </small>
+        {% if cancel_url is defined and cancel_url %}
+            <a href="{{ cancel_url }}" class="btn btn-sm btn-outline-secondary" data-async-job-target="backLink" style="display: none;">
+                {{ 'common.back'|trans({}, 'messages') }}
+            </a>
+        {% endif %}
+    </div>
+</div>
