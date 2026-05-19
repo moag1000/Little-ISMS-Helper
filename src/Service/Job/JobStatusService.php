@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service\Job;
 
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * Generic file-based status store for async admin jobs.
@@ -31,7 +30,12 @@ final class JobStatusService
      */
     public function create(string $name, array $payload = []): string
     {
-        $id = Uuid::v4()->toRfc4122();
+        // UUID v4 — no external package needed
+        $b = random_bytes(16);
+        $b[6] = chr((ord($b[6]) & 0x0F) | 0x40);
+        $b[8] = chr((ord($b[8]) & 0x3F) | 0x80);
+        $h = bin2hex($b);
+        $id = sprintf('%s-%s-%s-%s-%s', substr($h, 0, 8), substr($h, 8, 4), substr($h, 12, 4), substr($h, 16, 4), substr($h, 20));
         $this->write($id, [
             'id' => $id,
             'name' => $name,
