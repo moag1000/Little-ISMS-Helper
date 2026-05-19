@@ -79,6 +79,18 @@ dora:
         button: "Export Register of Information (ITS-conformant)"
         download_name: "dora-register-of-information"
         aria: "Download Register of Information as ITS-conformant CSV file"
+        badge: "DORA ROI export"
+        progress_title: "Building Register of Information"
+        progress_subtitle: "The export runs in the background. This page refreshes automatically."
+        download_button: "Download CSV"
+        file_not_found: "Export file not found (likely already downloaded or expired)."
+        modal:
+            title: "Export DORA Register of Information"
+            body: "Generates an ITS-conformant CSV (EBA/EIOPA/ESMA Final Draft, Art. 28 DORA) for the current tenant. The export runs in the background."
+            start: "Start export"
+
+    breadcrumb:
+        dora: "DORA Compliance"
 
     # MINOR-6: additional supplier fields for ITS ROI conformance
     supplier:

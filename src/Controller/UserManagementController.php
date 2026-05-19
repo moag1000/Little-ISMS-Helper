@@ -23,11 +23,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -358,6 +363,89 @@ class UserManagementController extends AbstractController
 
         return $streamedResponse;
     }
+
+    /**
+     * Async wrapper around {@see self::export()}: dispatches an
+     * {@see \App\Job\ExportUsersJob} that writes the user CSV to
+     * var/exports/<jobId>.csv in the background and renders a polling
+     * progress page with a Download CTA once the worker reports succeeded.
+     *
+     * The legacy sync GET route is kept for back-compat (bookmarks, external
+     * automation, tests); new UI traffic should use this dispatch endpoint
+     * to avoid PHP-FPM timeouts on large user lists (10k+).
+     *
+     * Phase 3 of the async admin-jobs rollout.
+     */
+    #[Route('/admin/users/export/dispatch', name: 'user_management_export_dispatch', methods: ['POST'])]
+    #[IsGranted(UserVoter::VIEW_ALL)]
+    #[IsCsrfTokenValid('user_management_export_dispatch')]
+    public function exportDispatch(
+        \App\Service\Job\JobStatusService $jobStatusService,
+        MessageBusInterface $messageBus,
+    ): Response {
+        $jobId = $jobStatusService->create('user_management.export', []);
+
+        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
+            jobClass: \App\Job\ExportUsersJob::class,
+            args: [],
+            jobId: $jobId,
+        ));
+
+        return $this->render('user_management/export_progress.html.twig', [
+            'jobId' => $jobId,
+            'cancelUrl' => $this->generateUrl('user_management_index'),
+            'downloadUrl' => $this->generateUrl('user_management_export_download', ['id' => $jobId]),
+        ]);
+    }
+
+    /**
+     * Streams the file produced by {@see \App\Job\ExportUsersJob} and removes
+     * it from disk afterwards. The job ID UUID-v4 is the canonical filename
+     * stem so we can derive the path without any user-controlled string.
+     */
+    #[Route('/admin/users/export/download/{id}', name: 'user_management_export_download', methods: ['GET'])]
+    #[IsGranted(UserVoter::VIEW_ALL)]
+    public function exportDownload(
+        string $id,
+        \App\Service\Job\JobStatusService $jobStatusService,
+        KernelInterface $kernel,
+        TranslatorInterface $translator,
+    ): Response {
+        if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $id)) {
+            throw $this->createNotFoundException('Invalid export ID.');
+        }
+        if (!$jobStatusService->exists($id)) {
+            throw $this->createNotFoundException(
+                $translator->trans('user.export.file_not_found', [], 'user'),
+            );
+        }
+        $record = $jobStatusService->read($id);
+        if (($record['status'] ?? '') !== 'succeeded') {
+            throw $this->createNotFoundException(
+                $translator->trans('user.export.file_not_found', [], 'user'),
+            );
+        }
+
+        $path = $kernel->getProjectDir() . '/var/exports/' . $id . '.csv';
+        if (!is_file($path)) {
+            throw $this->createNotFoundException(
+                $translator->trans('user.export.file_not_found', [], 'user'),
+            );
+        }
+
+        $filename = sprintf('users_export_%s.csv', date('Y-m-d_H-i-s'));
+
+        $response = new BinaryFileResponse($path);
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filename,
+        );
+        $response->deleteFileAfterSend(true);
+
+        return $response;
+    }
+
     #[Route('/admin/users/import', name: 'user_management_import', methods: ['GET', 'POST'])]
     #[IsGranted(UserVoter::CREATE)]
     public function import(

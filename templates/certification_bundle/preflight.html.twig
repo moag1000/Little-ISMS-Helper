@@ -163,9 +163,9 @@
                 {{ 'cert_bundle.preflight.action.fix'|trans }}
             </a>
         {% else %}
-            {# Green path: export directly #}
-            <form method="post" action="{{ path('app_certification_bundle_export') }}" data-turbo="false">
-                <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export') }}">
+            {# Green path: dispatch async bundle export (Phase 3 async-jobs rollout) #}
+            <form method="post" action="{{ path('app_certification_bundle_export_dispatch') }}" data-turbo="false">
+                <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export_dispatch') }}">
                 <input type="hidden" name="framework" value="{{ selected_framework_code|default('ISO27001') }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                     <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
@@ -182,8 +182,8 @@
                     class: 'mb-0',
                     body: 'cert_bundle.preflight.override_warning'|trans
                 }) }}
-                <form method="post" action="{{ path('app_certification_bundle_export') }}" data-turbo="false" class="mt-2">
-                    <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export') }}">
+                <form method="post" action="{{ path('app_certification_bundle_export_dispatch') }}" data-turbo="false" class="mt-2">
+                    <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export_dispatch') }}">
                     <input type="hidden" name="framework" value="{{ selected_framework_code|default('ISO27001') }}">
                     <input type="hidden" name="bypass_preflight" value="1">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">

@@ -24,7 +24,7 @@
                 <option value="24">{{ 'analytics.filter.period.last_24_months'|trans({}, 'analytics') }}</option>
             </select>
 
-            {# Export Dropdown #}
+            {# Export Dropdown — each item is a POST form that dispatches an async ExportAnalyticsJob #}
             <div class="dropdown">
                 <button class="fa-cyber-btn fa-cyber-btn--ghost dropdown-toggle"
                         type="button"
@@ -33,25 +33,28 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item"
-                           href="{{ path('app_analytics_export', {type: 'risks'}) }}"
-                           data-turbo="false">
-                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'analytics.action.export_risks_csv'|trans({}, 'analytics') }}
-                        </a>
+                        <form method="post" action="{{ path('app_analytics_export_dispatch', {type: 'risks'}) }}" data-turbo="false" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('analytics_export_dispatch') }}">
+                            <button type="submit" class="dropdown-item">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'analytics.action.export_risks_csv'|trans({}, 'analytics') }}
+                            </button>
+                        </form>
                     </li>
                     <li>
-                        <a class="dropdown-item"
-                           href="{{ path('app_analytics_export', {type: 'assets'}) }}"
-                           data-turbo="false">
-                            <i class="fa-icon fa-icon--asset-server" aria-hidden="true"></i> {{ 'analytics.action.export_assets_csv'|trans({}, 'analytics') }}
-                        </a>
+                        <form method="post" action="{{ path('app_analytics_export_dispatch', {type: 'assets'}) }}" data-turbo="false" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('analytics_export_dispatch') }}">
+                            <button type="submit" class="dropdown-item">
+                                <i class="fa-icon fa-icon--asset-server" aria-hidden="true"></i> {{ 'analytics.action.export_assets_csv'|trans({}, 'analytics') }}
+                            </button>
+                        </form>
                     </li>
                     <li>
-                        <a class="dropdown-item"
-                           href="{{ path('app_analytics_export', {type: 'compliance'}) }}"
-                           data-turbo="false">
-                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'analytics.action.export_compliance_csv'|trans({}, 'analytics') }}
-                        </a>
+                        <form method="post" action="{{ path('app_analytics_export_dispatch', {type: 'compliance'}) }}" data-turbo="false" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('analytics_export_dispatch') }}">
+                            <button type="submit" class="dropdown-item">
+                                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'analytics.action.export_compliance_csv'|trans({}, 'analytics') }}
+                            </button>
+                        </form>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>

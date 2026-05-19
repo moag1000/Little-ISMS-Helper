@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dora' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'dora.register_export.progress_title'|trans({}, 'dora') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'dora.breadcrumb.dora'|trans({}, 'dora'), url: path('app_dora_compliance_dashboard') },
+            { label: 'dora.register_export.progress_title'|trans({}, 'dora') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-download', label: 'dora.register_export.badge'|trans({}, 'dora') },
+        title: 'dora.register_export.progress_title'|trans({}, 'dora'),
+        subtitle: 'dora.register_export.progress_subtitle'|trans({}, 'dora'),
+    }) }}
+
+    {# Turbo cache disabled — live status changes every 3 s #}
+    <meta name="turbo-cache-control" content="no-cache">
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-8 col-xl-6">
+            {% include '_components/_async_job_progress.html.twig' with {
+                job_id:    jobId,
+                job_name:  'dora.register_export',
+                job_label: 'dora.register_export.progress_title'|trans({}, 'dora'),
+                cancel_url: cancelUrl,
+                download_url: downloadUrl,
+                download_label: 'dora.register_export.download_button'|trans({}, 'dora'),
+            } %}
+
+            <div class="mt-3 text-center text-muted small">
+                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                {{ 'admin.job.worker_hint'|trans({}, 'admin') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

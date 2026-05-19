@@ -1,6 +1,6 @@
 # check_route_trailing_slash.py baseline
 src/Controller/VulnerabilityController.php:38:/vulnerability/
-src/Controller/ProcessingActivityController.php:45:/processing-activity/
+src/Controller/ProcessingActivityController.php:50:/processing-activity/
 src/Controller/BusinessContinuityPlanController.php:37:/business-continuity-plan/
 src/Controller/ComplianceRequirementController.php:44:/compliance/requirement/
 src/Controller/PersonController.php:31:/person/
