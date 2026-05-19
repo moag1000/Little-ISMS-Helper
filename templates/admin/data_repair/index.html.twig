@@ -61,6 +61,52 @@
         {{ _fa_alert.render({ variant: 'danger', dismissible: true, body: message }) }}
     {% endfor %}
 
+    {# Async integrity-check banner (Phase 2.5 — async-jobs rollout).
+     # The full scan is also computed inline on this page hit (legacy),
+     # but on large tenant trees that can blow past PHP-FPM's 30 s limit.
+     # The CTA dispatches a Messenger worker that re-runs the scan in
+     # the background and caches a scalar summary to var/data_integrity/last.json.
+     # The "Last run" footer compares the cached snapshot with the live
+     # inline scan so admins can verify drift / spot stale caches. #}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}
+        {% block alert_body %}
+        <div class="d-flex align-items-start gap-3 flex-wrap">
+            <div class="flex-grow-1">
+                <div class="fa-alert__title">{{ 'admin.data_repair.integrity_check.title'|trans({}, 'admin') }}</div>
+                <p class="mb-2">{{ 'admin.data_repair.integrity_check.description'|trans({}, 'admin') }}</p>
+                {% if integrityResultCache is not null %}
+                    <p class="small text-muted mb-0">
+                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.integrity_check.last_run'|trans({
+                            '%when%': integrityResultCache.completed_at|date('Y-m-d H:i'),
+                            '%duration%': (integrityResultCache.duration_ms / 1000)|round(1),
+                        }, 'admin') }}
+                        {% set _c = integrityResultCache.counts %}
+                        — {{ 'admin.data_repair.integrity_check.last_counts'|trans({
+                            '%orphans%': _c.orphans_total|default(0),
+                            '%duplicates%': _c.duplicates_groups|default(0),
+                            '%broken%': _c.broken_references|default(0),
+                            '%health%': _c.health_score|default(0),
+                        }, 'admin') }}
+                    </p>
+                {% else %}
+                    <p class="small text-muted mb-0">
+                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.integrity_check.never_run'|trans({}, 'admin') }}
+                    </p>
+                {% endif %}
+            </div>
+            <form method="post" action="{{ path('admin_data_repair_run_integrity_check') }}" class="d-inline-block">
+                <input type="hidden" name="_token" value="{{ csrf_token('run_integrity_check') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.integrity_check.run_now'|trans({}, 'admin') }}
+                </button>
+            </form>
+        </div>
+        {% endblock %}
+    {% endembed %}
+
     {# Schema-Maintenance — 3-Card-Grid (Migrations | Drift | Aktionen).
      # Buttons werden IMMER gerendert; bei nichts-zu-tun disabled + Status-Pill
      # zeigt grün/gelb/rot den aktuellen Zustand. So sieht der Admin auch im
