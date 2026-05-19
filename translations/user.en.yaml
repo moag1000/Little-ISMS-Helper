@@ -7,6 +7,17 @@ user:
         edit: Edit
         delete_user: 'Delete User'
         deactivate: 'Deactivate'
+        export_csv: 'Export CSV'
+    export:
+        badge: 'User Export'
+        progress_title: 'Export user list'
+        progress_subtitle: 'The export runs in the background. This page refreshes automatically.'
+        download_button: 'Download user list'
+        file_not_found: 'Export file not found (likely already downloaded or expired).'
+        modal:
+            title: 'Export user list'
+            body: 'Generates a CSV file with all users. The export runs in the background; once complete a download link will appear.'
+            start: 'Start export'
     stats:
         total: Total
         users: Users

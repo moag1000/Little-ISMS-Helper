@@ -570,10 +570,10 @@ translations/threat.en.yaml:160:type
 translations/threat.en.yaml:173:severity
 translations/threat.en.yaml:180:status_type
 translations/threat.en.yaml:188:threat_intelligence
-translations/user.de.yaml:257:user_management
-translations/user.de.yaml:261:profile
-translations/user.en.yaml:257:user_management
-translations/user.en.yaml:261:profile
+translations/user.de.yaml:268:user_management
+translations/user.de.yaml:272:profile
+translations/user.en.yaml:268:user_management
+translations/user.en.yaml:272:profile
 translations/validators.de.yaml:110:Error
 translations/validators.de.yaml:224:setup
 translations/validators.de.yaml:244:document

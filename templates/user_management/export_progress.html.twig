@@ -1,0 +1,44 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'user' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'user.export.progress_title'|trans({}, 'user') }}{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'nav.users'|trans({}, 'nav'), url: path('user_management_index') },
+            { label: 'user.export.progress_title'|trans({}, 'user') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-download', label: 'user.export.badge'|trans({}, 'user') },
+        title: 'user.export.progress_title'|trans({}, 'user'),
+        subtitle: 'user.export.progress_subtitle'|trans({}, 'user'),
+    }) }}
+
+    {# Turbo cache disabled — live status changes every 3 s #}
+    <meta name="turbo-cache-control" content="no-cache">
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-8 col-xl-6">
+            {% include '_components/_async_job_progress.html.twig' with {
+                job_id:    jobId,
+                job_name:  'user_management.export',
+                job_label: 'user.export.progress_title'|trans({}, 'user'),
+                cancel_url: cancelUrl,
+                download_url: downloadUrl,
+                download_label: 'user.export.download_button'|trans({}, 'user'),
+            } %}
+
+            <div class="mt-3 text-center text-muted small">
+                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                {{ 'admin.job.worker_hint'|trans({}, 'admin') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

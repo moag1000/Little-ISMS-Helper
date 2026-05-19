@@ -7,6 +7,17 @@ user:
         edit: Bearbeiten
         delete_user: 'Benutzer löschen'
         deactivate: 'Deaktivieren'
+        export_csv: 'CSV-Export'
+    export:
+        badge: 'Benutzer-Export'
+        progress_title: 'Benutzerliste exportieren'
+        progress_subtitle: 'Der Export läuft im Hintergrund. Diese Seite aktualisiert sich automatisch.'
+        download_button: 'Benutzerliste herunterladen'
+        file_not_found: 'Export-Datei nicht gefunden (möglicherweise bereits heruntergeladen oder abgelaufen).'
+        modal:
+            title: 'Benutzerliste exportieren'
+            body: 'Erstellt eine CSV-Datei mit allen Benutzern. Der Export läuft im Hintergrund, danach steht ein Download-Link zur Verfügung.'
+            start: 'Export starten'
     stats:
         total: Gesamt
         users: Benutzer
