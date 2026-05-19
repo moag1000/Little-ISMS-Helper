@@ -45,5 +45,8 @@ framework:
             App\Message\Schedule\GenerateComplianceReportMessage: scheduler
             App\Message\Schedule\ExecuteScheduledTaskMessage: scheduler
 
+            # Async admin jobs (file-backed status, Doctrine transport, no auto-retry)
+            App\Message\Job\ExecuteJobMessage: async
+
             # Route your messages to the transports
             # 'App\Message\YourMessage': async

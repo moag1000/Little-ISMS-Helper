@@ -9,6 +9,14 @@ use Symfony\Component\HttpKernel\KernelInterface;
 /**
  * File-based status store for setup-wizard async jobs.
  *
+ * @deprecated since v3.8 — use App\Service\Job\JobStatusService for new code.
+ *   This class keeps its own file-based storage (var/cache/setup_jobs/<key>.json)
+ *   to avoid breaking the existing setup-wizard callers that use simple string
+ *   keys ('restore_upload', 'industry_preset') instead of UUID job IDs.
+ *
+ *   Migration path: when the setup wizard is refactored to dispatch
+ *   ExecuteJobMessage, switch callers to JobStatusService::create() + UUIDs.
+ *
  * Replaces session-based status because Symfony's Session::save() is a no-op
  * after the first session_write_close() (triggered by the first save() before
  * fastcgi_finish_request). The terminal status (success/failed) written by

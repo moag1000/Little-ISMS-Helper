@@ -144,6 +144,10 @@ services:
         # P-14 (S5) — SystemTemplate providers auto-register via interface tag.
         App\Template\TemplateProviderInterface:
             tags: ['system_template.provider']
+        # Async admin jobs — all AsyncJobInterface implementations auto-register
+        # so ExecuteJobHandler's #[TaggedLocator('app.async_job')] can resolve them.
+        App\Job\AsyncJobInterface:
+            tags: ['app.async_job']
 
     # F40 — Audit-Workbook orchestrator: receives all tagged generators.
     App\Service\Audit\AuditWorkbookGenerator:
