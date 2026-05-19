@@ -187,30 +187,31 @@
         </div>
         <div class="fa-section__body">
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+            {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
             <div class="row g-3">
                 <div class="col-md-4">
-                    <section class="fa-section {{ 'text-center ' ~ (summary.orphaned_count > 0 ? 'bg-warning' : 'bg-success') ~ ' bg-opacity-10' }}">
-        <div class="fa-section__body">
-            <h3 class="text-{% if summary.orphaned_count > 0 %}warning{% else %}success{% endif %}">{{ summary.orphaned_count }}</h3>
-                            <p class="mb-0"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Orphaned Entities</p>
-        </div>
-    </section>
+                    {{ _fa_feature_card.render({
+                        variant: summary.orphaned_count > 0 ? 'warning' : 'success',
+                        icon: 'status-warning',
+                        label: 'admin.data_repair.orphaned_entities'|trans({}, 'admin'),
+                        value: summary.orphaned_count,
+                    }) }}
                 </div>
                 <div class="col-md-4">
-                    <section class="fa-section {{ 'text-center ' ~ (summary.broken_references_count > 0 ? 'bg-danger' : 'bg-success') ~ ' bg-opacity-10' }}">
-        <div class="fa-section__body">
-            <h3 class="text-{% if summary.broken_references_count > 0 %}danger{% else %}success{% endif %}">{{ summary.broken_references_count }}</h3>
-                            <p class="mb-0"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> Broken References</p>
-        </div>
-    </section>
+                    {{ _fa_feature_card.render({
+                        variant: summary.broken_references_count > 0 ? 'danger' : 'success',
+                        icon: 'ui-link',
+                        label: 'admin.data_repair.broken_references'|trans({}, 'admin'),
+                        value: summary.broken_references_count,
+                    }) }}
                 </div>
                 <div class="col-md-4">
-                    <section class="fa-section {{ 'text-center ' ~ (summary.duplicates_count > 0 ? 'bg-warning' : 'bg-success') ~ ' bg-opacity-10' }}">
-        <div class="fa-section__body">
-            <h3 class="text-{% if summary.duplicates_count > 0 %}warning{% else %}success{% endif %}">{{ summary.duplicates_count }}</h3>
-                            <p class="mb-0"><i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> Duplicates</p>
-        </div>
-    </section>
+                    {{ _fa_feature_card.render({
+                        variant: summary.duplicates_count > 0 ? 'warning' : 'success',
+                        icon: 'ui-copy',
+                        label: 'admin.data_repair.duplicates.title'|trans({}, 'admin'),
+                        value: summary.duplicates_count,
+                    }) }}
                 </div>
             </div>
 
