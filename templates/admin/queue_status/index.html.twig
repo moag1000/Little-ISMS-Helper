@@ -1,0 +1,189 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'admin.queue.title'|trans({}, 'admin') }} - {{ parent() }}{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-inbox', label: 'admin.queue.badge'|trans({}, 'admin') },
+        title: 'admin.queue.title'|trans({}, 'admin'),
+        subtitle: 'admin.queue.subtitle'|trans({}, 'admin'),
+    }) }}
+
+    {# Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_hub_index') },
+            { label: 'admin.queue.title'|trans({}, 'admin') }
+        ]
+    } %}
+
+    {# Status banner (RED/YELLOW state explanation) #}
+    {% set st = snapshot.status %}
+    {% set bannerVariant = st == 'red' ? 'danger' : (st == 'yellow' ? 'warning' : (st == 'green' ? 'success' : 'info')) %}
+    {{ _fa_alert.render({
+        variant: bannerVariant,
+        dismissible: false,
+        body: ('admin.queue.status.' ~ st ~ '.message')|trans({
+            '%age%': snapshot.heartbeat_age_seconds|default(0),
+            '%depth%': snapshot.queue_depth,
+        }, 'admin'),
+    }) }}
+
+    {# KPI tiles — Aurora feature-cards #}
+    {% set heartbeatVariant = st == 'green' ? 'success' : (st == 'yellow' ? 'warning' : (st == 'red' ? 'danger' : 'primary')) %}
+    {% set queueVariant = snapshot.queue_depth == 0 ? 'success' : (snapshot.queue_depth < 20 ? 'primary' : (snapshot.queue_depth < 50 ? 'warning' : 'danger')) %}
+    {% set pendingVariant = snapshot.pending_jobs == 0 ? 'success' : (snapshot.pending_jobs < 10 ? 'warning' : 'danger') %}
+    {% set failedVariant = snapshot.failed_jobs_24h == 0 ? 'success' : (snapshot.failed_jobs_24h < 5 ? 'warning' : 'danger') %}
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-lg-3">
+            {{ _fa_feature_card.render({
+                variant: heartbeatVariant,
+                icon: 'nav-heart-pulse',
+                label: 'admin.queue.kpi.heartbeat.label'|trans({}, 'admin'),
+                value: snapshot.heartbeat_age_seconds is null
+                    ? ('admin.queue.kpi.heartbeat.never'|trans({}, 'admin'))
+                    : snapshot.heartbeat_age_seconds,
+                unit: snapshot.heartbeat_age_seconds is null ? '' : 's',
+                hint: 'admin.queue.kpi.heartbeat.hint'|trans({}, 'admin'),
+            }) }}
+        </div>
+        <div class="col-md-6 col-lg-3">
+            {{ _fa_feature_card.render({
+                variant: queueVariant,
+                icon: 'nav-inbox',
+                label: 'admin.queue.kpi.queue_depth.label'|trans({}, 'admin'),
+                value: snapshot.queue_depth,
+                hint: 'admin.queue.kpi.queue_depth.hint'|trans({}, 'admin'),
+            }) }}
+        </div>
+        <div class="col-md-6 col-lg-3">
+            {{ _fa_feature_card.render({
+                variant: pendingVariant,
+                icon: 'status-pending',
+                label: 'admin.queue.kpi.pending.label'|trans({}, 'admin'),
+                value: snapshot.pending_jobs,
+                hint: 'admin.queue.kpi.pending.hint'|trans({}, 'admin'),
+            }) }}
+        </div>
+        <div class="col-md-6 col-lg-3">
+            {{ _fa_feature_card.render({
+                variant: failedVariant,
+                icon: 'status-error',
+                label: 'admin.queue.kpi.failed.label'|trans({}, 'admin'),
+                value: snapshot.failed_jobs_24h,
+                hint: 'admin.queue.kpi.failed.hint'|trans({}, 'admin'),
+            }) }}
+        </div>
+    </div>
+
+    {# Manual trigger + cron-recipe section #}
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="fa-icon fa-icon--play" aria-hidden="true"></i>
+                {{ 'admin.queue.process_now.title'|trans({}, 'admin') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            <p>{{ 'admin.queue.process_now.description'|trans({}, 'admin') }}</p>
+
+            <form method="post"
+                  action="{{ path('admin_queue_process_now') }}"
+                  class="d-flex flex-wrap gap-3 align-items-center">
+                <input type="hidden" name="_token" value="{{ csrf_token('admin_queue_process_now') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--play" aria-hidden="true"></i>
+                    {{ 'admin.queue.process_now.button'|trans({}, 'admin') }}
+                </button>
+                <span class="small text-muted">
+                    {{ 'admin.queue.process_now.fineprint'|trans({}, 'admin') }}
+                </span>
+            </form>
+
+            <div class="mt-4">
+                <h3 class="h6 mb-2">{{ 'admin.queue.cron.title'|trans({}, 'admin') }}</h3>
+                <p class="small text-muted">{{ 'admin.queue.cron.description'|trans({}, 'admin') }}</p>
+                <pre class="p-3 rounded" style="background: var(--surface-2); border: 1px solid var(--border); overflow-x: auto;"><code>{{ cron_command }}</code></pre>
+                <p class="small text-muted mb-0">
+                    {{ 'admin.queue.cron.see_guide'|trans({}, 'admin') }}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    {# Recent jobs #}
+    <section class="fa-section">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="fa-icon fa-icon--nav-clock-history" aria-hidden="true"></i>
+                {{ 'admin.queue.recent.title'|trans({}, 'admin') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            {% if recent_jobs is empty %}
+                {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+                {{ _fa_empty_state.render({
+                    mood: 'curious',
+                    title: 'admin.queue.recent.empty.title'|trans({}, 'admin'),
+                    description: 'admin.queue.recent.empty.description'|trans({}, 'admin'),
+                }) }}
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>{{ 'admin.queue.recent.col.job'|trans({}, 'admin') }}</th>
+                                <th>{{ 'admin.queue.recent.col.status'|trans({}, 'admin') }}</th>
+                                <th>{{ 'admin.queue.recent.col.progress'|trans({}, 'admin') }}</th>
+                                <th>{{ 'admin.queue.recent.col.updated'|trans({}, 'admin') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in recent_jobs %}
+                                {% set jobStatus = job.status|default('unknown') %}
+                                {% set statusTone = jobStatus == 'succeeded' ? 'success'
+                                    : (jobStatus == 'failed' ? 'danger'
+                                    : (jobStatus == 'running' ? 'primary'
+                                    : (jobStatus == 'pending' ? 'warning' : 'muted'))) %}
+                                <tr>
+                                    <td>
+                                        <code class="small">{{ job.name|default('—') }}</code>
+                                        {% if job.message %}
+                                            <div class="small text-muted">{{ job.message }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge text-bg-{{ statusTone }}">
+                                            {{ ('admin.queue.job_status.' ~ jobStatus)|trans({}, 'admin') }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if job.progress_total|default(0) > 0 %}
+                                            {{ job.progress_current|default(0) }} / {{ job.progress_total }}
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if job.updated_at %}
+                                            <time datetime="{{ job.updated_at|date('c') }}" title="{{ job.updated_at|date('Y-m-d H:i:s') }}">
+                                                {{ job.updated_at|date('Y-m-d H:i:s') }}
+                                            </time>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

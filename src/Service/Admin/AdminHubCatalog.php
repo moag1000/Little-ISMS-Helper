@@ -506,6 +506,15 @@ final class AdminHubCatalog
                         'route' => 'monitoring_health',
                         'requiredAttribute' => 'ADMIN_GLOBAL_OP',
                     ],
+                    // scope: own-tenant async-worker health + manual queue drain
+                    [
+                        'key' => 'queue_status',
+                        'icon' => 'fa-icon--nav-inbox',
+                        'label' => 'admin.queue.hub.label',
+                        'description' => 'admin.queue.hub.desc',
+                        'route' => 'admin_queue_status',
+                        'requiredAttribute' => 'ADMIN_OWN_TENANT',
+                    ],
                     // scope: own-tenant module activation
                     [
                         'key' => 'modules',

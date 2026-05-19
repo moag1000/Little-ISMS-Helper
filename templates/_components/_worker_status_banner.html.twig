@@ -1,0 +1,29 @@
+{# Worker-down warning banner.
+ #
+ # Inserted into base.html.twig above the flash-message stack. Only renders
+ # for ROLE_ADMIN on non-auth/non-setup routes when the WorkerHealthService
+ # snapshot returns status='red'. Visibility decision is centralised in
+ # WorkerStatusExtension::shouldShowBanner() to keep the template lean.
+ #
+ # Use case: shared-hosting cron stopped working — admin needs an
+ # always-on cue, not just the /admin/queue-status page they may never
+ # think to check.
+ #}
+{% if worker_banner_visible() %}
+    {% set _wbStatus = worker_status() %}
+    <div class="container mt-3" role="alert" aria-live="polite">
+        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+        {{ _fa_alert.render({
+            variant: 'danger',
+            dismissible: false,
+            body:
+                '<strong>' ~ ('admin.queue.banner.title'|trans({}, 'admin')) ~ '</strong> '
+                ~ ('admin.queue.banner.message'|trans({
+                    '%age%': _wbStatus.heartbeat_age_seconds|default(0),
+                    '%depth%': _wbStatus.queue_depth,
+                }, 'admin'))
+                ~ ' <a href="' ~ path('admin_queue_status') ~ '" class="alert-link">'
+                ~ ('admin.queue.banner.link'|trans({}, 'admin')) ~ '</a>'
+        }) }}
+    </div>
+{% endif %}
