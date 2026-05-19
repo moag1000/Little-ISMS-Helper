@@ -388,7 +388,7 @@ class RiskController extends AbstractController
     public function exportDispatch(
         Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
-        \Symfony\Component\Messenger\MessageBusInterface $messageBus,
+        \App\Service\Job\JobDispatcher $jobDispatcher,
     ): Response {
         if (!$this->isCsrfTokenValid('risk_export_dispatch', $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
@@ -409,17 +409,22 @@ class RiskController extends AbstractController
 
         $jobId = $jobStatusService->create('risk.export', $args);
 
-        $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
-            jobClass: \App\Job\ExportRisksJob::class,
-            args: $args,
-            jobId: $jobId,
-        ));
-
-        return $this->render('risk/export_progress.html.twig', [
+        // Render progress page BEFORE dispatch — JobDispatcher flushes it then
+        // runs the export in this same PHP-FPM worker (or hands it to a
+        // Messenger daemon when app.async_job.runner=messenger).
+        $response = $this->render('risk/export_progress.html.twig', [
             'jobId' => $jobId,
             'cancelUrl' => $this->generateUrl('app_risk_index'),
             'downloadUrl' => $this->generateUrl('app_risk_export_download', ['id' => $jobId]),
         ]);
+
+        return $jobDispatcher->dispatch(
+            \App\Job\ExportRisksJob::class,
+            $args,
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     /**

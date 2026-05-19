@@ -17,6 +17,7 @@ use App\Form\ComplianceFrameworkSelectionType;
 use App\Form\DatabaseConfigurationType;
 use App\Form\EmailConfigurationType;
 use App\Form\OrganisationInfoType;
+use App\Controller\Trait\DetachableResponseTrait;
 use App\Repository\AssetRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
@@ -51,6 +52,8 @@ use Psr\Log\LoggerInterface;
 
 class DeploymentWizardController extends AbstractController
 {
+    use DetachableResponseTrait;
+
     public function __construct(
         private readonly SystemRequirementsChecker $systemRequirementsChecker,
         private readonly ModuleConfigurationService $moduleConfigurationService,
@@ -2659,31 +2662,6 @@ class DeploymentWizardController extends AbstractController
             PDO::ATTR_TIMEOUT => 5,
         ]);
     }
-    /**
-     * Sends the immediate JSON response and detaches the FCGI worker so the
-     * client sees status=started while the long-running setup-wizard work
-     * continues in the background.
-     *
-     * Flushes every active output buffer before fastcgi_finish_request() —
-     * with PHP's default output_buffering=4096 the JSON body would otherwise
-     * sit in the buffer and the FCGI stream would stay open until script
-     * exit, defeating the async-job pattern (browser hangs on POST until
-     * the reverse-proxy gateway-timeout fires).
-     */
-    private function detachAndContinue(\Symfony\Component\HttpFoundation\Response $response): void
-    {
-        $response->send();
-        while (ob_get_level() > 0) {
-            @ob_end_flush();
-        }
-        flush();
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        } elseif (function_exists('litespeed_finish_request')) {
-            litespeed_finish_request();
-        }
-    }
-
     /**
      * Get Docker MySQL password from auto-generated credentials file
      */

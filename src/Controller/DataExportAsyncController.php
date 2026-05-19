@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Job\ExportDataJob;
-use App\Message\Job\ExecuteJobMessage;
+use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -45,7 +44,7 @@ final class DataExportAsyncController extends AbstractController
 {
     public function __construct(
         private readonly JobStatusService $jobStatusService,
-        private readonly MessageBusInterface $messageBus,
+        private readonly JobDispatcher $jobDispatcher,
         private readonly TranslatorInterface $translator,
         private readonly KernelInterface $kernel,
     ) {
@@ -91,18 +90,23 @@ final class DataExportAsyncController extends AbstractController
             ['entities' => $selectedEntities, 'format' => $format],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: ExportDataJob::class,
-            args: ['entities' => $selectedEntities, 'format' => $format],
-            jobId: $jobId,
-        ));
-
-        return $this->render('data_management/export_progress.html.twig', [
+        // Render the progress page BEFORE dispatch so the rendered HTML is
+        // in the Response object — InRequestJobRunner flushes it to the
+        // browser, then runs the export in this same PHP-FPM worker.
+        $response = $this->render('data_management/export_progress.html.twig', [
             'jobId' => $jobId,
             'format' => $format,
             'cancelUrl' => $this->generateUrl('data_export_index'),
             'downloadUrl' => $this->generateUrl('data_export_download', ['id' => $jobId]),
         ]);
+
+        return $this->jobDispatcher->dispatch(
+            ExportDataJob::class,
+            ['entities' => $selectedEntities, 'format' => $format],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     /**

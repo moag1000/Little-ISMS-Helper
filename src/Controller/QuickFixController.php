@@ -11,9 +11,9 @@ use App\Job\QuickFixRepairAllJob;
 use App\Job\QuickFixRepairDuplicatesJob;
 use App\Job\QuickFixRepairOrphansJob;
 use App\Job\QuickFixRepairTenantMismatchesJob;
-use App\Message\Job\ExecuteJobMessage;
 use App\Service\AuditLogger;
 use App\Service\DataIntegrityService;
+use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\QuickFixGuard;
 use App\Service\SchemaMaintenanceService;
@@ -21,7 +21,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -204,7 +203,7 @@ class QuickFixController extends AbstractController
         Request $request,
         QuickFixGuard $guard,
         JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
@@ -220,8 +219,9 @@ class QuickFixController extends AbstractController
         $request->getSession()->remove('quick_fix.last_apply_failure');
 
         return $this->dispatchJobProgress(
+            $request,
             $jobStatusService,
-            $messageBus,
+            $jobDispatcher,
             $translator,
             QuickFixApplyMigrationsJob::class,
             'quick_fix.apply',
@@ -237,7 +237,7 @@ class QuickFixController extends AbstractController
         QuickFixGuard $guard,
         SchemaMaintenanceService $maintenance,
         JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
@@ -265,8 +265,9 @@ class QuickFixController extends AbstractController
         }
 
         return $this->dispatchJobProgress(
+            $request,
             $jobStatusService,
-            $messageBus,
+            $jobDispatcher,
             $translator,
             QuickFixReconcileSchemaJob::class,
             'quick_fix.reconcile',
@@ -446,7 +447,7 @@ class QuickFixController extends AbstractController
         Request $request,
         QuickFixGuard $guard,
         JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
@@ -456,8 +457,9 @@ class QuickFixController extends AbstractController
         }
 
         return $this->dispatchJobProgress(
+            $request,
             $jobStatusService,
-            $messageBus,
+            $jobDispatcher,
             $translator,
             QuickFixRepairOrphansJob::class,
             'quick_fix.repair_orphans',
@@ -476,7 +478,7 @@ class QuickFixController extends AbstractController
         Request $request,
         QuickFixGuard $guard,
         JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
@@ -486,8 +488,9 @@ class QuickFixController extends AbstractController
         }
 
         return $this->dispatchJobProgress(
+            $request,
             $jobStatusService,
-            $messageBus,
+            $jobDispatcher,
             $translator,
             QuickFixRepairTenantMismatchesJob::class,
             'quick_fix.repair_tenant_mismatches',
@@ -507,7 +510,7 @@ class QuickFixController extends AbstractController
         Request $request,
         QuickFixGuard $guard,
         JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
         string $entityType,
     ): Response {
@@ -524,8 +527,9 @@ class QuickFixController extends AbstractController
         }
 
         return $this->dispatchJobProgress(
+            $request,
             $jobStatusService,
-            $messageBus,
+            $jobDispatcher,
             $translator,
             QuickFixRepairDuplicatesJob::class,
             'quick_fix.repair_duplicates',
@@ -545,7 +549,7 @@ class QuickFixController extends AbstractController
         Request $request,
         QuickFixGuard $guard,
         JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
@@ -555,8 +559,9 @@ class QuickFixController extends AbstractController
         }
 
         return $this->dispatchJobProgress(
+            $request,
             $jobStatusService,
-            $messageBus,
+            $jobDispatcher,
             $translator,
             QuickFixRepairAllJob::class,
             'quick_fix.repair_all',
@@ -586,7 +591,7 @@ class QuickFixController extends AbstractController
         Request $request,
         QuickFixGuard $guard,
         JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
     ): Response {
         if (!$guard->mayAccess($request)) {
@@ -602,8 +607,9 @@ class QuickFixController extends AbstractController
         }
 
         return $this->dispatchJobProgress(
+            $request,
             $jobStatusService,
-            $messageBus,
+            $jobDispatcher,
             $translator,
             QuickFixForceSchemaUpdateJob::class,
             'quick_fix.force_schema_update',
@@ -616,9 +622,13 @@ class QuickFixController extends AbstractController
     /**
      * Shared dispatch helper for every QuickFix async action.
      *
-     * Creates a job-status record, dispatches the Messenger message, then
-     * renders the standalone progress template that polls the public
-     * /quick-fix/jobs/{id}/status endpoint.
+     * Creates a job-status record, renders the standalone progress template
+     * (polls the public /quick-fix/jobs/{id}/status endpoint), then hands
+     * the job to {@see JobDispatcher} — which by default runs it in this
+     * same PHP-FPM worker after the response has been flushed
+     * (fastcgi_finish_request pattern) so shared-hosting operators do not
+     * need a Messenger worker daemon. Falls back to Messenger when
+     * `app.async_job.runner=messenger`.
      *
      * @param class-string $jobClass    FQCN of the {@see \App\Job\AsyncJobInterface}
      * @param string       $statusName  Internal slug stored on the status record
@@ -627,8 +637,9 @@ class QuickFixController extends AbstractController
      * @param array<string, mixed> $args Args forwarded to the job context
      */
     private function dispatchJobProgress(
+        Request $request,
         JobStatusService $jobStatusService,
-        MessageBusInterface $messageBus,
+        JobDispatcher $jobDispatcher,
         TranslatorInterface $translator,
         string $jobClass,
         string $statusName,
@@ -638,18 +649,20 @@ class QuickFixController extends AbstractController
     ): Response {
         $jobId = $jobStatusService->create($statusName, $args);
 
-        $messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: $jobClass,
-            args: $args,
-            jobId: $jobId,
-        ));
-
-        return $this->render('quick_fix/job_progress.html.twig', [
+        $response = $this->render('quick_fix/job_progress.html.twig', [
             'jobId' => $jobId,
             'jobLabel' => $translator->trans($labelKey, [], 'quick_fix'),
             'jobSubtitle' => $translator->trans($subtitleKey, [], 'quick_fix'),
             'cancelUrl' => $this->generateUrl('app_quick_fix_index'),
             'statusUrl' => $this->generateUrl('app_quick_fix_job_status', ['id' => $jobId]),
         ]);
+
+        return $jobDispatcher->dispatch(
+            $jobClass,
+            $args,
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 }
