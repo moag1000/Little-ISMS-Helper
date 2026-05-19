@@ -19,6 +19,21 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Workflow-Step drag-drop CRUD API (legacy, retained for the existing
+ * workflow-builder UI consumed by `assets/controllers/workflow_builder_controller.js`).
+ *
+ * @deprecated since Y.3 (2026-06). The canonical source of truth for workflow
+ *             definitions is `config/workflows/regulatory/*.yaml`. New code MUST
+ *             NOT instantiate `App\Entity\Workflow` / `WorkflowStep`. This
+ *             controller is kept for one release while the YAML-overlay editor
+ *             (Y.3 sprint) ships; the PHPStan rule
+ *             `tools/phpstan/Rule/NoNewWorkflowOrWorkflowStep.php` exempts the
+ *             `App\Controller\Api\` namespace specifically for this file.
+ *
+ * @see docs/decisions/2026-05-17-workflow-yaml-unification.md
+ * @see docs/superpowers/plans/2026-05-17-workflow-system-unification.md (Sprint Y.3 — DEPRECATE)
+ */
 #[IsGranted('ROLE_MANAGER')]
 class WorkflowStepApiController extends AbstractController
 {
@@ -71,6 +86,7 @@ class WorkflowStepApiController extends AbstractController
             return $this->json(['success' => false, 'error' => 'Empty or invalid request body'], Response::HTTP_BAD_REQUEST);
         }
 
+        // @phpstan-ignore app.deprecatedWorkflowEntityInstantiation (legacy workflow-builder UI, see class-level @deprecated)
         $workflowStep = new WorkflowStep();
         $workflowStep->setWorkflow($workflow);
 
@@ -289,6 +305,7 @@ class WorkflowStepApiController extends AbstractController
             return $this->json(['success' => false, 'error' => 'Workflow not found'], Response::HTTP_NOT_FOUND);
         }
 
+        // @phpstan-ignore app.deprecatedWorkflowEntityInstantiation (legacy workflow-builder UI, see class-level @deprecated)
         $newStep = new WorkflowStep();
         $newStep->setWorkflow($workflow);
         $newStep->setName($workflowStep->getName() . ' (Copy)');
@@ -464,6 +481,7 @@ class WorkflowStepApiController extends AbstractController
             // Apply template steps (starting from 1)
             $startOrder = $workflow->getSteps()->count() + 1;
             foreach ($template['steps'] as $index => $stepData) {
+                // @phpstan-ignore app.deprecatedWorkflowEntityInstantiation (legacy workflow-builder UI, see class-level @deprecated)
                 $workflowStep = new WorkflowStep();
                 $workflowStep->setWorkflow($workflow);
                 $workflowStep->setStepOrder($startOrder + $index);

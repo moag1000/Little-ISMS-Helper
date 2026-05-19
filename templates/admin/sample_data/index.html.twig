@@ -35,92 +35,104 @@
             </h2>
         </div>
         <div class="fa-section__body">
-            <form method="post" action="{{ path('admin_sample_data_import') }}">
+            {# C-02 fix: the outer "import" form previously wrapped the entire
+               table, but each row's "remove" cell also contains a <form>. Nested
+               forms are invalid HTML — browsers POST to the wrong action and
+               drop checkbox state. Use the HTML5 `form` attribute: declare the
+               import form as a standalone (empty) form here, then bind the
+               checkboxes + submit button to it via `form="sample_data_import_form"`.
+               This keeps the per-row remove forms as un-nested siblings. #}
+            <form id="sample_data_import_form"
+                  method="post"
+                  action="{{ path('admin_sample_data_import') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('sample_data_import') }}">
+            </form>
 
-                {% embed '_components/_fa_table.html.twig' %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col" class="fa-table__th" style="width: 40px;">
+            {% embed '_components/_fa_table.html.twig' %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th" style="width: 40px;">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   id="sample_select_all"
+                                   data-controller="select-all"
+                                   data-action="change->select-all#toggle"
+                                   data-select-all-selector="input[name^='samples['][type='checkbox']:not([disabled])"
+                                   aria-label="{{ 'admin.sample_data.select_all'|trans({}, 'admin') }}"
+                                   title="{{ 'admin.sample_data.select_all'|trans({}, 'admin') }}">
+                        </th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.sample_data.col_name'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.sample_data.col_description'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.sample_data.col_modules'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.sample_data.col_status'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'admin.sample_data.col_actions'|trans({}, 'admin') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for sample in samples %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell">
                                 <input type="checkbox"
                                        class="form-check-input"
-                                       id="sample_select_all"
-                                       data-controller="select-all"
-                                       data-action="change->select-all#toggle"
-                                       data-select-all-selector="input[name^='samples['][type='checkbox']:not([disabled])"
-                                       aria-label="{{ 'admin.sample_data.select_all'|trans({}, 'admin') }}"
-                                       title="{{ 'admin.sample_data.select_all'|trans({}, 'admin') }}">
-                            </th>
-                            <th scope="col" class="fa-table__th">{{ 'admin.sample_data.col_name'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'admin.sample_data.col_description'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'admin.sample_data.col_modules'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'admin.sample_data.col_status'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'admin.sample_data.col_actions'|trans({}, 'admin') }}</th>
+                                       form="sample_data_import_form"
+                                       name="samples[{{ sample.key }}]"
+                                       value="1"
+                                       id="sample_{{ sample.key }}"
+                                       {% if not sample.modules_ok %}disabled{% endif %}>
+                            </td>
+                            <td class="fa-table__cell">
+                                <label for="sample_{{ sample.key }}" class="fw-semibold mb-0">{{ sample.name }}</label>
+                            </td>
+                            <td class="fa-table__cell text-muted small">{{ sample.description }}</td>
+                            <td class="fa-table__cell">
+                                {% for m in sample.required_modules %}
+                                    <span class="fa-status-pill fa-status-pill--neutral">{{ m }}</span>
+                                {% else %}
+                                    <span class="text-muted small">—</span>
+                                {% endfor %}
+                            </td>
+                            <td class="fa-table__cell fa-table__cell--num">
+                                {% if sample.imported %}
+                                    <span class="fa-status-pill fa-status-pill--success">{{ 'admin.sample_data.imported_count'|trans({'%count%': sample.count}, 'admin') }}</span>
+                                {% elseif not sample.modules_ok %}
+                                    <span class="fa-status-pill fa-status-pill--warning">{{ 'admin.sample_data.modules_missing'|trans({}, 'admin') }}</span>
+                                {% else %}
+                                    <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.sample_data.not_imported'|trans({}, 'admin') }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell fa-table__cell--actions">
+                                {# Entfernen-Button wird auch gezeigt wenn Tracking-Rows existieren
+                                   (sample.count > 0), nicht nur bei sample.imported. So lassen
+                                   sich auch verwaiste Reste aus früheren Imports bereinigen,
+                                   selbst wenn der Status-Badge gerade "nicht importiert" anzeigt. #}
+                                {% if (sample.imported or sample.count > 0) and sample.removable %}
+                                    <form method="post"
+                                          action="{{ path('admin_sample_data_remove', {sampleKey: sample.key}) }}"
+                                          class="d-inline"
+                                          data-controller="ui-actions"
+                                          data-action="submit->ui-actions#confirm"
+                                          data-ui-actions-message-param="{{ 'admin.sample_data.confirm_remove'|trans({'%name%': sample.name, '%count%': sample.count}, 'admin') }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('sample_data_remove_' ~ sample.key) }}">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
+                                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'admin.sample_data.remove_button'|trans({}, 'admin') }}
+                                        </button>
+                                    </form>
+                                {% elseif sample.imported and not sample.removable %}
+                                    <small class="text-muted">{{ 'admin.sample_data.not_removable'|trans({}, 'admin') }}</small>
+                                {% endif %}
+                            </td>
                         </tr>
-                    {% endblock %}
-                    {% block table_body %}
-                        {% for sample in samples %}
-                            <tr class="fa-table__row">
-                                <td class="fa-table__cell">
-                                    <input type="checkbox"
-                                           class="form-check-input"
-                                           name="samples[{{ sample.key }}]"
-                                           value="1"
-                                           id="sample_{{ sample.key }}"
-                                           {% if not sample.modules_ok %}disabled{% endif %}>
-                                </td>
-                                <td class="fa-table__cell">
-                                    <label for="sample_{{ sample.key }}" class="fw-semibold mb-0">{{ sample.name }}</label>
-                                </td>
-                                <td class="fa-table__cell text-muted small">{{ sample.description }}</td>
-                                <td class="fa-table__cell">
-                                    {% for m in sample.required_modules %}
-                                        <span class="fa-status-pill fa-status-pill--neutral">{{ m }}</span>
-                                    {% else %}
-                                        <span class="text-muted small">—</span>
-                                    {% endfor %}
-                                </td>
-                                <td class="fa-table__cell fa-table__cell--num">
-                                    {% if sample.imported %}
-                                        <span class="fa-status-pill fa-status-pill--success">{{ 'admin.sample_data.imported_count'|trans({'%count%': sample.count}, 'admin') }}</span>
-                                    {% elseif not sample.modules_ok %}
-                                        <span class="fa-status-pill fa-status-pill--warning">{{ 'admin.sample_data.modules_missing'|trans({}, 'admin') }}</span>
-                                    {% else %}
-                                        <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.sample_data.not_imported'|trans({}, 'admin') }}</span>
-                                    {% endif %}
-                                </td>
-                                <td class="fa-table__cell fa-table__cell--actions">
-                                    {# Entfernen-Button wird auch gezeigt wenn Tracking-Rows existieren
-                                       (sample.count > 0), nicht nur bei sample.imported. So lassen
-                                       sich auch verwaiste Reste aus früheren Imports bereinigen,
-                                       selbst wenn der Status-Badge gerade "nicht importiert" anzeigt. #}
-                                    {% if (sample.imported or sample.count > 0) and sample.removable %}
-                                        <form method="post"
-                                              action="{{ path('admin_sample_data_remove', {sampleKey: sample.key}) }}"
-                                              class="d-inline"
-                                              data-controller="ui-actions"
-                                              data-action="submit->ui-actions#confirm"
-                                              data-ui-actions-message-param="{{ 'admin.sample_data.confirm_remove'|trans({'%name%': sample.name, '%count%': sample.count}, 'admin') }}">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('sample_data_remove_' ~ sample.key) }}">
-                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
-                                                <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'admin.sample_data.remove_button'|trans({}, 'admin') }}
-                                            </button>
-                                        </form>
-                                    {% elseif sample.imported and not sample.removable %}
-                                        <small class="text-muted">{{ 'admin.sample_data.not_removable'|trans({}, 'admin') }}</small>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
 
-                <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'admin.sample_data.import_button'|trans({}, 'admin') }}
-                    </button>
-                </div>
-            </form>
+            <div class="d-flex justify-content-end mt-3">
+                <button type="submit"
+                        form="sample_data_import_form"
+                        class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i> {{ 'admin.sample_data.import_button'|trans({}, 'admin') }}
+                </button>
+            </div>
         </div>
     </section>
 
