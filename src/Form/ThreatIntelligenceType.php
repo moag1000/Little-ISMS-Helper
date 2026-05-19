@@ -8,8 +8,8 @@ use App\Entity\Asset;
 use App\Entity\Person;
 use App\Entity\ThreatIntelligence;
 use App\Entity\User;
-use App\Form\DataTransformer\JsonArrayTransformer;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Type\JsonStructuredType;
 use App\Form\Type\JsonTagsType;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -249,7 +249,8 @@ final class ThreatIntelligenceType extends AbstractType
                 ])
                 // TODO(s5-json-objects): replace with CollectionType + IocEntryType
                 // (STIX 2.1 shape: [{type:ip|domain|hash|url|email, value, context}]).
-                ->add('iocsList', TextareaType::class, [
+                // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
+                ->add('iocsList', JsonStructuredType::class, [
                     'label' => 'threat_intelligence.field.iocs_list',
                     'required' => false,
                     'attr' => ['rows' => 5],
@@ -272,7 +273,7 @@ final class ThreatIntelligenceType extends AbstractType
                 ])
             ;
 
-            $builder->get('iocsList')->addModelTransformer(new JsonArrayTransformer());
+            // JsonArrayTransformer now applied automatically by JsonStructuredType.
         }
     }
 

@@ -1076,6 +1076,8 @@ action:
     view_all: 'Alle anzeigen'
     view: Anzeigen
 form:
+    json:
+        invalid: 'Ungültiges JSON. Bitte korrekte JSON-Syntax verwenden (z.B. {"key":"value"} oder [...]).'
     automatic_value: 'Dieses Feld wurde automatisch von der Cyberpunk Fee ausgefüllt.'
     complete_asset_inventory: 'Asset-Inventar vervollständigen'
     conduct_risk_analysis: 'Risikoanalyse durchführen'

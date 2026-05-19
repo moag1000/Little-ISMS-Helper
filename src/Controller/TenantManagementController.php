@@ -107,11 +107,10 @@ class TenantManagementController extends AbstractController
                     }
                 }
 
-                // Handle settings JSON
-                $settingsJson = $form->get('settings')->getData();
-                if ($settingsJson) {
-                    $tenant->setSettings(json_decode((string) $settingsJson, true));
-                }
+                // Settings are now mapped via App\Form\Type\JsonStructuredType —
+                // the JsonArrayTransformer round-trips array<->JSON and raises a
+                // user-friendly TransformationFailedException on invalid JSON
+                // instead of silently writing null (C-06).
 
                 $this->entityManager->persist($tenant);
                 $this->entityManager->flush();
@@ -254,11 +253,9 @@ class TenantManagementController extends AbstractController
                     }
                 }
 
-                // Handle settings JSON
-                $settingsJson = $form->get('settings')->getData();
-                if ($settingsJson) {
-                    $tenant->setSettings(json_decode((string) $settingsJson, true));
-                }
+                // Settings are now mapped via App\Form\Type\JsonStructuredType
+                // (C-06). The JsonArrayTransformer has already deserialised the
+                // textarea content into $tenant->getSettings() by this point.
 
                 // MRIS-KPI-Toggle (inline checkbox, gated to ROLE_ADMIN). Merge
                 // statt überschreiben, damit andere Settings-Keys erhalten bleiben.

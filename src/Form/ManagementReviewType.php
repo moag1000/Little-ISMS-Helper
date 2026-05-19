@@ -8,8 +8,8 @@ use App\Entity\Document;
 use App\Entity\ManagementReview;
 use App\Entity\Person;
 use App\Entity\User;
-use App\Form\DataTransformer\JsonArrayTransformer;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Type\JsonStructuredType;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityRepository;
@@ -320,7 +320,8 @@ final class ManagementReviewType extends AbstractType
                 ],
                 'help' => 'management_review.help.policy_review_outcome',
             ])
-            ->add('actionItemsWithDeadlines', TextareaType::class, [
+            // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
+            ->add('actionItemsWithDeadlines', JsonStructuredType::class, [
                 'label' => 'management_review.field.action_items_with_deadlines',
                 'required' => false,
                 'attr' => [
@@ -330,11 +331,9 @@ final class ManagementReviewType extends AbstractType
                 'help' => 'management_review.help.action_items_with_deadlines',
             ]);
 
-        $builder->get('actionItemsWithDeadlines')
-            ->addModelTransformer(new JsonArrayTransformer());
-
         if ($this->isModuleActive('compliance')) {
-            $builder->add('frameworkComplianceStatus', TextareaType::class, [
+            // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
+            $builder->add('frameworkComplianceStatus', JsonStructuredType::class, [
                 'label' => 'management_review.field.framework_compliance_status',
                 'required' => false,
                 'attr' => [
@@ -343,8 +342,6 @@ final class ManagementReviewType extends AbstractType
                 ],
                 'help' => 'management_review.help.framework_compliance_status',
             ]);
-            $builder->get('frameworkComplianceStatus')
-                ->addModelTransformer(new JsonArrayTransformer());
         }
     }
 

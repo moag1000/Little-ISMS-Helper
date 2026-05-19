@@ -1,16 +1,2 @@
 # check_raw_json_textarea.py baseline
 # Format: <FormType-path>:<line>:<property>
-src/Form/TenantType.php:204:settings
-src/Form/SupplierType.php:444:subcontractorChain
-src/Form/SupplierType.php:451:processingLocations
-src/Form/CrisisTeamType.php:256:escalationMatrix
-src/Form/UserType.php:246:competencies
-src/Form/ThreatIntelligenceType.php:252:iocsList
-src/Form/BusinessContinuityPlanType.php:206:responseTeamMembers
-src/Form/BusinessContinuityPlanType.php:215:requiredResources
-src/Form/BusinessContinuityPlanType.php:221:escalationLevels
-src/Form/ControlType.php:266:frameworkReferences
-src/Form/ManagementReviewType.php:323:actionItemsWithDeadlines
-src/Form/ManagementReviewType.php:337:frameworkComplianceStatus
-src/Form/BCExerciseType.php:237:successCriteria
-src/Form/BCExerciseType.php:271:evidenceArtifacts
