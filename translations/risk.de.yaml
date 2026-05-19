@@ -614,6 +614,13 @@ fair:
       suspected: 'Vermutet'
       related: 'Verwandt'
       mitigation_failed: 'Maßnahme versagt'
+  # Async CSV export (Phase 2.5 — async admin jobs rollout)
+  export:
+    badge: 'Risiko-Export'
+    progress_title: 'Risiken als CSV exportieren'
+    progress_subtitle: 'Der Export läuft im Hintergrund — die Datei steht nach Fertigstellung zum Download bereit.'
+    download_button: 'CSV herunterladen'
+    file_not_found: 'Export-Datei nicht gefunden (möglicherweise bereits heruntergeladen oder abgelaufen).'
 risk_management:
   title: Titel
   description: Beschreibung

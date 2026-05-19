@@ -10,7 +10,7 @@ src/Service/DataIntegrityService.php:LOC=1864 deps=26
 src/Service/DashboardStatisticsService.php:LOC=1808 deps=25
 src/Service/Export/CertificationBundleExporter.php:LOC=1581 deps=19
 src/Controller/PolicyWizardController.php:LOC=1419 deps=0
-src/Controller/RiskController.php:LOC=1311 deps=0
+src/Controller/RiskController.php:LOC=1410 deps=0
 src/Controller/ManagementReportController.php:LOC=1293 deps=0
 src/Controller/DocumentController.php:LOC=1179 deps=0
 src/Service/ManagementReportService.php:LOC=1134 deps=18

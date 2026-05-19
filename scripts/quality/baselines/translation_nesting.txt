@@ -530,12 +530,12 @@ translations/risk.de.yaml:520:iso_9001_bridge
 translations/risk.de.yaml:525:severity_choice
 translations/risk.de.yaml:539:dora
 translations/risk.de.yaml:572:fair
-translations/risk.de.yaml:617:risk_management
+translations/risk.de.yaml:624:risk_management
 translations/risk.en.yaml:503:iso_9001_bridge
 translations/risk.en.yaml:508:severity_choice
 translations/risk.en.yaml:522:dora
 translations/risk.en.yaml:555:fair
-translations/risk.en.yaml:601:risk_management
+translations/risk.en.yaml:608:risk_management
 translations/risk_treatment_plan.de.yaml:106:iso_9001_bridge
 translations/risk_treatment_plan.en.yaml:106:iso_9001_bridge
 translations/role_management.de.yaml:110:role
