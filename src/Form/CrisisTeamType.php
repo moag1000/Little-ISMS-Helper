@@ -8,7 +8,7 @@ use App\Entity\BusinessContinuityPlan;
 use App\Entity\CrisisTeam;
 use App\Entity\Person;
 use App\Entity\User;
-use App\Form\DataTransformer\JsonArrayTransformer;
+use App\Form\Type\JsonStructuredType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -253,7 +253,9 @@ final class CrisisTeamType extends AbstractType
                     'rows' => 3,
                 ],
             ])
-            ->add('escalationMatrix', TextareaType::class, [
+            // C-06: JsonStructuredType bakes in the JsonArrayTransformer so
+            // invalid JSON surfaces as TransformationFailedException.
+            ->add('escalationMatrix', JsonStructuredType::class, [
                 'label' => 'crisis_team.field.escalation_matrix',
                 'required' => false,
                 'attr' => [
@@ -277,7 +279,7 @@ final class CrisisTeamType extends AbstractType
             ])
         ;
 
-        $builder->get('escalationMatrix')->addModelTransformer(new JsonArrayTransformer());
+        // JsonArrayTransformer is now applied automatically by JsonStructuredType.
     }
 
     public function configureOptions(OptionsResolver $resolver): void

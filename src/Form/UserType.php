@@ -21,7 +21,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Form\DataTransformer\JsonArrayTransformer;
+use App\Form\Type\JsonStructuredType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -243,13 +243,14 @@ final class UserType extends AbstractType
         // ISO 27001 §7.2 Competence — list of structured competency objects
         // {name, category, level, certifiedBy, certifiedAt, expiresAt}.
         // TODO(s5-json-objects): replace with CollectionType + CompetencyEntryType.
-        $builder->add('competencies', TextareaType::class, [
+        // C-06: JsonStructuredType applies JsonArrayTransformer automatically so
+        // invalid JSON surfaces as TransformationFailedException.
+        $builder->add('competencies', JsonStructuredType::class, [
             'label' => 'user.field.competencies',
             'required' => false,
             'attr' => ['rows' => 6, 'placeholder' => 'user.placeholder.competencies_json'],
             'help' => 'user.help.competencies_json',
         ]);
-        $builder->get('competencies')->addModelTransformer(new JsonArrayTransformer());
 
         // Audit-S5 P-12 — Previous QM-System background (drives Norm-Bridge visibility).
         // Available in every edit mode so an admin can set this for a user during

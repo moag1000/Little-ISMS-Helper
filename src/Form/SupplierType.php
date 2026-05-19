@@ -7,7 +7,10 @@ namespace App\Form;
 use App\Entity\Supplier;
 use App\Entity\SupplierCriticalityLevel;
 use App\Entity\Tenant;
+use App\Form\DataTransformer\CommaOrLinesListTransformer;
+use App\Form\DataTransformer\SubcontractorChainTransformer;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Type\JsonOrLinesTextareaType;
 use App\Repository\SupplierCriticalityLevelRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -230,96 +233,16 @@ final class SupplierType extends AbstractType
             $this->addMariskFields($builder);
         }
 
-        // Sync unmapped textareas back to JSON entity properties
-        $builder->addEventListener(
-            \Symfony\Component\Form\FormEvents::POST_SUBMIT,
-            static function (\Symfony\Component\Form\Event\PostSubmitEvent $event): void {
-                $form = $event->getForm();
-                $supplier = $form->getData();
-                if (!$supplier instanceof Supplier) {
-                    return;
-                }
-                if ($form->has('subcontractorChain')) {
-                    $raw = trim((string) ($form->get('subcontractorChain')->getData() ?? ''));
-                    $list = [];
-                    if (str_starts_with($raw, '[')) {
-                        $decoded = json_decode($raw, true);
-                        if (is_array($decoded)) {
-                            foreach ($decoded as $entry) {
-                                if (is_string($entry) && trim($entry) !== '') {
-                                    $list[] = trim($entry);
-                                    continue;
-                                }
-                                if (is_array($entry)) {
-                                    $name = isset($entry['name']) ? trim((string) $entry['name']) : '';
-                                    if ($name === '') {
-                                        continue;
-                                    }
-                                    $tier = isset($entry['tier']) ? max(1, min(5, (int) $entry['tier'])) : 1;
-                                    $list[] = [
-                                        'tier' => $tier,
-                                        'name' => $name,
-                                        'lei' => isset($entry['lei']) ? trim((string) $entry['lei']) : '',
-                                        'country' => isset($entry['country']) ? strtoupper(substr(trim((string) $entry['country']), 0, 2)) : '',
-                                        'service' => isset($entry['service']) ? trim((string) $entry['service']) : '',
-                                        'criticality' => isset($entry['criticality']) && in_array($entry['criticality'], ['low', 'medium', 'high', 'critical'], true)
-                                            ? $entry['criticality']
-                                            : '',
-                                    ];
-                                }
-                            }
-                        }
-                    } elseif ($raw !== '') {
-                        $list = array_values(array_filter(
-                            array_map('trim', preg_split('/\r?\n/', $raw) ?: []),
-                            static fn(string $v): bool => $v !== '',
-                        ));
-                    }
-                    $supplier->setSubcontractorChain($list === [] ? null : $list);
-                }
-                if ($form->has('processingLocations')) {
-                    $raw = (string) ($form->get('processingLocations')->getData() ?? '');
-                    $list = array_values(array_filter(
-                        array_map('trim', preg_split('/[,;\r\n]+/', $raw) ?: []),
-                        static fn(string $v): bool => $v !== '',
-                    ));
-                    $supplier->setProcessingLocations($list === [] ? null : $list);
-                }
-            },
-        );
-    }
-
-    /**
-     * Hydrate the unmapped textarea fields (subcontractorChain,
-     * processingLocations) from entity arrays. Must run in finishView() —
-     * children FormViews are only populated after buildView() returns, so
-     * `$view['subcontractorChain']` would not yet exist.
-     */
-    public function finishView(
-        \Symfony\Component\Form\FormView $view,
-        \Symfony\Component\Form\FormInterface $form,
-        array $options,
-    ): void {
-        $supplier = $form->getData();
-        if (!$supplier instanceof Supplier) {
-            return;
+        // C-06: subcontractorChain + processingLocations are now mapped JSON
+        // fields with dedicated DataTransformers. The previous POST_SUBMIT
+        // listener + finishView() hydration is no longer needed — the
+        // transformers handle both directions (array<->textarea) and surface
+        // invalid JSON as a user-friendly TransformationFailedException.
+        if ($builder->has('subcontractorChain')) {
+            $builder->get('subcontractorChain')->addModelTransformer(new SubcontractorChainTransformer());
         }
-        if (isset($view['subcontractorChain']) && !$form->get('subcontractorChain')->getViewData()) {
-            $chain = $supplier->getSubcontractorChain();
-            if (is_array($chain) && $chain !== []) {
-                // JSON-encode so the Stimulus editor picks up structured rows.
-                // Legacy strings are preserved verbatim in the encoded array.
-                $view['subcontractorChain']->vars['value'] = json_encode($chain, JSON_UNESCAPED_UNICODE);
-            }
-        }
-        if (isset($view['processingLocations']) && !$form->get('processingLocations')->getViewData()) {
-            $locs = $supplier->getProcessingLocations();
-            if (is_array($locs) && $locs !== []) {
-                // Defensive: filter out non-scalars (legacy data may contain nested
-                // structures); only strings/scalars survive into the textarea value.
-                $flat = array_values(array_filter($locs, 'is_scalar'));
-                $view['processingLocations']->vars['value'] = implode(', ', array_map('strval', $flat));
-            }
+        if ($builder->has('processingLocations')) {
+            $builder->get('processingLocations')->addModelTransformer(new CommaOrLinesListTransformer());
         }
     }
 
@@ -441,18 +364,22 @@ final class SupplierType extends AbstractType
                 'help' => 'supplier.help.has_subcontractors',
                 'required' => false,
             ])
-            ->add('subcontractorChain', TextareaType::class, [
+            // C-06: mapped JSON field — SubcontractorChainTransformer (attached
+            // in buildForm tail) handles both JSON-array and newline-delimited
+            // input shapes and raises TransformationFailedException on invalid
+            // JSON instead of silently writing null.
+            ->add('subcontractorChain', JsonOrLinesTextareaType::class, [
                 'label' => 'supplier.field.subcontractor_chain',
                 'help' => 'supplier.help.subcontractor_chain',
                 'required' => false,
-                'mapped' => false,
                 'attr' => ['rows' => 3, 'placeholder' => 'Provider A' . "\n" . 'Provider B' . "\n" . 'Provider C'],
             ])
-            ->add('processingLocations', TextareaType::class, [
+            // C-06: mapped JSON field — CommaOrLinesListTransformer handles
+            // comma/semicolon/newline-delimited input.
+            ->add('processingLocations', JsonOrLinesTextareaType::class, [
                 'label' => 'supplier.field.processing_locations',
                 'help' => 'supplier.help.processing_locations',
                 'required' => false,
-                'mapped' => false,
                 'attr' => ['rows' => 2, 'placeholder' => 'DE, IE, US'],
             ])
             ->add('lastDoraAuditDate', DateType::class, [

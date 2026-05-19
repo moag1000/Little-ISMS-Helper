@@ -9,8 +9,8 @@ use App\Entity\Person;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Asset;
-use App\Form\DataTransformer\JsonArrayTransformer;
 use App\Form\Trait\ModuleAwareFormTrait;
+use App\Form\Type\JsonStructuredType;
 use App\Repository\RiskRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -263,7 +263,8 @@ final class ControlType extends AbstractType
             ])
             // TODO(s5-json-objects): replace with structured map editor
             // (shape: {iso27001:[...], bsi:[...], nist:[...], dora:[...]}).
-            ->add('frameworkReferences', TextareaType::class, [
+            // C-06: JsonStructuredType applies JsonArrayTransformer automatically.
+            ->add('frameworkReferences', JsonStructuredType::class, [
                 'label' => 'control.field.framework_references',
                 'required' => false,
                 'attr' => ['rows' => 4],
@@ -289,7 +290,7 @@ final class ControlType extends AbstractType
                 },
             ]);
 
-        $builder->get('frameworkReferences')->addModelTransformer(new JsonArrayTransformer());
+        // JsonArrayTransformer now applied automatically by JsonStructuredType.
 
         // ── Cloud-fields gated by 'cloud_security' module ─────────────────────
         if ($this->isModuleActive('cloud_security')) {

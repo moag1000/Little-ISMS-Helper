@@ -8,8 +8,8 @@ use App\Entity\Asset;
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\BusinessProcess;
 use App\Entity\CrisisTeam;
-use App\Form\DataTransformer\JsonArrayTransformer;
 use App\Form\Trait\OwnerPickerFormTrait;
+use App\Form\Type\JsonStructuredType;
 use App\Repository\CrisisTeamRepository;
 use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -203,7 +203,9 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 'attr' => ['rows' => 3],
                 'help' => 'bc_plans.help.review_notes',
             ])
-            ->add('responseTeamMembers', TextareaType::class, [
+            // C-06: JsonStructuredType applies JsonArrayTransformer automatically
+            // so invalid JSON surfaces as TransformationFailedException.
+            ->add('responseTeamMembers', JsonStructuredType::class, [
                 'label' => 'bc_plans.field.response_team_members',
                 'required' => false,
                 'attr' => [
@@ -212,13 +214,13 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
                 ],
                 'help' => 'bc_plans.help.response_team_members_json',
             ])
-            ->add('requiredResources', TextareaType::class, [
+            ->add('requiredResources', JsonStructuredType::class, [
                 'label' => 'bc_plans.field.required_resources',
                 'required' => false,
                 'attr' => ['rows' => 4],
                 'help' => 'bc_plans.help.required_resources_json',
             ])
-            ->add('escalationLevels', TextareaType::class, [
+            ->add('escalationLevels', JsonStructuredType::class, [
                 'label' => 'bc_plans.field.escalation_levels',
                 'required' => false,
                 'attr' => ['rows' => 5],
@@ -268,9 +270,7 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
             'with_legacy'        => true,
         ]);
 
-        $builder->get('responseTeamMembers')->addModelTransformer(new JsonArrayTransformer());
-        $builder->get('requiredResources')->addModelTransformer(new JsonArrayTransformer());
-        $builder->get('escalationLevels')->addModelTransformer(new JsonArrayTransformer());
+        // JsonArrayTransformer now applied automatically by JsonStructuredType.
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -7,6 +7,7 @@ namespace App\Tests\Service;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Lifecycle\LifecycleTransitionInterface;
 use App\Repository\ProcessingActivityRepository;
 use App\Service\AuditLogger;
 use App\Service\ProcessingActivityService;
@@ -30,6 +31,7 @@ class ProcessingActivityServiceTest extends TestCase
     private MockObject $security;
     private MockObject $auditLogger;
     private MockObject $workflowAutoProgressionService;
+    private MockObject $lifecycleService;
     private ProcessingActivityService $service;
     private MockObject $tenant;
     private MockObject $user;
@@ -42,6 +44,10 @@ class ProcessingActivityServiceTest extends TestCase
         $this->security = $this->createMock(Security::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
+        // C-07: LifecycleService is now required by activate()/archive(); inject a
+        // mock so the test exercises the canonical Symfony-Workflow path instead
+        // of the removed setStatus() fallback.
+        $this->lifecycleService = $this->createMock(LifecycleTransitionInterface::class);
 
         $this->tenant = $this->createMock(Tenant::class);
         $this->tenant->method('getId')->willReturn(1);
@@ -60,7 +66,8 @@ class ProcessingActivityServiceTest extends TestCase
             $this->tenantContext,
             $this->security,
             $this->auditLogger,
-            $this->workflowAutoProgressionService
+            $this->workflowAutoProgressionService,
+            $this->lifecycleService,
         );
     }
 
@@ -387,10 +394,19 @@ class ProcessingActivityServiceTest extends TestCase
         $processingActivity->method('getId')->willReturn(1);
         $processingActivity->method('getName')->willReturn('Archived');
 
-        $processingActivity->expects($this->once())->method('setStatus')->with(\App\Enum\ProcessingActivityStatus::Archived);
         $processingActivity->expects($this->once())->method('setEndDate');
 
-        $this->entityManager->expects($this->once())->method('flush');
+        // C-07: archive() now goes through LifecycleService::transition() — the
+        // direct setStatus() fallback was removed because it bypassed Voter /
+        // 4-eyes / audit-log.
+        $this->lifecycleService->expects($this->once())
+            ->method('transition')
+            ->with(
+                $processingActivity,
+                'processing_activity_lifecycle',
+                'archive',
+                $this->user,
+            );
 
         $this->service->archive($processingActivity);
     }

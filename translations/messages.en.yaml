@@ -1062,6 +1062,8 @@ action:
     back_to_list: ''
     view_all: ''
 form:
+    json:
+        invalid: 'Invalid JSON. Please use valid JSON syntax (e.g. {"key":"value"} or [...]).'
     automatic_value: 'This field was automatically filled by the Cyberpunk Fairy.'
     complete_asset_inventory: 'Complete asset inventory'
     conduct_risk_analysis: 'Conduct risk analysis'
