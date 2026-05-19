@@ -113,10 +113,10 @@ src/Controller/LocationController.php:111
 src/Controller/ManagementReviewController.php:72
 src/Controller/ManagementReviewController.php:99
 src/Controller/ManagementReviewController.php:175
-src/Controller/MfaLoginController.php:93
-src/Controller/MfaLoginController.php:106
-src/Controller/MfaLoginController.php:134
-src/Controller/MfaLoginController.php:154
+src/Controller/MfaLoginController.php:95
+src/Controller/MfaLoginController.php:108
+src/Controller/MfaLoginController.php:136
+src/Controller/MfaLoginController.php:156
 src/Controller/PatchController.php:102
 src/Controller/PatchController.php:129
 src/Controller/PatchController.php:146

@@ -75,13 +75,18 @@ final class SsoDiscoveryApiControllerTest extends WebTestCase
     public function returnsFalseWhenDiscoveryFails(): void
     {
         $client = static::createClient();
+        $client->disableReboot();
 
+        $client->loginUser($this->getOrCreateAdminUser($client));
+        $csrfToken = $this->generateCsrfToken($client, 'sso_validate_discovery');
+
+        // Mock MUST be injected AFTER the session-bootstrap GET in generateCsrfToken(),
+        // because each request would reboot the kernel and discard the mock —
+        // disableReboot() above preserves the container across requests.
         $mockDiscovery = $this->createMock(OidcDiscoveryService::class);
         $mockDiscovery->method('fetchDiscovery')->willThrowException(new \RuntimeException('Connection refused'));
         $client->getContainer()->set(OidcDiscoveryService::class, $mockDiscovery);
 
-        $client->loginUser($this->getOrCreateAdminUser($client));
-        $csrfToken = $this->generateCsrfToken($client, 'sso_validate_discovery');
         $client->request(
             'POST',
             '/de/api/sso/validate-discovery',
