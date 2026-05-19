@@ -1,5 +1,24 @@
 quick_fix:
     title: 'Quick Fix — Schema Maintenance'
+    # Async-job progress page strings (Phase 2 rollout).
+    job:
+        id_label: 'Job ID'
+        worker_hint: 'Running in the background. This page refreshes every 3 seconds.'
+        back: 'Back to Quick Fix'
+        apply_label: 'Apply Pending Migrations'
+        apply_subtitle: 'Running the Doctrine migration plan in the background…'
+        reconcile_label: 'Reconcile Schema'
+        reconcile_subtitle: 'Aligning the live database with entity metadata in the background…'
+        repair_orphans_label: 'Repair Orphans'
+        repair_orphans_subtitle: 'Assigning orphaned entities to the default tenant in the background…'
+        repair_mismatches_label: 'Repair Tenant Mismatches'
+        repair_mismatches_subtitle: 'Aligning child entity tenants with their parent (Asset) in the background…'
+        repair_duplicates_label: 'Repair Duplicates'
+        repair_duplicates_subtitle: 'Merging duplicate entries (oldest kept) in the background…'
+        repair_all_label: 'Repair All'
+        repair_all_subtitle: 'Orphans + mismatches + duplicates in the background — this may take several minutes.'
+        force_schema_label: 'Force Schema Update'
+        force_schema_subtitle: 'Running doctrine:schema:update in safe mode (additive only) in the background…'
     pending:
         title: 'Database update required'
         body: 'This instance has been upgraded but the database schema is still at the previous version. Apply with one click:'

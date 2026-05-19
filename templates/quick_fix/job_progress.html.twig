@@ -1,0 +1,213 @@
+{# Standalone progress page for QuickFix async jobs.
+   Does NOT extend a layout — QuickFix exists for the case where the main app
+   layout cannot render due to schema errors. Inline CSS + vanilla JS keep the
+   page usable even when Stimulus / Aurora pipelines are broken. #}
+{% set lang = app.request.locale|default('de') %}
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ jobLabel|default('Async Job') }} — Little ISMS Helper</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <meta name="turbo-cache-control" content="no-cache">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --border: #334155;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --danger: #f87171;
+            --success: #4ade80;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .icon { font-size: 48px; margin-bottom: 16px; }
+        h1 { font-size: 22px; margin: 0 0 8px; font-weight: 600; }
+        p { color: var(--muted); line-height: 1.6; margin: 8px 0; }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(56,189,248,0.15);
+            color: var(--accent);
+            border: 1px solid rgba(56,189,248,0.3);
+        }
+        .badge.success { background: rgba(74,222,128,0.15); color: var(--success); border-color: rgba(74,222,128,0.3); }
+        .badge.failed  { background: rgba(248,113,113,0.15); color: var(--danger);  border-color: rgba(248,113,113,0.3); }
+        .progress-shell {
+            background: var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            height: 10px;
+            margin: 16px 0 8px;
+        }
+        .progress-bar {
+            background: var(--accent);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-bar.success { background: var(--success); }
+        .progress-bar.failed  { background: var(--danger); }
+        .meta { color: var(--muted); font-size: 13px; margin: 0; display: flex; justify-content: space-between; }
+        .error-trace {
+            background: rgba(248,113,113,0.08);
+            border: 1px solid rgba(248,113,113,0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--danger);
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+        .footer { color: var(--muted); font-size: 12px; margin-top: 24px; text-align: center; }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 16px;
+        }
+        a:hover { color: var(--accent-hover); text-decoration: underline; }
+        code { font-family: monospace; font-size: 11px; color: var(--muted); word-break: break-all; }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <div class="icon">⚙️</div>
+        <h1>{{ jobLabel|default('Async Job') }}</h1>
+        {% if jobSubtitle is defined and jobSubtitle %}
+            <p>{{ jobSubtitle }}</p>
+        {% endif %}
+
+        <div style="margin-top: 16px;">
+            <span class="badge" id="job-status">pending</span>
+            <span id="job-message" style="margin-left: 8px; font-size: 13px; color: var(--muted);">Queued…</span>
+        </div>
+
+        <div id="job-progress-wrapper" style="display: none;">
+            <div class="progress-shell">
+                <div class="progress-bar" id="job-progress-bar"></div>
+            </div>
+            <div class="meta">
+                <span id="job-progress-label">Progress</span>
+                <span id="job-progress-numbers">0 / 0</span>
+            </div>
+        </div>
+
+        <pre class="error-trace" id="job-error-trace"></pre>
+
+        <p class="footer">
+            {{ 'quick_fix.job.id_label'|trans({}, 'quick_fix') }}: <code>{{ jobId }}</code>
+            <br>
+            {{ 'quick_fix.job.worker_hint'|trans({}, 'quick_fix') }}
+        </p>
+
+        <a href="{{ cancelUrl|default(path('app_quick_fix_index')) }}" id="job-back-link" style="display: none;">
+            &larr; {{ 'quick_fix.job.back'|trans({}, 'quick_fix') }}
+        </a>
+    </main>
+
+    <script>
+        (function() {
+            // Vanilla JS poller — keeps QuickFix usable without Stimulus / Aurora.
+            const statusUrl = {{ statusUrl|json_encode|raw }};
+            const cancelUrl = {{ (cancelUrl|default(path('app_quick_fix_index')))|json_encode|raw }};
+            const pollInterval = 3000;
+            let terminal = false;
+            let timer = null;
+
+            const $status   = document.getElementById('job-status');
+            const $message  = document.getElementById('job-message');
+            const $wrapper  = document.getElementById('job-progress-wrapper');
+            const $bar      = document.getElementById('job-progress-bar');
+            const $numbers  = document.getElementById('job-progress-numbers');
+            const $errBox   = document.getElementById('job-error-trace');
+            const $backLink = document.getElementById('job-back-link');
+
+            function applyTerminal(klass) {
+                terminal = true;
+                if (timer) { clearInterval(timer); timer = null; }
+                $status.classList.add(klass);
+                $bar.classList.add(klass);
+                $backLink.style.display = '';
+            }
+
+            function poll() {
+                if (terminal) return;
+                fetch(statusUrl, { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+                    .then(function(r) {
+                        if (r.status === 404) {
+                            $message.textContent = 'Job not found (deleted or expired).';
+                            applyTerminal('failed');
+                            return null;
+                        }
+                        if (!r.ok) return null;
+                        return r.json();
+                    })
+                    .then(function(data) {
+                        if (!data) return;
+                        const status = data.status || 'unknown';
+                        $status.textContent = status;
+
+                        if (data.message) {
+                            $message.textContent = data.message;
+                        }
+
+                        const current = data.progress_current || 0;
+                        const total = data.progress_total || 0;
+                        if (total > 0) {
+                            $wrapper.style.display = '';
+                            const pct = Math.min(100, Math.round((current / total) * 100));
+                            $bar.style.width = pct + '%';
+                            $numbers.textContent = current + ' / ' + total;
+                        }
+
+                        if (status === 'succeeded') {
+                            $bar.style.width = '100%';
+                            applyTerminal('success');
+                        } else if (status === 'failed') {
+                            if (data.error_trace) {
+                                $errBox.textContent = data.error_trace;
+                                $errBox.style.display = '';
+                            }
+                            applyTerminal('failed');
+                        }
+                    })
+                    .catch(function() { /* transient network error — keep polling */ });
+            }
+
+            poll();
+            timer = setInterval(poll, pollInterval);
+        })();
+    </script>
+</body>
+</html>

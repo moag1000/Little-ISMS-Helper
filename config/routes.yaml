@@ -57,6 +57,15 @@ app_quick_fix_force_schema_update:
     controller: App\Controller\QuickFixController::forceSchemaUpdate
     methods: [POST]
 
+# Public job-status polling endpoint for QuickFix async jobs.
+# Mirrors /admin/jobs/{id}/status but is gated by QuickFixGuard (no auth)
+# so the emergency-recovery UI can poll progress while the app boot is
+# still degraded (which is the entire reason QuickFix exists).
+app_quick_fix_job_status:
+    path: /quick-fix/jobs/{id}/status
+    controller: App\Controller\QuickFixJobStatusController::status
+    methods: [GET]
+
 # Root redirect - smart locale detection (without locale)
 app_home:
     path: /
@@ -105,6 +114,7 @@ app_routes:
         - '../src/Controller/SecurityController.php'
         - '../src/Controller/HomeController.php'
         - '../src/Controller/QuickFixController.php'
+        - '../src/Controller/QuickFixJobStatusController.php'
         - '../src/Controller/SsoController.php'
         - '../src/Controller/LifecycleController.php'
 
