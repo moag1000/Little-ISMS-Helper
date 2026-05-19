@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'certification_bundle' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'certification_bundle.export.progress_title'|trans({}, 'certification_bundle') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'certification_bundle.breadcrumb'|trans({}, 'certification_bundle'), url: path('app_certification_bundle_index') },
+            { label: 'certification_bundle.export.progress_title'|trans({}, 'certification_bundle') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-download', label: (isKonzern ? 'certification_bundle.export.badge.konzern' : 'certification_bundle.export.badge.single')|trans({}, 'certification_bundle') },
+        title: 'certification_bundle.export.progress_title'|trans({}, 'certification_bundle'),
+        subtitle: 'certification_bundle.export.progress_subtitle'|trans({}, 'certification_bundle'),
+    }) }}
+
+    {# Turbo cache disabled — live status changes every 3 s #}
+    <meta name="turbo-cache-control" content="no-cache">
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-8 col-xl-6">
+            {% include '_components/_async_job_progress.html.twig' with {
+                job_id:    jobId,
+                job_name:  isKonzern ? 'certification_bundle.konzern_export' : 'certification_bundle.export',
+                job_label: 'certification_bundle.export.progress_title'|trans({}, 'certification_bundle'),
+                cancel_url: cancelUrl,
+                download_url: downloadUrl,
+                download_label: 'certification_bundle.export.download_button'|trans({}, 'certification_bundle'),
+            } %}
+
+            <div class="mt-3 text-center text-muted small">
+                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                {{ 'admin.job.worker_hint'|trans({}, 'admin') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,8 +1,17 @@
 certification_bundle:
     title: 'Certification Document Bundle'
     subtitle: 'All ISMS documents in a single ZIP archive for the auditor'
+    breadcrumb: 'Certification Bundle'
     generate: 'Generate Bundle'
     generating: 'Generating...'
+    export:
+        progress_title: 'Building certification bundle'
+        progress_subtitle: 'The bundle is being generated in the background. This page refreshes automatically.'
+        download_button: 'Download ZIP'
+        file_not_found: 'Bundle file not found (likely already downloaded or expired).'
+        badge:
+            single: 'Bundle export'
+            konzern: 'Konzern bundle export'
     preview:
         organization: 'Organization'
         framework: 'Framework'
