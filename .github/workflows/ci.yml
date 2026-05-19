@@ -375,6 +375,8 @@ jobs:
         run: python3 scripts/quality/check_admin_role_scope.py --baseline scripts/quality/baselines/admin_role_scope.txt --quiet
       - name: "Gate 42: Status-Enum cases match Symfony Workflow YAML places"
         run: python3 scripts/quality/check_status_enum_yaml_parity.py --baseline scripts/quality/baselines/status_enum_yaml_parity.txt --quiet
+      - name: "Gate 43: Backup entity coverage (every src/Entity/*.php is backed up or has documented exclusion)"
+        run: python3 scripts/quality/check_backup_entity_coverage.py --quiet
       # ── End Repo Quality Gates ─────────────────────────────────────────────
 
       # Hadolint — Dockerfile best-practice linting

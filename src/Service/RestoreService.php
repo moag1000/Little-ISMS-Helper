@@ -1926,11 +1926,74 @@ class RestoreService
             'CustomReport' => 76,
             'AppliedBaseline' => 77,    // FK: Tenant, User
             'KpiSnapshot' => 78,        // FK: Tenant
+            'SoaSnapshot' => 79,        // FK: Tenant, User
 
             // User Preferences
             'DashboardLayout' => 80,
             'MfaToken' => 81,
             'ScheduledTask' => 82,
+            'PushSubscription' => 82,   // FK: Tenant, User — push endpoints
+
+            // Tenant-level overrides / branding (after Tenant + User)
+            'TenantBranding' => 8,                       // FK: Tenant, User (has logoPath)
+            'TenantPolicySetting' => 8,                  // FK: Tenant, User
+            'TenantPolicySettingChangeAttempt' => 8,     // FK: Tenant, User
+            'LifecycleConfig' => 8,                      // FK: Tenant, User
+
+            // SSO / Identity (after User + Role + Tenant)
+            'IdentityProvider' => 9,                     // FK: Tenant
+            'IdentityProviderRoleMapping' => 10,         // FK: IdentityProvider, Role, Tenant
+            'IdentityProviderUserMapping' => 10,         // FK: IdentityProvider, User, Tenant
+            'SsoUserApproval' => 10,                     // FK: IdentityProvider, User, Tenant
+
+            // Policies & Templates (PolicyTemplate is global, Acknowledgement after Document)
+            'PolicyTemplate' => 9,                       // GLOBAL (no tenant_id)
+            'AuthorityTemplate' => 9,                    // FK: Tenant
+
+            // Document family (DocumentVersion + sections after Document)
+            'DocumentVersion' => 46,                     // FK: Document, Tenant, User
+            'DocumentSection' => 46,                     // FK: Document, Tenant, User
+            'DocumentControlLink' => 46,                 // FK: Document, Control
+            'PolicyAcknowledgement' => 46,               // FK: Document, Tenant, User
+
+            // Training participation (after Training + User)
+            'TrainingParticipation' => 47,               // FK: Training, Tenant, User
+
+            // BSI-200-4 exercise log (after BCExercise + User)
+            'Bsi2004ExerciseLog' => 38,                  // FK: BCExercise, Tenant, User
+
+            // Risk-Incident links (after Risk + Incident)
+            'RiskIncidentLink' => 30,                    // FK: Risk, Incident, Tenant, User
+
+            // TISAX / Prototype Protection (after Tenant, Supplier, Location, User, Person)
+            'PrototypeProtectionAssessment' => 40,       // FK: many
+
+            // Evidence re-verify (after DocumentVersion + Control + Fulfillment)
+            'EvidenceReverificationTask' => 65,          // FK: DocumentVersion, Control, Fulfillment, User, Tenant
+
+            // Compliance inheritance audit (after ComplianceMapping + Fulfillment)
+            'FulfillmentInheritanceLog' => 69,           // FK: Fulfillment, ComplianceMapping, Tenant, User
+
+            // Comments (polymorphic — after all target entities)
+            'Comment' => 85,                             // FK: Tenant, User (polymorphic target)
+
+            // Wizards
+            'WizardRun' => 85,                           // FK: Tenant, User
+            'WizardSession' => 85,                       // FK: Tenant, User
+
+            // Import audit-trail (after target entities + Document)
+            'BulkImportBatch' => 85,                     // FK: Tenant, Document, User
+            'BulkImportRow' => 86,                       // FK: BulkImportBatch
+            'ImportSession' => 85,                       // FK: Tenant, User
+            'ImportRowEvent' => 86,                      // FK: ImportSession
+            'SampleDataImport' => 85,                    // FK: Tenant, User
+
+            // Alva-Hint user state + telemetry (after User + Tenant)
+            'AlvaHintDismissal' => 85,                   // FK: User, Tenant
+            'AlvaHintRenderCount' => 85,                 // FK: Tenant
+
+            // Misc tenant customizations
+            'GuidedTourStepOverride' => 85,              // FK: Tenant
 
             // Logs and audit trails (last)
             'AuditLog' => 90,
