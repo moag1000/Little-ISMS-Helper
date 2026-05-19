@@ -11,7 +11,7 @@ src/Controller/LocationController.php:28:/location/
 src/Controller/ModuleManagementController.php:24:/modules/
 src/Controller/ContextController.php:30:/context/
 src/Controller/ComplianceMappingController.php:66:/compliance/mapping/
-src/Controller/DeploymentWizardController.php:80:/setup/
+src/Controller/DeploymentWizardController.php:83:/setup/
 src/Controller/DPIAController.php:56:/dpia/
 src/Controller/ReportController.php:44:/reports/
 src/Controller/BCMController.php:23:/bcm/
@@ -36,4 +36,4 @@ src/Controller/PatchController.php:32:/patch/
 src/Controller/SupplierController.php:38:/supplier/
 src/Controller/RiskTreatmentPlanController.php:30:/risk-treatment-plan/
 src/Controller/ComplianceFrameworkController.php:33:/compliance/framework/
-src/Controller/Admin/DataRepairController.php:131:/admin/data-repair/
+src/Controller/Admin/DataRepairController.php:130:/admin/data-repair/

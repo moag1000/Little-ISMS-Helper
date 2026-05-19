@@ -12,7 +12,6 @@ use App\Job\FixTenantMismatchesJob;
 use App\Job\MergeDuplicatesJob;
 use App\Job\ReconcileSchemaJob;
 use App\Job\RunFullIntegrityCheckJob;
-use App\Message\Job\ExecuteJobMessage;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
@@ -23,13 +22,13 @@ use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\DataIntegrityResultCache;
 use App\Service\DataIntegrityService;
+use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\SchemaMaintenanceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -64,7 +63,7 @@ class DataRepairController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly SchemaMaintenanceService $schemaMaintenanceService,
         private readonly \Doctrine\Persistence\ManagerRegistry $managerRegistry,
-        private readonly MessageBusInterface $messageBus,
+        private readonly JobDispatcher $jobDispatcher,
         private readonly JobStatusService $jobStatusService,
         private readonly DataIntegrityResultCache $integrityResultCache,
     ) {
@@ -272,19 +271,21 @@ class DataRepairController extends AbstractController
             [],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: RunFullIntegrityCheckJob::class,
-            args: [],
-            jobId: $jobId,
-        ));
-
-        return $this->render('admin/data_repair/job_progress.html.twig', [
+        $response = $this->render('admin/data_repair/job_progress.html.twig', [
             'jobId' => $jobId,
             'jobName' => 'admin.data_repair.run_integrity_check',
             'jobLabel' => $this->translator->trans('admin.data_repair.job.run_integrity_check_label', [], 'admin'),
             'jobSubtitle' => $this->translator->trans('admin.data_repair.job.run_integrity_check_subtitle', [], 'admin'),
             'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
         ]);
+
+        return $this->jobDispatcher->dispatch(
+            RunFullIntegrityCheckJob::class,
+            [],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     #[Route('/admin/data-repair/assign-orphans', name: 'admin_data_repair_assign_orphans', methods: ['POST'])]
@@ -639,23 +640,25 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        // Create job status record and dispatch the message
+        // Create job status record and dispatch
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.fix_all_orphans',
             ['tenantId' => $tenantId, 'tenantName' => $tenant->getName()],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: FixAllOrphansJob::class,
-            args: ['tenantId' => $tenantId],
-            jobId: $jobId,
-        ));
-
-        return $this->render('admin/data_repair/fix_all_orphans_progress.html.twig', [
+        $response = $this->render('admin/data_repair/fix_all_orphans_progress.html.twig', [
             'jobId' => $jobId,
             'tenantName' => $tenant->getName(),
             'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
         ]);
+
+        return $this->jobDispatcher->dispatch(
+            FixAllOrphansJob::class,
+            ['tenantId' => $tenantId],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     /**
@@ -797,19 +800,21 @@ class DataRepairController extends AbstractController
             ['reason_length' => mb_strlen($reason)],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: FixTenantMismatchesJob::class,
-            args: ['reason' => $reason],
-            jobId: $jobId,
-        ));
-
-        return $this->render('admin/data_repair/job_progress.html.twig', [
+        $response = $this->render('admin/data_repair/job_progress.html.twig', [
             'jobId' => $jobId,
             'jobName' => 'admin.data_repair.fix_tenant_mismatches',
             'jobLabel' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_label', [], 'admin'),
             'jobSubtitle' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_subtitle', [], 'admin'),
             'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
         ]);
+
+        return $this->jobDispatcher->dispatch(
+            FixTenantMismatchesJob::class,
+            ['reason' => $reason],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     /**
@@ -848,19 +853,21 @@ class DataRepairController extends AbstractController
             ['entityType' => $entityType, 'actor' => $actor],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: MergeDuplicatesJob::class,
-            args: ['entityType' => $entityType, 'actor' => $actor],
-            jobId: $jobId,
-        ));
-
-        return $this->render('admin/data_repair/job_progress.html.twig', [
+        $response = $this->render('admin/data_repair/job_progress.html.twig', [
             'jobId' => $jobId,
             'jobName' => 'admin.data_repair.merge_duplicates',
             'jobLabel' => $this->translator->trans('admin.data_repair.job.merge_duplicates_label', ['%type%' => $entityType], 'admin'),
             'jobSubtitle' => $this->translator->trans('admin.data_repair.job.merge_duplicates_subtitle', [], 'admin'),
             'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
         ]);
+
+        return $this->jobDispatcher->dispatch(
+            MergeDuplicatesJob::class,
+            ['entityType' => $entityType, 'actor' => $actor],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     /**
@@ -889,19 +896,21 @@ class DataRepairController extends AbstractController
             ['actor' => $actor],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: ExecutePendingMigrationsJob::class,
-            args: ['actor' => $actor],
-            jobId: $jobId,
-        ));
-
-        return $this->render('admin/data_repair/job_progress.html.twig', [
+        $response = $this->render('admin/data_repair/job_progress.html.twig', [
             'jobId' => $jobId,
             'jobName' => 'admin.data_repair.execute_migrations',
             'jobLabel' => $this->translator->trans('admin.data_repair.job.execute_migrations_label', [], 'admin'),
             'jobSubtitle' => $this->translator->trans('admin.data_repair.job.execute_migrations_subtitle', [], 'admin'),
             'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
         ]);
+
+        return $this->jobDispatcher->dispatch(
+            ExecutePendingMigrationsJob::class,
+            ['actor' => $actor],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     /**
@@ -1100,19 +1109,21 @@ class DataRepairController extends AbstractController
             ['actor' => $actor, 'bypassMigrationGate' => true],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: ReconcileSchemaJob::class,
-            args: ['actor' => $actor, 'bypassMigrationGate' => true],
-            jobId: $jobId,
-        ));
-
-        return $this->render('admin/data_repair/job_progress.html.twig', [
+        $response = $this->render('admin/data_repair/job_progress.html.twig', [
             'jobId' => $jobId,
             'jobName' => 'admin.data_repair.reconcile_schema',
             'jobLabel' => $this->translator->trans('admin.data_repair.job.reconcile_schema_label', [], 'admin'),
             'jobSubtitle' => $this->translator->trans('admin.data_repair.job.reconcile_schema_subtitle', [], 'admin'),
             'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
         ]);
+
+        return $this->jobDispatcher->dispatch(
+            ReconcileSchemaJob::class,
+            ['actor' => $actor, 'bypassMigrationGate' => true],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 }
 

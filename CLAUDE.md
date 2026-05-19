@@ -67,19 +67,75 @@ Self-hosted-Operator hat `/quick-fix` als Web-UI fuer:
 CLI nur fuer destructive-edge-cases wenn UI-Auto-Recovery scheitert. Doku:
 `docs/user-guide/QUICK_FIX.md`.
 
-## Async Admin Jobs (Symfony Messenger)
+## Async Admin Jobs
 
-Long-running admin tasks (> PHP-FPM 30s limit) run via Symfony Messenger.
-Status is persisted in `var/jobs/<uuid>.json` — survives PHP-FPM restarts.
-Frontend polls `GET /admin/jobs/{uuid}/status` every 3s (Stimulus `async-job` controller).
+Long-running admin tasks (> PHP-FPM 30 s limit) run asynchronously and report
+status via `var/jobs/<uuid>.json`. The frontend polls
+`GET /admin/jobs/{uuid}/status` every 3 s (Stimulus `async-job` controller).
 
-**Worker start (dev):**
+**Two execution strategies, chosen by the `app.async_job.runner` parameter:**
+
+| Strategy            | Use when                              | Worker needed? |
+|---------------------|---------------------------------------|----------------|
+| `in_request` (default) | Shared hosting / no shell access     | No — uses `fastcgi_finish_request()` |
+| `messenger` (opt-in) | Multi-server / dedicated worker box  | Yes — `messenger:consume async` |
+
+Switch via env: `APP_ASYNC_JOB_RUNNER=messenger`.
+
+### In-request runner (default — shared-hosting friendly)
+
+The runner flushes the response to the browser, calls
+`fastcgi_finish_request()` (or `litespeed_finish_request()`), then keeps the
+PHP-FPM worker executing the job until completion. Falls back to synchronous
+execution under CLI / non-FPM SAPIs so phpunit + console commands work
+unchanged.
+
+`InRequestJobRunner` lives at `src/Service/Job/InRequestJobRunner.php`.
+The detach helper is shared with the setup-wizard via
+`App\Controller\Trait\DetachableResponseTrait`.
+
+### Adding a new async admin job
+
+1. Create `src/Job/MyJob.php` implementing `App\Job\AsyncJobInterface`
+2. Inject services via constructor (autowired automatically)
+3. Implement `run(JobContext $ctx)` — call `$ctx->progress()` and `$ctx->message()`
+4. In the controller — render the progress page **before** dispatch:
+   ```php
+   $jobId = $this->jobStatusService->create('admin.my_job', $payload);
+   $response = $this->render('...progress.html.twig', [
+       'jobId' => $jobId, 'cancelUrl' => '...',
+   ]);
+   return $this->jobDispatcher->dispatch(
+       MyJob::class,
+       ['myArg' => $val],
+       $jobId,
+       $response,
+       $request->getSession(),  // released early so polling does not block
+   );
+   ```
+5. Include `_async_job_progress.html.twig` in the progress template
+
+**Critical ordering invariant:** `$this->render(...)` MUST come before
+`$jobDispatcher->dispatch()` — the response body must exist when the runner
+flushes it.
+
+**Jobs must NOT depend on request-bound services** (Session, Request,
+FlashBag, TenantContext-via-request). After `fastcgi_finish_request()` the
+session is read-only and the original request is gone. Pass everything you
+need (tenantId, userId, …) through `$args` at dispatch time — see
+`ExportRisksJob` as the reference pattern. The shared EntityManager
+keeps working after detach.
+
+### Advanced — Messenger worker (opt-in, for dedicated infra)
+
+Set `APP_ASYNC_JOB_RUNNER=messenger` to route `ExecuteJobMessage` through
+the doctrine async transport. Worker start:
+
 ```bash
+# Dev
 php bin/console messenger:consume async --time-limit=300 -vv
-```
 
-**Worker start (production — systemd unit example):**
-```ini
+# Production — systemd unit
 # /etc/systemd/system/isms-worker.service
 [Unit]
 Description=Little ISMS Helper Messenger Worker
@@ -95,35 +151,22 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 ```
+
 ```bash
 systemctl enable isms-worker && systemctl start isms-worker
 ```
 
-**Adding a new async admin job:**
-1. Create `src/Job/MyJob.php` implementing `App\Job\AsyncJobInterface`
-2. Inject services via constructor (autowired automatically)
-3. Implement `run(JobContext $ctx)` — call `$ctx->progress()` and `$ctx->message()`
-4. In the controller:
-   ```php
-   $jobId = $this->jobStatusService->create('admin.my_job', $payload);
-   $this->messageBus->dispatch(new ExecuteJobMessage(MyJob::class, ['myArg' => $val], $jobId));
-   return $this->render('...progress.html.twig', ['jobId' => $jobId, 'cancelUrl' => '...']);
-   ```
-5. Include `_async_job_progress.html.twig` in the progress template
+### Key files
 
-**Phase 2 follow-up candidates (not yet converted):**
-- `schema-reconcile` — long ALTER TABLE sequences on large DBs
-- `bulk-data-repair` (tenant mismatch fix) — large row counts
-- `restore` — backup restore (currently uses detachAndContinue pattern)
-- `large-export` — report exports on 10k+ row datasets
-- `compliance-import` commit phase (already has BulkImportMessage but no progress page)
-
-**Key files:**
-- `src/Service/Job/JobStatusService.php` — status store
+- `src/Service/Job/JobDispatcher.php` — facade controllers inject
+- `src/Service/Job/InRequestJobRunner.php` — default strategy (FCGI detach)
+- `src/Service/Job/MessengerJobRunner.php` — opt-in Messenger strategy
+- `src/Service/Job/JobStatusService.php` — file-based status store
 - `src/Job/AsyncJobInterface.php` + `JobContext.php` — contract + context
-- `src/Message/Job/ExecuteJobMessage.php` — Messenger message
+- `src/Message/Job/ExecuteJobMessage.php` — Messenger envelope (opt-in path)
 - `src/MessageHandler/Job/ExecuteJobHandler.php` — worker handler
 - `src/Controller/Admin/JobStatusController.php` — polling endpoint
+- `src/Controller/Trait/DetachableResponseTrait.php` — buffer-drain + FCGI helper
 - `templates/_components/_async_job_progress.html.twig` — progress partial
 - `assets/controllers/async_job_controller.js` — Stimulus polling controller
 

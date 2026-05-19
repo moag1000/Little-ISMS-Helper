@@ -9,9 +9,9 @@ use InvalidArgumentException;
 use DateTimeInterface;
 use App\Job\CreateBackupJob;
 use App\Job\RestoreBackupJob;
-use App\Message\Job\ExecuteJobMessage;
 use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\BackupService;
+use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\RestoreService;
 use App\Service\TenantContext;
@@ -24,7 +24,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -64,7 +63,7 @@ class AdminBackupController extends AbstractController
         private readonly LoggerInterface $logger,
         private readonly TenantContext $tenantContext,
         private readonly JobStatusService $jobStatusService,
-        private readonly MessageBusInterface $messageBus,
+        private readonly JobDispatcher $jobDispatcher,
     ) {
     }
 
@@ -86,7 +85,7 @@ class AdminBackupController extends AbstractController
 
     #[Route('/admin/data/backup/create', name: 'data_backup_create', methods: ['POST'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
-    public function createBackup(Request $request): JsonResponse
+    public function createBackup(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('data_backup_create', $request->request->get('_token'))) {
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
@@ -116,27 +115,45 @@ class AdminBackupController extends AbstractController
             ],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: CreateBackupJob::class,
-            args: [
-                'includeAuditLog'     => $includeAuditLog,
-                'includeUserSessions' => $includeUserSessions,
-                'tenantId'            => $tenantScope?->getId(),
-            ],
-            jobId: $jobId,
-        ));
+        $args = [
+            'includeAuditLog'     => $includeAuditLog,
+            'includeUserSessions' => $includeUserSessions,
+            'tenantId'            => $tenantScope?->getId(),
+        ];
 
-        // Frontend JS reads `async` + `jobId` + `progressUrl` and redirects
-        // to the progress page; legacy fields (`success`, `message`) are kept
-        // for backward-compat with any third-party callers.
-        return new JsonResponse([
-            'success'      => true,
-            'async'        => true,
-            'message'      => 'Backup-Job gestartet — Fortschritt wird auf der Status-Seite angezeigt.',
-            'jobId'        => $jobId,
-            'progressUrl'  => $this->generateUrl('data_backup_progress', ['id' => $jobId]),
-            'statusUrl'    => $this->generateUrl('admin_job_status', ['id' => $jobId]),
-        ]);
+        // Safety net: when the page's inline JS fails to attach the submit
+        // listener (e.g. transient parse error in a third-party module),
+        // the browser submits the form directly via the form's `action`. In
+        // that case there's no JS to read `progressUrl` from a JsonResponse,
+        // so we redirect to the progress page server-side instead. Detect
+        // the AJAX path via `X-Requested-With` (set explicitly by the page
+        // fetch() call) — XHR clients still receive the JsonResponse.
+        //
+        // Build the response BEFORE dispatch so InRequestJobRunner can flush
+        // it and detach the connection before running the long backup job.
+        if (!$request->isXmlHttpRequest()) {
+            $response = $this->redirectToRoute('data_backup_progress', ['id' => $jobId]);
+        } else {
+            // Frontend JS reads `async` + `jobId` + `progressUrl` and redirects
+            // to the progress page; legacy fields (`success`, `message`) are
+            // kept for backward-compat with any third-party callers.
+            $response = new JsonResponse([
+                'success'      => true,
+                'async'        => true,
+                'message'      => 'Backup-Job gestartet — Fortschritt wird auf der Status-Seite angezeigt.',
+                'jobId'        => $jobId,
+                'progressUrl'  => $this->generateUrl('data_backup_progress', ['id' => $jobId]),
+                'statusUrl'    => $this->generateUrl('admin_job_status', ['id' => $jobId]),
+            ]);
+        }
+
+        return $this->jobDispatcher->dispatch(
+            CreateBackupJob::class,
+            $args,
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     /**
@@ -196,17 +213,25 @@ class AdminBackupController extends AbstractController
 
     #[Route('/admin/data/backup/upload', name: 'data_backup_upload', methods: ['POST'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
-    public function uploadBackup(Request $request): JsonResponse
+    public function uploadBackup(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('data_backup_upload', $request->request->get('_token'))) {
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
+
+        $isXhr = $request->isXmlHttpRequest();
 
         try {
             /** @var UploadedFile|null $file */
             $file = $request->files->get('backup_file');
 
             if (!$file) {
+                if (!$isXhr) {
+                    $this->addFlash('error', 'Keine Datei hochgeladen');
+
+                    return $this->redirectToRoute('data_backup_index');
+                }
+
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Keine Datei hochgeladen',
@@ -218,6 +243,12 @@ class AdminBackupController extends AbstractController
             $extension = $file->getClientOriginalExtension();
 
             if (!in_array($extension, $allowedExtensions)) {
+                if (!$isXhr) {
+                    $this->addFlash('error', 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt.');
+
+                    return $this->redirectToRoute('data_backup_index');
+                }
+
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt.',
@@ -235,6 +266,16 @@ class AdminBackupController extends AbstractController
                 'filename' => $filename,
             ]);
 
+            // Safety net: see createBackup() comment above. Non-XHR submits
+            // (JS failed to attach the submit listener) redirect to the
+            // backup index instead of returning a JsonResponse the browser
+            // would render as raw text.
+            if (!$isXhr) {
+                $this->addFlash('success', 'Backup-Datei erfolgreich hochgeladen: ' . $filename);
+
+                return $this->redirectToRoute('data_backup_index');
+            }
+
             return new JsonResponse([
                 'success' => true,
                 'message' => 'Backup-Datei erfolgreich hochgeladen',
@@ -244,6 +285,12 @@ class AdminBackupController extends AbstractController
             $this->logger->error('Backup upload failed', [
                 'error' => $e->getMessage(),
             ]);
+
+            if (!$isXhr) {
+                $this->addFlash('error', 'Fehler beim Hochladen der Datei: ' . $e->getMessage());
+
+                return $this->redirectToRoute('data_backup_index');
+            }
 
             return new JsonResponse([
                 'success' => false,
@@ -341,7 +388,7 @@ class AdminBackupController extends AbstractController
 
     #[Route('/admin/data/backup/restore/{filename}', name: 'data_backup_restore', methods: ['POST'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
-    public function restoreBackup(string $filename, Request $request): JsonResponse
+    public function restoreBackup(string $filename, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('data_backup_restore', $request->request->get('_token'))) {
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
@@ -396,17 +443,16 @@ class AdminBackupController extends AbstractController
             ],
         );
 
-        $this->messageBus->dispatch(new ExecuteJobMessage(
-            jobClass: RestoreBackupJob::class,
-            args: [
-                'filepath'        => $filepath,
-                'options'         => $options,
-                'targetTenantId'  => $targetTenantScope?->getId(),
-            ],
-            jobId: $jobId,
-        ));
+        $args = [
+            'filepath'        => $filepath,
+            'options'         => $options,
+            'targetTenantId'  => $targetTenantScope?->getId(),
+        ];
 
-        return new JsonResponse([
+        // Build the JSON envelope BEFORE dispatch — the in-request runner
+        // flushes it to the browser then keeps running the restore in this
+        // same PHP-FPM worker.
+        $response = new JsonResponse([
             'success'      => true,
             'async'        => true,
             'message'      => $options['dry_run']
@@ -418,6 +464,14 @@ class AdminBackupController extends AbstractController
             'tenant_scope' => $targetTenantScope?->getId(),
             'dry_run'      => $options['dry_run'],
         ]);
+
+        return $this->jobDispatcher->dispatch(
+            RestoreBackupJob::class,
+            $args,
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     #[Route('/admin/data/backup/delete/{filename}', name: 'data_backup_delete', methods: ['POST', 'DELETE'])]
