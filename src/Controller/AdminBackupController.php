@@ -86,7 +86,7 @@ class AdminBackupController extends AbstractController
 
     #[Route('/admin/data/backup/create', name: 'data_backup_create', methods: ['POST'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
-    public function createBackup(Request $request): JsonResponse
+    public function createBackup(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('data_backup_create', $request->request->get('_token'))) {
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
@@ -125,6 +125,17 @@ class AdminBackupController extends AbstractController
             ],
             jobId: $jobId,
         ));
+
+        // Safety net: when the page's inline JS fails to attach the submit
+        // listener (e.g. transient parse error in a third-party module),
+        // the browser submits the form directly via the form's `action`. In
+        // that case there's no JS to read `progressUrl` from a JsonResponse,
+        // so we redirect to the progress page server-side instead. Detect
+        // the AJAX path via `X-Requested-With` (set explicitly by the page
+        // fetch() call) — XHR clients still receive the JsonResponse.
+        if (!$request->isXmlHttpRequest()) {
+            return $this->redirectToRoute('data_backup_progress', ['id' => $jobId]);
+        }
 
         // Frontend JS reads `async` + `jobId` + `progressUrl` and redirects
         // to the progress page; legacy fields (`success`, `message`) are kept
@@ -196,17 +207,25 @@ class AdminBackupController extends AbstractController
 
     #[Route('/admin/data/backup/upload', name: 'data_backup_upload', methods: ['POST'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
-    public function uploadBackup(Request $request): JsonResponse
+    public function uploadBackup(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('data_backup_upload', $request->request->get('_token'))) {
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
+
+        $isXhr = $request->isXmlHttpRequest();
 
         try {
             /** @var UploadedFile|null $file */
             $file = $request->files->get('backup_file');
 
             if (!$file) {
+                if (!$isXhr) {
+                    $this->addFlash('error', 'Keine Datei hochgeladen');
+
+                    return $this->redirectToRoute('data_backup_index');
+                }
+
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Keine Datei hochgeladen',
@@ -218,6 +237,12 @@ class AdminBackupController extends AbstractController
             $extension = $file->getClientOriginalExtension();
 
             if (!in_array($extension, $allowedExtensions)) {
+                if (!$isXhr) {
+                    $this->addFlash('error', 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt.');
+
+                    return $this->redirectToRoute('data_backup_index');
+                }
+
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt.',
@@ -235,6 +260,16 @@ class AdminBackupController extends AbstractController
                 'filename' => $filename,
             ]);
 
+            // Safety net: see createBackup() comment above. Non-XHR submits
+            // (JS failed to attach the submit listener) redirect to the
+            // backup index instead of returning a JsonResponse the browser
+            // would render as raw text.
+            if (!$isXhr) {
+                $this->addFlash('success', 'Backup-Datei erfolgreich hochgeladen: ' . $filename);
+
+                return $this->redirectToRoute('data_backup_index');
+            }
+
             return new JsonResponse([
                 'success' => true,
                 'message' => 'Backup-Datei erfolgreich hochgeladen',
@@ -244,6 +279,12 @@ class AdminBackupController extends AbstractController
             $this->logger->error('Backup upload failed', [
                 'error' => $e->getMessage(),
             ]);
+
+            if (!$isXhr) {
+                $this->addFlash('error', 'Fehler beim Hochladen der Datei: ' . $e->getMessage());
+
+                return $this->redirectToRoute('data_backup_index');
+            }
 
             return new JsonResponse([
                 'success' => false,

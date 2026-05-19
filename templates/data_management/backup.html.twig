@@ -23,7 +23,14 @@
                     <p class="text-muted">
                         {{ 'data_management.backup.create.description'|trans({}, 'admin') }}
                     </p>
+                    {# Safety net: when JS fails to attach the submit listener,
+                       the browser submits the form via the explicit action + method
+                       below. AdminBackupController::createBackup() detects the
+                       missing X-Requested-With header and redirects to the
+                       progress page instead of returning JSON. #}
                     <form id="createBackupForm"
+                          method="post"
+                          action="{{ path('data_backup_create') }}"
                           data-controller="wizard-busy"
                           data-wizard-busy-message-value="{{ 'data.alva.busy.backup_create'|trans({}, 'data_management') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('data_backup_create') }}">
@@ -70,7 +77,11 @@
                     <p class="text-muted">
                         {{ 'data_management.backup.upload.description'|trans({}, 'admin') }}
                     </p>
+                    {# Safety net: see createBackupForm above. #}
                     <form id="uploadBackupForm"
+                          method="post"
+                          action="{{ path('data_backup_upload') }}"
+                          enctype="multipart/form-data"
                           data-controller="wizard-busy"
                           data-wizard-busy-message-value="{{ 'data.alva.busy.backup_upload'|trans({}, 'data_management') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('data_backup_upload') }}">
@@ -419,6 +430,9 @@
         var _t = {
             totalRecordsLabel: {{ 'data_management.backup.preview.total_records'|trans({}, 'admin')|json_encode|raw }},
             errorLabel: {{ 'data_management.backup.message.error'|trans({}, 'admin')|json_encode|raw }},
+            fileLabel: {{ 'data_management.backup.message.file'|trans({}, 'admin')|json_encode|raw }},
+            savedEntriesLabel: {{ 'data_management.backup.message.saved_entries'|trans({}, 'admin')|json_encode|raw }},
+            closeLabel: {{ 'action.close'|trans({}, 'messages')|json_encode|raw }},
             previewTotalRecordsAlert: function(count) {
                 return '<div class="fa-alert fa-alert--info" role="alert"><div class="fa-alert__body"><p class="fa-alert__message"><strong>' + _t.totalRecordsLabel + ':</strong> ' + count + '</p></div></div>';
             },
@@ -474,7 +488,8 @@
                 try {
                     const response = await fetch('{{ path('data_backup_create') }}', {
                         method: 'POST',
-                        body: formData
+                        body: formData,
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
                     });
 
                     const result = await response.json();
@@ -490,14 +505,13 @@
                     if (result.success) {
                         createBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--success" role="alert">
-                                <i class="fa-icon fa-icon--ui-check" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-check fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body">
                                 <strong>${result.message}</strong><br>
-                                {{ 'data_management.backup.message.file'|trans({}, 'admin') }}: ${result.filename}<br>
-                                <small>{{ 'data_management.backup.message.saved_entries'|trans({}, 'admin') }}: ${Object.values(result.statistics).reduce((a, b) => a + b, 0)}</small>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+                                ${_t.fileLabel}: ${result.filename}<br>
+                                <small>${_t.savedEntriesLabel}: ${Object.values(result.statistics).reduce((a, b) => a + b, 0)}</small>
                                 </div>
-                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="${_t.closeLabel}">
                                     <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -513,11 +527,9 @@
                     } else {
                         createBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--danger" role="alert">
-                                <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> ${result.message}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                                </div>
-                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                                <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body">${result.message}</div>
+                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="${_t.closeLabel}">
                                     <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -526,11 +538,9 @@
                 } catch (error) {
                     createBackupStatus.innerHTML = `
                         <div class="fa-alert fa-alert--danger" role="alert">
-                            <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
-                            <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                            </div>
-                            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body">${_t.errorLabel}: ${error.message}</div>
+                            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="${_t.closeLabel}">
                                 <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -568,7 +578,8 @@
                 try {
                     const response = await fetch('{{ path('data_backup_upload') }}', {
                         method: 'POST',
-                        body: formData
+                        body: formData,
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
                     });
 
                     const result = await response.json();
@@ -576,11 +587,9 @@
                     if (result.success) {
                         uploadBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--success" role="alert">
-                                <i class="fa-icon fa-icon--ui-check" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> ${result.message}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                                </div>
-                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                                <i class="fa-icon fa-icon--ui-check fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body">${result.message}</div>
+                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="${_t.closeLabel}">
                                     <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -597,11 +606,9 @@
                     } else {
                         uploadBackupStatus.innerHTML = `
                             <div class="fa-alert fa-alert--danger" role="alert">
-                                <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> ${result.message}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                                </div>
-                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                                <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body">${result.message}</div>
+                                <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="${_t.closeLabel}">
                                     <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -610,11 +617,9 @@
                 } catch (error) {
                     uploadBackupStatus.innerHTML = `
                         <div class="fa-alert fa-alert--danger" role="alert">
-                            <i class="fa-icon fa-icon--status-critical" fa-alert__icon" aria-hidden="true"></i>
-                            <div class="fa-alert__body"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                            </div>
-                            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+                            <div class="fa-alert__body">${_t.errorLabel}: ${error.message}</div>
+                            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="${_t.closeLabel}">
                                 <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -862,8 +867,8 @@
                         let html = isDryRun
                             ? `<div class="fa-alert fa-alert--info" role="alert"><i class="fa-icon fa-alert__icon fa-icon--compliance-shield" aria-hidden="true"></i><div class="fa-alert__body"><strong>${result.message}</strong>`
                             : `<div class="fa-alert fa-alert--success" role="alert">
-                                <i class="fa-icon fa-icon--ui-check" fa-alert__icon" aria-hidden="true"></i>
-                                <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> <strong>${result.message}</strong>`;
+                                <i class="fa-icon fa-icon--ui-check fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body"><strong>${result.message}</strong>`;
 
                         if (isDryRun) {
                             // Count total simulated entities
@@ -909,9 +914,7 @@
                             html += '<br><small class="text-muted">{{ 'data_management.backup.restore.page_reload'|trans({}, 'admin') }}</small>';
                         }
 
-                        html += '
-                                </div>
-                            </div>';
+                        html += '</div></div>';
                         restoreStatus.innerHTML = html;
 
                         if (!isDryRun) {

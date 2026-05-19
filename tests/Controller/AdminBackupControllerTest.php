@@ -175,6 +175,11 @@ class AdminBackupControllerTest extends WebTestCase
      * accepts any token value when both `Sec-Fetch-Site: same-origin` and a
      * token parameter are present (cf. config/packages/csrf.yaml).
      *
+     * Sends `X-Requested-With: XMLHttpRequest` to match the JS fetch()
+     * call's headers — AdminBackupController distinguishes the AJAX path
+     * (JsonResponse) from the JS-failed form-submit fallback path
+     * (server-side redirect to progress page) via this header.
+     *
      * @param array<string, mixed> $params Post parameters (will carry `_token=same-origin`)
      */
     private function sameOriginRequest(string $method, string $uri, array $params = [], array $files = []): void
@@ -188,7 +193,10 @@ class AdminBackupControllerTest extends WebTestCase
             $uri,
             $params,
             $files,
-            ['HTTP_SEC_FETCH_SITE' => 'same-origin']
+            [
+                'HTTP_SEC_FETCH_SITE'   => 'same-origin',
+                'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
+            ]
         );
     }
 
@@ -249,6 +257,28 @@ class AdminBackupControllerTest extends WebTestCase
         $this->sameOriginRequest('POST', '/en/admin/data/backup/create');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/json');
+    }
+
+    #[Test]
+    public function testCreateBackupRedirectsToProgressPageWhenNotXhr(): void
+    {
+        // Safety net: when the page's inline JS fails (e.g. transient parse
+        // error in a third-party module), the browser submits the form via
+        // the explicit form `action`. Without `X-Requested-With`, the
+        // controller must redirect to the progress page server-side instead
+        // of returning a JsonResponse the browser would render as raw text.
+        $this->loginAsUser($this->adminUser);
+        $this->client->request(
+            'POST',
+            '/en/admin/data/backup/create',
+            ['_token' => 'csrf-token'],
+            [],
+            ['HTTP_SEC_FETCH_SITE' => 'same-origin'],
+        );
+        $this->assertResponseRedirects();
+        $location = $this->client->getResponse()->headers->get('Location');
+        $this->assertNotNull($location);
+        $this->assertStringContainsString('/admin/data/backup/progress/', (string) $location);
     }
 
     // ========== ROLE-SCOPE PHASE 3 — TENANT-SCOPED BACKUP TESTS ==========
