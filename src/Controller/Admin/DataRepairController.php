@@ -6,7 +6,11 @@ namespace App\Controller\Admin;
 
 use App\Entity\Control;
 use App\Entity\User;
+use App\Job\ExecutePendingMigrationsJob;
 use App\Job\FixAllOrphansJob;
+use App\Job\FixTenantMismatchesJob;
+use App\Job\MergeDuplicatesJob;
+use App\Job\ReconcileSchemaJob;
 use App\Message\Job\ExecuteJobMessage;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
@@ -716,6 +720,10 @@ class DataRepairController extends AbstractController
      * call (could be a data leak OR a reparation) — therefore:
      *   - a reason ≥ 20 chars is mandatory,
      *   - every reassignment is audit-logged with the before/after tenant.
+     *
+     * Dispatches {@see FixTenantMismatchesJob} via Symfony Messenger so the
+     * polling progress page replaces a blocking request that previously
+     * risked the PHP-FPM 30 s timeout on large broken-reference lists.
      */
     #[Route('/admin/data-repair/fix-tenant-mismatches', name: 'admin_data_repair_fix_tenant_mismatches', methods: ['POST'])]
     public function fixTenantMismatches(Request $request): Response
@@ -735,86 +743,24 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        $fixedCount = 0;
-        $this->withoutTenantFilter(function () use ($reason, &$fixedCount): void {
-            $brokenReferences = $this->dataIntegrityService->findBrokenReferences();
+        $jobId = $this->jobStatusService->create(
+            'admin.data_repair.fix_tenant_mismatches',
+            ['reason_length' => mb_strlen($reason)],
+        );
 
-            foreach ($brokenReferences as $ref) {
-            // Fix risk-asset tenant mismatches by setting risk tenant to match asset
-            if ($ref['type'] === 'risk_asset_tenant_mismatch') {
-                $risk = $this->riskRepository->find($ref['entity_id']);
-                $asset = $risk?->getAsset();
-                if ($risk && $asset && $asset->getTenant()) {
-                    $previousTenant = $risk->getTenant();
-                    $newTenant = $asset->getTenant();
-                    $risk->setTenant($newTenant);
-                    $this->auditLogger->logCustom(
-                        'admin.data_repair.tenant_mismatch_fixed',
-                        'Risk',
-                        (int) $risk->getId(),
-                        ['tenant_id' => $previousTenant?->getId()],
-                        [
-                            'tenant_id' => $newTenant->getId(),
-                            'tenant_name' => $newTenant->getName(),
-                            'aligned_to' => 'Asset#' . (int) $asset->getId(),
-                            'reason' => $reason,
-                        ],
-                        sprintf(
-                            'Risk#%d tenant aligned to Asset#%d owner (tenant %d -> %d): %s',
-                            (int) $risk->getId(),
-                            (int) $asset->getId(),
-                            (int) ($previousTenant?->getId() ?? 0),
-                            (int) $newTenant->getId(),
-                            $reason,
-                        ),
-                    );
-                    $fixedCount++;
-                }
-            }
+        $this->messageBus->dispatch(new ExecuteJobMessage(
+            jobClass: FixTenantMismatchesJob::class,
+            args: ['reason' => $reason],
+            jobId: $jobId,
+        ));
 
-            // Fix incident-asset tenant mismatches
-            if ($ref['type'] === 'incident_asset_tenant_mismatch') {
-                $incident = $this->incidentRepository->find($ref['entity_id']);
-                if ($incident && $incident->getAffectedAssets()->count() > 0) {
-                    // Set incident tenant to first asset's tenant
-                    $firstAsset = $incident->getAffectedAssets()->first();
-                    if ($firstAsset && $firstAsset->getTenant()) {
-                        $previousTenant = $incident->getTenant();
-                        $newTenant = $firstAsset->getTenant();
-                        $incident->setTenant($newTenant);
-                        $this->auditLogger->logCustom(
-                            'admin.data_repair.tenant_mismatch_fixed',
-                            'Incident',
-                            (int) $incident->getId(),
-                            ['tenant_id' => $previousTenant?->getId()],
-                            [
-                                'tenant_id' => $newTenant->getId(),
-                                'tenant_name' => $newTenant->getName(),
-                                'aligned_to' => 'Asset#' . (int) $firstAsset->getId(),
-                                'reason' => $reason,
-                            ],
-                            sprintf(
-                                'Incident#%d tenant aligned to first affected Asset#%d owner (tenant %d -> %d): %s',
-                                (int) $incident->getId(),
-                                (int) $firstAsset->getId(),
-                                (int) ($previousTenant?->getId() ?? 0),
-                                (int) $newTenant->getId(),
-                                $reason,
-                            ),
-                        );
-                        $fixedCount++;
-                    }
-                }
-            }
-            }
-            $this->entityManager->flush();
-        });
-
-        $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_mismatches', [
-            '%count%' => $fixedCount,
-        ], 'admin'));
-
-        return $this->redirectToRoute('admin_data_repair_index');
+        return $this->render('admin/data_repair/job_progress.html.twig', [
+            'jobId' => $jobId,
+            'jobName' => 'admin.data_repair.fix_tenant_mismatches',
+            'jobLabel' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_label', [], 'admin'),
+            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_subtitle', [], 'admin'),
+            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
+        ]);
     }
 
     /**
@@ -822,6 +768,10 @@ class DataRepairController extends AbstractController
      * Keeps the entity with the lowest ID (oldest) and removes newer duplicates.
      *
      * Supported entity types: audits, assets, risks, incidents, documents
+     *
+     * Dispatches {@see MergeDuplicatesJob} via Symfony Messenger so very large
+     * duplicate groups (>10 k rows on legacy imports) don't hit the PHP-FPM
+     * 30 s timeout. Audit-log is written from the job.
      */
     #[Route('/admin/data-repair/fix-duplicates/{entityType}', name: 'admin_data_repair_fix_duplicates', methods: ['POST'])]
     #[IsGranted('ROLE_SUPER_ADMIN')]
@@ -842,27 +792,26 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        $deleted = $this->withoutTenantFilter(
-            fn() => $this->dataIntegrityService->mergeDuplicates($entityType)
-        );
-
         $actor = (string) ($user->getEmail() ?? 'admin');
-        $this->auditLogger->logCustom(
-            'admin.data_repair.duplicates_merged',
-            $entityType,
-            0,
-            [],
-            ['entity_type' => $entityType, 'deleted_count' => $deleted, 'actor' => $actor],
-            sprintf('Merged duplicates for entity type "%s": %d record(s) deleted (oldest kept).', $entityType, $deleted),
+
+        $jobId = $this->jobStatusService->create(
+            'admin.data_repair.merge_duplicates',
+            ['entityType' => $entityType, 'actor' => $actor],
         );
 
-        $this->addFlash('success', $this->translator->trans(
-            'admin.data_repair.duplicates_merged',
-            ['%count%' => $deleted, '%type%' => $entityType],
-            'admin',
+        $this->messageBus->dispatch(new ExecuteJobMessage(
+            jobClass: MergeDuplicatesJob::class,
+            args: ['entityType' => $entityType, 'actor' => $actor],
+            jobId: $jobId,
         ));
 
-        return $this->redirectToRoute('admin_data_repair_index');
+        return $this->render('admin/data_repair/job_progress.html.twig', [
+            'jobId' => $jobId,
+            'jobName' => 'admin.data_repair.merge_duplicates',
+            'jobLabel' => $this->translator->trans('admin.data_repair.job.merge_duplicates_label', ['%type%' => $entityType], 'admin'),
+            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.merge_duplicates_subtitle', [], 'admin'),
+            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
+        ]);
     }
 
     /**
@@ -885,36 +834,25 @@ class DataRepairController extends AbstractController
         }
 
         $actor = (string) ($user->getEmail() ?? 'admin');
-        $result = $this->schemaMaintenanceService->executePendingMigrations($actor);
 
-        if ($result['success']) {
-            $this->addFlash('success', $this->translator->trans(
-                'admin.data_repair.schema.migrations_applied',
-                ['%count%' => $result['executed']],
-                'admin',
-            ));
-        } else {
-            $diagnosis = $result['diagnosis'] ?? null;
-            if (is_array($diagnosis) && ($diagnosis['category'] ?? 'unknown') !== 'unknown') {
-                $this->addFlash('error', sprintf(
-                    '[%s] %s — %s%s',
-                    $diagnosis['category'],
-                    $diagnosis['message'] ?? '',
-                    $diagnosis['suggested_action'] ?? '',
-                    isset($diagnosis['offending_version']) && $diagnosis['offending_version'] !== null
-                        ? sprintf(' (offending: %s)', $diagnosis['offending_version'])
-                        : '',
-                ));
-            } else {
-                $this->addFlash('error', $this->translator->trans(
-                    'admin.data_repair.schema.migrations_failed',
-                    ['%error%' => (string) $result['error']],
-                    'admin',
-                ));
-            }
-        }
+        $jobId = $this->jobStatusService->create(
+            'admin.data_repair.execute_migrations',
+            ['actor' => $actor],
+        );
 
-        return $this->redirectToRoute('admin_data_repair_index');
+        $this->messageBus->dispatch(new ExecuteJobMessage(
+            jobClass: ExecutePendingMigrationsJob::class,
+            args: ['actor' => $actor],
+            jobId: $jobId,
+        ));
+
+        return $this->render('admin/data_repair/job_progress.html.twig', [
+            'jobId' => $jobId,
+            'jobName' => 'admin.data_repair.execute_migrations',
+            'jobLabel' => $this->translator->trans('admin.data_repair.job.execute_migrations_label', [], 'admin'),
+            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.execute_migrations_subtitle', [], 'admin'),
+            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
+        ]);
     }
 
     /**
@@ -1103,55 +1041,29 @@ class DataRepairController extends AbstractController
         }
 
         $actor = (string) ($user->getEmail() ?? 'admin');
+
         // Reconcile from the data-repair page intentionally bypasses the
         // pending-migration gate: an admin who's looking at a populated
         // drift card has already seen any pending migrations on the same
         // page — the UX here is "apply both buttons explicitly".
-        $result = $this->schemaMaintenanceService->reconcileSchema($actor, bypassMigrationGate: true);
+        $jobId = $this->jobStatusService->create(
+            'admin.data_repair.reconcile_schema',
+            ['actor' => $actor, 'bypassMigrationGate' => true],
+        );
 
-        if ($result['blocked'] !== null) {
-            $this->addFlash('error', $this->translator->trans(
-                'admin.data_repair.schema.reconcile_blocked',
-                ['%reason%' => (string) $result['blocked']],
-                'admin',
-            ));
-        } elseif ($result['success']) {
-            $autoMarkedCount = count($result['auto_marked'] ?? []);
-            $autoMarkFailedCount = count($result['auto_mark_failed'] ?? []);
-            $message = $this->translator->trans(
-                'admin.data_repair.schema.reconcile_applied',
-                ['%count%' => $result['executed']],
-                'admin',
-            );
-            if ($autoMarkedCount > 0) {
-                $message .= ' · ' . $this->translator->trans(
-                    'admin.data_repair.schema.auto_marked_migrations',
-                    ['%count%' => $autoMarkedCount],
-                    'admin',
-                );
-            }
-            if ($autoMarkFailedCount > 0) {
-                $firstError = '';
-                foreach ($result['auto_mark_failed'] as $version => $err) {
-                    $firstError = sprintf('%s: %s', $version, $err);
-                    break;
-                }
-                $message .= ' · ' . $this->translator->trans(
-                    'admin.data_repair.schema.auto_mark_failed',
-                    ['%count%' => $autoMarkFailedCount, '%first%' => $firstError],
-                    'admin',
-                );
-            }
-            $this->addFlash('success', $message);
-        } else {
-            $this->addFlash('error', $this->translator->trans(
-                'admin.data_repair.schema.reconcile_failed',
-                ['%error%' => (string) $result['error']],
-                'admin',
-            ));
-        }
+        $this->messageBus->dispatch(new ExecuteJobMessage(
+            jobClass: ReconcileSchemaJob::class,
+            args: ['actor' => $actor, 'bypassMigrationGate' => true],
+            jobId: $jobId,
+        ));
 
-        return $this->redirectToRoute('admin_data_repair_index');
+        return $this->render('admin/data_repair/job_progress.html.twig', [
+            'jobId' => $jobId,
+            'jobName' => 'admin.data_repair.reconcile_schema',
+            'jobLabel' => $this->translator->trans('admin.data_repair.job.reconcile_schema_label', [], 'admin'),
+            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.reconcile_schema_subtitle', [], 'admin'),
+            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
+        ]);
     }
 }
 

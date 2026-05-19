@@ -1,5 +1,24 @@
 quick_fix:
     title: 'Quick-Fix — Schema-Wartung'
+    # Async-Job-Fortschrittsseiten (Phase-2-Rollout).
+    job:
+        id_label: 'Job-ID'
+        worker_hint: 'Läuft im Hintergrund. Die Seite aktualisiert sich alle 3 Sekunden.'
+        back: 'Zurück zu Quick-Fix'
+        apply_label: 'Ausstehende Migrationen anwenden'
+        apply_subtitle: 'Führt den Doctrine-Migration-Plan im Hintergrund aus…'
+        reconcile_label: 'Schema reconcilen'
+        reconcile_subtitle: 'Gleicht das Live-Datenbank-Schema im Hintergrund mit den Entity-Metadaten ab…'
+        repair_orphans_label: 'Verwaiste Einträge reparieren'
+        repair_orphans_subtitle: 'Weist verwaiste Entities im Hintergrund dem Standard-Mandanten zu…'
+        repair_mismatches_label: 'Mandanten-Fehlzuordnungen beheben'
+        repair_mismatches_subtitle: 'Richtet Kind-Mandanten im Hintergrund am Parent (Asset) aus…'
+        repair_duplicates_label: 'Duplikate zusammenführen'
+        repair_duplicates_subtitle: 'Behält den ältesten Eintrag, entfernt neuere Duplikate im Hintergrund…'
+        repair_all_label: 'Alles reparieren'
+        repair_all_subtitle: 'Orphans + Mismatches + Duplikate im Hintergrund — kann mehrere Minuten dauern.'
+        force_schema_label: 'Schema-Update erzwingen'
+        force_schema_subtitle: 'Führt doctrine:schema:update im sicheren Modus (nur additiv) im Hintergrund aus…'
     pending:
         title: 'Datenbank-Update erforderlich'
         body: 'Diese Instanz wurde aktualisiert, das Datenbank-Schema ist aber noch auf dem alten Stand. Mit einem Klick anwenden:'

@@ -684,6 +684,18 @@ admin:
             col_entity: 'Entity'
             col_enum: 'Enum'
             col_unknown_values: 'Unknown values × count'
+        # Async data-repair job progress pages (Phase 2 rollout)
+        job:
+            badge: 'Data Repair'
+            generic_subtitle: 'Running in the background to keep PHP-FPM responsive.'
+            fix_tenant_mismatches_label: 'Fix Tenant Mismatches'
+            fix_tenant_mismatches_subtitle: 'Aligning child entity tenants with their parent (Asset) in the background…'
+            merge_duplicates_label: 'Merge Duplicates — %type%'
+            merge_duplicates_subtitle: 'Keeping the oldest entry, deleting newer duplicates in the background…'
+            execute_migrations_label: 'Execute Pending Migrations'
+            execute_migrations_subtitle: 'Running the Doctrine migration plan in the background…'
+            reconcile_schema_label: 'Reconcile Schema'
+            reconcile_schema_subtitle: 'Aligning live database schema with entity metadata in the background…'
     modules:
         title: Title
         dependency_graph: 'Dependency Graph'
@@ -1251,6 +1263,11 @@ data_management:
             page_reload: 'Page will reload in 3 seconds...'
         confirm_delete: 'Do you really want to delete the backup "%filename%"?'
         bootstrap_error: 'Bootstrap could not be loaded after %attempts% attempts'
+        # Async-job progress page (Phase 2 rollout) — shared by create and restore.
+        progress:
+            badge: 'Backup'
+            title: 'Backup job in progress'
+            subtitle: 'Running in the background to avoid PHP-FPM timeouts on large datasets.'
     export:
         includes_all_records: 'Includes all records from your tenant'
         sensitive_data_warning: 'Warning: This export may contain sensitive data. Please store securely.'

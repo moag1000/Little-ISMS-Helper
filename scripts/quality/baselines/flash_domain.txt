@@ -2,39 +2,13 @@
 # Format: <relative-path>:<line>
 # Remove an entry once the call passes an explicit domain
 # or is migrated to a LocalizedFlashTrait helper.
-src/Controller/Admin/DataRepairController.php:238
-src/Controller/Admin/DataRepairController.php:244
-src/Controller/Admin/DataRepairController.php:323
-src/Controller/Admin/DataRepairController.php:329
-src/Controller/Admin/DataRepairController.php:356
-src/Controller/Admin/DataRepairController.php:388
-src/Controller/Admin/DataRepairController.php:409
-src/Controller/Admin/DataRepairController.php:429
-src/Controller/Admin/DataRepairController.php:449
-src/Controller/Admin/DataRepairController.php:470
-src/Controller/Admin/DataRepairController.php:475
-src/Controller/Admin/DataRepairController.php:481
-src/Controller/Admin/DataRepairController.php:487
-src/Controller/Admin/DataRepairController.php:519
-src/Controller/Admin/DataRepairController.php:524
-src/Controller/Admin/DataRepairController.php:530
-src/Controller/Admin/DataRepairController.php:536
-src/Controller/Admin/DataRepairController.php:583
-src/Controller/Admin/DataRepairController.php:603
-src/Controller/Admin/DataRepairController.php:678
-src/Controller/Admin/DataRepairController.php:790
-src/Controller/Admin/DataRepairController.php:795
-src/Controller/Admin/DataRepairController.php:837
-src/Controller/Admin/DataRepairController.php:884
-src/Controller/Admin/DataRepairController.php:969
-src/Controller/Admin/DataRepairController.php:1055
 src/Controller/Admin/SampleDataController.php:168
-src/Controller/AdminBackupController.php:466
-src/Controller/AdminBackupController.php:474
-src/Controller/AdminBackupController.php:525
-src/Controller/AdminBackupController.php:532
-src/Controller/AdminBackupController.php:584
-src/Controller/AdminBackupController.php:598
+src/Controller/AdminBackupController.php:501
+src/Controller/AdminBackupController.php:509
+src/Controller/AdminBackupController.php:560
+src/Controller/AdminBackupController.php:567
+src/Controller/AdminBackupController.php:619
+src/Controller/AdminBackupController.php:633
 src/Controller/AdminModuleController.php:117
 src/Controller/AdminModuleController.php:133
 src/Controller/AdminModuleController.php:169

@@ -14,16 +14,22 @@
  #   } %}
  #
  # Variables:
- #   job_id    (string)  UUID returned by JobStatusService::create()
- #   job_name  (string)  Internal slug, shown in small text
- #   job_label (string)  Human-readable title shown as card heading
- #   cancel_url (string) Optional URL for a "Back" link once done
+ #   job_id     (string)  UUID returned by JobStatusService::create()
+ #   job_name   (string)  Internal slug, shown in small text
+ #   job_label  (string)  Human-readable title shown as card heading
+ #   cancel_url (string)  Optional URL for a "Back" link once done
+ #   status_url (string)  Optional override of the polling endpoint URL.
+ #                        Used by the QuickFix flow to swap the locale-prefixed
+ #                        admin endpoint for the public /quick-fix/jobs/{id}/status
+ #                        route (different auth model — see QuickFixGuard).
  #}
 {% trans_default_domain 'admin' %}
 
+{% set _poll_url = status_url|default(path('admin_job_status', {id: job_id, _locale: app.request.locale})) %}
+
 <div class="card border-0 shadow-sm"
      data-controller="async-job"
-     data-async-job-status-url-value="{{ path('admin_job_status', {id: job_id, _locale: app.request.locale}) }}"
+     data-async-job-status-url-value="{{ _poll_url }}"
      data-async-job-poll-interval-value="3000"
      data-async-job-job-id-value="{{ job_id }}"
      data-async-job-cancel-url-value="{{ cancel_url ?? '' }}">

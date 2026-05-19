@@ -1,0 +1,27 @@
+# Test-only Messenger override.
+#
+# Route ExecuteJobMessage to the sync transport in `test` env so PHPUnit
+# WebTestCase requests fully execute the async-job handler inline. Without
+# this override the handler runs only when `messenger:consume async`
+# actually drains the doctrine queue, which never happens in WebTestCase —
+# so the test would observe a job-progress page but no entity changes.
+#
+# Production (dev/prod env) still uses the doctrine 'async' transport so
+# real workers handle the load. The Sync transport is registered as a
+# top-level transport so we can address it by name in routing.
+#
+# `doctrine_transaction` middleware is intentionally REMOVED from the default
+# bus in test env: DAMA-DoctrineTestBundle already wraps every test in a
+# rollback-only transaction with its own SAVEPOINT semantics. Re-adding
+# `doctrine_transaction` on top causes "SAVEPOINT DOCTRINE_X does not exist"
+# when an async job runs inside that DAMA transaction.
+framework:
+    messenger:
+        transports:
+            sync: 'sync://'
+        routing:
+            App\Message\Job\ExecuteJobMessage: sync
+        buses:
+            messenger.bus.default:
+                middleware:
+                    - validation
