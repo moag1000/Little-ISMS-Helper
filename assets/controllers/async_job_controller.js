@@ -1,206 +1,191 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Async-Job Controller — for long-running form submits that would otherwise
- * hit proxy/PHP timeouts. Pattern:
+ * AsyncJob Controller — polls the /admin/jobs/{id}/status endpoint and
+ * updates a progress card rendered by _async_job_progress.html.twig.
  *
- *   1. Intercept submit, show wizard-busy overlay (Alva working + spinner).
- *   2. POST the form via fetch (server returns immediately via
- *      fastcgi_finish_request and continues work in background).
- *   3. Poll a status endpoint every N ms until status === 'success' | 'failed'.
- *   4. On success: reload page (or navigate to redirect URL from response).
- *   5. On failure: show error message in overlay, re-enable form.
+ * Terminal states (succeeded / failed) stop polling and show a "Back" link.
+ * Emits Alva mood events on completion and failure.
  *
- * Form-element data attributes:
- *   data-controller="async-job"
- *   data-async-job-status-url-value="/setup/step3/schema-status"
- *   data-async-job-poll-interval-value="1500"      (default: 1500ms)
- *   data-async-job-message-running-value="Alva ist gerade dabei…"
- *   data-async-job-message-success-value="Erfolgreich!"
- *   data-async-job-redirect-url-value="/setup/step4" (optional; default: location.reload())
- *   data-action="submit->async-job#start"
+ * Targets:
+ *   statusBadge    — span showing current status text + entity-badge class
+ *   statusMessage  — span with free-text status message
+ *   progressWrapper — div wrapping progress bar (hidden until total > 0)
+ *   progressBar    — div.progress-bar (width %)
+ *   progressNumbers — span showing "current / total"
+ *   progressLabel  — span with label text (updated from message field)
+ *   errorBox       — div.alert-danger (hidden until failure)
+ *   errorTrace     — pre inside errorBox for stack trace
+ *   successBox     — div.alert-success (hidden until success)
+ *   successMessage — span inside successBox
+ *   backLink       — link shown after terminal state
  *
- * Plays nicely with wizard_busy_controller — directly emits the same overlay
- * structure so styling stays consistent.
+ * Values:
+ *   statusUrl     (String) — /admin/jobs/{uuid}/status
+ *   pollInterval  (Number) — polling interval in ms (default 3000)
+ *   jobId         (String) — UUID of the job (for reference)
+ *   cancelUrl     (String) — optional URL for "back" navigation on done
  */
 export default class extends Controller {
+    static targets = [
+        'statusBadge', 'statusMessage',
+        'progressWrapper', 'progressBar', 'progressNumbers', 'progressLabel',
+        'errorBox', 'errorTrace',
+        'successBox', 'successMessage',
+        'backLink',
+    ];
+
     static values = {
         statusUrl: String,
-        pollInterval: { type: Number, default: 1500 },
-        messageRunning: { type: String, default: 'Wird ausgeführt…' },
-        messageSuccess: { type: String, default: 'Fertig.' },
-        redirectUrl: { type: String, default: '' },
+        pollInterval: { type: Number, default: 3000 },
+        jobId: String,
+        cancelUrl: { type: String, default: '' },
     };
 
     connect() {
-        this._polling = false;
+        console.log('[async-job] connected, jobId:', this.jobIdValue);
+        this._timer = null;
+        this._terminal = false;
+        window.alvaBus?.emit({ mood: 'scanning', reason: 'async-job-pending' });
+        this._startPolling();
     }
 
     disconnect() {
-        this._polling = false;
+        this._stopPolling();
     }
 
-    async start(event) {
-        event.preventDefault();
-        if (this._polling) return;
+    // ── Private helpers ────────────────────────────────────────────────────
 
-        this._polling = true;
-        this._showOverlay(this.messageRunningValue);
-        this._lockForm();
-        this._switchAlvaMood('working');
+    _startPolling() {
+        // Poll immediately, then on interval
+        this._poll();
+        this._timer = setInterval(() => this._poll(), this.pollIntervalValue);
+    }
 
-        // POST the form. Server returns immediately via fastcgi_finish_request.
-        const form = this.element;
-        const formData = new FormData(form);
+    _stopPolling() {
+        if (this._timer !== null) {
+            clearInterval(this._timer);
+            this._timer = null;
+        }
+    }
+
+    async _poll() {
+        if (this._terminal || !this.statusUrlValue) return;
 
         try {
-            const resp = await fetch(form.action, {
-                method: form.method || 'POST',
-                body: formData,
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            const resp = await fetch(this.statusUrlValue, {
+                headers: { Accept: 'application/json' },
                 credentials: 'same-origin',
             });
 
             if (!resp.ok) {
-                const text = await resp.text();
-                throw new Error(`HTTP ${resp.status}: ${text.slice(0, 200)}`);
-            }
-
-            // Now poll status
-            await this._pollUntilDone();
-        } catch (err) {
-            this._showError(err.message || String(err));
-            this._unlockForm();
-            this._switchAlvaMood('warning');
-            this._polling = false;
-        }
-    }
-
-    async _pollUntilDone() {
-        while (this._polling) {
-            await this._sleep(this.pollIntervalValue);
-            try {
-                const resp = await fetch(this.statusUrlValue, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                    credentials: 'same-origin',
-                });
-                if (!resp.ok) continue; // transient failure, keep polling
-
-                const data = await resp.json();
-                if (data.status === 'success') {
-                    this._showSuccess(data.message || this.messageSuccessValue);
-                    this._switchAlvaMood('happy');
-                    this._polling = false;
-                    setTimeout(() => {
-                        if (this.redirectUrlValue) {
-                            window.location.href = this.redirectUrlValue;
-                        } else {
-                            window.location.reload();
-                        }
-                    }, 600);
-                    return;
+                // 404 → job file deleted; treat as terminal failure
+                if (resp.status === 404) {
+                    this._applyTerminalFailure('Job not found (deleted or expired).');
                 }
-                if (data.status === 'failed') {
-                    this._showError(data.message || 'Fehlgeschlagen');
-                    this._unlockForm();
-                    this._switchAlvaMood('warning');
-                    this._polling = false;
-                    return;
-                }
-                // status === 'running' or 'idle' → keep polling
-            } catch (_e) {
-                // transient — keep polling
+                return; // other transient errors — keep polling
             }
+
+            const data = await resp.json();
+            this._applyData(data);
+
+        } catch (_e) {
+            // Network error — keep polling silently
         }
     }
 
-    _sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+    _applyData(data) {
+        const status = data.status ?? 'unknown';
 
-    _showOverlay(message) {
-        this._removeOverlay();
-        const overlay = document.createElement('div');
-        overlay.className = 'wizard-busy-overlay async-job-overlay';
-        overlay.setAttribute('role', 'status');
-        overlay.setAttribute('aria-live', 'polite');
-        overlay.innerHTML =
-            '<div class="wizard-busy-overlay__inner">' +
-                '<div class="spinner-border text-primary" role="status" aria-hidden="true"></div>' +
-                '<div class="wizard-busy-overlay__text"></div>' +
-            '</div>';
-        overlay.querySelector('.wizard-busy-overlay__text').textContent = message;
-        const cs = window.getComputedStyle(this.element);
-        if (cs.position === 'static') this.element.style.position = 'relative';
-        this.element.classList.add('wizard-busy');
-        this.element.appendChild(overlay);
-    }
+        // Update status badge
+        if (this.hasStatusBadgeTarget) {
+            const badge = this.statusBadgeTarget;
+            [...badge.classList]
+                .filter((c) => c.startsWith('fa-entity-badge--'))
+                .forEach((c) => badge.classList.remove(c));
 
-    _showSuccess(message) {
-        const text = this.element.querySelector('.wizard-busy-overlay__text');
-        if (text) text.textContent = message;
-        const spinner = this.element.querySelector('.spinner-border');
-        if (spinner) spinner.classList.replace('text-primary', 'text-success');
-    }
+            const cls = {
+                pending:   'fa-entity-badge--audit',
+                running:   'fa-entity-badge--training',
+                succeeded: 'fa-entity-badge--control',
+                failed:    'fa-entity-badge--finding',
+            }[status] ?? 'fa-entity-badge--audit';
 
-    _showError(message) {
-        const text = this.element.querySelector('.wizard-busy-overlay__text');
-        if (text) text.textContent = '⚠ ' + message;
-        const spinner = this.element.querySelector('.spinner-border');
-        if (spinner) {
-            spinner.classList.remove('spinner-border');
-            spinner.classList.add('text-danger');
-            spinner.innerHTML = '<i class="fa-icon fa-icon--status-critical"></i>';
+            badge.classList.add(cls);
+            badge.textContent = status;
+        }
+
+        // Update free-text message
+        if (this.hasStatusMessageTarget && data.message) {
+            this.statusMessageTarget.textContent = data.message;
+        }
+
+        // Progress bar
+        const current = data.progress_current ?? 0;
+        const total = data.progress_total ?? 0;
+        if (total > 0 && this.hasProgressWrapperTarget) {
+            this.progressWrapperTarget.style.display = '';
+            const pct = Math.min(100, Math.round((current / total) * 100));
+            if (this.hasProgressBarTarget) {
+                this.progressBarTarget.style.width = pct + '%';
+                this.progressBarTarget.setAttribute('aria-valuenow', pct);
+            }
+            if (this.hasProgressNumbersTarget) {
+                this.progressNumbersTarget.textContent = current + ' / ' + total;
+            }
+            if (this.hasProgressLabelTarget && data.message) {
+                this.progressLabelTarget.textContent = data.message;
+            }
+        }
+
+        // Terminal states
+        if (status === 'succeeded') {
+            this._applyTerminalSuccess(data.message);
+        } else if (status === 'failed') {
+            this._applyTerminalFailure(data.message, data.error_trace);
         }
     }
 
-    _removeOverlay() {
-        const o = this.element.querySelector('.wizard-busy-overlay');
-        if (o) o.remove();
-        this.element.classList.remove('wizard-busy');
+    _applyTerminalSuccess(message) {
+        this._terminal = true;
+        this._stopPolling();
+
+        if (this.hasProgressBarTarget) {
+            this.progressBarTarget.classList.remove('progress-bar-animated', 'progress-bar-striped');
+            this.progressBarTarget.style.width = '100%';
+        }
+
+        if (this.hasSuccessBoxTarget) {
+            this.successBoxTarget.classList.remove('d-none');
+        }
+        if (this.hasSuccessMessageTarget && message) {
+            this.successMessageTarget.textContent = message;
+        }
+
+        this._showBackLink();
+        window.alvaBus?.emit({ mood: 'celebrating', reason: 'async-job-succeeded', ttlMs: 5000 });
     }
 
-    _lockForm() {
-        const elements = this.element.querySelectorAll('input:not([type="hidden"]), select, textarea, button, a.btn');
-        elements.forEach((el) => {
-            if (el.tagName === 'BUTTON') {
-                el.disabled = true;
-            } else if (el.tagName === 'A') {
-                el.classList.add('disabled');
-                el.setAttribute('aria-disabled', 'true');
-            } else {
-                el.readOnly = true;
-                el.classList.add('wizard-busy-locked');
-            }
-        });
+    _applyTerminalFailure(message, trace) {
+        this._terminal = true;
+        this._stopPolling();
+
+        if (this.hasErrorBoxTarget) {
+            this.errorBoxTarget.classList.remove('d-none');
+        }
+        if (this.hasErrorTraceTarget && trace) {
+            this.errorTraceTarget.textContent = trace;
+        } else if (this.hasErrorTraceTarget && message) {
+            this.errorTraceTarget.textContent = message;
+        }
+
+        this._showBackLink();
+        window.alvaBus?.emit({ mood: 'warning', reason: 'async-job-failed' });
     }
 
-    _unlockForm() {
-        const elements = this.element.querySelectorAll('input:not([type="hidden"]), select, textarea, button, a.btn');
-        elements.forEach((el) => {
-            if (el.tagName === 'BUTTON') {
-                el.disabled = false;
-            } else if (el.tagName === 'A') {
-                el.classList.remove('disabled');
-                el.removeAttribute('aria-disabled');
-            } else {
-                el.readOnly = false;
-                el.classList.remove('wizard-busy-locked');
-            }
-        });
-    }
-
-    _switchAlvaMood(mood) {
-        // Setup-Wizard wraps Alva in two layers: outer .fa-onboarding-fairy
-        // (orbit + aura wrapper, animated via .fa-onboarding-fairy--{mood})
-        // and inner .fa-alva SVG (bob/wings/face animations via .fa-alva--{mood}).
-        // Both need the mood swap for the full visible effect.
-        document.querySelectorAll('.fa-alva, .fa-onboarding-fairy').forEach((el) => {
-            const baseClass = el.classList.contains('fa-onboarding-fairy')
-                ? 'fa-onboarding-fairy--'
-                : 'fa-alva--';
-            Array.from(el.classList).forEach((c) => {
-                if (c.startsWith(baseClass)) el.classList.remove(c);
-            });
-            el.classList.add(baseClass + mood);
-        });
+    _showBackLink() {
+        if (this.hasBackLinkTarget) {
+            this.backLinkTarget.style.display = '';
+        }
     }
 }

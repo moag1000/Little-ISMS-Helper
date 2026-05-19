@@ -1159,6 +1159,15 @@ admin:
         hint:
             yaml_baseline: 'Fehlende Overrides verwenden automatisch den YAML-Baseline-Wert aus der Workflow-Konfiguration.'
 
+    # Async admin jobs
+    job:
+        queued: "Job wurde in die Warteschlange eingereiht und wird bald verarbeitet…"
+        progress: "Fortschritt"
+        error: "Fehler"
+        completed: "Job erfolgreich abgeschlossen."
+        id_label: "Job-ID"
+        worker_hint: "Der Job läuft im Hintergrund. Diese Seite aktualisiert sich automatisch alle 3 Sekunden."
+
 
 data_management:
     backup:
@@ -1500,3 +1509,4 @@ industry_preset:
             four_eyes:
                 title: 'Vier-Augen-Prinzip'
                 body: 'Wenn aktiviert, muss eine zweite Person die Transition bestätigen.'
+
