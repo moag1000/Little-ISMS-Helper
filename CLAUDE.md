@@ -131,6 +131,13 @@ keeps working after detach.
 Set `APP_ASYNC_JOB_RUNNER=messenger` to route `ExecuteJobMessage` through
 the doctrine async transport. Worker start:
 
+**When running in Messenger mode:** Worker-Health-UI at
+`/admin/queue-status` (route `admin_queue_status`) shows queue depth + last
+heartbeat + "Process queue now" emergency-trigger button. Shared-hosting
+users without shell access can use the cron pattern documented in
+`docs/user-guide/HOSTING_WORKER.md`. **Default in-request runner needs none
+of this — only Messenger mode does.**
+
 ```bash
 # Dev
 php bin/console messenger:consume async --time-limit=300 -vv
