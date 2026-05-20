@@ -9,7 +9,7 @@ src/Service/PolicyWizard/DocumentGenerator.php:LOC=1870 deps=15
 src/Service/DataIntegrityService.php:LOC=1864 deps=26
 src/Service/DashboardStatisticsService.php:LOC=1808 deps=25
 src/Service/Export/CertificationBundleExporter.php:LOC=1581 deps=19
-src/Controller/RiskController.php:LOC=1430 deps=0
+src/Controller/RiskController.php:LOC=1419 deps=0
 src/Controller/PolicyWizardController.php:LOC=1419 deps=0
 src/Controller/ManagementReportController.php:LOC=1293 deps=0
 src/Controller/Admin/DataRepairController.php:LOC=1287 deps=0
@@ -19,7 +19,7 @@ src/Service/MyDayAggregator.php:LOC=1068 deps=20
 src/Controller/UserManagementController.php:LOC=1023 deps=0
 src/Controller/Admin/ComplianceImportController.php:LOC=922 deps=0
 src/Controller/TenantManagementController.php:LOC=912 deps=0
-src/Controller/IncidentController.php:LOC=830 deps=0
+src/Controller/IncidentController.php:LOC=825 deps=0
 src/Controller/AdminBackupController.php:LOC=795 deps=0
 src/Controller/AnalyticsController.php:LOC=761 deps=0
 src/Controller/ComplianceWizardController.php:LOC=761 deps=0
@@ -29,6 +29,5 @@ src/Controller/DPIAController.php:LOC=664 deps=0
 src/Controller/AuditController.php:LOC=653 deps=0
 src/Controller/ProcessingActivityController.php:LOC=651 deps=0
 src/Service/ScheduledReportService.php:LOC=619 deps=22
-src/Controller/AssetController.php:LOC=604 deps=0
 src/Service/ComplianceFrameworkLoaderService.php:LOC=537 deps=26
 src/Service/ComplianceLoaderFixerService.php:LOC=256 deps=28
