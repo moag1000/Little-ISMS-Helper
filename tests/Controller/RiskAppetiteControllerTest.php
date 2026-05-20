@@ -117,7 +117,7 @@ class RiskAppetiteControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/risk-appetite/');
+        $this->client->request('GET', '/en/risk-appetite');
         $this->assertResponseRedirects();
     }
 
@@ -125,7 +125,7 @@ class RiskAppetiteControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/risk-appetite/');
+        $this->client->request('GET', '/en/risk-appetite');
         $this->assertResponseIsSuccessful();
     }
 

@@ -29,6 +29,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Module gate: 'privacy'. Role gate: PERSONA_DPO (Role-Scope Phase 6 —
  * resolves to ROLE_DPO via TenantScopedAdminVoter).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/dashboards/dpo', name: 'app_dashboard_dpo')]
 #[IsGranted(TenantScopedAdminVoter::PERSONA_DPO)]
 final class DpoDashboardController extends AbstractController

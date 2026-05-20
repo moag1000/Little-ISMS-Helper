@@ -149,7 +149,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/compliance/framework/');
+        $this->client->request('GET', '/en/compliance/framework');
         $this->assertResponseRedirects();
     }
 
@@ -157,7 +157,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/compliance/framework/');
+        $this->client->request('GET', '/en/compliance/framework');
         // Template may have property errors due to missing computed fields
         $statusCode = $this->client->getResponse()->getStatusCode();
         $this->assertTrue(
@@ -170,7 +170,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
     public function testIndexAcceptsActiveFilter(): void
     {
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/compliance/framework/?active=1');
+        $this->client->request('GET', '/en/compliance/framework?active=1');
         $statusCode = $this->client->getResponse()->getStatusCode();
         $this->assertTrue($statusCode >= 200 && $statusCode < 600);
     }
@@ -179,7 +179,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
     public function testIndexAcceptsMandatoryFilter(): void
     {
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/compliance/framework/?mandatory=1');
+        $this->client->request('GET', '/en/compliance/framework?mandatory=1');
         $statusCode = $this->client->getResponse()->getStatusCode();
         $this->assertTrue($statusCode >= 200 && $statusCode < 600);
     }
@@ -188,7 +188,7 @@ class ComplianceFrameworkControllerTest extends WebTestCase
     public function testIndexAcceptsIndustryFilter(): void
     {
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/compliance/framework/?industry=finance');
+        $this->client->request('GET', '/en/compliance/framework?industry=finance');
         $statusCode = $this->client->getResponse()->getStatusCode();
         $this->assertTrue($statusCode >= 200 && $statusCode < 600);
     }

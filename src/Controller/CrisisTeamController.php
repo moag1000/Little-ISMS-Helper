@@ -33,7 +33,7 @@ class CrisisTeamController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
     ) {}
 
-    #[Route('/crisis-team/', name: 'app_crisis_team_index', methods: ['GET'])]
+    #[Route('/crisis-team', name: 'app_crisis_team_index', methods: ['GET'])]
     public function index(): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;

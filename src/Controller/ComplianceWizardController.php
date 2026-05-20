@@ -40,6 +40,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * - Gap identification with actionable recommendations
  * - PDF export for management reports
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/compliance-wizard')]
 #[IsGranted('ROLE_AUDITOR')]
 class ComplianceWizardController extends AbstractController

@@ -29,6 +29,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *   - Compliance Fulfillment — per compliance framework
  *   - Risk Register — full tenant risk register
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/audit-workbook', name: 'app_audit_workbook_')]
 #[IsGranted('ROLE_AUDITOR')]
 class AuditWorkbookController extends AbstractController

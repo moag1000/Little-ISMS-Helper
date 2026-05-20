@@ -164,7 +164,7 @@ class ProcessingActivityControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/processing-activity/');
+        $this->client->request('GET', '/en/processing-activity');
         $this->assertResponseRedirects();
     }
 
@@ -172,7 +172,7 @@ class ProcessingActivityControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/processing-activity/');
+        $this->client->request('GET', '/en/processing-activity');
         $this->assertResponseIsSuccessful();
     }
 
@@ -180,7 +180,7 @@ class ProcessingActivityControllerTest extends WebTestCase
     public function testIndexShowsTestActivity(): void
     {
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/processing-activity/');
+        $this->client->request('GET', '/en/processing-activity');
         $this->assertResponseIsSuccessful();
     }
 
@@ -273,7 +273,7 @@ class ProcessingActivityControllerTest extends WebTestCase
         $this->testActivity = null;
 
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/processing-activity/');
+        $this->client->request('GET', '/en/processing-activity');
         $this->assertResponseIsSuccessful();
     }
 }

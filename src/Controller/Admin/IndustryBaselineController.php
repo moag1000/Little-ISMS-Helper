@@ -22,6 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * preview (`dry_run=1`) or apply a baseline; only `maturityTarget` is set,
  * existing self-assessment values stay intact.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/industry-baselines', name: 'admin_industry_baselines_')]
 #[IsGranted('ROLE_ADMIN')]
 final class IndustryBaselineController extends AbstractController

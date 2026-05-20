@@ -21,6 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * Phase 7A: Manages scheduled reports - create, edit, activate/deactivate, and trigger.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/reports/scheduled')]
 #[IsGranted('ROLE_MANAGER')]
 class ScheduledReportController extends AbstractController

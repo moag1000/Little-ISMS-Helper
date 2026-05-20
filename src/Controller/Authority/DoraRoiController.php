@@ -35,6 +35,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Module gate: nis2_dora
  * RBAC: ROLE_MANAGER for VIEW/EXPORT; ROLE_ADMIN for MARK_SUBMITTED
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/authority/dora-roi', name: 'dora_roi_')]
 #[IsGranted('ROLE_MANAGER')]
 class DoraRoiController extends AbstractController

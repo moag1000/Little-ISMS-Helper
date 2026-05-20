@@ -59,7 +59,7 @@ class DeploymentWizardControllerTest extends WebTestCase
     #[Test]
     public function testIndexAccessible(): void
     {
-        $this->client->request('GET', '/en/setup/');
+        $this->client->request('GET', '/en/setup');
         // Either redirects to welcome or shows setup complete page
         $statusCode = $this->client->getResponse()->getStatusCode();
         $this->assertTrue(
@@ -358,7 +358,7 @@ class DeploymentWizardControllerTest extends WebTestCase
     #[Test]
     public function testWizardNavigationFromIndex(): void
     {
-        $this->client->request('GET', '/en/setup/');
+        $this->client->request('GET', '/en/setup');
         $statusCode = $this->client->getResponse()->getStatusCode();
 
         // Either shows page or redirects to welcome

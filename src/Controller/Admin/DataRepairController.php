@@ -157,7 +157,7 @@ class DataRepairController extends AbstractController
      * exposes a "Refresh now" CTA dispatching a section-specific scan
      * job.
      */
-    #[Route('/admin/data-repair/', name: 'admin_data_repair_index', methods: ['GET'])]
+    #[Route('/admin/data-repair', name: 'admin_data_repair_index', methods: ['GET'])]
     public function index(): Response
     {
         // Schema maintenance: Doctrine migration backlog + entity-vs-DB drift.

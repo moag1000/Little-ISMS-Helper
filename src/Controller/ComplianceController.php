@@ -45,7 +45,7 @@ class ComplianceController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ?FrameworkMaturityService $frameworkMaturityService = null,
     ) {}
-    #[Route('/compliance/', name: 'app_compliance_index', methods: ['GET'])]
+    #[Route('/compliance', name: 'app_compliance_index', methods: ['GET'])]
     public function index(): Response
     {
         $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();

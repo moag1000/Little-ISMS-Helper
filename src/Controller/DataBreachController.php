@@ -28,6 +28,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/data-breach', name: 'app_data_breach_')]
 #[IsGranted('ROLE_USER')]
 class DataBreachController extends AbstractController

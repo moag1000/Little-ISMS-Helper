@@ -26,6 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * H-01: CRUD for structured Audit Findings (ISO 27001 Clause 10.1).
  */
 #[IsGranted('ROLE_USER')]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/audit-finding', name: 'app_audit_finding_')]
 class AuditFindingController extends AbstractController
 {

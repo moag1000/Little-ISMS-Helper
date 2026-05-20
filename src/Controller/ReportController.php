@@ -41,7 +41,7 @@ class ReportController extends AbstractController
         private readonly ISMSObjectiveRepository $ismsObjectiveRepository
     ) {}
 
-    #[Route('/reports/', name: 'app_reports_index', methods: ['GET'])]
+    #[Route('/reports', name: 'app_reports_index', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('reports/index.html.twig');

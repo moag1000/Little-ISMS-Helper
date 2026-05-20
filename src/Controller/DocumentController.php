@@ -74,7 +74,7 @@ class DocumentController extends AbstractController
         private readonly ?LifecycleService $lifecycleService = null,
     ) {}
 
-    #[Route('/document/', name: 'app_document_index', methods: ['GET'])]
+    #[Route('/document', name: 'app_document_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         // Get current tenant

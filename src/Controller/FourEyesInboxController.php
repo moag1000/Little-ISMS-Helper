@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/four-eyes/inbox', name: 'app_four_eyes_inbox')]
 #[IsGranted('ROLE_MANAGER')]
 final class FourEyesInboxController extends AbstractController

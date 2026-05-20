@@ -43,6 +43,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * config JSON from the form textarea is parsed and stored in NotificationChannel::config.
  * secretPlain (unmapped) is encrypted via SecretEncryptionInterface before persist.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/notification/channel', name: 'admin_notification_channel_')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class NotificationChannelController extends AbstractController

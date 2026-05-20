@@ -147,7 +147,7 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/risk-treatment-plan/');
+        $this->client->request('GET', '/en/risk-treatment-plan');
         $this->assertResponseRedirects();
     }
 
@@ -155,7 +155,7 @@ class RiskTreatmentPlanControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/risk-treatment-plan/');
+        $this->client->request('GET', '/en/risk-treatment-plan');
         $this->assertResponseIsSuccessful();
     }
 

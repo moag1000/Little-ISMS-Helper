@@ -26,6 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * loaders inside their own tenant tree (`W own` per spec §3.1).
  * SUPER_ADMIN passes through and may additionally run schema-level fixers.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/loader-fixer', name: 'admin_loader_fixer_')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class LoaderFixerController extends AbstractController

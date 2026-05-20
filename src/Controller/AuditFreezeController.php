@@ -32,6 +32,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * @see docs/CM_JUNIOR_RESPONSE.md CM-8
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/audit-freeze')]
 #[IsGranted('ROLE_MANAGER')]
 class AuditFreezeController extends AbstractController

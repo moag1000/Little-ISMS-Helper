@@ -32,6 +32,7 @@ use Symfony\Component\Workflow\Registry;
  * SUPER_ADMIN any. Tenant scope resolves via
  * {@see TenantContext::resolveAdminScope()}.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/lifecycle-overrides')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class LifecycleOverridesController extends AbstractController

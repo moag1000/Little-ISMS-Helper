@@ -50,6 +50,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *  - Global IdPs (tenant == null) require SUPER_ADMIN — the voter rejects
  *    `null` subjects for non-SUPER callers.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/sso', name: 'admin_sso_')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class SsoProviderController extends AbstractController

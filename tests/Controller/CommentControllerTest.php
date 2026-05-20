@@ -173,7 +173,7 @@ class CommentControllerTest extends WebTestCase
     private function generateIsmsCommentToken(): string
     {
         // GET on a tenant-scoped page primes the session cookie.
-        $this->client->request('GET', '/en/risk/');
+        $this->client->request('GET', '/en/risk');
         $session = $this->client->getRequest()->getSession();
 
         $generator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();

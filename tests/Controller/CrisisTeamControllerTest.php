@@ -122,7 +122,7 @@ class CrisisTeamControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/crisis-team/');
+        $this->client->request('GET', '/en/crisis-team');
         $this->assertResponseRedirects();
     }
 
@@ -130,7 +130,7 @@ class CrisisTeamControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/crisis-team/');
+        $this->client->request('GET', '/en/crisis-team');
         $this->assertResponseIsSuccessful();
     }
 

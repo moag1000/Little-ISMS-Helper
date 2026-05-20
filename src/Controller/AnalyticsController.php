@@ -37,6 +37,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Phase 7B: Advanced Analytics Dashboards with multi-framework compliance,
  * control effectiveness, and predictive risk analytics.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/analytics')]
 class AnalyticsController extends AbstractController
 {

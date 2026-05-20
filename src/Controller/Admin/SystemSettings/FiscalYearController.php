@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * financialYearStartMonth stored in Tenant column.
  * quarterlyGrouping + reportingCadence stored in Tenant.settings['fiscal'] sub-key.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/settings/fiscal-year')]
 #[IsGranted('ROLE_ADMIN')]
 class FiscalYearController extends AbstractController

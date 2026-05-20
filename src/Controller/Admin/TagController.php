@@ -27,6 +27,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * routing configuration already handles locale prefixing (see existing admin
  * controllers such as LoaderFixerController).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/tags', name: 'admin_tag_')]
 #[IsGranted('ROLE_ADMIN')]
 final class TagController extends AbstractController

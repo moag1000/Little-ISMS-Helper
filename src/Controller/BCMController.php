@@ -20,7 +20,7 @@ class BCMController extends AbstractController
         private readonly BusinessProcessRepository $businessProcessRepository,
         private readonly ProtectionRequirementService $protectionRequirementService
     ) {}
-    #[Route('/bcm/', name: 'app_bcm_index', methods: ['GET'])]
+    #[Route('/bcm', name: 'app_bcm_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $processes = $this->businessProcessRepository->findAll();

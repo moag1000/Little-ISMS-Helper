@@ -42,6 +42,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   6. diff    — result view with counters + error table
  *   7. errorCsv— streamed CSV of error rows for download
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/import/{entityType}', requirements: ['entityType' => 'asset|supplier|control|risk|business_process'])]
 #[IsGranted('ROLE_MANAGER')]
 final class BulkImportController extends AbstractController

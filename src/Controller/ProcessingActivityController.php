@@ -47,7 +47,7 @@ class ProcessingActivityController extends AbstractController
     /**
      * List all processing activities (VVT index)
      */
-    #[Route('/processing-activity/', name: 'app_processing_activity_index', methods: ['GET'])]
+    #[Route('/processing-activity', name: 'app_processing_activity_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;

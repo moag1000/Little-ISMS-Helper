@@ -20,6 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * Handles PWA push notification subscription management.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/api/push')]
 class PushSubscriptionController extends AbstractController
 {

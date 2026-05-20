@@ -25,6 +25,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * — the voter resolves PERSONA_CISO → ROLE_CISO etc — but consistent with
  * the hub-catalog `requiredAttribute` convention.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/dashboards')]
 class RoleDashboardController extends AbstractController
 {

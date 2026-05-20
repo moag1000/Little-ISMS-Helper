@@ -147,7 +147,7 @@ class BCExerciseControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/bc-exercise/');
+        $this->client->request('GET', '/en/bc-exercise');
         $this->assertResponseRedirects();
     }
 
@@ -155,7 +155,7 @@ class BCExerciseControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/bc-exercise/');
+        $this->client->request('GET', '/en/bc-exercise');
         $this->assertResponseIsSuccessful();
     }
 

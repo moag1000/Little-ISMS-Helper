@@ -20,7 +20,7 @@ final class ThreatIntelligenceControllerTest extends WebTestCase
     #[Test]
     public function testIndexPageReachable(): void
     {
-        $this->client->request('GET', '/de/threat-intelligence/');
+        $this->client->request('GET', '/de/threat-intelligence');
         $status = $this->client->getResponse()->getStatusCode();
         $this->assertContains($status, [200, 302]);
     }

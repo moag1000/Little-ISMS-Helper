@@ -172,7 +172,7 @@ class SupplierControllerTest extends WebTestCase
 
     private function generateCsrfToken(string $tokenId): string
     {
-        $this->client->request('GET', '/en/supplier/');
+        $this->client->request('GET', '/en/supplier');
 
         $session = $this->client->getRequest()->getSession();
         $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
@@ -187,7 +187,7 @@ class SupplierControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/supplier/');
+        $this->client->request('GET', '/en/supplier');
 
         $this->assertResponseRedirects();
     }
@@ -197,7 +197,7 @@ class SupplierControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/supplier/');
+        $this->client->request('GET', '/en/supplier');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -208,7 +208,7 @@ class SupplierControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/supplier/', ['view' => 'own']);
+        $this->client->request('GET', '/en/supplier', ['view' => 'own']);
 
         $this->assertResponseIsSuccessful();
     }
@@ -218,7 +218,7 @@ class SupplierControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/supplier/', ['view' => 'subsidiaries']);
+        $this->client->request('GET', '/en/supplier', ['view' => 'subsidiaries']);
 
         $this->assertResponseIsSuccessful();
     }
@@ -228,7 +228,7 @@ class SupplierControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/supplier/', ['view' => 'inherited']);
+        $this->client->request('GET', '/en/supplier', ['view' => 'inherited']);
 
         $this->assertResponseIsSuccessful();
     }
@@ -422,7 +422,7 @@ class SupplierControllerTest extends WebTestCase
             '_token' => $token,
         ]);
 
-        $this->assertResponseRedirects('/en/supplier/');
+        $this->assertResponseRedirects('/en/supplier');
     }
 
     #[Test]
@@ -435,7 +435,7 @@ class SupplierControllerTest extends WebTestCase
         ]);
 
         // Should redirect but not delete
-        $this->assertResponseRedirects('/en/supplier/');
+        $this->assertResponseRedirects('/en/supplier');
 
         // Verify supplier was NOT deleted
         $supplierRepository = $this->entityManager->getRepository(Supplier::class);
@@ -598,7 +598,7 @@ class SupplierControllerTest extends WebTestCase
 
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/supplier/', ['view' => 'own']);
+        $this->client->request('GET', '/en/supplier', ['view' => 'own']);
 
         $this->assertResponseIsSuccessful();
         // User should only see suppliers from their own tenant

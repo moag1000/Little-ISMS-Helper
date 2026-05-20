@@ -27,6 +27,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Access: ROLE_DPO (inherits ROLE_MANAGER)
  * Module: eu_authority_reporting
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/authority/notification', name: 'app_authority_notification_')]
 #[IsGranted('ROLE_MANAGER')]
 final class AuthorityNotificationController extends AbstractController

@@ -35,6 +35,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * action also re-resolves the tenant from context (no tenant_id in
  * request payload).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/policy-style')]
 #[IsGranted('ROLE_ADMIN')]
 final class AdminPolicyStyleController extends AbstractController

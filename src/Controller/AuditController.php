@@ -43,7 +43,7 @@ class AuditController extends AbstractController
         private readonly LifecycleService $lifecycleService,
         private readonly ?InternalAuditCloner $internalAuditCloner = null,
     ) {}
-    #[Route('/audit/', name: 'app_audit_index', methods: ['GET'])]
+    #[Route('/audit', name: 'app_audit_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         // Get filter parameters

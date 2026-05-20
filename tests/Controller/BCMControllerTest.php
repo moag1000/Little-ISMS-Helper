@@ -134,7 +134,7 @@ class BCMControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/bcm/');
+        $this->client->request('GET', '/en/bcm');
 
         $this->assertResponseRedirects();
     }
@@ -144,7 +144,7 @@ class BCMControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/bcm/');
+        $this->client->request('GET', '/en/bcm');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -155,7 +155,7 @@ class BCMControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/en/bcm/');
+        $crawler = $this->client->request('GET', '/en/bcm');
 
         $this->assertResponseIsSuccessful();
         // Page should render successfully with statistics
@@ -166,7 +166,7 @@ class BCMControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/bcm/');
+        $this->client->request('GET', '/en/bcm');
 
         $this->assertResponseIsSuccessful();
     }
@@ -275,7 +275,7 @@ class BCMControllerTest extends WebTestCase
         $this->entityManager->persist($process2);
         $this->entityManager->flush();
 
-        $this->client->request('GET', '/en/bcm/');
+        $this->client->request('GET', '/en/bcm');
 
         $this->assertResponseIsSuccessful();
 
@@ -289,7 +289,7 @@ class BCMControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/bcm/');
+        $this->client->request('GET', '/en/bcm');
 
         $this->assertResponseIsSuccessful();
     }
@@ -315,7 +315,7 @@ class BCMControllerTest extends WebTestCase
         $this->entityManager->persist($criticalProcess);
         $this->entityManager->flush();
 
-        $this->client->request('GET', '/en/bcm/');
+        $this->client->request('GET', '/en/bcm');
 
         $this->assertResponseIsSuccessful();
 
@@ -329,7 +329,7 @@ class BCMControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/bcm/');
+        $this->client->request('GET', '/en/bcm');
 
         $this->assertResponseIsSuccessful();
         // The test process has 'high' criticality
@@ -347,7 +347,7 @@ class BCMControllerTest extends WebTestCase
 
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/bcm/');
+        $this->client->request('GET', '/en/bcm');
 
         $this->assertResponseIsSuccessful();
     }

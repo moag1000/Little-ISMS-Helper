@@ -79,7 +79,7 @@ class RiskController extends AbstractController
     {
         return $this->translator;
     }
-    #[Route('/risk/', name: 'app_risk_index', methods: ['GET'])]
+    #[Route('/risk', name: 'app_risk_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {

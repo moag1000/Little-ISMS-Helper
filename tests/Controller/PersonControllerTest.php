@@ -117,7 +117,7 @@ class PersonControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/person/');
+        $this->client->request('GET', '/en/person');
         $this->assertResponseRedirects();
     }
 
@@ -125,7 +125,7 @@ class PersonControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/person/');
+        $this->client->request('GET', '/en/person');
         $this->assertResponseIsSuccessful();
     }
 

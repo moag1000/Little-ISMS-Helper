@@ -127,7 +127,7 @@ class MappingQualityControllerTest extends WebTestCase
     #[Test]
     public function testDashboardRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/compliance/mapping-quality/');
+        $this->client->request('GET', '/en/compliance/mapping-quality');
         $this->assertResponseRedirects();
     }
 
@@ -135,7 +135,7 @@ class MappingQualityControllerTest extends WebTestCase
     public function testDashboardAccessibleForUser(): void
     {
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/compliance/mapping-quality/');
+        $this->client->request('GET', '/en/compliance/mapping-quality');
         // May redirect to compliance index if no mappings exist
         $statusCode = $this->client->getResponse()->getStatusCode();
         $this->assertTrue(
@@ -148,7 +148,7 @@ class MappingQualityControllerTest extends WebTestCase
     public function testDashboardAccessibleForAdmin(): void
     {
         $this->loginAsUser($this->adminUser);
-        $this->client->request('GET', '/en/compliance/mapping-quality/');
+        $this->client->request('GET', '/en/compliance/mapping-quality');
         $statusCode = $this->client->getResponse()->getStatusCode();
         $this->assertTrue(
             $statusCode === Response::HTTP_OK || $statusCode === Response::HTTP_FOUND,

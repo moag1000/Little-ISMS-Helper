@@ -31,6 +31,7 @@ use Symfony\Component\Yaml\Yaml;
  * tenant, SUPER_ADMIN may target any via the `tenant_id` POST param.
  * Tenant scope resolves via {@see TenantContext::resolveAdminScope()}.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/industry-presets', name: 'app_admin_industry_preset_')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class IndustryPresetController extends AbstractController

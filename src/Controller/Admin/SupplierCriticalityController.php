@@ -25,6 +25,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * SUPER_ADMIN any. Tenant scope resolves via
  * {@see TenantContext::resolveAdminScope()}.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/supplier-criticality')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class SupplierCriticalityController extends AbstractController

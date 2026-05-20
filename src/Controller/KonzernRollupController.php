@@ -35,6 +35,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * ROLE_GROUP_CISO, ROLE_GROUP_BCM_OFFICER and ROLE_SUPER_ADMIN. The
  * voter additionally enforces the holding-tree scope.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/policy-wizard/konzern-rollup', name: 'app_policy_wizard_konzern_rollup_')]
 final class KonzernRollupController extends AbstractController
 {

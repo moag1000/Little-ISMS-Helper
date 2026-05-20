@@ -41,7 +41,7 @@ class ComplianceRequirementController extends AbstractController
         private readonly PersonRepository $personRepository,
     ) {}
 
-    #[Route('/compliance/requirement/', name: 'app_compliance_requirement_index', methods: ['GET'])]
+    #[Route('/compliance/requirement', name: 'app_compliance_requirement_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $frameworkId = $request->query->get('framework');
