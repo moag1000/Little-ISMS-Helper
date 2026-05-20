@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Exception;
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Training;
 use App\Entity\TrainingParticipation;
 use App\Enum\TrainingStatus;
@@ -13,6 +14,7 @@ use App\Form\TrainingType;
 use App\Repository\TrainingParticipationRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\UserRepository;
+use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,12 +22,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TrainingController extends AbstractController
 {
+    use BulkActionTrait;
+
     public function __construct(
         private readonly TrainingRepository $trainingRepository,
         private readonly EntityManagerInterface $entityManager,
@@ -34,6 +39,7 @@ class TrainingController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ?TrainingParticipationRepository $participationRepository = null,
         private readonly ?UserRepository $userRepository = null,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
     #[Route('/training', name: 'app_training_index', methods: ['GET'])]
     public function index(Request $request): Response
@@ -390,5 +396,109 @@ class TrainingController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
+    }
+
+    /**
+     * Bulk CSV export of selected trainings.
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/training/bulk-export', name: 'app_training_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $trainings = [];
+        foreach ($ids as $rawId) {
+            $training = $this->trainingRepository->find((int) $rawId);
+            if ($training === null) {
+                continue;
+            }
+            if ($tenant !== null && $training->getTenant() !== $tenant) {
+                continue;
+            }
+            $trainings[] = $training;
+        }
+
+        if ($trainings === []) {
+            return $this->json(['error' => 'No exportable trainings'], 404);
+        }
+
+        $headers = ['ID', 'Title', 'Status', 'Trainer'];
+
+        return $this->streamCsvExport(
+            $trainings,
+            $headers,
+            static function (Training $t): array {
+                return [
+                    (string) $t->getId(),
+                    (string) $t->getTitle(),
+                    (string) $t->getStatus(),
+                    (string) $t->getTrainer(),
+                ];
+            },
+            'trainings-export',
+            'Training',
+            $this->auditLogger,
+        );
+    }
+
+    /**
+     * Bulk assign selected trainings to a trainer user (sets trainerUser).
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/training/bulk-assign', name: 'app_training_bulk_assign', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkAssign(Request $request): Response
+    {
+        $data     = json_decode($request->getContent(), true);
+        $ids      = $data['ids'] ?? [];
+        $assignId = (int) ($data['assignee_id'] ?? 0);
+
+        if (!is_array($ids) || $ids === [] || $assignId === 0) {
+            return $this->json(['error' => 'No items selected or no assignee'], 400);
+        }
+
+        $tenant   = $this->tenantContext->getCurrentTenant();
+        $assignee = $this->userRepository?->find($assignId);
+
+        if (!$assignee instanceof User) {
+            return $this->json(['error' => 'Assignee not found'], 404);
+        }
+        if ($tenant !== null && $assignee->getTenant() !== $tenant) {
+            return $this->json(['error' => 'Assignee tenant mismatch'], 403);
+        }
+
+        $trainings = [];
+        foreach ($ids as $rawId) {
+            $training = $this->trainingRepository->find((int) $rawId);
+            if ($training === null) {
+                continue;
+            }
+            if ($tenant !== null && $training->getTenant() !== $tenant) {
+                continue;
+            }
+            $trainings[] = $training;
+        }
+
+        $result = $this->applyBulkAssign(
+            $trainings,
+            static function (Training $t, User $u): void { $t->setTrainerUser($u); },
+            $assignee,
+            'Training',
+            $this->auditLogger,
+        );
+
+        if ($result['changed'] > 0) {
+            $this->entityManager->flush();
+        }
+
+        return $this->json($result);
     }
 }

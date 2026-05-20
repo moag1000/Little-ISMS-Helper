@@ -29,17 +29,22 @@ use App\Service\IncidentRiskFeedbackService;
 use App\Service\Risk\RiskIncidentLinkService;
 use App\Repository\RiskIncidentLinkRepository;
 use App\Repository\UserRepository;
+use App\Service\AuditLogger;
+use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class IncidentController extends AbstractController
 {
+    use BulkActionTrait;
+
     public function __construct(
         private readonly IncidentRepository $incidentRepository,
         private readonly AuditLogRepository $auditLogRepository,
@@ -60,6 +65,7 @@ class IncidentController extends AbstractController
         private readonly RiskIncidentLinkService $riskIncidentLinkService,
         private readonly RiskIncidentLinkRepository $riskIncidentLinkRepository,
         private readonly ?CommentRepository $commentRepository = null,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
     #[Route('/incident', name: 'app_incident_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -821,5 +827,60 @@ class IncidentController extends AbstractController
         ];
 
         return $this->json($response);
+    }
+
+    /**
+     * Bulk CSV export of selected incidents.
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/incident/bulk-export', name: 'app_incident_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user   = $this->security->getUser();
+        $tenant = $user instanceof User ? $user->getTenant() : null;
+
+        $incidents = [];
+        foreach ($ids as $rawId) {
+            $incident = $this->incidentRepository->find((int) $rawId);
+            if ($incident === null) {
+                continue;
+            }
+            if ($tenant !== null && $incident->getTenant() !== $tenant) {
+                continue;
+            }
+            $incidents[] = $incident;
+        }
+
+        if ($incidents === []) {
+            return $this->json(['error' => 'No exportable incidents'], 404);
+        }
+
+        $headers = ['ID', 'Title', 'Category', 'Severity', 'Status', 'Assigned To', 'Reported By'];
+
+        return $this->streamCsvExport(
+            $incidents,
+            $headers,
+            static function (Incident $i): array {
+                return [
+                    (string) $i->getId(),
+                    (string) $i->getTitle(),
+                    (string) $i->getCategory(),
+                    (string) ($i->getSeverity()?->value ?? ''),
+                    (string) ($i->getStatus()?->value ?? ''),
+                    (string) $i->getAssignedTo(),
+                    (string) $i->getReportedBy(),
+                ];
+            },
+            'incidents-export',
+            'Incident',
+            $this->auditLogger,
+        );
     }
 }

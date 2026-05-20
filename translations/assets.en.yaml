@@ -11,3 +11,6 @@ asset:
         is_dora_relevant: 'This asset qualifies as an ICT asset under DORA Art. 28 and will be included in the Register of Information XBRL export. Only flagged assets appear in the export.'
     message:
         inherited_asset: 'Inherited Asset'
+    bulk_delete:
+        success: '%count% asset(s) deleted successfully.'
+        no_items: 'No assets were deleted.'

@@ -7,12 +7,14 @@ namespace App\Controller;
 use RuntimeException;
 use DateTime;
 use App\Controller\Trait\ModuleGatedControllerTrait;
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\DataBreach;
 use App\Entity\Incident;
 use App\Enum\DataBreachStatus;
 use App\Form\DataBreachType;
 use App\Repository\CommentRepository;
 use App\Repository\IncidentRepository;
+use App\Service\AuditLogger;
 use App\Service\DataBreachService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
@@ -24,6 +26,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -34,6 +37,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DataBreachController extends AbstractController
 {
     use ModuleGatedControllerTrait;
+    use BulkActionTrait;
 
     public function __construct(
         private readonly DataBreachService $dataBreachService,
@@ -45,6 +49,7 @@ class DataBreachController extends AbstractController
         private readonly ?CommentRepository $commentRepository = null,
         private readonly ?IncidentRepository $incidentRepository = null,
         private readonly ?RoleDashboardService $roleDashboardService = null,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {
     }
 
@@ -530,5 +535,63 @@ class DataBreachController extends AbstractController
             'errors' => $errors,
             'message' => "$deleted data breaches deleted successfully",
         ]);
+    }
+
+    /**
+     * Bulk CSV export of selected data breaches.
+     * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/bulk-export', name: 'bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_AUDITOR')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        if ($redirect = $this->checkModuleActive('privacy')) {
+            return $redirect;
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $breaches = [];
+        foreach ($ids as $rawId) {
+            $breach = $this->dataBreachService->findById((int) $rawId);
+            if ($breach === null) {
+                continue;
+            }
+            if ($tenant !== null && $breach->getTenant() !== $tenant) {
+                continue;
+            }
+            $breaches[] = $breach;
+        }
+
+        if ($breaches === []) {
+            return $this->json(['error' => 'No exportable data breaches'], 404);
+        }
+
+        $headers = ['ID', 'Title', 'Status', 'Severity', 'Detected At', 'Affected Data Subjects', 'Reference Number'];
+
+        return $this->streamCsvExport(
+            $breaches,
+            $headers,
+            static function (DataBreach $b): array {
+                return [
+                    (string) $b->getId(),
+                    (string) $b->getTitle(),
+                    (string) $b->getStatus(),
+                    (string) $b->getSeverity(),
+                    $b->getDetectedAt()?->format('Y-m-d') ?? '',
+                    (string) $b->getAffectedDataSubjects(),
+                    (string) $b->getReferenceNumber(),
+                ];
+            },
+            'data-breaches-export',
+            'DataBreach',
+            $this->auditLogger,
+        );
     }
 }
