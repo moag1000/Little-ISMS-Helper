@@ -262,12 +262,23 @@ class AnalyticsController extends AbstractController
         string $type,
         \App\Service\Job\JobStatusService $jobStatusService,
         MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         if (!in_array($type, ['risks', 'assets', 'compliance'], true)) {
             throw $this->createNotFoundException(sprintf('Unsupported analytics export type "%s".', $type));
         }
 
-        $jobId = $jobStatusService->create('analytics.export', ['type' => $type]);
+        $jobId = $jobStatusService->create('analytics.export', [
+            'type' => $type,
+            '_label' => $translator->trans('analytics.export.progress_title', [], 'analytics'),
+            '_subtitle' => $translator->trans('analytics.export.progress_subtitle', [], 'analytics'),
+            '_download_label' => $translator->trans('analytics.export.download_button', [], 'analytics'),
+        ]);
+        // Patch the download URL once the UUID is known (chicken-and-egg
+        // with JobStatusService::create — UUID is minted inside the method).
+        $jobStatusService->updatePayload($jobId, [
+            '_download_url' => $this->generateUrl('app_analytics_export_download', ['id' => $jobId, 'type' => $type]),
+        ]);
 
         $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
             jobClass: \App\Job\ExportAnalyticsJob::class,
@@ -275,12 +286,13 @@ class AnalyticsController extends AbstractController
             jobId: $jobId,
         ));
 
-        return $this->render('analytics/export_progress.html.twig', [
-            'jobId' => $jobId,
-            'type' => $type,
-            'cancelUrl' => $this->generateUrl('app_analytics_dashboard'),
-            'downloadUrl' => $this->generateUrl('app_analytics_export_download', ['id' => $jobId, 'type' => $type]),
-        ]);
+        // PRG: 303 redirect to the shared progress page. Required for Hotwire
+        // Turbo — see App\Controller\Admin\DataRepairController::runIntegrityCheck()
+        // for the full rationale.
+        return $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('app_analytics_dashboard'),
+        ], Response::HTTP_SEE_OTHER);
     }
 
     /**

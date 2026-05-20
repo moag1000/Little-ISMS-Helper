@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Entity\Control;
 use App\Entity\User;
+use App\Job\AssignOrphansJob;
 use App\Job\ExecutePendingMigrationsJob;
 use App\Job\FixAllOrphansJob;
 use App\Job\FixTenantMismatchesJob;
 use App\Job\MergeDuplicatesJob;
+use App\Job\ReassignEntityJob;
 use App\Job\ReconcileSchemaJob;
 use App\Job\RunFullIntegrityCheckJob;
+use App\Job\ScanBrokenReferencesJob;
+use App\Job\ScanDuplicatesJob;
+use App\Job\ScanHealthIssuesJob;
+use App\Job\ScanOrphansJob;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
@@ -25,6 +30,7 @@ use App\Service\DataIntegrityService;
 use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\SchemaMaintenanceService;
+use App\Service\SectionScanResultCache;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,6 +72,7 @@ class DataRepairController extends AbstractController
         private readonly JobDispatcher $jobDispatcher,
         private readonly JobStatusService $jobStatusService,
         private readonly DataIntegrityResultCache $integrityResultCache,
+        private readonly SectionScanResultCache $sectionScanCache,
     ) {
     }
 
@@ -127,123 +134,260 @@ class DataRepairController extends AbstractController
         }
     }
 
+    /**
+     * Cache-only index page.
+     *
+     * Previously the controller ran a full integrity scan + several findAll()
+     * sweeps + 4 health-check methods synchronously on every GET, which on
+     * tenants with > ~50k entities pushed past PHP-FPM's 30 s timeout. The
+     * page now renders <500 ms regardless of data size by reading scalar
+     * counts from per-section JSON caches written by background jobs:
+     *
+     *   - var/data_integrity/last.json         (full integrity summary)
+     *   - var/data_integrity/orphans.json
+     *   - var/data_integrity/duplicates.json
+     *   - var/data_integrity/broken_references.json
+     *   - var/data_integrity/health.json
+     *
+     * Live data only stays on this page for the schema-maintenance card
+     * (Doctrine migration backlog + drift), which is cheap, and for a
+     * tenant-status card that uses scalar COUNT queries. Every section
+     * that previously rendered entity lists has moved to its own
+     * `/admin/data-repair/<section>` sub-page that loads scoped data and
+     * exposes a "Refresh now" CTA dispatching a section-specific scan
+     * job.
+     */
     #[Route('/admin/data-repair/', name: 'admin_data_repair_index', methods: ['GET'])]
     public function index(): Response
     {
-        // Integrity-Check + Übersicht brauchen TenantFilter-off, sonst
-        // fehlen Cross-Tenant-Mismatches und Orphans in den Counts.
-        [$integrityCheck, $summary] = $this->withoutTenantFilter(fn() => [
-            $this->dataIntegrityService->runFullIntegrityCheck(),
-            $this->dataIntegrityService->getSummaryStatistics(),
-        ]);
-
-        // Get all tenants
-        $tenants = $this->tenantRepository->findAll();
-
-        // Get all risks, incidents and assets for dropdown assignment.
-        // TenantFilter wird bewusst umgangen — Admin-Repair-Page muss
-        // tenant-lose Orphans + Cross-Tenant-Entities in den Dropdowns
-        // anbieten, sonst kann der Admin Orphans nicht reassignen.
-        [$allRisks, $allIncidents, $allAssets, $allControls, $allComplianceRequirements] = $this->withoutTenantFilter(fn() => [
-            $this->riskRepository->findAll(),
-            $this->incidentRepository->findAll(),
-            $this->assetRepository->findAll(),
-            $this->controlRepository->findAll(),
-            $this->complianceRequirementRepository->findAll(),
-        ]);
-
-        // Build a set of control IDs that are mapped to compliance requirements
-        $controlsWithFrameworks = [];
-        foreach ($allComplianceRequirements as $allComplianceRequirement) {
-            foreach ($allComplianceRequirement->getMappedControls() as $control) {
-                $controlsWithFrameworks[$control->getId()] = true;
-            }
-        }
-
-        $controlsWithoutRisks = array_filter($allControls, fn(Control $control): bool =>
-            // Only show controls that are applicable AND have no risks AND no framework assignments
-            $control->isApplicable()
-            && $control->getRisks()->isEmpty()
-            && !isset($controlsWithFrameworks[$control->getId()]));
-
-        // Find controls without assets
-        $controlsWithoutAssets = array_filter($allControls, fn(Control $control): bool =>
-            $control->isApplicable() && $control->getProtectedAssets()->isEmpty());
-
         // Schema maintenance: Doctrine migration backlog + entity-vs-DB drift.
-        // Both are read-only here; the corresponding apply-routes are POST.
+        // Both are read-only here; cheap on every render (a single SQL probe).
         $maintenance = $this->schemaMaintenanceService->getMaintenanceStatus();
 
-        $riskHealthIssues = $this->withoutTenantFilter(
-            fn() => $this->dataIntegrityService->findRiskHealthIssues()
-        );
-
-        $complianceHealthIssues = $this->withoutTenantFilter(
-            fn() => $this->dataIntegrityService->findComplianceHealthIssues()
-        );
-
-        $operationalHealthIssues = $this->withoutTenantFilter(
-            fn() => $this->dataIntegrityService->findOperationalHealthIssues()
-        );
-
-        $dataQualityIssues = $this->withoutTenantFilter(
-            fn() => $this->dataIntegrityService->findDataQualityIssues()
-        );
+        // Cheap COUNT(t.id) — sub-millisecond on any realistic deployment.
+        $tenantCount = (int) $this->tenantRepository->createQueryBuilder('t')
+            ->select('COUNT(t.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
 
         return $this->render('admin/data_repair/index.html.twig', [
-            // Tenants & Summary
-            'tenants' => $tenants,
-            'summary' => $summary,
-
             // Schema maintenance status (3-card grid in template)
             'migration_status' => $maintenance['migration_status'],
             'schema_drift' => $maintenance['schema_drift'],
 
-            // Comprehensive integrity check results
-            'orphanedEntities' => $integrityCheck['orphaned_entities'],
-            'duplicates' => $integrityCheck['duplicates'],
-            'brokenReferences' => $integrityCheck['broken_references'],
-            'missingRelationships' => $integrityCheck['missing_relationships'],
-            'inconsistentData' => $integrityCheck['inconsistent_data'],
-            'tenantStats' => $integrityCheck['entity_counts'],
-
-            // Legacy data for existing template sections
-            'orphanedAssets' => $integrityCheck['orphaned_entities']['assets'] ?? [],
-            'orphanedRisks' => $integrityCheck['orphaned_entities']['risks'] ?? [],
-            'orphanedIncidents' => $integrityCheck['orphaned_entities']['incidents'] ?? [],
-            'allRisks' => $allRisks,
-            'allIncidents' => $allIncidents,
-            'allAssets' => $allAssets,
-            'controlsWithoutRisks' => $controlsWithoutRisks,
-            'controlsWithoutAssets' => $controlsWithoutAssets,
-
-            // Risk health checks (ISO 27005)
-            'riskHealthIssues' => $riskHealthIssues,
-
-            // Compliance health checks (GDPR / Art. 30 VVT)
-            'complianceHealthIssues' => $complianceHealthIssues,
-
-            // Operational health checks (Tier 2 ISO 27001 operational gaps)
-            'operationalHealthIssues' => $operationalHealthIssues,
-
-            // Tier 3 data quality checks (operational gaps)
-            'dataQualityIssues' => $dataQualityIssues,
-
-            // Extended coverage (2026-05) — passed from the full integrity
-            // check result so the template has direct access without a
-            // second service round-trip.
-            'orphanedUploads' => $integrityCheck['orphaned_uploads'] ?? ['files' => [], 'scanned' => 0, 'referenced' => 0, 'uploads_dir' => null],
-            'cascadeOrphans' => $integrityCheck['cascade_orphans'] ?? [],
-            'jsonSchemaViolations' => $integrityCheck['json_schema_violations'] ?? [],
-            'auditLogIntegrity' => $integrityCheck['audit_log_integrity'] ?? ['bulk_batch_mismatches' => [], 'day_gaps' => [], 'null_tenant_entries' => []],
-            'statusEnumDrift' => $integrityCheck['status_enum_drift'] ?? [],
-
             // Async-integrity-check (Phase 2.5): scalar summary written by
             // RunFullIntegrityCheckJob to var/data_integrity/last.json.
-            // Surfaced as a banner so admins can verify whether the slow
-            // page-load scan and the recent async run agree.
             'integrityResultCache' => $this->integrityResultCache->read(),
+
+            // Per-section caches written by ScanOrphansJob /
+            // ScanDuplicatesJob / ScanBrokenReferencesJob /
+            // ScanHealthIssuesJob. Keys: 'orphans', 'duplicates',
+            // 'broken_references', 'health'. Each value is either null
+            // (never scanned) or an envelope with `completed_at`,
+            // `duration_ms` and a section-specific `payload`.
+            'sectionCaches' => $this->sectionScanCache->readAll(),
+
+            // Tenant-status card — cheap COUNT(*) result so the index
+            // page can show "N tenants in this deployment" without
+            // loading every tenant entity.
+            'tenantCount' => $tenantCount,
         ]);
+    }
+
+    // ====================================================================
+    // Section sub-pages — each renders from its own per-section cache and
+    // exposes a "Refresh now" CTA that dispatches a scoped scan job.
+    // ====================================================================
+
+    /**
+     * Orphan-entity sub-page. Reads only the orphan cache + the dropdown
+     * sources needed for the per-entity reassign forms. The live
+     * findAll() sweeps are scoped to this sub-page so they no longer
+     * block the index render.
+     */
+    #[Route('/admin/data-repair/orphans', name: 'admin_data_repair_orphans', methods: ['GET'])]
+    public function orphans(): Response
+    {
+        $tenants = $this->tenantRepository->findAll();
+
+        // Live data for the repair-action dropdowns — without this the
+        // reassign forms can't render. Scoped to this sub-page only;
+        // never visited from the main index after the refactor.
+        $orphaned = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->findAllOrphanedEntities()
+        );
+
+        return $this->render('admin/data_repair/orphans.html.twig', [
+            'cache' => $this->sectionScanCache->read(SectionScanResultCache::SECTION_ORPHANS),
+            'tenants' => $tenants,
+            'orphanedEntities' => $orphaned,
+            'orphanedAssets' => $orphaned['assets'] ?? [],
+            'orphanedRisks' => $orphaned['risks'] ?? [],
+            'orphanedIncidents' => $orphaned['incidents'] ?? [],
+        ]);
+    }
+
+    /**
+     * Duplicate-detection sub-page.
+     */
+    #[Route('/admin/data-repair/duplicates', name: 'admin_data_repair_duplicates_index', methods: ['GET'])]
+    public function duplicates(): Response
+    {
+        $duplicates = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->findDuplicateEntities()
+        );
+
+        return $this->render('admin/data_repair/duplicates.html.twig', [
+            'cache' => $this->sectionScanCache->read(SectionScanResultCache::SECTION_DUPLICATES),
+            'duplicates' => $duplicates,
+        ]);
+    }
+
+    /**
+     * Broken-references sub-page (broken FKs + cascade orphans + orphaned uploads).
+     */
+    #[Route('/admin/data-repair/broken-references', name: 'admin_data_repair_broken_refs_index', methods: ['GET'])]
+    public function brokenReferences(): Response
+    {
+        $broken = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->findBrokenReferences()
+        );
+        $cascade = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->findCascadeOrphans()
+        );
+        $uploads = $this->withoutTenantFilter(
+            fn() => $this->dataIntegrityService->findOrphanedUploads()
+        );
+
+        return $this->render('admin/data_repair/broken_references.html.twig', [
+            'cache' => $this->sectionScanCache->read(SectionScanResultCache::SECTION_BROKEN_REFERENCES),
+            'brokenReferences' => $broken,
+            'cascadeOrphans' => $cascade,
+            'orphanedUploads' => $uploads,
+        ]);
+    }
+
+    /**
+     * Health-issues sub-page (4 buckets: risk / compliance / operational / data-quality).
+     */
+    #[Route('/admin/data-repair/health', name: 'admin_data_repair_health_index', methods: ['GET'])]
+    public function health(): Response
+    {
+        return $this->render('admin/data_repair/health.html.twig', [
+            'cache' => $this->sectionScanCache->read(SectionScanResultCache::SECTION_HEALTH),
+        ]);
+    }
+
+    /**
+     * Refresh-now CTA for the orphan sub-page. Dispatches {@see ScanOrphansJob}
+     * via the same in-request runner used by the other admin jobs.
+     */
+    #[Route('/admin/data-repair/orphans/refresh', name: 'admin_data_repair_orphans_refresh', methods: ['POST'])]
+    public function refreshOrphans(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('refresh_section_orphans', $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
+            return $this->redirectToRoute('admin_data_repair_orphans');
+        }
+
+        return $this->dispatchSectionScan(
+            $request,
+            ScanOrphansJob::class,
+            'admin.data_repair.scan_orphans',
+            'admin.data_repair.job.scan_orphans_label',
+            'admin.data_repair.job.scan_orphans_subtitle',
+            $this->generateUrl('admin_data_repair_orphans'),
+        );
+    }
+
+    #[Route('/admin/data-repair/duplicates/refresh', name: 'admin_data_repair_duplicates_refresh', methods: ['POST'])]
+    public function refreshDuplicates(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('refresh_section_duplicates', $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
+            return $this->redirectToRoute('admin_data_repair_duplicates_index');
+        }
+
+        return $this->dispatchSectionScan(
+            $request,
+            ScanDuplicatesJob::class,
+            'admin.data_repair.scan_duplicates',
+            'admin.data_repair.job.scan_duplicates_label',
+            'admin.data_repair.job.scan_duplicates_subtitle',
+            $this->generateUrl('admin_data_repair_duplicates_index'),
+        );
+    }
+
+    #[Route('/admin/data-repair/broken-references/refresh', name: 'admin_data_repair_broken_refs_refresh', methods: ['POST'])]
+    public function refreshBrokenReferences(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('refresh_section_broken_refs', $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
+            return $this->redirectToRoute('admin_data_repair_broken_refs_index');
+        }
+
+        return $this->dispatchSectionScan(
+            $request,
+            ScanBrokenReferencesJob::class,
+            'admin.data_repair.scan_broken_refs',
+            'admin.data_repair.job.scan_broken_refs_label',
+            'admin.data_repair.job.scan_broken_refs_subtitle',
+            $this->generateUrl('admin_data_repair_broken_refs_index'),
+        );
+    }
+
+    #[Route('/admin/data-repair/health/refresh', name: 'admin_data_repair_health_refresh', methods: ['POST'])]
+    public function refreshHealth(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('refresh_section_health', $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
+            return $this->redirectToRoute('admin_data_repair_health_index');
+        }
+
+        return $this->dispatchSectionScan(
+            $request,
+            ScanHealthIssuesJob::class,
+            'admin.data_repair.scan_health',
+            'admin.data_repair.job.scan_health_label',
+            'admin.data_repair.job.scan_health_subtitle',
+            $this->generateUrl('admin_data_repair_health_index'),
+        );
+    }
+
+    /**
+     * Shared dispatch shim for the four section-scan refresh routes.
+     * Creates a JobStatusService row with payload-embedded UI metadata
+     * (label/subtitle) and redirects (303) to the shared progress page —
+     * the PRG pattern required by Hotwire Turbo. JobDispatcher flushes
+     * the redirect before running the job in-request.
+     *
+     * @param class-string<\App\Job\AsyncJobInterface> $jobClass
+     */
+    private function dispatchSectionScan(
+        Request $request,
+        string $jobClass,
+        string $jobName,
+        string $jobLabelKey,
+        string $jobSubtitleKey,
+        string $cancelUrl,
+    ): Response {
+        $jobId = $this->jobStatusService->create($jobName, [
+            '_label' => $this->translator->trans($jobLabelKey, [], 'admin'),
+            '_subtitle' => $this->translator->trans($jobSubtitleKey, [], 'admin'),
+        ]);
+
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $cancelUrl,
+        ], Response::HTTP_SEE_OTHER);
+
+        return $this->jobDispatcher->dispatch(
+            $jobClass,
+            [],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     /**
@@ -268,16 +412,21 @@ class DataRepairController extends AbstractController
 
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.run_integrity_check',
-            [],
+            [
+                '_label' => $this->translator->trans('admin.data_repair.job.run_integrity_check_label', [], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.run_integrity_check_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.run_integrity_check',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.run_integrity_check_label', [], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.run_integrity_check_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — required for Turbo.
+        // InRequestJobRunner flushes the redirect BEFORE running the job, and
+        // markRunning() is called inside dispatch() before detach() — so by
+        // the time the browser GETs /admin/jobs/{id}/progress, status is
+        // already `running` and the polling card never flashes `pending`.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             RunFullIntegrityCheckJob::class,
@@ -288,155 +437,141 @@ class DataRepairController extends AbstractController
         );
     }
 
+    /**
+     * Bulk-assigns orphaned entities (tenant_id IS NULL) to a target tenant.
+     *
+     * Was synchronous and looped {@see AuditLogger::logCustom()} per entity
+     * (each call flushes the EM). On tenants with thousands of orphans this
+     * exceeded the PHP-FPM 30 s timeout and the operator saw a blank page.
+     *
+     * Now dispatches {@see AssignOrphansJob} via {@see JobDispatcher} — the
+     * worker batches flushes (50 entities per commit) and the polling page
+     * surfaces live progress without blocking PHP-FPM.
+     */
     #[Route('/admin/data-repair/assign-orphans', name: 'admin_data_repair_assign_orphans', methods: ['POST'])]
-    public function assignOrphans(Request $request): Response
-    {
-        $tenantId = $request->request->get('tenant_id');
-        $entityType = $request->request->get('entity_type');
-
+    public function assignOrphans(
+        Request $request,
+        #[CurrentUser] User $user,
+    ): Response {
         if (!$this->isCsrfTokenValid('assign_orphans', $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
-            return $this->redirectToRoute('admin_data_repair_index');
+            return $this->redirectToRoute('admin_data_repair_orphans');
         }
+
+        $tenantId = (int) ($request->request->get('tenant_id') ?? 0);
+        $entityType = (string) ($request->request->get('entity_type') ?? 'all');
 
         $tenant = $this->tenantRepository->find($tenantId);
-        if (!$tenant) {
+        if ($tenant === null) {
             $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found', [], 'admin'));
-            return $this->redirectToRoute('admin_data_repair_index');
+            return $this->redirectToRoute('admin_data_repair_orphans');
         }
 
-        $count = 0;
+        $jobId = $this->jobStatusService->create(
+            'admin.data_repair.assign_orphans',
+            [
+                'tenantId' => $tenantId,
+                'tenantName' => $tenant->getName(),
+                'entityType' => $entityType,
+                '_label' => $this->translator->trans('admin.data_repair.job.assign_orphans_label', [
+                    '%tenant%' => $tenant->getName(),
+                ], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.assign_orphans_subtitle', [], 'admin'),
+            ],
+        );
 
-        // Audit-log each reassignment per entity (ISB MAJOR-1). The per-entity
-        // granularity lets an auditor answer "who moved entity X into tenant Y"
-        // without reverse-engineering a diff.
-        $assignFn = function (object $entity, string $className) use ($tenant, &$count): void {
-            if (!method_exists($entity, 'setTenant') || !method_exists($entity, 'getId')) {
-                return;
-            }
-            $entity->setTenant($tenant);
-            $this->auditLogger->logCustom(
-                'admin.data_repair.orphan_reassigned',
-                $className,
-                (int) $entity->getId(),
-                ['tenant_id' => null],
-                ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
-                sprintf('Orphan %s#%d reassigned to tenant %s', $className, (int) $entity->getId(), $tenant->getName()),
-            );
-            $count++;
-        };
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_orphans'),
+        ], Response::HTTP_SEE_OTHER);
 
-        // Generisch: Service liefert bereits alle Orphans keyed by entity-type.
-        // 'all' iteriert komplett, sonst nur die gewählte Kategorie.
-        $errorFlashKey = null;
-        $this->withoutTenantFilter(function () use ($entityType, &$assignFn, &$errorFlashKey): void {
-            $allOrphans = $this->dataIntegrityService->findAllOrphanedEntities();
-            if ($entityType === 'all') {
-                foreach ($allOrphans as $entities) {
-                    foreach ($entities as $entity) {
-                        $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
-                    }
-                }
-            } elseif (isset($allOrphans[$entityType])) {
-                foreach ($allOrphans[$entityType] as $entity) {
-                    $assignFn($entity, (new \ReflectionClass($entity))->getShortName());
-                }
-            } else {
-                $errorFlashKey = 'admin.data_repair.invalid_entity_type';
-            }
-        });
-
-        if ($errorFlashKey !== null) {
-            $this->addFlash('error', $this->translator->trans($errorFlashKey));
-            return $this->redirectToRoute('admin_data_repair_index');
-        }
-
-        // AuditLogger::logCustom flushes per call. If one of those flushes
-        // tripped (constraint violation, savepoint after DDL, etc.) the EM
-        // closed and the audit-log was swallowed best-effort. Detect that
-        // here and surface a clean message instead of bombing with HTTP 500.
-        // CLAUDE.md Common-Pitfalls #1.
-        if (!$this->entityManager->isOpen()) {
-            $this->addFlash('warning', $this->translator->trans('admin.data_repair.partial_assignment', [
-                '%count%' => $count,
-                '%tenant%' => $tenant->getName(),
-            ]));
-            return $this->redirectToRoute('admin_data_repair_index');
-        }
-
-        $this->entityManager->flush();
-
-        $this->addFlash('success', $this->translator->trans('admin.data_repair.assigned_count', [
-            '%count%' => $count,
-            '%tenant%' => $tenant->getName(),
-        ]));
-
-        return $this->redirectToRoute('admin_data_repair_index');
+        return $this->jobDispatcher->dispatch(
+            AssignOrphansJob::class,
+            [
+                'tenantId' => $tenantId,
+                'entityType' => $entityType,
+                'userId' => $user->getId(),
+            ],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
+    /**
+     * Reassign a single orphan entity to a tenant.
+     *
+     * Was synchronous: one flush + one audit-log flush per request. On slow
+     * shared-hosting MySQL (fsync-heavy disk) the operator could still wait
+     * 10–30 s, which felt indistinguishable from the bulk-assign timeout.
+     *
+     * Now dispatches {@see ReassignEntityJob} — the polling page renders
+     * immediately and the job refreshes the orphan-cache so the index page
+     * reflects the new state when the operator returns.
+     */
     #[Route('/admin/data-repair/reassign-entity/{type}/{id}', name: 'admin_data_repair_reassign_entity', methods: ['POST'])]
-    public function reassignEntity(Request $request, string $type, int $id): Response
-    {
-        $tenantId = $request->request->get('tenant_id');
-
+    public function reassignEntity(
+        Request $request,
+        string $type,
+        int $id,
+        #[CurrentUser] User $user,
+    ): Response {
         if (!$this->isCsrfTokenValid('reassign_entity_' . $id, $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('common.csrf_error', [], 'messages'));
-            return $this->redirectToRoute('admin_data_repair_index');
+            return $this->redirectToRoute('admin_data_repair_orphans');
         }
 
+        $tenantId = (int) ($request->request->get('tenant_id') ?? 0);
         $tenant = $this->tenantRepository->find($tenantId);
-        if (!$tenant) {
+        if ($tenant === null) {
             $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found', [], 'admin'));
-            return $this->redirectToRoute('admin_data_repair_index');
+            return $this->redirectToRoute('admin_data_repair_orphans');
         }
 
-        // Generischer Reassign — findet Entity per Doctrine-Metadata statt
-        // fixer Repository-Auswahl. Damit funktionieren auch Controls,
-        // Workflows, Suppliers usw.
-        [$entity, $entityName, $className] = $this->withoutTenantFilter(function () use ($type, $id): array {
-            $fqcn = $this->resolveEntityClassForType($type);
-            if ($fqcn === null) {
-                return [null, '', ''];
-            }
-            $found = $this->entityManager->find($fqcn, $id);
-            $name = '';
-            if ($found !== null) {
-                if (method_exists($found, 'getName')) {
-                    $name = (string) $found->getName();
-                } elseif (method_exists($found, 'getTitle')) {
-                    $name = (string) $found->getTitle();
-                } else {
-                    $name = '#' . $id;
-                }
-            }
-            return [$found, $name, $found ? (new \ReflectionClass($found))->getShortName() : ''];
-        });
-
-        if (!$entity) {
-            $this->addFlash('error', $this->translator->trans('admin.data_repair.entity_not_found', [], 'admin'));
-            return $this->redirectToRoute('admin_data_repair_index');
+        // Verify the entity type slug maps to a real Doctrine entity before
+        // dispatching — saves the operator a round-trip to the job-progress
+        // page if they submitted a garbage URL.
+        if ($this->resolveEntityClassForType($type) === null) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.invalid_entity_type', [], 'admin'));
+            return $this->redirectToRoute('admin_data_repair_orphans');
         }
 
-        // ISB MAJOR-1: capture previous tenant before mutation for audit diff.
-        $previousTenant = method_exists($entity, 'getTenant') ? $entity->getTenant() : null;
-        $previousTenantId = $previousTenant instanceof \App\Entity\Tenant ? $previousTenant->getId() : null;
-        $entity->setTenant($tenant);
-        $this->auditLogger->logCustom(
-            'admin.data_repair.entity_reassigned',
-            $className,
-            $id,
-            ['tenant_id' => $previousTenantId],
-            ['tenant_id' => $tenant->getId(), 'tenant_name' => $tenant->getName()],
-            sprintf('%s#%d "%s" reassigned to tenant %s', $className, $id, $entityName, $tenant->getName()),
+        $jobId = $this->jobStatusService->create(
+            'admin.data_repair.reassign_entity',
+            [
+                'type' => $type,
+                'id' => $id,
+                'tenantId' => $tenantId,
+                'tenantName' => $tenant->getName(),
+                '_label' => $this->translator->trans('admin.data_repair.job.reassign_entity_label', [
+                    '%type%' => $type,
+                    '%id%' => $id,
+                ], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.reassign_entity_subtitle', [
+                    '%tenant%' => $tenant->getName(),
+                ], 'admin'),
+            ],
         );
-        $this->entityManager->flush();
 
-        $this->addFlash('success', $this->translator->trans('admin.data_repair.entity_reassigned', [
-            '%entity%' => $entityName,
-            '%tenant%' => $tenant->getName(),
-        ]));
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_orphans'),
+        ], Response::HTTP_SEE_OTHER);
 
-        return $this->redirectToRoute('admin_data_repair_index');
+        return $this->jobDispatcher->dispatch(
+            ReassignEntityJob::class,
+            [
+                'entityType' => $type,
+                'entityId' => $id,
+                'tenantId' => $tenantId,
+                'userId' => $user->getId(),
+            ],
+            $jobId,
+            $response,
+            $request->getSession(),
+        );
     }
 
     #[Route('/admin/data-repair/assign-asset/{type}/{id}', name: 'admin_data_repair_assign_asset', methods: ['POST'])]
@@ -643,14 +778,27 @@ class DataRepairController extends AbstractController
         // Create job status record and dispatch
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.fix_all_orphans',
-            ['tenantId' => $tenantId, 'tenantName' => $tenant->getName()],
+            [
+                'tenantId' => $tenantId,
+                'tenantName' => $tenant->getName(),
+                '_label' => sprintf(
+                    '%s — %s',
+                    $this->translator->trans('admin.data_repair.job.fix_all_orphans_label', [], 'admin'),
+                    $tenant->getName(),
+                ),
+                '_subtitle' => $this->translator->trans(
+                    'admin.data_repair.job.fix_all_orphans_subtitle',
+                    ['%tenant%' => $tenant->getName()],
+                    'admin',
+                ),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/fix_all_orphans_progress.html.twig', [
-            'jobId' => $jobId,
-            'tenantName' => $tenant->getName(),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             FixAllOrphansJob::class,
@@ -797,16 +945,18 @@ class DataRepairController extends AbstractController
 
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.fix_tenant_mismatches',
-            ['reason_length' => mb_strlen($reason)],
+            [
+                'reason_length' => mb_strlen($reason),
+                '_label' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_label', [], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.fix_tenant_mismatches',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_label', [], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.fix_tenant_mismatches_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             FixTenantMismatchesJob::class,
@@ -850,16 +1000,19 @@ class DataRepairController extends AbstractController
 
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.merge_duplicates',
-            ['entityType' => $entityType, 'actor' => $actor],
+            [
+                'entityType' => $entityType,
+                'actor' => $actor,
+                '_label' => $this->translator->trans('admin.data_repair.job.merge_duplicates_label', ['%type%' => $entityType], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.merge_duplicates_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.merge_duplicates',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.merge_duplicates_label', ['%type%' => $entityType], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.merge_duplicates_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             MergeDuplicatesJob::class,
@@ -893,16 +1046,18 @@ class DataRepairController extends AbstractController
 
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.execute_migrations',
-            ['actor' => $actor],
+            [
+                'actor' => $actor,
+                '_label' => $this->translator->trans('admin.data_repair.job.execute_migrations_label', [], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.execute_migrations_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.execute_migrations',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.execute_migrations_label', [], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.execute_migrations_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             ExecutePendingMigrationsJob::class,
@@ -1106,16 +1261,19 @@ class DataRepairController extends AbstractController
         // page — the UX here is "apply both buttons explicitly".
         $jobId = $this->jobStatusService->create(
             'admin.data_repair.reconcile_schema',
-            ['actor' => $actor, 'bypassMigrationGate' => true],
+            [
+                'actor' => $actor,
+                'bypassMigrationGate' => true,
+                '_label' => $this->translator->trans('admin.data_repair.job.reconcile_schema_label', [], 'admin'),
+                '_subtitle' => $this->translator->trans('admin.data_repair.job.reconcile_schema_subtitle', [], 'admin'),
+            ],
         );
 
-        $response = $this->render('admin/data_repair/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobName' => 'admin.data_repair.reconcile_schema',
-            'jobLabel' => $this->translator->trans('admin.data_repair.job.reconcile_schema_label', [], 'admin'),
-            'jobSubtitle' => $this->translator->trans('admin.data_repair.job.reconcile_schema_subtitle', [], 'admin'),
-            'cancelUrl' => $this->generateUrl('admin_data_repair_index'),
-        ]);
+        // PRG: 303 redirect to the shared progress page — see runIntegrityCheck() rationale.
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('admin_data_repair_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $this->jobDispatcher->dispatch(
             ReconcileSchemaJob::class,

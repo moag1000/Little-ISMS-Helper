@@ -278,7 +278,10 @@ class AdminBackupControllerTest extends WebTestCase
         $this->assertResponseRedirects();
         $location = $this->client->getResponse()->headers->get('Location');
         $this->assertNotNull($location);
-        $this->assertStringContainsString('/admin/data/backup/progress/', (string) $location);
+        // Turbo PRG fix: redirect now goes to the shared progress page at
+        // /admin/jobs/{id}/progress (was /admin/data/backup/progress/{id}).
+        $this->assertStringContainsString('/admin/jobs/', (string) $location);
+        $this->assertStringContainsString('/progress', (string) $location);
     }
 
     // ========== ROLE-SCOPE PHASE 3 — TENANT-SCOPED BACKUP TESTS ==========

@@ -122,24 +122,6 @@ class MappingQualityControllerTest extends WebTestCase
         $this->client->loginUser($user);
     }
 
-    /**
-     * Generate a CSRF token usable in subsequent POST requests.
-     * Bootstrap session via GET, then set token in the SAME session and immediately
-     * save+close. Returns the token value to include via X-CSRF-Token header.
-     */
-    private function generateCsrfToken(string $tokenId): string
-    {
-        $this->client->request('GET', '/en/compliance/mapping-quality/');
-        $session = $this->client->getRequest()->getSession();
-
-        $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
-        $tokenValue = $tokenGenerator->generateToken();
-        $session->set('_csrf/' . $tokenId, $tokenValue);
-        $session->save();
-
-        return $tokenValue;
-    }
-
     // ========== DASHBOARD TESTS ==========
 
     #[Test]
@@ -231,13 +213,12 @@ class MappingQualityControllerTest extends WebTestCase
     public function testUpdateReviewReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
-        $csrfToken = $this->generateCsrfToken('mapping_quality_review_update');
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/review/999999/update',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json', 'HTTP_X-CSRF-Token' => $csrfToken],
+            ['CONTENT_TYPE' => 'application/json'],
             json_encode(['review_status' => 'approved'])
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -264,14 +245,7 @@ class MappingQualityControllerTest extends WebTestCase
     public function testAnalyzeMappingReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
-        $csrfToken = $this->generateCsrfToken('mapping_quality_analyze');
-        $this->client->request(
-            'POST',
-            '/en/compliance/mapping-quality/analyze/999999',
-            [],
-            [],
-            ['HTTP_X-CSRF-Token' => $csrfToken]
-        );
+        $this->client->request('POST', '/en/compliance/mapping-quality/analyze/999999');
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
@@ -317,13 +291,12 @@ class MappingQualityControllerTest extends WebTestCase
     public function testUpdateGapReturns404ForNonexistent(): void
     {
         $this->loginAsUser($this->testUser);
-        $csrfToken = $this->generateCsrfToken('mapping_quality_gap_update');
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/gap/999999/update',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json', 'HTTP_X-CSRF-Token' => $csrfToken],
+            ['CONTENT_TYPE' => 'application/json'],
             json_encode(['status' => 'resolved'])
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -350,13 +323,12 @@ class MappingQualityControllerTest extends WebTestCase
     public function testBatchAnalyzeReturnsJsonForUser(): void
     {
         $this->loginAsUser($this->testUser);
-        $csrfToken = $this->generateCsrfToken('mapping_quality_batch_analyze');
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/batch-analyze',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json', 'HTTP_X-CSRF-Token' => $csrfToken],
+            ['CONTENT_TYPE' => 'application/json'],
             json_encode(['limit' => 5])
         );
         $this->assertResponseIsSuccessful();
@@ -367,13 +339,12 @@ class MappingQualityControllerTest extends WebTestCase
     public function testBatchAnalyzeValidatesLimit(): void
     {
         $this->loginAsUser($this->testUser);
-        $csrfToken = $this->generateCsrfToken('mapping_quality_batch_analyze');
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/batch-analyze',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json', 'HTTP_X-CSRF-Token' => $csrfToken],
+            ['CONTENT_TYPE' => 'application/json'],
             json_encode(['limit' => 500]) // Exceeds max of 100
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -383,13 +354,12 @@ class MappingQualityControllerTest extends WebTestCase
     public function testBatchAnalyzeValidatesJson(): void
     {
         $this->loginAsUser($this->testUser);
-        $csrfToken = $this->generateCsrfToken('mapping_quality_batch_analyze');
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/batch-analyze',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json', 'HTTP_X-CSRF-Token' => $csrfToken],
+            ['CONTENT_TYPE' => 'application/json'],
             'invalid json'
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -464,7 +434,6 @@ class MappingQualityControllerTest extends WebTestCase
     public function testUpdateReviewValidatesReviewStatus(): void
     {
         $this->loginAsUser($this->testUser);
-        $csrfToken = $this->generateCsrfToken('mapping_quality_review_update');
         // This would require a real mapping to test properly
         // For now, test that invalid mapping returns 404
         $this->client->request(
@@ -472,7 +441,7 @@ class MappingQualityControllerTest extends WebTestCase
             '/en/compliance/mapping-quality/review/999999/update',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json', 'HTTP_X-CSRF-Token' => $csrfToken],
+            ['CONTENT_TYPE' => 'application/json'],
             json_encode(['review_status' => 'invalid_status'])
         );
         // Returns 404 because mapping doesn't exist
@@ -483,13 +452,12 @@ class MappingQualityControllerTest extends WebTestCase
     public function testUpdateGapValidatesStatus(): void
     {
         $this->loginAsUser($this->testUser);
-        $csrfToken = $this->generateCsrfToken('mapping_quality_gap_update');
         $this->client->request(
             'POST',
             '/en/compliance/mapping-quality/gap/999999/update',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json', 'HTTP_X-CSRF-Token' => $csrfToken],
+            ['CONTENT_TYPE' => 'application/json'],
             json_encode(['status' => 'invalid_status'])
         );
         // Returns 404 because gap doesn't exist

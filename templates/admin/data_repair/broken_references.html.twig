@@ -1,0 +1,210 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% block title %}{{ 'admin.data_repair.section.broken_references'|trans({}, 'admin') }} — {{ 'admin.data_repair.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block admin_title %}
+    <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i> {{ 'admin.data_repair.section.broken_references'|trans({}, 'admin') }}
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'admin.data_repair.title'|trans({}, 'admin'), url: path('admin_data_repair_index') },
+            { label: 'admin.data_repair.section.broken_references'|trans({}, 'admin') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'ui-link', label: 'admin.data_repair.section.badge'|trans({}, 'admin') },
+        title: 'admin.data_repair.section.broken_references'|trans({}, 'admin'),
+        subtitle: 'admin.data_repair.section.broken_references_description'|trans({}, 'admin'),
+    }) }}
+
+    {% for message in app.flashes('success') %}{{ _fa_alert.render({ variant: 'success', dismissible: true, body: message }) }}{% endfor %}
+    {% for message in app.flashes('error') %}{{ _fa_alert.render({ variant: 'danger', dismissible: true, body: message }) }}{% endfor %}
+    {% for message in app.flashes('warning') %}{{ _fa_alert.render({ variant: 'warning', dismissible: true, body: message }) }}{% endfor %}
+    {% for message in app.flashes('info') %}{{ _fa_alert.render({ variant: 'info', dismissible: true, body: message }) }}{% endfor %}
+
+    {# Cache state + refresh-now CTA #}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: cache is null ? 'warning' : 'info', class: 'mb-4' } } %}
+        {% block alert_body %}
+        <div class="d-flex align-items-start gap-3 flex-wrap">
+            <div class="flex-grow-1">
+                <div class="fa-alert__title">{{ 'admin.data_repair.section.cache_status'|trans({}, 'admin') }}</div>
+                {% if cache is not null %}
+                    <p class="small text-muted mb-0">
+                        {{ 'admin.data_repair.section.last_scan'|trans({
+                            '%when%': cache.completed_at|date('Y-m-d H:i'),
+                            '%duration%': (cache.duration_ms / 1000)|round(1),
+                        }, 'admin') }}
+                        — {{ 'admin.data_repair.section.broken_refs_summary'|trans({
+                            '%broken%': cache.payload.broken_total|default(0),
+                            '%cascade%': cache.payload.cascade_total|default(0),
+                            '%uploads%': cache.payload.uploads_total|default(0),
+                        }, 'admin') }}
+                    </p>
+                {% else %}
+                    <p class="small text-muted mb-0">
+                        {{ 'admin.data_repair.section.never_scanned_full'|trans({}, 'admin') }}
+                    </p>
+                {% endif %}
+            </div>
+            <form method="post" action="{{ path('admin_data_repair_broken_refs_refresh') }}" class="d-inline-block">
+                <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_broken_refs') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
+                </button>
+            </form>
+        </div>
+        {% endblock %}
+    {% endembed %}
+
+    {# Fix-tenant-mismatches form — covered under broken-references because
+       cross-entity tenant drift is the most common broken-reference shape. #}
+    {% set brokenCount = 0 %}
+    {% for k, rows in brokenReferences %}{% set brokenCount = brokenCount + (rows|length) %}{% endfor %}
+
+    {% if brokenCount > 0 %}
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="mb-0">
+                <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
+                {{ 'admin.data_repair.broken_references'|trans({}, 'admin') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            {{ _fa_alert.render({
+                variant: 'danger',
+                body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.broken_references_desc'|trans({}, 'admin'),
+            }) }}
+            <form method="post" action="{{ path('admin_data_repair_fix_tenant_mismatches') }}"
+                  data-controller="ui-actions"
+                  data-action="submit->ui-actions#confirm"
+                  data-ui-actions-message-param="Fix all tenant mismatches automatically?">
+                <input type="hidden" name="_token" value="{{ csrf_token('fix_tenant_mismatches') }}">
+                <div class="mb-2">
+                    <label for="fix_tenant_mismatches_reason" class="form-label small fw-semibold">
+                        {{ 'admin.data_repair.reason_label'|trans({}, 'admin') }} <span class="text-danger" aria-hidden="true">*</span>
+                    </label>
+                    <textarea
+                        id="fix_tenant_mismatches_reason"
+                        name="reason"
+                        class="form-control fa-cyber-input__field"
+                        rows="2"
+                        minlength="20"
+                        required
+                        aria-required="true"></textarea>
+                    <div class="form-text">{{ 'admin.data_repair.reason_help'|trans({}, 'admin') }}</div>
+                </div>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
+                    <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.fix_tenant_mismatches'|trans({}, 'admin') }}
+                </button>
+            </form>
+        </div>
+    </section>
+    {% else %}
+        {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.section.no_broken_refs'|trans({}, 'admin') }) }}
+    {% endif %}
+
+    {# Orphaned uploads #}
+    {% set uploadsCount = orphanedUploads.files|default([])|length %}
+    <section class="fa-section mt-4 {{ uploadsCount > 0 ? 'border-warning' : 'border-success' }}">
+        <div class="fa-section__header">
+            <h2 class="mb-0">
+                <i class="fa-icon fa-icon--{{ uploadsCount > 0 ? 'status-warning' : 'ui-check-circle' }}" aria-hidden="true"></i>
+                {{ 'admin.data_repair.uploads.title'|trans({}, 'admin') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            {% if orphanedUploads.uploads_dir is null %}
+                {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: 'admin.data_repair.uploads.unavailable'|trans({}, 'admin') }) }}
+            {% elseif uploadsCount == 0 %}
+                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.uploads.all_ok'|trans({}, 'admin') }) }}
+            {% else %}
+                <p>{{ 'admin.data_repair.uploads.description'|trans({}, 'admin') }}</p>
+                <p class="small text-muted">
+                    {{ uploadsCount }} files · scanned {{ orphanedUploads.scanned|default(0) }} · referenced {{ orphanedUploads.referenced|default(0) }}
+                </p>
+                <form method="post" action="{{ path('admin_data_repair_quarantine_uploads') }}"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'admin.data_repair.uploads.confirm_quarantine'|trans({'%count%': uploadsCount}, 'admin') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('quarantine_uploads') }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">
+                        <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.uploads.action_quarantine'|trans({'%count%': uploadsCount}, 'admin') }}
+                    </button>
+                    <span class="ms-2 small text-muted">{{ 'admin.data_repair.uploads.action_hint'|trans({}, 'admin') }}</span>
+                </form>
+            {% endif %}
+        </div>
+    </section>
+
+    {# Cascade orphans (dangling refs) #}
+    {% set cascadeTotal = 0 %}
+    {% for bucket, rows in cascadeOrphans %}{% set cascadeTotal = cascadeTotal + (rows|length) %}{% endfor %}
+
+    <section class="fa-section mt-4 {{ cascadeTotal > 0 ? 'border-warning' : 'border-success' }}">
+        <div class="fa-section__header">
+            <h2 class="mb-0">
+                <i class="fa-icon fa-icon--{{ cascadeTotal > 0 ? 'status-warning' : 'ui-check-circle' }}" aria-hidden="true"></i>
+                {{ 'admin.data_repair.cascade.title'|trans({}, 'admin') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            {% if cascadeTotal == 0 %}
+                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.cascade.all_ok'|trans({}, 'admin') }) }}
+            {% else %}
+                <p>{{ 'admin.data_repair.cascade.description'|trans({}, 'admin') }}</p>
+                <div class="row g-3 mb-3">
+                    {% for bucket, rows in cascadeOrphans %}
+                        {% if rows|length > 0 %}
+                            <div class="col-md-4">
+                                {{ _fa_feature_card.render({
+                                    variant: 'warning',
+                                    icon: 'ui-link',
+                                    label: ('admin.data_repair.cascade.category.' ~ bucket)|trans({}, 'admin'),
+                                    value: rows|length,
+                                }) }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <form method="post" action="{{ path('admin_data_repair_cleanup_dangling_refs') }}"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'admin.data_repair.cascade.confirm_cleanup'|trans({'%count%': cascadeTotal}, 'admin') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('cleanup_dangling_refs') }}">
+                    <div class="mb-2">
+                        <label for="cleanup_reason" class="form-label small fw-semibold">
+                            {{ 'admin.data_repair.reason_label'|trans({}, 'admin') }} <span class="text-danger" aria-hidden="true">*</span>
+                        </label>
+                        <textarea id="cleanup_reason" name="reason" class="form-control fa-cyber-input__field"
+                                  rows="2" minlength="20" required aria-required="true"></textarea>
+                        <div class="form-text">{{ 'admin.data_repair.reason_help'|trans({}, 'admin') }}</div>
+                    </div>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
+                        <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.cascade.action_cleanup'|trans({'%count%': cascadeTotal}, 'admin') }}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </section>
+
+    <div class="mt-4">
+        <a href="{{ path('admin_data_repair_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
+            {{ 'admin.data_repair.section.back_to_index'|trans({}, 'admin') }}
+        </a>
+    </div>
+</div>
+{% endblock %}

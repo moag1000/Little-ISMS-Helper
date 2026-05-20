@@ -570,6 +570,7 @@ admin:
             confirm_merge: 'Really merge %count% duplicate group(s) for "%type%"? The oldest entry (lowest ID) is kept, all others are deleted. This action cannot be undone.'
             show_details: 'Show duplicate details'
             items: 'entries'
+            all_ok: 'No duplicate entities detected — all entries are unique within their tenant.'
         risk_health:
             title: 'Risk Health (ISO 27005)'
             all_ok: 'No risk health issues found — all risks are correctly configured.'
@@ -702,6 +703,64 @@ admin:
             reconcile_schema_subtitle: 'Aligning live database schema with entity metadata in the background…'
             run_integrity_check_label: 'Full Integrity Scan'
             run_integrity_check_subtitle: 'Scanning orphans, duplicates, broken references, missing relationships and schema drift in the background…'
+            scan_orphans_label: 'Scan Orphans'
+            scan_orphans_subtitle: 'Scanning orphaned (tenant_id IS NULL) entities in the background…'
+            scan_duplicates_label: 'Scan Duplicates'
+            scan_duplicates_subtitle: 'Detecting duplicate entities per type and tenant in the background…'
+            scan_broken_refs_label: 'Scan Broken References'
+            scan_broken_refs_subtitle: 'Scanning broken FK references, cascade orphans and orphaned uploads in the background…'
+            scan_health_label: 'Scan Health Issues'
+            scan_health_subtitle: 'Running the four health-check buckets (risk / compliance / operational / data-quality) in the background…'
+            assign_orphans_label: 'Assign Orphans → %tenant%'
+            assign_orphans_subtitle: 'Assigning orphaned entities (tenant_id IS NULL) to the target tenant in the background. Audit log written per entity, flushes batched.'
+            reassign_entity_label: 'Reassign %type%#%id%'
+            reassign_entity_subtitle: 'Reassigning the entity to tenant "%tenant%" in the background, then refreshing the orphan cache.'
+        # Inventory preview on the overview page (cache-driven, no DB roundtrip)
+        inventory:
+            title: 'What needs cleaning up?'
+            never_scanned: 'This section has never been scanned. Click "Refresh now" to dispatch a background scan.'
+            show_all: 'Show all'
+            more_items: '… and %count% more items'
+            more_groups: '… and %count% more groups'
+            col_type: 'Type'
+            col_group: 'Group / Value'
+            col_count: 'Count'
+            broken_refs_header: 'Broken FK References'
+            cascade_orphans_header: 'Cascade Orphans'
+            orphaned_uploads_summary: '%count% orphaned upload file(s) on disk'
+        # Sub-page navigation + cache banners (async-rendering refactor 2026-05)
+        sections_title: 'Repair Sections'
+        section:
+            badge: 'Data Repair'
+            orphans: 'Orphans'
+            orphans_description: 'Entities with no tenant assigned. Reassign individually or in bulk to a target tenant.'
+            duplicates: 'Duplicates'
+            duplicates_description: 'Duplicate entities within the same tenant. Merge keeps the lowest ID and removes the newer copies.'
+            broken_references: 'Broken References'
+            broken_references_description: 'Broken FK references, cascade orphans, and orphaned upload files on disk.'
+            health: 'Health Issues'
+            health_description: 'Four health-check buckets (risk / compliance / operational / data-quality) — informational, no auto-repair.'
+            cache_status: 'Cache Status'
+            last_scan: 'Last scan: %when% (took %duration% s)'
+            never_scanned: 'Never scanned'
+            never_scanned_full: 'No cached result yet — click "Refresh now" to dispatch a background scan.'
+            scanned_ago: 'Scanned %when%'
+            refresh_now: 'Refresh now'
+            back_to_index: 'Back to overview'
+            orphans_summary: '%total% orphan(s) across %types% entity type(s)'
+            duplicates_summary: '%groups% duplicate group(s) across %types% entity type(s)'
+            broken_refs_summary: '%broken% broken ref(s), %cascade% cascade orphan(s), %uploads% orphaned upload(s)'
+            health_summary: '%total% health issue(s) across 4 buckets'
+            health_run_to_view: 'Health-issue data is loaded from cache only — click "Refresh now" once to populate it.'
+            health_all_ok: 'All four health-check buckets are clean.'
+            health_bucket_count: '%count% issue(s) detected in this bucket'
+            no_broken_refs: 'No broken references detected.'
+            fix_tenant_mismatches: 'Fix Tenant Mismatches'
+            tip: 'Each section runs its own background scan. The index page reads only cached counts, so it stays fast regardless of how many entities you have. Repair actions still read live data when applied.'
+        tenant_card:
+            title: 'Tenants'
+            tenant_count: '%count% tenant(s) registered'
+            description: 'Cheap COUNT(*) — does not trigger a full scan.'
         integrity_check:
             title: 'Async Integrity Scan'
             description: 'On large datasets the inline scan on this page can exceed PHP-FPM''s timeout. Run it as a background job instead — the result is cached and surfaced here as a banner.'
@@ -1177,6 +1236,9 @@ admin:
         id_label: "Job ID"
         worker_hint: "The job is running in the background. This page auto-refreshes every 3 seconds."
         download: "Download file"
+        progress_page_title: "Job progress"
+        progress_subtitle_generic: "The operation is running in the background. A status will appear here once it completes."
+        badge: "Async job"
         export:
             data_label: "CSV export — all entities"
             data_subtitle: "Collecting selected entities into a file in the background…"

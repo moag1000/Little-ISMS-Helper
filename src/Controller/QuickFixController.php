@@ -622,13 +622,15 @@ class QuickFixController extends AbstractController
     /**
      * Shared dispatch helper for every QuickFix async action.
      *
-     * Creates a job-status record, renders the standalone progress template
-     * (polls the public /quick-fix/jobs/{id}/status endpoint), then hands
-     * the job to {@see JobDispatcher} — which by default runs it in this
-     * same PHP-FPM worker after the response has been flushed
-     * (fastcgi_finish_request pattern) so shared-hosting operators do not
-     * need a Messenger worker daemon. Falls back to Messenger when
-     * `app.async_job.runner=messenger`.
+     * Creates a job-status record with payload-embedded UI metadata
+     * (label / subtitle) and redirects (303) to the shared QuickFix
+     * progress page — required by Hotwire Turbo, which refuses to
+     * render a 200+HTML body in response to a form submission ("Form
+     * responses must redirect to another location"). {@see JobDispatcher}
+     * then runs the job in this same PHP-FPM worker after the redirect
+     * has been flushed (fastcgi_finish_request pattern) so shared-hosting
+     * operators do not need a Messenger worker daemon. Falls back to
+     * Messenger when `app.async_job.runner=messenger`.
      *
      * @param class-string $jobClass    FQCN of the {@see \App\Job\AsyncJobInterface}
      * @param string       $statusName  Internal slug stored on the status record
@@ -647,15 +649,23 @@ class QuickFixController extends AbstractController
         string $subtitleKey,
         array $args,
     ): Response {
-        $jobId = $jobStatusService->create($statusName, $args);
+        // Merge UI metadata into the payload so the shared progress route
+        // (QuickFixJobStatusController::progressPage) can render label +
+        // subtitle without per-controller templates.
+        $payload = $args + [
+            '_label' => $translator->trans($labelKey, [], 'quick_fix'),
+            '_subtitle' => $translator->trans($subtitleKey, [], 'quick_fix'),
+        ];
 
-        $response = $this->render('quick_fix/job_progress.html.twig', [
-            'jobId' => $jobId,
-            'jobLabel' => $translator->trans($labelKey, [], 'quick_fix'),
-            'jobSubtitle' => $translator->trans($subtitleKey, [], 'quick_fix'),
-            'cancelUrl' => $this->generateUrl('app_quick_fix_index'),
-            'statusUrl' => $this->generateUrl('app_quick_fix_job_status', ['id' => $jobId]),
-        ]);
+        $jobId = $jobStatusService->create($statusName, $payload);
+
+        // PRG: 303 redirect to the shared progress page so Turbo can follow
+        // it. The status name is registered as `name: app_quick_fix_job_progress`
+        // in config/routes.yaml — un-authenticated like the rest of QuickFix.
+        $response = $this->redirectToRoute('app_quick_fix_job_progress', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('app_quick_fix_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $jobDispatcher->dispatch(
             $jobClass,

@@ -1,0 +1,147 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% block title %}{{ 'admin.data_repair.section.health'|trans({}, 'admin') }} — {{ 'admin.data_repair.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block admin_title %}
+    <i class="fa-icon fa-icon--nav-heart-pulse" aria-hidden="true"></i> {{ 'admin.data_repair.section.health'|trans({}, 'admin') }}
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'admin.data_repair.title'|trans({}, 'admin'), url: path('admin_data_repair_index') },
+            { label: 'admin.data_repair.section.health'|trans({}, 'admin') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'nav-heart-pulse', label: 'admin.data_repair.section.badge'|trans({}, 'admin') },
+        title: 'admin.data_repair.section.health'|trans({}, 'admin'),
+        subtitle: 'admin.data_repair.section.health_description'|trans({}, 'admin'),
+    }) }}
+
+    {% for message in app.flashes('success') %}{{ _fa_alert.render({ variant: 'success', dismissible: true, body: message }) }}{% endfor %}
+    {% for message in app.flashes('error') %}{{ _fa_alert.render({ variant: 'danger', dismissible: true, body: message }) }}{% endfor %}
+    {% for message in app.flashes('warning') %}{{ _fa_alert.render({ variant: 'warning', dismissible: true, body: message }) }}{% endfor %}
+    {% for message in app.flashes('info') %}{{ _fa_alert.render({ variant: 'info', dismissible: true, body: message }) }}{% endfor %}
+
+    {# Cache state + refresh-now CTA #}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: cache is null ? 'warning' : 'info', class: 'mb-4' } } %}
+        {% block alert_body %}
+        <div class="d-flex align-items-start gap-3 flex-wrap">
+            <div class="flex-grow-1">
+                <div class="fa-alert__title">{{ 'admin.data_repair.section.cache_status'|trans({}, 'admin') }}</div>
+                {% if cache is not null %}
+                    <p class="small text-muted mb-0">
+                        {{ 'admin.data_repair.section.last_scan'|trans({
+                            '%when%': cache.completed_at|date('Y-m-d H:i'),
+                            '%duration%': (cache.duration_ms / 1000)|round(1),
+                        }, 'admin') }}
+                        — {{ 'admin.data_repair.section.health_summary'|trans({
+                            '%total%': cache.payload.total|default(0),
+                        }, 'admin') }}
+                    </p>
+                {% else %}
+                    <p class="small text-muted mb-0">
+                        {{ 'admin.data_repair.section.never_scanned_full'|trans({}, 'admin') }}
+                    </p>
+                {% endif %}
+            </div>
+            <form method="post" action="{{ path('admin_data_repair_health_refresh') }}" class="d-inline-block">
+                <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_health') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
+                </button>
+            </form>
+        </div>
+        {% endblock %}
+    {% endembed %}
+
+    {% if cache is null %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            body: 'admin.data_repair.section.health_run_to_view'|trans({}, 'admin'),
+        }) }}
+    {% else %}
+        {% set buckets = cache.payload.buckets|default({}) %}
+        {% set bucketTotalKeys = {
+            'risk': 'admin.data_repair.risk_health.title',
+            'compliance': 'admin.data_repair.compliance_health.title',
+            'operational': 'admin.data_repair.operational_health.title',
+            'data_quality': 'admin.data_repair.data_quality.title',
+        } %}
+
+        <div class="row g-3 mb-4">
+            {% for bucketKey, titleKey in bucketTotalKeys %}
+                {% set bucket = buckets[bucketKey]|default({}) %}
+                {% set total = bucket.total|default(0) %}
+                <div class="col-md-6 col-lg-3">
+                    {{ _fa_feature_card.render({
+                        variant: total > 0 ? 'warning' : 'success',
+                        icon: 'nav-heart-pulse',
+                        label: titleKey|trans({}, 'admin'),
+                        value: total,
+                    }) }}
+                </div>
+            {% endfor %}
+        </div>
+
+        {% for bucketKey, titleKey in bucketTotalKeys %}
+            {% set bucket = buckets[bucketKey]|default({}) %}
+            {% set total = bucket.total|default(0) %}
+            {% if total > 0 %}
+                <section class="fa-section mb-4 border-warning">
+                    <div class="fa-section__header">
+                        <h2 class="mb-0">
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                            {{ titleKey|trans({}, 'admin') }}
+                        </h2>
+                    </div>
+                    <div class="fa-section__body">
+                        <p class="small text-muted">
+                            {{ 'admin.data_repair.section.health_bucket_count'|trans({'%count%': total}, 'admin') }}
+                        </p>
+                        {% set byCheck = bucket.by_check|default({}) %}
+                        {% set preview = bucket.preview|default({}) %}
+                        {% for checkKey, count in byCheck %}
+                            <h3 class="fs-6 mt-3 mb-1">{{ checkKey|replace({'_': ' '})|title }} <span class="fa-status-pill fa-status-pill--warning">{{ count }}</span></h3>
+                            {% set rows = preview[checkKey]|default([]) %}
+                            {% if rows|length > 0 %}
+                                <ul class="list-unstyled small mb-3">
+                                    {% for row in rows %}
+                                        <li class="mb-1">
+                                            {% if row.id is not null %}<span class="fa-status-pill fa-status-pill--neutral">{{ 'ID: ' ~ row.id }}</span>{% endif %}
+                                            {{ row.label }}
+                                        </li>
+                                    {% endfor %}
+                                    {% if count > rows|length %}
+                                        <li class="text-muted">… {{ count - rows|length }} {{ 'common.more'|trans({}, 'messages') }}</li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+        {% endfor %}
+
+        {% if cache.payload.total|default(0) == 0 %}
+            {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.section.health_all_ok'|trans({}, 'admin') }) }}
+        {% endif %}
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{{ path('admin_data_repair_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
+            {{ 'admin.data_repair.section.back_to_index'|trans({}, 'admin') }}
+        </a>
+    </div>
+</div>
+{% endblock %}

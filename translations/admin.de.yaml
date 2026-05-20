@@ -586,6 +586,7 @@ admin:
             confirm_merge: 'Wirklich %count% Duplikat-Gruppe(n) für „%type%" zusammenführen? Der älteste Eintrag (kleinste ID) wird behalten, alle anderen werden gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.'
             show_details: 'Duplikat-Details anzeigen'
             items: 'Einträge'
+            all_ok: 'Keine Duplikate erkannt — alle Einträge sind innerhalb ihres Tenants eindeutig.'
         risk_health:
             title: 'Risiko-Gesundheit (ISO 27005)'
             all_ok: 'Keine Risiko-Gesundheitsprobleme gefunden — alle Risiken sind korrekt konfiguriert.'
@@ -718,6 +719,64 @@ admin:
             reconcile_schema_subtitle: 'Gleicht das Live-Datenbank-Schema im Hintergrund mit den Entity-Metadaten ab…'
             run_integrity_check_label: 'Voller Integritäts-Scan'
             run_integrity_check_subtitle: 'Prüft Orphans, Duplikate, defekte Referenzen, fehlende Relationen und Schema-Drift im Hintergrund…'
+            scan_orphans_label: 'Orphans scannen'
+            scan_orphans_subtitle: 'Sucht im Hintergrund nach verwaisten Entities (tenant_id IS NULL)…'
+            scan_duplicates_label: 'Duplikate scannen'
+            scan_duplicates_subtitle: 'Sucht im Hintergrund nach Duplikaten pro Entity-Typ und Tenant…'
+            scan_broken_refs_label: 'Defekte Referenzen scannen'
+            scan_broken_refs_subtitle: 'Sucht im Hintergrund nach defekten FK-Referenzen, Cascade-Orphans und verwaisten Upload-Dateien…'
+            scan_health_label: 'Health-Issues scannen'
+            scan_health_subtitle: 'Führt im Hintergrund die vier Health-Checks (Risk / Compliance / Operational / Data-Quality) aus…'
+            assign_orphans_label: 'Verwaiste Entities zuweisen → %tenant%'
+            assign_orphans_subtitle: 'Weist verwaiste Entities (tenant_id IS NULL) im Hintergrund dem Ziel-Mandanten zu. Audit-Log wird je Entity geschrieben, Flushes laufen in Batches.'
+            reassign_entity_label: 'Reassign %type%#%id%'
+            reassign_entity_subtitle: 'Weist die Entity im Hintergrund dem Mandanten "%tenant%" zu und aktualisiert anschließend den Orphan-Cache.'
+        # Inventur-Vorschau auf der Übersichtsseite (Cache-getrieben, kein DB-Roundtrip)
+        inventory:
+            title: 'Was kann bereinigt werden?'
+            never_scanned: 'Dieser Bereich wurde noch nie gescannt. Klick auf „Jetzt neu scannen", um einen Hintergrund-Scan zu starten.'
+            show_all: 'Alle anzeigen'
+            more_items: '… und %count% weitere Einträge'
+            more_groups: '… und %count% weitere Gruppen'
+            col_type: 'Typ'
+            col_group: 'Gruppe / Wert'
+            col_count: 'Anzahl'
+            broken_refs_header: 'Defekte FK-Referenzen'
+            cascade_orphans_header: 'Cascade-Orphans'
+            orphaned_uploads_summary: '%count% verwaiste Upload-Datei(en) im Filesystem'
+        # Untermenüs + Cache-Banner (Async-Render-Refactor 2026-05)
+        sections_title: 'Reparatur-Bereiche'
+        section:
+            badge: 'Daten-Reparatur'
+            orphans: 'Orphans'
+            orphans_description: 'Entities ohne Tenant-Zuordnung. Können einzeln oder als Bulk-Aktion einem Tenant zugewiesen werden.'
+            duplicates: 'Duplikate'
+            duplicates_description: 'Duplikate innerhalb eines Tenants. Beim Merge bleibt die niedrigste ID erhalten, neuere Kopien werden gelöscht.'
+            broken_references: 'Defekte Referenzen'
+            broken_references_description: 'Defekte FK-Referenzen, Cascade-Orphans und verwaiste Upload-Dateien.'
+            health: 'Health-Issues'
+            health_description: 'Vier Health-Check-Buckets (Risk / Compliance / Operational / Data-Quality) — rein informativ, keine Auto-Reparatur.'
+            cache_status: 'Cache-Status'
+            last_scan: 'Letzter Scan: %when% (Dauer: %duration% s)'
+            never_scanned: 'Noch nie gescannt'
+            never_scanned_full: 'Noch kein Cache vorhanden — klicken Sie auf „Jetzt aktualisieren", um einen Hintergrund-Scan zu starten.'
+            scanned_ago: 'Gescannt %when%'
+            refresh_now: 'Jetzt aktualisieren'
+            back_to_index: 'Zurück zur Übersicht'
+            orphans_summary: '%total% Orphan(s) in %types% Entity-Typ(en)'
+            duplicates_summary: '%groups% Duplikat-Gruppe(n) in %types% Entity-Typ(en)'
+            broken_refs_summary: '%broken% defekte Referenz(en), %cascade% Cascade-Orphan(s), %uploads% verwaiste Upload(s)'
+            health_summary: '%total% Health-Issue(s) in 4 Buckets'
+            health_run_to_view: 'Die Health-Daten kommen ausschließlich aus dem Cache — bitte einmal „Jetzt aktualisieren" klicken, um sie zu füllen.'
+            health_all_ok: 'Alle vier Health-Check-Buckets sind sauber.'
+            health_bucket_count: '%count% Issue(s) in diesem Bucket erkannt'
+            no_broken_refs: 'Keine defekten Referenzen erkannt.'
+            fix_tenant_mismatches: 'Tenant-Mismatches beheben'
+            tip: 'Jeder Bereich hat seinen eigenen Hintergrund-Scan. Die Übersichtsseite liest nur Cache-Werte — sie bleibt schnell, egal wie viele Entities Sie haben. Reparatur-Aktionen lesen weiterhin Live-Daten, wenn sie ausgeführt werden.'
+        tenant_card:
+            title: 'Mandanten'
+            tenant_count: '%count% Mandant(en) registriert'
+            description: 'Günstige COUNT(*)-Abfrage — startet keinen vollständigen Scan.'
         integrity_check:
             title: 'Asynchroner Integritäts-Scan'
             description: 'Bei großen Datenbeständen kann der Scan auf dieser Seite das PHP-FPM-Limit überschreiten. Starten Sie ihn alternativ als Hintergrund-Job — das Ergebnis wird zwischengespeichert und hier als Banner angezeigt.'
@@ -1193,6 +1252,9 @@ admin:
         id_label: "Job-ID"
         worker_hint: "Der Job läuft im Hintergrund. Diese Seite aktualisiert sich automatisch alle 3 Sekunden."
         download: "Datei herunterladen"
+        progress_page_title: "Job-Fortschritt"
+        progress_subtitle_generic: "Der Vorgang wird im Hintergrund ausgeführt. Sobald er abgeschlossen ist, wird hier ein Status angezeigt."
+        badge: "Async-Job"
         export:
             data_label: "CSV-Export — alle Entitäten"
             data_subtitle: "Sammelt die ausgewählten Entitäten in eine Datei im Hintergrund…"

@@ -15,7 +15,6 @@ export default class extends Controller {
     static values = {
         storageKey: { type: String, default: 'dashboard_widget_preferences' },
         apiUrl: { type: String, default: '/dashboard-layout/config' },
-        csrfToken: { type: String, default: '' },
         useDatabaseSync: { type: Boolean, default: true }
     };
 
@@ -265,17 +264,12 @@ export default class extends Controller {
 
         this.saveTimeout = setTimeout(async () => {
             try {
-                const headers = {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                };
-                if (this.csrfTokenValue) {
-                    headers['X-CSRF-Token'] = this.csrfTokenValue;
-                }
-
                 const response = await fetch(this.apiUrlValue, {
                     method: 'POST',
-                    headers: headers,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
                     body: JSON.stringify(this.preferences)
                 });
 

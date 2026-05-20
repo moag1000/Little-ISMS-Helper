@@ -128,7 +128,7 @@
 
     {# Batch Analysis UI - Always visible #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-        {% block card_attrs %}id="batchAnalysisCard" data-controller="batch-analysis" data-batch-analysis-url-value="{{ path('app_mapping_quality_batch_analyze') }}" data-batch-analysis-csrf-token-value="{{ csrf_token('mapping_quality_batch_analyze') }}" data-total-unanalyzed="{{ quality_stats.unanalyzed_mappings }}"{% endblock %}
+        {% block card_attrs %}id="batchAnalysisCard" data-controller="batch-analysis" data-batch-analysis-url-value="{{ path('app_mapping_quality_batch_analyze') }}" data-total-unanalyzed="{{ quality_stats.unanalyzed_mappings }}"{% endblock %}
         {% block card_header %}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">{{ 'compliance.mapping_quality.batch_analysis.title'|trans({}, 'compliance') }}</h3>

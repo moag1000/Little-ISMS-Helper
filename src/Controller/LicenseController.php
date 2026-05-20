@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 
 class LicenseController extends AbstractController
 {
@@ -107,7 +106,6 @@ class LicenseController extends AbstractController
     }
 
     #[Route('/about/licenses/generate', name: 'app_licenses_generate', methods: ['POST'])]
-    #[IsCsrfTokenValid('license_generate', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function generate(LicenseReportService $licenseReportService): JsonResponse
     {
         try {
