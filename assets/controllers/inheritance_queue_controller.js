@@ -7,7 +7,7 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static values = {
         count: Number,
-        pollUrl: { type: String, default: '/en/compliance/inheritance/pending-count' },
+        pollUrl: String,
         interval: { type: Number, default: 60000 },
     };
 
