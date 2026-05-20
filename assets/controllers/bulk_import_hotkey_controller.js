@@ -24,7 +24,6 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     connect() {
-        console.log('[bulk-import-hotkey] controller connected');
         this._onKeyDown = this._handleKeyDown.bind(this);
         document.addEventListener('keydown', this._onKeyDown);
     }

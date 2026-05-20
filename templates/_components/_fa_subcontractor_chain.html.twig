@@ -152,7 +152,7 @@
                             data-action="click->subcontractor-chain#indent"
                             __CAN_INDENT__
                             aria-label="{{ ('supplier.subcontractor.indent')|trans({}, translationDomain) }}"
-                            title="Tier +1">
+                            title="{{ ('supplier.subcontractor.indent')|trans({}, translationDomain) }}">
                         →
                     </button>
                     <button type="button"
@@ -161,7 +161,7 @@
                             data-action="click->subcontractor-chain#outdent"
                             __CAN_OUTDENT__
                             aria-label="{{ ('supplier.subcontractor.outdent')|trans({}, translationDomain) }}"
-                            title="Tier −1">
+                            title="{{ ('supplier.subcontractor.outdent')|trans({}, translationDomain) }}">
                         ←
                     </button>
                 </div>

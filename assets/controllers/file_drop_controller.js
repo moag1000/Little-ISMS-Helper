@@ -35,7 +35,6 @@ export default class extends Controller {
     };
 
     connect() {
-        console.log('[file-drop] controller connected');
         this._dragCount = 0;
     }
 
