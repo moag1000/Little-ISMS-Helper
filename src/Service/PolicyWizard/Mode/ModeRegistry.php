@@ -34,7 +34,8 @@ final class ModeRegistry
         foreach ($handlers as $handler) {
             $mode = $handler->mode();
             if (isset($this->handlers[$mode])) {
-                throw new \LogicException(sprintf(
+                        // @intentional-assertion: DI misconfiguration — duplicate mode_handler tag registration is a programmer error
+throw new \LogicException(sprintf(
                     'Duplicate ModeHandler registered for mode "%s": %s and %s.',
                     $mode,
                     $this->handlers[$mode]::class,

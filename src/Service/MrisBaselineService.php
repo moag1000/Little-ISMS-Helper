@@ -108,13 +108,13 @@ final class MrisBaselineService
             }
         }
         if ($found === null) {
-            throw new DomainException(sprintf('Baseline "%s" nicht gefunden.', $idOrFilename));
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf('Baseline "%s" nicht gefunden.', $idOrFilename), 'not_found');
         }
 
         $payload = Yaml::parseFile($found);
         $b = $payload['baseline'] ?? [];
         if (empty($b['id']) || empty($b['mhc_targets'])) {
-            throw new DomainException(sprintf('Baseline "%s" ist ungültig (id oder mhc_targets fehlt).', $found));
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf('Baseline "%s" ist ungültig (id oder mhc_targets fehlt).', $found), 'invalid_baseline');
         }
 
         // Normalise mhc_targets so the consumer always sees a localised
@@ -154,7 +154,7 @@ final class MrisBaselineService
         $baseline = $this->loadBaseline($baselineId);
         $framework = $this->frameworkRepository->findOneBy(['code' => self::FRAMEWORK_CODE]);
         if (!$framework instanceof ComplianceFramework) {
-            throw new DomainException(sprintf('Framework "%s" nicht im System — Library zuerst importieren.', self::FRAMEWORK_CODE));
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf('Framework "%s" nicht im System — Library zuerst importieren.', self::FRAMEWORK_CODE), 'framework_not_found');
         }
 
         $applied = 0;

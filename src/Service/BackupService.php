@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace App\Service;
 
 use DateTime;
-use Exception;
 use App\Entity\Tenant;
 use App\Entity\UserSession;
-use RuntimeException;
-use InvalidArgumentException;
 use DateTimeInterface;
 use Composer\InstalledVersions;
 use App\Entity\AuditLog;
@@ -314,7 +311,7 @@ class BackupService
                     'entity' => $entityName,
                     'count'  => count($entities),
                 ]);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('Error backing up entity', [
                     'entity' => $entityName,
                     'error'  => $e->getMessage(),
@@ -341,7 +338,7 @@ class BackupService
                 $backup['statistics']['AuditLog'] = count($entities);
 
                 $this->logger->info('Backed up audit log', ['count' => count($entities)]);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('Error backing up audit log', ['error' => $e->getMessage()]);
             }
         }
@@ -356,7 +353,7 @@ class BackupService
                     $backup['statistics']['UserSession'] = count($sessions);
 
                     $this->logger->info('Backed up user sessions', ['count' => count($sessions)]);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->logger->error('Error backing up user sessions', ['error' => $e->getMessage()]);
                 }
             }
@@ -426,7 +423,7 @@ class BackupService
                     return true;
                 }
             }
-        } catch (Exception) {
+        } catch (\Exception) {
             // Entity not registered with Doctrine (e.g. in tests) → treat as no tenant field
         }
 
@@ -524,12 +521,12 @@ class BackupService
 
         $json = json_encode($backup, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         if ($json === false) {
-            throw new RuntimeException('Failed to encode backup data to JSON: ' . json_last_error_msg());
+            throw new \App\Exception\Io\IoException('Failed to encode backup data to JSON: ' . json_last_error_msg());
         }
 
         $zip = new ZipArchive();
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            throw new RuntimeException('Could not create ZIP archive: ' . $zipPath);
+            throw new \App\Exception\Io\IoException('Could not create ZIP archive: ' . $zipPath);
         }
 
         $zip->addFromString('backup.json', $json);
@@ -571,7 +568,7 @@ class BackupService
 
         $json = json_encode($backup, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         if ($json === false) {
-            throw new RuntimeException('Failed to encode backup data to JSON: ' . json_last_error_msg());
+            throw new \App\Exception\Io\IoException('Failed to encode backup data to JSON: ' . json_last_error_msg());
         }
 
         if (file_put_contents($filepath, $json) === false) {
@@ -777,7 +774,7 @@ class BackupService
             }
 
             return $decoded['metadata'];
-        } catch (Exception) {
+        } catch (\Exception) {
             return null;
         }
     }
@@ -800,7 +797,7 @@ class BackupService
     public function loadBackupFromFile(string $filepath): array
     {
         if (!file_exists($filepath)) {
-            throw new InvalidArgumentException('Backup file not found: ' . $filepath);
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException('Backup file not found: ' . $filepath, 'filepath');
         }
 
         // Auto-detect ZIP by magic bytes (PK\x03\x04) for robustness
@@ -812,12 +809,12 @@ class BackupService
         if (str_ends_with($filepath, '.gz')) {
             // Check if zlib extension is available
             if (!extension_loaded('zlib')) {
-                throw new RuntimeException('Cannot decompress backup: ext-zlib extension not available');
+                throw new \App\Exception\Io\IoException('Cannot decompress backup: ext-zlib extension not available');
             }
 
             $json = @gzdecode(file_get_contents($filepath)); // Suppress warning for intentionally corrupted test files
             if ($json === false) {
-                throw new RuntimeException('Failed to decompress backup file');
+                throw new \App\Exception\Io\IoException('Failed to decompress backup file');
             }
         } else {
             $json = file_get_contents($filepath);
@@ -825,7 +822,7 @@ class BackupService
 
         $backup = json_decode($json, true);
         if ($backup === null) {
-            throw new RuntimeException('Failed to decode backup JSON: ' . json_last_error_msg());
+            throw new \App\Exception\Io\IoException('Failed to decode backup JSON: ' . json_last_error_msg());
         }
 
         return $backup;
@@ -840,24 +837,24 @@ class BackupService
     private function loadFromZip(string $filepath): array
     {
         if (!class_exists(ZipArchive::class)) {
-            throw new RuntimeException('ZipArchive extension is not available — cannot read ZIP backup');
+            throw new \App\Exception\Io\IoException('ZipArchive extension is not available — cannot read ZIP backup');
         }
 
         $zip = new ZipArchive();
         if ($zip->open($filepath) !== true) {
-            throw new RuntimeException('Failed to open ZIP backup: ' . $filepath);
+            throw new \App\Exception\Io\IoException('Failed to open ZIP backup: ' . $filepath);
         }
 
         $jsonContent = $zip->getFromName('backup.json');
         if ($jsonContent === false) {
             $zip->close();
-            throw new RuntimeException('ZIP backup does not contain backup.json');
+            throw new \App\Exception\Io\IoException('ZIP backup does not contain backup.json');
         }
 
         $backup = json_decode($jsonContent, true);
         if ($backup === null) {
             $zip->close();
-            throw new RuntimeException('Failed to decode backup JSON from ZIP: ' . json_last_error_msg());
+            throw new \App\Exception\Io\IoException('Failed to decode backup JSON from ZIP: ' . json_last_error_msg());
         }
 
         // Extract embedded files into public/uploads/ (before entity restore so paths resolve)
@@ -1117,7 +1114,7 @@ class BackupService
                 // Strip the namespace prefix for readability: keep only the timestamp part
                 return preg_replace('/^.*\\\\/', '', (string) $row['version']) ?? (string) $row['version'];
             }
-        } catch (Exception) {
+        } catch (\Exception) {
             // Table may not exist in test environments or on fresh installs
         }
         return 'unknown';
@@ -1133,7 +1130,7 @@ class BackupService
                 $packages = InstalledVersions::getAllRawData()[0]['versions'] ?? [];
                 return $packages['doctrine/orm']['version'] ?? 'unknown';
             }
-        } catch (Exception) {
+        } catch (\Exception) {
             // Fallback if Composer runtime API is not available
         }
         return 'unknown';

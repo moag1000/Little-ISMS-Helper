@@ -24,7 +24,6 @@ use Jose\Component\Signature\Serializer\CompactSerializer;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
@@ -166,7 +165,8 @@ final class OidcAuthenticationFlow
     {
         $provider = $approval->getProvider();
         if (!$provider instanceof IdentityProvider) {
-            throw new RuntimeException('Approval has no provider attached.');
+                    // @intentional-assertion: SSO approval invariant — Doctrine mapping ensures provider is set before flow runs
+throw new \App\Exception\BusinessRule\BusinessRuleException('Approval has no provider attached.', 'no_provider');
         }
         $user = $this->createUser($provider, (string) $approval->getEmail(), (string) $approval->getExternalId(), $approval->getClaims());
         $this->em->persist($user);
@@ -190,7 +190,7 @@ final class OidcAuthenticationFlow
             $this->em->flush();
         }
         if ($authUrl === null || $tokenUrl === null) {
-            throw new RuntimeException('Provider endpoints could not be resolved (configure discoveryUrl or endpoints).');
+            throw new \App\Exception\Io\IoException('Provider endpoints could not be resolved (configure discoveryUrl or endpoints).');
         }
 
         return new GenericProvider([

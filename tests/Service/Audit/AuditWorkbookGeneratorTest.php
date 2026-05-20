@@ -49,7 +49,7 @@ final class AuditWorkbookGeneratorTest extends TestCase
     #[Test]
     public function itThrowsForUnknownExportType(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/unknown-type/');
 
         $orchestrator = new AuditWorkbookGenerator([]);

@@ -17,7 +17,6 @@ use App\Service\AuditLogger;
 use App\Service\EmailNotificationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -196,7 +195,7 @@ final class PolicySectionApprovalService
         }
 
         if ($section->getStatus() === DocumentSection::STATUS_REJECTED) {
-            throw new InvalidArgumentException(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(
                 'Cannot approve a section in `rejected` state — section must be edited '
                 . 'and re-saved (back to draft) before re-approval.',
             );
@@ -277,7 +276,7 @@ final class PolicySectionApprovalService
     {
         $reason = trim($reason);
         if ($reason === '') {
-            throw new InvalidArgumentException(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(
                 'A rejection reason is mandatory (GDPR Art. 38(3) audit-trail requirement).',
             );
         }
@@ -362,7 +361,7 @@ final class PolicySectionApprovalService
 
         $existing = $hostInstance->getWitnessUser();
         if ($existing instanceof User && $existing->getId() !== $witness->getId()) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'WorkflowInstance #%d already witnessed by user #%d — refusing to overwrite (audit-trail immutability).',
                 $hostInstance->getId() ?? 0,
                 $existing->getId() ?? 0,
@@ -656,7 +655,7 @@ final class PolicySectionApprovalService
                 ),
             );
 
-            throw new InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Self-approval blocked on section #%d: author and approver are the same user (Art. 38(3) GDPR / §0.A.5).',
                 $section->getId() ?? 0,
             ));
@@ -762,7 +761,7 @@ final class PolicySectionApprovalService
         string $requestedRole = DocumentSection::APPROVAL_ROLE_DPO,
     ): string {
         if (!in_array($requestedRole, DocumentSection::ALLOWED_APPROVAL_ROLES, true)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Unknown approval role "%s" requested for section "%s".',
                 $requestedRole,
                 $sectionKey,

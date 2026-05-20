@@ -9,7 +9,7 @@ use App\Repository\ScheduledTaskRepository;
 use App\Service\ScheduledTaskService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
+use App\Exception\InvalidArgument\InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;

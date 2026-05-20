@@ -7,7 +7,7 @@ namespace App\Tests\Service;
 use App\Service\MfaEncryptionService;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use App\Exception\Io\IoException;
 
 class MfaEncryptionServiceTest extends TestCase
 {
@@ -71,7 +71,7 @@ class MfaEncryptionServiceTest extends TestCase
 
         $encrypted = $service1->encrypt('JBSWY3DPEHPK3PXP');
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $this->expectExceptionMessageMatches('/decryption failed/');
         $service2->decrypt($encrypted);
     }
@@ -79,7 +79,7 @@ class MfaEncryptionServiceTest extends TestCase
     #[Test]
     public function corruptedCiphertextThrows(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $this->service->decrypt('enc:not-valid-base64!!!');
     }
 }

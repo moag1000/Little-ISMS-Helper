@@ -11,7 +11,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\IndustryBaselineService;
 use Doctrine\ORM\EntityManagerInterface;
-use DomainException;
+use App\Exception\BusinessRule\BusinessRuleException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -81,7 +81,7 @@ final class IndustryBaselineServiceTest extends TestCase
     public function loadBaselineThrowsForUnknownId(): void
     {
         $service = $this->makeService();
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $service->loadBaseline('ISO27001', 'unknown-baseline-xyz');
     }
 
@@ -135,7 +135,7 @@ final class IndustryBaselineServiceTest extends TestCase
             $this->projectDir,
         );
 
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $service->applyBaseline(new Tenant(), 'ISO27001', 'iso27001-kritis');
     }
 
@@ -143,7 +143,7 @@ final class IndustryBaselineServiceTest extends TestCase
     public function frameworkCodeWithPathTraversalIsRejected(): void
     {
         $service = $this->makeService();
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $service->loadBaseline('../etc/passwd', 'whatever');
     }
 

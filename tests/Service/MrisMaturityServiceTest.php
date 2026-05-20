@@ -8,7 +8,7 @@ use App\Entity\ComplianceRequirement;
 use App\Service\AuditLogger;
 use App\Service\MrisMaturityService;
 use Doctrine\ORM\EntityManagerInterface;
-use DomainException;
+use App\Exception\BusinessRule\BusinessRuleException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -53,7 +53,7 @@ final class MrisMaturityServiceTest extends TestCase
         $service = $this->makeService();
         $req = new ComplianceRequirement();
 
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $service->setCurrent($req, 'optimized'); // not in MRIS Kap. 9.5
     }
 

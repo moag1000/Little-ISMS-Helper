@@ -255,7 +255,7 @@ class SchemaHealthService
     private function executeStatementFkAware(Connection $conn, string $sql, array &$droppedFks, int $depth = 0): void
     {
         if ($depth > 3) {
-            throw new \RuntimeException(sprintf(
+            throw new \App\Exception\Io\IoException(sprintf(
                 'FK-aware reconcile recursion limit reached for: %s',
                 substr($sql, 0, 100),
             ));

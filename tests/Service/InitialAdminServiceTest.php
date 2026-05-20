@@ -13,7 +13,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
+use App\Exception\Io\IoException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -364,7 +364,7 @@ class InitialAdminServiceTest extends TestCase
                 })
             );
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $this->expectExceptionMessage('Cannot delete the initial setup administrator. This user is required for system security.');
 
         $this->service->validateOperation($admin, 'delete');
@@ -390,7 +390,7 @@ class InitialAdminServiceTest extends TestCase
                 })
             );
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $this->expectExceptionMessage('Cannot deactivate the initial setup administrator. This user must remain active for system recovery.');
 
         $this->service->validateOperation($admin, 'deactivate');
@@ -416,7 +416,7 @@ class InitialAdminServiceTest extends TestCase
                 })
             );
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $this->expectExceptionMessage('Cannot remove ROLE_ADMIN from the initial setup administrator. At least one admin must exist.');
 
         $this->service->validateOperation($admin, 'remove_admin_role');
@@ -442,7 +442,7 @@ class InitialAdminServiceTest extends TestCase
                 })
             );
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $this->expectExceptionMessage('Operation not allowed on initial setup administrator.');
 
         $this->service->validateOperation($admin, 'unknown_operation');

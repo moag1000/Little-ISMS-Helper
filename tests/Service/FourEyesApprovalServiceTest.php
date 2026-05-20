@@ -6,9 +6,10 @@ namespace App\Tests\Service;
 
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\User;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use App\Service\CompliancePolicyService;
 use App\Service\FourEyesApprovalService;
-use InvalidArgumentException;
+use App\Exception\BusinessRule\BusinessRuleException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -45,7 +46,7 @@ final class FourEyesApprovalServiceTest extends TestCase
         $user = $this->createMock(User::class);
         $user->method('getId')->willReturn(42);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(BusinessRuleException::class);
         $service->requestApproval(
             actionType: FourEyesApprovalRequest::ACTION_MAPPING_OVERRIDE,
             payload: [],
@@ -68,7 +69,7 @@ final class FourEyesApprovalServiceTest extends TestCase
         $request->method('isPending')->willReturn(true);
         $request->method('getRequestedBy')->willReturn($requester);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $service->reject($request, $approver, 'too short');
     }
 

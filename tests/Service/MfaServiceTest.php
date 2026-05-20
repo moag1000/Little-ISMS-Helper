@@ -15,6 +15,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -147,7 +148,7 @@ class MfaServiceTest extends TestCase
         $user = $this->createUser(1, 'user@example.com');
         $token = $this->createMfaToken(1, $user, 'webauthn', 'secret');
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $this->expectExceptionMessage('QR codes can only be generated for TOTP tokens');
 
         $this->service->generateQrCode($token);
@@ -159,7 +160,7 @@ class MfaServiceTest extends TestCase
         $user = $this->createUser(1, 'user@example.com');
         $token = $this->createMfaToken(1, $user, 'backup_code', 'secret');
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $this->expectExceptionMessage('Can only verify TOTP tokens');
 
         $this->service->verifyTotp($token, '123456');

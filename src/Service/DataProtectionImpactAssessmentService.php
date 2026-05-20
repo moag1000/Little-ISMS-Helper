@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use RuntimeException;
 use DateTime;
 use DateTimeInterface;
 use App\Entity\DataProtectionImpactAssessment;
@@ -271,7 +270,7 @@ final class DataProtectionImpactAssessmentService
         }
 
         if (!$dataProtectionImpactAssessment->isComplete()) {
-            throw new RuntimeException('DPIA must be complete before submission');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('DPIA must be complete before submission', 'incomplete');
         }
 
         $this->entityManager->flush();

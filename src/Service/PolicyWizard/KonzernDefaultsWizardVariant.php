@@ -146,7 +146,8 @@ final class KonzernDefaultsWizardVariant
     public function commitDefaults(WizardRun $run, User $user): array
     {
         if (!$this->isKonzernDefaultsRun($run)) {
-            throw new \LogicException('WizardRun is not a Konzern-Defaults run.');
+                    // @intentional-assertion: programmer error — caller must check isKonzernDefaultsRun() first
+throw new \LogicException('WizardRun is not a Konzern-Defaults run.');
         }
         $konzern = $run->getTenant();
         if (!$konzern instanceof Tenant) {

@@ -12,7 +12,6 @@ use App\Exception\Workflow\InvalidStatusTransitionException;
 use App\Repository\FourEyesApprovalRequestRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
 use LogicException;
 
 /**
@@ -47,7 +46,7 @@ class FourEyesApprovalService
         ?User $specificApprover = null,
     ): FourEyesApprovalRequest {
         if ($specificApprover !== null && $specificApprover->getId() === $requester->getId()) {
-            throw new InvalidArgumentException('Approver must differ from requester (segregation of duties).');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Approver must differ from requester (segregation of duties).', 'self_approval');
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -94,11 +93,11 @@ class FourEyesApprovalService
             );
         }
         if ($request->getRequestedBy()?->getId() === $approver->getId()) {
-            throw new InvalidArgumentException('Approver must differ from requester.');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Approver must differ from requester.', 'self_approval');
         }
         if ($request->getRequestedApprover() !== null
             && $request->getRequestedApprover()->getId() !== $approver->getId()) {
-            throw new InvalidArgumentException('Only the designated approver can approve this request.');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Only the designated approver can approve this request.', 'wrong_approver');
         }
 
         $request->setStatus(FourEyesApprovalRequestStatus::Approved)
@@ -132,7 +131,7 @@ class FourEyesApprovalService
         }
         $minLen = $this->rejectionMinLength();
         if (mb_strlen(trim($reason)) < $minLen) {
-            throw new InvalidArgumentException(sprintf('Rejection reason requires at least %d characters.', $minLen));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Rejection reason requires at least %d characters.', $minLen), 'reason');
         }
 
         $request->setStatus(FourEyesApprovalRequestStatus::Rejected)

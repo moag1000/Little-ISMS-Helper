@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use InvalidArgumentException;
-use RuntimeException;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -68,7 +66,7 @@ final class EnvironmentWriter
             $databaseUrl = match ($type) {
                 'mysql', 'mariadb' => $this->buildMysqlDatabaseUrlWithVars($unixSocket),
                 'postgresql' => 'postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?serverVersion=${DB_SERVER_VERSION}&charset=utf8',
-                default => throw new InvalidArgumentException("Unsupported database type: {$type}")
+                default => throw new \App\Exception\InvalidArgument\InvalidArgumentException("Unsupported database type: {$type}", 'type')
             };
         } else {
             // SQLite doesn't need credentials
@@ -117,7 +115,7 @@ final class EnvironmentWriter
         // Validate variable names
         foreach (array_keys($variables) as $key) {
             if (!$this->isValidVariableName($key)) {
-                throw new InvalidArgumentException("Invalid environment variable name: {$key}");
+                throw new \App\Exception\InvalidArgument\InvalidArgumentException("Invalid environment variable name: {$key}", 'key');
             }
         }
 
@@ -144,7 +142,7 @@ final class EnvironmentWriter
             $bytesWritten = file_put_contents($tmpFilePath, $content);
 
             if ($bytesWritten === false || $bytesWritten !== strlen($content)) {
-                throw new RuntimeException("Failed to write to temporary file {$tmpFilePath}");
+                throw new \App\Exception\Io\IoException("Failed to write to temporary file {$tmpFilePath}");
             }
 
             // Set proper permissions before rename
@@ -152,9 +150,9 @@ final class EnvironmentWriter
 
             // Atomic rename (this is atomic on POSIX systems)
             if (!rename($tmpFilePath, $envFilePath)) {
-                throw new RuntimeException("Failed to rename temporary file to {$envFilePath}");
+                throw new \App\Exception\Io\IoException("Failed to rename temporary file to {$envFilePath}");
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Cleanup: Remove temp file if it exists
             if (file_exists($tmpFilePath)) {
                 @unlink($tmpFilePath);

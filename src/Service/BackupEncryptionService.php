@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use RuntimeException;
 
 /**
  * AES-256-GCM encryption/decryption for sensitive backup fields.
@@ -61,7 +60,7 @@ final class BackupEncryptionService
         );
 
         if ($ciphertext === false) {
-            throw new RuntimeException('BackupEncryptionService: openssl_encrypt failed — ' . openssl_error_string());
+            throw new \App\Exception\Io\IoException('BackupEncryptionService: openssl_encrypt failed — ' . openssl_error_string());
         }
 
         return [
@@ -87,7 +86,7 @@ final class BackupEncryptionService
         $ciphertext = base64_decode((string) ($envelope['ciphertext'] ?? ''), true);
 
         if ($iv === false || $tag === false || $ciphertext === false) {
-            throw new RuntimeException(
+            throw new \App\Exception\Io\IoException(
                 'Encrypted secret could not be decrypted — ensure APP_SECRET matches the source environment, '
                 . 'or replace the secret manually after restore'
             );
@@ -103,7 +102,7 @@ final class BackupEncryptionService
         );
 
         if ($plaintext === false) {
-            throw new RuntimeException(
+            throw new \App\Exception\Io\IoException(
                 'Encrypted secret could not be decrypted — ensure APP_SECRET matches the source environment, '
                 . 'or replace the secret manually after restore'
             );

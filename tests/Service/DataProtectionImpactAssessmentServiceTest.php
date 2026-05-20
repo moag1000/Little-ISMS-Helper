@@ -21,7 +21,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
-use RuntimeException;
+use App\Exception\BusinessRule\BusinessRuleException;
+use App\Exception\Workflow\InvalidStatusTransitionException;
 use Symfony\Bundle\SecurityBundle\Security;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -265,7 +266,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
         $dpia->method('getStatus')->willReturn('in_review');
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidStatusTransitionException::class);
         $this->expectExceptionMessage('Only draft DPIAs can be submitted for review');
 
         $this->service->submitForReview($dpia);
@@ -278,7 +279,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia->method('getStatus')->willReturn('draft');
         $dpia->method('isComplete')->willReturn(false);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('DPIA must be complete before submission');
 
         $this->service->submitForReview($dpia);
@@ -310,7 +311,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
         $dpia->method('getStatus')->willReturn('draft');
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidStatusTransitionException::class);
         $this->expectExceptionMessage('Only DPIAs in review can be approved');
 
         $this->service->approve($dpia, $this->user);
@@ -366,7 +367,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
         $dpia->method('getStatus')->willReturn('approved');
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidStatusTransitionException::class);
         $this->expectExceptionMessage('Only DPIAs in review can be rejected');
 
         $this->service->reject($dpia, $this->user, 'Insufficient analysis');
@@ -398,7 +399,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
         $dpia->method('getStatus')->willReturn('draft');
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidStatusTransitionException::class);
         $this->expectExceptionMessage('DPIA must be in review or approved to request revision');
 
         $this->service->requestRevision($dpia, 'Needs more detail');
@@ -430,7 +431,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
         $dpia->method('getStatus')->willReturn('approved');
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidStatusTransitionException::class);
         $this->expectExceptionMessage('Only DPIAs requiring revision can be reopened');
 
         $this->service->reopen($dpia);

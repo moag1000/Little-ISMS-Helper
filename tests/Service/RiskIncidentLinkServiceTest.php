@@ -15,7 +15,7 @@ use App\Service\AuditLogger;
 use App\Service\Risk\RiskIncidentLinkService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
+use App\Exception\InvalidArgument\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

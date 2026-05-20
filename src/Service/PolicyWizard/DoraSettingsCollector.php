@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service\PolicyWizard;
 
 use App\Entity\WizardRun;
-use InvalidArgumentException;
 
 /**
  * Policy-Wizard W4-A — DoraSettingsCollector.
@@ -82,7 +81,7 @@ final class DoraSettingsCollector
 
         $entityType = $this->normaliseString($doraBlock['entity_type'] ?? null);
         if ($entityType !== null && !in_array($entityType, self::ALLOWED_ENTITY_TYPES, true)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'DoraSettingsCollector: unknown entity_type "%s"; allowed: %s',
                 $entityType,
                 implode(', ', self::ALLOWED_ENTITY_TYPES),

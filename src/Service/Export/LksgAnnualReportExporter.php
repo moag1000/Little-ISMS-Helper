@@ -30,7 +30,7 @@ final class LksgAnnualReportExporter
 
         $stream = fopen('php://temp', 'w+');
         if ($stream === false) {
-            throw new \RuntimeException('Cannot open in-memory stream for CSV export.');
+            throw new \App\Exception\Io\IoException('Cannot open in-memory stream for CSV export.');
         }
 
         fputcsv($stream, [

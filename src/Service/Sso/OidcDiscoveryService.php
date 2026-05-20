@@ -6,7 +6,6 @@ namespace App\Service\Sso;
 
 use App\Entity\IdentityProvider;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -40,7 +39,7 @@ class OidcDiscoveryService
         if ($url === null || $url === '') {
             $issuer = $provider->getIssuer();
             if ($issuer === null || $issuer === '') {
-                throw new RuntimeException('Provider has neither discoveryUrl nor issuer configured.');
+                throw new \App\Exception\Io\IoException('Provider has neither discoveryUrl nor issuer configured.');
             }
             $url = rtrim($issuer, '/') . '/.well-known/openid-configuration';
         }
@@ -51,11 +50,11 @@ class OidcDiscoveryService
             $item->expiresAfter(self::CACHE_TTL);
             $resp = $this->http->request('GET', $url, ['timeout' => 10]);
             if ($resp->getStatusCode() !== 200) {
-                throw new RuntimeException(sprintf('Discovery fetch failed: HTTP %d for %s', $resp->getStatusCode(), $url));
+                throw new \App\Exception\Io\IoException(sprintf('Discovery fetch failed: HTTP %d for %s', $resp->getStatusCode(), $url));
             }
             $payload = json_decode($resp->getContent(false), true, flags: JSON_THROW_ON_ERROR);
             if (!is_array($payload)) {
-                throw new RuntimeException('Discovery response was not a JSON object.');
+                throw new \App\Exception\Io\IoException('Discovery response was not a JSON object.');
             }
 
             return $payload;
@@ -74,7 +73,7 @@ class OidcDiscoveryService
             $discovery = $this->fetchDiscovery($provider);
             $jwksUri = $discovery['jwks_uri'] ?? null;
             if (!is_string($jwksUri) || $jwksUri === '') {
-                throw new RuntimeException('Provider discovery did not return jwks_uri.');
+                throw new \App\Exception\Io\IoException('Provider discovery did not return jwks_uri.');
             }
         }
         $cacheKey = 'sso.jwks.' . hash('sha256', $jwksUri);
@@ -87,11 +86,11 @@ class OidcDiscoveryService
             $item->expiresAfter(self::CACHE_TTL);
             $resp = $this->http->request('GET', $jwksUri, ['timeout' => 10]);
             if ($resp->getStatusCode() !== 200) {
-                throw new RuntimeException(sprintf('JWKS fetch failed: HTTP %d for %s', $resp->getStatusCode(), $jwksUri));
+                throw new \App\Exception\Io\IoException(sprintf('JWKS fetch failed: HTTP %d for %s', $resp->getStatusCode(), $jwksUri));
             }
             $payload = json_decode($resp->getContent(false), true, flags: JSON_THROW_ON_ERROR);
             if (!is_array($payload) || !isset($payload['keys'])) {
-                throw new RuntimeException('JWKS response missing "keys" array.');
+                throw new \App\Exception\Io\IoException('JWKS response missing "keys" array.');
             }
 
             return $payload;

@@ -15,7 +15,7 @@ use App\Service\PolicyWizard\LockedSectionException;
 use App\Service\PolicyWizard\PolicySectionApprovalService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use InvalidArgumentException;
+use App\Exception\InvalidArgument\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

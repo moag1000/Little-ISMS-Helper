@@ -22,6 +22,7 @@ use App\Repository\WorkflowInstanceRepository;
 use App\Service\Export\CertificationBundleExporter;
 use App\Service\PdfExportService;
 use App\Service\PolicyWizard\Export\PolicyPdfExporter;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use App\Service\SoAReportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -198,7 +199,7 @@ final class CertificationBundleExporterKonzernTest extends TestCase
         $standalone = $this->makeTenant(1, 'Standalone', 'standalone');
         $exporter = $this->makeExporter([1 => []]);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $this->expectExceptionMessage('not_a_holding');
         $exporter->exportKonzern($standalone, ['ISO27001']);
     }

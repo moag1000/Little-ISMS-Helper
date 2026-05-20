@@ -239,7 +239,7 @@ final class DoraRoiXbrlExporter
         $xml = $dom->saveXML();
 
         if ($xml === false) {
-            throw new \RuntimeException('Failed to generate XBRL XML — DOMDocument::saveXML() returned false.');
+            throw new \App\Exception\Io\IoException('Failed to generate XBRL XML — DOMDocument::saveXML() returned false.');
         }
 
         return $xml;

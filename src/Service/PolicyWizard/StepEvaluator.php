@@ -114,7 +114,7 @@ final class StepEvaluator
     public function getStep(string $stepKey): StepInterface
     {
         if (!isset($this->stepIndex[$stepKey])) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Unknown wizard step: %s. Known steps: %s',
                 $stepKey,
                 implode(', ', array_keys($this->stepIndex)),

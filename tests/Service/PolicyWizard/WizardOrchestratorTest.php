@@ -28,6 +28,7 @@ use App\Service\PolicyWizard\StepValidationException;
 use App\Service\PolicyWizard\WizardOrchestrator;
 use App\Service\PolicyWizard\WizardStepKeys;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -148,7 +149,7 @@ final class WizardOrchestratorTest extends TestCase
     public function startRejectsUnknownMode(): void
     {
         $orchestrator = $this->makeOrchestrator();
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $orchestrator->start($this->makeTenant(), $this->makeUser(), null, 'bogus_mode');
     }
 
@@ -189,7 +190,7 @@ final class WizardOrchestratorTest extends TestCase
         $orchestrator = $this->makeOrchestrator();
         $run = $orchestrator->start($this->makeTenant(), $this->makeUser(), ['iso27001']);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $orchestrator->processStep($run, WizardStepKeys::STEP_ORG_SCOPE, []);
     }
 

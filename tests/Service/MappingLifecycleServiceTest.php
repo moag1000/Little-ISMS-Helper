@@ -6,6 +6,7 @@ namespace App\Tests\Service;
 
 use App\Entity\ComplianceMapping;
 use App\Entity\User;
+use App\Exception\BusinessRule\BusinessRuleException;
 use App\Service\AuditLogger;
 use App\Service\MappingLifecycleService;
 use App\Service\MappingQualityScoreService;
@@ -56,7 +57,7 @@ class MappingLifecycleServiceTest extends TestCase
     {
         $svc = $this->makeService();
         $mapping = $this->makeRichMapping()->setLifecycleState('draft');
-        $this->expectException(\DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $svc->transition($mapping, 'approved', $this->makeUser());
     }
 
@@ -65,7 +66,7 @@ class MappingLifecycleServiceTest extends TestCase
     {
         $svc = $this->makeService();
         $mapping = $this->makeRichMapping()->setLifecycleState('approved');
-        $this->expectException(\DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessageMatches('/ROLE_CISO/');
         $svc->transition($mapping, 'published', $this->makeUser(['ROLE_USER']));
     }
@@ -84,7 +85,7 @@ class MappingLifecycleServiceTest extends TestCase
     {
         $svc = $this->makeService();
         $bare = (new ComplianceMapping())->setLifecycleState('review');
-        $this->expectException(\DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessageMatches('/missing required fields/');
         $svc->transition($bare, 'approved', $this->makeUser());
     }

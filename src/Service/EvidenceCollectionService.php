@@ -267,13 +267,13 @@ final class EvidenceCollectionService
             'control' => $this->controlRepository->find($entityId),
             'requirement' => $this->requirementRepository->find($entityId),
             'risk_treatment_plan' => $this->rtpRepository->find($entityId),
-            default => throw new \InvalidArgumentException(
+            default => throw new \App\Exception\InvalidArgument\InvalidArgumentException(
                 sprintf('Unsupported entity type: %s', $entityType)
             ),
         };
 
         if ($entity === null) {
-            throw new \InvalidArgumentException(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(
                 sprintf('Entity of type "%s" with ID %d not found', $entityType, $entityId)
             );
         }
