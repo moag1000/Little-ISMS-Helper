@@ -6,6 +6,7 @@ namespace App\Tests\Service;
 
 use App\Entity\FulfillmentInheritanceLog;
 use App\Entity\User;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use App\Service\ComplianceInheritanceService;
 use App\Service\CompliancePolicyService;
 use App\Exception\BusinessRule\BusinessRuleException;
@@ -30,7 +31,7 @@ final class ComplianceInheritanceServiceTest extends TestCase
         $log->method('isPendingReview')->willReturn(true);
         $log->method('getReviewStatus')->willReturn(FulfillmentInheritanceLog::STATUS_PENDING_REVIEW);
 
-        $this->expectException(BusinessRuleException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $service->confirmInheritance($log, $this->createMock(User::class), 'too short');
     }
 
@@ -84,7 +85,7 @@ final class ComplianceInheritanceServiceTest extends TestCase
         $approver = $this->createMock(User::class);
         $approver->method('getId')->willReturn(2);
 
-        $this->expectException(BusinessRuleException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $service->overrideInheritance(
             $log,
             $reviewer,

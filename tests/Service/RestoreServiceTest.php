@@ -22,6 +22,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
@@ -189,7 +190,7 @@ class RestoreServiceTest extends TestCase
     #[Test]
     public function testRestoreFromBackupWithInvalidDataThrowsException(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid backup');
 
         $backup = [

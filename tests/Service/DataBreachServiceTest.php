@@ -22,6 +22,8 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use App\Exception\BusinessRule\BusinessRuleException;
+use App\Exception\Tenant\TenantOrphanException;
+use App\Exception\Workflow\InvalidStatusTransitionException;
 use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
@@ -95,7 +97,7 @@ class DataBreachServiceTest extends TestCase
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);
 
-        $this->expectException(BusinessRuleException::class);
+        $this->expectException(TenantOrphanException::class);
         $this->expectExceptionMessage('No tenant context available');
 
         $this->service->prepareNewBreach();
@@ -125,7 +127,7 @@ class DataBreachServiceTest extends TestCase
         $incident = $this->createMock(Incident::class);
         $user = $this->createMock(User::class);
 
-        $this->expectException(BusinessRuleException::class);
+        $this->expectException(TenantOrphanException::class);
         $this->expectExceptionMessage('No tenant context available');
 
         $this->service->createFromIncident($incident, $user);
@@ -192,7 +194,7 @@ class DataBreachServiceTest extends TestCase
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);
         $user = $this->createMock(User::class);
 
-        $this->expectException(BusinessRuleException::class);
+        $this->expectException(TenantOrphanException::class);
         $this->expectExceptionMessage('No tenant context available');
 
         $this->service->createStandalone($user, new DateTime());
@@ -356,7 +358,7 @@ class DataBreachServiceTest extends TestCase
 
         $user = $this->createMock(User::class);
 
-        $this->expectException(BusinessRuleException::class);
+        $this->expectException(InvalidStatusTransitionException::class);
         $this->expectExceptionMessage('must be in authority_notified or subjects_notified status');
 
         $this->service->close($dataBreach, $user);

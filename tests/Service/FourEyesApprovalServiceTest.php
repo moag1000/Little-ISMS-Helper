@@ -6,6 +6,7 @@ namespace App\Tests\Service;
 
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\User;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use App\Service\CompliancePolicyService;
 use App\Service\FourEyesApprovalService;
 use App\Exception\BusinessRule\BusinessRuleException;
@@ -68,7 +69,7 @@ final class FourEyesApprovalServiceTest extends TestCase
         $request->method('isPending')->willReturn(true);
         $request->method('getRequestedBy')->willReturn($requester);
 
-        $this->expectException(BusinessRuleException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $service->reject($request, $approver, 'too short');
     }
 

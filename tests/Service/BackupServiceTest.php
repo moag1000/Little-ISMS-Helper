@@ -17,6 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
@@ -234,7 +235,7 @@ class BackupServiceTest extends TestCase
     #[Test]
     public function testLoadBackupFromFileThrowsExceptionWhenFileNotFound(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $this->expectExceptionMessage('Backup file not found');
 
         $this->service->loadBackupFromFile('/nonexistent/file.json');

@@ -6,6 +6,7 @@ namespace App\Tests\Service\PolicyWizard;
 
 use App\Entity\IndustryPresetBundle;
 use App\Entity\WizardRun;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use App\Service\PolicyWizard\PresetBundleApplier;
 use App\Service\PolicyWizard\WizardStepKeys;
 use PHPUnit\Framework\Attributes\Test;
@@ -143,7 +144,7 @@ class PresetBundleApplierTest extends TestCase
         $run = new WizardRun();
         $bundle = $this->makeBundle(active: false);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $this->applier->applyTo($run, $bundle);
     }
 
