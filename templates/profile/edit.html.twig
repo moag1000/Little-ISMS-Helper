@@ -29,9 +29,9 @@
                            accidentally added (e.g. roles, tenant, isActive),
                            letting a regular user POST role-elevation. #}
                         {% include '_components/_auto_form.html.twig' with {
-                            'form': form,
-                            'strict_whitelist': true,
-                            'sections': {
+                            form: form,
+                            strict_whitelist: true,
+                            sections: {
                                 'basic_info': {
                                     'label': 'user.section.basic_info'|trans({}, 'user'),
                                     'fields': ['firstName', 'lastName', 'email', 'department', 'jobTitle', 'phoneNumber']
