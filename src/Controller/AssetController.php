@@ -23,11 +23,15 @@ use App\Service\InverseCoverageService;
 use App\Service\ProtectionRequirementService;
 use App\Service\TagFilterService;
 use App\Service\TenantContext;
+use App\Service\AuditLogger;
+use App\Repository\UserRepository;
+use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -35,6 +39,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class AssetController extends AbstractController
 {
     use LocalizedFlashTrait;
+    use BulkActionTrait;
 
     public function __construct(
         private readonly AssetRepository $assetRepository,
@@ -53,6 +58,8 @@ class AssetController extends AbstractController
         private readonly ?AiAgentInventoryService $aiAgentInventoryService = null,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?CommentRepository $commentRepository = null,
+        private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?UserRepository $userRepository = null,
     ) {}
 
     protected function getFlashDomain(): string
@@ -316,8 +323,8 @@ class AssetController extends AbstractController
         }
 
         $message = $deleted > 0
-            ? $this->translator->trans('asset.bulk_delete.success', ['count' => $deleted])
-            : $this->translator->trans('asset.bulk_delete.no_items');
+            ? $this->translator->trans('asset.bulk_delete.success', ['count' => $deleted], 'assets')
+            : $this->translator->trans('asset.bulk_delete.no_items', [], 'assets');
 
         if ($errors !== []) {
             return $this->json([
@@ -398,7 +405,7 @@ class AssetController extends AbstractController
 
         // Check if asset can be edited (not inherited) - only if user has tenant
         if ($tenant && !$this->assetService->canEditAsset($asset, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited')); // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited', [], 'messages'));
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
@@ -449,7 +456,7 @@ class AssetController extends AbstractController
 
         // Check if asset can be deleted (not inherited) - only if user has tenant
         if ($tenant && !$this->assetService->canEditAsset($asset, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited')); // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited', [], 'messages'));
             return $this->redirectToRoute('app_asset_index');
         }
 
@@ -588,5 +595,116 @@ class AssetController extends AbstractController
             'printDate' => new \DateTimeImmutable(),
             'assetsPerPage' => 10, // 2 columns x 5 rows
         ]);
+    }
+
+    /**
+     * Bulk CSV export of selected assets.
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/asset/bulk-export', name: 'app_asset_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        /** @var \App\Entity\User|null $user */
+        $user   = $this->security->getUser();
+        $tenant = $user instanceof \App\Entity\User ? $user->getTenant() : null;
+
+        $assets = [];
+        foreach ($ids as $rawId) {
+            $asset = $this->assetRepository->find((int) $rawId);
+            if ($asset === null) {
+                continue;
+            }
+            if ($tenant !== null && $asset->getTenant() !== $tenant) {
+                continue;
+            }
+            $assets[] = $asset;
+        }
+
+        if ($assets === []) {
+            return $this->json(['error' => 'No exportable assets'], 404);
+        }
+
+        $headers = ['ID', 'Name', 'Type', 'Status', 'Owner', 'Location', 'Data Classification'];
+
+        return $this->streamCsvExport(
+            $assets,
+            $headers,
+            static function (Asset $a): array {
+                return [
+                    (string) $a->getId(),
+                    (string) $a->getName(),
+                    (string) $a->getAssetType(),
+                    (string) $a->getStatus(),
+                    (string) ($a->getEffectiveOwner() ?? ''),
+                    (string) ($a->getEffectiveLocation() ?? $a->getLocation() ?? ''),
+                    (string) $a->getDataClassification(),
+                ];
+            },
+            'assets-export',
+            'Asset',
+            $this->auditLogger,
+        );
+    }
+
+    /**
+     * Bulk assign selected assets to a user (sets ownerUser).
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/asset/bulk-assign', name: 'app_asset_bulk_assign', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkAssign(Request $request): Response
+    {
+        $data     = json_decode($request->getContent(), true);
+        $ids      = $data['ids'] ?? [];
+        $assignId = (int) ($data['assignee_id'] ?? 0);
+
+        if (!is_array($ids) || $ids === [] || $assignId === 0) {
+            return $this->json(['error' => 'No items selected or no assignee'], 400);
+        }
+
+        /** @var \App\Entity\User|null $user */
+        $user   = $this->security->getUser();
+        $tenant = $user instanceof \App\Entity\User ? $user->getTenant() : null;
+
+        $assignee = $this->userRepository?->find($assignId);
+        if (!$assignee instanceof \App\Entity\User) {
+            return $this->json(['error' => 'Assignee not found'], 404);
+        }
+        if ($tenant !== null && $assignee->getTenant() !== $tenant) {
+            return $this->json(['error' => 'Assignee tenant mismatch'], 403);
+        }
+
+        $assets = [];
+        foreach ($ids as $rawId) {
+            $asset = $this->assetRepository->find((int) $rawId);
+            if ($asset === null) {
+                continue;
+            }
+            if ($tenant !== null && $asset->getTenant() !== $tenant) {
+                continue;
+            }
+            $assets[] = $asset;
+        }
+
+        $result = $this->applyBulkAssign(
+            $assets,
+            static function (Asset $a, \App\Entity\User $u): void { $a->setOwnerUser($u); },
+            $assignee,
+            'Asset',
+            $this->auditLogger,
+        );
+
+        if ($result['changed'] > 0) {
+            $this->entityManager->flush();
+        }
+
+        return $this->json($result);
     }
 }

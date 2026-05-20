@@ -239,10 +239,14 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initReportPreviewCharts() {
     // Initialize charts if Chart.js is available
     if (typeof Chart !== 'undefined') {
         document.querySelectorAll('.chart-canvas').forEach(canvas => {
+            // Skip already-initialized canvases to avoid duplicate charts on turbo:load
+            if (canvas.dataset.chartInitialized) return;
+            canvas.dataset.chartInitialized = '1';
+
             const type = canvas.dataset.chartType;
             const labels = JSON.parse(canvas.dataset.chartLabels || '[]');
             const data = JSON.parse(canvas.dataset.chartData || '[]');
@@ -274,6 +278,9 @@ document.addEventListener('DOMContentLoaded', function() {
             new Chart(canvas, config);
         });
     }
-});
+}
+
+document.addEventListener('DOMContentLoaded', initReportPreviewCharts);
+document.addEventListener('turbo:load', initReportPreviewCharts);
 </script>
 {% endblock %}

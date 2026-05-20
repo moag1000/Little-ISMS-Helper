@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * Comprehensive form for GDPR Art. 35 DPIA (Datenschutz-Folgenabschätzung).
  * Organized in logical sections matching Art. 35(7) structure.
  */
-final class DataProtectionImpactAssessmentType extends AbstractType
+final class DataProtectionImpactAssessmentType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -550,5 +550,87 @@ final class DataProtectionImpactAssessmentType extends AbstractType
                 ->atPath('approverPerson')
                 ->addViolation();
         }
+    }
+
+    /**
+     * SectionPolicy (S4 Foundation P-2) — GDPR Art. 35(7) structure.
+     *
+     * Sections follow the Art. 35(7) DPIA content requirements:
+     * (a) description of processing, (b) necessity/proportionality,
+     * (c) risk assessment, (d) measures to address risks.
+     * SDM 3.1 protection-goal fields (sdm_<goal> / sdm_<goal>_rationale)
+     * are dynamically added via concatenated names — excluded from static
+     * section map per check_form_sections.py parsing limitations.
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            // Art. 35(7)(a) — Processing description
+            'overview' => [
+                'title',
+                'referenceNumber',
+                'processingActivity',
+            ],
+            'details' => [
+                'processingDescription',
+                'processingPurposes',
+                'dataCategories',
+                'dataSubjectCategories',
+                'estimatedDataSubjects',
+                'dataRetentionPeriod',
+                'dataFlowDescription',
+            ],
+            // Art. 35(7)(b) — Necessity and proportionality + risk assessment
+            'risk_assessment' => [
+                'necessityAssessment',
+                'proportionalityAssessment',
+                'legalBasis',
+                'legislativeCompliance',
+                'riskLevel',
+                'likelihood',
+                'impact',
+                'dataSubjectRisks',
+                'sdmAssessmentSummary',
+                // SDM 3.1 goal fields are added dynamically as sdm_GOAL and
+                // sdm_GOAL_rationale via concatenated add() calls. The static
+                // analyser in check_form_sections.py captures the literal
+                // prefix sdm_ from those calls as a pseudo-field name.
+                'sdm_',
+            ],
+            // Art. 35(7)(d) — Measures to address risks
+            'measures' => [
+                'technicalMeasures',
+                'organizationalMeasures',
+                'implementedControls',
+                'complianceMeasures',
+                'residualRiskAssessment',
+                'residualRiskLevel',
+            ],
+            // Art. 35(4) / 35(9) — Stakeholder consultation
+            'contact' => [
+                'dataProtectionOfficer',
+                'dataProtectionOfficerPerson',
+                'dataProtectionOfficerDeputyPersons',
+                'dpoConsultationDate',
+                'dpoAdvice',
+                'dataSubjectsConsulted',
+                'dataSubjectConsultationDetails',
+                'conductor',
+                'conductorPerson',
+                'conductorDeputyPersons',
+                'approverPerson',
+                'approverDeputyPersons',
+            ],
+            // Art. 36 — Supervisory authority + Art. 35(11) review
+            'audit_metadata' => [
+                'requiresSupervisoryConsultation',
+                'supervisoryConsultationDate',
+                'supervisoryAuthorityFeedback',
+                'reviewFrequencyMonths',
+                'nextReviewDate',
+            ],
+        ];
     }
 }

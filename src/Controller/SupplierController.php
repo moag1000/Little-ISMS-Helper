@@ -7,10 +7,12 @@ namespace App\Controller;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
 use DateTimeImmutable;
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Supplier;
 use App\Form\SupplierType;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\SupplierRepository;
+use App\Service\AuditLogger;
 use App\Service\InverseCoverageService;
 use App\Service\SupplierService;
 use App\Service\TagFilterService;
@@ -19,12 +21,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SupplierController extends AbstractController
 {
+    use BulkActionTrait;
+
     public function __construct(
         private readonly SupplierRepository $supplierRepository,
         private readonly SupplierService $supplierService,
@@ -34,6 +39,7 @@ class SupplierController extends AbstractController
         private readonly TagFilterService $tagFilterService,
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
     #[Route('/supplier', name: 'app_supplier_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -339,5 +345,58 @@ class SupplierController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
+    }
+
+    /**
+     * Bulk CSV export of selected suppliers.
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/supplier/bulk-export', name: 'app_supplier_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user   = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        $suppliers = [];
+        foreach ($ids as $rawId) {
+            $supplier = $this->supplierRepository->find((int) $rawId);
+            if ($supplier === null) {
+                continue;
+            }
+            if ($tenant !== null && $supplier->getTenant() !== $tenant) {
+                continue;
+            }
+            $suppliers[] = $supplier;
+        }
+
+        if ($suppliers === []) {
+            return $this->json(['error' => 'No exportable suppliers'], 404);
+        }
+
+        $headers = ['ID', 'Name', 'Status', 'Contact Person', 'Country'];
+
+        return $this->streamCsvExport(
+            $suppliers,
+            $headers,
+            static function (Supplier $s): array {
+                return [
+                    (string) $s->getId(),
+                    (string) $s->getName(),
+                    (string) $s->getStatus(),
+                    (string) $s->getContactPerson(),
+                    (string) $s->getCountryOfHeadOffice(),
+                ];
+            },
+            'suppliers-export',
+            'Supplier',
+            $this->auditLogger,
+        );
     }
 }

@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * Form type for Data Breach (Art. 33/34 GDPR)
  */
-final class DataBreachType extends AbstractType
+final class DataBreachType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -376,5 +376,57 @@ final class DataBreachType extends AbstractType
                 ->atPath('assessorPerson')
                 ->addViolation();
         }
+    }
+
+    /**
+     * SectionPolicy (S4 Foundation P-2) — GDPR Art. 33/34 structure.
+     *
+     * Sections follow the Art. 33(3) notification content structure so
+     * regulatory-critical fields are visually grouped and not buried in "Sonstiges".
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'title',
+                'detectedAt',
+                'incident',
+                'processingActivity',
+            ],
+            'details' => [
+                'affectedDataSubjects',
+                'dataCategories',
+                'dataSubjectCategories',
+                'breachNature',
+                'likelyConsequences',
+                'measuresTaken',
+                'mitigationMeasures',
+            ],
+            'risk_assessment' => [
+                'severity',
+                'riskLevel',
+                'riskAssessment',
+                'specialCategoriesAffected',
+                'criminalDataAffected',
+            ],
+            'notification' => [
+                'requiresAuthorityNotification',
+                'requiresSubjectNotification',
+                'noSubjectNotificationReason',
+            ],
+            'lessons_learned' => [
+                'rootCause',
+                'lessonsLearned',
+            ],
+            'contact' => [
+                'dataProtectionOfficer',
+                'dataProtectionOfficerPerson',
+                'dataProtectionOfficerDeputyPersons',
+                'assessorPerson',
+                'assessorDeputyPersons',
+            ],
+        ];
     }
 }

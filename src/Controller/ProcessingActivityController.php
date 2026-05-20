@@ -8,9 +8,14 @@ use RuntimeException;
 use DateTime;
 use Exception;
 use App\Controller\Trait\ModuleGatedControllerTrait;
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\ProcessingActivity;
 use App\Entity\Supplier;
+use App\Entity\User;
 use App\Form\ProcessingActivityType;
+use App\Lifecycle\LifecycleService;
+use App\Repository\ProcessingActivityRepository;
+use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\PreFiller\AvvPickerPreFiller;
 use App\Service\ProcessingActivityService;
@@ -18,10 +23,12 @@ use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,6 +40,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ProcessingActivityController extends AbstractController
 {
     use ModuleGatedControllerTrait;
+    use BulkActionTrait;
 
     public function __construct(
         private readonly ProcessingActivityService $processingActivityService,
@@ -42,6 +50,10 @@ class ProcessingActivityController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
         private readonly ?AvvPickerPreFiller $avvPickerPreFiller = null,
+        private readonly ?ProcessingActivityRepository $processingActivityRepository = null,
+        private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?LifecycleService $lifecycleService = null,
+        private readonly ?Security $security = null,
     ) {}
 
     /**
@@ -652,5 +664,137 @@ class ProcessingActivityController extends AbstractController
             return "'" . $value;
         }
         return $value;
+    }
+
+    /**
+     * Bulk CSV export of selected processing activities (VVT).
+     * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/processing-activity/bulk-export', name: 'app_processing_activity_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        if ($redirect = $this->checkModuleActive('privacy')) {
+            return $redirect;
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $activities = [];
+        foreach ($ids as $rawId) {
+            $activity = $this->processingActivityRepository?->find((int) $rawId);
+            if ($activity === null) {
+                continue;
+            }
+            if ($tenant !== null && $activity->getTenant() !== $tenant) {
+                continue;
+            }
+            $activities[] = $activity;
+        }
+
+        if ($activities === []) {
+            return $this->json(['error' => 'No exportable processing activities'], 404);
+        }
+
+        $headers = ['ID', 'Name', 'Status', 'Legal Basis', 'Responsible Department', 'Description'];
+
+        return $this->streamCsvExport(
+            $activities,
+            $headers,
+            static function (ProcessingActivity $a): array {
+                return [
+                    (string) $a->getId(),
+                    (string) $a->getName(),
+                    (string) $a->getStatus(),
+                    (string) $a->getLegalBasis(),
+                    (string) $a->getResponsibleDepartment(),
+                    (string) $a->getDescription(),
+                ];
+            },
+            'processing-activities-export',
+            'ProcessingActivity',
+            $this->auditLogger,
+        );
+    }
+
+    /**
+     * Bulk status-change for processing activities.
+     * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     *
+     * Accepts JSON body: { "ids": [1,2,3], "newStatus": "approved", "reason": "..." }
+     * Returns: { "ok": true, "changed": N, "rejected": [{id, reason}] }
+     */
+    #[Route('/processing-activity/bulk-status-change', name: 'app_processing_activity_bulk_status_change', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkStatusChange(Request $request): Response
+    {
+        if ($redirect = $this->checkModuleActive('privacy')) {
+            return $redirect;
+        }
+
+        $data      = json_decode($request->getContent(), true);
+        $ids       = $data['ids'] ?? [];
+        $newStatus = (string) ($data['newStatus'] ?? '');
+        $reason    = (string) ($data['reason'] ?? '');
+
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $allowedStatuses = ['draft', 'in_review', 'approved', 'published', 'archived'];
+        if (!in_array($newStatus, $allowedStatuses, true)) {
+            return $this->json(['error' => 'Invalid target status'], 400);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $activities = [];
+        foreach ($ids as $rawId) {
+            $activity = $this->processingActivityRepository?->find((int) $rawId);
+            if ($activity === null) {
+                continue;
+            }
+            if ($tenant !== null && $activity->getTenant() !== $tenant) {
+                continue;
+            }
+            $activities[] = $activity;
+        }
+
+        if ($activities === []) {
+            return $this->json(['ok' => true, 'changed' => 0, 'rejected' => []]);
+        }
+
+        // Map target-status to transition name (processing_activity_lifecycle).
+        $statusToTransition = [
+            'in_review' => 'submit_for_review',
+            'approved'  => 'approve',
+            'draft'     => 'request_changes',
+            'archived'  => 'archive',
+            'published' => 'publish',
+        ];
+
+        /** @var User|null $user */
+        $user = $this->security?->getUser();
+        $lifecycleUser = $user instanceof User ? $user : null;
+
+        $result = $this->applyBulkStatusChange(
+            $activities,
+            'processing_activity_lifecycle',
+            $statusToTransition,
+            $newStatus,
+            $reason,
+            $lifecycleUser,
+            'ProcessingActivity',
+            $this->lifecycleService,
+            $this->auditLogger,
+        );
+
+        return $this->json($result);
     }
 }

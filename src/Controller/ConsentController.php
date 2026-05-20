@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\ModuleGatedControllerTrait;
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Consent;
 use App\Entity\User;
 use App\Enum\ConsentStatus;
 use App\Form\ConsentType;
 use App\Lifecycle\LifecycleService;
 use App\Repository\ConsentRepository;
+use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -19,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -28,6 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ConsentController extends AbstractController
 {
     use ModuleGatedControllerTrait;
+    use BulkActionTrait;
 
     public function __construct(
         private readonly ConsentRepository $consentRepository,
@@ -37,6 +41,7 @@ class ConsentController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly ModuleConfigurationService $moduleService,
         private readonly LifecycleService $lifecycleService,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
 
     #[Route('/', name: 'app_consent_index', methods: ['GET'])]
@@ -285,5 +290,63 @@ class ConsentController extends AbstractController
 
         $this->addFlash('success', $this->translator->trans('consent.success.deleted', [], 'consent'));
         return $this->redirectToRoute('app_consent_index');
+    }
+
+    /**
+     * Bulk CSV export of selected consents.
+     * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/bulk-export', name: 'app_consent_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        if ($redirect = $this->checkModuleActive('privacy')) {
+            return $redirect;
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $consents = [];
+        foreach ($ids as $rawId) {
+            $consent = $this->consentRepository->find((int) $rawId);
+            if ($consent === null) {
+                continue;
+            }
+            if ($tenant !== null && $consent->getTenant() !== $tenant) {
+                continue;
+            }
+            $consents[] = $consent;
+        }
+
+        if ($consents === []) {
+            return $this->json(['error' => 'No exportable consents'], 404);
+        }
+
+        $headers = ['ID', 'Data Subject Identifier', 'Identifier Type', 'Status', 'Granted At', 'Consent Method', 'Expires At'];
+
+        return $this->streamCsvExport(
+            $consents,
+            $headers,
+            static function (Consent $c): array {
+                return [
+                    (string) $c->getId(),
+                    (string) $c->getDataSubjectIdentifier(),
+                    (string) $c->getIdentifierType(),
+                    (string) $c->getStatus(),
+                    $c->getGrantedAt()?->format('Y-m-d') ?? '',
+                    (string) $c->getConsentMethod(),
+                    $c->getExpiresAt()?->format('Y-m-d') ?? '',
+                ];
+            },
+            'consents-export',
+            'Consent',
+            $this->auditLogger,
+        );
     }
 }

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\ThreatIntelligence;
 use App\Enum\ThreatIntelligenceStatus;
 use App\Form\ThreatIntelligenceType;
 use App\Repository\ThreatIntelligenceRepository;
+use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,18 +19,22 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ThreatIntelligenceController extends AbstractController
 {
+    use BulkActionTrait;
+
     public function __construct(
         private readonly ThreatIntelligenceRepository $repository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
         private readonly TenantContext $tenantContext,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
 
     #[Route('/threat-intelligence', name: 'app_threat_intelligence_index', methods: ['GET'])]
@@ -201,5 +207,58 @@ class ThreatIntelligenceController extends AbstractController
             'errors' => $errors,
             'message' => "$deleted threat intelligence items deleted successfully",
         ]);
+    }
+
+    /**
+     * Bulk CSV export of selected threat intelligence items.
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/threat-intelligence/bulk-export', name: 'app_threat_intelligence_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $threats = [];
+        foreach ($ids as $rawId) {
+            $threat = $this->repository->find((int) $rawId);
+            if ($threat === null) {
+                continue;
+            }
+            if ($tenant !== null && $threat->getTenant() !== $tenant) {
+                continue;
+            }
+            $threats[] = $threat;
+        }
+
+        if ($threats === []) {
+            return $this->json(['error' => 'No exportable threat intelligence items'], 404);
+        }
+
+        $headers = ['ID', 'Title', 'Type', 'Severity', 'Status', 'Source'];
+
+        return $this->streamCsvExport(
+            $threats,
+            $headers,
+            static function (ThreatIntelligence $t): array {
+                return [
+                    (string) $t->getId(),
+                    (string) $t->getTitle(),
+                    (string) $t->getThreatType(),
+                    (string) $t->getSeverity(),
+                    (string) $t->getStatus(),
+                    (string) $t->getSource(),
+                ];
+            },
+            'threat-intelligence-export',
+            'ThreatIntelligence',
+            $this->auditLogger,
+        );
     }
 }

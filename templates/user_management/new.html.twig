@@ -109,11 +109,13 @@
 {{ parent() }}
 <script>
     // Initialize Bootstrap tooltips for role checkboxes
-    document.addEventListener('DOMContentLoaded', function() {
+    function initUserNewTooltips() {
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         tooltipTriggerList.forEach(function(el) {
             new bootstrap.Tooltip(el);
         });
-    });
+    }
+    document.addEventListener('DOMContentLoaded', initUserNewTooltips);
+    document.addEventListener('turbo:load', initUserNewTooltips);
 </script>
 {% endblock %}

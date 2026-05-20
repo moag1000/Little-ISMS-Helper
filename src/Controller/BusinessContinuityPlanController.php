@@ -6,9 +6,11 @@ namespace App\Controller;
 
 use DateTimeImmutable;
 use App\Controller\Trait\ModuleGatedControllerTrait;
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\BusinessContinuityPlan;
 use App\Form\BusinessContinuityPlanType;
 use App\Repository\BusinessContinuityPlanRepository;
+use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +20,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -25,6 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class BusinessContinuityPlanController extends AbstractController
 {
     use ModuleGatedControllerTrait;
+    use BulkActionTrait;
 
     public function __construct(
         private readonly BusinessContinuityPlanRepository $businessContinuityPlanRepository,
@@ -33,6 +37,7 @@ class BusinessContinuityPlanController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
     #[Route('/business-continuity-plan', name: 'app_bc_plan_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -173,5 +178,60 @@ class BusinessContinuityPlanController extends AbstractController
             'errors' => $errors,
             'message' => "$deleted BC plans deleted successfully",
         ]);
+    }
+
+    /**
+     * Bulk CSV export of selected BC plans.
+     * Module-gated: bcm. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/business-continuity-plan/bulk-export', name: 'app_bc_plan_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        if ($redirect = $this->checkModuleActive('bcm')) {
+            return $redirect;
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $plans = [];
+        foreach ($ids as $rawId) {
+            $plan = $this->businessContinuityPlanRepository->find((int) $rawId);
+            if ($plan === null) {
+                continue;
+            }
+            if ($tenant !== null && $plan->getTenant() !== $tenant) {
+                continue;
+            }
+            $plans[] = $plan;
+        }
+
+        if ($plans === []) {
+            return $this->json(['error' => 'No exportable BC plans'], 404);
+        }
+
+        $headers = ['ID', 'Name', 'Status', 'Description'];
+
+        return $this->streamCsvExport(
+            $plans,
+            $headers,
+            static function (BusinessContinuityPlan $p): array {
+                return [
+                    (string) $p->getId(),
+                    (string) $p->getName(),
+                    (string) $p->getStatus(),
+                    (string) $p->getDescription(),
+                ];
+            },
+            'bc-plans-export',
+            'BusinessContinuityPlan',
+            $this->auditLogger,
+        );
     }
 }
