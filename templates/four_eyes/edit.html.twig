@@ -44,12 +44,17 @@
         </dl>
 
         {{ form_start(form) }}
+            {# H-03: strict_whitelist — 4-eyes flow is a control-bypass risk;
+               only approver-tri-state fields are user-editable. The actionType /
+               payload / requestedBy / tenant fields are set programmatically by
+               FourEyesApprovalService and MUST NOT leak via dev-tools. #}
             {% include '_components/_auto_form.html.twig' with {
-                'form': form,
-                'sections': {
+                form: form,
+                strict_whitelist: true,
+                sections: {
                     'approver': {
                         'label': 'section.approver'|trans({}, 'four_eyes'),
-                        'fields': ['requestedApprover', 'requestedApproverPerson', 'requestedApproverDeputyPersons']
+                        fields: ['requestedApprover', 'requestedApproverPerson', 'requestedApproverDeputyPersons']
                     }
                 },
                 'col_widths': {

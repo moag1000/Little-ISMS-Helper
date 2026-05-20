@@ -26,16 +26,19 @@
                 </div>
                 <div class="fa-section__body">
                     {{ form_start(form) }}
+                        {# H-03: strict_whitelist — admin settings must not leak
+                           any new field without explicit review. #}
                         {% include '_components/_auto_form.html.twig' with {
-                            'form': form,
-                            'sections': {
+                            form: form,
+                            strict_whitelist: true,
+                            sections: {
                                 'locale_settings': {
                                     'label': 'admin.settings.application.locale_settings'|trans({}, 'admin'),
-                                    'fields': ['default_locale', 'supported_locales']
+                                    fields: ['default_locale', 'supported_locales']
                                 },
                                 'display_settings': {
                                     'label': 'admin.settings.application.display_settings'|trans({}, 'admin'),
-                                    'fields': ['items_per_page', 'timezone', 'date_format', 'datetime_format']
+                                    fields: ['items_per_page', 'timezone', 'date_format', 'datetime_format']
                                 }
                             },
                             'col_widths': {

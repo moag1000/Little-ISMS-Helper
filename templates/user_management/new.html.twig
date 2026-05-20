@@ -34,28 +34,36 @@
                 {% endblock %}
                 {% block card_body %}
                     {{ form_start(form) }}
+                        {# H-03: strict_whitelist + explicit competence section
+                           prevents leakage of sensitive roles/tenant/isActive
+                           through the catch-all bucket. #}
                         {% include '_components/_auto_form.html.twig' with {
-                            'form': form,
-                            'sections': {
+                            form: form,
+                            strict_whitelist: true,
+                            sections: {
                                 'basic_info': {
                                     'label': 'user.section.basic_info'|trans({}, 'user'),
-                                    'fields': ['firstName', 'lastName', 'email', 'department', 'jobTitle', 'phoneNumber', 'avatarFile']
+                                    fields: ['firstName', 'lastName', 'email', 'department', 'jobTitle', 'phoneNumber', 'avatarFile']
                                 },
                                 'tenant': {
                                     'label': 'user.section.tenant'|trans({}, 'user'),
-                                    'fields': ['tenant']
+                                    fields: ['tenant']
                                 },
                                 'authentication': {
                                     'label': 'user.section.authentication'|trans({}, 'user'),
-                                    'fields': ['plainPassword']
+                                    fields: ['plainPassword']
                                 },
                                 'roles': {
                                     'label': 'user.section.roles'|trans({}, 'user'),
-                                    'fields': ['roles', 'customRoles']
+                                    fields: ['roles', 'customRoles']
                                 },
                                 'status': {
                                     'label': 'user.section.status'|trans({}, 'user'),
-                                    'fields': ['isActive', 'isVerified']
+                                    fields: ['isActive', 'isVerified']
+                                },
+                                'competence': {
+                                    'label': 'user.section.competence'|trans({}, 'user'),
+                                    fields: ['competencies', 'previousQmsBackground']
                                 }
                             },
                             'col_widths': {
@@ -71,7 +79,9 @@
                                 'roles': 12,
                                 'customRoles': 12,
                                 'isActive': 12,
-                                'isVerified': 12
+                                'isVerified': 12,
+                                'competencies': 12,
+                                'previousQmsBackground': 12
                             },
                             'translation_domain': 'user'
                         } %}

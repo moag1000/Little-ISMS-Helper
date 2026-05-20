@@ -28,15 +28,19 @@
                     {{ _fa_alert.render({ variant: 'warning', class: 'mb-4', title: 'role_management.warning.system_role'|trans({}, 'role_management'), body: 'role_management.warning.system_role_desc'|trans({}, 'role_management') }) }}
                 {% endif %}
 
+                {# H-03: strict_whitelist suppresses auto-form catch-all so
+                   `permissions` cannot be POST-injected even if the rich
+                   permissions table is bypassed via dev-tools. #}
                 {% include '_components/_auto_form.html.twig' with {
-                    'form': form,
-                    'sections': {
+                    form: form,
+                    strict_whitelist: true,
+                    sections: {
                         'basic_info': {
                             'label': 'role_management.section.basic_info'|trans({}, 'role_management'),
-                            'fields': ['name', 'description']|merge(not role.systemRole ? ['isSystemRole'] : [])
+                            fields: ['name', 'description']|merge(not role.systemRole ? ['isSystemRole'] : [])
                         }
                     },
-                    'exclude': ['permissions'],
+                    exclude: ['permissions'],
                     'translation_domain': 'role_management'
                 } %}
 
