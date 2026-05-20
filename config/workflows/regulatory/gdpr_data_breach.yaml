@@ -67,7 +67,7 @@ framework:
                         auto_progress_conditions:
                             type: field_completion
                             entity: DataBreach
-                            fields: [severity, affectedDataSubjectsCount, dataCategories, notificationRequired]
+                            fields: [severity, affectedDataSubjects, dataCategories, requiresAuthorityNotification]
                     -   name: "Technical Assessment (CISO)"
                         description: "Technical analysis of breach cause, scope, containment, and recovery measures"
                         order: 2
@@ -78,7 +78,8 @@ framework:
                         auto_progress_conditions:
                             type: field_completion
                             entity: DataBreach
-                            fields: [rootCause, affectedSystems, containmentMeasures, recoveryMeasures]
+                            # REMOVED: affectedSystems, containmentMeasures, recoveryMeasures — fields never existed on DataBreach entity
+                            fields: [rootCause, measuresTaken, mitigationMeasures]
                     -   name: "Management Information"
                         description: "Notify executive management of high-risk breach for budget approval and PR strategy"
                         order: 3
@@ -99,7 +100,8 @@ framework:
                         auto_progress_conditions:
                             type: field_completion
                             entity: DataBreach
-                            fields: [authorityNotificationDate, authorityNotificationMethod]
+                            # REMOVED: authorityNotificationDate → supervisoryAuthorityNotifiedAt; authorityNotificationMethod → notificationMethod
+                            fields: [supervisoryAuthorityNotifiedAt, notificationMethod]
                     -   name: "Data Subject Notification (DPO)"
                         description: "Notify affected data subjects if high risk (GDPR Art. 34)"
                         order: 5
@@ -110,8 +112,9 @@ framework:
                         auto_progress_conditions:
                             type: field_completion
                             entity: DataBreach
-                            fields: [dataSubjectNotificationDate, dataSubjectNotificationMethod]
-                            condition: "dataSubjectNotificationRequired = true"
+                            # REMOVED: dataSubjectNotificationDate → dataSubjectsNotifiedAt; dataSubjectNotificationMethod → subjectNotificationMethod; dataSubjectNotificationRequired → requiresSubjectNotification
+                            fields: [dataSubjectsNotifiedAt, subjectNotificationMethod]
+                            condition: "requiresSubjectNotification = true"
                     -   name: "Final Documentation (DPO)"
                         description: "Complete breach documentation and lessons learned (GDPR Art. 33 Abs. 5)"
                         order: 6
@@ -122,4 +125,5 @@ framework:
                         auto_progress_conditions:
                             type: field_completion
                             entity: DataBreach
-                            fields: [lessonsLearned, processImprovements]
+                            # REMOVED: processImprovements — field never existed; entity has followUpActions
+                            fields: [lessonsLearned, followUpActions]
