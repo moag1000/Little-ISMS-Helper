@@ -73,7 +73,7 @@
                     {% if draftSavedAt %}
                         <div class="fa-form-layout__draft-state"
                              data-{{ controller }}-target="draftState">
-                            <i class="bi bi-check-circle-fill"></i>
+                            <i class="fa-icon fa-icon--check-circle-fill"></i>
                             Entwurf gespeichert
                         </div>
                     {% endif %}
@@ -101,11 +101,11 @@
                                data-action="click->{{ controller }}#jumpToSection">
                                 <span class="fa-form-layout__outline-state">
                                     {%- if sectionStatus == 'done' -%}
-                                        <i class="bi bi-check"></i>
+                                        <i class="fa-icon fa-icon--ui-check"></i>
                                     {%- elseif sectionStatus == 'current' -%}
-                                        <i class="bi bi-pencil"></i>
+                                        <i class="fa-icon fa-icon--ui-edit"></i>
                                     {%- elseif sectionStatus == 'error' -%}
-                                        <i class="bi bi-exclamation"></i>
+                                        <i class="fa-icon fa-icon--ui-exclamation-triangle"></i>
                                     {%- else -%}
                                         {{ loop_index }}
                                     {%- endif -%}
@@ -138,9 +138,9 @@
                                 data-action="click->{{ controller }}#toggleSection">
                             <span class="fa-form-section__num">
                                 {%- if sectionStatus == 'done' -%}
-                                    <i class="bi bi-check"></i>
+                                    <i class="fa-icon fa-icon--ui-check"></i>
                                 {%- elseif sectionStatus == 'error' -%}
-                                    <i class="bi bi-exclamation"></i>
+                                    <i class="fa-icon fa-icon--ui-exclamation-triangle"></i>
                                 {%- else -%}
                                     {{ loop.index }}
                                 {%- endif -%}
@@ -159,7 +159,7 @@
                                     {%- endif -%}
                                 </span>
                             </div>
-                            <i class="bi bi-chevron-down fa-form-section__chevron"></i>
+                            <i class="fa-icon fa-icon--util-chevron-down fa-form-section__chevron"></i>
                         </header>
 
                         {% if not (sectionStatus == 'done' or sectionStatus == 'pending') or isOpen %}
