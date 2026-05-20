@@ -24,6 +24,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Values are stored in `system_settings` (category = compliance). YAML
  * parameters act as fallback defaults.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/compliance/settings', name: 'admin_compliance_policy_')]
 #[IsGranted('ROLE_ADMIN')]
 final class CompliancePolicyController extends AbstractController

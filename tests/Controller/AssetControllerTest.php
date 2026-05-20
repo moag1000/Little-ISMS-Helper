@@ -197,7 +197,7 @@ class AssetControllerTest extends WebTestCase
         // the GET response stays in-memory only and never reaches storage —
         // the next POST request opens a fresh session that doesn't see the
         // token.
-        $this->client->request('GET', '/en/asset/');
+        $this->client->request('GET', '/en/asset');
         $session = $this->client->getRequest()->getSession();
 
         $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
@@ -213,7 +213,7 @@ class AssetControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/asset/');
+        $this->client->request('GET', '/en/asset');
 
         $this->assertResponseRedirects();
     }
@@ -223,7 +223,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/');
+        $this->client->request('GET', '/en/asset');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -234,7 +234,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/', [
+        $this->client->request('GET', '/en/asset', [
             'type' => 'hardware'
         ]);
 
@@ -246,7 +246,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/', [
+        $this->client->request('GET', '/en/asset', [
             'classification' => 'internal'
         ]);
 
@@ -258,7 +258,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/', [
+        $this->client->request('GET', '/en/asset', [
             'owner' => 'Test'
         ]);
 
@@ -270,7 +270,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/', [
+        $this->client->request('GET', '/en/asset', [
             'status' => 'active'
         ]);
 
@@ -282,7 +282,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/', [
+        $this->client->request('GET', '/en/asset', [
             'view' => 'own'
         ]);
 
@@ -294,7 +294,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/', [
+        $this->client->request('GET', '/en/asset', [
             'view' => 'subsidiaries'
         ]);
 
@@ -306,7 +306,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/', [
+        $this->client->request('GET', '/en/asset', [
             'view' => 'inherited'
         ]);
 
@@ -318,7 +318,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/');
+        $this->client->request('GET', '/en/asset');
 
         $this->assertResponseIsSuccessful();
         // The default view parameter is 'inherited'
@@ -368,7 +368,7 @@ class AssetControllerTest extends WebTestCase
         // Verify redirect to show page (which means asset was created)
         $this->assertResponseRedirects();
         $redirectUrl = $this->client->getResponse()->headers->get('Location');
-        $this->assertStringContainsString('/asset/', $redirectUrl, 'Should redirect to asset show page');
+        $this->assertStringContainsString('/asset', $redirectUrl, 'Should redirect to asset show page');
 
         // Follow redirect to show page
         $this->client->followRedirect();
@@ -399,7 +399,7 @@ class AssetControllerTest extends WebTestCase
         // Verify asset was created (redirect means success)
         $this->assertResponseRedirects();
         $redirectUrl = $this->client->getResponse()->headers->get('Location');
-        $this->assertStringContainsString('/asset/', $redirectUrl, 'Should redirect to asset show page');
+        $this->assertStringContainsString('/asset', $redirectUrl, 'Should redirect to asset show page');
     }
 
     #[Test]
@@ -596,7 +596,7 @@ class AssetControllerTest extends WebTestCase
         ]);
 
         // Admin user can access the delete route and gets redirected
-        $this->assertResponseRedirects('/en/asset/');
+        $this->assertResponseRedirects('/en/asset');
     }
 
     #[Test]
@@ -609,7 +609,7 @@ class AssetControllerTest extends WebTestCase
         ]);
 
         // Should redirect but not delete
-        $this->assertResponseRedirects('/en/asset/');
+        $this->assertResponseRedirects('/en/asset');
 
         // Verify asset was NOT deleted
         $assetRepository = $this->entityManager->getRepository(Asset::class);
@@ -654,7 +654,7 @@ class AssetControllerTest extends WebTestCase
         ]);
 
         // Should redirect with error message
-        $this->assertResponseRedirects('/en/asset/');
+        $this->assertResponseRedirects('/en/asset');
     }
 
     // ========== BULK DELETE TESTS ==========
@@ -856,7 +856,7 @@ class AssetControllerTest extends WebTestCase
 
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/', ['view' => 'own']);
+        $this->client->request('GET', '/en/asset', ['view' => 'own']);
 
         $this->assertResponseIsSuccessful();
         // User should only see assets from their own tenant
@@ -867,7 +867,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/asset/');
+        $this->client->request('GET', '/en/asset');
 
         $this->assertResponseIsSuccessful();
         // Detailed stats should be calculated and passed to template

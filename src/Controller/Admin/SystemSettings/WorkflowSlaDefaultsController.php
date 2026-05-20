@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Persists in Tenant.settings['workflow_sla'] JSON sub-key.
  * SLA values are in hours. Picked up by Sprint-6b SlaDeadlineMonitor (Wave 2).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/settings/workflow-slas')]
 #[IsGranted('ROLE_ADMIN')]
 class WorkflowSlaDefaultsController extends AbstractController

@@ -32,6 +32,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * @see docs/DATA_REUSE_IMPROVEMENT_PLAN.md WS-4
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/reports/management/portfolio')]
 #[IsGranted('ROLE_MANAGER')]
 class PortfolioReportController extends AbstractController

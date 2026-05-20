@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/compliance/inheritance', name: 'app_compliance_inheritance_')]
 #[IsGranted('ROLE_MANAGER')]
 final class ComplianceInheritanceController extends AbstractController

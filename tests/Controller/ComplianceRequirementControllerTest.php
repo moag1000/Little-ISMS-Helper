@@ -99,7 +99,7 @@ class ComplianceRequirementControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/compliance/requirement/');
+        $this->client->request('GET', '/en/compliance/requirement');
         $this->assertResponseRedirects();
     }
 
@@ -107,7 +107,7 @@ class ComplianceRequirementControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/compliance/requirement/');
+        $this->client->request('GET', '/en/compliance/requirement');
         $this->assertResponseIsSuccessful();
     }
 

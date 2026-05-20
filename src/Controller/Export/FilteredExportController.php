@@ -24,6 +24,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * All exports are logged via AuditLogger for compliance traceability.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/export', name: 'app_filtered_export_')]
 #[IsGranted('ROLE_MANAGER')]
 final class FilteredExportController extends AbstractController

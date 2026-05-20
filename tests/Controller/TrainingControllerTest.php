@@ -169,7 +169,7 @@ class TrainingControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/training/');
+        $this->client->request('GET', '/en/training');
 
         $this->assertResponseRedirects();
     }
@@ -179,7 +179,7 @@ class TrainingControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/training/');
+        $this->client->request('GET', '/en/training');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -190,7 +190,7 @@ class TrainingControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/en/training/');
+        $crawler = $this->client->request('GET', '/en/training');
 
         $this->assertResponseIsSuccessful();
     }
@@ -200,7 +200,7 @@ class TrainingControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/training/', ['view' => 'own']);
+        $this->client->request('GET', '/en/training', ['view' => 'own']);
 
         $this->assertResponseIsSuccessful();
     }
@@ -210,7 +210,7 @@ class TrainingControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/training/', ['view' => 'inherited']);
+        $this->client->request('GET', '/en/training', ['view' => 'inherited']);
 
         $this->assertResponseIsSuccessful();
     }
@@ -220,7 +220,7 @@ class TrainingControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/training/', ['view' => 'subsidiaries']);
+        $this->client->request('GET', '/en/training', ['view' => 'subsidiaries']);
 
         $this->assertResponseIsSuccessful();
     }
@@ -397,7 +397,7 @@ class TrainingControllerTest extends WebTestCase
             $trainingId = $this->testTraining->getId();
             $this->client->submit($form);
 
-            $this->assertResponseRedirects('/en/training/');
+            $this->assertResponseRedirects('/en/training');
 
             // Verify training is deleted
             $this->entityManager->clear();
@@ -554,7 +554,7 @@ class TrainingControllerTest extends WebTestCase
         $this->entityManager->persist($completedTraining);
         $this->entityManager->flush();
 
-        $this->client->request('GET', '/en/training/');
+        $this->client->request('GET', '/en/training');
 
         $this->assertResponseIsSuccessful();
 
@@ -568,7 +568,7 @@ class TrainingControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/training/');
+        $this->client->request('GET', '/en/training');
 
         $this->assertResponseIsSuccessful();
         // The test training has isMandatory = true
@@ -579,7 +579,7 @@ class TrainingControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/training/');
+        $this->client->request('GET', '/en/training');
 
         $this->assertResponseIsSuccessful();
         // The test training has scheduledDate in the future

@@ -30,6 +30,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * mutation. The Applier enforces tenant binding; the controller adds CSRF
  * + role checks + flash messages.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/system-templates')]
 final class SystemTemplateApplyController extends AbstractController
 {

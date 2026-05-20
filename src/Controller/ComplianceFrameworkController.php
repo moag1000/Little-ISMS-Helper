@@ -30,7 +30,7 @@ class ComplianceFrameworkController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator
     ) {}
-    #[Route('/compliance/framework/', name: 'app_compliance_framework_index', methods: ['GET'])]
+    #[Route('/compliance/framework', name: 'app_compliance_framework_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {

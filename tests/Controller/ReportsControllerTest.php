@@ -99,7 +99,7 @@ class ReportsControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/reports/');
+        $this->client->request('GET', '/en/reports');
         $this->assertResponseRedirects();
     }
 
@@ -107,7 +107,7 @@ class ReportsControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/reports/');
+        $this->client->request('GET', '/en/reports');
         $this->assertResponseIsSuccessful();
     }
 }

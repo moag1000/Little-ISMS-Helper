@@ -99,7 +99,7 @@ class ModuleManagementControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/modules/');
+        $this->client->request('GET', '/en/modules');
         $this->assertResponseRedirects();
     }
 
@@ -107,7 +107,7 @@ class ModuleManagementControllerTest extends WebTestCase
     public function testIndexRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/modules/');
+        $this->client->request('GET', '/en/modules');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
@@ -115,7 +115,7 @@ class ModuleManagementControllerTest extends WebTestCase
     public function testIndexRedirectsToAdminForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
-        $this->client->request('GET', '/en/modules/');
+        $this->client->request('GET', '/en/modules');
         $this->assertResponseRedirects('/en/admin/modules');
     }
 }

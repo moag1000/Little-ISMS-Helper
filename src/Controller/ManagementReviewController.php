@@ -35,7 +35,7 @@ class ManagementReviewController extends AbstractController
         private readonly ManagementReportService $managementReportService,
         private readonly Security $security,
     ) {}
-    #[Route('/management-review/', name: 'app_management_review_index', methods: ['GET'])]
+    #[Route('/management-review', name: 'app_management_review_index', methods: ['GET'])]
     public function index(): Response
     {
         $reviews = $this->managementReviewRepository->findAll();

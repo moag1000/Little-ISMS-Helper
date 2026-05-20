@@ -34,7 +34,7 @@ class BusinessContinuityPlanController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
     ) {}
-    #[Route('/business-continuity-plan/', name: 'app_bc_plan_index', methods: ['GET'])]
+    #[Route('/business-continuity-plan', name: 'app_bc_plan_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {

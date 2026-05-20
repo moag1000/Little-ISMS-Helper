@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Base limit stored in Tenant.apiRateLimitPerMinute (int).
  * Extended settings (burst, exclude-routes) in Tenant.settings['api'] JSON sub-key.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/settings/api-rate-limits')]
 #[IsGranted('ROLE_ADMIN')]
 class ApiRateLimitsController extends AbstractController

@@ -107,7 +107,7 @@ class ContextControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/context/');
+        $this->client->request('GET', '/en/context');
         $this->assertResponseRedirects();
     }
 
@@ -115,7 +115,7 @@ class ContextControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/context/');
+        $this->client->request('GET', '/en/context');
         $this->assertResponseIsSuccessful();
     }
 

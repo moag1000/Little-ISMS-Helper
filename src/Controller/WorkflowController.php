@@ -64,7 +64,7 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
     }
 
-    #[Route('/workflow/', name: 'app_workflow_index', methods: ['GET'])]
+    #[Route('/workflow', name: 'app_workflow_index', methods: ['GET'])]
     public function index(): Response
     {
         $workflows = $this->workflowRepository->findAllActive();

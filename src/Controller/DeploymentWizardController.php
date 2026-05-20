@@ -80,7 +80,7 @@ class DeploymentWizardController extends AbstractController
     /**
      * Wizard Start / Welcome
      */
-    #[Route('/setup/', name: 'setup_wizard_index', methods: ['GET'])]
+    #[Route('/setup', name: 'setup_wizard_index', methods: ['GET'])]
     public function index(): Response
     {
         // Check if setup is already complete

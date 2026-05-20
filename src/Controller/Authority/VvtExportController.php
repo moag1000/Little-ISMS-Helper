@@ -29,6 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * All downloads are logged via AuditLogger for compliance traceability.
  * Requires module 'privacy' + ROLE_DPO (inherits ROLE_MANAGER).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/verfahrensverzeichnis/export', name: 'app_vvt_export_')]
 #[IsGranted('ROLE_DPO')]
 final class VvtExportController extends AbstractController

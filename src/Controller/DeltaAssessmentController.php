@@ -26,6 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * @see docs/CM_JUNIOR_RESPONSE.md CM-2
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/delta-assessment')]
 #[IsGranted('ROLE_MANAGER')]
 final class DeltaAssessmentController extends AbstractController

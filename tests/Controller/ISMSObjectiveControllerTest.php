@@ -121,7 +121,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
     public function testIndexDisplaysWithoutAuthentication(): void
     {
         // ISMSObjectiveController index has no IsGranted attribute
-        $this->client->request('GET', '/en/objective/');
+        $this->client->request('GET', '/en/objective');
         // May redirect to login or be accessible - check for redirect
         $this->assertResponseRedirects();
     }
@@ -130,7 +130,7 @@ class ISMSObjectiveControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/objective/');
+        $this->client->request('GET', '/en/objective');
         $this->assertResponseIsSuccessful();
     }
 

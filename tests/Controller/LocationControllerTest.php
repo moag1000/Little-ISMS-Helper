@@ -172,7 +172,7 @@ class LocationControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/location/');
+        $this->client->request('GET', '/en/location');
 
         $this->assertResponseRedirects();
     }
@@ -182,7 +182,7 @@ class LocationControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/location/');
+        $this->client->request('GET', '/en/location');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -193,7 +193,7 @@ class LocationControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/en/location/');
+        $crawler = $this->client->request('GET', '/en/location');
 
         $this->assertResponseIsSuccessful();
     }
@@ -203,7 +203,7 @@ class LocationControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/location/');
+        $this->client->request('GET', '/en/location');
 
         $this->assertResponseIsSuccessful();
     }
@@ -419,7 +419,7 @@ class LocationControllerTest extends WebTestCase
             $locationId = $this->testLocation->getId();
             $this->client->submit($form);
 
-            $this->assertResponseRedirects('/en/location/');
+            $this->assertResponseRedirects('/en/location');
 
             // Verify location is deleted
             $this->entityManager->clear();
@@ -494,7 +494,7 @@ class LocationControllerTest extends WebTestCase
 
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/location/');
+        $this->client->request('GET', '/en/location');
 
         $this->assertResponseIsSuccessful();
     }

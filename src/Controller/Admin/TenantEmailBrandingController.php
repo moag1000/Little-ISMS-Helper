@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 /**
  * Phase 8L.F3 — Admin-UI für E-Mail-Branding (Absender, Logo, Footer).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/email-branding')]
 #[IsGranted('ROLE_ADMIN')]
 class TenantEmailBrandingController extends AbstractController

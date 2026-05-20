@@ -35,7 +35,7 @@ class SupplierController extends AbstractController
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
     ) {}
-    #[Route('/supplier/', name: 'app_supplier_index', methods: ['GET'])]
+    #[Route('/supplier', name: 'app_supplier_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {

@@ -41,6 +41,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Spec: `docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md`
  * lines 295-302.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/policy-wizard/export', name: 'app_policy_export_')]
 final class PolicyExportController extends AbstractController
 {

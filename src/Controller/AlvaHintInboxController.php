@@ -20,6 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * grouped by tier, with filter and dismiss support. Accessible at
  * /{locale}/alva-inbox (locale-prefixed via routes.yaml app_routes group).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/alva-inbox', name: 'app_alva_hint_inbox')]
 #[IsGranted('ROLE_USER')]
 class AlvaHintInboxController extends AbstractController

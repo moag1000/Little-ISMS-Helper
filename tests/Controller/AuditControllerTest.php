@@ -175,7 +175,7 @@ class AuditControllerTest extends WebTestCase
     #[Test]
     public function testIndexWithoutAuthentication(): void
     {
-        $this->client->request('GET', '/en/audit/');
+        $this->client->request('GET', '/en/audit');
 
         $this->assertResponseRedirects();
     }
@@ -185,7 +185,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/en/audit/');
+        $crawler = $this->client->request('GET', '/en/audit');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -196,7 +196,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/en/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit', [
             'status' => 'planned'
         ]);
 
@@ -208,7 +208,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/en/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit', [
             'scope_type' => 'full_isms'
         ]);
 
@@ -220,7 +220,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/en/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit', [
             'date_from' => '2025-01-01',
             'date_to' => '2025-12-31'
         ]);
@@ -233,7 +233,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/en/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit', [
             'date_from' => '2025-01-01'
         ]);
 
@@ -245,7 +245,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/en/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit', [
             'date_to' => '2025-12-31'
         ]);
 
@@ -257,7 +257,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/en/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit', [
             'status' => 'planned',
             'scope_type' => 'full_isms',
             'date_from' => '2025-01-01',
@@ -547,7 +547,7 @@ class AuditControllerTest extends WebTestCase
         ]);
 
         // Admin user can access the delete route and gets redirected
-        $this->assertResponseRedirects('/en/audit/');
+        $this->assertResponseRedirects('/en/audit');
     }
 
     #[Test]
@@ -562,7 +562,7 @@ class AuditControllerTest extends WebTestCase
         ]);
 
         // Should redirect but not delete
-        $this->assertResponseRedirects('/en/audit/');
+        $this->assertResponseRedirects('/en/audit');
 
         // Verify audit was NOT deleted - fetch from database
         $auditRepository = $this->entityManager->getRepository(InternalAudit::class);
@@ -812,7 +812,7 @@ class AuditControllerTest extends WebTestCase
         // Login first to establish user context
         $this->loginAsUser($user);
         // Make a request to initialize session in browser context
-        $this->client->request('GET', '/en/audit/');
+        $this->client->request('GET', '/en/audit');
         // Get session from the last request and generate token directly
         $session = $this->client->getRequest()->getSession();
         // Generate a random token and store it in session

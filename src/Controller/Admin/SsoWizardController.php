@@ -41,6 +41,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * draft provider is implicitly scoped to the current tenant via
  * {@see self::getDraftProvider()} unless SUPER_ADMIN opts for a global IdP.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/sso/wizard', name: 'admin_sso_wizard_')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class SsoWizardController extends AbstractController

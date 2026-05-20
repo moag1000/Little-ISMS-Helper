@@ -61,7 +61,7 @@ class IncidentController extends AbstractController
         private readonly RiskIncidentLinkRepository $riskIncidentLinkRepository,
         private readonly ?CommentRepository $commentRepository = null,
     ) {}
-    #[Route('/incident/', name: 'app_incident_index', methods: ['GET'])]
+    #[Route('/incident', name: 'app_incident_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {

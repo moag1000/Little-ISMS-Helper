@@ -19,6 +19,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
  * WS-8: "Was hast du schon?"-Step im Setup-Wizard.
  * Standalone controller so the step survives edits to the big DeploymentWizardController.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/setup/existing-frameworks', name: 'setup_wizard_existing_frameworks')]
 final class ExistingFrameworksController extends AbstractController
 {

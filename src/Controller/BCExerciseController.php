@@ -34,7 +34,7 @@ class BCExerciseController extends AbstractController
         private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
     ) {}
-    #[Route('/bc-exercise/', name: 'app_bc_exercise_index', methods: ['GET'])]
+    #[Route('/bc-exercise', name: 'app_bc_exercise_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {

@@ -45,7 +45,7 @@ class MappingQualityController extends AbstractController
     ) {
     }
 
-    #[Route('/admin/mapping-quality', name: 'admin_mapping_quality_index')]
+    #[Route('/admin/mapping-quality', name: 'admin_mapping_quality_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $stateFilter = $request->query->get('state');
@@ -73,7 +73,7 @@ class MappingQualityController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/mapping-quality/{id}', name: 'admin_mapping_quality_show', requirements: ['id' => '\d+'])]
+    #[Route('/admin/mapping-quality/{id}', name: 'admin_mapping_quality_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(int $id): Response
     {
         $mapping = $this->mappingRepository->find($id);
@@ -177,7 +177,7 @@ class MappingQualityController extends AbstractController
      * "Wie viel von Framework Y ist durch Framework X abgedeckt — und wie
      * sicher sind wir uns dabei?"
      */
-    #[Route('/admin/mapping-quality/coverage/all', name: 'admin_mapping_quality_coverage')]
+    #[Route('/admin/mapping-quality/coverage/all', name: 'admin_mapping_quality_coverage', methods: ['GET'])]
     public function coverage(): Response
     {
         $frameworks = $this->frameworkRepository->findAll();

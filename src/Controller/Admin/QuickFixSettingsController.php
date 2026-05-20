@@ -22,6 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Operators of audit-critical Composer-deployments tighten via this UI:
  * require installer-token / dev-only / IP-allowlist.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/quick-fix-settings')]
 #[IsGranted('ROLE_ADMIN')]
 class QuickFixSettingsController extends AbstractController

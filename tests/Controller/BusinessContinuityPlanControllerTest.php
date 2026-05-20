@@ -218,7 +218,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
     private function generateCsrfToken(string $tokenId): string
     {
-        $this->client->request('GET', '/en/business-continuity-plan/');
+        $this->client->request('GET', '/en/business-continuity-plan');
 
         $session = $this->client->getRequest()->getSession();
         $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
@@ -233,7 +233,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/business-continuity-plan/');
+        $this->client->request('GET', '/en/business-continuity-plan');
 
         $this->assertResponseRedirects();
     }
@@ -243,7 +243,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/business-continuity-plan/');
+        $this->client->request('GET', '/en/business-continuity-plan');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -267,7 +267,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/business-continuity-plan/');
+        $this->client->request('GET', '/en/business-continuity-plan');
 
         $this->assertResponseIsSuccessful();
 
@@ -294,7 +294,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/business-continuity-plan/');
+        $this->client->request('GET', '/en/business-continuity-plan');
 
         $this->assertResponseIsSuccessful();
 
@@ -499,7 +499,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
             '_token' => $token,
         ]);
 
-        $this->assertResponseRedirects('/en/business-continuity-plan/');
+        $this->assertResponseRedirects('/en/business-continuity-plan');
     }
 
     #[Test]
@@ -512,7 +512,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         ]);
 
         // Should redirect but not delete
-        $this->assertResponseRedirects('/en/business-continuity-plan/');
+        $this->assertResponseRedirects('/en/business-continuity-plan');
 
         // Verify plan was NOT deleted
         $planRepository = $this->entityManager->getRepository(BusinessContinuityPlan::class);
@@ -561,7 +561,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
 
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/business-continuity-plan/');
+        $this->client->request('GET', '/en/business-continuity-plan');
 
         $this->assertResponseIsSuccessful();
         // User should only see plans from their own tenant

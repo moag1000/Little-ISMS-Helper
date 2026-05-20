@@ -25,6 +25,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   draft → in_review → approved/rejected → expired
  */
 #[IsGranted('ROLE_MANAGER')]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/prototype-protection', name: 'app_prototype_protection_')]
 class PrototypeProtectionAssessmentController extends AbstractController
 {

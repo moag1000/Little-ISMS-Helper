@@ -64,7 +64,7 @@ class AssetController extends AbstractController
     {
         return $this->translator;
     }
-    #[Route('/asset/', name: 'app_asset_index', methods: ['GET'])]
+    #[Route('/asset', name: 'app_asset_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {

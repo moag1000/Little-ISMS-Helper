@@ -27,7 +27,7 @@ class RiskTreatmentPlanController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext
     ) {}
-    #[Route('/risk-treatment-plan/', name: 'app_risk_treatment_plan_index', methods: ['GET'])]
+    #[Route('/risk-treatment-plan', name: 'app_risk_treatment_plan_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {

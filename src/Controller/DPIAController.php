@@ -53,7 +53,7 @@ class DPIAController extends AbstractController
     /**
      * List all DPIAs (index view)
      */
-    #[Route('/dpia/', name: 'app_dpia_index', methods: ['GET'])]
+    #[Route('/dpia', name: 'app_dpia_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;

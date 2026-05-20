@@ -18,6 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/industry-baselines', name: 'app_industry_baseline_')]
 #[IsGranted('ROLE_MANAGER')]
 final class IndustryBaselineController extends AbstractController

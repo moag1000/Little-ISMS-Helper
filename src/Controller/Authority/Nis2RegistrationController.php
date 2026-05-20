@@ -36,6 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Module gate: nis2_dora
  * RBAC: ROLE_MANAGER for VIEW/EDIT/EXPORT; ROLE_ADMIN for MARK_REPORTED
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/authority/nis2-registration', name: 'nis2_registration_')]
 #[IsGranted('ROLE_MANAGER')]
 final class Nis2RegistrationController extends AbstractController

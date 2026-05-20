@@ -63,7 +63,7 @@ class ComplianceMappingController extends AbstractController
         ]);
     }
 
-    #[Route('/compliance/mapping/', name: 'app_compliance_mapping_index', methods: ['GET'])]
+    #[Route('/compliance/mapping', name: 'app_compliance_mapping_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $requirementId = $request->query->get('requirement');

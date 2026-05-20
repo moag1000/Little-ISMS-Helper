@@ -18,6 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Tenant-level notification preference settings.
  * Stores in Tenant.notificationPreferences JSON column (global sub-key).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/settings/notifications')]
 #[IsGranted('ROLE_ADMIN')]
 class NotificationPreferencesController extends AbstractController
