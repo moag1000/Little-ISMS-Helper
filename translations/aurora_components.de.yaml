@@ -2,5 +2,6 @@
 # Domain: aurora_components
 # Used for placeholder/default labels in fa-page-header, fa-empty-state, fa-hero
 
-reports:
-    badge: Berichte
+aurora_components:
+    reports:
+        badge: Berichte

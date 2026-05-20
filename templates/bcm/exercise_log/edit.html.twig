@@ -1,8 +1,7 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'bsi_200_4_exercise' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'page.edit_title'|trans({}, 'bsi_200_4_exercise') }}{% endblock %}
+{% block title %}{{ 'bsi_200_4_exercise.page.edit_title'|trans({}, 'bsi_200_4_exercise') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -10,15 +9,15 @@
         breadcrumbs: [
             { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
             { label: 'nav.bc_exercises'|trans({}, 'nav'), url: path('app_bc_exercise_index') },
-            { label: 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), url: path('bcm_exercise_log_index') },
+            { label: 'bsi_200_4_exercise.nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), url: path('bcm_exercise_log_index') },
             { label: log.bcExercise.name ?? '', url: path('bcm_exercise_log_show', {id: log.id}) },
-            { label: 'page.edit_title'|trans({}, 'bsi_200_4_exercise') }
+            { label: 'bsi_200_4_exercise.page.edit_title'|trans({}, 'bsi_200_4_exercise') }
         ]
     } %}
 
     {{ _fa_page_header.render({
         badge: { icon: 'ui-edit', label: 'BSI 200-4' },
-        title: 'page.edit_title'|trans({}, 'bsi_200_4_exercise'),
+        title: 'bsi_200_4_exercise.page.edit_title'|trans({}, 'bsi_200_4_exercise'),
         subtitle: log.bcExercise.name ?? ''
     }) }}
 
@@ -45,12 +44,12 @@
 
         <div class="mb-4">{{ form_row(form.lessonsLearned) }}</div>
 
-        <h5 class="mb-3">{{ 'section.improvement_actions'|trans({}, 'bsi_200_4_exercise') }}</h5>
+        <h5 class="mb-3">{{ 'bsi_200_4_exercise.section.improvement_actions'|trans({}, 'bsi_200_4_exercise') }}</h5>
         <div class="mb-4" data-prototype="{{ form_widget(form.improvementActionsCollection.vars.prototype)|e('html_attr') }}">
             {{ form_widget(form.improvementActionsCollection) }}
             <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost mt-2" data-add-improvement-action>
                 <i class="fa-icon fa-icon--plus" aria-hidden="true"></i>
-                {{ 'section.improvement_actions'|trans({}, 'bsi_200_4_exercise') }}
+                {{ 'bsi_200_4_exercise.section.improvement_actions'|trans({}, 'bsi_200_4_exercise') }}
             </button>
         </div>
 
@@ -59,7 +58,7 @@
         <div class="d-flex gap-2">
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="fa-icon fa-icon--save" aria-hidden="true"></i>
-                {{ 'action.saved'|trans({}, 'bsi_200_4_exercise') }}
+                {{ 'bsi_200_4_exercise.action.saved'|trans({}, 'bsi_200_4_exercise') }}
             </button>
             <a href="{{ path('bcm_exercise_log_show', {id: log.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 {{ 'common.cancel'|trans({}, 'messages') }}

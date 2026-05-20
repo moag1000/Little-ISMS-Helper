@@ -31,7 +31,7 @@ final class Bsi2004ExerciseLogType extends AbstractType
 
         // --- Section 1: Basis ---
         $builder->add('exerciseType', ChoiceType::class, [
-            'label'           => 'field.exercise_type',
+            'label'           => 'bsi_200_4_exercise.field.exercise_type',
             'translation_domain' => $translationDomain,
             'choices'         => array_combine(
                 array_map(
@@ -44,7 +44,7 @@ final class Bsi2004ExerciseLogType extends AbstractType
         ]);
 
         $builder->add('bsi2004Template', ChoiceType::class, [
-            'label'           => 'field.template',
+            'label'           => 'bsi_200_4_exercise.field.template',
             'translation_domain' => $translationDomain,
             'choices'         => array_combine(
                 array_map(
@@ -58,48 +58,48 @@ final class Bsi2004ExerciseLogType extends AbstractType
 
         // --- Section 2: Szenario ---
         $builder->add('scenarioSummary', TextareaType::class, [
-            'label'              => 'field.scenario_summary',
+            'label'              => 'bsi_200_4_exercise.field.scenario_summary',
             'translation_domain' => $translationDomain,
             'attr'               => ['rows' => 5],
         ]);
 
         // Objectives: stored as JSON array but edited as newline-separated textarea
         $builder->add('objectivesText', TextareaType::class, [
-            'label'              => 'field.objectives',
+            'label'              => 'bsi_200_4_exercise.field.objectives',
             'translation_domain' => $translationDomain,
             'mapped'             => false,
             'required'           => false,
-            'attr'               => ['rows' => 4, 'placeholder' => 'field.objectives_placeholder'],
-            'help'               => 'field.objectives_help',
+            'attr'               => ['rows' => 4, 'placeholder' => 'bsi_200_4_exercise.field.objectives_placeholder'],
+            'help'               => 'bsi_200_4_exercise.field.objectives_help',
             'help_translation_parameters' => [],
         ]);
 
         // Participants: stored as JSON array but edited as comma-separated textarea
         $builder->add('participantsText', TextareaType::class, [
-            'label'              => 'field.participants',
+            'label'              => 'bsi_200_4_exercise.field.participants',
             'translation_domain' => $translationDomain,
             'mapped'             => false,
             'required'           => false,
-            'attr'               => ['rows' => 3, 'placeholder' => 'field.participants_placeholder'],
+            'attr'               => ['rows' => 3, 'placeholder' => 'bsi_200_4_exercise.field.participants_placeholder'],
         ]);
 
         // --- Section 3: Maßnahmen ---
         $builder->add('actionsBefore', TextareaType::class, [
-            'label'              => 'section.actions_before',
+            'label'              => 'bsi_200_4_exercise.section.actions_before',
             'translation_domain' => $translationDomain,
             'required'           => false,
             'attr'               => ['rows' => 4],
         ]);
 
         $builder->add('actionsDuring', TextareaType::class, [
-            'label'              => 'section.actions_during',
+            'label'              => 'bsi_200_4_exercise.section.actions_during',
             'translation_domain' => $translationDomain,
             'required'           => false,
             'attr'               => ['rows' => 4],
         ]);
 
         $builder->add('actionsAfter', TextareaType::class, [
-            'label'              => 'section.actions_after',
+            'label'              => 'bsi_200_4_exercise.section.actions_after',
             'translation_domain' => $translationDomain,
             'required'           => false,
             'attr'               => ['rows' => 4],
@@ -107,7 +107,7 @@ final class Bsi2004ExerciseLogType extends AbstractType
 
         // --- Section 4: Lessons Learned ---
         $builder->add('lessonsLearned', TextareaType::class, [
-            'label'              => 'field.lessons_learned',
+            'label'              => 'bsi_200_4_exercise.field.lessons_learned',
             'translation_domain' => $translationDomain,
             'required'           => false,
             'attr'               => ['rows' => 5],
@@ -115,7 +115,7 @@ final class Bsi2004ExerciseLogType extends AbstractType
 
         // ImprovementActions as a collection of sub-forms
         $builder->add('improvementActionsCollection', CollectionType::class, [
-            'label'              => 'section.improvement_actions',
+            'label'              => 'bsi_200_4_exercise.section.improvement_actions',
             'translation_domain' => $translationDomain,
             'entry_type'         => ImprovementActionType::class,
             'entry_options'      => ['label' => false],
@@ -130,10 +130,10 @@ final class Bsi2004ExerciseLogType extends AbstractType
 
         // --- Section 5: Bewertung ---
         $builder->add('overallRating', ChoiceType::class, [
-            'label'           => 'field.overall_rating',
+            'label'           => 'bsi_200_4_exercise.field.overall_rating',
             'translation_domain' => $translationDomain,
             'required'        => false,
-            'placeholder'     => 'field.rating_placeholder',
+            'placeholder'     => 'bsi_200_4_exercise.field.rating_placeholder',
             'choices'         => array_combine(
                 array_map(
                     static fn (string $r): string => 'rating.' . $r,

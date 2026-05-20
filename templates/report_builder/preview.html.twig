@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'report_builder' %}
 
 {% block title %}{{ report.name }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -8,7 +7,7 @@
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.reports'|trans({}, 'nav'), path: path('app_reports_overview') },
-            { label: 'page.title'|trans, path: path('report_builder_index') },
+            { label: 'report_builder.page.title'|trans({},'report_builder'), path: path('report_builder_index') },
             { label: report.name }
         ]
     } %}
@@ -20,10 +19,10 @@
         </h1>
         <div class="btn-group">
             <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'action.edit'|trans }}
+                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'report_builder.action.edit'|trans({},'report_builder') }}
             </a>
             <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger">
-                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'action.export_pdf'|trans }}
+                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'report_builder.action.export_pdf'|trans({},'report_builder') }}
             </a>
         </div>
     </div>
@@ -114,7 +113,7 @@
                 {# Line Chart #}
                 <canvas class="chart-canvas" data-chart-type="line" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="200"></canvas>
                 {% else %}
-                <div class="fa-alert fa-alert--info">{{ 'preview.chart_placeholder'|trans({'%type%': data.type}, 'report_builder') }}</div>
+                <div class="fa-alert fa-alert--info">{{ 'report_builder.preview.chart_placeholder'|trans({'%type%': data.type}, 'report_builder') }}</div>
                 {% endif %}
             </div>
 
@@ -141,7 +140,7 @@
                     {% endblock %}
                 {% endembed %}
                 {% else %}
-                <p class="text-muted text-center py-3">{{ 'preview.no_data'|trans }}</p>
+                <p class="text-muted text-center py-3">{{ 'report_builder.preview.no_data'|trans({},'report_builder') }}</p>
                 {% endif %}
             </div>
 
@@ -175,7 +174,7 @@
             </div>
 
             {% else %}
-            <div class="fa-alert fa-alert--info">{{ 'preview.unknown_widget'|trans({'%type%': widgetType}, 'report_builder') }}</div>
+            <div class="fa-alert fa-alert--info">{{ 'report_builder.preview.unknown_widget'|trans({'%type%': widgetType}, 'report_builder') }}</div>
             {% endif %}
         </div>
         {% endfor %}
@@ -184,7 +183,7 @@
     {# Report Footer #}
     <div class="report-footer mt-5 pt-4 border-top text-muted small">
         <div class="d-flex justify-content-between">
-            <span>{{ 'preview.generated_by'|trans }} {{ app.user.fullName }}</span>
+            <span>{{ 'report_builder.preview.generated_by'|trans({},'report_builder') }} {{ app.user.fullName }}</span>
             <span>{{ report_data.report.generated_at|date('d.m.Y H:i') }}</span>
         </div>
     </div>

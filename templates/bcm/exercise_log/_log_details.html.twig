@@ -1,4 +1,3 @@
-{% trans_default_domain 'bsi_200_4_exercise' %}
 {#
   Printable/reusable log details partial.
   Expects: log (Bsi2004ExerciseLog)
@@ -9,7 +8,7 @@
         <div class="card">
             <div class="card-header fw-semibold">
                 <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
-                {{ 'field.scenario_summary'|trans({}, 'bsi_200_4_exercise') }}
+                {{ 'bsi_200_4_exercise.field.scenario_summary'|trans({}, 'bsi_200_4_exercise') }}
             </div>
             <div class="card-body">
                 <p class="mb-0">{{ log.scenarioSummary|nl2br }}</p>
@@ -23,7 +22,7 @@
         <div class="card h-100">
             <div class="card-header fw-semibold">
                 <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                {{ 'field.objectives'|trans({}, 'bsi_200_4_exercise') }}
+                {{ 'bsi_200_4_exercise.field.objectives'|trans({}, 'bsi_200_4_exercise') }}
             </div>
             <div class="card-body">
                 <ul class="mb-0 ps-3">
@@ -42,7 +41,7 @@
         <div class="card h-100">
             <div class="card-header fw-semibold">
                 <i class="fa-icon fa-icon--nav-team" aria-hidden="true"></i>
-                {{ 'field.participants'|trans({}, 'bsi_200_4_exercise') }}
+                {{ 'bsi_200_4_exercise.field.participants'|trans({}, 'bsi_200_4_exercise') }}
             </div>
             <div class="card-body">
                 <ul class="mb-0 ps-3">
@@ -61,25 +60,25 @@
         <div class="card">
             <div class="card-header fw-semibold">
                 <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
-                {{ 'section.actions_before'|trans({}, 'bsi_200_4_exercise') }} / {{ 'section.actions_during'|trans({}, 'bsi_200_4_exercise') }} / {{ 'section.actions_after'|trans({}, 'bsi_200_4_exercise') }}
+                {{ 'bsi_200_4_exercise.section.actions_before'|trans({}, 'bsi_200_4_exercise') }} / {{ 'bsi_200_4_exercise.section.actions_during'|trans({}, 'bsi_200_4_exercise') }} / {{ 'bsi_200_4_exercise.section.actions_after'|trans({}, 'bsi_200_4_exercise') }}
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     {% if log.actionsBefore %}
                     <div class="col-md-4">
-                        <h6 class="text-muted small text-uppercase">{{ 'section.actions_before'|trans({}, 'bsi_200_4_exercise') }}</h6>
+                        <h6 class="text-muted small text-uppercase">{{ 'bsi_200_4_exercise.section.actions_before'|trans({}, 'bsi_200_4_exercise') }}</h6>
                         <p>{{ log.actionsBefore|nl2br }}</p>
                     </div>
                     {% endif %}
                     {% if log.actionsDuring %}
                     <div class="col-md-4">
-                        <h6 class="text-muted small text-uppercase">{{ 'section.actions_during'|trans({}, 'bsi_200_4_exercise') }}</h6>
+                        <h6 class="text-muted small text-uppercase">{{ 'bsi_200_4_exercise.section.actions_during'|trans({}, 'bsi_200_4_exercise') }}</h6>
                         <p>{{ log.actionsDuring|nl2br }}</p>
                     </div>
                     {% endif %}
                     {% if log.actionsAfter %}
                     <div class="col-md-4">
-                        <h6 class="text-muted small text-uppercase">{{ 'section.actions_after'|trans({}, 'bsi_200_4_exercise') }}</h6>
+                        <h6 class="text-muted small text-uppercase">{{ 'bsi_200_4_exercise.section.actions_after'|trans({}, 'bsi_200_4_exercise') }}</h6>
                         <p>{{ log.actionsAfter|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -95,7 +94,7 @@
         <div class="card">
             <div class="card-header fw-semibold">
                 <i class="fa-icon fa-icon--nav-book" aria-hidden="true"></i>
-                {{ 'field.lessons_learned'|trans({}, 'bsi_200_4_exercise') }}
+                {{ 'bsi_200_4_exercise.field.lessons_learned'|trans({}, 'bsi_200_4_exercise') }}
             </div>
             <div class="card-body">
                 <p class="mb-0">{{ log.lessonsLearned|nl2br }}</p>
@@ -111,10 +110,10 @@
             <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
                 <span>
                     <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                    {{ 'section.improvement_actions'|trans({}, 'bsi_200_4_exercise') }}
+                    {{ 'bsi_200_4_exercise.section.improvement_actions'|trans({}, 'bsi_200_4_exercise') }}
                 </span>
                 {% if log.hasOverdueImprovementActions %}
-                    <span class="fa-status-pill fa-status-pill--warning">{{ log.overdueImprovementActions|length }} {{ 'calendar.log_missing'|trans({}, 'bsi_200_4_exercise') }}</span>
+                    <span class="fa-status-pill fa-status-pill--warning">{{ log.overdueImprovementActions|length }} {{ 'bsi_200_4_exercise.calendar.log_missing'|trans({}, 'bsi_200_4_exercise') }}</span>
                 {% endif %}
             </div>
             <div class="card-body p-0">
@@ -124,9 +123,9 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col" class="fa-table__th">{{ 'field.improvement_action_description'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'field.improvement_action_due_date'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'field.improvement_action_completed'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'bsi_200_4_exercise.field.improvement_action_description'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'bsi_200_4_exercise.field.improvement_action_due_date'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'bsi_200_4_exercise.field.improvement_action_completed'|trans({}, 'bsi_200_4_exercise') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
@@ -155,7 +154,7 @@
     <div class="col-md-4">
         <div class="card text-center">
             <div class="card-body py-3">
-                <h6 class="text-muted small text-uppercase mb-1">{{ 'field.overall_rating'|trans({}, 'bsi_200_4_exercise') }}</h6>
+                <h6 class="text-muted small text-uppercase mb-1">{{ 'bsi_200_4_exercise.field.overall_rating'|trans({}, 'bsi_200_4_exercise') }}</h6>
                 <span class="fs-4 fw-bold">{{ ('rating.' ~ log.overallRating)|trans({}, 'bsi_200_4_exercise') }}</span>
             </div>
         </div>

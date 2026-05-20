@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'activity_feed' %}
 
-{% block title %}{{ 'title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'activity_feed.title'|trans({}, 'activity_feed') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
@@ -9,19 +8,19 @@
 {% block body %}
 <main class="fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-heart-pulse', label: 'badge'|trans },
-        title:    'title'|trans,
-        subtitle: 'subtitle'|trans,
+        badge:    { icon: 'nav-heart-pulse', label: 'activity_feed.badge'|trans({}, 'activity_feed') },
+        title:    'activity_feed.title'|trans({}, 'activity_feed'),
+        subtitle: 'activity_feed.subtitle'|trans({}, 'activity_feed'),
         actions: [
-            { label: 'action.standard_dashboard'|trans, variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
+            { label: 'activity_feed.action.standard_dashboard'|trans({}, 'activity_feed'), variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
         ]
     }) }}
 
     {# V4-EF-6 — Scope filter chips: All / Compliance #}
     <div class="mb-3">
         {{ _fa_filter_chip.group([
-            { label: 'scope.all'|trans,        href: path('app_activity_feed') },
-            { label: 'scope.compliance'|trans,  href: path('app_activity_feed', {scope: 'compliance'}) }
+            { label: 'activity_feed.scope.all'|trans({}, 'activity_feed'),        href: path('app_activity_feed') },
+            { label: 'activity_feed.scope.compliance'|trans({}, 'activity_feed'),  href: path('app_activity_feed', {scope: 'compliance'}) }
         ], current_scope == 'compliance' ? 1 : 0) }}
     </div>
 

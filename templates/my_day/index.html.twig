@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'my_day' %}
 
-{% block title %}{{ 'title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'my_day.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
@@ -11,11 +10,11 @@
 {% block body %}
 <main class="fa-aurora-surface my-day">
     {{ _fa_page_header.render({
-        badge:    { icon: 'nav-inbox', label: 'badge'|trans },
-        title:    'title'|trans,
-        subtitle: 'subtitle'|trans({'%generated_at%': inbox.generated_at|date('d.m.Y H:i')}, 'my_day'),
+        badge:    { icon: 'nav-inbox', label: 'my_day.badge'|trans },
+        title:    'my_day.title'|trans,
+        subtitle: 'my_day.subtitle'|trans({'%generated_at%': inbox.generated_at|date('d.m.Y H:i')}, 'my_day'),
         actions: [
-            { label: 'action.standard_dashboard'|trans, variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
+            { label: 'my_day.action.standard_dashboard'|trans, variant: 'ghost', icon: 'nav-home', href: path('app_dashboard') }
         ]
     }) }}
 
@@ -23,70 +22,70 @@
     <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
         {{ _fa_feature_card.render({
             icon: 'ui-undo',
-            label: 'kpi.workflows_pending'|trans,
+            label: 'my_day.kpi.workflows_pending'|trans,
             value: inbox.summary.workflows_pending,
             variant: inbox.summary.workflows_pending > 0 ? 'warning' : 'success',
             href: '#workflows-pending'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'status-critical',
-            label: 'kpi.workflows_overdue'|trans,
+            label: 'my_day.kpi.workflows_overdue'|trans,
             value: inbox.summary.workflows_overdue,
             variant: inbox.summary.workflows_overdue > 0 ? 'danger' : 'success',
             href: '#workflows-overdue'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'nav-people',
-            label: 'kpi.four_eyes'|trans,
+            label: 'my_day.kpi.four_eyes'|trans,
             value: inbox.summary.four_eyes,
             variant: inbox.summary.four_eyes > 0 ? 'warning' : 'success',
             href: '#four-eyes'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'ui-check',
-            label: 'kpi.acknowledgements'|trans,
+            label: 'my_day.kpi.acknowledgements'|trans,
             value: inbox.summary.acknowledgements,
             variant: inbox.summary.acknowledgements > 0 ? 'primary' : 'success',
             href: '#acknowledgements'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'ui-search',
-            label: 'kpi.findings'|trans,
+            label: 'my_day.kpi.findings'|trans,
             value: inbox.summary.findings,
             variant: inbox.summary.findings > 0 ? 'warning' : 'success',
             href: '#findings'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'file-person',
-            label: 'kpi.dsrs'|trans,
+            label: 'my_day.kpi.dsrs'|trans,
             value: inbox.summary.dsrs,
             variant: inbox.summary.dsrs > 0 ? 'danger' : 'success',
             href: '#dsrs'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'ui-hourglass',
-            label: 'kpi.corrective_actions_overdue'|trans,
+            label: 'my_day.kpi.corrective_actions_overdue'|trans,
             value: inbox.summary.corrective_actions_overdue,
             variant: inbox.summary.corrective_actions_overdue > 0 ? 'danger' : 'success',
             href: '#corrective-actions'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'nav-shield-alert',
-            label: 'kpi.risk_acceptance_expiring'|trans,
+            label: 'my_day.kpi.risk_acceptance_expiring'|trans,
             value: inbox.summary.risk_acceptance_expiring,
             variant: inbox.summary.risk_acceptance_expiring > 0 ? 'warning' : 'success',
             href: '#risk-acceptance-expiring'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'nav-file-earmark-text',
-            label: 'kpi.documents_review_overdue'|trans,
+            label: 'my_day.kpi.documents_review_overdue'|trans,
             value: inbox.summary.documents_review_overdue,
             variant: inbox.summary.documents_review_overdue > 0 ? 'danger' : 'success',
             href: '#documents-review-overdue'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'nav-mortarboard',
-            label: 'kpi.trainings_pending'|trans,
+            label: 'my_day.kpi.trainings_pending'|trans,
             value: inbox.summary.trainings_pending,
             variant: inbox.summary.trainings_pending > 0 ? 'primary' : 'success',
             href: '#trainings-pending'
@@ -94,42 +93,42 @@
         {# Audit V4 V4-LB-1 Round-2 — 6 ISB-Tagesgeschäft tiles #}
         {{ _fa_feature_card.render({
             icon: 'status-critical',
-            label: 'kpi.incidents_open_assigned'|trans,
+            label: 'my_day.kpi.incidents_open_assigned'|trans,
             value: inbox.summary.incidents_open_assigned,
             variant: inbox.summary.incidents_open_assigned > 0 ? 'danger' : 'success',
             href: '#incidents-open-assigned'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'nav-shield-alert',
-            label: 'kpi.data_breaches_72h_ticking'|trans,
+            label: 'my_day.kpi.data_breaches_72h_ticking'|trans,
             value: inbox.summary.data_breaches_72h_ticking,
             variant: inbox.summary.data_breaches_72h_ticking > 0 ? 'danger' : 'success',
             href: '#data-breaches-72h-ticking'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'bug',
-            label: 'kpi.vulnerabilities_critical_unpatched'|trans,
+            label: 'my_day.kpi.vulnerabilities_critical_unpatched'|trans,
             value: inbox.summary.vulnerabilities_critical_unpatched,
             variant: inbox.summary.vulnerabilities_critical_unpatched > 0 ? 'warning' : 'success',
             href: '#vulnerabilities-critical-unpatched'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'nav-clipboard-check',
-            label: 'kpi.audit_checklist_due'|trans,
+            label: 'my_day.kpi.audit_checklist_due'|trans,
             value: inbox.summary.audit_checklist_due,
             variant: inbox.summary.audit_checklist_due > 0 ? 'primary' : 'success',
             href: '#audit-checklist-due'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'util-refresh',
-            label: 'kpi.change_requests_pending_approval'|trans,
+            label: 'my_day.kpi.change_requests_pending_approval'|trans,
             value: inbox.summary.change_requests_pending_approval,
             variant: inbox.summary.change_requests_pending_approval > 0 ? 'primary' : 'success',
             href: '#change-requests-pending-approval'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'nav-clipboard-data',
-            label: 'kpi.management_review_upcoming'|trans,
+            label: 'my_day.kpi.management_review_upcoming'|trans,
             value: inbox.summary.management_review_upcoming,
             variant: inbox.summary.management_review_upcoming > 0 ? 'success' : 'success',
             href: '#management-review-upcoming'
@@ -138,7 +137,7 @@
         {% if inbox.summary.documents_pending_approval_for_me is defined %}
         {{ _fa_feature_card.render({
             icon: 'nav-file-check',
-            label: 'kpi.documents_pending_approval_for_me'|trans,
+            label: 'my_day.kpi.documents_pending_approval_for_me'|trans,
             value: inbox.summary.documents_pending_approval_for_me,
             variant: inbox.summary.documents_pending_approval_for_me > 0 ? 'warning' : 'success',
             href: '#documents-pending-approval'
@@ -147,7 +146,7 @@
         {% if inbox.summary.wizard_overdue is defined %}
         {{ _fa_feature_card.render({
             icon: 'ui-hourglass',
-            label: 'kpi.wizard_overdue'|trans,
+            label: 'my_day.kpi.wizard_overdue'|trans,
             value: inbox.summary.wizard_overdue,
             variant: inbox.summary.wizard_overdue > 0 ? 'warning' : 'success',
             href: '#wizard-overdue'
@@ -156,7 +155,7 @@
         {% if inbox.summary.framework_gaps_critical is defined %}
         {{ _fa_feature_card.render({
             icon: 'nav-bar-chart',
-            label: 'kpi.framework_gaps_critical'|trans,
+            label: 'my_day.kpi.framework_gaps_critical'|trans,
             value: inbox.summary.framework_gaps_critical,
             variant: inbox.summary.framework_gaps_critical > 0 ? 'danger' : 'success',
             href: '#framework-gaps-critical'
@@ -168,32 +167,32 @@
         <div class="my-4">
             {{ _fa_empty_state.render({
                 mood: 'happy',
-                title: 'empty.title'|trans,
-                text: 'empty.text'|trans,
+                title: 'my_day.empty.title'|trans,
+                text: 'my_day.empty.text'|trans,
             }) }}
         </div>
     {% else %}
 
     {% set sections = [
-        { id: 'workflows-pending', title: 'section.workflows_pending'|trans, items: inbox.workflows_pending },
-        { id: 'workflows-overdue', title: 'section.workflows_overdue'|trans, items: inbox.workflows_overdue },
-        { id: 'four-eyes', title: 'section.four_eyes'|trans, items: inbox.four_eyes },
-        { id: 'acknowledgements', title: 'section.acknowledgements'|trans, items: inbox.acknowledgements },
-        { id: 'findings', title: 'section.findings'|trans, items: inbox.findings },
-        { id: 'dsrs', title: 'section.dsrs'|trans, items: inbox.dsrs },
-        { id: 'corrective-actions', title: 'section.corrective_actions_overdue'|trans, items: inbox.corrective_actions_overdue },
-        { id: 'risk-acceptance-expiring', title: 'section.risk_acceptance_expiring'|trans, items: inbox.risk_acceptance_expiring },
-        { id: 'documents-review-overdue', title: 'section.documents_review_overdue'|trans, items: inbox.documents_review_overdue },
-        { id: 'trainings-pending', title: 'section.trainings_pending'|trans, items: inbox.trainings_pending },
-        { id: 'incidents-open-assigned', title: 'section.incidents_open_assigned'|trans, items: inbox.incidents_open_assigned },
-        { id: 'data-breaches-72h-ticking', title: 'section.data_breaches_72h_ticking'|trans, items: inbox.data_breaches_72h_ticking },
-        { id: 'vulnerabilities-critical-unpatched', title: 'section.vulnerabilities_critical_unpatched'|trans, items: inbox.vulnerabilities_critical_unpatched },
-        { id: 'audit-checklist-due', title: 'section.audit_checklist_due'|trans, items: inbox.audit_checklist_due },
-        { id: 'change-requests-pending-approval', title: 'section.change_requests_pending_approval'|trans, items: inbox.change_requests_pending_approval },
-        { id: 'management-review-upcoming', title: 'section.management_review_upcoming'|trans, items: inbox.management_review_upcoming },
-        { id: 'documents-pending-approval', title: 'section.documents_pending_approval_for_me'|trans, items: inbox.documents_pending_approval_for_me ?? [] },
-        { id: 'wizard-overdue', title: 'section.wizard_overdue'|trans, items: inbox.wizard_overdue ?? [] },
-        { id: 'framework-gaps-critical', title: 'section.framework_gaps_critical'|trans, items: inbox.framework_gaps_critical ?? [] },
+        { id: 'workflows-pending', title: 'my_day.section.workflows_pending'|trans, items: inbox.workflows_pending },
+        { id: 'workflows-overdue', title: 'my_day.section.workflows_overdue'|trans, items: inbox.workflows_overdue },
+        { id: 'four-eyes', title: 'my_day.section.four_eyes'|trans, items: inbox.four_eyes },
+        { id: 'acknowledgements', title: 'my_day.section.acknowledgements'|trans, items: inbox.acknowledgements },
+        { id: 'findings', title: 'my_day.section.findings'|trans, items: inbox.findings },
+        { id: 'dsrs', title: 'my_day.section.dsrs'|trans, items: inbox.dsrs },
+        { id: 'corrective-actions', title: 'my_day.section.corrective_actions_overdue'|trans, items: inbox.corrective_actions_overdue },
+        { id: 'risk-acceptance-expiring', title: 'my_day.section.risk_acceptance_expiring'|trans, items: inbox.risk_acceptance_expiring },
+        { id: 'documents-review-overdue', title: 'my_day.section.documents_review_overdue'|trans, items: inbox.documents_review_overdue },
+        { id: 'trainings-pending', title: 'my_day.section.trainings_pending'|trans, items: inbox.trainings_pending },
+        { id: 'incidents-open-assigned', title: 'my_day.section.incidents_open_assigned'|trans, items: inbox.incidents_open_assigned },
+        { id: 'data-breaches-72h-ticking', title: 'my_day.section.data_breaches_72h_ticking'|trans, items: inbox.data_breaches_72h_ticking },
+        { id: 'vulnerabilities-critical-unpatched', title: 'my_day.section.vulnerabilities_critical_unpatched'|trans, items: inbox.vulnerabilities_critical_unpatched },
+        { id: 'audit-checklist-due', title: 'my_day.section.audit_checklist_due'|trans, items: inbox.audit_checklist_due },
+        { id: 'change-requests-pending-approval', title: 'my_day.section.change_requests_pending_approval'|trans, items: inbox.change_requests_pending_approval },
+        { id: 'management-review-upcoming', title: 'my_day.section.management_review_upcoming'|trans, items: inbox.management_review_upcoming },
+        { id: 'documents-pending-approval', title: 'my_day.section.documents_pending_approval_for_me'|trans, items: inbox.documents_pending_approval_for_me ?? [] },
+        { id: 'wizard-overdue', title: 'my_day.section.wizard_overdue'|trans, items: inbox.wizard_overdue ?? [] },
+        { id: 'framework-gaps-critical', title: 'my_day.section.framework_gaps_critical'|trans, items: inbox.framework_gaps_critical ?? [] },
     ] %}
 
     {% for section in sections %}
@@ -251,7 +250,7 @@
                                 </div>
                                 <small class="text-muted">{{ item.subtitle }}</small>
                                 {% if item.due_date %}
-                                    <small class="d-block text-muted">{{ 'item.due'|trans }}: {{ item.due_date|date('d.m.Y') }}</small>
+                                    <small class="d-block text-muted">{{ 'my_day.item.due'|trans }}: {{ item.due_date|date('d.m.Y') }}</small>
                                 {% endif %}
                             </div>
                             <div class="text-end">
@@ -263,9 +262,9 @@
                                     {{ pill.render(item.badge, pillTone) }}
                                 {% endif %}
                                 {% if item.priority == 'high' %}
-                                    {{ pill.render('priority.high'|trans, 'danger', {class: 'ms-1'}) }}
+                                    {{ pill.render('my_day.priority.high'|trans, 'danger', {class: 'ms-1'}) }}
                                 {% elseif item.priority == 'medium' %}
-                                    {{ pill.render('priority.medium'|trans, 'warning', {class: 'ms-1'}) }}
+                                    {{ pill.render('my_day.priority.medium'|trans, 'warning', {class: 'ms-1'}) }}
                                 {% endif %}
                             </div>
                         </a>

@@ -1,89 +1,89 @@
-# My Day Inbox (Phase 7 Persona-driven Inbox)
-title: 'My Day'
-badge: 'My Day'
-subtitle: 'All open items from 19 inboxes — today, %generated_at%'
+my_day:
+    title: 'My Day'
+    badge: 'My Day'
+    subtitle: 'All open items from 19 inboxes — today, %generated_at%'
 
-action:
-    standard_dashboard: 'Standard Dashboard'
+    action:
+        standard_dashboard: 'Standard Dashboard'
 
-kpi:
-    workflows_pending: 'Lifecycles open'
-    workflows_overdue: 'Lifecycles overdue'
-    four_eyes: '4-eyes requests'
-    acknowledgements: 'Policy ack pending'
-    findings: 'Findings (mine)'
-    dsrs: 'DSR (mine)'
-    corrective_actions_overdue: 'CA overdue'
-    risk_acceptance_expiring: 'Risk acceptance expiring'
-    documents_review_overdue: 'Documents review overdue'
-    trainings_pending: 'Trainings pending'
-    incidents_open_assigned: 'Incidents (mine)'
-    data_breaches_72h_ticking: 'Data breaches 72h'
-    vulnerabilities_critical_unpatched: 'Vulnerabilities critical'
-    audit_checklist_due: 'Audit checklist due'
-    change_requests_pending_approval: 'CRs pending approval'
-    management_review_upcoming: 'Mgmt review upcoming'
-    documents_pending_approval_for_me: 'Documents pending approval'
-    wizard_overdue: 'Wizard assessments stalled'
-    framework_gaps_critical: 'Framework gaps critical'
+    kpi:
+        workflows_pending: 'Lifecycles open'
+        workflows_overdue: 'Lifecycles overdue'
+        four_eyes: '4-eyes requests'
+        acknowledgements: 'Policy ack pending'
+        findings: 'Findings (mine)'
+        dsrs: 'DSR (mine)'
+        corrective_actions_overdue: 'CA overdue'
+        risk_acceptance_expiring: 'Risk acceptance expiring'
+        documents_review_overdue: 'Documents review overdue'
+        trainings_pending: 'Trainings pending'
+        incidents_open_assigned: 'Incidents (mine)'
+        data_breaches_72h_ticking: 'Data breaches 72h'
+        vulnerabilities_critical_unpatched: 'Vulnerabilities critical'
+        audit_checklist_due: 'Audit checklist due'
+        change_requests_pending_approval: 'CRs pending approval'
+        management_review_upcoming: 'Mgmt review upcoming'
+        documents_pending_approval_for_me: 'Documents pending approval'
+        wizard_overdue: 'Wizard assessments stalled'
+        framework_gaps_critical: 'Framework gaps critical'
 
-section:
-    workflows_pending: 'Lifecycles open'
-    workflows_overdue: 'Lifecycles overdue'
-    four_eyes: '4-eyes approval'
-    acknowledgements: 'Policy acknowledgements'
-    findings: 'Audit findings (assigned to me)'
-    dsrs: 'Data subject requests'
-    corrective_actions_overdue: 'Corrective actions overdue'
-    risk_acceptance_expiring: 'Risk acceptance expiring'
-    documents_review_overdue: 'Documents: review overdue'
-    trainings_pending: 'Trainings (assigned to me)'
-    incidents_open_assigned: 'Incidents (assigned to me)'
-    data_breaches_72h_ticking: 'Data breaches — 72h clock ticking (GDPR Art. 33)'
-    vulnerabilities_critical_unpatched: 'Vulnerabilities — critical / unpatched'
-    audit_checklist_due: 'Audit checklist — due within 7 days'
-    change_requests_pending_approval: 'Change requests — pending approval'
-    management_review_upcoming: 'Management review — upcoming (90-day window)'
-    documents_pending_approval_for_me: 'Documents in review — pending CM approval'
-    wizard_overdue: 'Wizard assessments — stalled (90+ days)'
-    framework_gaps_critical: 'Framework coverage gaps — critical (< 60 %)'
+    section:
+        workflows_pending: 'Lifecycles open'
+        workflows_overdue: 'Lifecycles overdue'
+        four_eyes: '4-eyes approval'
+        acknowledgements: 'Policy acknowledgements'
+        findings: 'Audit findings (assigned to me)'
+        dsrs: 'Data subject requests'
+        corrective_actions_overdue: 'Corrective actions overdue'
+        risk_acceptance_expiring: 'Risk acceptance expiring'
+        documents_review_overdue: 'Documents: review overdue'
+        trainings_pending: 'Trainings (assigned to me)'
+        incidents_open_assigned: 'Incidents (assigned to me)'
+        data_breaches_72h_ticking: 'Data breaches — 72h clock ticking (GDPR Art. 33)'
+        vulnerabilities_critical_unpatched: 'Vulnerabilities — critical / unpatched'
+        audit_checklist_due: 'Audit checklist — due within 7 days'
+        change_requests_pending_approval: 'Change requests — pending approval'
+        management_review_upcoming: 'Management review — upcoming (90-day window)'
+        documents_pending_approval_for_me: 'Documents in review — pending CM approval'
+        wizard_overdue: 'Wizard assessments — stalled (90+ days)'
+        framework_gaps_critical: 'Framework coverage gaps — critical (< 60 %)'
 
-bucket:
-    risk_acceptance_expiring:
-        title: 'Risk acceptance expiring'
-        empty: 'No risk acceptances expiring within the next 30 days.'
-    documents_review_overdue:
-        title: 'Documents: review overdue'
-        empty: 'No overdue document reviews.'
-    trainings_pending:
-        title: 'Trainings (assigned to me)'
-        empty: 'No pending trainings right now.'
-    incidents_open_assigned:
-        title: 'Incidents (assigned to me)'
-        empty: 'No open incidents on your plate.'
-    data_breaches_72h_ticking:
-        title: 'Data breaches — 72h clock ticking'
-        empty: 'No open data breaches with active 72h clock.'
-    vulnerabilities_critical_unpatched:
-        title: 'Vulnerabilities — critical / unpatched'
-        empty: 'No critical vulnerabilities open.'
-    audit_checklist_due:
-        title: 'Audit checklist — due'
-        empty: 'No audit checklist items due in the next 7 days.'
-    change_requests_pending_approval:
-        title: 'Change requests — pending approval'
-        empty: 'No change requests waiting for approval.'
-    management_review_upcoming:
-        title: 'Management review — upcoming'
-        empty: 'No management reviews planned within 90 days.'
+    bucket:
+        risk_acceptance_expiring:
+            title: 'Risk acceptance expiring'
+            empty: 'No risk acceptances expiring within the next 30 days.'
+        documents_review_overdue:
+            title: 'Documents: review overdue'
+            empty: 'No overdue document reviews.'
+        trainings_pending:
+            title: 'Trainings (assigned to me)'
+            empty: 'No pending trainings right now.'
+        incidents_open_assigned:
+            title: 'Incidents (assigned to me)'
+            empty: 'No open incidents on your plate.'
+        data_breaches_72h_ticking:
+            title: 'Data breaches — 72h clock ticking'
+            empty: 'No open data breaches with active 72h clock.'
+        vulnerabilities_critical_unpatched:
+            title: 'Vulnerabilities — critical / unpatched'
+            empty: 'No critical vulnerabilities open.'
+        audit_checklist_due:
+            title: 'Audit checklist — due'
+            empty: 'No audit checklist items due in the next 7 days.'
+        change_requests_pending_approval:
+            title: 'Change requests — pending approval'
+            empty: 'No change requests waiting for approval.'
+        management_review_upcoming:
+            title: 'Management review — upcoming'
+            empty: 'No management reviews planned within 90 days.'
 
-empty:
-    title: 'All done'
-    text: 'No open tasks for you right now. Great work!'
+    empty:
+        title: 'All done'
+        text: 'No open tasks for you right now. Great work!'
 
-item:
-    due: 'Due'
+    item:
+        due: 'Due'
 
-priority:
-    high: 'High'
-    medium: 'Med'
+    priority:
+        high: 'High'
+        medium: 'Med'
