@@ -36,7 +36,6 @@ export default class extends Controller {
     };
 
     connect() {
-        console.log('[import-progress] controller connected, status:', this.statusValue);
         this._timer = null;
 
         if (this.statusValue === 'committing') {

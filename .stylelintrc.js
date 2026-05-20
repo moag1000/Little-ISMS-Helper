@@ -3,6 +3,7 @@ module.exports = {
     ignoreFiles: [
         'assets/styles/fairy-aurora.css',        // Token SoT — defines hex
         'assets/styles/fairy-aurora-print.css',  // Print SoT — fixed paper-colors per print-styles.html spec
+        'assets/styles/policy-doc.css',          // PDF/dompdf export — needs var(--token, #fallback) for dompdf which cannot resolve CSS custom properties
         'assets/styles/admin-panel.css',         // Tier-2 §F5 tokenized 2026-05-09 — kept ignored: rgba() syntax legacy-style, repo-wide pattern
         'assets/styles/alva.css',                // SVG brand fills legitimate
         'assets/styles/bootstrap*.css',          // Vendor
