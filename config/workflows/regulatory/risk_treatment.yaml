@@ -66,7 +66,8 @@ framework:
                         auto_progress_conditions:
                             type: risk_appetite
                             entity: Risk
-                            risk_score_field: residualRisk
+                            # REMOVED: residualRisk — field never existed; getResidualRiskLevel() is a computed getter
+                            risk_score_field: residualRiskLevel
                     -   name: "CISO Technical Review"
                         description: "CISO evaluates technical security measures and implementation feasibility"
                         order: 2
@@ -104,4 +105,5 @@ framework:
                         is_required: false
                         auto_progress_conditions:
                             type: auto
-                            condition: "residualRisk >= high"
+                            # REMOVED: residualRisk — field never existed; getResidualRiskLevel() is a computed getter
+                            condition: "residualRiskLevel >= high"

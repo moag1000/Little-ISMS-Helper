@@ -26,7 +26,7 @@ use Symfony\Component\Workflow\Registry;
  *         assess_when_complete:
  *           workflow: data_breach_lifecycle
  *           transition: assess
- *           required_fields: [severity, affectedDataSubjectsCount, dataCategories]
+ *           required_fields: [severity, affectedDataSubjects, dataCategories]
  *
  * --- Extended format (AND/OR condition tree, Y.1) ---
  *     lifecycle.auto_transition_rules:
@@ -37,15 +37,14 @@ use Symfony\Component\Workflow\Registry;
  *           conditions:
  *             all:                              # AND — all sub-conditions must be true
  *               - field: severity, comparison: ">=", value: high
- *               - field: affectedDataSubjectsCount, comparison: ">", value: 100
+ *               - field: affectedDataSubjects, comparison: ">", value: 100
  *       App\Entity\Risk:
  *         accept_when_appetite_met:
  *           workflow: risk_lifecycle
  *           transition: accept
  *           conditions:
  *             any:                              # OR — at least one must be true
- *               - field: residualRisk, comparison: "<=", value_from: riskAppetiteThreshold
- *               - field: acceptedManually, comparison: "==", value: true
+ *               - field: formallyAccepted, comparison: "==", value: true
  *
  * Supported comparison operators: ==, !=, >, <, >=, <=
  * value_from: reads the comparison target from another field on the same entity.
