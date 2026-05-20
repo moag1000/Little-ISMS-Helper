@@ -142,12 +142,12 @@ final class Nis2BsiRegistrationService
     {
         if ($profile->getIncidentReportingContact() === null) {
                         // @intentional-assertion: caller must populate incidentReportingContact before exportToJson()
-throw new LogicException('Cannot export profile: incidentReportingContact is required but not set.');
+throw new \LogicException('Cannot export profile: incidentReportingContact is required but not set.');
         }
 
         if ($profile->getSecurityResponsibleContact() === null) {
                         // @intentional-assertion: caller must populate securityResponsibleContact before exportToJson()
-throw new LogicException('Cannot export profile: securityResponsibleContact is required but not set.');
+throw new \LogicException('Cannot export profile: securityResponsibleContact is required but not set.');
         }
 
         $data = [
