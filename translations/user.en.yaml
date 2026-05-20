@@ -91,6 +91,7 @@ user:
         custom_roles: 'Custom Roles'
         all_permissions: 'All Permissions'
         actions: 'Actions'
+        competence: 'Competencies & QM Background'
     field:
         first_name: 'First Name'
         last_name: 'Last Name'

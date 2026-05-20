@@ -26,24 +26,27 @@
                 </div>
                 <div class="fa-section__body">
                     {{ form_start(form) }}
+                        {# H-03: strict_whitelist — security settings must not
+                           leak any new auth field without explicit review. #}
                         {% include '_components/_auto_form.html.twig' with {
-                            'form': form,
-                            'sections': {
+                            form: form,
+                            strict_whitelist: true,
+                            sections: {
                                 'session_settings': {
                                     'label': 'admin.settings.security.session_settings'|trans({}, 'admin'),
-                                    'fields': ['session_lifetime', 'remember_me_lifetime']
+                                    fields: ['session_lifetime', 'remember_me_lifetime']
                                 },
                                 'password_policy': {
                                     'label': 'admin.settings.security.password_settings'|trans({}, 'admin'),
-                                    'fields': ['password_min_length']
+                                    fields: ['password_min_length']
                                 },
                                 '2fa_settings': {
                                     'label': 'admin.settings.security.2fa_settings'|trans({}, 'admin'),
-                                    'fields': ['require_2fa']
+                                    fields: ['require_2fa']
                                 },
                                 'login_protection': {
                                     'label': 'admin.settings.security.auth_settings'|trans({}, 'admin'),
-                                    'fields': ['max_login_attempts', 'lockout_duration']
+                                    fields: ['max_login_attempts', 'lockout_duration']
                                 }
                             },
                             'col_widths': {

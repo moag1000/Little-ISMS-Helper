@@ -91,6 +91,7 @@ user:
         custom_roles: 'Benutzerdefinierte Rollen'
         all_permissions: 'Alle Berechtigungen'
         actions: 'Aktionen'
+        competence: 'Kompetenzen & QM-Hintergrund'
     field:
         first_name: Vorname
         last_name: Nachname
