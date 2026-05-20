@@ -25,7 +25,6 @@ use App\Service\IncidentEscalationWorkflowService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use App\Service\WorkflowService;
-use App\Service\WorkflowAutoProgressionService;
 use App\Service\IncidentRiskFeedbackService;
 use App\Service\Risk\RiskIncidentLinkService;
 use App\Repository\RiskIncidentLinkRepository;
@@ -56,7 +55,6 @@ class IncidentController extends AbstractController
         private readonly IncidentEscalationWorkflowService $incidentEscalationWorkflowService,
         private readonly TenantContext $tenantContext,
         private readonly WorkflowService $workflowService,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly IncidentRiskFeedbackService $incidentRiskFeedbackService,
         private readonly RiskRepository $riskRepository,
         private readonly RiskIncidentLinkService $riskIncidentLinkService,
@@ -263,11 +261,8 @@ class IncidentController extends AbstractController
                 $this->emailNotificationService->sendIncidentNotification($incident, $admins);
             }
 
-            // Check and auto-progress workflow if conditions are met
-            $currentUser = $this->security->getUser();
-            if ($currentUser instanceof User) {
-                $this->workflowAutoProgressionService->checkAndProgressWorkflow($incident, $currentUser);
-            }
+            // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
+            // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->addFlash('success', $this->translator->trans('incident.success.reported'));
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
@@ -422,11 +417,11 @@ class IncidentController extends AbstractController
                 $this->emailNotificationService->sendIncidentUpdateNotification($incident, $admins, $changeDescription);
             }
 
-            // Check and auto-progress workflow if conditions are met
+            // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
+            // (postUpdate event) — no explicit service call required (canonical since Y.1).
+
             $currentUser = $this->security->getUser();
             if ($currentUser instanceof User) {
-                $this->workflowAutoProgressionService->checkAndProgressWorkflow($incident, $currentUser);
-
                 // Trigger Incident→Risk feedback loop if incident was closed
                 if ($incident->getStatus() === IncidentStatus::Closed && $originalStatus !== IncidentStatus::Closed) {
                     $triggeredCount = $this->incidentRiskFeedbackService->processIncidentFeedback($incident, $currentUser);

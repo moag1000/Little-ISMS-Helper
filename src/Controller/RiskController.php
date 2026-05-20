@@ -33,7 +33,6 @@ use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
 use App\Service\RoleDashboardService;
 use App\Service\TagFilterService;
-use App\Service\WorkflowAutoProgressionService;
 use App\Service\Risk\RiskIncidentLinkService;
 use App\Repository\RiskIncidentLinkRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,7 +59,6 @@ class RiskController extends AbstractController
         private readonly ExcelExportService $excelExportService,
         private readonly PdfExportService $pdfExportService,
         private readonly Security $security,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly TagFilterService $tagFilterService,
         private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly IncidentRepository $incidentRepository,
@@ -908,11 +906,8 @@ class RiskController extends AbstractController
             $this->entityManager->persist($risk);
             $this->entityManager->flush();
 
-            // Check and auto-progress workflow if conditions are met
-            $currentUser = $this->security->getUser();
-            if ($currentUser instanceof User) {
-                $this->workflowAutoProgressionService->checkAndProgressWorkflow($risk, $currentUser);
-            }
+            // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
+            // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->flashSuccess('risk.success.created');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
@@ -942,11 +937,8 @@ class RiskController extends AbstractController
             $this->entityManager->persist($risk);
             $this->entityManager->flush();
 
-            // Check and auto-progress workflow if conditions are met
-            $currentUser = $this->security->getUser();
-            if ($currentUser instanceof User) {
-                $this->workflowAutoProgressionService->checkAndProgressWorkflow($risk, $currentUser);
-            }
+            // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
+            // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->flashSuccess('risk.success.created');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
@@ -1201,11 +1193,8 @@ class RiskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            // Check and auto-progress workflow if conditions are met
-            $currentUser = $this->security->getUser();
-            if ($currentUser instanceof User) {
-                $this->workflowAutoProgressionService->checkAndProgressWorkflow($risk, $currentUser);
-            }
+            // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
+            // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->flashSuccess('risk.success.updated');
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
