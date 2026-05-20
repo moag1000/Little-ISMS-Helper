@@ -14,6 +14,7 @@
 {% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
 {% import '_components/_fa_entity_badge.html.twig' as _fa_entity_badge %}
 {% import '_components/_alva.html.twig' as alva %}
+{% import '_components/_fa_form_layout.html.twig' as _fa_form %}
 
 {% block title %}Aurora v4 Living Styleguide{% endblock %}
 
@@ -42,6 +43,7 @@
             <a href="#sec-kbd"          class="fa-filter-chip">fa-kbd / fa-cheatsheet</a>
             <a href="#sec-pager"        class="fa-filter-chip">fa-pager</a>
             <a href="#sec-fa-menu"      class="fa-filter-chip">fa-menu</a>
+            <a href="#fa-form-layout"   class="fa-filter-chip">fa-form-layout</a>
         </nav>
 
         {# ── Page header ───────────────────────────────────────────────── #}
@@ -801,6 +803,74 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# fa-form-layout — Outline-Rail + Section-Cards                   #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="fa-form-layout">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-form-layout — Outline-Rail + Section-Cards</h2>
+            </div>
+            <div class="fa-section__body p-0">
+                <p class="px-3 pt-3 pb-1" style="color:var(--fg-2); font-size:13px;">
+                    Für 15+-Feld-Forms mit 4–10 thematischen Abschnitten. Persistenter Überblick mit Status
+                    (done · current · error · pending), Progress-Bar, Auto-Save-Indicator, Collapse/Expand.
+                    Verwendet Stimulus-Controller <code>form-layout</code> für Scrollspy, Live-Zählung und Jumplinks.
+                </p>
+                <div style="padding:0;">
+                    {{ _fa_form.render({
+                        eyebrow:  '<i class="bi bi-shield-shaded"></i> DSGVO Art. 35 · DPIA',
+                        title:    'Datenschutz-Folgenabschätzung',
+                        subtitle: 'HR-Anwendungsserver 04 · ID DPIA-2026-014',
+                        progress: { done: 5, total: 10 },
+                        sections: [
+                            { id: 'ds-sec-1', title: 'Grunddaten',       status: 'done',    fields: 5, filled: 5 },
+                            { id: 'ds-sec-2', title: 'Verarbeitung',      status: 'done',    fields: 4, filled: 4 },
+                            { id: 'ds-sec-3', title: 'Datenkategorien',   status: 'done',    fields: 3, filled: 3 },
+                            { id: 'ds-sec-4', title: 'Empfänger',         status: 'done',    fields: 2, filled: 2 },
+                            { id: 'ds-sec-5', title: 'Rechtsgrundlage',   status: 'done',    fields: 3, filled: 3 },
+                            { id: 'ds-sec-6', title: 'Risiken',           status: 'current', fields: 5, filled: 2,
+                              body: '<div class="fa-form-section__grid"><div class="fa-cyber-input"><div class="fa-cyber-input__header"><label class="fa-cyber-input__label">Eintrittswahrscheinlichkeit <span class=\"fa-cyber-input__req\">*</span></label></div><div class="fa-cyber-input__frame"><input class="fa-cyber-input__field" type="text" value="Mittel"></div></div><div class="fa-cyber-input"><div class="fa-cyber-input__header"><label class="fa-cyber-input__label">Schweregrad <span class=\"fa-cyber-input__req\">*</span></label></div><div class="fa-cyber-input__frame"><input class="fa-cyber-input__field" type="text" value="Hoch"></div></div></div>' },
+                            { id: 'ds-sec-7', title: 'Maßnahmen',         status: 'pending', fields: 4, filled: 0 },
+                            { id: 'ds-sec-8', title: 'DPO-Konsultation',  status: 'error',   fields: 3, filled: 1,
+                              errorHint: 'DPO-Stellungnahme + Datum fehlen' },
+                            { id: 'ds-sec-9', title: 'Restrisiko',        status: 'pending', fields: 2, filled: 0 },
+                            { id: 'ds-sec-10', title: 'Freigabe',         status: 'pending', fields: 3, filled: 0 }
+                        ],
+                        actions: {
+                            close:  { label: 'Als Entwurf schließen', variant: 'ghost' },
+                            next:   { label: 'Nächster Abschnitt',    variant: 'secondary' },
+                            submit: { label: 'DPIA abschließen',      variant: 'primary' }
+                        }
+                    }) }}
+                </div>
+
+                <details class="p-3" style="border-top:1px solid var(--border);">
+                    <summary style="cursor:pointer; color:var(--primary); margin-bottom:.75rem; font-weight:600;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto; font-size:12px;"><code>{% verbatim %}{% import '_components/_fa_form_layout.html.twig' as _fa_form %}
+
+{{ _fa_form.render({
+    eyebrow:      'DSGVO Art. 35 · DPIA',
+    title:        'Datenschutz-Folgenabschätzung',
+    subtitle:     'HR-Anwendungsserver 04 · ID DPIA-2026-014',
+    progress:     { done: 5, total: 10 },
+    draftSavedAt: entity.updatedAt,
+    sections: [
+        { id: 'sec-1', title: 'Grunddaten',       status: 'done',    fields: 5, filled: 5 },
+        { id: 'sec-6', title: 'Risiken',           status: 'current', fields: 5, filled: 2,
+          body: include('dpia/_section_risks.html.twig') },
+        { id: 'sec-8', title: 'DPO-Konsultation',  status: 'error',   fields: 3, filled: 1,
+          errorHint: 'DPO-Stellungnahme + Datum fehlen' },
+    ],
+    actions: {
+        close:  { label: 'Als Entwurf schließen', variant: 'ghost' },
+        next:   { label: 'Nächster Abschnitt',    variant: 'secondary' },
+        submit: { label: 'DPIA abschließen',      variant: 'primary' }
+    }
+}) }}{% endverbatim %}</code></pre>
+                </details>
             </div>
         </section>
 
