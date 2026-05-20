@@ -758,7 +758,7 @@
 @media print {
     @page {
         size: A4 portrait;
-        margin: 18mm 14mm 22mm 14mm;
+        margin: 18mm 14mm 22mm;
 
         @top-right {
             content: attr(data-report-status);

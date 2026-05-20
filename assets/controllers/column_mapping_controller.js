@@ -36,7 +36,6 @@ export default class extends Controller {
     };
 
     connect() {
-        console.log('[column-mapping] controller connected');
         // Store initial values for reset
         this._initialValues = this.dropdownTargets.map((sel) => sel.value);
     }

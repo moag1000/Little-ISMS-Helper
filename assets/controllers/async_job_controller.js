@@ -43,7 +43,6 @@ export default class extends Controller {
     };
 
     connect() {
-        console.log('[async-job] connected, jobId:', this.jobIdValue);
         this._timer = null;
         this._terminal = false;
         window.alvaBus?.emit({ mood: 'scanning', reason: 'async-job-pending' });

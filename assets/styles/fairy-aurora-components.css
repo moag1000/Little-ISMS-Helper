@@ -7334,7 +7334,7 @@ a.fa-matrix-table__cell:focus-visible {
 }
 
 .fa-settings-table__col--label   { width: 220px; }
-.fa-settings-table__col--control { }
+.fa-settings-table__col--control { /* flex placeholder — no explicit width */ }
 .fa-settings-table__col--status  { width: 140px; }
 
 .fa-settings-table__row {
@@ -7405,6 +7405,8 @@ a.fa-matrix-table__cell:focus-visible {
 .fa-settings-table .fa-cyber-input__field {
     padding: 6px 10px;
     font-size: 13px;
+}
+
 /* ---------------------------------------------------------------------------
  * fa-owner-picker — Unified Person/User owner-slot (audit-s4 P-1)
  *
@@ -7473,6 +7475,8 @@ a.fa-matrix-table__cell:focus-visible {
 .fa-owner-picker__legacy {
     border-top: 1px solid var(--border);
     padding-top: var(--space-2);
+}
+
 /* ─── fa-json-builder family (P-9 visual macros) ──────────────────────────
    Shared shell for:
      .fa-team-role-builder, .fa-resource-list, .fa-escalation-chain,
@@ -7762,7 +7766,7 @@ a.fa-matrix-table__cell:focus-visible {
     align-items: baseline;
     gap: var(--space-1);
     padding: 2px var(--space-2);
-    margin: 4px 0 6px 0;
+    margin: 4px 0 6px;
     font-size: 12px;
     line-height: 1.45;
     color: var(--fg-3);
@@ -7789,6 +7793,7 @@ a.fa-matrix-table__cell:focus-visible {
 
 .fa-norm-bridge__icon {
     --fa-icon-size: 12px;
+
     flex-shrink: 0;
     color: var(--sev-info-color);
     transform: translateY(1px);
@@ -7920,10 +7925,10 @@ a.fa-matrix-table__cell:focus-visible {
     background: var(--primary);
     box-shadow: 0 0 6px var(--primary);
 }
-.fa-audit-row__sev--info     { background:#06b6d4; box-shadow:0 0 6px rgba(6,182,212,.6); }
-.fa-audit-row__sev--warning  { background:#f59e0b; box-shadow:0 0 6px rgba(245,158,11,.6); }
-.fa-audit-row__sev--critical { background:#f97316; box-shadow:0 0 8px rgba(249,115,22,.7); }
-.fa-audit-row__sev--danger   { background:#ef4444; box-shadow:0 0 8px rgba(239,68,68,.7); }
+.fa-audit-row__sev--info     { background: var(--sev-info-color); box-shadow: 0 0 6px rgb(var(--sev-info-rgb) / 0.6); }
+.fa-audit-row__sev--warning  { background: var(--sev-warning-color); box-shadow: 0 0 6px rgb(var(--sev-warning-rgb) / 0.6); }
+.fa-audit-row__sev--critical { background: var(--sev-critical-color); box-shadow: 0 0 8px rgb(var(--sev-critical-rgb) / 0.7); }
+.fa-audit-row__sev--danger   { background: var(--sev-danger-color); box-shadow: 0 0 8px rgb(var(--sev-danger-rgb) / 0.7); }
 
 .fa-audit-row__actor {
     font-weight: 600;
@@ -7958,16 +7963,16 @@ a.fa-matrix-table__cell:focus-visible {
     text-transform: uppercase;
     padding: 2px 7px;
     border-radius: 3px;
-    background: rgba(139, 92, 246, 0.12);
-    color: #7c3aed;
-    border: 1px solid rgba(139, 92, 246, 0.28);
+    background: rgb(var(--tone-purple-rgb) / 0.12);
+    color: var(--tone-purple-strong);
+    border: 1px solid rgb(var(--tone-purple-rgb) / 0.28);
 }
 
 .fa-audit-row--sealed {
-    border-left-color: #8b5cf6;
-    background: linear-gradient(90deg, rgba(139,92,246,.04) 0%, transparent 40%);
+    border-left-color: var(--tone-purple);
+    background: linear-gradient(90deg, rgb(var(--tone-purple-rgb) / 0.04) 0%, transparent 40%);
 }
 .fa-audit-row--failed {
-    border-left-color: #ef4444;
+    border-left-color: var(--sev-danger-color);
 }
 
