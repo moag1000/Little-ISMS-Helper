@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -145,6 +146,7 @@ class AdminLicensingController extends AbstractController
      */
     #[Route('/admin/licensing/generate', name: 'admin_licensing_generate', methods: ['POST'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
+    #[IsCsrfTokenValid('admin_licensing_generate', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function generate(LicenseReportService $licenseReportService): JsonResponse
     {
         try {

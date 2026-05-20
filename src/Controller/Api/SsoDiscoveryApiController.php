@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -35,6 +36,7 @@ final class SsoDiscoveryApiController extends AbstractController
      *       or { "ok": false, "error": "..." }
      */
     #[Route('/validate-discovery', name: 'validate_discovery', methods: ['POST'])]
+    #[IsCsrfTokenValid('sso_validate_discovery', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function validateDiscovery(Request $request): JsonResponse
     {
         $data = json_decode((string) $request->getContent(), true);

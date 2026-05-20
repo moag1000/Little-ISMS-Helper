@@ -9,8 +9,8 @@ src/Controller/AdminBackupController.php:365
 src/Controller/AdminBackupController.php:488
 src/Controller/AdminBackupController.php:495
 src/Controller/AdminBackupController.php:630
-src/Controller/AuditFreezeController.php:167
-src/Controller/AuditFreezeController.php:173
+src/Controller/AuditFreezeController.php:169
+src/Controller/AuditFreezeController.php:175
 src/Controller/ManagementReportController.php:965
 src/Controller/SecurityController.php:100
 src/Controller/SecurityController.php:169

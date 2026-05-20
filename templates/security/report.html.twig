@@ -71,6 +71,7 @@
                                 data-controller="report-regenerate"
                                 data-action="click->report-regenerate#regenerate"
                                 data-report-regenerate-url-value="{{ path('app_security_report_generate') }}"
+                                data-report-regenerate-csrf-token-value="{{ csrf_token('security_report_generate') }}"
                                 data-report-regenerate-loading-text-value="{{ 'common.generating_reports'|trans({}, 'messages') }}"
                                 data-report-regenerate-success-text-value="{{ 'common.report_regenerated'|trans({}, 'messages') }}">
                             <i class="fa-icon me-1 fa-icon--ui-refresh" aria-hidden="true"></i>{{ 'security_reports.action.regenerate'|trans({}, 'security_reports') }}

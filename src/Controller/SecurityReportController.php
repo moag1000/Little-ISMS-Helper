@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 
 class SecurityReportController extends AbstractController
 {
@@ -68,6 +69,7 @@ class SecurityReportController extends AbstractController
     }
 
     #[Route('/about/security/generate', name: 'app_security_report_generate', methods: ['POST'])]
+    #[IsCsrfTokenValid('security_report_generate', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function generate(SecurityAuditService $securityAuditService): JsonResponse
     {
         try {
