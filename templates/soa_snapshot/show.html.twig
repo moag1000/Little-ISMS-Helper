@@ -7,7 +7,16 @@
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
+{# M-4 — module-gating: SoA Snapshot (depends on controls module) #}
+{% if not is_module_active('controls') %}
+    {{ _fa_alert.render({
+        variant: 'info',
+        icon: 'nav-shield-alert',
+        body: 'common.module_not_active'|trans({'%module%': 'Controls / SoA'}, 'messages')
+    }) }}
+{% else %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'nav.soa'|trans({}, 'nav'), url: path('app_soa_index') },
@@ -79,4 +88,5 @@
         {% endblock %}
     {% endembed %}
 </main>
+{% endif %} {# /M-4 controls module gate #}
 {% endblock %}

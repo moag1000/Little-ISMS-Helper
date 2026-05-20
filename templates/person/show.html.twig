@@ -7,6 +7,14 @@
 
 {% block body %}
 <div class="container">
+    {# M-4 — module-gating: Persons #}
+    {% if not is_module_active('persons') %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Persons'}, 'messages')
+        }) }}
+    {% else %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.people'|trans({}, 'nav'), url: path('app_person_index') },
@@ -142,5 +150,6 @@
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ person.id) }}">
         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
     </form>
+    {% endif %} {# /M-4 persons module gate #}
 </div>
 {% endblock %}

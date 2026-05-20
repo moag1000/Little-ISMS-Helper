@@ -33,8 +33,8 @@
         actions: _show_actions
     }) }}
 
-    {# Sprint-2 P-7 — DSGVO Art. 33 72h-deadline counter surfaced prominently #}
-    {% if incident.dataBreachOccurred and incident.detectedAt %}
+    {# Sprint-2 P-7 — DSGVO Art. 33 72h-deadline counter surfaced prominently — M-4 gated by privacy module #}
+    {% if is_module_active('privacy') and incident.dataBreachOccurred and incident.detectedAt %}
         {% set sla72h = incident.detectedAt|date_modify('+72 hours') %}
         <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
             {{ _fa_deadline_counter.render({
@@ -134,7 +134,8 @@
                     {% endif %}
                 </div>
 
-                {% if isDataBreach and workflowStatus.due_date %}
+                {# M-4 — module-gating: GDPR 72h deadline only when privacy module is active #}
+                {% if is_module_active('privacy') and isDataBreach and workflowStatus.due_date %}
                     <div class="gdpr-deadline-warning">
                         <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                         <strong>{{ 'incident.workflow.gdpr_72h_deadline'|trans({}, 'incident') }}</strong>

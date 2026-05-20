@@ -21,6 +21,15 @@
 
 {% block body %}
 <div class="container-fluid">
+    {# M-4 — module-gating: TISAX Prototype Protection (VDA-ISA Tier-1/2 Automotive) #}
+    {% if not is_module_active('tisax') %}
+        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'TISAX'}, 'messages')
+        }) }}
+    {% else %}
     {# Lifecycle Y.5 — status transition dropdown (prototype_protection_assessment_lifecycle) #}
     {% include '_components/_lifecycle_toolbar.html.twig' with {
         entity: assessment,
@@ -143,5 +152,6 @@
             {% endif %}
         </div>
     </div>
+    {% endif %} {# /M-4 tisax module gate #}
 </div>
 {% endblock %}

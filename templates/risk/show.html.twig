@@ -13,6 +13,9 @@
 {% block body %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container">
+    {# TODO M-4 module-gate — whole-template gate on `risks` module + per-section
+       privacy (GDPR-fields), vulnerability_intel (linkedVulnerability), nis2_dora
+       (ICT-asset dependencies); deferred — RiskController.php is not yet gated. #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index') },

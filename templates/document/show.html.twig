@@ -74,9 +74,11 @@
        DORA-Stand (validity-from) + Climate-Change-Amendment marker live as
        EntityTag rows; surface them as header chips so auditors see the
        regulatory-clock + Amd. 1:2024 marker without expanding the tag list. #}
-    {% if (doraValidityDate is defined and doraValidityDate is not null) or (climateChangeAware is defined and climateChangeAware) %}
+    {# M-4 — module-gating: DORA validity chip + alert only when nis2_dora module is active #}
+    {% set _show_dora_validity = is_module_active('nis2_dora') and doraValidityDate is defined and doraValidityDate is not null %}
+    {% if _show_dora_validity or (climateChangeAware is defined and climateChangeAware) %}
         <div class="d-flex flex-wrap gap-2 mb-3" data-test="document-norm-anchor-chips">
-            {% if doraValidityDate is defined and doraValidityDate is not null %}
+            {% if _show_dora_validity %}
                 <span data-test="document-dora-validity-badge">
                     {{ pill.render('document.dora_validity.badge'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document'), 'primary', {icon: 'ui-calendar-event', title: 'document.dora_validity.tooltip'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document')}) }}
                 </span>
@@ -88,7 +90,7 @@
             {% endif %}
         </div>
 
-        {% if doraValidityDate is defined and doraValidityDate is not null %}
+        {% if _show_dora_validity %}
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'ui-calendar-event', class: 'mb-3' } } %}
                 {% block alert_body %}
                     <div class="fa-alert__title">{{ 'document.dora_validity.heading'|trans({}, 'document') }}</div>

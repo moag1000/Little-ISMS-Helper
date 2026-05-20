@@ -11,6 +11,14 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {# M-4 — module-gating: Audit Management (ISO 27001 Cl. 9.2) #}
+    {% if not is_module_active('audits') %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Audits'}, 'messages')
+        }) }}
+    {% else %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'audit_management.title'|trans({}, 'audit'), url: path('app_audit_index') },
@@ -647,6 +655,7 @@
     </div>
 </div>
 {% endif %}
+{% endif %} {# /M-4 audits module gate #}
 
 {# Lifecycle X.3b — transition history tab #}
 {{ _lifecycle_history.history('internal-audit', audit.id) }}

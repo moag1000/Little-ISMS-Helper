@@ -10,6 +10,14 @@
 {% import '_components/_lifecycle_actions.html.twig' as _lifecycle_actions %}
 {% import '_components/_lifecycle_history_tab.html.twig' as _lifecycle_history %}
 <div class="container-fluid py-4">
+    {# M-4 — module-gating: ISMS Objectives (ISO 27001 Cl. 6.2) #}
+    {% if not is_module_active('objectives') %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Objectives'}, 'messages')
+        }) }}
+    {% else %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.objectives'|trans({}, 'nav'), url: path('app_objective_index') },
@@ -107,5 +115,6 @@
 
     {# Lifecycle X.3 — status history tab #}
     {{ _lifecycle_history.history('isms-objective', objective.id) }}
+    {% endif %} {# /M-4 objectives module gate #}
 </div>
 {% endblock %}
