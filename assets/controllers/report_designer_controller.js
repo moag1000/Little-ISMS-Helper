@@ -24,7 +24,9 @@ export default class extends Controller {
 
     static values = {
         reportId: Number,
-        saveUrl: String
+        saveUrl: String,
+        widgetDataUrl: String,
+        shareUrl: String
     };
 
     connect() {
@@ -77,7 +79,7 @@ export default class extends Controller {
         if (!contentEl) return;
 
         try {
-            const response = await fetch('/de/report-builder/api/widget-data', {
+            const response = await fetch(this.widgetDataUrlValue, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -446,7 +448,7 @@ export default class extends Controller {
         });
 
         try {
-            const response = await fetch(`/de/report-builder/${this.reportIdValue}/share`, {
+            const response = await fetch(this.shareUrlValue, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
