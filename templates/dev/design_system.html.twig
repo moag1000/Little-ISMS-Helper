@@ -15,6 +15,7 @@
 {% import '_components/_fa_entity_badge.html.twig' as _fa_entity_badge %}
 {% import '_components/_alva.html.twig' as alva %}
 {% import '_components/_fa_form_layout.html.twig' as _fa_form %}
+{% import '_components/_fa_modal_wizard.html.twig' as _fa_modal_wizard %}
 
 {% block title %}Aurora v4 Living Styleguide{% endblock %}
 
@@ -43,7 +44,8 @@
             <a href="#sec-kbd"          class="fa-filter-chip">fa-kbd / fa-cheatsheet</a>
             <a href="#sec-pager"        class="fa-filter-chip">fa-pager</a>
             <a href="#sec-fa-menu"      class="fa-filter-chip">fa-menu</a>
-            <a href="#fa-form-layout"   class="fa-filter-chip">fa-form-layout</a>
+            <a href="#fa-form-layout"       class="fa-filter-chip">fa-form-layout</a>
+            <a href="#fa-modal-wizard"     class="fa-filter-chip">fa-modal--wizard</a>
         </nav>
 
         {# ── Page header ───────────────────────────────────────────────── #}
@@ -869,6 +871,133 @@
         next:   { label: 'Nächster Abschnitt',    variant: 'secondary' },
         submit: { label: 'DPIA abschließen',      variant: 'primary' }
     }
+}) }}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# fa-modal--wizard — High-stakes linear-flow modal              #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="fa-modal-wizard">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-modal--wizard — High-stakes Linear-Flow Modal</h2>
+            </div>
+            <div class="fa-section__body p-3">
+                <p style="color:var(--fg-2); font-size:13px; margin-bottom:1.25rem;">
+                    Für erzwungene lineare Flows wo Schritte vor dem Weitergehen validiert werden müssen.
+                    4-stufiges Beispiel: DSGVO-Datenpanne Ersterfassung (Art. 33/34).
+                    Verwendet Stimulus-Controller <code>modal-wizard</code> für Step-Navigation,
+                    Validierungs-Gates und Cancel-Guard.
+                </p>
+
+                {# ── Live demo: rendered inline (no Bootstrap modal backdrop) ── #}
+                <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-lg); padding:2rem; display:flex; justify-content:center; align-items:flex-start; min-height:520px;">
+                    {{ _fa_modal_wizard.render({
+                        id: 'ds-breach-wizard',
+                        title: 'Datenpanne melden',
+                        subtitle: 'DSGVO Art. 33/34 · Ersterfassung',
+                        steps: [
+                            {
+                                id: 'step-severity',
+                                label: 'Schweregrad',
+                                title: '1. Schweregradeinstufung',
+                                required: true,
+                                validationHint: 'Bitte Schweregrad auswählen und Anzahl betroffener Systeme angeben.',
+                                body: '<div style="display:grid;gap:14px;">'
+                                    ~ '<div class="fa-cyber-input"><div class="fa-cyber-input__header"><label class="fa-cyber-input__label">Schweregrad <span class="fa-cyber-input__req">*</span></label></div><div class="fa-cyber-input__frame"><select class="fa-cyber-input__field" required><option value="">— bitte wählen —</option><option value="low">Niedrig</option><option value="medium">Mittel</option><option value="high">Hoch</option><option value="critical">Kritisch</option></select></div></div>'
+                                    ~ '<div class="fa-cyber-input"><div class="fa-cyber-input__header"><label class="fa-cyber-input__label">Betroffene Systeme (Anzahl) <span class="fa-cyber-input__req">*</span></label></div><div class="fa-cyber-input__frame"><input class="fa-cyber-input__field" type="number" min="1" placeholder="z.B. 3" required></div></div>'
+                                    ~ '</div>'
+                            },
+                            {
+                                id: 'step-notification',
+                                label: 'Meldepflicht',
+                                title: '2. Meldepflichtentscheidung',
+                                required: true,
+                                validationHint: 'Bitte eine Option auswählen.',
+                                body: '<div style="display:flex;flex-direction:column;gap:10px;">'
+                                    ~ '<p style="font:500 13px/1.5 var(--font-sans); color:var(--fg-2); margin:0 0 6px;">Muss die Datenpanne der Aufsichtsbehörde gemeldet werden?</p>'
+                                    ~ '<label style="display:flex;align-items:flex-start;gap:12px;padding:11px 13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;"><input type="radio" name="ds-notification" value="yes" required style="margin-top:3px;"> <span><strong style="display:block;margin-bottom:2px;">Ja — Behörde benachrichtigen</strong><span style="font-size:12px;color:var(--fg-3);">Innerhalb von 72 Stunden nach Kenntnis (Art. 33 DSGVO)</span></span></label>'
+                                    ~ '<label style="display:flex;align-items:flex-start;gap:12px;padding:11px 13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;"><input type="radio" name="ds-notification" value="no" style="margin-top:3px;"> <span><strong style="display:block;margin-bottom:2px;">Nein — kein voraussichtliches Risiko</strong><span style="font-size:12px;color:var(--fg-3);">Interne Dokumentation gemäß Art. 33 Abs. 5 DSGVO ausreichend</span></span></label>'
+                                    ~ '</div>'
+                            },
+                            {
+                                id: 'step-record',
+                                label: 'Erfassung',
+                                title: '3. Vorfallbeschreibung',
+                                required: true,
+                                validationHint: 'Bitte Beschreibung ausfüllen.',
+                                body: '<div style="display:grid;gap:14px;">'
+                                    ~ '<div class="fa-cyber-input"><div class="fa-cyber-input__header"><label class="fa-cyber-input__label">Beschreibung der Datenpanne <span class="fa-cyber-input__req">*</span></label></div><div class="fa-cyber-input__frame"><textarea class="fa-cyber-input__field" rows="4" placeholder="Was ist passiert? Welche Daten sind betroffen?" required></textarea></div></div>'
+                                    ~ '<div class="fa-cyber-input"><div class="fa-cyber-input__header"><label class="fa-cyber-input__label">Beweise / Anhänge <span style="color:var(--fg-3);font-weight:400;">(optional)</span></label></div><div class="fa-cyber-input__frame"><input class="fa-cyber-input__field" type="text" placeholder="Dateiname oder Ticket-Referenz"></div></div>'
+                                    ~ '</div>'
+                            },
+                            {
+                                id: 'step-review',
+                                label: 'Prüfen',
+                                title: '4. Zusammenfassung prüfen',
+                                required: false,
+                                body: '<div class="fa-modal__wizard-review-grid">'
+                                    ~ '<div class="fa-modal__wizard-review-row"><div class="fa-modal__wizard-review-label">Schweregrad</div><div class="fa-modal__wizard-review-value">—</div></div>'
+                                    ~ '<div class="fa-modal__wizard-review-row"><div class="fa-modal__wizard-review-label">Betroffene Systeme</div><div class="fa-modal__wizard-review-value">—</div></div>'
+                                    ~ '<div class="fa-modal__wizard-review-row"><div class="fa-modal__wizard-review-label">Meldepflicht</div><div class="fa-modal__wizard-review-value">—</div></div>'
+                                    ~ '<div class="fa-modal__wizard-review-row"><div class="fa-modal__wizard-review-label">Beschreibung</div><div class="fa-modal__wizard-review-value">—</div></div>'
+                                    ~ '</div>'
+                                    ~ '<p style="font:500 12px/1.6 var(--font-sans);color:var(--fg-3);margin:14px 0 0;"><i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> Nach dem Absenden wird ein Workflow zur Behördenmeldung gestartet (sofern Meldepflicht bejaht).</p>'
+                            }
+                        ],
+                        actions: {
+                            cancel: { label: 'Abbrechen' },
+                            submit: { label: 'Datenpanne erfassen', variant: 'danger' }
+                        }
+                    }) }}
+                </div>
+
+                <details class="mt-3">
+                    <summary style="cursor:pointer; color:var(--primary); font-weight:600; padding:.5rem 0;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto; font-size:12px; margin-top:.75rem;"><code>{% verbatim %}{% import '_components/_fa_modal_wizard.html.twig' as _fa_modal_wizard %}
+
+{{ _fa_modal_wizard.render({
+    id: 'breach-wizard',
+    title: 'Datenpanne melden',
+    subtitle: 'DSGVO Art. 33/34 · Ersterfassung',
+    steps: [
+        {
+            id: 'severity',
+            label: 'Schweregrad',
+            title: '1. Schweregradeinstufung',
+            required: true,
+            validationHint: 'Bitte Schweregrad und Systemanzahl angeben.',
+            body: include('data_breach/_step_severity.html.twig'),
+        },
+        {
+            id: 'notification',
+            label: 'Meldepflicht',
+            title: '2. Meldepflichtentscheidung',
+            required: true,
+            validationHint: 'Bitte eine Option auswählen.',
+            body: include('data_breach/_step_notification.html.twig'),
+        },
+        {
+            id: 'record',
+            label: 'Erfassung',
+            title: '3. Vorfallbeschreibung',
+            required: true,
+            validationHint: 'Bitte Beschreibung ausfüllen.',
+            body: include('data_breach/_step_record.html.twig'),
+        },
+        {
+            id: 'review',
+            label: 'Prüfen',
+            title: '4. Zusammenfassung prüfen',
+            required: false,
+            body: include('data_breach/_step_review.html.twig'),
+        },
+    ],
+    actions: {
+        cancel: { label: 'Abbrechen' },
+        submit: { label: 'Datenpanne erfassen', variant: 'danger' },
+    },
 }) }}{% endverbatim %}</code></pre>
                 </details>
             </div>
