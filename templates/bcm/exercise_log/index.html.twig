@@ -1,11 +1,10 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'bsi_200_4_exercise' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% import '_components/_fa_table.html.twig' as _fa_table %}
 
-{% block title %}{{ 'page.index_title'|trans({}, 'bsi_200_4_exercise') }}{% endblock %}
+{% block title %}{{ 'bsi_200_4_exercise.page.index_title'|trans({}, 'bsi_200_4_exercise') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -13,16 +12,16 @@
         breadcrumbs: [
             { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
             { label: 'nav.bc_exercises'|trans({}, 'nav'), url: path('app_bc_exercise_index') },
-            { label: 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise') }
+            { label: 'bsi_200_4_exercise.nav.exercise_log'|trans({}, 'bsi_200_4_exercise') }
         ]
     } %}
 
     {{ _fa_page_header.render({
         badge: { icon: 'nav-clipboard-check', label: 'BSI 200-4' },
-        title: 'page.index_title'|trans({}, 'bsi_200_4_exercise'),
-        subtitle: 'page.index_subtitle'|trans({}, 'bsi_200_4_exercise'),
+        title: 'bsi_200_4_exercise.page.index_title'|trans({}, 'bsi_200_4_exercise'),
+        subtitle: 'bsi_200_4_exercise.page.index_subtitle'|trans({}, 'bsi_200_4_exercise'),
         actions: [
-            { label: 'nav.exercise_log_calendar'|trans({}, 'bsi_200_4_exercise'), href: path('bcm_exercise_log_calendar'), variant: 'secondary', icon: 'ui-calendar' }
+            { label: 'bsi_200_4_exercise.nav.exercise_log_calendar'|trans({}, 'bsi_200_4_exercise'), href: path('bcm_exercise_log_calendar'), variant: 'secondary', icon: 'ui-calendar' }
         ]
     }) }}
 
@@ -43,10 +42,10 @@
     {% if logs|length == 0 %}
         {{ _fa_empty_state.render({
             icon: 'nav-clipboard-check',
-            title: 'empty_state.title'|trans({}, 'bsi_200_4_exercise'),
-            body: 'empty_state.body'|trans({}, 'bsi_200_4_exercise'),
+            title: 'bsi_200_4_exercise.empty_state.title'|trans({}, 'bsi_200_4_exercise'),
+            body: 'bsi_200_4_exercise.empty_state.body'|trans({}, 'bsi_200_4_exercise'),
             action: {
-                label: 'empty_state.action'|trans({}, 'bsi_200_4_exercise'),
+                label: 'bsi_200_4_exercise.empty_state.action'|trans({}, 'bsi_200_4_exercise'),
                 href: path('app_bc_exercise_index')
             }
         }) }}
@@ -59,13 +58,13 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col" class="fa-table__th">{{ 'table.header_exercise'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'table.header_type'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'table.header_template'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'table.header_status'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'table.header_rating'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th scope="col" class="fa-table__th">{{ 'table.header_submitted'|trans({}, 'bsi_200_4_exercise') }}</th>
-                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'table.header_actions'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'bsi_200_4_exercise.table.header_exercise'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'bsi_200_4_exercise.table.header_type'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'bsi_200_4_exercise.table.header_template'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'bsi_200_4_exercise.table.header_status'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'bsi_200_4_exercise.table.header_rating'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'bsi_200_4_exercise.table.header_submitted'|trans({}, 'bsi_200_4_exercise') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'bsi_200_4_exercise.table.header_actions'|trans({}, 'bsi_200_4_exercise') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
@@ -87,11 +86,11 @@
                             <td class="fa-table__cell">{{ ('template.' ~ log.bsi2004Template)|trans({}, 'bsi_200_4_exercise') }}</td>
                             <td class="fa-table__cell">
                                 {% if log.isConfirmed %}
-                                    <span class="fa-status-pill fa-status-pill--success">{{ 'status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--success">{{ 'bsi_200_4_exercise.status.confirmed'|trans({}, 'bsi_200_4_exercise') }}</span>
                                 {% elseif log.isSubmitted %}
-                                    <span class="fa-status-pill fa-status-pill--info">{{ 'status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--info">{{ 'bsi_200_4_exercise.status.submitted'|trans({}, 'bsi_200_4_exercise') }}</span>
                                 {% else %}
-                                    <span class="badge bg-light text-muted border">{{ 'status.draft'|trans({}, 'bsi_200_4_exercise') }}</span>
+                                    <span class="badge bg-light text-muted border">{{ 'bsi_200_4_exercise.status.draft'|trans({}, 'bsi_200_4_exercise') }}</span>
                                 {% endif %}
                             </td>
                             <td class="fa-table__cell">

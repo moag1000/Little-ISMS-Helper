@@ -28,23 +28,23 @@ final class FourEyesApprovalRequestType extends AbstractType
         $builder
             // Tri-State approver fields
             ->add('requestedApprover', EntityType::class, [
-                'label' => 'field.requested_approver_user',
+                'label' => 'four_eyes.field.requested_approver_user',
                 'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
-                'placeholder' => 'placeholder.requested_approver_user',
-                'help' => 'help.requested_approver_user',
+                'placeholder' => 'four_eyes.placeholder.requested_approver_user',
+                'help' => 'four_eyes.help.requested_approver_user',
             ])
             ->add('requestedApproverPerson', EntityType::class, [
-                'label' => 'field.requested_approver_person',
+                'label' => 'four_eyes.field.requested_approver_person',
                 'class' => Person::class,
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
-                'placeholder' => 'placeholder.requested_approver_person',
-                'help' => 'help.requested_approver_person',
+                'placeholder' => 'four_eyes.placeholder.requested_approver_person',
+                'help' => 'four_eyes.help.requested_approver_person',
             ])
             ->add('requestedApproverDeputyPersons', EntityType::class, [
-                'label' => 'field.requested_approver_deputy_persons',
+                'label' => 'four_eyes.field.requested_approver_deputy_persons',
                 'class' => Person::class,
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
@@ -53,7 +53,7 @@ final class FourEyesApprovalRequestType extends AbstractType
                 'attr' => [
                     'data-controller' => 'tom-select',
                 ],
-                'help' => 'help.requested_approver_deputy_persons',
+                'help' => 'four_eyes.help.requested_approver_deputy_persons',
             ])
         ;
     }
@@ -75,7 +75,7 @@ final class FourEyesApprovalRequestType extends AbstractType
             return;
         }
         if ($entity->getRequestedApprover() === null && $entity->getRequestedApproverPerson() === null) {
-            $context->buildViolation('error.approver_required_user_or_person')
+            $context->buildViolation('four_eyes.error.approver_required_user_or_person')
                 ->atPath('requestedApprover')
                 ->addViolation();
         }

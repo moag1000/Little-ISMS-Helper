@@ -1,8 +1,7 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'report_builder' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'new.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'report_builder.new.title'|trans({},'report_builder') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
@@ -10,13 +9,13 @@
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.reports'|trans({}, 'nav'), path: path('app_reports_overview') },
-            { label: 'page.title'|trans({}, 'report_builder'), path: path('report_builder_index') },
-            { label: 'new.title'|trans({}, 'report_builder') }
+            { label: 'report_builder.page.title'|trans({}, 'report_builder'), path: path('report_builder_index') },
+            { label: 'report_builder.new.title'|trans({}, 'report_builder') }
         ]
     } %}
 
     {{ _fa_page_header.render({
-        title: 'new.title'|trans({}, 'report_builder'),
+        title: 'report_builder.new.title'|trans({}, 'report_builder'),
         badge: { icon: 'plus', label: '' }
     }) }}
 
@@ -25,7 +24,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="h5 mb-0">{{ 'new.subtitle'|trans({}, 'report_builder') }}</h2>
+                        <h2 class="h5 mb-0">{{ 'report_builder.new.subtitle'|trans({}, 'report_builder') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -35,8 +34,8 @@
                         <div class="mb-3">
                             {{ _fa_cyber.text('name', {
                                 id: 'name',
-                                label: 'form.name'|trans({}, 'report_builder'),
-                                placeholder: 'form.name_placeholder'|trans({}, 'report_builder'),
+                                label: 'report_builder.form.name'|trans({}, 'report_builder'),
+                                placeholder: 'report_builder.form.name_placeholder'|trans({}, 'report_builder'),
                                 required: true
                             }) }}
                         </div>
@@ -44,15 +43,15 @@
                         <div class="mb-3">
                             {{ _fa_cyber.textarea('description', {
                                 id: 'description',
-                                label: 'form.description'|trans({}, 'report_builder'),
-                                placeholder: 'form.description_placeholder'|trans({}, 'report_builder'),
+                                label: 'report_builder.form.description'|trans({}, 'report_builder'),
+                                placeholder: 'report_builder.form.description_placeholder'|trans({}, 'report_builder'),
                                 rows: 3
                             }) }}
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="category" class="form-label">{{ 'form.category'|trans({}, 'report_builder') }}</label>
+                                <label for="category" class="form-label">{{ 'report_builder.form.category'|trans({}, 'report_builder') }}</label>
                                 <select class="form-select fa-cyber-input__field" id="category" name="category">
                                     {% for key, label in categories %}
                                     <option value="{{ key }}">{{ label }}</option>
@@ -61,7 +60,7 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label for="layout" class="form-label">{{ 'form.layout'|trans({}, 'report_builder') }}</label>
+                                <label for="layout" class="form-label">{{ 'report_builder.form.layout'|trans({}, 'report_builder') }}</label>
                                 <select class="form-select fa-cyber-input__field" id="layout" name="layout">
                                     {% for key, label in layouts %}
                                     <option value="{{ key }}" {% if key == 'dashboard' %}selected{% endif %}>{{ label }}</option>
@@ -71,7 +70,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <h3 class="h6">{{ 'form.layout_preview'|trans({}, 'report_builder') }}</h3>
+                            <h3 class="h6">{{ 'report_builder.form.layout_preview'|trans({}, 'report_builder') }}</h3>
                             <div class="row g-2" id="layout-preview">
                                 {# 8H.4 migrated — 3 clickable layout-option cards. data-layout attr kept via card_attrs block. #}
                                 <div class="col-md-4">
@@ -82,7 +81,7 @@
                                                 <div class="border rounded p-2 mb-2" style="height: 80px; background: var(--surface-2);">
                                                     <div class="bg-primary opacity-25 h-100 rounded"></div>
                                                 </div>
-                                                <small>{{ 'layout.single'|trans({}, 'report_builder') }}</small>
+                                                <small>{{ 'report_builder.layout.single'|trans({}, 'report_builder') }}</small>
                                             </div>
                                         {% endblock %}
                                     {% endembed %}
@@ -96,7 +95,7 @@
                                                     <div class="bg-primary opacity-25 flex-grow-1 rounded"></div>
                                                     <div class="bg-primary opacity-25 flex-grow-1 rounded"></div>
                                                 </div>
-                                                <small>{{ 'layout.two_column'|trans({}, 'report_builder') }}</small>
+                                                <small>{{ 'report_builder.layout.two_column'|trans({}, 'report_builder') }}</small>
                                             </div>
                                         {% endblock %}
                                     {% endembed %}
@@ -112,7 +111,7 @@
                                                         <div class="col-6"><div class="bg-primary opacity-25 h-100 rounded"></div></div>
                                                     </div>
                                                 </div>
-                                                <small>{{ 'layout.dashboard'|trans({}, 'report_builder') }}</small>
+                                                <small>{{ 'report_builder.layout.dashboard'|trans({}, 'report_builder') }}</small>
                                             </div>
                                         {% endblock %}
                                     {% endembed %}
@@ -122,10 +121,10 @@
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'action.create_and_design'|trans({}, 'report_builder') }}
+                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'report_builder.action.create_and_design'|trans({}, 'report_builder') }}
                             </button>
                             <a href="{{ path('report_builder_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                                {{ 'action.cancel'|trans({}, 'report_builder') }}
+                                {{ 'report_builder.action.cancel'|trans({}, 'report_builder') }}
                             </a>
                         </div>
                     </form>

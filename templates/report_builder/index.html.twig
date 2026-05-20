@@ -1,25 +1,24 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'report_builder' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
-{% block title %}{{ 'page.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'report_builder.page.title'|trans({},'report_builder') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.reports'|trans({}, 'nav'), path: path('app_reports_overview') },
-            { label: 'page.title'|trans }
+            { label: 'report_builder.page.title'|trans({},'report_builder') }
         ]
     } %}
 
     {{ _fa_page_header.render({
         badge: { icon: 'nav-palette', label: 'nav.reports'|trans({}, 'nav') },
-        title: 'page.title'|trans,
-        subtitle: 'page.subtitle'|trans,
+        title: 'report_builder.page.title'|trans({},'report_builder'),
+        subtitle: 'report_builder.page.subtitle'|trans({},'report_builder'),
         actions: [
-            { label: 'action.create'|trans, variant: 'primary', icon: 'plus', href: path('report_builder_new') }
+            { label: 'report_builder.action.create'|trans({},'report_builder'), variant: 'primary', icon: 'plus', href: path('report_builder_new') }
         ]
     }) }}
 
@@ -30,14 +29,12 @@
         <div class="col-12">
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    {% trans_default_domain 'report_builder' %}
-                    <div class="card-header">
-                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--threat" aria-hidden="true"></i> {{ 'section.quick_start'|trans }}</h2>
+                                        <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--threat" aria-hidden="true"></i> {{ 'report_builder.section.quick_start'|trans({},'report_builder') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% trans_default_domain 'report_builder' %}
-                    <div class="row g-3">
+                                        <div class="row g-3">
                         {% for key, template in predefined_templates %}
                         <div class="col-md-4 col-lg-2">
                             <a href="{{ path('report_builder_from_template', {templateKey: key}) }}" class="card fa-section h-100 text-decoration-none text-center hover-lift">
@@ -61,14 +58,12 @@
             {% if favorites|length > 0 %}
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    {% trans_default_domain 'report_builder' %}
-                    <div class="card-header">
-                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-star text-warning" aria-hidden="true"></i> {{ 'section.favorites'|trans }}</h2>
+                                        <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--ui-star text-warning" aria-hidden="true"></i> {{ 'report_builder.section.favorites'|trans({},'report_builder') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% trans_default_domain 'report_builder' %}
-                    <div class="row g-3">
+                                        <div class="row g-3">
                         {% for report in favorites %}
                         <div class="col-md-6">
                             {% include 'report_builder/_report_card.html.twig' with {report: report} %}
@@ -82,30 +77,26 @@
             {# All Reports #}
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    {% trans_default_domain 'report_builder' %}
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ 'section.my_reports'|trans }}</h2>
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ 'report_builder.section.my_reports'|trans({},'report_builder') }}</h2>
                         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: reports|length } %}
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% trans_default_domain 'report_builder' %}
-                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+                                        {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if reports|length > 0 %}
                     {% embed '_components/_fa_table.html.twig' with { hover: true } %}
                         {% block table_head %}
-                            {% trans_default_domain 'report_builder' %}
-                            <tr>
-                                <th scope="col" class="fa-table__th">{{ 'table.name'|trans }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'table.category'|trans }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'table.layout'|trans }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'table.updated'|trans }}</th>
-                                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'table.actions'|trans }}</th>
+                                                        <tr>
+                                <th scope="col" class="fa-table__th">{{ 'report_builder.table.name'|trans({},'report_builder') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'report_builder.table.category'|trans({},'report_builder') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'report_builder.table.layout'|trans({},'report_builder') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'report_builder.table.updated'|trans({},'report_builder') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'report_builder.table.actions'|trans({},'report_builder') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
-                            {% trans_default_domain 'report_builder' %}
-                            {% for report in reports %}
+                                                        {% for report in reports %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell">
                                     <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="text-decoration-none fw-bold">
@@ -121,13 +112,13 @@
                                 <td class="fa-table__cell">{{ report.updatedAt ? report.updatedAt|date('d.m.Y H:i') : report.createdAt|date('d.m.Y H:i') }}</td>
                                 <td class="fa-table__cell fa-table__cell--actions">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'action.edit'|trans }}">
+                                        <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'report_builder.action.edit'|trans({},'report_builder') }}">
                                             <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                         </a>
-                                        <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'action.preview'|trans }}">
+                                        <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'report_builder.action.preview'|trans({},'report_builder') }}">
                                             <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                         </a>
-                                        <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger" title="{{ 'action.export_pdf'|trans }}">
+                                        <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger" title="{{ 'report_builder.action.export_pdf'|trans({},'report_builder') }}">
                                             <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                                         </a>
                                     </div>
@@ -139,9 +130,9 @@
                     {% else %}
                     {{ _fa_empty_state.render({
                         mood: 'sleeping',
-                        title: 'empty.no_reports'|trans,
+                        title: 'report_builder.empty.no_reports'|trans({},'report_builder'),
                         actions: [
-                            { label: 'action.create_first'|trans, variant: 'primary', icon: 'plus', href: path('report_builder_new') }
+                            { label: 'report_builder.action.create_first'|trans({},'report_builder'), variant: 'primary', icon: 'plus', href: path('report_builder_new') }
                         ]
                     }) }}
                     {% endif %}
@@ -155,14 +146,12 @@
             {% if recently_used|length > 0 %}
             {% embed '_components/_card.html.twig' with {class: 'mb-4', noPadding: true} %}
                 {% block card_header %}
-                    {% trans_default_domain 'report_builder' %}
-                    <div class="card-header">
-                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'section.recently_used'|trans }}</h2>
+                                        <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'report_builder.section.recently_used'|trans({},'report_builder') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% trans_default_domain 'report_builder' %}
-                    <ul class="list-group list-group-flush">
+                                        <ul class="list-group list-group-flush">
                         {% for report in recently_used %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="text-decoration-none">
@@ -180,14 +169,12 @@
             {% if templates|length > 0 %}
             {% embed '_components/_card.html.twig' with {noPadding: true} %}
                 {% block card_header %}
-                    {% trans_default_domain 'report_builder' %}
-                    <div class="card-header">
-                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'section.shared_templates'|trans }}</h2>
+                                        <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'report_builder.section.shared_templates'|trans({},'report_builder') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% trans_default_domain 'report_builder' %}
-                    <ul class="list-group list-group-flush">
+                                        <ul class="list-group list-group-flush">
                         {% for template in templates %}
                         <li class="list-group-item">
                             <div class="d-flex justify-content-between align-items-start">
@@ -197,12 +184,12 @@
                                 </div>
                                 <form method="post" action="{{ path('report_builder_clone', {id: template.id}) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ template.id) }}">
-                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'action.use_template'|trans }}">
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'report_builder.action.use_template'|trans({},'report_builder') }}">
                                         <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
                                     </button>
                                 </form>
                             </div>
-                            <small class="text-muted"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ template.usageCount }} {{ 'uses'|trans }}</small>
+                            <small class="text-muted"><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ template.usageCount }} {{ 'report_builder.uses'|trans({},'report_builder') }}</small>
                         </li>
                         {% endfor %}
                     </ul>

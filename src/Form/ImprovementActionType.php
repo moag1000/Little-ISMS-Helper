@@ -22,24 +22,24 @@ final class ImprovementActionType extends AbstractType
     {
         $builder
             ->add('description', TextType::class, [
-                'label'              => 'field.improvement_action_description',
+                'label'              => 'bsi_200_4_exercise.field.improvement_action_description',
                 'translation_domain' => 'bsi_200_4_exercise',
                 'attr'               => ['class' => 'form-control'],
             ])
             ->add('owner_user_id', IntegerType::class, [
-                'label'              => 'field.improvement_action_owner',
+                'label'              => 'bsi_200_4_exercise.field.improvement_action_owner',
                 'translation_domain' => 'bsi_200_4_exercise',
                 'required'           => false,
-                'attr'               => ['class' => 'form-control', 'placeholder' => 'field.owner_user_id_placeholder'],
+                'attr'               => ['class' => 'form-control', 'placeholder' => 'bsi_200_4_exercise.field.owner_user_id_placeholder'],
             ])
             ->add('due_date', TextType::class, [
-                'label'              => 'field.improvement_action_due_date',
+                'label'              => 'bsi_200_4_exercise.field.improvement_action_due_date',
                 'translation_domain' => 'bsi_200_4_exercise',
                 'required'           => false,
                 'attr'               => ['class' => 'form-control', 'type' => 'date'],
             ])
             ->add('completed', CheckboxType::class, [
-                'label'              => 'field.improvement_action_completed',
+                'label'              => 'bsi_200_4_exercise.field.improvement_action_completed',
                 'translation_domain' => 'bsi_200_4_exercise',
                 'required'           => false,
             ]);

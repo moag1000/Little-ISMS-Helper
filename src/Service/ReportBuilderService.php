@@ -102,75 +102,75 @@ final class ReportBuilderService
 
         return [
             self::WIDGET_CATEGORY_KPI => [
-                'label' => $t('widget.category.kpi'),
+                'label' => $t('report_builder.widget.category.kpi'),
                 'icon' => 'nav-dashboard',
                 'widgets' => [
                     self::WIDGET_KPI_RISK_COUNT => [
-                        'label' => $t('widget.kpi_risk_count'),
-                        'description' => $t('widget.kpi_risk_count.description'),
+                        'label' => $t('report_builder.widget.kpi_risk_count'),
+                        'description' => $t('report_builder.widget.kpi_risk_count.description'),
                         'icon' => 'status-warning',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => 'risks',
                     ],
                     self::WIDGET_KPI_HIGH_RISKS => [
-                        'label' => $t('widget.kpi_high_risks'),
-                        'description' => $t('widget.kpi_high_risks.description'),
+                        'label' => $t('report_builder.widget.kpi_high_risks'),
+                        'description' => $t('report_builder.widget.kpi_high_risks.description'),
                         'icon' => 'status-warning',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => 'risks',
                     ],
                     self::WIDGET_KPI_CONTROL_COUNT => [
-                        'label' => $t('widget.kpi_control_count'),
-                        'description' => $t('widget.kpi_control_count.description'),
+                        'label' => $t('report_builder.widget.kpi_control_count'),
+                        'description' => $t('report_builder.widget.kpi_control_count.description'),
                         'icon' => 'shield-check',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => 'controls',
                     ],
                     self::WIDGET_KPI_CONTROL_IMPLEMENTATION => [
-                        'label' => $t('widget.kpi_control_implementation'),
-                        'description' => $t('widget.kpi_control_implementation.description'),
+                        'label' => $t('report_builder.widget.kpi_control_implementation'),
+                        'description' => $t('report_builder.widget.kpi_control_implementation.description'),
                         'icon' => 'status-ok',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => 'controls',
                     ],
                     self::WIDGET_KPI_ASSET_COUNT => [
-                        'label' => $t('widget.kpi_asset_count'),
-                        'description' => $t('widget.kpi_asset_count.description'),
+                        'label' => $t('report_builder.widget.kpi_asset_count'),
+                        'description' => $t('report_builder.widget.kpi_asset_count.description'),
                         'icon' => 'asset-network',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => 'assets',
                     ],
                     self::WIDGET_KPI_INCIDENT_COUNT => [
-                        'label' => $t('widget.kpi_incident_count'),
-                        'description' => $t('widget.kpi_incident_count.description'),
+                        'label' => $t('report_builder.widget.kpi_incident_count'),
+                        'description' => $t('report_builder.widget.kpi_incident_count.description'),
                         'icon' => 'status-warning',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => 'incidents',
                     ],
                     self::WIDGET_KPI_OPEN_INCIDENTS => [
-                        'label' => $t('widget.kpi_open_incidents'),
-                        'description' => $t('widget.kpi_open_incidents.description'),
+                        'label' => $t('report_builder.widget.kpi_open_incidents'),
+                        'description' => $t('report_builder.widget.kpi_open_incidents.description'),
                         'icon' => 'status-warning',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => 'incidents',
                     ],
                     self::WIDGET_KPI_COMPLIANCE_SCORE => [
-                        'label' => $t('widget.kpi_compliance_score'),
-                        'description' => $t('widget.kpi_compliance_score.description'),
+                        'label' => $t('report_builder.widget.kpi_compliance_score'),
+                        'description' => $t('report_builder.widget.kpi_compliance_score.description'),
                         'icon' => 'nav-patch-check',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => 'compliance',
                     ],
                     self::WIDGET_KPI_OVERDUE_TREATMENTS => [
-                        'label' => $t('widget.kpi_overdue_treatments'),
-                        'description' => $t('widget.kpi_overdue_treatments.description'),
+                        'label' => $t('report_builder.widget.kpi_overdue_treatments'),
+                        'description' => $t('report_builder.widget.kpi_overdue_treatments.description'),
                         'icon' => 'nav-clock-history',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => 'risks',
                     ],
                     self::WIDGET_KPI_BCM_COVERAGE => [
-                        'label' => $t('widget.kpi_bcm_coverage'),
-                        'description' => $t('widget.kpi_bcm_coverage.description'),
+                        'label' => $t('report_builder.widget.kpi_bcm_coverage'),
+                        'description' => $t('report_builder.widget.kpi_bcm_coverage.description'),
                         'icon' => 'nav-process',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => 'bcm',
@@ -178,61 +178,61 @@ final class ReportBuilderService
                 ],
             ],
             self::WIDGET_CATEGORY_CHART => [
-                'label' => $t('widget.category.chart'),
+                'label' => $t('report_builder.widget.category.chart'),
                 'icon' => 'nav-bar-chart',
                 'widgets' => [
                     self::WIDGET_CHART_RISK_MATRIX => [
-                        'label' => $t('widget.chart_risk_matrix'),
-                        'description' => $t('widget.chart_risk_matrix.description'),
+                        'label' => $t('report_builder.widget.chart_risk_matrix'),
+                        'description' => $t('report_builder.widget.chart_risk_matrix.description'),
                         'icon' => 'nav-grid',
                         'size' => ['width' => 2, 'height' => 2],
                         'module' => 'risks',
                     ],
                     self::WIDGET_CHART_RISK_BY_CATEGORY => [
-                        'label' => $t('widget.chart_risk_by_category'),
-                        'description' => $t('widget.chart_risk_by_category.description'),
+                        'label' => $t('report_builder.widget.chart_risk_by_category'),
+                        'description' => $t('report_builder.widget.chart_risk_by_category.description'),
                         'icon' => 'nav-pie-chart',
                         'size' => ['width' => 2, 'height' => 1],
                         'module' => 'risks',
                     ],
                     self::WIDGET_CHART_RISK_TREND => [
-                        'label' => $t('widget.chart_risk_trend'),
-                        'description' => $t('widget.chart_risk_trend.description'),
+                        'label' => $t('report_builder.widget.chart_risk_trend'),
+                        'description' => $t('report_builder.widget.chart_risk_trend.description'),
                         'icon' => 'nav-bar-chart',
                         'size' => ['width' => 2, 'height' => 1],
                         'module' => 'risks',
                     ],
                     self::WIDGET_CHART_CONTROL_STATUS => [
-                        'label' => $t('widget.chart_control_status'),
-                        'description' => $t('widget.chart_control_status.description'),
+                        'label' => $t('report_builder.widget.chart_control_status'),
+                        'description' => $t('report_builder.widget.chart_control_status.description'),
                         'icon' => 'nav-pie-chart',
                         'size' => ['width' => 2, 'height' => 1],
                         'module' => 'controls',
                     ],
                     self::WIDGET_CHART_COMPLIANCE_RADAR => [
-                        'label' => $t('widget.chart_compliance_radar'),
-                        'description' => $t('widget.chart_compliance_radar.description'),
+                        'label' => $t('report_builder.widget.chart_compliance_radar'),
+                        'description' => $t('report_builder.widget.chart_compliance_radar.description'),
                         'icon' => 'nav-process',
                         'size' => ['width' => 2, 'height' => 2],
                         'module' => 'compliance',
                     ],
                     self::WIDGET_CHART_INCIDENT_TREND => [
-                        'label' => $t('widget.chart_incident_trend'),
-                        'description' => $t('widget.chart_incident_trend.description'),
+                        'label' => $t('report_builder.widget.chart_incident_trend'),
+                        'description' => $t('report_builder.widget.chart_incident_trend.description'),
                         'icon' => 'nav-bar-chart',
                         'size' => ['width' => 2, 'height' => 1],
                         'module' => 'incidents',
                     ],
                     self::WIDGET_CHART_ASSET_CRITICALITY => [
-                        'label' => $t('widget.chart_asset_criticality'),
-                        'description' => $t('widget.chart_asset_criticality.description'),
+                        'label' => $t('report_builder.widget.chart_asset_criticality'),
+                        'description' => $t('report_builder.widget.chart_asset_criticality.description'),
                         'icon' => 'nav-bar-chart',
                         'size' => ['width' => 2, 'height' => 1],
                         'module' => 'assets',
                     ],
                     self::WIDGET_CHART_FRAMEWORK_COMPARISON => [
-                        'label' => $t('widget.chart_framework_comparison'),
-                        'description' => $t('widget.chart_framework_comparison.description'),
+                        'label' => $t('report_builder.widget.chart_framework_comparison'),
+                        'description' => $t('report_builder.widget.chart_framework_comparison.description'),
                         'icon' => 'nav-bar-chart',
                         'size' => ['width' => 2, 'height' => 1],
                         'module' => 'compliance',
@@ -240,52 +240,52 @@ final class ReportBuilderService
                 ],
             ],
             self::WIDGET_CATEGORY_TABLE => [
-                'label' => $t('widget.category.table'),
+                'label' => $t('report_builder.widget.category.table'),
                 'icon' => 'nav-grid',
                 'widgets' => [
                     self::WIDGET_TABLE_TOP_RISKS => [
-                        'label' => $t('widget.table_top_risks'),
-                        'description' => $t('widget.table_top_risks.description'),
+                        'label' => $t('report_builder.widget.table_top_risks'),
+                        'description' => $t('report_builder.widget.table_top_risks.description'),
                         'icon' => 'nav-list-ordered',
                         'size' => ['width' => 2, 'height' => 2],
                         'module' => 'risks',
                         'config' => ['limit' => 10],
                     ],
                     self::WIDGET_TABLE_RECENT_INCIDENTS => [
-                        'label' => $t('widget.table_recent_incidents'),
-                        'description' => $t('widget.table_recent_incidents.description'),
+                        'label' => $t('report_builder.widget.table_recent_incidents'),
+                        'description' => $t('report_builder.widget.table_recent_incidents.description'),
                         'icon' => 'nav-list-check',
                         'size' => ['width' => 2, 'height' => 2],
                         'module' => 'incidents',
                         'config' => ['limit' => 10],
                     ],
                     self::WIDGET_TABLE_OVERDUE_CONTROLS => [
-                        'label' => $t('widget.table_overdue_controls'),
-                        'description' => $t('widget.table_overdue_controls.description'),
+                        'label' => $t('report_builder.widget.table_overdue_controls'),
+                        'description' => $t('report_builder.widget.table_overdue_controls.description'),
                         'icon' => 'clock',
                         'size' => ['width' => 2, 'height' => 2],
                         'module' => 'controls',
                         'config' => ['limit' => 10],
                     ],
                     self::WIDGET_TABLE_CRITICAL_ASSETS => [
-                        'label' => $t('widget.table_critical_assets'),
-                        'description' => $t('widget.table_critical_assets.description'),
+                        'label' => $t('report_builder.widget.table_critical_assets'),
+                        'description' => $t('report_builder.widget.table_critical_assets.description'),
                         'icon' => 'asset-database',
                         'size' => ['width' => 2, 'height' => 2],
                         'module' => 'assets',
                         'config' => ['limit' => 10],
                     ],
                     self::WIDGET_TABLE_AUDIT_FINDINGS => [
-                        'label' => $t('widget.table_audit_findings'),
-                        'description' => $t('widget.table_audit_findings.description'),
+                        'label' => $t('report_builder.widget.table_audit_findings'),
+                        'description' => $t('report_builder.widget.table_audit_findings.description'),
                         'icon' => 'nav-clipboard-check',
                         'size' => ['width' => 2, 'height' => 2],
                         'module' => 'audits',
                         'config' => ['limit' => 10],
                     ],
                     self::WIDGET_TABLE_BC_PLANS => [
-                        'label' => $t('widget.table_bc_plans'),
-                        'description' => $t('widget.table_bc_plans.description'),
+                        'label' => $t('report_builder.widget.table_bc_plans'),
+                        'description' => $t('report_builder.widget.table_bc_plans.description'),
                         'icon' => 'nav-file-earmark-text',
                         'size' => ['width' => 2, 'height' => 2],
                         'module' => 'bcm',
@@ -294,12 +294,12 @@ final class ReportBuilderService
                 ],
             ],
             self::WIDGET_CATEGORY_STATUS => [
-                'label' => $t('widget.category.status'),
+                'label' => $t('report_builder.widget.category.status'),
                 'icon' => 'status-info',
                 'widgets' => [
                     self::WIDGET_STATUS_RAG => [
-                        'label' => $t('widget.status_rag'),
-                        'description' => $t('widget.status_rag.description'),
+                        'label' => $t('report_builder.widget.status_rag'),
+                        'description' => $t('report_builder.widget.status_rag.description'),
                         'icon' => 'status-warning',
                         'size' => ['width' => 1, 'height' => 1],
                         'module' => null,
@@ -307,27 +307,27 @@ final class ReportBuilderService
                 ],
             ],
             self::WIDGET_CATEGORY_TEXT => [
-                'label' => $t('widget.category.text'),
+                'label' => $t('report_builder.widget.category.text'),
                 'icon' => 'ui-document',
                 'widgets' => [
                     self::WIDGET_TEXT_HEADER => [
-                        'label' => $t('widget.text_header'),
-                        'description' => $t('widget.text_header.description'),
+                        'label' => $t('report_builder.widget.text_header'),
+                        'description' => $t('report_builder.widget.text_header.description'),
                         'icon' => 'ui-document',
                         'size' => ['width' => 2, 'height' => 1],
                         'module' => null,
                         'config' => ['text' => '', 'level' => 'h2'],
                     ],
                     self::WIDGET_TEXT_SUMMARY => [
-                        'label' => $t('widget.text_summary'),
-                        'description' => $t('widget.text_summary.description'),
+                        'label' => $t('report_builder.widget.text_summary'),
+                        'description' => $t('report_builder.widget.text_summary.description'),
                         'icon' => 'nav-document',
                         'size' => ['width' => 2, 'height' => 1],
                         'module' => null,
                     ],
                     self::WIDGET_TEXT_CUSTOM => [
-                        'label' => $t('widget.text_custom'),
-                        'description' => $t('widget.text_custom.description'),
+                        'label' => $t('report_builder.widget.text_custom'),
+                        'description' => $t('report_builder.widget.text_custom.description'),
                         'icon' => 'ui-document',
                         'size' => ['width' => 2, 'height' => 1],
                         'module' => null,
@@ -433,8 +433,8 @@ final class ReportBuilderService
 
         return [
             'executive_summary' => [
-                'name' => $t('template.executive_summary'),
-                'description' => $t('template.executive_summary.description'),
+                'name' => $t('report_builder.template.executive_summary'),
+                'description' => $t('report_builder.template.executive_summary.description'),
                 'category' => CustomReport::CATEGORY_EXECUTIVE,
                 'layout' => CustomReport::LAYOUT_DASHBOARD,
                 'widgets' => [
@@ -448,8 +448,8 @@ final class ReportBuilderService
                 ],
             ],
             'risk_report' => [
-                'name' => $t('template.risk_report'),
-                'description' => $t('template.risk_report.description'),
+                'name' => $t('report_builder.template.risk_report'),
+                'description' => $t('report_builder.template.risk_report.description'),
                 'category' => CustomReport::CATEGORY_RISK,
                 'layout' => CustomReport::LAYOUT_DASHBOARD,
                 'widgets' => [
@@ -463,8 +463,8 @@ final class ReportBuilderService
                 ],
             ],
             'compliance_dashboard' => [
-                'name' => $t('template.compliance_dashboard'),
-                'description' => $t('template.compliance_dashboard.description'),
+                'name' => $t('report_builder.template.compliance_dashboard'),
+                'description' => $t('report_builder.template.compliance_dashboard.description'),
                 'category' => CustomReport::CATEGORY_COMPLIANCE,
                 'layout' => CustomReport::LAYOUT_DASHBOARD,
                 'widgets' => [
@@ -477,8 +477,8 @@ final class ReportBuilderService
                 ],
             ],
             'incident_report' => [
-                'name' => $t('template.incident_report'),
-                'description' => $t('template.incident_report.description'),
+                'name' => $t('report_builder.template.incident_report'),
+                'description' => $t('report_builder.template.incident_report.description'),
                 'category' => CustomReport::CATEGORY_INCIDENT,
                 'layout' => CustomReport::LAYOUT_TWO_COLUMN,
                 'widgets' => [
@@ -489,8 +489,8 @@ final class ReportBuilderService
                 ],
             ],
             'bcm_status' => [
-                'name' => $t('template.bcm_status'),
-                'description' => $t('template.bcm_status.description'),
+                'name' => $t('report_builder.template.bcm_status'),
+                'description' => $t('report_builder.template.bcm_status.description'),
                 'category' => CustomReport::CATEGORY_BCM,
                 'layout' => CustomReport::LAYOUT_TWO_COLUMN,
                 'widgets' => [
@@ -500,8 +500,8 @@ final class ReportBuilderService
                 ],
             ],
             'asset_overview' => [
-                'name' => $t('template.asset_overview'),
-                'description' => $t('template.asset_overview.description'),
+                'name' => $t('report_builder.template.asset_overview'),
+                'description' => $t('report_builder.template.asset_overview.description'),
                 'category' => CustomReport::CATEGORY_ASSET,
                 'layout' => CustomReport::LAYOUT_DASHBOARD,
                 'widgets' => [
@@ -551,7 +551,7 @@ final class ReportBuilderService
         $count = $this->riskRepository->count([]);
         return [
             'value' => $count,
-            'label' => $this->translator->trans('widget.kpi_risk_count', [], 'report_builder'),
+            'label' => $this->translator->trans('report_builder.widget.kpi_risk_count', [], 'report_builder'),
             'trend' => null,
             'color' => $count > 20 ? 'warning' : 'primary',
         ];
@@ -565,7 +565,7 @@ final class ReportBuilderService
 
         return [
             'value' => $count,
-            'label' => $this->translator->trans('widget.kpi_high_risks', [], 'report_builder'),
+            'label' => $this->translator->trans('report_builder.widget.kpi_high_risks', [], 'report_builder'),
             'trend' => null,
             'color' => $count > 5 ? 'danger' : ($count > 0 ? 'warning' : 'success'),
         ];
@@ -576,7 +576,7 @@ final class ReportBuilderService
         $count = $this->controlRepository->count([]);
         return [
             'value' => $count,
-            'label' => $this->translator->trans('widget.kpi_control_count', [], 'report_builder'),
+            'label' => $this->translator->trans('report_builder.widget.kpi_control_count', [], 'report_builder'),
             'trend' => null,
             'color' => 'primary',
         ];
@@ -591,7 +591,7 @@ final class ReportBuilderService
 
         return [
             'value' => $percentage . '%',
-            'label' => $this->translator->trans('widget.kpi_control_implementation', [], 'report_builder'),
+            'label' => $this->translator->trans('report_builder.widget.kpi_control_implementation', [], 'report_builder'),
             'trend' => null,
             'color' => $percentage >= 80 ? 'success' : ($percentage >= 50 ? 'warning' : 'danger'),
             'details' => ['implemented' => $implemented, 'total' => $total],
@@ -603,7 +603,7 @@ final class ReportBuilderService
         $count = $this->assetRepository->count([]);
         return [
             'value' => $count,
-            'label' => $this->translator->trans('widget.kpi_asset_count', [], 'report_builder'),
+            'label' => $this->translator->trans('report_builder.widget.kpi_asset_count', [], 'report_builder'),
             'trend' => null,
             'color' => 'primary',
         ];
@@ -614,7 +614,7 @@ final class ReportBuilderService
         $count = $this->incidentRepository->count([]);
         return [
             'value' => $count,
-            'label' => $this->translator->trans('widget.kpi_incident_count', [], 'report_builder'),
+            'label' => $this->translator->trans('report_builder.widget.kpi_incident_count', [], 'report_builder'),
             'trend' => null,
             'color' => 'info',
         ];
@@ -627,7 +627,7 @@ final class ReportBuilderService
 
         return [
             'value' => $open,
-            'label' => $this->translator->trans('widget.kpi_open_incidents', [], 'report_builder'),
+            'label' => $this->translator->trans('report_builder.widget.kpi_open_incidents', [], 'report_builder'),
             'trend' => null,
             'color' => $open > 5 ? 'danger' : ($open > 0 ? 'warning' : 'success'),
         ];
@@ -642,7 +642,7 @@ final class ReportBuilderService
 
         return [
             'value' => $score . '%',
-            'label' => $this->translator->trans('widget.kpi_compliance_score', [], 'report_builder'),
+            'label' => $this->translator->trans('report_builder.widget.kpi_compliance_score', [], 'report_builder'),
             'trend' => null,
             'color' => $score >= 80 ? 'success' : ($score >= 50 ? 'warning' : 'danger'),
         ];
@@ -662,7 +662,7 @@ final class ReportBuilderService
 
         return [
             'value' => $overdue,
-            'label' => $this->translator->trans('widget.kpi_overdue_treatments', [], 'report_builder'),
+            'label' => $this->translator->trans('report_builder.widget.kpi_overdue_treatments', [], 'report_builder'),
             'trend' => null,
             'color' => $overdue > 0 ? 'danger' : 'success',
         ];
@@ -679,7 +679,7 @@ final class ReportBuilderService
 
         return [
             'value' => $percentage . '%',
-            'label' => $this->translator->trans('widget.kpi_bcm_coverage', [], 'report_builder'),
+            'label' => $this->translator->trans('report_builder.widget.kpi_bcm_coverage', [], 'report_builder'),
             'trend' => null,
             'color' => $percentage >= 80 ? 'success' : ($percentage >= 50 ? 'warning' : 'danger'),
             'details' => ['critical_processes' => $critical, 'bc_plans' => $covered],
@@ -1069,13 +1069,13 @@ final class ReportBuilderService
         // Determine RAG status
         if ($implementationRate >= 80 && $highRisks <= 3) {
             $status = 'green';
-            $label = $this->translator->trans('status.good', [], 'report_builder');
+            $label = $this->translator->trans('report_builder.status.good', [], 'report_builder');
         } elseif ($implementationRate >= 50 && $highRisks <= 10) {
             $status = 'amber';
-            $label = $this->translator->trans('status.attention', [], 'report_builder');
+            $label = $this->translator->trans('report_builder.status.attention', [], 'report_builder');
         } else {
             $status = 'red';
-            $label = $this->translator->trans('status.critical', [], 'report_builder');
+            $label = $this->translator->trans('report_builder.status.critical', [], 'report_builder');
         }
 
         return [
@@ -1094,7 +1094,7 @@ final class ReportBuilderService
 
         return [
             'text' => sprintf(
-                $this->translator->trans('widget.text_summary.content', [], 'report_builder'),
+                $this->translator->trans('report_builder.widget.text_summary.content', [], 'report_builder'),
                 $stats['risks_total'] ?? 0,
                 $stats['controls_implemented'] ?? 0,
                 $stats['incidents_open'] ?? 0

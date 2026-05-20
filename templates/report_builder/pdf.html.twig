@@ -225,9 +225,9 @@
         {% endif %}
         <div class="report-meta">
             {% if report.styles.showGeneratedDate|default(true) %}
-            {{ 'pdf.generated_at'|trans({}, 'report_builder') }}: {{ report_data.report.generated_at|date('d.m.Y H:i') }}
+            {{ 'report_builder.pdf.generated_at'|trans({}, 'report_builder') }}: {{ report_data.report.generated_at|date('d.m.Y H:i') }}
             {% endif %}
-            | {{ 'pdf.category'|trans({}, 'report_builder') }}: {{ report.category }}
+            | {{ 'report_builder.pdf.category'|trans({}, 'report_builder') }}: {{ report.category }}
         </div>
     </div>
 
@@ -259,7 +259,7 @@
 
             {# Risk Matrix #}
             {% elseif widgetType == 'chart_risk_matrix' %}
-            <div class="widget-title">{{ 'widget.chart_risk_matrix'|trans({}, 'report_builder') }}</div>
+            <div class="widget-title">{{ 'report_builder.widget.chart_risk_matrix'|trans({}, 'report_builder') }}</div>
             <table class="risk-matrix">
                 <thead>
                     <tr>
@@ -288,7 +288,7 @@
             {% elseif widgetType starts with 'chart_' %}
             <div class="widget-title">{{ ('widget.' ~ widgetType)|trans({}, 'report_builder') }}</div>
             <div style="text-align: center; padding: 30px; color: #666; background: var(--surface-2); border-radius: 4px;">
-                {{ 'pdf.chart_data'|trans({}, 'report_builder') }}:
+                {{ 'report_builder.pdf.chart_data'|trans({}, 'report_builder') }}:
                 {% if data.labels is defined %}
                 <br><strong>{{ data.labels|join(', ') }}</strong>
                 {% endif %}
@@ -320,7 +320,7 @@
                 </tbody>
             </table>
             {% else %}
-            <p style="text-align: center; color: #666;">{{ 'pdf.no_data'|trans({}, 'report_builder') }}</p>
+            <p style="text-align: center; color: #666;">{{ 'report_builder.pdf.no_data'|trans({}, 'report_builder') }}</p>
             {% endif %}
 
             {# Status Widget #}
@@ -349,7 +349,7 @@
 
             {% else %}
             <div style="color: #666; text-align: center; padding: 20px;">
-                {{ 'pdf.unknown_widget'|trans({'%type%': widgetType}, 'report_builder') }}
+                {{ 'report_builder.pdf.unknown_widget'|trans({'%type%': widgetType}, 'report_builder') }}
             </div>
             {% endif %}
         </div>
@@ -360,7 +360,7 @@
     {% if report.styles.showFooter|default(true) %}
     <div class="report-footer">
         <div class="footer-left">
-            {{ 'pdf.generated_by'|trans({}, 'report_builder') }}: {{ app.user.fullName }}
+            {{ 'report_builder.pdf.generated_by'|trans({}, 'report_builder') }}: {{ app.user.fullName }}
         </div>
         <div class="footer-right">
             {{ report_data.report.generated_at|date('d.m.Y H:i') }}

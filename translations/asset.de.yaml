@@ -388,7 +388,3 @@ qr:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
   validation:
     ai_prohibited_must_be_inactive: 'Verbotene KI-Systeme (EU AI Act Art. 5) dürfen nicht aktiv betrieben werden. Status muss inaktiv oder archiviert sein.'
-asset_management:
-  title: Titel
-  description: Beschreibung
-  active_assets: Aktiv Assets

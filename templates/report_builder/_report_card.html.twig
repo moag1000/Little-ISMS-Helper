@@ -1,9 +1,7 @@
-{% trans_default_domain 'report_builder' %}
 
 {% embed '_components/_card.html.twig' with { 'class': 'h-100 hover-lift' } %}
     {% block card_body %}
-        {% trans_default_domain 'report_builder' %}
-        <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex justify-content-between align-items-start mb-2">
             <h3 class="h6 mb-0">
                 {% if report.isFavorite %}<i class="fa-icon fa-icon--ui-star text-warning" aria-hidden="true"></i>{% endif %}
                 {{ report.name }}
@@ -18,10 +16,10 @@
                 <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i> {{ report.updatedAt ? report.updatedAt|date('d.m.Y') : report.createdAt|date('d.m.Y') }}
             </small>
             <div class="btn-group btn-group-sm">
-                <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'action.edit'|trans }}">
+                <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'report_builder.action.edit'|trans({},'report_builder') }}">
                     <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                 </a>
-                <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'action.preview'|trans }}">
+                <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'report_builder.action.preview'|trans({},'report_builder') }}">
                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                 </a>
             </div>

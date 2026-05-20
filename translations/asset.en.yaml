@@ -384,7 +384,3 @@ qr:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
   validation:
     ai_prohibited_must_be_inactive: 'Prohibited AI systems (EU AI Act Art. 5) must not be in operational use. Status must be inactive or archived.'
-asset_management:
-  title: Title
-  description: Description
-  active_assets: Active Assets

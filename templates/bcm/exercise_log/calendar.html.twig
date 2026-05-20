@@ -1,34 +1,33 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'bsi_200_4_exercise' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
-{% block title %}{{ 'page.calendar_title'|trans({}, 'bsi_200_4_exercise') }}{% endblock %}
+{% block title %}{{ 'bsi_200_4_exercise.page.calendar_title'|trans({}, 'bsi_200_4_exercise') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
-            { label: 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), url: path('bcm_exercise_log_index') },
-            { label: 'page.calendar_title'|trans({}, 'bsi_200_4_exercise') }
+            { label: 'bsi_200_4_exercise.nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), url: path('bcm_exercise_log_index') },
+            { label: 'bsi_200_4_exercise.page.calendar_title'|trans({}, 'bsi_200_4_exercise') }
         ]
     } %}
 
     {{ _fa_page_header.render({
         badge: { icon: 'ui-calendar', label: 'BSI 200-4' },
-        title: 'page.calendar_title'|trans({}, 'bsi_200_4_exercise'),
-        subtitle: 'page.calendar_subtitle'|trans({}, 'bsi_200_4_exercise'),
+        title: 'bsi_200_4_exercise.page.calendar_title'|trans({}, 'bsi_200_4_exercise'),
+        subtitle: 'bsi_200_4_exercise.page.calendar_subtitle'|trans({}, 'bsi_200_4_exercise'),
         actions: [
-            { label: 'nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), href: path('bcm_exercise_log_index'), variant: 'secondary', icon: 'ui-list' }
+            { label: 'bsi_200_4_exercise.nav.exercise_log'|trans({}, 'bsi_200_4_exercise'), href: path('bcm_exercise_log_index'), variant: 'secondary', icon: 'ui-list' }
         ]
     }) }}
 
     {% if byMonth|length == 0 %}
         {{ _fa_empty_state.render({
             icon: 'ui-calendar',
-            title: 'calendar.no_exercises'|trans({}, 'bsi_200_4_exercise'),
-            body: 'calendar.no_exercises'|trans({}, 'bsi_200_4_exercise'),
+            title: 'bsi_200_4_exercise.calendar.no_exercises'|trans({}, 'bsi_200_4_exercise'),
+            body: 'bsi_200_4_exercise.calendar.no_exercises'|trans({}, 'bsi_200_4_exercise'),
             action: {
                 label: 'nav.bc_exercises'|trans({}, 'nav'),
                 href: path('app_bc_exercise_index')
@@ -46,7 +45,7 @@
                                 {{ monthKey|date('F Y') }}
                             </span>
                             <span class="fa-status-pill fa-status-pill--primary">
-                                {{ 'calendar.exercises_planned'|trans({'%count%': exercises|length}, 'bsi_200_4_exercise') }}
+                                {{ 'bsi_200_4_exercise.calendar.exercises_planned'|trans({'%count%': exercises|length}, 'bsi_200_4_exercise') }}
                             </span>
                         </div>
                         <ul class="list-group list-group-flush">
@@ -63,12 +62,12 @@
                                     {% if exercise.hasExerciseLog %}
                                         <a href="{{ path('bcm_exercise_log_show', {id: exercise.exerciseLog.id}) }}"
                                            class="fa-status-pill fa-status-pill--success text-decoration-none">
-                                            {{ 'calendar.log_exists'|trans({}, 'bsi_200_4_exercise') }}
+                                            {{ 'bsi_200_4_exercise.calendar.log_exists'|trans({}, 'bsi_200_4_exercise') }}
                                         </a>
                                     {% else %}
                                         <a href="{{ path('bcm_exercise_log_new', {exerciseId: exercise.id}) }}"
                                            class="fa-status-pill fa-status-pill--warning text-decoration-none">
-                                            {{ 'calendar.log_missing'|trans({}, 'bsi_200_4_exercise') }}
+                                            {{ 'bsi_200_4_exercise.calendar.log_missing'|trans({}, 'bsi_200_4_exercise') }}
                                         </a>
                                     {% endif %}
                                 </div>

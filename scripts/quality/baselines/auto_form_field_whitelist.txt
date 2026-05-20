@@ -19,7 +19,7 @@ templates/training/edit.html.twig:28
 templates/training/new.html.twig:33
 templates/objective/edit.html.twig:28
 templates/objective/new.html.twig:27
-templates/report_builder/settings_edit.html.twig:27
+templates/report_builder/settings_edit.html.twig:26
 templates/document/edit.html.twig:33
 templates/document/new.html.twig:28
 templates/risk_appetite/edit.html.twig:30
@@ -46,6 +46,7 @@ templates/business_continuity_plan/edit.html.twig:34
 templates/business_continuity_plan/new.html.twig:30
 templates/change_request/edit.html.twig:44
 templates/change_request/new.html.twig:39
+templates/four_eyes/edit.html.twig:46
 templates/risk/edit.html.twig:64
 templates/risk/new.html.twig:72
 templates/risk/new_quick.html.twig:35
