@@ -23,6 +23,7 @@
     }) }}
 
     <form method="post" action="{{ path('app_processing_activity_avv_picker', {id: processing_activity.id}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('avv_picker_' ~ processing_activity.id) }}">
         <section class="fa-section">
             <header class="fa-section__header">
                 <h2 class="fa-section__title">{{ 'processing_activity.avv_required.picker_section_title'|trans({}, 'alva') }}</h2>

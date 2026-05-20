@@ -601,6 +601,11 @@ class ProcessingActivityController extends AbstractController
         }
 
         if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('avv_picker_' . $processingActivity->getId(), (string) $request->request->get('_token'))) {
+                $this->addFlash('error', $this->translator->trans('common.csrf_invalid', [], 'messages'));
+                return $this->redirectToRoute('app_processing_activity_avv_picker', ['id' => $processingActivity->getId()]);
+            }
+
             $supplierIds = array_filter(
                 (array) $request->request->all('supplier_ids'),
                 static fn($id): bool => is_string($id) && ctype_digit($id),

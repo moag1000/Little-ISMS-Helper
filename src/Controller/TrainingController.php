@@ -283,6 +283,11 @@ class TrainingController extends AbstractController
         }
 
         if ($request->isMethod('POST') && $this->participationRepository !== null && $this->userRepository !== null) {
+            if (!$this->isCsrfTokenValid('audience_picker_' . $training->getId(), (string) $request->request->get('_token'))) {
+                $this->addFlash('error', $this->translator->trans('common.csrf_invalid', [], 'messages'));
+                return $this->redirectToRoute('app_training_audience_picker', ['id' => $training->getId()]);
+            }
+
             $userIds = array_filter(
                 (array) $request->request->all('user_ids'),
                 static fn($id): bool => is_string($id) && ctype_digit($id),
