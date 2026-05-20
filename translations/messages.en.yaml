@@ -1098,6 +1098,12 @@ form:
         lessons_learned: 'Lessons learned'
         details: 'Details'
         contact: 'Contact'
+        risk_assessment: 'Risk assessment'
+        treatment: 'Treatment'
+        acceptance: 'Risk acceptance'
+        notification: 'Notification requirements'
+        measures: 'Measures'
+        privacy: 'Data protection (GDPR)'
         warning:
             unmapped_title: 'Notice (dev only):'
             unmapped_body: 'The following fields are not covered by any section and fall through to the catch-all bucket: %fields%. Update the SectionPolicy on the FormType class.'

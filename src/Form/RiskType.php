@@ -31,7 +31,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class RiskType extends AbstractType
+final class RiskType extends AbstractType implements SectionMapInterface
 {
     use ModuleAwareFormTrait;
     use OwnerPickerFormTrait;
@@ -414,5 +414,68 @@ final class RiskType extends AbstractType
                 ->atPath('asset')
                 ->addViolation();
         }
+    }
+
+    /**
+     * SectionPolicy (S4 Foundation P-2) — ISO 27001 Cl. 6.1.2 structure.
+     *
+     * Module-conditional fields are included (privacy, vulnerability_intel)
+     * to prevent Sonstiges-leakage when those modules are active.
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'title',
+                'category',
+                'description',
+                'threat',
+                'vulnerability',
+            ],
+            'details' => [
+                'asset',
+                'person',
+                'location',
+                'supplier',
+            ],
+            'risk_assessment' => [
+                'probability',
+                'impact',
+                'residualProbability',
+                'residualImpact',
+                // vulnerability_intel module fields (NIS2/DORA — conditional)
+                'threatIntelligence',
+                'linkedVulnerability',
+            ],
+            'treatment' => [
+                'treatmentStrategy',
+                'treatmentDescription',
+            ],
+            'acceptance' => [
+                'acceptanceApprovedByUser',
+                'acceptanceApprovedBy',
+                'acceptanceApprovedAt',
+                'acceptanceJustification',
+                'acceptanceExpiryDate',
+            ],
+            // privacy module fields (DSGVO Art. 24/32/35 — conditional)
+            'privacy' => [
+                'involvesPersonalData',
+                'involvesSpecialCategoryData',
+                'legalBasis',
+                'processingScale',
+                'requiresDPIA',
+                'dataSubjectImpact',
+            ],
+            'audit_metadata' => [
+                'riskOwner',
+                'riskOwnerPerson',
+                'riskOwnerDeputyPersons',
+                'status',
+                'reviewDate',
+            ],
+        ];
     }
 }

@@ -1112,6 +1112,12 @@ form:
         lessons_learned: 'Lessons Learned'
         details: 'Details'
         contact: 'Kontakt'
+        risk_assessment: 'Risikobewertung'
+        treatment: 'Behandlung'
+        acceptance: 'Risikoakzeptanz'
+        notification: 'Meldepflichten'
+        measures: 'Maßnahmen'
+        privacy: 'Datenschutz (DSGVO)'
         warning:
             unmapped_title: 'Hinweis (nur dev):'
             unmapped_body: 'Folgende Felder sind in keiner Section abgebildet und landen im Auffangbecken: %fields%. SectionPolicy in der FormType-Klasse aktualisieren.'
