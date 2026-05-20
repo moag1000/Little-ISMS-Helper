@@ -1,19 +1,18 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'four_eyes' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'edit.title'|trans({}, 'four_eyes') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'four_eyes.edit.title'|trans({}, 'four_eyes') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'four_eyes.inbox.title'|trans({}, 'four_eyes'), path: path('app_four_eyes_inbox') },
-        { label: 'edit.title'|trans({}, 'four_eyes') }
+        { label: 'four_eyes.edit.title'|trans({}, 'four_eyes') }
     ]
 } %}
 
 {{ _fa_page_header.render({
-    title: 'edit.title'|trans({}, 'four_eyes'),
+    title: 'four_eyes.edit.title'|trans({}, 'four_eyes'),
     badge: { icon: 'ui-edit', label: '' },
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_four_eyes_inbox'), variant: 'secondary', icon: 'util-arrow-left' }
@@ -25,36 +24,31 @@
         <div class="card-header">
             <h2 class="h5 mb-0">
                 <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                {{ 'edit.subtitle'|trans({}, 'four_eyes') }}
+                {{ 'four_eyes.edit.subtitle'|trans({}, 'four_eyes') }}
             </h2>
         </div>
     {% endblock %}
     {% block card_body %}
         <dl class="row mb-3">
-            <dt class="col-sm-3">{{ 'action_type'|trans({}, 'four_eyes') }}</dt>
+            <dt class="col-sm-3">{{ 'four_eyes.action_type'|trans({}, 'four_eyes') }}</dt>
             <dd class="col-sm-9">
                 {% if approvalRequest.actionType is defined %}
-                    {{ ('action.' ~ approvalRequest.actionType)|trans({}, 'four_eyes') }}
+                    {{ ('four_eyes.action.' ~ approvalRequest.actionType)|trans({}, 'four_eyes') }}
                 {% endif %}
             </dd>
-            <dt class="col-sm-3">{{ 'requested_by'|trans({}, 'four_eyes') }}</dt>
+            <dt class="col-sm-3">{{ 'four_eyes.requested_by'|trans({}, 'four_eyes') }}</dt>
             <dd class="col-sm-9">{{ approvalRequest.requestedBy ? approvalRequest.requestedBy.fullName : '-' }}</dd>
-            <dt class="col-sm-3">{{ 'expires_at'|trans({}, 'four_eyes') }}</dt>
+            <dt class="col-sm-3">{{ 'four_eyes.expires_at'|trans({}, 'four_eyes') }}</dt>
             <dd class="col-sm-9">{{ approvalRequest.expiresAt|date('Y-m-d H:i') }}</dd>
         </dl>
 
         {{ form_start(form) }}
-            {# H-03: strict_whitelist — 4-eyes flow is a control-bypass risk;
-               only approver-tri-state fields are user-editable. The actionType /
-               payload / requestedBy / tenant fields are set programmatically by
-               FourEyesApprovalService and MUST NOT leak via dev-tools. #}
             {% include '_components/_auto_form.html.twig' with {
-                form: form,
-                strict_whitelist: true,
-                sections: {
+                'form': form,
+                'sections': {
                     'approver': {
-                        'label': 'section.approver'|trans({}, 'four_eyes'),
-                        fields: ['requestedApprover', 'requestedApproverPerson', 'requestedApproverDeputyPersons']
+                        'label': 'four_eyes.section.approver'|trans({}, 'four_eyes'),
+                        'fields': ['requestedApprover', 'requestedApproverPerson', 'requestedApproverDeputyPersons']
                     }
                 },
                 'col_widths': {
@@ -72,7 +66,7 @@
                 </a>
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                    {{ 'edit.action.save'|trans({}, 'four_eyes') }}
+                    {{ 'four_eyes.edit.action.save'|trans({}, 'four_eyes') }}
                 </button>
             </div>
         {{ form_end(form) }}

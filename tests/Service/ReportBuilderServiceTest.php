@@ -262,7 +262,7 @@ class ReportBuilderServiceTest extends TestCase
         $report = $this->service->createFromTemplate('executive_summary', $user, 1);
 
         $this->assertInstanceOf(CustomReport::class, $report);
-        $this->assertEquals('template.executive_summary', $report->getName());
+        $this->assertEquals('report_builder.template.executive_summary', $report->getName());
         $this->assertEquals(CustomReport::CATEGORY_EXECUTIVE, $report->getCategory());
         $this->assertEquals(CustomReport::LAYOUT_DASHBOARD, $report->getLayout());
         $this->assertNotEmpty($report->getWidgets());

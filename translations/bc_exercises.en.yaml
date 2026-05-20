@@ -170,26 +170,3 @@ bc_exercises:
         raw_toggle: 'Edit as JSON'
         raw_label: 'Raw JSON (power-user)'
         raw_help: 'Warning: raw editing can corrupt data. Schema must match entity definition.'
-bc_plans:
-    message:
-        readiness_score: 'Readiness Score'
-
-# Audit-S5 P-13 — Severity definitions for BC-Exercise rating. Not yet
-# rendered via _fa_severity_choice because successRating is a 5-step
-# integer scale (see field.success_rating). Kept here so the hover-tooltip
-# pattern can be wired in later once BC-Exercise gets a real 4-stage
-# severity field.
-severity_choice:
-    aria_label: 'Exercise rating severity'
-    low:
-        label: 'Low'
-        definition: 'Exercise was largely successful, minor plan tweaks sufficient. Example: minimal time deviation during the recovery test.'
-    medium:
-        label: 'Medium'
-        definition: 'Exercise surfaced notable weaknesses, BC-plan update recommended. Example: contact list refresh needed, one recovery step unclear.'
-    high:
-        label: 'High'
-        definition: 'Exercise exposed serious issues, BC-plan must be reworked, re-exercise recommended. Example: RTO not met, crisis team not fully reachable.'
-    critical:
-        label: 'Critical'
-        definition: 'Exercise failed — BC-plan in its current form is unfit. Immediate plan redesign, escalation to management. Example: complete recovery failure, critical dependency not covered.'

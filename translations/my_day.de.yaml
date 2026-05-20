@@ -1,89 +1,89 @@
-# My Day Inbox (Phase 7 Persona-driven Inbox)
-title: 'Mein Tag'
-badge: 'My Day'
-subtitle: 'Alle offenen Punkte aus 19 Posteingängen — heute, %generated_at%'
+my_day:
+    title: 'Mein Tag'
+    badge: 'My Day'
+    subtitle: 'Alle offenen Punkte aus 19 Posteingängen — heute, %generated_at%'
 
-action:
-    standard_dashboard: 'Standard-Dashboard'
+    action:
+        standard_dashboard: 'Standard-Dashboard'
 
-kpi:
-    workflows_pending: 'Lifecycles offen'
-    workflows_overdue: 'Lifecycles überfällig'
-    four_eyes: '4-Augen-Anfragen'
-    acknowledgements: 'Policy-Ack ausstehend'
-    findings: 'Findings (mir)'
-    dsrs: 'DSR (mir)'
-    corrective_actions_overdue: 'CA überfällig'
-    risk_acceptance_expiring: 'Risiko-Akzeptanz fällig'
-    documents_review_overdue: 'Dokumente Review überfällig'
-    trainings_pending: 'Trainings offen'
-    incidents_open_assigned: 'Incidents (mir)'
-    data_breaches_72h_ticking: 'Datenpannen 72h'
-    vulnerabilities_critical_unpatched: 'Schwachstellen kritisch'
-    audit_checklist_due: 'Audit-Checkliste fällig'
-    change_requests_pending_approval: 'CRs zur Freigabe'
-    management_review_upcoming: 'Mgmt-Review anstehend'
-    documents_pending_approval_for_me: 'Dokumente zur Freigabe'
-    wizard_overdue: 'Wizard-Assessments gestoppt'
-    framework_gaps_critical: 'Framework-Gaps kritisch'
+    kpi:
+        workflows_pending: 'Lifecycles offen'
+        workflows_overdue: 'Lifecycles überfällig'
+        four_eyes: '4-Augen-Anfragen'
+        acknowledgements: 'Policy-Ack ausstehend'
+        findings: 'Findings (mir)'
+        dsrs: 'DSR (mir)'
+        corrective_actions_overdue: 'CA überfällig'
+        risk_acceptance_expiring: 'Risiko-Akzeptanz fällig'
+        documents_review_overdue: 'Dokumente Review überfällig'
+        trainings_pending: 'Trainings offen'
+        incidents_open_assigned: 'Incidents (mir)'
+        data_breaches_72h_ticking: 'Datenpannen 72h'
+        vulnerabilities_critical_unpatched: 'Schwachstellen kritisch'
+        audit_checklist_due: 'Audit-Checkliste fällig'
+        change_requests_pending_approval: 'CRs zur Freigabe'
+        management_review_upcoming: 'Mgmt-Review anstehend'
+        documents_pending_approval_for_me: 'Dokumente zur Freigabe'
+        wizard_overdue: 'Wizard-Assessments gestoppt'
+        framework_gaps_critical: 'Framework-Gaps kritisch'
 
-section:
-    workflows_pending: 'Lifecycles offen'
-    workflows_overdue: 'Lifecycles überfällig'
-    four_eyes: '4-Augen-Approval'
-    acknowledgements: 'Policy-Acknowledgements'
-    findings: 'Audit-Findings (mir zugewiesen)'
-    dsrs: 'Data-Subject-Requests'
-    corrective_actions_overdue: 'Korrekturmaßnahmen überfällig'
-    risk_acceptance_expiring: 'Risiko-Akzeptanz läuft ab'
-    documents_review_overdue: 'Dokumente: Review überfällig'
-    trainings_pending: 'Trainings (mir zugewiesen)'
-    incidents_open_assigned: 'Incidents (mir zugewiesen)'
-    data_breaches_72h_ticking: 'Datenpannen — 72h-Frist läuft (DSGVO Art. 33)'
-    vulnerabilities_critical_unpatched: 'Schwachstellen — kritisch / ungepatcht'
-    audit_checklist_due: 'Audit-Checkliste — fällig in 7 Tagen'
-    change_requests_pending_approval: 'Change Requests — warten auf Freigabe'
-    management_review_upcoming: 'Management-Review — anstehend (90-Tage-Fenster)'
-    documents_pending_approval_for_me: 'Dokumente in Prüfung — warten auf Freigabe (CM)'
-    wizard_overdue: 'Wizard-Assessments — gestoppt (90+ Tage)'
-    framework_gaps_critical: 'Framework-Coverage-Gaps — kritisch (< 60 %)'
+    section:
+        workflows_pending: 'Lifecycles offen'
+        workflows_overdue: 'Lifecycles überfällig'
+        four_eyes: '4-Augen-Approval'
+        acknowledgements: 'Policy-Acknowledgements'
+        findings: 'Audit-Findings (mir zugewiesen)'
+        dsrs: 'Data-Subject-Requests'
+        corrective_actions_overdue: 'Korrekturmaßnahmen überfällig'
+        risk_acceptance_expiring: 'Risiko-Akzeptanz läuft ab'
+        documents_review_overdue: 'Dokumente: Review überfällig'
+        trainings_pending: 'Trainings (mir zugewiesen)'
+        incidents_open_assigned: 'Incidents (mir zugewiesen)'
+        data_breaches_72h_ticking: 'Datenpannen — 72h-Frist läuft (DSGVO Art. 33)'
+        vulnerabilities_critical_unpatched: 'Schwachstellen — kritisch / ungepatcht'
+        audit_checklist_due: 'Audit-Checkliste — fällig in 7 Tagen'
+        change_requests_pending_approval: 'Change Requests — warten auf Freigabe'
+        management_review_upcoming: 'Management-Review — anstehend (90-Tage-Fenster)'
+        documents_pending_approval_for_me: 'Dokumente in Prüfung — warten auf Freigabe (CM)'
+        wizard_overdue: 'Wizard-Assessments — gestoppt (90+ Tage)'
+        framework_gaps_critical: 'Framework-Coverage-Gaps — kritisch (< 60 %)'
 
-bucket:
-    risk_acceptance_expiring:
-        title: 'Risiko-Akzeptanz läuft ab'
-        empty: 'Keine Risiko-Akzeptanzen laufen in den nächsten 30 Tagen ab.'
-    documents_review_overdue:
-        title: 'Dokumente: Review überfällig'
-        empty: 'Keine überfälligen Dokument-Reviews.'
-    trainings_pending:
-        title: 'Trainings (mir zugewiesen)'
-        empty: 'Aktuell keine offenen Trainings.'
-    incidents_open_assigned:
-        title: 'Incidents (mir zugewiesen)'
-        empty: 'Keine offenen Incidents auf deinem Tisch.'
-    data_breaches_72h_ticking:
-        title: 'Datenpannen — 72h-Frist läuft'
-        empty: 'Keine offenen Datenpannen mit laufender 72h-Frist.'
-    vulnerabilities_critical_unpatched:
-        title: 'Schwachstellen — kritisch / ungepatcht'
-        empty: 'Keine kritischen Schwachstellen offen.'
-    audit_checklist_due:
-        title: 'Audit-Checkliste — fällig'
-        empty: 'Keine Audit-Checklisten-Items in den nächsten 7 Tagen fällig.'
-    change_requests_pending_approval:
-        title: 'Change Requests — warten auf Freigabe'
-        empty: 'Keine Change Requests warten auf Freigabe.'
-    management_review_upcoming:
-        title: 'Management-Review — anstehend'
-        empty: 'Keine Management-Reviews in den nächsten 90 Tagen geplant.'
+    bucket:
+        risk_acceptance_expiring:
+            title: 'Risiko-Akzeptanz läuft ab'
+            empty: 'Keine Risiko-Akzeptanzen laufen in den nächsten 30 Tagen ab.'
+        documents_review_overdue:
+            title: 'Dokumente: Review überfällig'
+            empty: 'Keine überfälligen Dokument-Reviews.'
+        trainings_pending:
+            title: 'Trainings (mir zugewiesen)'
+            empty: 'Aktuell keine offenen Trainings.'
+        incidents_open_assigned:
+            title: 'Incidents (mir zugewiesen)'
+            empty: 'Keine offenen Incidents auf deinem Tisch.'
+        data_breaches_72h_ticking:
+            title: 'Datenpannen — 72h-Frist läuft'
+            empty: 'Keine offenen Datenpannen mit laufender 72h-Frist.'
+        vulnerabilities_critical_unpatched:
+            title: 'Schwachstellen — kritisch / ungepatcht'
+            empty: 'Keine kritischen Schwachstellen offen.'
+        audit_checklist_due:
+            title: 'Audit-Checkliste — fällig'
+            empty: 'Keine Audit-Checklisten-Items in den nächsten 7 Tagen fällig.'
+        change_requests_pending_approval:
+            title: 'Change Requests — warten auf Freigabe'
+            empty: 'Keine Change Requests warten auf Freigabe.'
+        management_review_upcoming:
+            title: 'Management-Review — anstehend'
+            empty: 'Keine Management-Reviews in den nächsten 90 Tagen geplant.'
 
-empty:
-    title: 'Alles erledigt'
-    text: 'Aktuell keine offenen Aufgaben für dich. Gute Arbeit!'
+    empty:
+        title: 'Alles erledigt'
+        text: 'Aktuell keine offenen Aufgaben für dich. Gute Arbeit!'
 
-item:
-    due: 'Fällig'
+    item:
+        due: 'Fällig'
 
-priority:
-    high: 'High'
-    medium: 'Med'
+    priority:
+        high: 'High'
+        medium: 'Med'

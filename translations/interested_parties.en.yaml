@@ -80,32 +80,6 @@ interested_party:
     tooltip:
         satisfaction_level: '<strong>😊 Satisfaction Level (1-5)</strong><br><em>Question: How satisfied is this interested party with the collaboration?</em><br><br><strong>1</strong> = Very dissatisfied<br><strong>2</strong> = Dissatisfied<br><strong>3</strong> = Neutral<br><strong>4</strong> = Satisfied<br><strong>5</strong> = Very satisfied<br><br><em>Tip: Based on last feedback/conversation</em>'
         importance: '<strong>⭐ Party Importance</strong><br><em>Question: How important is this party for the ISMS?</em><br><br><strong>Critical</strong> = Regulators, authorities<br><strong>High</strong> = Key customers, certifiers<br><strong>Medium</strong> = Suppliers, partners<br><strong>Low</strong> = General public<br><br><em>Per ISO 27001 Context of the Organization</em>'
-Customer: Customer
-Shareholder: Shareholder
-Employee: Employee
-Regulator: Regulator
-Supplier: Supplier
-Partner: Partner
-Public: Public
-Media: Media
-Government: Government
-Competitor: Competitor
-Other: Other
-Critical: Critical
-High: High
-Medium: Medium
-Low: Low
-Daily: Daily
-Weekly: Weekly
-Monthly: Monthly
-Yearly: Annually
-Quarterly: Quarterly
-Annually: Annually
-'As Needed': 'As Needed'
-Active: Active
-Inactive: Inactive
-Evaluation: Evaluation
-Terminated: Terminated
 iso_9001_bridge:
     party: 'Identical to ISO 9001 Clause 4.2 "Understanding the needs and expectations of interested parties". The 9001 terms "interested party" and "stakeholder" are used synonymously.'
     expectation: 'In ISO 9001 these are the "needs and expectations of relevant interested parties" (Clause 4.2.b).'

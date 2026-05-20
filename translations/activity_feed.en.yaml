@@ -1,15 +1,12 @@
-# Activity Feed
-title: 'Activity Feed'
-badge: 'Feed'
-subtitle: 'Recent activity from audit log, workflows, documents, and risks'
-
-action:
-    standard_dashboard: 'Standard Dashboard'
-
-scope:
-    all: 'All events'
-    compliance: 'Compliance only'
-
-widget:
-    heading: 'Recent activity'
-    empty: 'No activity yet.'
+activity_feed:
+    title: 'Activity Feed'
+    badge: 'Feed'
+    subtitle: 'Recent activity from audit log, workflows, documents, and risks'
+    action:
+        standard_dashboard: 'Standard Dashboard'
+    scope:
+        all: 'All events'
+        compliance: 'Compliance only'
+    widget:
+        heading: 'Recent activity'
+        empty: 'No activity yet.'

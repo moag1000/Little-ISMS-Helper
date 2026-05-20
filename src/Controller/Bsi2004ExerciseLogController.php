@@ -90,7 +90,7 @@ class Bsi2004ExerciseLogController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_MANAGER');
 
         if ($exercise->hasExerciseLog()) {
-            $this->addFlash('warning', $this->translator->trans('error.log_already_exists', [], 'bsi_200_4_exercise'));
+            $this->addFlash('warning', $this->translator->trans('bsi_200_4_exercise.error.log_already_exists', [], 'bsi_200_4_exercise'));
             return $this->redirectToRoute('bcm_exercise_log_show', ['id' => $exercise->getExerciseLog()?->getId()]);
         }
 
@@ -121,7 +121,7 @@ class Bsi2004ExerciseLogController extends AbstractController
                 sprintf('BSI-200-4 Logbuch für Übung "%s" erstellt.', $exercise->getName() ?? '?')
             );
 
-            $this->addFlash('success', $this->translator->trans('action.created', [], 'bsi_200_4_exercise'));
+            $this->addFlash('success', $this->translator->trans('bsi_200_4_exercise.action.created', [], 'bsi_200_4_exercise'));
             return $this->redirectToRoute('bcm_exercise_log_show', ['id' => $log->getId()]);
         }
 
@@ -180,7 +180,7 @@ class Bsi2004ExerciseLogController extends AbstractController
 
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('action.saved', [], 'bsi_200_4_exercise'));
+            $this->addFlash('success', $this->translator->trans('bsi_200_4_exercise.action.saved', [], 'bsi_200_4_exercise'));
             return $this->redirectToRoute('bcm_exercise_log_show', ['id' => $log->getId()]);
         }
 
@@ -206,7 +206,7 @@ class Bsi2004ExerciseLogController extends AbstractController
         $this->denyAccessUnlessGranted(Bsi2004ExerciseLogVoter::EDIT, $log);
 
         if (!$this->isCsrfTokenValid('bsi_log_submit_' . $log->getId(), $request->request->getString('_token'))) {
-            $this->addFlash('error', $this->translator->trans('error.invalid_token', [], 'bsi_200_4_exercise'));
+            $this->addFlash('error', $this->translator->trans('bsi_200_4_exercise.error.invalid_token', [], 'bsi_200_4_exercise'));
             return $this->redirectToRoute('bcm_exercise_log_show', ['id' => $log->getId()]);
         }
 
@@ -217,7 +217,7 @@ class Bsi2004ExerciseLogController extends AbstractController
 
         $this->logService->markComplete($log, $user);
 
-        $this->addFlash('success', $this->translator->trans('action.submitted', [], 'bsi_200_4_exercise'));
+        $this->addFlash('success', $this->translator->trans('bsi_200_4_exercise.action.submitted', [], 'bsi_200_4_exercise'));
         return $this->redirectToRoute('bcm_exercise_log_show', ['id' => $log->getId()]);
     }
 
@@ -237,7 +237,7 @@ class Bsi2004ExerciseLogController extends AbstractController
         $this->denyAccessUnlessGranted(Bsi2004ExerciseLogVoter::CONFIRM, $log);
 
         if (!$this->isCsrfTokenValid('bsi_log_confirm_' . $log->getId(), $request->request->getString('_token'))) {
-            $this->addFlash('error', $this->translator->trans('error.invalid_token', [], 'bsi_200_4_exercise'));
+            $this->addFlash('error', $this->translator->trans('bsi_200_4_exercise.error.invalid_token', [], 'bsi_200_4_exercise'));
             return $this->redirectToRoute('bcm_exercise_log_show', ['id' => $log->getId()]);
         }
 
@@ -248,7 +248,7 @@ class Bsi2004ExerciseLogController extends AbstractController
 
         $this->logService->confirmByAuditor($log, $user);
 
-        $this->addFlash('success', $this->translator->trans('action.confirmed', [], 'bsi_200_4_exercise'));
+        $this->addFlash('success', $this->translator->trans('bsi_200_4_exercise.action.confirmed', [], 'bsi_200_4_exercise'));
         return $this->redirectToRoute('bcm_exercise_log_show', ['id' => $log->getId()]);
     }
 

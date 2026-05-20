@@ -1,67 +1,54 @@
-inbox:
-    title: 'Pending four-eyes approvals'
-    lead: 'Requests awaiting your second approval (segregation of duties per ISO 27001 A.5.3).'
-    empty: 'No pending approval requests.'
-
-action:
-    inheritance_implement: 'Transition to "Implemented"'
-    mapping_override: 'Mapping override'
-    bulk_tag_removal: 'Bulk tag removal'
-    import_large_commit: 'Large import commit'
-
-action_type: 'Action type'
-
-requested_by: 'Requested by'
-expires_at: 'Expires on'
-
-field:
-    requested_approver_person: 'Approver (Person)'
-    requested_approver_deputy_persons: 'Approver Deputies (Persons)'
-    requested_approver_user: 'Approver (User)'
-
-placeholder:
-    requested_approver_person: '-- Person from master data --'
-    requested_approver_user: '-- Select a user --'
-
-help:
-    requested_approver_person: 'Person without system login as approver. Order: User > Person > empty.'
-    requested_approver_deputy_persons: 'Additional persons with deputy role for the approver.'
-    requested_approver_user: 'System user as approver. At least one of User or Person is required.'
-
-error:
-    approver_required_user_or_person: 'At least one of Approver (User) or Approver (Person) must be set.'
-
-approve: 'Approve'
-reject: 'Reject'
-
-edit:
-    title: 'Edit Approval Request'
-    subtitle: 'Reassign the approver for this pending request'
-    action:
-        save: 'Save Approver'
-
-section:
-    approver: 'Requested Approver'
-
-reject_modal:
-    title: 'Reject request'
-    reason: 'Reason (min. 20 chars)'
-
-flash:
-    approved: 'Approval granted.'
-    rejected: 'Approval rejected.'
-    approver_updated: 'Approver updated successfully.'
-
-# Prefixed keys (used by templates with explicit domain prefix)
 four_eyes:
     inbox:
         title: 'Pending four-eyes approvals'
         lead: 'Requests awaiting your second approval (segregation of duties per ISO 27001 A.5.3).'
         empty: 'No pending approval requests.'
+
+    action:
+        inheritance_implement: 'Transition to "Implemented"'
+        mapping_override: 'Mapping override'
+        bulk_tag_removal: 'Bulk tag removal'
+        import_large_commit: 'Large import commit'
+
+    action_type: 'Action type'
+
     requested_by: 'Requested by'
     expires_at: 'Expires on'
+
+    field:
+        requested_approver_person: 'Approver (Person)'
+        requested_approver_deputy_persons: 'Approver Deputies (Persons)'
+        requested_approver_user: 'Approver (User)'
+
+    placeholder:
+        requested_approver_person: '-- Person from master data --'
+        requested_approver_user: '-- Select a user --'
+
+    help:
+        requested_approver_person: 'Person without system login as approver. Order: User > Person > empty.'
+        requested_approver_deputy_persons: 'Additional persons with deputy role for the approver.'
+        requested_approver_user: 'System user as approver. At least one of User or Person is required.'
+
+    error:
+        approver_required_user_or_person: 'At least one of Approver (User) or Approver (Person) must be set.'
+
     approve: 'Approve'
     reject: 'Reject'
+
+    edit:
+        title: 'Edit Approval Request'
+        subtitle: 'Reassign the approver for this pending request'
+        action:
+            save: 'Save Approver'
+
+    section:
+        approver: 'Requested Approver'
+
     reject_modal:
         title: 'Reject request'
         reason: 'Reason (min. 20 chars)'
+
+    flash:
+        approved: 'Approval granted.'
+        rejected: 'Approval rejected.'
+        approver_updated: 'Approver updated successfully.'
