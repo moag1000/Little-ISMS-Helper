@@ -187,9 +187,21 @@
     {% endembed %}
 
     {# Recovery Priority Recommendations #}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% set _priorityVariant = {
+        'immediate': 'danger',
+        'high': 'warning',
+        'medium': 'primary',
+        'low': 'primary'
+    }[analysis.recovery_priority.level]|default('primary') %}
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4', 'variant': 'bordered', 'borderColor': _priorityVariant } %}
         {% block card_header %}
-            <div class="card-header bg-{{ priority_class }}"><h2 class="h5 mb-0 text-white"><i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> Recovery Priority: {{ analysis.recovery_priority.level|upper }}</h2></div>
+            <div class="fa-section__header card-header">
+                <h2 class="fa-section__title h5 mb-0">
+                    <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
+                    Recovery Priority:
+                    <span class="fa-status-pill fa-status-pill--{{ _priorityVariant }} ms-1">{{ analysis.recovery_priority.level|upper }}</span>
+                </h2>
+            </div>
         {% endblock %}
         {% block card_body %}
             <p><strong>Reasoning:</strong> {{ analysis.recovery_priority.reasoning }}</p>

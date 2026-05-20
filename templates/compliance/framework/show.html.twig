@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% trans_default_domain 'compliance' %}
 
 {% block title %}{{ framework.name }}{% endblock %}
@@ -68,45 +69,38 @@
     {# Statistics Row #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'bg-primary text-white' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h2>{{ total_requirements }}</h2>
-                        <p class="mb-0">{{ 'compliance.framework.stats.total_requirements'|trans({}, 'compliance') }}</p>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label:   'compliance.framework.stats.total_requirements'|trans({}, 'compliance'),
+                value:   total_requirements,
+                variant: 'primary',
+                icon:    'nav-list-check'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'bg-info text-white' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h2>{{ applicable_requirements }}</h2>
-                        <p class="mb-0">{{ 'compliance.framework.stats.applicable'|trans({}, 'compliance') }}</p>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label:   'compliance.framework.stats.applicable'|trans({}, 'compliance'),
+                value:   applicable_requirements,
+                variant: 'primary',
+                icon:    'status-info'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'bg-success text-white' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h2>{{ fulfilled_requirements }}</h2>
-                        <p class="mb-0">{{ 'compliance.framework.stats.fulfilled'|trans({}, 'compliance') }}</p>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label:   'compliance.framework.stats.fulfilled'|trans({}, 'compliance'),
+                value:   fulfilled_requirements,
+                variant: 'success',
+                icon:    'status-ok'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% set complianceColorClass = compliance_percentage >= 80 ? 'bg-success' : (compliance_percentage >= 50 ? 'bg-warning' : 'bg-danger') %}
-            {% embed '_components/_card.html.twig' with { 'class': complianceColorClass ~ ' text-white' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <h2>{{ compliance_percentage|round }}%</h2>
-                        <p class="mb-0">{{ 'compliance.framework.stats.compliance'|trans({}, 'compliance') }}</p>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {% set _kpiVariant = compliance_percentage >= 80 ? 'success' : (compliance_percentage >= 50 ? 'warning' : 'danger') %}
+            {{ _fa_feature_card.render({
+                label:   'compliance.framework.stats.compliance'|trans({}, 'compliance'),
+                value:   compliance_percentage|round,
+                unit:    '%',
+                variant: _kpiVariant,
+                icon:    'ui-bar-chart'
+            }) }}
         </div>
     </div>
 
