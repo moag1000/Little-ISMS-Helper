@@ -6,6 +6,7 @@
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -28,40 +29,36 @@
     {# Statistics #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-primary text-white' } %}
-                {% block card_body %}
-                    <i class="fa-icon fa-icon--ui-calendar-event fs-1" aria-hidden="true"></i>
-                    <h3 class="display-5">{{ statistics.total }}</h3>
-                    <small>{{ 'scheduled_report.stats.total'|trans({}, 'scheduled_reports') }}</small>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label:   'scheduled_report.stats.total'|trans({}, 'scheduled_reports'),
+                value:   statistics.total,
+                variant: 'primary',
+                icon:    'ui-calendar-event'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-success text-white' } %}
-                {% block card_body %}
-                    <i class="fa-icon fa-icon--status-ok fs-1" aria-hidden="true"></i>
-                    <h3 class="display-5">{{ statistics.active }}</h3>
-                    <small>{{ 'scheduled_report.stats.active'|trans({}, 'scheduled_reports') }}</small>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label:   'scheduled_report.stats.active'|trans({}, 'scheduled_reports'),
+                value:   statistics.active,
+                variant: 'success',
+                icon:    'status-ok'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-secondary text-white' } %}
-                {% block card_body %}
-                    <i class="fa-icon fs-1 fa-icon--status-pending" aria-hidden="true"></i>
-                    <h3 class="display-5">{{ statistics.inactive }}</h3>
-                    <small>{{ 'scheduled_report.stats.inactive'|trans({}, 'scheduled_reports') }}</small>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label:   'scheduled_report.stats.inactive'|trans({}, 'scheduled_reports'),
+                value:   statistics.inactive,
+                variant: 'primary',
+                icon:    'status-pending'
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-warning-subtle text-warning' } %}
-                {% block card_body %}
-                    <i class="fa-icon fa-icon--ui-hourglass fs-1" aria-hidden="true"></i>
-                    <h3 class="display-5">{{ due_reports|length }}</h3>
-                    <small>{{ 'scheduled_report.stats.due'|trans({}, 'scheduled_reports') }}</small>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label:   'scheduled_report.stats.due'|trans({}, 'scheduled_reports'),
+                value:   due_reports|length,
+                variant: 'warning',
+                icon:    'ui-hourglass'
+            }) }}
         </div>
     </div>
 
