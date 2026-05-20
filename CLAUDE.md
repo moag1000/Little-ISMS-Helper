@@ -663,3 +663,4 @@ Only fetch additional documentation when:
 - Security-critical implementations
 
 For standard CRUD, forms, templates, and services - this guide plus codebase exploration should suffice.
+
