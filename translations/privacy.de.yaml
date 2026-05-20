@@ -216,6 +216,12 @@ privacy:
         title: 'DSGVO Datenschutzverletzungs-Assistent'
         subtitle: 'Schritt-für-Schritt-Bewertung gemäß Art. 33 DSGVO'
 
+        # Stepper labels (short form for header navigation)
+        step1_short: 'Bezug'
+        step2_short: 'Datentyp'
+        step3_short: 'Umfang'
+        step4_short: 'Ergebnis'
+
         # Step 1
         step1_title: 'Sind personenbezogene Daten betroffen?'
         personal_data_question: 'Sind bei diesem Vorfall personenbezogene Daten betroffen (Daten, die sich auf identifizierte oder identifizierbare natürliche Personen beziehen)?'
@@ -850,6 +856,10 @@ data_breach:
         trigger_hint: 'Verwenden Sie den Assistenten, um zu ermitteln, ob eine DSGVO-Meldung erforderlich ist (Art. 33)'
         title: 'DSGVO Datenschutzverletzungs-Assistent'
         subtitle: 'Schrittweise Bewertung gemäß DSGVO Art. 33'
+        step1_short: 'Bezug'
+        step2_short: 'Datentyp'
+        step3_short: 'Umfang'
+        step4_short: 'Ergebnis'
         step1_title: 'Sind personenbezogene Daten betroffen?'
         personal_data_question: 'Sind bei diesem Vorfall personenbezogene Daten betroffen (Daten, die sich auf identifizierte oder identifizierbare natürliche Personen beziehen)?'
         personal_data_yes: 'Personenbezogene Daten sind betroffen'

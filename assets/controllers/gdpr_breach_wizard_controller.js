@@ -93,6 +93,9 @@ export default class extends Controller {
 
     /**
      * Open wizard modal
+     *
+     * Uses the fa-prefs-modal shell pattern: the outer element is both the
+     * backdrop and the dialog wrapper; `.d-none` toggles visibility.
      */
     open(event) {
         if (event) event.preventDefault();
@@ -102,9 +105,8 @@ export default class extends Controller {
         this.showStep(1);
         this.updateProgress();
 
-        // Show modal
-        this.modalTarget.classList.add('modal-open');
-        this.backdropTarget.classList.add('modal-backdrop-show');
+        // Show modal (fa-prefs-modal shell pattern)
+        this.modalTarget.classList.remove('d-none');
         document.body.style.overflow = 'hidden';
 
         // Enable ESC key handler
@@ -123,11 +125,20 @@ export default class extends Controller {
     close(event) {
         if (event) event.preventDefault();
 
-        this.modalTarget.classList.remove('modal-open');
-        this.backdropTarget.classList.remove('modal-backdrop-show');
+        this.modalTarget.classList.add('d-none');
         document.body.style.overflow = '';
 
         document.removeEventListener('keydown', this.boundHandleEscape);
+    }
+
+    /**
+     * Close modal when the user clicks outside the container (on the backdrop).
+     * Mirrors the fa-prefs-modal handleBackdropClick contract.
+     */
+    handleBackdropClick(event) {
+        if (event.target === this.modalTarget) {
+            this.close(event);
+        }
     }
 
     /**
@@ -302,32 +313,34 @@ export default class extends Controller {
      * Display results in Step 4
      */
     displayResults(assessment) {
-        // Risk level with color coding
+        // Risk level with Aurora status-pill tone
         const riskLevelText = this.getRiskLevelTranslation(assessment.risk_level);
-        const riskLevelClass = this.getRiskLevelClass(assessment.risk_level);
+        const riskLevelTone = this.getRiskLevelTone(assessment.risk_level);
         this.resultRiskLevelTarget.textContent = riskLevelText;
-        this.resultRiskLevelTarget.className = `badge ${riskLevelClass} fs-5`;
+        this.resultRiskLevelTarget.className = `fa-status-pill fa-status-pill--${riskLevelTone} fa-status-pill--lg`;
 
         // Reportable status (translated)
         const yesText = this.translations.yes_reportable || 'YES - Reportable to Supervisory Authority';
         const noText = this.translations.no_not_reportable || 'NO - Not Reportable';
         const reportableText = assessment.is_reportable ? yesText : noText;
-        const reportableBadge = assessment.is_reportable ? 'bg-danger' : 'bg-success';
+        const reportableTone = assessment.is_reportable ? 'danger' : 'success';
         this.resultReportableTarget.textContent = reportableText;
-        this.resultReportableTarget.className = `badge ${reportableBadge} fs-6`;
+        this.resultReportableTarget.className = `fa-status-pill fa-status-pill--${reportableTone} fa-status-pill--lg`;
 
         // Recommendation
         const recommendationText = this.getRecommendationTranslation(assessment.recommendation);
         this.resultRecommendationTarget.textContent = recommendationText;
 
-        // 72h deadline (if reportable)
+        // 72h deadline (if reportable) — toggle the outer Aurora alert wrapper.
+        // Use closest() for robustness against DOM nesting changes.
+        const deadlineAlert = this.resultDeadlineTarget.closest('.gdpr-wizard__deadline');
         if (assessment.is_reportable) {
             const deadline = new Date();
             deadline.setHours(deadline.getHours() + 72);
             this.resultDeadlineTarget.textContent = deadline.toLocaleString();
-            this.resultDeadlineTarget.parentElement.parentElement.classList.remove('d-none');
+            deadlineAlert?.classList.remove('d-none');
         } else {
-            this.resultDeadlineTarget.parentElement.parentElement.classList.add('d-none');
+            deadlineAlert?.classList.add('d-none');
         }
     }
 
@@ -424,24 +437,14 @@ export default class extends Controller {
     }
 
     /**
-     * Show success message with fairy styling
+     * Show success message via the Aurora toast stack (window.faToast).
+     * Falls back to a console log if the toast helper is unavailable.
      */
     showSuccessMessage() {
-        const message = document.createElement('div');
-        message.className = 'alert alert-success alert-dismissible fade show fairy-magic-glow';
-        message.setAttribute('role', 'alert');
         const successTitle = this.translations.success_title || 'GDPR Assessment Complete!';
         const successText = this.translations.success_text || 'Incident form has been pre-filled with assessment results.';
-        message.innerHTML = `
-            <i class="fa-icon fa-icon--ui-stars fairy-icon-sparkle me-2" aria-hidden="true"></i>
-            <strong>${successTitle}</strong> ${successText}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        `;
-
-        const container = document.querySelector('.container-fluid');
-        if (container) {
-            container.insertBefore(message, container.firstChild);
-            setTimeout(() => message.remove(), 5000);
+        if (typeof window.faToast === 'function') {
+            window.faToast(`${successTitle} ${successText}`, 'success');
         }
     }
 
@@ -454,16 +457,17 @@ export default class extends Controller {
     }
 
     /**
-     * Get risk level CSS class
+     * Get risk level Aurora status-pill tone
+     * Maps risk severity → Aurora .fa-status-pill--* modifier.
      */
-    getRiskLevelClass(level) {
-        const classes = {
-            'low': 'bg-success',
-            'medium': 'bg-warning text-dark',
-            'high': 'bg-danger',
-            'very_high': 'bg-dark'
+    getRiskLevelTone(level) {
+        const tones = {
+            'low': 'success',
+            'medium': 'warning',
+            'high': 'danger',
+            'very_high': 'danger'
         };
-        return classes[level] || 'bg-secondary';
+        return tones[level] || 'neutral';
     }
 
     /**

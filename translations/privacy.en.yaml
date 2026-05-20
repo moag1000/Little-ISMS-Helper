@@ -217,6 +217,12 @@ privacy:
         title: 'GDPR Data Breach Assessment Wizard'
         subtitle: 'Step-by-step assessment according to GDPR Art. 33'
 
+        # Stepper labels (short form for header navigation)
+        step1_short: 'Scope'
+        step2_short: 'Data Type'
+        step3_short: 'Volume'
+        step4_short: 'Result'
+
         # Step 1
         step1_title: 'Is personal data involved?'
         personal_data_question: 'Does this incident involve personal data (data relating to identified or identifiable natural persons)?'
@@ -690,6 +696,10 @@ data_breach:
         trigger_hint: 'Use the wizard to determine if GDPR reporting is required (Art. 33)'
         title: 'GDPR Data Breach Assessment Wizard'
         subtitle: 'Step-by-step assessment according to GDPR Art. 33'
+        step1_short: 'Scope'
+        step2_short: 'Data Type'
+        step3_short: 'Volume'
+        step4_short: 'Result'
         step1_title: 'Is personal data involved?'
         personal_data_question: 'Does this incident involve personal data (data relating to identified or identifiable natural persons)?'
         personal_data_yes: 'Personal data is involved'

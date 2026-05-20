@@ -48,3 +48,6 @@
 @import "./styles/policy-doc.css";
 /* Report-Doc 5-slot template — sister stylesheet, used by templates/_components/_fa_report_doc.html.twig */
 @import "./styles/report-doc.css";
+
+/* GDPR Data-Breach Wizard Modal — Aurora v4 conformant (BEM .gdpr-wizard__*) */
+@import "./styles/gdpr-wizard.css";
