@@ -289,6 +289,17 @@ src/Controller/ManagementReviewController.php:215
 src/Controller/ManagementReviewController.php:69
 src/Controller/ManagementReviewController.php:70
 src/Controller/ManagementReviewController.php:97
+src/Controller/MappingQualityController.php:186
+src/Controller/MappingQualityController.php:234
+src/Controller/MappingQualityController.php:236
+src/Controller/MappingQualityController.php:243
+src/Controller/MappingQualityController.php:246
+src/Controller/MappingQualityController.php:355
+src/Controller/MappingQualityController.php:464
+src/Controller/MappingQualityController.php:466
+src/Controller/MappingQualityController.php:474
+src/Controller/MappingQualityController.php:477
+src/Controller/MappingQualityController.php:498
 src/Controller/MfaTokenController.php:224
 src/Controller/MfaTokenController.php:225
 src/Controller/Notification/InAppNotificationCenterController.php:147
