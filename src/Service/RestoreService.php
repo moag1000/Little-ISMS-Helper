@@ -279,7 +279,7 @@ class RestoreService
         $bestEffort = (bool) ($options['best_effort'] ?? false);
         try {
             $integrityWarning = $this->verifyIntegrity($backup);
-        } catch (RuntimeException $integrityException) {
+        } catch (\RuntimeException $integrityException) {
             if ($bestEffort) {
                 $this->logger->warning('Best-effort: SHA256 mismatch — continuing anyway', [
                     'error' => $integrityException->getMessage(),

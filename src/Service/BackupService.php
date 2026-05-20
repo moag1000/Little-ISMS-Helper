@@ -311,7 +311,7 @@ class BackupService
                     'entity' => $entityName,
                     'count'  => count($entities),
                 ]);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('Error backing up entity', [
                     'entity' => $entityName,
                     'error'  => $e->getMessage(),
@@ -338,7 +338,7 @@ class BackupService
                 $backup['statistics']['AuditLog'] = count($entities);
 
                 $this->logger->info('Backed up audit log', ['count' => count($entities)]);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('Error backing up audit log', ['error' => $e->getMessage()]);
             }
         }
@@ -353,7 +353,7 @@ class BackupService
                     $backup['statistics']['UserSession'] = count($sessions);
 
                     $this->logger->info('Backed up user sessions', ['count' => count($sessions)]);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $this->logger->error('Error backing up user sessions', ['error' => $e->getMessage()]);
                 }
             }
@@ -423,7 +423,7 @@ class BackupService
                     return true;
                 }
             }
-        } catch (Exception) {
+        } catch (\Exception) {
             // Entity not registered with Doctrine (e.g. in tests) → treat as no tenant field
         }
 
@@ -774,7 +774,7 @@ class BackupService
             }
 
             return $decoded['metadata'];
-        } catch (Exception) {
+        } catch (\Exception) {
             return null;
         }
     }
@@ -1114,7 +1114,7 @@ class BackupService
                 // Strip the namespace prefix for readability: keep only the timestamp part
                 return preg_replace('/^.*\\\\/', '', (string) $row['version']) ?? (string) $row['version'];
             }
-        } catch (Exception) {
+        } catch (\Exception) {
             // Table may not exist in test environments or on fresh installs
         }
         return 'unknown';
@@ -1130,7 +1130,7 @@ class BackupService
                 $packages = InstalledVersions::getAllRawData()[0]['versions'] ?? [];
                 return $packages['doctrine/orm']['version'] ?? 'unknown';
             }
-        } catch (Exception) {
+        } catch (\Exception) {
             // Fallback if Composer runtime API is not available
         }
         return 'unknown';

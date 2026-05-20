@@ -424,7 +424,7 @@ class RiskAcceptanceWorkflowService
                     $risk->getRiskOwner(),
                     $user
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('Failed to send approval notification', [
                     'error' => $e->getMessage(),
                     'risk_id' => $risk->getId(),
@@ -486,7 +486,7 @@ class RiskAcceptanceWorkflowService
                     $reason,
                     $user
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('Failed to send rejection notification', [
                     'error' => $e->getMessage(),
                     'risk_id' => $risk->getId(),
