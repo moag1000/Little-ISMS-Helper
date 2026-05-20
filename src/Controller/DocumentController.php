@@ -1144,6 +1144,11 @@ class DocumentController extends AbstractController
         }
 
         if ($request->isMethod('POST') && $this->userRepository !== null) {
+            if (!$this->isCsrfTokenValid('ack_audience_' . $document->getId(), (string) $request->request->get('_token'))) {
+                $this->addFlash('error', $this->translator->trans('common.csrf_invalid', [], 'messages'));
+                return $this->redirectToRoute('app_document_acknowledgement_audience_picker', ['id' => $document->getId()]);
+            }
+
             $userIds = array_filter(
                 (array) $request->request->all('user_ids'),
                 static fn($id): bool => is_string($id) && ctype_digit($id),

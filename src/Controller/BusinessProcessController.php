@@ -5,27 +5,33 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\BusinessProcess;
 use App\Form\BusinessProcessType;
 use App\Repository\BusinessProcessRepository;
 use App\Controller\Trait\LocalizedFlashTrait;
+use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[IsGranted('ROLE_USER')]
 class BusinessProcessController extends AbstractController
 {
     use LocalizedFlashTrait;
+    use ModuleGatedControllerTrait;
 
     public function __construct(
         private readonly BusinessProcessRepository $businessProcessRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly ModuleConfigurationService $moduleService,
     ) {}
 
     protected function getFlashDomain(): string
@@ -40,6 +46,8 @@ class BusinessProcessController extends AbstractController
     #[Route('/bcm/business-process', name: 'app_business_process_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         // Get current user's tenant
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
@@ -127,8 +135,11 @@ class BusinessProcessController extends AbstractController
         ]);
     }
     #[Route('/bcm/business-process/new', name: 'app_business_process_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $businessProcess = new BusinessProcess();
 
         // Set tenant from current user
@@ -156,6 +167,8 @@ class BusinessProcessController extends AbstractController
     #[Route('/bcm/business-process/api/stats', name: 'app_business_process_stats_api', methods: ['GET'])]
     public function statsApi(BusinessProcessRepository $businessProcessRepository): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $processes = $businessProcessRepository->findAll();
 
         $stats = [
@@ -198,6 +211,8 @@ class BusinessProcessController extends AbstractController
     #[Route('/bcm/business-process/{id}', name: 'app_business_process_show', methods: ['GET'])]
     public function show(BusinessProcess $businessProcess): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         // Calculate additional metrics for display
         $metrics = [
             'business_impact_score' => $businessProcess->getBusinessImpactScore(),
@@ -215,8 +230,11 @@ class BusinessProcessController extends AbstractController
         ]);
     }
     #[Route('/bcm/business-process/{id}/edit', name: 'app_business_process_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, BusinessProcess $businessProcess, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $form = $this->createForm(BusinessProcessType::class, $businessProcess);
         $form->handleRequest($request);
 
@@ -233,8 +251,11 @@ class BusinessProcessController extends AbstractController
         ]);
     }
     #[Route('/bcm/business-process/{id}', name: 'app_business_process_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, BusinessProcess $businessProcess, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete'.$businessProcess->getId(), $request->request->get('_token'))) {
             $entityManager->remove($businessProcess);
             $entityManager->flush();
@@ -247,6 +268,8 @@ class BusinessProcessController extends AbstractController
     #[Route('/bcm/business-process/{id}/bia', name: 'app_business_process_bia', methods: ['GET'])]
     public function bia(BusinessProcess $businessProcess): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         // Business Impact Analysis view
         $biaData = [
             'rto' => $businessProcess->getRto(),
