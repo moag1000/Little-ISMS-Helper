@@ -66,6 +66,15 @@ app_quick_fix_job_status:
     controller: App\Controller\QuickFixJobStatusController::status
     methods: [GET]
 
+# Shared progress page for QuickFix async jobs (PRG-after-POST landing).
+# Sibling to admin_job_progress_page but un-authenticated (QuickFixGuard).
+# Every QuickFix POST dispatcher redirects here with a 303 so Turbo can
+# follow the redirect instead of erroring on a 200+HTML response to a form.
+app_quick_fix_job_progress:
+    path: /quick-fix/jobs/{id}/progress
+    controller: App\Controller\QuickFixJobStatusController::progressPage
+    methods: [GET]
+
 # Root redirect - smart locale detection (without locale)
 app_home:
     path: /

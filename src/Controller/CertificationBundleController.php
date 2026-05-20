@@ -180,6 +180,7 @@ class CertificationBundleController extends AbstractController
         Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
         MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         $submittedToken = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('certification_bundle_export_dispatch', $submittedToken)) {
@@ -210,7 +211,14 @@ class CertificationBundleController extends AbstractController
             'locale' => $this->resolvePdfLocale($request),
         ];
 
-        $jobId = $jobStatusService->create('certification_bundle.export', $args);
+        $jobId = $jobStatusService->create('certification_bundle.export', $args + [
+            '_label' => $translator->trans('certification_bundle.export.progress_title', [], 'certification_bundle'),
+            '_subtitle' => $translator->trans('certification_bundle.export.progress_subtitle', [], 'certification_bundle'),
+            '_download_label' => $translator->trans('certification_bundle.export.download_button', [], 'certification_bundle'),
+        ]);
+        $jobStatusService->updatePayload($jobId, [
+            '_download_url' => $this->generateUrl('app_certification_bundle_export_download', ['id' => $jobId]),
+        ]);
 
         $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
             jobClass: \App\Job\ExportCertificationBundleJob::class,
@@ -218,12 +226,11 @@ class CertificationBundleController extends AbstractController
             jobId: $jobId,
         ));
 
-        return $this->render('certification_bundle/export_progress.html.twig', [
-            'jobId' => $jobId,
-            'cancelUrl' => $this->generateUrl('app_certification_bundle_index'),
-            'downloadUrl' => $this->generateUrl('app_certification_bundle_export_download', ['id' => $jobId]),
-            'isKonzern' => false,
-        ]);
+        // PRG: 303 redirect — see DataRepairController::runIntegrityCheck() for rationale.
+        return $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('app_certification_bundle_index'),
+        ], Response::HTTP_SEE_OTHER);
     }
 
     /**
@@ -447,6 +454,7 @@ class CertificationBundleController extends AbstractController
         Request $request,
         \App\Service\Job\JobStatusService $jobStatusService,
         MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         $submittedToken = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('certification_bundle_konzern_export_dispatch', $submittedToken)) {
@@ -499,7 +507,14 @@ class CertificationBundleController extends AbstractController
             'locale' => $this->resolvePdfLocale($request),
         ];
 
-        $jobId = $jobStatusService->create('certification_bundle.konzern_export', $args);
+        $jobId = $jobStatusService->create('certification_bundle.konzern_export', $args + [
+            '_label' => $translator->trans('certification_bundle.export.progress_title', [], 'certification_bundle'),
+            '_subtitle' => $translator->trans('certification_bundle.export.progress_subtitle', [], 'certification_bundle'),
+            '_download_label' => $translator->trans('certification_bundle.export.download_button', [], 'certification_bundle'),
+        ]);
+        $jobStatusService->updatePayload($jobId, [
+            '_download_url' => $this->generateUrl('app_certification_bundle_export_download', ['id' => $jobId]),
+        ]);
 
         $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
             jobClass: \App\Job\ExportKonzernCertificationBundleJob::class,
@@ -507,11 +522,10 @@ class CertificationBundleController extends AbstractController
             jobId: $jobId,
         ));
 
-        return $this->render('certification_bundle/export_progress.html.twig', [
-            'jobId' => $jobId,
-            'cancelUrl' => $this->generateUrl('app_certification_bundle_index'),
-            'downloadUrl' => $this->generateUrl('app_certification_bundle_export_download', ['id' => $jobId]),
-            'isKonzern' => true,
-        ]);
+        // PRG: 303 redirect — see DataRepairController::runIntegrityCheck() for rationale.
+        return $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('app_certification_bundle_index'),
+        ], Response::HTTP_SEE_OTHER);
     }
 }

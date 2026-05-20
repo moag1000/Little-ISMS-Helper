@@ -316,7 +316,14 @@ class ProcessingActivityController extends AbstractController
     ): Response {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
-        $jobId = $jobStatusService->create('processing_activity.vvt_export', []);
+        $jobId = $jobStatusService->create('processing_activity.vvt_export', [
+            '_label' => $this->translator->trans('processing_activity.export.progress_title', [], 'compliance'),
+            '_subtitle' => $this->translator->trans('processing_activity.export.progress_subtitle', [], 'compliance'),
+            '_download_label' => $this->translator->trans('processing_activity.export.download_button', [], 'compliance'),
+        ]);
+        $jobStatusService->updatePayload($jobId, [
+            '_download_url' => $this->generateUrl('app_processing_activity_export_csv_download', ['id' => $jobId]),
+        ]);
 
         $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
             jobClass: \App\Job\ExportProcessingActivityVvtJob::class,
@@ -324,11 +331,11 @@ class ProcessingActivityController extends AbstractController
             jobId: $jobId,
         ));
 
-        return $this->render('processing_activity/export_progress.html.twig', [
-            'jobId' => $jobId,
-            'cancelUrl' => $this->generateUrl('app_processing_activity_index'),
-            'downloadUrl' => $this->generateUrl('app_processing_activity_export_csv_download', ['id' => $jobId]),
-        ]);
+        // PRG: 303 redirect — see DataRepairController::runIntegrityCheck() for rationale.
+        return $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('app_processing_activity_index'),
+        ], Response::HTTP_SEE_OTHER);
     }
 
     /**

@@ -102,6 +102,25 @@ final class JobStatusService
     }
 
     /**
+     * Merge additional keys into the payload of an existing job record.
+     *
+     * Used by controllers that need to embed UI metadata (e.g. download
+     * URLs containing the job's own UUID) which can only be computed
+     * AFTER {@see self::create()} returns. Existing payload keys are
+     * preserved; conflicting keys are overwritten by the new values.
+     *
+     * @param array<string, mixed> $patch
+     */
+    public function updatePayload(string $id, array $patch): void
+    {
+        $data = $this->readRaw($id);
+        $current = is_array($data['payload'] ?? null) ? $data['payload'] : [];
+        $data['payload'] = $patch + $current;
+        $data['updated_at'] = time();
+        $this->write($id, $data);
+    }
+
+    /**
      * Read job status, applying stale-detection for stuck 'running' jobs.
      *
      * @return array{id: string, name: string, status: string, message: ?string,

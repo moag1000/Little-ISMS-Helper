@@ -1,13 +1,30 @@
 {% extends 'admin/layout.html.twig' %}
-{% trans_default_domain 'admin'%}
+{% trans_default_domain 'admin' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_status_pill.html.twig' as pill %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
 {% block title %}{{ 'admin.data_repair.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_title %}
     <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'admin.data_repair.title'|trans({}, 'admin') }}
 {% endblock %}
+
+{#
+ # The async-rendering refactor splits this page into a fast-rendering
+ # cache-driven hub and four per-section sub-pages (orphans / duplicates /
+ # broken-references / health). Every tile below reads scalar counts from
+ # var/data_integrity/<section>.json. The "Refresh now" CTAs on each
+ # sub-page dispatch a section-scoped scan job via JobDispatcher.
+ #
+ # Counts are stale-tolerant by design: when an admin clicks a repair
+ # action the underlying route still reads live data — the cache only
+ # drives the navigation UI and timestamp banners.
+ #}
+
+{% set hourAgo = "now"|date('U') - 3600 %}
+{% set fullCache = integrityResultCache %}
+{% set fullCacheStale = fullCache is null or fullCache.completed_at < hourAgo %}
 
 {% block admin_content %}
 <div class="container-fluid">
@@ -24,8 +41,7 @@
         subtitle: 'admin.data_repair.description'|trans({}, 'admin'),
     }) }}
 
-    {# Sprint 10 / S10-2: Junior-Sorge „Titel klingt gefährlich" —
-     # explizite Warn-Leiste mit Reversibilitäts-Information. #}
+    {# Safety banner — every action here mutates live data. #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'border-start border-5 border-danger shadow-sm' } } %}
         {% block alert_body %}
         <div class="fa-alert__title">{{ 'admin.data_repair.safety.title'|trans({}, 'admin') }}</div>
@@ -61,27 +77,29 @@
         {{ _fa_alert.render({ variant: 'danger', dismissible: true, body: message }) }}
     {% endfor %}
 
-    {# Async integrity-check banner (Phase 2.5 — async-jobs rollout).
-     # The full scan is also computed inline on this page hit (legacy),
-     # but on large tenant trees that can blow past PHP-FPM's 30 s limit.
-     # The CTA dispatches a Messenger worker that re-runs the scan in
-     # the background and caches a scalar summary to var/data_integrity/last.json.
-     # The "Last run" footer compares the cached snapshot with the live
-     # inline scan so admins can verify drift / spot stale caches. #}
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}
+    {% for message in app.flashes('warning') %}
+        {{ _fa_alert.render({ variant: 'warning', dismissible: true, body: message }) }}
+    {% endfor %}
+
+    {% for message in app.flashes('info') %}
+        {{ _fa_alert.render({ variant: 'info', dismissible: true, body: message }) }}
+    {% endfor %}
+
+    {# Full integrity-scan banner — cache state + run-now CTA. #}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: fullCacheStale ? 'warning' : 'info', class: 'mb-4' } } %}
         {% block alert_body %}
         <div class="d-flex align-items-start gap-3 flex-wrap">
             <div class="flex-grow-1">
                 <div class="fa-alert__title">{{ 'admin.data_repair.integrity_check.title'|trans({}, 'admin') }}</div>
                 <p class="mb-2">{{ 'admin.data_repair.integrity_check.description'|trans({}, 'admin') }}</p>
-                {% if integrityResultCache is not null %}
+                {% if fullCache is not null %}
                     <p class="small text-muted mb-0">
                         <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                         {{ 'admin.data_repair.integrity_check.last_run'|trans({
-                            '%when%': integrityResultCache.completed_at|date('Y-m-d H:i'),
-                            '%duration%': (integrityResultCache.duration_ms / 1000)|round(1),
+                            '%when%': fullCache.completed_at|date('Y-m-d H:i'),
+                            '%duration%': (fullCache.duration_ms / 1000)|round(1),
                         }, 'admin') }}
-                        {% set _c = integrityResultCache.counts %}
+                        {% set _c = fullCache.counts %}
                         — {{ 'admin.data_repair.integrity_check.last_counts'|trans({
                             '%orphans%': _c.orphans_total|default(0),
                             '%duplicates%': _c.duplicates_groups|default(0),
@@ -107,22 +125,18 @@
         {% endblock %}
     {% endembed %}
 
-    {# Schema-Maintenance — 3-Card-Grid (Migrations | Drift | Aktionen).
-     # Buttons werden IMMER gerendert; bei nichts-zu-tun disabled + Status-Pill
-     # zeigt grün/gelb/rot den aktuellen Zustand. So sieht der Admin auch im
-     # Sync-Fall, dass die Funktion existiert und erreichbar ist. #}
+    {# Schema-Maintenance — 3-Card-Grid (Migrations | Drift | Aktionen). #}
     <div class="row g-3 mb-4">
-        {# Migrations Card #}
         <div class="col-md-4">
             <section class="fa-section">
-        <div class="fa-section__header">
-            <h4 class="mb-0">
-                            <i class="fa-icon fa-icon--nav-database-add" aria-hidden="true"></i>
-                            {{ 'admin.data_repair.schema.migrations'|trans({}, 'admin') }}
-                        </h4>
-        </div>
-        <div class="fa-section__body">
-            <p class="mb-2">
+                <div class="fa-section__header">
+                    <h4 class="mb-0">
+                        <i class="fa-icon fa-icon--nav-database-add" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.schema.migrations'|trans({}, 'admin') }}
+                    </h4>
+                </div>
+                <div class="fa-section__body">
+                    <p class="mb-2">
                         {% if migration_status.pending > 0 %}
                             <span class="fa-status-pill fa-status-pill--warning">
                                 {{ migration_status.pending }} {{ 'admin.data_repair.schema.pending'|trans({}, 'admin') }}
@@ -152,21 +166,20 @@
                             {{ 'admin.data_repair.schema.run_migrations'|trans({}, 'admin') }}
                         </button>
                     </form>
-        </div>
-    </section>
+                </div>
+            </section>
         </div>
 
-        {# Schema Drift Card #}
         <div class="col-md-4">
             <section class="fa-section">
-        <div class="fa-section__header">
-            <h4 class="mb-0">
-                            <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
-                            {{ 'admin.data_repair.schema.drift'|trans({}, 'admin') }}
-                        </h4>
-        </div>
-        <div class="fa-section__body">
-            <p class="mb-2">
+                <div class="fa-section__header">
+                    <h4 class="mb-0">
+                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.schema.drift'|trans({}, 'admin') }}
+                    </h4>
+                </div>
+                <div class="fa-section__body">
+                    <p class="mb-2">
                         {% if schema_drift.count > 0 %}
                             <span class="fa-status-pill fa-status-pill--danger">
                                 {{ schema_drift.count }} {{ 'admin.data_repair.schema.statements'|trans({}, 'admin') }}
@@ -197,2152 +210,496 @@
                             {{ 'admin.data_repair.schema.run_reconcile'|trans({}, 'admin') }}
                         </button>
                     </form>
-        </div>
-    </section>
+                </div>
+            </section>
         </div>
 
-        {# Refresh Status Card #}
         <div class="col-md-4">
             <section class="fa-section">
-        <div class="fa-section__header">
-            <h4 class="mb-0">
-                            <i class="fa-icon fa-icon--util-spinner" aria-hidden="true"></i>
-                            {{ 'admin.data_repair.schema.actions'|trans({}, 'admin') }}
-                        </h4>
-        </div>
-        <div class="fa-section__body">
-            <p class="small text-muted mb-2">
-                        {{ 'admin.data_repair.schema.actions_desc'|trans({}, 'admin') }}
+                <div class="fa-section__header">
+                    <h4 class="mb-0">
+                        <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.tenant_card.title'|trans({}, 'admin') }}
+                    </h4>
+                </div>
+                <div class="fa-section__body">
+                    <p class="mb-2">
+                        <span class="fa-status-pill fa-status-pill--neutral">
+                            {{ 'admin.data_repair.tenant_card.tenant_count'|trans({'%count%': tenantCount}, 'admin') }}
+                        </span>
                     </p>
-                    <a href="{{ path('admin_data_repair_index') }}"
-                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--full mb-2">
-                        <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.schema.refresh'|trans({}, 'admin') }}
-                    </a>
-        </div>
-    </section>
+                    <p class="small text-muted mb-0">
+                        {{ 'admin.data_repair.tenant_card.description'|trans({}, 'admin') }}
+                    </p>
+                </div>
+            </section>
         </div>
     </div>
 
-    {# Data Health Summary #}
-    <section class="fa-section {{ 'mb-4 border-' ~ (summary.health_score >= 90 ? 'success' : (summary.health_score >= 70 ? 'warning' : 'danger')) }}">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--nav-heart-pulse" aria-hidden="true"></i> Data Health Score: {{ summary.health_score }}%
-                </h2>
+    {# ====================================================================
+       Per-section KPI tiles — each links to its sub-page where repair
+       actions + previewed rows are rendered. Counts come from the
+       per-section cache; "never scanned" tiles render neutral grey.
+    ==================================================================== #}
+    <h2 class="mt-4 mb-3">
+        <i class="fa-icon fa-icon--nav-heart-pulse" aria-hidden="true"></i>
+        {{ 'admin.data_repair.sections_title'|trans({}, 'admin') }}
+    </h2>
+
+    <div class="row g-3 mb-4">
+        {# Orphans tile #}
+        {% set orphCache = sectionCaches.orphans %}
+        {% set orphTotal = orphCache is not null ? (orphCache.payload.total|default(0)) : null %}
+        {% set orphVariant = orphCache is null ? 'primary' : (orphTotal > 0 ? 'warning' : 'success') %}
+        <div class="col-md-6 col-lg-3">
+            {{ _fa_feature_card.render({
+                variant: orphVariant,
+                icon: 'status-warning',
+                label: 'admin.data_repair.section.orphans'|trans({}, 'admin'),
+                value: orphCache is null ? '—' : orphTotal,
+                hint: orphCache is null
+                    ? 'admin.data_repair.section.never_scanned'|trans({}, 'admin')
+                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': orphCache.completed_at|date('Y-m-d H:i')}, 'admin'),
+                href: path('admin_data_repair_orphans'),
+            }) }}
         </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
-            <div class="row g-3">
-                <div class="col-md-4">
-                    {{ _fa_feature_card.render({
-                        variant: summary.orphaned_count > 0 ? 'warning' : 'success',
-                        icon: 'status-warning',
-                        label: 'admin.data_repair.orphaned_entities'|trans({}, 'admin'),
-                        value: summary.orphaned_count,
-                    }) }}
-                </div>
-                <div class="col-md-4">
-                    {{ _fa_feature_card.render({
-                        variant: summary.broken_references_count > 0 ? 'danger' : 'success',
-                        icon: 'ui-link',
-                        label: 'admin.data_repair.broken_references'|trans({}, 'admin'),
-                        value: summary.broken_references_count,
-                    }) }}
-                </div>
-                <div class="col-md-4">
-                    {{ _fa_feature_card.render({
-                        variant: summary.duplicates_count > 0 ? 'warning' : 'success',
-                        icon: 'ui-copy',
-                        label: 'admin.data_repair.duplicates.title'|trans({}, 'admin'),
-                        value: summary.duplicates_count,
-                    }) }}
+
+        {# Duplicates tile #}
+        {% set dupCache = sectionCaches.duplicates %}
+        {% set dupTotal = dupCache is not null ? (dupCache.payload.total_groups|default(0)) : null %}
+        {% set dupVariant = dupCache is null ? 'primary' : (dupTotal > 0 ? 'warning' : 'success') %}
+        <div class="col-md-6 col-lg-3">
+            {{ _fa_feature_card.render({
+                variant: dupVariant,
+                icon: 'ui-copy',
+                label: 'admin.data_repair.section.duplicates'|trans({}, 'admin'),
+                value: dupCache is null ? '—' : dupTotal,
+                hint: dupCache is null
+                    ? 'admin.data_repair.section.never_scanned'|trans({}, 'admin')
+                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': dupCache.completed_at|date('Y-m-d H:i')}, 'admin'),
+                href: path('admin_data_repair_duplicates_index'),
+            }) }}
+        </div>
+
+        {# Broken refs tile #}
+        {% set brCache = sectionCaches.broken_references %}
+        {% set brTotal = brCache is not null
+            ? (brCache.payload.broken_total|default(0)) + (brCache.payload.cascade_total|default(0)) + (brCache.payload.uploads_total|default(0))
+            : null %}
+        {% set brVariant = brCache is null ? 'primary' : (brTotal > 0 ? 'danger' : 'success') %}
+        <div class="col-md-6 col-lg-3">
+            {{ _fa_feature_card.render({
+                variant: brVariant,
+                icon: 'ui-link',
+                label: 'admin.data_repair.section.broken_references'|trans({}, 'admin'),
+                value: brCache is null ? '—' : brTotal,
+                hint: brCache is null
+                    ? 'admin.data_repair.section.never_scanned'|trans({}, 'admin')
+                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': brCache.completed_at|date('Y-m-d H:i')}, 'admin'),
+                href: path('admin_data_repair_broken_refs_index'),
+            }) }}
+        </div>
+
+        {# Health tile #}
+        {% set healthCache = sectionCaches.health %}
+        {% set healthTotal = healthCache is not null ? (healthCache.payload.total|default(0)) : null %}
+        {% set healthVariant = healthCache is null ? 'primary' : (healthTotal > 0 ? 'warning' : 'success') %}
+        <div class="col-md-6 col-lg-3">
+            {{ _fa_feature_card.render({
+                variant: healthVariant,
+                icon: 'nav-heart-pulse',
+                label: 'admin.data_repair.section.health'|trans({}, 'admin'),
+                value: healthCache is null ? '—' : healthTotal,
+                hint: healthCache is null
+                    ? 'admin.data_repair.section.never_scanned'|trans({}, 'admin')
+                    : 'admin.data_repair.section.scanned_ago'|trans({'%when%': healthCache.completed_at|date('Y-m-d H:i')}, 'admin'),
+                href: path('admin_data_repair_health_index'),
+            }) }}
+        </div>
+    </div>
+
+    {# ====================================================================
+       Inventory previews — render cached scan results inline so the admin
+       can SEE what's cleanable without clicking through to the sub-pages.
+       Each section card reads from SectionScanResultCache (fast file read,
+       no DB roundtrip on this page) and shows the first ~10 items + a
+       "View all" link when more remain. Cache-empty cards render an
+       Aurora empty-state with a "Scan now" CTA pointing to the section.
+    ==================================================================== #}
+    <h2 class="mt-5 mb-3">
+        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+        {{ 'admin.data_repair.inventory.title'|trans({}, 'admin') }}
+    </h2>
+
+    {# Orphans inventory card #}
+    <section class="fa-section mb-4 {{ orphCache is null ? 'border-primary' : (orphTotal > 0 ? 'border-warning' : 'border-success') }}">
+        <div class="fa-section__header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h3 class="mb-0 fs-5">
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.orphans'|trans({}, 'admin') }}
+                    {% if orphCache is not null %}
+                        <span class="fa-status-pill fa-status-pill--{{ orphTotal > 0 ? 'warning' : 'success' }} ms-2">
+                            {{ orphTotal }}
+                        </span>
+                    {% endif %}
+                </h3>
+                <div class="d-flex gap-2 align-items-center small text-muted">
+                    {% if orphCache is not null %}
+                        <span>
+                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': orphCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                        </span>
+                    {% endif %}
+                    <form method="post" action="{{ path('admin_data_repair_orphans_refresh') }}" class="d-inline-block m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_orphans') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
+                        </button>
+                    </form>
                 </div>
             </div>
-
-            {% if summary.total_issues > 0 %}
-                {{ _fa_alert.render({ variant: 'info', class: 'mt-3 mb-0', body: '<strong>' ~ 'common.info'|trans({}, 'messages') ~ ':</strong> Found ' ~ summary.total_issues ~ ' total issues. Use the repair tools below to fix them.' }) }}
+        </div>
+        <div class="fa-section__body">
+            {% if orphCache is null %}
+                {{ _fa_alert.render({
+                    variant: 'info',
+                    body: 'admin.data_repair.inventory.never_scanned'|trans({}, 'admin'),
+                }) }}
+            {% elseif orphTotal == 0 %}
+                {{ _fa_alert.render({
+                    variant: 'success',
+                    body: 'admin.data_repair.no_orphans'|trans({}, 'admin'),
+                }) }}
             {% else %}
-                {{ _fa_alert.render({ variant: 'success', class: 'mt-3 mb-0', body: '<strong>All systems healthy!</strong> No data integrity issues detected.' }) }}
+                {% set orphPreview = orphCache.payload.preview_by_type|default({}) %}
+                {% set orphCounts = orphCache.payload.counts_by_type|default({}) %}
+                <p class="small text-muted mb-3">
+                    {{ 'admin.data_repair.section.orphans_summary'|trans({
+                        '%total%': orphTotal,
+                        '%types%': orphCounts|length,
+                    }, 'admin') }}
+                </p>
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--compact fa-table--hover">
+                        <thead class="fa-table__head"><tr>
+                            <th scope="col" class="fa-table__th">{{ 'admin.data_repair.inventory.col_type'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">ID</th>
+                            <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                        </tr></thead>
+                        <tbody class="fa-table__body">
+                            {% set rowsShown = 0 %}
+                            {% set maxRows = 15 %}
+                            {% for typeKey, rows in orphPreview %}
+                                {% for row in rows %}
+                                    {% if rowsShown < maxRows %}
+                                        <tr class="fa-table__row">
+                                            <td class="fa-table__cell">
+                                                <span class="fa-status-pill fa-status-pill--neutral">{{ typeKey|replace({'_': ' '})|title }}</span>
+                                            </td>
+                                            <td class="fa-table__cell">{{ row.id ?? '—' }}</td>
+                                            <td class="fa-table__cell">{{ row.label ?? '—' }}</td>
+                                        </tr>
+                                        {% set rowsShown = rowsShown + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if orphTotal > rowsShown %}
+                    <p class="small text-muted mt-2 mb-0">
+                        {{ 'admin.data_repair.inventory.more_items'|trans({'%count%': orphTotal - rowsShown}, 'admin') }}
+                    </p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ path('admin_data_repair_orphans') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.inventory.show_all'|trans({}, 'admin') }}
+                    </a>
+                </div>
             {% endif %}
         </div>
     </section>
 
-    {# Quick Fix Tools #}
-    {% if summary.orphaned_count > 0 or summary.broken_references_count > 0 %}
-    <section class="fa-section mb-4">
+    {# Duplicates inventory card #}
+    <section class="fa-section mb-4 {{ dupCache is null ? 'border-primary' : (dupTotal > 0 ? 'border-warning' : 'border-success') }}">
         <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> Quick Fix Tools
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            <div class="row g-3">
-                {% if summary.orphaned_count > 0 %}
-                <div class="col-md-6"
-                     data-controller="data-repair"
-                     data-data-repair-base-url-value="{{ path('admin_data_repair_fix_all_orphans_async', {tenantId: 0}) }}"
-                     data-data-repair-expected-total-value="{{ summary.orphaned_count }}"
-                     data-data-repair-confirm-text-value="Assign ALL orphaned entities to this tenant?">
-                    <h3>Fix All Orphaned Entities</h3>
-                    <p class="text-muted">Assign all {{ summary.orphaned_count }} orphaned entities to a tenant</p>
-                    <p class="text-muted small">
-                        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
-                        Runs asynchronously — returns immediately with a progress page.
-                    </p>
-                    <form method="post" data-data-repair-target="form">
-                        <input type="hidden" name="_token" value="{{ csrf_token('fix_all_orphans') }}">
-                        <div class="input-group">
-                            <select name="tenant_id" class="form-select fa-cyber-input__field" required data-data-repair-target="tenantSelect">
-                                <option value="">Select Tenant...</option>
-                                {% for tenant in tenants %}
-                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-action="data-repair#fixAllOrphans">
-                                <i class="fa-icon fa-icon--threat" aria-hidden="true"></i> Fix All Orphans
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                {% endif %}
-
-                {% if summary.broken_references_count > 0 %}
-                <div class="col-md-6">
-                    <h3>Fix Tenant Mismatches</h3>
-                    <p class="text-muted">Automatically align {{ summary.broken_references_count }} tenant assignments</p>
-                    <form method="post" action="{{ path('admin_data_repair_fix_tenant_mismatches') }}"
-                          data-controller="ui-actions"
-                          data-action="submit->ui-actions#confirm"
-                          data-ui-actions-message-param="Fix all tenant mismatches automatically?">
-                        <input type="hidden" name="_token" value="{{ csrf_token('fix_tenant_mismatches') }}">
-                        <div class="mb-2">
-                            <label for="fix_tenant_mismatches_reason" class="form-label small fw-semibold">
-                                {{ 'admin.data_repair.reason_label'|trans({}, 'admin') }} <span class="text-danger" aria-hidden="true">*</span>
-                            </label>
-                            <textarea
-                                id="fix_tenant_mismatches_reason"
-                                name="reason"
-                                class="form-control fa-cyber-input__field"
-                                rows="2"
-                                minlength="20"
-                                required
-                                aria-required="true"
-                                aria-describedby="fix_tenant_mismatches_reason_help"></textarea>
-                            <div id="fix_tenant_mismatches_reason_help" class="form-text">
-                                {{ 'admin.data_repair.reason_help'|trans({}, 'admin') }}
-                            </div>
-                        </div>
-                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
-                            <i class="fa-icon fa-icon--threat" aria-hidden="true"></i> Fix Tenant Mismatches
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h3 class="mb-0 fs-5">
+                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.duplicates'|trans({}, 'admin') }}
+                    {% if dupCache is not null %}
+                        <span class="fa-status-pill fa-status-pill--{{ dupTotal > 0 ? 'warning' : 'success' }} ms-2">
+                            {{ dupTotal }}
+                        </span>
+                    {% endif %}
+                </h3>
+                <div class="d-flex gap-2 align-items-center small text-muted">
+                    {% if dupCache is not null %}
+                        <span>
+                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': dupCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                        </span>
+                    {% endif %}
+                    <form method="post" action="{{ path('admin_data_repair_duplicates_refresh') }}" class="d-inline-block m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_duplicates') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
                         </button>
                     </form>
                 </div>
-                {% endif %}
             </div>
         </div>
-    </section>
-    {% endif %}
-
-    {# ────────────────────────────────────────────────────────────────────────
-       Duplicate Fix Tools
-       Shown only when at least one duplicate group exists across any entity type.
-    ──────────────────────────────────────────────────────────────────────── #}
-    {% set hasDuplicates = (duplicates.audits is defined and duplicates.audits|length > 0)
-        or (duplicates.assets is defined and duplicates.assets|length > 0)
-        or (duplicates.risks is defined and duplicates.risks|length > 0)
-        or (duplicates.incidents is defined and duplicates.incidents|length > 0)
-        or (duplicates.documents is defined and duplicates.documents|length > 0) %}
-    {% if hasDuplicates %}
-    <section class="fa-section mb-4 border-warning">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
-                    {{ 'admin.data_repair.duplicates.title'|trans({}, 'admin') }}
-                </h2>
-        </div>
         <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.duplicates.description'|trans({}, 'admin') }) }}
+            {% if dupCache is null %}
+                {{ _fa_alert.render({
+                    variant: 'info',
+                    body: 'admin.data_repair.inventory.never_scanned'|trans({}, 'admin'),
+                }) }}
+            {% elseif dupTotal == 0 %}
+                {{ _fa_alert.render({
+                    variant: 'success',
+                    body: 'admin.data_repair.duplicates.all_ok'|trans({}, 'admin'),
+                }) }}
+            {% else %}
+                {% set dupPreview = dupCache.payload.preview_by_type|default({}) %}
+                {% set dupGroups = dupCache.payload.groups_by_type|default({}) %}
+                <p class="small text-muted mb-3">
+                    {{ 'admin.data_repair.section.duplicates_summary'|trans({
+                        '%groups%': dupTotal,
+                        '%types%': dupGroups|length,
+                    }, 'admin') }}
+                </p>
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--compact fa-table--hover">
+                        <thead class="fa-table__head"><tr>
+                            <th scope="col" class="fa-table__th">{{ 'admin.data_repair.inventory.col_type'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'admin.data_repair.inventory.col_group'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'admin.data_repair.inventory.col_count'|trans({}, 'admin') }}</th>
+                        </tr></thead>
+                        <tbody class="fa-table__body">
+                            {% set rowsShown = 0 %}
+                            {% set maxRows = 15 %}
+                            {% for typeKey, groups in dupPreview %}
+                                {% for grp in groups %}
+                                    {% if rowsShown < maxRows %}
+                                        <tr class="fa-table__row">
+                                            <td class="fa-table__cell">
+                                                <span class="fa-status-pill fa-status-pill--neutral">{{ typeKey|replace({'_': ' '})|title }}</span>
+                                            </td>
+                                            <td class="fa-table__cell">{{ grp.label ?? '—' }}</td>
+                                            <td class="fa-table__cell">
+                                                <span class="fa-status-pill fa-status-pill--warning">{{ grp.count ?? 0 }}</span>
+                                            </td>
+                                        </tr>
+                                        {% set rowsShown = rowsShown + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if dupTotal > rowsShown %}
+                    <p class="small text-muted mt-2 mb-0">
+                        {{ 'admin.data_repair.inventory.more_groups'|trans({'%count%': dupTotal - rowsShown}, 'admin') }}
+                    </p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ path('admin_data_repair_duplicates_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.inventory.show_all'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
 
-            {# Summary pills per entity type #}
-            <div class="d-flex flex-wrap gap-2 mb-4">
-                {% for typeKey in ['audits', 'assets', 'risks', 'incidents', 'documents'] %}
-                    {% set groups = duplicates[typeKey] is defined ? duplicates[typeKey] : [] %}
-                    {% if groups|length > 0 %}
-                        <span class="fa-status-pill fa-status-pill--warning">
-                            {{ typeKey|replace({'_': ' '})|title }}: {{ groups|length }} {{ 'admin.data_repair.duplicates.group_count'|trans({}, 'admin') }}
+    {# Broken-references inventory card #}
+    <section class="fa-section mb-4 {{ brCache is null ? 'border-primary' : (brTotal > 0 ? 'border-danger' : 'border-success') }}">
+        <div class="fa-section__header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h3 class="mb-0 fs-5">
+                    <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.broken_references'|trans({}, 'admin') }}
+                    {% if brCache is not null %}
+                        <span class="fa-status-pill fa-status-pill--{{ brTotal > 0 ? 'danger' : 'success' }} ms-2">
+                            {{ brTotal }}
                         </span>
                     {% endif %}
-                {% endfor %}
-            </div>
-
-            {# Per-type merge forms (SUPER_ADMIN only — destructive) #}
-            <div class="row g-3">
-                {% for typeKey in ['audits', 'assets', 'risks', 'incidents', 'documents'] %}
-                    {% set groups = duplicates[typeKey] is defined ? duplicates[typeKey] : [] %}
-                    {% if groups|length > 0 %}
-                    <div class="col-md-6 col-lg-4">
-                        <section class="fa-section h-100 border-warning">
-        <div class="fa-section__header">
-            <h3 class="mb-0 fs-6 fw-semibold">
-                                        <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
-                                        {{ typeKey|replace({'_': ' '})|title }}
-                                    </h3>
-        </div>
-        <div class="fa-section__body">
-            {% set totalDupItems = 0 %}
-                                {% for grp in groups %}
-                                    {% set cnt = grp.count is defined ? grp.count : (grp|length) %}
-                                    {% set totalDupItems = totalDupItems + cnt %}
-                                {% endfor %}
-                                <p class="small text-muted mb-2">
-                                    {{ 'admin.data_repair.duplicates.group_info'|trans({'%groups%': groups|length, '%items%': totalDupItems}, 'admin') }}
-                                </p>
-                                <p class="small mb-3">{{ 'admin.data_repair.duplicates.merge_hint'|trans({}, 'admin') }}</p>
-                                <form method="post"
-                                      action="{{ path('admin_data_repair_fix_duplicates', {entityType: typeKey}) }}"
-                                      data-controller="ui-actions"
-                                      data-action="submit->ui-actions#confirm"
-                                      data-ui-actions-message-param="{{ 'admin.data_repair.duplicates.confirm_merge'|trans({'%type%': typeKey, '%count%': groups|length}, 'admin') }}">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('fix_duplicates_' ~ typeKey) }}">
-                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--full">
-                                        <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i>
-                                        {{ 'admin.data_repair.duplicates.merge_button'|trans({'%count%': groups|length}, 'admin') }}
-                                    </button>
-                                </form>
-        </div>
-    </section>
-                    </div>
+                </h3>
+                <div class="d-flex gap-2 align-items-center small text-muted">
+                    {% if brCache is not null %}
+                        <span>
+                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': brCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                        </span>
                     {% endif %}
-                {% endfor %}
+                    <form method="post" action="{{ path('admin_data_repair_broken_refs_refresh') }}" class="d-inline-block m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_broken_refs') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
+                        </button>
+                    </form>
+                </div>
             </div>
-
-            {# Detailed duplicate groups — collapsed by default for readability #}
-            <details class="mt-4">
-                <summary class="fw-semibold cursor-pointer">{{ 'admin.data_repair.duplicates.show_details'|trans({}, 'admin') }}</summary>
-                <div class="mt-3">
-                {% for typeKey in ['audits', 'assets', 'risks', 'incidents', 'documents'] %}
-                    {% set groups = duplicates[typeKey] is defined ? duplicates[typeKey] : [] %}
-                    {% if groups|length > 0 %}
-                    <h4 class="mt-3 mb-2 fs-6 text-uppercase text-muted">{{ typeKey|replace({'_': ' '})|title }}</h4>
-                    {% for grp in groups %}
-                        {% set entities = grp.entities is defined ? grp.entities : grp %}
-                        {% set groupLabel = grp.value is defined ? grp.value : (entities|first).title|default((entities|first).name|default('#' ~ (entities|first).id|default(''))) %}
-                        <section class="fa-section mb-2 border-warning">
-        <div class="fa-section__header">
-            <span class="fw-semibold small">{{ groupLabel }}</span>
-                                    <span class="fa-status-pill fa-status-pill--warning">{{ (entities|length) ~ ' ' ~ 'admin.data_repair.duplicates.items'|trans({}, 'admin') }}</span>
         </div>
         <div class="fa-section__body">
-            <ul class="list-unstyled mb-0 small">
-                                {% for entity in entities %}
+            {% if brCache is null %}
+                {{ _fa_alert.render({
+                    variant: 'info',
+                    body: 'admin.data_repair.inventory.never_scanned'|trans({}, 'admin'),
+                }) }}
+            {% elseif brTotal == 0 %}
+                {{ _fa_alert.render({
+                    variant: 'success',
+                    body: 'admin.data_repair.section.no_broken_refs'|trans({}, 'admin'),
+                }) }}
+            {% else %}
+                {% set brokenTotal = brCache.payload.broken_total|default(0) %}
+                {% set cascadeTotal = brCache.payload.cascade_total|default(0) %}
+                {% set uploadsTotal = brCache.payload.uploads_total|default(0) %}
+                <p class="small text-muted mb-3">
+                    {{ 'admin.data_repair.section.broken_refs_summary'|trans({
+                        '%broken%': brokenTotal,
+                        '%cascade%': cascadeTotal,
+                        '%uploads%': uploadsTotal,
+                    }, 'admin') }}
+                </p>
+
+                {% set brokenByBucket = brCache.payload.broken_by_bucket|default({}) %}
+                {% set cascadeByBucket = brCache.payload.cascade_by_bucket|default({}) %}
+                <div class="row g-3">
+                    {% if brokenByBucket|length > 0 %}
+                        <div class="col-md-6">
+                            <h4 class="fs-6 mb-2">{{ 'admin.data_repair.inventory.broken_refs_header'|trans({}, 'admin') }}</h4>
+                            <ul class="list-unstyled small mb-0">
+                                {% for bucket, count in brokenByBucket %}
                                     <li class="mb-1">
-                                        <span class="fa-status-pill fa-status-pill--neutral">{{ 'ID: ' ~ entity.id }}</span>
-                                        {% if entity.title is defined %}{{ entity.title }}{% elseif entity.name is defined %}{{ entity.name }}{% elseif entity.auditNumber is defined %}{{ entity.auditNumber }}{% elseif entity.originalFilename is defined %}{{ entity.originalFilename }}{% endif %}
-                                        {% if entity.tenant is defined and entity.tenant %}<small class="text-muted">({{ entity.tenant.name }})</small>{% endif %}
+                                        <span class="fa-status-pill fa-status-pill--danger">{{ count }}</span>
+                                        {{ bucket|replace({'_': ' '})|title }}
                                     </li>
                                 {% endfor %}
-                                </ul>
-        </div>
-    </section>
-                    {% endfor %}
+                            </ul>
+                        </div>
                     {% endif %}
-                {% endfor %}
+                    {% if cascadeByBucket|length > 0 %}
+                        <div class="col-md-6">
+                            <h4 class="fs-6 mb-2">{{ 'admin.data_repair.inventory.cascade_orphans_header'|trans({}, 'admin') }}</h4>
+                            <ul class="list-unstyled small mb-0">
+                                {% for bucket, count in cascadeByBucket %}
+                                    <li class="mb-1">
+                                        <span class="fa-status-pill fa-status-pill--warning">{{ count }}</span>
+                                        {{ bucket|replace({'_': ' '})|title }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
                 </div>
-            </details>
+                {% if uploadsTotal > 0 %}
+                    <p class="small text-muted mt-3 mb-0">
+                        <i class="fa-icon fa-icon--nav-hdd" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.inventory.orphaned_uploads_summary'|trans({'%count%': uploadsTotal}, 'admin') }}
+                    </p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ path('admin_data_repair_broken_refs_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.inventory.show_all'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </section>
-    {% endif %}
 
-    {# Orphaned Entities Section #}
-    <section class="fa-section mb-4">
+    {# Health-issues inventory card #}
+    <section class="fa-section mb-4 {{ healthCache is null ? 'border-primary' : (healthTotal > 0 ? 'border-warning' : 'border-success') }}">
         <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.data_repair.orphaned_entities'|trans({}, 'admin') }}
-                </h2>
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h3 class="mb-0 fs-5">
+                    <i class="fa-icon fa-icon--nav-heart-pulse" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.health'|trans({}, 'admin') }}
+                    {% if healthCache is not null %}
+                        <span class="fa-status-pill fa-status-pill--{{ healthTotal > 0 ? 'warning' : 'success' }} ms-2">
+                            {{ healthTotal }}
+                        </span>
+                    {% endif %}
+                </h3>
+                <div class="d-flex gap-2 align-items-center small text-muted">
+                    {% if healthCache is not null %}
+                        <span>
+                            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.scanned_ago'|trans({'%when%': healthCache.completed_at|date('Y-m-d H:i')}, 'admin') }}
+                        </span>
+                    {% endif %}
+                    <form method="post" action="{{ path('admin_data_repair_health_refresh') }}" class="d-inline-block m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_health') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                            {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
         <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {% set totalOrphans = 0 %}
-            {% for entities in orphanedEntities %}{% set totalOrphans = totalOrphans + entities|length %}{% endfor %}
-            {% if totalOrphans == 0 %}
-                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.no_orphans'|trans({}, 'admin') }) }}
+            {% if healthCache is null %}
+                {{ _fa_alert.render({
+                    variant: 'info',
+                    body: 'admin.data_repair.inventory.never_scanned'|trans({}, 'admin'),
+                }) }}
+            {% elseif healthTotal == 0 %}
+                {{ _fa_alert.render({
+                    variant: 'success',
+                    body: 'admin.data_repair.section.health_all_ok'|trans({}, 'admin'),
+                }) }}
             {% else %}
-                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.orphans_found'|trans({}, 'admin') ~ ' — ' ~ 'admin.data_repair.total_orphans'|trans({'%count%': totalOrphans}, 'admin') }) }}
-
-                {# Dynamischer Orphan-Count-Grid — pro detektiertem Entity-Typ eine Karte.
-                   Zeigt auch seltene/seit Refactor neu erkannte Typen (Controls, Workflows, …). #}
-                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 mb-3">
-                    {% for key, entities in orphanedEntities %}
-                        {% if entities|length > 0 %}
-                            <div class="col">
-                                <section class="fa-section text-center h-100">
-        <div class="fa-section__body">
-            <h3 class="mb-1" style="color: var(--danger-strong, var(--danger)); font-weight: 700;">{{ entities|length }}</h3>
-                                        <p class="mb-0 small text-uppercase">{{ key|replace({'_': ' '}) }}</p>
-        </div>
-    </section>
+                {% set healthBuckets = healthCache.payload.buckets|default({}) %}
+                <div class="row g-3">
+                    {% for bucketKey, bucket in healthBuckets %}
+                        {% if (bucket.total|default(0)) > 0 %}
+                            <div class="col-md-6 col-lg-3">
+                                <div class="fa-section h-100 border-warning">
+                                    <div class="fa-section__header">
+                                        <h4 class="mb-0 fs-6">
+                                            {{ bucketKey|replace({'_': ' '})|title }}
+                                            <span class="fa-status-pill fa-status-pill--warning ms-1">{{ bucket.total }}</span>
+                                        </h4>
+                                    </div>
+                                    <div class="fa-section__body">
+                                        {% set byCheck = bucket.by_check|default({}) %}
+                                        <ul class="list-unstyled small mb-0">
+                                            {% for checkKey, count in byCheck %}
+                                                <li class="mb-1">
+                                                    <span class="fa-status-pill fa-status-pill--neutral">{{ count }}</span>
+                                                    {{ checkKey|replace({'_': ' '})|title }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         {% endif %}
                     {% endfor %}
                 </div>
-
-                {# Bulk Assignment Form — Entity-Type-Dropdown dynamisch aus allen
-                   detektierten Orphan-Typen. #}
-                <form method="post" action="{{ path('admin_data_repair_assign_orphans') }}" class="mb-4">
-                    <input type="hidden" name="_token" value="{{ csrf_token('assign_orphans') }}">
-                    <div class="row align-items-end">
-                        <div class="col-md-4">
-                            <label for="tenant_id" class="form-label">{{ 'admin.data_repair.assign_to_tenant'|trans({}, 'admin') }}</label>
-                            <select name="tenant_id" id="tenant_id" class="form-select fa-cyber-input__field" required>
-                                <option value="">{{ 'admin.data_repair.select_tenant'|trans({}, 'admin') }}</option>
-                                {% for tenant in tenants %}
-                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="entity_type" class="form-label">{{ 'admin.data_repair.entity_type'|trans({}, 'admin') }}</label>
-                            <select name="entity_type" id="entity_type" class="form-select fa-cyber-input__field" required>
-                                <option value="all">{{ 'admin.data_repair.all_orphans'|trans({}, 'admin') }} ({{ totalOrphans }})</option>
-                                {% for key, entities in orphanedEntities %}
-                                    {% if entities|length > 0 %}
-                                        <option value="{{ key }}">{{ key|replace({'_': ' '})|title }} ({{ entities|length }})</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning w-100">
-                                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ 'admin.data_repair.assign_orphans'|trans({}, 'admin') }}
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-                {# Detailed Lists #}
-                {% if orphanedAssets|length > 0 %}
-                <div class="mb-4">
-                    <h3>{{ 'admin.data_repair.orphaned_assets_list'|trans({}, 'admin') }}</h3>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for asset in orphanedAssets %}
-                            <tr class="fa-table__row">
-                                <td class="fa-table__cell">{{ asset.id }}</td>
-                                <td class="fa-table__cell">{{ asset.name }}</td>
-                                <td class="fa-table__cell">{{ asset.assetType }}</td>
-                                <td class="fa-table__cell">
-                                    <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'asset', id: asset.id}) }}" class="d-inline">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ asset.id) }}">
-                                        <div class="input-group input-group-sm">
-                                            <select name="tenant_id" class="form-select form-select-sm fa-cyber-input__field" required>
-                                                {% for tenant in tenants %}
-                                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if orphanedRisks|length > 0 %}
-                <div class="mb-4">
-                    <h3>{{ 'admin.data_repair.orphaned_risks_list'|trans({}, 'admin') }}</h3>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.label.inherent_risk'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for risk in orphanedRisks %}
-                            <tr class="fa-table__row">
-                                <td class="fa-table__cell">{{ risk.id }}</td>
-                                <td class="fa-table__cell">{{ risk.title }}</td>
-                                <td class="fa-table__cell">{{ risk.inherentRiskLevel }}</td>
-                                <td class="fa-table__cell">
-                                    <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'risk', id: risk.id}) }}" class="d-inline">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ risk.id) }}">
-                                        <div class="input-group input-group-sm">
-                                            <select name="tenant_id" class="form-select form-select-sm fa-cyber-input__field" required>
-                                                {% for tenant in tenants %}
-                                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if orphanedIncidents|length > 0 %}
-                <div class="mb-4">
-                    <h3>{{ 'admin.data_repair.orphaned_incidents_list'|trans({}, 'admin') }}</h3>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'incident.label.title'|trans({}, 'incident') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'incident.label.severity'|trans({}, 'incident') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for incident in orphanedIncidents %}
-                            <tr class="fa-table__row">
-                                <td class="fa-table__cell">{{ incident.id }}</td>
-                                <td class="fa-table__cell">{{ incident.title }}</td>
-                                <td class="fa-table__cell">{{ incident.severity ? incident.severity.value : '' }}</td>
-                                <td class="fa-table__cell">
-                                    <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'incident', id: incident.id}) }}" class="d-inline">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ incident.id) }}">
-                                        <div class="input-group input-group-sm">
-                                            <select name="tenant_id" class="form-select form-select-sm fa-cyber-input__field" required>
-                                                {% for tenant in tenants %}
-                                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
-                                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-            {% endif %}
-        </div>
-    </section>
-
-    {# Tenant Statistics #}
-    <section class="fa-section">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'admin.data_repair.tenant_statistics'|trans({}, 'admin') }}
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead>
-                    <tr>
-                        <th scope="col" class="fa-table__th">{{ 'tenant.name'|trans({}, 'tenant') }}</th>
-                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'nav.assets'|trans({}, 'nav') }}</th>
-                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'nav.risks'|trans({}, 'nav') }}</th>
-                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'nav.incidents'|trans({}, 'nav') }}</th>
-                        <th scope="col" class="fa-table__th fa-table__th--center">Audits</th>
-                        <th scope="col" class="fa-table__th fa-table__th--center">Documents</th>
-                        <th scope="col" class="fa-table__th fa-table__th--center">BC Plans</th>
-                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'common.all'|trans({}, 'messages') }}</th>
-                    </tr>
-                </thead>
-                            <tbody class="fa-table__body">
-                    {% for stat in tenantStats %}
-                    <tr class="fa-table__row">
-                        <td class="fa-table__cell">
-                            <strong>{{ stat.tenant.name }}</strong>
-                            {% if stat.tenant.description %}
-                                <br><small class="text-muted">{{ stat.tenant.description }}</small>
-                            {% endif %}
-                        </td>
-                        <td class="fa-table__cell fa-table__cell--center">{{ stat.assets }}</td>
-                        <td class="fa-table__cell fa-table__cell--center">{{ stat.risks }}</td>
-                        <td class="fa-table__cell fa-table__cell--center">{{ stat.incidents }}</td>
-                        <td class="fa-table__cell fa-table__cell--center">{{ stat.audits|default(0) }}</td>
-                        <td class="fa-table__cell fa-table__cell--center">{{ stat.documents|default(0) }}</td>
-                        <td class="fa-table__cell fa-table__cell--center">{{ stat.bc_plans|default(0) }}</td>
-                        <td class="fa-table__cell fa-table__cell--center"><strong>{{ stat.assets + stat.risks + stat.incidents + (stat.audits|default(0)) + (stat.documents|default(0)) + (stat.bc_plans|default(0)) }}</strong></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                        </table>
-                    </div>
-        </div>
-    </section>
-
-    {# fixAllOrphans is now handled by data-repair Stimulus controller #}
-
-    {# Asset Assignment Repair for Risks #}
-    {% set risksWithoutAsset = allRisks|filter(r => r.asset is null) %}
-    {% if risksWithoutAsset|length > 0 %}
-    <section class="fa-section mt-4">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans({}, 'admin') }}
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.risk_asset_assignment_desc'|trans({}, 'admin') }) }}
-            <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead>
-                    <tr>
-                        <th scope="col" class="fa-table__th">ID</th>
-                        <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.current_asset'|trans({}, 'admin') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin') }}</th>
-                    </tr>
-                </thead>
-                            <tbody class="fa-table__body">
-                    {% for risk in risksWithoutAsset %}
-                    <tr class="table-warning">
-                        <td class="fa-table__cell">{{ risk.id }}</td>
-                        <td class="fa-table__cell">
-                            {{ risk.title }}
-                            {% if risk.tenant %}
-                                <br><small class="text-muted">{{ risk.tenant.name }}</small>
-                            {% endif %}
-                        </td>
-                        <td class="fa-table__cell">
-                            {% if risk.asset %}
-                                <span class="fa-status-pill fa-status-pill--success">{{ risk.asset.name }}</span>
-                            {% else %}
-                                <span class="fa-status-pill fa-status-pill--danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
-                            {% endif %}
-                        </td>
-                        <td class="fa-table__cell">
-                            <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'risk', id: risk.id}) }}" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ risk.id) }}">
-                                <div class="input-group input-group-sm">
-                                    <select name="asset_id" class="form-select form-select-sm fa-cyber-input__field" required>
-                                        <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin') }}</option>
-                                        {% for asset in allAssets %}
-                                            <option value="{{ asset.id }}"{% if risk.asset and risk.asset.id == asset.id %} selected{% endif %}>
-                                                {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                        </table>
-                    </div>
-        </div>
-    </section>
-    {% endif %}
-
-    {# Asset Assignment Repair for Incidents #}
-    {% set incidentsWithoutAsset = allIncidents|filter(i => i.affectedAssets|length == 0) %}
-    {% if incidentsWithoutAsset|length > 0 %}
-    <section class="fa-section mt-4">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans({}, 'admin') }}
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.incident_asset_assignment_desc'|trans({}, 'admin') }) }}
-            <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead>
-                    <tr>
-                        <th scope="col" class="fa-table__th">ID</th>
-                        <th scope="col" class="fa-table__th">{{ 'incident.label.title'|trans({}, 'incident') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.current_asset'|trans({}, 'admin') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin') }}</th>
-                    </tr>
-                </thead>
-                            <tbody class="fa-table__body">
-                    {% for incident in incidentsWithoutAsset %}
-                    <tr class="table-warning">
-                        <td class="fa-table__cell">{{ incident.id }}</td>
-                        <td class="fa-table__cell">
-                            {{ incident.title }}
-                            {% if incident.tenant %}
-                                <br><small class="text-muted">{{ incident.tenant.name }}</small>
-                            {% endif %}
-                        </td>
-                        <td class="fa-table__cell">
-                            {% if incident.affectedAssets|length > 0 %}
-                                {% for asset in incident.affectedAssets %}
-                                    <span class="fa-status-pill fa-status-pill--success">{{ asset.name }}</span>
-                                {% endfor %}
-                            {% else %}
-                                <span class="fa-status-pill fa-status-pill--danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
-                            {% endif %}
-                        </td>
-                        <td class="fa-table__cell">
-                            <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'incident', id: incident.id}) }}" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ incident.id) }}">
-                                <div class="input-group input-group-sm">
-                                    <select name="asset_id" class="form-select form-select-sm fa-cyber-input__field" required>
-                                        <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin') }}</option>
-                                        {% for asset in allAssets %}
-                                            <option value="{{ asset.id }}">
-                                                {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                        </table>
-                    </div>
-        </div>
-    </section>
-    {% endif %}
-
-    {# Controls Without Risks #}
-    {% if controlsWithoutRisks|length > 0 %}
-    <section class="fa-section mt-4">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_risks'|trans({}, 'admin') }}
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.controls_without_risks_desc'|trans({}, 'admin') }) }}
-            <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutRisks|length}, 'admin') }}</p>
-            <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead>
-                    <tr>
-                        <th scope="col" class="fa-table__th">{{ 'control.field.control_id'|trans({}, 'control') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'control.field.name'|trans({}, 'control') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'control.field.category'|trans({}, 'control') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'control.field.implementation_status'|trans({}, 'control') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.assign_risk'|trans({}, 'admin') }}</th>
-                    </tr>
-                </thead>
-                            <tbody class="fa-table__body">
-                    {% for control in controlsWithoutRisks %}
-                    <tr class="table-warning">
-                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--primary">{{ control.controlId }}</span></td>
-                        <td class="fa-table__cell">{{ control.name }}</td>
-                        <td class="fa-table__cell">{{ control.category }}</td>
-                        <td class="fa-table__cell">
-                            {{ pill.render(('control.status.' ~ control.implementationStatus)|trans({}, 'control'), control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'neutral'), {size: 'sm'}) }}
-                        </td>
-                        <td class="fa-table__cell">
-                            <form method="post" action="{{ path('admin_data_repair_assign_risk', {id: control.id}) }}" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('assign_risk_' ~ control.id) }}">
-                                <div class="input-group input-group-sm">
-                                    <select name="risk_id" class="form-select form-select-sm fa-cyber-input__field" required>
-                                        <option value="">{{ 'admin.data_repair.select_risk'|trans({}, 'admin') }}</option>
-                                        {% for risk in allRisks %}
-                                            <option value="{{ risk.id }}">
-                                                {{ risk.title }} ({{ risk.tenant ? risk.tenant.name : 'Kein Tenant' }})
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                        <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                        </table>
-                    </div>
-        </div>
-    </section>
-    {% endif %}
-
-    {# Controls Without Assets #}
-    {% if controlsWithoutAssets|length > 0 %}
-    <section class="fa-section mt-4">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_assets'|trans({}, 'admin') }}
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {{ _fa_alert.render({ variant: 'info', body: '<strong>' ~ 'common.info'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.controls_without_assets_desc'|trans({}, 'admin') }) }}
-            <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutAssets|length}, 'admin') }}</p>
-            <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead>
-                    <tr>
-                        <th scope="col" class="fa-table__th">{{ 'control.field.control_id'|trans({}, 'control') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'control.field.name'|trans({}, 'control') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'control.field.category'|trans({}, 'control') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'control.field.implementation_status'|trans({}, 'control') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.assign_asset'|trans({}, 'admin') }}</th>
-                    </tr>
-                </thead>
-                            <tbody class="fa-table__body">
-                    {% for control in controlsWithoutAssets %}
-                    <tr class="fa-table__row">
-                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--primary">{{ control.controlId }}</span></td>
-                        <td class="fa-table__cell">{{ control.name }}</td>
-                        <td class="fa-table__cell">{{ control.category }}</td>
-                        <td class="fa-table__cell">
-                            {{ pill.render(('control.status.' ~ control.implementationStatus)|trans({}, 'control'), control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'neutral'), {size: 'sm'}) }}
-                        </td>
-                        <td class="fa-table__cell">
-                            <form method="post" action="{{ path('admin_data_repair_assign_asset_to_control', {id: control.id}) }}" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_to_control_' ~ control.id) }}">
-                                <div class="input-group input-group-sm">
-                                    <select name="asset_id" class="form-select form-select-sm fa-cyber-input__field" required>
-                                        <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin') }}</option>
-                                        {% for asset in allAssets %}
-                                            <option value="{{ asset.id }}">
-                                                {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                        <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                        </table>
-                    </div>
-        </div>
-    </section>
-    {% endif %}
-
-    {# Duplicate Entities #}
-    {% if duplicates.audits is defined and duplicates.audits|length > 0 %}
-    <section class="fa-section mt-4">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> Duplicate Audit Numbers
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> Found ' ~ duplicates.audits|length ~ ' audit number(s) used multiple times within the same tenant.' }) }}
-            {% for dup in duplicates.audits %}
-                <section class="fa-section mb-3 border-warning">
-        <div class="fa-section__header">
-            <strong>Audit Number:</strong> {{ dup.value }}
-                            <span class="fa-status-pill fa-status-pill--warning">{{ dup.count ~ ' duplicates' }}</span>
-        </div>
-        <div class="fa-section__body">
-            <ul class="list-unstyled mb-0">
-                        {% for audit in dup.entities %}
-                            <li class="mb-2">
-                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'ID: ' ~ audit.id }}</span>
-                                {{ audit.title }}
-                                <small class="text-muted">({{ audit.tenant.name }})</small>
-                                {% if audit.plannedDate %}
-                                    - <small>{{ audit.plannedDate|date('d.m.Y') }}</small>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                        </ul>
-        </div>
-    </section>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    {% if duplicates.assets is defined and duplicates.assets|length > 0 %}
-    <section class="fa-section mt-4">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i> Duplicate Asset Names
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> Found ' ~ duplicates.assets|length ~ ' asset name(s) used multiple times within the same tenant.' }) }}
-            {% for dup in duplicates.assets %}
-                <section class="fa-section mb-3 border-warning">
-        <div class="fa-section__header">
-            <strong>Asset Name:</strong> {{ dup.value }}
-                            <span class="fa-status-pill fa-status-pill--warning">{{ dup.count ~ ' duplicates' }}</span>
-        </div>
-        <div class="fa-section__body">
-            <ul class="list-unstyled mb-0">
-                        {% for asset in dup.entities %}
-                            <li class="mb-2">
-                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'ID: ' ~ asset.id }}</span>
-                                {{ asset.name }}
-                                <small class="text-muted">({{ asset.tenant.name }}, Type: {{ asset.assetType }})</small>
-                            </li>
-                        {% endfor %}
-                        </ul>
-        </div>
-    </section>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    {# Inconsistent Data #}
-    {% if inconsistentData.audits_completed_without_date is defined and inconsistentData.audits_completed_without_date|length > 0 %}
-    <section class="fa-section mt-4">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> Completed Audits Without Completion Date
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {{ _fa_alert.render({ variant: 'info', body: 'Found ' ~ inconsistentData.audits_completed_without_date|length ~ ' audit(s) marked as completed but missing actual completion date.' }) }}
-            <ul>
-            {% for audit in inconsistentData.audits_completed_without_date %}
-                <li>
-                    <span class="fa-status-pill fa-status-pill--neutral">{{ audit.auditNumber }}</span>
-                    {{ audit.title }}
-                    {{ pill.render(audit.status, audit.status == 'completed' ? 'success' : 'primary', {size: 'sm'}) }}
-                </li>
-            {% endfor %}
-            </ul>
-        </div>
-    </section>
-    {% endif %}
-
-    {% if inconsistentData.risks_residual_higher_than_inherent is defined and inconsistentData.risks_residual_higher_than_inherent|length > 0 %}
-    <section class="fa-section mt-4">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Risks with Residual > Inherent
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {{ _fa_alert.render({ variant: 'info', body: 'Found ' ~ inconsistentData.risks_residual_higher_than_inherent|length ~ ' risk(s) where residual risk is higher than inherent risk (should never happen).' }) }}
-            <ul>
-            {% for risk in inconsistentData.risks_residual_higher_than_inherent %}
-                <li>
-                    {{ risk.title }}
-                    <span class="fa-status-pill fa-status-pill--danger">{{ 'Inherent: ' ~ risk.inherentRiskLevel }}</span>
-                    →
-                    <span class="fa-status-pill fa-status-pill--warning">{{ 'Residual: ' ~ risk.residualRiskLevel }}</span>
-                </li>
-            {% endfor %}
-            </ul>
-        </div>
-    </section>
-    {% endif %}
-
-    {# ────────────────────────────────────────────────────────────────────────
-       Risk Health (ISO 27005 / ISO 27001 Clause 6.1.2)
-       Four specific checks that go beyond "orphan / duplicate / broken-ref".
-    ──────────────────────────────────────────────────────────────────────── #}
-    {% set totalRiskIssues = 0 %}
-    {% for issueGroup in riskHealthIssues %}{% set totalRiskIssues = totalRiskIssues + issueGroup|length %}{% endfor %}
-    <section class="fa-section {{ 'mt-4 border-' ~ (totalRiskIssues > 0 ? 'warning' : 'success') }}">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--{{ totalRiskIssues > 0 ? 'status-warning' : 'ui-check-circle' }}" aria-hidden="true"></i>
-                    {{ 'admin.data_repair.risk_health.title'|trans({}, 'admin') }}
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {% if totalRiskIssues == 0 %}
-                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.risk_health.all_ok'|trans({}, 'admin') }) }}
-            {% else %}
-                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.risk_health.issues_found'|trans({'%count%': totalRiskIssues}, 'admin') }) }}
-
-                {# Summary grid #}
-                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
-                    {% set checkKeys = [
-                        'risks_missing_treatment_strategy',
-                        'risks_residual_exceeds_inherent',
-                        'risks_treatment_plan_without_controls',
-                        'risks_past_review_date'
-                    ] %}
-                    {% for checkKey in checkKeys %}
-                        {% set items = riskHealthIssues[checkKey] is defined ? riskHealthIssues[checkKey] : [] %}
-                        <div class="col">
-                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : '') }}" style="background-color: var(--success-tint); border: 1px solid var(--success);">
-        <div class="fa-section__body">
-            <h3 class="text-{{ items|length > 0 ? 'warning' : 'success' }} mb-1">{{ items|length }}</h3>
-                                    <p class="mb-0 small">{{ ('admin.data_repair.risk_health.' ~ checkKey)|trans({}, 'admin') }}</p>
-        </div>
-    </section>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                {# Check 1: Missing treatment strategy #}
-                {% if riskHealthIssues.risks_missing_treatment_strategy is defined and riskHealthIssues.risks_missing_treatment_strategy|length > 0 %}
-                <div class="mb-4">
-                    <h3 class="fs-5">{{ 'admin.data_repair.risk_health.risks_missing_treatment_strategy'|trans({}, 'admin') }}</h3>
-                    <p class="text-muted small">{{ 'admin.data_repair.risk_health.risks_missing_treatment_strategy_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.field.inherent_risk'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for risk in riskHealthIssues.risks_missing_treatment_strategy %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ risk.id }}</td>
-                                <td class="fa-table__cell">{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
-                                <td class="fa-table__cell">{{ risk.inherentRiskLevel }}</td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-
-                {# Check 2: Residual exceeds inherent #}
-                {% if riskHealthIssues.risks_residual_exceeds_inherent is defined and riskHealthIssues.risks_residual_exceeds_inherent|length > 0 %}
-                <div class="mb-4">
-                    <h3 class="fs-5">{{ 'admin.data_repair.risk_health.risks_residual_exceeds_inherent'|trans({}, 'admin') }}</h3>
-                    <p class="text-muted small">{{ 'admin.data_repair.risk_health.risks_residual_exceeds_inherent_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.field.inherent_risk'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.field.residual_risk'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for risk in riskHealthIssues.risks_residual_exceeds_inherent %}
-                            <tr class="table-danger">
-                                <td class="fa-table__cell">{{ risk.id }}</td>
-                                <td class="fa-table__cell">{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--primary">{{ risk.inherentRiskLevel }}</span></td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--danger">{{ risk.residualRiskLevel }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-
-                {# Check 3: Treatment plan without controls #}
-                {% if riskHealthIssues.risks_treatment_plan_without_controls is defined and riskHealthIssues.risks_treatment_plan_without_controls|length > 0 %}
-                <div class="mb-4">
-                    <h3 class="fs-5">{{ 'admin.data_repair.risk_health.risks_treatment_plan_without_controls'|trans({}, 'admin') }}</h3>
-                    <p class="text-muted small">{{ 'admin.data_repair.risk_health.risks_treatment_plan_without_controls_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.field.treatment_description'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for risk in riskHealthIssues.risks_treatment_plan_without_controls %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ risk.id }}</td>
-                                <td class="fa-table__cell">{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
-                                <td class="fa-table__cell"><span class="text-truncate d-inline-block" style="max-width:200px" title="{{ risk.treatmentDescription }}">{{ risk.treatmentDescription|slice(0, 60) }}{% if risk.treatmentDescription|length > 60 %}…{% endif %}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-
-                {# Check 4: Past review date #}
-                {% if riskHealthIssues.risks_past_review_date is defined and riskHealthIssues.risks_past_review_date|length > 0 %}
-                <div class="mb-4">
-                    <h3 class="fs-5">{{ 'admin.data_repair.risk_health.risks_past_review_date'|trans({}, 'admin') }}</h3>
-                    <p class="text-muted small">{{ 'admin.data_repair.risk_health.risks_past_review_date_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.field.review_date'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for risk in riskHealthIssues.risks_past_review_date %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ risk.id }}</td>
-                                <td class="fa-table__cell">{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
-                                <td class="fa-table__cell">
-                                    <span class="fa-status-pill fa-status-pill--danger">{{ risk.reviewDate|date('d.m.Y') }}</span>
-                                </td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-            {% endif %}
-        </div>
-    </section>
-
-    {# ────────────────────────────────────────────────────────────────────────
-       Compliance Health (GDPR / Art. 30 VVT)
-       Five critical checks for privacy-related data completeness.
-    ──────────────────────────────────────────────────────────────────────── #}
-    {% set totalComplianceIssues = 0 %}
-    {% for issueGroup in complianceHealthIssues %}{% set totalComplianceIssues = totalComplianceIssues + issueGroup|length %}{% endfor %}
-    <section class="fa-section {{ 'mt-4 border-' ~ (totalComplianceIssues > 0 ? 'danger' : 'success') }}">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--{{ totalComplianceIssues > 0 ? 'status-critical' : 'ui-check-circle' }}" aria-hidden="true"></i>
-                    {{ 'admin.data_repair.compliance_health.title'|trans({}, 'admin') }}
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {% if totalComplianceIssues == 0 %}
-                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.compliance_health.all_ok'|trans({}, 'admin') }) }}
-            {% else %}
-                {{ _fa_alert.render({ variant: 'danger', body: '<strong>' ~ 'common.error'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.compliance_health.issues_found'|trans({'%count%': totalComplianceIssues}, 'admin') }) }}
-
-                {# Summary metric grid — 5 checks #}
-                <div class="row row-cols-2 row-cols-md-5 g-3 mb-4">
-                    {% set complianceCheckKeys = [
-                        'assets_without_cia',
-                        'breaches_overdue_72h',
-                        'dsr_overdue_30d',
-                        'dpia_without_dpo',
-                        'vvt_incomplete'
-                    ] %}
-                    {% for checkKey in complianceCheckKeys %}
-                        {% set items = complianceHealthIssues[checkKey] is defined ? complianceHealthIssues[checkKey] : [] %}
-                        <div class="col">
-                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-danger bg-opacity-10' : '') }}" style="background-color: var(--success-tint); border: 1px solid var(--success);">
-        <div class="fa-section__body">
-            <h3 class="text-{{ items|length > 0 ? 'danger' : 'success' }} mb-1">{{ items|length }}</h3>
-                                    <p class="mb-0 small">{{ ('admin.data_repair.compliance_health.' ~ checkKey)|trans({}, 'admin') }}</p>
-        </div>
-    </section>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                {# Check 1: Assets without CIA values #}
-                {% if complianceHealthIssues.assets_without_cia is defined and complianceHealthIssues.assets_without_cia|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-danger">
-                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.compliance_health.assets_without_cia'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--danger">{{ complianceHealthIssues.assets_without_cia|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.compliance_health.assets_without_cia_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for asset in complianceHealthIssues.assets_without_cia %}
-                            <tr class="table-danger">
-                                <td class="fa-table__cell">{{ asset.id }}</td>
-                                <td class="fa-table__cell">{{ asset.name }}{% if asset.tenant %}<br><small class="text-muted">{{ asset.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ asset.assetType }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_asset_edit', {id: asset.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.edit'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                {# Check 2: Data Breaches overdue 72h notification #}
-                {% if complianceHealthIssues.breaches_overdue_72h is defined and complianceHealthIssues.breaches_overdue_72h|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-danger">
-                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.compliance_health.breaches_overdue_72h'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--danger">{{ complianceHealthIssues.breaches_overdue_72h|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.compliance_health.breaches_overdue_72h_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.date'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for breach in complianceHealthIssues.breaches_overdue_72h %}
-                            <tr class="table-danger">
-                                <td class="fa-table__cell">{{ breach.id }}</td>
-                                <td class="fa-table__cell">{{ breach.title ?? breach.referenceNumber ?? ('#' ~ breach.id) }}{% if breach.tenant %}<br><small class="text-muted">{{ breach.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell">
-                                    {% if breach.detectedAt %}
-                                        <span class="fa-status-pill fa-status-pill--danger">{{ breach.detectedAt|date('d.m.Y H:i') }}</span>
-                                    {% endif %}
-                                </td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_data_breach_show', {id: breach.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                {# Check 3: DSR past 30-day deadline #}
-                {% if complianceHealthIssues.dsr_overdue_30d is defined and complianceHealthIssues.dsr_overdue_30d|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-danger">
-                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.compliance_health.dsr_overdue_30d'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--danger">{{ complianceHealthIssues.dsr_overdue_30d|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.compliance_health.dsr_overdue_30d_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">Status</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for dsr in complianceHealthIssues.dsr_overdue_30d %}
-                            <tr class="table-danger">
-                                <td class="fa-table__cell">{{ dsr.id }}</td>
-                                <td class="fa-table__cell">{{ dsr.requestType ?? ('#' ~ dsr.id) }}{% if dsr.tenant %}<br><small class="text-muted">{{ dsr.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--warning">{{ dsr.status }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_data_subject_request_show', {id: dsr.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                {# Check 4: DPIA approved without DPO consultation #}
-                {% if complianceHealthIssues.dpia_without_dpo is defined and complianceHealthIssues.dpia_without_dpo|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-danger">
-                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.compliance_health.dpia_without_dpo'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--danger">{{ complianceHealthIssues.dpia_without_dpo|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.compliance_health.dpia_without_dpo_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for dpia in complianceHealthIssues.dpia_without_dpo %}
-                            <tr class="table-danger">
-                                <td class="fa-table__cell">{{ dpia.id }}</td>
-                                <td class="fa-table__cell">{{ dpia.title ?? ('#' ~ dpia.id) }}{% if dpia.tenant %}<br><small class="text-muted">{{ dpia.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_dpia_show', {id: dpia.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                {# Check 5: Active processing activities incomplete (Art. 30) #}
-                {% if complianceHealthIssues.vvt_incomplete is defined and complianceHealthIssues.vvt_incomplete|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-danger">
-                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.compliance_health.vvt_incomplete'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--danger">{{ complianceHealthIssues.vvt_incomplete|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.compliance_health.vvt_incomplete_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for pa in complianceHealthIssues.vvt_incomplete %}
-                            <tr class="table-danger">
-                                <td class="fa-table__cell">{{ pa.id }}</td>
-                                <td class="fa-table__cell">{{ pa.name ?? ('#' ~ pa.id) }}{% if pa.tenant %}<br><small class="text-muted">{{ pa.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_processing_activity_edit', {id: pa.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.edit'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-            {% endif %}
-        </div>
-    </section>
-
-    {# ────────────────────────────────────────────────────────────────────────
-       Operational Health (ISO 27001 Tier 2)
-       Seven checks for supplier assessments, BCM testing, audit findings,
-       corrective actions, training, document freshness, and management reviews.
-    ──────────────────────────────────────────────────────────────────────── #}
-    {% set totalOperationalIssues = 0 %}
-    {% for issueGroup in operationalHealthIssues %}{% set totalOperationalIssues = totalOperationalIssues + issueGroup|length %}{% endfor %}
-    <section class="fa-section {{ 'mt-4 border-' ~ (totalOperationalIssues > 0 ? 'warning' : 'success') }}">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--{{ totalOperationalIssues > 0 ? 'status-warning' : 'ui-check-circle' }}" aria-hidden="true"></i>
-                    {{ 'admin.data_repair.operational_health.title'|trans({}, 'admin') }}
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {% if totalOperationalIssues == 0 %}
-                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.operational_health.all_ok'|trans({}, 'admin') }) }}
-            {% else %}
-                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.operational_health.issues_found'|trans({'%count%': totalOperationalIssues}, 'admin') }) }}
-
-                {# Summary grid #}
-                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
-                    {% set opCheckKeys = [
-                        'suppliers_unassessed',
-                        'bc_plans_untested',
-                        'findings_overdue',
-                        'capa_overdue',
-                        'training_overdue',
-                        'documents_stale',
-                        'reviews_overdue'
-                    ] %}
-                    {% for checkKey in opCheckKeys %}
-                        {% set items = operationalHealthIssues[checkKey] is defined ? operationalHealthIssues[checkKey] : [] %}
-                        <div class="col">
-                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : '') }}" style="background-color: var(--success-tint); border: 1px solid var(--success);">
-        <div class="fa-section__body">
-            <h3 class="text-{{ items|length > 0 ? 'warning' : 'success' }} mb-1">{{ items|length }}</h3>
-                                    <p class="mb-0 small">{{ ('admin.data_repair.operational_health.' ~ checkKey)|trans({}, 'admin') }}</p>
-        </div>
-    </section>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                {# Check 1: Critical suppliers never assessed #}
-                {% if operationalHealthIssues.suppliers_unassessed is defined and operationalHealthIssues.suppliers_unassessed|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-warning">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.operational_health.suppliers_unassessed'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.suppliers_unassessed|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.suppliers_unassessed_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for supplier in operationalHealthIssues.suppliers_unassessed %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ supplier.id }}</td>
-                                <td class="fa-table__cell">{{ supplier.name }}{% if supplier.tenant %}<br><small class="text-muted">{{ supplier.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ supplier.criticality }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_supplier_edit', {id: supplier.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.edit'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                {# Check 2: Active BC Plans never tested #}
-                {% if operationalHealthIssues.bc_plans_untested is defined and operationalHealthIssues.bc_plans_untested|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-warning">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.operational_health.bc_plans_untested'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.bc_plans_untested|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.bc_plans_untested_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for plan in operationalHealthIssues.bc_plans_untested %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ plan.id }}</td>
-                                <td class="fa-table__cell">{{ plan.name }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ plan.status }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_bc_plan_edit', {id: plan.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.edit'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                {# Check 3: Audit findings overdue #}
-                {% if operationalHealthIssues.findings_overdue is defined and operationalHealthIssues.findings_overdue|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-warning">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.operational_health.findings_overdue'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.findings_overdue|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.findings_overdue_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for finding in operationalHealthIssues.findings_overdue %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ finding.id }}</td>
-                                <td class="fa-table__cell">{{ finding.title }}{% if finding.tenant %}<br><small class="text-muted">{{ finding.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ finding.status }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_audit_finding_show', {id: finding.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                {# Check 4: Corrective actions overdue #}
-                {% if operationalHealthIssues.capa_overdue is defined and operationalHealthIssues.capa_overdue|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-warning">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.operational_health.capa_overdue'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.capa_overdue|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.capa_overdue_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for capa in operationalHealthIssues.capa_overdue %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ capa.id }}</td>
-                                <td class="fa-table__cell">{{ capa.title }}{% if capa.tenant %}<br><small class="text-muted">{{ capa.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ capa.status }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_corrective_action_show', {id: capa.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                {# Check 5: Training past due and uncompleted #}
-                {% if operationalHealthIssues.training_overdue is defined and operationalHealthIssues.training_overdue|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-warning">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.operational_health.training_overdue'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.training_overdue|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.training_overdue_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for training in operationalHealthIssues.training_overdue %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ training.id }}</td>
-                                <td class="fa-table__cell">{{ training.title }}{% if training.tenant %}<br><small class="text-muted">{{ training.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ training.status }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_training_edit', {id: training.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.edit'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                {# Check 6: Stale policy/procedure/guideline documents #}
-                {% if operationalHealthIssues.documents_stale is defined and operationalHealthIssues.documents_stale|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-warning">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.operational_health.documents_stale'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.documents_stale|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.documents_stale_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.category'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for doc in operationalHealthIssues.documents_stale %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ doc.id }}</td>
-                                <td class="fa-table__cell">{{ doc.originalFilename ?? doc.filename }}{% if doc.tenant %}<br><small class="text-muted">{{ doc.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ doc.category }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_document_show', {id: doc.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-                {# Check 7: Management reviews overdue #}
-                {% if operationalHealthIssues.reviews_overdue is defined and operationalHealthIssues.reviews_overdue|length > 0 %}
-                <details class="mb-4">
-                    <summary class="fw-semibold cursor-pointer text-warning">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.operational_health.reviews_overdue'|trans({}, 'admin') }}
-                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.reviews_overdue|length }}</span>
-                    </summary>
-                    <div class="mt-2">
-                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.reviews_overdue_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for review in operationalHealthIssues.reviews_overdue %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ review.id }}</td>
-                                <td class="fa-table__cell">{{ review.title }}{% if review.tenant %}<br><small class="text-muted">{{ review.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ review.status }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_management_review_show', {id: review.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                </details>
-                {% endif %}
-
-            {% endif %}
-        </div>
-    </section>
-
-    {# Broken References #}
-    {% if brokenReferences|length > 0 %}
-    <section class="fa-section mt-4">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'admin.data_repair.broken_references'|trans({}, 'admin') }}
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {{ _fa_alert.render({ variant: 'danger', body: '<strong>' ~ 'common.error'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.broken_references_desc'|trans({}, 'admin') }) }}
-            <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead>
-                    <tr>
-                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.entity_type'|trans({}, 'admin') }}</th>
-                        <th scope="col" class="fa-table__th">ID</th>
-                        <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.issue'|trans({}, 'admin') }}</th>
-                    </tr>
-                </thead>
-                            <tbody class="fa-table__body">
-                    {% for ref in brokenReferences %}
-                    <tr class="table-danger">
-                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ ref.entity_type }}</span></td>
-                        <td class="fa-table__cell">{{ ref.entity_id }}</td>
-                        <td class="fa-table__cell">{{ ref.entity_name }}</td>
-                        <td class="fa-table__cell">{{ ref.issue }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                        </table>
-                    </div>
-        </div>
-    </section>
-    {% endif %}
-
-    {# ────────────────────────────────────────────────────────────────────────
-       Data Quality (Tier 3) — Operational gaps beyond structural integrity.
-       Four checks: stuck workflows, risks without values, incidents without
-       RCA, and completed treatment plans missing effectiveness review.
-    ──────────────────────────────────────────────────────────────────────── #}
-    {% set totalDataQualityIssues = 0 %}
-    {% for issueGroup in dataQualityIssues %}{% set totalDataQualityIssues = totalDataQualityIssues + issueGroup|length %}{% endfor %}
-    <section class="fa-section {{ 'mt-4 border-' ~ (totalDataQualityIssues > 0 ? 'warning' : 'success') }}">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--{{ totalDataQualityIssues > 0 ? 'status-warning' : 'ui-check-circle' }}" aria-hidden="true"></i>
-                    {{ 'admin.data_repair.data_quality.title'|trans({}, 'admin') }}
-                </h2>
-        </div>
-        <div class="fa-section__body">
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-            {% if totalDataQualityIssues == 0 %}
-                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.data_quality.all_ok'|trans({}, 'admin') }) }}
-            {% else %}
-                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.data_quality.issues_found'|trans({'%count%': totalDataQualityIssues}, 'admin') }) }}
-
-                {# Summary grid #}
-                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
-                    {% set dqCheckKeys = [
-                        'workflows_stuck',
-                        'risks_zero_values',
-                        'incidents_no_rca',
-                        'treatments_unreviewed'
-                    ] %}
-                    {% for checkKey in dqCheckKeys %}
-                        {% set items = dataQualityIssues[checkKey] is defined ? dataQualityIssues[checkKey] : [] %}
-                        <div class="col">
-                            <section class="fa-section {{ 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : '') }}" style="background-color: var(--success-tint); border: 1px solid var(--success);">
-        <div class="fa-section__body">
-            <h3 class="text-{{ items|length > 0 ? 'warning' : 'success' }} mb-1">{{ items|length }}</h3>
-                                    <p class="mb-0 small">{{ ('admin.data_repair.data_quality.' ~ checkKey)|trans({}, 'admin') }}</p>
-        </div>
-    </section>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                {# Check 1: Stuck workflows #}
-                {% if dataQualityIssues.workflows_stuck is defined and dataQualityIssues.workflows_stuck|length > 0 %}
-                <div class="mb-4">
-                    <h3 class="fs-5">{{ 'admin.data_repair.data_quality.workflows_stuck'|trans({}, 'admin') }}</h3>
-                    <p class="text-muted small">{{ 'admin.data_repair.data_quality.workflows_stuck_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'admin.data_repair.data_quality.col_workflow'|trans({}, 'admin') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'admin.data_repair.data_quality.col_entity'|trans({}, 'admin') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'admin.data_repair.data_quality.col_started'|trans({}, 'admin') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for instance in dataQualityIssues.workflows_stuck %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ instance.id }}</td>
-                                <td class="fa-table__cell">{{ instance.workflow ? instance.workflow.name : '-' }}{% if instance.tenant %}<br><small class="text-muted">{{ instance.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><small class="text-muted">{{ instance.entityType }}</small> #{{ instance.entityId }}</td>
-                                <td class="fa-table__cell">{{ instance.startedAt ? instance.startedAt|date('Y-m-d') : '-' }}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--warning">{{ instance.status }}</span></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-
-                {# Check 2: Risks with zero probability/impact #}
-                {% if dataQualityIssues.risks_zero_values is defined and dataQualityIssues.risks_zero_values|length > 0 %}
-                <div class="mb-4">
-                    <h3 class="fs-5">{{ 'admin.data_repair.data_quality.risks_zero_values'|trans({}, 'admin') }}</h3>
-                    <p class="text-muted small">{{ 'admin.data_repair.data_quality.risks_zero_values_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'risk.field.probability'|trans({}, 'risk') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for risk in dataQualityIssues.risks_zero_values %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ risk.id }}</td>
-                                <td class="fa-table__cell">{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
-                                <td class="fa-table__cell">{{ risk.probability ?? '-' }}</td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-
-                {# Check 3: Incidents closed without root cause #}
-                {% if dataQualityIssues.incidents_no_rca is defined and dataQualityIssues.incidents_no_rca|length > 0 %}
-                <div class="mb-4">
-                    <h3 class="fs-5">{{ 'admin.data_repair.data_quality.incidents_no_rca'|trans({}, 'admin') }}</h3>
-                    <p class="text-muted small">{{ 'admin.data_repair.data_quality.incidents_no_rca_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'incident.field.title'|trans({}, 'incident') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'incident.field.status'|trans({}, 'incident') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for incident in dataQualityIssues.incidents_no_rca %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ incident.id }}</td>
-                                <td class="fa-table__cell">{{ incident.title }}{% if incident.tenant %}<br><small class="text-muted">{{ incident.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ incident.status }}</span></td>
-                                <td class="fa-table__cell">
-                                    <a href="{{ path('app_incident_show', {id: incident.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                        {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-
-                {# Check 4: Treatment plans completed without effectiveness review date #}
-                {% if dataQualityIssues.treatments_unreviewed is defined and dataQualityIssues.treatments_unreviewed|length > 0 %}
-                <div class="mb-4">
-                    <h3 class="fs-5">{{ 'admin.data_repair.data_quality.treatments_unreviewed'|trans({}, 'admin') }}</h3>
-                    <p class="text-muted small">{{ 'admin.data_repair.data_quality.treatments_unreviewed_hint'|trans({}, 'admin') }}</p>
-                    <div class="fa-table-wrap">
-                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
-                            <thead class="fa-table__head">
-                            <tr>
-                                <th scope="col" class="fa-table__th">ID</th>
-                                <th scope="col" class="fa-table__th">{{ 'admin.data_repair.data_quality.col_treatment'|trans({}, 'admin') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'admin.data_repair.data_quality.col_risk'|trans({}, 'admin') }}</th>
-                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
-                            </tr>
-                        </thead>
-                            <tbody class="fa-table__body">
-                            {% for plan in dataQualityIssues.treatments_unreviewed %}
-                            <tr class="table-warning">
-                                <td class="fa-table__cell">{{ plan.id }}</td>
-                                <td class="fa-table__cell">{{ plan.title }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
-                                <td class="fa-table__cell">{{ plan.risk ? plan.risk.title : '-' }}</td>
-                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--success">{{ plan.status }}</span></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-
-            {% endif %}
-        </div>
-    </section>
-
-    {# =================================================================
-     # Extended-coverage sections (2026-05): file orphans, cascade
-     # cleanup, JSON-schema, audit-log integrity, status-enum drift.
-     # ================================================================= #}
-
-    {# 1. Orphaned upload files — disk-vs-DB cross-check. #}
-    {% set _uploads_count = orphanedUploads.files|length %}
-    <section class="fa-section {{ 'mt-4 border-' ~ (_uploads_count > 0 ? 'warning' : 'success') }}">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                <i class="fa-icon fa-icon--nav-archive" aria-hidden="true"></i>
-                {{ 'admin.data_repair.uploads.title'|trans({}, 'admin') }}
-                <span class="badge {{ _uploads_count > 0 ? 'bg-warning' : 'bg-success' }} ms-2">
-                    {{ _uploads_count }}{% if orphanedUploads.scanned > 0 %} / {{ orphanedUploads.scanned }}{% endif %}
-                </span>
-            </h2>
-        </div>
-        <div class="fa-section__body">
-            <p class="text-muted small mb-2">{{ 'admin.data_repair.uploads.description'|trans({}, 'admin') }}</p>
-            {% if orphanedUploads.uploads_dir is null %}
-                {{ _fa_alert.render({ variant: 'info', body: 'admin.data_repair.uploads.unavailable'|trans({}, 'admin') }) }}
-            {% elseif _uploads_count == 0 %}
-                {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.uploads.all_ok'|trans({}, 'admin') }) }}
-            {% else %}
-                <div class="table-responsive mb-3">
-                    <table class="fa-table fa-table--sm">
-                        <thead class="fa-table__head"><tr>
-                            <th class="fa-table__cell">{{ 'admin.data_repair.uploads.col_path'|trans({}, 'admin') }}</th>
-                            <th class="fa-table__cell">{{ 'admin.data_repair.uploads.col_size'|trans({}, 'admin') }}</th>
-                            <th class="fa-table__cell">{{ 'admin.data_repair.uploads.col_mtime'|trans({}, 'admin') }}</th>
-                        </tr></thead>
-                        <tbody class="fa-table__body">
-                            {% for file in orphanedUploads.files|slice(0, 20) %}
-                                <tr>
-                                    <td class="fa-table__cell"><code class="small">{{ file.relative }}</code></td>
-                                    <td class="fa-table__cell">{{ (file.size / 1024)|round(1) }} KB</td>
-                                    <td class="fa-table__cell"><small class="text-muted">{{ file.mtime|date('Y-m-d H:i') }}</small></td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% if _uploads_count > 20 %}
-                        <p class="small text-muted mb-0">… {{ _uploads_count - 20 }} {{ 'admin.data_repair.uploads.more'|trans({}, 'admin') }}</p>
-                    {% endif %}
-                </div>
-
-                <form method="post" action="{{ path('admin_data_repair_quarantine_uploads') }}"
-                      onsubmit="return confirm('{{ 'admin.data_repair.uploads.confirm_quarantine'|trans({'%count%': _uploads_count}, 'admin')|e('js') }}');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('quarantine_uploads') }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">
-                        <i class="fa-icon fa-icon--nav-archive" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.uploads.action_quarantine'|trans({'%count%': _uploads_count}, 'admin') }}
-                    </button>
-                    <span class="small text-muted ms-2">{{ 'admin.data_repair.uploads.action_hint'|trans({}, 'admin') }}</span>
-                </form>
-            {% endif %}
-        </div>
-    </section>
-
-    {# 2. Cascade cleanup — 5 buckets. #}
-    {% set _cascade_total = 0 %}
-    {% for items in cascadeOrphans %}{% set _cascade_total = _cascade_total + items|length %}{% endfor %}
-    <section class="fa-section {{ 'mt-4 border-' ~ (_cascade_total > 0 ? 'warning' : 'success') }}">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
-                {{ 'admin.data_repair.cascade.title'|trans({}, 'admin') }}
-                <span class="badge {{ _cascade_total > 0 ? 'bg-warning' : 'bg-success' }} ms-2">{{ _cascade_total }}</span>
-            </h2>
-        </div>
-        <div class="fa-section__body">
-            <p class="text-muted small mb-3">{{ 'admin.data_repair.cascade.description'|trans({}, 'admin') }}</p>
-            {% if _cascade_total == 0 %}
-                {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.cascade.all_ok'|trans({}, 'admin') }) }}
-            {% else %}
-                <div class="row g-3 mb-3">
-                    {% for category, items in cascadeOrphans %}
-                        <div class="col-md-4">
-                            <div class="fa-feature-card h-100">
-                                <div class="fa-feature-card__body">
-                                    <h4 class="fa-feature-card__value">{{ items|length }}</h4>
-                                    <p class="fa-feature-card__label">{{ ('admin.data_repair.cascade.category.' ~ category)|trans({}, 'admin') }}</p>
-                                    {% if items|length > 0 %}
-                                        <details class="small mt-2">
-                                            <summary>{{ 'admin.data_repair.cascade.show_examples'|trans({}, 'admin') }}</summary>
-                                            <ul class="mt-2 mb-0 small">
-                                                {% for item in items|slice(0, 5) %}
-                                                    <li>{{ item.label }}</li>
-                                                {% endfor %}
-                                                {% if items|length > 5 %}
-                                                    <li><em>… {{ items|length - 5 }} {{ 'admin.data_repair.cascade.more'|trans({}, 'admin') }}</em></li>
-                                                {% endif %}
-                                            </ul>
-                                        </details>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                <form method="post" action="{{ path('admin_data_repair_cleanup_dangling_refs') }}"
-                      onsubmit="return confirm('{{ 'admin.data_repair.cascade.confirm_cleanup'|trans({'%count%': _cascade_total}, 'admin')|e('js') }}');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('cleanup_dangling_refs') }}">
-                    <div class="mb-2">
-                        <label for="cascade-reason" class="form-label small">{{ 'admin.data_repair.reason_label'|trans({}, 'admin') }}</label>
-                        <input type="text" id="cascade-reason" name="reason" class="form-control fa-cyber-input__field"
-                               minlength="20" required
-                               placeholder="{{ 'admin.data_repair.reason_help'|trans({}, 'admin') }}">
-                    </div>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">
-                        <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
-                        {{ 'admin.data_repair.cascade.action_cleanup'|trans({'%count%': _cascade_total}, 'admin') }}
-                    </button>
-                </form>
-            {% endif %}
-        </div>
-    </section>
-
-    {# 3. JSON-schema violations — detection only, surfaced as manual-review. #}
-    {% set _json_total = 0 %}
-    {% for items in jsonSchemaViolations %}{% set _json_total = _json_total + items|length %}{% endfor %}
-    <section class="fa-section {{ 'mt-4 border-' ~ (_json_total > 0 ? 'danger' : 'success') }}">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
-                {{ 'admin.data_repair.json_schema.title'|trans({}, 'admin') }}
-                <span class="badge {{ _json_total > 0 ? 'bg-danger' : 'bg-success' }} ms-2">{{ _json_total }}</span>
-            </h2>
-        </div>
-        <div class="fa-section__body">
-            <p class="text-muted small mb-2">{{ 'admin.data_repair.json_schema.description'|trans({}, 'admin') }}</p>
-            {% if _json_total == 0 %}
-                {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.json_schema.all_ok'|trans({}, 'admin') }) }}
-            {% else %}
-                {{ _fa_alert.render({ variant: 'info', body: 'admin.data_repair.json_schema.detection_only'|trans({}, 'admin') }) }}
-                {% for category, items in jsonSchemaViolations %}
-                    {% if items|length > 0 %}
-                        <h4 class="h6 mt-3">{{ ('admin.data_repair.json_schema.category.' ~ category)|trans({}, 'admin') }} <span class="badge bg-danger">{{ items|length }}</span></h4>
-                        <div class="table-responsive">
-                            <table class="fa-table fa-table--sm">
-                                <thead class="fa-table__head"><tr>
-                                    <th class="fa-table__cell">ID</th>
-                                    <th class="fa-table__cell">{{ 'admin.data_repair.json_schema.col_error'|trans({}, 'admin') }}</th>
-                                </tr></thead>
-                                <tbody class="fa-table__body">
-                                    {% for item in items|slice(0, 20) %}
-                                        <tr>
-                                            <td class="fa-table__cell">{{ item.id }}{% if item.tenant is defined and item.tenant %} <small class="text-muted">({{ item.tenant }})</small>{% endif %}</td>
-                                            <td class="fa-table__cell"><code class="small">{{ item.error }}</code></td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
-    </section>
-
-    {# 4. AuditLog integrity gaps — detection only. #}
-    {% set _audit_total = auditLogIntegrity.bulk_batch_mismatches|length + auditLogIntegrity.day_gaps|length + auditLogIntegrity.null_tenant_entries|length %}
-    <section class="fa-section {{ 'mt-4 border-' ~ (_audit_total > 0 ? 'warning' : 'success') }}">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                <i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i>
-                {{ 'admin.data_repair.audit_integrity.title'|trans({}, 'admin') }}
-                <span class="badge {{ _audit_total > 0 ? 'bg-warning' : 'bg-success' }} ms-2">{{ _audit_total }}</span>
-            </h2>
-        </div>
-        <div class="fa-section__body">
-            <p class="text-muted small mb-3">{{ 'admin.data_repair.audit_integrity.description'|trans({}, 'admin') }}</p>
-
-            {% if _audit_total == 0 %}
-                {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.audit_integrity.all_ok'|trans({}, 'admin') }) }}
-            {% else %}
-                {{ _fa_alert.render({ variant: 'info', body: 'admin.data_repair.json_schema.detection_only'|trans({}, 'admin') }) }}
-
-                {% if auditLogIntegrity.bulk_batch_mismatches|length > 0 %}
-                    <h4 class="h6 mt-3">{{ 'admin.data_repair.audit_integrity.bulk_mismatches'|trans({}, 'admin') }} <span class="badge bg-danger">{{ auditLogIntegrity.bulk_batch_mismatches|length }}</span></h4>
-                    <div class="table-responsive mb-3">
-                        <table class="fa-table fa-table--sm">
-                            <thead class="fa-table__head"><tr>
-                                <th class="fa-table__cell">batch_id</th>
-                                <th class="fa-table__cell">expected</th>
-                                <th class="fa-table__cell">actual</th>
-                            </tr></thead>
-                            <tbody class="fa-table__body">
-                                {% for row in auditLogIntegrity.bulk_batch_mismatches|slice(0, 20) %}
-                                    <tr>
-                                        <td class="fa-table__cell"><code class="small">{{ row.batch_id }}</code></td>
-                                        <td class="fa-table__cell">{{ row.expected }}</td>
-                                        <td class="fa-table__cell"><span class="text-danger">{{ row.actual }}</span></td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% endif %}
-
-                {% if auditLogIntegrity.day_gaps|length > 0 %}
-                    <h4 class="h6 mt-3">{{ 'admin.data_repair.audit_integrity.day_gaps'|trans({}, 'admin') }} <span class="badge bg-warning">{{ auditLogIntegrity.day_gaps|length }}</span></h4>
-                    <p class="small">
-                        {% for gap in auditLogIntegrity.day_gaps|slice(0, 15) %}
-                            <code class="me-2">{{ gap.date }}</code>
-                        {% endfor %}
-                        {% if auditLogIntegrity.day_gaps|length > 15 %}<em>+{{ auditLogIntegrity.day_gaps|length - 15 }}</em>{% endif %}
-                    </p>
-                {% endif %}
-
-                {% if auditLogIntegrity.null_tenant_entries|length > 0 %}
-                    <h4 class="h6 mt-3">{{ 'admin.data_repair.audit_integrity.null_tenants'|trans({}, 'admin') }} <span class="badge bg-warning">{{ auditLogIntegrity.null_tenant_entries|length }}</span></h4>
-                    <div class="table-responsive">
-                        <table class="fa-table fa-table--sm">
-                            <thead class="fa-table__head"><tr>
-                                <th class="fa-table__cell">ID</th>
-                                <th class="fa-table__cell">action</th>
-                                <th class="fa-table__cell">entity_type</th>
-                            </tr></thead>
-                            <tbody class="fa-table__body">
-                                {% for row in auditLogIntegrity.null_tenant_entries|slice(0, 20) %}
-                                    <tr>
-                                        <td class="fa-table__cell">{{ row.id }}</td>
-                                        <td class="fa-table__cell"><code class="small">{{ row.action }}</code></td>
-                                        <td class="fa-table__cell"><code class="small">{{ row.entity_type }}</code></td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% endif %}
-            {% endif %}
-        </div>
-    </section>
-
-    {# 5. Status-Enum drift — detection only. #}
-    <section class="fa-section {{ 'mt-4 border-' ~ (statusEnumDrift|length > 0 ? 'warning' : 'success') }}">
-        <div class="fa-section__header">
-            <h2 class="mb-0">
-                <i class="fa-icon fa-icon--nav-tags" aria-hidden="true"></i>
-                {{ 'admin.data_repair.status_enum_drift.title'|trans({}, 'admin') }}
-                <span class="badge {{ statusEnumDrift|length > 0 ? 'bg-warning' : 'bg-success' }} ms-2">{{ statusEnumDrift|length }}</span>
-            </h2>
-        </div>
-        <div class="fa-section__body">
-            <p class="text-muted small mb-3">{{ 'admin.data_repair.status_enum_drift.description'|trans({}, 'admin') }}</p>
-            {% if statusEnumDrift|length == 0 %}
-                {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.status_enum_drift.all_ok'|trans({}, 'admin') }) }}
-            {% else %}
-                {{ _fa_alert.render({ variant: 'info', body: 'admin.data_repair.json_schema.detection_only'|trans({}, 'admin') }) }}
-                <div class="table-responsive">
-                    <table class="fa-table fa-table--sm">
-                        <thead class="fa-table__head"><tr>
-                            <th class="fa-table__cell">{{ 'admin.data_repair.status_enum_drift.col_entity'|trans({}, 'admin') }}</th>
-                            <th class="fa-table__cell">{{ 'admin.data_repair.status_enum_drift.col_enum'|trans({}, 'admin') }}</th>
-                            <th class="fa-table__cell">{{ 'admin.data_repair.status_enum_drift.col_unknown_values'|trans({}, 'admin') }}</th>
-                        </tr></thead>
-                        <tbody class="fa-table__body">
-                            {% for row in statusEnumDrift %}
-                                <tr>
-                                    <td class="fa-table__cell"><strong>{{ row.entity }}</strong></td>
-                                    <td class="fa-table__cell"><code class="small">{{ row.enum }}</code></td>
-                                    <td class="fa-table__cell">
-                                        {% for value, count in row.unknown_values %}
-                                            <span class="badge bg-warning me-1"><code>{{ value }}</code> × {{ count }}</span>
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="mt-3">
+                    <a href="{{ path('admin_data_repair_health_index') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.inventory.show_all'|trans({}, 'admin') }}
+                    </a>
                 </div>
             {% endif %}
         </div>
     </section>
 
+    {{ _fa_alert.render({
+        variant: 'info',
+        class: 'mt-3',
+        body: '<strong>' ~ 'common.note'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.section.tip'|trans({}, 'admin'),
+    }) }}
 </div>
 {% endblock %}

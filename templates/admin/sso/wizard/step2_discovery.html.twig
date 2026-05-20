@@ -25,8 +25,7 @@
     ], 1, { ariaLabel: 'sso.wizard.aria_label'|trans }) }}
 
     <div class="mt-4" data-controller="sso-wizard"
-         data-sso-wizard-validate-url-value="{{ path('api_sso_validate_discovery') }}"
-         data-sso-wizard-csrf-token-value="{{ csrf_token('sso_validate_discovery') }}">
+         data-sso-wizard-validate-url-value="{{ path('api_sso_validate_discovery') }}">
 
         {% if preset %}
             {{ fa_alert({ variant: 'info', body: ('sso.preset.help.' ~ provider.presetType)|trans({}, 'sso'), class: 'mb-3' }) }}

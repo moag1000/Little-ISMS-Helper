@@ -87,6 +87,7 @@ class DoraRegisterExportController extends AbstractController
     public function exportDispatch(
         \App\Service\Job\JobStatusService $jobStatusService,
         MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
@@ -94,7 +95,14 @@ class DoraRegisterExportController extends AbstractController
         }
 
         $args = ['tenantId' => $tenant->getId()];
-        $jobId = $jobStatusService->create('dora.register_export', $args);
+        $jobId = $jobStatusService->create('dora.register_export', $args + [
+            '_label' => $translator->trans('dora.register_export.progress_title', [], 'dora'),
+            '_subtitle' => $translator->trans('dora.register_export.progress_subtitle', [], 'dora'),
+            '_download_label' => $translator->trans('dora.register_export.download_button', [], 'dora'),
+        ]);
+        $jobStatusService->updatePayload($jobId, [
+            '_download_url' => $this->generateUrl('app_dora_register_export_csv_download', ['id' => $jobId]),
+        ]);
 
         $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
             jobClass: \App\Job\ExportDoraRegisterJob::class,
@@ -102,11 +110,11 @@ class DoraRegisterExportController extends AbstractController
             jobId: $jobId,
         ));
 
-        return $this->render('dora_compliance/export_progress.html.twig', [
-            'jobId' => $jobId,
-            'cancelUrl' => $this->generateUrl('app_dora_compliance_dashboard'),
-            'downloadUrl' => $this->generateUrl('app_dora_register_export_csv_download', ['id' => $jobId]),
-        ]);
+        // PRG: 303 redirect — see DataRepairController::runIntegrityCheck() for rationale.
+        return $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('app_dora_compliance_dashboard'),
+        ], Response::HTTP_SEE_OTHER);
     }
 
     /**

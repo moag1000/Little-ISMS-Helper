@@ -1,0 +1,269 @@
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% block title %}{{ 'admin.data_repair.section.orphans'|trans({}, 'admin') }} — {{ 'admin.data_repair.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block admin_title %}
+    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.data_repair.section.orphans'|trans({}, 'admin') }}
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'admin.data_repair.title'|trans({}, 'admin'), url: path('admin_data_repair_index') },
+            { label: 'admin.data_repair.section.orphans'|trans({}, 'admin') }
+        ]
+    } %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'status-warning', label: 'admin.data_repair.section.badge'|trans({}, 'admin') },
+        title: 'admin.data_repair.section.orphans'|trans({}, 'admin'),
+        subtitle: 'admin.data_repair.section.orphans_description'|trans({}, 'admin'),
+    }) }}
+
+    {% for message in app.flashes('success') %}{{ _fa_alert.render({ variant: 'success', dismissible: true, body: message }) }}{% endfor %}
+    {% for message in app.flashes('error') %}{{ _fa_alert.render({ variant: 'danger', dismissible: true, body: message }) }}{% endfor %}
+    {% for message in app.flashes('warning') %}{{ _fa_alert.render({ variant: 'warning', dismissible: true, body: message }) }}{% endfor %}
+    {% for message in app.flashes('info') %}{{ _fa_alert.render({ variant: 'info', dismissible: true, body: message }) }}{% endfor %}
+
+    {# Cache state + refresh-now CTA #}
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: cache is null ? 'warning' : 'info', class: 'mb-4' } } %}
+        {% block alert_body %}
+        <div class="d-flex align-items-start gap-3 flex-wrap">
+            <div class="flex-grow-1">
+                <div class="fa-alert__title">{{ 'admin.data_repair.section.cache_status'|trans({}, 'admin') }}</div>
+                {% if cache is not null %}
+                    <p class="small text-muted mb-0">
+                        {{ 'admin.data_repair.section.last_scan'|trans({
+                            '%when%': cache.completed_at|date('Y-m-d H:i'),
+                            '%duration%': (cache.duration_ms / 1000)|round(1),
+                        }, 'admin') }}
+                        — {{ 'admin.data_repair.section.orphans_summary'|trans({
+                            '%total%': cache.payload.total|default(0),
+                            '%types%': cache.payload.counts_by_type|default({})|length,
+                        }, 'admin') }}
+                    </p>
+                {% else %}
+                    <p class="small text-muted mb-0">
+                        {{ 'admin.data_repair.section.never_scanned_full'|trans({}, 'admin') }}
+                    </p>
+                {% endif %}
+            </div>
+            <form method="post" action="{{ path('admin_data_repair_orphans_refresh') }}" class="d-inline-block">
+                <input type="hidden" name="_token" value="{{ csrf_token('refresh_section_orphans') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--arrow-repeat" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.section.refresh_now'|trans({}, 'admin') }}
+                </button>
+            </form>
+        </div>
+        {% endblock %}
+    {% endembed %}
+
+    {# Live data — per-type counts + reassign dropdowns #}
+    {% set totalOrphans = 0 %}
+    {% for entities in orphanedEntities %}{% set totalOrphans = totalOrphans + entities|length %}{% endfor %}
+
+    {% if totalOrphans == 0 %}
+        {{ _fa_alert.render({ variant: 'success', body: 'admin.data_repair.no_orphans'|trans({}, 'admin') }) }}
+    {% else %}
+        {{ _fa_alert.render({
+            variant: 'warning',
+            body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.orphans_found'|trans({}, 'admin') ~ ' — ' ~ 'admin.data_repair.total_orphans'|trans({'%count%': totalOrphans}, 'admin'),
+        }) }}
+
+        {# Per-type tile grid #}
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 mb-4">
+            {% for key, entities in orphanedEntities %}
+                {% if entities|length > 0 %}
+                    <div class="col">
+                        {{ _fa_feature_card.render({
+                            variant: 'warning',
+                            icon: 'status-warning',
+                            label: key|replace({'_': ' '}),
+                            value: entities|length,
+                        }) }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {# Bulk assign form #}
+        <section class="fa-section mb-4">
+            <div class="fa-section__header">
+                <h2 class="mb-0">
+                    <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.assign_orphans'|trans({}, 'admin') }}
+                </h2>
+            </div>
+            <div class="fa-section__body">
+                <form method="post" action="{{ path('admin_data_repair_assign_orphans') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('assign_orphans') }}">
+                    <div class="row align-items-end g-3">
+                        <div class="col-md-4">
+                            <label for="tenant_id" class="form-label">{{ 'admin.data_repair.assign_to_tenant'|trans({}, 'admin') }}</label>
+                            <select name="tenant_id" id="tenant_id" class="form-select fa-cyber-input__field" required>
+                                <option value="">{{ 'admin.data_repair.select_tenant'|trans({}, 'admin') }}</option>
+                                {% for tenant in tenants %}
+                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="entity_type" class="form-label">{{ 'admin.data_repair.entity_type'|trans({}, 'admin') }}</label>
+                            <select name="entity_type" id="entity_type" class="form-select fa-cyber-input__field" required>
+                                <option value="all">{{ 'admin.data_repair.all_orphans'|trans({}, 'admin') }} ({{ totalOrphans }})</option>
+                                {% for key, entities in orphanedEntities %}
+                                    {% if entities|length > 0 %}
+                                        <option value="{{ key }}">{{ key|replace({'_': ' '})|title }} ({{ entities|length }})</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning w-100">
+                                <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                {{ 'admin.data_repair.assign_orphans'|trans({}, 'admin') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        {# Per-entity reassign — keep the three legacy detail tables for the
+           three entity types the existing bulk forms call out by name. #}
+        {% if orphanedAssets|length > 0 %}
+        <section class="fa-section mt-4">
+            <div class="fa-section__header"><h3 class="mb-0">{{ 'admin.data_repair.orphaned_assets_list'|trans({}, 'admin') }}</h3></div>
+            <div class="fa-section__body">
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                        <thead class="fa-table__head"><tr>
+                            <th scope="col" class="fa-table__th">ID</th>
+                            <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                        </tr></thead>
+                        <tbody class="fa-table__body">
+                        {% for asset in orphanedAssets %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ asset.id }}</td>
+                                <td class="fa-table__cell">{{ asset.name }}</td>
+                                <td class="fa-table__cell">{{ asset.assetType }}</td>
+                                <td class="fa-table__cell">
+                                    <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'asset', id: asset.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ asset.id) }}">
+                                        <div class="input-group input-group-sm">
+                                            <select name="tenant_id" class="form-select form-select-sm fa-cyber-input__field" required>
+                                                {% for tenant in tenants %}<option value="{{ tenant.id }}">{{ tenant.name }}</option>{% endfor %}
+                                            </select>
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
+                                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if orphanedRisks|length > 0 %}
+        <section class="fa-section mt-4">
+            <div class="fa-section__header"><h3 class="mb-0">{{ 'admin.data_repair.orphaned_risks_list'|trans({}, 'admin') }}</h3></div>
+            <div class="fa-section__body">
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                        <thead class="fa-table__head"><tr>
+                            <th scope="col" class="fa-table__th">ID</th>
+                            <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'risk.label.inherent_risk'|trans({}, 'risk') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                        </tr></thead>
+                        <tbody class="fa-table__body">
+                        {% for risk in orphanedRisks %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ risk.id }}</td>
+                                <td class="fa-table__cell">{{ risk.title }}</td>
+                                <td class="fa-table__cell">{{ risk.inherentRiskLevel }}</td>
+                                <td class="fa-table__cell">
+                                    <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'risk', id: risk.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ risk.id) }}">
+                                        <div class="input-group input-group-sm">
+                                            <select name="tenant_id" class="form-select form-select-sm fa-cyber-input__field" required>
+                                                {% for tenant in tenants %}<option value="{{ tenant.id }}">{{ tenant.name }}</option>{% endfor %}
+                                            </select>
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
+                                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if orphanedIncidents|length > 0 %}
+        <section class="fa-section mt-4">
+            <div class="fa-section__header"><h3 class="mb-0">{{ 'admin.data_repair.orphaned_incidents_list'|trans({}, 'admin') }}</h3></div>
+            <div class="fa-section__body">
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                        <thead class="fa-table__head"><tr>
+                            <th scope="col" class="fa-table__th">ID</th>
+                            <th scope="col" class="fa-table__th">{{ 'incident.label.title'|trans({}, 'incident') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'incident.label.severity'|trans({}, 'incident') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                        </tr></thead>
+                        <tbody class="fa-table__body">
+                        {% for incident in orphanedIncidents %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ incident.id }}</td>
+                                <td class="fa-table__cell">{{ incident.title }}</td>
+                                <td class="fa-table__cell">{{ incident.severity ? incident.severity.value : '' }}</td>
+                                <td class="fa-table__cell">
+                                    <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'incident', id: incident.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ incident.id) }}">
+                                        <div class="input-group input-group-sm">
+                                            <select name="tenant_id" class="form-select form-select-sm fa-cyber-input__field" required>
+                                                {% for tenant in tenants %}<option value="{{ tenant.id }}">{{ tenant.name }}</option>{% endfor %}
+                                            </select>
+                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" aria-label="{{ 'common.apply'|trans({}, 'messages') }}">
+                                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{{ path('admin_data_repair_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
+            {{ 'admin.data_repair.section.back_to_index'|trans({}, 'admin') }}
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -78,16 +78,7 @@ final class LibraryImporterControllerTest extends WebTestCase
         }
 
         $client->loginUser($superUser);
-
-        // Bootstrap session + inject CSRF token (required by #[IsCsrfTokenValid] on import)
-        $client->request('GET', '/de/admin/library');
-        $session = $client->getRequest()->getSession();
-        $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
-        $tokenValue = $tokenGenerator->generateToken();
-        $session->set('_csrf/library_import', $tokenValue);
-        $session->save();
-
-        $client->request('POST', '/de/admin/library/import?type=bsi', ['_token' => $tokenValue]);
+        $client->request('POST', '/de/admin/library/import?type=bsi');
 
         // Import may succeed or show partial result — both are 200
         self::assertTrue(

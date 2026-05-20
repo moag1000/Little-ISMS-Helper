@@ -267,7 +267,6 @@ export default class extends Controller {
         const url = event.params.url;
         const method = event.params.method || 'POST';
         const shouldReload = event.params.reload === 'true' || event.params.reload === true;
-        const csrfToken = event.params.csrfToken || '';
 
         if (!url) {
             return;
@@ -279,17 +278,12 @@ export default class extends Controller {
         button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> ...';
 
         try {
-            const headers = {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            };
-            if (csrfToken) {
-                headers['X-CSRF-Token'] = csrfToken;
-            }
-
             const response = await fetch(url, {
                 method: method,
-                headers: headers
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
 
             const result = await response.json();

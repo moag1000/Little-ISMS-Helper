@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -79,7 +78,6 @@ class LibraryImporterController extends AbstractController
      */
     #[Route('/import', name: 'import', methods: ['POST'])]
     #[IsGranted(TenantScopedAdminVoter::ADMIN_GLOBAL_OP)]
-    #[IsCsrfTokenValid('library_import', tokenKey: '_token')]
     public function import(Request $request): Response
     {
         $type = $request->query->getString('type', 'bsi');
