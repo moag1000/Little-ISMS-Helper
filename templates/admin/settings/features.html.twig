@@ -29,12 +29,12 @@
                         {# H-03: strict_whitelist — admin settings must not leak
                            any new toggle without explicit review. #}
                         {% include '_components/_auto_form.html.twig' with {
-                            'form': form,
-                            'strict_whitelist': true,
-                            'sections': {
+                            form: form,
+                            strict_whitelist: true,
+                            sections: {
                                 'feature_toggles': {
                                     'label': 'admin.settings.features.feature_toggles'|trans({}, 'admin'),
-                                    'fields': ['enable_dark_mode', 'enable_global_search', 'enable_quick_view', 'enable_notifications', 'enable_audit_log']
+                                    fields: ['enable_dark_mode', 'enable_global_search', 'enable_quick_view', 'enable_notifications', 'enable_audit_log']
                                 }
                             },
                             'col_widths': {

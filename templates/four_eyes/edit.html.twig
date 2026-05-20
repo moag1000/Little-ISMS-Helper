@@ -49,12 +49,12 @@
                payload / requestedBy / tenant fields are set programmatically by
                FourEyesApprovalService and MUST NOT leak via dev-tools. #}
             {% include '_components/_auto_form.html.twig' with {
-                'form': form,
-                'strict_whitelist': true,
-                'sections': {
+                form: form,
+                strict_whitelist: true,
+                sections: {
                     'approver': {
                         'label': 'section.approver'|trans({}, 'four_eyes'),
-                        'fields': ['requestedApprover', 'requestedApproverPerson', 'requestedApproverDeputyPersons']
+                        fields: ['requestedApprover', 'requestedApproverPerson', 'requestedApproverDeputyPersons']
                     }
                 },
                 'col_widths': {
