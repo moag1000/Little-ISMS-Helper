@@ -37,7 +37,7 @@ class BusinessProcessController extends AbstractController
     {
         return $this->translator;
     }
-    #[Route('/bcm/business-process/', name: 'app_business_process_index', methods: ['GET'])]
+    #[Route('/bcm/business-process', name: 'app_business_process_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         // Get current user's tenant

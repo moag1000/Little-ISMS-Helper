@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * fetch the OpenID Connect discovery document. Returns status + discovered
  * endpoints so the UI can show a live preview without page reload.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/api/sso', name: 'api_sso_')]
 #[IsGranted('ROLE_ADMIN')]
 final class SsoDiscoveryApiController extends AbstractController

@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Persists in Tenant.settings['backup'] JSON sub-key.
  * Note: "Run now" button and actual Messenger dispatch are Wave 2.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/settings/backups')]
 #[IsGranted('ROLE_ADMIN')]
 class BackupSettingsController extends AbstractController

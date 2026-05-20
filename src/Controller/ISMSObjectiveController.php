@@ -31,7 +31,7 @@ class ISMSObjectiveController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
     ) {}
-    #[Route('/objective/', name: 'app_objective_index', methods: ['GET'])]
+    #[Route('/objective', name: 'app_objective_index', methods: ['GET'])]
     public function index(): Response
     {
         $objectives = $this->ismsObjectiveRepository->findAll();

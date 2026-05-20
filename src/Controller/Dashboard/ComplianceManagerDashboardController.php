@@ -34,6 +34,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *   - Top-3 frameworks with lowest coverage
  *   - Quick-actions (start wizard, create mapping, generate audit-bundle)
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/dashboards', name: 'app_dashboard_')]
 class ComplianceManagerDashboardController extends AbstractController
 {

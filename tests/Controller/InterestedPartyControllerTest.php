@@ -118,7 +118,7 @@ class InterestedPartyControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/interested-party/');
+        $this->client->request('GET', '/en/interested-party');
         $this->assertResponseRedirects();
     }
 
@@ -126,7 +126,7 @@ class InterestedPartyControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/interested-party/');
+        $this->client->request('GET', '/en/interested-party');
         $this->assertResponseIsSuccessful();
     }
 

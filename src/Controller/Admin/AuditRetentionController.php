@@ -26,6 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * as `wrong:ADMIN_EDIT`) to `ADMIN_OWN_TENANT`. Tenant-admins manage
  * retention for their org, SUPER_ADMIN may operate on any tenant context.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/audit-log/retention')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class AuditRetentionController extends AbstractController

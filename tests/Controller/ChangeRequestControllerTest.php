@@ -123,7 +123,7 @@ class ChangeRequestControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/change-request/');
+        $this->client->request('GET', '/en/change-request');
         $this->assertResponseRedirects();
     }
 
@@ -131,7 +131,7 @@ class ChangeRequestControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/change-request/');
+        $this->client->request('GET', '/en/change-request');
         $this->assertResponseIsSuccessful();
     }
 

@@ -106,7 +106,7 @@ final class DataRepairControllerTest extends WebTestCase
         // the CSRF check passes, so we use an intentionally invalid token
         // and expect either (a) a CSRF error flash OR (b) a reason error
         // flash; both result in the same redirect back to the index.
-        $this->client->request('GET', '/de/admin/data-repair/');
+        $this->client->request('GET', '/de/admin/data-repair');
         self::assertResponseIsSuccessful();
 
         $this->client->request('POST', '/de/admin/data-repair/fix-tenant-mismatches', [
@@ -117,7 +117,7 @@ final class DataRepairControllerTest extends WebTestCase
         // Controller redirects back to the index either way.
         self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
         self::assertStringContainsString(
-            '/admin/data-repair/',
+            '/admin/data-repair',
             (string) $this->client->getResponse()->headers->get('Location'),
         );
     }
@@ -129,7 +129,7 @@ final class DataRepairControllerTest extends WebTestCase
         // container wiring are all intact after the MAJOR-1 audit-log
         // additions to the controller constructor.
         $this->client->loginUser($this->adminUser);
-        $this->client->request('GET', '/de/admin/data-repair/');
+        $this->client->request('GET', '/de/admin/data-repair');
         self::assertResponseIsSuccessful();
         $html = (string) $this->client->getResponse()->getContent();
         // The page title is translated — match on a stable substring.
@@ -144,7 +144,7 @@ final class DataRepairControllerTest extends WebTestCase
         // query returns zero rows and the loop never body). Running the
         // call twice keeps the audit-row count stable.
         $this->client->loginUser($this->adminUser);
-        $this->client->request('GET', '/de/admin/data-repair/');
+        $this->client->request('GET', '/de/admin/data-repair');
         self::assertResponseIsSuccessful();
 
         $before = $this->countAudit('admin.data_repair.orphan_reassigned');
@@ -178,7 +178,7 @@ final class DataRepairControllerTest extends WebTestCase
         // Asserting the localized card titles is sufficient — they're
         // unique on the page and only present when the grid renders.
         $this->client->loginUser($this->adminUser);
-        $this->client->request('GET', '/de/admin/data-repair/');
+        $this->client->request('GET', '/de/admin/data-repair');
         self::assertResponseIsSuccessful();
         $html = (string) $this->client->getResponse()->getContent();
         self::assertStringContainsString('Migrationen', $html);
@@ -198,7 +198,7 @@ final class DataRepairControllerTest extends WebTestCase
         ]);
         self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
         self::assertStringContainsString(
-            '/admin/data-repair/',
+            '/admin/data-repair',
             (string) $this->client->getResponse()->headers->get('Location'),
         );
     }
@@ -212,7 +212,7 @@ final class DataRepairControllerTest extends WebTestCase
         ]);
         self::assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
         self::assertStringContainsString(
-            '/admin/data-repair/',
+            '/admin/data-repair',
             (string) $this->client->getResponse()->headers->get('Location'),
         );
     }

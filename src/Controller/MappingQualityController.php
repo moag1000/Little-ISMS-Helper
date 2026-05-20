@@ -34,7 +34,7 @@ class MappingQualityController extends AbstractController
     /**
      * Dashboard showing mapping quality overview
      */
-    #[Route('/compliance/mapping-quality/', name: 'app_mapping_quality_dashboard', methods: ['GET'])]
+    #[Route('/compliance/mapping-quality', name: 'app_mapping_quality_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
         try {

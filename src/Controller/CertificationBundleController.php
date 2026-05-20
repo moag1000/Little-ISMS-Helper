@@ -31,6 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * ISO 27001 certification audits. The bundle includes SoA, risk treatment
  * plans, asset register, evidence documents, and gap analysis.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/certification-bundle', name: 'app_certification_bundle_')]
 #[IsGranted('ROLE_MANAGER')]
 class CertificationBundleController extends AbstractController

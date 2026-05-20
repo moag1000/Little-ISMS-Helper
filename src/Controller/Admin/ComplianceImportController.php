@@ -53,6 +53,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *    global, but the audit trail is tenant-scoped.
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route(
     path: '/admin/import/compliance',
     name: 'admin_compliance_import_'

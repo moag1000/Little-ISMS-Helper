@@ -35,6 +35,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Migrated from `ROLE_MANAGER` in Phase 4d of the Role-Scope Architecture
  * rollout (spec: `docs/superpowers/specs/2026-05-18-role-scope-architecture.md`).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/notification/rule', name: 'admin_notification_rule_')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class NotificationRuleController extends AbstractController

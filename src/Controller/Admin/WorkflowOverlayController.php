@@ -37,6 +37,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * Cross-link: links to admin_lifecycle_overrides_index for transition-level overrides.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/workflows')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 final class WorkflowOverlayController extends AbstractController

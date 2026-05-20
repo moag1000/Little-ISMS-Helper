@@ -26,6 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * SUPER-vs-ADMIN branch in {@see self::denyIfWrongTenant()}.
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/kpi-thresholds', name: 'admin_kpi_threshold_')]
 class KpiThresholdConfigController extends AbstractController
 {

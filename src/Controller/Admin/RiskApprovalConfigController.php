@@ -29,6 +29,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * SUPER_ADMIN target an arbitrary tenant via
  * {@see TenantContext::resolveAdminScope()}.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/risk-governance/approval-thresholds')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class RiskApprovalConfigController extends AbstractController

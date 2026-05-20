@@ -25,7 +25,7 @@ class LocationController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security
     ) {}
-    #[Route('/location/', name: 'app_location_index', methods: ['GET'])]
+    #[Route('/location', name: 'app_location_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {

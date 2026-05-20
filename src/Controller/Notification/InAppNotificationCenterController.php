@@ -31,6 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * The bell endpoint returns JSON consumed by notification_bell_controller.js
  * which polls every 30 s.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/notifications', name: 'app_notification_')]
 #[IsGranted('ROLE_USER')]
 class InAppNotificationCenterController extends AbstractController

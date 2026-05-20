@@ -29,6 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Module gate: eu_authority_reporting
  * RBAC: ROLE_MANAGER
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/authority/hub', name: 'authority_hub_')]
 #[IsGranted('ROLE_MANAGER')]
 class AuthorityHubController extends AbstractController

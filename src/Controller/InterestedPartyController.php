@@ -38,7 +38,7 @@ class InterestedPartyController extends AbstractController
     {
         return $this->translator;
     }
-    #[Route('/interested-party/', name: 'app_interested_party_index', methods: ['GET'])]
+    #[Route('/interested-party', name: 'app_interested_party_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {

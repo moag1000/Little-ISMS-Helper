@@ -126,7 +126,7 @@ class ReportControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/reports/');
+        $this->client->request('GET', '/en/reports');
         $this->assertResponseRedirects();
     }
 
@@ -134,7 +134,7 @@ class ReportControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/reports/');
+        $this->client->request('GET', '/en/reports');
         $this->assertResponseIsSuccessful();
     }
 
@@ -142,7 +142,7 @@ class ReportControllerTest extends WebTestCase
     public function testIndexShowsReportTypes(): void
     {
         $this->loginAsUser($this->testUser);
-        $crawler = $this->client->request('GET', '/en/reports/');
+        $crawler = $this->client->request('GET', '/en/reports');
         $this->assertResponseIsSuccessful();
     }
 

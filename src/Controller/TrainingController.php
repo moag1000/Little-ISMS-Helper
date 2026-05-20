@@ -35,7 +35,7 @@ class TrainingController extends AbstractController
         private readonly ?TrainingParticipationRepository $participationRepository = null,
         private readonly ?UserRepository $userRepository = null,
     ) {}
-    #[Route('/training/', name: 'app_training_index', methods: ['GET'])]
+    #[Route('/training', name: 'app_training_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $user = $this->security->getUser();

@@ -78,7 +78,7 @@ class ComplianceMappingControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/compliance/mapping/');
+        $this->client->request('GET', '/en/compliance/mapping');
         $this->assertResponseRedirects();
     }
 
@@ -86,7 +86,7 @@ class ComplianceMappingControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/compliance/mapping/');
+        $this->client->request('GET', '/en/compliance/mapping');
         $this->assertResponseIsSuccessful();
     }
 

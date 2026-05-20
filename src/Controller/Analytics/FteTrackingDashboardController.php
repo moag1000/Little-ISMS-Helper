@@ -35,6 +35,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Module-gate: analytics
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/dashboard/fte-tracking', name: 'analytics_fte_')]
 #[IsGranted('ROLE_MANAGER')]
 class FteTrackingDashboardController extends AbstractController

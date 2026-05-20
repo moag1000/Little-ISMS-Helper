@@ -39,6 +39,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *    {@see TenantScopedAdminVoter::ADMIN_GLOBAL_OP} (SUPER_ADMIN only).
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/library', name: 'admin_library_')]
 class LibraryImporterController extends AbstractController
 {

@@ -30,6 +30,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * /admin/* paths.
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route(
     path: '/admin/import/history',
     name: 'admin_import_history_'

@@ -175,7 +175,7 @@ class DPIAControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/dpia/');
+        $this->client->request('GET', '/en/dpia');
         $this->assertResponseRedirects();
     }
 
@@ -183,7 +183,7 @@ class DPIAControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/dpia/');
+        $this->client->request('GET', '/en/dpia');
         $this->assertResponseIsSuccessful();
     }
 

@@ -49,7 +49,7 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?CommentRepository $commentRepository = null,
     ) {}
-    #[Route('/soa/', name: 'app_soa_index', methods: ['GET'])]
+    #[Route('/soa', name: 'app_soa_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         // Get current user's tenant

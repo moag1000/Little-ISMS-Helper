@@ -154,7 +154,7 @@ class InternalAuditApprovalWorkflowTest extends WebTestCase
     {
         $this->client->loginUser($user);
         // First GET to establish session.
-        $this->client->request('GET', '/en/audit/');
+        $this->client->request('GET', '/en/audit');
         $session = $this->client->getRequest()->getSession();
 
         $tokenGenerator = new UriSafeTokenGenerator();

@@ -26,6 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Manages evidence document uploads and linkage to Controls,
  * ComplianceRequirements, and RiskTreatmentPlans for ISO 27001 audit preparation.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/evidence', name: 'app_evidence_')]
 #[IsGranted('ROLE_USER')]
 class EvidenceController extends AbstractController

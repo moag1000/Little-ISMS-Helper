@@ -107,7 +107,7 @@ class AuditLogControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/admin/audit-log/');
+        $this->client->request('GET', '/en/admin/audit-log');
         $this->assertResponseRedirects();
     }
 
@@ -115,7 +115,7 @@ class AuditLogControllerTest extends WebTestCase
     public function testIndexRequiresAdminRole(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/admin/audit-log/');
+        $this->client->request('GET', '/en/admin/audit-log');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
@@ -123,7 +123,7 @@ class AuditLogControllerTest extends WebTestCase
     public function testIndexDisplaysForAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
-        $this->client->request('GET', '/en/admin/audit-log/');
+        $this->client->request('GET', '/en/admin/audit-log');
         $this->assertResponseIsSuccessful();
     }
 

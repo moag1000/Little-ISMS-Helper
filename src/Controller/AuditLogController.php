@@ -52,7 +52,7 @@ class AuditLogController extends AbstractController
         return $this->redirectToRoute('app_audit_log_index');
     }
 
-    #[Route('/admin/audit-log/', name: 'app_audit_log_index', methods: ['GET'])]
+    #[Route('/admin/audit-log', name: 'app_audit_log_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $page = max(1, $request->query->getInt('page', 1));

@@ -44,6 +44,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Spec: `docs/plans/policy-wizard/05-architecture.md` §6 + §7.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/policy-wizard', name: 'app_policy_wizard_')]
 final class PolicyWizardController extends AbstractController
 {

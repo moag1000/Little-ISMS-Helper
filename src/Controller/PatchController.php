@@ -29,7 +29,7 @@ class PatchController extends AbstractController
         private readonly Security $security
     ) {}
 
-    #[Route('/patch/', name: 'app_patch_index', methods: ['GET'])]
+    #[Route('/patch', name: 'app_patch_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         // Get current user's tenant

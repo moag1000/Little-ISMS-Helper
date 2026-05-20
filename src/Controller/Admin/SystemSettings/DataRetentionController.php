@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Persists per-entity-type retention in Tenant.dataRetentionPolicies JSON column.
  * NOTE: Auto-delete cron is NOT implemented here (Wave 2). UI only.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/settings/data-retention')]
 #[IsGranted('ROLE_ADMIN')]
 class DataRetentionController extends AbstractController

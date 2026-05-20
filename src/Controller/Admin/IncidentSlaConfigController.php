@@ -29,6 +29,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * {@see TenantContext::resolveAdminScope()} (optional `tenant_id`
  * POST param for SUPER_ADMIN cross-tenant).
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/admin/incident-sla')]
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class IncidentSlaConfigController extends AbstractController

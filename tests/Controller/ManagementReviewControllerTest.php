@@ -126,7 +126,7 @@ class ManagementReviewControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/management-review/');
+        $this->client->request('GET', '/en/management-review');
         $this->assertResponseRedirects();
     }
 
@@ -134,7 +134,7 @@ class ManagementReviewControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/en/management-review/');
+        $this->client->request('GET', '/en/management-review');
         $this->assertResponseIsSuccessful();
     }
 

@@ -36,6 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * logged-in user. The group reports instead traverse the subtree
  * explicitly and never mutate data.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/group-report', name: 'app_group_report_')]
 #[IsGranted('ROLE_GROUP_CISO')]
 final class GroupReportController extends AbstractController

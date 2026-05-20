@@ -129,7 +129,7 @@ class BusinessProcessControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/bcm/business-process/');
+        $this->client->request('GET', '/en/bcm/business-process');
         $this->assertResponseRedirects();
     }
 
@@ -137,7 +137,7 @@ class BusinessProcessControllerTest extends WebTestCase
     public function testIndexDisplaysForUser(): void
     {
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/bcm/business-process/');
+        $this->client->request('GET', '/en/bcm/business-process');
         $this->assertResponseIsSuccessful();
     }
 
@@ -146,13 +146,13 @@ class BusinessProcessControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/bcm/business-process/?view=own');
+        $this->client->request('GET', '/en/bcm/business-process?view=own');
         $this->assertResponseIsSuccessful();
 
-        $this->client->request('GET', '/en/bcm/business-process/?view=inherited');
+        $this->client->request('GET', '/en/bcm/business-process?view=inherited');
         $this->assertResponseIsSuccessful();
 
-        $this->client->request('GET', '/en/bcm/business-process/?view=subsidiaries');
+        $this->client->request('GET', '/en/bcm/business-process?view=subsidiaries');
         $this->assertResponseIsSuccessful();
     }
 
@@ -303,7 +303,7 @@ class BusinessProcessControllerTest extends WebTestCase
         $this->testProcess = null;
 
         $this->loginAsUser($this->testUser);
-        $this->client->request('GET', '/en/bcm/business-process/');
+        $this->client->request('GET', '/en/bcm/business-process');
         $this->assertResponseIsSuccessful();
     }
 }

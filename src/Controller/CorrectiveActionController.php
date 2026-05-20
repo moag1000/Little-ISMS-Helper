@@ -27,6 +27,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * H-01: CRUD for Corrective Actions (ISO 27001 Clause 10.1).
  */
 #[IsGranted('ROLE_USER')]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/corrective-action', name: 'app_corrective_action_')]
 class CorrectiveActionController extends AbstractController
 {

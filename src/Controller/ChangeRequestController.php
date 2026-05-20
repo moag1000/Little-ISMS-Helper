@@ -29,7 +29,7 @@ class ChangeRequestController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
     ) {}
-    #[Route('/change-request/', name: 'app_change_request_index', methods: ['GET'])]
+    #[Route('/change-request', name: 'app_change_request_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {

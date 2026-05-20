@@ -214,7 +214,7 @@ class WorkflowControllerTest extends WebTestCase
     #[Test]
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/en/workflow/');
+        $this->client->request('GET', '/en/workflow');
 
         $this->assertResponseRedirects();
     }
@@ -224,7 +224,7 @@ class WorkflowControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/workflow/');
+        $this->client->request('GET', '/en/workflow');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -235,7 +235,7 @@ class WorkflowControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/en/workflow/');
+        $this->client->request('GET', '/en/workflow');
 
         $this->assertResponseIsSuccessful();
     }

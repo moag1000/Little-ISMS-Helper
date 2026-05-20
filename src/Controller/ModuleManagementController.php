@@ -21,7 +21,7 @@ class ModuleManagementController extends AbstractController
     /**
      * Module Overview - Redirect to Admin
      */
-    #[Route('/modules/', name: 'module_management_index', methods: ['GET'])]
+    #[Route('/modules', name: 'module_management_index', methods: ['GET'])]
     public function index(): Response
     {
         return $this->redirectToRoute('admin_modules_index');

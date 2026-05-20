@@ -28,7 +28,7 @@ class PersonController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security
     ) {}
-    #[Route('/person/', name: 'app_person_index', methods: ['GET'])]
+    #[Route('/person', name: 'app_person_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {

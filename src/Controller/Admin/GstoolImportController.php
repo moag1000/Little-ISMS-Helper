@@ -38,6 +38,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *    (no `tenant_id` form field exposed in the upload form).
  */
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route(
     path: '/admin/import/gstool',
     name: 'admin_gstool_import_',

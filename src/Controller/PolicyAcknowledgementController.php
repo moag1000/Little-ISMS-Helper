@@ -32,6 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * declared in `config/routes.yaml` — no need to repeat the placeholder
  * here.
  */
+// @no-methods-required — class-level path prefix, methods declared per action
 #[Route('/policy-ack', name: 'app_policy_ack_')]
 #[IsGranted('ROLE_USER')]
 final class PolicyAcknowledgementController extends AbstractController
