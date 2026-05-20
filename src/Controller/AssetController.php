@@ -23,8 +23,6 @@ use App\Service\InverseCoverageService;
 use App\Service\ProtectionRequirementService;
 use App\Service\TagFilterService;
 use App\Service\TenantContext;
-use App\Service\WorkflowAutoProgressionService;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -50,7 +48,6 @@ class AssetController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
         private readonly TenantContext $tenantContext,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly TagFilterService $tagFilterService,
         private readonly ?AssetDependencyService $assetDependencyService = null,
         private readonly ?AiAgentInventoryService $aiAgentInventoryService = null,
@@ -228,11 +225,8 @@ class AssetController extends AbstractController
             $this->entityManager->persist($asset);
             $this->entityManager->flush();
 
-            // Check and auto-progress workflow if conditions are met
-            $currentUser = $this->security->getUser();
-            if ($currentUser instanceof User) {
-                $this->workflowAutoProgressionService->checkAndProgressWorkflow($asset, $currentUser);
-            }
+            // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
+            // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->flashSuccess('asset.success.created');
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
@@ -257,11 +251,8 @@ class AssetController extends AbstractController
             $this->entityManager->persist($asset);
             $this->entityManager->flush();
 
-            // Check and auto-progress workflow if conditions are met
-            $currentUser = $this->security->getUser();
-            if ($currentUser instanceof User) {
-                $this->workflowAutoProgressionService->checkAndProgressWorkflow($asset, $currentUser);
-            }
+            // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
+            // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->flashSuccess('asset.success.created');
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
@@ -417,11 +408,8 @@ class AssetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            // Check and auto-progress workflow if conditions are met
-            $currentUser = $this->security->getUser();
-            if ($currentUser instanceof User) {
-                $this->workflowAutoProgressionService->checkAndProgressWorkflow($asset, $currentUser);
-            }
+            // Auto-progression fires via FieldCompletionAutoTransition Doctrine listener
+            // (postUpdate event) — no explicit service call required (canonical since Y.1).
 
             $this->flashSuccess('asset.success.updated');
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);

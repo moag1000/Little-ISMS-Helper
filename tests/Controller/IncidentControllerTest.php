@@ -27,7 +27,6 @@ use App\Service\IncidentRiskFeedbackService;
 use App\Service\PdfExportService;
 use App\Service\Risk\RiskIncidentLinkService;
 use App\Service\TenantContext;
-use App\Service\WorkflowAutoProgressionService;
 use App\Service\WorkflowService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -78,7 +77,6 @@ class IncidentControllerTest extends TestCase
     private MockObject $incidentEscalationWorkflowService;
     private MockObject $tenantContext;
     private MockObject $workflowService;
-    private MockObject $workflowAutoProgressionService;
     private MockObject $incidentRiskFeedbackService;
     private MockObject $riskRepository;
     private MockObject $riskIncidentLinkService;
@@ -108,7 +106,6 @@ class IncidentControllerTest extends TestCase
         $this->incidentEscalationWorkflowService = $this->createMock(IncidentEscalationWorkflowService::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
         $this->workflowService = $this->createMock(WorkflowService::class);
-        $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
         $this->incidentRiskFeedbackService = $this->createMock(IncidentRiskFeedbackService::class);
         $this->riskRepository = $this->createMock(RiskRepository::class);
         $this->riskIncidentLinkService = $this->createMock(RiskIncidentLinkService::class);
@@ -171,7 +168,6 @@ class IncidentControllerTest extends TestCase
             $this->incidentEscalationWorkflowService,
             $this->tenantContext,
             $this->workflowService,
-            $this->workflowAutoProgressionService,
             $this->incidentRiskFeedbackService,
             $this->riskRepository,
             $this->riskIncidentLinkService,
