@@ -220,6 +220,8 @@ final class AuditLogSubscriber
             'ChangeRequest',
             // SSO Wave 2 — config changes emit ACTION_SSO_CONFIG_CHANGED via postUpdate
             'IdentityProvider',
+            // ISO 27001 Cl. 7.5.3 — vulnerability tracking is a documented information asset
+            'Vulnerability',
         ];
 
         return in_array($className, $auditedEntities);
