@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Entity;
 
 use App\Entity\TenantBranding;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -104,28 +103,28 @@ final class TenantBrandingReportStyleTest extends TestCase
     #[Test]
     public function coverPatternRejectsUnknown(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         (new TenantBranding())->setReportDocCoverPattern('crazy-cover');
     }
 
     #[Test]
     public function audienceRejectsUnknown(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         (new TenantBranding())->setReportDocDefaultAudience('president');
     }
 
     #[Test]
     public function pageOrientationRejectsUnknown(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         (new TenantBranding())->setReportDocPageOrientation('diagonal');
     }
 
     #[Test]
     public function chartColorSchemeRejectsUnknown(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         (new TenantBranding())->setReportDocChartColorScheme('rainbow');
     }
 

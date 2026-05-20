@@ -6,7 +6,6 @@ namespace App\Tests\Entity;
 
 use App\Entity\DocumentSection;
 use App\Entity\User;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -46,7 +45,7 @@ class DocumentSectionApprovalRoleTest extends TestCase
         self::assertNull($section->getApprovalRole());
 
         // Unknown values throw — section-state must stay regulator-clean.
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         $section->setApprovalRole('owner');
     }
 

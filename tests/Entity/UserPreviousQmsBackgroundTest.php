@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Entity;
 
 use App\Entity\User;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -43,7 +42,7 @@ final class UserPreviousQmsBackgroundTest extends TestCase
     #[Test]
     public function rejectsUnknownValue(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid previousQmsBackground');
         $user = new User();
         $user->setPreviousQmsBackground('iso_27001');

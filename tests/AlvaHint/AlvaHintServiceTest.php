@@ -12,7 +12,6 @@ use App\Entity\User;
 use App\Repository\AlvaHintDismissalRepository;
 use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -102,7 +101,7 @@ class AlvaHintServiceTest extends TestCase
     #[Test]
     public function tier1HintMustNotBeDismissible(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         new AlvaHint(
             key: 'incident.gdpr_72h',
             titleTranslationKey: 'tests.title',

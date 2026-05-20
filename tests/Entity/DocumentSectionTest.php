@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Entity;
 
 use App\Entity\DocumentSection;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -46,7 +45,7 @@ class DocumentSectionTest extends TestCase
     public function setStatusRejectsUnknownValue(): void
     {
         $section = new DocumentSection();
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         // ROLE_DPO must NOT be allowed to push the section into a state
         // outside the allow-list — section state is regulator-relevant.
         $section->setStatus('foo_bar_unknown');

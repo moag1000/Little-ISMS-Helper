@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Entity;
 
 use App\Entity\TenantBranding;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -68,21 +67,21 @@ final class TenantBrandingPolicyStyleTest extends TestCase
     #[Test]
     public function invalidCoverPatternRejected(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         (new TenantBranding())->setPolicyDocCoverPattern('disco-funk');
     }
 
     #[Test]
     public function invalidLogoSizeRejected(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         (new TenantBranding())->setPolicyDocCoverLogoSize('xxl');
     }
 
     #[Test]
     public function invalidPageMarginRejected(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
         (new TenantBranding())->setPolicyDocPageMargin('square');
     }
 
