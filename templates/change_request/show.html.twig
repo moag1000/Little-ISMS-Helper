@@ -7,6 +7,14 @@
 
 {% block body %}
 <div class="container">
+    {# M-4 — module-gating: Change Management (ISO 27001 A.8.32) #}
+    {% if not is_module_active('change_requests') %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Change Management'}, 'messages')
+        }) }}
+    {% else %}
     {# Lifecycle Y.5 — status transition dropdown (change_request_lifecycle) #}
     {% include '_components/_lifecycle_toolbar.html.twig' with {
         entity: change_request,
@@ -195,5 +203,6 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+    {% endif %} {# /M-4 change_requests module gate #}
 </div>
 {% endblock %}

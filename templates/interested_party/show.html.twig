@@ -7,6 +7,14 @@
 
 {% block body %}
 <div class="container">
+    {# M-4 — module-gating: Interested Parties (ISO 27001 Cl. 4.2) #}
+    {% if not is_module_active('interested_parties') %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Interested Parties'}, 'messages')
+        }) }}
+    {% else %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.interested_parties'|trans({}, 'nav'), url: path('app_interested_party_index') },
@@ -141,6 +149,7 @@
             </div>
         {% endblock %}
     {% endembed %}
+    {% endif %} {# /M-4 interested_parties module gate #}
 </div>
 
 <style>
