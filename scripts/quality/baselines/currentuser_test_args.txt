@@ -1,5 +1,7 @@
 # check_currentuser_test_args.py baseline
 # Format: <relative-path>:<line>
+tests/Controller/Admin/Library/LibraryImporterControllerTest.php:88
+tests/Controller/Api/SsoDiscoveryApiControllerTest.php:114
 tests/Controller/AssetControllerTest.php:206
 tests/Controller/CertificationBundleControllerKonzernTest.php:175
 tests/Controller/CertificationBundleControllerKonzernTest.php:194
@@ -17,6 +19,7 @@ tests/Controller/IncidentControllerTest.php:361
 tests/Controller/IncidentControllerTest.php:388
 tests/Controller/IncidentControllerTest.php:440
 tests/Controller/InternalAuditApprovalWorkflowTest.php:163
+tests/Controller/MappingQualityControllerTest.php:138
 tests/Controller/PolicyAcknowledgementControllerTest.php:159
 tests/Controller/PolicyExportControllerTest.php:177
 tests/Controller/PolicyWizardBestandsaufnahmeFlowTest.php:179
@@ -29,7 +32,7 @@ tests/Service/IndustryBaselineApplierTest.php:192
 tests/Service/IndustryBaselineApplierTest.php:193
 tests/Service/IndustryBaselineApplierTest.php:194
 tests/Service/TenantContextTest.php:208
-tests/Template/SystemTemplateApplierTest.php:52
-tests/Template/SystemTemplateApplierTest.php:90
 tests/Template/SystemTemplateApplierTest.php:120
 tests/Template/SystemTemplateApplierTest.php:152
+tests/Template/SystemTemplateApplierTest.php:52
+tests/Template/SystemTemplateApplierTest.php:90
