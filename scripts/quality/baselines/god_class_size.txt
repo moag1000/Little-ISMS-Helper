@@ -21,8 +21,8 @@ src/Controller/Admin/ComplianceImportController.php:LOC=922 deps=0
 src/Controller/TenantManagementController.php:LOC=912 deps=0
 src/Controller/IncidentController.php:LOC=825 deps=0
 src/Controller/AdminBackupController.php:LOC=795 deps=0
-src/Controller/AnalyticsController.php:LOC=761 deps=0
-src/Controller/ComplianceWizardController.php:LOC=761 deps=0
+src/Controller/AnalyticsController.php:LOC=762 deps=0
+src/Controller/ComplianceWizardController.php:LOC=762 deps=0
 src/Controller/MonitoringController.php:LOC=727 deps=0
 src/Controller/QuickFixController.php:LOC=678 deps=0
 src/Controller/DPIAController.php:LOC=664 deps=0
