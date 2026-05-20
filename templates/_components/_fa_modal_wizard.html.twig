@@ -1,0 +1,248 @@
+{#
+ # FairyAurora v4.0 — fa-modal--wizard macro
+ #
+ # High-stakes linear-flow modal with step-pips + validation-gates.
+ # Used by: Tenant-Setup-Wizard, GDPR-Breach-Initial-Assessment,
+ #           Compliance-Wizard, Policy-Wizard.
+ #
+ # Macros:
+ #   render(config)  — full wizard modal shell
+ #
+ # Config keys:
+ #   id                   (string, required)    — modal element id
+ #   title                (string, required)    — wizard heading
+ #   subtitle             (string|null)         — supporting text under title
+ #   steps                (array, required)     — see step schema below
+ #   actions              (object, required)    — cancel + submit actions
+ #   stimulusController   (string|null)         — default: 'modal-wizard'
+ #   initialStep          (int|null)            — 0-based default: 0
+ #
+ # Step schema:
+ #   id              string   — unique step id (also used as DOM id prefix)
+ #   label           string   — short label for the pip-rail
+ #   title           string   — full title shown in step header
+ #   body            string   — step content (pre-rendered HTML, use include(…))
+ #   required        bool     — gate Next-button on validity (default: false)
+ #   validationHint  string   — shown when required but incomplete
+ #
+ # Actions schema:
+ #   cancel:
+ #     label         string
+ #     onclick       string|null  — raw JS expression, alternative to route
+ #     route         string|null  — Symfony route name (used as href on cancel link)
+ #   submit:
+ #     label         string
+ #     onclick       string|null
+ #     variant       'primary'|'danger'   (default: 'primary')
+ #
+ # Usage:
+ #   {% import '_components/_fa_modal_wizard.html.twig' as _fa_modal_wizard %}
+ #
+ #   {{ _fa_modal_wizard.render({
+ #       id: 'breach-wizard',
+ #       title: 'Datenpanne melden',
+ #       subtitle: 'DSGVO Art. 33/34 — Ersterfassung',
+ #       steps: [
+ #           {
+ #               id: 'severity',
+ #               label: 'Schweregrad',
+ #               title: '1. Schweregradeinstufung',
+ #               body: include('data_breach/_step_severity.html.twig'),
+ #               required: true,
+ #               validationHint: 'Bitte Schweregrad und betroffene Systeme angeben.',
+ #           },
+ #           ...
+ #       ],
+ #       actions: {
+ #           cancel: { label: 'Abbrechen' },
+ #           submit: { label: 'Datenpanne erfassen', variant: 'danger' },
+ #       },
+ #   }) }}
+ #
+ # A11y:
+ #   - role="dialog" aria-modal="true" aria-labelledby on root
+ #   - aria-current="step" on the active pip
+ #   - aria-live="polite" on validation banner
+ #   - focus trap managed by Stimulus controller
+ #}
+
+{% macro render(config) %}
+    {%- set id           = config.id ?? 'modal-wizard' -%}
+    {%- set title        = config.title ?? '' -%}
+    {%- set subtitle     = config.subtitle ?? null -%}
+    {%- set steps        = config.steps ?? [] -%}
+    {%- set actions      = config.actions ?? {} -%}
+    {%- set controller   = config.stimulusController ?? 'modal-wizard' -%}
+    {%- set initialStep  = config.initialStep ?? 0 -%}
+    {%- set totalSteps   = steps|length -%}
+    {%- set headingId    = id ~ '-title' -%}
+
+    <div id="{{ id }}"
+         class="fa-modal fa-modal--wizard"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="{{ headingId }}"
+         data-controller="{{ controller }}"
+         data-{{ controller }}-current-step-value="{{ initialStep }}"
+         data-{{ controller }}-total-steps-value="{{ totalSteps }}"
+         data-{{ controller }}-has-changes-value="false">
+
+        {# ── Wizard Header ──────────────────────────────────────────────── #}
+        <header class="fa-modal__wizard-header">
+            <div class="fa-modal__wizard-header-top">
+                <div class="fa-modal__wizard-icon" aria-hidden="true">
+                    <i class="fa-icon fa-icon--security-shield"></i>
+                </div>
+                <div class="fa-modal__wizard-heading">
+                    <h2 id="{{ headingId }}">{{ title }}</h2>
+                    {% if subtitle %}
+                        <p>{{ subtitle }}</p>
+                    {% endif %}
+                </div>
+                <button type="button"
+                        class="fa-modal__wizard-close"
+                        aria-label="Wizard schließen"
+                        data-action="{{ controller }}#cancel"
+                        data-{{ controller }}-target="closeBtn">
+                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            {# ── Pip-rail ─────────────────────────────────────────────── #}
+            <ol class="fa-modal__wizard-pips"
+                role="list"
+                aria-label="Wizard-Schritte">
+                {% for idx, step in steps %}
+                    {%- set pipState = (idx < initialStep) ? 'done' : (idx == initialStep ? 'current' : 'pending') -%}
+                    <li class="fa-modal__wizard-pip fa-modal__wizard-pip--{{ pipState }}"
+                        data-{{ controller }}-target="pip"
+                        data-step-index="{{ idx }}"
+                        {% if pipState == 'done' %}
+                            data-action="click->{{ controller }}#jumpToPip"
+                            role="button"
+                            tabindex="0"
+                            aria-label="Zurück zu Schritt {{ idx + 1 }}: {{ step.label }}"
+                        {% endif %}
+                        {% if pipState == 'current' %}aria-current="step"{% endif %}>
+                        <div class="fa-modal__wizard-pip-bar" aria-hidden="true"></div>
+                        <span class="fa-modal__wizard-pip-num">
+                            {%- if pipState == 'done' -%}
+                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                            {%- elseif pipState == 'error' -%}
+                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                            {%- else -%}
+                                {{ idx + 1 }}
+                            {%- endif -%}
+                        </span>
+                        <span class="fa-modal__wizard-pip-label">{{ step.label }}</span>
+                    </li>
+                {% endfor %}
+            </ol>
+        </header>
+
+        {# ── Wizard Body ────────────────────────────────────────────────── #}
+        <div class="fa-modal__wizard-body">
+            {% for idx, step in steps %}
+                {%- set isActive = (idx == initialStep) -%}
+                <div id="{{ id }}-step-{{ idx }}"
+                     class="fa-modal__wizard-step{% if isActive %} is-active{% endif %}"
+                     data-{{ controller }}-target="step"
+                     data-step-index="{{ idx }}"
+                     data-step-required="{{ step.required is defined and step.required ? 'true' : 'false' }}"
+                     {% if step.validationHint is defined and step.validationHint %}
+                         data-validation-hint="{{ step.validationHint }}"
+                     {% endif %}
+                     role="group"
+                     aria-label="Schritt {{ idx + 1 }}: {{ step.title }}">
+
+                    <p class="fa-modal__wizard-step-title">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                        {{ step.title }}
+                    </p>
+
+                    {% if step.body is defined and step.body %}
+                        {{ step.body|raw }}
+                    {% endif %}
+
+                    {# Validation banner — shown by JS when required inputs are empty #}
+                    <div class="fa-modal__wizard-validation"
+                         data-{{ controller }}-target="validationHint"
+                         role="alert"
+                         aria-live="polite">
+                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                        <span class="fa-modal__wizard-validation-text">
+                            {{- step.validationHint is defined and step.validationHint
+                                ? step.validationHint
+                                : 'Bitte alle Pflichtfelder ausfüllen, bevor Sie fortfahren.' -}}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>{# /.fa-modal__wizard-body #}
+
+        {# ── Wizard Footer ──────────────────────────────────────────────── #}
+        <footer class="fa-modal__wizard-footer">
+            <div class="fa-modal__wizard-footer-info">
+                Schritt <strong data-{{ controller }}-target="stepCounter">{{ initialStep + 1 }}</strong>
+                von <strong>{{ totalSteps }}</strong>
+            </div>
+            <div class="fa-modal__wizard-footer-actions">
+                {# Cancel #}
+                {% if actions.cancel is defined %}
+                    {% if actions.cancel.onclick is defined and actions.cancel.onclick %}
+                        <button type="button"
+                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                onclick="{{ actions.cancel.onclick }}"
+                                data-{{ controller }}-target="cancelBtn">
+                            <span class="fa-cyber-btn__label">{{ actions.cancel.label }}</span>
+                        </button>
+                    {% else %}
+                        <button type="button"
+                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                data-action="{{ controller }}#cancel"
+                                data-{{ controller }}-target="cancelBtn">
+                            <span class="fa-cyber-btn__label">{{ actions.cancel.label }}</span>
+                        </button>
+                    {% endif %}
+                {% endif %}
+
+                {# Back (hidden on first step) #}
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm"
+                        data-action="{{ controller }}#back"
+                        data-{{ controller }}-target="backBtn"
+                        {% if initialStep == 0 %}hidden{% endif %}
+                        aria-label="Zurück zum vorherigen Schritt">
+                    <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
+                    <span class="fa-cyber-btn__label">Zurück</span>
+                </button>
+
+                {# Next (visible on all but last step) #}
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
+                        data-action="{{ controller }}#next"
+                        data-{{ controller }}-target="nextBtn"
+                        {% if initialStep == totalSteps - 1 %}hidden{% endif %}
+                        aria-label="Weiter zum nächsten Schritt">
+                    <span class="fa-cyber-btn__label">Weiter</span>
+                    <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                </button>
+
+                {# Submit (visible only on last step) #}
+                {% if actions.submit is defined %}
+                    {%- set submitVariant = actions.submit.variant ?? 'primary' -%}
+                    <button type="submit"
+                            class="fa-cyber-btn fa-cyber-btn--{{ submitVariant }} fa-cyber-btn--sm"
+                            data-action="{{ controller }}#submit"
+                            data-{{ controller }}-target="submitBtn"
+                            {% if initialStep < totalSteps - 1 %}hidden{% endif %}
+                            aria-label="{{ actions.submit.label }}">
+                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                        <span class="fa-cyber-btn__label">{{ actions.submit.label }}</span>
+                    </button>
+                {% endif %}
+            </div>
+        </footer>
+
+    </div>{# /.fa-modal.fa-modal--wizard #}
+{% endmacro %}
