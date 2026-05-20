@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
@@ -66,12 +65,13 @@ class SetupAccessChecker
     /**
      * Reset the setup (development only).
      *
-     * @throws RuntimeException if not in development environment
+     * @throws \LogicException if not in development environment
      */
     public function resetSetup(): void
     {
         if ($this->parameterBag->get('kernel.environment') !== 'dev') {
-            throw new RuntimeException('Setup reset is only allowed in development environment');
+            // @intentional-assertion: programmer-error guard — resetSetup() must never be called in production
+            throw new \LogicException('Setup reset is only allowed in development environment');
         }
 
         $setupFile = $this->getSetupLockFilePath();

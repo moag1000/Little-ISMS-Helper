@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use RuntimeException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -50,7 +49,8 @@ final class DatabaseConfigurationType extends AbstractType
 
         // If no PDO extensions available, show error
         if ($availableTypes === []) {
-            throw new RuntimeException(
+            // @intentional-assertion: deployment-time guard — no PDO extension loaded is a server misconfiguration
+            throw new \LogicException(
                 'No PDO database extensions found. Please install at least one of: pdo_mysql, pdo_pgsql, or pdo_sqlite'
             );
         }

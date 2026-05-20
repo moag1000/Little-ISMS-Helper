@@ -11,7 +11,6 @@ use App\Entity\EvidenceReverificationTask;
 use App\Entity\Tenant;
 use App\Entity\User;
 use DateTimeImmutable;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -51,7 +50,7 @@ class EvidenceReverificationTaskTest extends TestCase
     #[Test]
     public function testInvalidStatusThrows(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\App\Exception\InvalidArgument\InvalidArgumentException::class);
 
         $task = new EvidenceReverificationTask();
         $task->setStatus('invalid_status');

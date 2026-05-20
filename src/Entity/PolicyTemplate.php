@@ -432,7 +432,7 @@ class PolicyTemplate
     public function setBsiTier(?string $bsiTier): static
     {
         if ($bsiTier !== null && !in_array($bsiTier, self::BSI_TIERS, true)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Unknown BSI tier "%s". Allowed: %s, or null.',
                 $bsiTier,
                 implode(', ', self::BSI_TIERS),
