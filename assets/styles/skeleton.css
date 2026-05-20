@@ -12,13 +12,13 @@
         var(--surface-2) 100%
     );
     background-size: 200% 100%;
-    animation: skeletonLoading 1.5s ease-in-out infinite;
+    animation: fa-skeleton-shimmer 1.5s ease-in-out infinite;
     border-radius: var(--r-sm);
 }
 
-@keyframes skeletonLoading {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+@keyframes fa-skeleton-shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -164,16 +164,12 @@
 
 /* Pulse Animation (alternative to shimmer) */
 .skeleton-pulse {
-    animation: skeletonPulse 1.5s ease-in-out infinite;
+    animation: fa-skeleton-pulse 1.5s ease-in-out infinite;
 }
 
-@keyframes skeletonPulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
+@keyframes fa-skeleton-pulse {
+    0%, 100% { opacity: .9;  }
+    50%      { opacity: .55; }
 }
 
 /* Variants */

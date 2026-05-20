@@ -987,3 +987,205 @@ html[data-theme="dark"] .fa-admin-hub-card__count { background: rgba(255,255,255
     cursor: not-allowed;
     box-shadow: none;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   Audit-Log-Item — .audit-log-item (Detail/History Card-Variant)
+   Light + Dark via Aurora tokens only. Use in audit_log/detail
+   and audit_log/entity_history. For compact log-rows in tables
+   keep using .fa-audit-row above.
+   ══════════════════════════════════════════════════════════════ */
+.audit-log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.audit-log-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 16px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--fg-3);
+    border-radius: var(--r-lg);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition: border-color var(--t-fast) var(--ease-out),
+                box-shadow  var(--t-fast) var(--ease-out);
+}
+.audit-log-item:hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.audit-log-item__icon {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 40px; height: 40px;
+    border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-2);
+    color: var(--fg-3);
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.audit-log-item__head {
+    grid-column: 2;
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 4px;
+    min-width: 0;
+}
+.audit-log-item__actor {
+    font: 600 14px var(--font-sans);
+    color: var(--fg);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.audit-log-item__action {
+    font: 600 10.5px var(--font-mono);
+    color: var(--accent-strong);
+    background: var(--accent-tint);
+    border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+    padding: 2px 8px;
+    border-radius: var(--r-pill);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+}
+.audit-log-item__ts {
+    font: 500 11.5px var(--font-mono);
+    color: var(--fg-3);
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.audit-log-item__body {
+    grid-column: 2;
+    min-width: 0;
+}
+.audit-log-item__entity {
+    font: 500 13px var(--font-sans);
+    color: var(--fg-2);
+    margin-bottom: 6px;
+}
+.audit-log-item__entity code {
+    font: 600 12px var(--font-mono);
+    color: var(--primary-strong);
+    background: var(--primary-tint);
+    border: 1px solid color-mix(in oklab, var(--primary) 22%, transparent);
+    padding: 1px 7px;
+    border-radius: var(--r-sm);
+}
+.audit-log-item__desc {
+    font: 400 13px/1.5 var(--font-sans);
+    color: var(--fg-2);
+    margin: 4px 0 8px;
+}
+.audit-log-item__meta {
+    display: flex; flex-wrap: wrap; gap: 4px 12px;
+    font: 500 11px var(--font-mono);
+    color: var(--fg-3);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+}
+.audit-log-item__meta-cell {
+    display: inline-flex; align-items: center; gap: 5px;
+}
+.audit-log-item__meta-cell i { font-size: 12px; opacity: 0.7; }
+.audit-log-item__hash {
+    margin-left: auto;
+    color: var(--fg-3);
+    font-feature-settings: "tnum";
+}
+
+/* Tone Variants — border-left + icon-bg/-color */
+.audit-log-item--create { border-left-color: var(--success); }
+.audit-log-item--create .audit-log-item__icon {
+    background: color-mix(in oklab, var(--success) 14%, var(--surface));
+    color: var(--success);
+}
+.audit-log-item--update { border-left-color: var(--warning); }
+.audit-log-item--update .audit-log-item__icon {
+    background: color-mix(in oklab, var(--warning) 14%, var(--surface));
+    color: var(--warning-text, var(--warning));
+}
+.audit-log-item--delete { border-left-color: var(--danger); }
+.audit-log-item--delete .audit-log-item__icon {
+    background: color-mix(in oklab, var(--danger) 14%, var(--surface));
+    color: var(--danger);
+}
+.audit-log-item--login,
+.audit-log-item--access { border-left-color: var(--primary); }
+.audit-log-item--login .audit-log-item__icon,
+.audit-log-item--access .audit-log-item__icon {
+    background: var(--primary-tint);
+    color: var(--primary);
+}
+.audit-log-item--system { border-left-color: var(--accent); }
+.audit-log-item--system .audit-log-item__icon {
+    background: var(--accent-tint);
+    color: var(--accent);
+}
+
+/* Lifecycle Modifier — combine on top of tone variants */
+.audit-log-item--sealed {
+    background:
+      linear-gradient(90deg,
+        color-mix(in oklab, var(--accent) 6%, transparent) 0%,
+        transparent 50%),
+      var(--surface);
+    border-left-color: var(--accent);
+}
+.audit-log-item--sealed .audit-log-item__icon {
+    background: var(--accent-tint);
+    color: var(--accent);
+    box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+.audit-log-item--sealed .audit-log-item__hash::before {
+    content: "✦ ";
+    color: var(--accent);
+}
+.audit-log-item--failed {
+    background:
+      linear-gradient(90deg,
+        color-mix(in oklab, var(--danger) 5%, transparent) 0%,
+        transparent 50%),
+      var(--surface);
+    border-left-color: var(--danger);
+}
+.audit-log-item--failed .audit-log-item__icon {
+    background: color-mix(in oklab, var(--danger) 14%, var(--surface));
+    color: var(--danger);
+}
+
+/* Diff-Slot (optional, expanded view) */
+.audit-log-item__diff {
+    grid-column: 2;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    font: 500 12px var(--font-mono);
+}
+.audit-log-item__diff-col h5 {
+    font: 600 10px var(--font-mono);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin: 0 0 6px;
+    color: var(--fg-3);
+}
+.audit-log-item__diff-col--old h5 { color: var(--danger); }
+.audit-log-item__diff-col--new h5 { color: var(--success); }
+.audit-log-item__diff-col dl {
+    margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 8px;
+}
+.audit-log-item__diff-col dt { color: var(--fg-3); }
+.audit-log-item__diff-col dd { color: var(--fg); margin: 0; }
+.audit-log-item__diff-col--old dd { color: var(--danger); }
+.audit-log-item__diff-col--new dd { color: var(--success); }
+
