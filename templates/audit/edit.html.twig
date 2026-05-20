@@ -177,7 +177,7 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initAuditEditSubsidiaries() {
     const scopeTypeSelect = document.querySelector('[data-corporate-scope]');
     const subsidiariesContainer = document.getElementById('subsidiaries-container');
     const subsidiariesSelect = document.querySelector('[data-corporate-subsidiaries]');
@@ -215,12 +215,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Run on scope type change
     scopeTypeSelect.addEventListener('change', toggleSubsidiariesField);
-});
+}
 
-// Also handle Turbo navigation
-document.addEventListener('turbo:load', function() {
-    const event = new Event('DOMContentLoaded');
-    document.dispatchEvent(event);
-});
+document.addEventListener('DOMContentLoaded', initAuditEditSubsidiaries);
+document.addEventListener('turbo:load', initAuditEditSubsidiaries);
 </script>
 {% endblock %}

@@ -473,15 +473,17 @@
                     });
 
                     // Initialize Bootstrap tooltips
-                    document.addEventListener('DOMContentLoaded', function() {
+                    function initRequirementTooltips() {
                         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        tooltipTriggerList.map(function (tooltipTriggerEl) {
                             return new bootstrap.Tooltip(tooltipTriggerEl, {
                                 trigger: 'hover',
                                 html: false
                             });
                         });
-                    });
+                    }
+                    document.addEventListener('DOMContentLoaded', initRequirementTooltips);
+                    document.addEventListener('turbo:load', initRequirementTooltips);
                     </script>
                 {% endblock %}
             {% endembed %}

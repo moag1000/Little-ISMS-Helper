@@ -272,8 +272,8 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        // Initialize Bootstrap tooltips
-        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap tooltips and loading state
+        function initReviewQueueTooltips() {
             // Enable tooltips on badges
             const badges = document.querySelectorAll('.badge');
             badges.forEach(badge => {
@@ -306,7 +306,9 @@
                     this.classList.add('disabled');
                 });
             });
-        });
+        }
+        document.addEventListener('DOMContentLoaded', initReviewQueueTooltips);
+        document.addEventListener('turbo:load', initReviewQueueTooltips);
     </script>
 {% endblock %}
 {% endblock %}

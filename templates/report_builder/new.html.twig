@@ -135,9 +135,11 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initReportBuilderLayout() {
     const layoutSelect = document.getElementById('layout');
     const layoutOptions = document.querySelectorAll('.layout-option');
+
+    if (!layoutSelect) return;
 
     layoutOptions.forEach(option => {
         option.addEventListener('click', function() {
@@ -155,7 +157,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-});
+}
+
+document.addEventListener('DOMContentLoaded', initReportBuilderLayout);
+document.addEventListener('turbo:load', initReportBuilderLayout);
 </script>
 
 <style>

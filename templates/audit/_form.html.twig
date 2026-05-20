@@ -497,7 +497,7 @@
 {# JavaScript for conditional subsidiaries field #}
 {% if form.auditedSubsidiaries is defined %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initAuditFormSubsidiaries() {
     const scopeTypeSelect = document.querySelector('[data-corporate-scope]');
     const subsidiariesContainer = document.getElementById('subsidiaries-container');
     const subsidiariesSelect = document.querySelector('[data-corporate-subsidiaries]');
@@ -536,6 +536,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Listen for changes
     scopeTypeSelect.addEventListener('change', toggleSubsidiariesField);
-});
+}
+
+document.addEventListener('DOMContentLoaded', initAuditFormSubsidiaries);
+document.addEventListener('turbo:load', initAuditFormSubsidiaries);
 </script>
 {% endif %}

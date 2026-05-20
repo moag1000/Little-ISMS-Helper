@@ -146,7 +146,7 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    function initRoleHelp() {
         const collapseEl = document.getElementById('roleHelpContent');
         if (collapseEl) {
             collapseEl.addEventListener('show.bs.collapse', function() {
@@ -160,5 +160,7 @@
                 if (btn) btn.querySelector('.collapse-text').classList.add('d-none');
             });
         }
-    });
+    }
+    document.addEventListener('DOMContentLoaded', initRoleHelp);
+    document.addEventListener('turbo:load', initRoleHelp);
 </script>
