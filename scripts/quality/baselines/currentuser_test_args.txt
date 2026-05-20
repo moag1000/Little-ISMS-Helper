@@ -29,7 +29,7 @@ tests/Service/IndustryBaselineApplierTest.php:192
 tests/Service/IndustryBaselineApplierTest.php:193
 tests/Service/IndustryBaselineApplierTest.php:194
 tests/Service/TenantContextTest.php:208
-tests/Template/SystemTemplateApplierTest.php:120
-tests/Template/SystemTemplateApplierTest.php:152
 tests/Template/SystemTemplateApplierTest.php:52
 tests/Template/SystemTemplateApplierTest.php:90
+tests/Template/SystemTemplateApplierTest.php:120
+tests/Template/SystemTemplateApplierTest.php:152
