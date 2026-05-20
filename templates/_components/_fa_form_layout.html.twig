@@ -1,0 +1,212 @@
+{#
+ * fa-form-layout — Outline-Rail + Section-Cards for large forms (15+ fields, 4-10 sections)
+ *
+ * Usage:
+ *   {% import '_components/_fa_form_layout.html.twig' as _fa_form %}
+ *   {{ _fa_form.render({ ... }) }}
+ *
+ * Config keys:
+ *   eyebrow      (string|null)      — small caps badge above title
+ *   title        (string, required)
+ *   subtitle     (string|null)
+ *   progress     { done: int, total: int }
+ *   draftSavedAt (\DateTime|null)   — timestamp of last auto-save
+ *   sections     [{
+ *     id:         string,
+ *     title:      string,
+ *     status:     'done'|'current'|'error'|'pending',
+ *     fields:     int,       — total fields in section
+ *     filled:     int,       — currently filled
+ *     body:       string|null  — pre-rendered HTML (use include(...))
+ *     errorHint:  string|null
+ *   }]
+ *   actions {
+ *     close:  { label, variant: 'ghost' }
+ *     next:   { label, variant: 'secondary' }
+ *     submit: { label, variant: 'primary' }
+ *   }
+ *   stimulusController (string|null, default 'form-layout')
+ #}
+
+{% macro render(config) %}
+    {%- set eyebrow          = config.eyebrow ?? null -%}
+    {%- set title            = config.title ?? '' -%}
+    {%- set subtitle         = config.subtitle ?? null -%}
+    {%- set progress         = config.progress ?? null -%}
+    {%- set draftSavedAt     = config.draftSavedAt ?? null -%}
+    {%- set sections         = config.sections ?? [] -%}
+    {%- set actions          = config.actions ?? {} -%}
+    {%- set controller       = config.stimulusController ?? 'form-layout' -%}
+
+    {%- set progressPercent  = (progress and progress.total > 0) ? ((progress.done / progress.total) * 100)|round : 0 -%}
+    {%- set totalSections    = sections|length -%}
+
+    <div class="fa-form-layout"
+         data-controller="{{ controller }}"
+         data-{{ controller }}-sections-state-value="{{ sections|map(s => {
+             (s.id): { fields: (s.fields ?? 0), filled: (s.filled ?? 0), status: (s.status ?? 'pending') }
+         })|merge({})|json_encode }}"
+         {% if draftSavedAt %}data-{{ controller }}-draft-saved-at-value="{{ draftSavedAt|date('c') }}"{% endif %}>
+
+        {# ── Header ──────────────────────────────────────────────────────── #}
+        <header class="fa-form-layout__header">
+            <div>
+                {% if eyebrow %}
+                    <div class="fa-form-layout__eyebrow">{{ eyebrow|raw }}</div>
+                {% endif %}
+                <h2 class="fa-form-layout__title">{{ title }}</h2>
+                {% if subtitle %}
+                    <p class="fa-form-layout__sub">{{ subtitle }}</p>
+                {% endif %}
+            </div>
+            {% if progress %}
+                <div class="fa-form-layout__progress">
+                    <div class="fa-form-layout__progress-text"
+                         data-{{ controller }}-target="progressText">
+                        <strong>{{ progress.done }}</strong> von <strong>{{ progress.total }}</strong> Abschnitten · {{ progressPercent }}%
+                    </div>
+                    <div class="fa-form-layout__progress-bar">
+                        <div class="fa-form-layout__progress-fill"
+                             data-{{ controller }}-target="progressFill"
+                             style="width: {{ progressPercent }}%;"></div>
+                    </div>
+                    {% if draftSavedAt %}
+                        <div class="fa-form-layout__draft-state"
+                             data-{{ controller }}-target="draftState">
+                            <i class="bi bi-check-circle-fill"></i>
+                            Entwurf gespeichert
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </header>
+
+        {# ── Body: Outline + Sections ─────────────────────────────────────── #}
+        <div class="fa-form-layout__body">
+
+            {# ── Outline rail ──────────────────────────────────────────────── #}
+            <nav class="fa-form-layout__outline" aria-label="Abschnitte">
+                <div class="fa-form-layout__outline-title">Abschnitte</div>
+                <ul class="fa-form-layout__outline-list">
+                    {% for section in sections %}
+                        {%- set sectionStatus = section.status ?? 'pending' -%}
+                        {%- set sectionFields = section.fields ?? 0 -%}
+                        {%- set sectionFilled = section.filled ?? 0 -%}
+                        {%- set loop_index    = loop.index -%}
+                        <li>
+                            <a class="fa-form-layout__outline-item{% if sectionStatus == 'done' %} fa-form-layout__outline-item--done{% elseif sectionStatus == 'current' %} fa-form-layout__outline-item--current fa-form-layout__outline-item--active{% elseif sectionStatus == 'error' %} fa-form-layout__outline-item--error{% endif %}"
+                               href="#{{ section.id }}"
+                               data-{{ controller }}-target="outlineItem"
+                               data-section-id="{{ section.id }}"
+                               data-action="click->{{ controller }}#jumpToSection">
+                                <span class="fa-form-layout__outline-state">
+                                    {%- if sectionStatus == 'done' -%}
+                                        <i class="bi bi-check"></i>
+                                    {%- elseif sectionStatus == 'current' -%}
+                                        <i class="bi bi-pencil"></i>
+                                    {%- elseif sectionStatus == 'error' -%}
+                                        <i class="bi bi-exclamation"></i>
+                                    {%- else -%}
+                                        {{ loop_index }}
+                                    {%- endif -%}
+                                </span>
+                                <span class="fa-form-layout__outline-label">{{ section.title }}</span>
+                                <span class="fa-form-layout__outline-count"
+                                      data-section-count="{{ section.id }}">{{ sectionFilled }}/{{ sectionFields }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+
+            {# ── Section cards ─────────────────────────────────────────────── #}
+            <div class="fa-form-layout__sections"
+                 data-action="scroll->{{ controller }}#onScroll">
+                {% for section in sections %}
+                    {%- set sectionStatus   = section.status ?? 'pending' -%}
+                    {%- set sectionFields   = section.fields ?? 0 -%}
+                    {%- set sectionFilled   = section.filled ?? 0 -%}
+                    {%- set sectionPending  = sectionFields - sectionFilled -%}
+                    {%- set isCurrent       = (sectionStatus == 'current') -%}
+                    {%- set isOpen          = isCurrent -%}
+                    <section id="{{ section.id }}"
+                             class="fa-form-section{% if sectionStatus == 'done' %} fa-form-section--done{% elseif sectionStatus == 'current' %} fa-form-section--current{% elseif sectionStatus == 'error' %} fa-form-section--error{% endif %}{% if isOpen %} fa-form-section--open{% else %} fa-form-section--collapsed{% endif %}"
+                             data-{{ controller }}-target="section"
+                             data-section-id="{{ section.id }}">
+
+                        <header class="fa-form-section__head"
+                                data-action="click->{{ controller }}#toggleSection">
+                            <span class="fa-form-section__num">
+                                {%- if sectionStatus == 'done' -%}
+                                    <i class="bi bi-check"></i>
+                                {%- elseif sectionStatus == 'error' -%}
+                                    <i class="bi bi-exclamation"></i>
+                                {%- else -%}
+                                    {{ loop.index }}
+                                {%- endif -%}
+                            </span>
+                            <div class="fa-form-section__heading">
+                                <h3 class="fa-form-section__title">{{ loop.index }} · {{ section.title }}</h3>
+                                <span class="fa-form-section__meta"
+                                      data-section-meta="{{ section.id }}"
+                                      {% if sectionStatus == 'error' %}style="color: var(--danger);"{% endif %}>
+                                    {%- if sectionStatus == 'done' -%}
+                                        {{ sectionFields }} Felder · alle ausgefüllt
+                                    {%- elseif sectionStatus == 'error' and section.errorHint is defined and section.errorHint -%}
+                                        {{ section.errorHint }}
+                                    {%- else -%}
+                                        {{ sectionFields }} Felder · {{ sectionFilled }} ausgefüllt · {{ sectionPending }} ausstehend
+                                    {%- endif -%}
+                                </span>
+                            </div>
+                            <i class="bi bi-chevron-down fa-form-section__chevron"></i>
+                        </header>
+
+                        {% if not (sectionStatus == 'done' or sectionStatus == 'pending') or isOpen %}
+                            <div class="fa-form-section__body">
+                                {% if section.body is defined and section.body %}
+                                    {{ section.body|raw }}
+                                {% endif %}
+                            </div>
+                        {% elseif isOpen %}
+                            <div class="fa-form-section__body"></div>
+                        {% endif %}
+
+                    </section>
+                {% endfor %}
+            </div>
+
+        </div>{# /.fa-form-layout__body #}
+
+        {# ── Footer ───────────────────────────────────────────────────────── #}
+        <footer class="fa-form-layout__footer">
+            <div class="fa-form-layout__footer-meta">
+                {% block formLayoutFooterMeta %}{% endblock %}
+            </div>
+            <div class="fa-form-layout__footer-actions">
+                {% if actions.close is defined %}
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--{{ actions.close.variant ?? 'ghost' }} fa-cyber-btn--sm">
+                        <span class="fa-cyber-btn__label">{{ actions.close.label }}</span>
+                    </button>
+                {% endif %}
+                {% if actions.next is defined %}
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--{{ actions.next.variant ?? 'secondary' }} fa-cyber-btn--sm"
+                            data-action="{{ controller }}#nextSection">
+                        <i class="fa-icon fa-icon--util-arrow-right"></i>
+                        <span class="fa-cyber-btn__label">{{ actions.next.label }}</span>
+                    </button>
+                {% endif %}
+                {% if actions.submit is defined %}
+                    <button type="submit"
+                            class="fa-cyber-btn fa-cyber-btn--{{ actions.submit.variant ?? 'primary' }} fa-cyber-btn--sm">
+                        <i class="fa-icon fa-icon--ui-check"></i>
+                        <span class="fa-cyber-btn__label">{{ actions.submit.label }}</span>
+                    </button>
+                {% endif %}
+            </div>
+        </footer>
+
+    </div>{# /.fa-form-layout #}
+{% endmacro %}
