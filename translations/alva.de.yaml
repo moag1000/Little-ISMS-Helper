@@ -18,6 +18,10 @@ data_breach:
         title: '72-h-Frist DSGVO Art. 33 läuft'
         body: 'Schwere Datenpanne ohne Aufsichtsbehörden-Meldung. Verbleibend: %hours% h %minutes% min. Versäumte Frist = bis 10 Mio. € / 2 % Konzernumsatz (Art. 83 Abs. 4).'
         action: 'Meldung dokumentieren'
+    notification_overdue:
+        title: 'DSGVO Art. 33 — Meldepflicht um %hours% h überschritten'
+        body: 'Die 72h-Frist für die Aufsichtsbehörden-Meldung ist ohne bestätigte Meldung verstrichen (%hours% Stunden überfällig). DSGVO Art. 33 / Art. 83 Abs. 4 — Bußgeld bis 10 Mio. € / 2 % Konzernumsatz. Meldung dokumentieren oder Verzögerung sofort begründen.'
+        action: 'Meldung dokumentieren'
 
 processing_activity:
     third_country:
@@ -40,6 +44,10 @@ processing_activity:
         create_supplier: 'Lieferant anlegen'
         save: 'Auswahl speichern'
         flash_saved: 'AVV-Lieferanten gespeichert.'
+    retention_missing:
+        title: 'Aufbewahrungsfrist fehlt — DSGVO Art. 5 Abs. 1 lit. e Lücke'
+        body: 'Diese Verarbeitungstätigkeit hat keine dokumentierte Aufbewahrungsfrist oder Löschrichtlinie. DSGVO Art. 5 Abs. 1 lit. e Speicherbegrenzungsgrundsatz verlangt, personenbezogene Daten nicht länger als erforderlich aufzubewahren. Aufsichtsbehörden bemängeln fehlende Löschfristen regelmäßig.'
+        action: 'Aufbewahrungsfrist setzen'
 
 vulnerability:
     critical_unpatched:
@@ -58,6 +66,10 @@ asset:
         title: 'Schutzbedarf aus Abhängigkeiten verfügbar'
         body: 'Abhängige Assets ergeben höheren Schutzbedarf nach BSI 3.6 Maximumprinzip: C=%c%, I=%i%, A=%a%. Vorschlag übernehmen.'
         action: 'Schutzbedarf übernehmen'
+    criticality_missing_high_risk:
+        title: 'CIA-Klassifizierung fehlt bei hoch-risikobeladenem Asset'
+        body: 'Dieses Asset ist mit einem hochkritischen Risiko verknüpft, hat aber keine Vertraulichkeits-/Integritäts-/Verfügbarkeitsklassifizierung. Ohne diese ist der Schutzbedarf nicht nachweisbar und kann weder in die BSI-3.6-Vererbung noch in den ISO-27001-A.5.9-Nachweis einfließen.'
+        action: 'CIA-Klassifizierung setzen'
 
 bc_plan:
     test_overdue:
@@ -77,6 +89,11 @@ supplier:
         title: 'DORA Exit-Strategie fehlt'
         body: 'ICT-kritischer Lieferant ohne dokumentierte Exit-Strategie. DORA Art. 28 Abs. 8 fordert verbindlichen Ausstiegsplan für kritische Dienste.'
         action: 'Exit-Strategie ergänzen'
+    no_recent_assessment:
+        title: 'Hochkritischer Lieferant ohne aktuelles Sicherheits-Assessment'
+        body_with_last: 'Letztes Sicherheits-Assessment für diesen %criticality%-Lieferanten vor %months% Monaten. ISO 27001 A.5.19 / DORA Art. 28 fordern regelmäßige Sicherheits-Reviews für kritische Dritte — jährliche Kadenz ist der erwartete Standard.'
+        body_never: 'Kein Sicherheits-Assessment dokumentiert für diesen %criticality%-Lieferanten. ISO 27001 A.5.19 / DORA Art. 28 fordern Nachweise für Drittpartei-Sicherheits-Reviews.'
+        action: 'Assessment einplanen'
 
 audit_finding:
     no_capa:
@@ -118,6 +135,10 @@ document:
         empty_means_all: 'Hinweis: leere Auswahl behält das Standard-Verhalten "alle aktiven Mandanten-Nutzer".'
         flash_saved: 'Acknowledgement-Audience gespeichert.'
         flash_not_required: 'Dokument fordert keine Bestätigung — Audience-Picker übersprungen.'
+    review_overdue:
+        title: 'Dokument-Review überfällig — %months% Monate ohne Überprüfung'
+        body: 'Dieses freigegebene/veröffentlichte Dokument wurde vor mehr als %months% Monaten zuletzt aktualisiert und hat kein geplantes Nächst-Review-Datum. ISO 27001 Cl. 7.5.3 fordert regelmäßige Dokument-Reviews — fehlende Nachweise sind ein Audit-Finding.'
+        action: 'Review planen'
 
 training:
     mandatory_audience:
@@ -134,6 +155,10 @@ training:
         save: 'Audience speichern'
         flash_saved: '%count% neue Pflichtteilnehmer zugewiesen.'
         flash_not_mandatory: 'Training ist nicht als Pflicht markiert — Audience-Picker übersprungen.'
+    low_completion_rate:
+        title: 'Pflichttraining: Abschlussquote bei %rate%%%'
+        body: 'Nur %completed% von %total% zugewiesenen Teilnehmenden haben dieses Pflichttraining abgeschlossen (%rate%%). ISO 27001 A.6.3 / Cl. 7.3 Awareness fordert nachweisbaren Abschluss — ausstehende Nachweise vor dem nächsten Audit einholen.'
+        action: 'Ausstehende Teilnehmer erinnern'
 
 risk:
     no_treatment:
@@ -144,6 +169,10 @@ risk:
         title: 'DSFA-Pflicht erkannt — Datenschutz-Folgenabschätzung fehlt'
         body: 'Risiko ist als DSFA-pflichtig markiert (DSGVO Art. 35), aber bisher keine DSFA verlinkt. Vorbefüllung aus Risiko-Daten verfügbar — Beschreibung, verknüpftes Asset und Betroffenen-Auswirkungen werden übernommen.'
         action: 'DSFA mit Vorbefüllung anlegen'
+    treatment_overdue:
+        title: 'Hohes Risiko seit %days% Tagen unbehandelt'
+        body: 'Inherentes Risiko-Niveau %level% vor %days% Tagen identifiziert, bisher kein Treatment-Plan. ISO 27001 Cl. 6.1.3 fordert eine dokumentierte Behandlungsentscheidung — je länger die Lücke, desto stärker die Audit-Feststellung.'
+        action: 'Treatment-Plan anlegen'
 
 control:
     orphan:
@@ -154,6 +183,34 @@ control:
         title: 'Nicht-anwendbares Control ohne Begründung — Major-NC-Risiko'
         body: 'Dieses Control ist als „nicht anwendbar" markiert, aber im SoA fehlt die schriftliche Begründung. ISO 27001 Cl. 6.1.3 d / 8.3 b verlangen für jede Ausschluss-Entscheidung eine dokumentierte Begründung — sonst Major-NC beim externen Zertifizierungs-Audit.'
         action: 'Begründung ergänzen'
+    soa_no_mappings:
+        title: 'SoA-Control ohne Compliance-Anforderungs-Mappings'
+        body: 'Dieses anwendbare Control hat Risiken verknüpft, aber keine Framework-Anforderungs-Mappings. ISO 27001 Cl. 6.1.3 c fordert, dass jedes Control im SoA auf Framework-Klauseln oder Risikoentscheidungen zurückgeführt wird. Mindestens ein Mapping ergänzen, um die Nachweis-Lücke zu schließen.'
+        action: 'Anforderungs-Mappings ergänzen'
+
+bc_exercise:
+    no_findings:
+        title: 'Abgeschlossene BC-Übung ohne dokumentierte Erkenntnisse'
+        body: 'ISO 22301 Cl. 8.6 erwartet von jeder Übung mindestens eine dokumentierte Feststellung oder einen Verbesserungsbereich. Ein Übungsbericht ohne Beobachtungen hat begrenzten Audit-Wert — Regulatoren und Zertifizierungsstellen werden dies bemerken.'
+        action: 'Erkenntnisse ergänzen'
+
+audit:
+    findings_without_capa:
+        title: '%count% offene Finding(s) ohne zugewiesenen Verantwortlichen'
+        body: '%count% offene oder in Bearbeitung befindliche Finding(s) haben keinen zugewiesenen Verantwortlichen. ISO 27001 Cl. 10.1 fordert für jede Nichtkonformität einen dokumentierten Korrekturmaßnahmen-Inhaber — nicht zugewiesene Findings sind ein Major-NC-Indikator beim externen Audit.'
+        action: 'Findings zuweisen'
+
+compliance_framework:
+    low_coverage:
+        title: 'Framework „%name%" — nur %coverage%% der Anforderungen gemappt'
+        body: 'Nur %coverage%% der Anforderungen in „%name%" sind Controls oder Nachweisen zugeordnet (Schwelle: %threshold%%). ISO 27001 Cl. 9.1 erwartet eine aktuelle, evidenzgestützte Compliance-Haltung für aktive Frameworks. Mit den hochpriorisierten Lücken beginnen.'
+        action: 'Framework-Lücken öffnen'
+
+management_review:
+    interval_overdue:
+        title: 'Management-Review überfällig — letzter vor %months% Monaten'
+        body: 'Der zuletzt dokumentierte Management-Review ist %months% Monate alt. ISO 27001 Cl. 9.3 fordert Reviews in geplanten Intervallen — in der Regel jährlich. Fehlende Kadenz ist ein direktes Audit-Finding bei der Zertifizierung.'
+        action: 'Management-Review anlegen'
 
 dpia:
     sdm_incomplete:
@@ -166,6 +223,10 @@ incident:
         title: 'Vorfall ohne Risk-Treatment-Plan'
         body: 'Hochkritischer Vorfall mit betroffenem hochsensiblen Asset, aber kein Treatment-Plan dokumentiert. ISO 27001 A.5.27 — Lessons Learned.'
         action: 'Treatment-Plan anlegen'
+    high_severity_open_too_long:
+        title: 'Hochkritischer Vorfall seit %hours% Stunden offen — SLA überschritten'
+        body: 'Dieser hoch-/kritische Vorfall ist seit %hours% Stunden offen (SLA: %sla% h). ISO 27001 A.5.26 und NIS2 Art. 23 fordern schnelle Reaktion und Eskalation. Sofortiger Handlungsbedarf.'
+        action: 'Vorfall aktualisieren'
     requires_data_breach:
         title: 'DSGVO Art. 33 — Datenpanne dokumentieren (72h-Frist)'
         body: 'Dieser Vorfall ist als Datenpanne markiert, aber es liegt noch keine verknüpfte Datenpanne-Akte vor. DSGVO Art. 33 verlangt Meldung an die Aufsichtsbehörde binnen 72h nach Kenntnisnahme. Versäumte Frist = Bußgeld bis 10 Mio. € / 2 % Konzernumsatz (Art. 83 Abs. 4 lit. a).'
