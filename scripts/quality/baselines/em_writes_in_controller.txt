@@ -347,6 +347,15 @@ src/Controller/RiskAppetiteController.php:155
 src/Controller/RiskAppetiteController.php:156
 src/Controller/RiskAppetiteController.php:89
 src/Controller/RiskAppetiteController.php:90
+src/Controller/RiskController.php:1016
+src/Controller/RiskController.php:1024
+src/Controller/RiskController.php:1192
+src/Controller/RiskController.php:1224
+src/Controller/RiskController.php:1225
+src/Controller/RiskController.php:898
+src/Controller/RiskController.php:899
+src/Controller/RiskController.php:932
+src/Controller/RiskController.php:933
 src/Controller/RiskTreatmentPlanController.php:103
 src/Controller/RiskTreatmentPlanController.php:104
 src/Controller/RiskTreatmentPlanController.php:138
