@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')]
@@ -119,6 +120,7 @@ class MappingQualityController extends AbstractController
      * Update mapping review status and percentage
      */
     #[Route('/compliance/mapping-quality/review/{id}/update', name: 'app_mapping_quality_review_update', methods: ['POST'])]
+    #[IsCsrfTokenValid('mapping_quality_review_update', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function updateReview(int $id, Request $request): JsonResponse
     {
         try {
@@ -204,6 +206,7 @@ class MappingQualityController extends AbstractController
      * Re-analyze a specific mapping
      */
     #[Route('/compliance/mapping-quality/analyze/{id}', name: 'app_mapping_quality_analyze', methods: ['POST'])]
+    #[IsCsrfTokenValid('mapping_quality_analyze', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function analyze(int $id): JsonResponse
     {
         $mapping = $this->complianceMappingRepository->find($id);
@@ -291,6 +294,7 @@ class MappingQualityController extends AbstractController
      * Update gap item status
      */
     #[Route('/compliance/mapping-quality/gap/{id}/update', name: 'app_mapping_quality_gap_update', methods: ['POST'])]
+    #[IsCsrfTokenValid('mapping_quality_gap_update', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function updateGap(int $id, Request $request): JsonResponse
     {
         try {
@@ -371,6 +375,7 @@ class MappingQualityController extends AbstractController
      * Batch analyze mappings (for UI-based analysis in chunks)
      */
     #[Route('/compliance/mapping-quality/batch-analyze', name: 'app_mapping_quality_batch_analyze', methods: ['POST'])]
+    #[IsCsrfTokenValid('mapping_quality_batch_analyze', tokenKey: 'X-CSRF-Token', tokenSource: IsCsrfTokenValid::SOURCE_HEADER)]
     public function batchAnalyze(Request $request): JsonResponse
     {
         try {

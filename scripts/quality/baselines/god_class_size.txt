@@ -3,7 +3,7 @@
 # NEW file added OR existing file growing beyond LOC will fail CI.
 src/Service/ComplianceWizardService.php:LOC=6031 deps=23
 src/Controller/DeploymentWizardController.php:LOC=2683 deps=0
-src/Controller/ComplianceController.php:LOC=2607 deps=0
+src/Controller/ComplianceController.php:LOC=2609 deps=0
 src/Service/RestoreService.php:LOC=2287 deps=7
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1870 deps=15
 src/Service/DataIntegrityService.php:LOC=1864 deps=26

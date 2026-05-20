@@ -10,7 +10,7 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static targets = ['presetCard', 'discoveryUrl', 'discoveryResult', 'callbackUrl'];
-    static values = { validateUrl: String };
+    static values = { validateUrl: String, csrfToken: { type: String, default: '' } };
 
     connect() {
         this._highlightSelectedPreset();
@@ -41,9 +41,13 @@ export default class extends Controller {
         this.discoveryResultTarget.innerHTML = '<span class="text-muted">Validating…</span>';
 
         try {
+            const headers = { 'Content-Type': 'application/json' };
+            if (this.csrfTokenValue) {
+                headers['X-CSRF-Token'] = this.csrfTokenValue;
+            }
             const response = await fetch(this.validateUrlValue, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify({ discoveryUrl: url }),
             });
             const data = await response.json();

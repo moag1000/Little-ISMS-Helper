@@ -20,6 +20,7 @@
                     data-ui-actions-confirm-param="{{ 'mapping_review.action.reanalyze_confirm'|trans({}, 'compliance') }}"
                     data-ui-actions-url-param="{{ path('app_mapping_quality_analyze', {id: mapping.id}) }}"
                     data-ui-actions-method-param="POST"
+                    data-ui-actions-csrf-token-param="{{ csrf_token('mapping_quality_analyze') }}"
                     data-ui-actions-reload-param="true">
                 <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'mapping_review.action.reanalyze'|trans({}, 'compliance') }}
             </button>
@@ -330,6 +331,7 @@ document.getElementById('reviewForm').addEventListener('submit', async (e) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-Token': {{ csrf_token('mapping_quality_review_update')|json_encode|raw }},
             },
             body: JSON.stringify(data)
         });
