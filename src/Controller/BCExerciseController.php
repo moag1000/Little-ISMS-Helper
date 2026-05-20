@@ -6,9 +6,11 @@ namespace App\Controller;
 
 use DateTimeImmutable;
 use App\Controller\Trait\ModuleGatedControllerTrait;
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\BCExercise;
 use App\Form\BCExerciseType;
 use App\Repository\BCExerciseRepository;
+use App\Service\AuditLogger;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +20,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -25,6 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class BCExerciseController extends AbstractController
 {
     use ModuleGatedControllerTrait;
+    use BulkActionTrait;
 
     public function __construct(
         private readonly BCExerciseRepository $bcExerciseRepository,
@@ -33,6 +37,7 @@ class BCExerciseController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
         private readonly Security $security,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
     #[Route('/bc-exercise', name: 'app_bc_exercise_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -175,5 +180,62 @@ class BCExerciseController extends AbstractController
             'errors' => $errors,
             'message' => "$deleted BC exercises deleted successfully",
         ]);
+    }
+
+    /**
+     * Bulk CSV export of selected BC exercises.
+     * Module-gated: bcm. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/bc-exercise/bulk-export', name: 'app_bc_exercise_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        if ($redirect = $this->checkModuleActive('bcm')) {
+            return $redirect;
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $exercises = [];
+        foreach ($ids as $rawId) {
+            $exercise = $this->bcExerciseRepository->find((int) $rawId);
+            if ($exercise === null) {
+                continue;
+            }
+            if ($tenant !== null && $exercise->getTenant() !== $tenant) {
+                continue;
+            }
+            $exercises[] = $exercise;
+        }
+
+        if ($exercises === []) {
+            return $this->json(['error' => 'No exportable BC exercises'], 404);
+        }
+
+        $headers = ['ID', 'Name', 'Type', 'Status', 'Exercise Date', 'Results'];
+
+        return $this->streamCsvExport(
+            $exercises,
+            $headers,
+            static function (BCExercise $e): array {
+                return [
+                    (string) $e->getId(),
+                    (string) $e->getName(),
+                    (string) $e->getExerciseType(),
+                    (string) $e->getStatus(),
+                    $e->getExerciseDate()?->format('Y-m-d') ?? '',
+                    (string) $e->getResults(),
+                ];
+            },
+            'bc-exercises-export',
+            'BCExercise',
+            $this->auditLogger,
+        );
     }
 }

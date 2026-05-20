@@ -35,11 +35,15 @@ use App\Service\RoleDashboardService;
 use App\Service\TagFilterService;
 use App\Service\Risk\RiskIncidentLinkService;
 use App\Repository\RiskIncidentLinkRepository;
+use App\Repository\UserRepository;
+use App\Service\AuditLogger;
+use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -47,6 +51,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class RiskController extends AbstractController
 {
     use LocalizedFlashTrait;
+    use BulkActionTrait;
 
     public function __construct(
         private readonly RiskRepository $riskRepository,
@@ -68,6 +73,8 @@ class RiskController extends AbstractController
         private readonly ?RiskIncidentLinkService $riskIncidentLinkService = null,
         private readonly ?RiskIncidentLinkRepository $riskIncidentLinkRepository = null,
         private readonly ?RoleDashboardService $roleDashboardService = null,
+        private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?UserRepository $userRepository = null,
     ) {}
 
     protected function getFlashDomain(): string
@@ -1415,5 +1422,115 @@ class RiskController extends AbstractController
             return "'" . $value;
         }
         return $value;
+    }
+
+    /**
+     * Bulk CSV export of selected risks.
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/risk/bulk-export', name: 'app_risk_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user   = $this->security->getUser();
+        $tenant = $user instanceof User ? $user->getTenant() : null;
+
+        $risks = [];
+        foreach ($ids as $rawId) {
+            $risk = $this->riskRepository->find((int) $rawId);
+            if ($risk === null) {
+                continue;
+            }
+            if ($tenant !== null && $risk->getTenant() !== $tenant) {
+                continue;
+            }
+            $risks[] = $risk;
+        }
+
+        if ($risks === []) {
+            return $this->json(['error' => 'No exportable risks'], 404);
+        }
+
+        $headers = ['ID', 'Title', 'Category', 'Status', 'Probability', 'Impact', 'Treatment Strategy', 'Owner'];
+
+        return $this->streamCsvExport(
+            $risks,
+            $headers,
+            static function (Risk $r): array {
+                return [
+                    (string) $r->getId(),
+                    (string) $r->getTitle(),
+                    (string) $r->getCategory(),
+                    (string) ($r->getStatus()?->value ?? ''),
+                    (string) $r->getProbability(),
+                    (string) $r->getImpact(),
+                    (string) ($r->getTreatmentStrategy()?->value ?? ''),
+                    (string) ($r->getRiskOwnerName() ?? ''),
+                ];
+            },
+            'risks-export',
+            'Risk',
+            $this->auditLogger,
+        );
+    }
+
+    /**
+     * Bulk assign selected risks to a user (sets riskOwner).
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/risk/bulk-assign', name: 'app_risk_bulk_assign', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkAssign(Request $request): Response
+    {
+        $data     = json_decode($request->getContent(), true);
+        $ids      = $data['ids'] ?? [];
+        $assignId = (int) ($data['assignee_id'] ?? 0);
+
+        if (!is_array($ids) || $ids === [] || $assignId === 0) {
+            return $this->json(['error' => 'No items selected or no assignee'], 400);
+        }
+
+        $user   = $this->security->getUser();
+        $tenant = $user instanceof User ? $user->getTenant() : null;
+
+        $assignee = $this->userRepository?->find($assignId);
+        if (!$assignee instanceof User) {
+            return $this->json(['error' => 'Assignee not found'], 404);
+        }
+        if ($tenant !== null && $assignee->getTenant() !== $tenant) {
+            return $this->json(['error' => 'Assignee tenant mismatch'], 403);
+        }
+
+        $risks = [];
+        foreach ($ids as $rawId) {
+            $risk = $this->riskRepository->find((int) $rawId);
+            if ($risk === null) {
+                continue;
+            }
+            if ($tenant !== null && $risk->getTenant() !== $tenant) {
+                continue;
+            }
+            $risks[] = $risk;
+        }
+
+        $result = $this->applyBulkAssign(
+            $risks,
+            static function (Risk $r, User $u): void { $r->setRiskOwner($u); },
+            $assignee,
+            'Risk',
+            $this->auditLogger,
+        );
+
+        if ($result['changed'] > 0) {
+            $this->entityManager->flush();
+        }
+
+        return $this->json($result);
     }
 }

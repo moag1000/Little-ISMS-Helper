@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Patch;
 use App\Form\PatchType;
 use App\Repository\PatchRepository;
+use App\Service\AuditLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,6 +17,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -22,11 +25,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class PatchController extends AbstractController
 {
+    use BulkActionTrait;
+
     public function __construct(
         private readonly PatchRepository $patchRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
 
     #[Route('/patch', name: 'app_patch_index', methods: ['GET'])]
@@ -234,5 +240,61 @@ class PatchController extends AbstractController
             'errors' => $errors,
             'message' => "$deleted patches deleted successfully",
         ]);
+    }
+
+    /**
+     * Bulk CSV export of selected patches.
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/patch/bulk-export', name: 'app_patch_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user   = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        $patches = [];
+        foreach ($ids as $rawId) {
+            $patch = $this->patchRepository->find((int) $rawId);
+            if ($patch === null) {
+                continue;
+            }
+            if ($tenant !== null && $patch->getTenant() !== $tenant) {
+                continue;
+            }
+            $patches[] = $patch;
+        }
+
+        if ($patches === []) {
+            return $this->json(['error' => 'No exportable patches'], 404);
+        }
+
+        $headers = ['ID', 'Title', 'Status', 'Priority', 'Version', 'Vendor', 'Product', 'Release Date'];
+
+        return $this->streamCsvExport(
+            $patches,
+            $headers,
+            static function (Patch $p): array {
+                return [
+                    (string) $p->getId(),
+                    (string) $p->getTitle(),
+                    (string) $p->getStatus(),
+                    (string) $p->getPriority(),
+                    (string) $p->getVersion(),
+                    (string) $p->getVendor(),
+                    (string) $p->getProduct(),
+                    $p->getReleaseDate()?->format('Y-m-d') ?? '',
+                ];
+            },
+            'patches-export',
+            'Patch',
+            $this->auditLogger,
+        );
     }
 }

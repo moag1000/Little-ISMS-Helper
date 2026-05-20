@@ -6,10 +6,13 @@ namespace App\Controller;
 
 use RuntimeException;
 use App\Controller\Trait\ModuleGatedControllerTrait;
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\DataSubjectRequest;
 use App\Enum\DataSubjectRequestStatus;
 use App\Form\DataSubjectRequestType;
 use App\Repository\CommentRepository;
+use App\Repository\DataSubjectRequestRepository;
+use App\Service\AuditLogger;
 use App\Service\DataSubjectRequestService;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -19,6 +22,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -29,6 +33,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DataSubjectRequestController extends AbstractController
 {
     use ModuleGatedControllerTrait;
+    use BulkActionTrait;
 
     public function __construct(
         private readonly DataSubjectRequestService $dataSubjectRequestService,
@@ -37,6 +42,8 @@ class DataSubjectRequestController extends AbstractController
         private readonly Security $security,
         private readonly ?TenantContext $tenantContext = null,
         private readonly ?CommentRepository $commentRepository = null,
+        private readonly ?DataSubjectRequestRepository $dataSubjectRequestRepository = null,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {
     }
 
@@ -309,5 +316,62 @@ class DataSubjectRequestController extends AbstractController
             'errors' => $errors,
             'message' => "$deleted data subject requests deleted successfully",
         ]);
+    }
+
+    /**
+     * Bulk CSV export of selected data subject requests.
+     * Module-gated: privacy. ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/bulk-export', name: 'bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        if ($redirect = $this->checkModuleActive('privacy')) {
+            return $redirect;
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $tenant = $this->tenantContext?->getCurrentTenant();
+
+        $dsrs = [];
+        foreach ($ids as $rawId) {
+            $dsr = $this->dataSubjectRequestRepository?->find((int) $rawId);
+            if ($dsr === null) {
+                continue;
+            }
+            if ($tenant !== null && $dsr->getTenant() !== $tenant) {
+                continue;
+            }
+            $dsrs[] = $dsr;
+        }
+
+        if ($dsrs === []) {
+            return $this->json(['error' => 'No exportable data subject requests'], 404);
+        }
+
+        $headers = ['ID', 'Request Type', 'Status', 'Data Subject Name', 'Received At', 'Deadline At'];
+
+        return $this->streamCsvExport(
+            $dsrs,
+            $headers,
+            static function (DataSubjectRequest $d): array {
+                return [
+                    (string) $d->getId(),
+                    (string) $d->getRequestType(),
+                    (string) $d->getStatus(),
+                    (string) $d->getDataSubjectName(),
+                    $d->getReceivedAt()?->format('Y-m-d') ?? '',
+                    $d->getDeadlineAt()?->format('Y-m-d') ?? '',
+                ];
+            },
+            'data-subject-requests-export',
+            'DataSubjectRequest',
+            $this->auditLogger,
+        );
     }
 }

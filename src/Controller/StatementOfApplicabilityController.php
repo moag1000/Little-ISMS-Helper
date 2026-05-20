@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use DateTime;
 use DateTimeImmutable;
+use App\Controller\Trait\BulkActionTrait;
 use App\Entity\Control;
 use App\Entity\User;
 use App\Entity\Tenant;
@@ -26,6 +27,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -33,6 +35,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class StatementOfApplicabilityController extends AbstractController
 {
+    use BulkActionTrait;
     public function __construct(
         private readonly ControlRepository $controlRepository,
         private readonly EntityManagerInterface $entityManager,
@@ -505,5 +508,58 @@ class StatementOfApplicabilityController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
+    }
+
+    /**
+     * Bulk CSV export of selected SoA controls.
+     * ISO 27001 Cl. 7.5.3 — audit-logged via BulkActionTrait.
+     */
+    #[Route('/soa/bulk-export', name: 'app_soa_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(Request $request): StreamedResponse|Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids  = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user   = $this->security->getUser();
+        $tenant = $user instanceof User ? $user->getTenant() : null;
+
+        $controls = [];
+        foreach ($ids as $rawId) {
+            $control = $this->controlRepository->find((int) $rawId);
+            if ($control === null) {
+                continue;
+            }
+            if ($tenant !== null && $control->getTenant()?->getId() !== $tenant->getId()) {
+                continue;
+            }
+            $controls[] = $control;
+        }
+
+        if ($controls === []) {
+            return $this->json(['error' => 'No exportable SoA controls'], 404);
+        }
+
+        $headers = ['ID', 'Control ID', 'Name', 'Control Type', 'Control Maturity'];
+
+        return $this->streamCsvExport(
+            $controls,
+            $headers,
+            static function (Control $c): array {
+                return [
+                    (string) $c->getId(),
+                    (string) $c->getControlId(),
+                    (string) $c->getName(),
+                    (string) $c->getControlType(),
+                    (string) $c->getControlMaturity(),
+                ];
+            },
+            'soa-controls-export',
+            'Control',
+            $this->auditLogger,
+        );
     }
 }
