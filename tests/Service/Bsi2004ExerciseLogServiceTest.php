@@ -15,7 +15,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use App\Exception\BusinessRule\BusinessRuleException;
 
 #[AllowMockObjectsWithoutExpectations]
 class Bsi2004ExerciseLogServiceTest extends TestCase
@@ -89,7 +89,7 @@ class Bsi2004ExerciseLogServiceTest extends TestCase
         $existingLog->setBcExercise($exercise);
         $exercise->setExerciseLog($existingLog);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->service->createFromExercise($exercise);
     }
 
@@ -120,7 +120,7 @@ class Bsi2004ExerciseLogServiceTest extends TestCase
         $log = new Bsi2004ExerciseLog();
         $log->setSubmittedAt(new \DateTimeImmutable());
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->service->markComplete($log, new User());
     }
 
@@ -150,7 +150,7 @@ class Bsi2004ExerciseLogServiceTest extends TestCase
     {
         $log = new Bsi2004ExerciseLog();
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->service->confirmByAuditor($log, new User());
     }
 
@@ -161,7 +161,7 @@ class Bsi2004ExerciseLogServiceTest extends TestCase
         $log->setSubmittedAt(new \DateTimeImmutable());
         $log->setConfirmedAt(new \DateTimeImmutable());
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->service->confirmByAuditor($log, new User());
     }
 

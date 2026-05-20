@@ -6,7 +6,6 @@ namespace App\Service;
 
 use Exception;
 use Psr\Cache\InvalidArgumentException;
-use RuntimeException;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
@@ -143,6 +142,6 @@ class InitialAdminService
             'operation' => $operation,
         ]);
 
-        throw new RuntimeException($message);
+        throw new \App\Exception\Io\IoException($message);
     }
 }

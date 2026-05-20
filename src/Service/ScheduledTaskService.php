@@ -8,8 +8,6 @@ use App\Entity\ScheduledTask;
 use App\Repository\ScheduledTaskRepository;
 use Cron\CronExpression;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
-use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -39,7 +37,7 @@ final class ScheduledTaskService
     ): ScheduledTask {
         // Validate cron expression
         if (!CronExpression::isValidExpression($cronExpression)) {
-            throw new InvalidArgumentException(sprintf('Invalid cron expression: %s', $cronExpression));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid cron expression: %s', $cronExpression), 'cronExpression');
         }
 
         $task = new ScheduledTask();
@@ -88,7 +86,7 @@ final class ScheduledTaskService
 
         if ($cronExpression !== null) {
             if (!CronExpression::isValidExpression($cronExpression)) {
-                throw new InvalidArgumentException(sprintf('Invalid cron expression: %s', $cronExpression));
+                throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid cron expression: %s', $cronExpression), 'cronExpression');
             }
 
             $task->setCronExpression($cronExpression);
@@ -173,7 +171,7 @@ final class ScheduledTaskService
                 'Next run: %s',
                 $nextRun->format('Y-m-d H:i:s')
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return 'Unable to determine next run time';
         }
     }

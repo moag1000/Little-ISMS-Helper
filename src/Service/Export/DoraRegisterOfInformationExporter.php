@@ -70,7 +70,7 @@ final class DoraRegisterOfInformationExporter
 
         $handle = fopen('php://temp', 'w+');
         if ($handle === false) {
-            throw new \RuntimeException('Unable to open in-memory stream for CSV export.');
+            throw new \App\Exception\Io\IoException('Unable to open in-memory stream for CSV export.');
         }
 
         fputcsv($handle, self::COLUMNS, ',', '"', '\\');
@@ -84,7 +84,7 @@ final class DoraRegisterOfInformationExporter
         fclose($handle);
 
         if ($body === false) {
-            throw new \RuntimeException('Failed to read CSV body from stream.');
+            throw new \App\Exception\Io\IoException('Failed to read CSV body from stream.');
         }
 
         return self::UTF8_BOM . $body;

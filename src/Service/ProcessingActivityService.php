@@ -6,7 +6,6 @@ namespace App\Service;
 
 use DateTime;
 use DateTimeInterface;
-use RuntimeException;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
 use App\Enum\ProcessingActivityStatus;
@@ -478,7 +477,7 @@ final class ProcessingActivityService
         // Validate before activation
         $errors = $this->validate($processingActivity);
         if ($errors !== []) {
-            throw new RuntimeException(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(
                 'Cannot activate processing activity with validation errors: ' . implode(', ', $errors)
             );
         }

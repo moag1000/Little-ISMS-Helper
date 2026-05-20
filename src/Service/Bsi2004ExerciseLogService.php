@@ -9,7 +9,6 @@ use App\Entity\Bsi2004ExerciseLog;
 use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use RuntimeException;
 
 /**
  * Domain service for BSI-200-4 Übungs-Logbuch (F27).
@@ -33,7 +32,7 @@ final class Bsi2004ExerciseLogService
     public function createFromExercise(BCExercise $exercise): Bsi2004ExerciseLog
     {
         if ($exercise->getExerciseLog() !== null) {
-            throw new RuntimeException(sprintf(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf(
                 'BCExercise #%d already has a Bsi2004ExerciseLog.',
                 (int) $exercise->getId()
             ));
@@ -90,7 +89,7 @@ final class Bsi2004ExerciseLogService
     public function markComplete(Bsi2004ExerciseLog $log, User $submittedBy): void
     {
         if ($log->isSubmitted()) {
-            throw new RuntimeException('Log is already submitted.');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Log is already submitted.', 'already_submitted');
         }
 
         $log->setSubmittedBy($submittedBy);
@@ -117,10 +116,10 @@ final class Bsi2004ExerciseLogService
     public function confirmByAuditor(Bsi2004ExerciseLog $log, User $auditor): void
     {
         if (!$log->isSubmitted()) {
-            throw new RuntimeException('Log must be submitted before it can be confirmed.');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Log must be submitted before it can be confirmed.', 'not_submitted');
         }
         if ($log->isConfirmed()) {
-            throw new RuntimeException('Log is already confirmed.');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Log is already confirmed.', 'already_confirmed');
         }
 
         $log->setConfirmedByAuditor($auditor);

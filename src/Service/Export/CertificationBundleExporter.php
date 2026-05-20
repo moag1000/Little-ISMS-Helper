@@ -146,12 +146,12 @@ final class CertificationBundleExporter
 
         $tempPath = tempnam(sys_get_temp_dir(), 'cert_bundle_');
         if ($tempPath === false) {
-            throw new \RuntimeException('Unable to create temp file for ZIP.');
+            throw new \App\Exception\Io\IoException('Unable to create temp file for ZIP.');
         }
 
         $zip = new \ZipArchive();
         if ($zip->open($tempPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
-            throw new \RuntimeException('Unable to open ZIP for writing: ' . $tempPath);
+            throw new \App\Exception\Io\IoException('Unable to open ZIP for writing: ' . $tempPath);
         }
 
         $user = $this->security->getUser();
@@ -397,7 +397,7 @@ final class CertificationBundleExporter
     ): array {
         $directSubs = $holdingTenant->getSubsidiaries();
         if ($directSubs->count() === 0) {
-            throw new \InvalidArgumentException('not_a_holding');
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException('not_a_holding', 'tenantId');
         }
 
         if ($frameworks === []) {
@@ -426,12 +426,12 @@ final class CertificationBundleExporter
 
         $tempPath = tempnam(sys_get_temp_dir(), 'konzern_cert_bundle_');
         if ($tempPath === false) {
-            throw new \RuntimeException('Unable to create temp file for Konzern ZIP.');
+            throw new \App\Exception\Io\IoException('Unable to create temp file for Konzern ZIP.');
         }
 
         $zip = new \ZipArchive();
         if ($zip->open($tempPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
-            throw new \RuntimeException('Unable to open Konzern ZIP for writing: ' . $tempPath);
+            throw new \App\Exception\Io\IoException('Unable to open Konzern ZIP for writing: ' . $tempPath);
         }
 
         $aggregatedIndexRows = [

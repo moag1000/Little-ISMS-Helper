@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Exception\Io\IoException;
 use App\Service\BackupEncryptionService;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 use PHPUnit\Framework\Attributes\Test;
 
 class BackupEncryptionServiceTest extends TestCase
@@ -85,7 +85,7 @@ class BackupEncryptionServiceTest extends TestCase
         // A service initialised with a different APP_SECRET must fail to decrypt.
         $wrongService = new BackupEncryptionService('completely-different-secret');
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $this->expectExceptionMessageMatches('/ensure APP_SECRET matches/');
         $wrongService->decryptValue($envelope);
     }
@@ -96,7 +96,7 @@ class BackupEncryptionServiceTest extends TestCase
         $envelope               = $this->service->encryptValue('sensitive');
         $envelope['ciphertext'] = base64_encode('CORRUPTED_GARBAGE_DATA_THAT_WONT_DECRYPT');
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $wrongService = new BackupEncryptionService($this->appSecret);
         $wrongService->decryptValue($envelope);
     }
@@ -104,7 +104,7 @@ class BackupEncryptionServiceTest extends TestCase
     #[Test]
     public function testDecryptWithInvalidBase64Throws(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $this->service->decryptValue([
             '__encrypted' => true,
             'cipher'      => 'aes-256-gcm',

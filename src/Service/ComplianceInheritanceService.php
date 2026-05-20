@@ -18,7 +18,6 @@ use App\Repository\ComplianceRequirementRepository;
 use App\Repository\FulfillmentInheritanceLogRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
 use LogicException;
 
 /**
@@ -164,7 +163,7 @@ class ComplianceInheritanceService
 
         if ($requestImplementedTransition) {
             if ($fourEyesApprover === null || $fourEyesApprover->getId() === $reviewer->getId()) {
-                throw new InvalidArgumentException('Implementation status change requires a different approver (4-eyes).');
+                throw new \App\Exception\BusinessRule\BusinessRuleException('Implementation status change requires a different approver (4-eyes).', 'self_approval');
             }
             $this->fourEyesService->requestApproval(
                 actionType: \App\Entity\FourEyesApprovalRequest::ACTION_INHERITANCE_IMPLEMENT,
@@ -229,10 +228,10 @@ class ComplianceInheritanceService
     ): void {
         $this->assertMinLength($reason, $this->minOverrideReasonLength(), 'override_reason');
         if ($newValue < 0 || $newValue > 150) {
-            throw new InvalidArgumentException('Override value must be within 0..150.');
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException('Override value must be within 0..150.', 'newValue');
         }
         if ($fourEyesApprover === null || $fourEyesApprover->getId() === $reviewer->getId()) {
-            throw new InvalidArgumentException('Override requires a different approver (4-eyes).');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Override requires a different approver (4-eyes).', 'self_approval');
         }
 
         $log->setReviewStatus(FulfillmentInheritanceLog::STATUS_OVERRIDDEN)
@@ -301,7 +300,7 @@ class ComplianceInheritanceService
             $confidences[$log->getDerivedFromMapping()?->getConfidence() ?? 'unknown'] = true;
         }
         if (count($confidences) > 1) {
-            throw new InvalidArgumentException('Bulk confirm requires all items to share the same confidence level.');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Bulk confirm requires all items to share the same confidence level.', 'mixed_confidence');
         }
 
         $confirmed = 0;
@@ -445,7 +444,7 @@ class ComplianceInheritanceService
     private function assertMinLength(string $value, int $min, string $field): void
     {
         if (mb_strlen(trim($value)) < $min) {
-            throw new InvalidArgumentException(sprintf('Field "%s" requires at least %d characters.', $field, $min));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Field "%s" requires at least %d characters.', $field, $min), 'field');
         }
     }
 }

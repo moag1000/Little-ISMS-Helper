@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Evidence;
 
-use RuntimeException;
 use SplFileInfo;
 
 /**
@@ -26,7 +25,7 @@ class ContentHashCalculator
     public function calculateFromPath(string $filePath): string
     {
         if (!is_readable($filePath)) {
-            throw new RuntimeException(sprintf(
+            throw new \App\Exception\Io\IoException(sprintf(
                 'ContentHashCalculator: cannot read file "%s".',
                 $filePath,
             ));
@@ -35,7 +34,7 @@ class ContentHashCalculator
         $ctx = hash_init('sha256');
         $fh = fopen($filePath, 'rb');
         if ($fh === false) {
-            throw new RuntimeException(sprintf(
+            throw new \App\Exception\Io\IoException(sprintf(
                 'ContentHashCalculator: failed to open "%s".',
                 $filePath,
             ));
@@ -45,7 +44,7 @@ class ContentHashCalculator
             while (!feof($fh)) {
                 $chunk = fread($fh, self::CHUNK_SIZE);
                 if ($chunk === false) {
-                    throw new RuntimeException(sprintf(
+                    throw new \App\Exception\Io\IoException(sprintf(
                         'ContentHashCalculator: read error on "%s".',
                         $filePath,
                     ));

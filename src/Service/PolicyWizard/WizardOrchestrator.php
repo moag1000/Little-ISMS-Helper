@@ -15,10 +15,8 @@ use App\Service\PolicyWizard\Step\TargetedFindingReferenceStep;
 use BadMethodCallException;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use RuntimeException;
 
 /**
  * Policy-Wizard W2-A — public façade that drives a wizard run.
@@ -105,7 +103,7 @@ final class WizardOrchestrator
     ): WizardRun {
         $mode ??= WizardStepKeys::MODE_FULL;
         if (!in_array($mode, [WizardStepKeys::MODE_FULL, WizardStepKeys::MODE_TARGETED, WizardStepKeys::MODE_SANDBOX], true)) {
-            throw new InvalidArgumentException(sprintf('Unknown wizard mode: %s', $mode));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Unknown wizard mode: %s', $mode), 'mode');
         }
 
         $run = new WizardRun();
@@ -171,7 +169,7 @@ final class WizardOrchestrator
         if ($current !== '') {
             try {
                 $defaults = $this->stepEvaluator->getStep($current)->defaults($run);
-            } catch (InvalidArgumentException) {
+            } catch (\InvalidArgumentException) {
                 // Unknown step persisted — fall through with empty defaults.
                 $defaults = [];
             }
@@ -203,7 +201,7 @@ final class WizardOrchestrator
         $step = $this->stepEvaluator->getStep($stepKey);
 
         if ($run->getStep() !== $stepKey) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Run is on step "%s" but caller submitted "%s".',
                 $run->getStep(),
                 $stepKey,
@@ -211,7 +209,7 @@ final class WizardOrchestrator
         }
 
         if (!$step->isApplicable($run)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Step "%s" is not applicable in mode "%s".',
                 $stepKey,
                 $run->getMode(),
@@ -314,7 +312,7 @@ final class WizardOrchestrator
                 'wizard_run_id' => $run->getId(),
                 'stub_message' => $stubFailure->getMessage(),
             ]);
-        } catch (RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             $run->setStatus(WizardStepKeys::STATUS_FAILED);
             $run->setErrorMessage($e->getMessage());
             $this->entityManager->flush();

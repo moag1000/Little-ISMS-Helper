@@ -302,7 +302,8 @@ final class ApprovalKickoffService
     {
         $existing = $instance->getWitnessUser();
         if ($existing instanceof User && $existing->getId() !== $witness->getId()) {
-            throw new \LogicException(sprintf(
+                        // @intentional-assertion: audit-trail immutability invariant — programmer error if different witness already set
+throw new \LogicException(sprintf(
                 'WorkflowInstance #%d already witnessed by user #%d — refusing to overwrite (audit-trail immutability).',
                 $instance->getId() ?? 0,
                 $existing->getId() ?? 0,

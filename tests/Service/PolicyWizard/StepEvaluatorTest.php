@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service\PolicyWizard;
 
 use App\Entity\WizardRun;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use App\Service\PolicyWizard\Step\LifecycleStep;
 use App\Service\PolicyWizard\Step\OperationalBaselinesStep;
 use App\Service\PolicyWizard\Step\OrganisationScopeStep;
@@ -136,7 +137,7 @@ final class StepEvaluatorTest extends TestCase
     public function getStepThrowsForUnknownKey(): void
     {
         $evaluator = $this->makeEvaluator();
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         $evaluator->getStep('bogus_step_key');
     }
 

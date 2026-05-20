@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use InvalidArgumentException;
 use DateTimeImmutable;
 use App\Entity\MfaToken;
 use App\Entity\User;
@@ -81,7 +80,7 @@ final class MfaService
     public function generateQrCode(MfaToken $mfaToken): string
     {
         if ($mfaToken->getTokenType() !== 'totp') {
-            throw new InvalidArgumentException('QR codes can only be generated for TOTP tokens');
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException('QR codes can only be generated for TOTP tokens', 'tokenType');
         }
 
         $user = $mfaToken->getUser();
@@ -113,7 +112,7 @@ final class MfaService
     public function verifyTotp(MfaToken $mfaToken, string $code, bool $isSetup = false): bool
     {
         if ($mfaToken->getTokenType() !== 'totp') {
-            throw new InvalidArgumentException('Can only verify TOTP tokens');
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException('Can only verify TOTP tokens', 'tokenType');
         }
 
         // Rate limiting check

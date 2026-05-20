@@ -251,7 +251,7 @@ final class PresetBundleApplier
     public function applyTo(WizardRun $run, IndustryPresetBundle $bundle): WizardRun
     {
         if (!$bundle->isActive()) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'IndustryPresetBundle "%s" is inactive and cannot be applied.',
                 $bundle->getKey(),
             ));

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service\ComplianceWizard\Check\PolicyWizard;
 
 use App\Entity\Tenant;
+use App\Exception\InvalidArgument\InvalidArgumentException as AppInvalidArgumentException;
 use App\Repository\DocumentRepository;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck;
 use Doctrine\ORM\Query;
@@ -36,7 +37,7 @@ final class PolicyTopicPresentCheckTest extends TestCase
     #[Test]
     public function emptyTopicIsRejectedAtConstructionTime(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(AppInvalidArgumentException::class);
         new PolicyTopicPresentCheck($this->documentRepository, '');
     }
 

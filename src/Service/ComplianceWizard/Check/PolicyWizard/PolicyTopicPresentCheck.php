@@ -25,7 +25,7 @@ final class PolicyTopicPresentCheck implements PolicyWizardCheckInterface
         private readonly string $standard = 'iso27001',
     ) {
         if ($this->topic === '') {
-            throw new \InvalidArgumentException('PolicyTopicPresentCheck requires a non-empty topic.');
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException('PolicyTopicPresentCheck requires a non-empty topic.', 'topic');
         }
     }
 

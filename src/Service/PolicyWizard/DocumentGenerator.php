@@ -26,7 +26,6 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use RuntimeException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -932,7 +931,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             return;
         }
 
-        throw new RuntimeException(
+        throw new \App\Exception\Io\IoException(
             'iso27001 body must contain climate-change wording per Amd. 1:2024 '
             . '(template "' . ($template->getKey() ?? 'unknown') . '")',
         );

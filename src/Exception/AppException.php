@@ -23,7 +23,10 @@ namespace App\Exception;
  *               ├── Module\ModuleConfigurationException
  *               ├── Security\InsufficientPrivilegeException
  *               ├── Security\CsrfTokenInvalidException
- *               └── Validation\DomainValidationException
+ *               ├── Validation\DomainValidationException
+ *               ├── BusinessRule\BusinessRuleException
+ *               ├── Io\IoException
+ *               └── InvalidArgument\InvalidArgumentException
  *
  * Use these instead of bare \RuntimeException/\InvalidArgumentException
  * whenever the failure has a clear domain meaning that downstream code

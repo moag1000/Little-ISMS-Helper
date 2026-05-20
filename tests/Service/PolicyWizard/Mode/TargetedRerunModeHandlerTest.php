@@ -12,7 +12,7 @@ use App\Service\PolicyWizard\WizardStepKeys;
 use App\Service\TenantSettingResolver\OverrideMode;
 use App\Service\TenantSettingResolver\SettingProviderInterface;
 use App\Service\TenantSettingResolver\TenantSettingResolver;
-use InvalidArgumentException;
+use App\Exception\InvalidArgument\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

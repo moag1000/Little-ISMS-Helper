@@ -58,10 +58,10 @@ final class MappingLifecycleService
         $oldState = $mapping->getLifecycleState();
 
         if (!in_array($newState, self::STATES, true)) {
-            throw new \DomainException(sprintf("Unknown lifecycle state '%s'.", $newState));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf("Unknown lifecycle state '%s'.", $newState), 'newState');
         }
         if (!$this->isAllowedTransition($oldState, $newState)) {
-            throw new \DomainException(sprintf(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf(
                 "Transition '%s' → '%s' not allowed. Allowed from '%s': %s.",
                 $oldState,
                 $newState,
@@ -77,7 +77,7 @@ final class MappingLifecycleService
         if (in_array($newState, ['approved', 'published'], true)) {
             $missing = $this->missingRequiredFields($mapping);
             if (!empty($missing)) {
-                throw new \DomainException(sprintf(
+                throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf(
                     "Cannot transition to '%s' — missing required fields: %s.",
                     $newState,
                     implode(', ', $missing),
@@ -139,14 +139,14 @@ final class MappingLifecycleService
         if ($newState === 'published') {
             $allowed = ['ROLE_CISO', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'];
             if (empty(array_intersect($roles, $allowed))) {
-                throw new \DomainException("Only ROLE_CISO/ADMIN/SUPER_ADMIN can publish a mapping (CISO sign-off).");
+                throw new \App\Exception\BusinessRule\BusinessRuleException("Only ROLE_CISO/ADMIN/SUPER_ADMIN can publish a mapping (CISO sign-off).", 'insufficient_role');
             }
         }
         // deprecated erfordert ADMIN
         if ($newState === 'deprecated') {
             $allowed = ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_CISO'];
             if (empty(array_intersect($roles, $allowed))) {
-                throw new \DomainException("Only ROLE_ADMIN/SUPER_ADMIN/CISO can deprecate a mapping.");
+                throw new \App\Exception\BusinessRule\BusinessRuleException("Only ROLE_ADMIN/SUPER_ADMIN/CISO can deprecate a mapping.", 'insufficient_role');
             }
         }
     }

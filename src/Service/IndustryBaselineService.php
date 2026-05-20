@@ -123,7 +123,7 @@ final class IndustryBaselineService
             }
         }
         if ($found === null) {
-            throw new DomainException(sprintf(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf(
                 'Baseline "%s" für Framework "%s" nicht gefunden.',
                 $idOrFilename,
                 $frameworkCode
@@ -133,7 +133,7 @@ final class IndustryBaselineService
         $payload = Yaml::parseFile($found);
         $b = $payload['baseline'] ?? [];
         if (empty($b['id']) || !isset($b['targets']) || !is_array($b['targets'])) {
-            throw new DomainException(sprintf(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf(
                 'Baseline "%s" ist ungültig (id oder targets fehlen).',
                 $found
             ));
@@ -183,7 +183,7 @@ final class IndustryBaselineService
 
         $framework = $this->frameworkRepository->findOneBy(['code' => $frameworkCode]);
         if (!$framework instanceof ComplianceFramework) {
-            throw new DomainException(sprintf(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf(
                 'Framework "%s" nicht im System — Library zuerst importieren.',
                 $frameworkCode
             ));
@@ -231,7 +231,7 @@ final class IndustryBaselineService
     {
         // Sanitise to avoid traversal — only [A-Za-z0-9_.-] allowed.
         if (preg_match('/^[A-Za-z0-9_.\-]+$/', $frameworkCode) !== 1) {
-            throw new DomainException(sprintf('Ungültiger Framework-Code: "%s".', $frameworkCode));
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf('Ungültiger Framework-Code: "%s".', $frameworkCode), 'frameworkCode');
         }
 
         return $this->projectDir . self::BASELINE_ROOT . '/' . $frameworkCode;

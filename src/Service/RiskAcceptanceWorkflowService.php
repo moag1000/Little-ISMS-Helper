@@ -6,10 +6,8 @@ namespace App\Service;
 
 use DateMalformedStringException;
 use App\Entity\RiskAppetite;
-use DomainException;
 use DateTime;
 use App\Entity\WorkflowInstance;
-use Exception;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Tenant;
@@ -84,7 +82,7 @@ class RiskAcceptanceWorkflowService
         $appetiteCheck = $this->validateRiskAppetite($risk);
 
         if (!$appetiteCheck['acceptable']) {
-            throw new DomainException($appetiteCheck['reason']);
+            throw new \App\Exception\BusinessRule\BusinessRuleException($appetiteCheck['reason'], 'risk_appetite_exceeded');
         }
 
         // 3. Determine required approval level
@@ -109,24 +107,24 @@ class RiskAcceptanceWorkflowService
     {
         // Check if risk has "accept" treatment strategy
         if ($risk->getTreatmentStrategy() !== TreatmentStrategy::Accept) {
-            throw new DomainException(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(
                 'Risk must have "accept" treatment strategy. Current strategy: ' . $risk->getTreatmentStrategy()?->value
             );
         }
 
         // Risk must have assessment completed
         if (!$risk->getProbability() || !$risk->getImpact()) {
-            throw new DomainException('Risk assessment must be completed before acceptance');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Risk assessment must be completed before acceptance', 'assessment_incomplete');
         }
 
         // Residual risk should be assessed
         if (!$risk->getResidualProbability() || !$risk->getResidualImpact()) {
-            throw new DomainException('Residual risk must be assessed before acceptance');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Residual risk must be assessed before acceptance', 'residual_incomplete');
         }
 
         // Check if already formally accepted
         if ($risk->isFormallyAccepted()) {
-            throw new DomainException('Risk is already formally accepted');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Risk is already formally accepted', 'already_accepted');
         }
     }
 
@@ -264,8 +262,9 @@ class RiskAcceptanceWorkflowService
         $approver = $this->getRequiredApprover($tenant, $approvalLevel);
 
         if (!$approver instanceof User) {
-            throw new DomainException(
-                sprintf('No %s approver configured for tenant', $approvalLevel)
+            throw new \App\Exception\BusinessRule\BusinessRuleException(
+                sprintf('No %s approver configured for tenant', $approvalLevel),
+                'no_approver_configured'
             );
         }
 
@@ -367,7 +366,7 @@ class RiskAcceptanceWorkflowService
                 approvalLevel: $approvalLevel,
                 approver: $user
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->error('Failed to send approval notification', [
                 'error' => $e->getMessage(),
                 'risk_id' => $risk->getId(),
@@ -425,7 +424,7 @@ class RiskAcceptanceWorkflowService
                     $risk->getRiskOwner(),
                     $user
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('Failed to send approval notification', [
                     'error' => $e->getMessage(),
                     'risk_id' => $risk->getId(),
@@ -487,7 +486,7 @@ class RiskAcceptanceWorkflowService
                     $reason,
                     $user
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('Failed to send rejection notification', [
                     'error' => $e->getMessage(),
                     'risk_id' => $risk->getId(),

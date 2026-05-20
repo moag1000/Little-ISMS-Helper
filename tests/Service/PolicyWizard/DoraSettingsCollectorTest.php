@@ -7,7 +7,7 @@ namespace App\Tests\Service\PolicyWizard;
 use App\Entity\WizardRun;
 use App\Service\PolicyWizard\DoraSettingsCollector;
 use App\Service\PolicyWizard\WizardStepKeys;
-use InvalidArgumentException;
+use App\Exception\InvalidArgument\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

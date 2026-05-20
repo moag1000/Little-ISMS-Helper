@@ -71,10 +71,10 @@ final class EntityListExporter
         string $format,
     ): StreamedResponse|array {
         if (!in_array($entityType, self::SUPPORTED_ENTITY_TYPES, true)) {
-            throw new \InvalidArgumentException(sprintf('Unsupported entity type: %s', $entityType));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Unsupported entity type: %s', $entityType), 'entityType');
         }
         if (!in_array($format, self::SUPPORTED_FORMATS, true)) {
-            throw new \InvalidArgumentException(sprintf('Unsupported format: %s', $format));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Unsupported format: %s', $format), 'format');
         }
 
         $rows = $this->fetchRows($entityType, $filters, $tenant);
@@ -89,7 +89,7 @@ final class EntityListExporter
             'xlsx' => $this->buildXlsxResponse($rows, $entityType),
             'csv' => $this->buildCsvResponse($rows, $entityType),
             'json' => $rows,
-            default => throw new \InvalidArgumentException('Unsupported format: ' . $format),
+            default => throw new \App\Exception\InvalidArgument\InvalidArgumentException('Unsupported format: ' . $format, 'format'),
         };
     }
 

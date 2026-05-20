@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
-use RuntimeException;
+use App\Exception\BusinessRule\BusinessRuleException;
 use Symfony\Bundle\SecurityBundle\Security;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -332,7 +332,7 @@ class ProcessingActivityServiceTest extends TestCase
         $processingActivity->method('getHasAutomatedDecisionMaking')->willReturn(false);
         $processingActivity->method('requiresDPIA')->willReturn(false);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Cannot activate processing activity with validation errors');
 
         $this->service->activate($processingActivity);

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use RuntimeException;
 use DateTimeImmutable;
 use App\Entity\DataSubjectRequest;
 use App\Entity\Tenant;
@@ -110,12 +109,12 @@ final class DataSubjectRequestService
         $transitionName = $transitionMap[$currentStatus][$newStatus] ?? null;
         if ($transitionName === null) {
             $allowed = array_keys($transitionMap[$currentStatus] ?? []);
-            throw new RuntimeException(sprintf(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf(
                 'Cannot transition from "%s" to "%s". Allowed targets: %s',
                 $currentStatus,
                 $newStatus,
                 $allowed === [] ? '<none>' : implode(', ', $allowed),
-            ));
+            ), 'invalid_transition');
         }
 
         $oldStatus = $currentStatus;
@@ -149,7 +148,7 @@ final class DataSubjectRequestService
     public function complete(DataSubjectRequest $request, string $responseDescription): void
     {
         if (in_array($request->getStatus(), [DataSubjectRequestStatus::Completed->value, DataSubjectRequestStatus::Rejected->value], true)) {
-            throw new RuntimeException('Request is already in a terminal state');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Request is already in a terminal state', 'terminal_state');
         }
 
         $request->setCompletedAt(new DateTimeImmutable());
@@ -182,7 +181,7 @@ final class DataSubjectRequestService
     public function reject(DataSubjectRequest $request, string $reason): void
     {
         if (in_array($request->getStatus(), [DataSubjectRequestStatus::Completed->value, DataSubjectRequestStatus::Rejected->value], true)) {
-            throw new RuntimeException('Request is already in a terminal state');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Request is already in a terminal state', 'terminal_state');
         }
 
         $request->setRejectionReason($reason);
@@ -222,7 +221,7 @@ final class DataSubjectRequestService
         }
 
         if ($request->getExtendedDeadlineAt() !== null) {
-            throw new RuntimeException('Deadline has already been extended');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Deadline has already been extended', 'already_extended');
         }
 
         $extendedDeadline = $request->getReceivedAt()->modify('+90 days');

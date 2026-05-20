@@ -102,7 +102,7 @@ final class MailerTlsChecker
             ? $this->translator->trans('email.tls_required_error', [], 'scheduled_reports')
             : 'Mailer DSN does not enforce TLS. Scheduled report sending is blocked per DSGVO Art. 32 / ISO 27001 A.5.34.';
 
-        throw new \RuntimeException($message);
+        throw new \App\Exception\Io\IoException($message);
     }
 
     public function getDsnSchemeForDiagnostics(): string

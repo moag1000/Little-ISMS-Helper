@@ -56,7 +56,7 @@ final class AuditWorkbookGenerator
             }
         }
 
-        throw new \InvalidArgumentException(sprintf(
+        throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
             'No audit-workbook generator found for export type "%s". Supported types: %s.',
             $exportType,
             implode(', ', self::SUPPORTED_EXPORT_TYPES)

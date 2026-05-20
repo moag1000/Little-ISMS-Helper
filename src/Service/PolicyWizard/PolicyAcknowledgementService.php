@@ -13,8 +13,6 @@ use App\Repository\PolicyAcknowledgementRepository;
 use App\Service\AuditLogger;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * Per-user acknowledgement collection service for published policies.
@@ -118,7 +116,7 @@ final class PolicyAcknowledgementService
         ?string $ipAddress = null,
     ): PolicyAcknowledgement {
         if (!in_array($method, self::ALLOWED_METHODS, true)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Acknowledgement method "%s" is not supported. Allowed: %s.',
                 $method,
                 implode(', ', self::ALLOWED_METHODS),
@@ -138,7 +136,7 @@ final class PolicyAcknowledgementService
         // ACKNOWLEDGED row blocks the call.
         if ($existing instanceof PolicyAcknowledgement
             && $existing->getStatus() === PolicyAcknowledgement::STATUS_ACKNOWLEDGED) {
-            throw new RuntimeException(sprintf(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf(
                 'User %d has already acknowledged Document %d at version %s.',
                 $user->getId() ?? -1,
                 $document->getId() ?? -1,

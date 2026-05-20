@@ -17,7 +17,7 @@ use App\Service\RiskAcceptanceWorkflowService;
 use App\Service\RiskAppetitePrioritizationService;
 use App\Service\WorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
-use DomainException;
+use App\Exception\BusinessRule\BusinessRuleException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -136,7 +136,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
 
         $user = $this->createUser();
 
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Risk must have "accept" treatment strategy');
 
         $this->service->requestAcceptance($risk, $user, 'Test justification');
@@ -152,7 +152,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
 
         $user = $this->createUser();
 
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Risk assessment must be completed before acceptance');
 
         $this->service->requestAcceptance($risk, $user, 'Test justification');
@@ -168,7 +168,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
 
         $user = $this->createUser();
 
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Risk assessment must be completed before acceptance');
 
         $this->service->requestAcceptance($risk, $user, 'Test justification');
@@ -186,7 +186,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
 
         $user = $this->createUser();
 
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Residual risk must be assessed before acceptance');
 
         $this->service->requestAcceptance($risk, $user, 'Test justification');
@@ -205,7 +205,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
 
         $user = $this->createUser();
 
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Risk is already formally accepted');
 
         $this->service->requestAcceptance($risk, $user, 'Test justification');
@@ -223,7 +223,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->riskAppetiteService->method('getApplicableAppetite')
             ->willReturn($appetite);
 
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Risk appetite must be approved before use');
 
         $this->service->requestAcceptance($risk, $user, 'Test justification');
@@ -245,7 +245,7 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $this->riskAppetiteService->method('exceedsAppetite')
             ->willReturn(true);
 
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('exceeds organizational risk appetite');
 
         $this->service->requestAcceptance($risk, $user, 'Test justification');
