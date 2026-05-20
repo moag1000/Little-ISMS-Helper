@@ -118,6 +118,10 @@ services:
         tags: ['twig.extension']
 
     # Data-Repair file-orphan scanner needs projectDir to find public/uploads/.
+    App\Service\DataIntegrity\UploadOrphanChecker:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     App\Service\DataIntegrityService:
         arguments:
             $projectDir: '%kernel.project_dir%'

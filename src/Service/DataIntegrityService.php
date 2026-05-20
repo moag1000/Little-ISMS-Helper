@@ -9,6 +9,8 @@ use App\Entity\Tenant;
 use App\Enum\IncidentStatus;
 use App\Enum\InternalAuditStatus;
 use App\Enum\TreatmentStrategy;
+use App\Service\DataIntegrity\StatusEnumDriftChecker;
+use App\Service\DataIntegrity\UploadOrphanChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
@@ -91,6 +93,17 @@ final class DataIntegrityService
          * keep compiling; downstream methods handle the null case gracefully.
          */
         private readonly ?string $projectDir = null,
+        /**
+         * Filesystem upload-orphan scanner. Injected by the container when
+         * $projectDir is available; null-safe — DataIntegrityService keeps
+         * compiling in unit-test contexts that don't provide this dep.
+         */
+        private readonly ?UploadOrphanChecker $uploadOrphanChecker = null,
+        /**
+         * Status-enum drift checker. Optional for backward-compat with
+         * unit-test setUp() that constructs without the new dep.
+         */
+        private readonly ?StatusEnumDriftChecker $statusEnumDriftChecker = null,
     ) {
     }
 
@@ -1176,6 +1189,8 @@ final class DataIntegrityService
      * Repair path: {@see DataRepairController::quarantineOrphanedUploads()}
      * — soft move to `var/quarantine/<date>/`, never `unlink`.
      *
+     * Implementation delegated to {@see UploadOrphanChecker}.
+     *
      * @return array{
      *     files: list<array{path: string, relative: string, size: int, mtime: int}>,
      *     scanned: int,
@@ -1185,133 +1200,12 @@ final class DataIntegrityService
      */
     public function findOrphanedUploads(): array
     {
-        $empty = ['files' => [], 'scanned' => 0, 'referenced' => 0, 'uploads_dir' => null];
-        if ($this->projectDir === null) {
-            return $empty;
+        if ($this->uploadOrphanChecker !== null) {
+            return $this->uploadOrphanChecker->findOrphanedUploads();
         }
-        $uploadsDir = $this->projectDir . '/public/uploads';
-        if (!is_dir($uploadsDir)) {
-            return $empty;
-        }
-
-        // 1. Collect referenced file paths from entity columns.
-        $referenced = $this->collectReferencedUploadPaths();
-
-        // 2. Walk the uploads/ tree and flag every regular file that is
-        //    NOT in the referenced-set. Skip .gitkeep and dot-files.
-        $orphans = [];
-        $scanned = 0;
-        try {
-            $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($uploadsDir, \FilesystemIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::LEAVES_ONLY,
-            );
-        } catch (\Throwable) {
-            return $empty;
-        }
-
-        $basePath = rtrim((string) realpath($uploadsDir), '/');
-        foreach ($iterator as $fileInfo) {
-            if (!$fileInfo instanceof \SplFileInfo || !$fileInfo->isFile()) {
-                continue;
-            }
-            $name = $fileInfo->getFilename();
-            if ($name === '.gitkeep' || str_starts_with($name, '.')) {
-                continue;
-            }
-            $scanned++;
-
-            $realPath = (string) $fileInfo->getRealPath();
-            if ($realPath === '' || !str_starts_with($realPath, $basePath)) {
-                continue;
-            }
-            // Build the relative path the way entities store it (with or without leading slash).
-            $relative = '/uploads' . substr($realPath, strlen($basePath));
-            $relativeNoSlash = ltrim($relative, '/');
-
-            if (isset($referenced[$relative]) || isset($referenced[$relativeNoSlash])) {
-                continue;
-            }
-            // tenants/ and users/ logos can be stored either with or without
-            // the `uploads/` prefix — the BackupService comments document this.
-            $logoStyle = preg_replace('#^/uploads/#', '', $relative);
-            if (is_string($logoStyle) && isset($referenced[$logoStyle])) {
-                continue;
-            }
-
-            $orphans[] = [
-                'path' => $realPath,
-                'relative' => $relative,
-                'size' => (int) $fileInfo->getSize(),
-                'mtime' => (int) $fileInfo->getMTime(),
-            ];
-        }
-
-        // Cap the response list — typical orphan counts after a few backup
-        // restores can reach thousands; the template only needs the top N.
-        usort($orphans, static fn(array $a, array $b): int => $b['size'] <=> $a['size']);
-
-        return [
-            'files' => array_slice($orphans, 0, 500),
-            'scanned' => $scanned,
-            'referenced' => count($referenced),
-            'uploads_dir' => $uploadsDir,
-        ];
-    }
-
-    /**
-     * Builds the set of file-paths currently referenced by Doctrine entities.
-     * Returns an associative array keyed by path (both `/uploads/...` and
-     * `uploads/...` styles are present where the entity stores either form).
-     *
-     * @return array<string, true>
-     */
-    private function collectReferencedUploadPaths(): array
-    {
-        $set = [];
-        $columnMap = [
-            // FQCN => property name
-            \App\Entity\Document::class => 'filePath',
-            \App\Entity\DocumentVersion::class => 'filePath',
-            \App\Entity\Tenant::class => 'logoPath',
-            \App\Entity\User::class => 'profilePicture',
-        ];
-
-        $factory = $this->entityManager->getMetadataFactory();
-        foreach ($columnMap as $fqcn => $property) {
-            try {
-                $metadata = $factory->getMetadataFor($fqcn);
-            } catch (\Throwable) {
-                continue;
-            }
-            if (!$metadata->hasField($property)) {
-                continue;
-            }
-            try {
-                $rows = $this->entityManager->createQueryBuilder()
-                    ->select('e.' . $property . ' AS path')
-                    ->from($fqcn, 'e')
-                    ->where('e.' . $property . ' IS NOT NULL')
-                    ->getQuery()
-                    ->getScalarResult();
-            } catch (\Throwable) {
-                continue;
-            }
-            foreach ($rows as $row) {
-                $path = (string) ($row['path'] ?? '');
-                if ($path === '') {
-                    continue;
-                }
-                $set[$path] = true;
-                // Also store the "other" form to be tolerant of mixed storage.
-                if (str_starts_with($path, '/')) {
-                    $set[ltrim($path, '/')] = true;
-                } else {
-                    $set['/' . $path] = true;
-                }
-            }
-        }
-        return $set;
+        // Fallback when helper is not injected (e.g. legacy unit-test setUp
+        // that constructs DataIntegrityService without the new optional dep).
+        return ['files' => [], 'scanned' => 0, 'referenced' => 0, 'uploads_dir' => null];
     }
 
     /**
@@ -1774,6 +1668,8 @@ final class DataIntegrityService
      * legacy values via a one-off SQL or a dedicated console command) —
      * automated repair would risk hiding a real lifecycle bug.
      *
+     * Implementation delegated to {@see StatusEnumDriftChecker}.
+     *
      * @return list<array{
      *     entity: string,
      *     enum: string,
@@ -1782,83 +1678,10 @@ final class DataIntegrityService
      */
     public function findStatusEnumDriftIssues(): array
     {
-        $result = [];
-        // Mapping is intentionally explicit (rather than guessing entity-FQCN
-        // from enum-FQCN) because not every *Status enum is paired with the
-        // identically-named entity (e.g. BCExerciseStatus → BCExercise).
-        $pairs = [
-            \App\Entity\Asset::class => \App\Enum\AssetStatus::class,
-            \App\Entity\Risk::class => \App\Enum\RiskStatus::class,
-            \App\Entity\Incident::class => \App\Enum\IncidentStatus::class,
-            \App\Entity\Document::class => \App\Enum\DocumentStatus::class,
-            \App\Entity\InternalAudit::class => \App\Enum\InternalAuditStatus::class,
-            \App\Entity\AuditFinding::class => \App\Enum\AuditFindingStatus::class,
-            \App\Entity\CorrectiveAction::class => \App\Enum\CorrectiveActionStatus::class,
-            \App\Entity\BusinessContinuityPlan::class => \App\Enum\BusinessContinuityPlanStatus::class,
-            \App\Entity\DataBreach::class => \App\Enum\DataBreachStatus::class,
-            \App\Entity\ProcessingActivity::class => \App\Enum\ProcessingActivityStatus::class,
-            \App\Entity\Supplier::class => \App\Enum\SupplierStatus::class,
-            \App\Entity\RiskTreatmentPlan::class => \App\Enum\RiskTreatmentPlanStatus::class,
-            \App\Entity\SsoUserApproval::class => \App\Enum\SsoUserApprovalStatus::class,
-            \App\Entity\EvidenceReverificationTask::class => \App\Enum\EvidenceReverificationTaskStatus::class,
-            \App\Entity\ChangeRequest::class => \App\Enum\ChangeRequestStatus::class,
-            \App\Entity\ManagementReview::class => \App\Enum\ManagementReviewStatus::class,
-            \App\Entity\Training::class => \App\Enum\TrainingStatus::class,
-        ];
-
-        $factory = $this->entityManager->getMetadataFactory();
-        foreach ($pairs as $entityFqcn => $enumFqcn) {
-            if (!class_exists($entityFqcn) || !enum_exists($enumFqcn)) {
-                continue;
-            }
-            try {
-                $metadata = $factory->getMetadataFor($entityFqcn);
-            } catch (\Throwable) {
-                continue;
-            }
-            if (!$metadata->hasField('status')) {
-                continue;
-            }
-
-            $allowed = [];
-            foreach ($enumFqcn::cases() as $case) {
-                $allowed[(string) $case->value] = true;
-            }
-
-            try {
-                $rows = $this->entityManager->createQueryBuilder()
-                    ->select('e.status AS status, COUNT(e.id) AS cnt')
-                    ->from($entityFqcn, 'e')
-                    ->where('e.status IS NOT NULL')
-                    ->groupBy('e.status')
-                    ->getQuery()
-                    ->getArrayResult();
-            } catch (\Throwable) {
-                continue;
-            }
-
-            $unknown = [];
-            foreach ($rows as $row) {
-                $raw = $row['status'] ?? null;
-                // Doctrine returns BackedEnum for entities with enumType: mapping.
-                $value = $raw instanceof \BackedEnum ? $raw->value : (string) ($raw ?? '');
-                if ($value === '' || isset($allowed[$value])) {
-                    continue;
-                }
-                $unknown[$value] = (int) ($row['cnt'] ?? 0);
-            }
-
-            if ($unknown !== []) {
-                $shortEntity = substr($entityFqcn, strrpos($entityFqcn, '\\') + 1);
-                $shortEnum = substr($enumFqcn, strrpos($enumFqcn, '\\') + 1);
-                $result[] = [
-                    'entity' => $shortEntity,
-                    'enum' => $shortEnum,
-                    'unknown_values' => $unknown,
-                ];
-            }
+        if ($this->statusEnumDriftChecker !== null) {
+            return $this->statusEnumDriftChecker->findDriftIssues();
         }
-
-        return $result;
+        // Fallback when helper not injected (legacy unit-test setUp without new dep).
+        return [];
     }
 }
