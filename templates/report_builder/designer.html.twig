@@ -3,7 +3,12 @@
 {% block title %}{{ 'report_builder.designer.title'|trans({'%name%': report.name}, 'report_builder') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
-<div class="report-designer" data-controller="report-designer" data-report-designer-report-id-value="{{ report.id }}" data-report-designer-save-url-value="{{ path('report_builder_save', {id: report.id}) }}">
+<div class="report-designer"
+     data-controller="report-designer"
+     data-report-designer-report-id-value="{{ report.id }}"
+     data-report-designer-save-url-value="{{ path('report_builder_save', {id: report.id}) }}"
+     data-report-designer-widget-data-url-value="{{ path('report_builder_widget_data') }}"
+     data-report-designer-share-url-value="{{ path('report_builder_share', {id: report.id}) }}">
     {# Designer Header #}
     <div class="designer-header bg-body text-body py-2 px-3 d-flex justify-content-between align-items-center border-bottom">
         <div class="d-flex align-items-center gap-3">
