@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Tenant;
+use App\Form\Type\JsonStructuredType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -201,17 +202,19 @@ final class TenantType extends AbstractType
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
             ])
-            ->add('settings', TextareaType::class, [
+            // Mapped JSON field — JsonStructuredType round-trips array<->JSON via
+            // App\Form\DataTransformer\JsonArrayTransformer. Invalid JSON surfaces
+            // as a user-friendly TransformationFailedException instead of silently
+            // overwriting settings with null (C-06).
+            ->add('settings', JsonStructuredType::class, [
                 'label' => 'tenant.field.settings',
                 'help' => 'tenant.field.settings_help',
                 'required' => false,
-                'mapped' => false,
                 'attr' => [
                     'rows' => 10,
                     'placeholder' => 'tenant.placeholder.settings',
                     'class' => 'font-monospace',
                 ],
-                'data' => $options['data']->getSettings() ? json_encode($options['data']->getSettings(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : null,
             ])
         ;
     }

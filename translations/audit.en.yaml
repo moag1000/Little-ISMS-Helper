@@ -110,6 +110,10 @@ audit_log:
         page_counter: 'Page Counter'
     showing_recent: 'Showing Recent'
 audit:
+    success:
+        created: 'Audit created successfully.'
+        updated: 'Audit updated successfully.'
+        deleted: 'Audit deleted successfully.'
     edit: Edit
     iso_27001_requirement: 'Iso 27001 Requirement'
     iso_27001_clause_info: 'Iso 27001 Clause Info'

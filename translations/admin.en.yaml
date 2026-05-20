@@ -115,6 +115,7 @@ admin:
             module_config: 'Module-Config'
             settings: Settings
     nav:
+        admin: Administration
         tenants: Tenants
         users: Users
         roles: Roles
@@ -1244,6 +1245,154 @@ admin:
             ready: "Export ready. Click Download to save the file."
             file_not_found: "Export file not found (already downloaded or expired)."
 
+    workflows:
+        title: 'Workflow Step Editor'
+        subtitle: 'Edit per-tenant step-level overrides for regulatory approval lifecycles and lifecycle configurations'
+        no_regulatory: 'No regulatory workflow configuration files found.'
+        no_lifecycle: 'No lifecycle configuration files found.'
+        no_steps: 'No steps defined for this workflow. Lifecycle configurations use transition-level overrides.'
+        no_yaml_baseline: 'No YAML baseline data available for this step.'
+        yaml_baseline: 'YAML baseline'
+        yaml_value: 'YAML value'
+        current_override: 'Current override'
+        save_success: 'Workflow step override saved.'
+        reset_success: 'Workflow step override reset — YAML baseline will be used again.'
+        reset_confirm: 'Really reset all overrides for this step?'
+        section:
+            regulatory: 'Regulatory Workflows'
+            regulatory_desc: 'Approval chain workflows with per-step overrides for roles, SLA, and auto-progress conditions.'
+            lifecycle: 'Lifecycle Configurations'
+            lifecycle_desc: 'Entity status state machines — configure transition-level overrides via the Lifecycle Overrides editor.'
+            steps: 'Approval Steps'
+            steps_desc: '%count% steps defined in YAML'
+            override_fields: 'Override Fields'
+            yaml_baseline: 'YAML Baseline'
+            help: 'Help'
+        col:
+            name: 'Workflow'
+            steps: 'Steps'
+            overrides: 'Active Overrides'
+            step_name: 'Step'
+            approver_role: 'Approver Role'
+            days: 'Days'
+            overridden_keys: 'Overridden Keys'
+        step:
+            unnamed: '(unnamed step)'
+            overridden: 'overridden'
+            override_active: 'Override active'
+        show:
+            title: 'Workflow: %workflow%'
+            subtitle: 'Step structure and tenant overrides'
+        edit:
+            title: 'Edit Step %step% — %workflow%'
+            breadcrumb: 'Step %step%'
+            hint: 'Empty fields use the YAML baseline value. Only populated fields are stored in the database.'
+        action:
+            show: 'Manage steps'
+            back: 'Back'
+            reset: 'Reset'
+            transition_overrides: 'Transition overrides'
+            edit_transitions: 'Edit transition overrides'
+            lifecycle_overrides: 'Lifecycle Overrides'
+        form:
+            approver_role: 'Approver role'
+            approver_role_help: 'ROLE_* value that overrides the YAML approver role for this step. Leave empty to use YAML default.'
+            approver_users: 'Approver users (JSON)'
+            approver_users_help: 'JSON array of user IDs, e.g. [42, 57]. Leave empty to use YAML default.'
+            days_to_complete: 'Days to complete'
+            days_to_complete_help: 'SLA days override. Leave empty to use YAML default.'
+            auto_progress_conditions: 'Auto-progress conditions (JSON)'
+            auto_progress_conditions_help: 'JSON condition object for field_completion auto-progression. Leave empty to use YAML default.'
+            reason_required: 'Reason required'
+            reason_required_value: 'Require reason'
+            four_eyes: 'Four-eyes principle'
+            four_eyes_value: 'Enable four-eyes'
+            module: 'Module gate'
+            module_help: 'Module key (e.g. privacy, documents). Leave empty for no restriction.'
+            enable_override: 'Enable override'
+        hint:
+            yaml_baseline: 'Missing overrides automatically use the YAML baseline value from the workflow configuration.'
+            lifecycle_redirect: 'Lifecycle configurations use transition-level overrides. Click "Transition overrides" to configure them.'
+            lifecycle_has_transitions: 'This is a lifecycle configuration. Use the Lifecycle Overrides editor to configure transition-level metadata.'
+        validation:
+            days_non_negative: 'Days to complete must be 0 or greater.'
+            conditions_invalid_json: 'Auto-progress conditions must be valid JSON.'
+        help:
+            approver_role:
+                title: 'Approver role'
+                body: 'Overrides the ROLE_* value that is required to approve this step. Takes precedence over the YAML definition.'
+            days_to_complete:
+                title: 'Days to complete'
+                body: 'Override the SLA deadline for this step. Affects the overdue-monitoring cron job.'
+            auto_progress:
+                title: 'Auto-progress conditions'
+                body: 'When all conditions evaluate to true (field_completion / risk_appetite / auto), the step is auto-approved without user action.'
+            four_eyes:
+                title: 'Four-eyes principle'
+                body: 'When enabled, a second person must confirm the transition (four-eyes principle).'
+    queue:
+        title: 'Queue Status'
+        badge: 'Async Worker'
+        subtitle: 'Heartbeat, queue depth, recently processed jobs, and manual emergency-trigger for shared-hosting deployments.'
+        status:
+            green:
+                message: 'Worker healthy — last heartbeat %age% s ago, %depth% messages queued.'
+            yellow:
+                message: 'Worker is slow to respond (last heartbeat %age% s ago). Cron may run with delay — usually drains on the next cycle.'
+            red:
+                message: 'Worker offline — no heartbeat for %age% s. %depth% messages queued. Check cron entry or click "Process now".'
+            unknown:
+                message: 'No heartbeat recorded yet. The traffic light activates as soon as the worker runs for the first time.'
+        kpi:
+            heartbeat:
+                label: 'Heartbeat'
+                hint: 'Seconds since last worker tick'
+                never: 'never'
+            queue_depth:
+                label: 'Queue depth'
+                hint: 'Pending async messages'
+            pending:
+                label: 'Pending jobs'
+                hint: 'Job files with status "pending"'
+            failed:
+                label: 'Failed (24 h)'
+                hint: 'Messenger failure queue, last 24 h'
+        process_now:
+            title: 'Process queue now'
+            description: 'Safe emergency drain: up to 5 messages within 25 seconds — stays under the PHP-FPM timeout. Click repeatedly for larger queues.'
+            button: 'Process now'
+            fineprint: 'CSRF-protected, audit-logged.'
+            success: 'Queue drain completed successfully (%duration% s).'
+            partial: 'Worker exited with code %exit% after %duration% s. Check logs.'
+            error: 'Queue drain failed to start: %error%'
+        cron:
+            title: 'Cron entry for a permanent worker'
+            description: 'Configure as a 1-minute cron in your hosting panel (cPanel, Plesk, ISPConfig). See the hosting-worker guide for details.'
+            see_guide: 'Full guide: docs/user-guide/HOSTING_WORKER.md'
+        recent:
+            title: 'Recently processed jobs'
+            col:
+                job: 'Job'
+                status: 'Status'
+                progress: 'Progress'
+                updated: 'Updated'
+            empty:
+                title: 'No jobs processed yet'
+                description: 'Jobs appear here as soon as the worker (cron or manual trigger) executes async tasks.'
+        job_status:
+            pending: 'Pending'
+            running: 'Running'
+            succeeded: 'Succeeded'
+            failed: 'Failed'
+            unknown: 'Unknown'
+        banner:
+            title: 'Async worker offline.'
+            message: 'No heartbeat for %age% s, %depth% messages queued. Admin jobs (backup, data repair, exports) are stuck until the worker resumes.'
+            link: 'Open queue status →'
+        hub:
+            label: 'Queue status'
+            desc: 'Worker health, heartbeat, manual drain'
+
 
 data_management:
     backup:
@@ -1505,152 +1654,4 @@ industry_preset:
             activate: 'Activate'
             optional: 'optional'
 
-
-    workflows:
-        title: 'Workflow Step Editor'
-        subtitle: 'Edit per-tenant step-level overrides for regulatory approval lifecycles and lifecycle configurations'
-        no_regulatory: 'No regulatory workflow configuration files found.'
-        no_lifecycle: 'No lifecycle configuration files found.'
-        no_steps: 'No steps defined for this workflow. Lifecycle configurations use transition-level overrides.'
-        no_yaml_baseline: 'No YAML baseline data available for this step.'
-        yaml_baseline: 'YAML baseline'
-        yaml_value: 'YAML value'
-        current_override: 'Current override'
-        save_success: 'Workflow step override saved.'
-        reset_success: 'Workflow step override reset — YAML baseline will be used again.'
-        reset_confirm: 'Really reset all overrides for this step?'
-        section:
-            regulatory: 'Regulatory Workflows'
-            regulatory_desc: 'Approval chain workflows with per-step overrides for roles, SLA, and auto-progress conditions.'
-            lifecycle: 'Lifecycle Configurations'
-            lifecycle_desc: 'Entity status state machines — configure transition-level overrides via the Lifecycle Overrides editor.'
-            steps: 'Approval Steps'
-            steps_desc: '%count% steps defined in YAML'
-            override_fields: 'Override Fields'
-            yaml_baseline: 'YAML Baseline'
-            help: 'Help'
-        col:
-            name: 'Workflow'
-            steps: 'Steps'
-            overrides: 'Active Overrides'
-            step_name: 'Step'
-            approver_role: 'Approver Role'
-            days: 'Days'
-            overridden_keys: 'Overridden Keys'
-        step:
-            unnamed: '(unnamed step)'
-            overridden: 'overridden'
-            override_active: 'Override active'
-        show:
-            title: 'Workflow: %workflow%'
-            subtitle: 'Step structure and tenant overrides'
-        edit:
-            title: 'Edit Step %step% — %workflow%'
-            breadcrumb: 'Step %step%'
-            hint: 'Empty fields use the YAML baseline value. Only populated fields are stored in the database.'
-        action:
-            show: 'Manage steps'
-            back: 'Back'
-            reset: 'Reset'
-            transition_overrides: 'Transition overrides'
-            edit_transitions: 'Edit transition overrides'
-            lifecycle_overrides: 'Lifecycle Overrides'
-        form:
-            approver_role: 'Approver role'
-            approver_role_help: 'ROLE_* value that overrides the YAML approver role for this step. Leave empty to use YAML default.'
-            approver_users: 'Approver users (JSON)'
-            approver_users_help: 'JSON array of user IDs, e.g. [42, 57]. Leave empty to use YAML default.'
-            days_to_complete: 'Days to complete'
-            days_to_complete_help: 'SLA days override. Leave empty to use YAML default.'
-            auto_progress_conditions: 'Auto-progress conditions (JSON)'
-            auto_progress_conditions_help: 'JSON condition object for field_completion auto-progression. Leave empty to use YAML default.'
-            reason_required: 'Reason required'
-            reason_required_value: 'Require reason'
-            four_eyes: 'Four-eyes principle'
-            four_eyes_value: 'Enable four-eyes'
-            module: 'Module gate'
-            module_help: 'Module key (e.g. privacy, documents). Leave empty for no restriction.'
-            enable_override: 'Enable override'
-        hint:
-            yaml_baseline: 'Missing overrides automatically use the YAML baseline value from the workflow configuration.'
-            lifecycle_redirect: 'Lifecycle configurations use transition-level overrides. Click "Transition overrides" to configure them.'
-            lifecycle_has_transitions: 'This is a lifecycle configuration. Use the Lifecycle Overrides editor to configure transition-level metadata.'
-        validation:
-            days_non_negative: 'Days to complete must be 0 or greater.'
-            conditions_invalid_json: 'Auto-progress conditions must be valid JSON.'
-        help:
-            approver_role:
-                title: 'Approver role'
-                body: 'Overrides the ROLE_* value that is required to approve this step. Takes precedence over the YAML definition.'
-            days_to_complete:
-                title: 'Days to complete'
-                body: 'Override the SLA deadline for this step. Affects the overdue-monitoring cron job.'
-            auto_progress:
-                title: 'Auto-progress conditions'
-                body: 'When all conditions evaluate to true (field_completion / risk_appetite / auto), the step is auto-approved without user action.'
-            four_eyes:
-                title: 'Four-eyes principle'
-                body: 'When enabled, a second person must confirm the transition (four-eyes principle).'
-    queue:
-        title: 'Queue Status'
-        badge: 'Async Worker'
-        subtitle: 'Heartbeat, queue depth, recently processed jobs, and manual emergency-trigger for shared-hosting deployments.'
-        status:
-            green:
-                message: 'Worker healthy — last heartbeat %age% s ago, %depth% messages queued.'
-            yellow:
-                message: 'Worker is slow to respond (last heartbeat %age% s ago). Cron may run with delay — usually drains on the next cycle.'
-            red:
-                message: 'Worker offline — no heartbeat for %age% s. %depth% messages queued. Check cron entry or click "Process now".'
-            unknown:
-                message: 'No heartbeat recorded yet. The traffic light activates as soon as the worker runs for the first time.'
-        kpi:
-            heartbeat:
-                label: 'Heartbeat'
-                hint: 'Seconds since last worker tick'
-                never: 'never'
-            queue_depth:
-                label: 'Queue depth'
-                hint: 'Pending async messages'
-            pending:
-                label: 'Pending jobs'
-                hint: 'Job files with status "pending"'
-            failed:
-                label: 'Failed (24 h)'
-                hint: 'Messenger failure queue, last 24 h'
-        process_now:
-            title: 'Process queue now'
-            description: 'Safe emergency drain: up to 5 messages within 25 seconds — stays under the PHP-FPM timeout. Click repeatedly for larger queues.'
-            button: 'Process now'
-            fineprint: 'CSRF-protected, audit-logged.'
-            success: 'Queue drain completed successfully (%duration% s).'
-            partial: 'Worker exited with code %exit% after %duration% s. Check logs.'
-            error: 'Queue drain failed to start: %error%'
-        cron:
-            title: 'Cron entry for a permanent worker'
-            description: 'Configure as a 1-minute cron in your hosting panel (cPanel, Plesk, ISPConfig). See the hosting-worker guide for details.'
-            see_guide: 'Full guide: docs/user-guide/HOSTING_WORKER.md'
-        recent:
-            title: 'Recently processed jobs'
-            col:
-                job: 'Job'
-                status: 'Status'
-                progress: 'Progress'
-                updated: 'Updated'
-            empty:
-                title: 'No jobs processed yet'
-                description: 'Jobs appear here as soon as the worker (cron or manual trigger) executes async tasks.'
-        job_status:
-            pending: 'Pending'
-            running: 'Running'
-            succeeded: 'Succeeded'
-            failed: 'Failed'
-            unknown: 'Unknown'
-        banner:
-            title: 'Async worker offline.'
-            message: 'No heartbeat for %age% s, %depth% messages queued. Admin jobs (backup, data repair, exports) are stuck until the worker resumes.'
-            link: 'Open queue status →'
-        hub:
-            label: 'Queue status'
-            desc: 'Worker health, heartbeat, manual drain'
 

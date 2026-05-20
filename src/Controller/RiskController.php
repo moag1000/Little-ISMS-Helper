@@ -958,14 +958,19 @@ class RiskController extends AbstractController
         ]);
     }
     #[Route('/risk/matrix', name: 'app_risk_matrix', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function matrix(): Response
     {
         // Get current user's tenant
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
-        // Get risks: tenant-filtered if user has tenant, all risks if not
-        $risks = $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
+        // C-01 fix: tenant-scoped query only. Previously this route fell back
+        // to $riskRepository->findAll() when $tenant was null, leaking
+        // cross-tenant data. With #[IsGranted('ROLE_USER')] above the user is
+        // always authenticated; if they have no tenant assigned, return an
+        // empty matrix rather than every tenant's risks.
+        $risks = $tenant ? $this->riskService->getRisksForTenant($tenant) : [];
 
         $matrixData = $this->riskMatrixService->generateMatrix();
         $statistics = $this->riskMatrixService->getRiskStatistics();

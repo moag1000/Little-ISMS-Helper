@@ -1,4 +1,10 @@
 compliance:
+    heatmap:
+        title: 'Compliance Heatmap'
+        caption: 'Framework × control-cluster fulfillment heatmap'
+        col_framework: 'Framework'
+        col_cluster: 'Control Cluster'
+        no_data: 'No mapping data available for the heatmap yet.'
     iso9001_bridge:
         prefix: 'For 9001 practitioners:'
         more: 'full 9001 ↔ 27001 bridge →'
@@ -786,6 +792,9 @@ compliance:
             all_analyzed_desc: 'You can start a re-analysis to recalculate quality values with the latest algorithm.'
             analyze_count: 'Analyze %count%'
             analyze_all: 'Analyze all'
+            progress:
+                status: 'Analyzing…'
+                ready: 'Ready'
         progress:
             analyzed: 'Analyzed'
             remaining: 'Remaining'

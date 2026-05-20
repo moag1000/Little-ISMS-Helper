@@ -134,11 +134,11 @@ src/Controller/ProcessingActivityController.php:242
 src/Controller/RiskAppetiteController.php:92
 src/Controller/RiskAppetiteController.php:141
 src/Controller/RiskAppetiteController.php:158
-src/Controller/RiskController.php:1189
-src/Controller/RiskController.php:1224
-src/Controller/RiskController.php:1263
-src/Controller/RiskController.php:1317
-src/Controller/RiskController.php:1342
+src/Controller/RiskController.php:1194
+src/Controller/RiskController.php:1229
+src/Controller/RiskController.php:1268
+src/Controller/RiskController.php:1322
+src/Controller/RiskController.php:1347
 src/Controller/RiskTreatmentPlanController.php:106
 src/Controller/RiskTreatmentPlanController.php:140
 src/Controller/RiskTreatmentPlanController.php:157

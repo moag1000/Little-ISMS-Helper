@@ -134,6 +134,7 @@ confirm:
 back: Zurück
 common:
     module_not_active: 'Modul "%module%" ist nicht aktiviert. Bitte Setup → Module aktivieren.'
+    tenant_not_found: 'Kein aktiver Mandant — bitte zuerst in einen Workspace einloggen, bevor diese Funktion genutzt wird.'
     please_select: 'Bitte auswählen...'
     next: Weiter
     yes: 'Ja'
@@ -1076,6 +1077,8 @@ action:
     view_all: 'Alle anzeigen'
     view: Anzeigen
 form:
+    json:
+        invalid: 'Ungültiges JSON. Bitte korrekte JSON-Syntax verwenden (z.B. {"key":"value"} oder [...]).'
     automatic_value: 'Dieses Feld wurde automatisch von der Cyberpunk Fee ausgefüllt.'
     complete_asset_inventory: 'Asset-Inventar vervollständigen'
     conduct_risk_analysis: 'Risikoanalyse durchführen'
@@ -2202,3 +2205,8 @@ sso:
 # Owner-Picker — Tri-State Owner Slot Component (S4 P-1)
 owner_picker:
     legacy_hint: 'Legacy-Freitext aus älteren Datensätzen. Bitte einen Benutzer oder eine Person oben auswählen, dieses Feld ist nur lesbar und dient als Migrations-Hinweis.'
+
+# Cross-cutting Flash-Messages (DeploymentWizard, DataRepair) — Keys mit `messages`-Domain referenziert
+'setup.preset.applied': 'Industry-Preset "%preset%" angewendet. %modules% Modul(e) aktiviert, %frameworks% Framework(s) freigeschaltet.'
+'setup.preset.error.unknown': 'Unbekanntes Industry-Preset.'
+'admin.data_repair.partial_assignment': 'Teilweise zugeordnet — %assigned% von %total% verwaisten Datensätzen zugeordnet. Restliche Einträge manuell prüfen.'

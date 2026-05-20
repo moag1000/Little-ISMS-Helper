@@ -11,6 +11,6 @@ src/Form/InterestedPartyType.php:51:contactPerson
 src/Form/InternalAuditType.php:130:leadAuditor
 src/Form/InternalAuditType.php:150:auditTeam
 src/Form/LocationType.php:93:country
-src/Form/SupplierType.php:60:contactPerson
-src/Form/SupplierType.php:403:countryOfHeadOffice
+src/Form/SupplierType.php:63:contactPerson
+src/Form/SupplierType.php:326:countryOfHeadOffice
 src/Form/TrainingType.php:126:participants

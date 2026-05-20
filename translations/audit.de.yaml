@@ -1,4 +1,8 @@
 audit:
+    success:
+        created: 'Audit erfolgreich erstellt.'
+        updated: 'Audit erfolgreich aktualisiert.'
+        deleted: 'Audit erfolgreich gelöscht.'
     new: 'Neues Audit'
     edit: 'Audit bearbeiten'
     create: 'Audit erstellen'
