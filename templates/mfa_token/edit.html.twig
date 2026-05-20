@@ -24,8 +24,11 @@
         {% block card_body %}
             {{ form_start(form) }}
 
+            {# H-03: strict_whitelist — MFA token form must never leak hidden
+               fields like secret, last_used_at, recovery_codes via catch-all. #}
             {% include '_components/_auto_form.html.twig' with {
                 'form': form,
+                'strict_whitelist': true,
                 'sections': {
                     'basic_info': {
                         'label': 'mfa_token.section.basic_info'|trans({}, 'mfa'),

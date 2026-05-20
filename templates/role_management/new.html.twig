@@ -33,8 +33,12 @@
         <div class="fa-section__body">
             {{ form_start(form, {'action': path('role_management_new')}) }}
 
+                {# H-03: strict_whitelist suppresses auto-form catch-all so
+                   `permissions` cannot be POST-injected even if the rich
+                   permissions table is bypassed via dev-tools. #}
                 {% include '_components/_auto_form.html.twig' with {
                     'form': form,
+                    'strict_whitelist': true,
                     'sections': {
                         'basic_info': {
                             'label': 'role_management.section.basic_info'|trans({}, 'role_management'),

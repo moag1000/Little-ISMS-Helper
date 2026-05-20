@@ -51,6 +51,28 @@
 {% set other_section_label = other_section_label|default('common.section.other'|trans({}, 'messages')) %}
 {% set skip_other = skip_other|default(false) %}
 
+{# ─── H-03 Privilege-Escalation Hardening (Security) ────────────────────────
+   The catch-all "Other fields" bucket renders EVERY form-child that is not
+   explicitly listed in `sections`. Sensitive fields like `permissions`,
+   `roles`, `tenant`, `isActive` can leak through if a caller forgets to
+   add them to a section — attackers could then inject these via dev-tools.
+
+   Callers MAY opt-in to strict whitelist mode via:
+     {% include '_components/_auto_form.html.twig' with {
+         strict_whitelist: true,   # H-03 — suppress catch-all entirely
+         sections: { ... }
+     } %}
+
+   strict_whitelist implies skip_other: true. High-risk forms (admin/user/
+   role/tenant) MUST set strict_whitelist: true. The dev-environment
+   surfaces a warning when the catch-all is active and there are unmapped
+   fields, so devs can incrementally adopt sections (see @todo H-03 markers).
+#}
+{% set strict_whitelist = strict_whitelist|default(false) %}
+{% if strict_whitelist %}
+    {% set skip_other = true %}
+{% endif %}
+
 {# ─── S4 Foundation P-2 SectionPolicy ───────────────────────────────────────
    If caller did not pass a `sections` dict explicitly, check if the FormType
    implements SectionMapInterface (form_section_map() returns non-null) and
@@ -260,5 +282,42 @@
                 </div>
             {% endif %}
         </fieldset>
+    {% endif %}
+{% endif %}
+
+{# ─── H-03 dev-only visibility ─────────────────────────────────────────────
+   Show which fields are suppressed by strict_whitelist (privilege-escalation
+   safeguard) OR rendered via the catch-all (potential leak risk). Dev only.
+   Hidden in prod for performance + UX. #}
+{% if app.environment == 'dev' %}
+    {% set _unmapped_fields = [] %}
+    {% for child in form %}
+        {% set child_name = child.vars.name %}
+        {% set child_type = child.vars.block_prefixes[1]|default('') %}
+        {% if child_name not in listed_fields
+            and child_name not in exclude_fields
+            and child_type != 'hidden'
+            and child_name != '_token' %}
+            {% set _unmapped_fields = _unmapped_fields|merge([child_name]) %}
+        {% endif %}
+    {% endfor %}
+    {% if _unmapped_fields|length > 0 and strict_whitelist %}
+        <div class="alert alert-info small mb-3" role="alert">
+            <strong>[dev] H-03 strict whitelist:</strong>
+            {{ _unmapped_fields|length }} field(s) suppressed
+            (privilege-escalation safeguard):
+            <code>{{ _unmapped_fields|join(', ') }}</code>.
+            Add to a <code>sections</code> entry to render them.
+        </div>
+    {% elseif _unmapped_fields|length > 0 and not skip_other %}
+        <div class="alert alert-warning small mb-3" role="alert">
+            <strong>[dev] @todo H-03 section-policy:</strong>
+            {{ _unmapped_fields|length }} field(s) rendered via catch-all
+            (no section-policy whitelist):
+            <code>{{ _unmapped_fields|join(', ') }}</code>.
+            Privilege-escalation risk if any are sensitive (roles, permissions,
+            tenant, isActive). Add to <code>sections</code> or pass
+            <code>strict_whitelist: true</code>.
+        </div>
     {% endif %}
 {% endif %}

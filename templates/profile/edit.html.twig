@@ -23,8 +23,14 @@
                 {% endblock %}
                 {% block card_body %}
                     {{ form_start(form) }}
+                        {# H-03: strict_whitelist is CRITICAL here — the profile
+                           controller passes is_profile_edit=true, but the
+                           catch-all would still render any field the FormType
+                           accidentally added (e.g. roles, tenant, isActive),
+                           letting a regular user POST role-elevation. #}
                         {% include '_components/_auto_form.html.twig' with {
                             'form': form,
+                            'strict_whitelist': true,
                             'sections': {
                                 'basic_info': {
                                     'label': 'user.section.basic_info'|trans({}, 'user'),
@@ -37,6 +43,10 @@
                                 'preferences': {
                                     'label': 'user.profile.section.preferences'|trans({}, 'user'),
                                     'fields': ['language', 'timezone', 'previousQmsBackground']
+                                },
+                                'competence': {
+                                    'label': 'user.section.competence'|trans({}, 'user'),
+                                    'fields': ['competencies']
                                 },
                                 'security': {
                                     'label': 'user.profile.section.security'|trans({}, 'user'),
@@ -54,6 +64,7 @@
                                 'language': 6,
                                 'timezone': 6,
                                 'previousQmsBackground': 12,
+                                'competencies': 12,
                                 'plainPassword': 12
                             },
                             'translation_domain': 'user'

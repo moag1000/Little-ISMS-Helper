@@ -26,8 +26,11 @@
                 </div>
                 <div class="fa-section__body">
                     {{ form_start(form) }}
+                        {# H-03: strict_whitelist — security settings must not
+                           leak any new auth field without explicit review. #}
                         {% include '_components/_auto_form.html.twig' with {
                             'form': form,
+                            'strict_whitelist': true,
                             'sections': {
                                 'session_settings': {
                                     'label': 'admin.settings.security.session_settings'|trans({}, 'admin'),
