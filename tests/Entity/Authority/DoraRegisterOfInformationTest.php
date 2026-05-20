@@ -7,6 +7,7 @@ namespace App\Tests\Entity\Authority;
 use App\Entity\Authority\DoraRegisterOfInformation;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Exception\InvalidArgument\InvalidArgumentException;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -81,7 +82,7 @@ final class DoraRegisterOfInformationTest extends TestCase
     #[Test]
     public function setReportingScopeThrowsForInvalidScope(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $record = new DoraRegisterOfInformation();
         $record->setReportingScope('invalid_scope');
     }

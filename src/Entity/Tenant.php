@@ -504,9 +504,11 @@ class Tenant
     {
         if ($parent instanceof Tenant) {
             if ($parent === $this) {
+                // @intentional-assertion: programmer-error guard — cycle detection in entity graph
                 throw new \LogicException('A tenant cannot be its own parent');
             }
             if ($parent->isChildOf($this)) {
+                // @intentional-assertion: programmer-error guard — cycle detection in entity graph
                 throw new \LogicException(sprintf(
                     'Setting parent would create a cycle: tenant "%s" is already a descendant of "%s"',
                     $parent->getCode() ?? '?',

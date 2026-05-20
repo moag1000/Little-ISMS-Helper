@@ -130,7 +130,7 @@ class DoraRegisterOfInformation
     public function setReportingScope(string $reportingScope): static
     {
         if (!in_array($reportingScope, self::VALID_SCOPES, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid reporting scope: %s', $reportingScope));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid reporting scope: %s', $reportingScope));
         }
 
         $this->reportingScope = $reportingScope;

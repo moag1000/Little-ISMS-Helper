@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Entity;
 
 use App\Entity\PolicyTemplate;
-use InvalidArgumentException;
+use App\Exception\InvalidArgument\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

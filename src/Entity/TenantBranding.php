@@ -307,7 +307,7 @@ class TenantBranding
     public function setPolicyDocCoverPattern(string $value): static
     {
         if (!in_array($value, self::POLICY_DOC_COVER_PATTERNS, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid cover pattern "%s".', $value));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid cover pattern "%s".', $value));
         }
         $this->policyDocCoverPattern = $value;
         return $this;
@@ -411,7 +411,7 @@ class TenantBranding
     public function setPolicyDocCoverLogoSize(string $value): static
     {
         if (!in_array($value, self::POLICY_DOC_LOGO_SIZES, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid logo size "%s".', $value));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid logo size "%s".', $value));
         }
         $this->policyDocCoverLogoSize = $value;
         return $this;
@@ -425,7 +425,7 @@ class TenantBranding
     public function setPolicyDocPageMargin(string $value): static
     {
         if (!in_array($value, self::POLICY_DOC_PAGE_MARGINS, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid page margin "%s".', $value));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid page margin "%s".', $value));
         }
         $this->policyDocPageMargin = $value;
         return $this;
@@ -459,7 +459,7 @@ class TenantBranding
     public function setReportDocCoverPattern(string $value): static
     {
         if (!in_array($value, self::REPORT_DOC_COVER_PATTERNS, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid report cover pattern "%s".', $value));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid report cover pattern "%s".', $value));
         }
         $this->reportDocCoverPattern = $value;
         return $this;
@@ -473,7 +473,7 @@ class TenantBranding
     public function setReportDocDefaultAudience(string $value): static
     {
         if (!in_array($value, self::REPORT_DOC_AUDIENCES, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid report audience "%s".', $value));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid report audience "%s".', $value));
         }
         $this->reportDocDefaultAudience = $value;
         return $this;
@@ -558,7 +558,7 @@ class TenantBranding
     public function setReportDocPageOrientation(string $value): static
     {
         if (!in_array($value, self::REPORT_DOC_PAGE_ORIENTATIONS, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid page orientation "%s".', $value));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid page orientation "%s".', $value));
         }
         $this->reportDocPageOrientation = $value;
         return $this;
@@ -572,7 +572,7 @@ class TenantBranding
     public function setReportDocChartColorScheme(string $value): static
     {
         if (!in_array($value, self::REPORT_DOC_CHART_COLOR_SCHEMES, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid chart color scheme "%s".', $value));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf('Invalid chart color scheme "%s".', $value));
         }
         $this->reportDocChartColorScheme = $value;
         return $this;
