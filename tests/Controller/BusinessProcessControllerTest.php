@@ -28,6 +28,8 @@ class BusinessProcessControllerTest extends WebTestCase
     private EntityManagerInterface $entityManager;
     private ?Tenant $testTenant = null;
     private ?User $testUser = null;
+    private ?User $testManagerUser = null;
+    private ?User $testAdminUser = null;
     private ?BusinessProcess $testProcess = null;
 
     protected function setUp(): void
@@ -52,14 +54,16 @@ class BusinessProcessControllerTest extends WebTestCase
             }
         }
 
-        if ($this->testUser) {
-            try {
-                $user = $this->entityManager->find(User::class, $this->testUser->getId());
-                if ($user) {
-                    $this->entityManager->remove($user);
+        foreach ([$this->testUser, $this->testManagerUser, $this->testAdminUser] as $u) {
+            if ($u) {
+                try {
+                    $found = $this->entityManager->find(User::class, $u->getId());
+                    if ($found) {
+                        $this->entityManager->remove($found);
+                    }
+                } catch (\Exception $e) {
+                    // Ignore
                 }
-            } catch (\Exception $e) {
-                // Ignore
             }
         }
 
@@ -101,6 +105,26 @@ class BusinessProcessControllerTest extends WebTestCase
         $this->testUser->setTenant($this->testTenant);
         $this->testUser->setIsActive(true);
         $this->entityManager->persist($this->testUser);
+
+        $this->testManagerUser = new User();
+        $this->testManagerUser->setEmail('testmanager_' . $uniqueId . '@example.com');
+        $this->testManagerUser->setFirstName('Test');
+        $this->testManagerUser->setLastName('Manager');
+        $this->testManagerUser->setRoles(['ROLE_MANAGER']);
+        $this->testManagerUser->setPassword('hashed_password');
+        $this->testManagerUser->setTenant($this->testTenant);
+        $this->testManagerUser->setIsActive(true);
+        $this->entityManager->persist($this->testManagerUser);
+
+        $this->testAdminUser = new User();
+        $this->testAdminUser->setEmail('testadmin_' . $uniqueId . '@example.com');
+        $this->testAdminUser->setFirstName('Test');
+        $this->testAdminUser->setLastName('Admin');
+        $this->testAdminUser->setRoles(['ROLE_ADMIN']);
+        $this->testAdminUser->setPassword('hashed_password');
+        $this->testAdminUser->setTenant($this->testTenant);
+        $this->testAdminUser->setIsActive(true);
+        $this->entityManager->persist($this->testAdminUser);
 
         $this->testProcess = new BusinessProcess();
         $this->testProcess->setTenant($this->testTenant);
@@ -166,9 +190,18 @@ class BusinessProcessControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testNewDisplaysFormForUser(): void
+    public function testNewRequiresRoleManager(): void
     {
+        // ROLE_USER is denied (C-1/H-2: new requires ROLE_MANAGER)
         $this->loginAsUser($this->testUser);
+        $this->client->request('GET', '/en/bcm/business-process/new');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function testNewDisplaysFormForManager(): void
+    {
+        $this->loginAsUser($this->testManagerUser);
         $crawler = $this->client->request('GET', '/en/bcm/business-process/new');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
@@ -209,9 +242,18 @@ class BusinessProcessControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testEditDisplaysFormForUser(): void
+    public function testEditRequiresRoleManager(): void
     {
+        // ROLE_USER is denied (H-2: edit requires ROLE_MANAGER)
         $this->loginAsUser($this->testUser);
+        $this->client->request('GET', '/en/bcm/business-process/' . $this->testProcess->getId() . '/edit');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function testEditDisplaysFormForManager(): void
+    {
+        $this->loginAsUser($this->testManagerUser);
         $crawler = $this->client->request('GET', '/en/bcm/business-process/' . $this->testProcess->getId() . '/edit');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
@@ -227,11 +269,20 @@ class BusinessProcessControllerTest extends WebTestCase
     }
 
     #[Test]
+    public function testDeleteRequiresRoleAdmin(): void
+    {
+        // ROLE_MANAGER is denied (H-2: delete requires ROLE_ADMIN)
+        $this->loginAsUser($this->testManagerUser);
+        $this->client->request('POST', '/en/bcm/business-process/' . $this->testProcess->getId());
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
     public function testDeleteRequiresCsrfToken(): void
     {
-        $this->loginAsUser($this->testUser);
+        // ROLE_ADMIN without CSRF token: redirect without deleting
+        $this->loginAsUser($this->testAdminUser);
         $this->client->request('POST', '/en/bcm/business-process/' . $this->testProcess->getId());
-        // Without valid CSRF token, should redirect without deleting
         $this->assertResponseRedirects();
     }
 

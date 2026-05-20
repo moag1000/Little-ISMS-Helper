@@ -181,7 +181,9 @@ class ComplianceRequirementController extends AbstractController
             'transitive_coverage' => $this->transitiveCoverageService->computeForRequirement($complianceRequirement),
             'is_mris' => $isMris,
             'mris' => $mrisData,
-            'available_users' => $this->userRepository->findAll(),
+            'available_users' => ($tenant instanceof \App\Entity\Tenant)
+                ? $this->userRepository->findBy(['tenant' => $tenant])
+                : $this->userRepository->findAll(),
             'available_persons' => $this->personRepository->findAll(),
         ]);
     }

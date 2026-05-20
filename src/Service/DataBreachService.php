@@ -540,10 +540,17 @@ final class DataBreachService
             throw new \App\Exception\BusinessRule\BusinessRuleException('Only closed data breaches can be reopened', 'closed_required');
         }
 
-        $dataBreach->setStatus('under_assessment'); // @phpstan-ignore lifecycle.directSetStatus (DataBreachService manages its own role/guard checks per GDPR Art.33; LifecycleService migration deferred to X.6)
         $dataBreach->setUpdatedBy($user);
 
-        $this->entityManager->flush();
+        // Route via LifecycleService so ROLE_DPO guard from data_breach_lifecycle metadata
+        // is enforced and the transition is audit-logged as a lifecycle event (audit H-6).
+        $this->lifecycleService->transition(
+            $dataBreach,
+            'data_breach_lifecycle',
+            'reopen',
+            $user,
+            $reopenReason,
+        );
 
         $this->auditLogger->logCustom(
             'data_breach.reopened',

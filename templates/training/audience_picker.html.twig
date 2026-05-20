@@ -23,6 +23,7 @@
     }) }}
 
     <form method="post" action="{{ path('app_training_audience_picker', {id: training.id}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('audience_picker_' ~ training.id) }}">
         <section class="fa-section">
             <header class="fa-section__header">
                 <h2 class="fa-section__title">{{ 'training.mandatory_audience.picker_section_title'|trans({}, 'alva') }}</h2>

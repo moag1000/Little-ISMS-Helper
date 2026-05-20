@@ -313,8 +313,13 @@ class UserManagementController extends AbstractController
     public function export(
         UserRepository $userRepository
     ): StreamedResponse {
-
-        $users = $userRepository->findAll();
+        // Scope export to current user's tenant (audit M-7: cross-tenant leak via findAll()).
+        // SUPER_ADMIN cross-tenant export requires a dedicated privileged endpoint.
+        $currentUser = $this->getUser();
+        $tenant = ($currentUser instanceof User) ? $currentUser->getTenant() : null;
+        $users = $tenant !== null
+            ? $userRepository->findBy(['tenant' => $tenant])
+            : $userRepository->findAll();
 
         $streamedResponse = new StreamedResponse(function () use ($users): void {
             $handle = fopen('php://output', 'w');
