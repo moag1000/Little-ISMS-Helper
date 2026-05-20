@@ -212,7 +212,7 @@ final class VvtBfdiExporter
         $handle = fopen('php://temp', 'wb+');
 
         if ($handle === false) {
-            throw new \RuntimeException('Could not open temp stream for CSV export.');
+            throw new \App\Exception\Io\IoException('Could not open temp stream for CSV export.');
         }
 
         // UTF-8 BOM for Excel compatibility

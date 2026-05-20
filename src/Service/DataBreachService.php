@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use RuntimeException;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Deprecated;
@@ -241,14 +240,14 @@ final class DataBreachService
     public function submitForAssessment(DataBreach $dataBreach, User $user): DataBreach
     {
         if ($dataBreach->getStatus() !== 'draft') {
-            throw new RuntimeException('Only draft data breaches can be submitted for assessment');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Only draft data breaches can be submitted for assessment', 'draft_required');
         }
 
         if (!$dataBreach->isComplete()) {
-            throw new RuntimeException(sprintf(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf(
                 'Data breach must be complete before assessment (currently %d%% complete)',
                 $dataBreach->getCompletenessPercentage()
-            ));
+            ), 'incomplete');
         }
 
         $dataBreach->setAssessor($user);
@@ -296,11 +295,11 @@ final class DataBreachService
         array $documents = []
     ): DataBreach {
         if (!$dataBreach->getRequiresAuthorityNotification()) {
-            throw new RuntimeException('This data breach does not require supervisory authority notification');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('This data breach does not require supervisory authority notification', 'notification_not_required');
         }
 
         if ($dataBreach->getSupervisoryAuthorityNotifiedAt() instanceof DateTimeInterface) {
-            throw new RuntimeException('Supervisory authority has already been notified');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Supervisory authority has already been notified', 'already_notified');
         }
 
         $notifiedAt = new DateTimeImmutable();
@@ -378,7 +377,7 @@ final class DataBreachService
     public function recordNotificationDelay(DataBreach $dataBreach, string $delayReason): DataBreach
     {
         if (!$dataBreach->isAuthorityNotificationOverdue()) {
-            throw new RuntimeException('Notification is not overdue - delay reason not needed');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Notification is not overdue - delay reason not needed', 'not_overdue');
         }
 
         $dataBreach->setNotificationDelayReason($delayReason);
@@ -409,11 +408,11 @@ final class DataBreachService
         array $documents = []
     ): DataBreach {
         if (!$dataBreach->getRequiresSubjectNotification()) {
-            throw new RuntimeException('This data breach does not require data subject notification');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('This data breach does not require data subject notification', 'notification_not_required');
         }
 
         if ($dataBreach->getDataSubjectsNotifiedAt() instanceof DateTimeInterface) {
-            throw new RuntimeException('Data subjects have already been notified');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Data subjects have already been notified', 'already_notified');
         }
 
         $notifiedAt = new DateTimeImmutable();
@@ -495,11 +494,11 @@ final class DataBreachService
 
         // Validate required notifications are complete
         if ($dataBreach->getRequiresAuthorityNotification() && !$dataBreach->getSupervisoryAuthorityNotifiedAt()) {
-            throw new RuntimeException('Supervisory authority notification required before closing');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Supervisory authority notification required before closing', 'authority_notification_required');
         }
 
         if ($dataBreach->getRequiresSubjectNotification() && !$dataBreach->getDataSubjectsNotifiedAt()) {
-            throw new RuntimeException('Data subject notification required before closing');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Data subject notification required before closing', 'subject_notification_required');
         }
 
         $dataBreach->setUpdatedBy($user);
@@ -538,7 +537,7 @@ final class DataBreachService
     public function reopen(DataBreach $dataBreach, User $user, string $reopenReason): DataBreach
     {
         if ($dataBreach->getStatus() !== 'closed') {
-            throw new RuntimeException('Only closed data breaches can be reopened');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Only closed data breaches can be reopened', 'closed_required');
         }
 
         $dataBreach->setStatus('under_assessment'); // @phpstan-ignore lifecycle.directSetStatus (DataBreachService manages its own role/guard checks per GDPR Art.33; LifecycleService migration deferred to X.6)

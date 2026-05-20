@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Sso;
 
-use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
@@ -25,10 +24,10 @@ final class SsoSecretEncryption implements SecretEncryptionInterface
     public function __construct(#[\SensitiveParameter] #[Autowire('%kernel.secret%')] string $kernelSecret)
     {
         if (!function_exists('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
-            throw new RuntimeException('libsodium extension is required for SSO secret encryption.');
+            throw new \App\Exception\Io\IoException('libsodium extension is required for SSO secret encryption.');
         }
         if ($kernelSecret === '') {
-            throw new RuntimeException('Kernel secret must not be empty.');
+            throw new \App\Exception\Io\IoException('Kernel secret must not be empty.');
         }
         $this->key = sodium_crypto_generichash(
             self::CTX . '|' . $kernelSecret,
@@ -55,13 +54,13 @@ final class SsoSecretEncryption implements SecretEncryptionInterface
         }
         $raw = base64_decode($envelope, true);
         if ($raw === false || strlen($raw) <= SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
-            throw new RuntimeException('Malformed SSO secret envelope.');
+            throw new \App\Exception\Io\IoException('Malformed SSO secret envelope.');
         }
         $nonce = substr($raw, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
         $cipher = substr($raw, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
         $plain = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($cipher, self::CTX, $nonce, $this->key);
         if ($plain === false) {
-            throw new RuntimeException('SSO secret decryption failed (key changed or ciphertext tampered).');
+            throw new \App\Exception\Io\IoException('SSO secret decryption failed (key changed or ciphertext tampered).');
         }
 
         return $plain;

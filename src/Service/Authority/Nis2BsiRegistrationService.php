@@ -9,7 +9,6 @@ use App\Entity\Tenant;
 use App\Repository\Authority\Nis2RegistrationProfileRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use LogicException;
 
 /**
  * F29 — Business logic for NIS-2 BSI-Portal Yearly Re-Registration.
@@ -142,11 +141,13 @@ final class Nis2BsiRegistrationService
     public function exportToJson(Nis2RegistrationProfile $profile): string
     {
         if ($profile->getIncidentReportingContact() === null) {
-            throw new LogicException('Cannot export profile: incidentReportingContact is required but not set.');
+                        // @intentional-assertion: caller must populate incidentReportingContact before exportToJson()
+throw new LogicException('Cannot export profile: incidentReportingContact is required but not set.');
         }
 
         if ($profile->getSecurityResponsibleContact() === null) {
-            throw new LogicException('Cannot export profile: securityResponsibleContact is required but not set.');
+                        // @intentional-assertion: caller must populate securityResponsibleContact before exportToJson()
+throw new LogicException('Cannot export profile: securityResponsibleContact is required but not set.');
         }
 
         $data = [

@@ -13,7 +13,7 @@ use App\Service\AuditLogger;
 use App\Service\MrisBaselineService;
 use App\Service\MrisMaturityService;
 use Doctrine\ORM\EntityManagerInterface;
-use DomainException;
+use App\Exception\BusinessRule\BusinessRuleException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -101,7 +101,7 @@ final class MrisBaselineServiceTest extends TestCase
     public function testLoadBaselineThrowsForUnknownId(): void
     {
         $service = $this->makeService();
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $service->loadBaseline('nonexistent-baseline-xyz');
     }
 
@@ -109,7 +109,7 @@ final class MrisBaselineServiceTest extends TestCase
     public function testApplyBaselineWithoutFrameworkThrows(): void
     {
         $service = $this->makeService(null);
-        $this->expectException(DomainException::class);
+        $this->expectException(BusinessRuleException::class);
         $service->applyBaseline(new Tenant(), 'kritis');
     }
 

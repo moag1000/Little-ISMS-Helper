@@ -138,7 +138,7 @@ final class ScheduledReportService
         }
 
         if ($filterResult['valid'] === []) {
-            throw new \RuntimeException('No qualifying recipients after role/tenant check.');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('No qualifying recipients after role/tenant check.', 'no_recipients');
         }
 
         // Generate the report content
@@ -317,7 +317,7 @@ final class ScheduledReportService
             ],
             ScheduledReport::TYPE_PORTFOLIO => $this->getPortfolioReportData(),
             ScheduledReport::TYPE_BOARD => $this->getBoardReportData(),
-            default => throw new \InvalidArgumentException("Unknown report type: {$type}"),
+            default => throw new \App\Exception\InvalidArgument\InvalidArgumentException("Unknown report type: {$type}", 'reportType'),
         };
     }
 
@@ -408,7 +408,7 @@ final class ScheduledReportService
             ScheduledReport::TYPE_GDPR => 'management_reports/gdpr_pdf.html.twig',
             ScheduledReport::TYPE_PORTFOLIO => 'portfolio_report/pdf.html.twig',
             ScheduledReport::TYPE_BOARD => 'reports/board_one_pager.html.twig',
-            default => throw new \InvalidArgumentException("Unknown report type: {$type}"),
+            default => throw new \App\Exception\InvalidArgument\InvalidArgumentException("Unknown report type: {$type}", 'reportType'),
         };
     }
 

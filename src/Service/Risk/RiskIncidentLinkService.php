@@ -51,7 +51,7 @@ class RiskIncidentLinkService
         ?string $notes,
     ): RiskIncidentLink {
         if (!in_array($linkType, self::VALID_LINK_TYPES, true)) {
-            throw new \InvalidArgumentException(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(
                 sprintf('Invalid linkType "%s". Valid: %s', $linkType, implode(', ', self::VALID_LINK_TYPES))
             );
         }

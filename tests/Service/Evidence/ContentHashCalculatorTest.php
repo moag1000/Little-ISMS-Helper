@@ -7,7 +7,7 @@ namespace App\Tests\Service\Evidence;
 use App\Service\Evidence\ContentHashCalculator;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use App\Exception\Io\IoException;
 
 /**
  * F4 — ContentHashCalculator unit tests.
@@ -57,7 +57,7 @@ class ContentHashCalculatorTest extends TestCase
     #[Test]
     public function testCalculateFromPathThrowsForMissingFile(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $this->calculator->calculateFromPath('/nonexistent/path/file.pdf');
     }
 

@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use JsonException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use RuntimeException;
 use ZipArchive;
 
 /**
@@ -88,7 +87,7 @@ class BackupRepairService
     public function repair(string $filePath, string $outputPath): RepairReport
     {
         if ($filePath === $outputPath) {
-            throw new RuntimeException('Output path must differ from source path to avoid data loss.');
+            throw new \App\Exception\BusinessRule\BusinessRuleException('Output path must differ from source path to avoid data loss.', 'same_path');
         }
 
         return $this->process($filePath, outputPath: $outputPath);
@@ -553,19 +552,19 @@ class BackupRepairService
     ): void {
         $dir = dirname($outputPath);
         if ($dir !== '' && !is_dir($dir) && !mkdir($dir, 0755, true)) {
-            throw new RuntimeException("Cannot create output directory: {$dir}");
+            throw new \App\Exception\Io\IoException("Cannot create output directory: {$dir}");
         }
 
         $json = json_encode($cleanBackup, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         if ($json === false) {
-            throw new RuntimeException('Failed to JSON-encode cleaned backup: ' . json_last_error_msg());
+            throw new \App\Exception\Io\IoException('Failed to JSON-encode cleaned backup: ' . json_last_error_msg());
         }
 
         if ($isZip) {
             $this->writeZipOutput($outputPath, $json, $zipEntries);
         } else {
             if (file_put_contents($outputPath, $json) === false) {
-                throw new RuntimeException("Failed to write cleaned backup to: {$outputPath}");
+                throw new \App\Exception\Io\IoException("Failed to write cleaned backup to: {$outputPath}");
             }
         }
 
@@ -583,12 +582,12 @@ class BackupRepairService
     private function writeZipOutput(string $outputPath, string $json, array $zipEntries): void
     {
         if (!class_exists(ZipArchive::class)) {
-            throw new RuntimeException('ZipArchive extension is not available — cannot write ZIP output.');
+            throw new \App\Exception\Io\IoException('ZipArchive extension is not available — cannot write ZIP output.');
         }
 
         $zip = new ZipArchive();
         if ($zip->open($outputPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            throw new RuntimeException("Could not create output ZIP archive: {$outputPath}");
+            throw new \App\Exception\Io\IoException("Could not create output ZIP archive: {$outputPath}");
         }
 
         $zip->addFromString('backup.json', $json);

@@ -6,14 +6,12 @@ namespace App\Service;
 
 use App\Service\BackupEncryptionService;
 use Doctrine\Persistence\ManagerRegistry;
-use InvalidArgumentException;
 use Exception;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Id\AssignedGenerator;
 use ReflectionClass;
-use RuntimeException;
 use DateTimeImmutable;
 use DateTime;
 use Doctrine\ORM\Id\AbstractIdGenerator;
@@ -339,7 +337,7 @@ class RestoreService
         // {@see filterEntitiesByScope()} handles row-level scoping).
         $validation = $this->validateBackup($backup);
         if (!$validation['valid']) {
-            throw new InvalidArgumentException('Invalid backup: ' . implode(', ', $validation['errors']));
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException('Invalid backup: ' . implode(', ', $validation['errors']), 'backup');
         }
 
         // Re-apply cross-tenant warning that was collected before validateBackup() reset warnings
@@ -1362,7 +1360,7 @@ class RestoreService
                     if (!array_key_exists($fieldName, $data)) {
                         // Handle missing field
                         if ($options['missing_field_strategy'] === self::STRATEGY_FAIL) {
-                            throw new RuntimeException(sprintf('Missing field: %s', $fieldName));
+                            throw new \App\Exception\Io\IoException(sprintf('Missing field: %s', $fieldName));
                         }
                         // Handle missing field
                         if ($options['missing_field_strategy'] === self::STRATEGY_SKIP_FIELD) {
@@ -1568,7 +1566,7 @@ class RestoreService
                                         }
 
                                         if (!$setterFound) {
-                                            throw new RuntimeException(sprintf(
+                                            throw new \App\Exception\Io\IoException(sprintf(
                                                 'No setter found for association "%s". Tried: %s',
                                                 $assocName,
                                                 implode(', ', $setterCandidates)
@@ -2187,7 +2185,7 @@ class RestoreService
         $actualHash = hash('sha256', (string) json_encode($backup['data'] ?? []));
 
         if (!hash_equals($storedHash, $actualHash)) {
-            throw new RuntimeException(sprintf(
+            throw new \App\Exception\Io\IoException(sprintf(
                 'Backup integrity check failed: sha256 mismatch (expected %s, got %s)',
                 $storedHash,
                 $actualHash

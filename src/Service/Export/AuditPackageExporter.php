@@ -58,12 +58,12 @@ final class AuditPackageExporter
 
         $tempPath = tempnam(sys_get_temp_dir(), 'audit_pkg_');
         if ($tempPath === false) {
-            throw new \RuntimeException('Unable to create temp file for ZIP.');
+            throw new \App\Exception\Io\IoException('Unable to create temp file for ZIP.');
         }
 
         $zip = new \ZipArchive();
         if ($zip->open($tempPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
-            throw new \RuntimeException('Unable to open ZIP for writing: ' . $tempPath);
+            throw new \App\Exception\Io\IoException('Unable to open ZIP for writing: ' . $tempPath);
         }
 
         $frameworkCode = $this->slug((string) $framework->getCode());

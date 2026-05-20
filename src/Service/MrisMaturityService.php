@@ -112,7 +112,7 @@ final class MrisMaturityService
             return;
         }
         if (!in_array($stage, self::STAGES, true)) {
-            throw new DomainException(sprintf(
+            throw new \App\Exception\BusinessRule\BusinessRuleException(sprintf(
                 'Ungültiger Reifegrad "%s". Erlaubt: %s.',
                 $stage,
                 implode(', ', self::STAGES),

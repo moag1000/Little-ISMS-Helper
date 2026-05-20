@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use App\Exception\BusinessRule\BusinessRuleException;
 
 /**
  * Unit tests for {@see PolicyAcknowledgementService}.
@@ -190,7 +190,7 @@ final class PolicyAcknowledgementServiceTest extends TestCase
         self::assertSame(0, $pending);
 
         // acknowledge() throws because the row already exists.
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $service->acknowledge($document, $user, PolicyAcknowledgementService::METHOD_WEB_CLICK);
     }
 

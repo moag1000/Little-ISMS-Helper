@@ -10,7 +10,6 @@ use App\Repository\WizardRunRepository;
 use App\Service\PolicyWizard\Step\TargetedPickTopicsStep;
 use App\Service\PolicyWizard\WizardStepKeys;
 use App\Service\TenantSettingResolver\TenantSettingResolver;
-use InvalidArgumentException;
 
 /**
  * Policy-Wizard W2-C — Mode 2 (Targeted re-run) handler.
@@ -185,7 +184,7 @@ final class TargetedRerunModeHandler implements ModeHandlerInterface
     public function assertTopicsWithinCap(array $topics): void
     {
         if (count($topics) > self::MAX_TOPICS) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Targeted re-run accepts at most %d topics, %d given.',
                 self::MAX_TOPICS,
                 count($topics),

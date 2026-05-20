@@ -14,7 +14,6 @@ use App\Repository\PolicyAcknowledgementRepository;
 use App\Repository\TenantBrandingRepository;
 use App\Repository\WizardRunRepository;
 use App\Repository\WorkflowInstanceRepository;
-use RuntimeException;
 use Twig\Environment as TwigEnvironment;
 use ZipArchive;
 
@@ -75,13 +74,13 @@ final class PolicyZipExporter
 
         $zipPath = tempnam(sys_get_temp_dir(), 'policy-zip-');
         if ($zipPath === false) {
-            throw new RuntimeException('Could not allocate a temporary file for the ZIP export.');
+            throw new \App\Exception\Io\IoException('Could not allocate a temporary file for the ZIP export.');
         }
 
         $zip = new ZipArchive();
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
             @unlink($zipPath);
-            throw new RuntimeException('Could not open the ZIP archive for writing.');
+            throw new \App\Exception\Io\IoException('Could not open the ZIP archive for writing.');
         }
 
         try {
@@ -167,7 +166,7 @@ final class PolicyZipExporter
         $binary = @file_get_contents($zipPath);
         @unlink($zipPath);
         if (!is_string($binary)) {
-            throw new RuntimeException('Could not read back the ZIP archive contents.');
+            throw new \App\Exception\Io\IoException('Could not read back the ZIP archive contents.');
         }
         return $binary;
     }

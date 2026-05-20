@@ -21,7 +21,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
+use App\Exception\BusinessRule\BusinessRuleException;
 use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
@@ -95,7 +95,7 @@ class DataBreachServiceTest extends TestCase
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('No tenant context available');
 
         $this->service->prepareNewBreach();
@@ -125,7 +125,7 @@ class DataBreachServiceTest extends TestCase
         $incident = $this->createMock(Incident::class);
         $user = $this->createMock(User::class);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('No tenant context available');
 
         $this->service->createFromIncident($incident, $user);
@@ -192,7 +192,7 @@ class DataBreachServiceTest extends TestCase
         $this->tenantContext->method('getCurrentTenant')->willReturn(null);
         $user = $this->createMock(User::class);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('No tenant context available');
 
         $this->service->createStandalone($user, new DateTime());
@@ -276,7 +276,7 @@ class DataBreachServiceTest extends TestCase
 
         $user = $this->createMock(User::class);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Only draft data breaches can be submitted for assessment');
 
         $this->service->submitForAssessment($dataBreach, $user);
@@ -292,7 +292,7 @@ class DataBreachServiceTest extends TestCase
 
         $user = $this->createMock(User::class);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Data breach must be complete before assessment');
 
         $this->service->submitForAssessment($dataBreach, $user);
@@ -304,7 +304,7 @@ class DataBreachServiceTest extends TestCase
         $dataBreach = $this->createMock(DataBreach::class);
         $dataBreach->method('getRequiresAuthorityNotification')->willReturn(false);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('does not require supervisory authority notification');
 
         $this->service->notifySupervisoryAuthority($dataBreach, 'Authority', 'email');
@@ -317,7 +317,7 @@ class DataBreachServiceTest extends TestCase
         $dataBreach->method('getRequiresAuthorityNotification')->willReturn(true);
         $dataBreach->method('getSupervisoryAuthorityNotifiedAt')->willReturn(new DateTime());
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Supervisory authority has already been notified');
 
         $this->service->notifySupervisoryAuthority($dataBreach, 'Authority', 'email');
@@ -329,7 +329,7 @@ class DataBreachServiceTest extends TestCase
         $dataBreach = $this->createMock(DataBreach::class);
         $dataBreach->method('getRequiresSubjectNotification')->willReturn(false);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('does not require data subject notification');
 
         $this->service->notifyDataSubjects($dataBreach, 'email', 100);
@@ -342,7 +342,7 @@ class DataBreachServiceTest extends TestCase
         $dataBreach->method('getRequiresSubjectNotification')->willReturn(true);
         $dataBreach->method('getDataSubjectsNotifiedAt')->willReturn(new DateTime());
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Data subjects have already been notified');
 
         $this->service->notifyDataSubjects($dataBreach, 'email', 100);
@@ -356,7 +356,7 @@ class DataBreachServiceTest extends TestCase
 
         $user = $this->createMock(User::class);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('must be in authority_notified or subjects_notified status');
 
         $this->service->close($dataBreach, $user);
@@ -372,7 +372,7 @@ class DataBreachServiceTest extends TestCase
 
         $user = $this->createMock(User::class);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Supervisory authority notification required before closing');
 
         $this->service->close($dataBreach, $user);
@@ -386,7 +386,7 @@ class DataBreachServiceTest extends TestCase
 
         $user = $this->createMock(User::class);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Only closed data breaches can be reopened');
 
         $this->service->reopen($dataBreach, $user, 'New information received');
@@ -398,7 +398,7 @@ class DataBreachServiceTest extends TestCase
         $dataBreach = $this->createMock(DataBreach::class);
         $dataBreach->method('isAuthorityNotificationOverdue')->willReturn(false);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(BusinessRuleException::class);
         $this->expectExceptionMessage('Notification is not overdue');
 
         $this->service->recordNotificationDelay($dataBreach, 'Some reason');

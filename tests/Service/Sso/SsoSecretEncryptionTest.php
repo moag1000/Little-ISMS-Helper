@@ -7,7 +7,7 @@ namespace App\Tests\Service\Sso;
 use App\Service\Sso\SsoSecretEncryption;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use App\Exception\Io\IoException;
 
 final class SsoSecretEncryptionTest extends TestCase
 {
@@ -39,7 +39,7 @@ final class SsoSecretEncryptionTest extends TestCase
         $svcB = new SsoSecretEncryption('secret-b');
         $cipher = $svcA->encrypt('value');
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         $svcB->decrypt($cipher);
     }
 
@@ -56,7 +56,7 @@ final class SsoSecretEncryptionTest extends TestCase
     #[Test]
     public function emptyKernelSecretIsRejected(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(IoException::class);
         new SsoSecretEncryption('');
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
-use LogicException;
 use Exception;
 use App\Security\SamlAuthFactory;
 use App\Service\Sso\SsoProviderRegistry;
@@ -97,6 +96,7 @@ class SecurityController extends AbstractController
     public function logout(): void
     {
         // This method can be blank - it will be intercepted by the logout key on your firewall
+        // @intentional-assertion: Symfony firewall always intercepts /logout before this code runs
         throw new LogicException('This method should never be reached.');
     }
 
@@ -166,6 +166,7 @@ class SecurityController extends AbstractController
             $errors = $settings->validateMetadata($metadata);
 
             if (!empty($errors)) {
+                // @intentional-assertion: SAML lib throws \Exception; caught immediately by the outer try-catch
                 throw new Exception('Invalid SP metadata: ' . implode(', ', $errors));
             }
 
@@ -190,6 +191,7 @@ class SecurityController extends AbstractController
 
             $errors = $samlAuth->getErrors();
             if (!empty($errors)) {
+                // @intentional-assertion: SAML lib throws \Exception; caught immediately by the outer try-catch
                 throw new Exception('SAML SLO Error: ' . implode(', ', $errors));
             }
 
