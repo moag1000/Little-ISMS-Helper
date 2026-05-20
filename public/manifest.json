@@ -61,6 +61,15 @@
       "purpose": "any maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "/icons/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "CISO Executive Dashboard"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Dashboard",
