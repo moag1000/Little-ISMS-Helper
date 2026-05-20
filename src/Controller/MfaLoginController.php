@@ -90,7 +90,7 @@ class MfaLoginController extends AbstractController
         $tokenId = (int) $request->request->get('token_id');
 
         if ($code === '' || $code === '0') {
-            $this->addFlash('mfa_error', $this->translator->trans('mfa.challenge.error.code_required'));
+            $this->addFlash('mfa_error', $this->translator->trans('mfa.challenge.error.code_required')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_mfa_challenge', ['_locale' => $request->getLocale()]);
         }
 
@@ -103,7 +103,7 @@ class MfaLoginController extends AbstractController
                 'ip' => $request->getClientIp(),
             ]);
 
-            $this->addFlash('mfa_error', $this->translator->trans('mfa.challenge.error.invalid_token'));
+            $this->addFlash('mfa_error', $this->translator->trans('mfa.challenge.error.invalid_token')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_mfa_challenge', ['_locale' => $request->getLocale()]);
         }
 
@@ -131,7 +131,7 @@ class MfaLoginController extends AbstractController
                 'ip' => $request->getClientIp(),
             ]);
 
-            $this->addFlash('success', $this->translator->trans('mfa.challenge.success'));
+            $this->addFlash('success', $this->translator->trans('mfa.challenge.success')); // @todo H-06 flash-domain
 
             // Redirect to original target or dashboard
             $targetPath = $session->get('_security.main.target_path');
@@ -151,7 +151,7 @@ class MfaLoginController extends AbstractController
             'ip' => $request->getClientIp(),
         ]);
 
-        $this->addFlash('mfa_error', $this->translator->trans('mfa.challenge.error.invalid_code'));
+        $this->addFlash('mfa_error', $this->translator->trans('mfa.challenge.error.invalid_code')); // @todo H-06 flash-domain
         return $this->redirectToRoute('app_mfa_challenge', ['_locale' => $request->getLocale()]);
     }
 }

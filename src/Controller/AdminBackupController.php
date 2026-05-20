@@ -562,7 +562,7 @@ class AdminBackupController extends AbstractController
         TranslatorInterface $translator
     ): Response {
         if (!$this->isCsrfTokenValid('data_export', $request->request->get('_token'))) {
-            $this->addFlash('error', $translator->trans('data.export.error.invalid_token'));
+            $this->addFlash('error', $translator->trans('data.export.error.invalid_token', [], 'messages'));
             return $this->redirectToRoute('data_export_index');
         }
 
@@ -570,7 +570,7 @@ class AdminBackupController extends AbstractController
         $format = $request->request->get('format', 'json');
 
         if ($selectedEntities === []) {
-            $this->addFlash('error', $translator->trans('data.export.error.no_entities'));
+            $this->addFlash('error', $translator->trans('data.export.error.no_entities', [], 'messages'));
             return $this->redirectToRoute('data_export_index');
         }
 
@@ -621,14 +621,14 @@ class AdminBackupController extends AbstractController
         TranslatorInterface $translator
     ): Response {
         if (!$this->isCsrfTokenValid('data_import', $request->request->get('_token'))) {
-            $this->addFlash('error', $translator->trans('data.import.error.invalid_token'));
+            $this->addFlash('error', $translator->trans('data.import.error.invalid_token', [], 'messages'));
             return $this->redirectToRoute('data_import_index');
         }
 
         $file = $request->files->get('import_file');
 
         if (!$file) {
-            $this->addFlash('error', $translator->trans('data.import.error.no_file'));
+            $this->addFlash('error', $translator->trans('data.import.error.no_file', [], 'messages'));
             return $this->redirectToRoute('data_import_index');
         }
 
@@ -647,7 +647,7 @@ class AdminBackupController extends AbstractController
         } catch (Exception $e) {
             $this->addFlash('error', $translator->trans('data.import.error.invalid_file', [
                 'error' => $e->getMessage(),
-            ]));
+            ], 'messages'));
             return $this->redirectToRoute('data_import_index');
         }
     }
@@ -680,7 +680,7 @@ class AdminBackupController extends AbstractController
         TranslatorInterface $translator
     ): Response {
         if (!$this->isCsrfTokenValid('data_import_execute', $request->request->get('_token'))) {
-            $this->addFlash('error', $translator->trans('data.import.error.invalid_token'));
+            $this->addFlash('error', $translator->trans('data.import.error.invalid_token', [], 'messages'));
             return $this->redirectToRoute('data_import_index');
         }
 
@@ -694,7 +694,7 @@ class AdminBackupController extends AbstractController
         // NOTE: This is a simplified implementation
         // In production, you'd need proper entity creation, validation, and relationship handling
 
-        $this->addFlash('warning', $translator->trans('data.import.warning.not_implemented'));
+        $this->addFlash('warning', $translator->trans('data.import.warning.not_implemented', [], 'messages'));
         $request->getSession()->remove('import_preview_data');
 
         return $this->redirectToRoute('data_import_index');

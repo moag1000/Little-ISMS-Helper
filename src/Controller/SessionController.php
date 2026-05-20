@@ -128,7 +128,7 @@ class SessionController extends AbstractController
         // Verify CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('terminate_session_' . $userName, $token)) {
-            $this->addFlash('danger', $translator->trans('session.error.invalid_token'));
+            $this->addFlash('danger', $translator->trans('session.error.invalid_token')); // @todo H-06 flash-domain
             return $this->redirectToRoute('session_index');
         }
 
@@ -170,7 +170,7 @@ class SessionController extends AbstractController
         // Verify CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('terminate_single_' . $sessionId, $token)) {
-            $this->addFlash('danger', $translator->trans('session.error.invalid_token'));
+            $this->addFlash('danger', $translator->trans('session.error.invalid_token')); // @todo H-06 flash-domain
             return $this->redirectToRoute('session_index');
         }
 

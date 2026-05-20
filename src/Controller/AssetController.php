@@ -407,7 +407,7 @@ class AssetController extends AbstractController
 
         // Check if asset can be edited (not inherited) - only if user has tenant
         if ($tenant && !$this->assetService->canEditAsset($asset, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited'));
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
@@ -461,7 +461,7 @@ class AssetController extends AbstractController
 
         // Check if asset can be deleted (not inherited) - only if user has tenant
         if ($tenant && !$this->assetService->canEditAsset($asset, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited'));
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_asset_index');
         }
 

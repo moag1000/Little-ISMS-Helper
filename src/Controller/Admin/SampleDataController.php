@@ -165,7 +165,7 @@ class SampleDataController extends AbstractController
     public function remove(Request $request, string $sampleKey): Response
     {
         if (!$this->isCsrfTokenValid('sample_data_remove_' . $sampleKey, $request->request->get('_token'))) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error')); // @todo H-06 flash-domain
             return $this->redirectToRoute('admin_sample_data_index');
         }
 

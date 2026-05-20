@@ -94,7 +94,7 @@ class ProcessingActivityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->processingActivityService->create($processingActivity);
 
-            $this->addFlash('success', $this->translator->trans('processing_activity.created'));
+            $this->addFlash('success', $this->translator->trans('processing_activity.created', [], 'messages'));
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
         }
 
@@ -118,7 +118,7 @@ class ProcessingActivityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->processingActivityService->update($processingActivity);
 
-            $this->addFlash('success', $this->translator->trans('processing_activity.updated'));
+            $this->addFlash('success', $this->translator->trans('processing_activity.updated', [], 'messages'));
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
         }
 
@@ -140,7 +140,7 @@ class ProcessingActivityController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->processingActivityService->delete($processingActivity);
 
-            $this->addFlash('success', $this->translator->trans('processing_activity.deleted'));
+            $this->addFlash('success', $this->translator->trans('processing_activity.deleted', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_processing_activity_index');
@@ -161,7 +161,7 @@ class ProcessingActivityController extends AbstractController
 
         try {
             $this->processingActivityService->activate($processingActivity);
-            $this->addFlash('success', $this->translator->trans('processing_activity.activated'));
+            $this->addFlash('success', $this->translator->trans('processing_activity.activated', [], 'messages'));
         } catch (RuntimeException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -180,7 +180,7 @@ class ProcessingActivityController extends AbstractController
         if ($this->isCsrfTokenValid('archive' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->processingActivityService->archive($processingActivity);
 
-            $this->addFlash('success', $this->translator->trans('processing_activity.archived'));
+            $this->addFlash('success', $this->translator->trans('processing_activity.archived', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_processing_activity_index');
@@ -200,7 +200,7 @@ class ProcessingActivityController extends AbstractController
 
             $this->processingActivityService->markForReview($processingActivity, $reviewDate);
 
-            $this->addFlash('success', $this->translator->trans('processing_activity.marked_for_review'));
+            $this->addFlash('success', $this->translator->trans('processing_activity.marked_for_review', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
@@ -217,7 +217,7 @@ class ProcessingActivityController extends AbstractController
         if ($this->isCsrfTokenValid('complete-review' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->processingActivityService->completeReview($processingActivity);
 
-            $this->addFlash('success', $this->translator->trans('processing_activity.review_completed'));
+            $this->addFlash('success', $this->translator->trans('processing_activity.review_completed', [], 'messages'));
         }
 
         return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
@@ -239,7 +239,7 @@ class ProcessingActivityController extends AbstractController
         $newName = $processingActivity->getName() . ' (Copy)';
         $clone = $this->processingActivityService->clone($processingActivity, $newName);
 
-        $this->addFlash('success', $this->translator->trans('processing_activity.cloned'));
+        $this->addFlash('success', $this->translator->trans('processing_activity.cloned', [], 'messages'));
         return $this->redirectToRoute('app_processing_activity_edit', ['id' => $clone->getId()]);
     }
 

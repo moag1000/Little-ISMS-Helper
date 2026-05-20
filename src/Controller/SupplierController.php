@@ -144,7 +144,7 @@ class SupplierController extends AbstractController
             $this->entityManager->persist($supplier);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('supplier.success.created'));
+            $this->addFlash('success', $this->translator->trans('supplier.success.created')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
         }
 
@@ -257,7 +257,7 @@ class SupplierController extends AbstractController
 
         // Check if supplier can be edited (not inherited) - only if user has tenant
         if ($tenant && !$this->supplierService->canEditSupplier($supplier, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited'));
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
         }
 
@@ -268,7 +268,7 @@ class SupplierController extends AbstractController
             $supplier->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('supplier.success.updated'));
+            $this->addFlash('success', $this->translator->trans('supplier.success.updated')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_supplier_show', ['id' => $supplier->getId()]);
         }
 
@@ -286,7 +286,7 @@ class SupplierController extends AbstractController
 
         // Check if supplier can be deleted (not inherited) - only if user has tenant
         if ($tenant && !$this->supplierService->canEditSupplier($supplier, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited'));
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_supplier_index');
         }
 
@@ -294,7 +294,7 @@ class SupplierController extends AbstractController
             $this->entityManager->remove($supplier);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('supplier.success.deleted'));
+            $this->addFlash('success', $this->translator->trans('supplier.success.deleted')); // @todo H-06 flash-domain
         }
 
         return $this->redirectToRoute('app_supplier_index');

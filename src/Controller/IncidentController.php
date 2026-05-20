@@ -269,7 +269,7 @@ class IncidentController extends AbstractController
                 $this->workflowAutoProgressionService->checkAndProgressWorkflow($incident, $currentUser);
             }
 
-            $this->addFlash('success', $this->translator->trans('incident.success.reported'));
+            $this->addFlash('success', $this->translator->trans('incident.success.reported')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
@@ -450,7 +450,7 @@ class IncidentController extends AbstractController
                 }
             }
 
-            $this->addFlash('success', $this->translator->trans('incident.success.updated'));
+            $this->addFlash('success', $this->translator->trans('incident.success.updated')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
@@ -530,7 +530,7 @@ class IncidentController extends AbstractController
             $this->entityManager->remove($incident);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('incident.success.deleted'));
+            $this->addFlash('success', $this->translator->trans('incident.success.deleted')); // @todo H-06 flash-domain
         }
 
         return $this->redirectToRoute('app_incident_index');

@@ -127,7 +127,7 @@ class DPIAController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->dataProtectionImpactAssessmentService->create($dataProtectionImpactAssessment);
 
-            $this->addFlash('success', $this->translator->trans('dpia.created'));
+            $this->addFlash('success', $this->translator->trans('dpia.created')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()],Response::HTTP_SEE_OTHER);
         }
 
@@ -157,7 +157,7 @@ class DPIAController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->dataProtectionImpactAssessmentService->update($dataProtectionImpactAssessment);
 
-            $this->addFlash('success', $this->translator->trans('dpia.updated'));
+            $this->addFlash('success', $this->translator->trans('dpia.updated')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -179,7 +179,7 @@ class DPIAController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->dataProtectionImpactAssessmentService->delete($dataProtectionImpactAssessment);
 
-            $this->addFlash('success', $this->translator->trans('dpia.deleted'));
+            $this->addFlash('success', $this->translator->trans('dpia.deleted')); // @todo H-06 flash-domain
         }
 
         return $this->redirectToRoute('app_dpia_index');
@@ -204,7 +204,7 @@ class DPIAController extends AbstractController
 
         try {
             $this->dataProtectionImpactAssessmentService->submitForReview($dataProtectionImpactAssessment);
-            $this->addFlash('success', $this->translator->trans('dpia.submitted_for_review'));
+            $this->addFlash('success', $this->translator->trans('dpia.submitted_for_review')); // @todo H-06 flash-domain
         } catch (RuntimeException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -230,7 +230,7 @@ class DPIAController extends AbstractController
 
         try {
             $this->dataProtectionImpactAssessmentService->approve($dataProtectionImpactAssessment, $this->getUser(), $comments);
-            $this->addFlash('success', $this->translator->trans('dpia.approved'));
+            $this->addFlash('success', $this->translator->trans('dpia.approved')); // @todo H-06 flash-domain
         } catch (RuntimeException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -261,7 +261,7 @@ class DPIAController extends AbstractController
 
         try {
             $this->dataProtectionImpactAssessmentService->reject($dataProtectionImpactAssessment, $this->getUser(), $reason);
-            $this->addFlash('success', $this->translator->trans('dpia.rejected'));
+            $this->addFlash('success', $this->translator->trans('dpia.rejected')); // @todo H-06 flash-domain
         } catch (RuntimeException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -292,7 +292,7 @@ class DPIAController extends AbstractController
 
         try {
             $this->dataProtectionImpactAssessmentService->requestRevision($dataProtectionImpactAssessment, $reason);
-            $this->addFlash('success', $this->translator->trans('dpia.revision_requested'));
+            $this->addFlash('success', $this->translator->trans('dpia.revision_requested')); // @todo H-06 flash-domain
         } catch (RuntimeException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -315,7 +315,7 @@ class DPIAController extends AbstractController
 
         try {
             $this->dataProtectionImpactAssessmentService->reopen($dataProtectionImpactAssessment);
-            $this->addFlash('success', $this->translator->trans('dpia.reopened'));
+            $this->addFlash('success', $this->translator->trans('dpia.reopened')); // @todo H-06 flash-domain
         } catch (RuntimeException $e) {
             $this->addFlash('danger', $e->getMessage());
         }
@@ -349,7 +349,7 @@ class DPIAController extends AbstractController
         }
 
         $this->dataProtectionImpactAssessmentService->recordDPOConsultation($dataProtectionImpactAssessment, $this->getUser(), $advice);
-        $this->addFlash('success', $this->translator->trans('dpia.dpo_consulted'));
+        $this->addFlash('success', $this->translator->trans('dpia.dpo_consulted')); // @todo H-06 flash-domain
 
         return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
     }
@@ -376,7 +376,7 @@ class DPIAController extends AbstractController
         }
 
         $this->dataProtectionImpactAssessmentService->recordSupervisoryConsultation($dataProtectionImpactAssessment, $feedback);
-        $this->addFlash('success', $this->translator->trans('dpia.supervisory_consulted'));
+        $this->addFlash('success', $this->translator->trans('dpia.supervisory_consulted')); // @todo H-06 flash-domain
 
         return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
     }
@@ -409,7 +409,7 @@ class DPIAController extends AbstractController
         $dueDate = $dueDateStr ? new DateTime($dueDateStr) : null;
 
         $this->dataProtectionImpactAssessmentService->markForReview($dataProtectionImpactAssessment, $reason, $dueDate);
-        $this->addFlash('success', $this->translator->trans('dpia.marked_for_review'));
+        $this->addFlash('success', $this->translator->trans('dpia.marked_for_review')); // @todo H-06 flash-domain
 
         return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
     }
@@ -429,7 +429,7 @@ class DPIAController extends AbstractController
         }
 
         $this->dataProtectionImpactAssessmentService->completeReview($dataProtectionImpactAssessment);
-        $this->addFlash('success', $this->translator->trans('dpia.review_completed'));
+        $this->addFlash('success', $this->translator->trans('dpia.review_completed')); // @todo H-06 flash-domain
 
         return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
     }
@@ -454,7 +454,7 @@ class DPIAController extends AbstractController
         $newTitle = $dataProtectionImpactAssessment->getTitle() . ' (Copy)';
         $clone = $this->dataProtectionImpactAssessmentService->clone($dataProtectionImpactAssessment, $newTitle);
 
-        $this->addFlash('success', $this->translator->trans('dpia.cloned'));
+        $this->addFlash('success', $this->translator->trans('dpia.cloned')); // @todo H-06 flash-domain
         return $this->redirectToRoute('app_dpia_edit', ['id' => $clone->getId()]);
     }
 
