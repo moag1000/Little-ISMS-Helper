@@ -323,8 +323,8 @@ class AssetController extends AbstractController
         }
 
         $message = $deleted > 0
-            ? $this->translator->trans('asset.bulk_delete.success', ['count' => $deleted])
-            : $this->translator->trans('asset.bulk_delete.no_items');
+            ? $this->translator->trans('asset.bulk_delete.success', ['count' => $deleted], 'assets')
+            : $this->translator->trans('asset.bulk_delete.no_items', [], 'assets');
 
         if ($errors !== []) {
             return $this->json([
@@ -405,7 +405,7 @@ class AssetController extends AbstractController
 
         // Check if asset can be edited (not inherited) - only if user has tenant
         if ($tenant && !$this->assetService->canEditAsset($asset, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited')); // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_edit_inherited', [], 'messages'));
             return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
         }
 
@@ -456,7 +456,7 @@ class AssetController extends AbstractController
 
         // Check if asset can be deleted (not inherited) - only if user has tenant
         if ($tenant && !$this->assetService->canEditAsset($asset, $tenant)) {
-            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited')); // @todo H-06 flash-domain
+            $this->addFlash('error', $this->translator->trans('corporate.inheritance.cannot_delete_inherited', [], 'messages'));
             return $this->redirectToRoute('app_asset_index');
         }
 
