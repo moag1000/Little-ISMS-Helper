@@ -15,7 +15,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Polling endpoint + shared progress page for QuickFix async jobs.
  *
- * Intentionally separate from {@see \App\Controller\Admin\JobStatusController}
+ * Intentionally separate from {@see \App\Controller\JobStatusController}
  * because QuickFix is an UN-authenticated emergency UI gated only by
  * {@see QuickFixGuard} (token / dev-only / IP allowlist). The admin polling
  * controller carries `#[IsGranted('ROLE_ADMIN')]` and would be unreachable
@@ -65,7 +65,7 @@ class QuickFixJobStatusController extends AbstractController
      * for the case where the main app layout itself is broken).
      *
      * Reuses the same payload-driven contract as
-     * {@see \App\Controller\Admin\JobStatusController::progressPage()}:
+     * {@see \App\Controller\JobStatusController::progressPage()}:
      *  - `_label`, `_subtitle` set per-dispatch on the job payload,
      *  - `?return=` query parameter (open-redirect-safe) for the back link.
      */

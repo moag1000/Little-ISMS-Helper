@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Controller;
 
 use App\Service\Job\JobStatusService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
