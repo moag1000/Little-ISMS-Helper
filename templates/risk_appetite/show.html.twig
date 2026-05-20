@@ -5,6 +5,15 @@
 
 {% block body %}
 <div class="container">
+    {# M-4 — module-gating: Risk Appetite (ISO 27001 Cl. 6.1.3 + DORA Art. 6(2)) #}
+    {% if not is_module_active('risk_appetite') %}
+        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Risk Appetite'}, 'messages')
+        }) }}
+    {% else %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index') },
@@ -303,6 +312,7 @@
     {% endblock %}
 {% endembed %}
 {% endif %}
+{% endif %} {# /M-4 risk_appetite module gate #}
 
 <style>
 .page-header {

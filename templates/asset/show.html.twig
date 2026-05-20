@@ -107,7 +107,8 @@
                 </div>
             {% endif %}
 
-            {% if asset.isAiAgent %}
+            {# M-4 — module-gating: AI Governance (EU AI Act + ISO 42001) #}
+            {% if is_module_active('ai_governance') and asset.isAiAgent %}
                 <div class="detail-section">
                     <h3>
                         <i class="fa-icon fa-icon--nav-robot" aria-hidden="true"></i>
@@ -502,8 +503,8 @@
                 </div>
             {% endif %}
 
-            {# V3 W2-Bug3: Linked Processing Activities (M:N inverse) #}
-            {% if asset.processingActivities is defined and asset.processingActivities|length > 0 %}
+            {# V3 W2-Bug3: Linked Processing Activities (M:N inverse) — privacy module (GDPR Art. 30 RoPA) #}
+            {% if is_module_active('privacy') and asset.processingActivities is defined and asset.processingActivities|length > 0 %}
                 <div class="detail-section">
                     <h3>{{ 'asset.section.processing_activities'|trans({}, 'asset') }} ({{ asset.processingActivities|length }})</h3>
                     <div class="processing-activities-list">

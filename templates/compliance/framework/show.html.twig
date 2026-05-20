@@ -7,6 +7,15 @@
 
 {% block body %}
 <div class="container-fluid mt-4">
+    {# M-4 — module-gating: Multi-Framework Compliance #}
+    {% if not is_module_active('compliance') %}
+        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Compliance'}, 'messages')
+        }) }}
+    {% else %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
@@ -272,5 +281,6 @@
             {% endembed %}
         </div>
     </div>
+    {% endif %} {# /M-4 compliance module gate #}
 </div>
 {% endblock %}

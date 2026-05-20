@@ -6,6 +6,15 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {# M-4 — module-gating: Scheduled Reports (depends on report_builder) #}
+    {% if not is_module_active('scheduled_reports') %}
+        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Scheduled Reports'}, 'messages')
+        }) }}
+    {% else %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
@@ -264,5 +273,6 @@
             {% endembed %}
         </div>
     </div>
+    {% endif %} {# /M-4 scheduled_reports module gate #}
 </div>
 {% endblock %}

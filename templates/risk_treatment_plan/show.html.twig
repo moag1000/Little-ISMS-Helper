@@ -6,7 +6,16 @@
 
 {% block body %}
     {% import '_components/_fa_progress.html.twig' as _fa_progress %}
+    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 <div class="container">
+    {# M-4 — module-gating: Risk Treatment Plans (ISO 27001 Cl. 6.1.3) #}
+    {% if not is_module_active('risk_treatment_plans') %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Risk Treatment Plans'}, 'messages')
+        }) }}
+    {% else %}
     {# Lifecycle Y.5 — status transition dropdown (risk_treatment_plan_lifecycle) #}
     {% include '_components/_lifecycle_toolbar.html.twig' with {
         entity: plan,
@@ -258,6 +267,7 @@
     {% endblock %}
 {% endembed %}
 {% endif %}
+{% endif %} {# /M-4 risk_treatment_plans module gate #}
 
 <style>
 .page-header {

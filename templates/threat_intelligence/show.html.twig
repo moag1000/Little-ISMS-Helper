@@ -6,6 +6,15 @@
 
 {% block body %}
 <div class="container">
+    {# M-4 — module-gating: Threat Intelligence (MITRE ATT&CK + STIX) #}
+    {% if not is_module_active('vulnerability_intel') %}
+        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Threat Intel'}, 'messages')
+        }) }}
+    {% else %}
     {# Lifecycle Y.5 — status transition dropdown (threat_intelligence_lifecycle) #}
     {% include '_components/_lifecycle_toolbar.html.twig' with {
         entity: threat,
@@ -165,6 +174,7 @@
             </div>
         {% endblock %}
     {% endembed %}
+    {% endif %} {# /M-4 vulnerability_intel module gate #}
 </div>
 
 <style>

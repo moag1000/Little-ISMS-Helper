@@ -173,6 +173,8 @@
                     </button>
                 </li>
                 {% endif %}
+                {# M-4 — module-gating: GDPR Art. 28 processor tab only when privacy module is active #}
+                {% if is_module_active('privacy') %}
                 <li class="nav-item" role="presentation">
                     <button class="nav-link"
                             id="tab-privacy"
@@ -186,6 +188,7 @@
                         {{ 'supplier.tab.privacy'|trans({}, 'suppliers') }}
                     </button>
                 </li>
+                {% endif %}
             </ul>
 
             <div class="tab-content" id="supplierTabsContent">
@@ -366,7 +369,8 @@
                         {% endif %}
                     </div>
 
-                    {% if supplier.lksgReportingObligation or supplier.lksgRiskCategory or supplier.lksgRiskAnalysisDate %}
+                    {# M-4 — module-gating: LkSG (Lieferkettensorgfaltspflichten) section #}
+                    {% if is_module_active('lksg') and (supplier.lksgReportingObligation or supplier.lksgRiskCategory or supplier.lksgRiskAnalysisDate) %}
                     <div class="detail-section">
                         <h3>{{ 'supplier.section.lksg'|trans({}, 'suppliers') }}</h3>
                         <div class="detail-grid">
@@ -561,7 +565,8 @@
                 </div>
                 {% endif %}
 
-                {# ─────────────── Tab 4: Privacy (GDPR Art. 28) ────────── #}
+                {# ─────────────── Tab 4: Privacy (GDPR Art. 28) — M-4 module-gated ────────── #}
+                {% if is_module_active('privacy') %}
                 <div class="tab-pane fade"
                      id="pane-privacy"
                      role="tabpanel"
@@ -604,6 +609,7 @@
                         </dd>
                     </dl>
                 </div>
+                {% endif %} {# /M-4 privacy tab #}
             </div>
         {% endblock %}
     {% endembed %}

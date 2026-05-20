@@ -6,6 +6,14 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {# M-4 — module-gating: Audit Freeze (depends on audits module) #}
+    {% if not is_module_active('audits') %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            icon: 'nav-shield-alert',
+            body: 'common.module_not_active'|trans({'%module%': 'Audits'}, 'messages')
+        }) }}
+    {% else %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'audit_freeze.title'|trans({}, 'audit_freeze'), path: 'app_audit_freeze_index' },
@@ -110,5 +118,6 @@
             </div>
         </div>
     </div>
+    {% endif %} {# /M-4 audits module gate #}
 </div>
 {% endblock %}
