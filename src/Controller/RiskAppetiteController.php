@@ -89,7 +89,7 @@ class RiskAppetiteController extends AbstractController
             $this->entityManager->persist($riskAppetite);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('risk_appetite.success.created'));
+            $this->addFlash('success', $this->translator->trans('risk_appetite.success.created')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_risk_appetite_show', ['id' => $riskAppetite->getId()]);
         }
 
@@ -138,7 +138,7 @@ class RiskAppetiteController extends AbstractController
             $riskAppetite->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('risk_appetite.success.updated'));
+            $this->addFlash('success', $this->translator->trans('risk_appetite.success.updated')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_risk_appetite_show', ['id' => $riskAppetite->getId()]);
         }
 
@@ -155,7 +155,7 @@ class RiskAppetiteController extends AbstractController
             $this->entityManager->remove($riskAppetite);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('risk_appetite.success.deleted'));
+            $this->addFlash('success', $this->translator->trans('risk_appetite.success.deleted')); // @todo H-06 flash-domain
         }
 
         return $this->redirectToRoute('app_risk_appetite_index');

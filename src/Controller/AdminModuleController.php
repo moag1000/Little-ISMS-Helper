@@ -85,7 +85,7 @@ class AdminModuleController extends AbstractController
             foreach ($result['added_modules'] ?? [] as $addedKey) {
                 $module = $this->moduleConfigurationService->getModule($addedKey);
                 if ($module && $addedKey !== $moduleKey) {
-                    $this->addFlash('info', $this->translator->trans('module.info.added_as_dependency', ['name' => $module['name']]));
+                    $this->addFlash('info', $this->translator->trans('module.info.added_as_dependency', ['name' => $module['name']], 'messages'));
                 }
             }
         } else {
@@ -114,7 +114,7 @@ class AdminModuleController extends AbstractController
             $this->addFlash('error', $result['error']);
 
             if (isset($result['dependents'])) {
-                $this->addFlash('warning', $this->translator->trans('module.warning.disable_dependents_first', ['dependents' => implode(', ', $result['dependents'])]));
+                $this->addFlash('warning', $this->translator->trans('module.warning.disable_dependents_first', ['dependents' => implode(', ', $result['dependents'])], 'messages'));
             }
         }
 
@@ -130,7 +130,7 @@ class AdminModuleController extends AbstractController
         $module = $this->moduleConfigurationService->getModule($moduleKey);
 
         if (!$module) {
-            $this->addFlash('error', $this->translator->trans('module.error.not_found'));
+            $this->addFlash('error', $this->translator->trans('module.error.not_found', [], 'messages'));
             return $this->redirectToRoute('admin_modules_index');
         }
 
@@ -166,12 +166,12 @@ class AdminModuleController extends AbstractController
         $module = $this->moduleConfigurationService->getModule($moduleKey);
 
         if (!$module) {
-            $this->addFlash('error', $this->translator->trans('module.error.not_found'));
+            $this->addFlash('error', $this->translator->trans('module.error.not_found', [], 'messages'));
             return $this->redirectToRoute('admin_modules_index');
         }
 
         if (!$this->moduleConfigurationService->isModuleActive($moduleKey)) {
-            $this->addFlash('error', $this->translator->trans('module.error.not_active'));
+            $this->addFlash('error', $this->translator->trans('module.error.not_active', [], 'messages'));
             return $this->redirectToRoute('admin_modules_details', ['moduleKey' => $moduleKey]);
         }
 

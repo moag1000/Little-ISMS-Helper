@@ -77,7 +77,7 @@ class CrisisTeamController extends AbstractController
             $this->entityManager->persist($crisisTeam);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('crisis_team.success.created'));
+            $this->addFlash('success', $this->translator->trans('crisis_team.success.created')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_crisis_team_show', ['id' => $crisisTeam->getId()]);
         }
 
@@ -108,7 +108,7 @@ class CrisisTeamController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('crisis_team.success.updated'));
+            $this->addFlash('success', $this->translator->trans('crisis_team.success.updated')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_crisis_team_show', ['id' => $crisisTeam->getId()]);
         }
 
@@ -127,7 +127,7 @@ class CrisisTeamController extends AbstractController
             $this->entityManager->remove($crisisTeam);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('crisis_team.success.deleted'));
+            $this->addFlash('success', $this->translator->trans('crisis_team.success.deleted')); // @todo H-06 flash-domain
         }
 
         return $this->redirectToRoute('app_crisis_team_index');
@@ -142,7 +142,7 @@ class CrisisTeamController extends AbstractController
             $crisisTeam->setLastActivatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('crisis_team.success.activated'));
+            $this->addFlash('success', $this->translator->trans('crisis_team.success.activated')); // @todo H-06 flash-domain
         }
 
         return $this->redirectToRoute('app_crisis_team_show', ['id' => $crisisTeam->getId()]);

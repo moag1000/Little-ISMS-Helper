@@ -69,7 +69,7 @@ class BusinessContinuityPlanController extends AbstractController
             $this->entityManager->persist($businessContinuityPlan);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.created'));
+            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.created', [], 'messages'));
             return $this->redirectToRoute('app_bc_plan_show', ['id' => $businessContinuityPlan->getId()]);
         }
 
@@ -101,7 +101,7 @@ class BusinessContinuityPlanController extends AbstractController
             $businessContinuityPlan->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.updated'));
+            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.updated', [], 'messages'));
             return $this->redirectToRoute('app_bc_plan_show', ['id' => $businessContinuityPlan->getId()]);
         }
 
@@ -120,7 +120,7 @@ class BusinessContinuityPlanController extends AbstractController
             $this->entityManager->remove($businessContinuityPlan);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.deleted'));
+            $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.deleted')); // @todo H-06 flash-domain
         }
 
         return $this->redirectToRoute('app_bc_plan_index');

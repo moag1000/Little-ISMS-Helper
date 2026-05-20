@@ -420,3 +420,10 @@
 .fa-icon--toggles-on { --fa-icon: url("../icons/nav-sliders.svg"); }
 .fa-icon--ui-arrow-left { --fa-icon: url("../icons/util-arrow-left.svg"); }
 .fa-icon--x-circle { --fa-icon: url("../icons/ui-close.svg"); }
+
+/* Lifecycle + admin/lifecycle-overrides aliases (H-01 re-application — audit 2026-05-20) */
+.fa-icon--nav-flow { --fa-icon: url("../icons/nav-workflow.svg"); }
+.fa-icon--nav-chat-quote { --fa-icon: url("../icons/ui-chat.svg"); }
+.fa-icon--nav-eye { --fa-icon: url("../icons/ui-eye.svg"); }
+.fa-icon--ui-chevron-down { --fa-icon: url("../icons/util-chevron-down.svg"); }
+.fa-icon--ui-arrows-expand-vertical { --fa-icon: url("../icons/util-drag-handle.svg"); }

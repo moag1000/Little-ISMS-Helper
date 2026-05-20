@@ -140,7 +140,7 @@ class DeploymentWizardController extends AbstractController
             $state = $this->setupAccessChecker->detectSetupState();
 
             if ($state['database_configured']) {
-                $this->addFlash('info', $this->translator->trans('setup.state.recovery_detected'));
+                $this->addFlash('info', $this->translator->trans('setup.state.recovery_detected')); // @todo H-06 flash-domain
 
                 // Redirect to appropriate step
                 $nextStep = $this->setupAccessChecker->getRecommendedNextStep();
@@ -162,7 +162,7 @@ class DeploymentWizardController extends AbstractController
 
         // Check if system requirements are met (step 1)
         if (!$this->systemRequirementsChecker->isSystemReady()) {
-            $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements'));
+            $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step1_requirements');
         }
 
@@ -178,7 +178,7 @@ class DeploymentWizardController extends AbstractController
                 $session->set('setup_database_configured', true);
                 // init-mysql.sh also runs migrations, so mark schema as created
                 $session->set('setup_schema_created', true);
-                $this->addFlash('info', $this->translator->trans('setup.database.docker_auto_configured'));
+                $this->addFlash('info', $this->translator->trans('setup.database.docker_auto_configured')); // @todo H-06 flash-domain
                 return $this->redirectToRoute('setup_step3_restore_backup');
             }
         }
@@ -230,7 +230,7 @@ class DeploymentWizardController extends AbstractController
                         'serverVersion' => $queryParams['serverVersion'] ?? ($type === 'postgresql' ? '15' : 'mariadb-11.4.0'),
                         'unixSocket' => $queryParams['unix_socket'] ?? null,
                     ];
-                    $this->addFlash('info', $this->translator->trans('setup.database.config_loaded'));
+                    $this->addFlash('info', $this->translator->trans('setup.database.config_loaded')); // @todo H-06 flash-domain
                 }
             }
         }
@@ -267,7 +267,7 @@ class DeploymentWizardController extends AbstractController
                     'serverVersion' => $envVars['DB_SERVER_VERSION'] ?? 'mariadb-11.4.0',
                     'unixSocket' => $unixSocket,
                 ];
-                $this->addFlash('info', $this->translator->trans('setup.database.config_loaded'));
+                $this->addFlash('info', $this->translator->trans('setup.database.config_loaded')); // @todo H-06 flash-domain
             }
         }
 
@@ -286,7 +286,7 @@ class DeploymentWizardController extends AbstractController
                 'unixSocket' => '/run/mysqld/mysqld.sock',
             ];
 
-            $this->addFlash('info', $this->translator->trans('setup.database.docker_detected'));
+            $this->addFlash('info', $this->translator->trans('setup.database.docker_detected')); // @todo H-06 flash-domain
         }
 
         $form = $this->createForm(DatabaseConfigurationType::class, $defaultData);
@@ -321,7 +321,7 @@ class DeploymentWizardController extends AbstractController
                 // Check for existing tables (warn user)
                 $existingTables = $this->databaseTestService->checkExistingTables($config);
                 if ($existingTables['has_tables']) {
-                    $this->addFlash('warning', $this->translator->trans('setup.database.existing_tables', [
+                    $this->addFlash('warning', $this->translator->trans('setup.database.existing_tables', [ // @todo H-06 flash-domain
                         '%count%' => $existingTables['count'],
                         '%tables%' => implode(', ', array_slice($existingTables['tables'], 0, 5)),
                     ]));
@@ -359,30 +359,30 @@ class DeploymentWizardController extends AbstractController
                     // Clear form data from session (success - no need to preserve)
                     $session->remove('setup_step1_form_data');
 
-                    $this->addFlash('success', $this->translator->trans('setup.database.config_saved'));
+                    $this->addFlash('success', $this->translator->trans('setup.database.config_saved')); // @todo H-06 flash-domain
 
                     return $this->redirectToRoute('setup_step3_restore_backup');
                 } catch (RuntimeException $e) {
                     // File system errors (permissions, disk full, etc.)
                     if (str_contains($e->getMessage(), 'Failed to write') || str_contains($e->getMessage(), 'Failed to rename')) {
-                        $this->addFlash('error', $this->translator->trans('setup.database.write_failed',  [
+                        $this->addFlash('error', $this->translator->trans('setup.database.write_failed',  [ // @todo H-06 flash-domain
                             '%error%' => $e->getMessage(),
                             '%hint%' => 'Please check file permissions for .env.local and ensure sufficient disk space.'
                         ]));
                     } else {
-                        $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage());
+                        $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage()); // @todo H-06 flash-domain
                     }
                     // Redirect to same page to show error (Turbo compatibility)
                     return $this->redirectToRoute('setup_step2_database_config');
                 } catch (Exception $e) {
-                    $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage());
+                    $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage()); // @todo H-06 flash-domain
                     // Redirect to same page to show error (Turbo compatibility)
                     return $this->redirectToRoute('setup_step2_database_config');
                 }
             } else {
                 // Test failed - store result in session and redirect (Turbo compatibility)
                 $session->set('setup_db_test_result', $testResult);
-                $this->addFlash('error', $testResult['message'] ?? $this->translator->trans('setup.database.test_failed'));
+                $this->addFlash('error', $testResult['message'] ?? $this->translator->trans('setup.database.test_failed')); // @todo H-06 flash-domain
                 return $this->redirectToRoute('setup_step2_database_config');
             }
         }
@@ -433,7 +433,7 @@ class DeploymentWizardController extends AbstractController
 
         // Check if database is configured
         if (!$session->get('setup_database_configured')) {
-            $this->addFlash('error', $this->translator->trans('setup.error.configure_database_first'));
+            $this->addFlash('error', $this->translator->trans('setup.error.configure_database_first')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step2_database_config');
         }
 
@@ -591,7 +591,7 @@ class DeploymentWizardController extends AbstractController
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_restore_backup', $token)) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
@@ -739,7 +739,7 @@ class DeploymentWizardController extends AbstractController
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_skip_restore', $token)) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
@@ -846,7 +846,7 @@ class DeploymentWizardController extends AbstractController
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_repair_orphans', $token)) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
@@ -933,7 +933,7 @@ class DeploymentWizardController extends AbstractController
 
         // If backup was restored in step 3, skip to completion
         if ($session->get('setup_backup_restored')) {
-            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step11_complete');
         }
 
@@ -953,7 +953,7 @@ class DeploymentWizardController extends AbstractController
 
             // Still not configured? Redirect to step 2
             if (!$session->get('setup_database_configured')) {
-                $this->addFlash('error', $this->translator->trans('setup.error.configure_database_first'));
+                $this->addFlash('error', $this->translator->trans('setup.error.configure_database_first')); // @todo H-06 flash-domain
                 return $this->redirectToRoute('setup_step2_database_config');
             }
         }
@@ -1002,12 +1002,12 @@ class DeploymentWizardController extends AbstractController
                     // Clear form data from session (success - no need to preserve)
                     $session->remove('setup_step2_form_data');
 
-                    $this->addFlash('success', $this->translator->trans('setup.admin.user_created'));
+                    $this->addFlash('success', $this->translator->trans('setup.admin.user_created')); // @todo H-06 flash-domain
 
                     return $this->redirectToRoute('setup_step5_email_config');
                 }
 
-                $this->addFlash('error', $this->translator->trans('setup.admin.creation_failed') . ': ' . $result['message']);
+                $this->addFlash('error', $this->translator->trans('setup.admin.creation_failed') . ': ' . $result['message']); // @todo H-06 flash-domain
                 return $this->redirectToRoute('setup_step4_admin_user');
 
             } catch (Exception $e) {
@@ -1038,13 +1038,13 @@ class DeploymentWizardController extends AbstractController
 
         // If backup was restored in step 3, skip to completion
         if ($session->get('setup_backup_restored')) {
-            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step11_complete');
         }
 
         // Check if admin user is created
         if (!$session->get('setup_admin_created')) {
-            $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first'));
+            $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step4_admin_user');
         }
 
@@ -1096,11 +1096,11 @@ class DeploymentWizardController extends AbstractController
                 $this->environmentWriter->writeEnvVariables($envVars);
 
                 $session->set('setup_email_configured', true);
-                $this->addFlash('success', $this->translator->trans('setup.email.config_saved'));
+                $this->addFlash('success', $this->translator->trans('setup.email.config_saved')); // @todo H-06 flash-domain
 
                 return $this->redirectToRoute('setup_step6_organisation_info');
             } catch (Exception $e) {
-                $this->addFlash('error', $this->translator->trans('setup.email.config_failed') . ': ' . $e->getMessage());
+                $this->addFlash('error', $this->translator->trans('setup.email.config_failed') . ': ' . $e->getMessage()); // @todo H-06 flash-domain
                 // Turbo requires redirect after POST
                 return $this->redirectToRoute('setup_step5_email_config');
             }
@@ -1126,12 +1126,12 @@ class DeploymentWizardController extends AbstractController
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_email_skip', $token)) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step5_email_config');
         }
 
         $session->set('setup_email_configured', false);
-        $this->addFlash('info', $this->translator->trans('setup.email.skipped'));
+        $this->addFlash('info', $this->translator->trans('setup.email.skipped')); // @todo H-06 flash-domain
 
         return $this->redirectToRoute('setup_step6_organisation_info');
     }
@@ -1144,14 +1144,14 @@ class DeploymentWizardController extends AbstractController
         if ($guard = $this->guardPostSetup()) { return $guard; }
         // If backup was restored in step 3, skip to completion
         if ($session->get('setup_backup_restored')) {
-            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step11_complete');
         }
 
         // User can skip email config, so we don't check for it
         // But admin must be created
         if (!$session->get('setup_admin_created')) {
-            $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first'));
+            $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step4_admin_user');
         }
 
@@ -1173,12 +1173,12 @@ class DeploymentWizardController extends AbstractController
                 $session->set('setup_organisation_country', $data['country']);
                 $session->set('setup_organisation_description', $data['description'] ?? '');
 
-                $this->addFlash('success', $this->translator->trans('setup.organisation.info_saved'));
+                $this->addFlash('success', $this->translator->trans('setup.organisation.info_saved')); // @todo H-06 flash-domain
 
                 // V4-EF-1: Offer Industry-Preset Express-Path before manual module selection.
                 return $this->redirectToRoute('setup_industry_preset');
             } catch (Exception $e) {
-                $this->addFlash('error', $this->translator->trans('setup.organisation.info_failed') . ': ' . $e->getMessage());
+                $this->addFlash('error', $this->translator->trans('setup.organisation.info_failed') . ': ' . $e->getMessage()); // @todo H-06 flash-domain
                 // Turbo requires redirect after POST
                 return $this->redirectToRoute('setup_step6_organisation_info');
             }
@@ -1216,11 +1216,11 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step11_complete');
         }
         if (!$this->systemRequirementsChecker->isSystemReady()) {
-            $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements'));
+            $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step1_requirements');
         }
         if (!$session->get('setup_admin_created')) {
-            $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first'));
+            $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step4_admin_user');
         }
 
@@ -1242,7 +1242,7 @@ class DeploymentWizardController extends AbstractController
 
         $token = (string) $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_industry_preset', $token)) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_industry_preset');
         }
 
@@ -1256,11 +1256,11 @@ class DeploymentWizardController extends AbstractController
 
         $applied = $this->industryPresetService->applyToSession($presetId, $session);
         if ($applied === null) {
-            $this->addFlash('error', $this->translator->trans('setup.preset.error.unknown'));
+            $this->addFlash('error', $this->translator->trans('setup.preset.error.unknown')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_industry_preset');
         }
 
-        $this->addFlash('success', $this->translator->trans('setup.preset.applied', [
+        $this->addFlash('success', $this->translator->trans('setup.preset.applied', [ // @todo H-06 flash-domain
             '%modules%' => count($applied['modules']),
             '%frameworks%' => count($applied['frameworks']),
         ]));
@@ -1293,13 +1293,13 @@ class DeploymentWizardController extends AbstractController
     {
         // If backup was restored in step 3, skip to completion
         if ($session->get('setup_backup_restored')) {
-            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step11_complete');
         }
 
         // Check if requirements passed
         if (!$this->systemRequirementsChecker->isSystemReady()) {
-            $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements'));
+            $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step1_requirements');
         }
 
@@ -1339,7 +1339,7 @@ class DeploymentWizardController extends AbstractController
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_modules', $token)) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step7_modules');
         }
 
@@ -1365,7 +1365,7 @@ class DeploymentWizardController extends AbstractController
         // Show added modules
         foreach ($resolved['added'] as $addedModule) {
             $module = $this->moduleConfigurationService->getModule($addedModule);
-            $this->addFlash('info', $this->translator->trans('deployment.info.module_added_auto', ['name' => $module['name']]));
+            $this->addFlash('info', $this->translator->trans('deployment.info.module_added_auto', ['name' => $module['name']])); // @todo H-06 flash-domain
         }
 
         foreach ($validation['warnings'] as $warning) {
@@ -1387,14 +1387,14 @@ class DeploymentWizardController extends AbstractController
     {
         // If backup was restored in step 3, skip to completion
         if ($session->get('setup_backup_restored')) {
-            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step11_complete');
         }
 
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
-            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
+            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step7_modules');
         }
 
@@ -1451,7 +1451,7 @@ class DeploymentWizardController extends AbstractController
             // Store selection in session
             $session->set('setup_selected_frameworks', $selectedFrameworks);
 
-            $this->addFlash('success', $this->translator->trans('setup.compliance.frameworks_saved', [
+            $this->addFlash('success', $this->translator->trans('setup.compliance.frameworks_saved', [ // @todo H-06 flash-domain
                 '%count%' => count($selectedFrameworks),
             ]));
 
@@ -1846,14 +1846,14 @@ class DeploymentWizardController extends AbstractController
     {
         // If backup was restored in step 3, skip to completion
         if ($session->get('setup_backup_restored')) {
-            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step11_complete');
         }
 
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
-            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
+            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step7_modules');
         }
 
@@ -1948,14 +1948,14 @@ class DeploymentWizardController extends AbstractController
     {
         // If backup was restored in step 3, skip to completion
         if ($session->get('setup_backup_restored')) {
-            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps'));
+            $this->addFlash('info', $this->translator->trans('setup.info.backup_restored_skip_steps')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step11_complete');
         }
 
         $selectedModules = $session->get('setup_selected_modules', []);
 
         if (empty($selectedModules)) {
-            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
+            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step7_modules');
         }
 
@@ -2047,11 +2047,11 @@ class DeploymentWizardController extends AbstractController
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('setup_sample_skip', $token)) {
-            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            $this->addFlash('error', $this->translator->trans('common.csrf_error')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step10_sample_data');
         }
 
-        $this->addFlash('info', $this->translator->trans('deployment.info.sample_data_skipped'));
+        $this->addFlash('info', $this->translator->trans('deployment.info.sample_data_skipped')); // @todo H-06 flash-domain
         return $this->redirectToRoute('setup_step11_complete');
     }
     /**
@@ -2066,7 +2066,7 @@ class DeploymentWizardController extends AbstractController
         // If backup was restored, skip module requirement check
         // (backup already contains all necessary configuration)
         if (empty($selectedModules) && !$backupRestored) {
-            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules'));
+            $this->addFlash('error', $this->translator->trans('deployment.error.select_modules')); // @todo H-06 flash-domain
             return $this->redirectToRoute('setup_step7_modules');
         }
 
@@ -2106,7 +2106,7 @@ class DeploymentWizardController extends AbstractController
         // Clear session
         $session->clear();
 
-        $this->addFlash('success', $this->translator->trans('deployment.success.reset'));
+        $this->addFlash('success', $this->translator->trans('deployment.success.reset')); // @todo H-06 flash-domain
         return $this->redirectToRoute('setup_wizard_index');
     }
     /**

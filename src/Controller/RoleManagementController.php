@@ -51,7 +51,7 @@ class RoleManagementController extends AbstractController
             $entityManager->persist($role);
             $entityManager->flush();
 
-            $this->addFlash('success', $translator->trans('role.success.created'));
+            $this->addFlash('success', $translator->trans('role.success.created')); // @todo H-06 flash-domain
 
             return $this->redirectToRoute('role_management_index');
         }
@@ -156,7 +156,7 @@ class RoleManagementController extends AbstractController
                 $entityManager->persist($role);
                 $entityManager->flush();
 
-                $this->addFlash('success', $translator->trans('role.success.created_from_template', [
+                $this->addFlash('success', $translator->trans('role.success.created_from_template', [ // @todo H-06 flash-domain
                     'role' => $role->getName(),
                 ]));
 
@@ -203,7 +203,7 @@ class RoleManagementController extends AbstractController
             $role->setUpdatedAt(new DateTimeImmutable());
             $entityManager->flush();
 
-            $this->addFlash('success', $translator->trans('role.success.updated'));
+            $this->addFlash('success', $translator->trans('role.success.updated')); // @todo H-06 flash-domain
 
             return $this->redirectToRoute('role_management_show', ['id' => $role->getId()]);
         }
@@ -227,7 +227,7 @@ class RoleManagementController extends AbstractController
             $entityManager->remove($role);
             $entityManager->flush();
 
-            $this->addFlash('success', $translator->trans('role.success.deleted'));
+            $this->addFlash('success', $translator->trans('role.success.deleted')); // @todo H-06 flash-domain
         }
 
         return $this->redirectToRoute('role_management_index');
