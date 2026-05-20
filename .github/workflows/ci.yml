@@ -111,6 +111,12 @@ jobs:
           # Mark setup as complete to bypass setup wizard redirect
           touch config/setup_complete.lock
 
+          # Provision active_modules.yaml for test env (gitignored; required by
+          # ModuleConfigurationService for module-gated show-templates added in M-4).
+          # Without this file the service falls back to core-only modules and
+          # module-gated show-template tests (e.g. SoaSnapshotControllerTest) fail.
+          cp config/active_modules.yaml.dist config/active_modules.yaml
+
       - name: Run PHPUnit tests
         env:
           DATABASE_URL: mysql://isms_user:isms_password@127.0.0.1:3306/isms?serverVersion=mariadb-11.0.0&charset=utf8mb4
