@@ -7976,3 +7976,392 @@ a.fa-matrix-table__cell:focus-visible {
     border-left-color: var(--sev-danger-color);
 }
 
+/* ───────────────────────────────────────────────────────────────────────────
+ * fa-form-layout — Outline-Rail + Section-Cards for large forms (15+ fields)
+ * Pattern: DPIA, Risk-Assessment, SoA-Bulk-Edit, Policy-Authoring, Audit-Plan
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+.fa-form-layout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.fa-form-layout__header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--accent) 5%, transparent) 0%,
+        transparent 100%
+    ), var(--surface);
+    position: relative;
+}
+
+.fa-form-layout__header::after {
+    content: "";
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: -1px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--accent), transparent);
+    border-radius: 2px;
+}
+
+.fa-form-layout__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 600 10px var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin-bottom: 4px;
+}
+
+.fa-form-layout__title {
+    font: 700 18px/1.2 var(--font-sans);
+    letter-spacing: -0.01em;
+    margin: 0;
+}
+
+.fa-form-layout__sub {
+    font: 400 12.5px/1.45 var(--font-sans);
+    color: var(--fg-2);
+    margin: 3px 0 0;
+}
+
+.fa-form-layout__progress {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.fa-form-layout__progress-text {
+    font: 600 11px var(--font-mono);
+    color: var(--fg-2);
+}
+
+.fa-form-layout__progress-text strong {
+    color: var(--fg);
+}
+
+.fa-form-layout__progress-bar {
+    width: 220px;
+    height: 6px;
+    background: var(--surface-3);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.fa-form-layout__progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    box-shadow: 0 0 12px var(--accent-glow);
+    border-radius: 999px;
+    transition: width 300ms var(--ease-out);
+}
+
+.fa-form-layout__draft-state {
+    font: 500 10.5px var(--font-mono);
+    color: var(--success);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.fa-form-layout__body {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 0;
+}
+
+.fa-form-layout__outline {
+    border-right: 1px solid var(--border);
+    background: var(--surface-2);
+    padding: 16px 14px;
+    overflow-y: auto;
+}
+
+.fa-form-layout__outline-title {
+    font: 600 10px var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    padding: 0 8px 8px;
+    margin: 0;
+}
+
+.fa-form-layout__outline-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.fa-form-layout__outline-item {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    color: var(--fg-2);
+    text-decoration: none;
+    transition: background 120ms var(--ease-out), color 120ms var(--ease-out);
+}
+
+.fa-form-layout__outline-item:hover {
+    background: var(--surface);
+    color: var(--fg);
+}
+
+.fa-form-layout__outline-item--active {
+    background: var(--surface);
+    color: var(--fg);
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.fa-form-layout__outline-state {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--surface-3);
+    border: 1.5px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: var(--fg-3);
+}
+
+.fa-form-layout__outline-item--done .fa-form-layout__outline-state {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--on-success);
+}
+
+.fa-form-layout__outline-item--current .fa-form-layout__outline-state {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 20%, transparent);
+}
+
+.fa-form-layout__outline-item--error .fa-form-layout__outline-state {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: var(--on-danger);
+}
+
+.fa-form-layout__outline-label {
+    font: 500 12.5px var(--font-sans);
+}
+
+.fa-form-layout__outline-count {
+    font: 600 9.5px var(--font-mono);
+    color: var(--fg-3);
+    background: var(--surface);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+.fa-form-layout__outline-item--error .fa-form-layout__outline-count {
+    color: var(--danger);
+    border-color: color-mix(in oklab, var(--danger) 30%, transparent);
+    background: color-mix(in oklab, var(--danger) 8%, transparent);
+}
+
+.fa-form-layout__sections {
+    padding: 18px 24px 24px;
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+/* ── Section cards ────────────────────────────────────────────────────────── */
+
+.fa-form-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    margin-bottom: 14px;
+    overflow: hidden;
+    scroll-margin-top: 16px;
+}
+
+.fa-form-section--current {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent),
+        0 6px 24px color-mix(in oklab, var(--accent) 18%, transparent);
+}
+
+.fa-form-section--error {
+    border-color: var(--danger);
+}
+
+.fa-form-section__head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+}
+
+.fa-form-section--collapsed .fa-form-section__head {
+    border-bottom: none;
+}
+
+.fa-form-section__num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--fg-2);
+    border: 1px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: 600 12px var(--font-mono);
+    flex-shrink: 0;
+}
+
+.fa-form-section--done .fa-form-section__num {
+    background: var(--success);
+    color: var(--on-success);
+    border-color: var(--success);
+}
+
+.fa-form-section--current .fa-form-section__num {
+    background: var(--accent);
+    color: var(--on-accent);
+    border-color: var(--accent);
+}
+
+.fa-form-section--error .fa-form-section__num {
+    background: var(--danger);
+    color: var(--on-danger);
+    border-color: var(--danger);
+}
+
+.fa-form-section__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.fa-form-section__title {
+    font: 700 14px var(--font-sans);
+    margin: 0;
+}
+
+.fa-form-section__meta {
+    font: 500 10.5px var(--font-mono);
+    color: var(--fg-3);
+}
+
+.fa-form-section__chevron {
+    font-size: 16px;
+    color: var(--fg-3);
+    transition: transform 200ms var(--ease-out);
+}
+
+.fa-form-section--open .fa-form-section__chevron {
+    transform: rotate(180deg);
+}
+
+.fa-form-section__body {
+    padding: 16px 18px 18px;
+}
+
+.fa-form-section--collapsed .fa-form-section__body {
+    display: none;
+}
+
+.fa-form-section__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.fa-form-section__grid--single {
+    grid-template-columns: 1fr;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+
+.fa-form-layout__footer {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+}
+
+.fa-form-layout__footer-meta {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    font: 500 11.5px var(--font-mono);
+    color: var(--fg-3);
+}
+
+.fa-form-layout__footer-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .fa-form-layout__body {
+        grid-template-columns: 1fr;
+    }
+
+    .fa-form-layout__outline {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 10px 12px;
+        gap: 6px;
+    }
+
+    .fa-form-layout__outline-list {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+
+    .fa-form-layout__outline-title {
+        display: none;
+    }
+
+    .fa-form-layout__progress-bar {
+        width: 140px;
+    }
+
+    .fa-form-section__grid {
+        grid-template-columns: 1fr;
+    }
+}
