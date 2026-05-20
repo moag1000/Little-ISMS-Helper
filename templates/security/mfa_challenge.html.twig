@@ -29,7 +29,6 @@
     <form method="post"
           action="{{ path('app_mfa_verify', {_locale: app.request.locale}) }}"
           class="fa-auth-form__form">
-        <input type="hidden" name="_token" value="{{ csrf_token('mfa_verify') }}">
 
         {% set deviceOptions = [] %}
         {% for token in mfaTokens %}

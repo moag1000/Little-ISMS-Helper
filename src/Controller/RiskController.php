@@ -407,16 +407,26 @@ class RiskController extends AbstractController
             'owner' => $request->request->get('owner') ?? $request->query->get('owner'),
         ];
 
-        $jobId = $jobStatusService->create('risk.export', $args);
-
-        // Render progress page BEFORE dispatch — JobDispatcher flushes it then
-        // runs the export in this same PHP-FPM worker (or hands it to a
-        // Messenger daemon when app.async_job.runner=messenger).
-        $response = $this->render('risk/export_progress.html.twig', [
-            'jobId' => $jobId,
-            'cancelUrl' => $this->generateUrl('app_risk_index'),
-            'downloadUrl' => $this->generateUrl('app_risk_export_download', ['id' => $jobId]),
+        $jobId = $jobStatusService->create('risk.export', $args + [
+            '_label' => $this->translator->trans('risk.export.progress_title', [], 'risk'),
+            '_subtitle' => $this->translator->trans('risk.export.progress_subtitle', [], 'risk'),
+            '_download_label' => $this->translator->trans('risk.export.download_button', [], 'risk'),
         ]);
+        // Patch download URL after we know the UUID (JobStatusService::create
+        // mints the UUID inside the method, so we can't reference it before).
+        $jobStatusService->updatePayload($jobId, [
+            '_download_url' => $this->generateUrl('app_risk_export_download', ['id' => $jobId]),
+        ]);
+
+        // PRG: 303 redirect to the shared progress page so Turbo can follow
+        // the redirect instead of erroring on a 200+HTML form response.
+        // JobDispatcher flushes it then runs the export in this same
+        // PHP-FPM worker (or hands it to a Messenger daemon when
+        // `app.async_job.runner=messenger`).
+        $response = $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('app_risk_index'),
+        ], Response::HTTP_SEE_OTHER);
 
         return $jobDispatcher->dispatch(
             \App\Job\ExportRisksJob::class,

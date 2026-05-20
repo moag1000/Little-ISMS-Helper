@@ -217,6 +217,38 @@ final class DataRepairControllerTest extends WebTestCase
         );
     }
 
+    /**
+     * Each of the four section sub-pages (orphans / duplicates /
+     * broken-references / health) must render an HTTP 200 with the
+     * canonical "Refresh now" CTA. The CTA proves the section-scan
+     * dispatcher is wired up — the actual job runs are covered by the
+     * Job unit-tests.
+     */
+    #[Test]
+    public function testSectionSubpagesRender(): void
+    {
+        $this->client->loginUser($this->adminUser);
+        $paths = [
+            '/de/admin/data-repair/orphans' => '/admin/data-repair/orphans/refresh',
+            '/de/admin/data-repair/duplicates' => '/admin/data-repair/duplicates/refresh',
+            '/de/admin/data-repair/broken-references' => '/admin/data-repair/broken-references/refresh',
+            '/de/admin/data-repair/health' => '/admin/data-repair/health/refresh',
+        ];
+
+        foreach ($paths as $path => $refreshPath) {
+            $this->client->request('GET', $path);
+            self::assertResponseIsSuccessful('Sub-page ' . $path . ' did not return HTTP 200');
+            $html = (string) $this->client->getResponse()->getContent();
+            // Each sub-page must include a Refresh-now form pointing at its
+            // own POST refresh route.
+            self::assertStringContainsString(
+                $refreshPath,
+                $html,
+                'Sub-page ' . $path . ' is missing its refresh CTA pointing at ' . $refreshPath,
+            );
+        }
+    }
+
     private function countAudit(string $action): int
     {
         return (int) $this->em->createQuery(

@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -71,7 +70,6 @@ class MfaLoginController extends AbstractController
     }
 
     #[Route('/mfa-verify', name: 'app_mfa_verify', methods: ['POST'])]
-    #[IsCsrfTokenValid('mfa_verify', tokenKey: '_token')]
     public function verify(Request $request): Response|RedirectResponse
     {
         $session = $request->getSession();

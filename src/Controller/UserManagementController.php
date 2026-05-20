@@ -382,8 +382,16 @@ class UserManagementController extends AbstractController
     public function exportDispatch(
         \App\Service\Job\JobStatusService $jobStatusService,
         MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
     ): Response {
-        $jobId = $jobStatusService->create('user_management.export', []);
+        $jobId = $jobStatusService->create('user_management.export', [
+            '_label' => $translator->trans('user.export.progress_title', [], 'user'),
+            '_subtitle' => $translator->trans('user.export.progress_subtitle', [], 'user'),
+            '_download_label' => $translator->trans('user.export.download_button', [], 'user'),
+        ]);
+        $jobStatusService->updatePayload($jobId, [
+            '_download_url' => $this->generateUrl('user_management_export_download', ['id' => $jobId]),
+        ]);
 
         $messageBus->dispatch(new \App\Message\Job\ExecuteJobMessage(
             jobClass: \App\Job\ExportUsersJob::class,
@@ -391,11 +399,11 @@ class UserManagementController extends AbstractController
             jobId: $jobId,
         ));
 
-        return $this->render('user_management/export_progress.html.twig', [
-            'jobId' => $jobId,
-            'cancelUrl' => $this->generateUrl('user_management_index'),
-            'downloadUrl' => $this->generateUrl('user_management_export_download', ['id' => $jobId]),
-        ]);
+        // PRG: 303 redirect — see DataRepairController::runIntegrityCheck() for rationale.
+        return $this->redirectToRoute('admin_job_progress_page', [
+            'id'     => $jobId,
+            'return' => $this->generateUrl('user_management_index'),
+        ], Response::HTTP_SEE_OTHER);
     }
 
     /**

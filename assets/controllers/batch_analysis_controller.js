@@ -23,7 +23,6 @@ export default class extends Controller {
                       'resultsMessage', 'log', 'cancelBtn'];
     static values = {
         url: String,
-        csrfToken: { type: String, default: '' },
         batchSize: { type: Number, default: 5 },
         running: { type: Boolean, default: false },
         cancelled: { type: Boolean, default: false }
@@ -89,17 +88,12 @@ export default class extends Controller {
             const batchSize = Math.min(this.batchSizeValue, remaining);
 
             try {
-                const headers = {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                };
-                if (this.csrfTokenValue) {
-                    headers['X-CSRF-Token'] = this.csrfTokenValue;
-                }
-
                 const response = await fetch(this.urlValue, {
                     method: 'POST',
-                    headers: headers,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
                     body: JSON.stringify({
                         limit: batchSize,
                         offset: offset,

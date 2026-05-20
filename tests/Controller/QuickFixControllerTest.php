@@ -159,9 +159,10 @@ class QuickFixControllerTest extends WebTestCase
             '_token' => $token,
         ]);
 
-        // Async-jobs Phase 2: controller dispatches a Messenger job and
-        // renders the standalone progress page (sync transport in test env
-        // executes the handler inline — see config/packages/test/messenger.yaml).
+        // Turbo PRG fix: POST now returns 303 → /quick-fix/jobs/{id}/progress.
+        // Follow the redirect and verify the progress page renders the label.
+        $this->assertResponseRedirects();
+        $crawler = $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('body', 'Repair Orphans');
     }
@@ -193,6 +194,9 @@ class QuickFixControllerTest extends WebTestCase
             '_token' => $token,
         ]);
 
+        // Turbo PRG fix: POST now redirects (303) → progress page.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('body', 'Repair Tenant Mismatches');
     }
@@ -211,6 +215,9 @@ class QuickFixControllerTest extends WebTestCase
             '_token' => $token,
         ]);
 
+        // Turbo PRG fix: POST now redirects (303) → progress page.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('body', 'Repair Duplicates');
     }
@@ -243,10 +250,14 @@ class QuickFixControllerTest extends WebTestCase
             '_token' => $token,
         ]);
 
-        // Async-jobs Phase 2: returns the progress page; sync transport in
-        // test env runs the QuickFixRepairAllJob inline so the regression
-        // assertions in testRepairAllDoesNotMutateGlobalNotificationTemplates
-        // still observe the effects of the chained orphan + mismatch + dup steps.
+        // Turbo PRG fix: POST now redirects (303) → progress page.
+        // The job still runs inline because the in-request runner executes
+        // synchronously when fastcgi_finish_request is unavailable (CLI),
+        // so the regression assertions in
+        // testRepairAllDoesNotMutateGlobalNotificationTemplates still observe
+        // the chained orphan + mismatch + dup steps.
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('body', 'Repair All');
     }
@@ -312,7 +323,8 @@ class QuickFixControllerTest extends WebTestCase
                 '_token' => $token,
             ]);
 
-            $this->assertResponseIsSuccessful();
+            // Turbo PRG fix: POST now redirects (303) → progress page.
+            $this->assertResponseRedirects();
 
             // Reload and verify tenant_id is still NULL on both templates.
             $this->entityManager->clear();

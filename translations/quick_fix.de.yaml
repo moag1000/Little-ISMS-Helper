@@ -5,6 +5,7 @@ quick_fix:
         id_label: 'Job-ID'
         worker_hint: 'Läuft im Hintergrund. Die Seite aktualisiert sich alle 3 Sekunden.'
         back: 'Zurück zu Quick-Fix'
+        generic_label: 'Async-Job'
         apply_label: 'Ausstehende Migrationen anwenden'
         apply_subtitle: 'Führt den Doctrine-Migration-Plan im Hintergrund aus…'
         reconcile_label: 'Schema reconcilen'

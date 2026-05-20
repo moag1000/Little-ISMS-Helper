@@ -112,6 +112,8 @@ class AdminBackupController extends AbstractController
                 'includeAuditLog'     => $includeAuditLog,
                 'includeUserSessions' => $includeUserSessions,
                 'tenantId'            => $tenantScope?->getId(),
+                '_label' => 'Backup',
+                '_subtitle' => 'Backup wird im Hintergrund erstellt…',
             ],
         );
 
@@ -129,10 +131,18 @@ class AdminBackupController extends AbstractController
         // the AJAX path via `X-Requested-With` (set explicitly by the page
         // fetch() call) — XHR clients still receive the JsonResponse.
         //
+        // Non-XHR submits use the 303 PRG pattern (Turbo-compatible) and
+        // bounce through the shared progress-page route. The legacy
+        // `data_backup_progress` GET route is retained for the XHR success
+        // payload so existing frontend JS keeps working.
+        //
         // Build the response BEFORE dispatch so InRequestJobRunner can flush
         // it and detach the connection before running the long backup job.
         if (!$request->isXmlHttpRequest()) {
-            $response = $this->redirectToRoute('data_backup_progress', ['id' => $jobId]);
+            $response = $this->redirectToRoute('admin_job_progress_page', [
+                'id'     => $jobId,
+                'return' => $this->generateUrl('data_backup_index'),
+            ], Response::HTTP_SEE_OTHER);
         } else {
             // Frontend JS reads `async` + `jobId` + `progressUrl` and redirects
             // to the progress page; legacy fields (`success`, `message`) are
