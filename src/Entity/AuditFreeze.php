@@ -208,7 +208,7 @@ class AuditFreeze
     public function setPurpose(string $purpose): static
     {
         if (!in_array($purpose, self::PURPOSES, true)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Invalid purpose "%s". Allowed: %s',
                 $purpose,
                 implode(', ', self::PURPOSES)

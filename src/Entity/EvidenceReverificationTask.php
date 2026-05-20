@@ -9,7 +9,6 @@ use App\Repository\EvidenceReverificationTaskRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use InvalidArgumentException;
 
 /**
  * F4 Evidence-Versioning — reviewer-queue task.
@@ -193,7 +192,7 @@ class EvidenceReverificationTask
         // while existing string-passing callers keep working unchanged.
         $value = is_string($status) ? $status : $status->value;
         if (!in_array($value, self::VALID_STATUSES, true)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Invalid EvidenceReverificationTask status "%s". Valid: %s',
                 $value,
                 implode(', ', self::VALID_STATUSES),

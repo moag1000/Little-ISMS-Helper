@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\AlvaHint;
 
-use InvalidArgumentException;
 
 /**
  * Immutable hint payload returned by AlvaHintRule::build().
@@ -60,10 +59,10 @@ final readonly class AlvaHint
         public int $version = 1,
     ) {
         if ($this->priorityTier < 1 || $this->priorityTier > 3) {
-            throw new InvalidArgumentException('priorityTier must be 1, 2, or 3.');
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException('priorityTier must be 1, 2, or 3.');
         }
         if ($this->priorityTier === 1 && $this->dismissible) {
-            throw new InvalidArgumentException(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(
                 'Tier-1 (regulatory) hints must not be dismissible — pass dismissible: false.',
             );
         }

@@ -205,7 +205,7 @@ class DocumentSection
         // while existing string-passing callers keep working unchanged.
         $value = is_string($status) ? $status : $status->value;
         if (!in_array($value, self::ALLOWED_STATUSES, true)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Invalid DocumentSection status "%s". Allowed: %s',
                 $value,
                 implode(', ', self::ALLOWED_STATUSES),
@@ -321,7 +321,7 @@ class DocumentSection
     public function setApprovalRole(?string $approvalRole): static
     {
         if ($approvalRole !== null && !in_array($approvalRole, self::ALLOWED_APPROVAL_ROLES, true)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Invalid DocumentSection approval role "%s". Allowed: %s, or null.',
                 $approvalRole,
                 implode(', ', self::ALLOWED_APPROVAL_ROLES),

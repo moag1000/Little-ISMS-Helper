@@ -654,7 +654,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $allowed = ['iso_9001', 'iso_14001', 'other', 'none', null];
         if (!in_array($previousQmsBackground, $allowed, true)) {
-            throw new \InvalidArgumentException(\sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(\sprintf(
                 'Invalid previousQmsBackground "%s". Allowed: iso_9001, iso_14001, other, none, null.',
                 $previousQmsBackground,
             ));

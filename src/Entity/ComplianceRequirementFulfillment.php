@@ -12,7 +12,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use InvalidArgumentException;
 
 /**
  * Compliance Requirement Fulfillment
@@ -379,7 +378,7 @@ class ComplianceRequirementFulfillment
         $value = is_string($status) ? $status : $status->value;
         $allowedStatuses = ['not_started', 'in_progress', 'implemented', 'verified'];
         if (!in_array($value, $allowedStatuses)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new \App\Exception\InvalidArgument\InvalidArgumentException(sprintf(
                 'Invalid status "%s". Allowed: %s',
                 $value,
                 implode(', ', $allowedStatuses)
