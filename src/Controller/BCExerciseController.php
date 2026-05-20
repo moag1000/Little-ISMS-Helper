@@ -71,7 +71,7 @@ class BCExerciseController extends AbstractController
             $this->entityManager->persist($bcExercise);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('bc_exercise.success.created'));
+            $this->addFlash('success', $this->translator->trans('bc_exercise.success.created')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_bc_exercise_show', ['id' => $bcExercise->getId()]);
         }
 
@@ -103,7 +103,7 @@ class BCExerciseController extends AbstractController
             $bcExercise->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('bc_exercise.success.updated'));
+            $this->addFlash('success', $this->translator->trans('bc_exercise.success.updated')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_bc_exercise_show', ['id' => $bcExercise->getId()]);
         }
 
@@ -122,7 +122,7 @@ class BCExerciseController extends AbstractController
             $this->entityManager->remove($bcExercise);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('bc_exercise.success.deleted'));
+            $this->addFlash('success', $this->translator->trans('bc_exercise.success.deleted')); // @todo H-06 flash-domain
         }
 
         return $this->redirectToRoute('app_bc_exercise_index');

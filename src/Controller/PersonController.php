@@ -74,7 +74,7 @@ class PersonController extends AbstractController
             $this->entityManager->persist($person);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('person.success.created'));
+            $this->addFlash('success', $this->translator->trans('person.success.created')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_person_show', ['id' => $person->getId()]);
         }
 
@@ -129,7 +129,7 @@ class PersonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('person.success.updated'));
+            $this->addFlash('success', $this->translator->trans('person.success.updated')); // @todo H-06 flash-domain
             return $this->redirectToRoute('app_person_show', ['id' => $person->getId()]);
         }
 
@@ -146,7 +146,7 @@ class PersonController extends AbstractController
             $this->entityManager->remove($person);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('person.success.deleted'));
+            $this->addFlash('success', $this->translator->trans('person.success.deleted')); // @todo H-06 flash-domain
         }
 
         return $this->redirectToRoute('app_person_index');

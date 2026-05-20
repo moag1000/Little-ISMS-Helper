@@ -36,7 +36,7 @@ class SecurityController extends AbstractController
         $limiter = $this->rateLimiterFactory->create($request->getClientIp());
 
         if (false === $limiter->consume(1)->isAccepted()) {
-            $this->addFlash('error', $this->translator->trans('security.error.too_many_attempts'));
+            $this->addFlash('error', $this->translator->trans('security.error.too_many_attempts', [], 'messages'));
 
             $response = $this->render('security/login.html.twig', [
                 'last_username' => '',
@@ -138,7 +138,7 @@ class SecurityController extends AbstractController
             // This will never be reached as login() redirects
             return new Response('Redirecting to SAML IdP...');
         } catch (Exception $e) {
-            $this->addFlash('error', $this->translator->trans('security.error.saml_login_error') . ': ' . $e->getMessage());
+            $this->addFlash('error', $this->translator->trans('security.error.saml_login_error', [], 'messages') . ': ' . $e->getMessage());
             return $this->redirectToRoute('app_login');
         }
     }
@@ -195,7 +195,7 @@ class SecurityController extends AbstractController
 
             return $this->redirectToRoute('app_login');
         } catch (Exception $e) {
-            $this->addFlash('error', $this->translator->trans('security.error.saml_logout_error') . ': ' . $e->getMessage());
+            $this->addFlash('error', $this->translator->trans('security.error.saml_logout_error', [], 'messages') . ': ' . $e->getMessage());
             return $this->redirectToRoute('app_login');
         }
     }
