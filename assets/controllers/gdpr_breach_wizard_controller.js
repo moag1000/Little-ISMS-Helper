@@ -93,6 +93,9 @@ export default class extends Controller {
 
     /**
      * Open wizard modal
+     *
+     * Uses the fa-prefs-modal shell pattern: the outer element is both the
+     * backdrop and the dialog wrapper; `.d-none` toggles visibility.
      */
     open(event) {
         if (event) event.preventDefault();
@@ -102,9 +105,8 @@ export default class extends Controller {
         this.showStep(1);
         this.updateProgress();
 
-        // Show modal
-        this.modalTarget.classList.add('modal-open');
-        this.backdropTarget.classList.add('modal-backdrop-show');
+        // Show modal (fa-prefs-modal shell pattern)
+        this.modalTarget.classList.remove('d-none');
         document.body.style.overflow = 'hidden';
 
         // Enable ESC key handler
@@ -123,11 +125,20 @@ export default class extends Controller {
     close(event) {
         if (event) event.preventDefault();
 
-        this.modalTarget.classList.remove('modal-open');
-        this.backdropTarget.classList.remove('modal-backdrop-show');
+        this.modalTarget.classList.add('d-none');
         document.body.style.overflow = '';
 
         document.removeEventListener('keydown', this.boundHandleEscape);
+    }
+
+    /**
+     * Close modal when the user clicks outside the container (on the backdrop).
+     * Mirrors the fa-prefs-modal handleBackdropClick contract.
+     */
+    handleBackdropClick(event) {
+        if (event.target === this.modalTarget) {
+            this.close(event);
+        }
     }
 
     /**
