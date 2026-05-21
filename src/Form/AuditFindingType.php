@@ -13,6 +13,7 @@ use App\Entity\User;
 use App\Enum\AuditFindingStatus;
 use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -23,9 +24,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class AuditFindingType extends AbstractType
+final class AuditFindingType extends AbstractType implements SectionMapInterface
 {
     use OwnerPickerFormTrait;
+
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'         => ['audit', 'findingNumber', 'title', 'description'],
+            'classification'   => ['type', 'severity', 'status', 'source', 'clauseReference'],
+            'root_cause'       => ['evidence', 'relatedControls'],
+            'corrective_action'=> ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'dueDate'],
+            'verification'     => ['reportedByPerson', 'reportedByDeputyPersons', 'linkedRequirements'],
+        ];
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

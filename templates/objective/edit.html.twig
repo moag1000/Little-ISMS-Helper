@@ -2,7 +2,7 @@
 {% trans_default_domain 'objective' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'objective.title.edit'|trans({}, 'objective')}}: {{ objective.title }}{% endblock %}
+{% block title %}{{ 'objective.title.edit'|trans({}, 'objective') }}: {{ objective.title }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -15,70 +15,70 @@
     } %}
 
     {{ _fa_page_header.render({
-    title: ('objective.title.edit'|trans({}, 'objective')) ~ ': ' ~ (objective.title),
-    badge: { icon: 'ui-edit', label: '' },
-    actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_objective_show', {id: objective.id}), variant: 'ghost', icon: 'util-arrow-left' }
-    ]
-}) }}
+        title: 'objective.title.edit'|trans({}, 'objective') ~ ': ' ~ objective.title,
+        badge: { icon: 'ui-edit', label: '' },
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_objective_show', {id: objective.id}), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {{ form_start(form) }}
-                {% include '_components/_auto_form.html.twig' with {
-                    'form': form,
-                    'sections': {
-                        'basic_info': {
-                            'label': 'objective.section.basic_info'|trans({}, 'objective'),
-                            'fields': ['title', 'category', 'description']
-                        },
-                        'measurement': {
-                            'label': 'objective.section.measurement'|trans({}, 'objective'),
-                            'fields': ['measurableIndicators', 'targetValue', 'currentValue', 'unit']
-                        },
-                        'responsibility': {
-                            'label': 'objective.section.responsibility'|trans({}, 'objective'),
-                            'fields': ['responsiblePerson', 'targetDate']
-                        },
-                        'status_progress': {
-                            'label': 'objective.section.status_progress'|trans({}, 'objective'),
-                            'fields': ['status', 'progressNotes']
-                        }
-                    },
-                    'col_widths': {
-                        'title': 8,
-                        'category': 4,
-                        'description': 12,
-                        'measurableIndicators': 12,
-                        'targetValue': 4,
-                        'currentValue': 4,
-                        'unit': 4,
-                        'responsiblePerson': 6,
-                        'targetDate': 6,
-                        'status': 12,
-                        'progressNotes': 12
-                    },
-                    'help_texts': {
-                        'targetDate': 'objective.help.target_date'|trans({}, 'objective')},
-                    'tooltips': {
-                        'measurableIndicators': 'objective.tooltip.measurable_indicators',
-                        'currentValue': 'objective.tooltip.current_value',
-                        'targetValue': 'objective.tooltip.target_value',
-                        'category': 'objective.tooltip.category',
-                        'status': 'objective.tooltip.status'
-                    }
-                } %}
-
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        {{ 'common.cancel'|trans({}, 'messages') }}
-                    </a>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        {{ 'common.save_changes'|trans({}, 'messages') }}
-                    </button>
-                </div>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endembed %}
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'ISO 27001 Cl. 6.2 · ISMS Objectives',
+        'title': objective.title,
+        'sections': {
+            'overview': {
+                'label': 'form.section.overview'|trans({}, 'messages'),
+                'fields': ['title', 'description', 'category']
+            },
+            'target_metric': {
+                'label': 'form.section.target_metric'|trans({}, 'messages'),
+                'fields': ['measurableIndicators', 'targetValue', 'currentValue', 'unit']
+            },
+            'monitoring': {
+                'label': 'form.section.monitoring'|trans({}, 'messages'),
+                'fields': ['measurementFrequency', 'measurementMethod']
+            },
+            'responsibility': {
+                'label': 'form.section.responsibility'|trans({}, 'messages'),
+                'fields': ['responsiblePerson', 'responsibleForMeasurement', 'targetDate']
+            },
+            'audit_metadata': {
+                'label': 'form.section.audit_metadata'|trans({}, 'messages'),
+                'fields': ['status', 'progressNotes']
+            }
+        },
+        'col_widths': {
+            'title': 8,
+            'category': 4,
+            'description': 12,
+            'measurableIndicators': 12,
+            'targetValue': 4,
+            'currentValue': 4,
+            'unit': 4,
+            'measurementFrequency': 6,
+            'measurementMethod': 6,
+            'responsiblePerson': 6,
+            'responsibleForMeasurement': 6,
+            'targetDate': 6,
+            'status': 6,
+            'progressNotes': 12
+        },
+        'tooltips': {
+            'measurableIndicators': 'objective.tooltip.measurable_indicators',
+            'currentValue': 'objective.tooltip.current_value',
+            'targetValue': 'objective.tooltip.target_value',
+            'category': 'objective.tooltip.category',
+            'status': 'objective.tooltip.status'
+        },
+        'translation_domain': 'objective',
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.save_changes'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
 </div>
 {% endblock %}

@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Entity\Person;
 use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -25,9 +26,21 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class TrainingType extends AbstractType
+final class TrainingType extends AbstractType implements SectionMapInterface
 {
     use OwnerPickerFormTrait;
+
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'     => ['title', 'description', 'trainingType', 'deliveryMethod'],
+            'schedule'     => ['scheduledDate', 'durationMinutes', 'completionDate'],
+            'audience'     => ['targetAudience', 'participantUsers', 'participants', 'attendeeCount'],
+            'team'         => ['trainerUser', 'trainerPerson', 'trainerDeputyPersons', 'trainer'],
+            'verification' => ['status', 'mandatory', 'coveredControls', 'complianceRequirements'],
+            'resources'    => ['materials', 'feedback'],
+        ];
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

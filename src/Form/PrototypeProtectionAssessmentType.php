@@ -11,6 +11,7 @@ use App\Entity\Supplier;
 use App\Entity\User;
 use App\Enum\PrototypeProtectionAssessmentStatus;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -25,8 +26,22 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * Prototype-Protection assessment form.
  * Mirrors the five VDA-ISA-6 Kapitel 8 sub-sections.
  */
-final class PrototypeProtectionAssessmentType extends AbstractType
+final class PrototypeProtectionAssessmentType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'     => ['title', 'scope', 'status', 'tisaxLevel', 'requiredLabels'],
+            'classification'=> ['supplier', 'location'],
+            'audit_metadata'=> ['assessor', 'assessorPerson', 'assessorDeputyPersons', 'assessmentDate', 'nextAssessmentDue'],
+            'physical'     => ['physicalResult', 'physicalNotes'],
+            'organisation' => ['organisationResult', 'organisationNotes'],
+            'handling'     => ['handlingResult', 'handlingNotes'],
+            'transport'    => ['trialOperationResult', 'trialOperationNotes'],
+            'photography'  => ['eventsResult', 'eventsNotes'],
+        ];
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $resultChoices = [
@@ -141,26 +156,64 @@ final class PrototypeProtectionAssessmentType extends AbstractType
                 'required' => false,
             ]);
 
-        foreach (PrototypeProtectionAssessment::SECTIONS as $section) {
-            $resultField = $section . 'Result';
-            $notesField = $section . 'Notes';
-            if ($section === 'trial_operation') {
-                $resultField = 'trialOperationResult';
-                $notesField = 'trialOperationNotes';
-            }
-            $builder
-                ->add($resultField, ChoiceType::class, [
-                    'label' => 'prototype_protection.section.' . $section . '.result',
-                    'required' => false,
-                    'placeholder' => 'prototype_protection.value.na',
-                    'choices' => $resultChoices,
-                ])
-                ->add($notesField, TextareaType::class, [
-                    'label' => 'prototype_protection.section.' . $section . '.notes',
-                    'required' => false,
-                    'attr' => ['rows' => 3],
-                ]);
-        }
+        // VDA-ISA 6 Kapitel 8 sub-sections — explicit fields for static analysis compatibility
+        $builder
+            ->add('physicalResult', ChoiceType::class, [
+                'label' => 'prototype_protection.section.physical.result',
+                'required' => false,
+                'placeholder' => 'prototype_protection.value.na',
+                'choices' => $resultChoices,
+            ])
+            ->add('physicalNotes', TextareaType::class, [
+                'label' => 'prototype_protection.section.physical.notes',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+            ->add('organisationResult', ChoiceType::class, [
+                'label' => 'prototype_protection.section.organisation.result',
+                'required' => false,
+                'placeholder' => 'prototype_protection.value.na',
+                'choices' => $resultChoices,
+            ])
+            ->add('organisationNotes', TextareaType::class, [
+                'label' => 'prototype_protection.section.organisation.notes',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+            ->add('handlingResult', ChoiceType::class, [
+                'label' => 'prototype_protection.section.handling.result',
+                'required' => false,
+                'placeholder' => 'prototype_protection.value.na',
+                'choices' => $resultChoices,
+            ])
+            ->add('handlingNotes', TextareaType::class, [
+                'label' => 'prototype_protection.section.handling.notes',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+            ->add('trialOperationResult', ChoiceType::class, [
+                'label' => 'prototype_protection.section.trial_operation.result',
+                'required' => false,
+                'placeholder' => 'prototype_protection.value.na',
+                'choices' => $resultChoices,
+            ])
+            ->add('trialOperationNotes', TextareaType::class, [
+                'label' => 'prototype_protection.section.trial_operation.notes',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+            ->add('eventsResult', ChoiceType::class, [
+                'label' => 'prototype_protection.section.events.result',
+                'required' => false,
+                'placeholder' => 'prototype_protection.value.na',
+                'choices' => $resultChoices,
+            ])
+            ->add('eventsNotes', TextareaType::class, [
+                'label' => 'prototype_protection.section.events.notes',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
