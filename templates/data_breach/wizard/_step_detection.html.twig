@@ -1,0 +1,19 @@
+{# Step 1 — Detection: core identification fields for GDPR Art. 33(3) breach record #}
+{% trans_default_domain 'privacy' %}
+<div class="fa-form-section__grid">
+    <div class="fa-form-section__grid--single">
+        {{ form_row(form.title) }}
+    </div>
+</div>
+<div class="fa-form-section__grid">
+    {{ form_row(form.detectedAt) }}
+    {{ form_row(form.severity) }}
+</div>
+<div class="fa-form-section__grid">
+    {{ form_row(form.incident) }}
+    {{ form_row(form.processingActivity) }}
+</div>
+<div class="fa-form-section__grid">
+    {{ form_row(form.affectedDataSubjects) }}
+    {{ form_row(form.riskLevel) }}
+</div>

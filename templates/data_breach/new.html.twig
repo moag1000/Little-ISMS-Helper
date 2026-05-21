@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_modal_wizard.html.twig' as _fa_modal_wizard %}
 
 {% block title %}{{ 'privacy.data_breach.page.new_title'|trans({}, 'privacy') }}{% endblock %}
 
@@ -23,86 +24,51 @@
         ]
     }) }}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_header %}
-            <div class="card-header"><h2 class="mb-0"><i class="fa-icon fa-icon--sop" aria-hidden="true"></i> {{ 'privacy.data_breach.form.title'|trans({}, 'privacy') }}</h2></div>
-        {% endblock %}
-        {% block card_body %}
-            {{ form_start(form) }}
-                {% include '_components/_auto_form.html.twig' with {
-                    'form': form,
-                    'sections': {
-                        'basic_info': {
-                            'label': '<i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> '~ 'data_breach.section.basic_info'|trans({}, 'privacy'),
-                            'fields': ['title', 'detectedAt', 'incident', 'processingActivity']
-                        },
-                        'notification_content': {
-                            'label': '<i class="fa-icon fa-icon--policy" aria-hidden="true"></i> Art. 33(3) - Content of Notification'|raw,
-                            'fields': ['affectedDataSubjects', 'dataCategories', 'dataSubjectCategories', 'breachNature', 'likelyConsequences', 'measuresTaken', 'mitigationMeasures']
-                        },
-                        'risk_assessment': {
-                            'label': '<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> '~ 'data_breach.section.risk_assessment'|trans({}, 'privacy'),
-                            'fields': ['severity', 'riskLevel', 'riskAssessment', 'specialCategoriesAffected', 'criminalDataAffected']
-                        },
-                        'notification_requirements': {
-                            'label': '<i class="fa-icon fa-icon--ui-bell" aria-hidden="true"></i> Notification Requirements'|raw,
-                            'fields': ['requiresAuthorityNotification', 'requiresSubjectNotification', 'noSubjectNotificationReason']
-                        },
-                        'investigation': {
-                            'label': '<i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> Investigation & Follow-up'|raw,
-                            'fields': ['rootCause', 'lessonsLearned']
-                        },
-                        'responsible_persons': {
-                            'label': '<i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> Responsible Persons'|raw,
-                            'fields': ['dataProtectionOfficer', 'dataProtectionOfficerPerson', 'dataProtectionOfficerDeputyPersons', 'assessorPerson', 'assessorDeputyPersons']
-                        }
-                    },
-                    'col_widths': {
-                        'title': 6,
-                        'detectedAt': 6,
-                        'incident': 6,
-                        'processingActivity': 6,
-                        'affectedDataSubjects': 12,
-                        'dataCategories': 12,
-                        'dataSubjectCategories': 12,
-                        'breachNature': 12,
-                        'likelyConsequences': 12,
-                        'measuresTaken': 12,
-                        'mitigationMeasures': 12,
-                        'severity': 6,
-                        'riskLevel': 6,
-                        'riskAssessment': 12,
-                        'specialCategoriesAffected': 6,
-                        'criminalDataAffected': 6,
-                        'requiresAuthorityNotification': 6,
-                        'requiresSubjectNotification': 6,
-                        'noSubjectNotificationReason': 12,
-                        'rootCause': 12,
-                        'lessonsLearned': 12,
-                        'dataProtectionOfficer': 6,
-                        'dataProtectionOfficerPerson': 6,
-                        'dataProtectionOfficerDeputyPersons': 12,
-                        'assessorPerson': 6,
-                        'assessorDeputyPersons': 6
-                    },
-                    'tooltips': {
-                        'affectedDataSubjects': 'data_breach.tooltip.affected_data_subjects',
-                        'severity': 'data_breach.tooltip.severity',
-                        'riskLevel': 'data_breach.tooltip.risk_level'
-                    },
-                    'translation_domain': 'privacy'
-                } %}
+    {# fa-modal--wizard wraps the entire Symfony form so POST submission works as-is.
+       The Stimulus modal-wizard controller enforces per-step HTML5 validation before
+       advancing. The final submit button on step 4 submits the whole form. #}
+    {{ form_start(form, { attr: { class: 'fa-aurora-surface' } }) }}
 
-                <div class="mt-4">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'privacy.data_breach.action.create'|trans({}, 'privacy') }}
-                    </button>
-                    <a href="{{ path('app_data_breach_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
-                    </a>
-                </div>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endembed %}
+        {{ _fa_modal_wizard.render({
+            id: 'gdpr-breach-wizard',
+            title: 'data_breach.wizard.new_title'|trans({}, 'privacy'),
+            subtitle: 'data_breach.wizard.new_subtitle'|trans({}, 'privacy'),
+            steps: [
+                {
+                    id: 'detection',
+                    label: 'data_breach.wizard.step.detection'|trans({}, 'privacy'),
+                    title: 'data_breach.wizard.step.detection_title'|trans({}, 'privacy'),
+                    required: true,
+                    body: include('data_breach/wizard/_step_detection.html.twig', { form: form })
+                },
+                {
+                    id: 'notification',
+                    label: 'data_breach.wizard.step.notification'|trans({}, 'privacy'),
+                    title: 'data_breach.wizard.step.notification_title'|trans({}, 'privacy'),
+                    required: true,
+                    body: include('data_breach/wizard/_step_notification.html.twig', { form: form })
+                },
+                {
+                    id: 'record',
+                    label: 'data_breach.wizard.step.record'|trans({}, 'privacy'),
+                    title: 'data_breach.wizard.step.record_title'|trans({}, 'privacy'),
+                    required: true,
+                    body: include('data_breach/wizard/_step_record.html.twig', { form: form })
+                },
+                {
+                    id: 'review',
+                    label: 'data_breach.wizard.step.review'|trans({}, 'privacy'),
+                    title: 'data_breach.wizard.step.review_title'|trans({}, 'privacy'),
+                    required: false,
+                    body: include('data_breach/wizard/_step_review.html.twig', { form: form, data_breach: null })
+                }
+            ],
+            actions: {
+                cancel: { label: 'common.cancel'|trans({}, 'messages'), route: path('app_data_breach_index') },
+                submit: { label: 'data_breach.wizard.action.submit'|trans({}, 'privacy'), variant: 'danger' }
+            }
+        }) }}
+
+    {{ form_end(form) }}
 </div>
 {% endblock %}

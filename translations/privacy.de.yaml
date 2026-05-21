@@ -910,6 +910,21 @@ data_breach:
         yes_reportable: 'JA - Meldepflichtig an Aufsichtsbehörde'
         no_not_reportable: 'NEIN - Nicht meldepflichtig'
         step_of: 'von'
+        new_title: 'Datenpanne erfassen'
+        new_subtitle: 'DSGVO Art. 33 · Frist 72h ab Kenntnisnahme'
+        title_72h_warning: '72-Stunden-Meldefrist läuft!'
+        subtitle_72h_warning: 'Meldung an die Aufsichtsbehörde gemäß DSGVO Art. 33 muss innerhalb von 72 Stunden nach Kenntnisnahme erfolgen.'
+        step:
+            detection: 'Erkennung'
+            detection_title: 'Schritt 1 · Vorfall identifizieren'
+            notification: 'Meldepflicht'
+            notification_title: 'Schritt 2 · Meldungs-Entscheidung'
+            record: 'Dokumentation'
+            record_title: 'Schritt 3 · Vorfall dokumentieren'
+            review: 'Überprüfung'
+            review_title: 'Schritt 4 · Abschließende Prüfung'
+        action:
+            submit: 'Datenpanne registrieren'
 dpia:
     dashboard:
         title: 'DSFA Dashboard'
