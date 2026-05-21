@@ -33,6 +33,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     private ?User $userRole = null;
     private ?User $auditorRole = null;
     private ?User $managerRole = null;
+    private ?User $dpoRole = null;
     private ?Tenant $otherTenant = null;
 
     // Entities under test
@@ -69,6 +70,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
         $this->userRole = $this->makeUser('user_' . $uid . '@x.test', ['ROLE_USER'], $this->tenant);
         $this->auditorRole = $this->makeUser('aud_' . $uid . '@x.test', ['ROLE_AUDITOR'], $this->tenant);
         $this->managerRole = $this->makeUser('mgr_' . $uid . '@x.test', ['ROLE_MANAGER'], $this->tenant);
+        $this->dpoRole = $this->makeUser('dpo_' . $uid . '@x.test', ['ROLE_DPO', 'ROLE_USER'], $this->tenant);
 
         $this->otherTenant = (new Tenant())->setName('OtherT ' . $uid)->setCode('oprv_' . substr($uid, -7));
         $this->em->persist($this->otherTenant);
