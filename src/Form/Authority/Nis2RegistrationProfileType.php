@@ -6,6 +6,7 @@ namespace App\Form\Authority;
 
 use App\Entity\Authority\Nis2RegistrationProfile;
 use App\Entity\User;
+use App\Form\SectionMapInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -26,8 +27,18 @@ use Symfony\Component\Validator\Constraints\Positive;
  * Translation domain: eu_authorities
  * Contact fields use EntityType for User selection.
  */
-final class Nis2RegistrationProfileType extends AbstractType
+final class Nis2RegistrationProfileType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'              => ['organizationLegalName', 'organizationLegalForm'],
+            'registration'         => ['commercialRegisterCity', 'commercialRegisterNumber', 'vatId'],
+            'entity_classification' => ['nis2Sector', 'nis2EntityCategory', 'affectedHeadcount', 'affectedAnnualTurnoverEur', 'ictDependencyDescription'],
+            'contact'              => ['incidentReportingContact', 'securityResponsibleContact', 'backupSecurityContact'],
+        ];
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $sectorChoices = [];
