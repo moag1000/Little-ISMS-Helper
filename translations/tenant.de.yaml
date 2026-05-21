@@ -110,6 +110,11 @@ tenant:
         details: Details
         isms_context: 'ISMS Kontext'
         users: Benutzer
+    tab:
+        general: Allgemein
+        corporate: Konzernstruktur
+        integration: Integration
+        settings: Einstellungen
     isms_context:
         not_configured: 'ISMS Kontext nicht konfiguriert'
         configure_prompt: 'Konfigurieren Sie den ISMS Kontext für diesen Mandanten.'
@@ -271,6 +276,8 @@ corporate:
         groups: Mandantengruppen
         standalone: 'Eigenständiger Mandant'
         structure: Unternehmensstruktur
+        legal: Rechtsperson
+        nis2: 'NIS2 / Regulierung'
     role:
         parent: Muttergesellschaft
     info:

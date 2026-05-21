@@ -1,0 +1,25 @@
+{#
+ # Tenant form — tab: general
+ # Fields: name, code, description, isActive, logoFile
+ # NOTE: This partial is included inside fa-tabs body (no {% embed %}),
+ # so file-scope imports from form.html.twig are visible here.
+ #}
+{% trans_default_domain 'tenant' %}
+
+{{ form_row(form.name) }}
+
+{{ form_row(form.code) }}
+
+{{ form_row(form.description) }}
+
+{{ form_row(form.logoFile) }}
+
+{# isActive switch — custom rendering to use form-switch pattern #}
+<div class="form-group mb-3">
+    <div class="form-check form-switch">
+        {{ form_widget(form.isActive, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+        {{ form_label(form.isActive, null, {'label_attr': {'class': 'form-check-label'}}) }}
+    </div>
+    {{ form_help(form.isActive) }}
+    {{ form_errors(form.isActive) }}
+</div>
