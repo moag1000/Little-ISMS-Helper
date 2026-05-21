@@ -66,8 +66,9 @@
                                     {% if action.modal_target is defined and action.modal_target %}
                                         <button type="button"
                                                 class="fa-cyber-btn fa-cyber-btn--{{ action.variant|default('primary') }} fa-cyber-btn--sm"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="{{ action.modal_target }}">
+                                                data-controller="fa-modal-dispatcher"
+                                                data-action="click->fa-modal-dispatcher#open"
+                                                data-fa-modal-id="{{ action.modal_target|replace({'#': ''}) }}">
                                             {% if action.icon is defined %}<i class="fa-icon {{ action.icon }}" aria-hidden="true"></i>{% endif %}
                                             {{ action.label }}
                                         </button>
