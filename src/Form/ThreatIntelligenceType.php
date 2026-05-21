@@ -8,6 +8,7 @@ use App\Entity\Asset;
 use App\Entity\Person;
 use App\Entity\ThreatIntelligence;
 use App\Entity\User;
+use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Type\JsonStructuredType;
 use App\Form\Type\JsonTagsType;
@@ -32,7 +33,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * This FormType is provided for future web-controller integration and
  * covers all user-editable fields including the Tri-State assignee slot.
  */
-final class ThreatIntelligenceType extends AbstractType
+final class ThreatIntelligenceType extends AbstractType implements SectionMapInterface
 {
     use ModuleAwareFormTrait;
 
@@ -275,6 +276,55 @@ final class ThreatIntelligenceType extends AbstractType
 
             // JsonArrayTransformer now applied automatically by JsonStructuredType.
         }
+    }
+
+    /**
+     * S4 Foundation P-2 SectionPolicy — ISO 27001 A.5.7 · Threat Intelligence.
+     * Module-gated fields (vulnerability_intel) listed to ensure complete coverage.
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'title',
+                'description',
+                'threatType',
+                'severity',
+                'status',
+            ],
+            'intelligence_source' => [
+                'source',
+                'cveId',
+                'cvssScore',
+                'detectionDate',
+                'mitigationDate',
+            ],
+            'threat_classification' => [
+                'affectsOrganization',
+                'tlpClassification',
+                'threatActorAttribution',
+                'confidenceLevel',
+                'mitreAttackTactics',
+                'mitreAttackTechniques',
+                'iocsList',
+                'sharedExternally',
+            ],
+            'affected_assets' => [
+                'affectedAssets',
+            ],
+            'mitigations' => [
+                'mitigationRecommendations',
+                'actionsTaken',
+                'references',
+            ],
+            'audit_metadata' => [
+                'assignedTo',
+                'assignedPerson',
+                'assignedDeputyPersons',
+            ],
+        ];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
