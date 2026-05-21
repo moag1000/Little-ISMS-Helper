@@ -137,6 +137,92 @@ final class FormLayoutMacroTest extends KernelTestCase
         self::assertStringContainsString('name="risk_probability"', $output);
     }
 
+    /**
+     * Regression test for: all-pending form (new entity) MUST render all section bodies.
+     *
+     * Bug: the old conditional skipped the body when sectionStatus == 'pending',
+     * causing every field to be absent from the HTML on new-entity forms.
+     * Symptom: Symfony Form "Unreachable field" exception on POST.
+     */
+    #[Test]
+    public function allPendingSectionsRenderTheirBodies(): void
+    {
+        $config = [
+            'title'    => 'Neues Formular',
+            'sections' => [
+                [
+                    'id'     => 'sec-a',
+                    'title'  => 'Basis',
+                    'status' => 'pending',
+                    'fields' => 3,
+                    'filled' => 0,
+                    'body'   => '<input type="text" name="email">',
+                ],
+                [
+                    'id'     => 'sec-b',
+                    'title'  => 'Details',
+                    'status' => 'pending',
+                    'fields' => 2,
+                    'filled' => 0,
+                    'body'   => '<input type="text" name="phone">',
+                ],
+            ],
+        ];
+
+        $output = $this->renderMacro($config);
+
+        // Both section bodies MUST be present in markup (visual collapse is CSS-only)
+        $bodyCount = substr_count($output, 'fa-form-section__body');
+        self::assertSame(2, $bodyCount, 'Each pending section must have a .fa-form-section__body in the DOM');
+
+        // Both input fields MUST be present so form POST works
+        self::assertStringContainsString('name="email"', $output);
+        self::assertStringContainsString('name="phone"', $output);
+
+        // Collapsed sections carry the --collapsed CSS class (visual only, not structural)
+        self::assertStringContainsString('fa-form-section--collapsed', $output);
+    }
+
+    /**
+     * Done sections must also have their body in the DOM so the user can
+     * re-open and edit them (collapse is CSS-only via --collapsed class).
+     */
+    #[Test]
+    public function doneSectionBodyIsAlwaysRendered(): void
+    {
+        $config = $this->fullConfig();
+        // sec-1 is status=done; add a body so we can assert it appears
+        $config['sections'][0]['body'] = '<input type="text" name="done_field">';
+
+        $output = $this->renderMacro($config);
+
+        self::assertStringContainsString('name="done_field"', $output,
+            'A done section\'s body must be in the DOM — collapse is visual-only via CSS');
+    }
+
+    /**
+     * Every section (regardless of status) must produce a .fa-form-section__body
+     * element so the Stimulus controller can toggle it via the --collapsed modifier.
+     */
+    #[Test]
+    public function everySectionStatusProducesABodyElement(): void
+    {
+        $config = [
+            'title'    => 'All statuses',
+            'sections' => [
+                ['id' => 's-done',    'title' => 'Done',    'status' => 'done',    'fields' => 1, 'filled' => 1],
+                ['id' => 's-current', 'title' => 'Current', 'status' => 'current', 'fields' => 1, 'filled' => 0],
+                ['id' => 's-error',   'title' => 'Error',   'status' => 'error',   'fields' => 1, 'filled' => 0],
+                ['id' => 's-pending', 'title' => 'Pending', 'status' => 'pending', 'fields' => 1, 'filled' => 0],
+            ],
+        ];
+
+        $output = $this->renderMacro($config);
+
+        $bodyCount = substr_count($output, 'fa-form-section__body');
+        self::assertSame(4, $bodyCount, 'All 4 section statuses must render a .fa-form-section__body');
+    }
+
     #[Test]
     public function rendersWithCustomStimulusController(): void
     {
