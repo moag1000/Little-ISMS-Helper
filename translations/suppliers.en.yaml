@@ -44,6 +44,8 @@ supplier:
         certifications_compliance: 'Certifications & Compliance'
         contract_info: 'Contract Information'
         lksg: 'Supply-chain due diligence (LkSG)'
+        tier_classification: 'DORA Tier Classification (Art. 28 RoI)'
+        marisk: 'MaRisk AT 9 · Outsourcing Management'
         related_assets: 'Related Assets'
         related_risks: 'Related Risks'
     field:

@@ -8,6 +8,7 @@ use App\Entity\Document;
 use App\Entity\ManagementReview;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Type\JsonStructuredType;
 use App\Service\ModuleConfigurationService;
@@ -26,7 +27,7 @@ use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class ManagementReviewType extends AbstractType
+final class ManagementReviewType extends AbstractType implements SectionMapInterface
 {
     use ModuleAwareFormTrait;
 
@@ -34,6 +35,18 @@ final class ManagementReviewType extends AbstractType
         private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly TenantContext $tenantContext,
     ) {
+    }
+
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => ['title', 'reviewDate', 'status', 'reviewedBy', 'reviewedByPerson', 'reviewedByDeputyPersons', 'participants', 'personParticipants'],
+            'inputs' => ['changesRelevantToISMS', 'feedbackFromInterestedParties', 'auditResults', 'performanceEvaluation', 'nonconformitiesReview', 'incidentsReview', 'risksReview', 'objectivesReview', 'contextChanges', 'previousReviewActions'],
+            'followup' => ['nonConformitiesStatus', 'correctiveActionsStatus', 'improvementOpportunities'],
+            'outputs' => ['opportunitiesForImprovement', 'decisions', 'actionItems', 'resourceNeeds', 'summary', 'actionItemsWithDeadlines'],
+            'audit_metadata' => ['topManagementAttended', 'nextReviewDate', 'meetingMinutesDocument', 'riskTreatmentEffectiveness', 'policyReviewOutcome'],
+            'compliance' => ['frameworkComplianceStatus'],
+        ];
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

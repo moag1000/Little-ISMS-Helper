@@ -15,17 +15,17 @@ use App\Repository\SupplierCriticalityLevelRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class SupplierType extends AbstractType
+final class SupplierType extends AbstractType implements SectionMapInterface
 {
     use ModuleAwareFormTrait;
 
@@ -519,6 +519,101 @@ final class SupplierType extends AbstractType
                 'help' => 'supplier.marisk.help.internal_audit_function_involvement',
             ])
         ;
+    }
+
+    /**
+     * S4 Foundation P-2 SectionPolicy — covers ALL fields including module-gated ones.
+     * Module-gated fields (privacy, nis2_dora, lksg, marisk) are listed here so the
+     * section-map is always complete. Fields not built by buildForm() are silently
+     * ignored by _auto_form.html.twig.
+     *
+     * Sections map (DORA Art. 28 · Lieferanten-Management):
+     * - overview:           core identification
+     * - contact:            contact information
+     * - risk_assessment:    security scoring + assessment schedule
+     * - contract:           contract dates + requirements + certifications
+     * - privacy:            GDPR Art. 28 — processor fields (privacy module)
+     * - tier_classification: DORA Art. 28 ROI fields (nis2_dora module)
+     * - lksg:               German Supply Chain Due Diligence Act (lksg module)
+     * - marisk:             BaFin MaRisk AT 9 outsourcing fields (marisk module)
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'name',
+                'description',
+                'criticality',
+                'status',
+                'serviceProvided',
+            ],
+            'contact' => [
+                'contactPerson',
+                'email',
+                'phone',
+                'address',
+            ],
+            'risk_assessment' => [
+                'securityScore',
+                'lastSecurityAssessment',
+                'nextAssessmentDate',
+                'assessmentFindings',
+                'nonConformities',
+            ],
+            'contract' => [
+                'contractStartDate',
+                'contractEndDate',
+                'securityRequirements',
+                'hasISO27001',
+                'hasISO22301',
+                'certifications',
+            ],
+            'privacy' => [
+                'hasDPA',
+                'dpaSignedDate',
+                'gdprProcessorStatus',
+                'gdprTransferMechanism',
+                'gdprAvContractSigned',
+                'gdprAvContractDate',
+            ],
+            'tier_classification' => [
+                'isDoraRelevant',
+                'leiCode',
+                'naceCode',
+                'countryOfHeadOffice',
+                'ictCriticality',
+                'ictFunctionType',
+                'substitutability',
+                'hasSubcontractors',
+                'subcontractorChain',
+                'processingLocations',
+                'lastDoraAuditDate',
+                'hasExitStrategy',
+            ],
+            'lksg' => [
+                'lksgReportingObligation',
+                'lksgRiskCategory',
+                'lksgHumanRightsRiskScore',
+                'lksgEnvironmentalRiskScore',
+                'lksgRiskAnalysisDate',
+                'lksgComplaintMechanism',
+                'lksgPreventionMeasures',
+            ],
+            'marisk' => [
+                'outsourcingClassification',
+                'outsourcingDueDiligenceCompleted',
+                'outsourcingDueDiligenceDate',
+                'outsourcingExitStrategy',
+                'bafinNotificationRequired',
+                'bafinNotificationDate',
+                'riskBearingCapacityImpact',
+                'boardLevelRiskAcceptance',
+                'complianceFunctionInvolvement',
+                'internalAuditFunctionInvolvement',
+            ],
+        ];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
