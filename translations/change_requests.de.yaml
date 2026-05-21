@@ -51,7 +51,6 @@ change_request:
         rollback_plan: 'Rollback-Plan bei Fehlschlag'
         testing_requirements: 'Testanforderungen und QA'
         approval_info: Freigabe-Informationen
-        verification: 'Verifikation und Abnahme'
         closure: 'Abschluss und Lessons Learned'
         affected_assets: 'Betroffene Assets'
         affected_controls: 'Betroffene Controls (ISO 27001)'
