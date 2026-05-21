@@ -4,7 +4,10 @@
     This component automatically renders all form fields using the _form_field component.
     It intelligently groups fields by section and handles all field types.
 
-    Usage:
+    ──────────────────────────────────────────────────────────────────────────────
+    BASIC USAGE (flat layout — default, backward-compatible)
+    ──────────────────────────────────────────────────────────────────────────────
+
         {% include '_components/_auto_form.html.twig' with {
             'form': form,
             'sections': {
@@ -29,60 +32,96 @@
             }
         } %}
 
-    Parameters:
-    - form: The Symfony form object
-    - sections: Array of sections with labels and field names
-    - col_widths: (Optional) Custom column widths for specific fields (default: 12 for full width)
-    - help_texts: (Optional) Array of help texts for specific fields (field_name => translated help text)
-    - tooltips: (Optional) Array of tooltip keys for specific fields (field_name => translation key)
-    - exclude: (Optional) Array of field names to exclude from rendering
+    ──────────────────────────────────────────────────────────────────────────────
+    OUTLINE-RAIL LAYOUT (opt-in, Phase-2)
+    ──────────────────────────────────────────────────────────────────────────────
 
-    Note: Labels are taken from field.vars.label which is already translated by the FormType.
-          Help texts must be provided pre-translated via the help_texts parameter.
-          Tooltips are translation keys that will be translated and shown as hover tooltips.
+    Delegates to `_fa_form_layout` macro with an outline-rail sidebar + section
+    cards. Recommended for large forms (15+ fields, 4–10 sections).
+    Phase-3 will migrate existing FormTypes — DO NOT migrate in Phase-2.
+
+        {% include '_components/_auto_form.html.twig' with {
+            'form':     form,
+            'layout':   'outline-rail',   {# 'flat' (default) | 'outline-rail' #}
+            'eyebrow':  'GDPR Art. 35',   {# optional badge above title #}
+            'title':    'DPIA',           {# used as form heading #}
+            'subtitle': 'HR-Server 04',   {# optional sub-heading #}
+            'sections': {
+                'overview': {
+                    'label': 'Overview',
+                    'fields': ['name', 'description', 'status']
+                },
+                'details': {
+                    'label': 'Details',
+                    'fields': ['riskLevel', 'affectedData', 'measures']
+                }
+            },
+            'actions': {
+                'close':  { 'label': 'Cancel',        'variant': 'ghost' },
+                'submit': { 'label': 'Save and close', 'variant': 'primary' }
+            }
+        } %}
+
+    When `layout == 'outline-rail'`, section progress (done/current/pending)
+    is computed automatically from `form[field].vars.value` emptiness.
+
+    ──────────────────────────────────────────────────────────────────────────────
+    ALL PARAMETERS
+    ──────────────────────────────────────────────────────────────────────────────
+
+    Common (both layouts):
+    - form               (FormView, required)
+    - sections           (map, optional) — section_key → {label, fields[]}
+                          Auto-populated from SectionMapInterface if omitted.
+    - col_widths         (map, optional) — field_name → Bootstrap col (1–12)
+    - help_texts         (map, optional) — field_name → pre-translated help text
+    - tooltips           (map, optional) — field_name → translation key
+    - exclude            (array, optional) — field names to skip entirely
+    - translation_domain (string, optional) — override tooltip translation domain
+    - strict_whitelist   (bool, default false) — H-03: suppress catch-all bucket
+    - automatic_fields   (array, optional) — fields marked as auto-populated
+
+    Flat-only:
+    - skip_other         (bool, default false) — suppress the catch-all section
+    - other_section_label (string, optional) — label for catch-all section
+
+    Outline-rail-only:
+    - layout             ('flat'|'outline-rail', default 'flat')
+    - eyebrow            (string, optional) — small-caps badge above title
+    - title              (string, optional) — form heading (default 'Form')
+    - subtitle           (string, optional) — sub-heading
+    - actions            (map, optional) — {close, next, submit} action defs
+
+    Note: Labels are taken from field.vars.label which is already translated
+          by the FormType. Help texts must be provided pre-translated.
+          Tooltips are translation keys that will be resolved at render time.
+
+    H-03 Privilege-Escalation Hardening:
+    The catch-all "Other fields" bucket renders every form-child not explicitly
+    listed in `sections`. Sensitive fields like `permissions`, `roles`, `tenant`,
+    `isActive` can leak through if a caller forgets to declare them. Use
+    `strict_whitelist: true` to suppress the catch-all entirely. High-risk forms
+    (admin/user/role/tenant) MUST set strict_whitelist: true.
 #}
 
-{% set exclude_fields = exclude|default([]) %}
-{% set help_texts = help_texts|default({}) %}
-{% set tooltips = tooltips|default({}) %}
+{# ─── Shared parameter initialisation ────────────────────────────────────── #}
+{% set layout          = layout|default('flat') %}
+{% set exclude_fields  = exclude|default([]) %}
+{% set help_texts      = help_texts|default({}) %}
+{% set tooltips        = tooltips|default({}) %}
 {% set automatic_fields = automatic_fields|default([]) %}
 {% set default_col_width = 12 %}
 {% set passed_translation_domain = translation_domain|default(null) %}
 {% set other_section_label = other_section_label|default('common.section.other'|trans({}, 'messages')) %}
-{% set skip_other = skip_other|default(false) %}
+{% set skip_other      = skip_other|default(false) %}
 
-{# ─── H-03 Privilege-Escalation Hardening (Security) ────────────────────────
-   The catch-all "Other fields" bucket renders EVERY form-child that is not
-   explicitly listed in `sections`. Sensitive fields like `permissions`,
-   `roles`, `tenant`, `isActive` can leak through if a caller forgets to
-   add them to a section — attackers could then inject these via dev-tools.
-
-   Callers MAY opt-in to strict whitelist mode via:
-     {% include '_components/_auto_form.html.twig' with {
-         strict_whitelist: true,   # H-03 — suppress catch-all entirely
-         sections: { ... }
-     } %}
-
-   strict_whitelist implies skip_other: true. High-risk forms (admin/user/
-   role/tenant) MUST set strict_whitelist: true. The dev-environment
-   surfaces a warning when the catch-all is active and there are unmapped
-   fields, so devs can incrementally adopt sections (see @todo H-03 markers).
-#}
+{# ─── H-03 Privilege-Escalation Hardening ───────────────────────────────── #}
 {% set strict_whitelist = strict_whitelist|default(false) %}
 {% if strict_whitelist %}
     {% set skip_other = true %}
 {% endif %}
 
-{# ─── S4 Foundation P-2 SectionPolicy ───────────────────────────────────────
-   If caller did not pass a `sections` dict explicitly, check if the FormType
-   implements SectionMapInterface (form_section_map() returns non-null) and
-   build the sections dict from `getSectionMap()`. Section labels resolve to
-   the `form.section.<key>` translation key in `messages` domain.
-
-   This makes regulatorily-critical fields (BCPlan RTO/RPO, BCExercise
-   actualRtoAchieved/successCriteria, etc.) appear in well-defined sections
-   instead of leaking into the catch-all "Sonstiges" bucket.
-#}
+{# ─── S4 Foundation P-2 SectionPolicy ───────────────────────────────────── #}
 {% set sections = sections|default(null) %}
 {% if sections is null %}
     {% set _form_section_map = form_section_map(form) %}
@@ -107,217 +146,199 @@
     {% set listed_fields = listed_fields|merge(section.fields) %}
 {% endfor %}
 
-{% for section_key, section in sections %}
-    <fieldset class="mb-4">
-        <legend class="h5 mb-3">{{ section.label|raw }}</legend>
+{# ════════════════════════════════════════════════════════════════════════════
+   OUTLINE-RAIL LAYOUT
+   Delegates entirely to _fa_form_layout macro with section bodies rendered
+   via the _auto_form_section_body partial.
+   ════════════════════════════════════════════════════════════════════════════ #}
+{% if layout == 'outline-rail' %}
+    {% import '_components/_fa_form_layout.html.twig' as _fa_form %}
 
-        {% set current_row_fields = [] %}
-        {% set current_row_width = 0 %}
-
-        {% for field_name in section.fields %}
-            {% if field_name not in exclude_fields and form[field_name] is defined %}
-                {% set field = form[field_name] %}
-                {% set field_type = field.vars.block_prefixes[1]|default('text') %}
-                {% set col_width = col_widths[field_name]|default(default_col_width) %}
-
-                {# Handle checkbox fields separately #}
-                {% if field_type == 'checkbox' %}
-                    {# Flush current row if any #}
-                    {% if current_row_fields|length > 0 %}
-                        <div class="row">
-                            {% for row_field in current_row_fields %}
-                                {{ row_field|raw }}
-                            {% endfor %}
-                        </div>
-                        {% set current_row_fields = [] %}
-                        {% set current_row_width = 0 %}
-                    {% endif %}
-
-                    {# Render checkbox #}
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-check mb-3">
-                                {{ form_widget(field, {'attr': {'class': 'form-check-input'}}) }}
-                                {{ form_label(field, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                {{ form_errors(field) }}
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    {# Regular field - add to current row or start new row #}
-                    {% if current_row_width + col_width > 12 %}
-                        {# Start new row #}
-                        <div class="row">
-                            {% for row_field in current_row_fields %}
-                                {{ row_field|raw }}
-                            {% endfor %}
-                        </div>
-                        {% set current_row_fields = [] %}
-                        {% set current_row_width = 0 %}
-                    {% endif %}
-
-                    {# Capture field HTML #}
-                    {% set field_html %}
-                        <div class="col-md-{{ col_width }}">
-                            {% set help_key = help_texts[field_name]|default(null) %}
-                            {% set tooltip_key = tooltips[field_name]|default(null) %}
-                            {# Use passed translation_domain for tooltips, fallback to field's domain #}
-                            {% set trans_domain = passed_translation_domain ? passed_translation_domain : field.vars.translation_domain|default('messages') %}
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': field,
-                                'label_key': field.vars.label,
-                                'help_key': help_key,
-                                'tooltip_key': tooltip_key,
-                                'translation_domain': trans_domain,
-                                'required': field.vars.required,
-                                'automatic': field_name in automatic_fields
-                            } %}
-                        </div>
-                    {% endset %}
-
-                    {% set current_row_fields = current_row_fields|merge([field_html]) %}
-                    {% set current_row_width = current_row_width + col_width %}
-                {% endif %}
+    {# Build sections array for the macro, computing fill-progress per section #}
+    {% set fa_form_sections = [] %}
+    {% for section_key, section_def in sections %}
+        {% set section_field_count = section_def.fields|length %}
+        {% set section_filled = 0 %}
+        {% for field_name in section_def.fields %}
+            {% if form[field_name] is defined and form[field_name].vars.value is not empty %}
+                {% set section_filled = section_filled + 1 %}
             {% endif %}
         {% endfor %}
 
-        {# Flush remaining row #}
-        {% if current_row_fields|length > 0 %}
-            <div class="row">
-                {% for row_field in current_row_fields %}
-                    {{ row_field|raw }}
-                {% endfor %}
+        {# Derive status from fill ratio #}
+        {% if section_filled == section_field_count and section_field_count > 0 %}
+            {% set section_status = 'done' %}
+        {% elseif section_filled > 0 %}
+            {% set section_status = 'current' %}
+        {% else %}
+            {% set section_status = 'pending' %}
+        {% endif %}
+
+        {# Render section body via the shared partial #}
+        {% set section_body %}
+            {% include '_components/_auto_form_section_body.html.twig' with {
+                'form':               form,
+                'section_fields':     section_def.fields,
+                'col_widths':         col_widths|default({}),
+                'help_texts':         help_texts,
+                'tooltips':           tooltips,
+                'exclude_fields':     exclude_fields,
+                'automatic_fields':   automatic_fields,
+                'translation_domain': passed_translation_domain
+            } %}
+        {% endset %}
+
+        {% set fa_form_sections = fa_form_sections|merge([{
+            'id':     'sec-' ~ section_key,
+            'title':  section_def.label,
+            'status': section_status,
+            'fields': section_field_count,
+            'filled': section_filled,
+            'body':   section_body
+        }]) %}
+    {% endfor %}
+
+    {# Count done sections for progress bar #}
+    {% set _done_count = 0 %}
+    {% for sec in fa_form_sections %}
+        {% if sec.status == 'done' %}
+            {% set _done_count = _done_count + 1 %}
+        {% endif %}
+    {% endfor %}
+
+    {# Build default actions if none provided #}
+    {% set _default_actions = {
+        'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+    } %}
+    {% if actions is defined and actions %}
+        {# Translate string labels in passed actions (close/next/submit) #}
+        {% set _resolved_actions = {} %}
+        {% for action_key, action_def in actions %}
+            {% set _resolved_actions = _resolved_actions|merge({
+                (action_key): action_def
+            }) %}
+        {% endfor %}
+        {% set _actions = _resolved_actions %}
+    {% else %}
+        {% set _actions = _default_actions %}
+    {% endif %}
+
+    {{ _fa_form.render({
+        'eyebrow':   eyebrow|default(null),
+        'title':     title|default('Form'),
+        'subtitle':  subtitle|default(null),
+        'progress':  {
+            'done':  _done_count,
+            'total': fa_form_sections|length
+        },
+        'sections':  fa_form_sections,
+        'actions':   _actions
+    }) }}
+
+{# ════════════════════════════════════════════════════════════════════════════
+   FLAT LAYOUT (default) — original behaviour, zero regression risk
+   ════════════════════════════════════════════════════════════════════════════ #}
+{% else %}
+
+    {% for section_key, section in sections %}
+        <fieldset class="mb-4">
+            <legend class="h5 mb-3">{{ section.label|raw }}</legend>
+
+            {% include '_components/_auto_form_section_body.html.twig' with {
+                'form':               form,
+                'section_fields':     section.fields,
+                'col_widths':         col_widths|default({}),
+                'help_texts':         help_texts,
+                'tooltips':           tooltips,
+                'exclude_fields':     exclude_fields,
+                'automatic_fields':   automatic_fields,
+                'translation_domain': passed_translation_domain
+            } %}
+        </fieldset>
+    {% endfor %}
+
+    {# ─── Catch-all: render any form-field NOT listed in sections ─────────────
+       Symfony's form_end() auto-renders unrendered fields via form_rest, which
+       would land them AFTER the submit-button. Render them here under a final
+       "Weitere Felder" fieldset so the form stays single-block.
+
+       Skip via {skip_other: true} param if caller intentionally manages all
+       fields (e.g. has its own form_widget calls outside this component).
+
+       S4 P-2 SectionPolicy note: if the FormType implements SectionMapInterface,
+       any field that ends up here is a leak — it means the section-map is out
+       of sync with the builder. In dev-env we render a visible warning. CI-gate
+       `scripts/quality/check_form_sections.py` enforces parity.
+    #}
+    {% set _has_section_map = form_section_map(form) is not null %}
+    {% if not skip_other %}
+        {% set other_fields = [] %}
+        {% for child in form %}
+            {% set child_name = child.vars.name %}
+            {% if child_name not in listed_fields and child_name not in exclude_fields and child.vars.block_prefixes[1]|default('') != 'hidden' %}
+                {% set other_fields = other_fields|merge([child_name]) %}
+            {% endif %}
+        {% endfor %}
+
+        {% if other_fields|length > 0 %}
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">{{ other_section_label }}</legend>
+                {% if _has_section_map and app.environment == 'dev' %}
+                    <div class="alert alert-warning small mb-3" role="alert">
+                        <strong>{{ 'form.section.warning.unmapped_title'|trans({}, 'messages') }}</strong>
+                        {{ 'form.section.warning.unmapped_body'|trans({ '%fields%': other_fields|join(', ') }, 'messages') }}
+                    </div>
+                {% endif %}
+
+                {% include '_components/_auto_form_section_body.html.twig' with {
+                    'form':               form,
+                    'section_fields':     other_fields,
+                    'col_widths':         col_widths|default({}),
+                    'help_texts':         help_texts,
+                    'tooltips':           tooltips,
+                    'exclude_fields':     exclude_fields,
+                    'automatic_fields':   automatic_fields,
+                    'translation_domain': passed_translation_domain
+                } %}
+            </fieldset>
+        {% endif %}
+    {% endif %}
+
+    {# ─── H-03 dev-only visibility ───────────────────────────────────────────
+       Show which fields are suppressed by strict_whitelist (privilege-escalation
+       safeguard) OR rendered via the catch-all (potential leak risk). Dev only.
+       Hidden in prod for performance + UX. #}
+    {% if app.environment == 'dev' %}
+        {% set _unmapped_fields = [] %}
+        {% for child in form %}
+            {% set child_name = child.vars.name %}
+            {% set child_type = child.vars.block_prefixes[1]|default('') %}
+            {% if child_name not in listed_fields
+                and child_name not in exclude_fields
+                and child_type != 'hidden'
+                and child_name != '_token' %}
+                {% set _unmapped_fields = _unmapped_fields|merge([child_name]) %}
+            {% endif %}
+        {% endfor %}
+        {% if _unmapped_fields|length > 0 and strict_whitelist %}
+            <div class="alert alert-info small mb-3" role="alert">
+                <strong>[dev] H-03 strict whitelist:</strong>
+                {{ _unmapped_fields|length }} field(s) suppressed
+                (privilege-escalation safeguard):
+                <code>{{ _unmapped_fields|join(', ') }}</code>.
+                Add to a <code>sections</code> entry to render them.
+            </div>
+        {% elseif _unmapped_fields|length > 0 and not skip_other %}
+            <div class="alert alert-warning small mb-3" role="alert">
+                <strong>[dev] @todo H-03 section-policy:</strong>
+                {{ _unmapped_fields|length }} field(s) rendered via catch-all
+                (no section-policy whitelist):
+                <code>{{ _unmapped_fields|join(', ') }}</code>.
+                Privilege-escalation risk if any are sensitive (roles, permissions,
+                tenant, isActive). Add to <code>sections</code> or pass
+                <code>strict_whitelist: true</code>.
             </div>
         {% endif %}
-    </fieldset>
-{% endfor %}
-
-{# ─── Catch-all: render any form-field NOT listed in sections ──────────────
-   Symfony's form_end() auto-renders unrendered fields via form_rest, which
-   would land them AFTER the submit-button. Render them here under a final
-   "Weitere Felder" fieldset so the form stays single-block.
-
-   Skip via {skip_other: true} param if caller intentionally manages all
-   fields (e.g. has its own form_widget calls outside this component).
-
-   S4 P-2 SectionPolicy note: if the FormType implements SectionMapInterface,
-   any field that ends up here is a leak — it means the section-map is out
-   of sync with the builder. In dev-env we render a visible warning. CI-gate
-   `scripts/quality/check_form_sections.py` enforces parity.
-#}
-{% set _has_section_map = form_section_map(form) is not null %}
-{% if not skip_other %}
-    {% set other_fields = [] %}
-    {% for child in form %}
-        {% set child_name = child.vars.name %}
-        {% if child_name not in listed_fields and child_name not in exclude_fields and child.vars.block_prefixes[1]|default('') != 'hidden' %}
-            {% set other_fields = other_fields|merge([child_name]) %}
-        {% endif %}
-    {% endfor %}
-
-    {% if other_fields|length > 0 %}
-        <fieldset class="mb-4">
-            <legend class="h5 mb-3">{{ other_section_label }}</legend>
-            {% if _has_section_map and app.environment == 'dev' %}
-                <div class="alert alert-warning small mb-3" role="alert">
-                    <strong>{{ 'form.section.warning.unmapped_title'|trans({}, 'messages') }}</strong>
-                    {{ 'form.section.warning.unmapped_body'|trans({ '%fields%': other_fields|join(', ') }, 'messages') }}
-                </div>
-            {% endif %}
-            {% set current_row_fields = [] %}
-            {% set current_row_width = 0 %}
-            {% for field_name in other_fields %}
-                {% set field = form[field_name] %}
-                {% set field_type = field.vars.block_prefixes[1]|default('text') %}
-                {% set col_width = col_widths[field_name]|default(default_col_width) %}
-
-                {% if field_type == 'checkbox' %}
-                    {% if current_row_fields|length > 0 %}
-                        <div class="row">
-                            {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
-                        </div>
-                        {% set current_row_fields = [] %}
-                        {% set current_row_width = 0 %}
-                    {% endif %}
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-check mb-3">
-                                {{ form_widget(field, {'attr': {'class': 'form-check-input'}}) }}
-                                {{ form_label(field, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                {{ form_errors(field) }}
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    {% if current_row_width + col_width > 12 %}
-                        <div class="row">
-                            {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
-                        </div>
-                        {% set current_row_fields = [] %}
-                        {% set current_row_width = 0 %}
-                    {% endif %}
-                    {% set field_html %}
-                        <div class="col-md-{{ col_width }}">
-                            {% set help_key = help_texts[field_name]|default(null) %}
-                            {% set tooltip_key = tooltips[field_name]|default(null) %}
-                            {% set trans_domain = passed_translation_domain ? passed_translation_domain : field.vars.translation_domain|default('messages') %}
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': field,
-                                'label_key': field.vars.label,
-                                'help_key': help_key,
-                                'tooltip_key': tooltip_key,
-                                'translation_domain': trans_domain,
-                                'required': field.vars.required,
-                                'automatic': field_name in automatic_fields
-                            } %}
-                        </div>
-                    {% endset %}
-                    {% set current_row_fields = current_row_fields|merge([field_html]) %}
-                    {% set current_row_width = current_row_width + col_width %}
-                {% endif %}
-            {% endfor %}
-            {% if current_row_fields|length > 0 %}
-                <div class="row">
-                    {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
-                </div>
-            {% endif %}
-        </fieldset>
     {% endif %}
-{% endif %}
 
-{# ─── H-03 dev-only visibility ─────────────────────────────────────────────
-   Show which fields are suppressed by strict_whitelist (privilege-escalation
-   safeguard) OR rendered via the catch-all (potential leak risk). Dev only.
-   Hidden in prod for performance + UX. #}
-{% if app.environment == 'dev' %}
-    {% set _unmapped_fields = [] %}
-    {% for child in form %}
-        {% set child_name = child.vars.name %}
-        {% set child_type = child.vars.block_prefixes[1]|default('') %}
-        {% if child_name not in listed_fields
-            and child_name not in exclude_fields
-            and child_type != 'hidden'
-            and child_name != '_token' %}
-            {% set _unmapped_fields = _unmapped_fields|merge([child_name]) %}
-        {% endif %}
-    {% endfor %}
-    {% if _unmapped_fields|length > 0 and strict_whitelist %}
-        <div class="alert alert-info small mb-3" role="alert">
-            <strong>[dev] H-03 strict whitelist:</strong>
-            {{ _unmapped_fields|length }} field(s) suppressed
-            (privilege-escalation safeguard):
-            <code>{{ _unmapped_fields|join(', ') }}</code>.
-            Add to a <code>sections</code> entry to render them.
-        </div>
-    {% elseif _unmapped_fields|length > 0 and not skip_other %}
-        <div class="alert alert-warning small mb-3" role="alert">
-            <strong>[dev] @todo H-03 section-policy:</strong>
-            {{ _unmapped_fields|length }} field(s) rendered via catch-all
-            (no section-policy whitelist):
-            <code>{{ _unmapped_fields|join(', ') }}</code>.
-            Privilege-escalation risk if any are sensitive (roles, permissions,
-            tenant, isActive). Add to <code>sections</code> or pass
-            <code>strict_whitelist: true</code>.
-        </div>
-    {% endif %}
-{% endif %}
+{% endif %}{# end layout == 'flat' #}
