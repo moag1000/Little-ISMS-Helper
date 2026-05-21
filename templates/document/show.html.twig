@@ -324,9 +324,7 @@
                 {% endif %}
                 {% if is_granted('ROLE_AUDITOR') and (canEdit is not defined or canEdit) %}
                     <button type="button"
-                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#effectivenessReviewModal">
+                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="effectivenessReviewModal">
                         <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                         {{ 'document.effectiveness.action.record'|trans({}, 'document') }}
                     </button>
@@ -426,22 +424,25 @@
     {% if is_granted('ROLE_AUDITOR') and (canEdit is not defined or canEdit) %}
         {# Effectiveness-Review Modal — Bootstrap modal (lazy-loaded
            via the existing modal-pattern documented in CLAUDE.md). #}
-        <div  class="modal fade"  id="effectivenessReviewModal" tabindex="-1"
-             aria-labelledby="effectivenessReviewModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <div class="fa-modal fa-modal--confirm fa-modal--neutral" id="effectivenessReviewModal"
+             data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"
+             role="dialog" aria-modal="true" aria-labelledby="effectivenessReviewModalLabel" aria-hidden="true">
+            <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+            <div class="fa-modal__container" data-fa-modal-target="dialog">
                 <form method="post" action="{{ path('app_document_mark_effectiveness_reviewed', {id: document.id}) }}"
-                      class="modal-content"
+                      data-fa-modal-target="form"
                       data-turbo="false">
                     <input type="hidden" name="_token" value="{{ csrf_token('document_effectiveness_review_' ~ document.id) }}">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="effectivenessReviewModalLabel">
-                            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
-                            {{ 'document.effectiveness.modal.title'|trans({}, 'document') }}
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
-                    </div>
-                    <div class="modal-body">
+                    <header class="fa-modal__header">
+                        <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--compliance-shield"></i></span>
+                        <div class="fa-modal__heading">
+                            <h2 class="fa-modal__title" id="effectivenessReviewModalLabel">
+                                {{ 'document.effectiveness.modal.title'|trans({}, 'document') }}
+                            </h2>
+                        </div>
+                        <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
+                    </header>
+                    <div class="fa-modal__body">
                         <p class="small text-muted">{{ 'document.effectiveness.modal.intro'|trans({}, 'document') }}</p>
                         <div class="mb-3">
                             <label for="effectivenessReviewNotes" class="form-label">
@@ -461,15 +462,15 @@
                             </label>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
+                    <footer class="fa-modal__footer">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">
                             {{ 'common.cancel'|trans({}, 'messages') }}
                         </button>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
                             {{ 'document.effectiveness.modal.submit'|trans({}, 'document') }}
                         </button>
-                    </div>
+                    </footer>
                 </form>
             </div>
         </div>
