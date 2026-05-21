@@ -550,6 +550,9 @@ class DataBreachController extends AbstractController
         }
 
         $data = json_decode($request->getContent(), true);
+        if (!$this->isCsrfTokenValid('bulk_action', (string) ($data['_token'] ?? ''))) {
+            return $this->json(['error' => 'Invalid CSRF token'], 403);
+        }
         $ids  = $data['ids'] ?? [];
         if (!is_array($ids) || $ids === []) {
             return $this->json(['error' => 'No items selected'], 400);

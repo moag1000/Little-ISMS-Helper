@@ -136,7 +136,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     public function dataBreachExportRequiresAuth(): void
     {
         $this->client->request('POST', '/en/data-breach/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->breach->getId()]]));
+            json_encode(['ids' => [$this->breach->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseRedirects();
     }
 
@@ -145,7 +145,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->auditorRole);
         $this->client->request('POST', '/en/data-breach/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->breach->getId()]]));
+            json_encode(['ids' => [$this->breach->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('text/csv', $this->client->getResponse()->headers->get('Content-Type') ?? '');
     }
@@ -155,7 +155,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->auditorRole);
         $this->client->request('POST', '/en/data-breach/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->otherBreach->getId()]]));
+            json_encode(['ids' => [$this->otherBreach->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
@@ -174,7 +174,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->userRole);
         $this->client->request('POST', '/en/dpia/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->dpia->getId()]]));
+            json_encode(['ids' => [$this->dpia->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('text/csv', $this->client->getResponse()->headers->get('Content-Type') ?? '');
     }
@@ -184,7 +184,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->userRole);
         $this->client->request('POST', '/en/dpia/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->otherDpia->getId()]]));
+            json_encode(['ids' => [$this->otherDpia->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
@@ -203,7 +203,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->userRole);
         $this->client->request('POST', '/en/processing-activity/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->pa->getId()]]));
+            json_encode(['ids' => [$this->pa->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('text/csv', $this->client->getResponse()->headers->get('Content-Type') ?? '');
     }
@@ -213,7 +213,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->userRole);
         $this->client->request('POST', '/en/processing-activity/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->otherPa->getId()]]));
+            json_encode(['ids' => [$this->otherPa->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
@@ -232,7 +232,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->userRole);
         $this->client->request('POST', '/en/processing-activity/bulk-status-change', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->pa->getId()], 'newStatus' => 'in_review']));
+            json_encode(['ids' => [$this->pa->getId()], 'newStatus' => 'in_review', '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
@@ -241,10 +241,39 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->managerRole);
         $this->client->request('POST', '/en/processing-activity/bulk-status-change', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->pa->getId()], 'newStatus' => 'in_review']));
+            json_encode(['ids' => [$this->pa->getId()], 'newStatus' => 'in_review', '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseIsSuccessful();
         $body = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertArrayHasKey('ok', $body);
+    }
+
+    // ── CSRF enforcement (audit C-1 / OWASP A01) ────────────────────────────
+
+    #[Test]
+    public function processingActivityExportRejectsMissingCsrfToken(): void
+    {
+        $this->client->loginUser($this->userRole);
+        $this->client->request('POST', '/en/processing-activity/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['ids' => [$this->pa->getId()]]));
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function processingActivityStatusChangeRejectsMissingCsrfToken(): void
+    {
+        $this->client->loginUser($this->managerRole);
+        $this->client->request('POST', '/en/processing-activity/bulk-status-change', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['ids' => [$this->pa->getId()], 'newStatus' => 'in_review']));
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function dataBreachExportRejectsMissingCsrfToken(): void
+    {
+        $this->client->loginUser($this->auditorRole);
+        $this->client->request('POST', '/en/data-breach/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['ids' => [$this->breach->getId()]]));
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     // ── Consent bulk-export ──────────────────────────────────────────────────
@@ -262,7 +291,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->dpoRole);
         $this->client->request('POST', '/en/consent/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->consent->getId()]]));
+            json_encode(['ids' => [$this->consent->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('text/csv', $this->client->getResponse()->headers->get('Content-Type') ?? '');
     }
@@ -272,7 +301,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->dpoRole);
         $this->client->request('POST', '/en/consent/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->otherConsent->getId()]]));
+            json_encode(['ids' => [$this->otherConsent->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
@@ -291,7 +320,7 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->dpoRole);
         $this->client->request('POST', '/en/data-subject-request/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->dsr->getId()]]));
+            json_encode(['ids' => [$this->dsr->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('text/csv', $this->client->getResponse()->headers->get('Content-Type') ?? '');
     }
@@ -301,11 +330,30 @@ class PrivacyModuleBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->dpoRole);
         $this->client->request('POST', '/en/data-subject-request/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->otherDsr->getId()]]));
+            json_encode(['ids' => [$this->otherDsr->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────
+
+
+    /**
+     * Generates a valid CSRF token for bulk-action endpoints by writing it
+     * directly to the session (audit C-1 — OWASP A01).
+     */
+    private function getBulkCsrfToken(): string
+    {
+        // Symfony's session-based CSRF stores tokens under the key '_csrf/<tokenId>'
+        $tokenValue = bin2hex(random_bytes(16));
+        $container  = static::getContainer();
+        /** @var \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface $csrfManager */
+        $csrfManager = $container->get('security.csrf.token_manager');
+        // Refresh the token for the 'bulk_action' ID so isCsrfTokenValid passes.
+        // Warm the session via a GET request so CSRF storage can persist tokens.
+        $this->client->request('GET', '/');
+        $token = $csrfManager->getToken('bulk_action');
+        return $token->getValue();
+    }
 
     private function makeUser(string $email, array $roles, Tenant $tenant): User
     {

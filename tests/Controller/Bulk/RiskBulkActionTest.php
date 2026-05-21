@@ -104,7 +104,7 @@ class RiskBulkActionTest extends WebTestCase
     {
         $this->client->request('POST', '/en/risk/bulk-export', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$this->risk->getId()]]));
+        ], json_encode(['ids' => [$this->risk->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseRedirects();
     }
 
@@ -114,7 +114,7 @@ class RiskBulkActionTest extends WebTestCase
         $this->client->loginUser($this->userRole);
         $this->client->request('POST', '/en/risk/bulk-export', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$this->risk->getId()]]));
+        ], json_encode(['ids' => [$this->risk->getId()], '_token' => $this->getBulkCsrfToken()]));
 
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('text/csv', $this->client->getResponse()->headers->get('Content-Type') ?? '');
@@ -126,10 +126,45 @@ class RiskBulkActionTest extends WebTestCase
         $this->client->loginUser($this->userRole);
         $this->client->request('POST', '/en/risk/bulk-export', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$this->otherRisk->getId()]]));
+        ], json_encode(['ids' => [$this->otherRisk->getId()], '_token' => $this->getBulkCsrfToken()]));
 
         // No exportable items → 404 JSON
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    // ── CSRF enforcement (audit C-1 / OWASP A01) ────────────────────────────
+
+    #[Test]
+    public function exportRejectsMissingCsrfToken(): void
+    {
+        $this->client->loginUser($this->userRole);
+        $this->client->request('POST', '/en/risk/bulk-export', [], [], [
+            'CONTENT_TYPE' => 'application/json',
+        ], json_encode(['ids' => [$this->risk->getId()]]));
+        // Missing _token → 403 Forbidden
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function exportRejectsInvalidCsrfToken(): void
+    {
+        $this->client->loginUser($this->userRole);
+        $this->client->request('POST', '/en/risk/bulk-export', [], [], [
+            'CONTENT_TYPE' => 'application/json',
+        ], json_encode(['ids' => [$this->risk->getId()], '_token' => 'invalid-token']));
+        // Invalid _token → 403 Forbidden
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    #[Test]
+    public function assignRejectsMissingCsrfToken(): void
+    {
+        $this->client->loginUser($this->managerRole);
+        $this->client->request('POST', '/en/risk/bulk-assign', [], [], [
+            'CONTENT_TYPE' => 'application/json',
+        ], json_encode(['ids' => [$this->risk->getId()], 'assignee_id' => $this->managerRole->getId()]));
+        // Missing _token → 403 Forbidden
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     // ── bulk-assign ──────────────────────────────────────────────────────────
@@ -148,7 +183,7 @@ class RiskBulkActionTest extends WebTestCase
         $this->client->loginUser($this->userRole);
         $this->client->request('POST', '/en/risk/bulk-assign', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$this->risk->getId()], 'assignee_id' => $this->userRole->getId()]));
+        ], json_encode(['ids' => [$this->risk->getId()], 'assignee_id' => $this->userRole->getId(), '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
@@ -158,7 +193,7 @@ class RiskBulkActionTest extends WebTestCase
         $this->client->loginUser($this->managerRole);
         $this->client->request('POST', '/en/risk/bulk-assign', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$this->risk->getId()], 'assignee_id' => $this->managerRole->getId()]));
+        ], json_encode(['ids' => [$this->risk->getId()], 'assignee_id' => $this->managerRole->getId(), '_token' => $this->getBulkCsrfToken()]));
 
         $this->assertResponseIsSuccessful();
         $body = json_decode($this->client->getResponse()->getContent(), true);
@@ -172,7 +207,7 @@ class RiskBulkActionTest extends WebTestCase
         $this->client->loginUser($this->managerRole);
         $this->client->request('POST', '/en/risk/bulk-assign', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => [$this->otherRisk->getId()], 'assignee_id' => $this->managerRole->getId()]));
+        ], json_encode(['ids' => [$this->otherRisk->getId()], 'assignee_id' => $this->managerRole->getId(), '_token' => $this->getBulkCsrfToken()]));
 
         $this->assertResponseIsSuccessful();
         $body = json_decode($this->client->getResponse()->getContent(), true);
@@ -180,6 +215,25 @@ class RiskBulkActionTest extends WebTestCase
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────
+
+
+    /**
+     * Generates a valid CSRF token for bulk-action endpoints by writing it
+     * directly to the session (audit C-1 — OWASP A01).
+     */
+    private function getBulkCsrfToken(): string
+    {
+        // Symfony's session-based CSRF stores tokens under the key '_csrf/<tokenId>'
+        $tokenValue = bin2hex(random_bytes(16));
+        $container  = static::getContainer();
+        /** @var \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface $csrfManager */
+        $csrfManager = $container->get('security.csrf.token_manager');
+        // Refresh the token for the 'bulk_action' ID so isCsrfTokenValid passes.
+        // Warm the session via a GET request so CSRF storage can persist tokens.
+        $this->client->request('GET', '/');
+        $token = $csrfManager->getToken('bulk_action');
+        return $token->getValue();
+    }
 
     private function makeUser(string $email, array $roles, Tenant $tenant): User
     {

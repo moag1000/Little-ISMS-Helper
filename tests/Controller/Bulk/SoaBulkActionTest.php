@@ -75,7 +75,7 @@ class SoaBulkActionTest extends WebTestCase
     public function exportRequiresAuth(): void
     {
         $this->client->request('POST', '/en/soa/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->control->getId()]]));
+            json_encode(['ids' => [$this->control->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseRedirects();
     }
 
@@ -84,7 +84,7 @@ class SoaBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->userRole);
         $this->client->request('POST', '/en/soa/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->control->getId()]]));
+            json_encode(['ids' => [$this->control->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('text/csv', $this->client->getResponse()->headers->get('Content-Type') ?? '');
     }
@@ -94,8 +94,27 @@ class SoaBulkActionTest extends WebTestCase
     {
         $this->client->loginUser($this->userRole);
         $this->client->request('POST', '/en/soa/bulk-export', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['ids' => [$this->otherControl->getId()]]));
+            json_encode(['ids' => [$this->otherControl->getId()], '_token' => $this->getBulkCsrfToken()]));
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+
+    /**
+     * Generates a valid CSRF token for bulk-action endpoints by writing it
+     * directly to the session (audit C-1 — OWASP A01).
+     */
+    private function getBulkCsrfToken(): string
+    {
+        // Symfony's session-based CSRF stores tokens under the key '_csrf/<tokenId>'
+        $tokenValue = bin2hex(random_bytes(16));
+        $container  = static::getContainer();
+        /** @var \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface $csrfManager */
+        $csrfManager = $container->get('security.csrf.token_manager');
+        // Refresh the token for the 'bulk_action' ID so isCsrfTokenValid passes.
+        // Warm the session via a GET request so CSRF storage can persist tokens.
+        $this->client->request('GET', '/');
+        $token = $csrfManager->getToken('bulk_action');
+        return $token->getValue();
     }
 
     private function makeUser(string $email, Tenant $tenant): User

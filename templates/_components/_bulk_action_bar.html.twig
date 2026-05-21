@@ -203,6 +203,7 @@
 
     <div class="{{ barClass }}"
          data-bulk-actions-target="actionBar"
+         data-bulk-actions-csrf-token="{{ csrf_token('bulk_action') }}"
          hidden
          role="region"
          aria-live="polite"
