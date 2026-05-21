@@ -58,6 +58,7 @@ export default class extends Controller {
     static targets = ['item', 'actionBar', 'bar', 'count', 'selectAllCheckbox'];
     static values = {
         endpoint: String,
+        csrfToken: { type: String, default: '' },
         // Translation strings
         entityLabel: { type: String, default: 'items' },
         deleteSuccess: { type: String, default: '%count% %entity% successfully deleted' },
@@ -84,12 +85,25 @@ export default class extends Controller {
         const bar = this.hasActionBarTarget ? this.actionBarTarget : (this.hasBarTarget ? this.barTarget : null);
         if (bar) {
             this._bar = bar;
+            // Cache the CSRF token from the bar's data attribute before teleport
+            // (data-bulk-actions-csrf-token on the bar element, set by _bulk_action_bar.html.twig).
+            if (!this.csrfTokenValue && bar.dataset.bulkActionsCsrfToken) {
+                this._csrfToken = bar.dataset.bulkActionsCsrfToken;
+            }
             if (bar.parentElement !== document.body) {
                 this._barOriginalParent = bar.parentElement;
                 document.body.appendChild(bar);
             }
         }
         this.updateActionBar();
+    }
+
+    /**
+     * Returns the CSRF token for bulk-action POSTs (OWASP A01 / ISO 27001 Cl. 7.5.3).
+     * Reads from Stimulus value first, then from bar data attribute cache.
+     */
+    _getCsrfToken() {
+        return this.csrfTokenValue || this._csrfToken || '';
     }
 
     disconnect() {
@@ -289,7 +303,7 @@ export default class extends Controller {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify({ ids })
+                body: JSON.stringify({ ids, _token: this._getCsrfToken() })
             });
 
             if (!response.ok) {
@@ -377,7 +391,7 @@ export default class extends Controller {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify({ ids, newStatus })
+                body: JSON.stringify({ ids, newStatus, _token: this._getCsrfToken() })
             });
 
             const payload = await response.json();
