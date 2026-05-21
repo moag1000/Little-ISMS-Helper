@@ -1,0 +1,92 @@
+{#
+    _auto_form_section_body.html.twig — Internal partial for _auto_form.html.twig
+
+    Renders the fields of a single form section.
+    Used by BOTH the flat and outline-rail layouts to avoid duplication.
+
+    Parameters:
+    - form            (FormView)     — The Symfony form object
+    - section_fields  (array)        — Ordered list of field names to render
+    - col_widths      (array)        — Optional map of field_name → Bootstrap col width (1–12)
+    - help_texts      (array)        — Optional map of field_name → pre-translated help text
+    - tooltips        (array)        — Optional map of field_name → translation key for tooltip
+    - exclude_fields  (array)        — Optional list of field names to skip (from parent context)
+    - automatic_fields (array)       — Optional list of field names that are auto-populated
+    - translation_domain (string|null) — Optional override translation domain for tooltips
+#}
+{% set col_widths       = col_widths|default({}) %}
+{% set help_texts       = help_texts|default({}) %}
+{% set tooltips         = tooltips|default({}) %}
+{% set exclude_fields   = exclude_fields|default([]) %}
+{% set automatic_fields = automatic_fields|default([]) %}
+{% set default_col_width = 12 %}
+{% set passed_translation_domain = translation_domain|default(null) %}
+
+{% set current_row_fields = [] %}
+{% set current_row_width  = 0 %}
+
+{% for field_name in section_fields %}
+    {% if field_name not in exclude_fields and form[field_name] is defined %}
+        {% set field      = form[field_name] %}
+        {% set field_type = field.vars.block_prefixes[1]|default('text') %}
+        {% set col_width  = col_widths[field_name]|default(default_col_width) %}
+
+        {% if field_type == 'checkbox' %}
+            {# Flush current row before rendering a full-width checkbox #}
+            {% if current_row_fields|length > 0 %}
+                <div class="row">
+                    {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
+                </div>
+                {% set current_row_fields = [] %}
+                {% set current_row_width  = 0 %}
+            {% endif %}
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-check mb-3">
+                        {{ form_widget(field, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(field, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                        {{ form_errors(field) }}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            {# Start a new row if adding this field would exceed 12 columns #}
+            {% if current_row_width + col_width > 12 %}
+                <div class="row">
+                    {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
+                </div>
+                {% set current_row_fields = [] %}
+                {% set current_row_width  = 0 %}
+            {% endif %}
+
+            {# Capture field HTML for batched row output #}
+            {% set field_html %}
+                <div class="col-md-{{ col_width }}">
+                    {% set help_key    = help_texts[field_name]|default(null) %}
+                    {% set tooltip_key = tooltips[field_name]|default(null) %}
+                    {% set trans_domain = passed_translation_domain ? passed_translation_domain : field.vars.translation_domain|default('messages') %}
+                    {% include '_components/_form_field.html.twig' with {
+                        'field':              field,
+                        'label_key':          field.vars.label,
+                        'help_key':           help_key,
+                        'tooltip_key':        tooltip_key,
+                        'translation_domain': trans_domain,
+                        'required':           field.vars.required,
+                        'automatic':          field_name in automatic_fields
+                    } %}
+                </div>
+            {% endset %}
+
+            {% set current_row_fields = current_row_fields|merge([field_html]) %}
+            {% set current_row_width  = current_row_width + col_width %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{# Flush any remaining fields in the last partial row #}
+{% if current_row_fields|length > 0 %}
+    <div class="row">
+        {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
+    </div>
+{% endif %}
