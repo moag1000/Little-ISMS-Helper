@@ -41,6 +41,17 @@ RE_TWIG_BI_CLASS = re.compile(
 # PHP: 'bi-name' / "bi-name" string literals
 RE_PHP_BI_LITERAL = re.compile(r"""['"]bi-[a-z0-9][a-z0-9-]*['"]""")
 
+# JS/TS: class="bi …" or class="bi-foo …" injected via innerHTML / template literals
+RE_JS_BI_CLASS = re.compile(
+    r"""class\s*=\s*["'`]              # class=" or class=` (template literals)
+        (?:[^"'`]*\s)?                  # optional preceding classes
+        bi(?:-[a-z0-9-]+)?             # `bi` alone OR `bi-foo`
+        (?:\s[^"'`]*)?                  # optional trailing classes
+        ["'`]
+    """,
+    re.VERBOSE,
+)
+
 
 def is_skipped(path: Path) -> bool:
     parts = path.relative_to(ROOT).parts
@@ -91,6 +102,23 @@ def scan_php(path: Path) -> list[tuple[int, str]]:
     return out
 
 
+def scan_js(path: Path) -> list[tuple[int, str]]:
+    try:
+        text = path.read_text(encoding="utf-8", errors="ignore")
+    except OSError:
+        return []
+    if "bi" not in text:
+        return []
+    out: list[tuple[int, str]] = []
+    for idx, raw in enumerate(text.splitlines(), start=1):
+        s = raw.lstrip()
+        if s.startswith("//") or s.startswith("*"):
+            continue
+        if RE_JS_BI_CLASS.search(raw):
+            out.append((idx, raw.strip()[:160]))
+    return out
+
+
 def walk(root: Path, pat: str) -> list[Path]:
     return sorted(p for p in root.glob(pat) if p.is_file() and not is_skipped(p))
 
@@ -126,6 +154,9 @@ def main() -> int:
             violations.append((f, ln, snip))
     for f in walk(ROOT / "src", "**/*.php"):
         for ln, snip in scan_php(f):
+            violations.append((f, ln, snip))
+    for f in walk(ROOT / "assets" / "controllers", "**/*.js"):
+        for ln, snip in scan_js(f):
             violations.append((f, ln, snip))
 
     if args.write_baseline is not None:
