@@ -5,108 +5,89 @@
 {% block title %}{{ 'threat.title.edit'|trans({}, 'threat') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid mt-4">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'threat.title.index'|trans({}, 'threat'), url: path('app_threat_intelligence_index'), icon: 'nav-shield-alert' },
-            { label: threat.title, url: path('app_threat_intelligence_show', {id: threat.id}) },
-            { label: 'threat.title.edit'|trans({}, 'threat') }
-        ]
-    } %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'threat.title.index'|trans({}, 'threat'), url: path('app_threat_intelligence_index'), icon: 'nav-shield-alert' },
+        { label: threat.title, url: path('app_threat_intelligence_show', {id: threat.id}) },
+        { label: 'threat.title.edit'|trans({}, 'threat') }
+    ]
+} %}
 
-    {{ _fa_page_header.render({
-        title: 'threat.title.edit'|trans({}, 'threat') ~ ': ' ~ threat.title,
-        badge: { icon: 'ui-edit', label: '' },
-        actions: [
-            { label: 'common.back'|trans({}, 'messages'), href: path('app_threat_intelligence_show', {id: threat.id}), variant: 'secondary', icon: 'util-arrow-left' }
-        ]
-    }) }}
+{{ _fa_page_header.render({
+    title: 'threat.title.edit'|trans({}, 'threat') ~ ': ' ~ threat.title,
+    badge: { icon: 'ui-edit', label: '' },
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_threat_intelligence_show', {id: threat.id}), variant: 'secondary', icon: 'util-arrow-left' }
+    ]
+}) }}
 
-    {{ form_start(form) }}
-
-    {% include '_components/_auto_form.html.twig' with {
-        'form': form,
-        'layout': 'outline-rail',
-        'eyebrow': 'ISO 27001 A.5.7 · Threat Intelligence',
-        'title': 'threat.title.edit'|trans({}, 'threat') ~ ': ' ~ threat.title,
-        'sections': {
-            'overview': {
-                'label': 'threat.section.overview'|trans({}, 'threat'),
-                'fields': ['title', 'description', 'threatType', 'severity', 'status']
-            },
-            'intelligence_source': {
-                'label': 'threat.section.intelligence_source'|trans({}, 'threat'),
-                'fields': ['source', 'cveId', 'cvssScore', 'detectionDate', 'mitigationDate']
-            },
-            'threat_classification': {
-                'label': 'threat.section.threat_classification'|trans({}, 'threat'),
-                'fields': ['affectsOrganization', 'tlpClassification', 'threatActorAttribution', 'confidenceLevel', 'mitreAttackTactics', 'mitreAttackTechniques', 'iocsList', 'sharedExternally']
-            },
-            'affected_assets': {
-                'label': 'threat.section.affected_assets'|trans({}, 'threat'),
-                'fields': ['affectedAssets']
-            },
-            'mitigations': {
-                'label': 'threat.section.mitigations'|trans({}, 'threat'),
-                'fields': ['mitigationRecommendations', 'actionsTaken', 'references']
-            },
-            'audit_metadata': {
-                'label': 'threat.section.audit_metadata'|trans({}, 'threat'),
-                'fields': ['assignedTo', 'assignedPerson', 'assignedDeputyPersons']
-            }
+{{ form_start(form) }}
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'eyebrow': 'ISO 27001 A.5.7 · Threat Intelligence',
+    'title': threat.title,
+    'sections': {
+        'basic': {
+            'label': 'threat.section.basic'|trans({}, 'threat'),
+            'fields': ['title', 'description', 'threatType', 'severity', 'status']
         },
-        'col_widths': {
-            'title': 8,
-            'threatType': 4,
-            'description': 12,
-            'severity': 4,
-            'status': 4,
-            'affectsOrganization': 4,
-            'source': 6,
-            'cveId': 3,
-            'cvssScore': 3,
-            'detectionDate': 6,
-            'mitigationDate': 6,
-            'tlpClassification': 6,
-            'threatActorAttribution': 6,
-            'confidenceLevel': 6,
-            'sharedExternally': 6,
-            'mitreAttackTactics': 12,
-            'mitreAttackTechniques': 12,
-            'iocsList': 12,
-            'affectedAssets': 12,
-            'mitigationRecommendations': 12,
-            'actionsTaken': 12,
-            'references': 12,
-            'assignedTo': 4,
-            'assignedPerson': 4,
-            'assignedDeputyPersons': 4
+        'details': {
+            'label': 'threat.section.details'|trans({}, 'threat'),
+            'fields': ['source', 'cveId', 'cvssScore', 'detectionDate', 'mitigationDate']
         },
-        'translation_domain': 'threat',
-        'actions': {
-            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
-            'submit': { 'label': 'threat.action.update'|trans({}, 'threat'), 'variant': 'primary' }
+        'impact': {
+            'label': 'threat.section.impact'|trans({}, 'threat'),
+            'fields': ['affectsOrganization', 'affectedAssets', 'mitigationRecommendations', 'actionsTaken', 'references']
+        },
+        'assignment': {
+            'label': 'threat.section.assignment'|trans({}, 'threat'),
+            'fields': ['assignedTo', 'assignedPerson', 'assignedDeputyPersons']
         }
-    } %}
+    },
+    'col_widths': {
+        'title': 8,
+        'threatType': 4,
+        'description': 12,
+        'severity': 4,
+        'status': 4,
+        'affectsOrganization': 4,
+        'source': 6,
+        'cveId': 3,
+        'cvssScore': 3,
+        'detectionDate': 6,
+        'mitigationDate': 6,
+        'affectedAssets': 12,
+        'mitigationRecommendations': 12,
+        'actionsTaken': 12,
+        'references': 12,
+        'assignedTo': 4,
+        'assignedPerson': 4,
+        'assignedDeputyPersons': 4
+    },
+    'translation_domain': 'threat',
+    'actions': {
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': 'threat.action.update'|trans({}, 'threat'), 'variant': 'primary' }
+    }
+} %}
+{{ form_end(form) }}
 
-    {{ form_end(form) }}
-
-    {# Delete Danger Zone #}
-    {% if is_granted('ROLE_ADMIN') %}
-    {% embed '_components/_card.html.twig' with {borderColor: 'danger', class: 'mt-4'} %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="h5 mb-0">
-                    <i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>
-                    {{ 'common.danger_zone'|trans({}, 'messages') }}
-                </h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
-            <p class="text-muted">{{ 'threat.warning.delete_irreversible'|trans({}, 'threat') }}</p>
-            {{ include('threat_intelligence/_delete_form.html.twig') }}
-        {% endblock %}
-    {% endembed %}
-    {% endif %}
-</div>
+{# Delete Danger Zone #}
+{% if is_granted('ROLE_ADMIN') %}
+{% embed '_components/_card.html.twig' with {borderColor: 'danger', class: 'mt-4'} %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="h5 mb-0">
+                <i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>
+                {{ 'common.danger_zone'|trans({}, 'messages') }}
+            </h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
+        <p class="text-muted">{{ 'threat.warning.delete_irreversible'|trans({}, 'threat') }}</p>
+        {{ include('threat_intelligence/_delete_form.html.twig') }}
+    {% endblock %}
+{% endembed %}
+{% endif %}
 {% endblock %}

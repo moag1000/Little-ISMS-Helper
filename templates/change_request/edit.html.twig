@@ -5,99 +5,107 @@
 {% block title %}{{ 'change_request.edit'|trans({}, 'change_requests') }} {{ change_request.changeNumber }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid mt-4">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'change_request.title'|trans({}, 'change_requests'), url: path('app_change_request_index') },
-            { label: change_request.changeNumber, url: path('app_change_request_show', {id: change_request.id}) },
-            { label: 'common.edit'|trans({}, 'messages') }
-        ]
-    } %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_change_request_index') }}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ 'change_request.title'|trans({}, 'change_requests') }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_change_request_show', {id: change_request.id}) }}" data-turbo-action="advance">
+                            {{ change_request.changeNumber }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ 'common.edit'|trans({}, 'messages') }}</li>
+                </ol>
+            </nav>
 
-    {{ _fa_page_header.render({
-        title: ('change_request.page.edit'|trans({}, 'change_requests')) ~ ': ' ~ (change_request.changeNumber),
-        badge: { icon: 'ui-edit', label: '' },
-        actions: [
-            { label: 'change_request.action.view'|trans({}, 'change_requests'), href: path('app_change_request_show', {id: change_request.id}), variant: 'ghost', icon: 'util-arrow-left' }
-        ]
-    }) }}
+            {{ _fa_page_header.render({
+    title: ('change_request.page.edit'|trans({}, 'change_requests')) ~ ': ' ~ (change_request.changeNumber),
+    badge: { icon: 'ui-edit', label: '' },
+    actions: [
+        { label: 'change_request.action.view'|trans({}, 'change_requests'), href: path('app_change_request_show', {id: change_request.id}), variant: 'ghost', icon: 'util-arrow-left' }
+    ]
+}) }}
 
-    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-
-    {% include '_components/_auto_form.html.twig' with {
-        'form': form,
-        'layout': 'outline-rail',
-        'eyebrow': 'ITIL · Change Management',
-        'title': ('change_request.page.edit'|trans({}, 'change_requests')) ~ ': ' ~ (change_request.changeNumber),
-        'sections': {
-            'overview': {
-                'label': 'change_request.section.overview'|trans({}, 'change_requests'),
-                'fields': ['changeNumber', 'title', 'changeType', 'description', 'justification']
-            },
-            'details': {
-                'label': 'change_request.section.details'|trans({}, 'change_requests'),
-                'fields': ['requestedBy', 'requestedDate', 'priority', 'status', 'clauseReference']
-            },
-            'impact_assessment': {
-                'label': 'change_request.section.impact_assessment'|trans({}, 'change_requests'),
-                'fields': ['ismsImpact', 'riskAssessment']
-            },
-            'approval': {
-                'label': 'change_request.section.approval'|trans({}, 'change_requests'),
-                'fields': ['approvedBy', 'approvedDate', 'approvalComments']
-            },
-            'implementation': {
-                'label': 'change_request.section.implementation'|trans({}, 'change_requests'),
-                'fields': ['implementationPlan', 'rollbackPlan', 'testingRequirements', 'plannedImplementationDate', 'actualImplementationDate', 'implementedBy', 'implementationNotes']
-            },
-            'verification': {
-                'label': 'change_request.section.verification'|trans({}, 'change_requests'),
-                'fields': ['verifiedBy', 'verifiedDate', 'verificationResults', 'closedDate', 'closureNotes']
-            }
-        },
-        'col_widths': {
-            'changeNumber': 4,
-            'title': 8,
-            'changeType': 12,
-            'description': 12,
-            'justification': 12,
-            'requestedBy': 6,
-            'requestedDate': 6,
-            'priority': 6,
-            'status': 6,
-            'clauseReference': 12,
-            'ismsImpact': 12,
-            'riskAssessment': 12,
-            'approvedBy': 6,
-            'approvedDate': 6,
-            'approvalComments': 12,
-            'implementationPlan': 12,
-            'rollbackPlan': 12,
-            'testingRequirements': 12,
-            'plannedImplementationDate': 6,
-            'actualImplementationDate': 6,
-            'implementedBy': 12,
-            'implementationNotes': 12,
-            'verifiedBy': 6,
-            'verifiedDate': 6,
-            'verificationResults': 12,
-            'closedDate': 6,
-            'closureNotes': 12
-        },
-        'tooltips': {
-            'riskAssessment': 'change_request.tooltip.risk_assessment',
-            'rollbackPlan': 'change_request.tooltip.rollback_plan',
-            'ismsImpact': 'change_request.tooltip.isms_impact',
-            'priority': 'change_request.tooltip.priority',
-            'changeType': 'change_request.tooltip.change_type'
-        },
-        'translation_domain': 'change_requests',
-        'actions': {
-            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
-            'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
-        }
-    } %}
-
-    {{ form_end(form) }}
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'layout': 'outline-rail',
+                'eyebrow': 'ITIL · Change Management',
+                'title': change_request.changeNumber,
+                'sections': {
+                    'basic_info': {
+                        'label': 'change_request.section.basic_info'|trans({}, 'change_requests'),
+                        'fields': ['changeNumber', 'title', 'changeType', 'description', 'justification']
+                    },
+                    'request_details': {
+                        'label': 'change_request.section.request_details'|trans({}, 'change_requests'),
+                        'fields': ['requestedBy', 'requestedDate', 'priority', 'status']
+                    },
+                    'impact_assessment': {
+                        'label': 'change_request.section.impact_assessment'|trans({}, 'change_requests'),
+                        'fields': ['ismsImpact', 'riskAssessment']
+                    },
+                    'implementation': {
+                        'label': 'change_request.section.implementation'|trans({}, 'change_requests'),
+                        'fields': ['implementationPlan', 'rollbackPlan', 'testingRequirements', 'plannedImplementationDate', 'actualImplementationDate', 'implementedBy', 'implementationNotes']
+                    },
+                    'approval': {
+                        'label': 'change_request.section.approval'|trans({}, 'change_requests'),
+                        'fields': ['approvedBy', 'approvedDate', 'approvalComments']
+                    },
+                    'verification_closure': {
+                        'label': 'change_request.section.verification_closure'|trans({}, 'change_requests'),
+                        'fields': ['verifiedBy', 'verifiedDate', 'verificationResults', 'closedDate', 'closureNotes']
+                    }
+                },
+                'col_widths': {
+                    'changeNumber': 4,
+                    'title': 8,
+                    'changeType': 12,
+                    'description': 12,
+                    'justification': 12,
+                    'requestedBy': 6,
+                    'requestedDate': 6,
+                    'priority': 6,
+                    'status': 6,
+                    'ismsImpact': 12,
+                    'riskAssessment': 12,
+                    'implementationPlan': 12,
+                    'rollbackPlan': 12,
+                    'testingRequirements': 12,
+                    'plannedImplementationDate': 6,
+                    'actualImplementationDate': 6,
+                    'implementedBy': 12,
+                    'implementationNotes': 12,
+                    'approvedBy': 6,
+                    'approvedDate': 6,
+                    'approvalComments': 12,
+                    'verifiedBy': 6,
+                    'verifiedDate': 6,
+                    'verificationResults': 12,
+                    'closedDate': 6,
+                    'closureNotes': 12
+                },
+                'tooltips': {
+                    'riskAssessment': 'change_request.tooltip.risk_assessment',
+                    'rollbackPlan': 'change_request.tooltip.rollback_plan',
+                    'ismsImpact': 'change_request.tooltip.isms_impact',
+                    'priority': 'change_request.tooltip.priority',
+                    'changeType': 'change_request.tooltip.change_type'
+                },
+                'actions': {
+                    'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+                    'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+                }
+            } %}
+            {{ form_end(form) }}
+        </div>
+    </div>
 </div>
 {% endblock %}
