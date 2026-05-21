@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Asset;
 use App\Entity\Location;
+use App\Form\SectionMapInterface;
 use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
@@ -28,7 +29,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class AssetType extends AbstractType
+final class AssetType extends AbstractType implements SectionMapInterface
 {
     use ModuleAwareFormTrait;
     use OwnerPickerFormTrait;
@@ -422,6 +423,62 @@ final class AssetType extends AbstractType
                 'help' => 'asset.ai_agent.help.extension_allowlist',
             ])
         ;
+    }
+
+    /**
+     * S4 Foundation P-2 SectionPolicy — ISO 27001 A.5.9 · Asset Inventory.
+     * Module-gated fields (nis2_dora, tisax, ai_governance) listed here so
+     * the map is always complete; fields not built are silently ignored.
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'name',
+                'description',
+                'assetType',
+            ],
+            'ownership' => [
+                'ownerUser',
+                'ownerPerson',
+                'ownerDeputyPersons',
+                'owner',
+                'physicalLocation',
+                'dependsOn',
+                'processingActivities',
+            ],
+            'classification' => [
+                'dataClassification',
+                'status',
+                'returnDate',
+                'isDoraRelevant',
+                'tisaxInformationClassification',
+            ],
+            'protection_requirements' => [
+                'confidentialityValue',
+                'integrityValue',
+                'availabilityValue',
+            ],
+            'lifecycle_status' => [
+                'acquisitionValue',
+                'currentValue',
+                'acceptableUsePolicy',
+                'handlingInstructions',
+            ],
+            'dependencies' => [
+                'aiAgentClassification',
+                'aiAgentPurpose',
+                'aiAgentDataSources',
+                'aiAgentOversightMechanism',
+                'aiAgentProvider',
+                'aiAgentModelVersion',
+                'aiAgentCapabilityScope',
+                'aiAgentThreatModelDocId',
+                'aiAgentExtensionAllowlist',
+            ],
+        ];
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -25,6 +25,8 @@ asset:
     basic_info: Grundinformationen
     assignment: Zuordnung
     location: Standort
+    overview: 'Überblick'
+    ownership: 'Eigentümer & Zuordnung'
     financial: Finanzielle Informationen
     classification: Klassifizierung & Status
     cia_values: CIA‑Bewertung (Schutzbedarf)
