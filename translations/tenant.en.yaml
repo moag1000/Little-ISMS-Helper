@@ -110,6 +110,11 @@ tenant:
         details: Details
         isms_context: 'ISMS Context'
         users: Users
+    tab:
+        general: General
+        corporate: Corporate Structure
+        integration: Integration
+        settings: Settings
     isms_context:
         not_configured: 'ISMS Context not configured'
         configure_prompt: 'Configure the ISMS Context for this tenant.'
@@ -271,6 +276,8 @@ corporate:
         groups: Groups
         standalone: Standalone
         structure: Structure
+        legal: Legal Entity
+        nis2: 'NIS2 / Regulation'
     role:
         parent: Parent
     info:

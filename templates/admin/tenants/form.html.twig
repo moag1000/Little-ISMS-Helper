@@ -1,5 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'tenant' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_tabs.html.twig' as _fa_tabs %}
 
 {% block admin_title %}
     {% if isEdit %}
@@ -30,149 +32,61 @@
             <section class="fa-section">
                 <div class="fa-section__body">
                     {{ form_start(form) }}
-                        {# Basic Information #}
-                        <fieldset class="mb-4">
-                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.basic_info'|trans({}, 'tenant') }}</legend>
 
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.name,
-                                'label': 'tenant.field.name'|trans({}, 'tenant'),
-                                'help': 'tenant.help.name'|trans({}, 'tenant'),
-                                'required': true
-                            } %}
+                    {{ _fa_tabs.render({
+                        id: 'tenant-settings',
+                        urlHashSync: true,
+                        initialTab: 'tab-general',
+                        tabs: [
+                            {
+                                id: 'tab-general',
+                                label: 'tenant.tab.general'|trans({}, 'tenant'),
+                                icon: 'ui-settings',
+                                body: include('admin/tenants/tabs/_tab_general.html.twig', { form: form, isEdit: isEdit, tenant: tenant is defined ? tenant : null })
+                            },
+                            {
+                                id: 'tab-corporate',
+                                label: 'tenant.tab.corporate'|trans({}, 'tenant'),
+                                icon: 'nav-building',
+                                body: include('admin/tenants/tabs/_tab_corporate.html.twig', { form: form })
+                            },
+                            {
+                                id: 'tab-integration',
+                                label: 'tenant.tab.integration'|trans({}, 'tenant'),
+                                icon: 'nav-link',
+                                body: include('admin/tenants/tabs/_tab_integration.html.twig', { form: form })
+                            },
+                            {
+                                id: 'tab-settings',
+                                label: 'tenant.tab.settings'|trans({}, 'tenant'),
+                                icon: 'nav-gear',
+                                body: include('admin/tenants/tabs/_tab_settings.html.twig', { form: form, isEdit: isEdit, tenant: tenant is defined ? tenant : null })
+                            }
+                        ]
+                    }) }}
 
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.code,
-                                'label': 'tenant.field.code'|trans({}, 'tenant'),
-                                'help': 'tenant.field.code_auto_generated'|trans({}, 'tenant')
-                            } %}
+                    {# CSRF token — rendered outside tab panels so it is always submitted #}
+                    {% if form._token is defined %}
+                        {{ form_row(form._token) }}
+                    {% endif %}
 
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.description,
-                                'label': 'tenant.field.description'|trans({}, 'tenant'),
-                                'help': 'tenant.help.description'|trans({}, 'tenant')
-                            } %}
-
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.logoFile,
-                                'label': 'tenant.field.logo'|trans({}, 'tenant'),
-                                'help': 'tenant.help.logo'|trans({}, 'tenant')
-                            } %}
-                        </fieldset>
-
-                        {# Corporate Structure #}
-                        <fieldset class="mb-4">
-                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'corporate.title'|trans({}, 'tenant') }}</legend>
-
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.parent,
-                                'label': 'tenant.field.parent'|trans({}, 'tenant'),
-                                'help': 'tenant.help.parent'|trans({}, 'tenant')
-                            } %}
-
-                            {# Switch field - special handling #}
-                            <div class="form-group mb-3">
-                                <div class="form-check form-switch">
-                                    {{ form_widget(form.isCorporateParent, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
-                                    {{ form_label(form.isCorporateParent, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                </div>
-                                {{ form_help(form.isCorporateParent) }}
-                                {{ form_errors(form.isCorporateParent) }}
-                            </div>
-
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.corporateNotes,
-                                'label': 'tenant.field.corporate_notes'|trans({}, 'tenant'),
-                                'help': 'tenant.help.corporate_notes'|trans({}, 'tenant')
-                            } %}
-                        </fieldset>
-
-                        {# Azure Integration #}
-                        <fieldset class="mb-4">
-                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.azure_integration'|trans({}, 'tenant') }}</legend>
-
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.azureTenantId,
-                                'label': 'tenant.field.azure_tenant_id'|trans({}, 'tenant'),
-                                'help': 'tenant.help.azure_tenant_id'|trans({}, 'tenant')
-                            } %}
-                        </fieldset>
-
-                        {# Settings #}
-                        <fieldset class="mb-4">
-                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'tenant.section.settings'|trans({}, 'tenant') }}</legend>
-
-                            {# Switch field - special handling #}
-                            <div class="form-group mb-3">
-                                <div class="form-check form-switch">
-                                    {{ form_widget(form.isActive, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
-                                    {{ form_label(form.isActive, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                </div>
-                                {{ form_help(form.isActive) }}
-                                {{ form_errors(form.isActive) }}
-                            </div>
-
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.settings,
-                                'label': 'tenant.field.settings'|trans({}, 'tenant'),
-                                'help': 'tenant.help.settings'|trans({}, 'tenant')
-                            } %}
-
-                            {# MRIS: KPI-Modul-Toggle. Default = aktiv. Inline-Checkbox, nicht
-                               via Form-Type, weil TenantType in vielen Stellen referenziert wird.
-                               Permission: ROLE_ADMIN (Mandanten-Settings sind Admin-Domain). #}
-                            {% if isEdit and is_granted('ROLE_ADMIN') %}
-                                {% set mrisKpisEnabled = (tenant.settings['mris']['kpis_enabled'] ?? true) is same as(false) ? false : true %}
-                                <div class="form-group mb-3">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox"
-                                               class="form-check-input"
-                                               role="switch"
-                                               id="mris_kpis_enabled"
-                                               name="mris_kpis_enabled"
-                                               value="1"
-                                               {% if mrisKpisEnabled %}checked{% endif %}>
-                                        <label for="mris_kpis_enabled" class="form-check-label">
-                                            MRIS-Mythos-KPIs anzeigen
-                                        </label>
-                                    </div>
-                                    <div class="form-text small">
-                                        Deaktivieren wenn der Mandant nicht von MRIS profitiert
-                                        (z. B. nicht-DORA, nicht-NIS2-Adressat).
-                                    </div>
-                                </div>
+                    {# Form Actions #}
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% if isEdit %}{{ path('tenant_management_show', {id: tenant.id}) }}{% else %}{{ path('tenant_management_index') }}{% endif %}"
+                           class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                        </a>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
+                            {% if isEdit %}
+                                {{ 'common.save'|trans({}, 'messages') }}
+                            {% else %}
+                                {{ 'tenant.action.create'|trans({}, 'tenant') }}
                             {% endif %}
-                            <div class="form-text mt-2">
-                                <strong>{{ 'tenant.settings.example_title'|trans({}, 'tenant') }}</strong><br>
-                                <pre class="bg-body-secondary p-2 rounded small mb-0"><code>{
-  "branding": {
-    "primaryColor": "#0d6efd",
-    "logoUrl": "/uploads/tenant-logo.png"
-  },
-  "features": {
-    "darkMode": true,
-    "globalSearch": false
-  }
-}</code></pre>
-                            </div>
-                        </fieldset>
+                        </button>
+                    </div>
 
-                        {# Form Actions #}
-                        <div class="d-flex justify-content-between">
-                            <a href="{% if isEdit %}{{ path('tenant_management_show', {id: tenant.id}) }}{% else %}{{ path('tenant_management_index') }}{% endif %}"
-                               class="fa-cyber-btn fa-cyber-btn--ghost">
-                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
-                            </a>
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
-                                {% if isEdit %}
-                                    {{ 'common.save'|trans({}, 'messages') }}
-                                {% else %}
-                                    {{ 'tenant.action.create'|trans({}, 'tenant') }}
-                                {% endif %}
-                            </button>
-                        </div>
-                    {{ form_end(form) }}
+                    {{ form_end(form, {render_rest: false}) }}
                 </div>
             </section>
         </div>
@@ -200,7 +114,7 @@
             </section>
 
             {% if isEdit %}
-                <section class="fa-section">
+                <section class="fa-section mt-3">
                     <div class="fa-section__header">
                         <h2 class="fa-section__title">{{ 'tenant.info.metadata'|trans({}, 'tenant') }}</h2>
                     </div>
@@ -251,11 +165,8 @@
             const isNewTenant = !codeField.value || codeField.value.trim() === '';
 
             if (isNewTenant) {
-                // Don't use readonly - just update the value on input
                 nameField.addEventListener('input', function() {
                     const name = this.value;
-
-                    // Convert umlauts and special characters
                     let code = name
                         .replace(/ä/g, 'ae')
                         .replace(/ö/g, 'oe')
@@ -264,10 +175,9 @@
                         .replace(/Ö/g, 'Oe')
                         .replace(/Ü/g, 'Ue')
                         .replace(/ß/g, 'ss')
-                        .replace(/\s+/g, '_')  // Spaces to underscores
+                        .replace(/\s+/g, '_')
                         .toLowerCase()
-                        .replace(/[^a-z0-9_-]/g, '');  // Remove invalid characters
-
+                        .replace(/[^a-z0-9_-]/g, '');
                     codeField.value = code;
                 });
             }

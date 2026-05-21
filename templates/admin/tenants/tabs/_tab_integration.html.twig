@@ -1,0 +1,16 @@
+{#
+ # Tenant form — tab: integration
+ # Fields: azureTenantId
+ #}
+{% trans_default_domain 'tenant' %}
+
+{{ form_row(form.azureTenantId) }}
+
+<div class="fa-section mt-3">
+    <div class="fa-section__body">
+        <p class="small text-muted mb-1">
+            <strong>{{ 'tenant.help.azure_title'|trans({}, 'tenant') }}</strong>
+        </p>
+        <p class="small text-muted mb-0">{{ 'tenant.help.azure_text'|trans({}, 'tenant') }}</p>
+    </div>
+</div>
