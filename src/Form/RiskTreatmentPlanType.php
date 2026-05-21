@@ -10,6 +10,7 @@ use App\Entity\Risk;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -23,8 +24,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class RiskTreatmentPlanType extends AbstractType
+final class RiskTreatmentPlanType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'        => ['risk', 'title', 'description'],
+            'treatment_option'=> ['status', 'priority', 'completionPercentage'],
+            'details'         => ['startDate', 'targetCompletionDate', 'actualCompletionDate', 'budget'],
+            'responsibility'  => ['responsiblePersonUser', 'responsiblePerson', 'responsibleDeputyPersons'],
+            'controls'        => ['controls'],
+            'residual_risk'   => ['implementationNotes'],
+        ];
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

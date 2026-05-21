@@ -1149,6 +1149,8 @@ form:
         transport: 'Transport'
         storage: 'Lagerung'
         photography: 'Fotografie'
+        controls: 'Controls'
+        party_details: 'Parteidetails'
         warning:
             unmapped_title: 'Hinweis (nur dev):'
             unmapped_body: 'Folgende Felder sind in keiner Section abgebildet und landen im Auffangbecken: %fields%. SectionPolicy in der FormType-Klasse aktualisieren.'

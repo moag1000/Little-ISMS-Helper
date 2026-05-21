@@ -1135,6 +1135,8 @@ form:
         transport: 'Transport'
         storage: 'Storage'
         photography: 'Photography'
+        controls: 'Controls'
+        party_details: 'Party Details'
         warning:
             unmapped_title: 'Notice (dev only):'
             unmapped_body: 'The following fields are not covered by any section and fall through to the catch-all bucket: %fields%. Update the SectionPolicy on the FormType class.'
