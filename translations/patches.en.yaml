@@ -10,6 +10,12 @@ patch:
         testing_deployment: 'Testing & Deployment'
         requirements: Requirements
         resources: Resources
+        overview: Overview
+        vulnerability_link: 'Vulnerability & Product Details'
+        affected_systems: 'Affected Systems'
+        testing: 'Testing & Requirements'
+        rollout: 'Rollout & Deployment'
+        verification: 'Rollback & Verification'
     field:
         patch_id: 'Patch ID'
         title: 'Patch Title'

@@ -26,6 +26,12 @@ threat:
         impact: 'Impact & Mitigations'
         assignment: 'Assignment'
         resulting_incidents: 'Resulting Incidents'
+        overview: Overview
+        intelligence_source: 'Source & CVE Details'
+        threat_classification: 'Classification & MITRE'
+        affected_assets: 'Affected Assets'
+        mitigations: 'Mitigations & Recommendations'
+        audit_metadata: 'Responsible Assignment'
     empty:
         title: 'No threats found'
         description: 'No threat intelligence records yet. Create a new threat to get started.'

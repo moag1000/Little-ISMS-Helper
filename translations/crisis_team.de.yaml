@@ -13,6 +13,12 @@ crisis_team:
         procedures: 'Verfahren'
         training: 'Training'
         plans: 'Pläne & Notizen'
+        overview: 'Überblick'
+        members: 'Mitglieder & Führung'
+        communication: 'Kommunikation & Treffpunkte'
+        escalation: 'Alarmierung & Eskalation'
+        activation: 'Aktivierung & Pläne'
+        testing: 'Übungen & Training'
     field:
         team_name: Teamname
         description: Beschreibung

@@ -46,6 +46,11 @@ supplier:
         lksg: 'Supply-chain due diligence (LkSG)'
         tier_classification: 'DORA Tier Classification (Art. 28 RoI)'
         marisk: 'MaRisk AT 9 · Outsourcing Management'
+        overview: 'Overview'
+        contact: 'Contact Details'
+        risk_assessment: 'Security Assessment & Risk'
+        contract: 'Contract & Certifications'
+        privacy: 'Privacy (GDPR Art. 28)'
         related_assets: 'Related Assets'
         related_risks: 'Related Risks'
     field:
