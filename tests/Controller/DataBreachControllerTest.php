@@ -444,6 +444,30 @@ class DataBreachControllerTest extends WebTestCase
         $this->assertSelectorExists('form[name="data_breach"]');
     }
 
+    /**
+     * PR #537 — fa-modal--wizard migration smoke test.
+     * Verifies the creation flow renders the wizard chrome.
+     */
+    #[Test]
+    public function testNewRendersWizardModalMarkup(): void
+    {
+        $this->loginAsUser($this->auditorUser);
+
+        $crawler = $this->client->request('GET', '/en/data-breach/new');
+
+        $this->assertResponseIsSuccessful();
+        // fa-modal--wizard BEM block must be present (design-system spec §form-layout)
+        $this->assertSelectorExists('.fa-modal--wizard');
+        // Stepper chrome must be present
+        $this->assertSelectorExists('.fa-stepper');
+        // Wizard controller wiring
+        $this->assertSelectorExists('[data-controller="modal-wizard"]');
+        // All 4 step panels
+        $this->assertCount(4, $crawler->filter('[data-modal-wizard-target="step"]'));
+        // Final submit button must be present
+        $this->assertSelectorExists('[data-modal-wizard-target="submitBtn"]');
+    }
+
     // ========== EDIT ACTION TESTS ==========
 
     #[Test]
