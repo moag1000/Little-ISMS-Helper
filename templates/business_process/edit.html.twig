@@ -2,7 +2,7 @@
 {% trans_default_domain 'business_process' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'business_process.edit'|trans({}, 'business_process')}}: {{ business_process.name }}{% endblock %}
+{% block title %}{{ 'business_process.edit'|trans({}, 'business_process') }}: {{ business_process.name }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -15,92 +15,72 @@
     } %}
 
     {{ _fa_page_header.render({
-    title: ('business_process.edit'|trans({}, 'business_process')) ~ ': ' ~ (business_process.name),
-    badge: { icon: 'ui-edit', label: '' },
-    actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_business_process_show', {id: business_process.id}), variant: 'ghost', icon: 'util-arrow-left' }
-    ]
-}) }}
+        title: 'business_process.edit'|trans({}, 'business_process') ~ ': ' ~ business_process.name,
+        badge: { icon: 'ui-edit', label: '' },
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_business_process_show', {id: business_process.id}), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {{ form_start(form) }}
-                {% include '_components/_auto_form.html.twig' with {
-                    'form': form,
-                    'sections': {
-                        'basic_info': {
-                            'label': 'business_process.section.basic_info'|trans({}, 'business_process'),
-                            'fields': ['name', 'processOwner', 'processOwnerUser', 'processOwnerPerson', 'processOwnerDeputyPersons', 'description', 'criticality']
-                        },
-                        'recovery_objectives': {
-                            'label': 'business_process.section.recovery_objectives'|trans({}, 'business_process'),
-                            'fields': ['rto', 'rpo', 'mtpd']
-                        },
-                        'financial_impact': {
-                            'label': 'business_process.section.financial_impact'|trans({}, 'business_process'),
-                            'fields': ['financialImpactPerHour', 'financialImpactPerDay']
-                        },
-                        'impact_assessment': {
-                            'label': 'business_process.section.impact_assessment'|trans({}, 'business_process'),
-                            'fields': ['reputationalImpact', 'regulatoryImpact', 'operationalImpact']
-                        },
-                        'dependencies': {
-                            'label': 'business_process.section.dependencies'|trans({}, 'business_process'),
-                            'fields': ['dependenciesUpstream', 'dependenciesDownstream']
-                        },
-                        'recovery': {
-                            'label': 'business_process.section.recovery'|trans({}, 'business_process'),
-                            'fields': ['recoveryStrategy']
-                        },
-                        'supporting_resources': {
-                            'label': 'business_process.section.supporting_resources'|trans({}, 'business_process'),
-                            'fields': ['supportingAssets', 'identifiedRisks']
-                        }
-                    },
-                    'col_widths': {
-                        'name': 6,
-                        'processOwner': 6,
-                        'processOwnerUser': 6,
-                        'processOwnerPerson': 6,
-                        'processOwnerDeputyPersons': 12,
-                        'description': 6,
-                        'criticality': 6,
-                        'rto': 4,
-                        'rpo': 4,
-                        'mtpd': 4,
-                        'financialImpactPerHour': 6,
-                        'financialImpactPerDay': 6,
-                        'reputationalImpact': 4,
-                        'regulatoryImpact': 4,
-                        'operationalImpact': 4,
-                        'dependenciesUpstream': 6,
-                        'dependenciesDownstream': 6,
-                        'recoveryStrategy': 12,
-                        'supportingAssets': 6,
-                        'identifiedRisks': 6
-                    },
-                    'tooltips': {
-                        'criticality': 'business_process.tooltip.criticality',
-                        'rto': 'business_process.tooltip.rto',
-                        'rpo': 'business_process.tooltip.rpo',
-                        'mtpd': 'business_process.tooltip.mtpd',
-                        'reputationalImpact': 'business_process.tooltip.reputational_impact',
-                        'regulatoryImpact': 'business_process.tooltip.regulatory_impact',
-                        'operationalImpact': 'business_process.tooltip.operational_impact'
-                    },
-                    'translation_domain': 'business_process'
-                } %}
-
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_business_process_show', {id: business_process.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        {{ 'common.cancel'|trans({}, 'messages') }}
-                    </a>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        {{ 'common.save_changes'|trans({}, 'messages') }}
-                    </button>
-                </div>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endembed %}
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'BCM · ISO 22301 Cl. 8.3 · Business Process Analysis',
+        'title': business_process.name,
+        'sections': {
+            'overview': {
+                'label': 'form.section.overview'|trans({}, 'messages'),
+                'fields': ['name', 'description', 'criticality']
+            },
+            'owner': {
+                'label': 'form.section.owner'|trans({}, 'messages'),
+                'fields': ['processOwnerUser', 'processOwnerPerson', 'processOwnerDeputyPersons', 'processOwner']
+            },
+            'criticality': {
+                'label': 'form.section.criticality'|trans({}, 'messages'),
+                'fields': ['reputationalImpact', 'regulatoryImpact', 'operationalImpact', 'financialImpactPerHour', 'financialImpactPerDay']
+            },
+            'recovery_targets': {
+                'label': 'form.section.recovery_targets'|trans({}, 'messages'),
+                'fields': ['rto', 'rpo', 'mtpd']
+            },
+            'dependencies': {
+                'label': 'form.section.dependencies'|trans({}, 'messages'),
+                'fields': ['dependenciesUpstream', 'dependenciesDownstream', 'recoveryStrategy']
+            },
+            'resources': {
+                'label': 'form.section.resources'|trans({}, 'messages'),
+                'fields': ['supportingAssets', 'identifiedRisks']
+            }
+        },
+        'col_widths': {
+            'name': 6,
+            'description': 6,
+            'criticality': 6,
+            'processOwnerUser': 6,
+            'processOwnerPerson': 6,
+            'processOwnerDeputyPersons': 12,
+            'processOwner': 6,
+            'reputationalImpact': 4,
+            'regulatoryImpact': 4,
+            'operationalImpact': 4,
+            'financialImpactPerHour': 6,
+            'financialImpactPerDay': 6,
+            'rto': 4,
+            'rpo': 4,
+            'mtpd': 4,
+            'dependenciesUpstream': 6,
+            'dependenciesDownstream': 6,
+            'recoveryStrategy': 12,
+            'supportingAssets': 6,
+            'identifiedRisks': 6
+        },
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.save_changes'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
 </div>
 {% endblock %}
