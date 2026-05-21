@@ -1258,13 +1258,28 @@ final class ComplianceWizardService
      */
     private function checkConsentCoverage(array $check, ?Tenant $tenant): array
     {
-        $qbTotal = $this->consentRepository->createQueryBuilder('c')->select('COUNT(c.id)');
-        $qbActive = $this->consentRepository->createQueryBuilder('c')->select('COUNT(c.id)')
-            ->where('c.isRevoked = :revoked')->setParameter('revoked', false);
-        if ($tenant !== null) {
-            $qbTotal->andWhere('c.tenant = :t')->setParameter('t', $tenant);
-            $qbActive->andWhere('c.tenant = :t')->setParameter('t', $tenant);
+        // Without a tenant context there is no meaningful scope to assess consent
+        // coverage — returning a cross-tenant aggregate would be both misleading
+        // and non-deterministic (stale records from other tenants / test runs).
+        // Return score=0 with a gap so callers always get the expected shape.
+        if ($tenant === null) {
+            return [
+                'score' => 0,
+                'details' => ['total' => 0, 'active' => 0],
+                'gap' => [
+                    'title' => $this->translator->trans('wizard.gap.no_consents', [], 'wizard'),
+                    'description' => $this->translator->trans('wizard.gap.no_consents_desc', [], 'wizard'),
+                    'priority' => 'high',
+                    'route' => $check['route'] ?? 'app_consent_index',
+                ],
+            ];
         }
+
+        $qbTotal = $this->consentRepository->createQueryBuilder('c')->select('COUNT(c.id)')
+            ->where('c.tenant = :t')->setParameter('t', $tenant);
+        $qbActive = $this->consentRepository->createQueryBuilder('c')->select('COUNT(c.id)')
+            ->where('c.isRevoked = :revoked')->setParameter('revoked', false)
+            ->andWhere('c.tenant = :t')->setParameter('t', $tenant);
 
         $total = (int) $qbTotal->getQuery()->getSingleScalarResult();
         $active = (int) $qbActive->getQuery()->getSingleScalarResult();
