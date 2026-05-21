@@ -31,6 +31,15 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->client = static::createClient();
         $container = static::getContainer();
 
+        // Ensure setup-complete lock exists — without it SetupRequiredSubscriber
+        // redirects every authenticated request to /de/setup. The lock may be
+        // missing when a prior test (DeploymentWizardControllerTest) removes it
+        // and its tearDown never runs (test crash / early abort).
+        $lockFile = $container->getParameter('kernel.project_dir') . '/config/setup_complete.lock';
+        if (!file_exists($lockFile)) {
+            @file_put_contents($lockFile, date('c'));
+        }
+
         try {
             $this->entityManager = $container->get(EntityManagerInterface::class);
             $this->entityManager->getConnection()->executeQuery('SELECT 1');
