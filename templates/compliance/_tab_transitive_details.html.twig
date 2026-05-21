@@ -1,0 +1,110 @@
+{% trans_default_domain 'compliance' %}
+{# Tab 3: Detailed Cross-Framework Mappings #}
+<h2 class="section-title">{{ 'compliance.section.cross_framework_mappings'|trans({}, 'compliance') }}</h2>
+
+{% if cross_mappings is empty %}
+    {% embed '_components/_card.html.twig' with { 'class': 'gradient-pink' } %}
+        {% block card_body %}
+            <div class="icon-xlarge mb-md"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i></div>
+            <h2 class="fs-15-white-mb">Keine detaillierten Mappings verfügbar</h2>
+            <p class="fs-11-lh-mb-sm">
+                Es wurden noch keine Cross-Framework Mappings zwischen den Requirements erstellt.
+            </p>
+            <div class="info-box-white-no-mb">
+                <p class="fs-095-opacity-09">
+                    <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> Mappings werden benötigt, um zu zeigen, wie sich Anforderungen verschiedener
+                    Compliance-Frameworks gegenseitig abdecken.
+                </p>
+            </div>
+        {% endblock %}
+    {% endembed %}
+{% else %}
+    {% for mapping_group in cross_mappings %}
+        <details class="card fa-section mb-border" open>
+            <summary class="summary-interactive">
+                <span class="mr-xs">▶</span>
+                {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
+                <span class="float-right-fs-1-secondary">
+                    {{ mapping_group.coverage.covered_requirements }} mappings ({{ mapping_group.coverage.coverage_percentage|round }}%)
+                </span>
+            </summary>
+
+            <div class="details-padding">
+                <div class="grid-responsive-200-my">
+                    <div class="mapping-card-success">
+                        <div class="fs-2-fw-bold-success">
+                            {{ mapping_group.coverage.strong_mappings ?? 0 }}
+                        </div>
+                        <div class="small-text-secondary">
+                            {{ 'compliance.mapping.type.full'|trans({}, 'compliance') }}
+                        </div>
+                    </div>
+                    <div class="mapping-card-warning">
+                        <div class="fs-2-fw-bold-warning">
+                            {{ mapping_group.coverage.partial_mappings ?? 0 }}
+                        </div>
+                        <div class="small-text-secondary">
+                            {{ 'compliance.mapping.type.partial'|trans({}, 'compliance') }}
+                        </div>
+                    </div>
+                    <div class="mapping-card-alt">
+                        <div class="fs-2-fw-bold-secondary">
+                            {{ mapping_group.coverage.weak_mappings ?? 0 }}
+                        </div>
+                        <div class="small-text-secondary">
+                            {{ 'compliance.mapping.type.weak'|trans({}, 'compliance') }}
+                        </div>
+                    </div>
+                </div>
+
+                {% if mapping_group.mappings|length > 5 %}
+                    <p class="text-center-italic-margin">
+                        Zeige erste 5 von {{ mapping_group.mappings|length }} Mappings
+                    </p>
+                {% endif %}
+
+                <div class="overflow-auto">
+                    {% embed '_components/_table.html.twig' with {
+                        'class': 'table-collapse',
+                        'theadClass': 'bg-alt',
+                        'noMargin': true
+                    } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="th-left-fs-09">{{ 'compliance.field.source_requirement'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="th-left-fs-09">{{ 'compliance.field.target_requirements'|trans({}, 'compliance') }}</th>
+                                <th scope="col" class="td-center-fs-09">{{ 'compliance.field.mapping_strength'|trans({}, 'compliance') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for mapping in mapping_group.mappings|slice(0, 5) %}
+                                <tr class="border-bottom-light">
+                                    <td class="p-md">
+                                        <strong class="text-primary">{{ mapping.sourceRequirement.requirementId }}</strong>
+                                        <div class="small-text-secondary">
+                                            {{ mapping.sourceRequirement.title|length > 60 ? mapping.sourceRequirement.title|slice(0, 60) ~ '...' : mapping.sourceRequirement.title }}
+                                        </div>
+                                    </td>
+                                    <td class="p-md">
+                                        <strong class="text-primary">{{ mapping.targetRequirement.requirementId }}</strong>
+                                        <div class="small-text-secondary">
+                                            {{ mapping.targetRequirement.title|length > 60 ? mapping.targetRequirement.title|slice(0, 60) ~ '...' : mapping.targetRequirement.title }}
+                                        </div>
+                                    </td>
+                                    <td class="td-center-p-075">
+                                        <div class="flex-center-gap-05">
+                                            <div class="progress-bar-container">
+                                                <div style="height: 100%; width: {{ mapping.mappingPercentage }}%; background: {% if mapping.mappingPercentage >= 100 %}var(--color-success){% elseif mapping.mappingPercentage >= 50 %}var(--color-warning){% else %}var(--color-secondary){% endif %};"></div>
+                                            </div>
+                                            <span class="fw-600-min-w-45">{{ mapping.mappingPercentage }}%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            </div>
+        </details>
+    {% endfor %}
+{% endif %}
