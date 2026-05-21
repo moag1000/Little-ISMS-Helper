@@ -36,8 +36,8 @@ templates/audit/edit.html.twig:87
 templates/audit/new.html.twig:94
 templates/data_breach/edit.html.twig:33
 templates/data_breach/new.html.twig:32
-templates/supplier/edit.html.twig:87
-templates/supplier/new.html.twig:86
+templates/supplier/edit.html.twig:29
+templates/supplier/new.html.twig:28
 templates/management_review/edit.html.twig:60
 templates/management_review/new.html.twig:59
 templates/vulnerability/edit.html.twig:29
