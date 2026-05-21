@@ -1,0 +1,172 @@
+{#
+ # FairyAurora v4.0 — fa-tabs macro
+ #
+ # Tab-group for settings-style forms with 3-6 equal groups.
+ # NOT for regulatory forms (use fa-form-layout) or linear flows (use fa-modal--wizard).
+ #
+ # Used by:
+ #   TenantType (17 fields → 3-4 settings-tabs)
+ #   UserType (15 fields → 2-3 tabs)
+ #   SystemSettings / Branding-Config / MFA-Config
+ #
+ # Macros:
+ #   1. render(config)  — full tab-group
+ #
+ # Config keys:
+ #   id               (string, required)    — root element id (also used for url-hash sync)
+ #   tabs             (array, required)     — see tab schema below
+ #   initialTab       (string|int|null)     — tab id (string) or 0-based index (int), default 0
+ #   stimulusController (string|null)       — default 'tabs'
+ #   urlHashSync      (bool, default true)  — sync active-tab to URL #hash
+ #
+ # Tab schema:
+ #   id               string               — anchor id (also used as hash target)
+ #   label            string               — display label in nav
+ #   icon             string|null          — fa-icon name WITHOUT prefix (e.g. 'ui-settings')
+ #   body             string|null          — pre-rendered HTML (use include(...))
+ #   errors           int|null             — show error-dot + badge when > 0
+ #   disabled         bool|null            — prevent activation
+ #
+ # Usage:
+ #   {% import '_components/_fa_tabs.html.twig' as _fa_tabs %}
+ #
+ #   {{ _fa_tabs.render({
+ #       id: 'tenant-settings',
+ #       tabs: [
+ #           {
+ #               id: 'general',
+ #               label: 'Allgemein',
+ #               icon: 'ui-settings',
+ #               body: include('tenant/_tab_general.html.twig'),
+ #           },
+ #           {
+ #               id: 'security',
+ #               label: 'Sicherheit',
+ #               icon: 'ui-lock',
+ #               body: include('tenant/_tab_security.html.twig'),
+ #               errors: 2,
+ #           },
+ #           {
+ #               id: 'branding',
+ #               label: 'Branding',
+ #               icon: 'nav-palette',
+ #               body: include('tenant/_tab_branding.html.twig'),
+ #               disabled: true,
+ #           },
+ #       ],
+ #       initialTab: 'general',
+ #       urlHashSync: true,
+ #   }) }}
+ #
+ # A11y:
+ #   - <ul role="tablist"> with <li> wrapping each <button role="tab">
+ #   - aria-selected + aria-controls on each tab button
+ #   - tabindex flipping: active tab = 0, others = -1
+ #   - role="tabpanel" + aria-labelledby on each panel
+ #   - Keyboard: Left/Right arrows navigate tabs; Home/End jump to edges
+ #   - disabled tabs: aria-disabled="true", tabindex="-1"
+ #}
+
+{% macro render(config) %}
+    {%- set id            = config.id ?? 'fa-tabs' -%}
+    {%- set tabs          = config.tabs ?? [] -%}
+    {%- set controller    = config.stimulusController ?? 'tabs' -%}
+    {%- set urlHashSync   = config.urlHashSync ?? true -%}
+    {%- set initialTabCfg = config.initialTab ?? 0 -%}
+    {%- set totalTabs     = tabs|length -%}
+
+    {#
+      Resolve initial active tab:
+        - If int (0-based index): use directly as index
+        - If string (non-empty): search by tab.id
+        - Default to 0
+
+      Twig note: integers are passed from PHP and remain integers. We distinguish
+      them from strings using `is constant` which only returns true for PHP constants,
+      so instead we check: if the value exists in the tab list as an id, use that index;
+      otherwise treat as integer index.
+
+      Safe approach: always iterate to find a matching tab.id. If no match is found
+      within the loop, treat the initialTabCfg value directly as an integer index.
+    #}
+    {%- set resolvedInitial = 0 -%}
+    {%- set foundByString = false -%}
+    {%- if initialTabCfg is not null and initialTabCfg is not iterable and initialTabCfg != '' and initialTabCfg != 0 -%}
+        {%- for idx, tab in tabs -%}
+            {%- if not foundByString and tab.id is defined and tab.id == initialTabCfg -%}
+                {%- set resolvedInitial = idx -%}
+                {%- set foundByString = true -%}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+    {%- if not foundByString and initialTabCfg is not null and initialTabCfg is not iterable -%}
+        {# No tab id matched — treat as 0-based integer index #}
+        {%- set resolvedInitial = initialTabCfg|default(0) -%}
+    {%- endif -%}
+
+    <div id="{{ id }}"
+         class="fa-tabs"
+         data-controller="{{ controller }}"
+         data-{{ controller }}-active-tab-value="{{ tabs[resolvedInitial].id ?? '' }}"
+         data-{{ controller }}-url-hash-sync-value="{{ urlHashSync ? 'true' : 'false' }}">
+
+        {# ── Tab nav ────────────────────────────────────────────────────── #}
+        <ul class="fa-tabs__nav" role="tablist" aria-label="{{ id }}">
+            {%- for idx, tab in tabs -%}
+                {%- set tabId      = tab.id ?? ('tab-' ~ idx) -%}
+                {%- set panelId    = id ~ '-panel-' ~ tabId -%}
+                {%- set isActive   = (idx == resolvedInitial) -%}
+                {%- set isDisabled = tab.disabled ?? false -%}
+                {%- set hasErrors  = tab.errors is defined and tab.errors > 0 -%}
+
+                <li role="presentation">
+                    <button
+                        id="{{ id }}-tab-{{ tabId }}"
+                        class="fa-tabs__nav-item{{ isActive ? ' is-active' : '' }}{{ hasErrors ? ' has-error' : '' }}{{ isDisabled ? ' is-disabled' : '' }}"
+                        role="tab"
+                        aria-selected="{{ isActive ? 'true' : 'false' }}"
+                        aria-controls="{{ panelId }}"
+                        tabindex="{{ isActive ? '0' : '-1' }}"
+                        {% if isDisabled %}aria-disabled="true"{% endif %}
+                        data-{{ controller }}-target="navItem"
+                        data-tab-id="{{ tabId }}"
+                        {% if not isDisabled %}
+                        data-action="click->{{ controller }}#activateTab keydown->{{ controller }}#onKeydown"
+                        {% endif %}
+                        type="button">
+                        {%- if tab.icon is defined and tab.icon -%}
+                            <i class="fa-icon fa-icon--{{ tab.icon }} fa-tabs__nav-icon" aria-hidden="true"></i>
+                        {%- endif -%}
+                        {{- tab.label ?? '' -}}
+                        {%- if hasErrors -%}
+                            <span class="fa-tabs__nav-badge"
+                                  data-{{ controller }}-target="errorBadge"
+                                  data-tab-id="{{ tabId }}"
+                                  aria-label="{{ tab.errors }} Fehler">{{ tab.errors }}</span>
+                        {%- endif -%}
+                    </button>
+                </li>
+            {%- endfor -%}
+        </ul>
+
+        {# ── Tab panels ─────────────────────────────────────────────────── #}
+        <div class="fa-tabs__panels">
+            {%- for idx, tab in tabs -%}
+                {%- set tabId    = tab.id ?? ('tab-' ~ idx) -%}
+                {%- set panelId  = id ~ '-panel-' ~ tabId -%}
+                {%- set isActive = (idx == resolvedInitial) -%}
+
+                <div id="{{ panelId }}"
+                     class="fa-tabs__panel{{ isActive ? ' is-active' : '' }}"
+                     role="tabpanel"
+                     aria-labelledby="{{ id }}-tab-{{ tabId }}"
+                     tabindex="0"
+                     data-{{ controller }}-target="panel"
+                     data-tab-id="{{ tabId }}">
+                    {{- tab.body|default('')|raw -}}
+                </div>
+            {%- endfor -%}
+        </div>
+
+    </div>
+{% endmacro %}
