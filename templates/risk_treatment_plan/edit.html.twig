@@ -13,91 +13,69 @@
             { label: 'common.edit'|trans({}, 'messages') }
         ]
     } %}
+
+    {{ _fa_page_header.render({
+        title: 'risk_treatment_plan.edit'|trans({}, 'risk_treatment_plan') ~ ': ' ~ plan.title,
+        badge: { icon: 'ui-edit', label: '' },
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_treatment_plan_show', {id: plan.id}), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
+
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'ISO 27001 Cl. 6.1.3 · Risk Treatment Plan',
+        'title': plan.title,
+        'sections': {
+            'overview': {
+                'label': 'form.section.overview'|trans({}, 'messages'),
+                'fields': ['risk', 'title', 'description']
+            },
+            'treatment_option': {
+                'label': 'form.section.treatment_option'|trans({}, 'messages'),
+                'fields': ['status', 'priority', 'completionPercentage']
+            },
+            'details': {
+                'label': 'form.section.details'|trans({}, 'messages'),
+                'fields': ['startDate', 'targetCompletionDate', 'actualCompletionDate', 'budget']
+            },
+            'responsibility': {
+                'label': 'form.section.responsibility'|trans({}, 'messages'),
+                'fields': ['responsiblePersonUser', 'responsiblePerson', 'responsibleDeputyPersons']
+            },
+            'controls': {
+                'label': 'form.section.controls'|trans({}, 'messages'),
+                'fields': ['controls']
+            },
+            'residual_risk': {
+                'label': 'form.section.residual_risk'|trans({}, 'messages'),
+                'fields': ['implementationNotes']
+            }
+        },
+        'col_widths': {
+            'risk': 6,
+            'title': 6,
+            'description': 12,
+            'status': 4,
+            'priority': 4,
+            'completionPercentage': 4,
+            'startDate': 4,
+            'targetCompletionDate': 4,
+            'actualCompletionDate': 4,
+            'budget': 6,
+            'responsiblePersonUser': 6,
+            'responsiblePerson': 6,
+            'responsibleDeputyPersons': 12,
+            'controls': 12,
+            'implementationNotes': 12
+        },
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.save_changes'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
 </div>
-
-{{ _fa_page_header.render({
-    title: ('risk_treatment_plan.edit'|trans({}, 'risk_treatment_plan')),
-    badge: { icon: 'ui-edit', label: '' },
-    actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_treatment_plan_show', {id: plan.id}), variant: 'ghost', icon: 'util-arrow-left' }
-    ]
-}) }}
-
-{% embed '_components/_card.html.twig' %}
-    {% block card_body %}
-        {{ form_start(form) }}
-            {% include '_components/_auto_form.html.twig' with {
-                'form': form,
-                'sections': {
-                    'basic_info': {
-                        'label': 'risk_treatment_plan.section.basic_info'|trans({}, 'risk_treatment_plan'),
-                        'fields': ['risk', 'title', 'description']
-                    },
-                    'status_progress': {
-                        'label': 'risk_treatment_plan.section.status_progress'|trans({}, 'risk_treatment_plan'),
-                        'fields': ['status', 'priority', 'completionPercentage']
-                    },
-                    'timeline': {
-                        'label': 'risk_treatment_plan.section.timeline'|trans({}, 'risk_treatment_plan'),
-                        'fields': ['startDate', 'targetCompletionDate', 'actualCompletionDate']
-                    },
-                    'responsibility_resources': {
-                        'label': 'risk_treatment_plan.section.responsibility_resources'|trans({}, 'risk_treatment_plan'),
-                        'fields': ['responsiblePersonUser', 'responsiblePerson', 'responsibleDeputyPersons', 'budget']
-                    },
-                    'controls_implementation': {
-                        'label': 'risk_treatment_plan.section.controls_implementation'|trans({}, 'risk_treatment_plan'),
-                        'fields': ['controls', 'implementationNotes']
-                    }
-                },
-                'col_widths': {
-                    'risk': 6,
-                    'title': 6,
-                    'description': 12,
-                    'status': 4,
-                    'priority': 4,
-                    'completionPercentage': 4,
-                    'startDate': 4,
-                    'targetCompletionDate': 4,
-                    'actualCompletionDate': 4,
-                    'responsiblePersonUser': 6,
-                    'responsiblePerson': 6,
-                    'responsibleDeputyPersons': 12,
-                    'budget': 6,
-                    'controls': 12,
-                    'implementationNotes': 12
-                }
-            } %}
-
-            <div class="form-actions">
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
-                </button>
-                <a href="{{ path('app_risk_treatment_plan_show', {id: plan.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    {{ 'common.cancel'|trans({}, 'messages') }}
-                </a>
-            </div>
-        {{ form_end(form) }}
-    {% endblock %}
-{% endembed %}
-
-<style>
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--spacing-xl);
-}
-
-.button-group {
-    display: flex;
-    gap: var(--spacing-sm);
-}
-
-.form-actions {
-    margin-top: var(--spacing-lg);
-    display: flex;
-    gap: var(--spacing-sm);
-}
-</style>
 {% endblock %}

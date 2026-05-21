@@ -11,6 +11,7 @@ use App\Entity\BusinessProcess;
 use App\Entity\Risk;
 use App\Form\Trait\OwnerPickerFormTrait;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -24,9 +25,21 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class BusinessProcessType extends AbstractType
+final class BusinessProcessType extends AbstractType implements SectionMapInterface
 {
     use OwnerPickerFormTrait;
+
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'        => ['name', 'description', 'criticality'],
+            'owner'           => ['processOwnerUser', 'processOwnerPerson', 'processOwnerDeputyPersons', 'processOwner'],
+            'criticality'     => ['reputationalImpact', 'regulatoryImpact', 'operationalImpact', 'financialImpactPerHour', 'financialImpactPerDay'],
+            'recovery_targets'=> ['rto', 'rpo', 'mtpd'],
+            'dependencies'    => ['dependenciesUpstream', 'dependenciesDownstream', 'recoveryStrategy'],
+            'resources'       => ['supportingAssets', 'identifiedRisks'],
+        ];
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

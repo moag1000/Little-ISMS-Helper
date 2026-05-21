@@ -4,7 +4,7 @@
 {% block title %}{{ 'prototype_protection.page.edit_title'|trans({'%title%': assessment.title}, 'prototype_protection') }}{% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'prototype_protection.page.index_title'|trans({}, 'prototype_protection'), url: path('app_prototype_protection_index') },
@@ -18,10 +18,76 @@
         badge: { icon: 'ui-edit', label: '' }
     }) }}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {% include 'prototype_protection/_form.html.twig' %}
-        {% endblock %}
-    {% endembed %}
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'TISAX · VDA-ISA 6 · Prototype Protection',
+        'title': assessment.title,
+        'sections': {
+            'overview': {
+                'label': 'form.section.overview'|trans({}, 'messages'),
+                'fields': ['title', 'scope', 'status', 'tisaxLevel', 'requiredLabels']
+            },
+            'classification': {
+                'label': 'form.section.classification'|trans({}, 'messages'),
+                'fields': ['supplier', 'location']
+            },
+            'audit_metadata': {
+                'label': 'form.section.audit_metadata'|trans({}, 'messages'),
+                'fields': ['assessor', 'assessorPerson', 'assessorDeputyPersons', 'assessmentDate', 'nextAssessmentDue']
+            },
+            'physical': {
+                'label': 'form.section.physical'|trans({}, 'messages'),
+                'fields': ['physicalResult', 'physicalNotes']
+            },
+            'organisation': {
+                'label': 'form.section.organisation'|trans({}, 'messages'),
+                'fields': ['organisationResult', 'organisationNotes']
+            },
+            'handling': {
+                'label': 'form.section.handling'|trans({}, 'messages'),
+                'fields': ['handlingResult', 'handlingNotes']
+            },
+            'transport': {
+                'label': 'form.section.transport'|trans({}, 'messages'),
+                'fields': ['trialOperationResult', 'trialOperationNotes']
+            },
+            'photography': {
+                'label': 'form.section.photography'|trans({}, 'messages'),
+                'fields': ['eventsResult', 'eventsNotes']
+            }
+        },
+        'col_widths': {
+            'title': 12,
+            'scope': 12,
+            'status': 4,
+            'tisaxLevel': 4,
+            'requiredLabels': 12,
+            'supplier': 6,
+            'location': 6,
+            'assessor': 6,
+            'assessorPerson': 6,
+            'assessorDeputyPersons': 12,
+            'assessmentDate': 6,
+            'nextAssessmentDue': 6,
+            'physicalResult': 4,
+            'physicalNotes': 12,
+            'organisationResult': 4,
+            'organisationNotes': 12,
+            'handlingResult': 4,
+            'handlingNotes': 12,
+            'trialOperationResult': 4,
+            'trialOperationNotes': 12,
+            'eventsResult': 4,
+            'eventsNotes': 12
+        },
+        'translation_domain': 'prototype_protection',
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
 </div>
 {% endblock %}

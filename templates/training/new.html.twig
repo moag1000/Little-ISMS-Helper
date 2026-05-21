@@ -8,95 +8,85 @@
     field is added to TrainingType. Translation keys retained as anchors.
 #}
 
-{% block title %}{{ 'training.new'|trans({}, 'training')}}{% endblock %}
+{% block title %}{{ 'training.new'|trans({}, 'training') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.training'|trans({}, 'nav'), url: path('app_training_index') },
-            { label: 'training.new'|trans({}, 'training')}
+            { label: 'training.new'|trans({}, 'training') }
         ]
     } %}
 
     {{ _fa_page_header.render({
-    title: ('training.new'|trans({}, 'training')),
-    badge: { icon: 'plus', label: '' },
-    actions: [
-        { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_training_index'), variant: 'ghost', icon: 'util-arrow-left' }
-    ]
-}) }}
+        title: 'training.new'|trans({}, 'training'),
+        badge: { icon: 'plus', label: '' },
+        actions: [
+            { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_training_index'), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {{ form_start(form) }}
-                {% include '_components/_auto_form.html.twig' with {
-                    'form': form,
-                    'sections': {
-                        'basic_info': {
-                            'label': 'training.section.basic_info'|trans({}, 'training'),
-                            'fields': ['title', 'description', 'trainingType', 'deliveryMethod']
-                        },
-                        'schedule': {
-                            'label': 'training.section.schedule'|trans({}, 'training'),
-                            'fields': ['scheduledDate', 'durationMinutes']
-                        },
-                        'people': {
-                            'label': 'training.section.people'|trans({}, 'training'),
-                            'fields': ['trainer', 'trainerUser', 'trainerPerson', 'trainerDeputyPersons', 'targetAudience', 'participants']
-                        },
-                        'status': {
-                            'label': 'training.section.status'|trans({}, 'training'),
-                            'fields': ['status', 'mandatory']
-                        },
-                        'controls': {
-                            'label': 'training.section.controls'|trans({}, 'training'),
-                            'fields': ['coveredControls', 'complianceRequirements']
-                        },
-                        'materials': {
-                            'label': 'training.section.materials'|trans({}, 'training'),
-                            'fields': ['materials', 'feedback']
-                        }
-                    },
-                    'col_widths': {
-                        'title': 12,
-                        'description': 12,
-                        'trainingType': 6,
-                        'deliveryMethod': 6,
-                        'scheduledDate': 6,
-                        'durationMinutes': 6,
-                        'trainer': 6,
-                        'trainerUser': 6,
-                        'trainerPerson': 6,
-                        'trainerDeputyPersons': 12,
-                        'targetAudience': 6,
-                        'participants': 12,
-                        'status': 6,
-                        'mandatory': 6,
-                        'coveredControls': 12,
-                        'complianceRequirements': 12,
-                        'materials': 12,
-                        'feedback': 12
-                    },
-                    'help_texts': {
-                        'durationMinutes': 'training.help.duration'|trans({}, 'training'),
-                        'participants': 'training.help.participants'|trans({}, 'training'),
-                        'coveredControls': 'training.help.covered_controls'|trans({}, 'training'),
-                        'complianceRequirements': 'training.help.compliance_requirements'|trans({}, 'training'),
-                        'materials': 'training.help.materials'|trans({}, 'training'),
-                        'feedback': 'training.help.feedback'|trans({}, 'training')}
-                } %}
-
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_training_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        {{ 'common.cancel'|trans({}, 'messages') }}
-                    </a>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        {{ 'training.create'|trans({}, 'training')}}
-                    </button>
-                </div>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endembed %}
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'ISO 27001 Cl. 7.2 · Awareness Training',
+        'title': 'training.new'|trans({}, 'training'),
+        'sections': {
+            'overview': {
+                'label': 'form.section.overview'|trans({}, 'messages'),
+                'fields': ['title', 'description', 'trainingType', 'deliveryMethod']
+            },
+            'schedule': {
+                'label': 'form.section.schedule'|trans({}, 'messages'),
+                'fields': ['scheduledDate', 'durationMinutes', 'completionDate']
+            },
+            'audience': {
+                'label': 'form.section.audience'|trans({}, 'messages'),
+                'fields': ['targetAudience', 'participantUsers', 'participants', 'attendeeCount']
+            },
+            'team': {
+                'label': 'form.section.team'|trans({}, 'messages'),
+                'fields': ['trainerUser', 'trainerPerson', 'trainerDeputyPersons', 'trainer']
+            },
+            'verification': {
+                'label': 'form.section.verification'|trans({}, 'messages'),
+                'fields': ['status', 'mandatory', 'coveredControls', 'complianceRequirements']
+            },
+            'resources': {
+                'label': 'form.section.resources'|trans({}, 'messages'),
+                'fields': ['materials', 'feedback']
+            }
+        },
+        'col_widths': {
+            'title': 12,
+            'description': 12,
+            'trainingType': 6,
+            'deliveryMethod': 6,
+            'scheduledDate': 6,
+            'durationMinutes': 6,
+            'completionDate': 6,
+            'targetAudience': 6,
+            'participantUsers': 12,
+            'participants': 12,
+            'attendeeCount': 6,
+            'trainerUser': 6,
+            'trainerPerson': 6,
+            'trainerDeputyPersons': 12,
+            'trainer': 6,
+            'status': 6,
+            'mandatory': 6,
+            'coveredControls': 12,
+            'complianceRequirements': 12,
+            'materials': 12,
+            'feedback': 12
+        },
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'training.create'|trans({}, 'training'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
 </div>
 {% endblock %}

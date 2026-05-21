@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\ISMSObjective;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -15,8 +16,19 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class ISMSObjectiveType extends AbstractType
+final class ISMSObjectiveType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'      => ['title', 'description', 'category'],
+            'target_metric' => ['measurableIndicators', 'targetValue', 'currentValue', 'unit'],
+            'monitoring'    => ['measurementFrequency', 'measurementMethod'],
+            'responsibility'=> ['responsiblePerson', 'responsibleForMeasurement', 'targetDate'],
+            'audit_metadata'=> ['status', 'progressNotes'],
+        ];
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

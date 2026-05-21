@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\InterestedParty;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -15,8 +16,19 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class InterestedPartyType extends AbstractType
+final class InterestedPartyType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'      => ['name', 'partyType', 'importance', 'description'],
+            'contact'       => ['contactPerson', 'email', 'phone'],
+            'requirements'  => ['requirements', 'howAddressed'],
+            'communication' => ['communicationFrequency', 'communicationMethod', 'lastCommunication', 'nextCommunication'],
+            'monitoring'    => ['feedback', 'satisfactionLevel', 'issues'],
+        ];
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

@@ -2,7 +2,7 @@
 {% trans_default_domain 'interested_parties' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'interested_party.page.edit_title'|trans({}, 'interested_parties')}}: {{ interested_party.name }}{% endblock %}
+{% block title %}{{ 'interested_party.page.edit_title'|trans({}, 'interested_parties') }}: {{ interested_party.name }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -15,75 +15,69 @@
     } %}
 
     {{ _fa_page_header.render({
-    title: ('interested_party.page.edit_title'|trans({}, 'interested_parties')) ~ ': ' ~ (interested_party.name),
-    badge: { icon: 'ui-edit', label: '' },
-    actions: [
-        { label: 'common.view'|trans({}, 'messages'), href: path('app_interested_party_show', {id: interested_party.id}), variant: 'ghost', icon: 'util-arrow-left' }
-    ]
-}) }}
+        title: 'interested_party.page.edit_title'|trans({}, 'interested_parties') ~ ': ' ~ interested_party.name,
+        badge: { icon: 'ui-edit', label: '' },
+        actions: [
+            { label: 'common.view'|trans({}, 'messages'), href: path('app_interested_party_show', {id: interested_party.id}), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {{ form_start(form) }}
-                {% include '_components/_auto_form.html.twig' with {
-                    'form': form,
-                    'sections': {
-                        'basic_info': {
-                            'label': 'interested_party.section.basic_info'|trans({}, 'interested_parties'),
-                            'fields': ['name', 'partyType', 'importance', 'description']
-                        },
-                        'contact_info': {
-                            'label': 'interested_party.section.contact_info'|trans({}, 'interested_parties'),
-                            'fields': ['contactPerson', 'email', 'phone']
-                        },
-                        'requirements': {
-                            'label': 'interested_party.section.requirements'|trans({}, 'interested_parties'),
-                            'fields': ['requirements', 'howAddressed']
-                        },
-                        'communication': {
-                            'label': 'interested_party.section.communication'|trans({}, 'interested_parties'),
-                            'fields': ['communicationFrequency', 'communicationMethod', 'lastCommunication', 'nextCommunication']
-                        },
-                        'feedback': {
-                            'label': 'interested_party.section.feedback'|trans({}, 'interested_parties'),
-                            'fields': ['feedback', 'satisfactionLevel', 'issues']
-                        }
-                    },
-                    'col_widths': {
-                        'name': 4,
-                        'partyType': 4,
-                        'importance': 4,
-                        'description': 12,
-                        'contactPerson': 4,
-                        'email': 4,
-                        'phone': 4,
-                        'requirements': 12,
-                        'howAddressed': 12,
-                        'communicationFrequency': 6,
-                        'communicationMethod': 6,
-                        'lastCommunication': 6,
-                        'nextCommunication': 6,
-                        'feedback': 12,
-                        'satisfactionLevel': 6,
-                        'issues': 6
-                    },
-                    'tooltips': {
-                        'satisfactionLevel': 'interested_party.tooltip.satisfaction_level',
-                        'importance': 'interested_party.tooltip.importance'
-                    },
-                    'translation_domain': 'interested_parties'
-                } %}
-
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_interested_party_show', {id: interested_party.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        {{ 'common.cancel'|trans({}, 'messages') }}
-                    </a>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        {{ 'interested_party.action.update'|trans({}, 'interested_parties')}}
-                    </button>
-                </div>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endembed %}
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'ISO 27001 Cl. 4.2 · Interested Parties',
+        'title': interested_party.name,
+        'sections': {
+            'overview': {
+                'label': 'form.section.overview'|trans({}, 'messages'),
+                'fields': ['name', 'partyType', 'importance', 'description']
+            },
+            'contact': {
+                'label': 'form.section.contact'|trans({}, 'messages'),
+                'fields': ['contactPerson', 'email', 'phone']
+            },
+            'requirements': {
+                'label': 'form.section.requirements'|trans({}, 'messages'),
+                'fields': ['requirements', 'howAddressed']
+            },
+            'communication': {
+                'label': 'form.section.communication'|trans({}, 'messages'),
+                'fields': ['communicationFrequency', 'communicationMethod', 'lastCommunication', 'nextCommunication']
+            },
+            'monitoring': {
+                'label': 'form.section.monitoring'|trans({}, 'messages'),
+                'fields': ['feedback', 'satisfactionLevel', 'issues']
+            }
+        },
+        'col_widths': {
+            'name': 4,
+            'partyType': 4,
+            'importance': 4,
+            'description': 12,
+            'contactPerson': 4,
+            'email': 4,
+            'phone': 4,
+            'requirements': 12,
+            'howAddressed': 12,
+            'communicationFrequency': 6,
+            'communicationMethod': 6,
+            'lastCommunication': 6,
+            'nextCommunication': 6,
+            'feedback': 12,
+            'satisfactionLevel': 6,
+            'issues': 6
+        },
+        'tooltips': {
+            'satisfactionLevel': 'interested_party.tooltip.satisfaction_level',
+            'importance': 'interested_party.tooltip.importance'
+        },
+        'translation_domain': 'interested_parties',
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.save_changes'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
 </div>
 {% endblock %}

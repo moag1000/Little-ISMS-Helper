@@ -28,77 +28,69 @@
         {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: '<strong>' ~ 'tenant.isms_context.linked_to'|trans({}, 'tenant') ~ ':</strong> ' ~ tenant.name ~ ' (' ~ tenant.code ~ ')' }) }}
     {% endif %}
 
-    <div class="row">
-        <div class="col-lg-10 col-xl-9 mx-auto">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-
-                    {% include '_components/_auto_form.html.twig' with {
-                        'form': form,
-                        'sections': {
-                            'organization': {
-                                'label': '<i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> ' ~ 'context.section.organization'|trans({}, 'context'),
-                                'fields': ['organizationName']
-                            },
-                            'scope': {
-                                'label': '<i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> ' ~ 'context.section.scope'|trans({}, 'context'),
-                                'fields': ['ismsScope', 'scopeExclusions']
-                            },
-                            'context_analysis': {
-                                'label': '<i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> ' ~ 'context.section.context_analysis'|trans({}, 'context'),
-                                'fields': ['externalIssues', 'internalIssues']
-                            },
-                            'stakeholders': {
-                                'label': '<i class="fa-icon fa-icon--group" aria-hidden="true"></i> ' ~ 'context.section.stakeholders'|trans({}, 'context'),
-                                'fields': ['interestedPartiesRequirements']
-                            },
-                            'compliance': {
-                                'label': '<i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> ' ~ 'context.section.compliance'|trans({}, 'context'),
-                                'fields': ['legalRequirements', 'regulatoryRequirements', 'contractualObligations']
-                            },
-                            'policy': {
-                                'label': '<i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i> ' ~ 'context.section.policy'|trans({}, 'context'),
-                                'fields': ['ismsPolicy', 'rolesAndResponsibilities']
-                            },
-                            'review': {
-                                'label': '<i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> ' ~ 'context.section.review'|trans({}, 'context'),
-                                'fields': ['lastReviewDate', 'nextReviewDate']
-                            }
-                        },
-                        'col_widths': {
-                            'organizationName': 12,
-                            'ismsScope': 12,
-                            'scopeExclusions': 12,
-                            'externalIssues': 6,
-                            'internalIssues': 6,
-                            'interestedPartiesRequirements': 12,
-                            'legalRequirements': 12,
-                            'regulatoryRequirements': 12,
-                            'contractualObligations': 12,
-                            'ismsPolicy': 12,
-                            'rolesAndResponsibilities': 12,
-                            'lastReviewDate': 6,
-                            'nextReviewDate': 6
-                        },
-                        'tooltips': {
-                            'externalIssues': 'context.tooltip.external_issues',
-                            'internalIssues': 'context.tooltip.internal_issues',
-                            'scopeExclusions': 'context.tooltip.scope_exclusions',
-                            'interestedPartiesRequirements': 'context.tooltip.interested_parties_requirements'
-                        }
-                    } %}
-
-                    {# Form Actions #}
-                    <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">
-                        <a href="{{ path('app_context_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}</a>
-                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg"><i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}</button>
-                    </div>
-
-                    {{ form_end(form) }}
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'ISO 27001 Cl. 4 · Organizational Context',
+        'title': context.organizationName,
+        'sections': {
+            'overview': {
+                'label': 'form.section.overview'|trans({}, 'messages'),
+                'fields': ['organizationName']
+            },
+            'scope_definition': {
+                'label': 'form.section.scope_definition'|trans({}, 'messages'),
+                'fields': ['ismsScope', 'scopeExclusions']
+            },
+            'internal_issues': {
+                'label': 'form.section.internal_issues'|trans({}, 'messages'),
+                'fields': ['internalIssues']
+            },
+            'external_issues': {
+                'label': 'form.section.external_issues'|trans({}, 'messages'),
+                'fields': ['externalIssues']
+            },
+            'interested_parties_link': {
+                'label': 'form.section.interested_parties_link'|trans({}, 'messages'),
+                'fields': ['interestedPartiesRequirements']
+            },
+            'details': {
+                'label': 'form.section.details'|trans({}, 'messages'),
+                'fields': ['legalRequirements', 'regulatoryRequirements', 'contractualObligations', 'ismsPolicy', 'rolesAndResponsibilities']
+            },
+            'audit_metadata': {
+                'label': 'form.section.audit_metadata'|trans({}, 'messages'),
+                'fields': ['lastReviewDate', 'nextReviewDate']
+            }
+        },
+        'col_widths': {
+            'organizationName': 12,
+            'ismsScope': 12,
+            'scopeExclusions': 12,
+            'internalIssues': 12,
+            'externalIssues': 12,
+            'interestedPartiesRequirements': 12,
+            'legalRequirements': 12,
+            'regulatoryRequirements': 12,
+            'contractualObligations': 12,
+            'ismsPolicy': 12,
+            'rolesAndResponsibilities': 12,
+            'lastReviewDate': 6,
+            'nextReviewDate': 6
+        },
+        'tooltips': {
+            'externalIssues': 'context.tooltip.external_issues',
+            'internalIssues': 'context.tooltip.internal_issues',
+            'scopeExclusions': 'context.tooltip.scope_exclusions',
+            'interestedPartiesRequirements': 'context.tooltip.interested_parties_requirements'
+        },
+        'translation_domain': 'context',
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
 </div>
 {% endblock %}

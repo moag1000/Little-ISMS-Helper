@@ -2,85 +2,83 @@
 {% trans_default_domain 'locations' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'location.title.create'|trans({}, 'locations')}} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'location.title.create'|trans({}, 'locations') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="container-fluid py-4">
+<div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.locations'|trans({}, 'nav'), url: path('app_location_index') },
-            { label: 'location.title.create'|trans({}, 'locations')}
+            { label: 'location.title.create'|trans({}, 'locations') }
         ]
     } %}
+
+    {{ _fa_page_header.render({
+        title: 'location.title.create'|trans({}, 'locations'),
+        badge: { icon: 'plus', label: '' },
+        actions: [
+            { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_location_index'), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
+
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'ISO 27001 A.7 · Physical Security',
+        'title': 'location.title.create'|trans({}, 'locations'),
+        'sections': {
+            'overview': {
+                'label': 'form.section.overview'|trans({}, 'messages'),
+                'fields': ['name', 'locationType', 'code', 'description', 'parentLocation']
+            },
+            'address': {
+                'label': 'form.section.address'|trans({}, 'messages'),
+                'fields': ['address', 'city', 'postalCode', 'country']
+            },
+            'security_zone': {
+                'label': 'form.section.security_zone'|trans({}, 'messages'),
+                'fields': ['securityLevel']
+            },
+            'access_control': {
+                'label': 'form.section.access_control'|trans({}, 'messages'),
+                'fields': ['requiresBadgeAccess', 'requiresEscort', 'cameraMonitored', 'accessControlSystem']
+            },
+            'environmental': {
+                'label': 'form.section.environmental'|trans({}, 'messages'),
+                'fields': ['capacity', 'squareMeters']
+            },
+            'audit_metadata': {
+                'label': 'form.section.audit_metadata'|trans({}, 'messages'),
+                'fields': ['responsiblePerson', 'active', 'notes']
+            }
+        },
+        'col_widths': {
+            'name': 6,
+            'locationType': 6,
+            'code': 6,
+            'description': 6,
+            'parentLocation': 12,
+            'address': 12,
+            'city': 4,
+            'postalCode': 4,
+            'country': 4,
+            'securityLevel': 6,
+            'requiresBadgeAccess': 12,
+            'requiresEscort': 12,
+            'cameraMonitored': 12,
+            'accessControlSystem': 12,
+            'capacity': 6,
+            'squareMeters': 6,
+            'responsiblePerson': 6,
+            'active': 12,
+            'notes': 12
+        },
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.create'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
 </div>
-
-{{ _fa_page_header.render({
-    title: ('location.title.create'|trans({}, 'locations')),
-    badge: { icon: 'plus', label: '' },
-    actions: [
-        { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_location_index'), variant: 'ghost', icon: 'util-arrow-left' }
-    ]
-}) }}
-
-{% embed '_components/_card.html.twig' %}
-    {% block card_body %}
-        {{ form_start(form) }}
-            {% include '_components/_auto_form.html.twig' with {
-                'form': form,
-                'sections': {
-                    'basic_info': {
-                        'label': 'location.section.basic_info'|trans({}, 'locations'),
-                        'fields': ['name', 'locationType', 'code', 'description']
-                    },
-                    'address': {
-                        'label': 'location.section.address'|trans({}, 'locations'),
-                        'fields': ['address', 'city', 'postalCode', 'country']
-                    },
-                    'hierarchy': {
-                        'label': 'location.section.hierarchy'|trans({}, 'locations'),
-                        'fields': ['parentLocation']
-                    },
-                    'security': {
-                        'label': 'location.section.security'|trans({}, 'locations'),
-                        'fields': ['securityLevel', 'requiresBadgeAccess', 'requiresEscort', 'cameraMonitored', 'accessControlSystem']
-                    },
-                    'details': {
-                        'label': 'location.section.details'|trans({}, 'locations'),
-                        'fields': ['responsiblePerson', 'capacity', 'squareMeters', 'notes']
-                    }
-                },
-                'col_widths': {
-                    'name': 6,
-                    'locationType': 6,
-                    'code': 6,
-                    'description': 6,
-                    'address': 12,
-                    'city': 4,
-                    'postalCode': 4,
-                    'country': 4,
-                    'parentLocation': 12,
-                    'securityLevel': 6,
-                    'requiresBadgeAccess': 12,
-                    'requiresEscort': 12,
-                    'cameraMonitored': 12,
-                    'accessControlSystem': 12,
-                    'responsiblePerson': 6,
-                    'capacity': 3,
-                    'squareMeters': 3,
-                    'notes': 12
-                },
-                'exclude': ['active']
-            } %}
-
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ path('app_location_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    {{ 'common.cancel'|trans({}, 'messages') }}
-                </a>
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                    {{ 'common.create'|trans({}, 'messages') }}
-                </button>
-            </div>
-        {{ form_end(form) }}
-    {% endblock %}
-{% endembed %}
 {% endblock %}

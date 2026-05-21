@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Location;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -16,8 +17,20 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class LocationType extends AbstractType
+final class LocationType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'      => ['name', 'locationType', 'code', 'description', 'parentLocation'],
+            'address'       => ['address', 'city', 'postalCode', 'country'],
+            'security_zone' => ['securityLevel'],
+            'access_control'=> ['requiresBadgeAccess', 'requiresEscort', 'cameraMonitored', 'accessControlSystem'],
+            'environmental' => ['capacity', 'squareMeters'],
+            'audit_metadata'=> ['responsiblePerson', 'active', 'notes'],
+        ];
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
