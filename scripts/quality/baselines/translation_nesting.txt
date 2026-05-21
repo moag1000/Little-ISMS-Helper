@@ -263,8 +263,8 @@ translations/suppliers.de.yaml:1:supplier
 translations/suppliers.de.yaml:299:corporate
 translations/suppliers.en.yaml:1:supplier
 translations/suppliers.en.yaml:298:corporate
-translations/tenant.de.yaml:195:corporate
-translations/tenant.en.yaml:195:corporate
+translations/tenant.de.yaml:200:corporate
+translations/tenant.en.yaml:200:corporate
 translations/threat.de.yaml:124:field
 translations/threat.de.yaml:144:placeholder
 translations/threat.de.yaml:152:help
@@ -283,10 +283,10 @@ translations/threat.en.yaml:166:type
 translations/threat.en.yaml:179:severity
 translations/threat.en.yaml:186:status_type
 translations/threat.en.yaml:194:threat_intelligence
-translations/user.de.yaml:269:user_management
-translations/user.de.yaml:273:profile
-translations/user.en.yaml:269:user_management
-translations/user.en.yaml:273:profile
+translations/user.de.yaml:273:user_management
+translations/user.de.yaml:277:profile
+translations/user.en.yaml:273:user_management
+translations/user.en.yaml:277:profile
 translations/validators.de.yaml:110:Error
 translations/validators.de.yaml:224:setup
 translations/validators.de.yaml:244:document

@@ -92,6 +92,10 @@ user:
         all_permissions: 'All Permissions'
         actions: 'Actions'
         competence: 'Competencies & QM Background'
+    tab:
+        profile: Profile
+        access: 'Roles & Access'
+        security: 'Security & Competencies'
     field:
         first_name: 'First Name'
         last_name: 'Last Name'

@@ -1,0 +1,39 @@
+{#
+ # Tenant form — tab: corporate
+ # Fields: parent, isCorporateParent, corporateNotes,
+ #         legalName, legalForm, naceCode,
+ #         nis2Classification, nis2Sector, nis2ContactPoint, nis2RegisteredAt
+ #}
+{% trans_default_domain 'tenant' %}
+
+<h3 class="h6 fw-semibold border-bottom pb-2 mb-3">{{ 'corporate.title'|trans({}, 'tenant') }}</h3>
+
+{{ form_row(form.parent) }}
+
+{# isCorporateParent switch — custom rendering #}
+<div class="form-group mb-3">
+    <div class="form-check form-switch">
+        {{ form_widget(form.isCorporateParent, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+        {{ form_label(form.isCorporateParent, null, {'label_attr': {'class': 'form-check-label'}}) }}
+    </div>
+    {{ form_help(form.isCorporateParent) }}
+    {{ form_errors(form.isCorporateParent) }}
+</div>
+
+{{ form_row(form.corporateNotes) }}
+
+<h3 class="h6 fw-semibold border-bottom pb-2 mb-3 mt-4">{{ 'corporate.section.legal'|trans({}, 'tenant') }}</h3>
+
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.legalName) }}</div>
+    <div class="col-md-6">{{ form_row(form.legalForm) }}</div>
+</div>
+
+{{ form_row(form.naceCode) }}
+
+<h3 class="h6 fw-semibold border-bottom pb-2 mb-3 mt-4">{{ 'corporate.section.nis2'|trans({}, 'tenant') }}</h3>
+
+{{ form_row(form.nis2Classification) }}
+{{ form_row(form.nis2Sector) }}
+{{ form_row(form.nis2ContactPoint) }}
+{{ form_row(form.nis2RegisteredAt) }}

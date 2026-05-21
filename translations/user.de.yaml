@@ -92,6 +92,10 @@ user:
         all_permissions: 'Alle Berechtigungen'
         actions: 'Aktionen'
         competence: 'Kompetenzen & QM-Hintergrund'
+    tab:
+        profile: Profil
+        access: 'Rollen & Zugriff'
+        security: 'Sicherheit & Kompetenzen'
     field:
         first_name: Vorname
         last_name: Nachname
