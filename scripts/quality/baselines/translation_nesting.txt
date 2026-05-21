@@ -260,9 +260,9 @@ translations/scheduled_reports.de.yaml:186:flash
 translations/setup_wizard.de.yaml:1:existing_frameworks
 translations/setup_wizard.en.yaml:1:existing_frameworks
 translations/suppliers.de.yaml:1:supplier
-translations/suppliers.de.yaml:292:corporate
+translations/suppliers.de.yaml:294:corporate
 translations/suppliers.en.yaml:1:supplier
-translations/suppliers.en.yaml:291:corporate
+translations/suppliers.en.yaml:293:corporate
 translations/tenant.de.yaml:195:corporate
 translations/tenant.en.yaml:195:corporate
 translations/threat.de.yaml:118:field
