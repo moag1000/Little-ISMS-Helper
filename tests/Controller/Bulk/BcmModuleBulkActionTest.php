@@ -172,6 +172,8 @@ class BcmModuleBulkActionTest extends WebTestCase
         /** @var \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface $csrfManager */
         $csrfManager = $container->get('security.csrf.token_manager');
         // Refresh the token for the 'bulk_action' ID so isCsrfTokenValid passes.
+        // Warm the session via a GET request so CSRF storage can persist tokens.
+        if (!$this->client->getRequest()) { $this->client->request('GET', '/'); }
         $token = $csrfManager->getToken('bulk_action');
         return $token->getValue();
     }
