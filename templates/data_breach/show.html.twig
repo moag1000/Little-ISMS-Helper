@@ -133,19 +133,19 @@
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-bs-toggle="modal" data-bs-target="#authorityModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="authorityModal">
                         <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and breach.requiresSubjectNotification and not breach.dataSubjectsNotifiedAt and breach.supervisoryAuthorityNotifiedAt %}
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-bs-toggle="modal" data-bs-target="#subjectsModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="subjectsModal">
                         <i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and not breach.requiresSubjectNotification and not breach.noSubjectNotificationReason %}
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="modal" data-bs-target="#exemptionModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="exemptionModal">
                         <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
@@ -160,7 +160,7 @@
                 {% endif %}
 
                 {% if is_granted('ROLE_MANAGER') and breach.status == 'closed' %}
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-bs-toggle="modal" data-bs-target="#reopenModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="reopenModal">
                         <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
@@ -398,17 +398,22 @@
     {{ _lifecycle_history.history('data-breach', breach.id) }}
 </div>
 
-{# Notify Supervisory Authority Modal #}
-<div  class="modal fade" aria-labelledby="authorityModalLabel"  id="authorityModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ path('app_data_breach_notify_authority', {id: breach.id}) }}" method="post">
+{# Notify Supervisory Authority Modal — fa-modal--confirm/warning #}
+<div class="fa-modal fa-modal--confirm fa-modal--warning" id="authorityModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="warning"
+     role="alertdialog" aria-modal="true" aria-labelledby="authorityModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+            <form action="{{ path('app_data_breach_notify_authority', {id: breach.id}) }}" method="post" data-fa-modal-target="form">
                 <input type="hidden" name="_token" value="{{ csrf_token('notify_authority' ~ breach.id) }}">
-                <div class="modal-header">
-                    <h2  id="authorityModalLabel" class="modal-title">{{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }} (Art. 33 GDPR)</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                </div>
-                <div class="modal-body">
+                <header class="fa-modal__header">
+                    <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--nav-building"></i></span>
+                    <div class="fa-modal__heading">
+                        <h2 id="authorityModalLabel" class="fa-modal__title">{{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }} (Art. 33 GDPR)</h2>
+                    </div>
+                    <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'action.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
+                </header>
+                <div class="fa-modal__body">
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.field.authority'|trans({}, 'privacy') }} *</label>
                         <select name="authority_name" class="form-select fa-cyber-input__field" required>
@@ -453,26 +458,30 @@
                         </div>
                     {% endif %}
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <footer class="fa-modal__footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">{{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }}</button>
-                </div>
+                </footer>
             </form>
-        </div>
     </div>
 </div>
 
-{# Notify Data Subjects Modal #}
-<div  class="modal fade" aria-labelledby="subjectsModalLabel"  id="subjectsModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ path('app_data_breach_notify_subjects', {id: breach.id}) }}" method="post">
+{# Notify Data Subjects Modal — fa-modal--confirm/neutral (primary) #}
+<div class="fa-modal fa-modal--confirm fa-modal--neutral" id="subjectsModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"
+     role="alertdialog" aria-modal="true" aria-labelledby="subjectsModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+            <form action="{{ path('app_data_breach_notify_subjects', {id: breach.id}) }}" method="post" data-fa-modal-target="form">
                 <input type="hidden" name="_token" value="{{ csrf_token('notify_subjects' ~ breach.id) }}">
-                <div class="modal-header">
-                    <h2  id="subjectsModalLabel" class="modal-title">{{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }} (Art. 34 GDPR)</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                </div>
-                <div class="modal-body">
+                <header class="fa-modal__header">
+                    <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--group"></i></span>
+                    <div class="fa-modal__heading">
+                        <h2 id="subjectsModalLabel" class="fa-modal__title">{{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }} (Art. 34 GDPR)</h2>
+                    </div>
+                    <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'action.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
+                </header>
+                <div class="fa-modal__body">
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }} *</label>
                         <select name="notification_method" class="form-select fa-cyber-input__field" required>
@@ -492,26 +501,30 @@
                         }) }}
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <footer class="fa-modal__footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">{{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }}</button>
-                </div>
+                </footer>
             </form>
-        </div>
     </div>
 </div>
 
-{# Exemption Modal #}
-<div  class="modal fade" aria-labelledby="exemptionModalLabel"  id="exemptionModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ path('app_data_breach_subject_notification_exemption', {id: breach.id}) }}" method="post">
+{# Exemption Modal — fa-modal--confirm/success #}
+<div class="fa-modal fa-modal--confirm fa-modal--success" id="exemptionModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="success"
+     role="alertdialog" aria-modal="true" aria-labelledby="exemptionModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+            <form action="{{ path('app_data_breach_subject_notification_exemption', {id: breach.id}) }}" method="post" data-fa-modal-target="form">
                 <input type="hidden" name="_token" value="{{ csrf_token('exemption' ~ breach.id) }}">
-                <div class="modal-header">
-                    <h2  id="exemptionModalLabel" class="modal-title">{{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                </div>
-                <div class="modal-body">
+                <header class="fa-modal__header">
+                    <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--compliance-shield"></i></span>
+                    <div class="fa-modal__heading">
+                        <h2 id="exemptionModalLabel" class="fa-modal__title">{{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}</h2>
+                    </div>
+                    <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'action.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
+                </header>
+                <div class="fa-modal__body">
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.field.exemption_reason'|trans({}, 'privacy') }} *</label>
                         <select name="exemption_reason" class="form-select fa-cyber-input__field" required>
@@ -522,38 +535,41 @@
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <footer class="fa-modal__footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">{{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}</button>
-                </div>
+                </footer>
             </form>
-        </div>
     </div>
 </div>
 
-{# Reopen Modal #}
-<div  class="modal fade" aria-labelledby="reopenModalLabel"  id="reopenModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ path('app_data_breach_reopen', {id: breach.id}) }}" method="post">
+{# Reopen Modal — fa-modal--confirm/warning #}
+<div class="fa-modal fa-modal--confirm fa-modal--warning" id="reopenModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="warning"
+     role="alertdialog" aria-modal="true" aria-labelledby="reopenModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+            <form action="{{ path('app_data_breach_reopen', {id: breach.id}) }}" method="post" data-fa-modal-target="form">
                 <input type="hidden" name="_token" value="{{ csrf_token('reopen' ~ breach.id) }}">
-                <div class="modal-header">
-                    <h2  id="reopenModalLabel" class="modal-title">{{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                </div>
-                <div class="modal-body">
+                <header class="fa-modal__header">
+                    <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--nav-collection"></i></span>
+                    <div class="fa-modal__heading">
+                        <h2 id="reopenModalLabel" class="fa-modal__title">{{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}</h2>
+                    </div>
+                    <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'action.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
+                </header>
+                <div class="fa-modal__body">
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.reopen_reason'|trans({}, 'privacy') }} *</label>
                         <textarea name="reopen_reason" class="form-control fa-cyber-input__field" rows="3" required
                                   placeholder="{{ 'common.placeholder.explain_breach_reopened'|trans({}, 'messages') }}"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <footer class="fa-modal__footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">{{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}</button>
-                </div>
+                </footer>
             </form>
-        </div>
     </div>
 </div>
 {% endblock %}
