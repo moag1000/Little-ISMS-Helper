@@ -1,0 +1,273 @@
+{#
+ # FairyAurora v4.0 — fa-modal unified macro library
+ #
+ # Canonical modal shell with three modes:
+ #   • confirm   — destructive / approval confirmations (delete, approve, reject)
+ #   • settings  — preference toggles / configuration lists (dashboard, preferences)
+ #   • wizard    — multi-step linear flows (delegates to _fa_modal_wizard for BC)
+ #
+ # All three modes share the same shell (.fa-modal + .fa-modal__container),
+ # backdrop, ESC/click-out close behavior, focus-trap, and event API.
+ #
+ # Spec: docs/design_system/sections/modals.html
+ # Stimulus: fa-modal (shell), fa-confirm (typed-phrase/cooldown), modal-wizard (steps)
+ #
+ # ┌─ Macros ────────────────────────────────────────────────────────────────┐
+ # │                                                                          │
+ # │ {% import '_components/_fa_modal.html.twig' as _fa_modal %}              │
+ # │                                                                          │
+ # │ {{ _fa_modal.confirm({                                                   │
+ # │     id:             'delete-risk',                                       │
+ # │     title:          'Risiko löschen?',                                   │
+ # │     message:        'Diese Aktion ist permanent.',                       │
+ # │     tone:           'danger',     // neutral|danger|warning|success      │
+ # │     icon:           'exclamation-triangle-fill',                         │
+ # │     confirmLabel:   'Löschen',                                           │
+ # │     cancelLabel:    'Abbrechen',                                         │
+ # │     typeToConfirm:  'risk-12345',                                        │
+ # │     cooldownSeconds: 5,                                                  │
+ # │     formAction:     path('risk_delete', {id: 12345}),                    │
+ # │     formCsrfToken:  csrf_token('risk_delete'),                           │
+ # │ }) }}                                                                    │
+ # │                                                                          │
+ # │ {{ _fa_modal.settings({                                                  │
+ # │     id:           'dashboard-customize',                                 │
+ # │     title:        'Dashboard anpassen',                                  │
+ # │     subtitle:     'Sichtbarkeit der Widgets',                            │
+ # │     body:         include('dashboard/_widget_toggles.html.twig'),        │
+ # │     primaryLabel: 'Speichern',                                           │
+ # │     formAction:   path('dashboard_settings_save'),                       │
+ # │     formCsrfToken: csrf_token('dashboard_settings'),                     │
+ # │ }) }}                                                                    │
+ # │                                                                          │
+ # │ {{ _fa_modal.wizard({...wizard config...}) }}  // BC-delegate            │
+ # │                                                                          │
+ # └──────────────────────────────────────────────────────────────────────────┘
+ #
+ # Open from JS (replaces `new bootstrap.Modal()`):
+ #   this.dispatch('fa-modal:request-open', { detail: { id: 'delete-risk' } });
+ #
+ # Open from Twig (button anywhere on page):
+ #   <button data-action="fa-modal-dispatcher#open" data-fa-modal-id="delete-risk">…</button>
+ #}
+
+{#
+ # confirm() — Destructive / approval confirmation modal
+ #
+ # Required: id, title, confirmLabel
+ # Optional: message, sub, tone, icon, cancelLabel, typeToConfirm,
+ #           confirmHint, cooldownSeconds, formAction, formCsrfToken,
+ #           formMethod, submitIcon, diff
+ #}
+{% macro confirm(props = {}) %}
+    {%- set id              = props.id ?? ('fa-modal-' ~ random()) -%}
+    {%- set tone            = props.tone ?? 'neutral' -%}
+    {%- set icon            = props.icon ?? (tone == 'danger' ? 'exclamation-triangle-fill' : (tone == 'warning' ? 'exclamation-triangle' : (tone == 'success' ? 'check-circle' : 'info-circle'))) -%}
+    {%- set cancelLabel     = props.cancelLabel ?? 'Abbrechen' -%}
+    {%- set cooldownSeconds = props.cooldownSeconds ?? 0 -%}
+    {%- set formMethod      = props.formMethod ?? 'post' -%}
+    {%- set hasTypeConfirm  = props.typeToConfirm is defined and props.typeToConfirm -%}
+    {%- set submitVariant   = tone == 'danger' ? 'danger' : (tone == 'warning' ? 'warning' : (tone == 'success' ? 'primary' : 'primary')) -%}
+
+    <div id="{{ id }}"
+         class="fa-modal fa-modal--confirm fa-modal--{{ tone }}"
+         role="alertdialog"
+         aria-modal="true"
+         aria-labelledby="{{ id }}-title"
+         aria-hidden="true"
+         data-controller="fa-modal{% if hasTypeConfirm or cooldownSeconds > 0 %} fa-confirm{% endif %}"
+         data-fa-modal-mode-value="confirm"
+         data-fa-modal-tone-value="{{ tone }}"
+         {% if hasTypeConfirm %}data-fa-confirm-phrase-value="{{ props.typeToConfirm }}"{% endif %}
+         {% if cooldownSeconds > 0 %}data-fa-confirm-cooldown-value="{{ cooldownSeconds }}"{% endif %}>
+
+        <div class="fa-modal__backdrop"
+             data-fa-modal-target="backdrop"
+             data-action="click->fa-modal#backdropClick"
+             aria-hidden="true"></div>
+
+        <div class="fa-modal__container" data-fa-modal-target="dialog">
+
+            <header class="fa-modal__header">
+                <span class="fa-modal__icon" aria-hidden="true">
+                    <i class="fa-icon fa-icon--{{ icon }}"></i>
+                </span>
+                <div class="fa-modal__heading">
+                    <h2 class="fa-modal__title" id="{{ id }}-title">{{ props.title }}</h2>
+                    {% if props.sub is defined and props.sub %}
+                        <p class="fa-modal__sub">{{ props.sub|raw }}</p>
+                    {% endif %}
+                </div>
+                <button type="button"
+                        class="fa-modal__close"
+                        aria-label="{{ cancelLabel }}"
+                        data-action="fa-modal#cancel">
+                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <div class="fa-modal__body">
+                {% if props.message is defined and props.message %}
+                    <p class="fa-modal__message">{{ props.message|raw }}</p>
+                {% endif %}
+
+                {% if props.diff is defined and props.diff|length > 0 %}
+                    <div class="fa-modal__diff">
+                        {% for row in props.diff %}
+                            <div class="fa-modal__diff-row">
+                                <span>{{ row.label }}</span>
+                                <strong{% if row.tone is defined and row.tone %} style="color: var(--{{ row.tone }}-strong);"{% endif %}>{{ row.value }}</strong>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="{{ formMethod }}"
+                      {% if props.formAction is defined and props.formAction %}action="{{ props.formAction }}"{% endif %}
+                      data-fa-modal-target="form"
+                      {% if hasTypeConfirm or cooldownSeconds > 0 %}data-fa-confirm-target="form"{% endif %}>
+
+                    {% if props.formCsrfToken is defined and props.formCsrfToken %}
+                        <input type="hidden" name="_token" value="{{ props.formCsrfToken }}">
+                    {% endif %}
+
+                    {% if hasTypeConfirm %}
+                        <label class="fa-modal__field">
+                            <span class="fa-modal__field-hint">
+                                {{- (props.confirmHint ?? ('Tippe <code>' ~ props.typeToConfirm ~ '</code> zum Bestätigen'))|raw -}}
+                            </span>
+                            <input type="text"
+                                   class="fa-modal__field-input"
+                                   data-fa-confirm-target="phraseInput"
+                                   data-action="input->fa-confirm#evaluate"
+                                   autocomplete="off"
+                                   spellcheck="false">
+                        </label>
+                    {% endif %}
+
+                    <footer class="fa-modal__footer">
+                        <button type="button"
+                                class="fa-cyber-btn fa-cyber-btn--ghost"
+                                data-action="fa-modal#cancel">{{ cancelLabel }}</button>
+                        <button type="submit"
+                                class="fa-cyber-btn fa-cyber-btn--{{ submitVariant }}"
+                                data-fa-modal-target="confirmButton"
+                                {% if hasTypeConfirm or cooldownSeconds > 0 %}data-fa-confirm-target="submit"{% endif %}
+                                {% if hasTypeConfirm or cooldownSeconds > 0 %}disabled{% endif %}>
+                            {% if props.submitIcon is defined and props.submitIcon %}
+                                <i class="fa-icon fa-icon--{{ props.submitIcon }}" aria-hidden="true"></i>
+                            {% endif %}
+                            <span {% if hasTypeConfirm or cooldownSeconds > 0 %}data-fa-confirm-target="submitLabel"{% endif %}>
+                                {{- props.confirmLabel -}}
+                            </span>
+                        </button>
+                    </footer>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+{#
+ # settings() — Preference / configuration modal
+ #
+ # Required: id, title, body
+ # Optional: subtitle, icon, primaryLabel, primaryIcon, cancelLabel,
+ #           primaryVariant, formAction, formCsrfToken, formMethod
+ #}
+{% macro settings(props = {}) %}
+    {%- set id            = props.id ?? ('fa-modal-' ~ random()) -%}
+    {%- set icon          = props.icon ?? 'sliders' -%}
+    {%- set cancelLabel   = props.cancelLabel ?? 'Schließen' -%}
+    {%- set primaryLabel  = props.primaryLabel ?? 'Speichern' -%}
+    {%- set primaryVariant = props.primaryVariant ?? 'primary' -%}
+    {%- set formMethod    = props.formMethod ?? 'post' -%}
+    {%- set hasForm       = props.formAction is defined and props.formAction -%}
+
+    <div id="{{ id }}"
+         class="fa-modal fa-modal--settings"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="{{ id }}-title"
+         aria-hidden="true"
+         data-controller="fa-modal"
+         data-fa-modal-mode-value="settings">
+
+        <div class="fa-modal__backdrop"
+             data-fa-modal-target="backdrop"
+             data-action="click->fa-modal#backdropClick"
+             aria-hidden="true"></div>
+
+        <div class="fa-modal__container" data-fa-modal-target="dialog">
+
+            <header class="fa-modal__header">
+                <span class="fa-modal__icon" aria-hidden="true">
+                    <i class="fa-icon fa-icon--{{ icon }}"></i>
+                </span>
+                <div class="fa-modal__heading">
+                    <h2 class="fa-modal__title" id="{{ id }}-title">{{ props.title }}</h2>
+                    {% if props.subtitle is defined and props.subtitle %}
+                        <p class="fa-modal__sub">{{ props.subtitle|raw }}</p>
+                    {% endif %}
+                </div>
+                <button type="button"
+                        class="fa-modal__close"
+                        aria-label="{{ cancelLabel }}"
+                        data-action="fa-modal#cancel">
+                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            {% if hasForm %}
+                <form method="{{ formMethod }}"
+                      action="{{ props.formAction }}"
+                      data-fa-modal-target="form">
+
+                    {% if props.formCsrfToken is defined and props.formCsrfToken %}
+                        <input type="hidden" name="_token" value="{{ props.formCsrfToken }}">
+                    {% endif %}
+
+                    <div class="fa-modal__body">
+                        {{ props.body|raw }}
+                    </div>
+
+                    <footer class="fa-modal__footer">
+                        <button type="button"
+                                class="fa-cyber-btn fa-cyber-btn--ghost"
+                                data-action="fa-modal#cancel">{{ cancelLabel }}</button>
+                        <button type="submit"
+                                class="fa-cyber-btn fa-cyber-btn--{{ primaryVariant }}"
+                                data-fa-modal-target="confirmButton">
+                            {% if props.primaryIcon is defined and props.primaryIcon %}
+                                <i class="fa-icon fa-icon--{{ props.primaryIcon }}" aria-hidden="true"></i>
+                            {% endif %}
+                            <span>{{ primaryLabel }}</span>
+                        </button>
+                    </footer>
+                </form>
+            {% else %}
+                <div class="fa-modal__body">
+                    {{ props.body|raw }}
+                </div>
+
+                <footer class="fa-modal__footer">
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--ghost"
+                            data-action="fa-modal#cancel">{{ cancelLabel }}</button>
+                </footer>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+
+{#
+ # wizard() — Delegate to existing _fa_modal_wizard.render() for BC.
+ # Existing call-sites of _fa_modal_wizard remain unchanged; this is the
+ # canonical access point for new code so all 3 modes live behind one import.
+ #}
+{% macro wizard(config = {}) %}
+    {% import '_components/_fa_modal_wizard.html.twig' as _fa_modal_wizard %}
+    {{ _fa_modal_wizard.render(config) }}
+{% endmacro %}

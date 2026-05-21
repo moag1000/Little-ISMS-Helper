@@ -124,7 +124,9 @@ final class AdminPanelMacrosTest extends KernelTestCase
             'submitLabel' => 'Endgültig löschen',
         ]);
 
-        $this->assertStringContainsString('data-tone="nuclear"', $output);
+        // BC-shim: legacy tone 'nuclear' is escalated to 'danger' with minimum 5s cooldown
+        // by the _fa_confirm → _fa_modal.confirm delegator (see 2026-05-21 modal foundation PR).
+        $this->assertStringContainsString('fa-modal--danger', $output);
         $this->assertStringContainsString('data-fa-confirm-cooldown-value="5"', $output);
         $this->assertStringContainsString('data-fa-confirm-phrase-value="tenant-delete"', $output);
         $this->assertStringContainsString('Endgültig löschen', $output);
