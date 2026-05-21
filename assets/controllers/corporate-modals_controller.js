@@ -30,11 +30,10 @@ export default class extends Controller {
             option.disabled = option.value == tenantId;
         });
 
-        const modalEl = document.getElementById('setParentModal');
-        if (modalEl && window.bootstrap) {
-            const modal = new window.bootstrap.Modal(modalEl);
-            modal.show();
-        }
+        document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
+            bubbles: true,
+            detail: { id: 'setParentModal' },
+        }));
     }
 
     /**
@@ -61,10 +60,9 @@ export default class extends Controller {
             helpText.textContent = window.governanceDescriptions[currentGovernance] || '';
         }
 
-        const modalEl = document.getElementById('updateGovernanceModal');
-        if (modalEl && window.bootstrap) {
-            const modal = new window.bootstrap.Modal(modalEl);
-            modal.show();
-        }
+        document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
+            bubbles: true,
+            detail: { id: 'updateGovernanceModal' },
+        }));
     }
 }

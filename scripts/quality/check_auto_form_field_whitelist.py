@@ -49,7 +49,7 @@ def scan() -> list[tuple[Path, int]]:
         for m in RE_INCLUDE.finditer(text):
             args = m.group("args")
             has_whitelist = bool(
-                re.search(r"\b(sections|fields|exclude)\s*:", args)
+                re.search(r"['\"]?\b(sections|fields|exclude)\b['\"]?\s*:", args)
             )
             if not has_whitelist:
                 ln = text.count("\n", 0, m.start()) + 1

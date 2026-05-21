@@ -69,10 +69,12 @@ export default class extends Controller {
             this.setParentFormTarget.action = this.setParentUrlTemplateValue.replace('__ID__', tenantId);
         }
 
-        // Show modal
-        if (window.bootstrap && this.hasSetParentModalTarget) {
-            const modal = new window.bootstrap.Modal(this.setParentModalTarget);
-            modal.show();
+        // Open fa-modal shell
+        if (this.hasSetParentModalTarget) {
+            document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
+                bubbles: true,
+                detail: { id: this.setParentModalTarget.id },
+            }));
         }
     }
 
@@ -103,10 +105,12 @@ export default class extends Controller {
             this.updateGovernanceFormTarget.action = this.setParentUrlTemplateValue.replace('__ID__', tenantId);
         }
 
-        // Show modal
-        if (window.bootstrap && this.hasUpdateGovernanceModalTarget) {
-            const modal = new window.bootstrap.Modal(this.updateGovernanceModalTarget);
-            modal.show();
+        // Open fa-modal shell
+        if (this.hasUpdateGovernanceModalTarget) {
+            document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
+                bubbles: true,
+                detail: { id: this.updateGovernanceModalTarget.id },
+            }));
         }
     }
 

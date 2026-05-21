@@ -47,7 +47,7 @@
                                 </button>
                             </form>
                             <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                    data-bs-toggle="modal" data-bs-target="#reject-{{ r.id }}">
+                                    data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="reject-{{ r.id }}">
                                 <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                 {{ 'four_eyes.reject'|trans({}, 'four_eyes') }}
                             </button>
@@ -55,33 +55,28 @@
                     </div>
                 </div>
 
-                <div  class="modal fade"  id="reject-{{ r.id }}" tabindex="-1"
-                     aria-labelledby="reject-{{ r.id }}-label" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <form method="post" class="modal-content"
-                              action="{{ path('app_four_eyes_reject', { id: r.id }) }}">
+                <div class="fa-modal fa-modal--confirm fa-modal--danger" id="reject-{{ r.id }}"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
+     role="alertdialog" aria-modal="true" aria-labelledby="reject-{{ r.id }}-label" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><form method="post"
+                              action="{{ path('app_four_eyes_reject', { id: r.id }) }}" data-fa-modal-target="form">
                             <input type="hidden" name="_token" value="{{ csrf_token('four_eyes_reject_' ~ r.id) }}">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="reject-{{ r.id }}-label">
+                            <header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-critical"></i></span><div class="fa-modal__heading"><h5 class="fa-modal__title" id="reject-{{ r.id }}-label">
                                     {{ 'four_eyes.reject_modal.title'|trans({}, 'four_eyes') }}
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
+                                </h5></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                            <div class="fa-modal__body">
                                 <label class="form-label">{{ 'four_eyes.reject_modal.reason'|trans({}, 'four_eyes') }}</label>
                                 <textarea name="reason" class="form-control fa-cyber-input__field" rows="3" minlength="20" required></textarea>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
-                                    {{ 'common.cancel'|trans({}, 'messages') }}
-                                </button>
+                            <footer class="fa-modal__footer">
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                                     {{ 'four_eyes.reject'|trans({}, 'four_eyes') }}
                                 </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                            </footer>
+                        </form></div>
+</div>
             {% endfor %}
         </div>
     {% endif %}

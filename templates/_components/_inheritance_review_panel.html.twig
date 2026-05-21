@@ -76,14 +76,12 @@
                 {{ 'compliance_inheritance.panel.confirm'|trans({ '%value%': log.suggestedPercentage }, 'compliance_inheritance') }}
             </button>
             <button type="button" class="fa-cyber-btn fa-cyber-btn--warning"
-                    data-bs-toggle="modal"
-                    data-bs-target="#override-modal-{{ log.id }}">
+                    data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="override-modal-{{ log.id }}">
                 <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                 {{ 'compliance_inheritance.panel.override'|trans({}, 'compliance_inheritance') }}
             </button>
             <button type="button" class="fa-cyber-btn fa-cyber-btn--danger"
-                    data-bs-toggle="modal"
-                    data-bs-target="#reject-modal-{{ log.id }}">
+                    data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="reject-modal-{{ log.id }}">
                 <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                 {{ 'compliance_inheritance.panel.reject'|trans({}, 'compliance_inheritance') }}
             </button>
@@ -103,51 +101,44 @@
 </section>
 
 {# Reject modal #}
-<div  class="modal fade"  id="reject-modal-{{ log.id }}" tabindex="-1"
-     aria-labelledby="reject-modal-{{ log.id }}-label" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="post" class="modal-content"
-              action="{{ path('app_compliance_inheritance_reject', { id: log.id, _locale: app.request.locale }) }}">
+<div class="fa-modal fa-modal--confirm fa-modal--danger" id="reject-modal-{{ log.id }}"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
+     role="alertdialog" aria-modal="true" aria-labelledby="reject-modal-{{ log.id }}-label" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><form method="post"
+              action="{{ path('app_compliance_inheritance_reject', { id: log.id, _locale: app.request.locale }) }}" data-fa-modal-target="form">
             <input type="hidden" name="_token" value="{{ csrf_token('inheritance_reject_' ~ log.id) }}">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reject-modal-{{ log.id }}-label">
+            <header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-critical"></i></span><div class="fa-modal__heading"><h5 class="fa-modal__title" id="reject-modal-{{ log.id }}-label">
                     {{ 'compliance_inheritance.reject.title'|trans({}, 'compliance_inheritance') }}
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
+                </h5></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+            <div class="fa-modal__body">
                 <label for="reject-reason-{{ log.id }}" class="form-label">
                     {{ 'compliance_inheritance.reject.reason_label'|trans({}, 'compliance_inheritance') }}
                 </label>
                 <textarea id="reject-reason-{{ log.id }}" name="reason" class="form-control fa-cyber-input__field" rows="3" required minlength="20"></textarea>
                 <div class="form-text">{{ 'compliance_inheritance.panel.chars_hint'|trans({ '%min%': 20 }, 'compliance_inheritance') }}</div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
-                    {{ 'common.cancel'|trans({}, 'messages') }}
-                </button>
+            <footer class="fa-modal__footer">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                     {{ 'compliance_inheritance.reject.submit'|trans({}, 'compliance_inheritance') }}
                 </button>
-            </div>
-        </form>
-    </div>
+            </footer>
+        </form></div>
 </div>
 
 {# Override modal #}
-<div  class="modal fade"  id="override-modal-{{ log.id }}" tabindex="-1"
-     aria-labelledby="override-modal-{{ log.id }}-label" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="post" class="modal-content"
-              action="{{ path('app_compliance_inheritance_override', { id: log.id, _locale: app.request.locale }) }}">
+<div class="fa-modal fa-modal--confirm fa-modal--warning" id="override-modal-{{ log.id }}"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="warning"
+     role="alertdialog" aria-modal="true" aria-labelledby="override-modal-{{ log.id }}-label" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><form method="post"
+              action="{{ path('app_compliance_inheritance_override', { id: log.id, _locale: app.request.locale }) }}" data-fa-modal-target="form">
             <input type="hidden" name="_token" value="{{ csrf_token('inheritance_override_' ~ log.id) }}">
-            <div class="modal-header">
-                <h5 class="modal-title" id="override-modal-{{ log.id }}-label">
+            <header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-warning"></i></span><div class="fa-modal__heading"><h5 class="fa-modal__title" id="override-modal-{{ log.id }}-label">
                     {{ 'compliance_inheritance.override.title'|trans({}, 'compliance_inheritance') }}
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
+                </h5></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+            <div class="fa-modal__body">
                 <div class="mb-3">
                     <label for="override-value-{{ log.id }}" class="form-label">
                         {{ 'compliance_inheritance.override.value_label'|trans({}, 'compliance_inheritance') }}
@@ -174,14 +165,11 @@
                     </select>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
-                    {{ 'common.cancel'|trans({}, 'messages') }}
-                </button>
+            <footer class="fa-modal__footer">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">
                     {{ 'compliance_inheritance.override.submit'|trans({}, 'compliance_inheritance') }}
                 </button>
-            </div>
-        </form>
-    </div>
+            </footer>
+        </form></div>
 </div>
