@@ -37,12 +37,12 @@
     {% if _has_secondary_actions %}
         <div class="d-flex justify-content-end gap-2 mb-3">
             {% if is_granted('ROLE_DPO') and not consent.verifiedBy %}
-                <button class="fa-cyber-btn fa-cyber-btn--success" data-bs-toggle="modal" data-bs-target="#verifyModal">
+                <button class="fa-cyber-btn fa-cyber-btn--success" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="verifyModal">
                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
                 </button>
             {% endif %}
             {% if consent.status == 'active' %}
-                <button class="fa-cyber-btn fa-cyber-btn--warning" data-bs-toggle="modal" data-bs-target="#revokeModal">
+                <button class="fa-cyber-btn fa-cyber-btn--warning" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="revokeModal">
                     <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
                 </button>
             {% endif %}
@@ -339,56 +339,64 @@
     {% endembed %}
 </div>
 
-{# Verify Modal #}
-<div  class="modal fade"  id="verifyModal" tabindex="-1" aria-labelledby="verifyModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title h5" id="verifyModalLabel">{{ 'consent.action.verify'|trans({}, 'consent') }}</h3>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+{# Verify Modal — fa-modal--confirm/success #}
+<div class="fa-modal fa-modal--confirm fa-modal--success" id="verifyModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="success"
+     role="alertdialog" aria-modal="true" aria-labelledby="verifyModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+        <header class="fa-modal__header">
+            <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-ok"></i></span>
+            <div class="fa-modal__heading">
+                <h2 class="fa-modal__title" id="verifyModalLabel">{{ 'consent.action.verify'|trans({}, 'consent') }}</h2>
             </div>
-            <form method="post" action="{{ path('app_consent_verify', {id: consent.id}) }}">
-                <input type="hidden" name="_token" value="{{ csrf_token('verify' ~ consent.id) }}">
-                <div class="modal-body">
-                    <p>{{ 'consent.verify.confirmation'|trans({}, 'consent') }}</p>
-                    <p class="text-muted small">{{ 'consent.verify.hint'|trans({}, 'consent') }}</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
-                    </button>
-                </div>
-            </form>
-        </div>
+            <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
+        </header>
+        <form method="post" action="{{ path('app_consent_verify', {id: consent.id}) }}" data-fa-modal-target="form">
+            <input type="hidden" name="_token" value="{{ csrf_token('verify' ~ consent.id) }}">
+            <div class="fa-modal__body">
+                <p>{{ 'consent.verify.confirmation'|trans({}, 'consent') }}</p>
+                <p class="text-muted small">{{ 'consent.verify.hint'|trans({}, 'consent') }}</p>
+            </div>
+            <footer class="fa-modal__footer">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
+                </button>
+            </footer>
+        </form>
     </div>
 </div>
 
-{# Revoke Modal #}
-<div  class="modal fade"  id="revokeModal" tabindex="-1" aria-labelledby="revokeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title h5" id="revokeModalLabel">{{ 'consent.action.document_revocation'|trans({}, 'consent') }}</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+{# Revoke Modal — fa-modal--confirm/danger #}
+<div class="fa-modal fa-modal--confirm fa-modal--danger" id="revokeModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
+     role="alertdialog" aria-modal="true" aria-labelledby="revokeModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+        <header class="fa-modal__header">
+            <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-warning"></i></span>
+            <div class="fa-modal__heading">
+                <h2 class="fa-modal__title" id="revokeModalLabel">{{ 'consent.action.document_revocation'|trans({}, 'consent') }}</h2>
             </div>
-            <form method="post" action="{{ path('app_consent_revoke', {id: consent.id}) }}">
-                <input type="hidden" name="_token" value="{{ csrf_token('revoke' ~ consent.id) }}">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="revocationReason" class="form-label">{{ 'consent.field.revocation_reason'|trans({}, 'consent') }}</label>
-                        <textarea class="form-control fa-cyber-input__field" id="revocationReason" name="revocationReason" rows="3" required></textarea>
-                    </div>
-                    <p class="text-muted small">{{ 'consent.revoke.hint'|trans({}, 'consent') }}</p>
+            <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
+        </header>
+        <form method="post" action="{{ path('app_consent_revoke', {id: consent.id}) }}" data-fa-modal-target="form">
+            <input type="hidden" name="_token" value="{{ csrf_token('revoke' ~ consent.id) }}">
+            <div class="fa-modal__body">
+                <div class="mb-3">
+                    <label for="revocationReason" class="form-label">{{ 'consent.field.revocation_reason'|trans({}, 'consent') }}</label>
+                    <textarea class="form-control fa-cyber-input__field" id="revocationReason" name="revocationReason" rows="3" required></textarea>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
-                    </button>
-                </div>
-            </form>
-        </div>
+                <p class="text-muted small">{{ 'consent.revoke.hint'|trans({}, 'consent') }}</p>
+            </div>
+            <footer class="fa-modal__footer">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
+                </button>
+            </footer>
+        </form>
     </div>
 </div>
 
