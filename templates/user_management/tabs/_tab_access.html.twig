@@ -1,0 +1,41 @@
+{#
+ # User form — tab: access
+ # Fields (admin-only): roles, customRoles, tenant, isActive, isVerified
+ # NOTE: These fields are only added to the form when is_profile_edit=false.
+ # The partial gracefully skips missing fields using `form.X is defined`.
+ #}
+{% trans_default_domain 'user' %}
+
+{% if form.roles is defined %}
+    {{ form_row(form.roles) }}
+{% endif %}
+
+{% if form.customRoles is defined %}
+    {{ form_row(form.customRoles) }}
+{% endif %}
+
+{% if form.tenant is defined %}
+    {{ form_row(form.tenant) }}
+{% endif %}
+
+{% if form.isActive is defined %}
+    <div class="form-group mb-3">
+        <div class="form-check form-switch">
+            {{ form_widget(form.isActive, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+            {{ form_label(form.isActive, null, {'label_attr': {'class': 'form-check-label'}}) }}
+        </div>
+        {{ form_help(form.isActive) }}
+        {{ form_errors(form.isActive) }}
+    </div>
+{% endif %}
+
+{% if form.isVerified is defined %}
+    <div class="form-group mb-3">
+        <div class="form-check form-switch">
+            {{ form_widget(form.isVerified, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+            {{ form_label(form.isVerified, null, {'label_attr': {'class': 'form-check-label'}}) }}
+        </div>
+        {{ form_help(form.isVerified) }}
+        {{ form_errors(form.isVerified) }}
+    </div>
+{% endif %}

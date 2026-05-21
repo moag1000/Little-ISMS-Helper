@@ -1,6 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'user' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_tabs.html.twig' as _fa_tabs %}
 
 {% block title %}{{ 'user.edit'|trans({}, 'user') }} - {{ user.fullName }}{% endblock %}
 
@@ -16,121 +18,100 @@
     } %}
 
     {{ _fa_page_header.render({
-    title: ('user.edit'|trans({}, 'user')),
-    badge: { icon: 'ui-edit', label: '' },
-    actions: [
-        { label: 'common.view'|trans({}, 'messages'), href: path('user_management_show', {'id': user.id}), variant: 'ghost', icon: 'util-arrow-left' }
-    ]
-}) }}
+        title: ('user.edit'|trans({}, 'user')),
+        badge: { icon: 'ui-edit', label: '' },
+        actions: [
+            { label: 'common.view'|trans({}, 'messages'), href: path('user_management_show', {'id': user.id}), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
 
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-10 offset-md-1">
             {# Role Help Component - explains system vs custom roles #}
             {{ include('_components/_role_help.html.twig') }}
 
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="mb-0">{{ user.fullName }} {{ 'user.edit_suffix'|trans({}, 'user') }}</h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ user.fullName }} {{ 'user.edit_suffix'|trans({}, 'user') }}</h2>
+                </div>
+                <div class="fa-section__body">
                     {{ form_start(form) }}
-                        {# H-03: strict_whitelist + explicit competence section
-                           prevents leakage of sensitive roles/tenant/isActive
-                           through the catch-all bucket. #}
-                        {% include '_components/_auto_form.html.twig' with {
-                            form: form,
-                            strict_whitelist: true,
-                            sections: {
-                                'basic_info': {
-                                    'label': 'user.section.basic_info'|trans({}, 'user'),
-                                    fields: ['firstName', 'lastName', 'email', 'department', 'jobTitle', 'phoneNumber', 'avatarFile']
-                                },
-                                'tenant': {
-                                    'label': 'user.section.tenant'|trans({}, 'user'),
-                                    fields: ['tenant']
-                                },
-                                'authentication': {
-                                    'label': 'user.section.authentication'|trans({}, 'user'),
-                                    fields: ['plainPassword']
-                                },
-                                'roles': {
-                                    'label': 'user.section.roles'|trans({}, 'user'),
-                                    fields: ['roles', 'customRoles']
-                                },
-                                'status': {
-                                    'label': 'user.section.status'|trans({}, 'user'),
-                                    fields: ['isActive', 'isVerified']
-                                },
-                                'competence': {
-                                    'label': 'user.section.competence'|trans({}, 'user'),
-                                    fields: ['competencies', 'previousQmsBackground']
-                                }
-                            },
-                            'col_widths': {
-                                'firstName': 6,
-                                'lastName': 6,
-                                'email': 12,
-                                'department': 6,
-                                'jobTitle': 6,
-                                'phoneNumber': 6,
-                                'avatarFile': 12,
-                                'tenant': 12,
-                                'plainPassword': 12,
-                                'roles': 12,
-                                'customRoles': 12,
-                                'isActive': 12,
-                                'isVerified': 12,
-                                'competencies': 12,
-                                'previousQmsBackground': 12
-                            },
-                            'translation_domain': 'user'
-                        } %}
 
-                        {# Auth Provider Info (Edit Mode Only) #}
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
-                            {% block alert_body %}
-                            <strong>{{ 'user.field.auth_provider'|trans({}, 'user') }}:</strong>
-                            {% if user.authProvider == 'azure_oauth' %}
-                                Azure OAuth
-                            {% elseif user.authProvider == 'azure_saml' %}
-                                Azure SAML
-                            {% else %}
-                                {{ 'user.auth_provider.local'|trans({}, 'user') }}
+                    {{ _fa_tabs.render({
+                        id: 'user-settings',
+                        urlHashSync: true,
+                        initialTab: 'tab-profile',
+                        tabs: [
+                            {
+                                id: 'tab-profile',
+                                label: 'user.tab.profile'|trans({}, 'user'),
+                                icon: 'ui-person',
+                                body: include('user_management/tabs/_tab_profile.html.twig', { form: form })
+                            },
+                            {
+                                id: 'tab-access',
+                                label: 'user.tab.access'|trans({}, 'user'),
+                                icon: 'nav-shield-lock',
+                                body: include('user_management/tabs/_tab_access.html.twig', { form: form })
+                            },
+                            {
+                                id: 'tab-security',
+                                label: 'user.tab.security'|trans({}, 'user'),
+                                icon: 'ui-lock',
+                                body: include('user_management/tabs/_tab_security.html.twig', { form: form })
+                            }
+                        ]
+                    }) }}
+
+                    {# CSRF token — outside tab panels so it is always submitted #}
+                    {% if form._token is defined %}
+                        {{ form_row(form._token) }}
+                    {% endif %}
+
+                    {# Auth Provider Info (Edit Mode Only) #}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                        {% block alert_body %}
+                        <strong>{{ 'user.field.auth_provider'|trans({}, 'user') }}:</strong>
+                        {% if user.authProvider == 'azure_oauth' %}
+                            Azure OAuth
+                        {% elseif user.authProvider == 'azure_saml' %}
+                            Azure SAML
+                        {% else %}
+                            {{ 'user.auth_provider.local'|trans({}, 'user') }}
+                        {% endif %}
+                        {% endblock %}
+                    {% endembed %}
+
+                    {# Metadata (Edit Mode Only) #}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                        {% block alert_body %}
+                        <small>
+                            <strong>{{ 'user.field.created_at'|trans({}, 'user') }}:</strong> {{ user.createdAt|date('d.m.Y H:i') }}<br>
+                            {% if user.updatedAt %}
+                                <strong>{{ 'user.field.updated_at'|trans({}, 'user') }}:</strong> {{ user.updatedAt|date('d.m.Y H:i') }}<br>
                             {% endif %}
-                            {% endblock %}
-                        {% endembed %}
+                            {% if user.lastLoginAt %}
+                                <strong>{{ 'user.field.last_login'|trans({}, 'user') }}:</strong> {{ user.lastLoginAt|date('d.m.Y H:i') }}
+                            {% endif %}
+                        </small>
+                        {% endblock %}
+                    {% endembed %}
 
-                        {# Metadata (Edit Mode Only) #}
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
-                            {% block alert_body %}
-                            <small>
-                                <strong>{{ 'user.field.created_at'|trans({}, 'user') }}:</strong> {{ user.createdAt|date('d.m.Y H:i') }}<br>
-                                {% if user.updatedAt %}
-                                    <strong>{{ 'user.field.updated_at'|trans({}, 'user') }}:</strong> {{ user.updatedAt|date('d.m.Y H:i') }}<br>
-                                {% endif %}
-                                {% if user.lastLoginAt %}
-                                    <strong>{{ 'user.field.last_login'|trans({}, 'user') }}:</strong> {{ user.lastLoginAt|date('d.m.Y H:i') }}
-                                {% endif %}
-                            </small>
-                            {% endblock %}
-                        {% endembed %}
+                    {# Form Actions #}
+                    <div class="form-actions d-flex gap-2 justify-content-between mt-4">
+                        <a href="{{ path('user_management_show', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                            {{ 'common.cancel'|trans({}, 'messages') }}
+                        </a>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
+                            {{ 'user.save_changes'|trans({}, 'user') }}
+                        </button>
+                    </div>
 
-                        {# Form Actions #}
-                        <div class="form-actions d-flex gap-2 justify-content-between mt-4">
-                            <a href="{{ path('user_management_show', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                                {{ 'common.cancel'|trans({}, 'messages') }}
-                            </a>
-                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
-                                {{ 'user.save_changes'|trans({}, 'user') }}
-                            </button>
-                        </div>
-                    {{ form_end(form) }}
-                {% endblock %}
-            {% endembed %}
+                    {{ form_end(form, {render_rest: false}) }}
+                </div>
+            </section>
         </div>
     </div>
 </div>

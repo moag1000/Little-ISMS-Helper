@@ -1,0 +1,20 @@
+{#
+ # User form — tab: profile
+ # Fields: firstName, lastName, email, department, jobTitle, phoneNumber, avatarFile
+ #}
+{% trans_default_domain 'user' %}
+
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.firstName) }}</div>
+    <div class="col-md-6">{{ form_row(form.lastName) }}</div>
+</div>
+
+{{ form_row(form.email) }}
+
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.department) }}</div>
+    <div class="col-md-6">{{ form_row(form.jobTitle) }}</div>
+</div>
+
+{{ form_row(form.phoneNumber) }}
+{{ form_row(form.avatarFile) }}
