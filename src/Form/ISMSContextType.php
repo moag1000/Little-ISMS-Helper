@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\ISMSContext;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -15,8 +16,21 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class ISMSContextType extends AbstractType
+final class ISMSContextType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'               => ['organizationName'],
+            'scope_definition'       => ['ismsScope', 'scopeExclusions'],
+            'internal_issues'        => ['internalIssues'],
+            'external_issues'        => ['externalIssues'],
+            'interested_parties_link'=> ['interestedPartiesRequirements'],
+            'details'                => ['legalRequirements', 'regulatoryRequirements', 'contractualObligations', 'ismsPolicy', 'rolesAndResponsibilities'],
+            'audit_metadata'         => ['lastReviewDate', 'nextReviewDate'],
+        ];
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
