@@ -162,15 +162,11 @@
                             <i class="fa-icon fa-icon--util-chevron-down fa-form-section__chevron"></i>
                         </header>
 
-                        {% if not (sectionStatus == 'done' or sectionStatus == 'pending') or isOpen %}
-                            <div class="fa-form-section__body">
-                                {% if section.body is defined and section.body %}
-                                    {{ section.body|raw }}
-                                {% endif %}
-                            </div>
-                        {% elseif isOpen %}
-                            <div class="fa-form-section__body"></div>
-                        {% endif %}
+                        <div class="fa-form-section__body">
+                            {% if section.body is defined and section.body %}
+                                {{ section.body|raw }}
+                            {% endif %}
+                        </div>
 
                     </section>
                 {% endfor %}
