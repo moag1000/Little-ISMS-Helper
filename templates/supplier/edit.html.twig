@@ -6,7 +6,7 @@
 {% block title %}{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers') }}{% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.suppliers'|trans({}, 'nav'), url: path('app_supplier_index') },
@@ -16,81 +16,142 @@
     } %}
 
     {{ _fa_page_header.render({
-    title: ('supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers')),
-    badge: { icon: 'ui-edit', label: '' },
-    actions: [
-        { label: 'supplier.action.view'|trans({}, 'suppliers'), href: path('app_supplier_show', {id: supplier.id}), variant: 'ghost', icon: 'util-arrow-left' }
-    ]
-}) }}
+        title: 'supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers'),
+        badge: { icon: 'ui-edit', label: '' },
+        actions: [
+            { label: 'supplier.action.view'|trans({}, 'suppliers'), href: path('app_supplier_show', {id: supplier.id}), variant: 'ghost', icon: 'util-arrow-left' }
+        ]
+    }) }}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {{ form_start(form) }}
-                {% include '_components/_auto_form.html.twig' with {
-                    'form': form,
-                    'sections': {
-                        'details': {
-                            'label': 'supplier.section.details'|trans({}, 'suppliers'),
-                            'fields': ['name', 'criticality', 'status', 'description', 'serviceProvided']
-                        },
-                        'contact_info': {
-                            'label': 'supplier.section.contact_info'|trans({}, 'suppliers'),
-                            'fields': ['contactPerson', 'email', 'phone', 'address']
-                        },
-                        'security_assessment': {
-                            'label': 'supplier.section.security_assessment'|trans({}, 'suppliers'),
-                            'fields': ['securityScore', 'lastSecurityAssessment', 'nextAssessmentDate', 'assessmentFindings', 'nonConformities', 'securityRequirements']
-                        },
-                        'certifications_compliance': {
-                            'label': 'supplier.section.certifications_compliance'|trans({}, 'suppliers'),
-                            'fields': ['hasISO27001', 'hasISO22301', 'hasDPA', 'dpaSignedDate', 'certifications']
-                        },
-                        'contract_info': {
-                            'label': 'supplier.section.contract_info'|trans({}, 'suppliers'),
-                            'fields': ['contractStartDate', 'contractEndDate']
-                        }
-                    },
-                    'col_widths': {
-                        'name': 4,
-                        'criticality': 4,
-                        'status': 4,
-                        'description': 12,
-                        'serviceProvided': 12,
-                        'contactPerson': 4,
-                        'email': 4,
-                        'phone': 4,
-                        'address': 12,
-                        'securityScore': 4,
-                        'lastSecurityAssessment': 4,
-                        'nextAssessmentDate': 4,
-                        'assessmentFindings': 12,
-                        'nonConformities': 12,
-                        'securityRequirements': 12,
-                        'hasISO27001': 12,
-                        'hasISO22301': 12,
-                        'hasDPA': 12,
-                        'dpaSignedDate': 6,
-                        'certifications': 6,
-                        'contractStartDate': 6,
-                        'contractEndDate': 6
-                    },
-                    'tooltips': {
-                        'securityScore': 'supplier.tooltip.security_score',
-                        'criticality': 'supplier.tooltip.criticality'
-                    },
-                    'translation_domain': 'suppliers'
-                } %}
+    {{ form_start(form) }}
 
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        {{ 'common.cancel'|trans({}, 'messages') }}
-                    </a>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        {{ 'supplier.action.update'|trans({}, 'suppliers')}}
-                    </button>
-                </div>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endembed %}
+    {% set outline_sections = {
+        'overview': {
+            'label': 'supplier.section.details'|trans({}, 'suppliers'),
+            'fields': ['name', 'description', 'criticality', 'status', 'serviceProvided']
+        },
+        'contact': {
+            'label': 'supplier.section.contact_info'|trans({}, 'suppliers'),
+            'fields': ['contactPerson', 'email', 'phone', 'address']
+        },
+        'risk_assessment': {
+            'label': 'supplier.section.security_assessment'|trans({}, 'suppliers'),
+            'fields': ['securityScore', 'lastSecurityAssessment', 'nextAssessmentDate', 'assessmentFindings', 'nonConformities']
+        },
+        'contract': {
+            'label': 'supplier.section.contract_info'|trans({}, 'suppliers'),
+            'fields': ['contractStartDate', 'contractEndDate', 'securityRequirements', 'hasISO27001', 'hasISO22301', 'certifications']
+        }
+    } %}
+
+    {# GDPR Art. 28 — privacy module section #}
+    {% if is_module_active('privacy') %}
+        {% set outline_sections = outline_sections|merge({
+            'privacy': {
+                'label': 'supplier.section.certifications_compliance'|trans({}, 'suppliers'),
+                'fields': ['hasDPA', 'dpaSignedDate', 'gdprProcessorStatus', 'gdprTransferMechanism', 'gdprAvContractSigned', 'gdprAvContractDate']
+            }
+        }) %}
+    {% endif %}
+
+    {# DORA Art. 28 — nis2_dora module section #}
+    {% if is_module_active('nis2_dora') %}
+        {% set outline_sections = outline_sections|merge({
+            'tier_classification': {
+                'label': 'supplier.section.tier_classification'|trans({}, 'suppliers'),
+                'fields': ['isDoraRelevant', 'leiCode', 'naceCode', 'countryOfHeadOffice', 'ictCriticality', 'ictFunctionType', 'substitutability', 'hasSubcontractors', 'subcontractorChain', 'processingLocations', 'lastDoraAuditDate', 'hasExitStrategy']
+            }
+        }) %}
+    {% endif %}
+
+    {# LkSG — lksg module section #}
+    {% if is_module_active('lksg') %}
+        {% set outline_sections = outline_sections|merge({
+            'lksg': {
+                'label': 'supplier.section.lksg'|trans({}, 'suppliers'),
+                'fields': ['lksgReportingObligation', 'lksgRiskCategory', 'lksgHumanRightsRiskScore', 'lksgEnvironmentalRiskScore', 'lksgRiskAnalysisDate', 'lksgComplaintMechanism', 'lksgPreventionMeasures']
+            }
+        }) %}
+    {% endif %}
+
+    {# MaRisk AT 9 — marisk module section #}
+    {% if is_module_active('marisk') %}
+        {% set outline_sections = outline_sections|merge({
+            'marisk': {
+                'label': 'supplier.section.marisk'|trans({}, 'suppliers'),
+                'fields': ['outsourcingClassification', 'outsourcingDueDiligenceCompleted', 'outsourcingDueDiligenceDate', 'outsourcingExitStrategy', 'bafinNotificationRequired', 'bafinNotificationDate', 'riskBearingCapacityImpact', 'boardLevelRiskAcceptance', 'complianceFunctionInvolvement', 'internalAuditFunctionInvolvement']
+            }
+        }) %}
+    {% endif %}
+
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'DORA Art. 28 · Lieferanten-Management',
+        'title': supplier.name,
+        'sections': outline_sections,
+        'col_widths': {
+            'name': 6,
+            'criticality': 3,
+            'status': 3,
+            'description': 12,
+            'serviceProvided': 12,
+            'contactPerson': 4,
+            'email': 4,
+            'phone': 4,
+            'address': 12,
+            'securityScore': 4,
+            'lastSecurityAssessment': 4,
+            'nextAssessmentDate': 4,
+            'assessmentFindings': 12,
+            'nonConformities': 12,
+            'contractStartDate': 6,
+            'contractEndDate': 6,
+            'securityRequirements': 12,
+            'hasISO27001': 12,
+            'hasISO22301': 12,
+            'certifications': 12,
+            'hasDPA': 12,
+            'dpaSignedDate': 6,
+            'gdprProcessorStatus': 6,
+            'gdprTransferMechanism': 6,
+            'gdprAvContractSigned': 12,
+            'gdprAvContractDate': 6,
+            'isDoraRelevant': 12,
+            'leiCode': 4,
+            'naceCode': 4,
+            'countryOfHeadOffice': 4,
+            'ictCriticality': 4,
+            'ictFunctionType': 8,
+            'substitutability': 4,
+            'hasSubcontractors': 12,
+            'subcontractorChain': 12,
+            'processingLocations': 12,
+            'lastDoraAuditDate': 6,
+            'hasExitStrategy': 12,
+            'lksgRiskCategory': 4,
+            'lksgHumanRightsRiskScore': 4,
+            'lksgEnvironmentalRiskScore': 4,
+            'lksgRiskAnalysisDate': 6,
+            'lksgComplaintMechanism': 12,
+            'lksgPreventionMeasures': 12,
+            'outsourcingClassification': 6,
+            'outsourcingDueDiligenceDate': 6,
+            'outsourcingExitStrategy': 12,
+            'bafinNotificationDate': 6,
+            'riskBearingCapacityImpact': 12
+        },
+        'tooltips': {
+            'securityScore': 'supplier.tooltip.security_score',
+            'criticality': 'supplier.tooltip.criticality'
+        },
+        'translation_domain': 'suppliers',
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'supplier.action.update'|trans({}, 'suppliers'), 'variant': 'primary' }
+        }
+    } %}
+
+    {{ form_end(form) }}
 </div>
 {% endblock %}
