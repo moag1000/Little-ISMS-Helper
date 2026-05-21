@@ -1,0 +1,20 @@
+{# Step 3 — Record: mandatory Art. 33(3) documentation content + persons #}
+{% trans_default_domain 'privacy' %}
+<div class="fa-form-section__grid fa-form-section__grid--single">
+    {{ form_row(form.breachNature) }}
+    {{ form_row(form.likelyConsequences) }}
+    {{ form_row(form.measuresTaken) }}
+    {{ form_row(form.mitigationMeasures) }}
+    {{ form_row(form.riskAssessment) }}
+</div>
+<div class="fa-form-section__grid">
+    {{ form_row(form.dataProtectionOfficer) }}
+    {{ form_row(form.dataProtectionOfficerPerson) }}
+</div>
+<div class="fa-form-section__grid fa-form-section__grid--single">
+    {{ form_row(form.dataProtectionOfficerDeputyPersons) }}
+</div>
+<div class="fa-form-section__grid">
+    {{ form_row(form.assessorPerson) }}
+    {{ form_row(form.assessorDeputyPersons) }}
+</div>

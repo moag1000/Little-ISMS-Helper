@@ -1,0 +1,15 @@
+{# Step 2 — Notification: Art. 33/34 reporting decision fields #}
+{% trans_default_domain 'privacy' %}
+<div class="fa-form-section__grid fa-form-section__grid--single">
+    {{ form_row(form.requiresAuthorityNotification) }}
+    {{ form_row(form.requiresSubjectNotification) }}
+    {{ form_row(form.noSubjectNotificationReason) }}
+</div>
+<div class="fa-form-section__grid">
+    {{ form_row(form.dataCategories) }}
+    {{ form_row(form.dataSubjectCategories) }}
+</div>
+<div class="fa-form-section__grid fa-form-section__grid--single">
+    {{ form_row(form.specialCategoriesAffected) }}
+    {{ form_row(form.criminalDataAffected) }}
+</div>

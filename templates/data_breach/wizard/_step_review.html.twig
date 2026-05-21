@@ -1,0 +1,76 @@
+{# Step 4 — Review: read-only summary of entered data + investigation follow-up #}
+{% trans_default_domain 'privacy' %}
+
+{# Show form errors if any before summary #}
+{% if form is defined and form.vars.errors|length > 0 %}
+    <div class="fa-alert fa-alert--danger mb-3" role="alert">
+        <i class="fa-icon fa-icon--status-critical fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body">
+            <div class="fa-alert__title">{{ 'common.form.errors'|trans({}, 'messages') }}</div>
+            {{ form_errors(form) }}
+        </div>
+    </div>
+{% endif %}
+
+{# Summary grid — Aurora surface-2 tiles #}
+{% if data_breach is defined and data_breach is not null %}
+<div class="fa-modal--wizard__review-grid">
+    <div class="fa-modal--wizard__review-tile">
+        <span class="fa-modal--wizard__review-label">{{ 'data_breach.form.title'|trans({}, 'privacy') }}</span>
+        <span class="fa-modal--wizard__review-value">{{ data_breach.title|default('—') }}</span>
+    </div>
+    <div class="fa-modal--wizard__review-tile">
+        <span class="fa-modal--wizard__review-label">{{ 'data_breach.form.detected_at'|trans({}, 'privacy') }}</span>
+        <span class="fa-modal--wizard__review-value">
+            {{ data_breach.detectedAt ? data_breach.detectedAt|date('d.m.Y H:i') : '—' }}
+        </span>
+    </div>
+    <div class="fa-modal--wizard__review-tile">
+        <span class="fa-modal--wizard__review-label">{{ 'data_breach.form.severity'|trans({}, 'privacy') }}</span>
+        <span class="fa-modal--wizard__review-value">
+            {% if data_breach.severity %}
+                <span class="fa-status-pill fa-status-pill--{{ data_breach.severity in ['high','critical'] ? 'danger' : (data_breach.severity == 'medium' ? 'warning' : 'success') }} fa-status-pill--sm">
+                    {{ ('data_breach.severity.' ~ data_breach.severity)|trans({}, 'privacy') }}
+                </span>
+            {% else %}—{% endif %}
+        </span>
+    </div>
+    <div class="fa-modal--wizard__review-tile">
+        <span class="fa-modal--wizard__review-label">{{ 'data_breach.form.affected_data_subjects'|trans({}, 'privacy') }}</span>
+        <span class="fa-modal--wizard__review-value">{{ data_breach.affectedDataSubjects|default('—') }}</span>
+    </div>
+    <div class="fa-modal--wizard__review-tile">
+        <span class="fa-modal--wizard__review-label">{{ 'data_breach.form.requires_authority_notification'|trans({}, 'privacy') }}</span>
+        <span class="fa-modal--wizard__review-value">
+            <span class="fa-status-pill fa-status-pill--{{ data_breach.requiresAuthorityNotification ? 'danger' : 'success' }} fa-status-pill--sm">
+                {{ data_breach.requiresAuthorityNotification ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}
+            </span>
+        </span>
+    </div>
+    <div class="fa-modal--wizard__review-tile">
+        <span class="fa-modal--wizard__review-label">{{ 'data_breach.form.requires_subject_notification'|trans({}, 'privacy') }}</span>
+        <span class="fa-modal--wizard__review-value">
+            <span class="fa-status-pill fa-status-pill--{{ data_breach.requiresSubjectNotification ? 'warning' : 'neutral' }} fa-status-pill--sm">
+                {{ data_breach.requiresSubjectNotification ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}
+            </span>
+        </span>
+    </div>
+</div>
+
+{# 72h deadline warning if authority notification required #}
+{% if data_breach.requiresAuthorityNotification %}
+<div class="fa-alert fa-alert--danger mt-3" role="alert">
+    <i class="fa-icon fa-icon--status-pending fa-alert__icon" aria-hidden="true"></i>
+    <div class="fa-alert__body">
+        <div class="fa-alert__title">{{ 'data_breach.wizard.title_72h_warning'|trans({}, 'privacy') }}</div>
+        <p class="fa-alert__message">{{ 'data_breach.wizard.subtitle_72h_warning'|trans({}, 'privacy') }}</p>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+
+{# Follow-up fields — rendered as editable even on review step #}
+<div class="fa-form-section__grid fa-form-section__grid--single mt-3">
+    {{ form_row(form.rootCause) }}
+    {{ form_row(form.lessonsLearned) }}
+</div>
