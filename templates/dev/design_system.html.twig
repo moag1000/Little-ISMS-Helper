@@ -16,6 +16,7 @@
 {% import '_components/_alva.html.twig' as alva %}
 {% import '_components/_fa_form_layout.html.twig' as _fa_form %}
 {% import '_components/_fa_modal_wizard.html.twig' as _fa_modal_wizard %}
+{% import '_components/_fa_modal.html.twig' as _fa_modal %}
 
 {% block title %}Aurora v4 Living Styleguide{% endblock %}
 
@@ -46,6 +47,8 @@
             <a href="#sec-fa-menu"      class="fa-filter-chip">fa-menu</a>
             <a href="#fa-form-layout"       class="fa-filter-chip">fa-form-layout</a>
             <a href="#fa-modal-wizard"     class="fa-filter-chip">fa-modal--wizard</a>
+            <a href="#fa-modal-confirm"    class="fa-filter-chip">fa-modal--confirm</a>
+            <a href="#fa-modal-settings"   class="fa-filter-chip">fa-modal--settings</a>
         </nav>
 
         {# ── Page header ───────────────────────────────────────────────── #}
@@ -998,6 +1001,179 @@
         cancel: { label: 'Abbrechen' },
         submit: { label: 'Datenpanne erfassen', variant: 'danger' },
     },
+}) }}{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# fa-modal--confirm — Destructive / approval confirmation        #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="fa-modal-confirm">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-modal--confirm — Destructive / Approval Confirmation</h2>
+            </div>
+            <div class="fa-section__body p-3">
+                <p style="color:var(--fg-2); font-size:13px; margin-bottom:1.25rem;">
+                    Modaler Bestätigungs-Dialog für Lösch-, Freigabe-, Ablehnungs-Aktionen.
+                    4 Tone-Modifier (<code>neutral</code> / <code>danger</code> / <code>warning</code> / <code>success</code>),
+                    optionale Type-to-Confirm-Phrase + Cooldown-Sekunden für Hochrisiko-Aktionen.
+                    Stimulus-Controller <code>fa-modal</code> (Shell) + optional <code>fa-confirm</code> (Phrase/Cooldown).
+                </p>
+
+                {# ── Trigger buttons ────────────────────────────────────── #}
+                <div style="display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem;">
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--ghost"
+                            data-controller="fa-modal-dispatcher"
+                            data-action="click->fa-modal-dispatcher#open"
+                            data-fa-modal-id="ds-confirm-neutral">
+                        Neutral öffnen
+                    </button>
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--warning"
+                            data-controller="fa-modal-dispatcher"
+                            data-action="click->fa-modal-dispatcher#open"
+                            data-fa-modal-id="ds-confirm-warning">
+                        Warning öffnen
+                    </button>
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--danger"
+                            data-controller="fa-modal-dispatcher"
+                            data-action="click->fa-modal-dispatcher#open"
+                            data-fa-modal-id="ds-confirm-danger">
+                        Danger (type-to-confirm) öffnen
+                    </button>
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--primary"
+                            data-controller="fa-modal-dispatcher"
+                            data-action="click->fa-modal-dispatcher#open"
+                            data-fa-modal-id="ds-confirm-success">
+                        Success öffnen
+                    </button>
+                </div>
+
+                {# ── Modal instances ───────────────────────────────────── #}
+                {{ _fa_modal.confirm({
+                    id: 'ds-confirm-neutral',
+                    tone: 'neutral',
+                    title: 'Änderung übernehmen?',
+                    message: 'Möchten Sie die aktuelle Auswahl als Standard speichern?',
+                    confirmLabel: 'Übernehmen',
+                }) }}
+
+                {{ _fa_modal.confirm({
+                    id: 'ds-confirm-warning',
+                    tone: 'warning',
+                    title: 'Audit abschließen?',
+                    message: 'Nach dem Abschluss können keine weiteren Findings hinzugefügt werden.',
+                    confirmLabel: 'Abschließen',
+                    submitIcon: 'ui-check',
+                }) }}
+
+                {{ _fa_modal.confirm({
+                    id: 'ds-confirm-danger',
+                    tone: 'danger',
+                    title: 'API-Key dauerhaft widerrufen?',
+                    sub: 'Der Key <code>lih_live_91de…</code> wird sofort ungültig.',
+                    diff: [
+                        { label: 'Aktive Verbindungen', value: '14 → 0' },
+                        { label: 'Reporting-Service',   value: 'offline', tone: 'danger' },
+                    ],
+                    typeToConfirm: 'reporting-service',
+                    confirmHint: 'Tippe <code>reporting-service</code> zum Bestätigen',
+                    cooldownSeconds: 5,
+                    confirmLabel: 'Endgültig widerrufen',
+                    submitIcon: 'shield-x',
+                }) }}
+
+                {{ _fa_modal.confirm({
+                    id: 'ds-confirm-success',
+                    tone: 'success',
+                    title: 'Genehmigung freigeben?',
+                    message: 'Die Richtlinie wird sofort für alle Tenant-User wirksam.',
+                    confirmLabel: 'Freigeben',
+                    submitIcon: 'ui-check',
+                }) }}
+
+                <details class="mt-3">
+                    <summary style="cursor:pointer; color:var(--primary); font-weight:600; padding:.5rem 0;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto; font-size:12px; margin-top:.75rem;"><code>{% verbatim %}{% import '_components/_fa_modal.html.twig' as _fa_modal %}
+
+{{ _fa_modal.confirm({
+    id:              'delete-risk',
+    tone:            'danger',
+    title:           'Risiko löschen?',
+    message:         'Diese Aktion ist permanent.',
+    typeToConfirm:   'risk-12345',
+    cooldownSeconds: 5,
+    confirmLabel:    'Löschen',
+    formAction:      path('risk_delete', { id: 12345 }),
+    formCsrfToken:   csrf_token('risk_delete'),
+}) }}
+
+{# Open trigger anywhere on the page #}
+<button type="button"
+        data-controller="fa-modal-dispatcher"
+        data-action="click->fa-modal-dispatcher#open"
+        data-fa-modal-id="delete-risk">
+    Risiko löschen
+</button>{% endverbatim %}</code></pre>
+                </details>
+            </div>
+        </section>
+
+        {# ═══════════════════════════════════════════════════════════════ #}
+        {# fa-modal--settings — Preferences / configuration               #}
+        {# ═══════════════════════════════════════════════════════════════ #}
+        <section class="fa-section mb-5" id="fa-modal-settings">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">fa-modal--settings — Preferences / Configuration</h2>
+            </div>
+            <div class="fa-section__body p-3">
+                <p style="color:var(--fg-2); font-size:13px; margin-bottom:1.25rem;">
+                    Modaler Settings-Dialog für Präferenz-Toggles, Widget-Sichtbarkeit, Konfigurations-Listen.
+                    Body wird als pre-gerenderter HTML-Block übergeben (typisch <code>include(…)</code>).
+                </p>
+
+                <div style="display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem;">
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--primary"
+                            data-controller="fa-modal-dispatcher"
+                            data-action="click->fa-modal-dispatcher#open"
+                            data-fa-modal-id="ds-settings-dashboard">
+                        Dashboard anpassen öffnen
+                    </button>
+                </div>
+
+                {{ _fa_modal.settings({
+                    id: 'ds-settings-dashboard',
+                    icon: 'sliders',
+                    title: 'Dashboard anpassen',
+                    subtitle: 'Sichtbarkeit der Widgets',
+                    body: '<div style="display:flex;flex-direction:column;gap:8px;">'
+                        ~ '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;"><input type="checkbox" checked> <span><strong style="display:block;margin-bottom:2px;">KPI-Tile: Risiken</strong><span style="font-size:11.5px;color:var(--fg-3);">Aggregierte Risiko-Score-Übersicht</span></span></label>'
+                        ~ '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;"><input type="checkbox" checked> <span><strong style="display:block;margin-bottom:2px;">KPI-Tile: Audit-Findings</strong><span style="font-size:11.5px;color:var(--fg-3);">Offene Findings nach Schweregrad</span></span></label>'
+                        ~ '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;"><input type="checkbox"> <span><strong style="display:block;margin-bottom:2px;">Workflow-Inbox</strong><span style="font-size:11.5px;color:var(--fg-3);">Anstehende Freigaben + Reviews</span></span></label>'
+                        ~ '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;"><input type="checkbox" checked> <span><strong style="display:block;margin-bottom:2px;">DPIA-Status</strong><span style="font-size:11.5px;color:var(--fg-3);">GDPR Art. 35 Datenschutz-Folgenabschätzungen</span></span></label>'
+                        ~ '</div>',
+                    primaryLabel: 'Speichern',
+                    primaryIcon: 'ui-check',
+                }) }}
+
+                <details class="mt-3">
+                    <summary style="cursor:pointer; color:var(--primary); font-weight:600; padding:.5rem 0;">Code kopieren</summary>
+                    <pre style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto; font-size:12px; margin-top:.75rem;"><code>{% verbatim %}{% import '_components/_fa_modal.html.twig' as _fa_modal %}
+
+{{ _fa_modal.settings({
+    id:            'dashboard-customize',
+    icon:          'sliders',
+    title:         'Dashboard anpassen',
+    subtitle:      'Sichtbarkeit der Widgets',
+    body:          include('dashboard/_widget_toggles.html.twig'),
+    primaryLabel:  'Speichern',
+    formAction:    path('dashboard_settings_save'),
+    formCsrfToken: csrf_token('dashboard_settings'),
 }) }}{% endverbatim %}</code></pre>
                 </details>
             </div>
