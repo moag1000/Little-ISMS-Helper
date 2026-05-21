@@ -1,26 +1,49 @@
 {{ form_start(form) }}
-    <div class="row g-3">
-        <div class="col-12">{{ form_row(form.finding) }}</div>
-        <div class="col-12">{{ form_row(form.title) }}</div>
-        <div class="col-12">{{ form_row(form.description) }}</div>
-        <div class="col-12">{{ form_row(form.rootCauseAnalysis) }}</div>
-        <div class="col-md-6">{{ form_row(form.status) }}</div>
-        <div class="col-md-6">{{ form_row(form.actionType) }}</div>
-        <div class="col-md-6">{{ form_row(form.responsiblePersonUser) }}</div>
-        <div class="col-md-6">{{ form_row(form.responsiblePerson) }}</div>
-        <div class="col-12">{{ form_row(form.responsibleDeputyPersons) }}</div>
-        <div class="col-md-6">{{ form_row(form.plannedCompletionDate) }}</div>
-        <div class="col-md-6">{{ form_row(form.actualCompletionDate) }}</div>
-        <div class="col-md-6">{{ form_row(form.effectivenessReviewDate) }}</div>
-        <div class="col-12">{{ form_row(form.effectivenessNotes) }}</div>
-        <div class="col-12">{{ form_row(form.effectivenessEvidence) }}</div>
-    </div>
-    <div class="mt-4">
-        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
-        </button>
-        <a href="{{ path('app_corrective_action_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            {{ 'common.cancel'|trans({}, 'messages') }}
-        </a>
-    </div>
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'eyebrow': 'ISO 27001 Cl. 10.1',
+    'title': form.vars.data.id
+        ? 'corrective_action.page.edit'|trans({}, 'audits')
+        : 'corrective_action.page.new'|trans({}, 'audits'),
+    'sections': {
+        'overview': {
+            'label': 'form.section.overview'|trans({}, 'messages'),
+            'fields': ['finding', 'title', 'description', 'actionType', 'status']
+        },
+        'root_cause': {
+            'label': 'form.section.root_cause'|trans({}, 'messages'),
+            'fields': ['rootCauseAnalysis']
+        },
+        'action_plan': {
+            'label': 'form.section.action_plan'|trans({}, 'messages'),
+            'fields': ['responsiblePersonUser', 'responsiblePerson', 'responsibleDeputyPersons', 'plannedCompletionDate', 'actualCompletionDate']
+        },
+        'verification': {
+            'label': 'form.section.verification'|trans({}, 'messages'),
+            'fields': ['effectivenessReviewDate', 'effectivenessNotes', 'effectivenessEvidence']
+        }
+    },
+    'col_widths': {
+        'finding': 12,
+        'title': 12,
+        'description': 12,
+        'actionType': 6,
+        'status': 6,
+        'rootCauseAnalysis': 12,
+        'responsiblePersonUser': 6,
+        'responsiblePerson': 6,
+        'responsibleDeputyPersons': 12,
+        'plannedCompletionDate': 6,
+        'actualCompletionDate': 6,
+        'effectivenessReviewDate': 6,
+        'effectivenessNotes': 12,
+        'effectivenessEvidence': 12
+    },
+    'translation_domain': 'audits',
+    'actions': {
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'href': path('app_corrective_action_index'), 'variant': 'ghost' },
+        'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
+    }
+} %}
 {{ form_end(form) }}
