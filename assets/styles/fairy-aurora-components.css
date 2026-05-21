@@ -8365,3 +8365,385 @@ a.fa-matrix-table__cell:focus-visible {
         grid-template-columns: 1fr;
     }
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+ * fa-modal--wizard — High-stakes linear-flow modal with validation-gates
+ * Pattern: Tenant-Setup, GDPR-Breach-Initial-Assessment, Compliance-Wizard,
+ *          Policy-Wizard
+ *
+ * Modifier: .fa-modal--wizard on the .fa-modal root
+ * BEM blocks: fa-modal__wizard-header, __wizard-pips, __wizard-body,
+ *             __wizard-step, __wizard-validation, __wizard-footer
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Width + max-height override for wizard mode ────────────────────────── */
+
+.fa-modal--wizard {
+    width: min(96%, 720px);
+    max-height: 85vh;
+}
+
+/* ── Wizard header: title + compact pip-rail ─────────────────────────────── */
+
+.fa-modal__wizard-header {
+    padding: 20px 24px 0;
+    border-bottom: none;
+    background: linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--accent) 8%, transparent) 0%,
+        transparent 100%
+    ),
+    var(--surface);
+    position: relative;
+}
+
+.fa-modal__wizard-header::after {
+    content: "";
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--accent), transparent);
+    border-radius: 2px;
+}
+
+.fa-modal__wizard-header-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 14px;
+}
+
+.fa-modal__wizard-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-md);
+    background: var(--accent-tint);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+}
+
+.fa-modal__wizard-heading {
+    flex: 1;
+    min-width: 0;
+}
+
+.fa-modal__wizard-heading h2 {
+    font: 700 16px/1.2 var(--font-sans);
+    margin: 0 0 3px;
+    color: var(--fg);
+}
+
+.fa-modal__wizard-heading p {
+    font: 400 12.5px/1.45 var(--font-sans);
+    color: var(--fg-2);
+    margin: 0;
+}
+
+.fa-modal__wizard-close {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: transparent;
+    color: var(--fg-3);
+    cursor: pointer;
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+
+.fa-modal__wizard-close:hover {
+    background: var(--surface-2);
+    color: var(--fg);
+}
+
+.fa-modal__wizard-close:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* ── Pip-rail: horizontal step indicator ─────────────────────────────────── */
+
+.fa-modal__wizard-pips {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 12px 0 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.fa-modal__wizard-pips::-webkit-scrollbar {
+    display: none;
+}
+
+.fa-modal__wizard-pip {
+    flex: 1;
+    min-width: 0;
+    padding: 0 4px 12px;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+}
+
+.fa-modal__wizard-pip--done {
+    cursor: pointer;
+}
+
+.fa-modal__wizard-pip--done:hover .fa-modal__wizard-pip-bar {
+    background: color-mix(in oklab, var(--primary) 60%, var(--surface-3));
+}
+
+.fa-modal__wizard-pip-bar {
+    height: 3px;
+    background: var(--surface-3);
+    border-radius: 2px;
+    transition: background var(--t-fast) var(--ease-out),
+                box-shadow var(--t-fast) var(--ease-out);
+}
+
+.fa-modal__wizard-pip--current .fa-modal__wizard-pip-bar {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.fa-modal__wizard-pip--done .fa-modal__wizard-pip-bar {
+    background: var(--primary);
+}
+
+.fa-modal__wizard-pip--error .fa-modal__wizard-pip-bar {
+    background: var(--danger);
+}
+
+.fa-modal__wizard-pip-label {
+    display: block;
+    font: 600 10px var(--font-mono);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color var(--t-fast) var(--ease-out);
+}
+
+.fa-modal__wizard-pip--current .fa-modal__wizard-pip-label {
+    color: var(--accent-strong);
+}
+
+.fa-modal__wizard-pip--done .fa-modal__wizard-pip-label {
+    color: var(--fg-2);
+}
+
+.fa-modal__wizard-pip-num {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font: 600 9.5px var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+}
+
+.fa-modal__wizard-pip--current .fa-modal__wizard-pip-num {
+    color: var(--accent-strong);
+}
+
+.fa-modal__wizard-pip--done .fa-modal__wizard-pip-num {
+    color: var(--primary-strong);
+}
+
+.fa-modal__wizard-pip--error .fa-modal__wizard-pip-num {
+    color: var(--danger);
+}
+
+/* ── Wizard body: shows one step at a time ───────────────────────────────── */
+
+.fa-modal__wizard-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 20px 24px 4px;
+    scroll-behavior: smooth;
+}
+
+/* ── Wizard step: single page within the wizard ──────────────────────────── */
+
+.fa-modal__wizard-step {
+    display: none;
+}
+
+.fa-modal__wizard-step.is-active {
+    display: block;
+    animation: fa-wizard-step-in var(--t-moderate) var(--ease-out) both;
+}
+
+@keyframes fa-wizard-step-in {
+    from {
+        opacity: 0;
+        transform: translateX(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fa-modal__wizard-step-title {
+    font: 700 14px/1.3 var(--font-sans);
+    color: var(--fg);
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fa-modal__wizard-step-title .fa-icon {
+    color: var(--accent);
+    font-size: 16px;
+}
+
+/* ── Validation banner: shown when step has required empty fields ─────────── */
+
+.fa-modal__wizard-validation {
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    margin-top: 14px;
+    background: color-mix(in oklab, var(--danger) 8%, var(--surface));
+    border: 1px solid color-mix(in oklab, var(--danger) 28%, transparent);
+    border-left: 3px solid var(--danger);
+    border-radius: var(--r-md);
+    font: 500 12.5px/1.45 var(--font-sans);
+    color: var(--fg);
+    animation: fa-wizard-validation-in var(--t-fast) var(--ease-out) both;
+}
+
+.fa-modal__wizard-validation.is-visible {
+    display: flex;
+}
+
+@keyframes fa-wizard-validation-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fa-modal__wizard-validation .fa-icon {
+    flex-shrink: 0;
+    font-size: 15px;
+    color: var(--danger);
+    margin-top: 1px;
+}
+
+.fa-modal__wizard-validation-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.fa-modal__wizard-step.has-validation-error .fa-modal__wizard-step-title {
+    color: var(--danger);
+}
+
+/* ── Wizard footer: Back + Cancel + Next/Submit ───────────────────────────── */
+
+.fa-modal__wizard-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+    flex-shrink: 0;
+}
+
+.fa-modal__wizard-footer-info {
+    font: 500 11px var(--font-mono);
+    color: var(--fg-3);
+    flex: 1;
+    min-width: 0;
+}
+
+.fa-modal__wizard-footer-info strong {
+    color: var(--fg-2);
+    font-weight: 600;
+}
+
+.fa-modal__wizard-footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* ── Review step: read-only summary styling ──────────────────────────────── */
+
+.fa-modal__wizard-review-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.fa-modal__wizard-review-row {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 10px 12px;
+}
+
+.fa-modal__wizard-review-label {
+    font: 600 10px var(--font-mono);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    margin-bottom: 3px;
+}
+
+.fa-modal__wizard-review-value {
+    font: 500 13px/1.4 var(--font-sans);
+    color: var(--fg);
+    word-break: break-word;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    .fa-modal--wizard {
+        width: 100%;
+        max-height: 100dvh;
+        border-radius: 0;
+        margin: 0;
+    }
+
+    .fa-modal__wizard-pips {
+        gap: 2px;
+    }
+
+    .fa-modal__wizard-pip-label {
+        display: none;
+    }
+
+    .fa-modal__wizard-review-grid {
+        grid-template-columns: 1fr;
+    }
+}

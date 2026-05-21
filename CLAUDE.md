@@ -630,6 +630,7 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-toast` | Aurora toast/flash-message stack (replaces Bootstrap toast-container) — wired in `base.html.twig` | `_fa_toast.html.twig` |
 | `fa-audit-row` | ISMS-Audit-Trail row pattern (compact + full views) | `_fa_audit_row.html.twig` |
 | `fa-form-layout` | Large-form pattern with outline-rail + section-cards + progress-bar (replaces flat _auto_form for 15+ field FormTypes) | `_fa_form_layout.html.twig` |
+| `fa-modal--wizard` | High-stakes linear flow modal with step-pips + validation gates (Tenant-Setup, GDPR-Breach-Initial, Compliance-Wizard) | `_fa_modal_wizard.html.twig` |
 | `fa-cyber-field` | Hand-rolled Aurora-Frame inputs (text/textarea/select) | `_fa_cyber_field.html.twig` |
 | `fa-drawer` | Slide-in side-sheet (right default, `--left`, `--sm`, `--lg`). Use `.fa-drawer-backdrop` + `.is-open`. CSS only — no macro yet. | CSS: `fairy-aurora-components.css` |
 | `fa-menu` | Dropdown / overflow-action menu (`fa-menu-anchor` + `.fa-menu.is-open`). Supports groups, icons, shortcuts, danger items, dividers. CSS only. | CSS: `fairy-aurora-components.css` |
