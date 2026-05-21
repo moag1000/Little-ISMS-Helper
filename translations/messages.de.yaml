@@ -1149,6 +1149,9 @@ form:
         transport: 'Transport'
         storage: 'Lagerung'
         photography: 'Fotografie'
+        physical: 'Physische Sicherheit'
+        organisation: 'Organisation'
+        handling: 'Handhabung'
         controls: 'Controls'
         party_details: 'Parteidetails'
         warning:
