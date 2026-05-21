@@ -39,6 +39,9 @@ change_request:
         implementation: Umsetzung
         approval: Freigabe
         verification_closure: 'Verifikation & Abschluss'
+        overview: 'Überblick'
+        details: 'Antragsteller & Priorisierung'
+        verification: 'Verifikation & Abschluss'
         description: Beschreibung
         associated_risks: 'Verbundene Risiken'
         justification: 'Begründung und Notwendigkeit'
