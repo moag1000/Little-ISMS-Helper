@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Document;
 use App\Enum\DocumentStatus;
+use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Repository\SystemSettingsRepository;
 use App\Service\ModuleConfigurationService;
@@ -23,9 +24,20 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
-final class DocumentType extends AbstractType
+final class DocumentType extends AbstractType implements SectionMapInterface
 {
     use ModuleAwareFormTrait;
+
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'        => ['originalFilename', 'description', 'category', 'status'],
+            'classification'  => ['tisaxInformationClassification'],
+            'lifecycle'       => ['version', 'reviewIntervalMonths', 'requiresAcknowledgement'],
+            'ownership'       => ['inheritable', 'overrideAllowed'],
+            'content'         => ['file', 'policyBody'],
+        ];
+    }
 
     public function __construct(
         private readonly SystemSettingsRepository $systemSettingsRepository,
