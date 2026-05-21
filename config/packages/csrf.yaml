@@ -19,3 +19,5 @@ framework:
             - data_export
             - data_import
             - data_import_execute
+            # Bulk-action endpoints (export/assign/status-change) — JSON POST with SameOrigin header
+            - bulk_action
