@@ -750,6 +750,21 @@ data_breach:
         yes_reportable: 'YES - Reportable to Supervisory Authority'
         no_not_reportable: 'NO - Not Reportable'
         step_of: 'of'
+        new_title: 'Record data breach'
+        new_subtitle: 'GDPR Art. 33 · 72h reporting deadline'
+        title_72h_warning: '72-hour reporting deadline is running!'
+        subtitle_72h_warning: 'Notification to the supervisory authority under GDPR Art. 33 must be submitted within 72 hours of becoming aware of the breach.'
+        step:
+            detection: 'Detection'
+            detection_title: 'Step 1 · Identify Incident'
+            notification: 'Notification'
+            notification_title: 'Step 2 · Notification Decision'
+            record: 'Record'
+            record_title: 'Step 3 · Document Incident'
+            review: 'Review'
+            review_title: 'Step 4 · Final Review'
+        action:
+            submit: 'Register data breach'
 dpia:
     dashboard:
         title: 'DPIA Dashboard'
