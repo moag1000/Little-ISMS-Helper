@@ -1,0 +1,67 @@
+{% trans_default_domain 'compliance' %}
+{# Tab 2: Compliance Matrix #}
+<h2 class="section-title">{{ 'compliance.section.compliance_matrix'|trans({}, 'compliance') }}</h2>
+<p class="text-secondary-mb-15">
+    {{ 'compliance.description.matrix'|trans({}, 'compliance') }}
+</p>
+
+<div class="overflow-auto-mb">
+    {% embed '_components/_table.html.twig' with {
+        'class': 'table-full-collapse',
+        'noMargin': true
+    } %}
+        {% block table_head %}
+            <tr class="bg-alt">
+                <th scope="col" class="th-sticky-left">
+                    Von → Nach
+                </th>
+                {% for framework in frameworks %}
+                    <th scope="col" class="th-center">
+                        {{ framework.code }}
+                    </th>
+                {% endfor %}
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for sourceFramework in frameworks %}
+                <tr>
+                    <td class="td-sticky-left">
+                        {{ sourceFramework.code }}
+                    </td>
+                    {% for targetFramework in frameworks %}
+                        <td class="td-center">
+                            {% if sourceFramework.id == targetFramework.id %}
+                                <span class="fs-1-fw-600-muted">100%</span>
+                            {% else %}
+                                {% set mapping = mapping_matrix[sourceFramework.id][targetFramework.id] ?? null %}
+                                {% if mapping and mapping.coverage > 0 %}
+                                    {% set percentage = mapping.coverage|round %}
+                                    {% include '_components/_badge.html.twig' with { variant: percentage >= 75 ? 'success' : (percentage >= 50 ? 'warning' : 'danger'), content: percentage ~ '%', class: 'badge-lg' } %}
+                                {% else %}
+                                    <span class="badge-matrix-zero">
+                                        0%
+                                    </span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+</div>
+
+<div class="legend-container">
+    <div class="flex-center-gap">
+        <span class="legend-success"></span>
+        <span class="small">≥ 75%</span>
+    </div>
+    <div class="flex-center-gap">
+        <span class="legend-warning"></span>
+        <span class="small">50-74%</span>
+    </div>
+    <div class="flex-center-gap">
+        <span class="legend-danger"></span>
+        <span class="small">< 50%</span>
+    </div>
+</div>

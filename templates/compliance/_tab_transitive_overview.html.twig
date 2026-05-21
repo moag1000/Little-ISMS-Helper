@@ -1,0 +1,79 @@
+{% trans_default_domain 'compliance' %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{# Tab 1: Framework Relationship Overview #}
+<p class="fw-bold fs-5">{{ 'compliance.section.framework_relationships'|trans({}, 'compliance') }}</p>
+
+{% if framework_relationships is empty %}
+    {% embed '_components/_card.html.twig' with { 'class': 'gradient-purple' } %}
+        {% block card_body %}
+            <div class="icon-xlarge mb-md"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i></div>
+            <p class="fs-15-white-mb fw-bold">Noch keine Framework-Mappings vorhanden</p>
+            <p class="fs-11-lh-mb">
+                Die Cross-Framework Mappings zwischen Ihren Compliance-Frameworks wurden noch nicht erstellt.
+                <br>Diese Mappings zeigen, wie Anforderungen verschiedener Frameworks zusammenhängen.
+            </p>
+            <div class="info-box-white">
+                <p class="h-white-no-mt-mb-sm fw-bold"><i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> So erstellen Sie Mappings:</p>
+                <p class="fs-095-opacity-09">
+                    Mappings müssen manuell erstellt oder über ein Datenimport-Script geladen werden.
+                    <br>Kontaktieren Sie Ihren Administrator für weitere Informationen.
+                </p>
+            </div>
+            <div class="inline-flex-center-wrap">
+                <button id="createMappingsBtn" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--ghost-primary-flex">
+                    <span id="btnIcon"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i></span>
+                    <span id="btnText">Mappings jetzt erstellen</span>
+                </button>
+                <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fw-600">
+                    <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_overview'|trans({}, 'messages') }}
+                </a>
+            </div>
+        {% endblock %}
+    {% endembed %}
+{% else %}
+    <div class="grid-responsive-350">
+        {% for relationship in framework_relationships %}
+        {% embed '_components/_card.html.twig' with { 'class': 'card-border-hover' } %}
+            {% block card_body %}
+                <div class="flex-center-gap-1">
+                    <div class="flex-1">
+                        <div class="fw-600-fs-095-secondary-mb">
+                            {{ relationship.sourceFramework.code }}
+                        </div>
+                        <div class="fs-2-primary-center-margin">
+                            <i class="fa-icon fa-icon--util-arrow-down" aria-hidden="true"></i>
+                        </div>
+                        <div class="fw-600-fs-095-secondary-mt">
+                            {{ relationship.targetFramework.code }}
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="fs-2-fw-bold-success">
+                            {{ relationship.coveragePercentage }}%
+                        </div>
+                        <div class="fs-075-text-secondary">
+                            Coverage
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-bg-alt-p-075-rounded-mb">
+                    <div class="flex-space-between-center">
+                        <span class="fs-085-text-secondary">
+                            {{ 'compliance.field.mapped'|trans({}, 'compliance') }}:
+                        </span>
+                        <span class="fw-600-fs-11-primary">
+                            {{ relationship.mappedRequirements }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="progress progress-bar-bg">
+                    <div class="progress-bar" style="width: {{ relationship.coveragePercentage }}%; height: 10px; border-radius: 5px; background: linear-gradient(to right, var(--color-success), var(--color-info)); transition: width 0.3s;"></div>
+                </div>
+            {% endblock %}
+        {% endembed %}
+        {% endfor %}
+    </div>
+{% endif %}
