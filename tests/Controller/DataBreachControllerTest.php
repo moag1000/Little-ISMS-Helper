@@ -459,7 +459,7 @@ class DataBreachControllerTest extends WebTestCase
         // fa-modal--wizard BEM block must be present (design-system spec §form-layout)
         $this->assertSelectorExists('.fa-modal--wizard');
         // Stepper chrome must be present
-        $this->assertSelectorExists('.fa-stepper');
+        $this->assertSelectorExists('.fa-modal__wizard-pips');
         // Wizard controller wiring
         $this->assertSelectorExists('[data-controller="modal-wizard"]');
         // All 4 step panels
