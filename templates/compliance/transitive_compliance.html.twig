@@ -2,6 +2,7 @@
 {% trans_default_domain 'compliance' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_tabs.html.twig' as _fa_tabs %}
 
 {% block title %}{{ 'compliance.title.transitive'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
@@ -42,378 +43,37 @@
     </div>
 </div>
 
-{# Tabbed Interface for better organization #}
-{% embed '_components/_card.html.twig' with { 'class': 'mb-2' } %}
-    {% block card_attrs %}data-controller="tabs" data-tabs-active-class="active"{% endblock %}
-    {% block card_header %}
-    <div class="tabs">
-        <button class="tab-button active" data-tabs-target="button" data-action="click->tabs#switch" data-tab="overview">
-            📊 {{ 'compliance.tab.overview'|trans({}, 'compliance') }}
-        </button>
-        <button class="tab-button" data-tabs-target="button" data-action="click->tabs#switch" data-tab="matrix">
-            <i class="fa-icon fa-icon--heatmap" aria-hidden="true"></i> {{ 'compliance.tab.matrix'|trans({}, 'compliance') }}
-        </button>
-        <button class="tab-button" data-tabs-target="button" data-action="click->tabs#switch" data-tab="details">
-            <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'compliance.tab.details'|trans({}, 'compliance') }}
-        </button>
-        <button class="tab-button" data-tabs-target="button" data-action="click->tabs#switch" data-tab="info">
-            <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> {{ 'compliance.tab.explanation'|trans({}, 'compliance') }}
-        </button>
-    </div>
-    {% endblock %}
-    {% block card_body %}
-    {# Tab 1: Overview #}
-    <div id="tab-overview" class="tab-content active" data-tabs-target="panel" data-tab="overview">
-        <p class="fw-bold fs-5">{{ 'compliance.section.framework_relationships'|trans({}, 'compliance') }}</p>
-
-        {% if framework_relationships is empty %}
-            {% embed '_components/_card.html.twig' with { 'class': 'gradient-purple' } %}
-                {% block card_body %}
-                    <div class="icon-xlarge mb-md"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i></div>
-                    <p class="fs-15-white-mb fw-bold">Noch keine Framework-Mappings vorhanden</p>
-                    <p class="fs-11-lh-mb">
-                        Die Cross-Framework Mappings zwischen Ihren Compliance-Frameworks wurden noch nicht erstellt.
-                        <br>Diese Mappings zeigen, wie Anforderungen verschiedener Frameworks zusammenhängen.
-                    </p>
-                    <div class="info-box-white">
-                        <p class="h-white-no-mt-mb-sm fw-bold"><i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> So erstellen Sie Mappings:</p>
-                        <p class="fs-095-opacity-09">
-                            Mappings müssen manuell erstellt oder über ein Datenimport-Script geladen werden.
-                            <br>Kontaktieren Sie Ihren Administrator für weitere Informationen.
-                        </p>
-                    </div>
-                    <div class="inline-flex-center-wrap">
-                        <button id="createMappingsBtn" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--ghost-primary-flex">
-                            <span id="btnIcon"><i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i></span>
-                            <span id="btnText">Mappings jetzt erstellen</span>
-                        </button>
-                        <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fw-600">
-                            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_overview'|trans({}, 'messages') }}
-                        </a>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        {% else %}
-            <div class="grid-responsive-350">
-                {% for relationship in framework_relationships %}
-                {% embed '_components/_card.html.twig' with { 'class': 'card-border-hover' } %}
-                    {% block card_body %}
-                        <div class="flex-center-gap-1">
-                            <div class="flex-1">
-                                <div class="fw-600-fs-095-secondary-mb">
-                                    {{ relationship.sourceFramework.code }}
-                                </div>
-                                <div class="fs-2-primary-center-margin">
-                                    <i class="fa-icon fa-icon--util-arrow-down" aria-hidden="true"></i>
-                                </div>
-                                <div class="fw-600-fs-095-secondary-mt">
-                                    {{ relationship.targetFramework.code }}
-                                </div>
-                            </div>
-
-                            <div class="text-center">
-                                <div class="fs-2-fw-bold-success">
-                                    {{ relationship.coveragePercentage }}%
-                                </div>
-                                <div class="fs-075-text-secondary">
-                                    Coverage
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="box-bg-alt-p-075-rounded-mb">
-                            <div class="flex-space-between-center">
-                                <span class="fs-085-text-secondary">
-                                    {{ 'compliance.field.mapped'|trans({}, 'compliance') }}:
-                                </span>
-                                <span class="fw-600-fs-11-primary">
-                                    {{ relationship.mappedRequirements }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="progress progress-bar-bg">
-                            <div class="progress-bar" style="width: {{ relationship.coveragePercentage }}%; height: 10px; border-radius: 5px; background: linear-gradient(to right, var(--color-success), var(--color-info)); transition: width 0.3s;"></div>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
-
-    {# Tab 2: Matrix #}
-    <div id="tab-matrix" class="tab-content d-none" data-tabs-target="panel" data-tab="matrix">
-        <h2 class="section-title">{{ 'compliance.section.compliance_matrix'|trans({}, 'compliance') }}</h2>
-        <p class="text-secondary-mb-15">
-            {{ 'compliance.description.matrix'|trans({}, 'compliance') }}
-        </p>
-
-        <div class="overflow-auto-mb">
-            {% embed '_components/_table.html.twig' with {
-                'class': 'table-full-collapse',
-                'noMargin': true
-            } %}
-                {% block table_head %}
-                    <tr class="bg-alt">
-                        <th scope="col" class="th-sticky-left">
-                            Von → Nach
-                        </th>
-                        {% for framework in frameworks %}
-                            <th scope="col" class="th-center">
-                                {{ framework.code }}
-                            </th>
-                        {% endfor %}
-                    </tr>
-                {% endblock %}
-                {% block table_body %}
-                    {% for sourceFramework in frameworks %}
-                        <tr>
-                            <td class="td-sticky-left">
-                                {{ sourceFramework.code }}
-                            </td>
-                            {% for targetFramework in frameworks %}
-                                <td class="td-center">
-                                    {% if sourceFramework.id == targetFramework.id %}
-                                        <span class="fs-1-fw-600-muted">100%</span>
-                                    {% else %}
-                                        {% set mapping = mapping_matrix[sourceFramework.id][targetFramework.id] ?? null %}
-                                        {% if mapping and mapping.coverage > 0 %}
-                                            {% set percentage = mapping.coverage|round %}
-                                            {% include '_components/_badge.html.twig' with { variant: percentage >= 75 ? 'success' : (percentage >= 50 ? 'warning' : 'danger'), content: percentage ~ '%', class: 'badge-lg' } %}
-                                        {% else %}
-                                            <span class="badge-matrix-zero">
-                                                0%
-                                            </span>
-                                        {% endif %}
-                                    {% endif %}
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                {% endblock %}
-            {% endembed %}
-        </div>
-
-        <div class="legend-container">
-            <div class="flex-center-gap">
-                <span class="legend-success"></span>
-                <span class="small">≥ 75%</span>
-            </div>
-            <div class="flex-center-gap">
-                <span class="legend-warning"></span>
-                <span class="small">50-74%</span>
-            </div>
-            <div class="flex-center-gap">
-                <span class="legend-danger"></span>
-                <span class="small">< 50%</span>
-            </div>
-        </div>
-    </div>
-
-    {# Tab 3: Detailed Mappings #}
-    <div id="tab-details" class="tab-content d-none" data-tabs-target="panel" data-tab="details">
-        <h2 class="section-title">{{ 'compliance.section.cross_framework_mappings'|trans({}, 'compliance') }}</h2>
-
-        {% if cross_mappings is empty %}
-            {% embed '_components/_card.html.twig' with { 'class': 'gradient-pink' } %}
-                {% block card_body %}
-                    <div class="icon-xlarge mb-md"><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i></div>
-                    <h2 class="fs-15-white-mb">Keine detaillierten Mappings verfügbar</h2>
-                    <p class="fs-11-lh-mb-sm">
-                        Es wurden noch keine Cross-Framework Mappings zwischen den Requirements erstellt.
-                    </p>
-                    <div class="info-box-white-no-mb">
-                        <p class="fs-095-opacity-09">
-                            <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> Mappings werden benötigt, um zu zeigen, wie sich Anforderungen verschiedener
-                            Compliance-Frameworks gegenseitig abdecken.
-                        </p>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        {% else %}
-            {% for mapping_group in cross_mappings %}
-                <details class="card fa-section mb-border" open>
-                    <summary class="summary-interactive">
-                        <span class="mr-xs">▶</span>
-                        {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
-                        <span class="float-right-fs-1-secondary">
-                            {{ mapping_group.coverage.covered_requirements }} mappings ({{ mapping_group.coverage.coverage_percentage|round }}%)
-                        </span>
-                    </summary>
-
-                    <div class="details-padding">
-                        <div class="grid-responsive-200-my">
-                            <div class="mapping-card-success">
-                                <div class="fs-2-fw-bold-success">
-                                    {{ mapping_group.coverage.strong_mappings ?? 0 }}
-                                </div>
-                                <div class="small-text-secondary">
-                                    {{ 'compliance.mapping.type.full'|trans({}, 'compliance') }}
-                                </div>
-                            </div>
-                            <div class="mapping-card-warning">
-                                <div class="fs-2-fw-bold-warning">
-                                    {{ mapping_group.coverage.partial_mappings ?? 0 }}
-                                </div>
-                                <div class="small-text-secondary">
-                                    {{ 'compliance.mapping.type.partial'|trans({}, 'compliance') }}
-                                </div>
-                            </div>
-                            <div class="mapping-card-alt">
-                                <div class="fs-2-fw-bold-secondary">
-                                    {{ mapping_group.coverage.weak_mappings ?? 0 }}
-                                </div>
-                                <div class="small-text-secondary">
-                                    {{ 'compliance.mapping.type.weak'|trans({}, 'compliance') }}
-                                </div>
-                            </div>
-                        </div>
-
-                        {% if mapping_group.mappings|length > 5 %}
-                            <p class="text-center-italic-margin">
-                                Zeige erste 5 von {{ mapping_group.mappings|length }} Mappings
-                            </p>
-                        {% endif %}
-
-                        <div class="overflow-auto">
-                            {% embed '_components/_table.html.twig' with {
-                                'class': 'table-collapse',
-                                'theadClass': 'bg-alt',
-                                'noMargin': true
-                            } %}
-                                {% block table_head %}
-                                    <tr>
-                                        <th scope="col" class="th-left-fs-09">{{ 'compliance.field.source_requirement'|trans({}, 'compliance') }}</th>
-                                        <th scope="col" class="th-left-fs-09">{{ 'compliance.field.target_requirements'|trans({}, 'compliance') }}</th>
-                                        <th scope="col" class="td-center-fs-09">{{ 'compliance.field.mapping_strength'|trans({}, 'compliance') }}</th>
-                                    </tr>
-                                {% endblock %}
-                                {% block table_body %}
-                                    {% for mapping in mapping_group.mappings|slice(0, 5) %}
-                                        <tr class="border-bottom-light">
-                                            <td class="p-md">
-                                                <strong class="text-primary">{{ mapping.sourceRequirement.requirementId }}</strong>
-                                                <div class="small-text-secondary">
-                                                    {{ mapping.sourceRequirement.title|length > 60 ? mapping.sourceRequirement.title|slice(0, 60) ~ '...' : mapping.sourceRequirement.title }}
-                                                </div>
-                                            </td>
-                                            <td class="p-md">
-                                                <strong class="text-primary">{{ mapping.targetRequirement.requirementId }}</strong>
-                                                <div class="small-text-secondary">
-                                                    {{ mapping.targetRequirement.title|length > 60 ? mapping.targetRequirement.title|slice(0, 60) ~ '...' : mapping.targetRequirement.title }}
-                                                </div>
-                                            </td>
-                                            <td class="td-center-p-075">
-                                                <div class="flex-center-gap-05">
-                                                    <div class="progress-bar-container">
-                                                        <div style="height: 100%; width: {{ mapping.mappingPercentage }}%; background: {% if mapping.mappingPercentage >= 100 %}var(--color-success){% elseif mapping.mappingPercentage >= 50 %}var(--color-warning){% else %}var(--color-secondary){% endif %};"></div>
-                                                    </div>
-                                                    <span class="fw-600-min-w-45">{{ mapping.mappingPercentage }}%</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                {% endblock %}
-                            {% endembed %}
-                        </div>
-                    </div>
-                </details>
-            {% endfor %}
-        {% endif %}
-    </div>
-
-    {# Tab 4: Explanation #}
-    <div id="tab-info" class="tab-content d-none" data-tabs-target="panel" data-tab="info">
-        <h2 class="section-title"><i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> {{ 'compliance.section.mapping_explanation'|trans({}, 'compliance') }}</h2>
-
-        <div class="grid-gap-15">
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info', 'class': 'card-card-border-left-info-lg' } %}
-                {% block card_body %}
-                    <h3 class="h-info-no-mt">{{ 'compliance.explanation.what_are_mappings_title'|trans({}, 'compliance') }}</h3>
-                    <p class="lh-16">
-                        {{ 'compliance.explanation.what_are_mappings'|trans({}, 'compliance') }}
-                    </p>
-                {% endblock %}
-            {% endembed %}
-
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success', 'class': 'card-card-border-left-success-lg' } %}
-                {% block card_body %}
-                    <h3 class="h-success-no-mt">{{ 'compliance.explanation.mapping_types_title'|trans({}, 'compliance') }}</h3>
-                    <ul class="lh-18-pl">
-                        <li><strong>{{ 'compliance.explanation.mapping_types_exceeds'|trans({}, 'compliance') }}</strong></li>
-                        <li><strong>{{ 'compliance.explanation.mapping_types_full'|trans({}, 'compliance') }}</strong></li>
-                        <li><strong>{{ 'compliance.explanation.mapping_types_partial'|trans({}, 'compliance') }}</strong></li>
-                        <li><strong>{{ 'compliance.explanation.mapping_types_weak'|trans({}, 'compliance') }}</strong></li>
-                    </ul>
-                {% endblock %}
-            {% endembed %}
-
-            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning', 'class': 'card-card-border-left-warning-lg' } %}
-                {% block card_body %}
-                    <h3 class="h-warning-no-mt">{{ 'compliance.explanation.strategic_value_title'|trans({}, 'compliance') }}</h3>
-                    <p class="lh-16">
-                        {{ 'compliance.explanation.strategic_value'|trans({}, 'compliance') }}
-                    </p>
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
-    {% endblock %}
-{% endembed %}
-
-<style>
-.tabs {
-    display: flex;
-    border-bottom: 2px solid var(--color-border);
-    margin: -1rem -1rem 0 -1rem;
-    padding: 0 1rem;
-    background: var(--color-bg-alt);
-    overflow-x: auto;
-}
-
-.tab-button {
-    padding: 1rem 1.5rem;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-
-.tab-button:hover {
-    color: var(--color-primary);
-    background: var(--color-bg);
-}
-
-.tab-button.active {
-    color: var(--color-primary);
-    border-bottom-color: var(--color-primary);
-    font-weight: 600;
-}
-
-.tab-content {
-    padding: 2rem 1rem;
-}
-
-details summary {
-    transition: color 0.2s;
-}
-
-details[open] summary {
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 1rem;
-}
-
-details[open] summary span:first-child {
-    transform: rotate(90deg);
-    display: inline-block;
-}
-</style>
+{# Tabbed Interface — _fa_tabs macro with new Stimulus targets #}
+{{ _fa_tabs.render({
+    id: 'transitive',
+    initialTab: 'overview',
+    urlHashSync: true,
+    tabs: [
+        {
+            id: 'overview',
+            label: '📊 ' ~ 'compliance.tab.overview'|trans({}, 'compliance'),
+            body: include('compliance/_tab_transitive_overview.html.twig'),
+        },
+        {
+            id: 'matrix',
+            label: 'compliance.tab.matrix'|trans({}, 'compliance'),
+            icon: 'heatmap',
+            body: include('compliance/_tab_transitive_matrix.html.twig'),
+        },
+        {
+            id: 'details',
+            label: 'compliance.tab.details'|trans({}, 'compliance'),
+            icon: 'nav-list-check',
+            body: include('compliance/_tab_transitive_details.html.twig'),
+        },
+        {
+            id: 'info',
+            label: 'compliance.tab.explanation'|trans({}, 'compliance'),
+            icon: 'ui-lightbulb',
+            body: include('compliance/_tab_transitive_info.html.twig'),
+        },
+    ],
+}) }}
 
 <script>
 // Create Cross-Framework Mappings
