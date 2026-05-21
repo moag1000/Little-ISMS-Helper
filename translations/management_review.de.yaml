@@ -44,6 +44,12 @@ management_review:
         inputs: 'Eingaben zur Bewertung (9.3.2)'
         followup: 'Status früherer Maßnahmen'
         outputs: 'Ergebnisse der Bewertung (9.3.3)'
+        audit_metadata: 'ISO 27001 §9.3 · Norm-Felder'
+        compliance: 'Framework-Compliance-Status'
+    action:
+        cancel: Abbrechen
+        save: 'Änderungen speichern'
+        create: 'Bewertung anlegen'
     field:
         basic_info: 'Basisinformationen'
         tenant: 'Organisation'
