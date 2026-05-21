@@ -1,11 +1,11 @@
 # check_god_class_size.py baseline
 # Format: <relative-path>:LOC=NNN deps=MMM
 # NEW file added OR existing file growing beyond LOC will fail CI.
-src/Service/ComplianceWizardService.php:LOC=6046 deps=23
 src/Controller/DeploymentWizardController.php:LOC=2683 deps=0
 src/Controller/ComplianceController.php:LOC=2607 deps=0
 src/Service/RestoreService.php:LOC=2285 deps=7
 src/Service/PolicyWizard/DocumentGenerator.php:LOC=1869 deps=15
+src/Service/ComplianceWizard/CategoryProvider/EuRegulatoryFrameworkCategoryProvider.php:LOC=1837 deps=4
 src/Service/DashboardStatisticsService.php:LOC=1808 deps=25
 src/Service/DataIntegrityService.php:LOC=1687 deps=28
 src/Service/Export/CertificationBundleExporter.php:LOC=1581 deps=19
@@ -17,6 +17,7 @@ src/Controller/DocumentController.php:LOC=1184 deps=0
 src/Service/ManagementReportService.php:LOC=1134 deps=18
 src/Service/MyDayAggregator.php:LOC=1068 deps=20
 src/Controller/UserManagementController.php:LOC=1028 deps=0
+src/Service/ComplianceWizard/CoverageCheckService.php:LOC=970 deps=19
 src/Controller/Admin/ComplianceImportController.php:LOC=923 deps=0
 src/Controller/TenantManagementController.php:LOC=912 deps=0
 src/Controller/IncidentController.php:LOC=889 deps=0
