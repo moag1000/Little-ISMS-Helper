@@ -303,9 +303,7 @@
                                 {% endif %}
                                 {% if is_granted('ROLE_ADMIN') %}
                                 <button type="button"
-                                        class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal{{ training.id }}"
+                                        class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="deleteModal{{ training.id }}"
                                         title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
                                     <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                 </button>
@@ -331,32 +329,26 @@
 
 {# Delete Modals #}
 {% for training in trainings %}
-<div  class="modal fade"  id="deleteModal{{ training.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ training.id }}" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h3 class="modal-title h5" id="deleteModalLabel{{ training.id }}">
-                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'training.confirm_delete'|trans({}, 'training') }}
-                </h3>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
-            </div>
-            <div class="modal-body">
+<div class="fa-modal fa-modal--confirm fa-modal--danger" id="deleteModal{{ training.id }}"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
+     role="alertdialog" aria-modal="true" aria-labelledby="deleteModal{{ training.id }}Label" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-trash"></i></span><div class="fa-modal__heading"><h3 class="fa-modal__title" id="deleteModalLabel{{ training.id }}">
+                    {{ 'training.confirm_delete'|trans({}, 'training') }}
+                </h3></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+            <div class="fa-modal__body">
                 <p>{{ 'training.delete_warning'|trans({'%title%': training.title}, 'training') }}</p>
                 <p class="text-muted"><small>{{ 'common.action_irreversible'|trans({}, 'messages') }}</small></p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
-                    {{ 'common.cancel'|trans({}, 'messages') }}
-                </button>
-                <form method="post" action="{{ path('app_training_delete', {id: training.id}) }}" class="d-inline">
+            <footer class="fa-modal__footer">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <form method="post" action="{{ path('app_training_delete', {id: training.id}) }}" class="d-inline" data-fa-modal-target="form">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ training.id) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
                         <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
-                </form>
-            </div>
-        </div>
-    </div>
+                </form></div>
+</div>
 </div>
 {% endfor %}
 </main>

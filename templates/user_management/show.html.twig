@@ -308,7 +308,7 @@
                             </button>
                         </form>
                     {% endif %}
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--danger" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="deleteModal">
                         <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 {% endif %}
@@ -319,27 +319,23 @@
 
 {# Delete Confirmation Modal #}
 {% if user.id != app.user.id %}
-<div  class="modal fade" aria-labelledby="deleteModalLabel"  id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2  id="deleteModalLabel" class="modal-title">{{ 'user.modal.delete_user'|trans({}, 'user') }}</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-            </div>
-            <div class="modal-body">
+<div class="fa-modal fa-modal--confirm fa-modal--danger" id="deleteModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="danger"
+     role="alertdialog" aria-modal="true" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-trash"></i></span><div class="fa-modal__heading"><h2  id="deleteModalLabel" class="fa-modal__title">{{ 'user.modal.delete_user'|trans({}, 'user') }}</h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+            <div class="fa-modal__body">
                 {{ 'user.modal.delete_confirm'|trans({'%name%': user.firstName ~ ' ' ~ user.lastName}, 'user')|raw }}
                 <br><br>
                 <strong>{{ 'user.modal.delete_warning'|trans({}, 'user') }}</strong>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" class="d-inline">
+            <footer class="fa-modal__footer">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" class="d-inline" data-fa-modal-target="form">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger"><i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
-                </form>
-            </div>
-        </div>
-    </div>
+                </form></div>
+</div>
 </div>
 {% endif %}
 {% endblock admin_content %}
