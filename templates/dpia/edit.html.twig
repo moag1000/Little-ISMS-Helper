@@ -3,25 +3,25 @@
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}Edit DPIA - {{ dpia.referenceNumber }}{% endblock %}
+{% block title %}{{ 'dpia.edit.title'|default('Edit DPIA') }} - {{ dpia.referenceNumber }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'GDPR', icon: 'shield-check' },
-            { label: 'DPIA', url: path('app_dpia_index') },
+            { label: 'dpia.new.breadcrumb_gdpr'|trans({}, 'privacy'), icon: 'shield-check' },
+            { label: 'dpia.new.breadcrumb_dpia'|trans({}, 'privacy'), url: path('app_dpia_index') },
             { label: dpia.referenceNumber, url: path('app_dpia_show', {id: dpia.id}) },
-            { label: 'Edit' }
+            { label: 'common.edit'|trans({}, 'messages') }
         ]
     } %}
 
     {{ _fa_page_header.render({
-        title: 'Edit DPIA: ' ~ dpia.title,
-        subtitle: dpia.referenceNumber ~ ' - Version ' ~ dpia.version,
+        title: dpia.title,
+        subtitle: dpia.referenceNumber,
         badge: { icon: 'ui-edit', label: '' },
         actions: [
-            { label: 'Cancel', href: path('app_dpia_show', {id: dpia.id}), variant: 'secondary', icon: 'ui-close' }
+            { label: 'common.cancel'|trans({}, 'messages'), href: path('app_dpia_show', {id: dpia.id}), variant: 'secondary', icon: 'ui-close' }
         ]
     }) }}
 
@@ -29,106 +29,96 @@
         {{ _fa_alert.render({ variant: 'warning', title: 'Revision Required', body: dpia.rejectionReason }) }}
     {% endif %}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="h5 mb-0"><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> DPIA Form</h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
-            {{ form_start(form) }}
-                {% include '_components/_auto_form.html.twig' with {
-                    'form': form,
-                    'sections': {
-                        'basic_info': {
-                            'label': '<i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> Basic Information'|raw,
-                            'fields': ['title', 'referenceNumber', 'processingActivity']
-                        },
-                        'processing_operations': {
-                            'label': '<i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i> Art. 35(7)(a) - Description of Processing Operations'|raw,
-                            'fields': ['processingDescription', 'processingPurposes', 'dataCategories', 'dataSubjectCategories', 'estimatedDataSubjects', 'dataRetentionPeriod', 'dataFlowDescription']
-                        },
-                        'necessity_proportionality': {
-                            'label': '<i class="fa-icon fa-icon--review" aria-hidden="true"></i> Art. 35(7)(b) - Assessment of Necessity and Proportionality'|raw,
-                            'fields': ['necessityAssessment', 'proportionalityAssessment', 'legalBasis', 'legislativeCompliance']
-                        },
-                        'risk_assessment': {
-                            'label': '<i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Art. 35(7)(c) - Risk Assessment'|raw,
-                            'fields': ['riskLevel', 'likelihood', 'impact', 'dataSubjectRisks']
-                        },
-                        'measures': {
-                            'label': '<i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> Art. 35(7)(d) - Measures to Address Risks'|raw,
-                            'fields': ['technicalMeasures', 'organizationalMeasures', 'implementedControls', 'complianceMeasures', 'residualRiskAssessment', 'residualRiskLevel']
-                        },
-                        'consultation': {
-                            'label': '<i class="fa-icon fa-icon--group" aria-hidden="true"></i> Stakeholder Consultation (Art. 35(4), 35(9))'|raw,
-                            'fields': ['dataProtectionOfficer', 'dataProtectionOfficerPerson', 'dataProtectionOfficerDeputyPersons', 'dpoConsultationDate', 'dpoAdvice', 'dataSubjectsConsulted', 'dataSubjectConsultationDetails']
-                        },
-                        'supervisory': {
-                            'label': '<i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> Supervisory Authority Consultation (Art. 36)'|raw,
-                            'fields': ['requiresSupervisoryConsultation', 'supervisoryConsultationDate', 'supervisoryAuthorityFeedback']
-                        },
-                        'workflow': {
-                            'label': '<i class="fa-icon fa-icon--recovery" aria-hidden="true"></i> Workflow & Review'|raw,
-                            'fields': ['conductor', 'conductorPerson', 'conductorDeputyPersons', 'approverPerson', 'approverDeputyPersons', 'reviewFrequencyMonths', 'nextReviewDate']
-                        }
-                    },
-                    'col_widths': {
-                        'title': 8,
-                        'referenceNumber': 4,
-                        'processingActivity': 12,
-                        'processingDescription': 12,
-                        'processingPurposes': 12,
-                        'dataCategories': 12,
-                        'dataSubjectCategories': 12,
-                        'estimatedDataSubjects': 6,
-                        'dataRetentionPeriod': 6,
-                        'dataFlowDescription': 12,
-                        'necessityAssessment': 12,
-                        'proportionalityAssessment': 12,
-                        'legalBasis': 6,
-                        'legislativeCompliance': 6,
-                        'riskLevel': 4,
-                        'likelihood': 4,
-                        'impact': 4,
-                        'dataSubjectRisks': 12,
-                        'technicalMeasures': 12,
-                        'organizationalMeasures': 12,
-                        'implementedControls': 12,
-                        'complianceMeasures': 12,
-                        'residualRiskAssessment': 6,
-                        'residualRiskLevel': 6,
-                        'dataProtectionOfficer': 6,
-                        'dataProtectionOfficerPerson': 6,
-                        'dataProtectionOfficerDeputyPersons': 12,
-                        'dpoConsultationDate': 6,
-                        'dpoAdvice': 12,
-                        'dataSubjectsConsulted': 12,
-                        'dataSubjectConsultationDetails': 12,
-                        'requiresSupervisoryConsultation': 12,
-                        'supervisoryConsultationDate': 6,
-                        'supervisoryAuthorityFeedback': 6,
-                        'conductor': 6,
-                        'conductorPerson': 6,
-                        'conductorDeputyPersons': 12,
-                        'approverPerson': 6,
-                        'approverDeputyPersons': 6,
-                        'reviewFrequencyMonths': 6,
-                        'nextReviewDate': 6
-                    },
-                    'translation_domain': 'privacy'
-                } %}
-
-                <div class="mt-4">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                        <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> Save Changes
-                    </button>
-                    <a href="{{ path('app_dpia_show', {id: dpia.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> Cancel
-                    </a>
-                </div>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endembed %}
+    {{ form_start(form) }}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'DSGVO Art. 35 · DPIA',
+        'title': dpia.title,
+        'subtitle': dpia.referenceNumber,
+        'sections': {
+            'basic_info': {
+                'label': 'dpia.new.section_basic_info'|trans({}, 'privacy'),
+                'fields': ['title', 'referenceNumber', 'processingActivity']
+            },
+            'processing_operations': {
+                'label': 'dpia.new.section_processing_operations'|trans({}, 'privacy'),
+                'fields': ['processingDescription', 'processingPurposes', 'dataCategories', 'dataSubjectCategories', 'estimatedDataSubjects', 'dataRetentionPeriod', 'dataFlowDescription']
+            },
+            'necessity_proportionality': {
+                'label': 'dpia.new.section_necessity_proportionality'|trans({}, 'privacy'),
+                'fields': ['necessityAssessment', 'proportionalityAssessment', 'legalBasis', 'legislativeCompliance']
+            },
+            'risk_assessment': {
+                'label': 'dpia.new.section_risk_assessment'|trans({}, 'privacy'),
+                'fields': ['riskLevel', 'likelihood', 'impact', 'dataSubjectRisks']
+            },
+            'measures': {
+                'label': 'dpia.new.section_measures'|trans({}, 'privacy'),
+                'fields': ['technicalMeasures', 'organizationalMeasures', 'implementedControls', 'complianceMeasures', 'residualRiskAssessment', 'residualRiskLevel']
+            },
+            'consultation': {
+                'label': 'dpia.new.section_consultation'|trans({}, 'privacy'),
+                'fields': ['dataProtectionOfficer', 'dataProtectionOfficerPerson', 'dataProtectionOfficerDeputyPersons', 'dpoConsultationDate', 'dpoAdvice', 'dataSubjectsConsulted', 'dataSubjectConsultationDetails']
+            },
+            'supervisory': {
+                'label': 'dpia.new.section_supervisory'|trans({}, 'privacy'),
+                'fields': ['requiresSupervisoryConsultation', 'supervisoryConsultationDate', 'supervisoryAuthorityFeedback']
+            },
+            'workflow': {
+                'label': 'dpia.new.section_workflow'|trans({}, 'privacy'),
+                'fields': ['conductor', 'conductorPerson', 'conductorDeputyPersons', 'approverPerson', 'approverDeputyPersons', 'reviewFrequencyMonths', 'nextReviewDate']
+            }
+        },
+        'col_widths': {
+            'title': 8,
+            'referenceNumber': 4,
+            'processingActivity': 12,
+            'processingDescription': 12,
+            'processingPurposes': 12,
+            'dataCategories': 12,
+            'dataSubjectCategories': 12,
+            'estimatedDataSubjects': 6,
+            'dataRetentionPeriod': 6,
+            'dataFlowDescription': 12,
+            'necessityAssessment': 12,
+            'proportionalityAssessment': 12,
+            'legalBasis': 6,
+            'legislativeCompliance': 6,
+            'riskLevel': 4,
+            'likelihood': 4,
+            'impact': 4,
+            'dataSubjectRisks': 12,
+            'technicalMeasures': 12,
+            'organizationalMeasures': 12,
+            'implementedControls': 12,
+            'complianceMeasures': 12,
+            'residualRiskAssessment': 6,
+            'residualRiskLevel': 6,
+            'dataProtectionOfficer': 6,
+            'dataProtectionOfficerPerson': 6,
+            'dataProtectionOfficerDeputyPersons': 12,
+            'dpoConsultationDate': 6,
+            'dpoAdvice': 12,
+            'dataSubjectsConsulted': 12,
+            'dataSubjectConsultationDetails': 12,
+            'requiresSupervisoryConsultation': 12,
+            'supervisoryConsultationDate': 6,
+            'supervisoryAuthorityFeedback': 6,
+            'conductor': 6,
+            'conductorPerson': 6,
+            'conductorDeputyPersons': 12,
+            'approverPerson': 6,
+            'approverDeputyPersons': 6,
+            'reviewFrequencyMonths': 6,
+            'nextReviewDate': 6
+        },
+        'translation_domain': 'privacy',
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'common.save_changes'|trans({}, 'messages'), 'variant': 'primary' }
+        }
+    } %}
+    {{ form_end(form) }}
 </div>
 {% endblock %}
