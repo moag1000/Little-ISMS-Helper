@@ -116,7 +116,7 @@ src/Controller/AssetController.php:322
 src/Controller/AssetController.php:416
 src/Controller/AssetController.php:464
 src/Controller/AssetController.php:465
-src/Controller/AssetController.php:705
+src/Controller/AssetController.php:711
 src/Controller/AuditController.php:100
 src/Controller/AuditController.php:101
 src/Controller/AuditController.php:165
@@ -355,7 +355,7 @@ src/Controller/RiskController.php:1033
 src/Controller/RiskController.php:1201
 src/Controller/RiskController.php:1230
 src/Controller/RiskController.php:1231
-src/Controller/RiskController.php:1531
+src/Controller/RiskController.php:1537
 src/Controller/RiskTreatmentPlanController.php:103
 src/Controller/RiskTreatmentPlanController.php:104
 src/Controller/RiskTreatmentPlanController.php:138
@@ -417,7 +417,7 @@ src/Controller/TrainingController.php:259
 src/Controller/TrainingController.php:260
 src/Controller/TrainingController.php:322
 src/Controller/TrainingController.php:326
-src/Controller/TrainingController.php:499
+src/Controller/TrainingController.php:505
 src/Controller/UserManagementController.php:113
 src/Controller/UserManagementController.php:114
 src/Controller/UserManagementController.php:238
