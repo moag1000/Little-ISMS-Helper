@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Asset;
 use App\Entity\Patch;
+use App\Form\SectionMapInterface;
 use App\Entity\Vulnerability;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -19,7 +20,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Url;
 
-final class PatchType extends AbstractType
+final class PatchType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -248,6 +249,54 @@ final class PatchType extends AbstractType
                 ],
             ])
         ;
+    }
+
+    /**
+     * S4 Foundation P-2 SectionPolicy — ISO 27001 A.8.8 · Vulnerability Management / Patch.
+     * Sections: overview · vulnerability_link · affected_systems · testing · rollout · verification
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'patchId',
+                'title',
+                'description',
+                'patchType',
+                'priority',
+                'status',
+            ],
+            'vulnerability_link' => [
+                'vulnerability',
+                'vendor',
+                'product',
+                'version',
+                'downloadUrl',
+                'documentationUrl',
+            ],
+            'affected_systems' => [
+                'affectedAssets',
+            ],
+            'testing' => [
+                'testingNotes',
+                'requiresDowntime',
+                'estimatedDowntimeMinutes',
+                'requiresReboot',
+                'knownIssues',
+            ],
+            'rollout' => [
+                'releaseDate',
+                'deploymentDeadline',
+                'deployedDate',
+                'responsiblePerson',
+                'deploymentNotes',
+            ],
+            'verification' => [
+                'rollbackPlan',
+            ],
+        ];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
