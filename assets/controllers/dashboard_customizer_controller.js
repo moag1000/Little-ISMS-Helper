@@ -1,5 +1,4 @@
 import { Controller } from '@hotwired/stimulus';
-import * as bootstrap from 'bootstrap';
 
 /**
  * Dashboard Customizer Controller
@@ -28,13 +27,7 @@ export default class extends Controller {
     }
 
     disconnect() {
-        // Clean up modal instance if it exists
-        if (this.hasSettingsModalTarget) {
-            const modalInstance = bootstrap.Modal?.getInstance(this.settingsModalTarget);
-            if (modalInstance) {
-                modalInstance.dispose();
-            }
-        }
+        // fa-modal shell controller manages its own lifecycle; no Bootstrap cleanup needed
     }
 
     // Enable drag and drop for widgets
@@ -338,36 +331,14 @@ export default class extends Controller {
         this.savePreferences();
     }
 
-    // Open settings modal
+    // Open settings modal via fa-modal shell
     openSettings() {
         if (this.hasSettingsModalTarget) {
-            // Wait for Bootstrap to be available before opening modal
-            this.waitForBootstrap(() => {
-                // Check if modal is already initialized
-                let modalInstance = bootstrap.Modal.getInstance(this.settingsModalTarget);
-
-                if (!modalInstance) {
-                    modalInstance = new bootstrap.Modal(this.settingsModalTarget);
-                }
-
-                modalInstance.show();
-            });
+            document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
+                bubbles: true,
+                detail: { id: this.settingsModalTarget.id },
+            }));
         }
-    }
-
-    // Helper function to wait for Bootstrap to be available
-    waitForBootstrap(callback, maxAttempts = 10) {
-        let attempts = 0;
-        const checkBootstrap = () => {
-            attempts++;
-            if (window.bootstrap && window.bootstrap.Modal) {
-                callback();
-            } else if (attempts < maxAttempts) {
-                setTimeout(checkBootstrap, 100);
-            } else {
-            }
-        };
-        checkBootstrap();
     }
 
     // Reset to defaults
