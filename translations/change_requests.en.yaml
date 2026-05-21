@@ -39,6 +39,8 @@ change_request:
         implementation: Implementation
         approval: Approval
         verification_closure: 'Verification & Closure'
+        overview: Overview
+        details: 'Requester & Prioritisation'
         description: Description
         justification: Justification
         impact: Impact

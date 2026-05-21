@@ -26,6 +26,12 @@ threat:
         impact: 'Auswirkungen & Maßnahmen'
         assignment: 'Zuweisung'
         resulting_incidents: 'Resultierenden Vorfälle'
+        overview: 'Überblick'
+        intelligence_source: 'Quelle & CVE-Details'
+        threat_classification: 'Klassifizierung & MITRE'
+        affected_assets: 'Betroffene Assets'
+        mitigations: 'Maßnahmen & Empfehlungen'
+        audit_metadata: 'Verantwortliche Zuweisung'
     empty:
         title: 'Keine Bedrohungen gefunden'
         description: 'Noch keine Bedrohungsinformationen erfasst. Erfassen Sie eine neue Bedrohung, um zu beginnen.'

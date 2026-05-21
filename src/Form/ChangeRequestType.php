@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\ChangeRequest;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -13,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class ChangeRequestType extends AbstractType
+final class ChangeRequestType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -190,6 +191,57 @@ final class ChangeRequestType extends AbstractType
                 'attr' => ['rows' => 2],
             ])
         ;
+    }
+
+    /**
+     * S4 Foundation P-2 SectionPolicy — ISO 27001 A.8.32 · ITIL Change Management.
+     * Sections: overview · details · impact_assessment · approval · implementation · verification · audit_metadata
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'changeNumber',
+                'title',
+                'changeType',
+                'description',
+                'justification',
+            ],
+            'details' => [
+                'requestedBy',
+                'requestedDate',
+                'priority',
+                'status',
+                'clauseReference',
+            ],
+            'impact_assessment' => [
+                'ismsImpact',
+                'riskAssessment',
+            ],
+            'approval' => [
+                'approvedBy',
+                'approvedDate',
+                'approvalComments',
+            ],
+            'implementation' => [
+                'implementationPlan',
+                'rollbackPlan',
+                'testingRequirements',
+                'plannedImplementationDate',
+                'actualImplementationDate',
+                'implementedBy',
+                'implementationNotes',
+            ],
+            'verification' => [
+                'verifiedBy',
+                'verifiedDate',
+                'verificationResults',
+                'closedDate',
+                'closureNotes',
+            ],
+        ];
     }
 
     public function configureOptions(OptionsResolver $resolver): void

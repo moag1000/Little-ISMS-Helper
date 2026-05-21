@@ -10,6 +10,12 @@ patch:
         testing_deployment: 'Test & Deployment'
         requirements: Anforderungen
         resources: Ressourcen
+        overview: 'Überblick'
+        vulnerability_link: 'Schwachstelle & Produktdetails'
+        affected_systems: 'Betroffene Systeme'
+        testing: 'Tests & Anforderungen'
+        rollout: 'Rollout & Deployment'
+        verification: 'Rollback & Verifikation'
     field:
         patch_id: Patch-ID
         title: Patch-Bezeichnung

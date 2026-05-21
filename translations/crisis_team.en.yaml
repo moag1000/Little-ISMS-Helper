@@ -13,6 +13,12 @@ crisis_team:
         procedures: Procedures
         training: Training
         plans: 'Plans & Notes'
+        overview: Overview
+        members: 'Members & Leadership'
+        communication: 'Communication & Meeting Locations'
+        escalation: 'Alerting & Escalation'
+        activation: 'Activation & Plans'
+        testing: 'Exercises & Training'
     field:
         team_name: 'Team Name'
         description: Description

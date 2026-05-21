@@ -1,113 +1,106 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'assets' %}
+{% trans_default_domain 'asset' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'asset.title.new'|trans({}, 'asset') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-{# Breadcrumb Navigation #}
-{% include '_components/_breadcrumb.html.twig' with {
-    breadcrumbs: [
-        { label: 'nav.assets'|trans({}, 'nav', 'nav'), url: path('app_asset_index'), icon: 'cpu' },
-        { label: 'asset.title.new'|trans({}, 'asset') }
-    ]
-} %}
+<div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.assets'|trans({}, 'nav'), url: path('app_asset_index'), icon: 'cpu' },
+            { label: 'asset.title.new'|trans({}, 'asset') }
+        ]
+    } %}
 
-{# Page Header #}
-{{ _fa_page_header.render({
-    title: 'asset.title.new'|trans({}, 'asset'),
-    badge: { icon: 'plus', label: '' },
-    actions: [
-        { label: 'common.back'|trans({}, 'messages'), href: path('app_asset_index'), variant: 'secondary', icon: 'util-arrow-left' }
-    ]
-}) }}
+    {{ _fa_page_header.render({
+        title: 'asset.title.new'|trans({}, 'asset'),
+        badge: { icon: 'plus', label: '' },
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_asset_index'), variant: 'secondary', icon: 'util-arrow-left' }
+        ]
+    }) }}
 
-{% embed '_components/_card.html.twig' %}
-    {% block card_body %}
-        {{ form_start(form) }}
-            {% include '_components/_auto_form.html.twig' with {
-                'form': form,
-                'sections': {
-                    'basic_info': {
-                        'label': 'asset.section.basic_info'|trans({}, 'asset'),
-                        'fields': ['name', 'assetType', 'description']
-                    },
-                    'assignment': {
-                        'label': 'asset.section.assignment'|trans({}, 'asset'),
-                        'fields': ['ownerUser', 'ownerPerson', 'ownerDeputyPersons', 'owner', 'physicalLocation', 'dependsOn']
-                    },
-                    'financial': {
-                        'label': 'asset.section.financial'|trans({}, 'asset'),
-                        'fields': ['acquisitionValue', 'currentValue']
-                    },
-                    'classification': {
-                        'label': 'asset.section.classification'|trans({}, 'asset'),
-                        'fields': ['dataClassification', 'status', 'returnDate']
-                    },
-                    'cia_values': {
-                        'label': 'asset.section.cia_values'|trans({}, 'asset'),
-                        'fields': ['confidentialityValue', 'integrityValue', 'availabilityValue']
-                    },
-                    'policies': {
-                        'label': 'asset.section.policies'|trans({}, 'asset'),
-                        'fields': ['acceptableUsePolicy', 'handlingInstructions']
-                    },
-                    'ai_agent': {
-                        'label': 'asset.section.ai_agent'|trans({}, 'asset'),
-                        'fields': ['aiAgentClassification', 'aiAgentPurpose', 'aiAgentDataSources', 'aiAgentOversightMechanism', 'aiAgentProvider', 'aiAgentModelVersion', 'aiAgentCapabilityScope', 'aiAgentThreatModelDocId', 'aiAgentExtensionAllowlist']
-                    }
-                },
-                'col_widths': {
-                    'name': 6,
-                    'assetType': 6,
-                    'description': 12,
-                    'ownerUser': 6,
-                    'ownerPerson': 6,
-                    'ownerDeputyPersons': 12,
-                    'owner': 6,
-                    'physicalLocation': 6,
-                    'dependsOn': 12,
-                    'acquisitionValue': 6,
-                    'currentValue': 6,
-                    'dataClassification': 4,
-                    'status': 4,
-                    'returnDate': 4,
-                    'confidentialityValue': 4,
-                    'integrityValue': 4,
-                    'availabilityValue': 4,
-                    'acceptableUsePolicy': 12,
-                    'handlingInstructions': 12,
-                    'aiAgentClassification': 6,
-                    'aiAgentProvider': 6,
-                    'aiAgentModelVersion': 6,
-                    'aiAgentOversightMechanism': 6,
-                    'aiAgentPurpose': 12,
-                    'aiAgentDataSources': 12,
-                    'aiAgentCapabilityScope': 12,
-                    'aiAgentExtensionAllowlist': 12,
-                    'aiAgentThreatModelDocId': 6
-                },
-                'tooltips': {
-                    'acquisitionValue': 'asset.tooltip.acquisition_value',
-                    'currentValue': 'asset.tooltip.current_value',
-                    'confidentialityValue': 'asset.tooltip.confidentiality',
-                    'integrityValue': 'asset.tooltip.integrity',
-                    'availabilityValue': 'asset.tooltip.availability'
-                },
-                'translation_domain': 'asset'
-            } %}
+    {{ form_start(form) }}
 
-            <div class="form-actions d-flex gap-2 justify-content-end">
-                <a href="{{ path('app_asset_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                    {{ 'common.cancel'|trans({}, 'messages') }}
-                </a>
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
-                    {{ 'asset.action.create'|trans({}, 'asset') }}
-                </button>
-            </div>
-        {{ form_end(form) }}
-    {% endblock %}
-{% endembed %}
+    {% include '_components/_auto_form.html.twig' with {
+        'form': form,
+        'layout': 'outline-rail',
+        'eyebrow': 'ISO 27001 A.5.9 · Asset Inventory',
+        'title': 'asset.title.new'|trans({}, 'asset'),
+        'sections': {
+            'overview': {
+                'label': 'asset.section.overview'|trans({}, 'asset'),
+                'fields': ['name', 'description', 'assetType']
+            },
+            'ownership': {
+                'label': 'asset.section.ownership'|trans({}, 'asset'),
+                'fields': ['ownerUser', 'ownerPerson', 'ownerDeputyPersons', 'owner', 'physicalLocation', 'dependsOn', 'processingActivities']
+            },
+            'classification': {
+                'label': 'asset.section.classification'|trans({}, 'asset'),
+                'fields': ['dataClassification', 'status', 'returnDate', 'isDoraRelevant', 'tisaxInformationClassification']
+            },
+            'protection_requirements': {
+                'label': 'asset.section.cia_values'|trans({}, 'asset'),
+                'fields': ['confidentialityValue', 'integrityValue', 'availabilityValue']
+            },
+            'lifecycle_status': {
+                'label': 'asset.section.financial'|trans({}, 'asset'),
+                'fields': ['acquisitionValue', 'currentValue', 'acceptableUsePolicy', 'handlingInstructions']
+            },
+            'dependencies': {
+                'label': 'asset.section.ai_agent'|trans({}, 'asset'),
+                'fields': ['aiAgentClassification', 'aiAgentPurpose', 'aiAgentDataSources', 'aiAgentOversightMechanism', 'aiAgentProvider', 'aiAgentModelVersion', 'aiAgentCapabilityScope', 'aiAgentThreatModelDocId', 'aiAgentExtensionAllowlist']
+            }
+        },
+        'col_widths': {
+            'name': 6,
+            'assetType': 6,
+            'description': 12,
+            'ownerUser': 6,
+            'ownerPerson': 6,
+            'ownerDeputyPersons': 12,
+            'owner': 6,
+            'physicalLocation': 6,
+            'dependsOn': 12,
+            'processingActivities': 12,
+            'dataClassification': 4,
+            'status': 4,
+            'returnDate': 4,
+            'isDoraRelevant': 6,
+            'tisaxInformationClassification': 6,
+            'confidentialityValue': 4,
+            'integrityValue': 4,
+            'availabilityValue': 4,
+            'acquisitionValue': 6,
+            'currentValue': 6,
+            'acceptableUsePolicy': 12,
+            'handlingInstructions': 12,
+            'aiAgentClassification': 6,
+            'aiAgentProvider': 6,
+            'aiAgentModelVersion': 6,
+            'aiAgentOversightMechanism': 6,
+            'aiAgentPurpose': 12,
+            'aiAgentDataSources': 12,
+            'aiAgentCapabilityScope': 12,
+            'aiAgentExtensionAllowlist': 12,
+            'aiAgentThreatModelDocId': 6
+        },
+        'tooltips': {
+            'acquisitionValue': 'asset.tooltip.acquisition_value',
+            'currentValue': 'asset.tooltip.current_value',
+            'confidentialityValue': 'asset.tooltip.confidentiality',
+            'integrityValue': 'asset.tooltip.integrity',
+            'availabilityValue': 'asset.tooltip.availability'
+        },
+        'translation_domain': 'asset',
+        'actions': {
+            'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+            'submit': { 'label': 'asset.action.create'|trans({}, 'asset'), 'variant': 'primary' }
+        }
+    } %}
+
+    {{ form_end(form) }}
+</div>
 {% endblock %}

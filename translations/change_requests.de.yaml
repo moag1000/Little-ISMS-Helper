@@ -39,6 +39,9 @@ change_request:
         implementation: Umsetzung
         approval: Freigabe
         verification_closure: 'Verifikation & Abschluss'
+        overview: 'Überblick'
+        details: 'Antragsteller & Priorisierung'
+        verification: 'Verifikation & Abschluss'
         description: Beschreibung
         associated_risks: 'Verbundene Risiken'
         justification: 'Begründung und Notwendigkeit'
@@ -48,7 +51,6 @@ change_request:
         rollback_plan: 'Rollback-Plan bei Fehlschlag'
         testing_requirements: 'Testanforderungen und QA'
         approval_info: Freigabe-Informationen
-        verification: 'Verifikation und Abnahme'
         closure: 'Abschluss und Lessons Learned'
         affected_assets: 'Betroffene Assets'
         affected_controls: 'Betroffene Controls (ISO 27001)'
