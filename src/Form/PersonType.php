@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\SectionMapInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -18,8 +19,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class PersonType extends AbstractType
+final class PersonType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'identity'     => ['fullName', 'personType', 'badgeId', 'active'],
+            'contact'      => ['email', 'phone'],
+            'organization' => ['company', 'department', 'jobTitle', 'linkedUser'],
+            'role'         => ['accessValidFrom', 'accessValidUntil', 'notes'],
+        ];
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

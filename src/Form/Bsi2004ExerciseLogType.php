@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Bsi2004ExerciseLog;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -23,8 +24,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *   4. Lessons Learned: lessonsLearned, improvementActions (collection)
  *   5. Bewertung: overallRating
  */
-final class Bsi2004ExerciseLogType extends AbstractType
+final class Bsi2004ExerciseLogType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'       => ['exerciseType', 'bsi2004Template'],
+            'exercise_scope' => ['scenarioSummary', 'objectivesText', 'participantsText'],
+            'results'        => ['actionsBefore', 'actionsDuring', 'actionsAfter', 'overallRating'],
+            'lessons_learned' => ['lessonsLearned', 'improvementActionsCollection'],
+        ];
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $translationDomain = 'bsi_200_4_exercise';

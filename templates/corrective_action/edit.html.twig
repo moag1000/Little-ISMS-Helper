@@ -9,10 +9,6 @@
         title: ('corrective_action.page.edit'|trans({}, 'audits')) ~ ': ' ~ action.title,
         badge: { icon: 'ui-edit', label: '' }
     }) }}
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {% include 'corrective_action/_form.html.twig' with {form: form} %}
-        {% endblock %}
-    {% endembed %}
+    {% include 'corrective_action/_form.html.twig' with {form: form} %}
 </div>
 {% endblock %}

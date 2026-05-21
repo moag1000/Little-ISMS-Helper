@@ -10,6 +10,7 @@ use App\Entity\Person;
 use App\Entity\User;
 use App\Enum\CorrectiveActionStatus;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -20,8 +21,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class CorrectiveActionType extends AbstractType
+final class CorrectiveActionType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'       => ['finding', 'title', 'description', 'actionType', 'status'],
+            'root_cause'     => ['rootCauseAnalysis'],
+            'action_plan'    => ['responsiblePersonUser', 'responsiblePerson', 'responsibleDeputyPersons', 'plannedCompletionDate', 'actualCompletionDate'],
+            'verification'   => ['effectivenessReviewDate', 'effectivenessNotes', 'effectivenessEvidence'],
+        ];
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

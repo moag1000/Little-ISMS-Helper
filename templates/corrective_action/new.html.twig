@@ -36,10 +36,6 @@
             <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}">{{ finding.findingNumber ?? ('#' ~ finding.id) }} — {{ finding.title }}</a>
         </p>
     {% endif %}
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {% include 'corrective_action/_form.html.twig' with {form: form} %}
-        {% endblock %}
-    {% endembed %}
+    {% include 'corrective_action/_form.html.twig' with {form: form} %}
 </div>
 {% endblock %}

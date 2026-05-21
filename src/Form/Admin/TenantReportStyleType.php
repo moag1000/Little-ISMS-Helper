@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form\Admin;
 
 use App\Entity\TenantBranding;
+use App\Form\SectionMapInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -28,8 +29,20 @@ use Symfony\Component\Validator\Constraints as Assert;
  * is exposed as 0–100 % via the `report_style_preview` Stimulus
  * controller and persisted as a 0.0–1.0 float.
  */
-final class TenantReportStyleType extends AbstractType
+final class TenantReportStyleType extends AbstractType implements SectionMapInterface
 {
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview'    => ['reportDocCoverPattern', 'reportDocDefaultAudience'],
+            'typography'  => ['reportDocFontFamily'],
+            'layout'      => ['reportDocPageOrientation', 'reportDocChartColorScheme'],
+            'branding'    => ['reportDocWatermarkEnabled', 'reportDocWatermarkOpacity'],
+            'content'     => ['reportDocShowExecSummary', 'reportDocShowAppendix', 'reportDocShowDistributionList', 'reportDocFooterDisclaimer'],
+            'advanced'    => ['reportDocCustomCss'],
+        ];
+    }
+
     public function __construct(
         private readonly Security $security,
     ) {
