@@ -8,6 +8,7 @@ use App\Entity\BusinessContinuityPlan;
 use App\Entity\CrisisTeam;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\SectionMapInterface;
 use App\Form\Type\JsonStructuredType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -25,7 +26,7 @@ use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Url;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class CrisisTeamType extends AbstractType
+final class CrisisTeamType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -280,6 +281,57 @@ final class CrisisTeamType extends AbstractType
         ;
 
         // JsonArrayTransformer is now applied automatically by JsonStructuredType.
+    }
+
+    /**
+     * S4 Foundation P-2 SectionPolicy — ISO 22301 Cl. 8.4 Crisis Team.
+     * Sections: overview · members · communication · escalation · activation · testing · audit_metadata
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'teamName',
+                'description',
+                'teamType',
+                'isActive',
+            ],
+            'members' => [
+                'teamLeader',
+                'teamLeaderPerson',
+                'teamLeaderDeputyPersons',
+                'deputyLeader',
+                'deputyLeaderPerson',
+                'deputyLeaderDeputyPersons',
+                'personMembers',
+            ],
+            'communication' => [
+                'primaryPhone',
+                'primaryEmail',
+                'meetingLocation',
+                'backupMeetingLocation',
+                'virtualMeetingUrl',
+                'communicationProtocols',
+            ],
+            'escalation' => [
+                'alertProcedures',
+                'decisionAuthority',
+                'escalationMatrix',
+            ],
+            'activation' => [
+                'businessContinuityPlans',
+                'activationCount',
+                'lastActivatedAt',
+                'notes',
+            ],
+            'testing' => [
+                'trainingSchedule',
+                'lastTrainingAt',
+                'nextTrainingAt',
+            ],
+        ];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
