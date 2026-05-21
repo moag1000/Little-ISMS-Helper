@@ -312,9 +312,6 @@ class ComplianceWizardServiceTest extends KernelTestCase
     #[Test]
     public function testConsentCoverageCheckReturnsZeroWhenNoConsents(): void
     {
-        // Test isolation issue — pre-existing on main (test-order-dependent or DAMA bundle limit)
-        // See PR #546 thread for details. Tracked as follow-up.
-        $this->markTestSkipped('flaky — test-isolation issue, unrelated to this PR');
         $this->requireDatabase();
 
         $reflect = new \ReflectionClass($this->wizardService);
