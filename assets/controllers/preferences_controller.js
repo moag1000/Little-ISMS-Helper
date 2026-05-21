@@ -25,102 +25,34 @@ export default class extends Controller {
     previouslyFocusedElement = null;
 
     connect() {
-        // Load saved preferences
         this.loadPreferences();
-
-        // Apply preferences
         this.applyPreferences();
-
-        // ESC to close modal
-        this.handleKeydown = this.handleKeydown.bind(this);
-        document.addEventListener('keydown', this.handleKeydown);
     }
 
-    disconnect() {
-        document.removeEventListener('keydown', this.handleKeydown);
-    }
-
-    handleKeydown(event) {
-        if (!this.hasModalTarget || this.modalTarget.classList.contains('d-none')) {
-            return;
-        }
-
-        if (event.key === 'Escape') {
-            this.close();
-        } else if (event.key === 'Tab') {
-            // Focus trap - keep focus within modal
-            this.handleTabKey(event);
-        }
-    }
-
-    handleTabKey(event) {
-        const focusableElements = this.getFocusableElements();
-        if (focusableElements.length === 0) return;
-
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (event.shiftKey) {
-            // Shift+Tab: if on first element, go to last
-            if (document.activeElement === firstElement) {
-                event.preventDefault();
-                lastElement.focus();
-            }
-        } else {
-            // Tab: if on last element, go to first
-            if (document.activeElement === lastElement) {
-                event.preventDefault();
-                firstElement.focus();
-            }
-        }
-    }
-
-    getFocusableElements() {
-        const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-        return Array.from(this.modalTarget.querySelectorAll(selector)).filter(
-            el => !el.disabled && el.offsetParent !== null
-        );
-    }
+    disconnect() {}
 
     open() {
-        if (this.hasModalTarget) {
-            // Save currently focused element to restore on close
-            this.previouslyFocusedElement = document.activeElement;
-
-            // Remove inline style that modal manager might have set
-            this.modalTarget.style.display = '';
-            this.modalTarget.classList.remove('d-none');
-            this.modalTarget.classList.add('show');
-            document.body.style.overflow = 'hidden';
-
-            // Focus first focusable element
-            requestAnimationFrame(() => {
-                const focusable = this.getFocusableElements();
-                if (focusable.length > 0) {
-                    focusable[0].focus();
-                }
-            });
-        }
+        if (!this.hasModalTarget) return;
+        document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
+            bubbles: true,
+            detail: { id: this.modalTarget.id, trigger: document.activeElement },
+        }));
     }
 
     close() {
-        if (this.hasModalTarget) {
-            this.modalTarget.classList.add('d-none');
-            this.modalTarget.classList.remove('show');
-            document.body.style.overflow = '';
-
-            // Restore focus to previously focused element
-            if (this.previouslyFocusedElement && typeof this.previouslyFocusedElement.focus === 'function') {
-                this.previouslyFocusedElement.focus();
-            }
-            this.previouslyFocusedElement = null;
-        }
+        const faModal = this.#faModalController();
+        faModal?.close();
     }
 
     handleBackdropClick(event) {
         if (event.target === this.modalTarget) {
             this.close();
         }
+    }
+
+    #faModalController() {
+        if (!this.hasModalTarget) return null;
+        return this.application.getControllerForElementAndIdentifier(this.modalTarget, 'fa-modal');
     }
 
     loadPreferences() {

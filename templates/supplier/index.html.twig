@@ -322,7 +322,9 @@
             {% if _system_templates|length > 0 %}
                 <div class="text-center mt-3">
                     <button type="button" class="btn btn-outline-primary"
-                            data-bs-toggle="modal" data-bs-target="#systemTemplateModalSupplier">
+                            data-controller="fa-modal-dispatcher"
+                            data-action="click->fa-modal-dispatcher#open"
+                            data-fa-modal-id="systemTemplateModalSupplier">
                         <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
                         {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
                     </button>

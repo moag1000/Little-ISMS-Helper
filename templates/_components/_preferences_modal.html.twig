@@ -1,36 +1,53 @@
 {#
- FairyAurora v3.0 — Preferences-Modal (Aurora-Redesign)
+ FairyAurora v4.0 — Preferences-Modal (canonical fa-modal--settings shell, 2026-05-21)
 
  Usage: {% include '_components/_preferences_modal.html.twig' %}
- Öffnen via: Trigger mit data-action="preferences#open"
+ Open via: trigger with data-action="preferences#open" OR dispatch
+          new CustomEvent('fa-modal:request-open', { detail: { id: 'preferencesModal' } })
 
  Features:
- - View-Density, Animations-Toggle, Keyboard-Shortcuts, Sprache
- - Export/Import der Preferences
- - i18n komplett via preferences domain (DE + EN)
- - Aurora-Panel-Pattern (surface-2 + Border + Shadow)
+ - View density, animations toggle, keyboard shortcuts, language
+ - Export/import of preferences
+ - i18n via preferences domain (DE + EN)
+ - Preserves legacy `.preferences-modal` class for modal_manager_controller BC
 #}
 
-<div class="preferences-modal d-none fa-prefs-modal"
-     data-controller="preferences"
+<div class="fa-modal fa-modal--settings preferences-modal"
+     id="preferencesModal"
+     data-controller="fa-modal preferences"
      data-preferences-target="modal"
-     data-action="click->preferences#handleBackdropClick">
+     data-fa-modal-target="dialog"
+     data-fa-modal-mode-value="settings"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="preferencesModalTitle"
+     aria-hidden="true">
 
-    <div class="fa-prefs-modal__container preferences-container">
-        {# Header #}
-        <div class="fa-prefs-modal__header preferences-header">
-            <h2 class="fa-prefs-modal__title preferences-title">
-                <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
-                {{ 'preferences.title'|trans({}, 'preferences')|default('Einstellungen') }}
-            </h2>
+    <div class="fa-modal__backdrop"
+         data-fa-modal-target="backdrop"
+         data-action="click->fa-modal#backdropClick"
+         aria-hidden="true"></div>
+
+    <div class="fa-modal__container">
+
+        <header class="fa-modal__header">
+            <span class="fa-modal__icon" aria-hidden="true">
+                <i class="fa-icon fa-icon--ui-settings"></i>
+            </span>
+            <div class="fa-modal__heading">
+                <h2 class="fa-modal__title" id="preferencesModalTitle">
+                    {{ 'preferences.title'|trans({}, 'preferences')|default('Einstellungen') }}
+                </h2>
+            </div>
             <button type="button"
-                    class="fa-prefs-modal__close"
-                    data-action="click->preferences#close"
-                    aria-label="{{ 'common.close'|trans({}, 'messages') }}">×</button>
-        </div>
+                    class="fa-modal__close"
+                    data-action="fa-modal#cancel"
+                    aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+            </button>
+        </header>
 
-        {# Body #}
-        <div class="fa-prefs-modal__body preferences-body">
+        <div class="fa-modal__body">
 
             {# View-Density #}
             <section class="fa-prefs-section preference-section">
@@ -141,8 +158,7 @@
             </section>
         </div>
 
-        {# Footer #}
-        <div class="fa-prefs-modal__footer preferences-footer">
+        <footer class="fa-modal__footer">
             {% import '_components/_cyber_button.html.twig' as btn %}
             {{ btn.render('common.reset'|trans({}, 'messages')|default('Zurücksetzen'), {
                 variant: 'danger',
@@ -153,8 +169,8 @@
             {{ btn.render('common.close'|trans({}, 'messages')|default('Schließen'), {
                 variant: 'primary',
                 size: 'sm',
-                attrs: { 'data-action': 'click->preferences#close' }
+                attrs: { 'data-action': 'fa-modal#cancel' }
             }) }}
-        </div>
+        </footer>
     </div>
 </div>
