@@ -8747,3 +8747,203 @@ a.fa-matrix-table__cell:focus-visible {
         grid-template-columns: 1fr;
     }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   fa-tabs — Tab-group for settings-style forms with 3-6 equal groups
+   Pattern: /admin/settings/*, TenantType, UserType, Branding-Config
+   NOT for: regulatory forms (fa-form-layout) or linear flows (fa-modal--wizard)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fa-tabs {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    width: 100%;
+    min-height: 0;
+}
+
+/* ── Nav ──────────────────────────────────────────────────────────── */
+
+.fa-tabs__nav {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0 var(--space-4);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    overflow-x: auto;
+    scrollbar-width: none;        /* Firefox */
+    -ms-overflow-style: none;     /* IE */
+    scroll-snap-type: x proximity;
+}
+
+.fa-tabs__nav::-webkit-scrollbar { display: none; }
+
+/* ── Nav item ─────────────────────────────────────────────────────── */
+
+.fa-tabs__nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    font: 500 13.5px/1 var(--font-sans);
+    color: var(--fg-2);
+    cursor: pointer;
+    white-space: nowrap;
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;           /* overlap nav bottom-border */
+    transition:
+        color 160ms,
+        border-color 160ms,
+        background-color 160ms;
+    scroll-snap-align: start;
+    text-decoration: none;
+    outline-offset: -2px;
+    position: relative;
+}
+
+.fa-tabs__nav-item:hover:not(.is-disabled, .is-active) {
+    color: var(--fg);
+    background: color-mix(in oklab, var(--primary-tint) 60%, transparent);
+    border-bottom-color: color-mix(in oklab, var(--primary) 30%, transparent);
+}
+
+.fa-tabs__nav-item:focus-visible {
+    outline: 2px solid var(--primary);
+    border-radius: var(--r-sm) var(--r-sm) 0 0;
+}
+
+.fa-tabs__nav-item.is-active {
+    color: var(--primary-strong);
+    border-bottom-color: var(--primary);
+    font-weight: 600;
+    background: color-mix(in oklab, var(--primary-tint) 40%, transparent);
+}
+
+.fa-tabs__nav-item.has-error {
+    color: var(--danger);
+}
+
+.fa-tabs__nav-item.has-error::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    right: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--danger);
+}
+
+.fa-tabs__nav-item.has-error.is-active {
+    border-bottom-color: var(--danger);
+}
+
+.fa-tabs__nav-item.is-disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ── Nav icon ─────────────────────────────────────────────────────── */
+
+.fa-tabs__nav-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    opacity: 0.8;
+}
+
+.fa-tabs__nav-item.is-active .fa-tabs__nav-icon {
+    opacity: 1;
+}
+
+/* ── Nav badge ────────────────────────────────────────────────────── */
+
+.fa-tabs__nav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font: 700 10px/1 var(--font-mono);
+    letter-spacing: 0.04em;
+    border-radius: var(--r-pill);
+    background: rgb(var(--danger-rgb) / 0.12);
+    color: var(--danger);
+    border: 1px solid rgb(var(--danger-rgb) / 0.28);
+}
+
+.fa-tabs__nav-item:not(.has-error) .fa-tabs__nav-badge {
+    background: var(--surface-3);
+    color: var(--fg-2);
+    border-color: var(--border);
+}
+
+/* ── Panels ───────────────────────────────────────────────────────── */
+
+.fa-tabs__panels {
+    min-height: 0;
+    position: relative;
+}
+
+.fa-tabs__panel {
+    display: none;
+    padding: var(--space-5) var(--space-5);
+    animation: fa-tabs-fadein 180ms ease;
+}
+
+.fa-tabs__panel.is-active {
+    display: block;
+}
+
+@keyframes fa-tabs-fadein {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Panel section (sub-divider within a tab) ─────────────────────── */
+
+.fa-tabs__panel-section {
+    border-top: 1px solid var(--border);
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+}
+
+.fa-tabs__panel-section:first-child {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.fa-tabs__panel-section-title {
+    font: 600 11px/1 var(--font-mono);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    margin-bottom: var(--space-3);
+}
+
+/* ── Responsive: ≤640px horizontal-scroll snap ───────────────────── */
+
+@media (max-width: 640px) {
+    .fa-tabs__nav {
+        padding: 0 var(--space-2);
+    }
+
+    .fa-tabs__nav-item {
+        padding: var(--space-3) var(--space-3);
+        font-size: 13px;
+    }
+
+    .fa-tabs__panel {
+        padding: var(--space-4) var(--space-3);
+    }
+}
