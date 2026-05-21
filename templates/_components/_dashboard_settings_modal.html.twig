@@ -1,85 +1,111 @@
-{# Dashboard Customization Settings Modal #}
+{# Dashboard Customization Settings Modal — Aurora fa-modal shell (2026-05-21) #}
 
-<div  class="modal fade" aria-labelledby="dashboardSettingsModalLabel"  id="dashboardSettingsModal" tabindex="-1" data-dashboard-customizer-target="settingsModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5  id="dashboardSettingsModalLabel" class="modal-title">
-                    <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i> Dashboard anpassen
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+<div class="fa-modal fa-modal--settings"
+     id="dashboardSettingsModal"
+     data-controller="fa-modal dashboard-customizer"
+     data-dashboard-customizer-target="settingsModal"
+     data-fa-modal-mode-value="settings"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="dashboardSettingsModalLabel"
+     aria-hidden="true">
+
+    <div class="fa-modal__backdrop"
+         data-fa-modal-target="backdrop"
+         data-action="click->fa-modal#backdropClick"
+         aria-hidden="true"></div>
+
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+
+        <header class="fa-modal__header">
+            <span class="fa-modal__icon" aria-hidden="true">
+                <i class="fa-icon fa-icon--nav-sliders"></i>
+            </span>
+            <div class="fa-modal__heading">
+                <h2 class="fa-modal__title" id="dashboardSettingsModalLabel">Dashboard anpassen</h2>
+                <p class="fa-modal__sub">Sichtbarkeit der Widgets</p>
             </div>
-            <div class="modal-body">
-                <p class="text-muted mb-4">
-                    Wählen Sie aus, welche Widgets auf Ihrem Dashboard angezeigt werden sollen.
-                </p>
+            <button type="button"
+                    class="fa-modal__close"
+                    aria-label="{{ 'action.close'|trans({}, 'messages') }}"
+                    data-action="fa-modal#cancel">
+                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+            </button>
+        </header>
 
-                <div class="widget-toggles">
-                    <h6 class="mb-3">Statistik-Karten</h6>
-                    <div class="form-check form-switch mb-3"
-                         data-widget-toggle="stats-cards"
-                         data-action="click->dashboard-customizer#toggleWidget">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">
-                            <i class="fa-icon fa-icon--nav-bar-chart me-2 text-primary" aria-hidden="true"></i>
-                            Statistik-Übersicht (Assets, Risks, Controls, Incidents)
-                        </label>
-                    </div>
+        <div class="fa-modal__body">
+            <p class="text-muted mb-4">
+                Wählen Sie aus, welche Widgets auf Ihrem Dashboard angezeigt werden sollen.
+            </p>
 
-                    <h6 class="mb-3 mt-4">Charts</h6>
-                    <div class="form-check form-switch mb-3"
-                         data-widget-toggle="risk-chart"
-                         data-action="click->dashboard-customizer#toggleWidget">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">
-                            <i class="fa-icon fa-icon--nav-pie-chart me-2 text-warning" aria-hidden="true"></i>
-                            Risikoverteilung
-                        </label>
-                    </div>
+            <div class="widget-toggles">
+                <h6 class="mb-3">Statistik-Karten</h6>
+                <div class="form-check form-switch mb-3"
+                     data-widget-toggle="stats-cards"
+                     data-action="click->dashboard-customizer#toggleWidget">
+                    <input class="form-check-input" type="checkbox" checked>
+                    <label class="form-check-label">
+                        <i class="fa-icon fa-icon--nav-bar-chart me-2 text-primary" aria-hidden="true"></i>
+                        Statistik-Übersicht (Assets, Risks, Controls, Incidents)
+                    </label>
+                </div>
 
-                    <div class="form-check form-switch mb-3"
-                         data-widget-toggle="asset-chart"
-                         data-action="click->dashboard-customizer#toggleWidget">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">
-                            <i class="fa-icon fa-icon--nav-bar-chart me-2 text-info" aria-hidden="true"></i>
-                            Assets nach Kategorie
-                        </label>
-                    </div>
+                <h6 class="mb-3 mt-4">Charts</h6>
+                <div class="form-check form-switch mb-3"
+                     data-widget-toggle="risk-chart"
+                     data-action="click->dashboard-customizer#toggleWidget">
+                    <input class="form-check-input" type="checkbox" checked>
+                    <label class="form-check-label">
+                        <i class="fa-icon fa-icon--nav-pie-chart me-2 text-warning" aria-hidden="true"></i>
+                        Risikoverteilung
+                    </label>
+                </div>
 
-                    <h6 class="mb-3 mt-4">Widgets</h6>
-                    <div class="form-check form-switch mb-3"
-                         data-widget-toggle="activity-feed"
-                         data-action="click->dashboard-customizer#toggleWidget">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">
-                            <i class="fa-icon fa-icon--nav-activity me-2 text-success" aria-hidden="true"></i>
-                            Letzte Aktivitäten
-                        </label>
-                    </div>
+                <div class="form-check form-switch mb-3"
+                     data-widget-toggle="asset-chart"
+                     data-action="click->dashboard-customizer#toggleWidget">
+                    <input class="form-check-input" type="checkbox" checked>
+                    <label class="form-check-label">
+                        <i class="fa-icon fa-icon--nav-bar-chart me-2 text-info" aria-hidden="true"></i>
+                        Assets nach Kategorie
+                    </label>
+                </div>
 
-                    <div class="form-check form-switch mb-3"
-                         data-widget-toggle="quick-actions"
-                         data-action="click->dashboard-customizer#toggleWidget">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">
-                            <i class="fa-icon me-2 text-warning fa-icon--threat" aria-hidden="true"></i>
-                            Schnellzugriff
-                        </label>
-                    </div>
+                <h6 class="mb-3 mt-4">Widgets</h6>
+                <div class="form-check form-switch mb-3"
+                     data-widget-toggle="activity-feed"
+                     data-action="click->dashboard-customizer#toggleWidget">
+                    <input class="form-check-input" type="checkbox" checked>
+                    <label class="form-check-label">
+                        <i class="fa-icon fa-icon--nav-activity me-2 text-success" aria-hidden="true"></i>
+                        Letzte Aktivitäten
+                    </label>
+                </div>
+
+                <div class="form-check form-switch mb-3"
+                     data-widget-toggle="quick-actions"
+                     data-action="click->dashboard-customizer#toggleWidget">
+                    <input class="form-check-input" type="checkbox" checked>
+                    <label class="form-check-label">
+                        <i class="fa-icon me-2 text-warning fa-icon--threat" aria-hidden="true"></i>
+                        Schnellzugriff
+                    </label>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button"
-                        class="fa-cyber-btn fa-cyber-btn--danger me-auto"
-                        data-action="click->dashboard-customizer#resetToDefaults">
-                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
-                </button>
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
-                    {{ 'common.close'|trans({}, 'messages') }}
-                </button>
-            </div>
         </div>
+
+        <footer class="fa-modal__footer">
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--danger me-auto"
+                    data-action="click->dashboard-customizer#resetToDefaults">
+                <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
+            </button>
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost"
+                    data-action="fa-modal#cancel">
+                {{ 'common.close'|trans({}, 'messages') }}
+            </button>
+        </footer>
     </div>
 </div>
 

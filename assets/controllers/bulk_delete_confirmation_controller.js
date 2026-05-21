@@ -37,10 +37,23 @@ export default class extends Controller {
     ];
 
     connect() {
-        this.modalInstance = null;
         this.resolvePromise = null;
         this.rejectPromise = null;
         this.previousFocus = null;
+
+        this.boundOnFaModalClosed = this.onFaModalClosed.bind(this);
+        this.element.addEventListener('fa-modal:closed', this.boundOnFaModalClosed);
+    }
+
+    disconnect() {
+        this.element.removeEventListener('fa-modal:closed', this.boundOnFaModalClosed);
+    }
+
+    onFaModalClosed() {
+        if (this.resolvePromise) {
+            this.resolvePromise(false);
+            this.cleanup();
+        }
     }
 
     /**
@@ -79,13 +92,11 @@ export default class extends Controller {
         this.hideError();
         this.hideDependencies();
 
-        // Get modal instance (Bootstrap 5)
-        if (!this.modalInstance) {
-            this.modalInstance = new bootstrap.Modal(this.modalTarget);
-        }
-
-        // Show modal
-        this.modalInstance.show();
+        // Open fa-modal shell via dispatch
+        document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
+            bubbles: true,
+            detail: { id: this.modalTarget.id },
+        }));
 
         // Check dependencies if endpoint provided
         if (endpoint && ids && ids.length > 0) {
@@ -108,18 +119,10 @@ export default class extends Controller {
             this.confirmButtonTarget.focus();
         }, 100);
 
-        // Return promise that resolves when user confirms or cancels
+        // Cancel-resolution happens via the fa-modal:closed listener bound in connect().
         return new Promise((resolve, reject) => {
             this.resolvePromise = resolve;
             this.rejectPromise = reject;
-
-            // Auto-reject if modal is closed without confirmation
-            this.modalTarget.addEventListener('hidden.bs.modal', () => {
-                if (this.resolvePromise) {
-                    this.resolvePromise(false);
-                    this.cleanup();
-                }
-            }, { once: true });
         });
     }
 
@@ -207,7 +210,7 @@ export default class extends Controller {
             this.resolvePromise(true);
             this.cleanup();
         }
-        this.modalInstance.hide();
+        this.closeModal();
     }
 
     cancel() {
@@ -215,7 +218,15 @@ export default class extends Controller {
             this.resolvePromise(false);
             this.cleanup();
         }
-        this.modalInstance.hide();
+        this.closeModal();
+    }
+
+    closeModal() {
+        const faModal = this.application.getControllerForElementAndIdentifier(
+            this.modalTarget,
+            'fa-modal',
+        );
+        faModal?.close();
     }
 
     cleanup() {

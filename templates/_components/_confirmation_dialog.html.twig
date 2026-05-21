@@ -1,5 +1,5 @@
 {#
- FairyAurora Confirmation-Dialog (Destructive Actions)
+ FairyAurora Confirmation-Dialog — Aurora fa-modal shell (2026-05-21)
 
  Usage:
    {% include '_components/_confirmation_dialog.html.twig' with {
@@ -12,52 +12,82 @@
        typingConfirm: 'LÖSCHEN'    {# optional: Typing-Bestätigung für High-Risk #}
    } %}
 
- Nutzt Bootstrap-Modal-Infrastruktur + Aurora-Styling via .fa-confirm-modal-Klasse.
- Plan § 29 Confirmation-Dialog.
+ Open via JS:
+   document.dispatchEvent(new CustomEvent('fa-modal:request-open', { detail: { id: '<id>' } }));
+
+ Migrated from Bootstrap modal to .fa-modal--confirm shell. Internal Stimulus
+ `confirm-typing` controller still gates the submit button on type-to-confirm
+ input matching (unchanged).
 #}
 
 {% set id = id|default('fa-confirm-' ~ random(99999)) %}
 {% set confirmLabel = confirmLabel|default('common.confirm'|trans({}, 'messages')|default('Bestätigen')) %}
 {% set cancelLabel = cancelLabel|default('common.cancel'|trans({}, 'messages')|default('Abbrechen')) %}
 
-<div class="modal fade fa-confirm-modal" id="{{ id }}" tabindex="-1" aria-hidden="true" aria-labelledby="{{ id }}-title">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content fa-confirm-modal__content">
-            <div class="modal-body fa-confirm-modal__body">
-                {% import '_components/_alva.html.twig' as alva %}
-                {{ alva.render('warning', { size: 60, decorative: true, class: 'fa-confirm-modal__alva' })|raw }}
+<div class="fa-modal fa-modal--confirm fa-modal--danger"
+     id="{{ id }}"
+     data-controller="fa-modal"
+     data-fa-modal-mode-value="confirm"
+     data-fa-modal-tone-value="danger"
+     role="alertdialog"
+     aria-modal="true"
+     aria-labelledby="{{ id }}-title"
+     aria-hidden="true">
 
-                <h2 id="{{ id }}-title" class="fa-confirm-modal__title">{{ title }}</h2>
-                <p class="fa-confirm-modal__message">{{ message }}</p>
+    <div class="fa-modal__backdrop"
+         data-fa-modal-target="backdrop"
+         data-action="click->fa-modal#backdropClick"
+         aria-hidden="true"></div>
 
-                {% if typingConfirm is defined and typingConfirm %}
-                    <div class="fa-confirm-modal__typing">
-                        <label class="fa-confirm-modal__typing-label">
-                            {{ 'confirm.typing_hint'|trans({'%keyword%': typingConfirm}, 'messages')|default('Tippe &laquo;' ~ typingConfirm ~ '&raquo; um zu bestätigen:')|raw }}
-                        </label>
-                        <input type="text"
-                               class="fa-confirm-modal__typing-input"
-                               data-confirm-keyword="{{ typingConfirm }}"
-                               data-controller="confirm-typing"
-                               data-confirm-typing-target-value="{{ typingConfirm }}"
-                               autocomplete="off">
-                    </div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+        <header class="fa-modal__header">
+            {% import '_components/_alva.html.twig' as alva %}
+            <span class="fa-modal__icon" aria-hidden="true">
+                {{ alva.render('warning', { size: 30, decorative: true, class: 'fa-modal__alva' })|raw }}
+            </span>
+            <div class="fa-modal__heading">
+                <h2 id="{{ id }}-title" class="fa-modal__title">{{ title }}</h2>
+                {% if message is defined and message %}
+                    <p class="fa-modal__sub">{{ message|raw }}</p>
                 {% endif %}
             </div>
-            <div class="modal-footer fa-confirm-modal__footer">
-                {% import '_components/_cyber_button.html.twig' as btn %}
-                {{ btn.render(cancelLabel, { variant: 'secondary', attrs: { 'data-bs-dismiss': 'modal' } }) }}
-                {% if confirmUrl is defined and confirmUrl %}
-                    {% if confirmMethod|default('post') == 'get' %}
-                        {{ btn.link(confirmUrl, confirmLabel, { variant: 'danger', icon: confirmIcon|default('status-warning') }) }}
-                    {% else %}
-                        <form action="{{ confirmUrl }}" method="post" class="fa-confirm-modal__form">
-                            {% if csrfToken is defined %}<input type="hidden" name="_token" value="{{ csrfToken }}">{% endif %}
-                            {{ btn.submit(confirmLabel, { variant: 'danger', icon: confirmIcon|default('status-warning') }) }}
-                        </form>
-                    {% endif %}
-                {% endif %}
-            </div>
+            <button type="button"
+                    class="fa-modal__close"
+                    aria-label="{{ cancelLabel }}"
+                    data-action="fa-modal#cancel">
+                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+            </button>
+        </header>
+
+        <div class="fa-modal__body">
+            {% if typingConfirm is defined and typingConfirm %}
+                <div class="fa-modal__field">
+                    <span class="fa-modal__field-hint">
+                        {{ 'confirm.typing_hint'|trans({'%keyword%': typingConfirm}, 'messages')|default('Tippe &laquo;' ~ typingConfirm ~ '&raquo; um zu bestätigen:')|raw }}
+                    </span>
+                    <input type="text"
+                           class="fa-modal__field-input"
+                           data-confirm-keyword="{{ typingConfirm }}"
+                           data-controller="confirm-typing"
+                           data-confirm-typing-target-value="{{ typingConfirm }}"
+                           autocomplete="off">
+                </div>
+            {% endif %}
         </div>
+
+        <footer class="fa-modal__footer">
+            {% import '_components/_cyber_button.html.twig' as btn %}
+            {{ btn.render(cancelLabel, { variant: 'secondary', attrs: { 'data-action': 'fa-modal#cancel' } }) }}
+            {% if confirmUrl is defined and confirmUrl %}
+                {% if confirmMethod|default('post') == 'get' %}
+                    {{ btn.link(confirmUrl, confirmLabel, { variant: 'danger', icon: confirmIcon|default('status-warning') }) }}
+                {% else %}
+                    <form action="{{ confirmUrl }}" method="post" class="fa-modal__form" data-fa-modal-target="form">
+                        {% if csrfToken is defined %}<input type="hidden" name="_token" value="{{ csrfToken }}">{% endif %}
+                        {{ btn.submit(confirmLabel, { variant: 'danger', icon: confirmIcon|default('status-warning') }) }}
+                    </form>
+                {% endif %}
+            {% endif %}
+        </footer>
     </div>
 </div>
