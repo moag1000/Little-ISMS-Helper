@@ -342,12 +342,11 @@ export default class extends Controller {
 
         form.innerHTML = formHtml;
 
-        // Show modal
-        const modal = document.getElementById('widgetConfigModal');
-        if (modal && window.bootstrap) {
-            const bsModal = new window.bootstrap.Modal(modal);
-            bsModal.show();
-        }
+        // Open fa-modal shell
+        document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
+            bubbles: true,
+            detail: { id: 'widgetConfigModal' },
+        }));
     }
 
     applyWidgetConfig() {
@@ -383,12 +382,10 @@ export default class extends Controller {
 
         this.isDirty = true;
 
-        // Close modal
+        // Close fa-modal shell
         const modal = document.getElementById('widgetConfigModal');
-        if (modal && window.bootstrap) {
-            const bsModal = window.bootstrap.Modal.getInstance(modal);
-            if (bsModal) bsModal.hide();
-        }
+        const faModal = modal ? this.application.getControllerForElementAndIdentifier(modal, 'fa-modal') : null;
+        faModal?.close();
     }
 
     changeLayout() {
@@ -461,10 +458,8 @@ export default class extends Controller {
             if (result.success) {
                 this.showNotification('Sharing settings saved', 'success');
                 const modal = document.getElementById('shareModal');
-                if (modal && window.bootstrap) {
-                    const bsModal = window.bootstrap.Modal.getInstance(modal);
-                    if (bsModal) bsModal.hide();
-                }
+                const faModal = modal ? this.application.getControllerForElementAndIdentifier(modal, 'fa-modal') : null;
+                faModal?.close();
             }
         } catch (error) {
             console.error('Share error:', error);

@@ -157,15 +157,17 @@ export default class extends Controller {
     showAddRuleModal(event) {
         event.preventDefault();
 
-        if (!this.hasRuleModalTarget || !window.bootstrap) return;
+        if (!this.hasRuleModalTarget) return;
 
         // Reset form fields
         if (this.hasRuleScopeTarget) this.ruleScopeTarget.value = 'control';
         if (this.hasRuleScopeIdTarget) this.ruleScopeIdTarget.value = '';
         if (this.hasRuleGovernanceTarget) this.ruleGovernanceTarget.value = 'hierarchical';
 
-        const modal = new window.bootstrap.Modal(this.ruleModalTarget);
-        modal.show();
+        document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
+            bubbles: true,
+            detail: { id: this.ruleModalTarget.id },
+        }));
     }
 
     /**
@@ -188,9 +190,9 @@ export default class extends Controller {
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                // Hide modal
-                const modalInstance = window.bootstrap.Modal.getInstance(this.ruleModalTarget);
-                if (modalInstance) modalInstance.hide();
+                // Hide fa-modal shell
+                const faModal = this.application.getControllerForElementAndIdentifier(this.ruleModalTarget, 'fa-modal');
+                faModal?.close();
                 this.loadGovernanceRules();
             } else {
                 window.faToast(this.saveErrorTextValue, 'danger');
