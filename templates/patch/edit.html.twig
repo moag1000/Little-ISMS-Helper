@@ -5,7 +5,7 @@
 {% block title %}{{ 'patch.edit'|trans({}, 'patches') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid mt-4">
+<div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.patches'|trans({}, 'nav'), url: path('app_patch_index') },
@@ -23,70 +23,72 @@
     }) }}
 
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-
     {% include '_components/_auto_form.html.twig' with {
         'form': form,
         'layout': 'outline-rail',
         'eyebrow': 'ISO 27001 A.8.8 · Vulnerability Management',
-        'title': ('patch.edit'|trans({}, 'patches')) ~ ': ' ~ patch.title,
+        'title': patch.title,
         'sections': {
-            'overview': {
-                'label': 'patch.section.overview'|trans({}, 'patches'),
-                'fields': ['patchId', 'title', 'description', 'patchType', 'priority', 'status']
+            'basic_info': {
+                'label': 'patch.section.basic_info'|trans({}, 'patches'),
+                'fields': ['patchId', 'title', 'description', 'vulnerability']
             },
-            'vulnerability_link': {
-                'label': 'patch.section.vulnerability_link'|trans({}, 'patches'),
-                'fields': ['vulnerability', 'vendor', 'product', 'version', 'downloadUrl', 'documentationUrl']
+            'product_info': {
+                'label': 'patch.section.product_info'|trans({}, 'patches'),
+                'fields': ['vendor', 'product', 'version', 'patchType']
             },
-            'affected_systems': {
-                'label': 'patch.section.affected_systems'|trans({}, 'patches'),
-                'fields': ['affectedAssets']
+            'priority_status': {
+                'label': 'patch.section.priority_status'|trans({}, 'patches'),
+                'fields': ['priority', 'affectedAssets', 'status']
             },
-            'testing': {
-                'label': 'patch.section.testing'|trans({}, 'patches'),
-                'fields': ['testingNotes', 'requiresDowntime', 'estimatedDowntimeMinutes', 'requiresReboot', 'knownIssues']
+            'deployment': {
+                'label': 'patch.section.deployment'|trans({}, 'patches'),
+                'fields': ['releaseDate', 'deploymentDeadline', 'deployedDate', 'responsiblePerson']
             },
-            'rollout': {
-                'label': 'patch.section.rollout'|trans({}, 'patches'),
-                'fields': ['releaseDate', 'deploymentDeadline', 'deployedDate', 'responsiblePerson', 'deploymentNotes']
+            'testing_deployment': {
+                'label': 'patch.section.testing_deployment'|trans({}, 'patches'),
+                'fields': ['testingNotes', 'deploymentNotes', 'rollbackPlan']
             },
-            'verification': {
-                'label': 'patch.section.verification'|trans({}, 'patches'),
-                'fields': ['rollbackPlan']
+            'requirements': {
+                'label': 'patch.section.requirements'|trans({}, 'patches'),
+                'fields': ['requiresDowntime', 'estimatedDowntimeMinutes', 'requiresReboot', 'knownIssues']
+            },
+            'resources': {
+                'label': 'patch.section.resources'|trans({}, 'patches'),
+                'fields': ['downloadUrl', 'documentationUrl']
             }
         },
         'col_widths': {
             'patchId': 4,
             'title': 8,
             'description': 12,
-            'patchType': 6,
-            'priority': 6,
-            'status': 6,
             'vulnerability': 12,
             'vendor': 6,
             'product': 6,
             'version': 6,
-            'downloadUrl': 12,
-            'documentationUrl': 12,
+            'patchType': 6,
+            'priority': 6,
             'affectedAssets': 12,
-            'testingNotes': 12,
-            'requiresDowntime': 6,
-            'estimatedDowntimeMinutes': 6,
-            'requiresReboot': 6,
-            'knownIssues': 12,
+            'status': 6,
             'releaseDate': 6,
             'deploymentDeadline': 6,
             'deployedDate': 6,
             'responsiblePerson': 6,
+            'testingNotes': 12,
             'deploymentNotes': 12,
-            'rollbackPlan': 12
+            'rollbackPlan': 12,
+            'requiresDowntime': 6,
+            'estimatedDowntimeMinutes': 6,
+            'requiresReboot': 6,
+            'knownIssues': 12,
+            'downloadUrl': 12,
+            'documentationUrl': 12
         },
         'actions': {
             'close': { 'label': 'common.back'|trans({}, 'messages'), 'variant': 'ghost' },
             'submit': { 'label': 'common.save'|trans({}, 'messages'), 'variant': 'primary' }
         }
     } %}
-
     {{ form_end(form) }}
 </div>
 {% endblock %}
