@@ -46,6 +46,11 @@ supplier:
         lksg: 'Lieferkettensorgfalt (LkSG)'
         tier_classification: 'DORA Tier-Klassifikation (Art. 28 RoI)'
         marisk: 'MaRisk AT 9 · Auslagerungsmanagement'
+        overview: 'Überblick'
+        contact: Kontaktdaten
+        risk_assessment: 'Sicherheitsbewertung & Risiko'
+        contract: 'Vertrag & Zertifizierungen'
+        privacy: 'Datenschutz (DSGVO Art. 28)'
         related_assets: 'Zugeordnete Assets'
         related_risks: 'Zugeordnete Risiken'
     field:
