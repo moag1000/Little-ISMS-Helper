@@ -190,7 +190,7 @@
                                  # Aurora-DS: link-style action via fa-cyber-btn--ghost (sm) keeps title tappable
                                  # without bare btn-link Bootstrap utility. #}
                                 <button type="button"
-                                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fw-semibold text-start"
+                                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm text-start"
                                         data-action="bestandsaufnahme-drawer#open"
                                         data-bestandsaufnahme-drawer-doc-id-param="{{ doc_id }}"
                                         data-bestandsaufnahme-drawer-doc-title-param="{{ row.title }}"
@@ -275,7 +275,7 @@
 
                             {# MUST #5 — Inline reminder when action=replace.
                              # Aurora-DS: fa-alert + warning variant (Stimulus target preserved on root). #}
-                            <div class="fa-alert fa-alert--warning py-1 px-2 small mb-2"
+                            <div class="fa-alert fa-alert--warning py-1 px-2 mb-2" style="font-size: 0.875rem;"
                                  role="alert"
                                  data-bestandsaufnahme-row-target="replaceReminder"
                                  {% if chosen_action != 'replace' %}hidden{% endif %}>
