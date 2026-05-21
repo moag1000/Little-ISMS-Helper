@@ -134,49 +134,51 @@
                             {% if not record.isSubmitted and is_granted('ROLE_ADMIN') %}
                             <button type="button"
                                     class="btn btn-sm btn-outline-success"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modal-mark-submitted-{{ record.id }}">
+                                    data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="modal-mark-submitted-{{ record.id }}">
                                 <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
                                 {{ 'eu_authorities.dora_roi.action.mark_submitted'|trans }}
                             </button>
 
-                            {# Mark-submitted modal #}
-                            <div class="modal fade" id="modal-mark-submitted-{{ record.id }}"
-                                 tabindex="-1" aria-labelledby="modal-mark-submitted-label-{{ record.id }}" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="modal-mark-submitted-label-{{ record.id }}">
+                            {# Mark-submitted modal — fa-modal--confirm/success #}
+                            <div class="fa-modal fa-modal--confirm fa-modal--success" id="modal-mark-submitted-{{ record.id }}"
+                                 data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="success"
+                                 role="alertdialog" aria-modal="true" aria-labelledby="modal-mark-submitted-label-{{ record.id }}" aria-hidden="true">
+                                <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+                                <div class="fa-modal__container" data-fa-modal-target="dialog">
+                                    <header class="fa-modal__header">
+                                        <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-check"></i></span>
+                                        <div class="fa-modal__heading">
+                                            <h2 class="fa-modal__title" id="modal-mark-submitted-label-{{ record.id }}">
                                                 {{ 'eu_authorities.dora_roi.modal.mark_submitted_title'|trans }}
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+                                            </h2>
                                         </div>
-                                        <form method="POST" action="{{ path('dora_roi_mark_submitted', { id: record.id }) }}">
-                                            <div class="modal-body">
-                                                <input type="hidden" name="_token"
-                                                       value="{{ csrf_token('dora_roi_mark_submitted_' ~ record.id) }}">
-                                                <label for="confirmation-number-{{ record.id }}" class="form-label fw-semibold">
-                                                    {{ 'eu_authorities.dora_roi.field.confirmation_number'|trans }}
-                                                    <span class="text-danger" aria-label="{{ 'common.required'|trans({}, 'messages') }}">*</span>
-                                                </label>
-                                                <input type="text"
-                                                       id="confirmation-number-{{ record.id }}"
-                                                       name="confirmation_number"
-                                                       class="form-control"
-                                                       placeholder="{{ 'eu_authorities.dora_roi.placeholder.confirmation_number'|trans }}"
-                                                       required>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                    {{ 'common.cancel'|trans({}, 'messages') }}
-                                                </button>
-                                                <button type="submit" class="btn btn-success">
-                                                    <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
-                                                    {{ 'eu_authorities.dora_roi.action.confirm_submission'|trans }}
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                        <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'common.close'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
+                                    </header>
+                                    <form method="POST" action="{{ path('dora_roi_mark_submitted', { id: record.id }) }}" data-fa-modal-target="form">
+                                        <div class="fa-modal__body">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('dora_roi_mark_submitted_' ~ record.id) }}">
+                                            <label for="confirmation-number-{{ record.id }}" class="form-label fw-semibold">
+                                                {{ 'eu_authorities.dora_roi.field.confirmation_number'|trans }}
+                                                <span class="text-danger" aria-label="{{ 'common.required'|trans({}, 'messages') }}">*</span>
+                                            </label>
+                                            <input type="text"
+                                                   id="confirmation-number-{{ record.id }}"
+                                                   name="confirmation_number"
+                                                   class="form-control"
+                                                   placeholder="{{ 'eu_authorities.dora_roi.placeholder.confirmation_number'|trans }}"
+                                                   required>
+                                        </div>
+                                        <footer class="fa-modal__footer">
+                                            <button type="button" class="btn btn-secondary" data-action="fa-modal#cancel">
+                                                {{ 'common.cancel'|trans({}, 'messages') }}
+                                            </button>
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fa-icon fa-icon--ui-check me-1" aria-hidden="true"></i>
+                                                {{ 'eu_authorities.dora_roi.action.confirm_submission'|trans }}
+                                            </button>
+                                        </footer>
+                                    </form>
                                 </div>
                             </div>
                             {% endif %}

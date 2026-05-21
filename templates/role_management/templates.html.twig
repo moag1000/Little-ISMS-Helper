@@ -71,8 +71,7 @@
                     <div class="fa-section__footer">
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--primary w-100"
-                                data-bs-toggle="modal"
-                                data-bs-target="#templateModal{{ key }}">
+                                data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="templateModal{{ key }}">
                             <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> Vorlage verwenden
                         </button>
                     </div>
@@ -80,16 +79,14 @@
             </div>
 
             {# Modal for template application #}
-            <div  class="modal fade" aria-labelledby="templateModal{{ key }}Label"  id="templateModal{{ key }}" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form method="post">
+            <div class="fa-modal fa-modal--confirm fa-modal--neutral" id="templateModal{{ key }}"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"
+     role="dialog" aria-modal="true" aria-labelledby="templateModal{{ key }}Label" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><form method="post" data-fa-modal-target="form">
                             <input type="hidden" name="_token" value="{{ csrf_token('role_template_apply') }}">
-                            <div class="modal-header">
-                                <h4  id="templateModal{{ key }}Label" class="modal-title h5">{{ template.name }} erstellen</h4>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                            </div>
-                            <div class="modal-body">
+                            <header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--nav-collection"></i></span><div class="fa-modal__heading"><h4  id="templateModal{{ key }}Label" class="fa-modal__title">{{ template.name }} erstellen</h4></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                            <div class="fa-modal__body">
                                 <input type="hidden" name="template" value="{{ key }}">
 
                                 <div class="mb-3">
@@ -122,18 +119,14 @@
                                     {% endblock %}
                                 {% endembed %}
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
-                                    {{ 'common.cancel'|trans({}, 'messages') }}
-                                </button>
+                            <footer class="fa-modal__footer">
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                     <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> Rolle erstellen
                                 </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                            </footer>
+                        </form></div>
+</div>
         {% endfor %}
     </div>
 

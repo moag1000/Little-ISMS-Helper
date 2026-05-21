@@ -30,28 +30,24 @@
     }) }}
 
     {# Async VVT-Export dispatch modal — POSTs to /processing-activity/export/csv/dispatch #}
-    <div class="modal fade" id="vvtExportModal" tabindex="-1" aria-labelledby="vvtExportModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title h5" id="vvtExportModalLabel">{{ 'processing_activity.export.modal.title'|trans({}, 'privacy') }}</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                </div>
-                <div class="modal-body">
+    <div class="fa-modal fa-modal--confirm fa-modal--neutral" id="vvtExportModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"
+     role="dialog" aria-modal="true" aria-labelledby="vvtExportModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-download"></i></span><div class="fa-modal__heading"><h2 class="fa-modal__title" id="vvtExportModalLabel">{{ 'processing_activity.export.modal.title'|trans({}, 'privacy') }}</h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                <div class="fa-modal__body">
                     <p class="mb-0">{{ 'processing_activity.export.modal.body'|trans({}, 'privacy') }}</p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <form method="post" action="{{ path('app_processing_activity_export_csv_dispatch') }}" data-turbo="false" class="d-inline">
+                <footer class="fa-modal__footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                    <form method="post" action="{{ path('app_processing_activity_export_csv_dispatch') }}" data-turbo="false" class="d-inline" data-fa-modal-target="form">
                         <input type="hidden" name="_token" value="{{ csrf_token('processing_activity_export_csv_dispatch') }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                             <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                             {{ 'processing_activity.export.modal.start'|trans({}, 'privacy') }}
                         </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+                    </form></div>
+</div>
     </div>
 
     {# F25: BfDI-Export button group — only visible for ROLE_DPO and when privacy module is active #}

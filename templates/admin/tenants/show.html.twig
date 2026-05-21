@@ -309,14 +309,12 @@
                                     {% endif %}
                                     {# Governance Rule Modal - inside controller for Stimulus access #}
                                     {% if tenant.parent %}
-                                    <div   class="modal fade" aria-labelledby="governanceRuleModalLabel" aria-labelledby="governanceRuleModalLabel"   id="governanceRuleModal" tabindex="-1" data-tenant-governance-target="ruleModal">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h2  id="governanceRuleModalLabel"  class="modal-title h5">{{ 'corporate.granular.modal.title'|trans({}, 'tenant') }}</h2>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                                                </div>
-                                                <div class="modal-body">
+                                    <div class="fa-modal fa-modal--confirm fa-modal--neutral" id="governanceRuleModal" data-tenant-governance-target="ruleModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"
+     role="dialog" aria-modal="true" aria-labelledby="governanceRuleModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--compliance-shield"></i></span><div class="fa-modal__heading"><h2  id="governanceRuleModalLabel"  class="fa-modal__title">{{ 'corporate.granular.modal.title'|trans({}, 'tenant') }}</h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                                                <div class="fa-modal__body">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="ruleScope">{{ 'corporate.granular.field.scope'|trans({}, 'tenant') }}</label>
                                                         <select class="form-select fa-cyber-input__field" id="ruleScope" data-tenant-governance-target="ruleScope" required>
@@ -345,13 +343,11 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                                                <footer class="fa-modal__footer">
+                                                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                                                     <button type="button" class="fa-cyber-btn fa-cyber-btn--primary"
-                                                            data-action="click->tenant-governance#saveGovernanceRule">{{ 'common.save'|trans({}, 'messages') }}</button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                            data-action="click->tenant-governance#saveGovernanceRule">{{ 'common.save'|trans({}, 'messages') }}</button></div>
+</div>
                                     </div>
                                     {% endif %}
                                 </div>{# End tenant-governance controller #}
@@ -395,7 +391,7 @@
                                     {{ 'tenant.section.users'|trans({}, 'tenant') }}
                                     <span class="fa-status-pill fa-status-pill--primary ms-2">{{ userCount }}</span>
                                 </h2>
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="manageUsersModal">
                                     <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
                                 </button>
                             </div>
@@ -476,22 +472,20 @@
     {% endif %}
 
     {# Manage Users Modal #}
-    <div   class="modal fade" aria-labelledby="manageUsersModalLabel" aria-labelledby="manageUsersModalLabel"   id="manageUsersModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2  id="manageUsersModalLabel"  class="modal-title h5">
-                        <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i> {{ 'tenant.users.manage_title'|trans({}, 'tenant') }}
-                    </h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                </div>
-                <div class="modal-body">
+    <div class="fa-modal fa-modal--confirm fa-modal--neutral" id="manageUsersModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"
+     role="dialog" aria-modal="true" aria-labelledby="manageUsersModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--group"></i></span><div class="fa-modal__heading"><h2  id="manageUsersModalLabel"  class="fa-modal__title">
+                        {{ 'tenant.users.manage_title'|trans({}, 'tenant') }}
+                    </h2></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                <div class="fa-modal__body">
                     {# Add User Section #}
                     <div class="mb-4">
                         <h3 class="border-bottom pb-2 mb-3 h6">
                             <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans({}, 'tenant') }}
                         </h3>
-                        <form method="post" action="{{ path('tenant_management_add_user', {id: tenant.id}) }}" id="addUserForm">
+                        <form method="post" action="{{ path('tenant_management_add_user', {id: tenant.id}) }}" id="addUserForm" data-fa-modal-target="form">
                             <input type="hidden" name="_token" value="{{ csrf_token('add_user_' ~ tenant.id) }}">
                             <div class="input-group">
                                 <input type="email"
@@ -537,10 +531,8 @@
                                                         <br>
                                                         <small class="text-muted">
                                                             {{ 'common.roles'|trans({}, 'messages') }}: {{ user.roles|join(', ') }}
-                                                        </small>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                        </small></div>
+</div>
                                             <div class="d-flex align-items-center gap-2">
                                                 {% if user.isActive %}
                                                     <span class="fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>
@@ -567,7 +559,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">
                         <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'common.close'|trans({}, 'messages') }}
                     </button>
                 </div>

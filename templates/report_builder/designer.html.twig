@@ -206,7 +206,7 @@
                         <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-action="click->report-designer#save">
                             <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i> {{ 'report_builder.action.save'|trans({}, 'report_builder') }}
                         </button>
-                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="modal" data-bs-target="#shareModal">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="shareModal">
                             <i class="fa-icon fa-icon--delegate" aria-hidden="true"></i> {{ 'report_builder.action.share'|trans({}, 'report_builder') }}
                         </button>
                         <form method="post" action="{{ path('report_builder_delete', {id: report.id}) }}"
@@ -227,25 +227,21 @@
 </div>
 
 {# Share Modal #}
-<div  class="modal fade" aria-labelledby="shareModalLabel"  id="shareModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5  id="shareModalLabel" class="modal-title">{{ 'report_builder.modal.share.title'|trans({}, 'report_builder') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
-            </div>
-            <div class="modal-body">
+<div class="fa-modal fa-modal--confirm fa-modal--neutral" id="shareModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"
+     role="dialog" aria-modal="true" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--nav-share"></i></span><div class="fa-modal__heading"><h5  id="shareModalLabel" class="fa-modal__title">{{ 'report_builder.modal.share.title'|trans({}, 'report_builder') }}</h5></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+            <div class="fa-modal__body">
                 <p class="text-muted">{{ 'report_builder.modal.share.description'|trans({}, 'report_builder') }}</p>
                 <div id="share-users-list">
                     <div class="text-center py-3">
                         <div class="spinner-border spinner-border-sm" role="status">
-                            <span class="visually-hidden">{{ 'report_builder.loading'|trans({}, 'report_builder') }}</span>
-                        </div>
-                    </div>
-                </div>
+                            <span class="visually-hidden">{{ 'report_builder.loading'|trans({}, 'report_builder') }}</span></div>
+</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'report_builder.action.cancel'|trans({}, 'report_builder') }}</button>
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'report_builder.action.cancel'|trans({}, 'report_builder') }}</button>
                 <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-action="click->report-designer#saveSharing">{{ 'report_builder.action.save'|trans({}, 'report_builder') }}</button>
             </div>
         </div>
@@ -253,22 +249,18 @@
 </div>
 
 {# Widget Config Modal #}
-<div  class="modal fade" aria-labelledby="widgetConfigModalLabel"  id="widgetConfigModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5  id="widgetConfigModalLabel" class="modal-title">{{ 'report_builder.modal.widget_config.title'|trans({}, 'report_builder') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
-            </div>
+<div class="fa-modal fa-modal--confirm fa-modal--neutral" id="widgetConfigModal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"
+     role="dialog" aria-modal="true" aria-labelledby="widgetConfigModalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-settings"></i></span><div class="fa-modal__heading"><h5  id="widgetConfigModalLabel" class="fa-modal__title">{{ 'report_builder.modal.widget_config.title'|trans({}, 'report_builder') }}</h5></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
             <div class="modal-body" id="widget-config-form">
                 {# Dynamic content #}
             </div>
-            <div class="modal-footer">
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'report_builder.action.cancel'|trans({}, 'report_builder') }}</button>
-                <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-action="click->report-designer#applyWidgetConfig">{{ 'report_builder.action.apply'|trans({}, 'report_builder') }}</button>
-            </div>
-        </div>
-    </div>
+            <footer class="fa-modal__footer">
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'report_builder.action.cancel'|trans({}, 'report_builder') }}</button>
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--primary" data-action="click->report-designer#applyWidgetConfig">{{ 'report_builder.action.apply'|trans({}, 'report_builder') }}</button></div>
+</div>
 </div>
 
 <style>

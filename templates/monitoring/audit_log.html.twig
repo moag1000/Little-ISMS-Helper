@@ -142,8 +142,7 @@
                                     {% if log.description or log.newValues %}
                                         <button type="button"
                                                 class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#logModal{{ log.id }}">
+                                                data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="logModal{{ log.id }}">
                                             <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'audit_log.table.view_details'|trans({}, 'audit_log') }}
                                         </button>
                                     {% else %}
@@ -154,14 +153,12 @@
 
                             {# Modal for log details #}
                             {% if log.description or log.newValues %}
-                                <div  class="modal fade" aria-labelledby="logModal{{ log.id }}Label"  id="logModal{{ log.id }}" tabindex="-1">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h3  id="logModal{{ log.id }}Label" class="modal-title h5">{{ 'audit_log.modal.title'|trans({}, 'audit_log') }}</h3>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                                            </div>
-                                            <div class="modal-body">
+                                <div class="fa-modal fa-modal--confirm fa-modal--neutral" id="logModal{{ log.id }}"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"
+     role="dialog" aria-modal="true" aria-labelledby="logModal{{ log.id }}Label" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-info"></i></span><div class="fa-modal__heading"><h3  id="logModal{{ log.id }}Label" class="fa-modal__title">{{ 'audit_log.modal.title'|trans({}, 'audit_log') }}</h3></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                                            <div class="fa-modal__body">
                                                 <dl class="row">
                                                     <dt class="col-sm-3">{{ 'audit_log.table.timestamp'|trans({}, 'audit_log') }}:</dt>
                                                     <dd class="col-sm-9">{{ log.createdAt|date('Y-m-d H:i:s') }}</dd>
@@ -185,10 +182,8 @@
                                                             <pre class="bg-body-secondary p-2 rounded">{{ log.newValues }}</pre>
                                                         </dd>
                                                     {% endif %}
-                                                </dl>
-                                            </div>
-                                        </div>
-                                    </div>
+                                                </dl></div>
+</div>
                                 </div>
                             {% endif %}
                         {% endfor %}
