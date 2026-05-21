@@ -1,0 +1,308 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+ * FairyAurora v4.0 — fa-modal canonical shell
+ *
+ * Single shell with three modes (confirm / settings / wizard) and four tone
+ * modifiers (neutral / danger / warning / success). Spec at
+ * docs/design_system/sections/modals.html.
+ *
+ * Shell structure (BEM):
+ *   .fa-modal                       — fixed-positioned shell + backdrop combined
+ *   .fa-modal--confirm              — destructive / approval mode
+ *   .fa-modal--settings             — preference / configuration mode
+ *   .fa-modal--wizard               — multi-step mode (legacy rules live in fairy-aurora-components.css)
+ *   .fa-modal--danger|warning|success|neutral  — tone modifiers
+ *   .fa-modal.is-open               — open state
+ *     ├ .fa-modal__backdrop         — click-out close target
+ *     └ .fa-modal__container        — actual dialog box
+ *         ├ .fa-modal__header
+ *         │   ├ .fa-modal__icon
+ *         │   ├ .fa-modal__heading
+ *         │   │   ├ .fa-modal__title
+ *         │   │   └ .fa-modal__sub
+ *         │   └ .fa-modal__close
+ *         ├ .fa-modal__body
+ *         │   ├ .fa-modal__message
+ *         │   ├ .fa-modal__diff > .fa-modal__diff-row
+ *         │   └ .fa-modal__field > .fa-modal__field-hint, .fa-modal__field-input
+ *         └ .fa-modal__footer
+ *
+ * BC note: existing .fa-modal--wizard rules (fairy-aurora-components.css ~8369-8740)
+ * remain unchanged; wizard mode renders inline (not as a fixed-position shell)
+ * for the design-system live-preview case. New wizard adoptions wrap the macro
+ * in a .fa-modal--confirm-like shell pattern (see _gdpr_breach_wizard_modal.html.twig).
+ * ═════════════════════════════════════════════════════════════════════════ */
+
+/* ── Shell positioning (confirm + settings modes only) ──────────────────── */
+
+.fa-modal--confirm,
+.fa-modal--settings {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal, 1050);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.fa-modal--confirm.is-open,
+.fa-modal--settings.is-open {
+    display: flex;
+}
+
+/* ── Backdrop ───────────────────────────────────────────────────────────── */
+
+.fa-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(15, 23, 42, 0.55);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity var(--t-base, 240ms) var(--ease-out, ease-out);
+}
+
+.fa-modal.is-open .fa-modal__backdrop {
+    opacity: 1;
+}
+
+/* ── Container (dialog box) ─────────────────────────────────────────────── */
+
+.fa-modal__container {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow:
+        0 24px 48px rgb(15, 23, 42, 0.18),
+        0 0 0 1px var(--border);
+    max-width: min(94vw, 560px);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(16px) scale(0.97);
+    opacity: 0;
+    transition:
+        transform var(--t-base, 240ms) var(--ease-out, ease-out),
+        opacity var(--t-base, 240ms) var(--ease-out, ease-out);
+}
+
+.fa-modal.is-open .fa-modal__container {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.fa-modal--settings .fa-modal__container {
+    max-width: min(94vw, 640px);
+}
+
+/* Tone-driven top border accent */
+.fa-modal--confirm .fa-modal__container {
+    border-top: 3px solid var(--tone, var(--border));
+}
+
+.fa-modal--neutral { --tone: var(--primary); --tone-tint: rgb(var(--primary-rgb), 0.10); --tone-bd: rgb(var(--primary-rgb), 0.28); }
+.fa-modal--danger  { --tone: var(--sev-danger-color);  --tone-tint: rgb(var(--sev-danger-rgb),  0.10); --tone-bd: rgb(var(--sev-danger-rgb),  0.28); }
+.fa-modal--warning { --tone: var(--sev-warning-color); --tone-tint: rgb(var(--sev-warning-rgb), 0.10); --tone-bd: rgb(var(--sev-warning-rgb), 0.26); }
+.fa-modal--success { --tone: var(--sev-success-color, var(--success)); --tone-tint: rgb(var(--success-rgb), 0.10); --tone-bd: rgb(var(--success-rgb), 0.28); }
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+
+.fa-modal__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 22px 22px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.fa-modal__icon {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--r-lg);
+    background: var(--tone-tint, var(--surface-2));
+    border: 1px solid var(--tone-bd, var(--border));
+    color: var(--tone, var(--fg));
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+
+.fa-modal__heading {
+    flex: 1;
+    min-width: 0;
+}
+
+.fa-modal__title {
+    margin: 0 0 4px;
+    font: 700 15px/1.3 var(--font-sans);
+    color: var(--fg);
+    letter-spacing: -0.01em;
+}
+
+.fa-modal__sub {
+    margin: 0;
+    font: 400 12.5px/1.5 var(--font-sans);
+    color: var(--fg-2);
+}
+
+.fa-modal__sub code {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: var(--r-xs);
+    border: 1px solid var(--border);
+    color: var(--fg);
+}
+
+.fa-modal__close {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: transparent;
+    color: var(--fg-3);
+    cursor: pointer;
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--t-fast, 100ms) var(--ease-out, ease-out), color var(--t-fast, 100ms) var(--ease-out, ease-out);
+}
+
+.fa-modal__close:hover {
+    background: var(--surface-2);
+    color: var(--fg);
+}
+
+.fa-modal__close:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* ── Body ───────────────────────────────────────────────────────────────── */
+
+.fa-modal__body {
+    padding: 18px 22px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.fa-modal__message {
+    margin: 0 0 14px;
+    font: 400 13.5px/1.55 var(--font-sans);
+    color: var(--fg);
+}
+
+.fa-modal__message:last-child {
+    margin-bottom: 0;
+}
+
+/* ── Diff (confirm mode) ────────────────────────────────────────────────── */
+
+.fa-modal__diff {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 10px 12px;
+    margin-bottom: 14px;
+}
+
+.fa-modal__diff-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font: 400 11.5px var(--font-mono);
+    color: var(--fg-2);
+}
+
+.fa-modal__diff-row strong {
+    color: var(--fg);
+    font-weight: 700;
+}
+
+/* ── Type-to-confirm input (confirm mode) ───────────────────────────────── */
+
+.fa-modal__field {
+    display: block;
+    margin: 14px 0 8px;
+}
+
+.fa-modal__field-hint {
+    display: block;
+    font: 400 11.5px var(--font-sans);
+    color: var(--fg-2);
+    margin-bottom: 6px;
+}
+
+.fa-modal__field-hint code {
+    font-family: var(--font-mono);
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: var(--r-xs);
+    border: 1px solid var(--border);
+    color: var(--fg);
+}
+
+.fa-modal__field-input {
+    width: 100%;
+    padding: 8px 10px;
+    font: 400 13px var(--font-mono);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    color: var(--fg);
+}
+
+.fa-modal__field-input:focus-visible {
+    outline: 2px solid var(--tone, var(--primary));
+    outline-offset: 1px;
+    border-color: var(--tone, var(--primary));
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+
+.fa-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 14px 22px 18px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    .fa-modal__backdrop,
+    .fa-modal__container {
+        transition: none;
+    }
+}
+
+/* ── Small viewports ────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+    .fa-modal__container {
+        max-width: 100vw;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    .fa-modal--confirm,
+    .fa-modal--settings {
+        padding: 0;
+    }
+
+    .fa-modal__footer {
+        flex-direction: column-reverse;
+    }
+
+    .fa-modal__footer .fa-cyber-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

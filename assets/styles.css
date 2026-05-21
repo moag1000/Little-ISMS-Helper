@@ -51,3 +51,6 @@
 
 /* GDPR Data-Breach Wizard Modal — Aurora v4 conformant (BEM .gdpr-wizard__*) */
 @import "./styles/gdpr-wizard.css";
+
+/* FairyAurora v4.0 — fa-modal canonical shell (confirm + settings modes) */
+@import "./styles/fa-modal.css";
