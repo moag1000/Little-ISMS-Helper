@@ -44,6 +44,8 @@ supplier:
         certifications_compliance: 'Zertifizierungen & Compliance'
         contract_info: Vertragsinformationen
         lksg: 'Lieferkettensorgfalt (LkSG)'
+        tier_classification: 'DORA Tier-Klassifikation (Art. 28 RoI)'
+        marisk: 'MaRisk AT 9 · Auslagerungsmanagement'
         related_assets: 'Zugeordnete Assets'
         related_risks: 'Zugeordnete Risiken'
     field:

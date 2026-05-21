@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * Comprehensive form for GDPR Art. 30 VVT entry.
  * Organized in logical sections matching Art. 30(1) structure.
  */
-final class ProcessingActivityType extends AbstractType
+final class ProcessingActivityType extends AbstractType implements SectionMapInterface
 {
     use ModuleAwareFormTrait;
     use OwnerPickerFormTrait;
@@ -573,6 +573,90 @@ final class ProcessingActivityType extends AbstractType
                 'with_legacy'    => false,
             ]);
         }
+    }
+
+    /**
+     * S4 Foundation P-2 SectionPolicy — covers ALL fields matching Art. 30(1) structure.
+     * DPO fields (privacy-gated) are included so the section-map is always complete.
+     * Fields not built by buildForm() are silently ignored by _auto_form.html.twig.
+     *
+     * Sections (DSGVO Art. 30 · Verarbeitungstätigkeit):
+     * - overview:        Art. 30(1)(a) — name, status, description
+     * - purposes:        Art. 30(1)(a) — purposes, data sources
+     * - legal_basis:     Art. 6 — legal basis + details for Art. 9
+     * - data_categories: Art. 30(1)(b-c) — data subjects, personal data categories
+     * - recipients:      Art. 30(1)(d-e) — recipients, third-country transfers
+     * - retention:       Art. 30(1)(f) — retention period + legal basis
+     * - measures:        Art. 30(1)(g) — technical/organizational measures + assets
+     * - audit_metadata:  Risk, DPIA, automated decisions, processors, schedule, contacts
+     *
+     * @return array<string, list<string>>
+     */
+    public static function getSectionMap(): array
+    {
+        return [
+            'overview' => [
+                'name',
+                'status',
+                'description',
+                'responsibleDepartment',
+            ],
+            'purposes' => [
+                'purposes',
+                'dataSources',
+                'startDate',
+                'endDate',
+                'nextReviewDate',
+            ],
+            'legal_basis' => [
+                'legalBasis',
+                'legalBasisDetails',
+                'legalBasisSpecialCategories',
+            ],
+            'data_categories' => [
+                'dataSubjectCategories',
+                'estimatedDataSubjectsCount',
+                'personalDataCategories',
+                'processesSpecialCategories',
+                'specialCategoriesDetails',
+                'processesCriminalData',
+            ],
+            'recipients' => [
+                'recipientCategories',
+                'recipientDetails',
+                'hasThirdCountryTransfer',
+                'thirdCountries',
+                'transferSafeguards',
+                'involvesProcessors',
+                'isJointController',
+            ],
+            'retention' => [
+                'retentionPeriod',
+                'retentionPeriodDays',
+                'retentionLegalBasis',
+            ],
+            'measures' => [
+                'technicalOrganizationalMeasures',
+                'implementedControls',
+                'assets',
+            ],
+            'audit_metadata' => [
+                'isHighRisk',
+                'dpiaCompleted',
+                'dpiaDate',
+                'riskLevel',
+                'hasAutomatedDecisionMaking',
+                'automatedDecisionMakingDetails',
+                // contact person slot (OwnerPickerFormTrait — always built)
+                'contactPersonUser',
+                'contactPerson',
+                'contactDeputyPersons',
+                // DPO slot (privacy module — conditionally built)
+                'dataProtectionOfficer',
+                'dataProtectionOfficerPerson',
+                'dataProtectionOfficerDeputyPersons',
+            ],
+        ];
     }
 
     public function configureOptions(OptionsResolver $resolver): void
