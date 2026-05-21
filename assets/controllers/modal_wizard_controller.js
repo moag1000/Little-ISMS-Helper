@@ -414,7 +414,17 @@ export default class extends Controller {
             }),
         );
 
-        // Attempt Bootstrap Modal close if we are inside one
+        // Attempt fa-modal close if we are inside a fa-modal shell
+        const faModalEl = this.element.closest('.fa-modal');
+        if (faModalEl) {
+            const faModal = this.application.getControllerForElementAndIdentifier(faModalEl, 'fa-modal');
+            if (faModal) {
+                faModal.close();
+                return;
+            }
+        }
+
+        // Legacy Bootstrap Modal fallback (BC for non-migrated wrappers)
         const bsModalEl = this.element.closest('.modal');
         if (bsModalEl && window.bootstrap && window.bootstrap.Modal) {
             const instance = window.bootstrap.Modal.getInstance(bsModalEl);

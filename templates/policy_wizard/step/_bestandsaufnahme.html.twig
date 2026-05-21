@@ -39,8 +39,7 @@
                 {# MUST #2 — Topic explainer popover trigger. #}
                 <button type="button"
                         class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#bestandsaufnahme-topic-help-modal"
+                        data-controller="fa-modal-dispatcher" data-action="click->fa-modal-dispatcher#open" data-fa-modal-id="bestandsaufnahme-topic-help-modal"
                         title="{{ 'policy_wizard.step.bestandsaufnahme.topic_help.button_label'|trans }}">
                     <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                     {{ 'policy_wizard.step.bestandsaufnahme.topic_help.button_label'|trans }}
@@ -91,34 +90,42 @@
                  data-bestandsaufnahme-bulk-target="feedback"></div>
         </div>
 
-        {# MUST #4 — Confirm modal (Bootstrap structure required for modal mechanics;
-         # action buttons use Aurora fa-cyber-btn variants). #}
-        <div class="modal fade"
-             tabindex="-1"
-             aria-hidden="true"
+        {# Bulk-confirm modal — Aurora fa-modal--confirm/warning shell.
+           Stimulus controller `bestandsaufnahme-bulk` targets confirmModal /
+           confirmBody / confirmApplyBtn (unchanged). Controller dispatches
+           fa-modal:request-open via document event when triggering. #}
+        <div class="fa-modal fa-modal--confirm fa-modal--warning"
+             id="bestandsaufnahme-bulk-confirm-modal"
+             data-controller="fa-modal"
+             data-fa-modal-mode-value="confirm"
+             data-fa-modal-tone-value="warning"
+             data-bestandsaufnahme-bulk-target="confirmModal"
+             role="alertdialog"
+             aria-modal="true"
              aria-labelledby="bestandsaufnahme-bulk-confirm-title"
-             data-bestandsaufnahme-bulk-target="confirmModal">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="bestandsaufnahme-bulk-confirm-title">
-                            <i class="fa-icon fa-icon--status-warning text-warning" aria-hidden="true"></i>
+             aria-hidden="true">
+            <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+            <div class="fa-modal__container" data-fa-modal-target="dialog">
+                <header class="fa-modal__header">
+                    <span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--status-warning"></i></span>
+                    <div class="fa-modal__heading">
+                        <h2 class="fa-modal__title" id="bestandsaufnahme-bulk-confirm-title">
                             {{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_title'|trans }}
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_cancel'|trans }}"></button>
+                        </h2>
                     </div>
-                    <div class="modal-body" data-bestandsaufnahme-bulk-target="confirmBody"></div>
-                    <div class="modal-footer">
-                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
-                            {{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_cancel'|trans }}
-                        </button>
-                        <button type="button"
-                                class="fa-cyber-btn fa-cyber-btn--warning"
-                                data-bestandsaufnahme-bulk-target="confirmApplyBtn">
-                            {{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_apply'|trans }}
-                        </button>
-                    </div>
-                </div>
+                    <button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_cancel'|trans }}"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button>
+                </header>
+                <div class="fa-modal__body" data-bestandsaufnahme-bulk-target="confirmBody"></div>
+                <footer class="fa-modal__footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">
+                        {{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_cancel'|trans }}
+                    </button>
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--warning"
+                            data-bestandsaufnahme-bulk-target="confirmApplyBtn">
+                        {{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_apply'|trans }}
+                    </button>
+                </footer>
             </div>
         </div>
     </section>
@@ -183,7 +190,7 @@
                                  # Aurora-DS: link-style action via fa-cyber-btn--ghost (sm) keeps title tappable
                                  # without bare btn-link Bootstrap utility. #}
                                 <button type="button"
-                                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fw-semibold text-start"
+                                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm text-start"
                                         data-action="bestandsaufnahme-drawer#open"
                                         data-bestandsaufnahme-drawer-doc-id-param="{{ doc_id }}"
                                         data-bestandsaufnahme-drawer-doc-title-param="{{ row.title }}"
@@ -268,7 +275,7 @@
 
                             {# MUST #5 — Inline reminder when action=replace.
                              # Aurora-DS: fa-alert + warning variant (Stimulus target preserved on root). #}
-                            <div class="fa-alert fa-alert--warning py-1 px-2 small mb-2"
+                            <div class="fa-alert fa-alert--warning py-1 px-2 mb-2" style="font-size: 0.875rem;"
                                  role="alert"
                                  data-bestandsaufnahme-row-target="replaceReminder"
                                  {% if chosen_action != 'replace' %}hidden{% endif %}>
@@ -403,24 +410,14 @@
     </div>
 
     {# MUST #2 — Topic explainer modal (popover-style table). #}
-    <div  class="modal fade"
-          id="bestandsaufnahme-topic-help-modal"
-         tabindex="-1"
-         aria-hidden="true"
-         aria-labelledby="bestandsaufnahme-topic-help-title">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="bestandsaufnahme-topic-help-title">
-                        <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
+    <div class="fa-modal fa-modal--confirm fa-modal--neutral" id="bestandsaufnahme-topic-help-modal"
+     data-controller="fa-modal" data-fa-modal-mode-value="confirm" data-fa-modal-tone-value="neutral"
+     role="dialog" aria-modal="true" aria-labelledby="bestandsaufnahme-topic-help-modalLabel" aria-hidden="true">
+    <div class="fa-modal__backdrop" data-fa-modal-target="backdrop" data-action="click->fa-modal#backdropClick" aria-hidden="true"></div>
+    <div class="fa-modal__container" data-fa-modal-target="dialog"><header class="fa-modal__header"><span class="fa-modal__icon" aria-hidden="true"><i class="fa-icon fa-icon--ui-info"></i></span><div class="fa-modal__heading"><h5 class="fa-modal__title" id="bestandsaufnahme-topic-help-title">
                         {{ 'policy_wizard.step.bestandsaufnahme.topic_help.modal_title'|trans }}
-                    </h5>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="{{ 'policy_wizard.step.bestandsaufnahme.topic_help.close'|trans }}"></button>
-                </div>
-                <div class="modal-body">
+                    </h5></div><button type="button" class="fa-modal__close" data-action="fa-modal#cancel" aria-label="Close"><i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i></button></header>
+                <div class="fa-modal__body">
                     <p class="text-muted small mb-3">
                         {{ 'policy_wizard.step.bestandsaufnahme.topic_help.modal_intro'|trans }}
                     </p>
@@ -447,12 +444,8 @@
                         {% endblock %}
                     {% endembed %}
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
-                        {{ 'policy_wizard.step.bestandsaufnahme.topic_help.close'|trans }}
-                    </button>
-                </div>
-            </div>
-        </div>
+                <footer class="fa-modal__footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-action="fa-modal#cancel">{{ 'policy_wizard.step.bestandsaufnahme.topic_help.close'|trans }}</button></div>
+</div>
     </div>
 {% endif %}

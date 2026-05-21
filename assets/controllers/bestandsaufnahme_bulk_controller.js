@@ -126,29 +126,21 @@ export default class extends Controller {
         if (!this.hasConfirmModalTarget) {
             return;
         }
-        const el = this.confirmModalTarget;
-        if (window.bootstrap && window.bootstrap.Modal) {
-            window.bootstrap.Modal.getOrCreateInstance(el).show();
-        } else {
-            el.classList.add('show');
-            el.style.display = 'block';
-        }
+        document.dispatchEvent(new CustomEvent('fa-modal:request-open', {
+            bubbles: true,
+            detail: { id: this.confirmModalTarget.id },
+        }));
     }
 
     _hideModal() {
         if (!this.hasConfirmModalTarget) {
             return;
         }
-        const el = this.confirmModalTarget;
-        if (window.bootstrap && window.bootstrap.Modal) {
-            const instance = window.bootstrap.Modal.getInstance(el);
-            if (instance) {
-                instance.hide();
-            }
-        } else {
-            el.classList.remove('show');
-            el.style.display = 'none';
-        }
+        const faModal = this.application.getControllerForElementAndIdentifier(
+            this.confirmModalTarget,
+            'fa-modal',
+        );
+        faModal?.close();
     }
 
     _announce(message) {
