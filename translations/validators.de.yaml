@@ -583,3 +583,33 @@ gstool_import:
 'bc_plans.error.rto_range': 'RTO (Recovery Time Objective) muss zwischen {{ min }} und {{ max }} Stunden liegen.'
 'bc_plans.error.rpo_range': 'RPO (Recovery Point Objective) muss zwischen {{ min }} und {{ max }} Stunden liegen.'
 'Must be a valid ROLE_ constant.': 'Muss eine gültige ROLE_-Konstante sein (z.B. ROLE_USER, ROLE_ADMIN).'
+
+# Entity validation messages (i18n sweep — replace hardcoded EN from src/Entity/*.php)
+'control.validation.control_id.required': 'Control-ID ist erforderlich.'
+'control.validation.control_id.max_length': 'Control-ID darf höchstens {{ limit }} Zeichen lang sein.'
+'control.validation.control_id.format': 'Control-ID muss dem ISO 27001/27701/27017/27018 Format entsprechen (z. B. 5.1, A.5.1, B.8.2, 7.2.1, CLD.6.3).'
+'control.validation.name.required': 'Control-Name ist erforderlich.'
+'control.validation.name.max_length': 'Control-Name darf höchstens {{ limit }} Zeichen lang sein.'
+'control.validation.description.required': 'Control-Beschreibung ist erforderlich.'
+'control.validation.category.required': 'Control-Kategorie ist erforderlich.'
+'control.validation.category.max_length': 'Kategorie darf höchstens {{ limit }} Zeichen lang sein.'
+'control.validation.applicable.required': 'Anwendbarkeit muss gesetzt sein.'
+'control.validation.implementation_status.required': 'Umsetzungsstatus ist erforderlich.'
+'control.validation.implementation_status.choice': 'Umsetzungsstatus muss einer von: {{ choices }} sein.'
+'control.validation.mythos_resilience.choice': 'Mythos-Resilienz muss einer von: standfest, degradiert, reibung, nicht_betroffen sein.'
+
+'audits.validation.audit_number.required': 'Audit-Nummer ist erforderlich.'
+'audits.validation.audit_number.max_length': 'Audit-Nummer darf höchstens {{ limit }} Zeichen lang sein.'
+'audits.validation.title.required': 'Audit-Titel ist erforderlich.'
+'audits.validation.title.max_length': 'Titel darf höchstens {{ limit }} Zeichen lang sein.'
+'audits.validation.scope_type.choice': 'Scope-Typ muss einer von: {{ choices }} sein.'
+'audits.validation.planned_date.required': 'Geplantes Datum ist erforderlich.'
+'audits.validation.status.required': 'Status ist erforderlich.'
+'audits.validation.status.choice': 'Status muss einer von: {{ choices }} sein.'
+
+'bc_exercises.validation.name.required': 'Name der Übung ist erforderlich.'
+'bc_exercises.validation.scope.required': 'Scope muss definiert sein.'
+'bc_exercises.validation.objectives.required': 'Ziele müssen definiert sein.'
+
+'interested_parties.validation.name.required': 'Name der interessierten Partei ist erforderlich.'
+'interested_parties.validation.requirements.required': 'Anforderungen müssen dokumentiert sein.'

@@ -76,14 +76,14 @@ class InternalAudit
 
     #[ORM\Column(length: 50)]
     #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\NotBlank(message: 'Audit number is required')]
-    #[Assert\Length(max: 50, maxMessage: 'Audit number cannot exceed {{ limit }} characters')]
+    #[Assert\NotBlank(message: 'audits.validation.audit_number.required')]
+    #[Assert\Length(max: 50, maxMessage: 'audits.validation.audit_number.max_length')]
     private ?string $auditNumber = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\NotBlank(message: 'Audit title is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed {{ limit }} characters')]
+    #[Assert\NotBlank(message: 'audits.validation.title.required')]
+    #[Assert\Length(max: 255, maxMessage: 'audits.validation.title.max_length')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -106,7 +106,7 @@ class InternalAudit
     #[Groups(['audit:read', 'audit:write'])]
     #[Assert\Choice(
         choices: ['full_isms', 'compliance_framework', 'asset', 'asset_type', 'asset_group', 'location', 'department', 'corporate_wide', 'corporate_subsidiaries'],
-        message: 'Scope type must be one of: {{ choices }}'
+        message: 'audits.validation.scope_type.choice'
     )]
     private ?string $scopeType = 'full_isms';
 
@@ -164,7 +164,7 @@ class InternalAudit
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\NotNull(message: 'Planned date is required')]
+    #[Assert\NotNull(message: 'audits.validation.planned_date.required')]
     private ?DateTimeInterface $plannedDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -243,10 +243,10 @@ class InternalAudit
      */
     #[ORM\Column(length: 50)]
     #[Groups(['audit:read', 'audit:write'])]
-    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\NotBlank(message: 'audits.validation.status.required')]
     #[Assert\Choice(
         choices: ['planned', 'conducted', 'reported', 'approved', 'rejected', 'closed', 'cancelled', 'in_progress', 'completed', 'postponed'],
-        message: 'Status must be one of: {{ choices }}'
+        message: 'audits.validation.status.choice'
     )]
     private ?string $status = 'planned';
 
