@@ -693,6 +693,22 @@ common:
     no: 'Nein'
 
 data_breach:
+    success:
+        updated: 'Datenschutzverletzung wurde aktualisiert.'
+        deleted: 'Datenschutzverletzung wurde gelöscht.'
+        submitted_for_assessment: 'Datenschutzverletzung zur Bewertung eingereicht.'
+        authority_notification_recorded: 'Meldung an die Aufsichtsbehörde dokumentiert.'
+        subject_notification_recorded: 'Benachrichtigung der betroffenen Personen dokumentiert.'
+        exemption_recorded: 'Ausnahme von der Benachrichtigungspflicht dokumentiert.'
+        closed: 'Datenschutzverletzung erfolgreich geschlossen.'
+        reopened: 'Datenschutzverletzung erfolgreich wiedereröffnet.'
+    error:
+        cannot_edit_in_status: 'Datenschutzverletzung kann im aktuellen Status nicht bearbeitet werden.'
+        invalid_csrf: 'Ungültiges CSRF-Token.'
+        authority_notification_fields_required: 'Behördenname und Meldemethode sind erforderlich.'
+        subject_notification_fields_required: 'Meldemethode und Anzahl der Betroffenen sind erforderlich.'
+        exemption_reason_required: 'Begründung für die Ausnahme ist erforderlich.'
+        reopen_reason_required: 'Begründung für die Wiedereröffnung ist erforderlich.'
     index:
         view_all_breaches: 'Alle Datenschutzverletzungen anzeigen'
         no_breaches_found: 'Keine Datenschutzverletzungen gefunden'

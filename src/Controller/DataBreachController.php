@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use RuntimeException;
 use DateTime;
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Controller\Trait\BulkActionTrait;
 use App\Entity\DataBreach;
@@ -36,8 +37,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class DataBreachController extends AbstractController
 {
+    use LocalizedFlashTrait;
     use ModuleGatedControllerTrait;
     use BulkActionTrait;
+
+    protected function getFlashDomain(): string
+    {
+        return 'privacy';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
 
     public function __construct(
         private readonly DataBreachService $dataBreachService,
@@ -216,7 +228,7 @@ class DataBreachController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!in_array($dataBreach->getStatus(), [DataBreachStatus::Draft->value, DataBreachStatus::UnderAssessment->value], true)) {
-            $this->addFlash('error', 'Cannot edit data breach in current status.');
+            $this->flashError('data_breach.error.cannot_edit_in_status');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
@@ -228,7 +240,7 @@ class DataBreachController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->dataBreachService->update($dataBreach, $this->getUser());
 
-            $this->addFlash('success', 'Data breach updated successfully.');
+            $this->flashSuccess('data_breach.success.updated');
 
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
@@ -250,13 +262,13 @@ class DataBreachController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('delete' . $dataBreach->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_breach.error.invalid_csrf');
             return $this->redirectToRoute('app_data_breach_index');
         }
 
         $this->dataBreachService->delete($dataBreach);
 
-        $this->addFlash('success', 'Data breach deleted successfully.');
+        $this->flashSuccess('data_breach.success.deleted');
 
         return $this->redirectToRoute('app_data_breach_index');
     }
@@ -276,13 +288,13 @@ class DataBreachController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('submit' . $dataBreach->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_breach.error.invalid_csrf');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
             $this->dataBreachService->submitForAssessment($dataBreach, $this->getUser());
-            $this->addFlash('success', 'Data breach submitted for assessment.');
+            $this->flashSuccess('data_breach.success.submitted_for_assessment');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -301,7 +313,7 @@ class DataBreachController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('notify_authority' . $dataBreach->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_breach.error.invalid_csrf');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
@@ -311,7 +323,7 @@ class DataBreachController extends AbstractController
         $delayReason = $request->request->get('delay_reason');
 
         if (!$authorityName || !$notificationMethod) {
-            $this->addFlash('error', 'Authority name and notification method are required.');
+            $this->flashError('data_breach.error.authority_notification_fields_required');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
@@ -333,7 +345,7 @@ class DataBreachController extends AbstractController
                 $this->dataBreachService->recordNotificationDelay($dataBreach, $delayReason);
             }
 
-            $this->addFlash('success', 'Supervisory authority notification recorded.');
+            $this->flashSuccess('data_breach.success.authority_notification_recorded');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -352,7 +364,7 @@ class DataBreachController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('notify_subjects' . $dataBreach->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_breach.error.invalid_csrf');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
@@ -360,13 +372,13 @@ class DataBreachController extends AbstractController
         $subjectsNotified = (int) $request->request->get('subjects_notified');
 
         if (!$notificationMethod || $subjectsNotified <= 0) {
-            $this->addFlash('error', 'Notification method and number of subjects are required.');
+            $this->flashError('data_breach.error.subject_notification_fields_required');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
             $this->dataBreachService->notifyDataSubjects($dataBreach, $notificationMethod, $subjectsNotified, []);
-            $this->addFlash('success', 'Data subject notification recorded.');
+            $this->flashSuccess('data_breach.success.subject_notification_recorded');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -385,20 +397,20 @@ class DataBreachController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('exemption' . $dataBreach->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_breach.error.invalid_csrf');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         $exemptionReason = $request->request->get('exemption_reason');
 
         if (!$exemptionReason) {
-            $this->addFlash('error', 'Exemption reason is required.');
+            $this->flashError('data_breach.error.exemption_reason_required');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
             $this->dataBreachService->recordSubjectNotificationExemption($dataBreach, $exemptionReason);
-            $this->addFlash('success', 'Subject notification exemption recorded.');
+            $this->flashSuccess('data_breach.success.exemption_recorded');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -417,13 +429,13 @@ class DataBreachController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('close' . $dataBreach->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_breach.error.invalid_csrf');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
             $this->dataBreachService->close($dataBreach, $this->getUser());
-            $this->addFlash('success', 'Data breach closed successfully.');
+            $this->flashSuccess('data_breach.success.closed');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -442,20 +454,20 @@ class DataBreachController extends AbstractController
 
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('reopen' . $dataBreach->getId(), $token)) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('data_breach.error.invalid_csrf');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         $reopenReason = $request->request->get('reopen_reason');
 
         if (!$reopenReason) {
-            $this->addFlash('error', 'Reopen reason is required.');
+            $this->flashError('data_breach.error.reopen_reason_required');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
             $this->dataBreachService->reopen($dataBreach, $this->getUser(), $reopenReason);
-            $this->addFlash('success', 'Data breach reopened successfully.');
+            $this->flashSuccess('data_breach.success.reopened');
         } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }

@@ -550,6 +550,22 @@ processing_activity:
         legal_basis_retention: 'Legal Basis and Retention Periods'
         art_30_1g: 'Art. 30(1)(g) GDPR - Technical and Organizational Measures (TOMs)'
 data_breach:
+    success:
+        updated: 'Data breach updated successfully.'
+        deleted: 'Data breach deleted successfully.'
+        submitted_for_assessment: 'Data breach submitted for assessment.'
+        authority_notification_recorded: 'Supervisory authority notification recorded.'
+        subject_notification_recorded: 'Data subject notification recorded.'
+        exemption_recorded: 'Subject notification exemption recorded.'
+        closed: 'Data breach closed successfully.'
+        reopened: 'Data breach reopened successfully.'
+    error:
+        cannot_edit_in_status: 'Cannot edit data breach in current status.'
+        invalid_csrf: 'Invalid CSRF token.'
+        authority_notification_fields_required: 'Authority name and notification method are required.'
+        subject_notification_fields_required: 'Notification method and number of subjects are required.'
+        exemption_reason_required: 'Exemption reason is required.'
+        reopen_reason_required: 'Reopen reason is required.'
     index:
         view_all_breaches: 'View All Breaches'
         no_breaches_found: 'No data breaches found'
