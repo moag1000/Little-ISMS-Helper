@@ -455,6 +455,7 @@ processing_activity:
         data_protection_officer_person: 'DPO (Person master data)'
         data_protection_officer_deputies: 'DPO Deputies'
         involves_processors: 'Involves Processors'
+        processor_suppliers: Processors
         is_joint_controller: 'Is Joint Controller'
         is_high_risk: 'Is High Risk'
         dpia_completed: 'Dpia Completed'
@@ -500,6 +501,7 @@ processing_activity:
         data_protection_officer_person: 'DPO from person master data (alternative to user account)'
         data_protection_officer_deputies: 'Deputy persons for the DPO slot'
         involves_processors: 'Are processors (Auftragsverarbeiter) involved (Art. 28)?'
+        processor_suppliers: 'External processors acting on your behalf in this processing activity (GDPR Art. 28).'
         is_joint_controller: 'Is this a joint controller arrangement (Art. 26)?'
         is_high_risk: 'Is this considered high-risk processing?'
         dpia_completed: 'Has a Data Protection Impact Assessment (DPIA) been conducted?'
