@@ -1,12 +1,13 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'admin' %}
 {% import '_components/_status_pill.html.twig' as pill %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_tabs.html.twig' as _fa_tabs %}
 
 {% block title %}{{ 'admin.policy_style.title'|trans }} — {{ tenant.name }}{% endblock %}
 
 {% block admin_content %}
-{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -51,65 +52,44 @@
                     })
                 }) }}
 
-                <h3 class="h6 text-muted mb-3">{{ 'admin.policy_style.group.cover'|trans }}</h3>
-                <div class="row g-3">
-                    <div class="col-md-6">{{ form_row(form.policyDocCoverPattern) }}</div>
-                    <div class="col-md-6">{{ form_row(form.policyDocCoverLogoSize) }}</div>
-                </div>
-
-                <hr class="my-4">
-                <h3 class="h6 text-muted mb-3">{{ 'admin.policy_style.group.typography'|trans }}</h3>
-                <div class="row g-3">
-                    <div class="col-md-6">{{ form_row(form.policyDocFontFamily) }}</div>
-                    <div class="col-md-6">{{ form_row(form.policyDocPageMargin) }}</div>
-                </div>
-
-                <hr class="my-4">
-                <h3 class="h6 text-muted mb-3">{{ 'admin.policy_style.group.watermark'|trans }}</h3>
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-4">{{ form_row(form.policyDocWatermarkEnabled) }}</div>
-                    <div class="col-md-8">
-                        <label for="{{ form.policyDocWatermarkOpacity.vars.id }}" class="form-label">
-                            {{ 'admin.policy_style.field.watermark_opacity'|trans }}
-                            (<span data-policy-style-preview-target="opacityLabel">{{ ((form.policyDocWatermarkOpacity.vars.value ?? 0.0)|number_format(2, '.', '') * 100)|round }}%</span>)
-                        </label>
-                        <input type="range"
-                               class="form-range"
-                               min="0" max="100" step="1"
-                               value="{{ ((form.policyDocWatermarkOpacity.vars.value ?? 0.0)|number_format(2, '.', '') * 100)|round }}"
-                               data-policy-style-preview-target="opacitySlider"
-                               data-action="input->policy-style-preview#syncOpacity"
-                               aria-label="{{ 'admin.policy_style.field.watermark_opacity'|trans }}">
-                        {{ form_widget(form.policyDocWatermarkOpacity, {attr: {hidden: true, class: 'visually-hidden'}}) }}
-                        <p class="form-text">{{ 'admin.policy_style.help.watermark_opacity'|trans }}</p>
-                    </div>
-                </div>
-
-                <hr class="my-4">
-                <h3 class="h6 text-muted mb-3">{{ 'admin.policy_style.group.layout'|trans }}</h3>
-                <div class="row g-3">
-                    <div class="col-md-6">{{ form_row(form.policyDocSignatureLines) }}</div>
-                    <div class="col-md-6 d-flex flex-column gap-2">
-                        {{ form_row(form.policyDocShowToc) }}
-                        {{ form_row(form.policyDocShowHistory) }}
-                        {{ form_row(form.policyDocShowAnnexARefs) }}
-                    </div>
-                </div>
-
-                <hr class="my-4">
-                <h3 class="h6 text-muted mb-3">{{ 'admin.policy_style.group.footer'|trans }}</h3>
-                <div class="row g-3">
-                    <div class="col-12">{{ form_row(form.policyDocFooterText) }}</div>
-                </div>
-
-                {% if form.policyDocCustomCss is defined %}
-                    <hr class="my-4">
-                    <h3 class="h6 text-muted mb-3">
-                        {{ 'admin.policy_style.group.advanced'|trans }}
-                        {{ pill.render('ROLE_ADMIN', 'warning', {size: 'sm', class: 'ms-2'}) }}
-                    </h3>
-                    {{ form_row(form.policyDocCustomCss) }}
-                {% endif %}
+                {{ _fa_tabs.render({
+                    id: 'policy-style-tabs',
+                    urlHashSync: true,
+                    initialTab: 'general',
+                    tabs: [
+                        {
+                            id: 'general',
+                            label: 'admin.policy_style.tab.general'|trans({}, 'admin'),
+                            icon: 'nav-palette',
+                            body: include('admin/policy_style/_tab_general.html.twig', { form: form })
+                        },
+                        {
+                            id: 'branding',
+                            label: 'admin.policy_style.tab.branding'|trans({}, 'admin'),
+                            icon: 'nav-droplet',
+                            body: include('admin/policy_style/_tab_branding.html.twig', { form: form })
+                        },
+                        {
+                            id: 'layout',
+                            label: 'admin.policy_style.tab.layout'|trans({}, 'admin'),
+                            icon: 'nav-layout',
+                            body: include('admin/policy_style/_tab_layout.html.twig', { form: form })
+                        },
+                        {
+                            id: 'content',
+                            label: 'admin.policy_style.tab.content'|trans({}, 'admin'),
+                            icon: 'nav-text-file',
+                            body: include('admin/policy_style/_tab_content.html.twig', { form: form })
+                        },
+                    ]|merge(
+                        form.policyDocCustomCss is defined ? [{
+                            id: 'advanced',
+                            label: 'admin.policy_style.tab.advanced'|trans({}, 'admin'),
+                            icon: 'nav-code',
+                            body: include('admin/policy_style/_tab_advanced.html.twig', { form: form })
+                        }] : []
+                    )
+                }) }}
 
                 <div class="d-flex flex-wrap gap-2 mt-4">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
@@ -136,7 +116,7 @@
         </section>
     </div>
 
-    {# ---------- Live preview column (right) ---------- #}
+    {# ---------- Live preview column (right) — sibling of fa-tabs, not inside ---------- #}
     <div class="col-xl-5">
         <section class="fa-section position-sticky" style="top: 1.5rem;">
             <header class="fa-section__header">

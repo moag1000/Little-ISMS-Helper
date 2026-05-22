@@ -1,0 +1,9 @@
+{#
+ # Report Style form — tab: general
+ # Fields: reportDocCoverPattern, reportDocDefaultAudience
+ #}
+{% trans_default_domain 'admin' %}
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.reportDocCoverPattern) }}</div>
+    <div class="col-md-6">{{ form_row(form.reportDocDefaultAudience) }}</div>
+</div>

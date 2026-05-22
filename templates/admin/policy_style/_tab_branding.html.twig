@@ -1,0 +1,27 @@
+{#
+ # Policy Style form — tab: branding
+ # Fields: policyDocFontFamily, policyDocWatermarkEnabled, policyDocWatermarkOpacity (range slider)
+ # Included inside fa-tabs body — Stimulus controller context from parent row.
+ #}
+{% trans_default_domain 'admin' %}
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.policyDocFontFamily) }}</div>
+</div>
+<div class="row g-3 align-items-end mt-2">
+    <div class="col-md-4">{{ form_row(form.policyDocWatermarkEnabled) }}</div>
+    <div class="col-md-8">
+        <label for="{{ form.policyDocWatermarkOpacity.vars.id }}" class="form-label">
+            {{ 'admin.policy_style.field.watermark_opacity'|trans({}, 'admin') }}
+            (<span data-policy-style-preview-target="opacityLabel">{{ ((form.policyDocWatermarkOpacity.vars.value ?? 0.0)|number_format(2, '.', '') * 100)|round }}%</span>)
+        </label>
+        <input type="range"
+               class="form-range"
+               min="0" max="100" step="1"
+               value="{{ ((form.policyDocWatermarkOpacity.vars.value ?? 0.0)|number_format(2, '.', '') * 100)|round }}"
+               data-policy-style-preview-target="opacitySlider"
+               data-action="input->policy-style-preview#syncOpacity"
+               aria-label="{{ 'admin.policy_style.field.watermark_opacity'|trans({}, 'admin') }}">
+        {{ form_widget(form.policyDocWatermarkOpacity, {attr: {hidden: true, class: 'visually-hidden'}}) }}
+        <p class="form-text">{{ 'admin.policy_style.help.watermark_opacity'|trans({}, 'admin') }}</p>
+    </div>
+</div>
