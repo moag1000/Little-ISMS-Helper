@@ -375,9 +375,9 @@ src/Controller/ScheduledReportController.php:129
 src/Controller/ScheduledReportController.php:184
 src/Controller/ScheduledReportController.php:185
 src/Controller/SeedReviewQueueController.php:95
-src/Controller/StatementOfApplicabilityController.php:363
-src/Controller/StatementOfApplicabilityController.php:403
-src/Controller/StatementOfApplicabilityController.php:453
+src/Controller/StatementOfApplicabilityController.php:368
+src/Controller/StatementOfApplicabilityController.php:408
+src/Controller/StatementOfApplicabilityController.php:458
 src/Controller/SupplierController.php:150
 src/Controller/SupplierController.php:151
 src/Controller/SupplierController.php:194

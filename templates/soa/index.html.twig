@@ -85,7 +85,10 @@
 {% endembed %}
 {% endif %}
 
-{# KPI Cards #}
+{# KPI Cards — compute applicable/implemented ONCE (perf fix T-1: was 6 redundant filter passes) #}
+{% set _kpi_applicable = controls|filter(c => c.applicable)|length %}
+{% set _kpi_implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
+{% set _kpi_percentage = _kpi_applicable > 0 ? (_kpi_implemented / _kpi_applicable * 100)|round : 0 %}
 <div class="kpi-grid">
     <div class="col-auto">
         {% if currentTenant %}
@@ -96,18 +99,13 @@
         {% endif %}
     </div>
     <div class="col-auto">
-        {{ _fa_feature_card.render({ label: 'soa.kpi.applicable_controls'|trans({}, 'soa'), value: controls|filter(c => c.applicable)|length, variant: 'success' }) }}
+        {{ _fa_feature_card.render({ label: 'soa.kpi.applicable_controls'|trans({}, 'soa'), value: _kpi_applicable, variant: 'success' }) }}
     </div>
     <div class="col-auto">
-        {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
-        {% set applicable = controls|filter(c => c.applicable)|length %}
-        {{ _fa_feature_card.render({ label: 'soa.kpi.implemented_controls'|trans({}, 'soa'), value: implemented, hint: ('soa.kpi.of'|trans({}, 'soa')) ~ ' ' ~ applicable, variant: 'info' }) }}
+        {{ _fa_feature_card.render({ label: 'soa.kpi.implemented_controls'|trans({}, 'soa'), value: _kpi_implemented, hint: ('soa.kpi.of'|trans({}, 'soa')) ~ ' ' ~ _kpi_applicable, variant: 'info' }) }}
     </div>
     <div class="col-auto">
-        {% set applicable = controls|filter(c => c.applicable)|length %}
-        {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
-        {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
-        {{ _fa_feature_card.render({ label: 'soa.kpi.compliance_rate'|trans({}, 'soa'), value: percentage ~ '%', variant: 'warning' }) }}
+        {{ _fa_feature_card.render({ label: 'soa.kpi.compliance_rate'|trans({}, 'soa'), value: _kpi_percentage ~ '%', variant: 'warning' }) }}
     </div>
 </div>
 
