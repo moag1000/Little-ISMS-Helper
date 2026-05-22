@@ -157,6 +157,12 @@ compliance:
     successfully_loaded: 'Framework loaded successfully'
     load_failed: 'Failed to load framework'
     error: 'Error'
+    # Generic flash-message keys (Controllers via LocalizedFlashTrait)
+    flash:
+        error:
+            invalid_csrf: 'Invalid CSRF token.'
+            select_two_frameworks: 'Please select two frameworks for comparison.'
+            framework_not_found: 'One or both frameworks were not found.'
     deleting: 'Deleting...'
     successfully_deleted: 'Framework deleted successfully'
     delete_failed: 'Failed to delete framework'
@@ -171,6 +177,11 @@ compliance:
         confirm_question: 'Do you really want to continue?'
         second_confirm: 'Are you sure? Framework will be permanently deleted!'
     mapping:
+        success:
+            created: 'Compliance mapping created successfully.'
+            updated: 'Compliance mapping updated successfully.'
+            deleted: 'Compliance mapping deleted successfully.'
+            analysis_completed: 'Mapping analysis completed successfully.'
         overview: 'Mapping Overview'
         confirm:
             delete: 'Are you sure you want to delete this mapping?'
@@ -492,6 +503,17 @@ compliance:
             fulfilled: __compliance.framework.stats.fulfilled
             compliance: __compliance.framework.stats.compliance
     requirement:
+        success:
+            created: 'Compliance requirement created successfully.'
+            updated: 'Compliance requirement updated successfully.'
+            deleted: 'Compliance requirement deleted successfully.'
+            mris_saved: 'MRIS maturity level saved.'
+            fulfillment_updated: 'Requirement fulfillment updated successfully for your tenant.'
+        error:
+            mris_only: 'Maturity level is only available for MRIS-MHC requirements.'
+            no_tenant: 'No tenant assigned to user. Please contact administrator.'
+            fulfillment_no_tenant: 'Cannot update fulfillment without tenant assignment.'
+            inherited_fulfillment_readonly: 'Cannot edit inherited fulfillment from parent tenant.'
         details: 'Requirement Details'
         confirm:
             delete: 'Are you sure you want to delete this requirement?'
