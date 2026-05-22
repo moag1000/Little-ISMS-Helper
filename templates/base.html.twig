@@ -214,10 +214,11 @@
                 {# Global Search Component (Button + Modal) #}
                 {% include '_components/_global_search.html.twig' %}
 
-                {# Notification Bell (moved to header) #}
+                {# Notification Bell — single canonical (Sprint-6b F3 backend-polled).
+                   Legacy _notification_bell.html.twig dropped 2026-05-22 — was a
+                   non-functional duplicate that showed an empty bell next to the
+                   working one. #}
                 {% if not is_setup_route %}
-                    {% include '_components/_notification_bell.html.twig' %}
-                    {# Sprint-6b F3: Backend-polled notification bell (notifications module) #}
                     {% include '_components/_navbar_notification_bell.html.twig' %}
                 {% endif %}
 
@@ -281,6 +282,15 @@
                             <i class="fa-icon fa-icon--control fa-dropdown-panel__item-icon" aria-hidden="true"></i>
                             <span class="fa-dropdown-panel__item-body">{{ 'nav.security'|trans({}, 'nav') }}</span>
                         </a>
+                        <button type="button"
+                                class="user-dropdown-item fa-dropdown-panel__item"
+                                role="menuitem"
+                                data-controller="fa-modal-dispatcher"
+                                data-action="click->fa-modal-dispatcher#open"
+                                data-fa-modal-id="preferencesModal">
+                            <i class="fa-icon fa-icon--ui-settings fa-dropdown-panel__item-icon" aria-hidden="true"></i>
+                            <span class="fa-dropdown-panel__item-body">{{ 'preferences.title'|trans({}, 'preferences')|default('Einstellungen') }}</span>
+                        </button>
                         {# Guided-Tour — Rolle(n) auswählbar bei mehreren passenden #}
                         {% set tour_roles = [] %}
                         {% if is_granted('ROLE_AUDITOR') %}{% set tour_roles = tour_roles|merge(['auditor']) %}{% endif %}
