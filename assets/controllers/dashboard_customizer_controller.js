@@ -273,8 +273,13 @@ export default class extends Controller {
                     const data = await response.json();
                     this.lastSyncedAt = data.updated_at;
                 } else {
+                    const msg = response.status === 403
+                        ? 'Keine Berechtigung'
+                        : `Fehler ${response.status}`;
+                    window.faToast(msg, 'danger');
                 }
             } catch (error) {
+                // Network error — localStorage copy still saved above
             }
         }, 1000); // Debounce 1 second
     }
