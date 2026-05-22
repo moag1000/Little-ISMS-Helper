@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Form\Admin;
 
 use App\Entity\Tenant;
-use App\Form\SectionMapInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -23,18 +22,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * retention-policies are JSON blobs and edited in dedicated sub-forms
  * (or as JSON for now).
  */
-final class TenantComplianceSettingsType extends AbstractType implements SectionMapInterface
+// SectionMap replaced by fa-tabs in edit.html.twig (JSON-config fields + sidebar preserved).
+// Tabs: Defaults/Frameworks/Modules/Contact/Advanced(JSON).
+// Global-settings sidebar is a sibling col-lg-4 alongside the form col-lg-8.
+final class TenantComplianceSettingsType extends AbstractType
 {
-    public static function getSectionMap(): array
-    {
-        return [
-            'defaults'   => ['locale', 'timezone', 'financialYearStartMonth', 'tlpDefault'],
-            'frameworks' => ['riskMethodology', 'riskMatrixSize', 'wizardMaturityTarget', 'doraEntityCategory'],
-            'contact'    => ['dpoContactName', 'dpoContactEmail'],
-            'modules'    => ['apiRateLimitPerMinute'],
-        ];
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

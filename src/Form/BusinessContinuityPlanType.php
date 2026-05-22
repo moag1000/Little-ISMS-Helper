@@ -24,7 +24,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class BusinessContinuityPlanType extends AbstractType implements SectionMapInterface
+// SectionMap not applicable — templates (new.html.twig, edit.html.twig) pass
+// their own 'sections' data directly to _auto_form, overriding any SectionMap.
+// The templates also use a custom form_theme (_bc_plan_form_theme.html.twig)
+// which overrides responseTeamMembers/requiredResources/escalationLevels rendering.
+final class BusinessContinuityPlanType extends AbstractType
 {
     use OwnerPickerFormTrait;
 
@@ -303,74 +307,4 @@ final class BusinessContinuityPlanType extends AbstractType implements SectionMa
         }
     }
 
-    /**
-     * S4 Foundation P-2 SectionPolicy — explicit field-to-section map for the
-     * `_auto_form.html.twig` renderer. Each field added via the form builder
-     * MUST appear in exactly one section (CI-gated by
-     * `scripts/quality/check_form_sections.py`).
-     *
-     * Sections follow ISO 22301 / BSI 200-4 BCM-Plan structure:
-     * - overview:   identity, scope, ownership
-     * - recovery:   RTO/RPO targets, recovery procedures, critical assets
-     * - team:       response team, crisis teams, escalation paths
-     * - communication: internal/external comms plans + stakeholder lists
-     * - resources:  alternative sites, required resources, backup/restore
-     * - activation: trigger criteria + roles
-     * - testing:    test schedule + review cadence
-     * - audit_metadata: version, status, review notes
-     */
-    public static function getSectionMap(): array
-    {
-        return [
-            'overview' => [
-                'name',
-                'businessProcess',
-                'description',
-                'planOwnerUser',
-                'planOwnerPerson',
-                'planOwnerDeputyPersons',
-                'planOwner',
-            ],
-            'recovery' => [
-                'rto',
-                'rpo',
-                'criticalAssets',
-                'recoveryProcedures',
-            ],
-            'team' => [
-                'bcTeam',
-                'responseTeamMembers',
-                'crisisTeams',
-                'escalationLevels',
-            ],
-            'communication' => [
-                'communicationPlan',
-                'internalCommunication',
-                'externalCommunication',
-            ],
-            'resources' => [
-                'alternativeSite',
-                'alternativeSiteAddress',
-                'alternativeSiteCapacity',
-                'requiredResources',
-                'backupProcedures',
-                'restoreProcedures',
-            ],
-            'activation' => [
-                'activationCriteria',
-                'rolesAndResponsibilities',
-            ],
-            'testing' => [
-                'lastTested',
-                'nextTestDate',
-                'lastReviewDate',
-                'nextReviewDate',
-                'reviewNotes',
-            ],
-            'audit_metadata' => [
-                'version',
-                'status',
-            ],
-        ];
-    }
 }

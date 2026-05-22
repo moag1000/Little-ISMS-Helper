@@ -1,0 +1,15 @@
+{#
+ # Policy Style form — tab: advanced (ROLE_ADMIN gated)
+ # Fields: policyDocCustomCss
+ # Included inside fa-tabs body.
+ #}
+{% trans_default_domain 'admin' %}
+{% import '_components/_status_pill.html.twig' as pill %}
+<p class="text-muted small mb-3">{{ 'admin.policy_style.help.custom_css'|trans({}, 'admin') }}</p>
+<div class="d-flex align-items-center mb-2">
+    {{ pill.render('ROLE_ADMIN', 'warning', {size: 'sm', class: 'me-2'}) }}
+    <span class="small text-muted">{{ 'admin.policy_style.group.advanced'|trans({}, 'admin') }}</span>
+</div>
+{% if form.policyDocCustomCss is defined %}
+    {{ form_row(form.policyDocCustomCss) }}
+{% endif %}

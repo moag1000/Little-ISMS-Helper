@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Form\Admin;
 
 use App\Entity\TenantBranding;
-use App\Form\SectionMapInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -30,19 +29,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * is exposed as 0–100 % via the `policy_style_preview` Stimulus
  * controller and persisted as a 0.0–1.0 float.
  */
-final class TenantPolicyStyleType extends AbstractType implements SectionMapInterface
+// SectionMap replaced by fa-tabs in edit.html.twig (live-preview compat).
+// Fields are grouped into General/Branding/Layout/Content/Advanced tabs.
+// Preview panel is a sibling col alongside the fa-tabs container.
+final class TenantPolicyStyleType extends AbstractType
 {
-    public static function getSectionMap(): array
-    {
-        return [
-            'overview'   => ['policyDocCoverPattern', 'policyDocCoverLogoSize'],
-            'branding'   => ['policyDocFontFamily', 'policyDocWatermarkEnabled', 'policyDocWatermarkOpacity'],
-            'layout'     => ['policyDocPageMargin', 'policyDocSignatureLines'],
-            'content'    => ['policyDocShowToc', 'policyDocShowHistory', 'policyDocShowAnnexARefs', 'policyDocFooterText'],
-            'advanced'   => ['policyDocCustomCss'],
-        ];
-    }
-
     public function __construct(
         private readonly Security $security,
     ) {

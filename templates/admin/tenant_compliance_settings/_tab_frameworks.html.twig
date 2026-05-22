@@ -1,0 +1,11 @@
+{#
+ # Tenant Compliance Settings — tab: frameworks
+ # Fields: riskMethodology, riskMatrixSize, wizardMaturityTarget, doraEntityCategory
+ #}
+{% trans_default_domain 'admin' %}
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.riskMethodology) }}</div>
+    <div class="col-md-6">{{ form_row(form.riskMatrixSize) }}</div>
+    <div class="col-md-6">{{ form_row(form.wizardMaturityTarget) }}</div>
+    <div class="col-md-6">{{ form_row(form.doraEntityCategory) }}</div>
+</div>

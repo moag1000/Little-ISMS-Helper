@@ -1,0 +1,16 @@
+{#
+ # Policy Style form — tab: layout
+ # Fields: policyDocPageMargin, policyDocSignatureLines,
+ #         policyDocShowToc, policyDocShowHistory, policyDocShowAnnexARefs
+ # Included inside fa-tabs body.
+ #}
+{% trans_default_domain 'admin' %}
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.policyDocPageMargin) }}</div>
+    <div class="col-md-6">{{ form_row(form.policyDocSignatureLines) }}</div>
+</div>
+<div class="d-flex flex-column gap-2 mt-3">
+    {{ form_row(form.policyDocShowToc) }}
+    {{ form_row(form.policyDocShowHistory) }}
+    {{ form_row(form.policyDocShowAnnexARefs) }}
+</div>

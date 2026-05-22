@@ -1,0 +1,9 @@
+{#
+ # Report Style form — tab: typography
+ # Fields: reportDocFontFamily, reportDocPageOrientation
+ #}
+{% trans_default_domain 'admin' %}
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.reportDocFontFamily) }}</div>
+    <div class="col-md-6">{{ form_row(form.reportDocPageOrientation) }}</div>
+</div>

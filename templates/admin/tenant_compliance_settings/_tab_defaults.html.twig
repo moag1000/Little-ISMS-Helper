@@ -1,0 +1,11 @@
+{#
+ # Tenant Compliance Settings — tab: defaults
+ # Fields: locale, timezone, financialYearStartMonth, tlpDefault
+ #}
+{% trans_default_domain 'admin' %}
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.locale) }}</div>
+    <div class="col-md-6">{{ form_row(form.timezone) }}</div>
+    <div class="col-md-6">{{ form_row(form.financialYearStartMonth) }}</div>
+    <div class="col-md-6">{{ form_row(form.tlpDefault) }}</div>
+</div>
