@@ -179,6 +179,7 @@ prototype_protection.result	3
 prototype_protection.section	3
 prototype_protection.status	3
 rating	2
+reauth.action.confirm_sso
 report.doc.audience	1
 report.doc.chart.type	1
 risk.acceptance.approval_levels	1
