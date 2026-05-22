@@ -241,7 +241,10 @@ class Risk
     #[ORM\JoinColumn(name: 'risk_owner_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
     #[MaxDepth(1)]
-    #[Assert\NotNull(message: 'risk.validation.risk_owner_required')]
+    // Either-or slot: validateRiskOwnerSlot() (RiskType callback) enforces
+    // "at least one of riskOwner / riskOwnerPerson". A blanket NotNull would
+    // block the Person path, which is the canonical PoC flow for orgs that
+    // run master-data Persons without User accounts.
     private ?User $riskOwner = null;
 
     #[ORM\Column(type: 'string', length: 50, enumType: RiskStatus::class)]

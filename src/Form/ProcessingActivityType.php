@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\Asset;
 use App\Entity\Control;
 use App\Entity\ProcessingActivity;
+use App\Entity\Supplier;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
 use App\Service\ModuleConfigurationService;
@@ -381,6 +382,20 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'required' => true,
                 'choice_translation_domain' => 'privacy',
             ])
+            // GDPR Art. 28: structured Supplier-link required when processors are involved.
+            // Pure form-side gap until now; the M2M relation exists on the entity (P-7 Wave-2).
+            ->add('processorSuppliers', EntityType::class, [
+                'label' => 'processing_activity.form.processor_suppliers',
+                'help' => 'processing_activity.help.processor_suppliers',
+                'class' => Supplier::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'required' => false,
+                'query_builder' => static function ($repo) {
+                    return $repo->createQueryBuilder('s')->orderBy('s.name', 'ASC');
+                },
+                'attr' => ['data-controller' => 'tom-select'],
+            ])
 
             // ============================================================================
             // Joint Controllers (Art. 26)
@@ -628,6 +643,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'thirdCountries',
                 'transferSafeguards',
                 'involvesProcessors',
+                'processorSuppliers',
                 'isJointController',
             ],
             'retention' => [

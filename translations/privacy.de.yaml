@@ -452,6 +452,7 @@ processing_activity:
         data_protection_officer_person: 'DSB (Personenstammdaten)'
         data_protection_officer_deputies: 'DSB-Vertretungen'
         involves_processors: 'Auftragsverarbeiter eingebunden (Art. 28 DSGVO)'
+        processor_suppliers: 'Eingebundene Auftragsverarbeiter (Lieferanten)'
         is_joint_controller: 'Gemeinsame Verantwortlichkeit (Art. 26 DSGVO)'
         is_high_risk: 'Hohes Risiko für Rechte und Freiheiten'
         dpia_completed: 'Datenschutz-Folgenabschätzung (DSFA) durchgeführt'
@@ -540,6 +541,7 @@ processing_activity:
         data_protection_officer_person: 'Datenschutzbeauftragter aus Personenstammdaten (alternativ zum Benutzerkonto)'
         data_protection_officer_deputies: 'Stellvertretende Personen für den DSB-Slot'
         involves_processors: 'Sind Auftragsverarbeiter eingebunden (Art. 28)?'
+        processor_suppliers: 'Konkrete Lieferanten/Dienstleister als Auftragsverarbeiter — wird Pflicht sobald oben "Ja" gewählt ist. Strukturierte Verknüpfung statt Freitext (Art. 28(1) DSGVO + AVV-Nachweispflicht).'
         is_joint_controller: 'Liegt eine gemeinsame Verantwortlichkeit vor (Art. 26)?'
         is_high_risk: 'Gilt dies als Hochrisiko-Verarbeitung?'
         dpia_completed: 'Wurde eine Datenschutz-Folgenabschätzung (DSFA) durchgeführt?'
@@ -686,6 +688,8 @@ processing_activity:
         art_30_1e: 'Art. 30(1)(e) DSGVO - Übermittlungen an Drittländer'
         legal_basis_retention: 'Rechtsgrundlage und Aufbewahrungsfristen'
         art_30_1g: 'Art. 30(1)(g) DSGVO - Technische und organisatorische Maßnahmen (TOMs)'
+    validation:
+        processor_suppliers_required: 'Wenn Auftragsverarbeiter eingebunden sind, muss mindestens ein Lieferant ausgewählt werden (Art. 28(1) DSGVO — AVV-Nachweispflicht).'
 
 # Common yes/no translations for choice fields
 common:

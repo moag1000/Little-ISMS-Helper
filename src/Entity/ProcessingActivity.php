@@ -1366,4 +1366,15 @@ class ProcessingActivity
                 && !$c->isRevoked()
         )->count();
     }
+
+    #[Assert\Callback]
+    public function validateProcessorSuppliers(\Symfony\Component\Validator\Context\ExecutionContextInterface $context): void
+    {
+        if ($this->involvesProcessors && $this->processorSuppliers->isEmpty()) {
+            $context->buildViolation('processing_activity.validation.processor_suppliers_required')
+                ->setTranslationDomain('privacy')
+                ->atPath('processorSuppliers')
+                ->addViolation();
+        }
+    }
 }

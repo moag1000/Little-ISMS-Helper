@@ -455,6 +455,7 @@ processing_activity:
         data_protection_officer_person: 'DPO (Person master data)'
         data_protection_officer_deputies: 'DPO Deputies'
         involves_processors: 'Involves Processors'
+        processor_suppliers: 'Involved processors (suppliers)'
         is_joint_controller: 'Is Joint Controller'
         is_high_risk: 'Is High Risk'
         dpia_completed: 'Dpia Completed'
@@ -500,6 +501,7 @@ processing_activity:
         data_protection_officer_person: 'DPO from person master data (alternative to user account)'
         data_protection_officer_deputies: 'Deputy persons for the DPO slot'
         involves_processors: 'Are processors (Auftragsverarbeiter) involved (Art. 28)?'
+        processor_suppliers: 'Concrete suppliers/service providers acting as processors — required once "Yes" is selected above. Structured link instead of free text (Art. 28(1) GDPR — DPA documentation duty).'
         is_joint_controller: 'Is this a joint controller arrangement (Art. 26)?'
         is_high_risk: 'Is this considered high-risk processing?'
         dpia_completed: 'Has a Data Protection Impact Assessment (DPIA) been conducted?'
@@ -549,6 +551,8 @@ processing_activity:
         art_30_1e: 'Art. 30(1)(e) GDPR - Transfers to Third Countries'
         legal_basis_retention: 'Legal Basis and Retention Periods'
         art_30_1g: 'Art. 30(1)(g) GDPR - Technical and Organizational Measures (TOMs)'
+    validation:
+        processor_suppliers_required: 'When processors are involved, at least one supplier must be selected (GDPR Art. 28(1) — DPA documentation duty).'
 data_breach:
     index:
         view_all_breaches: 'View All Breaches'
