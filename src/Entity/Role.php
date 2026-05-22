@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
 #[ORM\Table(name: 'roles')]
-#[UniqueEntity(fields: ['name'], message: 'This role name is already in use')]
+#[UniqueEntity(fields: ['name'], message: 'role_management.validation.name.unique')]
 class Role implements Stringable
 {
     #[ORM\Id]

@@ -680,3 +680,12 @@ gstool_import:
 'consent.validation.consent_channel.choice': 'Invalid consent channel.'
 'consent.validation.status.choice': 'Invalid consent status.'
 'consent.validation.revocation_method.choice': 'Invalid revocation method.'
+
+# Chunk 3 — UniqueEntity + system entity messages
+'role_management.validation.name.unique': 'This role name is already in use.'
+'role_management.validation.permission_name.unique': 'This permission name is already in use.'
+'user.validation.email.unique': 'There is already an account with this email.'
+'tenant.validation.code.unique': 'This tenant code is already in use.'
+'admin.validation.system_setting.unique': 'This setting already exists in this category.'
+'suppliers.validation.criticality_level.code_format': 'Code must be lowercase alphanumeric/underscore only.'
+'admin.validation.identity_provider.slug_format': 'Slug must be lowercase alphanumeric (with dashes/underscores).'

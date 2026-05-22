@@ -43,7 +43,7 @@ class SupplierCriticalityLevel
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(max: 50)]
-    #[Assert\Regex('/^[a-z0-9_]+$/', message: 'Code must be lowercase alphanumeric/underscore only')]
+    #[Assert\Regex('/^[a-z0-9_]+$/', message: 'suppliers.validation.criticality_level.code_format')]
     private ?string $code = null;
 
     /**

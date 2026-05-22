@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: SystemSettingsRepository::class)]
 #[ORM\Table(name: 'system_settings')]
 #[ORM\UniqueConstraint(name: 'UNIQ_CATEGORY_KEY', columns: ['category', 'setting_key'])]
-#[UniqueEntity(fields: ['category', 'key'], message: 'This setting already exists in this category')]
+#[UniqueEntity(fields: ['category', 'key'], message: 'admin.validation.system_setting.unique')]
 class SystemSettings
 {
     #[ORM\Id]

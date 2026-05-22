@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: TenantRepository::class)]
-#[UniqueEntity(fields: ['code'], message: 'This tenant code is already in use')]
+#[UniqueEntity(fields: ['code'], message: 'tenant.validation.code.unique')]
 #[ORM\HasLifecycleCallbacks]
 class Tenant
 {

@@ -708,3 +708,12 @@ gstool_import:
 'consent.validation.consent_channel.choice': 'Ungültiger Einwilligungskanal.'
 'consent.validation.status.choice': 'Ungültiger Einwilligungsstatus.'
 'consent.validation.revocation_method.choice': 'Ungültige Widerrufsmethode.'
+
+# Chunk 3 — UniqueEntity + system entity messages
+'role_management.validation.name.unique': 'Dieser Rollenname wird bereits verwendet.'
+'role_management.validation.permission_name.unique': 'Dieser Berechtigungsname wird bereits verwendet.'
+'user.validation.email.unique': 'Es existiert bereits ein Konto mit dieser E-Mail-Adresse.'
+'tenant.validation.code.unique': 'Dieser Mandanten-Code wird bereits verwendet.'
+'admin.validation.system_setting.unique': 'Diese Einstellung existiert bereits in dieser Kategorie.'
+'suppliers.validation.criticality_level.code_format': 'Code darf nur Kleinbuchstaben, Ziffern und Unterstriche enthalten.'
+'admin.validation.identity_provider.slug_format': 'Slug muss klein­alphanumerisch sein (Bindestriche/Unterstriche erlaubt).'
