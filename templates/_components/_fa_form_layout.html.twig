@@ -41,11 +41,16 @@
     {%- set progressPercent  = (progress and progress.total > 0) ? ((progress.done / progress.total) * 100)|round : 0 -%}
     {%- set totalSections    = sections|length -%}
 
+    {%- set sectionsState = {} -%}
+    {%- for s in sections -%}
+        {%- set sectionsState = sectionsState|merge({
+            (s.id): { fields: (s.fields ?? 0), filled: (s.filled ?? 0), status: (s.status ?? 'pending') }
+        }) -%}
+    {%- endfor -%}
+
     <div class="fa-form-layout"
          data-controller="{{ controller }}"
-         data-{{ controller }}-sections-state-value="{{ sections|map(s => {
-             (s.id): { fields: (s.fields ?? 0), filled: (s.filled ?? 0), status: (s.status ?? 'pending') }
-         })|merge({})|json_encode }}"
+         data-{{ controller }}-sections-state-value="{{ sectionsState|json_encode }}"
          {% if draftSavedAt %}data-{{ controller }}-draft-saved-at-value="{{ draftSavedAt|date('c') }}"{% endif %}>
 
         {# ── Header ──────────────────────────────────────────────────────── #}
