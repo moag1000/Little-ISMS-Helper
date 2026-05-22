@@ -177,6 +177,12 @@ compliance:
         confirm_question: 'Möchten Sie wirklich fortfahren?'
         second_confirm: 'Sind Sie sicher? Framework wird unwiderruflich gelöscht!'
     mapping:
+        quality:
+            no_mappings: 'Keine Mappings gefunden. Bitte erstellen Sie zuerst Compliance-Mappings.'
+            no_analysis: 'Noch keine Analyse durchgeführt. Führen Sie zuerst "php bin/console app:analyze-mapping-quality" aus.'
+            dashboard_load_error: 'Fehler beim Laden des Dashboards: %message%'
+            review_queue_load_error: 'Fehler beim Laden der Review Queue: %message%'
+            gap_load_error: 'Fehler beim Laden der Gap-Übersicht: %message%'
         success:
             created: 'Compliance-Mapping wurde erstellt.'
             updated: 'Compliance-Mapping wurde aktualisiert.'

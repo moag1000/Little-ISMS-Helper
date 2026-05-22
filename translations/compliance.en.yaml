@@ -177,6 +177,12 @@ compliance:
         confirm_question: 'Do you really want to continue?'
         second_confirm: 'Are you sure? Framework will be permanently deleted!'
     mapping:
+        quality:
+            no_mappings: 'No mappings found. Please create compliance mappings first.'
+            no_analysis: 'No analysis performed yet. Run "php bin/console app:analyze-mapping-quality" first.'
+            dashboard_load_error: 'Error loading dashboard: %message%'
+            review_queue_load_error: 'Error loading review queue: %message%'
+            gap_load_error: 'Error loading gap overview: %message%'
         success:
             created: 'Compliance mapping created successfully.'
             updated: 'Compliance mapping updated successfully.'
