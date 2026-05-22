@@ -9,6 +9,7 @@
     },
     "scripts": {
         "stylelint": "stylelint 'assets/styles/**/*.css'",
-        "screenshots": "node scripts/screenshots/capture.mjs"
+        "screenshots": "node scripts/screenshots/capture.mjs",
+        "audit:console": "node scripts/screenshots/audit.mjs"
     }
 }
