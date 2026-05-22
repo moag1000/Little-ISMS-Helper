@@ -71,3 +71,40 @@ Output landet unter `var/screenshots/<persona>/<theme>/<screen>.png` (gitignored
 - [Junior-Implementer-Walkthrough (textuell, vor Sichtwechsel)](../JUNIOR_IMPLEMENTER_WALKTHROUGH.md)
 - [Compliance-Frameworks-Guide](../COMPLIANCE_FRAMEWORKS_GUIDE.md)
 - [Architektur-README](../../README.md)
+
+---
+
+## Browser-Console-Audit (Stufe 1 — capture-only)
+
+Same Persona-YAML, same login flow — but instead of taking screenshots, the
+audit script collects browser-side issues per page:
+
+- `console.error` / `console.warn` (JS-side)
+- Uncaught `pageerror` events
+- Failed network requests (`requestfailed`)
+- HTTP 4xx / 5xx responses (excluding favicon, WDT noise)
+
+Output lives at `var/audit/console/`:
+
+- `index.md` — cross-persona summary table
+- `<persona>/summary.md` — per-persona digest (errors first, then warnings)
+- `<persona>/findings.json` — raw machine-readable findings
+
+Run all personas:
+
+```bash
+SCREENSHOT_BASE_URL=http://127.0.0.1:8000 \
+SCREENSHOT_USER=screenshots@local.test \
+SCREENSHOT_PASS='...' \
+npm run audit:console
+```
+
+Filter by persona / single screen:
+
+```bash
+npm run audit:console -- --persona=isb-practitioner
+npm run audit:console -- --persona=ciso-executive --screen=dashboard
+```
+
+Output is gitignored (`/var/`). Use the JSON for tooling / CI integration;
+use the MD digests for triage.
