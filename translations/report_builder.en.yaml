@@ -2,6 +2,15 @@ report_builder:
     # Report Builder Translations (English)
     # Phase 7C: Custom Report Builder with drag & drop designer
 
+    # Flash messages (controller-side, no nested prefix)
+    created: 'Report created'
+    saved: 'Report saved'
+    cloned: 'Report cloned'
+    deleted: 'Report deleted'
+    template_created: 'Template created'
+    template_not_found: 'Template not found'
+    created_from_template: 'Report created from template'
+
     # Page titles
     page:
         title: 'Custom Report Builder'
@@ -275,3 +284,8 @@ report_builder:
         asset: 'Asset Management'
         audit: 'Audit'
         incident: 'Incident Management'
+
+
+# Flash messages — merged into root block above
+settings:
+    saved: 'Settings saved'

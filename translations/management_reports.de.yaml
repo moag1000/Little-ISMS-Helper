@@ -520,3 +520,31 @@ management_reports:
         view_report: 'Quartalsvergleich'
 
 # Top-level cert_readiness keys (used by templates without management_reports. prefix)
+cert_readiness:
+    title: 'Zertifizierungs-Readiness'
+    view_assessment: 'Assessment anzeigen'
+    download_pdf: 'PDF herunterladen'
+    overall_score: Gesamt-Score
+    clause_compliance_score: 'Clause-Compliance-Score'
+    clauses_4_10: 'Clauses 4–10'
+    annex_a_coverage: 'Annex-A-Abdeckung'
+    controls_implemented: 'Controls implementiert'
+    gaps_found: 'Lücken gefunden'
+    all_controls_started: 'Alle Controls begonnen'
+    no_controls_in_progress: 'Keine Controls in Bearbeitung'
+    no_iso_wizard: 'Kein ISO-Wizard verfügbar'
+    table:
+        clause: Clause
+        score: Score
+        status: Status
+        gaps: Lücken
+    status:
+        complete: Vollständig
+        partial: Teilweise
+        not_started: 'Nicht begonnen'
+    section:
+        clause_compliance: 'Clause-Compliance'
+        controls_in_progress: 'Controls in Bearbeitung'
+        controls_not_started: 'Controls noch nicht begonnen'
+        critical_gaps: 'Kritische Lücken'
+        recommended_improvements: 'Empfohlene Verbesserungen'
