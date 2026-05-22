@@ -10,6 +10,7 @@ use App\Entity\ProcessingActivity;
 use App\Entity\Supplier;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
+use App\Form\Type\JsonStructuredType;
 use App\Repository\SupplierRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -400,6 +401,23 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'required' => true,
                 'choice_translation_domain' => 'privacy',
             ])
+            // Junior-ISB-Audit-2026-05-22 M-08: DSGVO Art. 26 Joint-Controller-Doku
+            // Joint controllers are typically EXTERNAL partner organisations
+            // (other legal entities the data is jointly controlled with), so a
+            // structured JSON list is the canonical shape — not an M2M to Tenant.
+            // Art. 26(1) requires the arrangement (responsibilities split), Art. 26(2)
+            // requires the essence to be made available to data subjects.
+            ->add('jointControllerDetails', JsonStructuredType::class, [
+                'label' => 'processing_activity.form.joint_controller_details',
+                'help' => 'processing_activity.help.joint_controller_details_json',
+                'required' => false,
+                'attr' => [
+                    'rows' => 6,
+                    'data-depends-on' => 'processing_activity_isJointController',
+                    'data-depends-on-value' => '1',
+                    'placeholder' => 'processing_activity.placeholder.joint_controller_details',
+                ],
+            ])
 
             // ============================================================================
             // Risk & DPIA (Art. 35)
@@ -659,6 +677,8 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 // Junior-ISB-Audit-2026-05-22 K-02: Art. 28 DSGVO Auftragsverarbeiter-Dokumentation
                 'processorSuppliers',
                 'isJointController',
+                // Junior-ISB-Audit-2026-05-22 M-08: DSGVO Art. 26 Joint-Controller-Doku
+                'jointControllerDetails',
             ],
             'retention' => [
                 'retentionPeriod',
