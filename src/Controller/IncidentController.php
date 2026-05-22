@@ -34,6 +34,7 @@ use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -302,6 +303,37 @@ class IncidentController extends AbstractController
 
         return $this->json($assessment);
     }
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
+     * Warns if an Incident has linked DataBreach records or RiskIncidentLinks.
+     */
+    #[Route('/incident/bulk-delete-check', name: 'app_incident_bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDeleteCheck(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $ids = array_filter((array) ($data['ids'] ?? []), 'is_int');
+        if ($ids === []) {
+            return new JsonResponse(['dependencies' => [], 'checked_count' => 0]);
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+        $incidents = $this->incidentRepository->findBy(['id' => $ids, 'tenant' => $tenant]);
+
+        $em = $this->entityManager;
+        return $this->checkBulkDependencies($incidents, 'getTitle', [
+            fn (\App\Entity\Incident $incident): ?array => ($c = (int) $em->createQuery(
+                'SELECT COUNT(db.id) FROM App\Entity\DataBreach db WHERE db.incident = :incident'
+            )->setParameter('incident', $incident)->getSingleScalarResult()) > 0
+                ? ['message' => sprintf('%d Datenpanne(n) verknüpft', $c), 'icon' => 'shield-x']
+                : null,
+            fn (\App\Entity\Incident $incident): ?array => ($c = $this->riskIncidentLinkRepository->count(['incident' => $incident])) > 0
+                ? ['message' => sprintf('%d Risiko-Vorfall-Verknüpfung(en)', $c), 'icon' => 'link-45deg']
+                : null,
+        ]);
+    }
+
     #[Route('/incident/bulk-delete', name: 'app_incident_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
