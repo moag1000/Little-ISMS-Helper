@@ -202,3 +202,6 @@ business_process:
     no_risks: No risks linked.
   error:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+  validation:
+    mtpd_below_rto: 'MTPD must be greater than or equal to RTO (ISO 22301 Cl. 8.2.2 — Maximum Tolerable Period of Disruption is the outer bound; RTO must fit inside it).'
+    mtpd_below_rpo: 'MTPD must be greater than or equal to RPO (ISO 22301 Cl. 8.2.2 — Recovery Point Objective cannot exceed the maximum tolerance).'

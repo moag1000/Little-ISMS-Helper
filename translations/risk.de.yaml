@@ -286,13 +286,13 @@ risk:
   tooltip:
     probability: '<strong>🎲 Wie wahrscheinlich ist der Eintritt?</strong><br><em>Frage:
       Wie oft könnte dieses Risiko eintreten?</em><br><br><strong>1</strong> = Sehr
-      selten (1× in 10+ Jahren)<br><em>z.B. Erdbeben, Flugzeugabsturz</em><br><strong>2</strong>
-      = Selten (1× in 5 Jahren)<br><em>z.B. Großbrand, schwerer Cyberangriff</em><br><strong>3</strong>
-      = Gelegentlich (1× pro Jahr)<br><em>z.B. Stromausfall, Datenpanne</em><br><strong>4</strong>
-      = Häufig (mehrmals/Jahr)<br><em>z.B. Phishing-Versuche, Mitarbeiterfluktuation</em><br><strong>5</strong>
-      = Sehr häufig (monatlich+)<br><em>z.B. Spam, Login-Fehlversuche</em>'
+      unwahrscheinlich (1× in 10+ Jahren)<br><em>z.B. Erdbeben, Flugzeugabsturz</em><br><strong>2</strong>
+      = Unwahrscheinlich (1× in 5 Jahren)<br><em>z.B. Großbrand, schwerer Cyberangriff</em><br><strong>3</strong>
+      = Möglich (1× pro Jahr)<br><em>z.B. Stromausfall, Datenpanne</em><br><strong>4</strong>
+      = Wahrscheinlich (mehrmals/Jahr)<br><em>z.B. Phishing-Versuche, Mitarbeiterfluktuation</em><br><strong>5</strong>
+      = Sehr wahrscheinlich (monatlich+)<br><em>z.B. Spam, Login-Fehlversuche</em>'
     impact: '<strong>💥 Wie schwer wäre der Schaden?</strong><br><em>Frage: Was passiert,
-      wenn das Risiko eintritt?</em><br><br><strong>1</strong> = Minimal (&lt;1.000€,
+      wenn das Risiko eintritt?</em><br><br><strong>1</strong> = Vernachlässigbar (&lt;1.000€,
       kein Betriebsausfall)<br><em>z.B. einzelner PC defekt</em><br><strong>2</strong>
       = Gering (1.000-10.000€, Stunden Ausfall)<br><em>z.B. Server-Neustart nötig</em><br><strong>3</strong>
       = Mittel (10.000-100.000€, Tage Ausfall)<br><em>z.B. Abteilung lahmgelegt</em><br><strong>4</strong>
@@ -387,17 +387,17 @@ risk:
     risks_total: 'Risiken gesamt'
     cell_title: 'Wahrscheinlichkeit: %probability% | Auswirkung: %impact%'
     likelihood:
-      1: 'Sehr selten'
-      2: 'Selten'
-      3: 'Gelegentlich'
+      1: 'Sehr unwahrscheinlich'
+      2: 'Unwahrscheinlich'
+      3: 'Möglich'
       4: 'Wahrscheinlich'
       5: 'Sehr wahrscheinlich'
     impact_label:
-      1: 'Unbedeutend'
+      1: 'Vernachlässigbar'
       2: 'Gering'
-      3: 'Moderat'
+      3: 'Mittel'
       4: 'Hoch'
-      5: 'Kritisch'
+      5: 'Katastrophal'
   acceptance:
     title: Risikoakzeptanz beantragen
     request: Antrag auf Risikoakzeptanz

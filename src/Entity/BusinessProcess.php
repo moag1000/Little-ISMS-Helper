@@ -14,6 +14,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: BusinessProcessRepository::class)]
 class BusinessProcess
@@ -867,6 +869,33 @@ class BusinessProcess
             $this->processOwner,
             $this->processOwnerDeputyPersons,
         );
+    }
+
+    /**
+     * ISO 22301 Cl. 8.2.2 — MTPD must be >= RTO and >= RPO.
+     *
+     * Maximum Tolerable Period of Disruption is the outer-bound; if a process
+     * cannot recover within MTPD the business cannot survive the disruption.
+     * Therefore RTO (when the process must be back) and RPO (acceptable data
+     * loss measured in time before disruption) MUST both be ≤ MTPD. Storing
+     * a configuration where MTPD < RTO would be an audit non-conformity in
+     * a certification audit (BIA fundamentally broken).
+     */
+    #[Assert\Callback]
+    public function validateBiaConsistency(ExecutionContextInterface $context): void
+    {
+        if ($this->mtpd !== null && $this->rto !== null && $this->mtpd < $this->rto) {
+            $context->buildViolation('business_process.validation.mtpd_below_rto')
+                ->setTranslationDomain('business_process')
+                ->atPath('mtpd')
+                ->addViolation();
+        }
+        if ($this->mtpd !== null && $this->rpo !== null && $this->mtpd < $this->rpo) {
+            $context->buildViolation('business_process.validation.mtpd_below_rpo')
+                ->setTranslationDomain('business_process')
+                ->atPath('mtpd')
+                ->addViolation();
+        }
     }
 
 }

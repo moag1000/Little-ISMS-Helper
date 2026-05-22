@@ -244,6 +244,44 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'required' => false,
                 'help' => 'risk.help.acceptance_expiry_date',
             ])
+            // ── Risk-Decision Audit-Trail (ISO 27001 Cl. 6.1.3) ──────────────
+            // 5 entity-fields previously NOT exposed in any FormType — pure
+            // dead-code per UX-audit 2026-05-22. Required for full
+            // decision-rationale documentation distinct from "acceptance"
+            // (acceptance = WHO/WHEN agreed; decision = WHY likelihood/impact
+            // ratings + WHY overall decision were chosen).
+            ->add('likelihoodJustification', TextareaType::class, [
+                'label' => 'risk.field.likelihood_justification',
+                'required' => false,
+                'help' => 'risk.help.likelihood_justification',
+                'attr' => ['rows' => 3],
+            ])
+            ->add('impactJustification', TextareaType::class, [
+                'label' => 'risk.field.impact_justification',
+                'required' => false,
+                'help' => 'risk.help.impact_justification',
+                'attr' => ['rows' => 3],
+            ])
+            ->add('decisionRationale', TextareaType::class, [
+                'label' => 'risk.field.decision_rationale',
+                'required' => false,
+                'help' => 'risk.help.decision_rationale',
+                'attr' => ['rows' => 3],
+            ])
+            ->add('decisionApprovedByUser', EntityType::class, [
+                'label' => 'risk.field.decision_approved_by_user',
+                'class' => User::class,
+                'choice_label' => fn(User $u) => $u->getFullName() ?: $u->getEmail(),
+                'required' => false,
+                'help' => 'risk.help.decision_approved_by_user',
+                'placeholder' => 'common.please_select',
+            ])
+            ->add('decisionApprovalDate', DateType::class, [
+                'label' => 'risk.field.decision_approval_date',
+                'widget' => 'single_text',
+                'required' => false,
+                'help' => 'risk.help.decision_approval_date',
+            ])
             // ── Status field is READ-ONLY (Lifecycle-bypass fix) ──────────────
             // Owned by `risk_lifecycle`. YAML 4-eyes on `accept`.
             // Transitions via LifecycleService::transition() only.
