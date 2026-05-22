@@ -91,6 +91,15 @@ export default class extends Controller {
                 })
             });
 
+            if (!response.ok) {
+                const msg = response.status === 403
+                    ? 'Keine Berechtigung'
+                    : `Fehler ${response.status}`;
+                contentEl.innerHTML = `<div class="alert alert-danger">${msg}</div>`;
+                window.faToast(msg, 'danger');
+                return;
+            }
+
             const data = await response.json();
             this.renderWidgetContent(contentEl, widgetType, data);
         } catch (error) {
@@ -453,6 +462,14 @@ export default class extends Controller {
                 body: JSON.stringify({ user_ids: selectedUsers })
             });
 
+            if (!response.ok) {
+                const msg = response.status === 403
+                    ? 'Keine Berechtigung'
+                    : `Fehler ${response.status}`;
+                window.faToast(msg, 'danger');
+                return;
+            }
+
             const result = await response.json();
 
             if (result.success) {
@@ -460,6 +477,8 @@ export default class extends Controller {
                 const modal = document.getElementById('shareModal');
                 const faModal = modal ? this.application.getControllerForElementAndIdentifier(modal, 'fa-modal') : null;
                 faModal?.close();
+            } else {
+                this.showNotification(result.error || 'Failed to save sharing settings', 'danger');
             }
         } catch (error) {
             console.error('Share error:', error);

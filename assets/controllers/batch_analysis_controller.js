@@ -102,6 +102,16 @@ export default class extends Controller {
                     })
                 });
 
+                if (!response.ok) {
+                    this.errors++;
+                    const msg = response.status === 403
+                        ? 'Keine Berechtigung'
+                        : `Fehler ${response.status}`;
+                    this.log(msg);
+                    window.faToast(msg, 'danger');
+                    break;
+                }
+
                 const result = await response.json();
 
                 if (!result.success) {
