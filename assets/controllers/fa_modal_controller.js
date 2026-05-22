@@ -134,7 +134,15 @@ export default class extends Controller {
         const isOpen = this.openValue;
 
         this.element.classList.toggle('is-open', isOpen);
-        this.element.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        // Use `inert` (not `aria-hidden`) so that focused descendants inside a
+        // closed modal don't trigger the "Blocked aria-hidden on element with
+        // focused descendant" browser a11y violation (WAI-ARIA 1.2 §6.6.1).
+        // `inert` removes focusability AND hides from the a11y tree in one step.
+        if (isOpen) {
+            this.element.removeAttribute('inert');
+        } else {
+            this.element.setAttribute('inert', '');
+        }
 
         if (isOpen) {
             document.body.style.overflow = 'hidden';
