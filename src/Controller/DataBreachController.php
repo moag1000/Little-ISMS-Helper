@@ -492,6 +492,19 @@ class DataBreachController extends AbstractController
         ]);
     }
 
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
+     * DataBreaches have no blocking FK relations — returns empty dependencies.
+     */
+    #[Route('/bulk-delete-check', name: 'bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDeleteCheck(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $ids = (array) ($data['ids'] ?? []);
+        return new JsonResponse(['dependencies' => [], 'checked_count' => count($ids)]);
+    }
+
     #[Route('/bulk-delete', name: 'bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request): JsonResponse

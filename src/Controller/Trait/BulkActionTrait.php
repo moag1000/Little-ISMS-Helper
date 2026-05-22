@@ -7,6 +7,7 @@ namespace App\Controller\Trait;
 use App\Entity\User;
 use App\Lifecycle\LifecycleService;
 use App\Service\AuditLogger;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -21,6 +22,56 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 trait BulkActionTrait
 {
+    /**
+     * Generic dependency-check helper for bulk-delete-check endpoints.
+     *
+     * Iterates the given (pre-tenant-scoped) entities, runs each checker
+     * closure, and returns a JSON response in the format expected by the
+     * bulk-delete-confirmation Stimulus controller:
+     *   { "dependencies": [{"message": "...", "icon": "..."}, ...], "checked_count": N }
+     *
+     * Each checker closure should return either null (no warning) or an array
+     * with at least a non-empty "message" key and an optional "icon" key.
+     * The "entity" and "count" metadata from the task spec are encoded into
+     * the human-readable message string here.
+     *
+     * @param iterable<object>  $entities      Tenant-scoped entities to check (already filtered by caller).
+     * @param string            $labelGetter   Method on entity returning the display label (e.g. "getName").
+     * @param array<callable>   $dependencyMap Array of closures: fn(object $entity): array|null — each returns
+     *                                         null or ['message' => '...', 'icon' => '...'].
+     *
+     * @return JsonResponse {"dependencies": [...], "checked_count": int}
+     */
+    protected function checkBulkDependencies(
+        iterable $entities,
+        string $labelGetter,
+        array $dependencyMap = [],
+    ): JsonResponse {
+        $deps = [];
+        $count = 0;
+
+        foreach ($entities as $entity) {
+            $count++;
+            if ($dependencyMap === []) {
+                continue;
+            }
+            $label = method_exists($entity, $labelGetter)
+                ? (string) $entity->{$labelGetter}()
+                : (string) ($entity->getId() ?? '?');
+            foreach ($dependencyMap as $checker) {
+                $check = ($checker)($entity);
+                if ($check !== null && isset($check['message']) && $check['message'] !== '') {
+                    $deps[] = [
+                        'message' => $label . ': ' . $check['message'],
+                        'icon' => $check['icon'] ?? 'link-45deg',
+                    ];
+                }
+            }
+        }
+
+        return new JsonResponse(['dependencies' => $deps, 'checked_count' => $count]);
+    }
+
     /**
      * Stream a CSV export response for the given entities.
      *

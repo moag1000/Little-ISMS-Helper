@@ -164,6 +164,19 @@ class ThreatIntelligenceController extends AbstractController
         return $this->redirectToRoute('app_threat_intelligence_index');
     }
 
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
+     * ThreatIntelligence entries have no blocking FK relations — returns empty dependencies.
+     */
+    #[Route('/threat-intelligence/bulk-delete-check', name: 'app_threat_intelligence_bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDeleteCheck(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $ids = (array) ($data['ids'] ?? []);
+        return new JsonResponse(['dependencies' => [], 'checked_count' => count($ids)]);
+    }
+
     #[Route('/threat-intelligence/bulk-delete', name: 'app_threat_intelligence_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request): JsonResponse

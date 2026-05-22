@@ -41,6 +41,7 @@ use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -990,6 +991,37 @@ class RiskController extends AbstractController
             'risksByLevel' => $risksByLevel,
         ]);
     }
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
+     * Warns if a Risk has linked Treatment Plans or Incidents before deletion.
+     */
+    #[Route('/risk/bulk-delete-check', name: 'app_risk_bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDeleteCheck(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $ids = array_filter((array) ($data['ids'] ?? []), 'is_int');
+        if ($ids === []) {
+            return new JsonResponse(['dependencies' => [], 'checked_count' => 0]);
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+        $risks = $this->riskRepository->findBy(['id' => $ids, 'tenant' => $tenant]);
+
+        return $this->checkBulkDependencies($risks, 'getTitle', [
+            fn (Risk $risk): ?array => count($this->riskTreatmentPlanRepository->findByRisk($risk)) > 0
+                ? ['message' => sprintf('%d Behandlungsplan/-pläne verknüpft', count($this->riskTreatmentPlanRepository->findByRisk($risk))), 'icon' => 'file-earmark-check']
+                : null,
+            fn (Risk $risk): ?array => ($c = $risk->getIncidents()->count()) > 0
+                ? ['message' => sprintf('%d Vorfall/Vorfälle verknüpft', $c), 'icon' => 'exclamation-triangle']
+                : null,
+            fn (Risk $risk): ?array => ($c = $risk->getControls()->count()) > 0
+                ? ['message' => sprintf('%d Maßnahme(n) verknüpft', $c), 'icon' => 'check-circle']
+                : null,
+        ]);
+    }
+
     #[Route('/risk/bulk-delete', name: 'app_risk_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
