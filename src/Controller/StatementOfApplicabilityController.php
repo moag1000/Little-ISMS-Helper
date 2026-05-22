@@ -80,15 +80,19 @@ class StatementOfApplicabilityController extends AbstractController
         // Essential-for-small-business filter (KMU/SME toggle)
         $essential = $request->query->get('essential');
 
-        // Get controls based on view filter
+        // Get controls based on view filter.
+        // $unfilteredControls holds the full DB result; applied filters narrow it
+        // to $controls for the table. Both reference the same already-hydrated
+        // objects — no second DB round-trip for mrisStats (perf fix B-1).
         if ($tenant) {
-            $controls = match ($view) {
+            $unfilteredControls = match ($view) {
                 'own' => $this->controlRepository->findByTenant($tenant),
                 'subsidiaries' => $this->controlRepository->findByTenantIncludingSubsidiaries($tenant),
                 default => $this->controlRepository->findByTenantIncludingParent($tenant),
             };
-            // Sort by ISO order using natural sort for proper numeric ordering (A.5.2 before A.5.10)
-            usort($controls, function($a, $b): int {
+            // Sort by ISO order using natural sort for proper numeric ordering (A.5.2 before A.5.10).
+            // DB uses LENGTH+ASC but that's lexicographic; strnatcmp is the canonical PHP sort.
+            usort($unfilteredControls, static function (Control $a, Control $b): int {
                 $aRef = $a->getIsoReference() ?? $a->getControlId() ?? '';
                 $bRef = $b->getIsoReference() ?? $b->getControlId() ?? '';
                 return strnatcmp($aRef, $bRef);
@@ -101,13 +105,16 @@ class StatementOfApplicabilityController extends AbstractController
         } else {
             // Defensive: short-circuited above, but keep the empty branch so
             // unrelated callers (filter pipelines) keep working.
-            $controls = [];
+            $unfilteredControls = [];
             $inheritanceInfo = [
                 'hasParent' => false,
                 'hasSubsidiaries' => false,
                 'currentView' => 'own'
             ];
         }
+
+        // Apply URL filters to produce the display set.
+        $controls = $unfilteredControls;
 
         // WS-5: framework-tag filter via ?tag=NIS2
         $tagFilter = $request->query->get('tag');
@@ -129,7 +136,7 @@ class StatementOfApplicabilityController extends AbstractController
         }
         if ($q !== '') {
             $needle = mb_strtolower($q);
-            $controls = array_filter($controls, function (Control $c) use ($needle): bool {
+            $controls = array_filter($controls, static function (Control $c) use ($needle): bool {
                 $haystack = mb_strtolower(
                     ($c->getName() ?? '')
                     . ' ' . ($c->getDescription() ?? '')
@@ -148,22 +155,20 @@ class StatementOfApplicabilityController extends AbstractController
             ? $this->controlRepository->countByCategory($tenant)
             : [];
 
-        // Calculate detailed statistics based on origin
+        // Calculate detailed statistics based on origin.
+        // Use $unfilteredControls so the KPI breakdown always reflects the full tenant set
+        // regardless of which display filters are active.
         if ($tenant) {
-            $detailedStats = $this->calculateDetailedStats($controls, $tenant);
+            $detailedStats = $this->calculateDetailedStats($unfilteredControls, $tenant);
         } else {
-            $detailedStats = ['own' => count($controls), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($controls)];
+            $detailedStats = ['own' => count($unfilteredControls), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($unfilteredControls)];
         }
 
-        // MRIS-Verteilung pro Kategorie (alle Controls, nicht gefiltert) — für UI-Filter-Counts
+        // MRIS-Verteilung pro Kategorie (alle Controls, nicht gefiltert) — für UI-Filter-Counts.
+        // Reuse $unfilteredControls — eliminates the previous second identical DB query (perf fix B-1).
         $mrisStats = ['standfest' => 0, 'degradiert' => 0, 'reibung' => 0, 'nicht_betroffen' => 0];
         if ($tenant) {
-            $allControls = match ($view) {
-                'own' => $this->controlRepository->findByTenant($tenant),
-                'subsidiaries' => $this->controlRepository->findByTenantIncludingSubsidiaries($tenant),
-                default => $this->controlRepository->findByTenantIncludingParent($tenant),
-            };
-            foreach ($allControls as $c) {
+            foreach ($unfilteredControls as $c) {
                 $cat = $c->getMythosResilience();
                 if ($cat !== null && isset($mrisStats[$cat])) {
                     $mrisStats[$cat]++;
