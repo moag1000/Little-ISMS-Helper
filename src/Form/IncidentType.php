@@ -26,6 +26,8 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -42,6 +44,19 @@ final class IncidentType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Junior-ISB-Audit-2026-05-22 K-01: SLA-Countdown anchor needs an unambiguous start time.
+        // GDPR Art. 33 (1) / NIS2 Art. 23 (4) 72h notification deadlines are measured from
+        // detectedAt. Incident::__construct() already sets a default; this form-layer listener
+        // is a defence-in-depth so the SLA contract is explicit and survives any future entity
+        // refactor. Only fires when detectedAt is null on the bound entity — editing an
+        // existing incident does NOT overwrite the persisted value.
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event): void {
+            $entity = $event->getData();
+            if ($entity instanceof Incident && $entity->getDetectedAt() === null) {
+                $entity->setDetectedAt(new \DateTimeImmutable());
+            }
+        });
+
         $builder
             ->add('title', TextType::class, [
                 'label' => 'incident.field.title',
