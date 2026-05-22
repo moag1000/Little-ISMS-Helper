@@ -1,0 +1,82 @@
+{% extends 'base_auth.html.twig' %}
+{% trans_default_domain 'security' %}
+
+{% block title %}{{ 'reauth.title'|trans({}, 'security') }} — Little ISMS Helper{% endblock %}
+
+{% block auth_mood %}warning{% endblock %}
+{% block auth_alva_line %}{{ 'reauth.alva_line'|trans({}, 'security') }}{% endblock %}
+{% block auth_alva_sub %}{{ 'reauth.alva_sub'|trans({}, 'security') }}{% endblock %}
+
+{% block body %}
+{% import '_components/_cyber_input.html.twig' as ci %}
+{% import '_components/_cyber_button.html.twig' as btn %}
+{% import '_components/_alert.html.twig' as faAlert %}
+
+<div class="fa-auth-form">
+    <header class="fa-auth-form__head">
+        <div class="fa-auth-form__eyebrow">
+            <i class="fa-icon fa-icon--control" aria-hidden="true"></i>
+            {{ 'reauth.eyebrow'|trans({}, 'security') }}
+        </div>
+        <h1 class="fa-auth-form__title">{{ 'reauth.title'|trans({}, 'security') }}</h1>
+        <p class="fa-auth-form__desc">
+            {{ 'reauth.subtitle'|trans({'%user%': user_identifier}, 'security') }}
+        </p>
+    </header>
+
+    {{ faAlert.render(
+        'reauth.explanation'|trans({}, 'security'),
+        'info',
+        { withAlva: true, dismissible: false }
+    )|raw }}
+
+    <form method="post"
+          action="{{ path('app_login') }}"
+          novalidate
+          class="fa-auth-form__form"
+          data-controller="form-validation"
+          data-action="submit->form-validation#handleSubmit">
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        {# Pass the validated return_to so LoginSuccessHandler can redirect back. #}
+        {% if return_to %}
+            <input type="hidden" name="_target_path" value="{{ return_to }}">
+        {% endif %}
+
+        {# Email is pre-filled and readonly — the user just needs to confirm the password. #}
+        {{ ci.render({
+            name: '_username',
+            label: 'reauth.field.email'|trans({}, 'security'),
+            type: 'email',
+            value: user_identifier,
+            required: true,
+            autocomplete: 'username',
+            attrs: { readonly: 'readonly', tabindex: '-1' }
+        }) }}
+
+        {{ ci.render({
+            name: '_password',
+            label: 'reauth.field.password'|trans({}, 'security'),
+            type: 'password',
+            required: true,
+            autocomplete: 'current-password',
+            attrs: { autofocus: 'autofocus' }
+        }) }}
+
+        {{ btn.submit('reauth.action.confirm'|trans({}, 'security'), {
+            variant: 'primary',
+            fullWidth: true,
+            icon: 'ui-login',
+            attrs: { 'data-controller': 'button-loading', 'data-action': 'button-loading#start' }
+        }) }}
+    </form>
+
+    <div class="fa-auth-form__footer-link">
+        <a href="{{ path('app_logout') }}" class="fa-auth-cancel-link">
+            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+            {{ 'reauth.action.logout'|trans({}, 'security') }}
+        </a>
+    </div>
+</div>
+{% endblock %}

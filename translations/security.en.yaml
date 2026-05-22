@@ -17,3 +17,17 @@
 'Invalid or expired login link.': 'Invalid or expired login link.'
 'Too many failed login attempts, please try again in %minutes% minute.': 'Too many failed login attempts, please try again in %minutes% minute.'
 'Too many failed login attempts, please try again in %minutes% minutes.': 'Too many failed login attempts, please try again in %minutes% minutes.'
+
+reauth:
+    eyebrow: 'Confirm Identity'
+    alva_line: 'Quick security check.'
+    alva_sub: 'Just your password, then you can continue.'
+    title: 'Confirm Login'
+    subtitle: 'You are signed in as %user%. Please confirm your password to continue this action.'
+    explanation: 'For security reasons, certain actions (e.g. bulk import, bulk operations) require a fresh authentication — your current session was restored via "Remember Me".'
+    field:
+        email: 'Email Address'
+        password: 'Password'
+    action:
+        confirm: 'Confirm Password'
+        logout: 'Sign out instead'

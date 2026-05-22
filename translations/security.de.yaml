@@ -17,3 +17,17 @@
 'Invalid or expired login link.': 'Ungültiger oder abgelaufener Anmelde-Link.'
 'Too many failed login attempts, please try again in %minutes% minute.': 'Zu viele fehlgeschlagene Anmeldeversuche, bitte versuchen Sie es in einer Minute noch einmal.'
 'Too many failed login attempts, please try again in %minutes% minutes.': 'Zu viele fehlgeschlagene Anmeldeversuche, bitte versuchen Sie es in %minutes% Minuten noch einmal.'
+
+reauth:
+    eyebrow: 'Identität bestätigen'
+    alva_line: 'Kurze Sicherheitsprüfung.'
+    alva_sub: 'Nur Ihr Passwort, dann geht es weiter.'
+    title: 'Login bestätigen'
+    subtitle: 'Sie sind als %user% angemeldet. Für diese Aktion bestätigen Sie bitte Ihr Passwort.'
+    explanation: 'Aus Sicherheitsgründen erfordern bestimmte Aktionen (z. B. Massenimport, Bulk-Operationen) eine frische Authentifizierung — Ihre aktuelle Sitzung wurde via „Angemeldet bleiben" wiederhergestellt.'
+    field:
+        email: 'E-Mail-Adresse'
+        password: 'Passwort'
+    action:
+        confirm: 'Passwort bestätigen'
+        logout: 'Stattdessen abmelden'
