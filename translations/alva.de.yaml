@@ -193,6 +193,10 @@ bc_exercise:
         title: 'Abgeschlossene BC-Übung ohne dokumentierte Erkenntnisse'
         body: 'ISO 22301 Cl. 8.6 erwartet von jeder Übung mindestens eine dokumentierte Feststellung oder einen Verbesserungsbereich. Ein Übungsbericht ohne Beobachtungen hat begrenzten Audit-Wert — Regulatoren und Zertifizierungsstellen werden dies bemerken.'
         action: 'Erkenntnisse ergänzen'
+    target_missed:
+        title: 'Übungsziel verfehlt — geplanter RTO nicht erreicht'
+        body: 'Die Übung hat den geplanten RTO (%planRto% h) des Plans „%planTitle%" nicht erreicht — actualRTO %actualRto% h. ISO 22301 Cl. 8.5.3 + 9.1.1 (Lessons-Learned) und BSI 200-4 ÜP-9 fordern, dass dieses Ergebnis in eine Plan-Korrektur überführt wird. Eine Anpassung des Plans wird empfohlen.'
+        action: 'Plan bearbeiten'
 
 audit:
     findings_without_capa:

@@ -193,6 +193,10 @@ bc_exercise:
         title: 'Completed BC exercise without documented findings'
         body: 'ISO 22301 Cl. 8.6 expects every exercise to produce at least one documented finding or area for improvement. An exercise report without observations is of limited audit value — regulators and certification bodies will notice.'
         action: 'Add findings'
+    target_missed:
+        title: 'Exercise target missed — planned RTO not achieved'
+        body: 'The exercise did not achieve the planned RTO (%planRto% h) of plan "%planTitle%" — actualRTO %actualRto% h. ISO 22301 Cl. 8.5.3 + 9.1.1 (Lessons-Learned) and BSI 200-4 ÜP-9 require this result to feed back into plan adjustment. Plan adjustment recommended.'
+        action: 'Edit plan'
 
 audit:
     findings_without_capa:
