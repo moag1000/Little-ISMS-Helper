@@ -62,8 +62,34 @@ class SecurityController extends AbstractController
         $request->getSession()->set('_locale', $locale);
         $request->setLocale($locale);
 
-        // If user is already logged in, redirect to dashboard with locale
+        // If user is already logged in …
         if ($this->getUser() instanceof UserInterface) {
+            // Check whether this visit was triggered by the ReauthAccessDeniedHandler
+            // (RememberMe-only session tried to access an IS_AUTHENTICATED_FULLY resource).
+            $reauthRequested = $request->query->getBoolean('_security_reauth')
+                || !$this->isGranted('IS_AUTHENTICATED_FULLY');
+
+            if ($reauthRequested) {
+                // Validate returnTo: must be a relative path on the same host.
+                // Reject empty, absolute URLs and protocol-relative URLs.
+                $returnTo = $request->query->get('_security_return_to', '');
+                if (!str_starts_with($returnTo, '/') || str_starts_with($returnTo, '//')) {
+                    $returnTo = '';
+                }
+
+                $response = $this->render('security/reauth.html.twig', [
+                    'user_identifier' => $this->getUser()->getUserIdentifier(),
+                    'return_to'       => $returnTo,
+                ]);
+
+                $response->setSharedMaxAge(0);
+                $response->headers->addCacheControlDirective('no-cache', true);
+                $response->headers->addCacheControlDirective('no-store', true);
+                $response->headers->addCacheControlDirective('must-revalidate', true);
+
+                return $response;
+            }
+
             return $this->redirectToRoute('app_dashboard', ['_locale' => $locale]);
         }
 
