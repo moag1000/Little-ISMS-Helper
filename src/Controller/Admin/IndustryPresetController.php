@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\ComplianceFramework;
 use App\Entity\Control;
 use App\Entity\Document;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * V3 W2-M3 — Admin UI for Industry-Preset application.
@@ -36,14 +38,27 @@ use Symfony\Component\Yaml\Yaml;
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class IndustryPresetController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     private const PRESET_DIR = __DIR__ . '/../../../fixtures/library/presets';
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly TranslatorInterface $translator,
         private readonly ?AuditLogger $auditLogger = null,
     ) {
+    }
+
+    protected function getFlashDomain(): string
+    {
+        return 'admin';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
@@ -63,7 +78,7 @@ class IndustryPresetController extends AbstractController
     {
         $config = $this->loadPreset($preset);
         if ($config === null) {
-            $this->addFlash('error', 'Preset not found.');
+            $this->flashError('admin.industry_preset.error.not_found');
             return $this->redirectToRoute('app_admin_industry_preset_index');
         }
 
@@ -78,19 +93,19 @@ class IndustryPresetController extends AbstractController
     public function apply(string $preset, Request $request): Response
     {
         if (!$this->isCsrfTokenValid('industry_preset_' . $preset, (string) $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('admin.industry_preset.error.invalid_csrf');
             return $this->redirectToRoute('app_admin_industry_preset_index');
         }
 
         $config = $this->loadPreset($preset);
         if ($config === null) {
-            $this->addFlash('error', 'Preset not found.');
+            $this->flashError('admin.industry_preset.error.not_found');
             return $this->redirectToRoute('app_admin_industry_preset_index');
         }
 
         $tenant = $this->tenantContext->resolveAdminScope($request->request->get('tenant_id'));
         if ($tenant === null) {
-            $this->addFlash('error', 'Tenant context required.');
+            $this->flashError('admin.industry_preset.error.tenant_required');
             return $this->redirectToRoute('app_admin_industry_preset_index');
         }
 

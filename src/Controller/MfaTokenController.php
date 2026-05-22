@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Exception;
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\MfaToken;
 use App\Entity\User;
 use App\Repository\MfaTokenRepository;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Admin UI for MFA-Token management (TOTP / WebAuthn / Backup codes).
@@ -32,13 +34,26 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted(TenantScopedAdminVoter::ADMIN_OWN_TENANT)]
 class MfaTokenController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly MfaTokenRepository $mfaTokenRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly MfaService $mfaService,
         private readonly AuditLogger $auditLogger,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly TranslatorInterface $translator,
     ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'mfa';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
     #[Route('/admin/mfa', name: 'admin_mfa_index', methods: ['GET'])]
     #[IsGranted('MFA_VIEW')]
     public function index(): Response
@@ -162,7 +177,7 @@ class MfaTokenController extends AbstractController
 
         $backupCodes = $this->mfaService->regenerateBackupCodes($mfaToken);
 
-        $this->addFlash('success', 'Backup codes regenerated successfully');
+        $this->flashSuccess('mfa.token.success.backup_regenerated');
 
         $this->logger->info('Backup codes regenerated', [
             'admin_user' => $this->getUser()?->getUserIdentifier(),
@@ -203,7 +218,7 @@ class MfaTokenController extends AbstractController
             'token_type' => $mfaToken->getTokenType(),
         ]);
 
-        $this->addFlash('success', 'MFA token disabled successfully');
+        $this->flashSuccess('mfa.token.success.disabled');
 
         return $this->redirectToRoute('admin_mfa_index');
     }
@@ -239,7 +254,7 @@ class MfaTokenController extends AbstractController
             sprintf('MFA token deleted for user %s by admin', $userEmail)
         );
 
-        $this->addFlash('success', 'MFA token deleted successfully');
+        $this->flashSuccess('mfa.token.success.deleted');
 
         return $this->redirectToRoute('admin_mfa_index');
     }

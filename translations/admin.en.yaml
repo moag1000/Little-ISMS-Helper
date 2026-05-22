@@ -1,4 +1,9 @@
 admin:
+    industry_preset:
+        error:
+            not_found: 'Preset not found.'
+            invalid_csrf: 'Invalid CSRF token.'
+            tenant_required: 'Tenant context required.'
     title: Administration
     cancel: 'Cancel'
     tenant_management:
