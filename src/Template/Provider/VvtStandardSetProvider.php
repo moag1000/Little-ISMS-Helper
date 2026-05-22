@@ -11,12 +11,14 @@ use App\Template\TemplateProviderInterface;
 /**
  * GDPR Art. 30 standard VVT starter set.
  *
- * Foundation P-14. Five everyday processing activities every German SMB has:
+ * Foundation P-14. Six everyday processing activities every German SMB has:
  * Bewerbermanagement, Lohnbuchhaltung, Kundenstamm, Marketing-Newsletter,
- * Vertragspartner. Each template is a single ProcessingActivity prefilled
- * with `dataSubjectCategories`, `personalDataCategories`, `legalBasis`,
+ * Vertragspartner, HR-Personalakte. Each template is a single ProcessingActivity
+ * prefilled with `dataSubjectCategories`, `personalDataCategories`, `legalBasis`,
  * `retentionPeriodDays`, `technicalOrganizationalMeasures` so the DPO can
  * adopt and refine instead of starting from a blank form.
+ *
+ * Junior-ISB-Audit-2026-05-22 M-05: HR-Personalakte added as 6th template.
  */
 final class VvtStandardSetProvider implements TemplateProviderInterface
 {
@@ -92,6 +94,23 @@ final class VvtStandardSetProvider implements TemplateProviderInterface
                 'legal_basis' => 'contract',
                 'retention_days' => 3650,
                 'department' => 'Procurement',
+            ],
+            // Junior-ISB-Audit-2026-05-22 M-05: HR-Personalakte — full employee
+            // lifecycle records (contract, appraisals, absences, training, exit).
+            // Legal basis: GDPR Art. 6(1)(b) + Art. 88, BDSG § 26.
+            [
+                'key' => 'hr_personnel_file',
+                'name_de' => 'HR-Personalakte',
+                'name_en' => 'HR Personnel file',
+                'description_de' => 'Führung der Personalakte über den gesamten Mitarbeiter-Lebenszyklus — Vertrag, Beurteilungen, Fehlzeiten, Weiterbildungen, Austritt.',
+                'description_en' => 'Personnel-file management across the entire employee lifecycle — contract, appraisals, absences, training, exit.',
+                'purposes_de' => ['Personalverwaltung', 'Beurteilungen', 'Fehlzeitenmanagement', 'Weiterbildungs-Dokumentation', 'Austrittsabwicklung'],
+                'purposes_en' => ['HR administration', 'Performance reviews', 'Absence management', 'Training records', 'Exit processing'],
+                'data_subjects' => ['employees'],
+                'data_categories' => ['identity', 'contact', 'contract_data', 'employment_history', 'qualifications', 'absence_records', 'performance_reviews'],
+                'legal_basis' => 'contract',
+                'retention_days' => 3650,  // 10 Jahre nach Austritt (AO § 147 + Beweiserhalt)
+                'department' => 'HR',
             ],
         ];
 

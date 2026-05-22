@@ -12,13 +12,34 @@ use PHPUnit\Framework\TestCase;
 final class VvtStandardSetProviderTest extends TestCase
 {
     #[Test]
-    public function emitsFiveStandardVvtsPerLanguage(): void
+    public function emitsSixStandardVvtsPerLanguage(): void
     {
         $provider = new VvtStandardSetProvider();
         $templates = iterator_to_array($provider->provide());
 
-        // 5 VVTs × 2 languages = 10 templates
-        $this->assertCount(10, $templates);
+        // 6 VVTs × 2 languages = 12 templates (recruiting, payroll, customer_master,
+        // marketing_newsletter, contract_partner, hr_personnel_file — M-05 added the last)
+        $this->assertCount(12, $templates);
+    }
+
+    #[Test]
+    public function hrPersonnelFileTemplateIsExposed(): void
+    {
+        $provider = new VvtStandardSetProvider();
+        $de = null;
+        $en = null;
+        foreach ($provider->provide() as $template) {
+            if ($template->key === 'vvt.standard.hr_personnel_file.de') {
+                $de = $template;
+            } elseif ($template->key === 'vvt.standard.hr_personnel_file.en') {
+                $en = $template;
+            }
+        }
+        $this->assertNotNull($de, 'HR-Personalakte DE template missing');
+        $this->assertNotNull($en, 'HR-Personalakte EN template missing');
+        $this->assertSame('HR-Personalakte', $de->name);
+        $this->assertSame('contract', $de->prefill['legalBasis']);
+        $this->assertContains('employees', $de->prefill['dataSubjectCategories']);
     }
 
     #[Test]

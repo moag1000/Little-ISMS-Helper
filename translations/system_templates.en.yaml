@@ -19,3 +19,4 @@ system_templates:
         konzern: 'Group / Holding'
         verein: 'Association / Non-profit'
         finanzdienstleister: 'Financial services (BaFin / DORA)'
+        automotive_supplier: 'Automotive supplier (TISAX / Prototype Protection)'
