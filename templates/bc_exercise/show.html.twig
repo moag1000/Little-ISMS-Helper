@@ -2,6 +2,7 @@
 {% trans_default_domain 'bc_exercises' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 
 {% block title %}{{ bc_exercise.name }}{% endblock %}
 
@@ -20,6 +21,10 @@
             { label: bc_exercise.name }
         ]
     } %}
+
+    {# Junior-ISB-Audit-2026-05-22 K-07: ISO 22301 Cl. 8.5.3 + 9.1.1 Lessons-Learned loop #}
+    {% set hint = alva_hint(bc_exercise) %}
+    {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {{ _fa_page_header.render({
         badge: { icon: 'play', label: ('bc_exercises.exercise_type.' ~ bc_exercise.exerciseType)|trans({}, 'bc_exercises') },
