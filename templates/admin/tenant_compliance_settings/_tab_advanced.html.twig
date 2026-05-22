@@ -1,0 +1,14 @@
+{#
+ # Tenant Compliance Settings — tab: advanced (JSON config fields)
+ # Fields: supervisoryAuthorities, dataRetentionPolicies, notificationPreferences,
+ #         csirtEndpoints, crisisTeamOnCall
+ #}
+{% trans_default_domain 'admin' %}
+<p class="text-muted small mb-3">{{ 'admin.tenant_settings.json_help'|trans({}, 'admin') }}</p>
+<div class="row g-3">
+    <div class="col-12">{{ form_row(form.supervisoryAuthorities) }}</div>
+    <div class="col-12">{{ form_row(form.dataRetentionPolicies) }}</div>
+    <div class="col-12">{{ form_row(form.notificationPreferences) }}</div>
+    <div class="col-12">{{ form_row(form.csirtEndpoints) }}</div>
+    <div class="col-12">{{ form_row(form.crisisTeamOnCall) }}</div>
+</div>
