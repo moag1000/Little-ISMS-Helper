@@ -61,6 +61,10 @@ security:
                 httponly: true
                 samesite: 'lax'
 
+            # Re-auth challenge: redirect RememberMe-only sessions to a password
+            # confirmation page instead of a confusing "already logged in" or 403.
+            access_denied_handler: App\Security\ReauthAccessDeniedHandler
+
             # Allow user impersonation (for admins)
             switch_user: { role: ROLE_ALLOWED_TO_SWITCH }
 
