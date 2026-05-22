@@ -1,0 +1,27 @@
+{#
+ # Report Style form — tab: branding
+ # Fields: reportDocWatermarkEnabled, reportDocWatermarkOpacity (range slider),
+ #         reportDocFooterDisclaimer
+ #}
+{% trans_default_domain 'admin' %}
+<div class="row g-3 align-items-end">
+    <div class="col-md-4">{{ form_row(form.reportDocWatermarkEnabled) }}</div>
+    <div class="col-md-8">
+        <label for="{{ form.reportDocWatermarkOpacity.vars.id }}" class="form-label">
+            {{ 'admin.report_style.field.watermark_opacity'|trans({}, 'admin') }}
+            (<span data-report-style-preview-target="opacityLabel">{{ ((form.reportDocWatermarkOpacity.vars.value ?? 0.0)|number_format(2, '.', '') * 100)|round }}%</span>)
+        </label>
+        <input type="range"
+               class="form-range"
+               min="0" max="100" step="1"
+               value="{{ ((form.reportDocWatermarkOpacity.vars.value ?? 0.0)|number_format(2, '.', '') * 100)|round }}"
+               data-report-style-preview-target="opacitySlider"
+               data-action="input->report-style-preview#syncOpacity"
+               aria-label="{{ 'admin.report_style.field.watermark_opacity'|trans({}, 'admin') }}">
+        {{ form_widget(form.reportDocWatermarkOpacity, {attr: {hidden: true, class: 'visually-hidden'}}) }}
+        <p class="form-text">{{ 'admin.report_style.help.watermark_opacity'|trans({}, 'admin') }}</p>
+    </div>
+</div>
+<div class="row g-3 mt-2">
+    <div class="col-12">{{ form_row(form.reportDocFooterDisclaimer) }}</div>
+</div>

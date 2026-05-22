@@ -1,0 +1,37 @@
+{#
+ # Report Style form — tab: layout
+ # Fields: reportDocChartColorScheme (+ swatches),
+ #         reportDocShowExecSummary, reportDocShowAppendix, reportDocShowDistributionList
+ #}
+{% trans_default_domain 'admin' %}
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.reportDocChartColorScheme) }}</div>
+    <div class="col-md-6">
+        {# Color-scheme swatches (4 mini previews) #}
+        <label class="form-label">{{ 'admin.report_style.swatches.label'|trans({}, 'admin') }}</label>
+        <div class="d-flex flex-column gap-2 small">
+            {% for scheme, swatch in {
+                'aurora': ['#22d3ee','#a855f7','#10b981','#f59e0b','#ef4444'],
+                'audit': ['#1e293b','#334155','#64748b','#94a3b8','#cbd5e1'],
+                'print-friendly': ['#000000','#404040','#808080','#a0a0a0','#d0d0d0'],
+                'colorblind-safe': ['#0072B2','#E69F00','#009E73','#CC79A7','#F0E442']
+            } %}
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted" style="min-width:6rem;">
+                        {{ ('admin.report_style.chart.' ~ scheme|replace({'-':'_'}))|trans({}, 'admin') }}
+                    </span>
+                    <span class="d-inline-flex" aria-hidden="true">
+                        {% for hex in swatch %}
+                            <span style="display:inline-block;width:14px;height:14px;border:1px solid var(--border);background:{{ hex }};"></span>
+                        {% endfor %}
+                    </span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="d-flex flex-column gap-2 mt-3">
+    {{ form_row(form.reportDocShowExecSummary) }}
+    {{ form_row(form.reportDocShowAppendix) }}
+    {{ form_row(form.reportDocShowDistributionList) }}
+</div>
