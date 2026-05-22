@@ -1,0 +1,144 @@
+{% trans_default_domain 'security' %}
+{% import '_components/_fa_modal.html.twig' as _fa_modal %}
+
+{#
+ # Re-authentication modal — FairyAurora fa-modal (warning tone).
+ #
+ # Rendered inline into base.html.twig (via block modals) when the user has
+ # a RememberMe session and tries to access a fully-authenticated route.
+ #
+ # Variables expected (passed from base.html.twig or reauth_page.html.twig):
+ #   reauth_provider    — 'password' | 'azure_oauth' | 'azure_saml' | 'oidc'
+ #   reauth_identifier  — user email string
+ #   reauth_return_to   — path to redirect after successful re-auth
+ #   reauth_sso_slug    — slug for OIDC providers (may be null)
+ #
+ # The Stimulus `reauth-modal` controller is wired via data-controller below.
+ # The global fetch interceptor dispatches `fa-reauth:open` with the JSON
+ # payload; the controller listens and forces openValue=true.
+ #}
+
+{% set _body %}
+<div class="reauth-modal-body"
+     data-reauth-modal-provider-value="{{ reauth_provider|default('password') }}"
+     data-reauth-modal-return-to-value="{{ reauth_return_to|default('/')|e('html_attr') }}"
+     data-reauth-modal-sso-slug-value="{{ reauth_sso_slug|default('')|e('html_attr') }}">
+
+    <p class="reauth-modal-body__hint">
+        <i class="fa-icon fa-icon--person-lock" aria-hidden="true"></i>
+        <strong>{{ reauth_identifier|default('') }}</strong>
+    </p>
+
+    {# ── Password form ───────────────────────────────────────────────────── #}
+    {% if reauth_provider|default('password') == 'password' %}
+
+        <form id="reauth-password-form"
+              data-reauth-modal-target="form"
+              data-action="submit->reauth-modal#submitPassword"
+              novalidate>
+
+            <div class="reauth-modal-body__field">
+                <label for="reauth-password-input" class="reauth-modal-body__label">
+                    {{ 'reauth.field.password'|trans }}
+                </label>
+                <input type="password"
+                       id="reauth-password-input"
+                       name="password"
+                       class="reauth-modal-body__input"
+                       data-reauth-modal-target="passwordInput"
+                       autocomplete="current-password"
+                       required
+                       autofocus>
+                <div class="reauth-modal-body__error"
+                     data-reauth-modal-target="errorMessage"
+                     role="alert"
+                     aria-live="polite"
+                     hidden></div>
+            </div>
+        </form>
+
+    {# ── SSO / Azure button ──────────────────────────────────────────────── #}
+    {% else %}
+
+        <p class="reauth-modal-body__sso-hint">
+            {{ 'reauth.sso.hint'|trans }}
+        </p>
+
+    {% endif %}
+</div>
+{% endset %}
+
+{# Determine footer button label and icon based on provider #}
+{% set _primaryLabel = reauth_provider|default('password') == 'password'
+    ? 'reauth.action.confirm_password'|trans
+    : ('reauth.action.confirm_sso.' ~ reauth_provider|default('password'))|trans({}, 'security')
+%}
+{% set _primaryIcon = reauth_provider|default('password') == 'password' ? 'ui-login' : 'control' %}
+{% set _primaryVariant = 'warning' %}
+
+{# Use fa-modal settings-variant shell with Stimulus reauth-modal controller. #}
+{# We build the shell manually to wire the Stimulus controller alongside fa-modal. #}
+<div id="reauth-modal"
+     class="fa-modal fa-modal--settings fa-modal--warning"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="reauth-modal-title"
+     inert
+     data-controller="fa-modal reauth-modal"
+     data-fa-modal-mode-value="settings"
+     data-fa-modal-close-on-esc-value="false"
+     data-fa-modal-close-on-backdrop-value="false"
+     data-reauth-modal-provider-value="{{ reauth_provider|default('password') }}"
+     data-reauth-modal-return-to-value="{{ reauth_return_to|default('/')|e('html_attr') }}"
+     data-reauth-modal-sso-slug-value="{{ reauth_sso_slug|default('')|e('html_attr') }}">
+
+    <div class="fa-modal__backdrop"
+         data-fa-modal-target="backdrop"
+         aria-hidden="true"></div>
+
+    <div class="fa-modal__container" data-fa-modal-target="dialog">
+
+        <header class="fa-modal__header">
+            <span class="fa-modal__icon" aria-hidden="true">
+                <i class="fa-icon fa-icon--shield-check"></i>
+            </span>
+            <div class="fa-modal__heading">
+                <h2 class="fa-modal__title" id="reauth-modal-title">
+                    {{ 'reauth.title'|trans }}
+                </h2>
+                <p class="fa-modal__sub">{{ 'reauth.subtitle'|trans }}</p>
+            </div>
+        </header>
+
+        <div class="fa-modal__body">
+            {{ _body }}
+        </div>
+
+        <footer class="fa-modal__footer">
+            {% if reauth_provider|default('password') == 'password' %}
+                {# Password submit: handled by Stimulus reauth-modal controller #}
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--warning"
+                        data-reauth-modal-target="submitButton"
+                        data-action="click->reauth-modal#submitPassword">
+                    <i class="fa-icon fa-icon--ui-login" aria-hidden="true"></i>
+                    <span>{{ 'reauth.action.confirm_password'|trans }}</span>
+                </button>
+            {% else %}
+                {# SSO: redirect to provider #}
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--warning"
+                        data-action="click->reauth-modal#redirectSso">
+                    <i class="fa-icon fa-icon--control" aria-hidden="true"></i>
+                    <span>
+                        {% if reauth_provider == 'azure_oauth' or reauth_provider == 'azure_saml' %}
+                            {{ 'reauth.action.confirm_sso.azure'|trans }}
+                        {% else %}
+                            {{ 'reauth.action.confirm_sso.oidc'|trans }}
+                        {% endif %}
+                    </span>
+                </button>
+            {% endif %}
+        </footer>
+    </div>
+</div>

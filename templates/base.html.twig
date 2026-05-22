@@ -447,6 +447,19 @@
     {# Bulk Delete Confirmation Dialog #}
     {% include '_components/_bulk_delete_confirmation.html.twig' %}
 
+    {# Re-authentication modal — shown when RememberMe user hits IS_AUTHENTICATED_FULLY route.
+       The reauth-modal Stimulus controller listens for `fa-reauth:open` events dispatched
+       by the global fetch interceptor (fetch-interceptor.js) when a 403+reauth response is
+       detected.  The modal is hidden by default (inert); the controller opens it on demand. #}
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user is not null %}
+        {% include 'security/_reauth_modal.html.twig' with {
+            reauth_provider:    app.user.authProvider in ['azure_oauth', 'azure_saml'] ? app.user.authProvider : (app.user.ssoProvider is not null ? 'oidc' : 'password'),
+            reauth_identifier:  app.user.email ?? app.user.userIdentifier,
+            reauth_return_to:   '/',
+            reauth_sso_slug:    app.user.ssoProvider is not null ? app.user.ssoProvider.slug : null,
+        } only %}
+    {% endif %}
+
     {# FairyAurora v4.0 — Alva Companion Dock (Phase 4)
        Shown to authenticated users on non-setup routes who have the companion enabled. #}
     {% if is_granted('IS_AUTHENTICATED_REMEMBERED')
@@ -494,6 +507,16 @@
                 loading: "{{ 'common.loading'|trans({}, 'messages')|raw }}",
                 error: "{{ 'common.error'|trans({}, 'messages')|raw }}",
                 success: "{{ 'common.success'|trans({}, 'messages')|raw }}"
+            },
+            security: {
+                reauth: {
+                    error: {
+                        password_required: "{{ 'reauth.error.password_required'|trans({}, 'security')|raw }}",
+                        invalid_password:  "{{ 'reauth.error.invalid_password'|trans({}, 'security')|raw }}",
+                        generic:           "{{ 'reauth.error.generic'|trans({}, 'security')|raw }}",
+                        network:           "{{ 'reauth.error.network'|trans({}, 'security')|raw }}"
+                    }
+                }
             }
         };
     </script>
