@@ -22,45 +22,56 @@
     ]
 }) }}
 
-{% embed '_components/_card.html.twig' %}
-    {% block card_body %}
-        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-            {% include '_components/_auto_form.html.twig' with {
-                'form': form,
-                'sections': {
-                    'basic_info': {
-                        'label': 'document.section.basic_info'|trans({}, 'document'),
-                        'fields': ['originalFilename', 'description', 'category', 'tisaxInformationClassification']
-                    },
-                    'file_upload': {
-                        'label': 'document.section.file_upload'|trans({}, 'document'),
-                        'fields': ['file']
-                    }
-                },
-                'col_widths': {
-                    'originalFilename': 12,
-                    'description': 12,
-                    'category': 6,
-                    'tisaxInformationClassification': 6,
-                    'file': 12
-                },
-                'tooltips': {
-                    'category': 'document.tooltip.category',
-                    'tisaxInformationClassification': 'document.tooltip.classification'
-                }
-            } %}
-
-            <div class="form-actions d-flex gap-2 justify-content-end">
-                <a href="{{ path('app_document_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
-                    {{ 'common.cancel'|trans({}, 'messages') }}
-                </a>
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
-                    {{ 'document.action.upload'|trans({}, 'document')}}
-                </button>
-            </div>
-        {{ form_end(form) }}
-    {% endblock %}
-{% endembed %}
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'eyebrow': 'ISO 27001 A.5.9 · Document Management',
+    'title': 'document.new'|trans({}, 'document'),
+    'sections': {
+        'overview': {
+            'label': 'document.section.basic_info'|trans({}, 'document'),
+            'fields': ['originalFilename', 'description', 'category', 'status']
+        },
+        'classification': {
+            'label': 'document.section.classification'|trans({}, 'document'),
+            'fields': ['tisaxInformationClassification']
+        },
+        'lifecycle': {
+            'label': 'document.section.lifecycle'|trans({}, 'document'),
+            'fields': ['version', 'reviewIntervalMonths', 'requiresAcknowledgement']
+        },
+        'ownership': {
+            'label': 'document.section.ownership'|trans({}, 'document'),
+            'fields': ['inheritable', 'overrideAllowed']
+        },
+        'content': {
+            'label': 'document.section.file_upload'|trans({}, 'document'),
+            'fields': ['file']
+        }
+    },
+    'col_widths': {
+        'originalFilename': 8,
+        'status': 4,
+        'description': 12,
+        'category': 6,
+        'tisaxInformationClassification': 6,
+        'version': 4,
+        'reviewIntervalMonths': 4,
+        'requiresAcknowledgement': 4,
+        'inheritable': 6,
+        'overrideAllowed': 6,
+        'file': 12
+    },
+    'tooltips': {
+        'category': 'document.tooltip.category',
+        'tisaxInformationClassification': 'document.tooltip.classification'
+    },
+    'translation_domain': 'document',
+    'actions': {
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': 'document.action.upload'|trans({}, 'document'), 'variant': 'primary', 'icon': 'nav-upload' }
+    }
+} %}
+{{ form_end(form) }}
 {% endblock %}

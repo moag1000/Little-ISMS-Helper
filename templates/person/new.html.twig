@@ -59,60 +59,50 @@
 </div>
 {% endif %}
 
-{% embed '_components/_card.html.twig' %}
-    {% block card_body %}
-        {{ form_start(form) }}
-            {% include '_components/_auto_form.html.twig' with {
-                'form': form,
-                'sections': {
-                    'basic_info': {
-                        'label': 'person.section.basic_info'|trans({}, 'messages'),
-                        'fields': ['fullName', 'personType', 'badgeId']
-                    },
-                    'organization': {
-                        'label': 'person.section.organization'|trans({}, 'messages'),
-                        'fields': ['company', 'department', 'jobTitle']
-                    },
-                    'contact': {
-                        'label': 'person.section.contact'|trans({}, 'messages'),
-                        'fields': ['email', 'phone']
-                    },
-                    'access': {
-                        'label': 'person.section.access'|trans({}, 'messages'),
-                        'fields': ['linkedUser', 'active', 'accessValidFrom', 'accessValidUntil']
-                    },
-                    'additional': {
-                        'label': 'person.section.additional'|trans({}, 'messages'),
-                        'fields': ['notes']
-                    }
-                },
-                'col_widths': {
-                    'fullName': 6,
-                    'personType': 6,
-                    'badgeId': 12,
-                    'company': 4,
-                    'department': 4,
-                    'jobTitle': 4,
-                    'email': 6,
-                    'phone': 6,
-                    'linkedUser': 12,
-                    'active': 12,
-                    'accessValidFrom': 6,
-                    'accessValidUntil': 6,
-                    'notes': 12
-                },
-                'exclude': ['linkedUser', 'active', 'accessValidFrom', 'accessValidUntil']
-            } %}
-
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ path('app_person_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    {{ 'common.cancel'|trans({}, 'messages') }}
-                </a>
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                    {{ 'common.create'|trans({}, 'messages') }}
-                </button>
-            </div>
-        {{ form_end(form) }}
-    {% endblock %}
-{% endembed %}
+{{ form_start(form) }}
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'layout': 'outline-rail',
+    'eyebrow': 'ISO 27001 A.7.2 · People Management',
+    'title': 'person.title.create'|trans({}, 'messages'),
+    'sections': {
+        'identity': {
+            'label': 'person.section.basic_info'|trans({}, 'messages'),
+            'fields': ['fullName', 'personType', 'badgeId', 'active']
+        },
+        'contact': {
+            'label': 'person.section.contact'|trans({}, 'messages'),
+            'fields': ['email', 'phone']
+        },
+        'organization': {
+            'label': 'person.section.organization'|trans({}, 'messages'),
+            'fields': ['company', 'department', 'jobTitle', 'linkedUser']
+        },
+        'role': {
+            'label': 'person.section.access'|trans({}, 'messages'),
+            'fields': ['accessValidFrom', 'accessValidUntil', 'notes']
+        }
+    },
+    'col_widths': {
+        'fullName': 6,
+        'personType': 6,
+        'badgeId': 8,
+        'active': 4,
+        'email': 6,
+        'phone': 6,
+        'company': 4,
+        'department': 4,
+        'jobTitle': 4,
+        'linkedUser': 12,
+        'accessValidFrom': 6,
+        'accessValidUntil': 6,
+        'notes': 12
+    },
+    'translation_domain': 'people',
+    'actions': {
+        'close': { 'label': 'common.cancel'|trans({}, 'messages'), 'variant': 'ghost' },
+        'submit': { 'label': 'common.create'|trans({}, 'messages'), 'variant': 'primary' }
+    }
+} %}
+{{ form_end(form) }}
 {% endblock %}
