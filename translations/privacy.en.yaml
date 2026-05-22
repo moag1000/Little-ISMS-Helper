@@ -734,6 +734,10 @@ data_breach:
         deadline_date: 'Reporting deadline (72h from now)'
         recommendation_label: 'Recommendation'
         legal_references: 'Legal References'
+        legal_ref:
+            gdpr_art_33: 'GDPR Art. 33 (Notification to supervisory authority)'
+            gdpr_art_34: 'GDPR Art. 34 (Communication to data subjects)'
+            iso_27001_a_16_1_6: 'ISO 27001 A.16.1.6 (Learning from information security incidents)'
         complete_and_create: 'Complete & Create Incident'
         risk_level:
             low: 'Low Risk'
