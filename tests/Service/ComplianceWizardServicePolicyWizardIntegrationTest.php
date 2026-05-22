@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\Tenant;
+use App\Service\ComplianceWizard\CategoryProvider\IsoFrameworkCategoryProvider;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckResult;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardTopicCatalogue;
+use App\Service\ComplianceWizard\CoverageCheckService;
 use App\Service\ComplianceWizardService;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -19,13 +21,19 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * {@see PolicyWizardCheckRegistry} and exposes the 29 Policy-Wizard rows
  * inside the ISO 27001 category map.
  *
+ * Adapted from god-class decomposition (PR #556):
+ * - `policyWizardCheckRegistry` was moved from ComplianceWizardService into
+ *   CoverageCheckService (the sub-service that owns dispatchPolicyWizardCheck).
+ * - `dispatchPolicyWizardCheck()` was moved to CoverageCheckService.
+ * - `getIso27001Categories()` was moved to IsoFrameworkCategoryProvider.
+ * - `runCheck()` is still private on ComplianceWizardService — reflection works.
+ *
  * Strategy:
  * - Boot the kernel to obtain a real, fully-wired {@see ComplianceWizardService}.
  * - For tests that exercise dispatch logic, swap the registry on a freshly
- *   constructed service using the kernel-resolved dependencies and a stub
- *   registry — keeps the test independent of real Document fixtures.
- * - For category-map assertions, reflect into `getIso27001Categories()`
- *   (private) since the surface is read-only and stable.
+ *   constructed CoverageCheckService using the kernel-resolved dependencies
+ *   and a stub registry — keeps the test independent of real Document fixtures.
+ * - For category-map assertions, use IsoFrameworkCategoryProvider directly.
  */
 final class ComplianceWizardServicePolicyWizardIntegrationTest extends KernelTestCase
 {
@@ -47,15 +55,30 @@ final class ComplianceWizardServicePolicyWizardIntegrationTest extends KernelTes
     /**
      * Build a ComplianceWizardService using the kernel's wiring but with the
      * Policy-Wizard registry replaced by the supplied stub.
+     *
+     * The registry lives in CoverageCheckService (god-class decomposition PR #556).
+     * We swap it there, then build a fresh ComplianceWizardService using the
+     * patched CoverageCheckService.
      */
     private function buildServiceWithRegistry(PolicyWizardCheckRegistry $registry): ComplianceWizardService
     {
         self::bootKernel();
         $container = static::getContainer();
-        $real = $container->get(ComplianceWizardService::class);
 
-        // Reuse all real collaborators; only swap the registry. Reflect to
-        // pull out the exact constructor argument set without re-resolving.
+        // Fetch the real CoverageCheckService and swap its registry via reflection.
+        $realCoverage = $container->get(CoverageCheckService::class);
+        $coverageRef = new \ReflectionClass($realCoverage);
+        $coverageArgs = [];
+        foreach ($coverageRef->getConstructor()->getParameters() as $param) {
+            $name = $param->getName();
+            $prop = $coverageRef->getProperty($name);
+            $coverageArgs[$name] = $prop->getValue($realCoverage);
+        }
+        $coverageArgs['policyWizardCheckRegistry'] = $registry;
+        $patchedCoverage = $coverageRef->newInstanceArgs($coverageArgs);
+
+        // Now build a fresh ComplianceWizardService with the patched coverage service.
+        $real = $container->get(ComplianceWizardService::class);
         $ref = new \ReflectionClass($real);
         $args = [];
         foreach ($ref->getConstructor()->getParameters() as $param) {
@@ -63,7 +86,7 @@ final class ComplianceWizardServicePolicyWizardIntegrationTest extends KernelTes
             $prop = $ref->getProperty($name);
             $args[$name] = $prop->getValue($real);
         }
-        $args['policyWizardCheckRegistry'] = $registry;
+        $args['coverageCheckService'] = $patchedCoverage;
 
         return $ref->newInstanceArgs($args);
     }
@@ -143,8 +166,15 @@ final class ComplianceWizardServicePolicyWizardIntegrationTest extends KernelTes
             'priority' => 'high',
         ];
 
-        $result = (new \ReflectionMethod($service, 'dispatchPolicyWizardCheck'))
-            ->invoke($service, $check, null);
+        // dispatchPolicyWizardCheck is now on CoverageCheckService — test via
+        // runCheck on the facade which delegates through coverageCheckService.
+        // Alternatively, test via the patched CoverageCheckService directly.
+        $patchedCoverage = (new \ReflectionClass($service))
+            ->getProperty('coverageCheckService')
+            ->getValue($service);
+
+        $result = (new \ReflectionMethod($patchedCoverage, 'dispatchPolicyWizardCheck'))
+            ->invoke($patchedCoverage, $check, null);
 
         self::assertSame(1, $invocations, 'Registry must be invoked exactly once for the matching check_id');
         self::assertTrue($passedTenant, 'Service must forward the tenant argument (null in this case) into the check');
@@ -212,10 +242,10 @@ final class ComplianceWizardServicePolicyWizardIntegrationTest extends KernelTes
         $this->requireDatabase();
 
         self::bootKernel();
-        $service = static::getContainer()->get(ComplianceWizardService::class);
+        // getIso27001Categories() was moved to IsoFrameworkCategoryProvider.
+        $isoProvider = static::getContainer()->get(IsoFrameworkCategoryProvider::class);
 
-        $categories = (new \ReflectionMethod($service, 'getIso27001Categories'))
-            ->invoke($service);
+        $categories = $isoProvider->getIso27001Categories();
 
         self::assertArrayHasKey('policies_top_level', $categories);
         self::assertArrayHasKey('policies_topic_coverage', $categories);

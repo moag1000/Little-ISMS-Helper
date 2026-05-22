@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\ComplianceFramework;
+use App\Service\ComplianceWizard\CategoryProvider\EuRegulatoryFrameworkCategoryProvider;
+use App\Service\ComplianceWizard\CategoryProvider\IsoFrameworkCategoryProvider;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701ClauseTagsAppliedCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701SchremsIIClauseInTransfersCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701VersionConfiguredCheck;
@@ -18,21 +20,23 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DsrProcedurePresentC
 use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\GdprSectionCoverageCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\PrivacyPolicyPresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\RopaMethodologyPresentCheck;
-use App\Service\ComplianceWizardService;
 use App\Service\TenantSettingResolver\PolicySettingProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * W6-D integration test — verifies that {@see ComplianceWizardService} hosts
- * dedicated `gdpr_policies` and `iso27701_pims` categories whose checks
- * resolve through the {@see PolicyWizardCheckRegistry}, gated by their
- * scope detectors (active GDPR ComplianceFramework or `iso27701.enabled`
- * tenant policy setting).
+ * W6-D integration test — verifies that {@see EuRegulatoryFrameworkCategoryProvider}
+ * and {@see IsoFrameworkCategoryProvider} host dedicated `gdpr_policies` and
+ * `iso27701_pims` categories whose checks resolve through the
+ * {@see PolicyWizardCheckRegistry}, gated by their scope detectors (active
+ * GDPR ComplianceFramework or `iso27701.enabled` tenant policy setting).
  *
- * Mirrors the W4-D / W5-C integration-test patterns: boots the kernel for
- * the real wiring then reflects into private category builders for surgical
- * assertions.
+ * Adapted from god-class decomposition (PR #556): `getGdprCategories()` /
+ * `buildGdprPolicyWizardCategory()` were extracted to
+ * EuRegulatoryFrameworkCategoryProvider; `getIso27701Categories()` /
+ * `buildIso27701PolicyWizardCategory()` were extracted to
+ * IsoFrameworkCategoryProvider. Tests now target sub-services directly via
+ * their public category-map APIs.
  */
 final class ComplianceWizardServicePrivacyIntegrationTest extends KernelTestCase
 {
@@ -52,25 +56,32 @@ final class ComplianceWizardServicePrivacyIntegrationTest extends KernelTestCase
         }
     }
 
-    private function bootService(): ComplianceWizardService
+    private function bootEuProvider(): EuRegulatoryFrameworkCategoryProvider
     {
         self::bootKernel();
-        $container = static::getContainer();
-        return $container->get(ComplianceWizardService::class);
+        return static::getContainer()->get(EuRegulatoryFrameworkCategoryProvider::class);
+    }
+
+    private function bootIsoProvider(): IsoFrameworkCategoryProvider
+    {
+        self::bootKernel();
+        return static::getContainer()->get(IsoFrameworkCategoryProvider::class);
     }
 
     #[Test]
     public function testGdprCategoryRegisteredWhenScopeActive(): void
     {
         $this->requireDatabase();
-        $service = $this->bootService();
+        $euProvider = $this->bootEuProvider();
 
         $em = static::getContainer()->get('doctrine.orm.entity_manager');
         $framework = $em->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'GDPR']);
 
-        $reflection = new \ReflectionMethod($service, 'buildGdprPolicyWizardCategory');
-        $built = $reflection->invoke($service);
+        // getGdprCategories() calls buildGdprPolicyWizardCategory() internally
+        // and drops null entries via array_filter — absence == null return.
+        $categories = $euProvider->getGdprCategories();
+        $built = $categories['gdpr_policies'] ?? null;
 
         if ($framework === null || $framework->isActive() !== true) {
             // Out-of-scope path: builder returns null when no fixture is active.
@@ -79,8 +90,6 @@ final class ComplianceWizardServicePrivacyIntegrationTest extends KernelTestCase
                 'When GDPR scope is not active, the gdpr_policies builder must return null',
             );
 
-            $categories = (new \ReflectionMethod($service, 'getGdprCategories'))
-                ->invoke($service);
             self::assertArrayNotHasKey(
                 'gdpr_policies',
                 $categories,
@@ -107,16 +116,16 @@ final class ComplianceWizardServicePrivacyIntegrationTest extends KernelTestCase
     public function testIso27701CategoryRegisteredWhenAddonEnabled(): void
     {
         $this->requireDatabase();
-        $service = $this->bootService();
+        $isoProvider = $this->bootIsoProvider();
 
-        $reflection = new \ReflectionMethod($service, 'buildIso27701PolicyWizardCategory');
-        $built = $reflection->invoke($service);
+        // getIso27701Categories() calls buildIso27701PolicyWizardCategory()
+        // internally. Absence of the key == null (not opted in).
+        $categories = $isoProvider->getIso27701Categories();
+        $built = $categories['iso27701_pims'] ?? null;
 
         if ($built === null) {
             // PolicySettingProvider not wired or PIMS not enabled in this kernel —
             // the category is not produced. Verify the category map agrees.
-            $categories = (new \ReflectionMethod($service, 'getIso27701Categories'))
-                ->invoke($service);
             self::assertArrayNotHasKey(
                 'iso27701_pims',
                 $categories,
@@ -141,27 +150,31 @@ final class ComplianceWizardServicePrivacyIntegrationTest extends KernelTestCase
     public function testCategoriesSkippedWhenScopeInactive(): void
     {
         $this->requireDatabase();
-        $service = $this->bootService();
+
+        self::bootKernel();
+        $euProvider = static::getContainer()->get(EuRegulatoryFrameworkCategoryProvider::class);
+        $isoProvider = static::getContainer()->get(IsoFrameworkCategoryProvider::class);
 
         $em = static::getContainer()->get('doctrine.orm.entity_manager');
         $gdprFramework = $em->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'GDPR']);
 
+        $gdprCategories = $euProvider->getGdprCategories();
+        $built = $gdprCategories['gdpr_policies'] ?? null;
+
         if ($gdprFramework === null || $gdprFramework->isActive() !== true) {
-            $built = (new \ReflectionMethod($service, 'buildGdprPolicyWizardCategory'))
-                ->invoke($service);
             self::assertNull($built);
         } else {
             self::assertNotNull(
-                (new \ReflectionMethod($service, 'buildGdprPolicyWizardCategory'))->invoke($service),
+                $built,
                 'GDPR scope is active in this kernel; builder must return an array',
             );
         }
 
         // ISO 27701 PIMS — gated on PolicySettingProvider+iso27701.enabled.
         // Without an active tenant context with the setting, it stays null.
-        $isoBuilt = (new \ReflectionMethod($service, 'buildIso27701PolicyWizardCategory'))
-            ->invoke($service);
+        $isoCategories = $isoProvider->getIso27701Categories();
+        $isoBuilt = $isoCategories['iso27701_pims'] ?? null;
         // Either null (not enabled / provider not wired) OR a populated array
         // (test kernel happens to be configured). Both are valid.
         self::assertTrue($isoBuilt === null || is_array($isoBuilt));
