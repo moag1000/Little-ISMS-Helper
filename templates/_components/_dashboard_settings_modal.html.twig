@@ -40,53 +40,53 @@
 
             <div class="widget-toggles">
                 <h6 class="mb-3">Statistik-Karten</h6>
-                <div class="form-check form-switch mb-3"
-                     data-widget-toggle="stats-cards"
-                     data-action="click->dashboard-customizer#toggleWidget">
-                    <input class="form-check-input" type="checkbox" checked>
-                    <label class="form-check-label">
+                <div class="form-check form-switch mb-3" data-widget-toggle="stats-cards">
+                    <input class="form-check-input" type="checkbox" id="widget-toggle-stats-cards"
+                           data-action="change->dashboard-customizer#toggleWidget"
+                           checked>
+                    <label class="form-check-label" for="widget-toggle-stats-cards">
                         <i class="fa-icon fa-icon--nav-bar-chart me-2 text-primary" aria-hidden="true"></i>
                         Statistik-Übersicht (Assets, Risks, Controls, Incidents)
                     </label>
                 </div>
 
                 <h6 class="mb-3 mt-4">Charts</h6>
-                <div class="form-check form-switch mb-3"
-                     data-widget-toggle="risk-chart"
-                     data-action="click->dashboard-customizer#toggleWidget">
-                    <input class="form-check-input" type="checkbox" checked>
-                    <label class="form-check-label">
+                <div class="form-check form-switch mb-3" data-widget-toggle="risk-chart">
+                    <input class="form-check-input" type="checkbox" id="widget-toggle-risk-chart"
+                           data-action="change->dashboard-customizer#toggleWidget"
+                           checked>
+                    <label class="form-check-label" for="widget-toggle-risk-chart">
                         <i class="fa-icon fa-icon--nav-pie-chart me-2 text-warning" aria-hidden="true"></i>
                         Risikoverteilung
                     </label>
                 </div>
 
-                <div class="form-check form-switch mb-3"
-                     data-widget-toggle="asset-chart"
-                     data-action="click->dashboard-customizer#toggleWidget">
-                    <input class="form-check-input" type="checkbox" checked>
-                    <label class="form-check-label">
+                <div class="form-check form-switch mb-3" data-widget-toggle="asset-chart">
+                    <input class="form-check-input" type="checkbox" id="widget-toggle-asset-chart"
+                           data-action="change->dashboard-customizer#toggleWidget"
+                           checked>
+                    <label class="form-check-label" for="widget-toggle-asset-chart">
                         <i class="fa-icon fa-icon--nav-bar-chart me-2 text-info" aria-hidden="true"></i>
                         Assets nach Kategorie
                     </label>
                 </div>
 
                 <h6 class="mb-3 mt-4">Widgets</h6>
-                <div class="form-check form-switch mb-3"
-                     data-widget-toggle="activity-feed"
-                     data-action="click->dashboard-customizer#toggleWidget">
-                    <input class="form-check-input" type="checkbox" checked>
-                    <label class="form-check-label">
+                <div class="form-check form-switch mb-3" data-widget-toggle="activity-feed">
+                    <input class="form-check-input" type="checkbox" id="widget-toggle-activity-feed"
+                           data-action="change->dashboard-customizer#toggleWidget"
+                           checked>
+                    <label class="form-check-label" for="widget-toggle-activity-feed">
                         <i class="fa-icon fa-icon--nav-activity me-2 text-success" aria-hidden="true"></i>
                         Letzte Aktivitäten
                     </label>
                 </div>
 
-                <div class="form-check form-switch mb-3"
-                     data-widget-toggle="quick-actions"
-                     data-action="click->dashboard-customizer#toggleWidget">
-                    <input class="form-check-input" type="checkbox" checked>
-                    <label class="form-check-label">
+                <div class="form-check form-switch mb-3" data-widget-toggle="quick-actions">
+                    <input class="form-check-input" type="checkbox" id="widget-toggle-quick-actions"
+                           data-action="change->dashboard-customizer#toggleWidget"
+                           checked>
+                    <label class="form-check-label" for="widget-toggle-quick-actions">
                         <i class="fa-icon me-2 text-warning fa-icon--threat" aria-hidden="true"></i>
                         Schnellzugriff
                     </label>

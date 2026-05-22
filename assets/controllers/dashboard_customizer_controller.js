@@ -281,10 +281,18 @@ export default class extends Controller {
 
     // Toggle widget visibility
     toggleWidget(event) {
-        const widgetId = event.currentTarget.dataset.widgetToggle;
-        const checkbox = event.currentTarget.querySelector('input[type="checkbox"]');
+        // Action wired to input's `change` event (template moved data-action to <input>
+        // 2026-05-22 — see _dashboard_settings_modal.html.twig). Read widget id from
+        // the parent wrapper carrying data-widget-toggle. Falls back to currentTarget
+        // dataset for any legacy callers that still wire click on the wrapper div.
+        const wrapper = event.currentTarget.closest('[data-widget-toggle]')
+            ?? event.currentTarget;
+        const widgetId = wrapper.dataset.widgetToggle;
+        const checkbox = event.currentTarget.matches('input[type="checkbox"]')
+            ? event.currentTarget
+            : wrapper.querySelector('input[type="checkbox"]');
 
-        if (!widgetId) return;
+        if (!widgetId || !checkbox) return;
 
         const isVisible = checkbox.checked;
 
