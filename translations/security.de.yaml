@@ -17,3 +17,34 @@
 'Invalid or expired login link.': 'Ungültiger oder abgelaufener Anmelde-Link.'
 'Too many failed login attempts, please try again in %minutes% minute.': 'Zu viele fehlgeschlagene Anmeldeversuche, bitte versuchen Sie es in einer Minute noch einmal.'
 'Too many failed login attempts, please try again in %minutes% minutes.': 'Zu viele fehlgeschlagene Anmeldeversuche, bitte versuchen Sie es in %minutes% Minuten noch einmal.'
+
+# ── Re-auth modal (feat/security-reauth-modal-multi-provider) ───────────────
+
+reauth:
+    title: 'Sitzung bestätigen'
+    subtitle: 'Ihre Sitzung läuft im "Angemeldet-bleiben"-Modus. Bitte bestätigen Sie Ihre Identität, um fortzufahren.'
+    page_title: 'Sitzung bestätigen'
+    page_heading: 'Sicherheitsüberprüfung erforderlich'
+    page_desc: 'Bitte bestätigen Sie Ihre Identität, um auf diese Seite zuzugreifen.'
+    eyebrow: 'Sicherheitscheck'
+    alva_line: 'Kurze Sicherheitsüberprüfung — dann geht es weiter.'
+    alva_sub: 'Ihre Sitzung läuft im "Angemeldet-bleiben"-Modus.'
+
+    field:
+        password: 'Passwort'
+
+    action:
+        confirm_password: 'Identität bestätigen'
+        confirm_sso:
+            azure: 'Über Microsoft bestätigen'
+            oidc: 'Über SSO-Provider bestätigen'
+        logout_instead: 'Stattdessen abmelden'
+
+    sso:
+        hint: 'Ihr Konto ist über einen externen Identitäts-Provider angemeldet. Klicken Sie unten, um Ihre Identität zu bestätigen.'
+
+    error:
+        password_required: 'Bitte geben Sie Ihr Passwort ein.'
+        invalid_password: 'Das Passwort ist nicht korrekt. Bitte erneut versuchen.'
+        generic: 'Authentifizierung fehlgeschlagen. Bitte erneut versuchen.'
+        network: 'Verbindungsfehler. Bitte Seite neu laden und erneut versuchen.'
