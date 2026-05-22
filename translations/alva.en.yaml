@@ -193,6 +193,14 @@ bc_exercise:
         title: 'Completed BC exercise without documented findings'
         body: 'ISO 22301 Cl. 8.6 expects every exercise to produce at least one documented finding or area for improvement. An exercise report without observations is of limited audit value — regulators and certification bodies will notice.'
         action: 'Add findings'
+    actual_exceeds_plan:
+        action: 'Review exercise and adjust plan'
+        rto:
+            title: 'Measured RTO exceeds the plan target'
+            body: 'The actual recovery time achieved in this exercise is greater than the target of at least one tested BC plan. ISO 22301 Cl. 8.5.3 requires a lessons-learned loop: either revise the plan to match reality or record a documented deviation justification.'
+        rpo:
+            title: 'Measured RPO exceeds the plan target'
+            body: 'The data-loss window measured in this exercise is greater than the target of at least one tested BC plan. ISO 22301 Cl. 8.5.3 requires a lessons-learned loop: either improve the backup interval or document the deviation.'
 
 audit:
     findings_without_capa:
