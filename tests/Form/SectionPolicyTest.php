@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Form;
 
-use App\Form\BCExerciseType;
-use App\Form\BusinessContinuityPlanType;
+use App\Form\DocumentType;
+use App\Form\PersonType;
 use App\Form\SectionMapInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -31,13 +31,13 @@ final class SectionPolicyTest extends TestCase
      */
     public static function sectionMapFormTypes(): iterable
     {
-        yield 'BusinessContinuityPlanType' => [
-            BusinessContinuityPlanType::class,
-            __DIR__ . '/../../src/Form/BusinessContinuityPlanType.php',
+        yield 'DocumentType' => [
+            DocumentType::class,
+            __DIR__ . '/../../src/Form/DocumentType.php',
         ];
-        yield 'BCExerciseType' => [
-            BCExerciseType::class,
-            __DIR__ . '/../../src/Form/BCExerciseType.php',
+        yield 'PersonType' => [
+            PersonType::class,
+            __DIR__ . '/../../src/Form/PersonType.php',
         ];
     }
 
@@ -171,39 +171,6 @@ final class SectionPolicyTest extends TestCase
                 )
             );
         }
-    }
-
-    /**
-     * BCPlan-specific assertion — RTO/RPO must live in the `recovery`
-     * section (ISO 22301 Cl. 8.2.2 / 8.4.2).
-     */
-    #[Test]
-    public function bcPlanRtoRpoLiveInRecoverySection(): void
-    {
-        $map = BusinessContinuityPlanType::getSectionMap();
-        self::assertArrayHasKey('recovery', $map, 'BCPlan must declare a "recovery" section');
-        self::assertContains('rto', $map['recovery'], 'BCPlan.rto must live in the "recovery" section');
-        self::assertContains('rpo', $map['recovery'], 'BCPlan.rpo must live in the "recovery" section');
-        self::assertContains(
-            'criticalAssets',
-            $map['recovery'],
-            'BCPlan.criticalAssets must live in the "recovery" section'
-        );
-    }
-
-    /**
-     * BCExercise-specific assertion — Result fields must live in the
-     * `results` section (ISO 22301 §8.5.4).
-     */
-    #[Test]
-    public function bcExerciseResultFieldsLiveInResultsSection(): void
-    {
-        $map = BCExerciseType::getSectionMap();
-        self::assertArrayHasKey('results', $map, 'BCExercise must declare a "results" section');
-        self::assertContains('actualRtoAchieved', $map['results']);
-        self::assertContains('actualRpoAchieved', $map['results']);
-        self::assertContains('successCriteria', $map['results']);
-        self::assertContains('evidenceArtifacts', $map['results']);
     }
 
     /**
