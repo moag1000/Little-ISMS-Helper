@@ -122,12 +122,15 @@
                     </div>
                 {% endif %}
 
-                <form method="{{ formMethod }}"
-                      {% if props.formAction is defined and props.formAction %}action="{{ props.formAction }}"{% endif %}
-                      data-fa-modal-target="form"
-                      {% if hasTypeConfirm or cooldownSeconds > 0 %}data-fa-confirm-target="form"{% endif %}>
+                {%- set hasForm = props.formAction is defined and props.formAction -%}
+                {%- set submitType = hasForm ? 'submit' : 'button' -%}
 
-                    {% if props.formCsrfToken is defined and props.formCsrfToken %}
+                {% if hasForm %}<form method="{{ formMethod }}"
+                      action="{{ props.formAction }}"
+                      data-fa-modal-target="form"
+                      {% if hasTypeConfirm or cooldownSeconds > 0 %}data-fa-confirm-target="form"{% endif %}>{% endif %}
+
+                    {% if hasForm and props.formCsrfToken is defined and props.formCsrfToken %}
                         <input type="hidden" name="_token" value="{{ props.formCsrfToken }}">
                     {% endif %}
 
@@ -149,9 +152,10 @@
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--ghost"
                                 data-action="fa-modal#cancel">{{ cancelLabel }}</button>
-                        <button type="submit"
+                        <button type="{{ submitType }}"
                                 class="fa-cyber-btn fa-cyber-btn--{{ submitVariant }}"
                                 data-fa-modal-target="confirmButton"
+                                {% if not hasForm %}data-action="fa-modal#submit"{% endif %}
                                 {% if hasTypeConfirm or cooldownSeconds > 0 %}data-fa-confirm-target="submit"{% endif %}
                                 {% if hasTypeConfirm or cooldownSeconds > 0 %}disabled{% endif %}>
                             {% if props.submitIcon is defined and props.submitIcon %}
@@ -162,7 +166,7 @@
                             </span>
                         </button>
                     </footer>
-                </form>
+                {% if hasForm %}</form>{% endif %}
             </div>
         </div>
     </div>
