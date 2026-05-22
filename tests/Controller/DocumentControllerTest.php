@@ -873,65 +873,59 @@ class DocumentControllerTest extends TestCase
     }
 
     /**
-     * Test byType action filters documents by type
-     *
-     * NOTE: This test is skipped because the controller has a bug:
-     * It calls $document->getType() but Document entity doesn't have a getType() method
-     * It should call $document->getCategory() instead
+     * Test byType action filters documents by MIME type
      */
     #[Test]
     public function testByTypeFiltersDocumentsByType(): void
     {
-        $this->markTestSkipped('Controller bug: Document::getType() does not exist, should use getCategory()');
         $tenant = $this->createTenant(1);
         $user = $this->createUser(1, $tenant);
-        $policyDoc = $this->createDocument(1, 'active', 'policy');
-        $procedureDoc = $this->createDocument(2, 'active', 'procedure');
+        $pdfDoc = $this->createDocument(1, 'active', 'policy', 'application/pdf');
+        $wordDoc = $this->createDocument(2, 'active', 'procedure', 'application/msword');
 
         $this->security->method('getUser')->willReturn($user);
         $this->documentService->method('getDocumentsForTenant')
-            ->willReturn([$policyDoc, $procedureDoc]);
+            ->willReturn([$pdfDoc, $wordDoc]);
 
         $this->twig->expects($this->once())
             ->method('render')
             ->with(
                 'document/by_type.html.twig',
                 $this->callback(function ($params) {
-                    // Only policy type should be included after filtering
+                    // Only the PDF doc should be included after filtering by mime type
                     return count($params['documents']) === 1
-                        && $params['type'] === 'policy';
+                        && $params['type'] === 'application/pdf';
                 })
             )
             ->willReturn('rendered');
 
-        $response = $this->controller->byType('policy');
+        $response = $this->controller->byType('application/pdf');
 
         $this->assertInstanceOf(Response::class, $response);
     }
 
     /**
-     * Test byType without tenant (super admin)
-     *
-     * NOTE: This test is skipped because the controller has a bug:
-     * It calls $document->getType() but Document entity doesn't have a getType() method
+     * Test byType without tenant (super admin) uses repository findAll
      */
     #[Test]
     public function testByTypeWithoutTenant(): void
     {
-        $this->markTestSkipped('Controller bug: Document::getType() does not exist, should use getCategory()');
         $user = $this->createMock(User::class);
         $user->method('getTenant')->willReturn(null);
-        $documents = [$this->createDocument(1, 'active', 'policy')];
+        $documents = [$this->createDocument(1, 'active', 'policy', 'application/pdf')];
 
         $this->security->method('getUser')->willReturn($user);
         $this->documentRepository->method('findAll')->willReturn($documents);
 
         $this->twig->expects($this->once())
             ->method('render')
-            ->with('document/by_type.html.twig')
+            ->with(
+                'document/by_type.html.twig',
+                $this->callback(fn($params) => $params['type'] === 'application/pdf')
+            )
             ->willReturn('rendered');
 
-        $response = $this->controller->byType('policy');
+        $response = $this->controller->byType('application/pdf');
 
         $this->assertInstanceOf(Response::class, $response);
     }
@@ -978,13 +972,14 @@ class DocumentControllerTest extends TestCase
     /**
      * Helper method to create a mock Document
      */
-    private function createDocument(int $id, string $status, string $category = 'policy'): Document
+    private function createDocument(int $id, string $status, string $category = 'policy', string $mimeType = 'application/pdf'): Document
     {
         $document = $this->createConfiguredMock(Document::class, [
             'getId' => $id,
             'getStatus' => $status,
             'isOperational' => !in_array($status, ['deleted', 'archived'], true),
             'getCategory' => $category,
+            'getMimeType' => $mimeType,
             'getFilename' => "document_{$id}.pdf",
             'getOriginalFilename' => "Document {$id}.pdf",
             'getUploadedAt' => new DateTimeImmutable(),
