@@ -56,9 +56,9 @@ class RiskAppetite
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
-    #[Assert\NotNull(message: 'Maximum acceptable risk level is required')]
+    #[Assert\NotNull(message: 'risk_appetite.validation.max_acceptable_risk.required')]
     #[Assert\Range(
-        notInRangeMessage: 'Maximum acceptable risk must be between {{ min }} and {{ max }}',
+        notInRangeMessage: 'risk_appetite.validation.max_acceptable_risk.range',
         min: 1,
         max: 25
     )]
@@ -69,7 +69,7 @@ class RiskAppetite
      */
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
-    #[Assert\NotBlank(message: 'Risk appetite description is required')]
+    #[Assert\NotBlank(message: 'risk_appetite.validation.description.required')]
     private ?string $description = null;
 
     /**

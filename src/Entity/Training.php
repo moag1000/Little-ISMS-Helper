@@ -76,8 +76,8 @@ class Training
 
     #[ORM\Column(length: 255)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\NotBlank(message: 'Training title is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed { limit } characters')]
+    #[Assert\NotBlank(message: 'training.validation.title.required')]
+    #[Assert\Length(max: 255, maxMessage: 'training.validation.title.max_length')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -86,23 +86,23 @@ class Training
 
     #[ORM\Column(length: 100)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\NotBlank(message: 'Training type is required')]
-    #[Assert\Length(max: 100, maxMessage: 'Training type cannot exceed { limit } characters')]
+    #[Assert\NotBlank(message: 'training.validation.training_type.required')]
+    #[Assert\Length(max: 100, maxMessage: 'training.validation.training_type.max_length')]
     private ?string $trainingType = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\NotNull(message: 'Scheduled date is required')]
+    #[Assert\NotNull(message: 'training.validation.scheduled_date.required')]
     private ?DateTimeInterface $scheduledDate = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\Positive(message: 'Duration must be a positive number')]
+    #[Assert\Positive(message: 'training.validation.duration_minutes.positive')]
     private ?int $durationMinutes = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'Trainer name cannot exceed { limit } characters')]
+    #[Assert\Length(max: 100, maxMessage: 'training.validation.trainer.max_length')]
     private ?string $trainer = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -115,14 +115,14 @@ class Training
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\PositiveOrZero(message: 'Attendee count must be zero or positive')]
+    #[Assert\PositiveOrZero(message: 'training.validation.attendee_count.positive_or_zero')]
     private ?int $attendeeCount = 0;
 
     #[ORM\Column(length: 50, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
     #[Assert\Choice(
         choices: ['in_person', 'online_live', 'e_learning', 'hybrid', 'workshop'],
-        message: 'Delivery method must be one of: { choices }'
+        message: 'training.validation.delivery_method.choice'
     )]
     private ?string $deliveryMethod = null;
 
@@ -132,10 +132,10 @@ class Training
 
     #[ORM\Column(length: 50)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\NotBlank(message: 'training.validation.status.required')]
     #[Assert\Choice(
         choices: ['planned', 'scheduled', 'in_progress', 'completed', 'cancelled'],
-        message: 'Status must be one of: { choices }'
+        message: 'training.validation.status.choice'
     )]
     private ?string $status = 'planned';
 

@@ -84,7 +84,7 @@ class Supplier
     private ?Tenant $tenant = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Supplier name is required')]
+    #[Assert\NotBlank(message: 'suppliers.validation.name.required')]
     #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $name = null;
 
@@ -97,7 +97,7 @@ class Supplier
     private ?string $contactPerson = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Email(message: 'Invalid email address')]
+    #[Assert\Email(message: 'suppliers.validation.email.invalid')]
     #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $email = null;
 
@@ -113,7 +113,7 @@ class Supplier
      * Service provided by supplier
      */
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Service description is required')]
+    #[Assert\NotBlank(message: 'suppliers.validation.service_provided.required')]
     #[Groups(['supplier:read', 'supplier:write'])]
     private ?string $serviceProvided = null;
 
@@ -886,7 +886,7 @@ class Supplier
     #[ORM\Column(length: 20, nullable: true)]
     #[Assert\Choice(
         choices: [null, 'low', 'medium', 'high', 'critical'],
-        message: 'LkSG risk category must be one of: low, medium, high, critical',
+        message: 'suppliers.validation.lksg_risk_category.choice',
     )]
     private ?string $lksgRiskCategory = null;
 

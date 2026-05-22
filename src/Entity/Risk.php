@@ -81,8 +81,8 @@ class Risk
 
     #[ORM\Column(length: 255)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotBlank(message: 'Risk title is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Risk title cannot exceed { limit } characters')]
+    #[Assert\NotBlank(message: 'risk.validation.title.required')]
+    #[Assert\Length(max: 255, maxMessage: 'risk.validation.title.max_length')]
     private ?string $title = null;
 
     /**
@@ -161,7 +161,7 @@ class Risk
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotBlank(message: 'Risk description is required')]
+    #[Assert\NotBlank(message: 'risk.validation.description.required')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -203,13 +203,13 @@ class Risk
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotNull(message: 'Probability is required')]
+    #[Assert\NotNull(message: 'risk.validation.probability.required')]
     #[Assert\Range(notInRangeMessage: 'Probability must be between { min } and { max }', min: 1, max: 5)]
     private ?int $probability = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotNull(message: 'Impact is required')]
+    #[Assert\NotNull(message: 'risk.validation.impact.required')]
     #[Assert\Range(notInRangeMessage: 'Impact must be between { min } and { max }', min: 1, max: 5)]
     private ?int $impact = null;
 
@@ -246,7 +246,7 @@ class Risk
 
     #[ORM\Column(type: 'string', length: 50, enumType: RiskStatus::class)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotNull(message: 'Status is required')]
+    #[Assert\NotNull(message: 'risk.validation.status.required')]
     private ?RiskStatus $status = RiskStatus::Identified;
 
     #[ORM\Version]

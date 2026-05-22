@@ -50,19 +50,19 @@ class RiskTreatmentPlan
     #[ORM\ManyToOne(targetEntity: Risk::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    #[Assert\NotNull(message: 'Risk is required')]
+    #[Assert\NotNull(message: 'risk_treatment_plan.validation.risk.required')]
     #[MaxDepth(1)]
     private ?Risk $risk = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    #[Assert\NotBlank(message: 'Title is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed {{ limit }} characters')]
+    #[Assert\NotBlank(message: 'risk_treatment_plan.validation.title.required')]
+    #[Assert\Length(max: 255, maxMessage: 'risk_treatment_plan.validation.title.max_length')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    #[Assert\NotBlank(message: 'Description is required')]
+    #[Assert\NotBlank(message: 'risk_treatment_plan.validation.description.required')]
     private ?string $description = null;
 
     /**
@@ -75,10 +75,10 @@ class RiskTreatmentPlan
      */
     #[ORM\Column(length: 50)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\NotBlank(message: 'risk_treatment_plan.validation.status.required')]
     #[Assert\Choice(
         choices: ['planned', 'in_progress', 'completed', 'cancelled', 'on_hold'],
-        message: 'Status must be one of: {{ choices }}'
+        message: 'risk_treatment_plan.validation.status.choice'
     )]
     private ?string $status = 'planned';
 
@@ -95,10 +95,10 @@ class RiskTreatmentPlan
      */
     #[ORM\Column(length: 20)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    #[Assert\NotBlank(message: 'Priority is required')]
+    #[Assert\NotBlank(message: 'risk_treatment_plan.validation.priority.required')]
     #[Assert\Choice(
         choices: ['low', 'medium', 'high', 'critical'],
-        message: 'Priority must be one of: {{ choices }}'
+        message: 'risk_treatment_plan.validation.priority.choice'
     )]
     private ?string $priority = 'medium';
 
@@ -108,7 +108,7 @@ class RiskTreatmentPlan
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    #[Assert\NotNull(message: 'Target completion date is required')]
+    #[Assert\NotNull(message: 'risk_treatment_plan.validation.target_completion_date.required')]
     private ?DateTimeInterface $targetCompletionDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -120,7 +120,7 @@ class RiskTreatmentPlan
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    #[Assert\PositiveOrZero(message: 'Budget must be positive or zero')]
+    #[Assert\PositiveOrZero(message: 'risk_treatment_plan.validation.budget.positive_or_zero')]
     private ?string $budget = null;
 
     /**

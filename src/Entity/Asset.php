@@ -83,8 +83,8 @@ class Asset
 
     #[ORM\Column(length: 255)]
     #[Groups(['asset:read', 'asset:write', 'risk:read'])]
-    #[Assert\NotBlank(message: 'Asset name is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Asset name cannot exceed { limit } characters')]
+    #[Assert\NotBlank(message: 'asset.validation.name.required')]
+    #[Assert\Length(max: 255, maxMessage: 'asset.validation.name.max_length')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -93,8 +93,8 @@ class Asset
 
     #[ORM\Column(length: 100)]
     #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\NotBlank(message: 'Asset type is required')]
-    #[Assert\Length(max: 100, maxMessage: 'Asset type cannot exceed { limit } characters')]
+    #[Assert\NotBlank(message: 'asset.validation.asset_type.required')]
+    #[Assert\Length(max: 100, maxMessage: 'asset.validation.asset_type.max_length')]
     private ?string $assetType = null;
 
     // ── AI-Agent-Inventar (Asset-Subtyp 'ai_agent') ───────────────────────
@@ -105,7 +105,7 @@ class Asset
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\Choice(
         choices: [null, 'prohibited', 'high_risk', 'limited_risk', 'minimal_risk'],
-        message: 'AI risk classification must be one of: prohibited, high_risk, limited_risk, minimal_risk',
+        message: 'asset.validation.ai_agent_classification.choice',
     )]
     private ?string $aiAgentClassification = null;
 
@@ -145,14 +145,14 @@ class Asset
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'Owner cannot exceed { limit } characters')]
+    #[Assert\Length(max: 100, maxMessage: 'asset.validation.owner.max_length')]
     private ?string $owner = null;
 
     // Legacy field - kept for backward compatibility
     // @deprecated Use $physicalLocation instead
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'Location cannot exceed { limit } characters')]
+    #[Assert\Length(max: 100, maxMessage: 'asset.validation.location.max_length')]
     private ?string $location = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
@@ -165,20 +165,20 @@ class Asset
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\NotNull(message: 'Confidentiality value is required')]
-    #[Assert\Range(notInRangeMessage: 'Confidentiality value must be between { min } and { max }', min: 1, max: 5)]
+    #[Assert\NotNull(message: 'asset.validation.confidentiality_value.required')]
+    #[Assert\Range(notInRangeMessage: 'asset.validation.cia_value.range', min: 1, max: 5)]
     private ?int $confidentialityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\NotNull(message: 'Integrity value is required')]
-    #[Assert\Range(notInRangeMessage: 'Integrity value must be between { min } and { max }', min: 1, max: 5)]
+    #[Assert\NotNull(message: 'asset.validation.integrity_value.required')]
+    #[Assert\Range(notInRangeMessage: 'asset.validation.cia_value.range', min: 1, max: 5)]
     private ?int $integrityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\NotNull(message: 'Availability value is required')]
-    #[Assert\Range(notInRangeMessage: 'Availability value must be between { min } and { max }', min: 1, max: 5)]
+    #[Assert\NotNull(message: 'asset.validation.availability_value.required')]
+    #[Assert\Range(notInRangeMessage: 'asset.validation.cia_value.range', min: 1, max: 5)]
     private ?int $availabilityValue = null;
 
     // Phase 6F: ISO 27001 Compliance Fields
@@ -190,7 +190,7 @@ class Asset
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\PositiveOrZero(message: 'Monetary value must be positive or zero')]
+    #[Assert\PositiveOrZero(message: 'asset.validation.monetary_value.positive_or_zero')]
     private ?string $monetaryValue = null;
 
     /**
@@ -201,7 +201,7 @@ class Asset
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\Choice(
         choices: ['public', 'internal', 'confidential', 'restricted'],
-        message: 'Data classification must be one of: { choices }'
+        message: 'asset.validation.data_classification.choice'
     )]
     private ?string $dataClassification = null;
 
@@ -215,7 +215,7 @@ class Asset
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\Choice(
         choices: ['public', 'internal', 'confidential', 'strictly_confidential', 'prototype'],
-        message: 'TISAX information classification must be one of: { choices }'
+        message: 'asset.validation.tisax_information_classification.choice'
     )]
     private ?string $tisaxInformationClassification = null;
 
@@ -251,10 +251,10 @@ class Asset
 
     #[ORM\Column(length: 50)]
     #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\NotBlank(message: 'Status is required')]
+    #[Assert\NotBlank(message: 'asset.validation.status.required')]
     #[Assert\Choice(
         choices: ['draft', 'active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'],
-        message: 'Status must be one of: { choices }'
+        message: 'asset.validation.status.choice'
     )]
     private ?string $status = 'active';
 
