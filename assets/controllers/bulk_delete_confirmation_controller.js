@@ -98,7 +98,11 @@ export default class extends Controller {
             detail: { id: this.modalTarget.id },
         }));
 
-        // Check dependencies if endpoint provided
+        // Check dependencies if endpoint provided.
+        // Not every entity implements bulk-delete-check yet (currently only
+        // Document). For non-supporting entities the endpoint returns 404 —
+        // treat that as "no dependency-info available" and proceed silently
+        // to the confirm prompt instead of blocking with a scary error.
         if (endpoint && ids && ids.length > 0) {
             this.showLoading();
             try {
@@ -110,7 +114,11 @@ export default class extends Controller {
                 }
             } catch (error) {
                 this.hideLoading();
-                this.showError('Fehler beim Laden der Abhängigkeiten: ' + error.message);
+                // Silently skip dep-check on 404 (endpoint not implemented);
+                // surface only real server errors (5xx, parse errors etc).
+                if (!String(error.message).startsWith('HTTP 404')) {
+                    this.showError('Fehler beim Laden der Abhängigkeiten: ' + error.message);
+                }
             }
         }
 

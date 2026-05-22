@@ -1,4 +1,3 @@
 # check_no_bi_classes.py baseline
 # Format: <relative-path>:<line>
-# Pre-existing JS violation baselined when JS scanning was added (H-4 audit follow-up)
 assets/controllers/command_palette_controller.js:220

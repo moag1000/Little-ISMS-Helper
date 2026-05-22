@@ -303,9 +303,24 @@ export default class extends Controller {
 
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
+
+            // Derive filename from server's Content-Disposition (correct extension).
+            // Fallback: extension from Content-Type, else .csv (BulkActionTrait default).
+            let filename = `export-${Date.now()}.csv`;
+            const cd = response.headers.get('Content-Disposition') || '';
+            const m = cd.match(/filename="?([^";]+)"?/i);
+            if (m && m[1]) {
+                filename = m[1];
+            } else {
+                const ct = (response.headers.get('Content-Type') || '').toLowerCase();
+                if (ct.includes('spreadsheetml') || ct.includes('xlsx')) {
+                    filename = `export-${Date.now()}.xlsx`;
+                }
+            }
+
             const a = document.createElement('a');
             a.href = url;
-            a.download = `export-${Date.now()}.xlsx`;
+            a.download = filename;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
