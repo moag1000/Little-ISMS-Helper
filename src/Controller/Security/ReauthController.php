@@ -38,7 +38,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * this via the general /{locale}/ rule, but these routes are locale-free so
  * we gate them explicitly via the attribute below).
  */
-#[Route('/reauth', name: 'app_reauth_')]
+#[Route('/reauth', name: 'app_reauth_', methods: ['GET', 'POST'])]
 #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
 final class ReauthController extends AbstractController
 {
