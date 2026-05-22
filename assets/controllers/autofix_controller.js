@@ -52,6 +52,21 @@ export default class extends Controller {
                 }
             });
 
+            if (!response.ok) {
+                const msg = response.status === 403
+                    ? 'Keine Berechtigung'
+                    : `Fehler ${response.status}`;
+                window.faToast(msg, 'danger');
+                if (resultContainer) {
+                    resultContainer.innerHTML = `
+                        <div class="alert alert-danger fix-result">
+                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> ${msg}
+                        </div>
+                    `;
+                }
+                return;
+            }
+
             const result = await response.json();
 
             if (result.success) {
