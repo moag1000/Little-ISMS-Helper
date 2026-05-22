@@ -22,6 +22,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -33,6 +35,20 @@ final class DataBreachType extends AbstractType implements SectionMapInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Junior-ISB-Audit-2026-05-22 K-01: SLA-Countdown anchor needs an unambiguous start time.
+        // GDPR Art. 33 (1) 72h authority-notification deadline is measured from detectedAt.
+        // Pre-fill on the form layer only when the bound entity has none (new standalone
+        // breach). DataBreachService::createFromIncident() syncs detectedAt from the linked
+        // incident before the form is built, so this listener does NOT overwrite that value.
+        // Editing an existing persisted DataBreach is also unaffected because detectedAt is
+        // non-null after Doctrine load.
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event): void {
+            $entity = $event->getData();
+            if ($entity instanceof DataBreach && $entity->getDetectedAt() === null) {
+                $entity->setDetectedAt(new \DateTimeImmutable());
+            }
+        });
+
         $builder
             // ================================================================
             // SECTION 1: Basic Information
