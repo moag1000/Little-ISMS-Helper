@@ -61,6 +61,16 @@ export default class extends Controller {
 
         try {
             const response = await fetch(this.urlValue);
+
+            if (!response.ok) {
+                const msg = response.status === 403
+                    ? 'Keine Berechtigung'
+                    : `Fehler ${response.status}`;
+                window.faToast(msg, 'danger');
+                this.showError();
+                return;
+            }
+
             const data = await response.json();
 
             this.renderRadarChart(data.data);
