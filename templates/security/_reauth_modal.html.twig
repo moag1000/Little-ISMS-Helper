@@ -37,19 +37,25 @@
               data-action="submit->reauth-modal#submitPassword"
               novalidate>
 
-            <div class="reauth-modal-body__field">
-                <label for="reauth-password-input" class="reauth-modal-body__label">
+            <div class="fa-cyber-input">
+                <label for="reauth-password-input" class="fa-cyber-input__label">
                     {{ 'reauth.field.password'|trans }}
                 </label>
-                <input type="password"
-                       id="reauth-password-input"
-                       name="password"
-                       class="reauth-modal-body__input"
-                       data-reauth-modal-target="passwordInput"
-                       autocomplete="current-password"
-                       required
-                       autofocus>
-                <div class="reauth-modal-body__error"
+                <div class="fa-cyber-input__frame">
+                    <span class="fa-cyber-input__tick fa-cyber-input__tick--tl" aria-hidden="true"></span>
+                    <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
+                    <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
+                    <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
+                    <input type="password"
+                           id="reauth-password-input"
+                           name="password"
+                           class="fa-cyber-input__field"
+                           data-reauth-modal-target="passwordInput"
+                           autocomplete="current-password"
+                           required
+                           autofocus>
+                </div>
+                <div class="fa-cyber-input__error reauth-modal-body__error"
                      data-reauth-modal-target="errorMessage"
                      role="alert"
                      aria-live="polite"

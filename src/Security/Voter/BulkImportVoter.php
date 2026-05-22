@@ -10,6 +10,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * BulkImportVoter
@@ -31,6 +32,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class BulkImportVoter extends Voter
 {
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
     public const string VIEW                = 'BULK_IMPORT_VIEW';
     public const string EDIT                = 'BULK_IMPORT_EDIT';
     public const string COMMIT              = 'BULK_IMPORT_COMMIT';
@@ -155,6 +161,8 @@ final class BulkImportVoter extends Voter
 
     private function hasRole(User $user, string $role): bool
     {
-        return in_array($role, $user->getRoles(), true);
+        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+
+        return in_array($role, $reachable, true);
     }
 }

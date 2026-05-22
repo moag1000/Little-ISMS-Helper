@@ -22,7 +22,7 @@ class UserVoterTest extends TestCase
     protected function setUp(): void
     {
         $this->initialAdminService = $this->createMock(InitialAdminService::class);
-        $this->voter = new UserVoter($this->initialAdminService);
+        $this->voter = new UserVoter($this->initialAdminService, VoterTestHelper::createRoleHierarchy());
     }
 
     private function createUser(int $id = 1, array $roles = ['ROLE_USER'], bool $isActive = true, array $permissions = []): User

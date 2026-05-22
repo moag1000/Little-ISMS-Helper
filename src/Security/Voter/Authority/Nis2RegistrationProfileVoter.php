@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * F29 — Voter for NIS-2 BSI Registration Profile.
@@ -24,6 +25,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class Nis2RegistrationProfileVoter extends Voter
 {
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
     public const string VIEW          = 'view';
     public const string EDIT          = 'edit';
     public const string EXPORT        = 'export';
@@ -52,6 +58,8 @@ final class Nis2RegistrationProfileVoter extends Voter
 
     private function hasRole(User $user, string $role): bool
     {
-        return in_array($role, $user->getRoles(), true);
+        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+
+        return in_array($role, $reachable, true);
     }
 }

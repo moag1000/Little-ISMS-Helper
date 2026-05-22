@@ -22,7 +22,7 @@ final class RiskIncidentLinkVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new RiskIncidentLinkVoter();
+        $this->voter = new RiskIncidentLinkVoter(VoterTestHelper::createRoleHierarchy());
     }
 
     private function createToken(User $user): UsernamePasswordToken

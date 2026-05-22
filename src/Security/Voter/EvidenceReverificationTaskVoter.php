@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * F4 Evidence-Versioning — EvidenceReverificationTask voter.
@@ -21,6 +22,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class EvidenceReverificationTaskVoter extends Voter
 {
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
     public const string VIEW = 'view';
     public const string COMPLETE = 'complete';
     public const string SKIP = 'skip';
@@ -74,12 +80,8 @@ final class EvidenceReverificationTaskVoter extends Voter
 
     private function hasRole(TokenInterface $token, string $role): bool
     {
-        foreach ($token->getRoleNames() as $r) {
-            if ($r === $role) {
-                return true;
-            }
-        }
-        // Check via hierarchy — Symfony stores effective roles in the token
-        return in_array($role, $token->getRoleNames(), true);
+        $reachable = $this->roleHierarchy->getReachableRoleNames($token->getRoleNames());
+
+        return in_array($role, $reachable, true);
     }
 }

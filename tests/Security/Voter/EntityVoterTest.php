@@ -19,7 +19,7 @@ class EntityVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new EntityVoter();
+        $this->voter = new EntityVoter(VoterTestHelper::createRoleHierarchy());
     }
 
     private function createUser(array $roles = ['ROLE_USER'], bool $isActive = true, array $permissions = []): User

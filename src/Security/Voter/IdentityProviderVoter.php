@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Tenant-scoped authorization for IdentityProvider entities.
@@ -23,6 +24,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class IdentityProviderVoter extends Voter
 {
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
     public const string VIEW   = 'view';
     public const string EDIT   = 'edit';
     public const string DELETE = 'delete';
@@ -43,7 +49,9 @@ final class IdentityProviderVoter extends Voter
         /** @var IdentityProvider $idp */
         $idp = $subject;
 
-        if (in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true)) {
+        $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+
+        if (in_array('ROLE_SUPER_ADMIN', $reachableRoles, true)) {
             return true;
         }
 
@@ -62,8 +70,8 @@ final class IdentityProviderVoter extends Voter
 
         return match ($attribute) {
             self::VIEW   => true,
-            self::EDIT   => in_array('ROLE_ADMIN', $user->getRoles(), true),
-            self::DELETE => in_array('ROLE_ADMIN', $user->getRoles(), true),
+            self::EDIT   => in_array('ROLE_ADMIN', $reachableRoles, true),
+            self::DELETE => in_array('ROLE_ADMIN', $reachableRoles, true),
             default      => false,
         };
     }

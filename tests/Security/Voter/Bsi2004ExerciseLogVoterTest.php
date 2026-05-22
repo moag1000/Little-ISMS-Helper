@@ -21,7 +21,7 @@ class Bsi2004ExerciseLogVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new Bsi2004ExerciseLogVoter();
+        $this->voter = new Bsi2004ExerciseLogVoter(VoterTestHelper::createRoleHierarchy());
     }
 
     private function createToken(User $user): UsernamePasswordToken
@@ -94,10 +94,27 @@ class Bsi2004ExerciseLogVoterTest extends TestCase
     }
 
     #[Test]
-    public function managerCannotConfirm(): void
+    public function managerCanConfirmViaHierarchy(): void
     {
+        // role_hierarchy: ROLE_MANAGER => [ROLE_USER, ROLE_AUDITOR].
+        // Since CONFIRM requires ROLE_AUDITOR and ROLE_MANAGER inherits it,
+        // a manager is implicitly granted confirm rights. This mirrors
+        // production semantics (security.yaml role_hierarchy).
         $tenant = new Tenant();
         $user   = $this->createUser($tenant, ['ROLE_MANAGER']);
+        $log    = $this->createLog($tenant, true);
+
+        $result = $this->voter->vote($this->createToken($user), $log, [Bsi2004ExerciseLogVoter::CONFIRM]);
+        self::assertSame(1, $result);
+    }
+
+    #[Test]
+    public function plainUserCannotConfirm(): void
+    {
+        // Pure ROLE_USER has no path to ROLE_AUDITOR in the hierarchy,
+        // so CONFIRM must be denied.
+        $tenant = new Tenant();
+        $user   = $this->createUser($tenant, ['ROLE_USER']);
         $log    = $this->createLog($tenant, true);
 
         $result = $this->voter->vote($this->createToken($user), $log, [Bsi2004ExerciseLogVoter::CONFIRM]);
