@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Service\AiAgentInventoryService;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * AI-Agent-Inventar (Asset-Subtyp 'ai_agent').
@@ -20,15 +23,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 final class AiAgentInventoryController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly AiAgentInventoryService $inventoryService,
         private readonly TenantContext $tenantContext,
+        private readonly ModuleConfigurationService $moduleService,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
     #[Route('/ai-agents', name: 'app_ai_agents_index', methods: ['GET'])]
     public function index(): Response
     {
+        if ($redirect = $this->checkModuleActive('ai_governance')) {
+            return $redirect;
+        }
+
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
             $this->addFlash('warning', 'Kein Mandant zugewiesen — AI-Agent-Inventar benötigt einen Mandantenkontext.');
