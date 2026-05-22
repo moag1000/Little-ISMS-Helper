@@ -58,6 +58,9 @@ document:
         type_overview: Typ‑Übersicht
         all_documents: 'Alle Dokumente'
         basic_info: Basisinformationen
+        classification: Klassifizierung
+        lifecycle: Lebenszyklus
+        ownership: Verantwortlichkeit
         file_upload: Datei‑Upload
         select_type: 'Typ auswählen'
         types_overview: Dokumenttypen-Übersicht

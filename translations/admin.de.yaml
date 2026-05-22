@@ -709,6 +709,8 @@ admin:
         job:
             badge: 'Datenreparatur'
             generic_subtitle: 'Läuft im Hintergrund, damit PHP-FPM antwortbereit bleibt.'
+            fix_all_orphans_label: 'Alle Orphans zuweisen'
+            fix_all_orphans_subtitle: 'Weist alle verwaisten Entities (tenant_id IS NULL) dem Standard-Tenant im Hintergrund zu…'
             fix_tenant_mismatches_label: 'Mandanten-Fehlzuordnungen beheben'
             fix_tenant_mismatches_subtitle: 'Richtet Kind-Mandanten im Hintergrund am Parent (Asset) aus…'
             merge_duplicates_label: 'Duplikate zusammenführen — %type%'
@@ -814,6 +816,12 @@ admin:
     tenant_settings:
         title: 'Compliance-Einstellungen'
         subtitle: 'Tier-1 Compliance Settings — Locale, Audit-Window, DPO-Kontakt, TLP, Aufsichtsbehoerden, Aufbewahrungsfristen'
+        tab:
+            defaults: Standardwerte
+            frameworks: Frameworks
+            modules: Module
+            contact: Kontakt
+            advanced: Erweitert
         no_tenant_in_context: 'Kein Mandanten-Kontext aktiv — bitte zuerst Mandant in der Liste waehlen.'
         section_tenant: 'Tenant-spezifisch'
         section_global: 'System-Default (alle Tenants)'
@@ -1035,6 +1043,12 @@ admin:
     policy_style:
         title: 'Policy-Optik'
         subtitle: 'Layout, Typografie, Wasserzeichen und Signatur-Slots für generierte Richtlinien-Dokumente konfigurieren.'
+        tab:
+            general: Allgemein
+            branding: Branding
+            layout: Layout
+            content: Inhalt
+            advanced: Erweitert
         section:
             form: 'Konfiguration'
             form_subtitle: 'Änderungen werden live in der Vorschau rechts angezeigt. Speichern persistiert die Werte für alle künftigen Policy-Dokumente.'
@@ -1106,6 +1120,12 @@ admin:
     report_style:
         title: 'Report-Optik'
         subtitle: 'Layout, Watermark und Audience-Defaults für generierte Reports — pro Mandant. Live-Vorschau rechts.'
+        tab:
+            general: Allgemein
+            branding: Branding
+            layout: Layout
+            typography: Typografie
+            advanced: Erweitert
         save: 'Speichern'
         reset: 'Auf Defaults zurücksetzen'
         reset_confirm: 'Wirklich alle 12 Felder auf Default zurücksetzen?'

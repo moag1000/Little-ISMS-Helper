@@ -2,6 +2,15 @@ report_builder:
     # Report Builder Übersetzungen (Deutsch)
     # Phase 7C: Benutzerdefinierter Report-Builder mit Drag & Drop Designer
 
+    # Flash messages (controller-side, no nested prefix)
+    created: 'Report erstellt'
+    saved: 'Report gespeichert'
+    cloned: 'Report dupliziert'
+    deleted: 'Report gelöscht'
+    template_created: 'Vorlage erstellt'
+    template_not_found: 'Vorlage nicht gefunden'
+    created_from_template: 'Report aus Vorlage erstellt'
+
     # Seitentitel
     page:
         title: 'Report-Builder'
@@ -275,3 +284,8 @@ report_builder:
         asset: 'Asset-Management'
         audit: 'Audit'
         incident: 'Vorfallsmanagement'
+
+
+# Flash messages (controller-side, no nested prefix) — merged into root block above
+settings:
+    saved: 'Einstellungen gespeichert'

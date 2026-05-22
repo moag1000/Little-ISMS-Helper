@@ -693,6 +693,8 @@ admin:
         job:
             badge: 'Data Repair'
             generic_subtitle: 'Running in the background to keep PHP-FPM responsive.'
+            fix_all_orphans_label: 'Assign all orphans'
+            fix_all_orphans_subtitle: 'Assigns all orphaned entities (tenant_id IS NULL) to the default tenant in the background…'
             fix_tenant_mismatches_label: 'Fix Tenant Mismatches'
             fix_tenant_mismatches_subtitle: 'Aligning child entity tenants with their parent (Asset) in the background…'
             merge_duplicates_label: 'Merge Duplicates — %type%'
@@ -798,6 +800,12 @@ admin:
     tenant_settings:
         title: 'Compliance Settings'
         subtitle: 'Tier-1 compliance settings — locale, audit window, DPO contact, TLP, supervisory authorities, retention policies'
+        tab:
+            defaults: Defaults
+            frameworks: Frameworks
+            modules: Modules
+            contact: Contact
+            advanced: Advanced
         no_tenant_in_context: 'No tenant context active — please pick a tenant from the list first.'
         section_tenant: 'Tenant-specific'
         section_global: 'System defaults (all tenants)'
@@ -1019,6 +1027,12 @@ admin:
     policy_style:
         title: 'Policy appearance'
         subtitle: 'Configure layout, typography, watermark and signature slots for generated policy documents.'
+        tab:
+            general: General
+            branding: Branding
+            layout: Layout
+            content: Content
+            advanced: Advanced
         section:
             form: 'Configuration'
             form_subtitle: 'Changes appear live in the preview on the right. Saving persists the values for all future policy documents.'
@@ -1090,6 +1104,12 @@ admin:
     report_style:
         title: 'Report Look'
         subtitle: 'Layout, watermark and audience defaults for generated reports — per tenant. Live preview on the right.'
+        tab:
+            general: General
+            branding: Branding
+            layout: Layout
+            typography: Typography
+            advanced: Advanced
         save: 'Save'
         reset: 'Reset to defaults'
         reset_confirm: 'Really reset all 12 fields to defaults?'

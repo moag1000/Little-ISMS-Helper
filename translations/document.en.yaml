@@ -58,6 +58,9 @@ document:
         type_overview: 'Type overview'
         all_documents: 'All documents'
         basic_info: 'Basic information'
+        classification: Classification
+        lifecycle: Lifecycle
+        ownership: Ownership
         file_upload: 'File upload'
         select_type: 'Select Type'
         types_overview: 'Types Overview'
