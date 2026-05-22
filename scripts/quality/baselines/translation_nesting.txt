@@ -62,10 +62,10 @@ translations/audit.de.yaml:236:checklist
 translations/audit.de.yaml:257:pdf
 translations/audit.de.yaml:296:audit_finding
 translations/audit.en.yaml:1:audit_log
-translations/audit.en.yaml:201:audit_management
-translations/audit.en.yaml:209:checklist
-translations/audit.en.yaml:230:pdf
-translations/audit.en.yaml:269:audit_finding
+translations/audit.en.yaml:200:audit_management
+translations/audit.en.yaml:208:checklist
+translations/audit.en.yaml:229:pdf
+translations/audit.en.yaml:268:audit_finding
 translations/audits.de.yaml:27:audit
 translations/audits.de.yaml:183:audit_log
 translations/audits.de.yaml:187:audit_management
