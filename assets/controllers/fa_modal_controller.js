@@ -103,6 +103,18 @@ export default class extends Controller {
         this.close();
     }
 
+    /**
+     * Form-less confirm (used when fa-modal has no wrapping <form>).
+     * Dispatches confirmed event + auto-closes. Form-based modals submit
+     * the form natively; the form's submit handler dispatches confirmed
+     * via #handleFormSubmit on open.
+     */
+    submit(event) {
+        event?.preventDefault();
+        this.dispatch('confirmed', { detail: { id: this.element.id } });
+        this.close();
+    }
+
     backdropClick(event) {
         if (!this.closeOnBackdropValue) return;
         if (event.target !== this.backdropTarget) return;
