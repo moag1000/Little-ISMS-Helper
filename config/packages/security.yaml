@@ -45,9 +45,10 @@ security:
                 - App\Security\AzureSamlAuthenticator
                 - App\Security\GenericOidcAuthenticator
 
-            # Entry point: use form_login for unauthenticated users
-            # OAuth/SAML accessible via their explicit routes
-            entry_point: form_login
+            # Entry point: ReauthEntryPoint renders the re-auth challenge for
+            # RememberMe sessions hitting fully-authenticated routes; otherwise
+            # falls back to redirecting unauthenticated users to login_path.
+            entry_point: App\Security\ReauthEntryPoint
 
             # Remember me functionality
             remember_me:
