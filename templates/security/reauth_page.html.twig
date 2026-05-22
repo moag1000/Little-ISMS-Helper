@@ -1,0 +1,100 @@
+{% trans_default_domain 'security' %}
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}{{ 'reauth.page_title'|trans }} — Little ISMS Helper{% endblock %}
+
+{% block auth_mood %}warning{% endblock %}
+{% block auth_alva_line %}{{ 'reauth.alva_line'|trans }}{% endblock %}
+{% block auth_alva_sub %}{{ 'reauth.alva_sub'|trans }}{% endblock %}
+
+{% block body %}
+
+{#
+ # Full-page re-auth view — used for non-AJAX (direct browser navigation)
+ # when a RememberMe user hits a fully-authenticated route.
+ #
+ # The fa-modal is embedded directly and auto-opened via the reauth-modal
+ # Stimulus controller (data-reauth-modal-auto-open-value="true").
+ # After successful re-auth the controller reloads the original page
+ # (return_to).
+ #}
+
+<div class="fa-auth-form">
+    <header class="fa-auth-form__head">
+        <div class="fa-auth-form__eyebrow">{{ 'reauth.eyebrow'|trans }}</div>
+        <h1 class="fa-auth-form__title">{{ 'reauth.page_heading'|trans }}</h1>
+        <p class="fa-auth-form__desc">{{ 'reauth.page_desc'|trans }}</p>
+    </header>
+
+    {# ── Password form (local users) ────────────────────────────────────── #}
+    {% if provider == 'password' %}
+
+        <form id="reauth-password-form-page"
+              data-controller="reauth-modal"
+              data-reauth-modal-provider-value="password"
+              data-reauth-modal-return-to-value="{{ return_to|e('html_attr') }}"
+              data-reauth-modal-sso-slug-value=""
+              data-reauth-modal-inline-value="true"
+              data-action="submit->reauth-modal#submitPassword"
+              novalidate>
+
+            <div class="reauth-modal-body__field mb-3">
+                <label for="reauth-page-password" class="reauth-modal-body__label">
+                    {{ 'reauth.field.password'|trans }}
+                </label>
+                <input type="password"
+                       id="reauth-page-password"
+                       name="password"
+                       class="reauth-modal-body__input"
+                       data-reauth-modal-target="passwordInput"
+                       autocomplete="current-password"
+                       required
+                       autofocus>
+                <div class="reauth-modal-body__error"
+                     data-reauth-modal-target="errorMessage"
+                     role="alert"
+                     aria-live="polite"
+                     hidden></div>
+            </div>
+
+            <button type="submit"
+                    class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--full"
+                    data-reauth-modal-target="submitButton">
+                <i class="fa-icon fa-icon--ui-login" aria-hidden="true"></i>
+                <span>{{ 'reauth.action.confirm_password'|trans }}</span>
+            </button>
+        </form>
+
+    {# ── SSO button (Azure / OIDC users) ────────────────────────────────── #}
+    {% else %}
+
+        <div data-controller="reauth-modal"
+             data-reauth-modal-provider-value="{{ provider }}"
+             data-reauth-modal-return-to-value="{{ return_to|e('html_attr') }}"
+             data-reauth-modal-sso-slug-value="{{ sso_slug|default('')|e('html_attr') }}"
+             data-reauth-modal-inline-value="true">
+
+            <p class="text-muted mb-4">{{ 'reauth.sso.hint'|trans }}</p>
+
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--full"
+                    data-action="click->reauth-modal#redirectSso">
+                <i class="fa-icon fa-icon--control" aria-hidden="true"></i>
+                <span>
+                    {% if provider == 'azure_oauth' or provider == 'azure_saml' %}
+                        {{ 'reauth.action.confirm_sso.azure'|trans }}
+                    {% else %}
+                        {{ 'reauth.action.confirm_sso.oidc'|trans }}
+                    {% endif %}
+                </span>
+            </button>
+        </div>
+
+    {% endif %}
+
+    <p class="fa-auth-form__help mt-3">
+        <a href="{{ path('app_logout') }}">{{ 'reauth.action.logout_instead'|trans }}</a>
+    </p>
+</div>
+
+{% endblock %}

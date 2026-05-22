@@ -73,6 +73,7 @@
 {% set fa_id        = id|default(null) %}
 {% set fa_class     = class|default('') %}
 {% set fa_wrap      = wrap is defined ? wrap : true %}
+{% set fa_wrapStyle = wrapStyle|default('') %}
 {% set fa_striped   = striped|default(false) %}
 {% set fa_compact   = compact|default(false) %}
 {% set fa_stickyHead = stickyHead|default(false) %}
@@ -91,7 +92,7 @@
 {% if fa_sortable   %}{% set _ctrls = _ctrls|merge(['fa-table-sort']) %}{% endif %}
 {% if fa_bulkSelect %}{% set _ctrls = _ctrls|merge(['fa-bulk-select']) %}{% endif %}
 
-{% if fa_wrap %}<div class="fa-table-wrap"{% if _ctrls|length > 0 %} data-controller="{{ _ctrls|join(' ') }}"{% endif %}>{% endif %}
+{% if fa_wrap %}<div class="fa-table-wrap"{% if _ctrls|length > 0 %} data-controller="{{ _ctrls|join(' ') }}"{% endif %}{% if fa_wrapStyle %} style="{{ fa_wrapStyle }}"{% endif %}>{% endif %}
     <table class="{{ _classes|join(' ') }}"{% if fa_id %} id="{{ fa_id }}"{% endif %}>
         {% if block('table_head') is defined %}
             <thead class="fa-table__head">

@@ -64,6 +64,11 @@ security:
             # Allow user impersonation (for admins)
             switch_user: { role: ROLE_ALLOWED_TO_SWITCH }
 
+            # Re-authentication challenge: when a RememberMe user hits a route
+            # requiring IS_AUTHENTICATED_FULLY, return a modal challenge instead
+            # of redirecting to /login.
+            access_denied_handler: App\Security\ReauthAccessDeniedHandler
+
     # Role hierarchy - higher roles inherit permissions from lower roles
     role_hierarchy:
         ROLE_AUDITOR:           ROLE_USER
@@ -138,6 +143,10 @@ security:
         # User is authenticated but hasn't completed MFA yet
         - { path: '^/(de|en)/mfa-challenge$', roles: IS_AUTHENTICATED_REMEMBERED }
         - { path: '^/(de|en)/mfa-verify$', roles: IS_AUTHENTICATED_REMEMBERED }
+
+        # Re-auth endpoints (locale-prefixed — /{locale}/reauth/...)
+        # IS_AUTHENTICATED_REMEMBERED: a RememberMe user must be able to reach these.
+        - { path: '^/(de|en)/reauth/', roles: IS_AUTHENTICATED_REMEMBERED }
 
         # Defensive safeguard: Prevent locale-prefixed security routes from requiring authentication
         # These routes should NEVER exist (SecurityController is excluded from locale routing),
