@@ -495,6 +495,7 @@ processing_activity:
         contact_person: Ansprechperson
         data_protection_officer: 'Datenschutzbeauftragter (DSB)'
         involves_processors: 'Auftragsverarbeiter eingebunden (Art. 28 DSGVO)'
+        processor_suppliers: Auftragsverarbeiter
         is_joint_controller: 'Gemeinsame Verantwortlichkeit (Art. 26 DSGVO)'
         is_high_risk: 'Hohes Risiko für Rechte und Freiheiten'
         dpia_completed: 'Datenschutz-Folgenabschätzung (DSFA) durchgeführt'
@@ -540,6 +541,7 @@ processing_activity:
         data_protection_officer_person: 'Datenschutzbeauftragter aus Personenstammdaten (alternativ zum Benutzerkonto)'
         data_protection_officer_deputies: 'Stellvertretende Personen für den DSB-Slot'
         involves_processors: 'Sind Auftragsverarbeiter eingebunden (Art. 28)?'
+        processor_suppliers: 'Externe Auftragsverarbeiter, die in dieser Verarbeitungstätigkeit für Sie tätig sind (Art. 28 DSGVO).'
         is_joint_controller: 'Liegt eine gemeinsame Verantwortlichkeit vor (Art. 26)?'
         is_high_risk: 'Gilt dies als Hochrisiko-Verarbeitung?'
         dpia_completed: 'Wurde eine Datenschutz-Folgenabschätzung (DSFA) durchgeführt?'

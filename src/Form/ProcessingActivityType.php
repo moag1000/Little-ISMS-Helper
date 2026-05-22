@@ -7,9 +7,12 @@ namespace App\Form;
 use App\Entity\Asset;
 use App\Entity\Control;
 use App\Entity\ProcessingActivity;
+use App\Entity\Supplier;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
+use App\Repository\SupplierRepository;
 use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -35,6 +38,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
 
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -528,6 +532,30 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
         ;
 
+        // Junior-ISB-Audit-2026-05-22 K-02: Art. 28 DSGVO Auftragsverarbeiter-Dokumentation
+        // M2M ProcessingActivity ↔ Supplier — exposes the existing entity relationship
+        // (src/Entity/ProcessingActivity.php::$processorSuppliers) so DSGVO Art. 30(1)(d)
+        // + Art. 28 documentation is fillable from the VVT form. Module-gated to `privacy`
+        // per CLAUDE.md "Module-Awareness" convention.
+        if ($this->isModuleActive('privacy')) {
+            $builder->add('processorSuppliers', EntityType::class, [
+                'label' => 'processing_activity.field.processor_suppliers',
+                'help' => 'processing_activity.help.processor_suppliers',
+                'class' => Supplier::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'by_reference' => false,
+                'required' => false,
+                'query_builder' => function (SupplierRepository $r) {
+                    return $r->createQueryBuilder('s')
+                        ->where('s.tenant = :tenant')
+                        ->setParameter('tenant', $this->tenantContext->getCurrentTenant())
+                        ->orderBy('s.name', 'ASC');
+                },
+                'attr' => ['data-controller' => 'tom-select'],
+            ]);
+        }
+
         // S4 P-1 Wave-2 — OwnerPicker rollout (P-1).
         // Contact-Person compound slot: contactPersonUser (User) +
         // contactPerson (Person) + contactDeputyPersons (Multi-Person).
@@ -628,6 +656,8 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'thirdCountries',
                 'transferSafeguards',
                 'involvesProcessors',
+                // Junior-ISB-Audit-2026-05-22 K-02: Art. 28 DSGVO Auftragsverarbeiter-Dokumentation
+                'processorSuppliers',
                 'isJointController',
             ],
             'retention' => [
