@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\ComplianceFramework;
+use App\Service\ComplianceWizard\CategoryProvider\BsiFrameworkCategoryProvider;
+use App\Service\ComplianceWizard\CategoryProvider\IsoFrameworkCategoryProvider;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmBiaMethodologyPresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmCrisisManagementPlanPresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmExerciseProgrammeActiveCheck;
@@ -20,18 +22,21 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiTierConsistencyCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiTopLevelLeitliniePresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
-use App\Service\ComplianceWizardService;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * W5-C integration test — verifies that {@see ComplianceWizardService} hosts
- * dedicated `bsi_policies` and `bcm_policies` categories whose checks resolve
- * through the {@see PolicyWizardCheckRegistry}, gated by their respective
- * scope detectors (active ComplianceFramework or tenant-policy-setting).
+ * W5-C integration test — verifies that {@see BsiFrameworkCategoryProvider} and
+ * {@see IsoFrameworkCategoryProvider} host dedicated `bsi_policies` and
+ * `bcm_policies` categories whose checks resolve through the
+ * {@see PolicyWizardCheckRegistry}, gated by their respective scope detectors
+ * (active ComplianceFramework or tenant-policy-setting).
  *
- * Mirrors the W4-D integration-test pattern: boots the kernel for the real
- * wiring then reflects into private category builders for surgical assertions.
+ * Adapted from god-class decomposition (PR #556): methods were extracted from
+ * ComplianceWizardService into BsiFrameworkCategoryProvider (BSI) and
+ * IsoFrameworkCategoryProvider (BCM). Tests now target the sub-services
+ * directly via their public category-map APIs instead of reflecting into
+ * private builders on the facade.
  */
 final class ComplianceWizardServiceBsiBcmIntegrationTest extends KernelTestCase
 {
@@ -50,25 +55,33 @@ final class ComplianceWizardServiceBsiBcmIntegrationTest extends KernelTestCase
         }
     }
 
-    private function bootService(): ComplianceWizardService
+    private function bootBsiProvider(): BsiFrameworkCategoryProvider
     {
         self::bootKernel();
-        $container = static::getContainer();
-        return $container->get(ComplianceWizardService::class);
+        return static::getContainer()->get(BsiFrameworkCategoryProvider::class);
+    }
+
+    private function bootIsoProvider(): IsoFrameworkCategoryProvider
+    {
+        self::bootKernel();
+        return static::getContainer()->get(IsoFrameworkCategoryProvider::class);
     }
 
     #[Test]
     public function testBsiCategoryRegisteredWhenScopeActive(): void
     {
         $this->requireDatabase();
-        $service = $this->bootService();
+        $bsiProvider = $this->bootBsiProvider();
 
         $em = static::getContainer()->get('doctrine.orm.entity_manager');
         $framework = $em->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);
 
-        $reflection = new \ReflectionMethod($service, 'buildBsiPolicyWizardCategory');
-        $built = $reflection->invoke($service);
+        // Obtain the possibly-built bsi_policies category via the public API.
+        // getBsiGrundschutzCategories() calls the private builder internally and
+        // drops null entries via array_filter — so absence of the key == null return.
+        $categories = $bsiProvider->getBsiGrundschutzCategories();
+        $built = $categories['bsi_policies'] ?? null;
 
         if ($framework === null || $framework->isActive() !== true) {
             // Out-of-scope path: no fixture + no tenant policy setting →
@@ -78,8 +91,6 @@ final class ComplianceWizardServiceBsiBcmIntegrationTest extends KernelTestCase
                 'When BSI scope is not active, the bsi_policies builder must return null',
             );
 
-            $categories = (new \ReflectionMethod($service, 'getBsiGrundschutzCategories'))
-                ->invoke($service);
             self::assertArrayNotHasKey(
                 'bsi_policies',
                 $categories,
@@ -106,14 +117,15 @@ final class ComplianceWizardServiceBsiBcmIntegrationTest extends KernelTestCase
     public function testBcmCategoryRegisteredWhenScopeActive(): void
     {
         $this->requireDatabase();
-        $service = $this->bootService();
+        $isoProvider = $this->bootIsoProvider();
 
         $em = static::getContainer()->get('doctrine.orm.entity_manager');
         $framework = $em->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO_22301']);
 
-        $reflection = new \ReflectionMethod($service, 'buildBcmPolicyWizardCategory');
-        $built = $reflection->invoke($service);
+        // getIso22301Categories() calls buildBcmPolicyWizardCategory() internally.
+        $categories = $isoProvider->getIso22301Categories();
+        $built = $categories['bcm_policies'] ?? null;
 
         if ($framework === null || $framework->isActive() !== true) {
             self::assertNull(
@@ -121,8 +133,6 @@ final class ComplianceWizardServiceBsiBcmIntegrationTest extends KernelTestCase
                 'When BCM scope is not active, the bcm_policies builder must return null',
             );
 
-            $categories = (new \ReflectionMethod($service, 'getIso22301Categories'))
-                ->invoke($service);
             self::assertArrayNotHasKey(
                 'bcm_policies',
                 $categories,
@@ -148,7 +158,10 @@ final class ComplianceWizardServiceBsiBcmIntegrationTest extends KernelTestCase
     public function testCategoriesSkippedWhenScopeInactive(): void
     {
         $this->requireDatabase();
-        $service = $this->bootService();
+
+        self::bootKernel();
+        $bsiProvider = static::getContainer()->get(BsiFrameworkCategoryProvider::class);
+        $isoProvider = static::getContainer()->get(IsoFrameworkCategoryProvider::class);
 
         $em = static::getContainer()->get('doctrine.orm.entity_manager');
         $bsiFramework = $em->getRepository(ComplianceFramework::class)
@@ -159,24 +172,26 @@ final class ComplianceWizardServiceBsiBcmIntegrationTest extends KernelTestCase
         // For frameworks not active in this kernel, the builders MUST return
         // null. For frameworks that ARE active, the test exercises the
         // happy path elsewhere — here we simply pin the contract.
+        $bsiCategories = $bsiProvider->getBsiGrundschutzCategories();
+        $bsiBuilt = $bsiCategories['bsi_policies'] ?? null;
+
         if ($bsiFramework === null || $bsiFramework->isActive() !== true) {
-            $bsiBuilt = (new \ReflectionMethod($service, 'buildBsiPolicyWizardCategory'))
-                ->invoke($service);
             self::assertNull($bsiBuilt);
         } else {
             self::assertNotNull(
-                (new \ReflectionMethod($service, 'buildBsiPolicyWizardCategory'))->invoke($service),
+                $bsiBuilt,
                 'BSI scope is active in this kernel; builder must return an array',
             );
         }
 
+        $isoCategories = $isoProvider->getIso22301Categories();
+        $bcmBuilt = $isoCategories['bcm_policies'] ?? null;
+
         if ($bcmFramework === null || $bcmFramework->isActive() !== true) {
-            $bcmBuilt = (new \ReflectionMethod($service, 'buildBcmPolicyWizardCategory'))
-                ->invoke($service);
             self::assertNull($bcmBuilt);
         } else {
             self::assertNotNull(
-                (new \ReflectionMethod($service, 'buildBcmPolicyWizardCategory'))->invoke($service),
+                $bcmBuilt,
                 'BCM scope is active in this kernel; builder must return an array',
             );
         }
