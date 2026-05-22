@@ -131,6 +131,33 @@ class BusinessContinuityPlanController extends AbstractController
         return $this->redirectToRoute('app_bc_plan_index');
     }
 
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
+     * Warns if a BCPlan is referenced by BCExercises before deletion.
+     */
+    #[Route('/business-continuity-plan/bulk-delete-check', name: 'app_bc_plan_bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDeleteCheck(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $ids = array_filter((array) ($data['ids'] ?? []), 'is_int');
+        if ($ids === []) {
+            return new JsonResponse(['dependencies' => [], 'checked_count' => 0]);
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        $plans = $this->businessContinuityPlanRepository->findBy(['id' => $ids, 'tenant' => $tenant]);
+
+        $em = $this->entityManager;
+        return $this->checkBulkDependencies($plans, 'getName', [
+            fn (\App\Entity\BusinessContinuityPlan $plan): ?array => ($c = (int) $em->createQuery(
+                'SELECT COUNT(e.id) FROM App\Entity\BCExercise e JOIN e.testedPlans p WHERE p.id = :id'
+            )->setParameter('id', $plan->getId())->getSingleScalarResult()) > 0
+                ? ['message' => sprintf('%d Übung(en) verknüpft', $c), 'icon' => 'clipboard-check']
+                : null,
+        ]);
+    }
+
     #[Route('/business-continuity-plan/bulk-delete', name: 'app_bc_plan_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request): JsonResponse

@@ -178,6 +178,19 @@ class ManagementReviewController extends AbstractController
         return $this->redirectToRoute('app_management_review_index');
     }
 
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
+     * ManagementReviews are terminal — returns empty dependencies.
+     */
+    #[Route('/management-review/bulk-delete-check', name: 'app_management_review_bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDeleteCheck(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $ids = (array) ($data['ids'] ?? []);
+        return new JsonResponse(['dependencies' => [], 'checked_count' => count($ids)]);
+    }
+
     #[Route('/management-review/bulk-delete', name: 'app_management_review_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): JsonResponse

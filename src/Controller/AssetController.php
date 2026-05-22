@@ -29,6 +29,7 @@ use App\Controller\Trait\BulkActionTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -270,6 +271,37 @@ class AssetController extends AbstractController
             'form' => $form,
         ]);
     }
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
+     * Warns if an Asset has associated Risks or Incidents that reference it.
+     */
+    #[Route('/asset/bulk-delete-check', name: 'app_asset_bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDeleteCheck(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $ids = array_filter((array) ($data['ids'] ?? []), 'is_int');
+        if ($ids === []) {
+            return new JsonResponse(['dependencies' => [], 'checked_count' => 0]);
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+        $assets = $this->assetRepository->findBy(['id' => $ids, 'tenant' => $tenant]);
+
+        return $this->checkBulkDependencies($assets, 'getName', [
+            fn (Asset $asset): ?array => ($c = $asset->getRisks()->count()) > 0
+                ? ['message' => sprintf('%d Risk(s) verknüpft', $c), 'icon' => 'shield-exclamation']
+                : null,
+            fn (Asset $asset): ?array => ($c = $asset->getIncidents()->count()) > 0
+                ? ['message' => sprintf('%d Vorfall/Vorfälle verknüpft', $c), 'icon' => 'exclamation-triangle']
+                : null,
+            fn (Asset $asset): ?array => ($c = $asset->getProtectingControls()->count()) > 0
+                ? ['message' => sprintf('%d Maßnahme(n) verknüpft', $c), 'icon' => 'check-circle']
+                : null,
+        ]);
+    }
+
     #[Route('/asset/bulk-delete', name: 'app_asset_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response

@@ -25,6 +25,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -493,6 +494,42 @@ class ProcessingActivityController extends AbstractController
         ], $results);
 
         return $this->json(['results' => $formattedResults]);
+    }
+
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
+     * Warns if a ProcessingActivity has linked Consents, DataBreaches, or DPIAs.
+     */
+    #[Route('/processing-activity/bulk-delete-check', name: 'app_processing_activity_bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDeleteCheck(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $ids = array_filter((array) ($data['ids'] ?? []), 'is_int');
+        if ($ids === []) {
+            return new JsonResponse(['dependencies' => [], 'checked_count' => 0]);
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+        $activities = $this->processingActivityRepository?->findBy(['id' => $ids, 'tenant' => $tenant]) ?? [];
+
+        $em = $this->entityManager;
+        return $this->checkBulkDependencies($activities, 'getName', [
+            fn (\App\Entity\ProcessingActivity $pa): ?array => ($c = $pa->getConsents()->count()) > 0
+                ? ['message' => sprintf('%d Einwilligung(en) verknüpft', $c), 'icon' => 'person-check']
+                : null,
+            fn (\App\Entity\ProcessingActivity $pa): ?array => ($c = (int) $em->createQuery(
+                'SELECT COUNT(db.id) FROM App\Entity\DataBreach db WHERE db.processingActivity = :pa'
+            )->setParameter('pa', $pa)->getSingleScalarResult()) > 0
+                ? ['message' => sprintf('%d Datenpanne(n) verknüpft', $c), 'icon' => 'shield-x']
+                : null,
+            fn (\App\Entity\ProcessingActivity $pa): ?array => ($c = (int) $em->createQuery(
+                'SELECT COUNT(d.id) FROM App\Entity\DataProtectionImpactAssessment d WHERE d.processingActivity = :pa'
+            )->setParameter('pa', $pa)->getSingleScalarResult()) > 0
+                ? ['message' => sprintf('%d DPIA(s) verknüpft', $c), 'icon' => 'file-earmark-text']
+                : null,
+        ]);
     }
 
     /**
