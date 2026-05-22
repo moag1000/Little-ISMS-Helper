@@ -139,6 +139,8 @@ common:
     next: Weiter
     yes: 'Ja'
     no: 'Nein'
+    form:
+        errors: 'Formular-Fehler'
     greeting:
         hello_name: 'Hallo %name%,'
     person_picker:

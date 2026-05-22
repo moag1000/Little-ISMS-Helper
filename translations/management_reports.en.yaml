@@ -520,3 +520,31 @@ management_reports:
         view_report: 'Quarterly Trend'
 
 # Top-level cert_readiness keys (used by templates without management_reports. prefix)
+cert_readiness:
+    title: 'Certification readiness'
+    view_assessment: 'View assessment'
+    download_pdf: 'Download PDF'
+    overall_score: 'Overall score'
+    clause_compliance_score: 'Clause compliance score'
+    clauses_4_10: 'Clauses 4–10'
+    annex_a_coverage: 'Annex A coverage'
+    controls_implemented: 'Controls implemented'
+    gaps_found: 'Gaps found'
+    all_controls_started: 'All controls started'
+    no_controls_in_progress: 'No controls in progress'
+    no_iso_wizard: 'No ISO wizard available'
+    table:
+        clause: Clause
+        score: Score
+        status: Status
+        gaps: Gaps
+    status:
+        complete: Complete
+        partial: Partial
+        not_started: 'Not started'
+    section:
+        clause_compliance: 'Clause compliance'
+        controls_in_progress: 'Controls in progress'
+        controls_not_started: 'Controls not started'
+        critical_gaps: 'Critical gaps'
+        recommended_improvements: 'Recommended improvements'

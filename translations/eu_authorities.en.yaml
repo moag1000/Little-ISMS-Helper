@@ -42,6 +42,7 @@ eu_authorities:
             nis2: 'NIS-2 Classification'
             contacts: 'Notification Contacts'
             submission: 'Submission & Confirmation'
+            registration: 'Registration Details'
         field:
             legal_name: 'Legal Name of Organisation'
             legal_form: 'Legal Form'

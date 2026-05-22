@@ -330,9 +330,9 @@ class ProcessingActivityController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         $jobId = $jobStatusService->create('processing_activity.vvt_export', [
-            '_label' => $this->translator->trans('processing_activity.export.progress_title', [], 'compliance'),
-            '_subtitle' => $this->translator->trans('processing_activity.export.progress_subtitle', [], 'compliance'),
-            '_download_label' => $this->translator->trans('processing_activity.export.download_button', [], 'compliance'),
+            '_label' => $this->translator->trans('processing_activity.export.progress_title', [], 'privacy'),
+            '_subtitle' => $this->translator->trans('processing_activity.export.progress_subtitle', [], 'privacy'),
+            '_download_label' => $this->translator->trans('processing_activity.export.download_button', [], 'privacy'),
         ]);
         $jobStatusService->updatePayload($jobId, [
             '_download_url' => $this->generateUrl('app_processing_activity_export_csv_download', ['id' => $jobId]),
