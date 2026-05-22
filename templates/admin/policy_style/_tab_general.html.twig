@@ -1,0 +1,10 @@
+{#
+ # Policy Style form — tab: general
+ # Fields: policyDocCoverPattern, policyDocCoverLogoSize
+ # Included inside fa-tabs body — trans_default_domain inherited from parent.
+ #}
+{% trans_default_domain 'admin' %}
+<div class="row g-3">
+    <div class="col-md-6">{{ form_row(form.policyDocCoverPattern) }}</div>
+    <div class="col-md-6">{{ form_row(form.policyDocCoverLogoSize) }}</div>
+</div>
