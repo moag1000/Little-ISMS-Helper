@@ -871,27 +871,35 @@ class BusinessProcess
         );
     }
 
+    // Junior-ISB-Audit-2026-05-22 M-01: ISO 22301 Cl. 8.2.2 / 8.3.2 Recovery-Kette RPO ≤ RTO ≤ MTPD
     /**
-     * ISO 22301 Cl. 8.2.2 — MTPD must be >= RTO and >= RPO.
+     * ISO 22301 Cl. 8.2.2 / 8.3.2 — enforce the full BIA recovery-chain
+     * RPO ≤ RTO ≤ MTPD on save.
      *
      * Maximum Tolerable Period of Disruption is the outer-bound; if a process
      * cannot recover within MTPD the business cannot survive the disruption.
-     * Therefore RTO (when the process must be back) and RPO (acceptable data
-     * loss measured in time before disruption) MUST both be ≤ MTPD. Storing
-     * a configuration where MTPD < RTO would be an audit non-conformity in
-     * a certification audit (BIA fundamentally broken).
+     * Recovery Time Objective (when the process must be back) MUST fit inside
+     * MTPD. Recovery Point Objective (acceptable data loss measured in time
+     * before disruption) MUST be ≤ RTO — otherwise the process could be
+     * "recovered" but with data older than the recovery-target window, which
+     * defeats the BIA. Saving a violating ordering (e.g. mtpd=2h, rto=8h) is
+     * a direct ISO 22301 non-conformity during certification (Audit-NC).
      */
     #[Assert\Callback]
-    public function validateBiaConsistency(ExecutionContextInterface $context): void
+    public function validateRecoveryChain(ExecutionContextInterface $context): void
     {
-        if ($this->mtpd !== null && $this->rto !== null && $this->mtpd < $this->rto) {
-            $context->buildViolation('business_process.validation.mtpd_below_rto')
+        $rpo  = $this->rpo;
+        $rto  = $this->rto;
+        $mtpd = $this->mtpd;
+
+        if ($rpo !== null && $rto !== null && $rpo > $rto) {
+            $context->buildViolation('business_process.validator.rpo_greater_than_rto')
                 ->setTranslationDomain('business_process')
-                ->atPath('mtpd')
+                ->atPath('rpo')
                 ->addViolation();
         }
-        if ($this->mtpd !== null && $this->rpo !== null && $this->mtpd < $this->rpo) {
-            $context->buildViolation('business_process.validation.mtpd_below_rpo')
+        if ($rto !== null && $mtpd !== null && $rto > $mtpd) {
+            $context->buildViolation('business_process.validator.rto_greater_than_mtpd')
                 ->setTranslationDomain('business_process')
                 ->atPath('mtpd')
                 ->addViolation();

@@ -205,3 +205,6 @@ business_process:
   validation:
     mtpd_below_rto: 'MTPD must be greater than or equal to RTO (ISO 22301 Cl. 8.2.2 — Maximum Tolerable Period of Disruption is the outer bound; RTO must fit inside it).'
     mtpd_below_rpo: 'MTPD must be greater than or equal to RPO (ISO 22301 Cl. 8.2.2 — Recovery Point Objective cannot exceed the maximum tolerance).'
+  validator:
+    rpo_greater_than_rto: 'RPO must not exceed RTO (Recovery chain: RPO ≤ RTO ≤ MTPD)'
+    rto_greater_than_mtpd: 'RTO must not exceed MTPD (Recovery chain: RPO ≤ RTO ≤ MTPD)'
