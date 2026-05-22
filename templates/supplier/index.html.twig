@@ -23,7 +23,7 @@
 ] %}
 {% if doraActive ?? false %}
     {# Async DORA ROI export — opens dispatch modal (Phase 3 async-jobs rollout) #}
-    {% set supplierActions = [{ label: 'dora.register_export.button'|trans({}, 'dora'), variant: 'ghost', icon: 'download', href: '#', attrs: { 'data-bs-toggle': 'modal', 'data-bs-target': '#doraRegisterExportModal' } }] | merge(supplierActions) %}
+    {% set supplierActions = [{ label: 'dora.register_export.button'|trans({}, 'dora'), variant: 'ghost', icon: 'download', href: '#', attrs: { 'data-controller': 'fa-modal-dispatcher', 'data-action': 'click->fa-modal-dispatcher#open', 'data-fa-modal-id': 'doraRegisterExportModal' } }] | merge(supplierActions) %}
 {% endif %}
 {% if is_granted('ROLE_MANAGER') %}
     {% set supplierActions = [{ label: 'supplier.action.lksg_export'|trans({}, 'suppliers'), variant: 'ghost', icon: 'download', href: path('app_supplier_lksg_annual_report_csv') }] | merge(supplierActions) %}
