@@ -117,6 +117,19 @@ class ChangeRequestController extends AbstractController
         return $this->redirectToRoute('app_change_request_index');
     }
 
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
+     * ChangeRequests have no blocking FK relations — returns empty dependencies.
+     */
+    #[Route('/change-request/bulk-delete-check', name: 'app_change_request_bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDeleteCheck(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $ids = (array) ($data['ids'] ?? []);
+        return new JsonResponse(['dependencies' => [], 'checked_count' => count($ids)]);
+    }
+
     #[Route('/change-request/bulk-delete', name: 'app_change_request_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request): JsonResponse

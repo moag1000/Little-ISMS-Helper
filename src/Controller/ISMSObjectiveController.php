@@ -125,6 +125,19 @@ class ISMSObjectiveController extends AbstractController
         return $this->redirectToRoute('app_objective_index');
     }
 
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation modal.
+     * ISMSObjectives are terminal — returns empty dependencies.
+     */
+    #[Route('/objective/bulk-delete-check', name: 'app_objective_bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function bulkDeleteCheck(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $ids = (array) ($data['ids'] ?? []);
+        return new JsonResponse(['dependencies' => [], 'checked_count' => count($ids)]);
+    }
+
     #[Route('/objective/bulk-delete', name: 'app_objective_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request): JsonResponse
