@@ -23,7 +23,7 @@ class ControlVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new ControlVoter();
+        $this->voter = new ControlVoter(VoterTestHelper::createRoleHierarchy());
         $this->tenant = $this->createMock(Tenant::class);
         $this->otherTenant = $this->createMock(Tenant::class);
     }

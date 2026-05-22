@@ -22,7 +22,7 @@ final class IdentityProviderVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter  = new IdentityProviderVoter();
+        $this->voter  = new IdentityProviderVoter(VoterTestHelper::createRoleHierarchy());
         $this->tenant = $this->createMock(Tenant::class);
         $this->tenant->method('getId')->willReturn(1);
     }

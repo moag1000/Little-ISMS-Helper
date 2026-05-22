@@ -12,6 +12,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Policy-Wizard Voter — Phase 4-C / Sprint W1-B.
@@ -74,8 +75,14 @@ final class PolicyWizardVoter extends Voter
     ];
 
     public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
         private readonly ?ComplianceFrameworkRepository $complianceFrameworkRepository = null,
     ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
     }
 
     protected function supports(string $attribute, mixed $subject): bool
@@ -119,7 +126,7 @@ final class PolicyWizardVoter extends Voter
         }
 
         // ROLE_SUPER_ADMIN ist universal-bypass — konsistent mit den anderen Votern.
-        if (in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true)) {
+        if ($this->hasAnyRole($user, ['ROLE_SUPER_ADMIN'])) {
             return true;
         }
 
@@ -319,7 +326,7 @@ final class PolicyWizardVoter extends Voter
      */
     private function hasAnyRole(User $user, array $roles): bool
     {
-        $userRoles = $user->getRoles();
+        $userRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
         foreach ($roles as $role) {
             if (in_array($role, $userRoles, true)) {
                 return true;

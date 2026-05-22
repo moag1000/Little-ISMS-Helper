@@ -57,7 +57,7 @@ class PolicyWizardVoterTest extends TestCase
     private function makeVoter(?bool $doraActive = null): PolicyWizardVoter
     {
         if ($doraActive === null) {
-            return new PolicyWizardVoter(null);
+            return new PolicyWizardVoter(VoterTestHelper::createRoleHierarchy(), null);
         }
 
         $framework = $this->createMock(ComplianceFramework::class);
@@ -69,7 +69,7 @@ class PolicyWizardVoterTest extends TestCase
                 ($criteria['code'] ?? null) === 'DORA' ? $framework : null,
         );
 
-        return new PolicyWizardVoter($repo);
+        return new PolicyWizardVoter(VoterTestHelper::createRoleHierarchy(), $repo);
     }
 
     /**

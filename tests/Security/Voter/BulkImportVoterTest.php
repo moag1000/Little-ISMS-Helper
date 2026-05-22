@@ -23,7 +23,7 @@ class BulkImportVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter       = new BulkImportVoter();
+        $this->voter       = new BulkImportVoter(VoterTestHelper::createRoleHierarchy());
         $this->tenant      = $this->createMock(Tenant::class);
         $this->otherTenant = $this->createMock(Tenant::class);
     }

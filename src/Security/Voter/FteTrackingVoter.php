@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * F11 FTE-Tracking security voter.
@@ -22,6 +23,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class FteTrackingVoter extends Voter
 {
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
     public const string VIEW = 'fte_tracking_view';
     public const string CALIBRATE = 'fte_tracking_calibrate';
 
@@ -56,6 +62,8 @@ final class FteTrackingVoter extends Voter
 
     private function hasRole(TokenInterface $token, string $role): bool
     {
-        return in_array($role, $token->getRoleNames(), true);
+        $reachable = $this->roleHierarchy->getReachableRoleNames($token->getRoleNames());
+
+        return in_array($role, $reachable, true);
     }
 }

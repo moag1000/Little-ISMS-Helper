@@ -36,7 +36,7 @@ class DocumentSectionVoterTest extends TestCase
 
     private function makeVoter(): DocumentSectionVoter
     {
-        return new DocumentSectionVoter();
+        return new DocumentSectionVoter(VoterTestHelper::createRoleHierarchy());
     }
 
     /**

@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * F30 — Voter for DORA Register of Information (RoI).
@@ -23,6 +24,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class DoraRoiVoter extends Voter
 {
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
     public const string VIEW           = 'view';
     public const string EXPORT         = 'export';
     public const string MARK_SUBMITTED = 'mark_submitted';
@@ -50,6 +56,8 @@ final class DoraRoiVoter extends Voter
 
     private function hasRole(User $user, string $role): bool
     {
-        return in_array($role, $user->getRoles(), true);
+        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+
+        return in_array($role, $reachable, true);
     }
 }

@@ -10,6 +10,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * RiskIncidentLinkVoter — Sprint 9B / F16
@@ -25,6 +26,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class RiskIncidentLinkVoter extends Voter
 {
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
     public const string VIEW   = 'risk_incident_link_view';
     public const string CREATE = 'risk_incident_link_create';
     public const string DELETE = 'risk_incident_link_delete';
@@ -46,7 +52,9 @@ final class RiskIncidentLinkVoter extends Voter
         /** @var RiskIncidentLink $link */
         $link = $subject;
 
-        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+        $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+
+        if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
             return true;
         }
 
@@ -54,9 +62,9 @@ final class RiskIncidentLinkVoter extends Voter
             && $link->getTenant() === $user->getTenant();
 
         return match ($attribute) {
-            self::VIEW   => $sameTenant && in_array('ROLE_USER', $user->getRoles(), true),
+            self::VIEW   => $sameTenant && in_array('ROLE_USER', $reachableRoles, true),
             self::CREATE,
-            self::DELETE => $sameTenant && in_array('ROLE_MANAGER', $user->getRoles(), true),
+            self::DELETE => $sameTenant && in_array('ROLE_MANAGER', $reachableRoles, true),
             default      => false,
         };
     }

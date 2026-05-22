@@ -23,7 +23,7 @@ class RiskVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new RiskVoter();
+        $this->voter = new RiskVoter(VoterTestHelper::createRoleHierarchy());
         $this->tenant = $this->createMock(Tenant::class);
         $this->otherTenant = $this->createMock(Tenant::class);
     }
