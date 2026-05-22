@@ -171,7 +171,7 @@ asset:
     integrity: Integrität
     availability: Verfügbarkeit
     name: Name
-    classification: Classification
+    classification: Klassifizierung
   classification:
     public: Öffentlich
     internal: Intern

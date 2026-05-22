@@ -24,6 +24,8 @@ setup:
             db_test: 'Alva is testing the database connection — one moment please.'
             admin: 'Alva is creating the admin user — one moment please.'
             frameworks: 'Alva is setting up compliance frameworks — this may take a few seconds.'
+        success:
+            base_data: 'Master data imported successfully.'
 
     # Index/Landing Page
     already_complete:

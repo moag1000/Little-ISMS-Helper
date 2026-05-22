@@ -297,10 +297,10 @@ audit_finding:
         linked_requirements: 'Verknüpfung mit ISO/BSI-Anforderungen erstellt automatisch Korrekturmaßnahmen (F15).'
         empty_link: '/de/help/glossary#glossary-audit-finding'
     type:
-        major_nc: 'Major Nonconformity'
-        minor_nc: 'Minor Nonconformity'
-        observation: 'Observation'
-        opportunity: 'Opportunity for Improvement'
+        major_nc: 'Hauptabweichung (Major Nonconformity)'
+        minor_nc: 'Nebenabweichung (Minor Nonconformity)'
+        observation: 'Beobachtung'
+        opportunity: 'Verbesserungspotenzial'
     severity:
         critical: 'Kritisch'
         high: 'Hoch'

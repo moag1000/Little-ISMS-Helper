@@ -75,7 +75,7 @@ interested_party:
         delete: 'Möchten Sie diese interessierte Partei wirklich löschen?'
     party_type:
         customer: Kunde
-        shareholder: Shareholder
+        shareholder: Gesellschafter
         employee: Mitarbeiter
         regulator: 'Regulatorische Institution'
         supplier: Lieferant
