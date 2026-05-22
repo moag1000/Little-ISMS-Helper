@@ -13,7 +13,7 @@ export default class extends Controller {
     static targets = ['widget', 'settingsModal', 'toggleButton', 'widgetContainer', 'sizeSelector'];
     static values = {
         storageKey: { type: String, default: 'dashboard_widget_preferences' },
-        apiUrl: { type: String, default: '/dashboard-layout/config' },
+        apiUrl: { type: String, default: '' },
         useDatabaseSync: { type: Boolean, default: true }
     };
 
@@ -142,7 +142,7 @@ export default class extends Controller {
 
     // Load preferences from API or LocalStorage
     async loadPreferences() {
-        if (this.useDatabaseSyncValue) {
+        if (this.useDatabaseSyncValue && this.apiUrlValue) {
             try {
                 const response = await fetch(this.apiUrlValue, {
                     method: 'GET',
@@ -160,7 +160,10 @@ export default class extends Controller {
                     this.saveToLocalStorage();
                     return;
                 }
+                // non-ok (404, 401, …) — fall through to localStorage silently
             } catch (error) {
+                // Network or parse error — fall through to localStorage
+                console.debug('[dashboard-customizer] API unavailable, using localStorage');
             }
         }
 
@@ -246,7 +249,7 @@ export default class extends Controller {
         // Always save to localStorage immediately
         this.saveToLocalStorage();
 
-        if (!this.useDatabaseSyncValue) {
+        if (!this.useDatabaseSyncValue || !this.apiUrlValue) {
             return;
         }
 
