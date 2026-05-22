@@ -17,3 +17,34 @@
 'Invalid or expired login link.': 'Invalid or expired login link.'
 'Too many failed login attempts, please try again in %minutes% minute.': 'Too many failed login attempts, please try again in %minutes% minute.'
 'Too many failed login attempts, please try again in %minutes% minutes.': 'Too many failed login attempts, please try again in %minutes% minutes.'
+
+# ── Re-auth modal (feat/security-reauth-modal-multi-provider) ───────────────
+
+reauth:
+    title: 'Confirm your session'
+    subtitle: 'Your session is running in remember-me mode. Please confirm your identity to continue.'
+    page_title: 'Confirm your session'
+    page_heading: 'Security check required'
+    page_desc: 'Please confirm your identity to access this page.'
+    eyebrow: 'Security check'
+    alva_line: 'Quick identity check — then you can continue.'
+    alva_sub: 'Your session is running in remember-me mode.'
+
+    field:
+        password: 'Password'
+
+    action:
+        confirm_password: 'Confirm identity'
+        confirm_sso:
+            azure: 'Confirm via Microsoft'
+            oidc: 'Confirm via SSO provider'
+        logout_instead: 'Log out instead'
+
+    sso:
+        hint: 'Your account is authenticated via an external identity provider. Click below to confirm your identity.'
+
+    error:
+        password_required: 'Please enter your password.'
+        invalid_password: 'The password is incorrect. Please try again.'
+        generic: 'Authentication failed. Please try again.'
+        network: 'Connection error. Please reload the page and try again.'

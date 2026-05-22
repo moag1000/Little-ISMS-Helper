@@ -19,6 +19,9 @@ import './extension_error_handler.js';
 // CSRF Protection - Global script (not a Stimulus controller)
 import './csrf_protection.js';
 
+// Re-auth modal — global fetch interceptor: detects 403+reauth JSON and dispatches fa-reauth:open
+import './js/fetch-interceptor.js';
+
 // Import Bootstrap and expose globally for inline scripts (avoids Turbo/importmap conflicts)
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
