@@ -12,13 +12,34 @@ use PHPUnit\Framework\TestCase;
 final class ModuleProfileProviderTest extends TestCase
 {
     #[Test]
-    public function emitsFourProfilesPerLanguage(): void
+    public function emitsFiveProfilesPerLanguage(): void
     {
         $provider = new ModuleProfileProvider();
         $templates = iterator_to_array($provider->provide());
 
-        // 4 profiles × 2 languages = 8
-        $this->assertCount(8, $templates);
+        // 5 profiles × 2 languages = 10 (M-04 added automotive_supplier as the 5th)
+        $this->assertCount(10, $templates);
+    }
+
+    #[Test]
+    public function automotiveSupplierProfileEnablesTisaxStack(): void
+    {
+        $provider = new ModuleProfileProvider();
+        $auto = null;
+        foreach ($provider->provide() as $template) {
+            if ($template->prefill['profileKey'] === 'automotive_supplier' && $template->language === 'de') {
+                $auto = $template;
+                break;
+            }
+        }
+        $this->assertNotNull($auto, 'Automotive supplier DE template missing');
+
+        $modules = $auto->prefill['activeModules'];
+        $this->assertContains('tisax', $modules, 'Automotive profile must activate TISAX');
+        $this->assertContains('tisax_isa', $modules, 'Automotive profile must activate TISAX-ISA');
+        $this->assertContains('suppliers', $modules);
+        $this->assertNotContains('marisk', $modules,
+            'Automotive supplier is not under MaRisk by default');
     }
 
     #[Test]
