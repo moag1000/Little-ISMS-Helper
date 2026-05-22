@@ -77,22 +77,18 @@ export default class extends Controller {
     };
 
     connect() {
-        // Teleport bar to <body> so position:fixed escapes ancestor stacking-
-        // contexts (card hover transform etc.). Stimulus targets resolve only
-        // INSIDE controller scope — after the move the target lookup returns
-        // null, so we cache the element ref here and use this._bar in
-        // show/hide instead of the target.
+        // No teleport — the bar stays inside the controller's DOM scope so
+        // Stimulus action bindings remain valid. CSS-based stacking-context
+        // escape: .fa-bulk-bar uses position:fixed + isolation:isolate +
+        // will-change:transform so it renders above ancestor card transforms
+        // without leaving the controller subtree.
         const bar = this.hasActionBarTarget ? this.actionBarTarget : (this.hasBarTarget ? this.barTarget : null);
         if (bar) {
             this._bar = bar;
-            // Cache the CSRF token from the bar's data attribute before teleport
+            // Cache the CSRF token from the bar's data attribute.
             // (data-bulk-actions-csrf-token on the bar element, set by _bulk_action_bar.html.twig).
             if (!this.csrfTokenValue && bar.dataset.bulkActionsCsrfToken) {
                 this._csrfToken = bar.dataset.bulkActionsCsrfToken;
-            }
-            if (bar.parentElement !== document.body) {
-                this._barOriginalParent = bar.parentElement;
-                document.body.appendChild(bar);
             }
         }
         this.updateActionBar();
@@ -107,12 +103,7 @@ export default class extends Controller {
     }
 
     disconnect() {
-        // Restore bar to original parent so Turbo navigations don't orphan it.
-        if (this._bar && this._barOriginalParent && this._bar.parentElement === document.body) {
-            this._barOriginalParent.appendChild(this._bar);
-        }
         this._bar = null;
-        this._barOriginalParent = null;
     }
 
     selectAll(event) {

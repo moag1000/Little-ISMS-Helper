@@ -378,6 +378,12 @@ input[type="checkbox"]:indeterminate {
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
+    /* isolation:isolate + will-change:transform establish a new stacking context
+     * so position:fixed is computed relative to the viewport, not a transformed
+     * ancestor (e.g. card :hover scale). This is the CSS-based escape that
+     * replaces the old JS body-teleport (which broke Stimulus action bindings). */
+    isolation: isolate;
+    will-change: transform;
     z-index: var(--z-popover, 1080);
     display: inline-flex;
     align-items: stretch;
