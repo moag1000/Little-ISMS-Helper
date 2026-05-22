@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Authorization for inheritance workflow. Matrix defined in
@@ -16,6 +17,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class ComplianceInheritanceVoter extends Voter
 {
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
     public const VIEW = 'compliance_inheritance.view';
     public const CREATE_SUGGESTIONS = 'compliance_inheritance.create';
     public const CONFIRM = 'compliance_inheritance.confirm';
@@ -47,7 +53,7 @@ final class ComplianceInheritanceVoter extends Voter
             return false;
         }
 
-        $roles = $user->getRoles();
+        $roles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
         $isAuditorOrAbove = in_array('ROLE_AUDITOR', $roles, true)
             || in_array('ROLE_MANAGER', $roles, true)
             || in_array('ROLE_ADMIN', $roles, true)

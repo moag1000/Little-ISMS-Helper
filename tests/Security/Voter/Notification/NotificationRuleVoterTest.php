@@ -56,7 +56,7 @@ final class NotificationRuleVoterTest extends TestCase
     #[Test]
     public function managerCanViewEditDelete(): void
     {
-        $voter = new NotificationRuleVoter($this->buildModuleService(true));
+        $voter = new NotificationRuleVoter($this->buildModuleService(true), \App\Tests\Security\Voter\VoterTestHelper::createRoleHierarchy());
 
         self::assertTrue($voter->vote($this->token($this->managerUser), $this->rule, [NotificationRuleVoter::VIEW]) > 0);
         self::assertTrue($voter->vote($this->token($this->managerUser), $this->rule, [NotificationRuleVoter::EDIT]) > 0);
@@ -66,7 +66,7 @@ final class NotificationRuleVoterTest extends TestCase
     #[Test]
     public function regularUserCanOnlyView(): void
     {
-        $voter = new NotificationRuleVoter($this->buildModuleService(true));
+        $voter = new NotificationRuleVoter($this->buildModuleService(true), \App\Tests\Security\Voter\VoterTestHelper::createRoleHierarchy());
 
         self::assertTrue($voter->vote($this->token($this->readUser), $this->rule, [NotificationRuleVoter::VIEW]) > 0);
         self::assertFalse($voter->vote($this->token($this->readUser), $this->rule, [NotificationRuleVoter::EDIT]) > 0);
@@ -76,7 +76,7 @@ final class NotificationRuleVoterTest extends TestCase
     #[Test]
     public function deniessWhenModuleInactive(): void
     {
-        $voter = new NotificationRuleVoter($this->buildModuleService(false));
+        $voter = new NotificationRuleVoter($this->buildModuleService(false), \App\Tests\Security\Voter\VoterTestHelper::createRoleHierarchy());
 
         self::assertFalse($voter->vote($this->token($this->managerUser), $this->rule, [NotificationRuleVoter::VIEW]) > 0);
     }
@@ -98,7 +98,7 @@ final class NotificationRuleVoterTest extends TestCase
         $ruleOtherTenant = new NotificationRule();
         $ruleOtherTenant->setTenant($otherTenant);
 
-        $voter = new NotificationRuleVoter($this->buildModuleService(true));
+        $voter = new NotificationRuleVoter($this->buildModuleService(true), \App\Tests\Security\Voter\VoterTestHelper::createRoleHierarchy());
         self::assertFalse($voter->vote($this->token($this->managerUser), $ruleOtherTenant, [NotificationRuleVoter::VIEW]) > 0);
     }
 }

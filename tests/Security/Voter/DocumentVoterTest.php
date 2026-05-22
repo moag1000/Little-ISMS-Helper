@@ -23,7 +23,7 @@ class DocumentVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new DocumentVoter();
+        $this->voter = new DocumentVoter(VoterTestHelper::createRoleHierarchy());
         $this->tenant = $this->createMock(Tenant::class);
         $this->otherTenant = $this->createMock(Tenant::class);
     }

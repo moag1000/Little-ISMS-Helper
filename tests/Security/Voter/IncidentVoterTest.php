@@ -23,7 +23,7 @@ class IncidentVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new IncidentVoter();
+        $this->voter = new IncidentVoter(VoterTestHelper::createRoleHierarchy());
         $this->tenant = $this->createMock(Tenant::class);
         $this->otherTenant = $this->createMock(Tenant::class);
     }

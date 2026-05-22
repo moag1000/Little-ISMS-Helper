@@ -10,6 +10,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Incident Voter
@@ -42,6 +43,16 @@ final class IncidentVoter extends Voter
 {
     use HoldingTreeAccessTrait;
 
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
+    }
+
     public const string VIEW = 'view';
     public const string EDIT = 'edit';
     public const string DELETE = 'delete';
@@ -65,7 +76,7 @@ final class IncidentVoter extends Voter
         $incident = $subject;
 
         // Security: Admins can do everything
-        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+        if ($this->hasRoleHierarchical($user, 'ROLE_ADMIN')) {
             return true;
         }
 
@@ -103,6 +114,13 @@ final class IncidentVoter extends Voter
     private function canDelete(User $user): bool
     {
         // Security: Only admins can delete
-        return in_array('ROLE_ADMIN', $user->getRoles());
+        return $this->hasRoleHierarchical($user, 'ROLE_ADMIN');
+    }
+
+    private function hasRoleHierarchical(User $user, string $role): bool
+    {
+        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+
+        return in_array($role, $reachable, true);
     }
 }

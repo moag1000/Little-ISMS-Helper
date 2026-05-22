@@ -23,7 +23,7 @@ class AssetVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new AssetVoter();
+        $this->voter = new AssetVoter(VoterTestHelper::createRoleHierarchy());
         $this->tenant = $this->createMock(Tenant::class);
         $this->otherTenant = $this->createMock(Tenant::class);
     }
