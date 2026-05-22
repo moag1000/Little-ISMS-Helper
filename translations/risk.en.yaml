@@ -276,14 +276,14 @@ risk:
     decision_approval_date: Date of formal approval of the risk treatment decision.
   tooltip:
     probability: '<strong>🎲 How likely is this to happen?</strong><br><em>Question:
-      How often could this risk occur?</em><br><br><strong>1</strong> = Very rare
+      How often could this risk occur?</em><br><br><strong>1</strong> = Very Unlikely
       (1× in 10+ years)<br><em>e.g. earthquake, plane crash</em><br><strong>2</strong>
-      = Rare (1× in 5 years)<br><em>e.g. major fire, severe cyberattack</em><br><strong>3</strong>
-      = Occasional (1× per year)<br><em>e.g. power outage, data breach</em><br><strong>4</strong>
-      = Frequent (multiple times/year)<br><em>e.g. phishing attempts, staff turnover</em><br><strong>5</strong>
-      = Very frequent (monthly+)<br><em>e.g. spam, failed login attempts</em>'
+      = Unlikely (1× in 5 years)<br><em>e.g. major fire, severe cyberattack</em><br><strong>3</strong>
+      = Possible (1× per year)<br><em>e.g. power outage, data breach</em><br><strong>4</strong>
+      = Likely (multiple times/year)<br><em>e.g. phishing attempts, staff turnover</em><br><strong>5</strong>
+      = Very Likely (monthly+)<br><em>e.g. spam, failed login attempts</em>'
     impact: '<strong>💥 How severe would the damage be?</strong><br><em>Question: What
-      happens if this risk occurs?</em><br><br><strong>1</strong> = Minimal (&lt;€1,000,
+      happens if this risk occurs?</em><br><br><strong>1</strong> = Negligible (&lt;€1,000,
       no downtime)<br><em>e.g. single PC failure</em><br><strong>2</strong> = Minor
       (€1,000-10,000, hours of downtime)<br><em>e.g. server restart needed</em><br><strong>3</strong>
       = Moderate (€10,000-100,000, days of downtime)<br><em>e.g. department offline</em><br><strong>4</strong>
@@ -373,17 +373,17 @@ risk:
     risks_total: 'Risks total'
     cell_title: 'Risk Level: %level% (%count% risks)'
     likelihood:
-      1: 'Very rare'
-      2: 'Rare'
-      3: 'Occasional'
-      4: 'Probable'
-      5: 'Very probable'
+      1: 'Very Unlikely'
+      2: 'Unlikely'
+      3: 'Possible'
+      4: 'Likely'
+      5: 'Very Likely'
     impact_label:
       1: 'Negligible'
       2: 'Minor'
       3: 'Moderate'
-      4: 'High'
-      5: 'Critical'
+      4: 'Major'
+      5: 'Catastrophic'
   acceptance:
     title: Title
     request: Request
