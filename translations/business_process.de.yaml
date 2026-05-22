@@ -207,3 +207,6 @@ business_process:
     no_risks: Keine Risiken verknüpft.
   error:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+  validation:
+    mtpd_below_rto: 'MTPD muss größer oder gleich RTO sein (ISO 22301 Cl. 8.2.2 — die maximal tolerierbare Ausfallzeit ist die äußere Grenze, RTO muss innerhalb dieser liegen).'
+    mtpd_below_rpo: 'MTPD muss größer oder gleich RPO sein (ISO 22301 Cl. 8.2.2 — der Datenverlust-Zeitraum darf nicht über der Maximaltoleranz liegen).'
