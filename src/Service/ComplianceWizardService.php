@@ -319,6 +319,99 @@ final class ComplianceWizardService
     }
 
     /**
+     * Get quick compliance status for all available wizards.
+     *
+     * Useful for dashboard widgets to show compliance status at a glance.
+     * Performs a lightweight assessment without full details.
+     *
+     * @param Tenant|null $tenant Optional tenant context
+     * @return array Quick status for each available wizard
+     */
+    public function getQuickStatus(?Tenant $tenant = null): array
+    {
+        $tenant = $tenant ?? $this->tenantContext->getCurrentTenant();
+        $wizards = $this->getAvailableWizards();
+        $results = [];
+
+        foreach ($wizards as $key => $config) {
+            $assessment = $this->runAssessment($key, $tenant);
+
+            if ($assessment['success']) {
+                $results[$key] = [
+                    'key' => $key,
+                    'code' => $config['code'],
+                    'name' => $config['name'],
+                    'icon' => $config['icon'],
+                    'color' => $config['color'],
+                    'score' => $assessment['overall_score'],
+                    'status' => $assessment['status'],
+                    'critical_gaps' => $assessment['critical_gap_count'],
+                    'route' => 'app_compliance_wizard_assess',
+                    'route_params' => ['wizard' => $key],
+                ];
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get overall compliance summary across all frameworks.
+     *
+     * @param Tenant|null $tenant Optional tenant context
+     * @return array Overall compliance metrics
+     */
+    public function getOverallComplianceSummary(?Tenant $tenant = null): array
+    {
+        $quickStatus = $this->getQuickStatus($tenant);
+
+        if (empty($quickStatus)) {
+            return [
+                'has_frameworks' => false,
+                'average_score' => 0,
+                'status' => 'not_available',
+                'frameworks_count' => 0,
+                'critical_gaps_total' => 0,
+            ];
+        }
+
+        $totalScore = 0;
+        $criticalGaps = 0;
+        $statusCounts = [
+            'compliant' => 0,
+            'partial' => 0,
+            'in_progress' => 0,
+            'non_compliant' => 0,
+        ];
+
+        foreach ($quickStatus as $wizard) {
+            $totalScore += $wizard['score'];
+            $criticalGaps += $wizard['critical_gaps'];
+            $statusCounts[$wizard['status']] = ($statusCounts[$wizard['status']] ?? 0) + 1;
+        }
+
+        $count = count($quickStatus);
+        $averageScore = round($totalScore / $count, 1);
+
+        $overallStatus = match (true) {
+            $averageScore >= 95 => 'compliant',
+            $averageScore >= 75 => 'partial',
+            $averageScore >= 50 => 'in_progress',
+            default => 'non_compliant',
+        };
+
+        return [
+            'has_frameworks' => true,
+            'average_score' => $averageScore,
+            'status' => $overallStatus,
+            'frameworks_count' => $count,
+            'critical_gaps_total' => $criticalGaps,
+            'frameworks' => $quickStatus,
+            'status_breakdown' => $statusCounts,
+        ];
+    }
+
+    /**
      * Run compliance assessment for a specific wizard
      *
      * @param string $wizardKey Wizard identifier (iso27001, nis2, dora, etc.)
