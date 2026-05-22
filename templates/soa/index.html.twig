@@ -279,43 +279,46 @@
 {% endembed %}
 
 {# Canonical bulk-action wrapper (per design-system spec): provides row-level
-   selection state for the .table-bulk-selectable below + tag-bulk integration. #}
+   selection state for the fa-table below + tag-bulk integration. #}
 <div data-controller="bulk-actions"
      data-bulk-actions-endpoint-value="/{{ app.request.locale }}/soa"
      data-bulk-actions-applicability-url-value="{{ path('app_soa_bulk_applicability') }}"
      data-bulk-actions-applicability-csrf-token-value="{{ csrf_token('soa_bulk_applicability') }}">
-{% embed '_components/_table.html.twig' with {
-    'stickyHeader': true,
-    'theadClass': 'table-light',
-    'wrapperClass': 'table-container',
-    'class': 'table-bulk-selectable'
+{% embed '_components/_fa_table.html.twig' with {
+    stickyHead: true,
+    bulkSelect: false,
+    sortable: false,
+    id: 'soa-controls-list',
+    class: 'table-bulk-selectable',
+    wrapStyle: 'max-height: 70vh'
 } %}
-    {% import '_macros/inheritance_badge.html.twig' as inheritance %}
     {% block table_head %}
+        {% trans_default_domain 'soa' %}
         <tr>
-            <th scope="col" class="bulk-select-column">
+            <th scope="col" class="fa-table__th fa-table__th--checkbox">
                 <input type="checkbox"
                        class="form-check-input"
                        data-action="bulk-actions#selectAll"
                        data-bulk-actions-target="selectAllCheckbox"
                        aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
             </th>
-            <th scope="col" style="min-width: 100px;">{{ 'soa.table.control_id'|trans({}, 'soa') }}</th>
-            <th scope="col" style="min-width: 250px;">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
-            <th scope="col" style="min-width: 120px;">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
-            <th scope="col" class="text-center" style="min-width: 130px;" title="{{ 'soa.table.mris_help'|trans({}, 'soa') }}" data-tour="mris-soa-column">{{ 'soa.table.mris'|trans({}, 'soa') }}</th>
-            <th scope="col" class="text-center" style="min-width: 100px;">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
-            <th scope="col" style="min-width: 150px;">{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</th>
-            <th scope="col" class="text-center" style="min-width: 120px;">{{ 'soa.table.progress'|trans({}, 'soa') }}</th>
-            <th scope="col" class="text-center" style="min-width: 180px;">{{ 'soa.table.actions'|trans({}, 'soa') }}</th>
+            <th scope="col" class="fa-table__th" style="min-width: 100px;">{{ 'soa.table.control_id'|trans({}, 'soa') }}</th>
+            <th scope="col" class="fa-table__th" style="min-width: 250px;">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
+            <th scope="col" class="fa-table__th" style="min-width: 120px;">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
+            <th scope="col" class="fa-table__th fa-table__th--center" style="min-width: 130px;" title="{{ 'soa.table.mris_help'|trans({}, 'soa') }}" data-tour="mris-soa-column">{{ 'soa.table.mris'|trans({}, 'soa') }}</th>
+            <th scope="col" class="fa-table__th fa-table__th--center" style="min-width: 100px;">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
+            <th scope="col" class="fa-table__th" style="min-width: 150px;">{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</th>
+            <th scope="col" class="fa-table__th fa-table__th--center" style="min-width: 120px;">{{ 'soa.table.progress'|trans({}, 'soa') }}</th>
+            <th scope="col" class="fa-table__th fa-table__th--actions" style="min-width: 180px;"><span class="visually-hidden">{{ 'soa.table.actions'|trans({}, 'soa') }}</span></th>
         </tr>
     {% endblock %}
     {% block table_body %}
+        {% trans_default_domain 'soa' %}
         {% import '_macros/inheritance_badge.html.twig' as inheritance %}
         {% import '_components/_fa_progress.html.twig' as _fa_progress %}
         {% for control in controls %}
-        <tr data-filter-target="filterableRow" data-category="{{ control.category }}" data-status="{{ control.implementationStatus }}">
-            <td class="bulk-select-column">
+        <tr class="fa-table__row" data-filter-target="filterableRow" data-category="{{ control.category }}" data-status="{{ control.implementationStatus }}">
+            <td class="fa-table__cell fa-table__cell--checkbox">
                 <input type="checkbox"
                        class="form-check-input"
                        data-bulk-actions-target="item"
@@ -323,15 +326,15 @@
                        value="{{ control.id }}"
                        aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ control.name }}">
             </td>
-            <td>{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false, code_class: 'fw-bold' } only %}</td>
-            <td>
+            <td class="fa-table__cell">{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false, code_class: 'fw-bold' } only %}</td>
+            <td class="fa-table__cell">
                 {{ control.name }}
                 {{ inheritance.small_badge(control, currentTenant) }}
             </td>
-            <td>
+            <td class="fa-table__cell">
                 {% include '_components/_badge.html.twig' with { variant: 'info', content: ('soa.category.' ~ control.category)|trans({}, 'soa') } %}
             </td>
-            <td class="text-center">
+            <td class="fa-table__cell fa-table__cell--center">
                 {% set mrisLocale = app.request.locale|default('de') %}
                 {% if control.mythosResilience == 'standfest' %}
                     <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.standfest', 'tooltip', mrisLocale) }}">
@@ -356,14 +359,14 @@
                     <div class="small text-muted mt-1" data-bs-toggle="tooltip" title="{{ mris_help('mris.help.flanking_mhcs', 'tooltip', mrisLocale) }}">{{ control.mythosFlankingMhcs|join(', ') }}</div>
                 {% endif %}
             </td>
-            <td class="text-center">
+            <td class="fa-table__cell fa-table__cell--center">
                 {% if control.applicable %}
                     {% include '_components/_badge.html.twig' with { variant: 'success', content: '✓ ' ~ 'soa.value.yes'|trans({}, 'soa') } %}
                 {% else %}
                     {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: '✗ ' ~ 'soa.value.no'|trans({}, 'soa') } %}
                 {% endif %}
             </td>
-            <td>
+            <td class="fa-table__cell">
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'verified' %}
                         {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'nav-patch-check', content: 'soa.status.verified'|trans({}, 'soa') } %}
@@ -382,14 +385,14 @@
                     {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'badge-neutral', content: 'soa.status.not_applicable'|trans({}, 'soa') } %}
                 {% endif %}
             </td>
-            <td>
+            <td class="fa-table__cell">
                 {% if control.applicable %}
                     {{ _fa_progress.render({ value: control.implementationPercentage, showText: true, size: 'sm' }) }}
                 {% else %}
                     <span class="text-center-block-light">-</span>
                 {% endif %}
             </td>
-            <td class="text-center">
+            <td class="fa-table__cell fa-table__cell--actions">
                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                     <a href="{{ path('app_soa_show', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">👁 {{ 'common.view'|trans({}, 'messages') }}</a>
                     <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
