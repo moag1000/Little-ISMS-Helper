@@ -282,7 +282,7 @@ export default class extends Controller {
 
         // Update the section num indicator to checkmark
         const numEl = section.querySelector('.fa-form-section__num');
-        if (numEl) numEl.innerHTML = '<i class="bi bi-check"></i>';
+        if (numEl) numEl.innerHTML = '<i class="fa-icon fa-icon--ui-check"></i>';
 
         // Update matching outline item
         const outlineItem = this.outlineItemTargets.find(
@@ -295,7 +295,7 @@ export default class extends Controller {
             );
             outlineItem.classList.add('fa-form-layout__outline-item--done');
             const stateEl = outlineItem.querySelector('.fa-form-layout__outline-state');
-            if (stateEl) stateEl.innerHTML = '<i class="bi bi-check"></i>';
+            if (stateEl) stateEl.innerHTML = '<i class="fa-icon fa-icon--ui-check"></i>';
         }
     }
 
@@ -364,6 +364,6 @@ export default class extends Controller {
             label = `Entwurf gespeichert vor ${Math.round(diffSec / 3600)} h`;
         }
 
-        this.draftStateTarget.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${label}`;
+        this.draftStateTarget.innerHTML = `<i class="fa-icon fa-icon--check-circle-fill"></i> ${label}`;
     }
 }
