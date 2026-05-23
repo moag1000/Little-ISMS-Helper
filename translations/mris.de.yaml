@@ -1,6 +1,16 @@
 mris:
     license:
         cc_by_40: "CC BY 4.0"
+    baseline:
+        flash:
+            no_tenant: 'Kein Mandant zugewiesen — Baselines benötigen einen Mandantenkontext.'
+            none_selected: 'Keine Baseline ausgewählt.'
+            apply_failed: 'Baseline "%baseline%" konnte nicht angewendet werden: %reason%'
+            applied_summary: '%prefix%Baseline "%baseline%": %applied% Soll-Stufen %verb%, %skipped% übersprungen.'
+            missing_mhcs: 'Fehlende MHCs im Framework: %list%.'
+            dry_run_prefix: '[Dry-Run] '
+            verb_detected: 'erkannt'
+            verb_set: 'gesetzt'
     baselines:
         explainer:
             summary: 'Was tut eine MRIS-Baseline?'
@@ -43,6 +53,8 @@ mris:
             warning_missing: 'Hochrisiko-AI ohne DPIA — gem. DSGVO Art. 35 + AI Act Art. 9 erforderlich.'
             create_button: 'DPIA anlegen'
     audit_report:
+        flash:
+            no_tenant: 'Kein Mandant zugewiesen — MRIS-Audit-Report benötigt einen Mandantenkontext.'
         title: 'MRIS-Audit-Report'
         subtitle: 'Mythos-resistente Informationssicherheit · v1.5 — Auditor-Ansicht'
         meta:

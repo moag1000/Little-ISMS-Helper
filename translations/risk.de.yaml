@@ -320,11 +320,13 @@ risk:
       an Dritte abgeben<br><em>z.B. Versicherung, Outsourcing</em><br><br><strong>Akzeptieren</strong><br>Bewusst
       tolerieren (mit Begründung!)<br><em>z.B. Kosten der Maßnahme > möglicher Schaden</em>
     category: <strong>📁 Risikokategorie</strong><br><em>Hilft bei der Zuordnung und
-      Auswertung</em><br><br><strong>Technisch</strong><br>IT-Systeme, Software, Hardware<br><em>z.B.
-      Serverausfall, Softwarefehler</em><br><br><strong>Organisatorisch</strong><br>Prozesse,
-      Personal, Know-how<br><em>z.B. Wissensverlust, Fehlbedienung</em><br><br><strong>Physisch</strong><br>Gebäude,
-      Infrastruktur<br><em>z.B. Einbruch, Wasserschaden</em><br><br><strong>Compliance</strong><br>Gesetze,
-      Verträge, Regulatorik<br><em>z.B. DSGVO-Verstoß, Audit-Mängel</em>
+      Auswertung</em><br><br><strong>Finanziell</strong><br>Direkter monetärer Schaden<br><em>z.B.
+      Umsatzausfall, Bußgeld, Sachschaden</em><br><br><strong>Operativ</strong><br>Geschäftsprozesse,
+      Ressourcen, IT-Systeme<br><em>z.B. Serverausfall, Lieferkette, Personal</em><br><br><strong>Compliance</strong><br>Gesetze,
+      Verträge, Regulatorik<br><em>z.B. DSGVO-Verstoß, Audit-Mängel, Norm-Abweichung</em><br><br><strong>Strategisch</strong><br>Geschäftsmodell,
+      Markt, Wettbewerb<br><em>z.B. Marktveränderung, Fehlinvestition</em><br><br><strong>Reputativ</strong><br>Image,
+      Vertrauen, Marke<br><em>z.B. Datenleck, negative Presse</em><br><br><strong>Sicherheit</strong><br>Informationssicherheit
+      und Cyber<br><em>z.B. Phishing, Ransomware, unbefugter Zugriff</em>
     involves_personal_data: '<strong>🔒 Personenbezogene Daten betroffen?</strong><br><em>Aktivieren
       Sie diese Option, wenn das Risiko personenbezogene Daten betrifft (z.B. Kundendaten,
       Mitarbeiterdaten).</em><br><br>Relevant für: DSGVO Art. 5, 24, 32<br><em>Beispiele:

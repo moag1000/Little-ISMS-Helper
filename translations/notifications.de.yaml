@@ -1,4 +1,6 @@
 notifications:
+    aria:
+        toast_stack: 'Benachrichtigungen'
     title: 'Benachrichtigungen'
     action:
         delete: 'Löschen'

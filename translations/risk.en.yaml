@@ -309,11 +309,13 @@ risk:
       risk to third party<br><em>e.g. insurance, outsourcing</em><br><br><strong>Accept</strong><br>Consciously
       tolerate (with justification!)<br><em>e.g. control cost > potential damage</em>
     category: <strong>📁 Risk Category</strong><br><em>Helps with classification and
-      reporting</em><br><br><strong>Technical</strong><br>IT systems, software, hardware<br><em>e.g.
-      server failure, software bug</em><br><br><strong>Organizational</strong><br>Processes,
-      personnel, know-how<br><em>e.g. knowledge loss, human error</em><br><br><strong>Physical</strong><br>Buildings,
-      infrastructure<br><em>e.g. break-in, water damage</em><br><br><strong>Compliance</strong><br>Laws,
-      contracts, regulations<br><em>e.g. GDPR violation, audit findings</em>
+      reporting</em><br><br><strong>Financial</strong><br>Direct monetary impact<br><em>e.g.
+      revenue loss, fines, property damage</em><br><br><strong>Operational</strong><br>Business
+      processes, resources, IT systems<br><em>e.g. server outage, supply chain, personnel</em><br><br><strong>Compliance</strong><br>Laws,
+      contracts, regulations<br><em>e.g. GDPR violation, audit findings, standard deviation</em><br><br><strong>Strategic</strong><br>Business
+      model, market, competition<br><em>e.g. market shift, failed investment</em><br><br><strong>Reputational</strong><br>Image,
+      trust, brand<br><em>e.g. data breach, negative press</em><br><br><strong>Security</strong><br>Information
+      security and cyber<br><em>e.g. phishing, ransomware, unauthorized access</em>
     involves_personal_data: '<strong>🔒 Personal Data Involved?</strong><br><em>Enable
       this option if the risk affects personal data (e.g. customer data, employee data).</em><br><br>Relevant
       for: GDPR Art. 5, 24, 32<br><em>Examples: data breach, unauthorized access to

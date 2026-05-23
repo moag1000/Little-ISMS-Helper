@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Anwender-UI für MRIS-Branchen-Baselines.
@@ -31,6 +32,7 @@ final class MrisBaselineUiController extends AbstractController
     public function __construct(
         private readonly MrisBaselineService $baselineService,
         private readonly TenantContext $tenantContext,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -52,13 +54,13 @@ final class MrisBaselineUiController extends AbstractController
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant === null) {
-            $this->addFlash('warning', 'Kein Mandant zugewiesen — Baselines benötigen einen Mandantenkontext.');
+            $this->addFlash('warning', $this->translator->trans('mris.baseline.flash.no_tenant', [], 'mris'));
             return $this->redirectToRoute('app_mris_baselines_index');
         }
 
         $baselineId = trim((string) $request->request->get('baseline_id'));
         if ($baselineId === '') {
-            $this->addFlash('error', 'Keine Baseline ausgewählt.');
+            $this->addFlash('error', $this->translator->trans('mris.baseline.flash.none_selected', [], 'mris'));
             return $this->redirectToRoute('app_mris_baselines_index');
         }
 
@@ -67,20 +69,26 @@ final class MrisBaselineUiController extends AbstractController
         try {
             $result = $this->baselineService->applyBaseline($tenant, $baselineId, $dryRun);
         } catch (DomainException $e) {
-            $this->addFlash('error', sprintf('Baseline "%s" konnte nicht angewendet werden: %s', $baselineId, $e->getMessage()));
+            $this->addFlash('error', $this->translator->trans('mris.baseline.flash.apply_failed', [
+                '%baseline%' => $baselineId,
+                '%reason%' => $e->getMessage(),
+            ], 'mris'));
             return $this->redirectToRoute('app_mris_baselines_index');
         }
 
-        $message = sprintf(
-            '%sBaseline "%s": %d Soll-Stufen %s, %d übersprungen.',
-            $dryRun ? '[Dry-Run] ' : '',
-            $result['baseline'],
-            $result['applied'],
-            $dryRun ? 'erkannt' : 'gesetzt',
-            $result['skipped'],
-        );
+        $message = $this->translator->trans('mris.baseline.flash.applied_summary', [
+            '%prefix%' => $dryRun ? $this->translator->trans('mris.baseline.flash.dry_run_prefix', [], 'mris') : '',
+            '%baseline%' => $result['baseline'],
+            '%applied%' => $result['applied'],
+            '%verb%' => $dryRun
+                ? $this->translator->trans('mris.baseline.flash.verb_detected', [], 'mris')
+                : $this->translator->trans('mris.baseline.flash.verb_set', [], 'mris'),
+            '%skipped%' => $result['skipped'],
+        ], 'mris');
         if (!empty($result['missing_mhcs'])) {
-            $message .= sprintf(' Fehlende MHCs im Framework: %s.', implode(', ', $result['missing_mhcs']));
+            $message .= ' ' . $this->translator->trans('mris.baseline.flash.missing_mhcs', [
+                '%list%' => implode(', ', $result['missing_mhcs']),
+            ], 'mris');
             $this->addFlash('warning', $message);
         } else {
             $this->addFlash('success', $message);

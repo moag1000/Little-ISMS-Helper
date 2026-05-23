@@ -22,8 +22,8 @@
                 <i class="fa-icon fa-icon--nav-sliders"></i>
             </span>
             <div class="fa-modal__heading">
-                <h2 class="fa-modal__title" id="dashboardSettingsModalLabel">Dashboard anpassen</h2>
-                <p class="fa-modal__sub">Sichtbarkeit der Widgets</p>
+                <h2 class="fa-modal__title" id="dashboardSettingsModalLabel">{{ 'dashboard.settings.title'|trans({}, 'dashboard') }}</h2>
+                <p class="fa-modal__sub">{{ 'dashboard.settings.subtitle'|trans({}, 'dashboard') }}</p>
             </div>
             <button type="button"
                     class="fa-modal__close"
@@ -35,29 +35,29 @@
 
         <div class="fa-modal__body">
             <p class="text-muted mb-4">
-                Wählen Sie aus, welche Widgets auf Ihrem Dashboard angezeigt werden sollen.
+                {{ 'dashboard.settings.intro'|trans({}, 'dashboard') }}
             </p>
 
             <div class="widget-toggles">
-                <h6 class="mb-3">Statistik-Karten</h6>
+                <h6 class="mb-3">{{ 'dashboard.settings.group.stats'|trans({}, 'dashboard') }}</h6>
                 <div class="form-check form-switch mb-3" data-widget-toggle="stats-cards">
                     <input class="form-check-input" type="checkbox" id="widget-toggle-stats-cards"
                            data-action="change->dashboard-customizer#toggleWidget"
                            checked>
                     <label class="form-check-label" for="widget-toggle-stats-cards">
                         <i class="fa-icon fa-icon--nav-bar-chart me-2 text-primary" aria-hidden="true"></i>
-                        Statistik-Übersicht (Assets, Risks, Controls, Incidents)
+                        {{ 'dashboard.settings.widget.stats_cards'|trans({}, 'dashboard') }}
                     </label>
                 </div>
 
-                <h6 class="mb-3 mt-4">Charts</h6>
+                <h6 class="mb-3 mt-4">{{ 'dashboard.settings.group.charts'|trans({}, 'dashboard') }}</h6>
                 <div class="form-check form-switch mb-3" data-widget-toggle="risk-chart">
                     <input class="form-check-input" type="checkbox" id="widget-toggle-risk-chart"
                            data-action="change->dashboard-customizer#toggleWidget"
                            checked>
                     <label class="form-check-label" for="widget-toggle-risk-chart">
                         <i class="fa-icon fa-icon--nav-pie-chart me-2 text-warning" aria-hidden="true"></i>
-                        Risikoverteilung
+                        {{ 'dashboard.settings.widget.risk_chart'|trans({}, 'dashboard') }}
                     </label>
                 </div>
 
@@ -67,18 +67,18 @@
                            checked>
                     <label class="form-check-label" for="widget-toggle-asset-chart">
                         <i class="fa-icon fa-icon--nav-bar-chart me-2 text-info" aria-hidden="true"></i>
-                        Assets nach Kategorie
+                        {{ 'dashboard.settings.widget.asset_chart'|trans({}, 'dashboard') }}
                     </label>
                 </div>
 
-                <h6 class="mb-3 mt-4">Widgets</h6>
+                <h6 class="mb-3 mt-4">{{ 'dashboard.settings.group.widgets'|trans({}, 'dashboard') }}</h6>
                 <div class="form-check form-switch mb-3" data-widget-toggle="activity-feed">
                     <input class="form-check-input" type="checkbox" id="widget-toggle-activity-feed"
                            data-action="change->dashboard-customizer#toggleWidget"
                            checked>
                     <label class="form-check-label" for="widget-toggle-activity-feed">
                         <i class="fa-icon fa-icon--nav-activity me-2 text-success" aria-hidden="true"></i>
-                        Letzte Aktivitäten
+                        {{ 'dashboard.settings.widget.activity_feed'|trans({}, 'dashboard') }}
                     </label>
                 </div>
 
@@ -88,7 +88,7 @@
                            checked>
                     <label class="form-check-label" for="widget-toggle-quick-actions">
                         <i class="fa-icon me-2 text-warning fa-icon--threat" aria-hidden="true"></i>
-                        Schnellzugriff
+                        {{ 'dashboard.settings.widget.quick_actions'|trans({}, 'dashboard') }}
                     </label>
                 </div>
             </div>

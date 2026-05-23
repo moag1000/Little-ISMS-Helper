@@ -4,6 +4,20 @@ dashboard:
   action:
     customize: Anpassen
     role_dashboards: Rollen-Dashboards
+  settings:
+    title: 'Dashboard anpassen'
+    subtitle: 'Sichtbarkeit der Widgets'
+    intro: 'Wählen Sie aus, welche Widgets auf Ihrem Dashboard angezeigt werden sollen.'
+    group:
+      stats: 'Statistik-Karten'
+      charts: 'Charts'
+      widgets: 'Widgets'
+    widget:
+      stats_cards: 'Statistik-Übersicht (Assets, Risks, Controls, Incidents)'
+      risk_chart: 'Risikoverteilung'
+      asset_chart: 'Assets nach Kategorie'
+      activity_feed: 'Letzte Aktivitäten'
+      quick_actions: 'Schnellzugriff'
   role:
     ciso: CISO-Dashboard
     risk_manager: Risikomanager

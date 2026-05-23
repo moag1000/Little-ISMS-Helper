@@ -312,6 +312,8 @@ asset:
     inherited: Geerbter Wert
     driven_by: Getrieben durch
   ai_agent:
+    flash:
+      no_tenant: 'Kein Mandant zugewiesen — AI-Agent-Inventar benötigt einen Mandantenkontext.'
     section:
       title: AI-Agent-Inventar
       subtitle: EU AI Act / ISO 42001 / MRIS MHC-13
