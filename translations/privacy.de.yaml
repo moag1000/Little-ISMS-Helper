@@ -439,9 +439,10 @@ processing_activity:
         third_countries: 'Drittländer (außerhalb EU/EWR)'
         transfer_safeguards: 'Garantien für Drittlandübermittlung (z.B. Standardvertragsklauseln, BCR)'
         retention_period: Aufbewahrungsfrist
+        retention_reason: 'Begründung der Aufbewahrung'
         retention_period_days: 'Aufbewahrungsfrist in Tagen'
         retention_legal_basis: 'Rechtsgrundlage für Aufbewahrung'
-        technical_organizational_measures: 'Technische und organisatorische Maßnahmen (TOMs, Art. 32 DSGVO)'
+        technical_organizational_measures: 'Technische und organisatorische Maßnahmen — qualitative Beschreibung (TOMs, Art. 32 DSGVO)'
         implemented_controls: 'Implementierte Kontrollen'
         assets: 'Verknüpfte Assets'
         responsible_department: 'Verantwortliche Abteilung'
@@ -496,9 +497,10 @@ processing_activity:
         third_countries: 'Drittländer (außerhalb EU/EWR)'
         transfer_safeguards: 'Garantien für Drittlandübermittlung (z.B. Standardvertragsklauseln, BCR)'
         retention_period: Aufbewahrungsfrist
+        retention_reason: 'Begründung der Aufbewahrung'
         retention_period_days: 'Aufbewahrungsfrist in Tagen'
         retention_legal_basis: 'Rechtsgrundlage für Aufbewahrung'
-        technical_organizational_measures: 'Technische und organisatorische Maßnahmen (TOMs, Art. 32 DSGVO)'
+        technical_organizational_measures: 'Technische und organisatorische Maßnahmen — qualitative Beschreibung (TOMs, Art. 32 DSGVO)'
         implemented_controls: 'Implementierte Kontrollen'
         assets: 'Verknüpfte Assets'
         responsible_department: 'Verantwortliche Abteilung'
@@ -534,10 +536,11 @@ processing_activity:
         third_countries: 'Welche Länder erhalten die Daten?'
         transfer_safeguards: 'Rechtsgrundlage für Drittlandübermittlung (Art. 44-49)'
         retention_period: 'Aufbewahrungsfrist/Löschfrist (Art. 30(1)(f))'
-        retention_period_days: 'Aufbewahrungsfrist in Tagen (optional, für automatisierte Löschung)'
+        retention_reason: 'Begründung der Aufbewahrungsdauer (z.B. gesetzliche Frist, Vertrag). Strukturierter Wert: siehe „Aufbewahrungsfrist in Tagen". (Art. 30(1)(f) DSGVO)'
+        retention_period_days: 'Numerische Aufbewahrungsdauer in Tagen (kanonisch, für automatisierte Löschung). Begründung: siehe „Begründung der Aufbewahrung".'
         retention_legal_basis: 'Rechtsgrundlage für Aufbewahrungsfrist (z.B. HGB §257, Abgabenordnung)'
-        technical_organizational_measures: 'Beschreibung der technischen und organisatorischen Sicherheitsmaßnahmen (Art. 32 DSGVO)'
-        implemented_controls: 'Verknüpfung zu ISO 27001 Kontrollen (optional)'
+        technical_organizational_measures: 'Technische und organisatorische Maßnahmen — qualitative Beschreibung (Art. 32 DSGVO). Strukturierte Nachweise: siehe „Implementierte Kontrollen". Mindestens EINE der beiden Nachweisformen muss vorhanden sein.'
+        implemented_controls: 'Wählen Sie die ISO 27001 Controls aus, die diese Verarbeitung schützen (strukturierte Nachweise). Qualitative Beschreibung: siehe TOMs-Feld.'
         assets: 'Assets, die diese Verarbeitungstätigkeit nutzt (Server, Datenbanken,
             Anwendungen). Bei Datenklassifizierung „vertraulich"/„restricted" eines
             verknüpften Assets wird automatisch eine DSFA-Empfehlung ausgelöst (Art. 35 DSGVO).'
@@ -666,6 +669,9 @@ processing_activity:
         third_parties: 'Von Dritten'
         public_sources: 'Öffentliche Quellen'
         other: 'Sonstige Quellen'
+    # Junior-ISB-Audit-2026-05-22 C2-03: cross-field TOMs OR Controls evidence requirement.
+    validation:
+        tom_or_controls_required: 'Mindestens eine Nachweisform ist erforderlich (DSGVO Art. 32): entweder eine qualitative TOM-Beschreibung (≥ 50 Zeichen) ODER mindestens eine implementierte ISO 27001 Kontrolle.'
     # S3 P-4: canonical 5-stage lifecycle (draft → in_review → approved → published → archived).
     # Legacy `active` key kept as fallback label for any historical row not yet migrated.
     status:
