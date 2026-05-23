@@ -217,7 +217,7 @@
                                       data-async-job-status-url-value="{{ path('setup_job_status') }}?job=restore_upload"
                                       data-async-job-poll-interval-value="2000"
                                       data-async-job-message-running-value="{{ 'setup.alva.busy.restore'|trans({}, 'setup') }}"
-                                      data-async-job-message-success-value="Backup wiederhergestellt."
+                                      data-async-job-message-success-value="{{ 'setup.alva.success.restore'|trans({}, 'setup') }}"
                                       data-action="submit->async-job#start">
                                     <input type="hidden" name="_token" value="{{ csrf_token('setup_restore_backup') }}">
 

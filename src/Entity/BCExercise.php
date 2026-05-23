@@ -935,18 +935,15 @@ class BCExercise
     }
 
     /**
-     * Get exercise type description
+     * Get exercise type translation key (i18n).
+     *
+     * Junior-ISB-Audit-2026-05-22 S14: previously hardcoded EN strings — now
+     * returns a translation key. Callers must run `|trans({}, 'bc_exercises')`.
+     * No live callers in templates/services; kept for backward-compat API.
      */
     public function getExerciseTypeDescription(): string
     {
-        return match($this->exerciseType) {
-            'tabletop' => 'Tabletop Exercise (Discussion-based)',
-            'walkthrough' => 'Walkthrough (Step-by-step review)',
-            'simulation' => 'Simulation (Simulated incident)',
-            'full_test' => 'Full Test (Complete activation)',
-            'component_test' => 'Component Test (Specific component)',
-            default => 'Unknown'
-        };
+        return 'bc_exercises.exercise_type.' . ($this->exerciseType ?? 'unknown');
     }
 
     public function getExerciseLog(): ?Bsi2004ExerciseLog
