@@ -244,7 +244,8 @@
                 {% endembed %}
             {% endif %}
 
-            {% if audit.findings or audit.nonConformities or audit.observations %}
+            {# Non-deprecated structured fields: nonConformities + observations #}
+            {% if audit.nonConformities or audit.observations %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-warning' } %}
                 {% block card_header %}
                     <div class="card-header">
@@ -254,13 +255,6 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    {% if audit.findings %}
-                    <div class="mb-3">
-                        <h3 class="h6">{{ 'audit.findings'|trans({}, 'audit') }}</h3>
-                        <p>{{ audit.findings|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
                     {% if audit.nonConformities %}
                     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-3' } } %}
                         {% block alert_body %}<h3 class="h6 alert-heading">{{ 'audit.nonconformities'|trans({}, 'audit') }}</h3> <p class="mb-0">{{ audit.nonConformities|nl2br }}</p>{% endblock %}
@@ -276,30 +270,45 @@
             {% endembed %}
             {% endif %}
 
-            {# Recommendations & Conclusion #}
-            {% if audit.recommendations or audit.conclusion %}
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-                {% block card_header %}
-                    <div class="card-header bg-body-secondary">
-                        <h2 class="mb-0">
-                            <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans({}, 'audit') }}
-                        </h2>
+            {# Junior-ISB-Audit-2026-05-22 C2-04 — Legacy free-text deprecation #}
+            {# Render deprecated findings/recommendations/conclusion ONLY when non-empty, #}
+            {# inside an info alert labeled "Legacy". Use AuditFinding entity instead.    #}
+            {% if audit.findings or audit.recommendations or audit.conclusion %}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-4' } } %}
+                {% block alert_body %}
+                    <h3 class="h6 alert-heading mb-2">
+                        <span class="badge bg-secondary me-2">{{ 'audit.section.legacy_freetext'|trans({}, 'audit') }}</span>
+                        {{ 'audit.section.findings'|trans({}, 'audit') }}
+                    </h3>
+                    <p class="small mb-3">{{ 'audit.section.legacy_freetext_help'|trans({}, 'audit') }}</p>
+
+                    {% if audit.findings %}
+                    <div class="mb-3">
+                        <h4 class="h6 mb-1">{{ 'audit.section.legacy_findings'|trans({}, 'audit') }}</h4>
+                        <p class="mb-0 small">{{ audit.findings|nl2br }}</p>
                     </div>
-                {% endblock %}
-                {% block card_body %}
+                    {% endif %}
+
                     {% if audit.recommendations %}
                     <div class="mb-3">
-                        <h3 class="h6">{{ 'audit.recommendations'|trans({}, 'audit') }}</h3>
-                        <p>{{ audit.recommendations|nl2br }}</p>
+                        <h4 class="h6 mb-1">{{ 'audit.section.legacy_recommendations'|trans({}, 'audit') }}</h4>
+                        <p class="mb-0 small">{{ audit.recommendations|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.conclusion %}
-                    <div class="mb-0">
-                        <h3 class="h6">{{ 'audit.conclusion'|trans({}, 'audit') }}</h3>
-                        <p>{{ audit.conclusion|nl2br }}</p>
+                    <div class="mb-3">
+                        <h4 class="h6 mb-1">{{ 'audit.section.legacy_conclusion'|trans({}, 'audit') }}</h4>
+                        <p class="mb-0 small">{{ audit.conclusion|nl2br }}</p>
                     </div>
                     {% endif %}
+
+                    <div class="mt-2">
+                        <a href="{{ path('app_audit_finding_new', {audit: audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                            {{ 'audit.section.legacy_new_finding_cta'|trans({}, 'audit') }}
+                        </a>
+                    </div>
                 {% endblock %}
             {% endembed %}
             {% endif %}
