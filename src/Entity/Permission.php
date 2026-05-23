@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: PermissionRepository::class)]
 #[ORM\Table(name: 'permissions')]
-#[UniqueEntity(fields: ['name'], message: 'This permission name is already in use')]
+#[UniqueEntity(fields: ['name'], message: 'permission.validation.name_unique')]
 class Permission implements Stringable
 {
     #[ORM\Id]

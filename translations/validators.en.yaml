@@ -555,3 +555,180 @@ gstool_import:
 'bc_plans.error.rto_range': 'RTO (Recovery Time Objective) must be between {{ min }} and {{ max }} hours.'
 'bc_plans.error.rpo_range': 'RPO (Recovery Point Objective) must be between {{ min }} and {{ max }} hours.'
 'Must be a valid ROLE_ constant.': 'Must be a valid ROLE_ constant (e.g. ROLE_USER, ROLE_ADMIN).'
+
+# ─────────────────────────────────────────────────────────────────────────
+# S12 — Entity-Validator-Translation-Keys (Junior-ISB-Audit-2026-05-22)
+# Hardcoded EN messages in src/Entity/*.php converted to translation-keys.
+# Pattern: <entity_snake>.validation.<field>_<rule>
+# ─────────────────────────────────────────────────────────────────────────
+
+# Asset
+'asset.validation.name_required': 'Asset name is required.'
+'asset.validation.name_max_length': 'Asset name cannot exceed {{ limit }} characters.'
+'asset.validation.asset_type_required': 'Asset type is required.'
+'asset.validation.asset_type_max_length': 'Asset type cannot exceed {{ limit }} characters.'
+'asset.validation.ai_classification_invalid': 'AI risk classification must be one of: prohibited, high_risk, limited_risk, minimal_risk.'
+'asset.validation.owner_max_length': 'Owner cannot exceed {{ limit }} characters.'
+'asset.validation.location_max_length': 'Location cannot exceed {{ limit }} characters.'
+'asset.validation.confidentiality_required': 'Confidentiality value is required.'
+'asset.validation.confidentiality_range': 'Confidentiality value must be between {{ min }} and {{ max }}.'
+'asset.validation.integrity_required': 'Integrity value is required.'
+'asset.validation.integrity_range': 'Integrity value must be between {{ min }} and {{ max }}.'
+'asset.validation.availability_required': 'Availability value is required.'
+'asset.validation.availability_range': 'Availability value must be between {{ min }} and {{ max }}.'
+'asset.validation.monetary_value_positive': 'Monetary value must be positive or zero.'
+'asset.validation.data_classification_invalid': 'Data classification must be one of: {{ choices }}.'
+'asset.validation.tisax_classification_invalid': 'TISAX information classification must be one of: {{ choices }}.'
+'asset.validation.status_required': 'Status is required.'
+'asset.validation.status_invalid': 'Status must be one of: {{ choices }}.'
+
+# BCExercise
+'bc_exercise.validation.name_required': 'Exercise name is required.'
+'bc_exercise.validation.scope_required': 'Scope must be defined.'
+'bc_exercise.validation.objectives_required': 'Objectives must be defined.'
+
+# BusinessContinuityPlan
+'bc_plan.validation.name_required': 'Plan name is required.'
+'bc_plan.validation.business_process_required': 'Business process is required.'
+'bc_plan.validation.activation_criteria_required': 'Activation criteria must be defined.'
+'bc_plan.validation.recovery_procedures_required': 'Recovery procedures must be documented.'
+
+# ChangeRequest
+'change_request.validation.title_required': 'Change title is required.'
+'change_request.validation.description_required': 'Description is required.'
+'change_request.validation.justification_required': 'Justification is required.'
+
+# Consent
+'consent.validation.data_subject_identifier_required': 'Data subject identifier is required.'
+'consent.validation.data_subject_identifier_max_length': 'Identifier cannot exceed {{ limit }} characters.'
+'consent.validation.identifier_type_required': 'Identifier type is required.'
+'consent.validation.identifier_type_invalid': 'Invalid identifier type.'
+'consent.validation.processing_activity_required': 'Processing activity is required.'
+'consent.validation.granted_at_required': 'Grant date is required.'
+'consent.validation.consent_method_required': 'Consent method is required.'
+'consent.validation.consent_method_invalid': 'Invalid consent method.'
+'consent.validation.consent_text_required': 'Consent text is required for proof (GDPR Art. 7 (1)).'
+'consent.validation.consent_channel_invalid': 'Invalid consent channel.'
+'consent.validation.status_invalid': 'Invalid consent status.'
+'consent.validation.revocation_method_invalid': 'Invalid revocation method.'
+
+# Control
+'control.validation.control_id_required': 'Control ID is required.'
+'control.validation.control_id_max_length': 'Control ID cannot exceed {{ limit }} characters.'
+'control.validation.control_id_format': 'Control ID must follow ISO 27001/27701/27017/27018 format (e.g. 5.1, A.5.1, B.8.2, 7.2.1, CLD.6.3).'
+'control.validation.name_required': 'Control name is required.'
+'control.validation.name_max_length': 'Control name cannot exceed {{ limit }} characters.'
+'control.validation.description_required': 'Control description is required.'
+'control.validation.category_required': 'Control category is required.'
+'control.validation.category_max_length': 'Category cannot exceed {{ limit }} characters.'
+'control.validation.applicable_required': 'Applicable flag is required.'
+'control.validation.implementation_status_required': 'Implementation status is required.'
+'control.validation.implementation_status_invalid': 'Implementation status must be one of: {{ choices }}.'
+'control.validation.mythos_resilience_invalid': 'Mythos resilience must be one of: standfest, degradiert, reibung, nicht_betroffen.'
+'control.validation.implementation_percentage_range': 'Implementation percentage must be between {{ min }} and {{ max }}.'
+'control.validation.responsible_person_max_length': 'Responsible person cannot exceed {{ limit }} characters.'
+
+# IdentityProvider
+'identity_provider.validation.slug_format': 'Slug must be lowercase alphanumeric (with dashes/underscores).'
+
+# IdentityProviderRoleMapping
+'identity_provider_role_mapping.validation.role_format': 'Must be a valid ROLE_ constant (e.g. ROLE_USER, ROLE_ADMIN).'
+
+# Incident
+'incident.validation.number_required': 'Incident number is required.'
+'incident.validation.number_max_length': 'Incident number cannot exceed {{ limit }} characters.'
+'incident.validation.title_required': 'Incident title is required.'
+'incident.validation.title_max_length': 'Title cannot exceed {{ limit }} characters.'
+'incident.validation.description_required': 'Incident description is required.'
+'incident.validation.category_required': 'Incident category is required.'
+'incident.validation.category_max_length': 'Category cannot exceed {{ limit }} characters.'
+'incident.validation.severity_required': 'Severity is required.'
+'incident.validation.status_required': 'Status is required.'
+'incident.validation.detected_at_required': 'Detection date is required.'
+'incident.validation.reported_by_max_length': 'Reporter name cannot exceed {{ limit }} characters.'
+'incident.validation.assigned_to_max_length': 'Assignee name cannot exceed {{ limit }} characters.'
+'incident.validation.data_breach_flag_required': 'Data breach flag is required.'
+'incident.validation.notification_required_flag_required': 'Notification-required flag is required.'
+'incident.validation.nis2_category_invalid': 'NIS2 category must be one of: {{ choices }}.'
+
+# InterestedParty
+'interested_party.validation.name_required': 'Party name is required.'
+'interested_party.validation.requirements_required': 'Requirements must be documented.'
+
+# InternalAudit
+'internal_audit.validation.number_required': 'Audit number is required.'
+'internal_audit.validation.number_max_length': 'Audit number cannot exceed {{ limit }} characters.'
+'internal_audit.validation.title_required': 'Audit title is required.'
+'internal_audit.validation.title_max_length': 'Title cannot exceed {{ limit }} characters.'
+'internal_audit.validation.scope_type_invalid': 'Scope type must be one of: {{ choices }}.'
+'internal_audit.validation.planned_date_required': 'Planned date is required.'
+'internal_audit.validation.lead_auditor_max_length': 'Lead auditor name cannot exceed {{ limit }} characters.'
+'internal_audit.validation.status_required': 'Status is required.'
+'internal_audit.validation.status_invalid': 'Status must be one of: {{ choices }}.'
+
+# Permission
+'permission.validation.name_unique': 'This permission name is already in use.'
+
+# Risk (additive — existing keys in risk.validation.* preserved above)
+'risk.validation.title_required': 'Risk title is required.'
+'risk.validation.title_max_length': 'Risk title cannot exceed {{ limit }} characters.'
+'risk.validation.description_required': 'Risk description is required.'
+'risk.validation.probability_required': 'Probability is required.'
+'risk.validation.probability_range': 'Probability must be between {{ min }} and {{ max }}.'
+'risk.validation.impact_required': 'Impact is required.'
+'risk.validation.impact_range': 'Impact must be between {{ min }} and {{ max }}.'
+'risk.validation.residual_probability_range': 'Residual probability must be between {{ min }} and {{ max }}.'
+'risk.validation.residual_impact_range': 'Residual impact must be between {{ min }} and {{ max }}.'
+'risk.validation.status_required': 'Status is required.'
+
+# RiskAppetite (additive)
+'risk_appetite.validation.category_max_length': 'Category name cannot exceed {{ limit }} characters.'
+'risk_appetite.validation.max_acceptable_risk_required': 'Maximum acceptable risk level is required.'
+'risk_appetite.validation.max_acceptable_risk_range': 'Maximum acceptable risk must be between {{ min }} and {{ max }}.'
+'risk_appetite.validation.description_required': 'Risk appetite description is required.'
+
+# RiskTreatmentPlan (additive)
+'risk_treatment_plan.validation.risk_required': 'Risk is required.'
+'risk_treatment_plan.validation.title_required': 'Title is required.'
+'risk_treatment_plan.validation.title_max_length': 'Title cannot exceed {{ limit }} characters.'
+'risk_treatment_plan.validation.description_required': 'Description is required.'
+'risk_treatment_plan.validation.status_required': 'Status is required.'
+'risk_treatment_plan.validation.status_invalid': 'Status must be one of: {{ choices }}.'
+'risk_treatment_plan.validation.priority_required': 'Priority is required.'
+'risk_treatment_plan.validation.priority_invalid': 'Priority must be one of: {{ choices }}.'
+'risk_treatment_plan.validation.target_completion_date_required': 'Target completion date is required.'
+'risk_treatment_plan.validation.budget_positive': 'Budget must be positive or zero.'
+'risk_treatment_plan.validation.completion_percentage_range': 'Completion percentage must be between {{ min }} and {{ max }}.'
+
+# Role
+'role.validation.name_unique': 'This role name is already in use.'
+
+# Supplier
+'supplier.validation.name_required': 'Supplier name is required.'
+'supplier.validation.email_invalid': 'Invalid email address.'
+'supplier.validation.service_description_required': 'Service description is required.'
+'supplier.validation.lksg_human_rights_risk_score_range': 'LkSG human rights risk score must be between {{ min }} and {{ max }}.'
+'supplier.validation.lksg_environmental_risk_score_range': 'LkSG environmental risk score must be between {{ min }} and {{ max }}.'
+'supplier.validation.lksg_risk_category_invalid': 'LkSG risk category must be one of: low, medium, high, critical.'
+
+# SystemSettings
+'system_settings.validation.category_key_unique': 'This setting already exists in this category.'
+
+# Tenant
+'tenant.validation.code_unique': 'This tenant code is already in use.'
+
+# Training (additive)
+'training.validation.title_required': 'Training title is required.'
+'training.validation.title_max_length': 'Title cannot exceed {{ limit }} characters.'
+'training.validation.training_type_required': 'Training type is required.'
+'training.validation.training_type_max_length': 'Training type cannot exceed {{ limit }} characters.'
+'training.validation.scheduled_date_required': 'Scheduled date is required.'
+'training.validation.duration_positive': 'Duration must be a positive number.'
+'training.validation.trainer_max_length': 'Trainer name cannot exceed {{ limit }} characters.'
+'training.validation.attendee_count_positive': 'Attendee count must be zero or positive.'
+'training.validation.delivery_method_invalid': 'Delivery method must be one of: {{ choices }}.'
+'training.validation.status_required': 'Status is required.'
+'training.validation.status_invalid': 'Status must be one of: {{ choices }}.'
+
+# User
+'user.validation.email_unique': 'There is already an account with this email.'

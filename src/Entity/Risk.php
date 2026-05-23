@@ -82,8 +82,8 @@ class Risk
 
     #[ORM\Column(length: 255)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotBlank(message: 'Risk title is required')]
-    #[Assert\Length(max: 255, maxMessage: 'Risk title cannot exceed { limit } characters')]
+    #[Assert\NotBlank(message: 'risk.validation.title_required')]
+    #[Assert\Length(max: 255, maxMessage: 'risk.validation.title_max_length')]
     private ?string $title = null;
 
     /**
@@ -162,7 +162,7 @@ class Risk
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotBlank(message: 'Risk description is required')]
+    #[Assert\NotBlank(message: 'risk.validation.description_required')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -204,25 +204,25 @@ class Risk
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotNull(message: 'Probability is required')]
-    #[Assert\Range(notInRangeMessage: 'Probability must be between { min } and { max }', min: 1, max: 5)]
+    #[Assert\NotNull(message: 'risk.validation.probability_required')]
+    #[Assert\Range(notInRangeMessage: 'risk.validation.probability_range', min: 1, max: 5)]
     private ?int $probability = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotNull(message: 'Impact is required')]
-    #[Assert\Range(notInRangeMessage: 'Impact must be between { min } and { max }', min: 1, max: 5)]
+    #[Assert\NotNull(message: 'risk.validation.impact_required')]
+    #[Assert\Range(notInRangeMessage: 'risk.validation.impact_range', min: 1, max: 5)]
     private ?int $impact = null;
 
     // Set default values for required fields
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\Range(notInRangeMessage: 'Residual probability must be between { min } and { max }', min: 1, max: 5)]
+    #[Assert\Range(notInRangeMessage: 'risk.validation.residual_probability_range', min: 1, max: 5)]
     private ?int $residualProbability = 1;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\Range(notInRangeMessage: 'Residual impact must be between { min } and { max }', min: 1, max: 5)]
+    #[Assert\Range(notInRangeMessage: 'risk.validation.residual_impact_range', min: 1, max: 5)]
     private ?int $residualImpact = 1;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true, enumType: TreatmentStrategy::class)]
@@ -257,7 +257,7 @@ class Risk
 
     #[ORM\Column(type: 'string', length: 50, enumType: RiskStatus::class)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\NotNull(message: 'Status is required')]
+    #[Assert\NotNull(message: 'risk.validation.status_required')]
     private ?RiskStatus $status = RiskStatus::Identified;
 
     #[ORM\Version]
