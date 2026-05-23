@@ -75,6 +75,12 @@ final class LifecycleRegistry
     /**
      * Corrective Action lifecycle (ISO 27001 Cl. 10.1).
      *
+     * Junior-ISB-Audit-2026-05-22 CAPA-Lifecycle: inserted intermediate
+     * `verified` place between `completed` and the two terminal verdicts
+     * (`verified_effective` / `verified_ineffective`). Reviewer must open
+     * verification explicitly before recording a verdict — splits the
+     * audit-trail in two events as required by ISO 27001 Cl. 10.1 d.
+     *
      * @var LifecycleMap
      */
     public const array CAPA_STAGES = [
@@ -87,8 +93,12 @@ final class LifecycleRegistry
             'tone' => 'warning',
         ],
         'completed' => [
-            'transitions' => ['verified_effective', 'verified_ineffective'],
+            'transitions' => ['verified'],
             'tone' => 'primary',
+        ],
+        'verified' => [
+            'transitions' => ['verified_effective', 'verified_ineffective'],
+            'tone' => 'info',
         ],
         'verified_effective' => [
             'transitions' => [],

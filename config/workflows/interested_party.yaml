@@ -1,0 +1,70 @@
+# Junior-ISB-Audit-2026-05-22 S-01 — S13 InterestedParty-Lifecycle.
+#
+# ISO 27001 Cl. 4.2 + 9.3.2 c: the Mgmt-Review explicitly demands "feedback
+# from interested parties". Without versioned states the Auditor can't tell
+# which stakeholder snapshot fed which review cycle — Minor-NC-risk on
+# every external audit.
+#
+# Foundation alignment: identical place-vocabulary to STANDARD_5_STAGE
+# (minus `approved`) so the Twig tone-helper, voter, and audit-log listener
+# work without any per-entity special-casing.
+framework:
+    workflows:
+        interested_party_lifecycle:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\InterestedParty
+            initial_marking: draft
+            places:
+                - draft
+                - active
+                - in_review
+                - archived
+            transitions:
+                # Initial publish — the stakeholder record is approved and
+                # available for the Mgmt-Review input bundle.
+                activate:
+                    from: draft
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                        reason_required: false
+                # Periodic re-evaluation (Cl. 9.3.2 c) — needs/expectations
+                # of the party have to be re-confirmed before the next
+                # Mgmt-Review cycle.
+                start_review:
+                    from: active
+                    to: in_review
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                # Review concluded — record is current again.
+                conclude_review:
+                    from: in_review
+                    to: active
+                    metadata:
+                        roles: [ROLE_MANAGER, ROLE_CISO]
+                # Versioning — archived snapshot is read-only audit evidence
+                # for the Mgmt-Review of the year in which it was archived.
+                archive_from_active:
+                    from: active
+                    to: archived
+                    metadata:
+                        roles: [ROLE_CISO]
+                        reason_required: true
+                archive_from_review:
+                    from: in_review
+                    to: archived
+                    metadata:
+                        roles: [ROLE_CISO]
+                        reason_required: true
+                # Re-activate an archived record (e.g. supplier resumes
+                # relationship). Audit-trail keeps both stages.
+                reactivate:
+                    from: archived
+                    to: active
+                    metadata:
+                        roles: [ROLE_CISO]
+                        reason_required: true

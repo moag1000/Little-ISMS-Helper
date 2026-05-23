@@ -126,6 +126,12 @@ final class EntityTypeRegistry
             'class' => \App\Entity\BCExercise::class,
             'workflow' => 'bc_exercise_lifecycle',
         ],
+        // Junior-ISB-Audit-2026-05-22 S-01 — InterestedParty lifecycle
+        // (ISO 27001 Cl. 4.2 + 9.3.2 c — Mgmt-Review-Input demands versioning).
+        'interested-party' => [
+            'class' => \App\Entity\InterestedParty::class,
+            'workflow' => 'interested_party_lifecycle',
+        ],
     ];
 
     /** @return array{class: class-string, workflow: string}|null */
