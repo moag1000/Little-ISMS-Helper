@@ -99,7 +99,21 @@ The detach helper is shared with the setup-wizard via
 1. Create `src/Job/MyJob.php` implementing `App\Job\AsyncJobInterface`
 2. Inject services via constructor (autowired automatically)
 3. Implement `run(JobContext $ctx)` — call `$ctx->progress()` and `$ctx->message()`
-4. In the controller — render the progress page **before** dispatch:
+4. In the controller — use the **`AsyncJobDispatcher` facade** (P-16, since
+   2026-05-23) for the canonical PRG-redirect pattern:
+   ```php
+   return $this->asyncJobDispatcher->dispatchWithProgress(
+       request: $request,
+       jobClass: MyJob::class,
+       jobArgs: ['myArg' => $val],
+       jobName: 'admin.my_job',
+       payload: ['_label' => '…', '_subtitle' => '…'],
+       returnUrl: $this->generateUrl('admin_my_index'),
+   );
+   ```
+   For the rare case where you need direct template rendering (non-Turbo /
+   XHR JSON envelope / payload-patching with the freshly-minted UUID), drop
+   to the lower-level primitives:
    ```php
    $jobId = $this->jobStatusService->create('admin.my_job', $payload);
    $response = $this->render('...progress.html.twig', [
@@ -113,7 +127,9 @@ The detach helper is shared with the setup-wizard via
        $request->getSession(),  // released early so polling does not block
    );
    ```
-5. Include `_async_job_progress.html.twig` in the progress template
+5. Include `_async_job_progress.html.twig` in the progress template (only
+   needed for the rare direct-render variant — `dispatchWithProgress()`
+   redirects to the shared `admin_job_progress_page` route).
 
 **Critical ordering invariant:** `$this->render(...)` MUST come before
 `$jobDispatcher->dispatch()` — the response body must exist when the runner
@@ -165,7 +181,8 @@ systemctl enable isms-worker && systemctl start isms-worker
 
 ### Key files
 
-- `src/Service/Job/JobDispatcher.php` — facade controllers inject
+- `src/Service/Job/AsyncJobDispatcher.php` — P-16 boilerplate-reduction facade (use this for new endpoints — replaces the 5-step ritual with one call)
+- `src/Service/Job/JobDispatcher.php` — lower-level dispatch primitive controllers inject
 - `src/Service/Job/InRequestJobRunner.php` — default strategy (FCGI detach)
 - `src/Service/Job/MessengerJobRunner.php` — opt-in Messenger strategy
 - `src/Service/Job/JobStatusService.php` — file-based status store

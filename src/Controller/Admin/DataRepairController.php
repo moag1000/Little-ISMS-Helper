@@ -27,6 +27,7 @@ use App\Security\Voter\TenantScopedAdminVoter;
 use App\Service\AuditLogger;
 use App\Service\DataIntegrityResultCache;
 use App\Service\DataIntegrityService;
+use App\Service\Job\AsyncJobDispatcher;
 use App\Service\Job\JobDispatcher;
 use App\Service\Job\JobStatusService;
 use App\Service\SchemaMaintenanceService;
@@ -73,6 +74,7 @@ class DataRepairController extends AbstractController
         private readonly JobStatusService $jobStatusService,
         private readonly DataIntegrityResultCache $integrityResultCache,
         private readonly SectionScanResultCache $sectionScanCache,
+        private readonly AsyncJobDispatcher $asyncJobDispatcher,
     ) {
     }
 
@@ -410,30 +412,19 @@ class DataRepairController extends AbstractController
             return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        $jobId = $this->jobStatusService->create(
-            'admin.data_repair.run_integrity_check',
-            [
+        // P-16 facade: one call replaces create-status + redirect-to-progress
+        // + dispatch. The facade handles the 303 PRG dance internally so the
+        // pattern is uniform across all dispatching controllers.
+        return $this->asyncJobDispatcher->dispatchWithProgress(
+            request: $request,
+            jobClass: RunFullIntegrityCheckJob::class,
+            jobArgs: [],
+            jobName: 'admin.data_repair.run_integrity_check',
+            payload: [
                 '_label' => $this->translator->trans('admin.data_repair.job.run_integrity_check_label', [], 'admin'),
                 '_subtitle' => $this->translator->trans('admin.data_repair.job.run_integrity_check_subtitle', [], 'admin'),
             ],
-        );
-
-        // PRG: 303 redirect to the shared progress page — required for Turbo.
-        // InRequestJobRunner flushes the redirect BEFORE running the job, and
-        // markRunning() is called inside dispatch() before detach() — so by
-        // the time the browser GETs /admin/jobs/{id}/progress, status is
-        // already `running` and the polling card never flashes `pending`.
-        $response = $this->redirectToRoute('admin_job_progress_page', [
-            'id'     => $jobId,
-            'return' => $this->generateUrl('admin_data_repair_index'),
-        ], Response::HTTP_SEE_OTHER);
-
-        return $this->jobDispatcher->dispatch(
-            RunFullIntegrityCheckJob::class,
-            [],
-            $jobId,
-            $response,
-            $request->getSession(),
+            returnUrl: $this->generateUrl('admin_data_repair_index'),
         );
     }
 
