@@ -12,7 +12,7 @@ policy:
                     Diese Notfallleitlinie wird durch die oberste Leitung der {{ tenant.legal_name }} erlassen und ist die hoechste normative Aussage des Business-Continuity-Management-Systems (BCMS). Sie erfuellt die Anforderungen der ISO 22301:2019 Klausel 5.2 a-f sowie BSI 200-4 (2023) Kapitel 4.1 ("Notfallleitlinie"). Die Geschaeftsfuehrung der {{ tenant.legal_name }} verpflichtet sich hiermit, die Geschaeftskontinuitaet der Organisation auch bei stoerenden Ereignissen, Notfaellen und Krisen aufrechtzuerhalten und die hierfuer erforderlichen Ressourcen bereitzustellen. Diese Verpflichtung ist nicht delegierbar (ISO 22301 Klausel 5.1 "Leadership and commitment"). Die Leitlinie steht gleichberechtigt neben der Informationssicherheits-Leitlinie und ist mit dieser sowie mit der Datenschutzleitlinie kohaerent abzustimmen.
 
                     ## 2. Geltungsbereich
-                    Der Anwendungsbereich des BCMS ist im separaten Dokument *Geltungsbereich des BCMS / BCMS Scope Statement* gemaess ISO 22301 Klausel 4.3 verbindlich festgelegt. Diese Notfallleitlinie gilt fuer alle Beschaeftigten (unabhaengig vom Beschaeftigungsverhaeltnis), Auftragnehmer, Werkstudierende, Praktikantinnen und Praktikanten sowie fuer alle Dienstleister und Drittparteien, die kritische Geschaeftsprozesse der {{ tenant.legal_name }} unterstuetzen. Sie umfasst alle juristischen Einheiten, Standorte und Geschaeftsprozesse, die im Geltungsbereichsdokument als "in scope" gekennzeichnet sind. Ausschluesse sind im Geltungsbereichsdokument zu begruenden und duerfen die Faehigkeit der Organisation, ihre Kontinuitaetsziele zu erreichen, nicht beeintraechtigen (ISO 22301 Klausel 4.3 c).
+                    Der Anwendungsbereich des BCMS ist im separaten Dokument *Geltungsbereich des BCMS / BCMS Scope Statement* gemaess ISO 22301 Klausel 4.3 verbindlich festgelegt. Diese Notfallleitlinie gilt für alle Beschaeftigten (unabhaengig vom Beschaeftigungsverhaeltnis), Auftragnehmer, Werkstudierende, Praktikantinnen und Praktikanten sowie für alle Dienstleister und Drittparteien, die kritische Geschaeftsprozesse der {{ tenant.legal_name }} unterstuetzen. Sie umfasst alle juristischen Einheiten, Standorte und Geschaeftsprozesse, die im Geltungsbereichsdokument als "in scope" gekennzeichnet sind. Ausschluesse sind im Geltungsbereichsdokument zu begruenden und duerfen die Faehigkeit der Organisation, ihre Kontinuitaetsziele zu erreichen, nicht beeintraechtigen (ISO 22301 Klausel 4.3 c).
 
                     ## 3. BCMS-Ziele (Cl. 5.2 b + Cl. 6.2)
                     Die {{ tenant.legal_name }} verfolgt die folgenden uebergeordneten BCMS-Ziele, abgeleitet aus dem Organisationskontext (Klausel 4.1), den Anforderungen interessierter Parteien (Klausel 4.2) und einschlaegigen regulatorischen Vorgaben:
@@ -29,7 +29,7 @@ policy:
                     ## 4. Verpflichtung der obersten Leitung (Cl. 5.1)
                     Die Geschaeftsfuehrung der {{ tenant.legal_name }} ({{ approval.chain }}) verpflichtet sich gemaess ISO 22301 Klausel 5.1:
 
-                    - Bereitstellung der erforderlichen personellen, finanziellen und infrastrukturellen Ressourcen fuer das BCMS;
+                    - Bereitstellung der erforderlichen personellen, finanziellen und infrastrukturellen Ressourcen für das BCMS;
                     - Sicherstellung, dass die BCMS-Anforderungen in die Geschaeftsprozesse integriert werden;
                     - Foerderung der Bedeutung wirksamen Business Continuity Managements und der Konformitaet mit dieser Leitlinie;
                     - Sicherstellung, dass das BCMS die beabsichtigten Ergebnisse erreicht;
@@ -46,7 +46,7 @@ policy:
                     - **Notfallbeauftragte/r (BCM Officer)** — {{ roles.bcm_officer.fullName }}: Steuerung des BCMS, Berichterstattung an die oberste Leitung, Koordination der BIA, Pflege der Notfallleitlinie, Eskalations- und Meldekette. BSI 200-4 Kap. 4.4 fordert ausdruecklich die Bestellung eines Stellvertreters.
                     - **Krisenstabsleitung (Crisis Team Chair)** — {{ roles.crisis_team_lead.fullName }}: Einberufung des Krisenstabs, verbindliche Krisenentscheidungen, Aktivierung von BCM-Plaenen.
                     - **Informationssicherheitsbeauftragte/r (ISB)** — {{ roles.isb.fullName }}: Schnittstelle zum ISMS, Bewertung sicherheitsrelevanter Vorfaelle mit Kontinuitaetswirkung (A.5.29 + A.5.30).
-                    - **Prozessverantwortliche (Process Owner)** — Verantwortung fuer Pflege und Aktualisierung der jeweiligen Geschaeftsfortfuehrungs-, Wiederanlauf- und Wiederherstellungsplaene.
+                    - **Prozessverantwortliche (Process Owner)** — Verantwortung für Pflege und Aktualisierung der jeweiligen Geschaeftsfortfuehrungs-, Wiederanlauf- und Wiederherstellungsplaene.
                     - **BC-Plan-Eigner (Plan Owner)** — Pflege individueller BC-Plaene, Teilnahme an Uebungen, Mitwirkung an Lessons-Learned.
                     - **Beschaeftigte und Auftragnehmer** — Kenntnis dieser Leitlinie, Befolgung von Notfallanweisungen, Meldung von Stoerungen ueber die definierten Meldekanaele.
 
@@ -78,7 +78,7 @@ policy:
                     - Auswertung externer Quellen (BSI-Lageberichte, ENISA Threat Landscape, sektorale CSIRT-Warnungen) zur Anpassung des Bedrohungsverstaendnisses;
                     - regelmaessige Pflege der Krisenstab-Zusammensetzung sowie Schulung und Weiterbildung der Krisenstab-Mitglieder.
 
-                    Die Wirksamkeitsmessung des BCMS erfolgt anhand quantitativer Kennzahlen (z. B. RTO-Erfuellungsgrad, Anzahl durchgefuehrter und ausgefallener Uebungen, durchschnittliche Aktivierungsdauer, Anzahl offener Korrekturmassnahmen) und qualitativer Bewertungen (z. B. Reife-Self-Assessment gemaess BSI 200-4 Kap. 9.2). Die Kennzahlen werden quartalsweise an die Geschaeftsfuehrung berichtet und bilden die Grundlage fuer Verbesserungsentscheidungen.
+                    Die Wirksamkeitsmessung des BCMS erfolgt anhand quantitativer Kennzahlen (z. B. RTO-Erfuellungsgrad, Anzahl durchgeführter und ausgefallener Uebungen, durchschnittliche Aktivierungsdauer, Anzahl offener Korrekturmassnahmen) und qualitativer Bewertungen (z. B. Reife-Self-Assessment gemaess BSI 200-4 Kap. 9.2). Die Kennzahlen werden quartalsweise an die Geschaeftsfuehrung berichtet und bilden die Grundlage für Verbesserungsentscheidungen.
 
                     ## 7a. Reife-Stufenmodell des BCMS
                     Die {{ tenant.legal_name }} bewertet die Reife ihres BCMS jaehrlich anhand eines Stufenmodells (in Anlehnung an BSI 200-4 Kap. 9.2):
@@ -89,7 +89,7 @@ policy:
                     - **Stufe 4 (Gemessen)** — datengestuetzte Bewertung, KPI-Steuerung, kontinuierliche Verbesserung;
                     - **Stufe 5 (Optimierend)** — proaktive Anpassung an Bedrohungs-Lage, Branchen-Benchmarking, Innovation.
 
-                    Ziel-Reife ist mindestens Stufe 3 fuer alle in-scope Bereiche, Stufe 4 fuer regulatorisch besonders sensitive Bereiche (DORA-CIF, KRITIS-Funktionen). Die jaehrliche Reife-Bewertung ist Bestandteil der Managementbewertung und steuert Investitions-Priorisierungen.
+                    Ziel-Reife ist mindestens Stufe 3 für alle in-scope Bereiche, Stufe 4 für regulatorisch besonders sensitive Bereiche (DORA-CIF, KRITIS-Funktionen). Die jaehrliche Reife-Bewertung ist Bestandteil der Managementbewertung und steuert Investitions-Priorisierungen.
 
                     ## 8. Pruefung, Genehmigung und Kommunikation (Cl. 5.2 d-g)
                     Diese Notfallleitlinie wird mindestens alle {{ bcm.review_interval_months }} Monate (BSI 200-4 Kap. 4.1: mindestens jaehrlich) sowie bei wesentlichen Aenderungen ueberprueft. Wesentliche Aenderungen sind insbesondere: organisatorische Veraenderungen (M&A, neuer Standort, Veraeusserung), schwerwiegende Vorfaelle mit BCM-Aktivierung, regulatorische Aenderungen (z. B. neue DORA-RTS, NIS2-Umsetzungsgesetz) sowie fehlgeschlagene Uebungen mit strategischer Wirkung.
@@ -99,7 +99,7 @@ policy:
                     Die Leitlinie wird **aktiv kommuniziert** (BSI 200-4 Kap. 4.1 fordert ausdruecklich `aktive Kommunikation`): Veroeffentlichung im Intranet, Bestandteil des On-Boarding, jaehrliche Pflichtschulung gemaess A.6.3 ISO 27001, Aushaendigung an Drittparteien im Rahmen von Vertraegen (A.5.20). Die Lesebestaetigung wird zentral dokumentiert; bei Beschaeftigten in regulierten Funktionen (z. B. Krisenstab, Process Owner kritischer Prozesse) wird die jaehrliche Auffrischung verbindlich nachgewiesen.
 
                     ## 9. Verstoesse, Sanktionen und Anreizwirkung
-                    Verstoesse gegen diese Notfallleitlinie oder gegen untergeordnete BC-Plaene koennen zu disziplinarischen Massnahmen gemaess der Personalsicherheits-Richtlinie (A.6.4 ISO 27001), zivilrechtlichen Konsequenzen sowie strafrechtlicher Verfolgung fuehren, sofern strafbares Verhalten vorliegt. Bei Drittparteien werden vertragliche Konsequenzen gemaess A.5.20 wirksam (Mahnung, Vertragsstrafe, Sonderkuendigung). Positiv wirken Anreize fuer aktive Mitwirkung an Uebungen und Krisenstabsarbeit (z. B. dokumentierte Beruecksichtigung in Personalentwicklungsgespraechen, Foerderung von BCM-Zertifizierungen wie ISO 22301 Lead Implementer/Auditor).
+                    Verstoesse gegen diese Notfallleitlinie oder gegen untergeordnete BC-Plaene koennen zu disziplinarischen Massnahmen gemaess der Personalsicherheits-Richtlinie (A.6.4 ISO 27001), zivilrechtlichen Konsequenzen sowie strafrechtlicher Verfolgung fuehren, sofern strafbares Verhalten vorliegt. Bei Drittparteien werden vertragliche Konsequenzen gemaess A.5.20 wirksam (Mahnung, Vertragsstrafe, Sonderkuendigung). Positiv wirken Anreize für aktive Mitwirkung an Uebungen und Krisenstabsarbeit (z. B. dokumentierte Beruecksichtigung in Personalentwicklungsgespraechen, Foerderung von BCM-Zertifizierungen wie ISO 22301 Lead Implementer/Auditor).
 
                     ## 10. Beziehung zu untergeordneten BCMS-Dokumenten
                     Diese Notfallleitlinie bildet das Dach des BCMS-Dokumentensatzes. Untergeordnete Dokumente, die im Rahmen dieser Leitlinie verpflichtend sind: BCMS Scope Statement (Cl. 4.3), BIA-Methodik (Cl. 8.2.2), BCM-Risikoanalyse-Methodik (Cl. 8.2.3), BC-Strategie (Cl. 8.3), BC-Plan-Vorlage (Cl. 8.4.4), Verfahren zur Notfallreaktion und Kommunikation (Cl. 8.4.3), Krisenmanagement-Plan (Cl. 8.4.4), Wiederanlauf- und Wiederherstellungs-Plaene (Cl. 8.4.5), Uebungs- und Testprogramm (Cl. 8.6), BCMS-Internes-Audit-Programm (Cl. 9.2), BCMS-Managementbewertungs-Verfahren (Cl. 9.3), Verfahren zu Abweichungen und Korrekturmassnahmen (Cl. 10.1) sowie - falls BSI 200-4 adoptiert - das Notfallhandbuch (BSI 200-4 Kap. 7). Jedes untergeordnete Dokument verweist im Header auf diese Notfallleitlinie und verwendet die hier definierten Begriffe und Rollen konsistent.
@@ -114,11 +114,11 @@ policy:
                     scope:
                         title: 'Geltungsbereich'
                         body: |-
-                            Der Anwendungsbereich ist im separaten *BCMS Scope Statement* (Klausel 4.3) verbindlich festgelegt. Diese Leitlinie gilt fuer alle Beschaeftigten, Auftragnehmer und Drittparteien innerhalb des dokumentierten Geltungsbereichs. Ausschluesse sind zu begruenden und duerfen die Erreichung der Kontinuitaetsziele nicht beeintraechtigen (Cl. 4.3 c).
+                            Der Anwendungsbereich ist im separaten *BCMS Scope Statement* (Klausel 4.3) verbindlich festgelegt. Diese Leitlinie gilt für alle Beschaeftigten, Auftragnehmer und Drittparteien innerhalb des dokumentierten Geltungsbereichs. Ausschluesse sind zu begruenden und duerfen die Erreichung der Kontinuitaetsziele nicht beeintraechtigen (Cl. 4.3 c).
                     objectives:
                         title: 'BCMS-Ziele'
                         body: |-
-                            Die uebergeordneten Ziele Lebensschutz, Prozesserhalt, Schadensminimierung, Compliance, Vertrauensschutz und kontinuierliche Verbesserung bilden den Rahmen fuer messbare Jahresziele gemaess Klausel 6.2. Die aktuellen Ziele sind im separaten Dokument *BCMS-Jahresziele* dokumentiert.
+                            Die uebergeordneten Ziele Lebensschutz, Prozesserhalt, Schadensminimierung, Compliance, Vertrauensschutz und kontinuierliche Verbesserung bilden den Rahmen für messbare Jahresziele gemaess Klausel 6.2. Die aktuellen Ziele sind im separaten Dokument *BCMS-Jahresziele* dokumentiert.
                     commitment:
                         title: 'Verpflichtung der obersten Leitung'
                         body: |-
@@ -138,17 +138,17 @@ policy:
                     review:
                         title: 'Pruefung und Kommunikation'
                         body: |-
-                            Pruefung mindestens alle {{ bcm.review_interval_months }} Monate (BSI 200-4: mindestens jaehrlich), zusaetzlich bei wesentlichen Aenderungen. Aktive Kommunikation ueber Intranet, On-Boarding, Schulungen und Drittpartei-Vertraege (BSI 200-4 Kap. 4.1).
+                            Pruefung mindestens alle {{ bcm.review_interval_months }} Monate (BSI 200-4: mindestens jaehrlich), zusätzlich bei wesentlichen Aenderungen. Aktive Kommunikation ueber Intranet, On-Boarding, Schulungen und Drittpartei-Vertraege (BSI 200-4 Kap. 4.1).
                 tailoring_field:
                     bcms_objectives:
                         label: 'Organisations-spezifische BCMS-Jahresziele'
-                        placeholder: 'Beispiel: "1) Wiederanlauf aller kritischen Kundenprozesse innerhalb von 4 Stunden in 2026; 2) jaehrliche Vollscale-Uebung mit Behoerden-Beteiligung; 3) Reduktion ungeplanter Ausfallzeit um 25 % gegenueber Vorjahr; 4) 100 % BC-Plan-Abdeckung fuer Tier-1-Prozesse bis Q3."'
+                        placeholder: 'Beispiel: "1) Wiederanlauf aller kritischen Kundenprozesse innerhalb von 4 Stunden in 2026; 2) jaehrliche Vollscale-Uebung mit Behoerden-Beteiligung; 3) Reduktion ungeplanter Ausfallzeit um 25 % gegenueber Vorjahr; 4) 100 % BC-Plan-Abdeckung für Tier-1-Prozesse bis Q3."'
                     bcm_governance_structure:
                         label: 'Notfall-Governance und Eskalationsstruktur'
                         placeholder: 'Beispiel: "Notfallbeauftragter berichtet quartalsweise an Geschaeftsfuehrung; monatlicher BCMS-Steuerkreis mit ISB, Compliance, IT-Leitung; Krisenstab tagt nach Aktivierung mind. 2x taeglich bis Stand-Down. Eskalation an Aufsichtsrat ab Krisengrad rot."'
                     sector_specific_continuity_drivers:
                         label: 'Sektor-spezifische Kontinuitaetstreiber und Aufsichtsanforderungen'
-                        placeholder: 'Beispiel: "Als Finanzdienstleister unterliegen wir EU-DORA Art. 11 mit verbindlichen Recovery-Anforderungen fuer kritische ICT-Funktionen. Aufsicht durch BaFin/Bundesbank; Meldepflichten gemaess DORA RTS 4h/24h/1mo. Kritische Drittparteien-Liste wird quartalsweise an die Aufsicht uebermittelt."'
+                        placeholder: 'Beispiel: "Als Finanzdienstleister unterliegen wir EU-DORA Art. 11 mit verbindlichen Recovery-Anforderungen für kritische ICT-Funktionen. Aufsicht durch BaFin/Bundesbank; Meldepflichten gemaess DORA RTS 4h/24h/1mo. Kritische Drittparteien-Liste wird quartalsweise an die Aufsicht uebermittelt."'
         bcms_scope_statement:
             v1:
                 title: 'Geltungsbereich des BCMS / BCMS Scope Statement'
@@ -158,7 +158,7 @@ policy:
                     *Dokumentenklasse: Leitlinie (Governance — Anwendungsbereich) | Norm-Anker: ISO 22301:2019 Klausel 4.3, BSI 200-4 Kap. 3.2 | Pruefintervall: {{ bcm.review_interval_months }} Monate*
 
                     ## 1. Zweck dieses Dokuments
-                    Dieses Dokument legt den Anwendungsbereich des Business-Continuity-Management-Systems der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 4.3 ("The organization shall determine the boundaries and applicability of the business continuity management system to establish its scope") fest. Es bildet die Grundlage fuer die Notfallleitlinie, die BIA, die BCM-Risikoanalyse, die BC-Strategie und alle BC-Plaene. Das Geltungsbereichsdokument ist verbindlich; jede nachgeordnete BCMS-Aktivitaet referenziert diesen Anwendungsbereich.
+                    Dieses Dokument legt den Anwendungsbereich des Business-Continuity-Management-Systems der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 4.3 ("The organization shall determine the boundaries and applicability of the business continuity management system to establish its scope") fest. Es bildet die Grundlage für die Notfallleitlinie, die BIA, die BCM-Risikoanalyse, die BC-Strategie und alle BC-Plaene. Das Geltungsbereichsdokument ist verbindlich; jede nachgeordnete BCMS-Aktivitaet referenziert diesen Anwendungsbereich.
 
                     ## 2. Organisatorischer Geltungsbereich
                     Der Geltungsbereich umfasst die folgenden juristischen Einheiten der {{ tenant.legal_name }}:
@@ -183,15 +183,15 @@ policy:
                     Die zugewiesenen Prozesseigner sind verbindlich Process Owner im Sinne dieses Dokuments und verantworten Pflege und Uebung der zugehoerigen BC-Plaene.
 
                     ## 5. Produkt- und Dienstleistungs-Geltungsbereich
-                    Der Anwendungsbereich umfasst alle Produkte und Dienstleistungen, fuer die externen Stakeholdern (Kunden, Vertragspartner, Aufsichtsbehoerden) Kontinuitaetszusagen gegeben werden. Diese sind insbesondere:
+                    Der Anwendungsbereich umfasst alle Produkte und Dienstleistungen, für die externen Stakeholdern (Kunden, Vertragspartner, Aufsichtsbehoerden) Kontinuitaetszusagen gegeben werden. Diese sind insbesondere:
 
                     - In Service-Level-Agreements (SLAs) zugesagte Verfuegbarkeit und Wiederanlaufzeiten;
-                    - Regulatorisch geforderte Mindestverfuegbarkeiten (z. B. EU-DORA Art. 11 fuer kritische oder wichtige Funktionen);
+                    - Regulatorisch geforderte Mindestverfuegbarkeiten (z. B. EU-DORA Art. 11 für kritische oder wichtige Funktionen);
                     - Vertraglich zugesicherte Lieferterminierungen mit Vertragsstrafen-Risiko;
                     - Oeffentlich kommunizierte Service-Levels (Webseiten-Verfuegbarkeit, Hotline-Zeiten).
 
                     ## 6. IT-Service-Abhaengigkeiten im Geltungsbereich
-                    Das BCMS adressiert die fuer in-scope-Prozesse benoetigten IT-Services und ICT-Systeme gemaess Asset-Register (Klassifizierung Vertraulichkeit / Integritaet / Verfuegbarkeit). Erfasst sind insbesondere: Kernanwendungen, Datenbanken, Identity-Provider, Netzwerk-Infrastruktur, Datensicherungen, Cloud-Dienste und kritische Drittparteien (gemaess Lieferanten-Register). Die Schnittstelle zum ISMS ist ueber A.5.30 (ICT readiness for business continuity) hergestellt.
+                    Das BCMS adressiert die für in-scope-Prozesse benoetigten IT-Services und ICT-Systeme gemaess Asset-Register (Klassifizierung Vertraulichkeit / Integritaet / Verfuegbarkeit). Erfasst sind insbesondere: Kernanwendungen, Datenbanken, Identity-Provider, Netzwerk-Infrastruktur, Datensicherungen, Cloud-Dienste und kritische Drittparteien (gemaess Lieferanten-Register). Die Schnittstelle zum ISMS ist ueber A.5.30 (ICT readiness for business continuity) hergestellt.
 
                     ## 7. Ausschluesse mit Begruendung (Cl. 4.3 c)
                     ISO 22301 Klausel 4.3 c verlangt, dass Ausschluesse die Faehigkeit der Organisation, ihre Kontinuitaetsziele zu erreichen, nicht beeintraechtigen. Folgende Kategorien koennen begruendet ausgeschlossen werden:
@@ -213,12 +213,12 @@ policy:
                     Die integrierte Auditierung mehrerer Managementsysteme ist explizit vorgesehen (BSI 200-4 Kap. 9.1.4 empfiehlt Audit-Konsolidierung).
 
                     ## 8a. Anwendbare regulatorische Geltungsbereiche
-                    Der Anwendungsbereich des BCMS deckt die folgenden regulatorischen Erwartungen verbindlich ab, soweit fuer die {{ tenant.legal_name }} einschlaegig:
+                    Der Anwendungsbereich des BCMS deckt die folgenden regulatorischen Erwartungen verbindlich ab, soweit für die {{ tenant.legal_name }} einschlaegig:
 
-                    - **EU-DORA Art. 11 + Art. 12** (Finanzunternehmen) — Response and Recovery, ICT Business Continuity Policy mit Recovery-Anforderungen fuer kritische oder wichtige Funktionen (CIF);
-                    - **EU-DORA Art. 28** — Drittparteien-Risiko-Management mit Exit-Strategie-Pflicht fuer kritische ICT-Drittparteien;
+                    - **EU-DORA Art. 11 + Art. 12** (Finanzunternehmen) — Response and Recovery, ICT Business Continuity Policy mit Recovery-Anforderungen für kritische oder wichtige Funktionen (CIF);
+                    - **EU-DORA Art. 28** — Drittparteien-Risiko-Management mit Exit-Strategie-Pflicht für kritische ICT-Drittparteien;
                     - **NIS2-Richtlinie (EU) 2022/2555** — Risikomanagement-Massnahmen einschliesslich Backup-Konzept und Krisenmanagement;
-                    - **BSI-KritisV** und **IT-Sicherheitsgesetz 2.0** — fuer KRITIS-Betreiber Mindeststandards an Geschaeftskontinuitaet;
+                    - **BSI-KritisV** und **IT-Sicherheitsgesetz 2.0** — für KRITIS-Betreiber Mindeststandards an Geschaeftskontinuitaet;
                     - **ISO/IEC 27001:2022 A.5.29** und **A.5.30** — Schnittstelle ISMS / BCMS;
                     - **DSGVO Art. 32 Abs. 1 lit. b und c** — Wiederherstellbarkeit personenbezogener Daten;
                     - **MaRisk AT 7.3** und Aufsichtsanzeigen-Pflichten gemaess EU-DORA;
@@ -250,7 +250,7 @@ policy:
                     Validierungs-Ergebnisse fliessen in den jaehrlichen BCMS-Statusbericht an die Geschaeftsfuehrung ein.
 
                     ## 10. Konzern- und Holding-Aspekte
-                    Sofern die Holding-Funktion fuer die {{ tenant.legal_name }} aktiviert ist, gilt zusaetzlich:
+                    Sofern die Holding-Funktion für die {{ tenant.legal_name }} aktiviert ist, gilt zusätzlich:
 
                     - Der Konzern-Geltungsbereich ist im Konzern-BCMS-Scope-Dokument verbindlich festgelegt; das vorliegende Dokument konkretisiert den Geltungsbereich der Tochter und darf den Konzern-Geltungsbereich nicht unterschreiten;
                     - Lokale Standorte und Prozesse, die ueber die Konzern-Mindestanforderung hinausgehen (z. B. lokale regulatorische Pflichten), sind explizit ergaenzt;
@@ -263,11 +263,11 @@ policy:
                     purpose:
                         title: 'Zweck und Anwendung'
                         body: |-
-                            Festlegung des BCMS-Anwendungsbereichs gemaess ISO 22301 Klausel 4.3. Verbindliche Grundlage fuer Notfallleitlinie, BIA, BCM-RA, BC-Strategie und alle BC-Plaene. BSI 200-4 Kap. 3.2 entspricht inhaltlich.
+                            Festlegung des BCMS-Anwendungsbereichs gemaess ISO 22301 Klausel 4.3. Verbindliche Grundlage für Notfallleitlinie, BIA, BCM-RA, BC-Strategie und alle BC-Plaene. BSI 200-4 Kap. 3.2 entspricht inhaltlich.
                     organisational:
                         title: 'Organisatorischer Geltungsbereich'
                         body: |-
-                            Umfasst {{ tenant.legal_name }} und alle BCMS-relevanten Tochtergesellschaften gemaess Anlage 1. Holding-Strukturen werden ueber Konzern-Notfallleitlinie zusaetzlich abgebildet.
+                            Umfasst {{ tenant.legal_name }} und alle BCMS-relevanten Tochtergesellschaften gemaess Anlage 1. Holding-Strukturen werden ueber Konzern-Notfallleitlinie zusätzlich abgebildet.
                     geographic:
                         title: 'Geografischer Geltungsbereich'
                         body: |-
@@ -297,7 +297,7 @@ policy:
                         placeholder: 'Beispiel: "Tochtergesellschaft XY GmbH (Forschungsstandort, kein Kundenkontakt, kein Zahlungsverkehr) — eigenstaendige BCM-Konzeption nach gleichem Standard, jaehrliche Anerkennung. Repraesentanz Brueessel (rein verbindungspolitisch, keine operative Taetigkeit). Begruendung: kein Beitrag zu kritischen Kundenprozessen, kein DORA-Art.-11-Bezug."'
                     external_continuity_commitments:
                         label: 'Externe Kontinuitaetszusagen (SLAs, regulatorisch, vertraglich)'
-                        placeholder: 'Beispiel: "Online-Banking 99,9 % Verfuegbarkeit p. a. (vertraglich); Geldautomaten-Netz 99,5 % (regulatorische Erwartung); DORA Art. 11 fuer kritische oder wichtige Funktionen; SLA mit Top-10-Geschaeftskunden ueber Wiederanlauf binnen 4h; oeffentliche Hotline 24/7 mit max. 30 min Stoerung."'
+                        placeholder: 'Beispiel: "Online-Banking 99,9 % Verfuegbarkeit p. a. (vertraglich); Geldautomaten-Netz 99,5 % (regulatorische Erwartung); DORA Art. 11 für kritische oder wichtige Funktionen; SLA mit Top-10-Geschaeftskunden ueber Wiederanlauf binnen 4h; oeffentliche Hotline 24/7 mit max. 30 min Stoerung."'
         bia_methodology:
             v1:
                 title: 'BIA-Methodik / Methodik der Business-Impact-Analyse'
@@ -313,10 +313,10 @@ policy:
                     Folgende Begriffe sind innerhalb dieser Methodik verbindlich definiert:
 
                     - **MTPD (Maximum Tolerable Period of Disruption / Maximal tolerierbare Ausfallzeit)** — der maximale Zeitraum, ueber den ein Prozess unterbrochen sein darf, bevor existenzgefaehrdende Folgen eintreten. Bezugsgroesse: Geschaeftsbestand. Nicht verhandelbar.
-                    - **RTO (Recovery Time Objective / Wiederanlaufzeit)** — die Ziel-Zeit fuer den Wiederanlauf eines Prozesses nach Stoerung. Es gilt zwingend RTO < MTPD.
+                    - **RTO (Recovery Time Objective / Wiederanlaufzeit)** — die Ziel-Zeit für den Wiederanlauf eines Prozesses nach Stoerung. Es gilt zwingend RTO < MTPD.
                     - **RPO (Recovery Point Objective / Wiederherstellungspunkt)** — der maximal akzeptable Datenverlust, gemessen als Zeitspanne vor dem Stoerungseintritt.
                     - **MBCO (Minimum Business Continuity Objective / Minimum-Geschaeftskontinuitaetsziel)** — das minimal akzeptable Aktivitaetsniveau eines Prozesses waehrend einer Stoerung (z. B. "50 % der normalen Transaktionsrate").
-                    - **RTC (Recovery Time Capability)** — die tatsaechlich erreichte Wiederanlauf-Faehigkeit, im Vergleich zum RTO bewertet.
+                    - **RTC (Recovery Time Capability)** — die tatsächlich erreichte Wiederanlauf-Faehigkeit, im Vergleich zum RTO bewertet.
 
                     Diese Definitionen sind in der gesamten BCMS-Dokumentation zu verwenden.
 
@@ -346,16 +346,16 @@ policy:
                     Die Abhaengigkeiten werden als gerichteter Graph in der BIA-Datenbank gepflegt und feeden die Wiederanlauf-Reihenfolge in den Recovery-Plaenen.
 
                     ## 7. Datenerhebungsmethode
-                    Die BIA wird primaer ueber **moderierte Workshops** mit Process Ownern und Key Stakeholdern durchgefuehrt (Standardansatz). Alternative Methoden: strukturierte Interviews oder validierte Fragebogen. Die Wahl der Methode wird durch den BIA-Lead in Abstimmung mit dem Notfallbeauftragten festgelegt; Workshops werden bevorzugt fuer Tier-1- und Tier-2-Prozesse, Fragebogen fuer Tier-3 und Tier-4. Die Erhebung muss mindestens beinhalten: Prozess-Beschreibung, Inputs/Outputs, Schluesselrollen, IT-Abhaengigkeiten, Saisonalitaet, Auswirkungsbewertung pro Zeitfenster, vorgeschlagene MBCO.
+                    Die BIA wird primaer ueber **moderierte Workshops** mit Process Ownern und Key Stakeholdern durchgeführt (Standardansatz). Alternative Methoden: strukturierte Interviews oder validierte Fragebogen. Die Wahl der Methode wird durch den BIA-Lead in Abstimmung mit dem Notfallbeauftragten festgelegt; Workshops werden bevorzugt für Tier-1- und Tier-2-Prozesse, Fragebogen für Tier-3 und Tier-4. Die Erhebung muss mindestens beinhalten: Prozess-Beschreibung, Inputs/Outputs, Schluesselrollen, IT-Abhaengigkeiten, Saisonalitaet, Auswirkungsbewertung pro Zeitfenster, vorgeschlagene MBCO.
 
                     ## 8. Rollen
                     - **BIA-Lead** — verantwortet Durchfuehrung, Moderation, Konsolidierung; typischerweise Notfallbeauftragter oder benannter Stellvertreter.
                     - **Process Owner** — liefert Daten zum eigenen Prozess, validiert Ergebnisse, genehmigt finale BIA-Bewertung des eigenen Prozesses.
-                    - **Reviewer** — unabhaengiger Gegenleser (z. B. ISB {{ roles.isb.fullName }}, Compliance, Internal Audit), prueft Plausibilitaet und Konsistenz mit anderen BIA-Ergebnissen.
+                    - **Reviewer** — unabhängiger Gegenleser (z. B. ISB {{ roles.isb.fullName }}, Compliance, Internal Audit), prueft Plausibilitaet und Konsistenz mit anderen BIA-Ergebnissen.
                     - **Top-Management-Sponsor** — finale Freigabe der konsolidierten BIA-Ergebnisse.
 
                     ## 9. Pruef-, Freigabe- und Wiederholungs-Trigger
-                    Die BIA-Ergebnisse werden konsolidiert, durch BIA-Lead geprueft, durch unabhaengigen Reviewer gegengelesen und durch Top-Management freigegeben. Wiederholungstrigger:
+                    Die BIA-Ergebnisse werden konsolidiert, durch BIA-Lead geprueft, durch unabhängigen Reviewer gegengelesen und durch Top-Management freigegeben. Wiederholungstrigger:
 
                     - Regulaere Re-Execution: alle 24 Monate (default);
                     - Nach wesentlicher Organisations-Aenderung (Reorganisation, M&A, neuer Standort);
@@ -376,10 +376,10 @@ policy:
                     ## 10a. Werkzeuge und Datenhaltung
                     Die BIA wird in einem zentralen BCMS-Werkzeug erfasst, das die folgenden Funktionen verbindlich bereitstellt:
 
-                    - strukturierte Erfassung pro Geschaeftsprozess mit Pflichtfeldern fuer Auswirkungs-Bewertung pro Zeitfenster, MTPD, RTO, RPO, MBCO, Abhaengigkeiten;
+                    - strukturierte Erfassung pro Geschaeftsprozess mit Pflichtfeldern für Auswirkungs-Bewertung pro Zeitfenster, MTPD, RTO, RPO, MBCO, Abhaengigkeiten;
                     - Versionsverwaltung mit Vorgaenger-Tracking und Begruendung jeder Aenderung;
                     - Schnittstellen zum Asset-Register (Abgleich IT-Abhaengigkeiten), zum Lieferanten-Register (Drittparteien-Abhaengigkeiten), zum Personal-Stamm (Schluesselrollen) und zum Risiko-Register (Verknuepfung BIA-Bewertung mit Risiko-Eintraegen);
-                    - Reporting-Funktionen fuer den BIA-Konsolidierungs-Bericht (Tier-Verteilung, Top-N-Prozesse nach Auswirkung, Abhaengigkeits-Hotspots);
+                    - Reporting-Funktionen für den BIA-Konsolidierungs-Bericht (Tier-Verteilung, Top-N-Prozesse nach Auswirkung, Abhaengigkeits-Hotspots);
                     - Audit-Trail mit revisionssicherer Protokollierung aller Aenderungen.
 
                     Eine BIA-Erfassung ausserhalb des zentralen Werkzeugs (z. B. in lokalen Tabellen-Kalkulationen) ist nur als temporaerer Workshop-Zwischenschritt zulaessig; die Konsolidierung muss im zentralen Werkzeug erfolgen.
@@ -388,14 +388,14 @@ policy:
                     Alle BIA-Lead-Personen sowie Reviewer durchlaufen eine dokumentierte BIA-Schulung von mindestens 4 Stunden, die folgende Inhalte abdeckt: Methodik dieses Dokuments, Begriffsabgrenzung MTPD/RTO/RPO/MBCO/RTC, Workshop-Moderationstechniken, Plausibilitaets-Pruefung, Konfliktloesung bei divergierenden Bewertungen. Process Owner erhalten eine Kurz-Schulung von mind. 1 Stunde vor Teilnahme an einem BIA-Workshop. Die Schulungsteilnahme wird im Personalentwicklungs-System dokumentiert; ohne dokumentierte Schulung darf eine Person nicht als BIA-Lead oder Reviewer eingesetzt werden.
 
                     ## 11. Datenqualitaet und Plausibilitaetspruefung
-                    Die BIA-Ergebnisse muessen plausibel und konsistent sein. Pruefkriterien:
+                    Die BIA-Ergebnisse müssen plausibel und konsistent sein. Pruefkriterien:
 
-                    - **MTPD-RTO-Konsistenz** — fuer jeden Prozess muss RTO < MTPD gelten; Verstoesse werden vom Reviewer zwingend korrigiert.
+                    - **MTPD-RTO-Konsistenz** — für jeden Prozess muss RTO < MTPD gelten; Verstoesse werden vom Reviewer zwingend korrigiert.
                     - **Ressourcen-Konsistenz** — die in der BIA gemeldete IT-Abhaengigkeit muss mit dem Asset-Register uebereinstimmen.
                     - **Auswirkungs-Konsistenz** — Prozesse mit aehnlicher Funktion und Bedeutung sollten aehnliche Bewertungen erhalten; Ausreisser werden begruendet.
                     - **Saisonalitaet** — Prozesse mit saisonal schwankender Bedeutung (z. B. Jahresabschluss, Hochsaison) erhalten saisonale Bewertungs-Annexe.
 
-                    Vor Freigabe wird ein konsolidierter BIA-Bericht erstellt, der die wichtigsten Erkenntnisse, ungewoehnliche Bewertungen, Lueckenbefunde (z. B. fehlende Stellvertretungen, monolithische ICT-Abhaengigkeiten ohne Failover) und Empfehlungen fuer die BC-Strategie zusammenfasst.
+                    Vor Freigabe wird ein konsolidierter BIA-Bericht erstellt, der die wichtigsten Erkenntnisse, ungewoehnliche Bewertungen, Lueckenbefunde (z. B. fehlende Stellvertretungen, monolithische ICT-Abhaengigkeiten ohne Failover) und Empfehlungen für die BC-Strategie zusammenfasst.
 
                     ## 11a. Beispiel-Konsolidierungs-Bericht (Mindestinhalte)
                     Der konsolidierte BIA-Konsolidierungs-Bericht hat mindestens folgende Inhalte:
@@ -406,7 +406,7 @@ policy:
                     - Top-5-Lieferanten-Konzentrations-Risiken (Drittparteien, von denen mehrere Tier-1-Prozesse abhaengig sind);
                     - Schluesselrollen-Hotspots (Personen, von denen mehrere Tier-1-Prozesse abhaengig sind);
                     - Soll-Ist-Vergleich der RTC gegen RTO aus letzter Uebung;
-                    - empfohlene Investitions-Schwerpunkte fuer das Folgejahr;
+                    - empfohlene Investitions-Schwerpunkte für das Folgejahr;
                     - offene Methoden-Fragen und Vorschlaege zur naechsten Methodik-Aktualisierung.
 
                     Der Bericht wird der Geschaeftsfuehrung im Rahmen der Managementbewertung gemaess Klausel 9.3 vorgelegt.
@@ -424,7 +424,7 @@ policy:
                     glossary:
                         title: 'Glossar (MTPD/RTO/RPO/MBCO/RTC)'
                         body: |-
-                            MTPD = maximal tolerierbare Ausfallzeit (Bestandsfrage); RTO = Wiederanlaufzeit (zwingend < MTPD); RPO = max. Datenverlust; MBCO = Minimum-Aktivitaetsniveau bei Stoerung; RTC = tatsaechliche Faehigkeit (Soll-Ist).
+                            MTPD = maximal tolerierbare Ausfallzeit (Bestandsfrage); RTO = Wiederanlaufzeit (zwingend < MTPD); RPO = max. Datenverlust; MBCO = Minimum-Aktivitaetsniveau bei Stoerung; RTC = tatsächliche Faehigkeit (Soll-Ist).
                     impact_categories:
                         title: 'Auswirkungs-Kategorien'
                         body: |-
@@ -440,11 +440,11 @@ policy:
                     method:
                         title: 'Datenerhebung und Rollen'
                         body: |-
-                            Workshops (Standard fuer Tier 1/2), Interviews, Fragebogen (Tier 3/4). Rollen: BIA-Lead, Process Owner, Reviewer (ISB {{ roles.isb.fullName }} / Compliance), Top-Management-Sponsor.
+                            Workshops (Standard für Tier 1/2), Interviews, Fragebogen (Tier 3/4). Rollen: BIA-Lead, Process Owner, Reviewer (ISB {{ roles.isb.fullName }} / Compliance), Top-Management-Sponsor.
                     review:
                         title: 'Wiederholungs-Trigger'
                         body: |-
-                            Default 24 Monate; zusaetzlich bei Reorganisation, M&A, neuen Produkten, realer Aktivierung, Vollscale-Uebung, Skala-Aenderung.
+                            Default 24 Monate; zusätzlich bei Reorganisation, M&A, neuen Produkten, realer Aktivierung, Vollscale-Uebung, Skala-Aenderung.
                 tailoring_field:
                     impact_scale_anchors:
                         label: 'Monetaere/quantitative Anker der Auswirkungs-Skala'
@@ -454,7 +454,7 @@ policy:
                         placeholder: 'Beispiel: "Tier 1 + 2: ganztaegige moderierte Workshops mit Process Owner + 2 Stellvertretern + IT-Owner + Risk-Liaison. Tier 3: 2-stuendige Interviews. Tier 4: validierter Online-Fragebogen mit verbindlicher Plausibilitaetspruefung durch BIA-Lead. Alle Workshops mit Protokollpflicht und Audio-Mitschnitt (DSGVO-konform, 90 Tage Aufbewahrung)."'
                     bia_review_cycle:
                         label: 'Tenant-spezifischer BIA-Wiederholungszyklus und Trigger'
-                        placeholder: 'Beispiel: "Standard-Re-BIA alle 24 Monate, jedoch fuer Tier-1-Prozesse alle 12 Monate. Trigger: jede neu integrierte Tochtergesellschaft, jede neue regulatorisch-kritische Funktion (z. B. neue DORA-CIF), jede schwerwiegende BC-Aktivierung (Krisengrad gelb oder roeter), jede Vollscale-Uebung mit Soll-Ist-Abweichung > 30 %."'
+                        placeholder: 'Beispiel: "Standard-Re-BIA alle 24 Monate, jedoch für Tier-1-Prozesse alle 12 Monate. Trigger: jede neu integrierte Tochtergesellschaft, jede neue regulatorisch-kritische Funktion (z. B. neue DORA-CIF), jede schwerwiegende BC-Aktivierung (Krisengrad gelb oder roeter), jede Vollscale-Uebung mit Soll-Ist-Abweichung > 30 %."'
         risk_assessment_methodology_bcm:
             v1:
                 title: 'Methodik der Risikoanalyse im BCM-Kontext'
@@ -464,7 +464,7 @@ policy:
                     *Dokumentenklasse: Methodik | Norm-Anker: ISO 22301:2019 Klausel 8.2.3, BSI 200-4 Kap. 5.3 | Verbunden mit ISO/IEC 27005:2022 (ISMS-RA) | Pruefintervall: 24 Monate*
 
                     ## 1. Zweck und Abgrenzung
-                    Diese Methodik beschreibt das Verfahren zur Risikoanalyse im BCM-Kontext gemaess ISO 22301:2019 Klausel 8.2.3 ("The organization shall implement and maintain a systematic risk assessment process") und BSI 200-4 (2023) Kap. 5.3. Die BCM-Risikoanalyse fokussiert auf **Risiken fuer die Verfuegbarkeit und Geschaeftskontinuitaet** und ergaenzt die ISMS-Risikoanalyse gemaess ISO/IEC 27005:2022. Sie ist nicht mit dieser identisch, kann jedoch deren Methodik referenzieren (siehe Abschnitt 9).
+                    Diese Methodik beschreibt das Verfahren zur Risikoanalyse im BCM-Kontext gemaess ISO 22301:2019 Klausel 8.2.3 ("The organization shall implement and maintain a systematic risk assessment process") und BSI 200-4 (2023) Kap. 5.3. Die BCM-Risikoanalyse fokussiert auf **Risiken für die Verfuegbarkeit und Geschaeftskontinuitaet** und ergaenzt die ISMS-Risikoanalyse gemaess ISO/IEC 27005:2022. Sie ist nicht mit dieser identisch, kann jedoch deren Methodik referenzieren (siehe Abschnitt 9).
 
                     ## 2. Verhaeltnis zur ISMS-Risikoanalyse
                     Die BCM-RA und die ISMS-RA verwenden teilweise dieselben Risiko-Eintraege, fokussieren jedoch unterschiedlich:
@@ -472,7 +472,7 @@ policy:
                     - **ISMS-RA** bewertet alle Schutzziele (Vertraulichkeit, Integritaet, Verfuegbarkeit) — gemaess ISO 27001 Klausel 6.1.2.
                     - **BCM-RA** bewertet vorrangig **Verfuegbarkeit** und schwerwiegende Stoerungs-Szenarien.
 
-                    Wo die Methodik der ISMS-RA fuer den BCM-Kontext geeignet ist, wird auf sie referenziert. Abweichungen werden in Abschnitt 9 dokumentiert ("Delta-Erklaerung").
+                    Wo die Methodik der ISMS-RA für den BCM-Kontext geeignet ist, wird auf sie referenziert. Abweichungen werden in Abschnitt 9 dokumentiert ("Delta-Erklaerung").
 
                     ## 3. BCM-spezifische Risikoquellen (Kategorien)
                     Die folgenden Risikoquellen sind im BCM-Kontext zwingend zu betrachten (BSI 200-4 Anhang C / ISO 22301 Anhang A informativ):
@@ -502,7 +502,7 @@ policy:
                     Bei extremen Risiken (z. B. Pandemie, klimaverstaerktes Hochwasser) ist die Skala explizit nach oben offen — Stufe 1 darf nicht zur Verharmlosung fuehren.
 
                     ## 5. Auswirkungs-Mapping zu BIA-Zeitfenstern
-                    Die Auswirkungs-Bewertung erfolgt zwingend ueber die in der BIA-Methodik definierten Zeitfenster (1h/4h/24h/72h/1w/1mo). Risiken werden bewertet in Bezug auf: "Welche Prozesse werden fuer welchen Zeitraum gestoert, und wie entwickelt sich die Auswirkung ueber die Zeit?" Diese Verknuepfung ist verbindlich; eine BCM-RA ohne BIA-Bezug ist methodisch unzulaessig.
+                    Die Auswirkungs-Bewertung erfolgt zwingend ueber die in der BIA-Methodik definierten Zeitfenster (1h/4h/24h/72h/1w/1mo). Risiken werden bewertet in Bezug auf: "Welche Prozesse werden für welchen Zeitraum gestoert, und wie entwickelt sich die Auswirkung ueber die Zeit?" Diese Verknuepfung ist verbindlich; eine BCM-RA ohne BIA-Bezug ist methodisch unzulaessig.
 
                     ## 6. Risiko-Bewertungskriterien
                     Ein BCM-Risiko gilt als **nicht akzeptabel**, wenn
@@ -525,7 +525,7 @@ policy:
                     BCM-Risiken werden im zentralen Risiko-Register mit Filter `bcm = true` gefuehrt. Pflichtfelder: Bezeichnung, Quelle, betroffene Prozesse, Wahrscheinlichkeit, Auswirkung pro Zeitfenster, abgeleitete Stoerungsdauer, Behandlungsoption, verantwortliche Person (Risk Owner), Termin der naechsten Bewertung. Schnittstelle zum Workflow-System ist eingerichtet (auto-Eskalation bei Risiken Stufe 4/5).
 
                     ## 9. Reuse der ISMS-Methodik (Delta-Erklaerung)
-                    Sofern die ISMS-RA-Methodik gemaess ISO 27005:2022 fuer den BCM-Kontext genutzt wird, gelten folgende Deltas verbindlich:
+                    Sofern die ISMS-RA-Methodik gemaess ISO 27005:2022 für den BCM-Kontext genutzt wird, gelten folgende Deltas verbindlich:
 
                     - Wahrscheinlichkeitsskala wird auf BCM-Linse angepasst (siehe Abschnitt 4);
                     - Auswirkungs-Bewertung folgt BIA-Zeitfenstern statt ISMS-Schadenshoehe;
@@ -547,13 +547,13 @@ policy:
                     Die Verzahnung wird im jaehrlichen DORA-RAG-Selbst-Assessment (Risk Assessment Governance) dokumentiert.
 
                     ## 10. Risiko-Bewertungs-Workshops
-                    Die BCM-Risikoanalyse wird mindestens einmal jaehrlich in einem dedizierten Workshop durchgefuehrt, der den Notfallbeauftragten {{ roles.bcm_officer.fullName }}, den ISB {{ roles.isb.fullName }}, die Krisenstabsleitung {{ roles.crisis_team_lead.fullName }}, ausgewaehlte Process Owner kritischer Prozesse und Compliance umfasst. Der Workshop nutzt strukturierte Methoden (Bow-Tie-Analyse, Szenario-Analyse, What-If) und arbeitet sowohl Top-Down (vom Bedrohungs-Katalog zu betroffenen Prozessen) als auch Bottom-Up (vom Prozess zu plausiblen Stoerungs-Szenarien). Ergebnisse werden im Risiko-Register dokumentiert; signifikante neue Risiken loesen Strategie-Reviews aus.
+                    Die BCM-Risikoanalyse wird mindestens einmal jaehrlich in einem dedizierten Workshop durchgeführt, der den Notfallbeauftragten {{ roles.bcm_officer.fullName }}, den ISB {{ roles.isb.fullName }}, die Krisenstabsleitung {{ roles.crisis_team_lead.fullName }}, ausgewaehlte Process Owner kritischer Prozesse und Compliance umfasst. Der Workshop nutzt strukturierte Methoden (Bow-Tie-Analyse, Szenario-Analyse, What-If) und arbeitet sowohl Top-Down (vom Bedrohungs-Katalog zu betroffenen Prozessen) als auch Bottom-Up (vom Prozess zu plausiblen Stoerungs-Szenarien). Ergebnisse werden im Risiko-Register dokumentiert; signifikante neue Risiken loesen Strategie-Reviews aus.
 
                     ## 11. Beruecksichtigung klimabezogener Risiken
                     Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 sowie ISO 22301-Praxisleitfaeden werden klimabezogene Risiken explizit als BCM-Risiko-Kategorie beruecksichtigt. Klimabezogene Risiken umfassen: zunehmende Haeufigkeit und Intensitaet extremer Wetterereignisse (Hitzewellen, Hochwasser, Sturm), laengerfristige Einfluesse auf Standort-Tauglichkeit (Anstieg Meeresspiegel, Veraenderung Niederschlagsmuster), regulatorische Folgen (z. B. Klima-Stresstests durch Aufsichtsbehoerden), reputative Risiken bei mangelnder Vorsorge. Die Bewertung folgt dem Time-Horizon-Ansatz: physische Risiken (kurzfristig 0-5 Jahre, mittelfristig 5-15 Jahre, langfristig > 15 Jahre) und transitorische Risiken (regulatorisch, technologisch).
 
                     ## 12. Berichts- und Eskalationswege
-                    BCM-Risiken werden quartalsweise im BCMS-Steuerkreis berichtet. Risiken auf Stufe 4 oder 5 werden unmittelbar an die Geschaeftsfuehrung ({{ approval.chain }}) eskaliert. Akzeptanzentscheidungen fuer Stufe-4-Risiken erfordern dokumentierte Geschaeftsfuehrungs-Genehmigung mit Befristung und Wieder-Bewertungs-Termin (max. 12 Monate). Risiken auf Stufe 5 sind grundsaetzlich nicht akzeptabel und erfordern unmittelbare Behandlung.
+                    BCM-Risiken werden quartalsweise im BCMS-Steuerkreis berichtet. Risiken auf Stufe 4 oder 5 werden unmittelbar an die Geschaeftsfuehrung ({{ approval.chain }}) eskaliert. Akzeptanzentscheidungen für Stufe-4-Risiken erfordern dokumentierte Geschaeftsfuehrungs-Genehmigung mit Befristung und Wieder-Bewertungs-Termin (max. 12 Monate). Risiken auf Stufe 5 sind grundsaetzlich nicht akzeptabel und erfordern unmittelbare Behandlung.
 
                     ---
                     *Diese Methodik wird durch den Notfallbeauftragten {{ roles.bcm_officer.fullName }} verantwortet und alle 24 Monate sowie bei wesentlichen Aenderungen geprueft.*
@@ -589,10 +589,10 @@ policy:
                 tailoring_field:
                     bcm_threat_catalogue:
                         label: 'Tenant-spezifischer BCM-Bedrohungskatalog'
-                        placeholder: 'Beispiel: "Erweiterung um (a) Finanzmarkt-Stress-Szenarien (Bank Run, Liquiditaetskrise) gemaess BaFin-Stresstest-Methodik; (b) FX-Schock-Szenarien fuer internationale Toechter; (c) DORA-relevante kritische ICT-Drittparteien-Konzentration; (d) sektorspezifische Cyber-Bedrohungen aus Threat-Intelligence-Feed."'
+                        placeholder: 'Beispiel: "Erweiterung um (a) Finanzmarkt-Stress-Szenarien (Bank Run, Liquiditaetskrise) gemaess BaFin-Stresstest-Methodik; (b) FX-Schock-Szenarien für internationale Toechter; (c) DORA-relevante kritische ICT-Drittparteien-Konzentration; (d) sektorspezifische Cyber-Bedrohungen aus Threat-Intelligence-Feed."'
                     bcm_likelihood_calibration:
                         label: 'Tenant-spezifische Wahrscheinlichkeits-Kalibrierung'
-                        placeholder: 'Beispiel: "Stufe 4 (Wahrscheinlich, 5J) wird angepasst auf 3 Jahre fuer Cyber-Risiken (basierend auf branchenweiter Vorfallrate). Stufe 3 (Moeglich, 10J) wird auf 7 Jahre fuer Hochwasser nach Klima-Risikoanalyse 2026 verkuerzt. Schluesselpersonen-Risiko hat Spezialskala anhand Bench-Strength."'
+                        placeholder: 'Beispiel: "Stufe 4 (Wahrscheinlich, 5J) wird angepasst auf 3 Jahre für Cyber-Risiken (basierend auf branchenweiter Vorfallrate). Stufe 3 (Moeglich, 10J) wird auf 7 Jahre für Hochwasser nach Klima-Risikoanalyse 2026 verkuerzt. Schluesselpersonen-Risiko hat Spezialskala anhand Bench-Strength."'
                     isms_reuse_decision:
                         label: 'Entscheidung Reuse ISMS-Methodik (ja/nein) inkl. Delta'
                         placeholder: 'Beispiel: "Reuse: ja. Delta gegenueber ISMS-RA gemaess ISO 27005: BCM-Likelihood-Skala statt ISMS-Frequenzmodell; BIA-Zeitfenster statt Schadenshoehen-Skala; erweiterte Behandlungsoption Versicherungstransfer; gemeinsames Risiko-Register mit BCM-Tag, gemeinsame Quartalspflege durch Notfallbeauftragten und ISB {{ roles.isb.fullName }}."'
@@ -605,7 +605,7 @@ policy:
                     *Dokumentenklasse: Programm-Dokument (uebergreifend) | Norm-Anker: ISO 22301:2019 Klausel 8.3 inkl. 8.3.2 + 8.3.3, BSI 200-4 Kap. 5.4 | Pruefintervall: {{ bcm.review_interval_months }} Monate; ausserordentlich nach BIA-Update*
 
                     ## 1. Zweck der Strategie
-                    Dieses Dokument beschreibt die strategischen Optionen und ausgewaehlten Loesungen, mit denen die {{ tenant.legal_name }} die Geschaeftskontinuitaet fuer in-scope Prozesse sicherstellt. Es erfuellt ISO 22301:2019 Klausel 8.3 ("The organization shall determine and select business continuity strategies and solutions") und ist fundiert auf den Ergebnissen von BIA (§2.2) und BCM-Risikoanalyse (§2.3). Die Strategie wird durch die oberste Leitung genehmigt; die operative Umsetzung verantworten Process Owner und IT-Leitung in Abstimmung mit dem Notfallbeauftragten {{ roles.bcm_officer.fullName }}.
+                    Dieses Dokument beschreibt die strategischen Optionen und ausgewaehlten Loesungen, mit denen die {{ tenant.legal_name }} die Geschaeftskontinuitaet für in-scope Prozesse sicherstellt. Es erfuellt ISO 22301:2019 Klausel 8.3 ("The organization shall determine and select business continuity strategies and solutions") und ist fundiert auf den Ergebnissen von BIA (§2.2) und BCM-Risikoanalyse (§2.3). Die Strategie wird durch die oberste Leitung genehmigt; die operative Umsetzung verantworten Process Owner und IT-Leitung in Abstimmung mit dem Notfallbeauftragten {{ roles.bcm_officer.fullName }}.
 
                     ## 2. Strategische Optionen je Kritikalitaets-Tier
                     Die {{ tenant.legal_name }} nutzt eine Tier-basierte Strategie:
@@ -616,7 +616,7 @@ policy:
                     - **Tier 4 — Aufschiebbare Prozesse (RTO > 72 Stunden)** — Dokumentation und Akzeptanz; Wiederherstellung im Rahmen normaler Wiederanlauf-Verfahren.
 
                     ## 3. RTO vs. RTC (kritische Unterscheidung)
-                    **RTO** (Recovery Time Objective) ist die geforderte Wiederanlauf-Zeit. **RTC** (Recovery Time Capability) ist die tatsaechlich erreichbare Wiederanlauf-Faehigkeit, gemessen ueber Uebungen und reale Aktivierungen. **Die Strategie wird gemessen an RTC, nicht RTO.** Wenn RTC > RTO, liegt eine Strategie-Luecke vor, die durch Investitionen, Re-Architektur oder Tier-Umstufung geschlossen werden muss. Die Differenz wird im jaehrlichen Strategie-Review dokumentiert und in die Managementbewertung gemaess Klausel 9.3 eingebracht.
+                    **RTO** (Recovery Time Objective) ist die geforderte Wiederanlauf-Zeit. **RTC** (Recovery Time Capability) ist die tatsächlich erreichbare Wiederanlauf-Faehigkeit, gemessen ueber Uebungen und reale Aktivierungen. **Die Strategie wird gemessen an RTC, nicht RTO.** Wenn RTC > RTO, liegt eine Strategie-Luecke vor, die durch Investitionen, Re-Architektur oder Tier-Umstufung geschlossen werden muss. Die Differenz wird im jaehrlichen Strategie-Review dokumentiert und in die Managementbewertung gemaess Klausel 9.3 eingebracht.
 
                     ## 4. Ressourcen-Kategorien (ISO 22301 Cl. 8.3.3 a-g)
                     Die Strategie adressiert verbindlich alle Ressourcen-Kategorien:
@@ -643,7 +643,7 @@ policy:
                     Liquiditaetsreserve gemaess Treasury-Richtlinie; Notfall-Zahlungsverkehrs-Verfahren; Versicherungsleistungen (Betriebsunterbrechungs-Versicherung) als ergaenzender Schutz.
 
                     ### 4.8 Partner und Lieferanten
-                    Lieferanten-Diversifikation fuer Tier-1-Abhaengigkeiten; vertragliche Continuity-Klauseln gemaess A.5.20 ISO 27001; Exit-Strategien fuer kritische Drittparteien (insbesondere DORA Art. 28 fuer Finanzunternehmen).
+                    Lieferanten-Diversifikation für Tier-1-Abhaengigkeiten; vertragliche Continuity-Klauseln gemaess A.5.20 ISO 27001; Exit-Strategien für kritische Drittparteien (insbesondere DORA Art. 28 für Finanzunternehmen).
 
                     ## 5. Kosten-Nutzen-Bewertung pro Option
                     Jede Strategie-Option wird mit ihren Kosten (Investitionen, laufenden Kosten, Versicherungspraemien) und Nutzen (vermiedene Schaeden, regulatorische Compliance, Reputationsschutz) bewertet. Die Bewertung wird zur Managementbewertung gemaess Klausel 9.3 vorgelegt; Investitionsentscheidungen erfolgen durch die oberste Leitung ({{ approval.chain }}). Akzeptanz-Schwelle: Investitionen zur Schliessung von RTC-Luecken bei Tier-1-Risiken sind regelmaessig zu genehmigen.
@@ -652,7 +652,7 @@ policy:
                     Pro in-scope Geschaeftsprozess wird die ausgewaehlte Strategie in einem Strategie-Register dokumentiert. Pflichtangaben: Prozess-Bezeichnung, Tier, ausgewaehlte Strategie-Option, geplante MBCO, geschaetzter RTO/RTC-Wert, beteiligte Standorte und IT-Systeme, verantwortlicher Process Owner. Die Strategie wird im jeweiligen BC-Plan (§2.5) referenziert.
 
                     ## 7. Verbindung zur Risikobehandlung
-                    Die ausgewaehlten Strategien sind die wichtigsten Massnahmen zur Mitigation der in der BCM-RA identifizierten Risiken. Die Verknuepfung erfolgt im Risiko-Register: jeder Risiko-Eintrag verweist auf die zugehoerige Strategie-Massnahme und die zugehoerigen BC-Plaene. Bei nicht akzeptablen Restrisiken werden zusaetzliche Massnahmen (Versicherungen, strategische Alternativen) bewertet.
+                    Die ausgewaehlten Strategien sind die wichtigsten Massnahmen zur Mitigation der in der BCM-RA identifizierten Risiken. Die Verknuepfung erfolgt im Risiko-Register: jeder Risiko-Eintrag verweist auf die zugehoerige Strategie-Massnahme und die zugehoerigen BC-Plaene. Bei nicht akzeptablen Restrisiken werden zusätzliche Massnahmen (Versicherungen, strategische Alternativen) bewertet.
 
                     ## 8. Strategie-Pruefung und Aenderung
                     Die Strategie wird mindestens jaehrlich geprueft, ausserordentlich bei jedem BIA-Update, bei wesentlichen architektonischen Aenderungen (z. B. Cloud-Migrationsphasen) sowie bei wesentlichen RTC-Soll-Ist-Abweichungen aus Uebungen. Die Pruefung verantwortet der Notfallbeauftragte {{ roles.bcm_officer.fullName }}; die Genehmigung erfolgt durch {{ approval.chain }}.
@@ -663,13 +663,13 @@ policy:
                     - **Annahme 1**: Die BIA-Ergebnisse (insbesondere RTO/MTPD pro Prozess) sind aktuell und valide; bei abgelaufener BIA wird die Strategie nur provisorisch betrieben.
                     - **Annahme 2**: Die identifizierten kritischen Drittparteien (insbesondere Cloud-Provider) bleiben verfuegbar; die DORA-Art.-28-Exit-Strategien sind dokumentiert und mind. einmal pro Vertragslaufzeit geuebt.
                     - **Annahme 3**: Die Schluesselpersonen-Verfuegbarkeit (insbesondere Krisenstabsleitung {{ roles.crisis_team_lead.fullName }} und Stellvertretung) ist durch Cross-Training abgesichert.
-                    - **Annahme 4**: Der sekundaere Standort {{ secondary_site_label }} ist ueber eine geografisch unabhaengige Strom- und Kommunikationsversorgung erreichbar.
+                    - **Annahme 4**: Der sekundaere Standort {{ secondary_site_label }} ist ueber eine geografisch unabhängige Strom- und Kommunikationsversorgung erreichbar.
                     - **Annahme 5**: Die Versicherungsleistungen (Betriebsunterbrechung, Cyber) sind aktuell und decken die identifizierten Schadens-Szenarien.
 
                     Werden Annahmen waehrend des jaehrlichen Reviews als nicht mehr gueltig identifiziert, wird die zugehoerige Strategie-Komponente angepasst und die Investitions-Roadmap ueberprueft.
 
                     ## 9. Konzern- und Drittparteien-Aspekte
-                    In Konzern-Strukturen ist die Strategie mit Konzern-BCM-Vorgaben abzustimmen; lokale Strategien duerfen Konzern-Mindeststandards nicht unterschreiten, koennen jedoch ueber sie hinausgehen (z. B. strengere RTO-Ziele fuer regulatorisch besonders sensitive Tochtergesellschaften). Drittparteien-Aspekte: kritische Lieferanten und Dienstleister werden in einem dedizierten Drittparteien-Continuity-Register gefuehrt; die Strategien beruecksichtigen Lieferanten-Konzentrations-Risiken (insbesondere fuer Cloud-Provider und outgesourcte ICT-Funktionen). DORA Art. 28 (fuer Finanzunternehmen) verlangt explizite Exit-Strategien fuer kritische ICT-Drittparteien-Vereinbarungen mit dokumentiertem Ausstiegspfad und periodisch geuebten Migrationsfaehigkeiten.
+                    In Konzern-Strukturen ist die Strategie mit Konzern-BCM-Vorgaben abzustimmen; lokale Strategien duerfen Konzern-Mindeststandards nicht unterschreiten, koennen jedoch ueber sie hinausgehen (z. B. strengere RTO-Ziele für regulatorisch besonders sensitive Tochtergesellschaften). Drittparteien-Aspekte: kritische Lieferanten und Dienstleister werden in einem dedizierten Drittparteien-Continuity-Register gefuehrt; die Strategien beruecksichtigen Lieferanten-Konzentrations-Risiken (insbesondere für Cloud-Provider und outgesourcte ICT-Funktionen). DORA Art. 28 (fuer Finanzunternehmen) verlangt explizite Exit-Strategien für kritische ICT-Drittparteien-Vereinbarungen mit dokumentiertem Ausstiegspfad und periodisch geuebten Migrationsfaehigkeiten.
 
                     ## 10. Investitions- und Budget-Verzahnung
                     Strategie-Investitionen sind mit der Geschaeftsplanung verzahnt: BCM-Investitionsbedarf wird im Jahres-Budget-Prozess identifiziert, durch den Notfallbeauftragten konsolidiert, durch Compliance auf regulatorische Pflichten geprueft und in das Investitionsbudget des Folgejahres eingebracht. Mehrjaehrige Roadmaps (z. B. Datacenter-Konsolidierung, Cloud-Failover-Aufbau) werden im 3-Jahres-BCMS-Plan dokumentiert. Die Geschaeftsfuehrung erhaelt jaehrlich einen "BCMS-Investment-Outlook"-Bericht zur priorisierten Investitionsentscheidung.
@@ -677,7 +677,7 @@ policy:
                     ## 10a. Schnittstelle zur ISMS-Risiko-Behandlung (ISO 27001 Cl. 6.1.3)
                     Die BC-Strategie ist die wichtigste Sammlung von Massnahmen zur Behandlung der ISMS-Risiken im Verfuegbarkeits-Schutzziel. Die Schnittstelle ist:
 
-                    - jede in der ISMS-RA mit Verfuegbarkeitsbezug identifizierte Massnahme wird mit einer Strategie-Komponente verknuepft (z. B. ISMS-Massnahme "redundante WAN-Verbindung" → Strategie-Komponente "Tier-1 Hot-Standby Network");
+                    - jede in der ISMS-RA mit Verfuegbarkeitsbezug identifizierte Massnahme wird mit einer Strategie-Komponente verknüpft (z. B. ISMS-Massnahme "redundante WAN-Verbindung" → Strategie-Komponente "Tier-1 Hot-Standby Network");
                     - Kosten und Wirksamkeit der Strategie-Komponenten fliessen in die ISMS-SoA-Begruendung ein;
                     - bei Aenderung der Strategie wird die zugehoerige ISMS-RA-Massnahme geprueft und ggf. aktualisiert;
                     - die ISMS-Risikobehandlungs-Plaene und der BC-Strategie-Register werden quartalsweise abgeglichen.
@@ -687,7 +687,7 @@ policy:
 
                     - **RTO-Erfuellungsgrad** — Anteil der Tier-1-/Tier-2-Prozesse, die in Uebungen oder realen Aktivierungen ihr RTO eingehalten haben (Ziel: ≥ 95 % je Tier);
                     - **RPO-Erfuellungsgrad** — Anteil der Prozesse, deren RPO in Uebungen oder Realaktivierungen eingehalten wurde (Ziel: ≥ 98 % je Tier);
-                    - **Strategie-Test-Abdeckung** — Anteil der Strategie-Komponenten, die in den letzten 12 Monaten durch Test/Uebung verifiziert wurden (Ziel: 100 % fuer Tier 1, ≥ 75 % fuer Tier 2);
+                    - **Strategie-Test-Abdeckung** — Anteil der Strategie-Komponenten, die in den letzten 12 Monaten durch Test/Uebung verifiziert wurden (Ziel: 100 % für Tier 1, ≥ 75 % für Tier 2);
                     - **DORA-CIF-Recovery-Bereitschaft** (sofern anwendbar) — Anzahl kritischer oder wichtiger Funktionen mit dokumentierter und geuebter Recovery-Faehigkeit;
                     - **Drittparteien-Exit-Bereitschaft** (DORA Art. 28) — Anteil kritischer ICT-Drittparteien mit aktueller, im letzten Jahr geuebter Exit-Strategie.
 
@@ -710,11 +710,11 @@ policy:
                     rto_vs_rtc:
                         title: 'RTO vs. RTC'
                         body: |-
-                            RTO = gefordert; RTC = tatsaechlich erreichbar. Die Strategie wird an RTC gemessen. RTC > RTO ist Strategie-Luecke; jaehrliches Strategie-Review bringt Luecken in Managementbewertung (Cl. 9.3).
+                            RTO = gefordert; RTC = tatsächlich erreichbar. Die Strategie wird an RTC gemessen. RTC > RTO ist Strategie-Luecke; jaehrliches Strategie-Review bringt Luecken in Managementbewertung (Cl. 9.3).
                     resources:
                         title: 'Ressourcen-Kategorien (Cl. 8.3.3 a-g)'
                         body: |-
-                            Personal, Information, Gebaeude/Versorgung, Anlagen, ICT, Transport, Finanzen, Partner/Lieferanten. Lieferanten-Diversifikation fuer Tier 1; DORA-Art.-28-Exit-Strategien fuer kritische Finanz-ICT-Drittparteien.
+                            Personal, Information, Gebaeude/Versorgung, Anlagen, ICT, Transport, Finanzen, Partner/Lieferanten. Lieferanten-Diversifikation für Tier 1; DORA-Art.-28-Exit-Strategien für kritische Finanz-ICT-Drittparteien.
                     cost_benefit:
                         title: 'Kosten-Nutzen-Bewertung'
                         body: |-
@@ -726,7 +726,7 @@ policy:
                     risk_link:
                         title: 'Risiko-Behandlungs-Link'
                         body: |-
-                            Strategien als Hauptmassnahme der Risikobehandlung. Risiko-Register verweist je Risiko auf Strategie + BC-Plaene. Restrisiken werden mit zusaetzlichen Massnahmen (Versicherung, strategische Alternative) abgedeckt.
+                            Strategien als Hauptmassnahme der Risikobehandlung. Risiko-Register verweist je Risiko auf Strategie + BC-Plaene. Restrisiken werden mit zusätzlichen Massnahmen (Versicherung, strategische Alternative) abgedeckt.
                     review:
                         title: 'Strategie-Pruefung'
                         body: |-
@@ -737,10 +737,10 @@ policy:
                         placeholder: 'Beispiel: "Tier 1: Online-Banking → Active-Active-Cloud (Region eu-central-1 + eu-west-1) mit RPO 0; Tier 1: Kartenautorisierung → Hot-Standby On-Premise + DR-Standort (synchrone Replikation, RPO ≤ 5 min); Tier 2: Filialbetrieb → Warm-Standby (Coworking-Standort vertraglich gesichert); Tier 3: Reporting → Cold-Standby + Excel-Workaround mit dokumentierten Vorlagen."'
                     rtc_gap_status:
                         label: 'Aktuelle RTC-Soll-Ist-Bewertung und Investitions-Roadmap'
-                        placeholder: 'Beispiel: "Tier-1-Online-Banking: RTO 4h vs. RTC aus letzter Uebung 6h → Luecke 2h, Investition Active-Active-Architektur 2026 (1,5 Mio. EUR genehmigt). Tier-2-Filialbetrieb: RTO 24h vs. RTC 30h → Coworking-Vertrag wird auf 6 zusaetzliche Standorte erweitert (Q3/2026). Tier-3-Prozesse alle innerhalb RTC-Toleranz."'
+                        placeholder: 'Beispiel: "Tier-1-Online-Banking: RTO 4h vs. RTC aus letzter Uebung 6h → Luecke 2h, Investition Active-Active-Architektur 2026 (1,5 Mio. EUR genehmigt). Tier-2-Filialbetrieb: RTO 24h vs. RTC 30h → Coworking-Vertrag wird auf 6 zusätzliche Standorte erweitert (Q3/2026). Tier-3-Prozesse alle innerhalb RTC-Toleranz."'
                     secondary_site_concept:
                         label: 'Ausweich-Standort-Konzept'
-                        placeholder: 'Beispiel: "Primaerer Hauptstandort: Frankfurt; Ausweich-Standort: Eschborn (15 km Entfernung, eigenes Stromnetz, getrennte Telekom-Anbindung). Mutual-Aid-Vereinbarung mit Schwester-Tochter in Hamburg fuer extreme Szenarien (z. B. regionaler Strom-Ausfall Rhein-Main). Cloud-Failover via {{ secondary_site_label }} fuer kundenseitig-kritische digitale Services."'
+                        placeholder: 'Beispiel: "Primaerer Hauptstandort: Frankfurt; Ausweich-Standort: Eschborn (15 km Entfernung, eigenes Stromnetz, getrennte Telekom-Anbindung). Mutual-Aid-Vereinbarung mit Schwester-Tochter in Hamburg für extreme Szenarien (z. B. regionaler Strom-Ausfall Rhein-Main). Cloud-Failover via {{ secondary_site_label }} für kundenseitig-kritische digitale Services."'
         bc_plans:
             v1:
                 title: 'BCM-Plan-Vorlage und -Standard / BC Plan Template Standard'
@@ -769,7 +769,7 @@ policy:
                     Klare Bedingungen, unter denen der Plan aktiviert wird (Trigger-Liste). Verweis auf das Verfahren zur Notfallreaktion (§2.6) — die Aktivierungsentscheidung erfolgt durch die im Reaktionsverfahren benannte Rolle (typischerweise Krisenstabsleitung {{ roles.crisis_team_lead.fullName }} oder Geschaeftsfuehrung {{ approval.chain }}).
 
                     ### 3.3 Rollen und Kontaktliste
-                    Verbindliche Liste aller fuer die Plan-Ausfuehrung benoetigten Rollen mit Namen, Position, Telefon (Buero, Mobil, Notfall), E-Mail, Stellvertretung. Verweis auf den Krisenstab (§2.7). Aktualisierungsverpflichtung: Pruefung mindestens halbjaehrlich, ausserordentlich bei Personalwechsel.
+                    Verbindliche Liste aller für die Plan-Ausfuehrung benoetigten Rollen mit Namen, Position, Telefon (Buero, Mobil, Notfall), E-Mail, Stellvertretung. Verweis auf den Krisenstab (§2.7). Aktualisierungsverpflichtung: Pruefung mindestens halbjaehrlich, ausserordentlich bei Personalwechsel.
 
                     ### 3.4 Reihenfolge der Wiederanlauf-Aktionen
                     Detaillierte, schrittweise Anleitung zur Wiederherstellung der Prozessfaehigkeit innerhalb des RTO. Format: Schritt-Nummer, Beschreibung, Verantwortliche Person, geschaetzte Dauer, Vorbedingungen, Erfolgskriterium. Reihenfolge folgt der in der BIA dokumentierten Abhaengigkeitsanalyse (kritische Abhaengigkeiten zuerst).
@@ -781,21 +781,21 @@ policy:
                     Liste aller benoetigten internen Liefer- und Empfaengerprozesse, externer Lieferanten und Dienstleister mit deren BC-Vereinbarungen. Verweis auf Lieferanten-Register und SLAs.
 
                     ### 3.7 Kommunikationsvorlagen
-                    Vorbereitete Texte fuer interne Kommunikation (Beschaeftigte, Geschaeftsfuehrung), Kunden, Aufsichtsbehoerden und Medien. Verweis auf das Verfahren zur Notfallkommunikation (§2.6). Sprachversionen: mindestens Deutsch und Englisch fuer kunden- und behoerdenrelevante Texte.
+                    Vorbereitete Texte für interne Kommunikation (Beschaeftigte, Geschaeftsfuehrung), Kunden, Aufsichtsbehoerden und Medien. Verweis auf das Verfahren zur Notfallkommunikation (§2.6). Sprachversionen: mindestens Deutsch und Englisch für kunden- und behoerdenrelevante Texte.
 
                     ### 3.8 Stand-Down-Kriterien
                     Klare Bedingungen, unter denen der Plan deaktiviert und in den Normalbetrieb zurueckgekehrt wird. Verantwortliche Entscheidungsrolle, Dokumentationspflicht (BC-Plan-Aktivierungs-Log), Lessons-Learned-Trigger.
 
                     ### 3.9 Verweis auf Wiederanlauf-/Wiederherstellungs-Plaene
-                    Verweis auf zugehoerige Wiederanlauf- und Wiederherstellungs-Plaene gemaess §2.8 (insbesondere fuer ICT-Komponenten).
+                    Verweis auf zugehoerige Wiederanlauf- und Wiederherstellungs-Plaene gemaess §2.8 (insbesondere für ICT-Komponenten).
 
                     ## 4. Klassifikation und Aufbewahrung
-                    BC-Plaene gelten als vertraulich (default-Klassifikation: Internal-Confidential gemaess BSI 200-4 Kap. 6). Verteilung gemaess Need-to-know; Aufbewahrung gemaess Aufbewahrungs-Richtlinie. Versionsverwaltung verbindlich; alte Versionen werden revisionssicher fuer mindestens 3 Jahre aufbewahrt.
+                    BC-Plaene gelten als vertraulich (default-Klassifikation: Internal-Confidential gemaess BSI 200-4 Kap. 6). Verteilung gemaess Need-to-know; Aufbewahrung gemaess Aufbewahrungs-Richtlinie. Versionsverwaltung verbindlich; alte Versionen werden revisionssicher für mindestens 3 Jahre aufbewahrt.
 
                     ## 5. Erstellung, Pruefung, Genehmigung
                     - **Erstellung**: durch BC-Plan-Eigner in Abstimmung mit Process Owner und Notfallbeauftragten {{ roles.bcm_officer.fullName }}.
-                    - **Pruefung**: durch unabhaengigen Reviewer (typischerweise zweiter Process Owner oder Compliance) auf Vollstaendigkeit, Realismus, Konsistenz mit BIA und Strategie.
-                    - **Genehmigung**: durch Process Owner und Notfallbeauftragten; bei Tier-1-Prozessen zusaetzlich durch Krisenstabsleitung {{ roles.crisis_team_lead.fullName }}.
+                    - **Pruefung**: durch unabhängigen Reviewer (typischerweise zweiter Process Owner oder Compliance) auf Vollstaendigkeit, Realismus, Konsistenz mit BIA und Strategie.
+                    - **Genehmigung**: durch Process Owner und Notfallbeauftragten; bei Tier-1-Prozessen zusätzlich durch Krisenstabsleitung {{ roles.crisis_team_lead.fullName }}.
                     - **Pruefintervall**: jaehrlich; ausserordentlich bei Prozessaenderung, Reorganisation, Aenderung der Abhaengigkeiten.
 
                     ## 6. Verknuepfung mit Uebungen
@@ -820,26 +820,26 @@ policy:
                     - **Q1**: Pruefung Kontaktdaten (Beschaeftigte, Lieferanten, Behoerden), Aktualisierung Kontaktlisten;
                     - **Q2**: Tabletop-Uebung des Plans gemaess Uebungs-Programm;
                     - **Q3**: Pruefung der Wiederanlauf-Reihenfolge gegen aktuelles Asset-Register und BIA-Ergebnisse;
-                    - **Q4**: Plan-Review, Lessons-Learned-Einarbeitung, Versionserhebung, Genehmigung fuer Folgejahr.
+                    - **Q4**: Plan-Review, Lessons-Learned-Einarbeitung, Versionserhebung, Genehmigung für Folgejahr.
 
                     Die Quartals-Termine werden im BCMS-Werkzeug als Tasks angelegt; verspaetete Tasks werden nach 14 Tagen an den Notfallbeauftragten eskaliert; nach 60 Tagen Verzug an die Geschaeftsfuehrung ({{ approval.chain }}).
 
                     ## 9. Plan-Aktivierungs-Schnittstellen
-                    Die Aktivierung eines BC-Plans loest folgende Workflows aus:
+                    Die Aktivierung eines BC-Plans löst folgende Workflows aus:
 
                     - automatische Benachrichtigung der Krisenstabsleitung {{ roles.crisis_team_lead.fullName }} (auch wenn nicht-Krise);
                     - Eintrag in das Aktivierungs-Log mit Zeitstempel und Anlass;
                     - Aktivierung der Kommunikationsvorlagen aus §3.7;
                     - Stellvertreter-Information ueber Out-of-Band-Kanaele (vgl. §2.6 Verfahren zur Notfallreaktion);
-                    - bei Tier-1-Aktivierung zusaetzliche unmittelbare Information der Geschaeftsfuehrung ({{ approval.chain }}).
+                    - bei Tier-1-Aktivierung zusätzliche unmittelbare Information der Geschaeftsfuehrung ({{ approval.chain }}).
 
                     ## 9a. Schulung und Kompetenz der BC-Plan-Eigner
-                    Jeder BC-Plan-Eigner durchlaeuft vor erstmaliger Plan-Verantwortung eine Schulung von mindestens 2 Stunden, die folgende Inhalte abdeckt: BCMS-Grundlagen, Plan-Struktur gemaess dieser Vorlage, Aktivierungs-Verfahren, Schnittstelle zur Krisenstabsleitung, Dokumentationspflichten. Aktualisierungs-Schulungen erfolgen jaehrlich (mind. 1 Stunde) sowie bei wesentlichen Aenderungen der Vorlage. Die Schulung wird durch den Notfallbeauftragten {{ roles.bcm_officer.fullName }} oder einen benannten Stellvertreter durchgefuehrt; Teilnahme wird im Personalentwicklungs-System dokumentiert.
+                    Jeder BC-Plan-Eigner durchlaeuft vor erstmaliger Plan-Verantwortung eine Schulung von mindestens 2 Stunden, die folgende Inhalte abdeckt: BCMS-Grundlagen, Plan-Struktur gemaess dieser Vorlage, Aktivierungs-Verfahren, Schnittstelle zur Krisenstabsleitung, Dokumentationspflichten. Aktualisierungs-Schulungen erfolgen jaehrlich (mind. 1 Stunde) sowie bei wesentlichen Aenderungen der Vorlage. Die Schulung wird durch den Notfallbeauftragten {{ roles.bcm_officer.fullName }} oder einen benannten Stellvertreter durchgeführt; Teilnahme wird im Personalentwicklungs-System dokumentiert.
 
                     ## 9b. Schnittstellen zu Workflows und Auto-Eskalationen
-                    Das BCMS-Werkzeug verknuepft den BC-Plan-Lebenszyklus mit dem Workflow-System der {{ tenant.legal_name }}:
+                    Das BCMS-Werkzeug verknüpft den BC-Plan-Lebenszyklus mit dem Workflow-System der {{ tenant.legal_name }}:
 
-                    - bei Erstellung eines Plans wird eine Genehmigungs-Workflow-Instanz erzeugt (Reviewer, dann Process Owner, dann Notfallbeauftragter, bei Tier 1 zusaetzlich Krisenstabsleitung);
+                    - bei Erstellung eines Plans wird eine Genehmigungs-Workflow-Instanz erzeugt (Reviewer, dann Process Owner, dann Notfallbeauftragter, bei Tier 1 zusätzlich Krisenstabsleitung);
                     - bei jaehrlicher Pruefung wird automatisch ein Pruefungs-Task generiert; nach Abschluss erfolgt die erneute Genehmigung;
                     - bei Aktivierung eines Plans erzeugt das System automatisch ein Aktivierungs-Workflow-Element mit Zeitachsen-Protokoll;
                     - bei Stand-Down wird eine Lessons-Learned-Workflow-Instanz erzeugt mit Soll-Termin innerhalb von 30 Tagen.
@@ -855,7 +855,7 @@ policy:
                     purpose:
                         title: 'Zweck und Geltungsbereich'
                         body: |-
-                            Verbindliche Struktur fuer alle BC-Plaene gemaess ISO 22301 Cl. 8.4.4 und BSI 200-4 Kap. 6. Pro Prozess ein Plan; Vorlage ist Mindeststandard.
+                            Verbindliche Struktur für alle BC-Plaene gemaess ISO 22301 Cl. 8.4.4 und BSI 200-4 Kap. 6. Pro Prozess ein Plan; Vorlage ist Mindeststandard.
                     plan_types:
                         title: 'BSI-Drei-Plan-Modell vs. ISO-Einzel-Plan'
                         body: |-
@@ -875,7 +875,7 @@ policy:
                     communication:
                         title: 'Kommunikationsvorlagen'
                         body: |-
-                            Vorbereitete Texte fuer Beschaeftigte, Kunden, Aufsicht, Medien. Mindestens DE/EN. Verweis auf Verfahren §2.6.
+                            Vorbereitete Texte für Beschaeftigte, Kunden, Aufsicht, Medien. Mindestens DE/EN. Verweis auf Verfahren §2.6.
                     standdown:
                         title: 'Stand-Down und Verweise'
                         body: |-
@@ -887,13 +887,13 @@ policy:
                 tailoring_field:
                     plan_classification:
                         label: 'Klassifikation und Verteiler-Regel'
-                        placeholder: 'Beispiel: "BC-Plaene fuer Tier 1: Klassifikation `Vertraulich` gemaess Klassifikations-Richtlinie; Verteilung nur an Process Owner, Stellvertretung, BCM-Officer, IT-Lead. Tier 2/3: `Internal-Confidential`. Verbreitung papier+verschluesselter PDF-Speicher; jaehrliche Empfangs-Bestaetigung."'
+                        placeholder: 'Beispiel: "BC-Plaene für Tier 1: Klassifikation `Vertraulich` gemaess Klassifikations-Richtlinie; Verteilung nur an Process Owner, Stellvertretung, BCM-Officer, IT-Lead. Tier 2/3: `Internal-Confidential`. Verbreitung papier+verschluesselter PDF-Speicher; jaehrliche Empfangs-Bestaetigung."'
                     bcplan_creation_trigger:
                         label: 'Trigger zur BC-Plan-Erzeugung pro Prozess'
-                        placeholder: 'Beispiel: "Auto-Erzeugung beim Policy-Wizard-Abschluss fuer alle Prozesse mit Kritikalitaet ≥ mittel; manuelle Erzeugung zusaetzlich bei (a) neuen kritischen Geschaeftsprozessen aus M&A, (b) regulatorisch geforderten Prozessen (z. B. neue DORA-CIF), (c) Process-Owner-Anforderung mit Genehmigung Notfallbeauftragter."'
+                        placeholder: 'Beispiel: "Auto-Erzeugung beim Policy-Wizard-Abschluss für alle Prozesse mit Kritikalitaet ≥ mittel; manuelle Erzeugung zusätzlich bei (a) neuen kritischen Geschaeftsprozessen aus M&A, (b) regulatorisch geforderten Prozessen (z. B. neue DORA-CIF), (c) Process-Owner-Anforderung mit Genehmigung Notfallbeauftragter."'
                     review_cadence_per_tier:
                         label: 'Pruef- und Uebungs-Kadenz pro Tier'
-                        placeholder: 'Beispiel: "Tier 1: Pruefung halbjaehrlich (Mai/November), Uebung jaehrlich (Vollscale alle 24 Monate), zusaetzliche Tabletop-Tests Q1; Tier 2: Pruefung jaehrlich, Tabletop alle 18 Monate; Tier 3: Pruefung alle 24 Monate, dokumentierter Walkthrough alle 36 Monate; Tier 4: Pruefung 36 Monate, kein Uebungspflicht."'
+                        placeholder: 'Beispiel: "Tier 1: Pruefung halbjaehrlich (Mai/November), Uebung jaehrlich (Vollscale alle 24 Monate), zusätzliche Tabletop-Tests Q1; Tier 2: Pruefung jaehrlich, Tabletop alle 18 Monate; Tier 3: Pruefung alle 24 Monate, dokumentierter Walkthrough alle 36 Monate; Tier 4: Pruefung 36 Monate, kein Uebungspflicht."'
         incident_response_communication:
             v1:
                 title: 'Verfahren zur Notfallreaktion und Kommunikation / BCM Incident Response & Communication Procedure'
@@ -903,12 +903,12 @@ policy:
                     *Dokumentenklasse: Verfahren | Norm-Anker: ISO 22301:2019 Klausel 8.4.3 (insb. 8.4.3.2), BSI 200-4 Kap. 5.5 | Cross-Reference ISO/IEC 27001:2022 A.5.24-A.5.28 | Pruefintervall: {{ bcm.review_interval_months }} Monate; Trigger bei jeder Aktivierung*
 
                     ## 1. Zweck und Geltungsbereich
-                    Dieses Verfahren regelt verbindlich, wie die {{ tenant.legal_name }} auf Stoerungen, Notfaelle und Krisen reagiert und wie betroffene interne und externe Stakeholder informiert werden. Es erfuellt die Anforderungen von ISO 22301:2019 Klausel 8.4.3.2 ("The organization shall establish, implement and maintain procedures for ... communications") und BSI 200-4 (2023) Kapitel 5.5. Es gilt fuer alle Beschaeftigten, Auftragnehmer und kritischen Drittparteien.
+                    Dieses Verfahren regelt verbindlich, wie die {{ tenant.legal_name }} auf Stoerungen, Notfaelle und Krisen reagiert und wie betroffene interne und externe Stakeholder informiert werden. Es erfuellt die Anforderungen von ISO 22301:2019 Klausel 8.4.3.2 ("The organization shall establish, implement and maintain procedures for ... communications") und BSI 200-4 (2023) Kapitel 5.5. Es gilt für alle Beschaeftigten, Auftragnehmer und kritischen Drittparteien.
 
                     ## 2. Erkennung und Alarmierung
                     Stoerungen werden ueber folgende Kanaele erkannt:
 
-                    - **24/7-NOC** und SIEM-Plattform fuer technische Stoerungen;
+                    - **24/7-NOC** und SIEM-Plattform für technische Stoerungen;
                     - **Mitarbeitende** ueber zentrale Hotline (mit dokumentierter Rufnummer) und Notfall-E-Mail-Adresse;
                     - **Externes Monitoring** (z. B. Synthetic-Checks, Web-Performance-Monitoring);
                     - **Kunden- und Drittpartei-Meldungen** ueber Service-Desk und Account-Management;
@@ -939,7 +939,7 @@ policy:
 
                     - **Krisenstabsleitung** ({{ roles.crisis_team_lead.fullName }}) — bei Krise oder Notfall;
                     - **Geschaeftsfuehrung** ({{ approval.chain }}) — im Vertretungsfall oder bei Sondersituationen;
-                    - **Notfallbeauftragter** ({{ roles.bcm_officer.fullName }}) — fuer Notfaelle ohne Krisenstabs-Aktivierung.
+                    - **Notfallbeauftragter** ({{ roles.bcm_officer.fullName }}) — für Notfaelle ohne Krisenstabs-Aktivierung.
 
                     Aktivierungsentscheidung wird auditierbar protokolliert (Zeitpunkt, Anlass, betroffene BC-Plaene, Entscheider).
 
@@ -959,11 +959,11 @@ policy:
                     ## 7. Regulatorische Meldepflichten
                     Folgende Meldepflichten sind je nach Anwendbarkeit zu beachten:
 
-                    - **EU-DORA Art. 19 + RTS** (fuer Finanzunternehmen): Major-ICT-Incident-Meldung mit Stufen Initial (innerhalb 4 Stunden nach Klassifikation), Intermediate (innerhalb 24-72 Stunden), Final (innerhalb 1 Monat). Empfaenger: zustaendige Aufsichtsbehoerde (BaFin / Bundesbank fuer Deutschland).
+                    - **EU-DORA Art. 19 + RTS** (fuer Finanzunternehmen): Major-ICT-Incident-Meldung mit Stufen Initial (innerhalb 4 Stunden nach Klassifikation), Intermediate (innerhalb 24-72 Stunden), Final (innerhalb 1 Monat). Empfaenger: zustaendige Aufsichtsbehoerde (BaFin / Bundesbank für Deutschland).
                     - **NIS2** (Art. 23 NIS2-Richtlinie / nationale Umsetzung): Frueh-Warnung binnen 24 Stunden, Vorfallmeldung binnen 72 Stunden, Endbericht binnen 1 Monat. Empfaenger: nationales CSIRT.
                     - **BSI-KritisV** (fuer KRITIS-Betreiber): unverzuegliche Meldung erheblicher Stoerungen an BSI.
                     - **DSGVO Art. 33** (bei Datenschutzbezug): Meldung binnen 72 Stunden an die zustaendige Aufsichtsbehoerde.
-                    - **DSGVO Art. 34** (bei hohem Risiko fuer Betroffene): unverzuegliche Benachrichtigung Betroffener.
+                    - **DSGVO Art. 34** (bei hohem Risiko für Betroffene): unverzuegliche Benachrichtigung Betroffener.
                     - **Sektorspezifisch** — z. B. TKG-Meldungen, BaFin-MaRisk-Anzeigen, EU-DORA-Pflichten (Art. 17-23 Incident-Reporting, Art. 28-30 ICT-Drittparteien-Register).
 
                     Die konkrete Meldepflicht-Liste ist tenant-spezifisch und im Anhang Aufsichtsbehoerden gepflegt.
@@ -973,8 +973,8 @@ policy:
 
                     - **Telefon-Kaskade** mit ausgedrucktem Verteiler (jaehrlich aktualisiert, an Sicherheitsstandort hinterlegt);
                     - **SMS-Massen-Versand-Dienstleister** (separater Vertrag, wird in regulaeren Tests geprueft);
-                    - **Satelliten-Telefon** fuer Krisenstabsleitung (mind. zwei Geraete, monatlicher Funktionstest);
-                    - **Funkgeraete** fuer standortinterne Kommunikation;
+                    - **Satelliten-Telefon** für Krisenstabsleitung (mind. zwei Geraete, monatlicher Funktionstest);
+                    - **Funkgeraete** für standortinterne Kommunikation;
                     - **Physischer Sammelpunkt** mit Aushaengen am primaeren Standort (Treffpunkt nach Evakuierung).
 
                     Out-of-Band-Kanaele werden mindestens halbjaehrlich getestet (Frequenz: {{ bcm.exercise_frequency }}).
@@ -1008,7 +1008,7 @@ policy:
                     Verspaetungen werden im Aktivierungs-Log mit Begruendung dokumentiert; sie sind Bestandteil der Lessons-Learned und ggf. der regulatorischen Nachpruefung.
 
                     ## 11. Stand-Down und Rueckkehr in den Normalbetrieb
-                    Die Stand-Down-Entscheidung wird durch die Rolle getroffen, die die Aktivierung verfuegt hat (Krisenstabsleitung {{ roles.crisis_team_lead.fullName }}, Geschaeftsfuehrung {{ approval.chain }} oder Notfallbeauftragter {{ roles.bcm_officer.fullName }}). Voraussetzungen fuer Stand-Down:
+                    Die Stand-Down-Entscheidung wird durch die Rolle getroffen, die die Aktivierung verfuegt hat (Krisenstabsleitung {{ roles.crisis_team_lead.fullName }}, Geschaeftsfuehrung {{ approval.chain }} oder Notfallbeauftragter {{ roles.bcm_officer.fullName }}). Voraussetzungen für Stand-Down:
 
                     - die ausloesende Stoerung ist behoben oder unter Kontrolle;
                     - kritische Prozesse laufen mindestens auf MBCO-Niveau;
@@ -1022,7 +1022,7 @@ policy:
                     Innerhalb von 7 Tagen nach Stand-Down erfolgt ein Hot-Wash-Workshop mit allen Krisenstabs-Mitgliedern und Schluesselrollen. Innerhalb von 30 Tagen wird ein konsolidierter Lessons-Learned-Bericht erstellt; binnen 90 Tagen werden alle abgeleiteten Korrekturmassnahmen mit Termin und Verantwortlichkeit im Korrekturmassnahmen-System dokumentiert. Die Massnahmen werden bis zum Wirksamkeitsnachweis nachverfolgt; offene Massnahmen werden quartalsweise an die Geschaeftsfuehrung berichtet.
 
                     ## 13. Datenschutz waehrend der Aktivierung
-                    Die Verarbeitung personenbezogener Daten waehrend einer BCMS-Aktivierung (z. B. Mitarbeiter-Standort-Daten, Notfall-Kontakte, Medien-Inhalte) erfolgt unter Einbeziehung des Datenschutzbeauftragten und im Rahmen der bestehenden DSGVO-Erlaubnistatbestaende (insbesondere Art. 6 Abs. 1 lit. b und f, Art. 9 sofern Gesundheitsdaten beruehrt). Out-of-Band-Kanaele werden datenschutz-konform betrieben (z. B. SMS-Provider mit AVV gemaess Art. 28 DSGVO, Aufbewahrungsfristen fuer Telefon-Listen).
+                    Die Verarbeitung personenbezogener Daten waehrend einer BCMS-Aktivierung (z. B. Mitarbeiter-Standort-Daten, Notfall-Kontakte, Medien-Inhalte) erfolgt unter Einbeziehung des Datenschutzbeauftragten und im Rahmen der bestehenden DSGVO-Erlaubnistatbestaende (insbesondere Art. 6 Abs. 1 lit. b und f, Art. 9 sofern Gesundheitsdaten beruehrt). Out-of-Band-Kanaele werden datenschutz-konform betrieben (z. B. SMS-Provider mit AVV gemaess Art. 28 DSGVO, Aufbewahrungsfristen für Telefon-Listen).
 
                     ---
                     *Dieses Verfahren ist Teil des BCMS-Dokumentensatzes und wird jaehrlich sowie nach jeder Aktivierung geprueft.*
@@ -1066,10 +1066,10 @@ policy:
                 tailoring_field:
                     detection_channels:
                         label: 'Tenant-spezifische Erkennungs- und Alarmierungs-Kanaele'
-                        placeholder: 'Beispiel: "24/7-NOC mit SIEM (Splunk Cloud) und SOC-Outsourcing-Partner; interne Hotline +49-69-XXXX-911 (24/7); Notfall-E-Mail bcm@example.com mit PagerDuty-Eskalation; Synthetic-Monitoring (Datadog) fuer Tier-1-Services; CSIRT-Bund-Threat-Feed via STIX/TAXII; Kunden-Service-Desk (Zendesk) eskaliert P1 automatisch."'
+                        placeholder: 'Beispiel: "24/7-NOC mit SIEM (Splunk Cloud) und SOC-Outsourcing-Partner; interne Hotline +49-69-XXXX-911 (24/7); Notfall-E-Mail bcm@example.com mit PagerDuty-Eskalation; Synthetic-Monitoring (Datadog) für Tier-1-Services; CSIRT-Bund-Threat-Feed via STIX/TAXII; Kunden-Service-Desk (Zendesk) eskaliert P1 automatisch."'
                     regulator_notification_matrix:
                         label: 'Tenant-spezifische Aufsichts-Meldepflichten-Matrix'
                         placeholder: 'Beispiel: "Als deutsches BaFin-reguliertes Finanzunternehmen: DORA Art. 19 (Major ICT Incident, 4h Initial, 72h Intermediate, 1mo Final, an BaFin/Bundesbank); BSI-KritisV (KRITIS-relevante Stoerung, unverzueglich); DSGVO Art. 33 (72h, BfDI/Landesdatenschutz); MaRisk AT 7.3 (Aufsichtsanzeige bei wesentlichen Stoerungen). Konsolidierte Matrix in Compliance-Anhang."'
                     out_of_band_channels:
                         label: 'Out-of-Band-Kanaele und Test-Frequenz'
-                        placeholder: 'Beispiel: "Telefon-Kaskade (papier-Verteiler in Krisenstabsraum {{ secondary_site_label }}); SMS-Massen-Versand via separater Provider mit eigenem Backbone; 4 Iridium-Satelliten-Telefone (Krisenstabsleitung + Stellvertretung + 2 Reserve); DECT-Funkgeraete fuer Standort-interne Kommunikation; physischer Sammelpunkt Tiefgarage Ebene -2. Halbjaehrliche Funktionstests; jaehrliche Volluebung."'
+                        placeholder: 'Beispiel: "Telefon-Kaskade (papier-Verteiler in Krisenstabsraum {{ secondary_site_label }}); SMS-Massen-Versand via separater Provider mit eigenem Backbone; 4 Iridium-Satelliten-Telefone (Krisenstabsleitung + Stellvertretung + 2 Reserve); DECT-Funkgeraete für Standort-interne Kommunikation; physischer Sammelpunkt Tiefgarage Ebene -2. Halbjaehrliche Funktionstests; jaehrliche Volluebung."'

@@ -6,28 +6,28 @@ policy:
                 body: |-
                     # Krisenmanagement-Plan der {{ tenant.legal_name }}
 
-                    *Dokumentenklasse: Plan (operativ, jedoch an der Spitze der Vorfall-Pyramide) | Regulatorische Grundlage: ISO 22301:2019 Klausel 8.4.4 in Verbindung mit Klausel 8.4.2 (Warnung und Kommunikation), BSI 200-4:2023 Kapitel 5.4 ("Krisenstabsordnung"), Querverweise: ISO/IEC 27001:2022 A.5.29, EU-DORA Art. 11 Absatz 6 (Krisenkommunikation), KRITIS-Dachgesetz §§ 11–13 fuer Betreiber kritischer Anlagen | Geltungsbeginn: {{ generation_date }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: jaehrlich gemaess ISO 22301 Kl. 9.3 sowie nach jeder Aktivierung*
+                    *Dokumentenklasse: Plan (operativ, jedoch an der Spitze der Vorfall-Pyramide) | Regulatorische Grundlage: ISO 22301:2019 Klausel 8.4.4 in Verbindung mit Klausel 8.4.2 (Warnung und Kommunikation), BSI 200-4:2023 Kapitel 5.4 ("Krisenstabsordnung"), Querverweise: ISO/IEC 27001:2022 A.5.29, EU-DORA Art. 11 Absatz 6 (Krisenkommunikation), KRITIS-Dachgesetz §§ 11–13 für Betreiber kritischer Anlagen | Geltungsbeginn: {{ generation_date }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: jaehrlich gemaess ISO 22301 Kl. 9.3 sowie nach jeder Aktivierung*
 
                     ## 1. Zweck und Verbindlichkeit
-                    Diese Krisenstabsordnung etabliert die verbindliche Aufbau- und Ablauforganisation fuer den Krisenstab der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 8.4.4 ("Business continuity plans and procedures") in Verbindung mit Klausel 8.4.2. Sie konkretisiert das Top-Level-Bekenntnis aus der Notfallleitlinie (Klausel 5.2) auf die operative Ebene des Krisenmanagements und erfuellt zugleich die Anforderungen aus BSI 200-4 Kapitel 5.4. Fuer KRITIS-Betreiber im Sinne des KRITIS-Dachgesetzes (KRITIS-DachG) bildet diese Ordnung die Grundlage fuer die in §§ 11–13 KRITIS-DachG geforderte resilienzorientierte Stabsarbeit.
+                    Diese Krisenstabsordnung etabliert die verbindliche Aufbau- und Ablauforganisation für den Krisenstab der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 8.4.4 ("Business continuity plans and procedures") in Verbindung mit Klausel 8.4.2. Sie konkretisiert das Top-Level-Bekenntnis aus der Notfallleitlinie (Klausel 5.2) auf die operative Ebene des Krisenmanagements und erfuellt zugleich die Anforderungen aus BSI 200-4 Kapitel 5.4. Fuer KRITIS-Betreiber im Sinne des KRITIS-Dachgesetzes (KRITIS-DachG) bildet diese Ordnung die Grundlage für die in §§ 11–13 KRITIS-DachG geforderte resilienzorientierte Stabsarbeit.
 
-                    Die Krisenstabsordnung ist verbindlich fuer alle Mitglieder des Krisenstabs, alle Fuehrungskraefte mit Eskalationspflicht sowie alle Mitarbeitenden, die im Rahmen einer Krise aktiviert werden. Sie tritt in Kraft mit Genehmigung durch das Top-Management gemaess ISO 22301 Klausel 5.1 ("Leadership and commitment") und bleibt verbindlich bis zur dokumentierten Ausserkraftsetzung durch eine Folgeversion.
+                    Die Krisenstabsordnung ist verbindlich für alle Mitglieder des Krisenstabs, alle Fuehrungskraefte mit Eskalationspflicht sowie alle Mitarbeitenden, die im Rahmen einer Krise aktiviert werden. Sie tritt in Kraft mit Genehmigung durch das Top-Management gemaess ISO 22301 Klausel 5.1 ("Leadership and commitment") und bleibt verbindlich bis zur dokumentierten Ausserkraftsetzung durch eine Folgeversion.
 
                     ## 2. Geltungsbereich
-                    Diese Ordnung gilt fuer saemtliche Krisenlagen, die ueber den Rahmen einer Stoerung oder eines Notfalls hinausgehen und eine strategische Steuerung durch das Top-Management oder eine vom Top-Management explizit beauftragte Stabsstruktur erfordern. Sie gilt fuer alle Standorte, Geschaeftsprozesse und juristischen Einheiten im Geltungsbereich des BCMS (siehe BCMS-Geltungsbereich-Dokument).
+                    Diese Ordnung gilt für saemtliche Krisenlagen, die ueber den Rahmen einer Stoerung oder eines Notfalls hinausgehen und eine strategische Steuerung durch das Top-Management oder eine vom Top-Management explizit beauftragte Stabsstruktur erfordern. Sie gilt für alle Standorte, Geschaeftsprozesse und juristischen Einheiten im Geltungsbereich des BCMS (siehe BCMS-Geltungsbereich-Dokument).
 
                     Abgrenzung der Eskalationsstufen gemaess BSI 200-4 Kapitel 5.5:
 
                     - **Stoerung** – ueblicher Betriebsablauf wird kurzfristig beeintraechtigt; Behandlung im Linienbetrieb; keine Aktivierung des Krisenstabs.
                     - **Notfall** – Geschaeftsprozess ist ueber die Maximal Tolerierbare Ausfallzeit (MTPD) bedroht; Aktivierung des Notfallbeauftragten und ggf. einzelner BC-Plaene; Krisenstab wird in Standby versetzt.
                     - **Krise** – existenzbedrohende, reputations- oder ueberlebenskritische Lage; Krisenstab wird voll aktiviert; strategische Entscheidungen mit weitreichender Wirkung sind erforderlich.
-                    - **Katastrophe** – fuer KRITIS-Betreiber gemaess KRITIS-DachG § 2 Absatz 6: Lage, in der das Bundesamt fuer Bevoelkerungsschutz und Katastrophenhilfe (BBK) bzw. zustaendige Landesbehoerden involviert werden.
+                    - **Katastrophe** – für KRITIS-Betreiber gemaess KRITIS-DachG § 2 Absatz 6: Lage, in der das Bundesamt für Bevoelkerungsschutz und Katastrophenhilfe (BBK) bzw. zustaendige Landesbehoerden involviert werden.
 
                     ## 3. Aktivierungskriterien und Schwellenwerte
-                    Der Krisenstab wird gemaess ISO 22301 Klausel 8.4.3.2 aktiviert, sobald mindestens eines der folgenden Kriterien erfuellt ist. Die Verantwortung fuer die Aktivierungsentscheidung liegt bei {{ roles.crisis_team_lead.fullName }} (Vorsitz Krisenstab) oder dessen oder deren Stellvertretung.
+                    Der Krisenstab wird gemaess ISO 22301 Klausel 8.4.3.2 aktiviert, sobald mindestens eines der folgenden Kriterien erfuellt ist. Die Verantwortung für die Aktivierungsentscheidung liegt bei {{ roles.crisis_team_lead.fullName }} (Vorsitz Krisenstab) oder dessen oder deren Stellvertretung.
 
                     - **Kriterium A1 (Geschaeftsfortfuehrung):** Ein oder mehrere kritische Geschaeftsprozesse sind ueber den Schwellenwert MTPD hinaus oder voraussichtlich ueber MTPD hinaus ausgefallen oder werden ausfallen.
-                    - **Kriterium A2 (Reputation):** Es liegt ein Ereignis vor, das in den naechsten 24 Stunden voraussichtlich zu signifikanter Medienberichterstattung mit nachteiligen Auswirkungen fuer die {{ tenant.legal_name }} fuehrt.
+                    - **Kriterium A2 (Reputation):** Es liegt ein Ereignis vor, das in den naechsten 24 Stunden voraussichtlich zu signifikanter Medienberichterstattung mit nachteiligen Auswirkungen für die {{ tenant.legal_name }} fuehrt.
                     - **Kriterium A3 (Regulatorisch):** Die Lage erfordert eine Meldung an Aufsichtsbehoerden gemaess EU-DORA Art. 17–19 (IKT-Vorfall mit major-Klassifikation), gemaess NIS2-Umsetzung (BSIG § 32), gemaess KRITIS-DachG § 14 (Stoerungsmeldung) oder gemaess DSGVO Art. 33 (Verletzung des Schutzes personenbezogener Daten).
                     - **Kriterium A4 (Personenschutz):** Es liegt eine Gefaehrdung von Leib oder Leben von Beschaeftigten, Kundinnen oder Kunden oder Dritten vor.
                     - **Kriterium A5 (Cyber-Krise):** Es liegt ein Cyber-Vorfall vor, der eine wesentliche Beeintraechtigung der Verfuegbarkeit, Vertraulichkeit oder Integritaet im Sinne von ISO/IEC 27001:2022 A.5.24–A.5.28 darstellt und mit einer Krisenlage gemaess A1 oder A3 einhergeht.
@@ -36,11 +36,11 @@ policy:
                     ## 4. Krisenstab-Zusammensetzung
                     Der Krisenstab der {{ tenant.legal_name }} besteht aus den folgenden namentlich benannten Funktionen mit verbindlich benannten Stellvertretungen gemaess BSI 200-4 Kapitel 5.4 (Stellvertreterprinzip):
 
-                    - **Vorsitz Krisenstab (Krisenstabsleitung)** – {{ roles.crisis_team_lead.fullName }}; entscheidungsbefugt im Sinne von ISO 22301 Klausel 5.1; bindende Letztverantwortung fuer alle waehrend der Krise getroffenen Entscheidungen.
+                    - **Vorsitz Krisenstab (Krisenstabsleitung)** – {{ roles.crisis_team_lead.fullName }}; entscheidungsbefugt im Sinne von ISO 22301 Klausel 5.1; bindende Letztverantwortung für alle waehrend der Krise getroffenen Entscheidungen.
                     - **Stellvertretung Vorsitz Krisenstab** – verbindlich gemaess BSI 200-4 Kap. 5.4; gleichwertige Befugnisse waehrend der Vertretung.
                     - **Notfallbeauftragte/r (BCM Officer)** – {{ roles.bcm_officer.fullName }}; operative Steuerung der BC-Plaene und Schnittstelle zu BIA-Resultaten.
                     - **Informationssicherheitsbeauftragte/r (ISB)** – {{ roles.isb.fullName }}; Schnittstelle zu IKT-Vorfaellen, Cyber-Krisen und ISMS-Prozessen.
-                    - **Kommunikationsleitung (Comms-Lead)** – verantwortlich fuer interne und externe Krisenkommunikation, Pressekontakte und behoerdliche Kommunikation.
+                    - **Kommunikationsleitung (Comms-Lead)** – verantwortlich für interne und externe Krisenkommunikation, Pressekontakte und behoerdliche Kommunikation.
                     - **IT-Leitung (IT-Lead)** – operative Steuerung der IKT-Wiederherstellung; Schnittstelle zu Wiederanlauf- und Wiederherstellungsplaenen.
                     - **Personal-Leitung (HR-Lead)** – Mitarbeitendenfuersorge, Krisenkommunikation an Belegschaft, Schnittstelle Sozialpartner.
                     - **Rechtsberatung (Legal-Lead)** – juristische Bewertung, Aufsichtsmeldungen, Vertragsfragen, Datenschutz-Eskalation.
@@ -55,9 +55,9 @@ policy:
                     - **Stufe 0 (Erstkenntnis bis Bewertung):** 30 Minuten – Erstmelder informiert {{ roles.bcm_officer.fullName }} oder Vorsitz Krisenstab.
                     - **Stufe 1 (Bewertung bis Aktivierungsentscheidung):** 60 Minuten – Bewertung der Aktivierungskriterien, Entscheidung Aktivierung Ja oder Nein.
                     - **Stufe 2 (Aktivierungsentscheidung bis erste Sitzung):** 90 Minuten – Einberufung des Krisenstabs in den Krisenstabsraum (primaer oder Ausweich).
-                    - **Stufe 3 (erste Sitzung bis externe Erstkommunikation):** 120 Minuten – ggf. Erstmeldung an Aufsicht (DORA: 4-Stunden-Frist fuer Initial-Notification gemaess Art. 19 in Verbindung mit RTS).
+                    - **Stufe 3 (erste Sitzung bis externe Erstkommunikation):** 120 Minuten – ggf. Erstmeldung an Aufsicht (DORA: 4-Stunden-Frist für Initial-Notification gemaess Art. 19 in Verbindung mit RTS).
 
-                    Verkuerzte Fristen bei behoerdlichen Sofortmeldungen: DSGVO Art. 33 (72 Stunden ab Kenntnis), DORA Art. 19 (4 Stunden initial fuer major incident), KRITIS-DachG § 14 (unverzueglich), BSIG § 32 (unverzueglich, spaetestens 24 Stunden).
+                    Verkuerzte Fristen bei behoerdlichen Sofortmeldungen: DSGVO Art. 33 (72 Stunden ab Kenntnis), DORA Art. 19 (4 Stunden initial für major incident), KRITIS-DachG § 14 (unverzueglich), BSIG § 32 (unverzueglich, spaetestens 24 Stunden).
 
                     ## 6. Kommunikationskette
                     Die Krisenkommunikation folgt der Devise "ein Mund nach aussen" gemaess BSI 200-4 Kap. 5.4. Externe Kommunikation erfolgt ausschliesslich ueber die Kommunikationsleitung oder eine durch den Vorsitz Krisenstab namentlich beauftragte Sprecherrolle. Interne Kommunikation laeuft ueber definierte Eskalations- und Informationsstraenge:
@@ -70,7 +70,7 @@ policy:
                     6. **Strang Behoerden im Katastrophenfall** – bei Katastrophenlage gemaess KRITIS-DachG § 2 Absatz 6: BBK, zustaendige Landesbehoerde, Polizei, Feuerwehr.
 
                     ## 7. Krisenstabs-Raum (Lagezentrum)
-                    Der primaere Krisenstabsraum sowie ein Ausweich-Krisenstabsraum sind in den BCMS-Stammdaten benannt. Ausstattungs-Mindestanforderungen gemaess BSI 200-4 Kap. 5.4: gesicherte Telekommunikation, Out-of-Band-Verbindung (Mobilfunk und Festnetz), redundante Stromversorgung, Lagedarstellungs-Tools, Whiteboard, Drucker, ausgedruckte Notfall-Kontaktlisten, ausgedruckte BC-Plaene, Notverpflegung fuer 24 Stunden Stabsarbeit.
+                    Der primaere Krisenstabsraum sowie ein Ausweich-Krisenstabsraum sind in den BCMS-Stammdaten benannt. Ausstattungs-Mindestanforderungen gemaess BSI 200-4 Kap. 5.4: gesicherte Telekommunikation, Out-of-Band-Verbindung (Mobilfunk und Festnetz), redundante Stromversorgung, Lagedarstellungs-Tools, Whiteboard, Drucker, ausgedruckte Notfall-Kontaktlisten, ausgedruckte BC-Plaene, Notverpflegung für 24 Stunden Stabsarbeit.
 
                     Bei Cyber-Krisen mit Verdacht auf Kompromittierung der eigenen IKT: Stabsarbeit erfolgt auf isolierter Infrastruktur (z. B. dedizierte Mobiltelefone, externer Cloud-Dienst mit Out-of-Band-Authentifizierung).
 
@@ -82,7 +82,7 @@ policy:
                     ## 9. Stand-Down-Kriterien
                     Der Krisenstab wird durch den Vorsitz formal aufgeloest, sobald folgende Voraussetzungen erfuellt sind: (a) Aktivierungskriterien nicht mehr erfuellt; (b) Geschaeftsprozesse stabil im Wiederanlauf oder Normalbetrieb; (c) keine ungeloesten regulatorischen Eskalationen; (d) Lessons-Learned-Termin innerhalb von 14 Tagen geplant.
 
-                    Die formale Aufloesung wird protokolliert. Die Verantwortung fuer Restmassnahmen geht an den oder die Notfallbeauftragte/n {{ roles.bcm_officer.fullName }} ueber.
+                    Die formale Aufloesung wird protokolliert. Die Verantwortung für Restmassnahmen geht an den oder die Notfallbeauftragte/n {{ roles.bcm_officer.fullName }} ueber.
 
                     ## 10. Schnittstelle BC-Plaene und Wiederanlaufplaene
                     Der Krisenstab aktiviert BC-Plaene gemaess der separaten BC-Plan-Vorlage (Dokument BCMS Standard BCP). Die Aktivierungsbefugnis liegt beim Vorsitz Krisenstab, in Vertretung beim Notfallbeauftragten gemaess BSI 200-4 Kap. 6.
@@ -133,7 +133,7 @@ policy:
                         label: 'Lokale Krisenstab-Zusammensetzung mit Stellvertretungen'
                         placeholder: 'Beispiel: "Vorsitz: COO Frau Dr. Schmidt; Stellvertretung: CFO Herr Mueller. Notfallbeauftragte/r: Frau Wagner, Stellvertretung: Herr Bauer. ISB: Herr Schulze, Stellvertretung: Frau Becker. Comms-Lead: Frau Klein. IT-Lead: Herr Fischer. HR-Lead: Frau Hoffmann. Legal-Lead: extern Kanzlei XYZ. Records-Keeper: Frau Schneider."'
                     activation_thresholds_local:
-                        label: 'Tenant-spezifische Schwellenwerte fuer Krisenstabs-Aktivierung'
+                        label: 'Tenant-spezifische Schwellenwerte für Krisenstabs-Aktivierung'
                         placeholder: 'Beispiel: "Aktivierung verbindlich bei Ausfall des Kernbankensystems > 2h, bei Datenschutzvorfall mit > 1000 Betroffenen, bei Cyber-Vorfall mit Verdacht auf Datenexfiltration, bei Reputationsmeldung in regionaler Tageszeitung Auflage > 50.000."'
                     out_of_band_channels:
                         label: 'Out-of-Band-Kommunikationskanaele bei Ausfall der Primaer-IKT'
@@ -144,15 +144,15 @@ policy:
                 body: |-
                     # Wiederanlauf- und Wiederherstellungsplan-Standard der {{ tenant.legal_name }}
 
-                    *Dokumentenklasse: Verfahrensanweisung (definiert die Plan-Erstellungsregeln; einzelne Wiederanlaufplaene sind Aufzeichnungen je Asset) | Regulatorische Grundlage: ISO 22301:2019 Klausel 8.4.5 ("Recovery"), BSI 200-4:2023 Kapitel 6.2 ("Wiederanlauf- und Wiederherstellungsplaene"), Querverweise: ISO/IEC 27001:2022 A.5.30 (IKT-Bereitschaft fuer Geschaeftskontinuitaet) und A.8.13 (Backup), EU-DORA Art. 12 (Backup-, Wiederherstellungs- und Wiederanlaufrichtlinien) | Geltungsbeginn: {{ generation_date }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: jaehrlich gemaess ISO 22301 Klausel 9.3*
+                    *Dokumentenklasse: Verfahrensanweisung (definiert die Plan-Erstellungsregeln; einzelne Wiederanlaufplaene sind Aufzeichnungen je Asset) | Regulatorische Grundlage: ISO 22301:2019 Klausel 8.4.5 ("Recovery"), BSI 200-4:2023 Kapitel 6.2 ("Wiederanlauf- und Wiederherstellungsplaene"), Querverweise: ISO/IEC 27001:2022 A.5.30 (IKT-Bereitschaft für Geschaeftskontinuitaet) und A.8.13 (Backup), EU-DORA Art. 12 (Backup-, Wiederherstellungs- und Wiederanlaufrichtlinien) | Geltungsbeginn: {{ generation_date }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: jaehrlich gemaess ISO 22301 Klausel 9.3*
 
                     ## 1. Zweck und Verbindlichkeit
-                    Dieser Standard definiert die verbindliche Struktur, die Mindestinhalte sowie die Validierungsregeln fuer alle Wiederanlauf- und Wiederherstellungsplaene der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 8.4.5. Er ist anwendbar auf alle als kritisch oder hoch eingestuften Assets im Sinne der separaten Asset-Klassifikationsleitlinie, insbesondere auf alle als "Kronjuwelen" identifizierten Assets der ISMS-Schutzbedarfsanalyse.
+                    Dieser Standard definiert die verbindliche Struktur, die Mindestinhalte sowie die Validierungsregeln für alle Wiederanlauf- und Wiederherstellungsplaene der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 8.4.5. Er ist anwendbar auf alle als kritisch oder hoch eingestuften Assets im Sinne der separaten Asset-Klassifikationsleitlinie, insbesondere auf alle als "Kronjuwelen" identifizierten Assets der ISMS-Schutzbedarfsanalyse.
 
                     Fuer Tenants mit BSI-200-4-Adoption ist die in Kapitel 6 vorgenommene Differenzierung zwischen Geschaeftsfortfuehrungsplan, Wiederanlaufplan und Wiederherstellungsplan verbindlich. Fuer Tenants ausschliesslich nach ISO 22301 wird der zusammenfassende Recovery-Plan-Begriff verwendet.
 
                     ## 2. Begrifflichkeiten gemaess BSI 200-4 Kap. 6
-                    Die Differenzierung gemaess BSI 200-4 ist verbindlich fuer den Wiederanlaufprozess deutscher Tenants:
+                    Die Differenzierung gemaess BSI 200-4 ist verbindlich für den Wiederanlaufprozess deutscher Tenants:
 
                     - **Geschaeftsfortfuehrungsplan** – beschreibt, wie der Geschaeftsbetrieb durch Workarounds und Notbetrieb aufrechterhalten wird, waehrend die zugrunde liegenden Ressourcen ausgefallen sind.
                     - **Wiederanlaufplan** – beschreibt, wie ausgefallene Ressourcen in einen funktionsfaehigen, ggf. degradierten Zustand zurueckversetzt werden.
@@ -165,12 +165,12 @@ policy:
 
                     - alle Assets mit Schutzbedarf "hoch" oder "sehr hoch" in mindestens einer der Schutzziele (Vertraulichkeit, Integritaet, Verfuegbarkeit) gemaess BSI 200-2 Kap. 8.2.4;
                     - alle Assets, die einen kritischen oder wichtigen Geschaeftsprozess unmittelbar unterstuetzen (RTO ≤ 24 Stunden);
-                    - alle IKT-Assets, die im Informationsregister gemaess EU-DORA Art. 28 als unterstuetzend fuer eine kritische oder wichtige Funktion ("CIF") eingetragen sind;
+                    - alle IKT-Assets, die im Informationsregister gemaess EU-DORA Art. 28 als unterstuetzend für eine kritische oder wichtige Funktion ("CIF") eingetragen sind;
                     - alle Assets, die im KRITIS-Anlagenregister einer KRITIS-Anlage zugeordnet sind.
 
-                    Validierungsregel: Jeder Asset-Datensatz im ISMS, der die obigen Kriterien erfuellt, MUSS einen verknuepften Wiederanlaufplan-Datensatz mit Status "freigegeben" haben, andernfalls wird ein Audit-Finding erzeugt.
+                    Validierungsregel: Jeder Asset-Datensatz im ISMS, der die obigen Kriterien erfuellt, MUSS einen verknüpften Wiederanlaufplan-Datensatz mit Status "freigegeben" haben, andernfalls wird ein Audit-Finding erzeugt.
 
-                    ## 4. Plan-Inhalt fuer IT-Wiederanlaufplaene
+                    ## 4. Plan-Inhalt für IT-Wiederanlaufplaene
                     Jeder IT-Wiederanlaufplan enthaelt mindestens:
 
                     - **Plan-Identifikation:** Plan-ID, Asset-Bezug, Owner, Version, Klassifikation (Standard: Intern-Vertraulich), Freigabedatum.
@@ -183,10 +183,10 @@ policy:
                     - **Fallback-Strategie:** Hot-Standby, Warm-Standby, Cold-Standby oder manueller Workaround; Aktivierungsbefugnis.
                     - **Test-Nachweis:** letzter erfolgreicher Test, Naechster geplanter Test, Resultate, identifizierte Maengel und CAPA-Bezug.
                     - **Verantwortlichkeiten:** Plan-Owner, Aktivierungs-Befugte, technische Ausfuehrende, Quality-Gate.
-                    - **Querverweise:** verknuepfte BC-Plaene, verknuepfter Geschaeftsprozess, verknuepfter Krisenstabs-Eintrag.
+                    - **Querverweise:** verknüpfte BC-Plaene, verknüpfter Geschaeftsprozess, verknüpfter Krisenstabs-Eintrag.
 
-                    ## 5. Plan-Inhalt fuer Nicht-IT-Wiederanlaufplaene
-                    Nicht-IT-Wiederanlaufplaene gelten fuer Standorte, Personal, physische Akten oder spezialisierte Anlagen. Mindestinhalte:
+                    ## 5. Plan-Inhalt für Nicht-IT-Wiederanlaufplaene
+                    Nicht-IT-Wiederanlaufplaene gelten für Standorte, Personal, physische Akten oder spezialisierte Anlagen. Mindestinhalte:
 
                     - **Standort-Wiederanlauf:** Ausweich-Arbeitsflaechen, Verlagerung der Belegschaft, Telearbeits-Aktivierung, Schluesselgewalt, Erste-Hilfe-Versorgung.
                     - **Personal-Wiederanlauf:** Stellvertreter-Aktivierung, Cross-Training-Plaene, Schluessel-Personen-Risikoreduktion gemaess BSI 200-4 Kap. 5.3.
@@ -197,10 +197,10 @@ policy:
                     Wiederherstellungsplaene referenzieren verbindlich die Backup-Konfiguration des Backup-Service der {{ tenant.legal_name }}. Mindestanforderungen gemaess EU-DORA Art. 12 in Verbindung mit ISO/IEC 27001:2022 A.8.13:
 
                     - 3-2-1-Regel: drei Kopien, zwei verschiedene Medien, eine Off-Site;
-                    - regelmaessiger Test-Restore (mindestens jaehrlich, fuer kritische Assets quartalsweise);
+                    - regelmaessiger Test-Restore (mindestens jaehrlich, für kritische Assets quartalsweise);
                     - getrennte Aufbewahrungs- und Wiederherstellungs-Kompetenzen (Vier-Augen-Prinzip);
                     - Verschluesselung im Ruhezustand und im Transport;
-                    - Schutz gegen Ransomware durch unveraenderliche Speicherformen ("immutable backup") fuer kritische Assets.
+                    - Schutz gegen Ransomware durch unveraenderliche Speicherformen ("immutable backup") für kritische Assets.
 
                     ## 7. Test-Nachweispflicht
                     Jeder Wiederanlauf- und Wiederherstellungsplan ist mindestens jaehrlich nachweislich zu testen gemaess ISO 22301 Klausel 8.6. Fuer kritische IKT-Assets (CIF gemaess DORA, KRITIS-Anlagen) ist die Testfrequenz {{ bcm.exercise_frequency }} mit dokumentierten Erfolgskriterien. Fehlgeschlagene Tests erzeugen automatisch ein Audit-Finding und einen CAPA-Eintrag.
@@ -209,7 +209,7 @@ policy:
                     Dieser Standard wird mindestens jaehrlich (Kadenz {{ bcm.review_interval_months }} Monate) sowie ad hoc nach wesentlichen Architekturaenderungen, neuen kritischen Assets oder fehlgeschlagenen Tests ueberprueft. Genehmigung gemaess Genehmigungskette {{ approval.chain }}.
 
                     ## 9. Konsequenzen bei Nicht-Konformitaet
-                    Fehlende oder veraltete Wiederanlauf- und Wiederherstellungsplaene fuer kritische Assets stellen ein Audit-Major-Finding gemaess ISO 22301 Klausel 8.4.5 dar. Bei DORA-Bezug ist eine Aufsichtsmeldung gemaess Art. 17 Absatz 1 zu pruefen.
+                    Fehlende oder veraltete Wiederanlauf- und Wiederherstellungsplaene für kritische Assets stellen ein Audit-Major-Finding gemaess ISO 22301 Klausel 8.4.5 dar. Bei DORA-Bezug ist eine Aufsichtsmeldung gemaess Art. 17 Absatz 1 zu pruefen.
 
                     ## 10. Kronjuwelen-Liste
                     Eine als "Kronjuwelen" identifizierte Asset-Liste wird im Anhang dieses Standards gefuehrt. Sie umfasst die fuenf bis zehn wichtigsten Assets der {{ tenant.legal_name }}, deren Ausfall einen existenzbedrohenden Schaden verursachen wuerde. Die Liste wird quartalsweise durch {{ roles.bcm_officer.fullName }} mit dem Top-Management abgestimmt.
@@ -220,7 +220,7 @@ policy:
                     scope:
                         title: 'Geltungsbereich und Pflicht-Erfassung'
                         body: |-
-                            Pflicht zur Erstellung gilt fuer Assets mit Schutzbedarf "hoch" oder "sehr hoch", Assets kritischer Geschaeftsprozesse mit RTO ≤ 24h, IKT-Assets im DORA-Informationsregister sowie KRITIS-Anlagen-Assets. Validierungsregel: jeder Asset-Datensatz mit obigen Kriterien MUSS einen freigegebenen Plan haben.
+                            Pflicht zur Erstellung gilt für Assets mit Schutzbedarf "hoch" oder "sehr hoch", Assets kritischer Geschaeftsprozesse mit RTO ≤ 24h, IKT-Assets im DORA-Informationsregister sowie KRITIS-Anlagen-Assets. Validierungsregel: jeder Asset-Datensatz mit obigen Kriterien MUSS einen freigegebenen Plan haben.
                     bsi_terminology:
                         title: 'BSI 200-4 Begrifflichkeiten und ISO-Mapping'
                         body: |-
@@ -236,11 +236,11 @@ policy:
                     backup_interface:
                         title: 'Schnittstelle zu Backup-Verfahren'
                         body: |-
-                            3-2-1-Regel, jaehrlicher Test-Restore (kritische Assets quartalsweise), Vier-Augen-Prinzip, Encryption at-rest und in-transit, immutable Backup gegen Ransomware fuer kritische Assets. Quelle: EU-DORA Art. 12 in Verbindung mit ISO/IEC 27001:2022 A.8.13.
+                            3-2-1-Regel, jaehrlicher Test-Restore (kritische Assets quartalsweise), Vier-Augen-Prinzip, Encryption at-rest und in-transit, immutable Backup gegen Ransomware für kritische Assets. Quelle: EU-DORA Art. 12 in Verbindung mit ISO/IEC 27001:2022 A.8.13.
                     test_evidence:
                         title: 'Test-Nachweispflicht und CAPA'
                         body: |-
-                            Jaehrlicher Test verbindlich gemaess ISO 22301 Klausel 8.6; fuer CIF nach DORA und KRITIS-Anlagen Frequenz {{ bcm.exercise_frequency }}. Fehlgeschlagene Tests: automatisches Audit-Finding und CAPA-Eintrag.
+                            Jaehrlicher Test verbindlich gemaess ISO 22301 Klausel 8.6; für CIF nach DORA und KRITIS-Anlagen Frequenz {{ bcm.exercise_frequency }}. Fehlgeschlagene Tests: automatisches Audit-Finding und CAPA-Eintrag.
                     crown_jewels:
                         title: 'Kronjuwelen-Liste'
                         body: |-
@@ -255,7 +255,7 @@ policy:
                         placeholder: 'Beispiel: "1. Kernbankensystem (RTO 2h, RPO 15min); 2. Zahlungsverkehr-Gateway (RTO 1h, RPO 5min); 3. Online-Banking-Plattform (RTO 4h, RPO 30min); 4. KYC-Datenbank (RTO 8h, RPO 1h); 5. Aufsichts-Reporting-System (RTO 24h, RPO 4h)."'
                     backup_strategy:
                         label: 'Backup-Strategie der Organisation'
-                        placeholder: 'Beispiel: "Primaer-Backup taeglich vollstaendig auf On-Premises NAS; Sekundaer-Backup taeglich inkrementell in EU-Cloud; Tertiaer-Backup woechentlich auf Tape im externen Tresor (Off-Site, Air-Gapped). Encryption AES-256. Immutable Storage fuer Kronjuwelen 30 Tage. Test-Restore quartalsweise fuer Kronjuwelen."'
+                        placeholder: 'Beispiel: "Primaer-Backup taeglich vollstaendig auf On-Premises NAS; Sekundaer-Backup taeglich inkrementell in EU-Cloud; Tertiaer-Backup woechentlich auf Tape im externen Tresor (Off-Site, Air-Gapped). Encryption AES-256. Immutable Storage für Kronjuwelen 30 Tage. Test-Restore quartalsweise für Kronjuwelen."'
                     fallback_strategy_per_tier:
                         label: 'Fallback-Strategie je Kritikalitaets-Tier'
                         placeholder: 'Beispiel: "Tier-1 (RTO ≤ 4h): Hot-Standby mit Active-Active Geo-Redundanz. Tier-2 (RTO ≤ 24h): Warm-Standby mit Cloud-Failover-Zone. Tier-3 (RTO ≤ 72h): Cold-Standby mit Bare-Metal-Restore. Tier-4 (RTO > 72h): manueller Workaround, Wiederbeschaffung aus Backup."'
@@ -273,7 +273,7 @@ policy:
                     Externe Auditoren bewerten das Fehlen eines belastbaren Uebungsnachweises regelmaessig als Major Nonconformity. Dieses Programm ist daher verbindlich umzusetzen und in seiner Wirksamkeit nachzuweisen.
 
                     ## 2. Geltungsbereich
-                    Das Programm gilt fuer alle in den BCMS-Geltungsbereich eingeschlossenen Geschaeftsprozesse, BC-Plaene, Wiederanlaufplaene, Wiederherstellungsplaene, den Krisenstab sowie alle in das DORA-Informationsregister eingetragenen IKT-Systeme. Der Geltungsbereich wird mindestens jaehrlich durch {{ roles.bcm_officer.fullName }} ueberprueft.
+                    Das Programm gilt für alle in den BCMS-Geltungsbereich eingeschlossenen Geschaeftsprozesse, BC-Plaene, Wiederanlaufplaene, Wiederherstellungsplaene, den Krisenstab sowie alle in das DORA-Informationsregister eingetragenen IKT-Systeme. Der Geltungsbereich wird mindestens jaehrlich durch {{ roles.bcm_officer.fullName }} ueberprueft.
 
                     ## 3. Uebungsarten
                     Das Programm umfasst die folgenden Uebungsarten gemaess ISO 22301 Klausel 8.6.1 in Verbindung mit BSI 200-4 Kap. 8:
@@ -283,8 +283,8 @@ policy:
                     - **Funktionstest (Functional Simulation):** ein Teil eines Plans oder System-Wiederanlaufs wird real ausgefuehrt, eingebettet in ein simuliertes Szenario. Frequenz: mindestens jaehrlich pro kritischem System.
                     - **Vollnaher Test (Full-Scale Exercise):** realnahe, ggf. mehrtaegige Inszenierung mit voller Aktivierung des Krisenstabs und Wiederanlauf realer Systeme an Ausweich-Standorten. Frequenz: mindestens alle 24 bis 36 Monate gemaess BSI 200-4 Kap. 8 Empfehlung.
                     - **Alarmierungsuebung (Notification-Only):** Test der Erreichbarkeit und Verfuegbarkeit der Krisenstabsmitglieder ohne inhaltliche Stabsarbeit. Frequenz: mindestens halbjaehrlich.
-                    - **IKT-Wiederanlauftest (IT Recovery Test):** technischer Wiederanlauftest eines kritischen Systems gemaess Wiederanlaufplan; quartalsweise fuer Kronjuwelen, jaehrlich fuer alle hoch-kritischen Systeme.
-                    - **Threat-Led Penetration Test (TLPT):** fuer DORA-bedeutende Finanzunternehmen verbindlich gemaess Art. 26 DORA, Frequenz mindestens alle drei Jahre, Methodik nach finalisierter RTS-Vorlage in Anlehnung an TIBER-EU.
+                    - **IKT-Wiederanlauftest (IT Recovery Test):** technischer Wiederanlauftest eines kritischen Systems gemaess Wiederanlaufplan; quartalsweise für Kronjuwelen, jaehrlich für alle hoch-kritischen Systeme.
+                    - **Threat-Led Penetration Test (TLPT):** für DORA-bedeutende Finanzunternehmen verbindlich gemaess Art. 26 DORA, Frequenz mindestens alle drei Jahre, Methodik nach finalisierter RTS-Vorlage in Anlehnung an TIBER-EU.
 
                     ## 4. Frequenzplan
                     Die {{ tenant.legal_name }} folgt einer Drei-Jahres-Rollen-Logik gemaess ISO 22301 Klausel 8.6.1: ueber einen Drei-Jahres-Zyklus wird jeder im BCMS eingeschlossene Geschaeftsprozess mindestens einmal in einer Tabletop- oder Funktionstest-Uebung adressiert. Die Frequenz {{ bcm.exercise_frequency }} ist Mindestmass; Top-Management oder Aufsichtsbehoerden koennen verkuerzte Zyklen anordnen.
@@ -294,7 +294,7 @@ policy:
                     - Tabletop pro Krisenstab: jaehrlich;
                     - Tabletop pro kritischem BC-Plan: jaehrlich;
                     - Funktionstest pro kritischem System: jaehrlich;
-                    - IKT-Wiederanlauftest fuer Kronjuwelen: quartalsweise;
+                    - IKT-Wiederanlauftest für Kronjuwelen: quartalsweise;
                     - Vollnaher Test: alle 24 bis 36 Monate;
                     - Alarmierungsuebung: halbjaehrlich;
                     - TLPT (sofern DORA-bedeutend): mindestens alle drei Jahre.
@@ -302,7 +302,7 @@ policy:
                     ## 5. Rotations- und Abdeckungsregeln
                     Ueber drei aufeinanderfolgende Kalenderjahre wird jeder im BCMS eingeschlossene Prozess mindestens einmal in einer dokumentierten Uebung getestet. Ueber drei aufeinanderfolgende Kalenderjahre werden alle relevanten Krisenszenarien (Cyber, Stromausfall, Pandemie, Standortausfall, Schluesselpersonen-Ausfall, Lieferantenausfall, Naturereignis, Brand) mindestens je einmal als Tabletop oder Funktionstest abgedeckt.
 
-                    Die jaehrliche Rotationsplanung wird durch {{ roles.bcm_officer.fullName }} bis spaetestens Januar fuer das laufende Kalenderjahr in einer Uebungs-Roadmap dokumentiert und durch das Top-Management gemaess {{ approval.chain }} freigegeben.
+                    Die jaehrliche Rotationsplanung wird durch {{ roles.bcm_officer.fullName }} bis spaetestens Januar für das laufende Kalenderjahr in einer Uebungs-Roadmap dokumentiert und durch das Top-Management gemaess {{ approval.chain }} freigegeben.
 
                     ## 6. Uebungsdesign
                     Jede Uebung wird gemaess ISO 22301 Klausel 8.6.2 strukturiert dokumentiert:
@@ -310,7 +310,7 @@ policy:
                     - **Uebungsziel:** spezifische, messbare Ziele (z. B. "Bestaetigung, dass der Krisenstab innerhalb von 90 Minuten quorumsfaehig zusammentritt").
                     - **Szenario:** belastbar, realistisch, fachlich plausibel, abgeleitet aus dem BCM-Risikoregister.
                     - **Erfolgskriterien:** quantitative Kriterien je Ziel (z. B. RTO eingehalten, Notification-Frist eingehalten).
-                    - **Beobachterinnen und Beobachter:** unabhaengig vom Pruefling, mindestens zwei Personen je Uebung; bei Vollnah-Tests mindestens drei.
+                    - **Beobachterinnen und Beobachter:** unabhängig vom Pruefling, mindestens zwei Personen je Uebung; bei Vollnah-Tests mindestens drei.
                     - **Debrief:** unmittelbar nach Uebungsende, strukturiert, mit Lessons-Learned-Dokumentation.
                     - **Bericht:** binnen vier Wochen nach Uebungsende; Uebermittlung an {{ roles.bcm_officer.fullName }} und Vorsitz Krisenstab.
                     - **CAPA:** identifizierte Defizite werden als Korrekturmassnahmen-Eintraege im CAPA-Prozess gemaess Klausel 10.1 erfasst.
@@ -319,10 +319,10 @@ policy:
                     Jeder Uebungsbericht enthaelt eine Lessons-Learned-Sektion. Identifizierte Defizite werden mit verantwortlicher Person, Zieltermin und Eskalationsregel im CAPA-System erfasst. {{ roles.bcm_officer.fullName }} prueft quartalsweise die Schliessungsquote und berichtet an den Krisenstab.
 
                     ## 8. DORA-spezifische Anforderungen
-                    Fuer DORA-Anwender gelten zusaetzlich:
+                    Fuer DORA-Anwender gelten zusätzlich:
 
                     - jaehrliches umfassendes Testprogramm gemaess Art. 24 Absatz 6 DORA;
-                    - TLPT mindestens alle drei Jahre fuer bedeutende Finanzunternehmen gemaess Art. 26 DORA, Methodik nach finalisierter RTS-Vorlage und in Anlehnung an TIBER-EU;
+                    - TLPT mindestens alle drei Jahre für bedeutende Finanzunternehmen gemaess Art. 26 DORA, Methodik nach finalisierter RTS-Vorlage und in Anlehnung an TIBER-EU;
                     - Kommunikation der Testergebnisse an die zustaendige Aufsichtsbehoerde gemaess Art. 27 DORA;
                     - Einbeziehung kritischer IKT-Drittdienstleister in TLPT-Reichweite gemaess Art. 26 Absatz 3 DORA.
 
@@ -342,7 +342,7 @@ policy:
                     frequency_plan:
                         title: 'Frequenzplan und Mindestkadenz'
                         body: |-
-                            Mindestmass {{ bcm.exercise_frequency }}; Tabletop jaehrlich, Funktionstest jaehrlich, IKT-Wiederanlauf fuer Kronjuwelen quartalsweise, Vollnah alle 24-36 Monate, Alarmierung halbjaehrlich, TLPT mindestens alle drei Jahre fuer DORA-bedeutende Finanzunternehmen.
+                            Mindestmass {{ bcm.exercise_frequency }}; Tabletop jaehrlich, Funktionstest jaehrlich, IKT-Wiederanlauf für Kronjuwelen quartalsweise, Vollnah alle 24-36 Monate, Alarmierung halbjaehrlich, TLPT mindestens alle drei Jahre für DORA-bedeutende Finanzunternehmen.
                     rotation:
                         title: 'Rotation und Abdeckung ueber drei Jahre'
                         body: |-
@@ -358,7 +358,7 @@ policy:
                     dora_specific:
                         title: 'DORA-spezifische Test-Anforderungen'
                         body: |-
-                            Jaehrliches umfassendes Testprogramm (Art. 24 DORA). TLPT mindestens alle drei Jahre fuer bedeutende Finanzunternehmen (Art. 26 DORA), Methodik in Anlehnung an TIBER-EU. Kommunikation an Aufsicht (Art. 27 DORA). Einbeziehung kritischer IKT-Drittdienstleister.
+                            Jaehrliches umfassendes Testprogramm (Art. 24 DORA). TLPT mindestens alle drei Jahre für bedeutende Finanzunternehmen (Art. 26 DORA), Methodik in Anlehnung an TIBER-EU. Kommunikation an Aufsicht (Art. 27 DORA). Einbeziehung kritischer IKT-Drittdienstleister.
                     kritis_specific:
                         title: 'KRITIS-DachG Resilienzpruefungen'
                         body: |-
@@ -375,8 +375,8 @@ policy:
                         label: 'Szenario-Katalog der Organisation'
                         placeholder: 'Beispiel: "Cyber: Ransomware mit Verschluesselung des Kernsystems; Stromausfall: 8h regional; Pandemie: 30 Prozent Ausfall Belegschaft; Standort: Brand Hauptgebaeude; Schluesselperson: gleichzeitiger Ausfall CIO und Stellvertretung; Lieferant: Ausfall Cloud-Provider 24h; Naturereignis: Hochwasser Rechenzentrum-Standort; Lieferkette: Insolvenz kritischer Software-Anbieter."'
                     observer_pool:
-                        label: 'Pool unabhaengiger Beobachterinnen und Beobachter'
-                        placeholder: 'Beispiel: "Internes Audit (3 Personen), externe Spezialberatung (Vertrag mit Drei-Tage-Verfuegbarkeit), Vorgesetzte aus nicht-betroffenen Fachbereichen (Pool 6 Personen). Bei Vollnah-Tests zusaetzlich Observer aus Konzern-Schwesterunternehmen."'
+                        label: 'Pool unabhängiger Beobachterinnen und Beobachter'
+                        placeholder: 'Beispiel: "Internes Audit (3 Personen), externe Spezialberatung (Vertrag mit Drei-Tage-Verfuegbarkeit), Vorgesetzte aus nicht-betroffenen Fachbereichen (Pool 6 Personen). Bei Vollnah-Tests zusätzlich Observer aus Konzern-Schwesterunternehmen."'
         internal_audit_bcm:
             v1:
                 title: 'Internes Audit-Programm BCMS (ISO 22301 Kl. 9.2)'
@@ -393,7 +393,7 @@ policy:
                     ## 2. Geltungsbereich
                     Dieses Programm umfasst alle Komponenten des BCMS der {{ tenant.legal_name }}: die Notfallleitlinie, den BCMS-Geltungsbereich, BIA-Methodik, BCM-Risikoanalyse-Methodik, BC-Strategie, BC-Plaene, Wiederanlaufplaene, Wiederherstellungsplaene, Krisenstabsordnung, Notfallhandbuch sowie alle BCMS-Aufzeichnungen (Uebungsberichte, BIA-Ergebnisse, Notfallaufzeichnungen).
 
-                    Bei Tenants mit gemeinsamem Audit-Programm fuer ISMS und BCMS (Empfehlung gemaess Effizienz-Kriterien) wird ein konsolidiertes Audit durchgefuehrt; die Klausel-Abdeckung beider Normen ist nachweisbar getrennt zu dokumentieren.
+                    Bei Tenants mit gemeinsamem Audit-Programm für ISMS und BCMS (Empfehlung gemaess Effizienz-Kriterien) wird ein konsolidiertes Audit durchgeführt; die Klausel-Abdeckung beider Normen ist nachweisbar getrennt zu dokumentieren.
 
                     ## 3. Audit-Programm-Ziele
                     Gemaess ISO 22301 Klausel 9.2.2 verfolgt das Audit-Programm folgende Ziele:
@@ -402,27 +402,27 @@ policy:
                     - Pruefung der Konformitaet mit den eigenen Anforderungen der {{ tenant.legal_name }} (Notfallleitlinie, interne Verfahren);
                     - Pruefung der Wirksamkeit der Umsetzung;
                     - Identifikation von Verbesserungspotentialen;
-                    - Lieferung belastbarer Eingaben fuer die Managementbewertung gemaess Klausel 9.3.
+                    - Lieferung belastbarer Eingaben für die Managementbewertung gemaess Klausel 9.3.
 
                     ## 4. Audit-Frequenz und Drei-Jahres-Zyklus
                     Die {{ tenant.legal_name }} betreibt einen Drei-Jahres-Zyklus, in dessen Rahmen alle Klauseln und alle BCMS-Komponenten mindestens einmal vollstaendig auditiert werden. Mindestfrequenzen:
 
                     - mindestens jaehrlich ein internes Audit;
                     - alle Klauseln 4–10 ueber drei Jahre vollstaendig abgedeckt;
-                    - kritische Komponenten (Krisenstab, Kronjuwelen-Wiederanlaufplaene, BC-Plaene fuer kritische Geschaeftsprozesse) mindestens jaehrlich;
+                    - kritische Komponenten (Krisenstab, Kronjuwelen-Wiederanlaufplaene, BC-Plaene für kritische Geschaeftsprozesse) mindestens jaehrlich;
                     - ad-hoc-Sonderaudits bei major incident, fehlgeschlagener Uebung oder regulatorischer Auflage.
 
-                    ## 5. Auditoren-Kompetenz und Unabhaengigkeit
+                    ## 5. Auditoren-Kompetenz und Unabhängigkeit
                     Auditoren werden gemaess ISO 19011:2018 ausgewaehlt. Mindestkompetenzen:
 
                     - Kenntnis ISO 22301:2019 Anforderungen, vorzugsweise mit personenzertifizierter Auditor-Qualifikation;
-                    - Kenntnis BSI 200-4 fuer Tenants mit BSI-Adoption;
+                    - Kenntnis BSI 200-4 für Tenants mit BSI-Adoption;
                     - Auditierungs-Methodik gemaess ISO 19011 (Vorbereitung, Vor-Ort-Pruefung, Berichterstellung);
                     - Branchenkenntnis und Verstaendnis der Geschaeftsprozesse der {{ tenant.legal_name }};
-                    - Unabhaengigkeit vom Pruefgegenstand: Auditoren duerfen das von ihnen geprueften Bereich nicht im taeglichen Betrieb verantworten;
+                    - Unabhängigkeit vom Pruefgegenstand: Auditoren duerfen das von ihnen geprueften Bereich nicht im taeglichen Betrieb verantworten;
                     - {{ roles.bcm_officer.fullName }} ist niemals Auditor des eigenen Verantwortungsbereichs.
 
-                    Externe Auditoren oder Auditoren aus Konzern-Schwesterunternehmen koennen die Unabhaengigkeit erhoehen, sofern interne Auditoren nicht verfuegbar oder nicht hinreichend unabhaengig sind.
+                    Externe Auditoren oder Auditoren aus Konzern-Schwesterunternehmen koennen die Unabhängigkeit erhoehen, sofern interne Auditoren nicht verfuegbar oder nicht hinreichend unabhängig sind.
 
                     ## 6. Audit-Phasen
                     Jedes Audit folgt der Struktur gemaess ISO 19011:2018:
@@ -465,9 +465,9 @@ policy:
                         body: |-
                             Mindestens jaehrliches internes Audit, vollstaendige Klausel-Abdeckung 4-10 ueber drei Jahre. Kritische Komponenten (Krisenstab, Kronjuwelen-Plaene, BC-Plaene kritischer Prozesse) jaehrlich. Ad-hoc-Sonderaudits bei major incident oder fehlgeschlagener Uebung.
                     competence:
-                        title: 'Auditoren-Kompetenz und Unabhaengigkeit'
+                        title: 'Auditoren-Kompetenz und Unabhängigkeit'
                         body: |-
-                            ISO 19011:2018, ISO 22301:2019, BSI 200-4 (sofern adoptiert), Branchenkenntnis. Unabhaengigkeit vom Pruefgegenstand verbindlich; {{ roles.bcm_officer.fullName }} niemals Auditor des eigenen Bereichs. Externe oder Konzern-Auditoren bei Bedarf.
+                            ISO 19011:2018, ISO 22301:2019, BSI 200-4 (sofern adoptiert), Branchenkenntnis. Unabhängigkeit vom Pruefgegenstand verbindlich; {{ roles.bcm_officer.fullName }} niemals Auditor des eigenen Bereichs. Externe oder Konzern-Auditoren bei Bedarf.
                     phases:
                         title: 'Audit-Phasen gemaess ISO 19011'
                         body: |-
@@ -490,8 +490,8 @@ policy:
                             Mindestens jaehrlich, Kadenz {{ bcm.review_interval_months }} Monate. Ad hoc bei wesentlichen BCMS-Aenderungen oder regulatorischer Aenderung. Genehmigung ueber {{ approval.chain }}.
                 tailoring_field:
                     auditor_pool:
-                        label: 'Auditoren-Pool und Unabhaengigkeitsregeln'
-                        placeholder: 'Beispiel: "Interner Pool: 4 Auditoren aus Internal Audit (alle ISO-22301-Lead-Auditor zertifiziert). Externer Vertrag mit Beratungshaus XYZ fuer Spitzenlast. Konzern-Schwesterunternehmen XYZ stellt 2 Auditoren fuer cross-tenant Audits. {{ roles.bcm_officer.fullName }} ist nie Auditor."'
+                        label: 'Auditoren-Pool und Unabhängigkeitsregeln'
+                        placeholder: 'Beispiel: "Interner Pool: 4 Auditoren aus Internal Audit (alle ISO-22301-Lead-Auditor zertifiziert). Externer Vertrag mit Beratungshaus XYZ für Spitzenlast. Konzern-Schwesterunternehmen XYZ stellt 2 Auditoren für cross-tenant Audits. {{ roles.bcm_officer.fullName }} ist nie Auditor."'
                     audit_matrix_3y:
                         label: 'Drei-Jahres-Audit-Matrix Klausel-Abdeckung'
                         placeholder: 'Beispiel: "Jahr 1: Klausel 4 + 5 + Krisenstabsordnung; Jahr 2: Klausel 6 + 7 + 8 (BIA, RA, Strategie, Plaene); Jahr 3: Klausel 9 + 10 + Notfallhandbuch + Wiederanlaufplaene."'
@@ -507,15 +507,15 @@ policy:
                     *Dokumentenklasse: Verfahren | Regulatorische Grundlage: ISO 22301:2019 Klausel 9.3 ("Management review"), Querverweise: ISO/IEC 27001:2022 Klausel 9.3 (gemeinsame Managementbewertung moeglich), EU-DORA Art. 5 Absatz 2 (jaehrliche Pruefung des IKT-RMF durch Leitungsorgan) | Geltungsbeginn: {{ generation_date }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: jaehrlich gemaess Klausel 9.3*
 
                     ## 1. Zweck und Verbindlichkeit
-                    Dieses Verfahren regelt die verbindliche Durchfuehrung der Managementbewertung des BCMS der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 9.3. Die Managementbewertung ist die zentrale strategische Pruefung der Eignung, Angemessenheit und Wirksamkeit des BCMS und liefert die Entscheidungsgrundlage fuer Ressourcen-Allokation, Aenderung des BCMS-Geltungsbereichs und Korrekturmassnahmen.
+                    Dieses Verfahren regelt die verbindliche Durchfuehrung der Managementbewertung des BCMS der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 9.3. Die Managementbewertung ist die zentrale strategische Pruefung der Eignung, Angemessenheit und Wirksamkeit des BCMS und liefert die Entscheidungsgrundlage für Ressourcen-Allokation, Aenderung des BCMS-Geltungsbereichs und Korrekturmassnahmen.
 
                     Auditoren bewerten das Fehlen einer dokumentierten Managementbewertung regelmaessig als Major Nonconformity. Dieses Verfahren ist daher verbindlich umzusetzen und nachweispflichtig zu dokumentieren.
 
                     ## 2. Geltungsbereich
-                    Das Verfahren gilt fuer das BCMS der {{ tenant.legal_name }} in seinem im BCMS-Geltungsbereich-Dokument festgelegten Umfang. Es findet Anwendung auf alle BCMS-Aufzeichnungen, alle Auditberichte (intern und extern), alle Uebungsberichte sowie alle Vorfall- und CAPA-Aufzeichnungen.
+                    Das Verfahren gilt für das BCMS der {{ tenant.legal_name }} in seinem im BCMS-Geltungsbereich-Dokument festgelegten Umfang. Es findet Anwendung auf alle BCMS-Aufzeichnungen, alle Auditberichte (intern und extern), alle Uebungsberichte sowie alle Vorfall- und CAPA-Aufzeichnungen.
 
                     ## 3. Frequenz und Konvent
-                    Die Managementbewertung wird mindestens einmal jaehrlich durch das Top-Management der {{ tenant.legal_name }} durchgefuehrt. Frequenz {{ bcm.review_interval_months }} Monate. Konvenierende Person ist {{ roles.crisis_team_lead.fullName }} oder eine vom Top-Management benannte Vertretung. {{ roles.bcm_officer.fullName }} ist verpflichtende Teilnehmerrolle und liefert die Eingaben.
+                    Die Managementbewertung wird mindestens einmal jaehrlich durch das Top-Management der {{ tenant.legal_name }} durchgeführt. Frequenz {{ bcm.review_interval_months }} Monate. Konvenierende Person ist {{ roles.crisis_team_lead.fullName }} oder eine vom Top-Management benannte Vertretung. {{ roles.bcm_officer.fullName }} ist verpflichtende Teilnehmerrolle und liefert die Eingaben.
 
                     Empfehlung gemaess Effizienz-Kriterien: gemeinsame Managementbewertung mit ISMS-Managementbewertung (ISO/IEC 27001 Klausel 9.3); die getrennte Klausel-Abdeckung wird in einer kombinierten Agenda dokumentiert.
 
@@ -526,7 +526,7 @@ policy:
                     - **Aenderungen externer und interner Themen, die das BCMS beeinflussen** – regulatorische Aenderungen (z. B. neue NIS2-Umsetzung, DORA-RTS-Veroeffentlichungen, KRITIS-DachG-Updates), organisatorische Veraenderungen, Markt- und Wettbewerbsentwicklungen, Bedrohungslage.
                     - **Informationen zur BCMS-Leistung** – BCMS-Leistungsmetriken, BIA-Aktualitaet, Geltungsbereich-Abdeckung, RTO-Erfuellung im Test.
                     - **Vorfall-Statistiken** – Anzahl, Kategorisierung, Aktivierungen Krisenstab, MTPD-Verletzungen, regulatorische Meldungen (DORA Art. 19, KRITIS-DachG § 14, BSIG § 32, DSGVO Art. 33).
-                    - **Uebungsergebnisse** – durchgefuehrte Uebungen, Ergebnisse, identifizierte Defizite, Schliessungsquoten.
+                    - **Uebungsergebnisse** – durchgeführte Uebungen, Ergebnisse, identifizierte Defizite, Schliessungsquoten.
                     - **Audit-Ergebnisse** – interne und externe Audits, Findings-Klassifikation, Trendanalyse.
                     - **Feedback interessierter Parteien** – Aufsichtsbehoerden, Kundinnen und Kunden, Vertragspartner, Konzern-Mutter, Belegschaft.
                     - **Ergebnisse der Risikobewertung** – aktualisiertes BCM-Risikoregister, Risikoschwellenwert-Verletzungen.
@@ -590,7 +590,7 @@ policy:
                         label: 'Vorsitz und Pflicht-Teilnehmende der Managementbewertung'
                         placeholder: 'Beispiel: "Vorsitz: CEO Frau Dr. Schmidt. Pflicht-Teilnahme: COO, CFO, CIO, CISO ({{ roles.isb.fullName }}), BCM-Officer ({{ roles.bcm_officer.fullName }}), Datenschutzbeauftragte/r, Internal-Audit-Leitung, HR-Leitung, Legal-Leitung. Optional: Konzern-CISO bei dual-hatted Themen, externer Beratung."'
                     annual_kpi_dashboard:
-                        label: 'BCMS-KPI-Dashboard fuer die Managementbewertung'
+                        label: 'BCMS-KPI-Dashboard für die Managementbewertung'
                         placeholder: 'Beispiel: "RTO-Erfuellungsquote im Test (Ziel ≥ 95 Prozent), MTPD-Verletzungen pro Jahr (Ziel = 0), Major-Incidents (Trend), Krisenstabs-Aktivierungen (Anzahl pro Jahr), CAPA-Schliessungsquote (Ziel ≥ 90 Prozent in SLA), Uebungs-Abdeckung Drei-Jahres-Rolle (Ziel = 100 Prozent), Audit-Major-NC (Ziel = 0)."'
                     review_combined_isms_dora:
                         label: 'Kombinierte Reviews ueber BCMS, ISMS und DORA'
@@ -604,10 +604,10 @@ policy:
                     *Dokumentenklasse: Verfahren | Regulatorische Grundlage: ISO 22301:2019 Klausel 10.1 ("Nonconformity and corrective action"), Querverweise: ISO/IEC 27001:2022 Klausel 10.1 (gemeinsames Verfahren moeglich), EU-DORA Art. 13 (Lessons-Learned) | Geltungsbeginn: {{ generation_date }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: zwei-jaehrlich gemaess Klausel 9.3*
 
                     ## 1. Zweck und Verbindlichkeit
-                    Dieses Verfahren regelt die verbindliche Erfassung, Bewertung, Behandlung und Schliessung von Abweichungen und Korrekturmassnahmen ("CAPA") im BCMS der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 10.1. Es ist verbindlich fuer alle Beschaeftigten und Verantwortlichen im BCMS-Geltungsbereich.
+                    Dieses Verfahren regelt die verbindliche Erfassung, Bewertung, Behandlung und Schliessung von Abweichungen und Korrekturmassnahmen ("CAPA") im BCMS der {{ tenant.legal_name }} gemaess ISO 22301:2019 Klausel 10.1. Es ist verbindlich für alle Beschaeftigten und Verantwortlichen im BCMS-Geltungsbereich.
 
                     ## 2. Geltungsbereich
-                    Das Verfahren gilt fuer alle BCMS-Abweichungen und alle aus Audit-, Uebungs- und Vorfall-Aufzeichnungen abgeleiteten Korrekturmassnahmen-Bedarfe. Es deckt sowohl Major Nonconformities als auch Minor Nonconformities und Observations ab.
+                    Das Verfahren gilt für alle BCMS-Abweichungen und alle aus Audit-, Uebungs- und Vorfall-Aufzeichnungen abgeleiteten Korrekturmassnahmen-Bedarfe. Es deckt sowohl Major Nonconformities als auch Minor Nonconformities und Observations ab.
 
                     ## 3. Trigger-Quellen
                     Folgende Quellen koennen ein Abweichungs- oder Korrekturmassnahmen-Verfahren ausloesen:
@@ -617,7 +617,7 @@ policy:
                     - **Realnahe Vorfall-Erkenntnisse** (Krisenstabs-Aktivierungen, Notfaelle, Stoerungen);
                     - **Externe Beschwerden** (Kundinnen und Kunden, Vertragspartner, Aufsichtsbehoerden, Belegschaft);
                     - **Selbstmeldungen** durch Beschaeftigte (Anonyme oder offene Hinweisgebung);
-                    - **DORA-Lessons-Learned** gemaess Art. 13 DORA (verpflichtend fuer Finanzunternehmen);
+                    - **DORA-Lessons-Learned** gemaess Art. 13 DORA (verpflichtend für Finanzunternehmen);
                     - **Bedrohungslage-Aenderungen** (z. B. neue Bedrohungen, neue Schwachstellen, neue regulatorische Anforderungen).
 
                     ## 4. Erfassung und Klassifikation
@@ -626,11 +626,11 @@ policy:
                     Klassifikation gemaess Findings-Schema (siehe internes Audit-Programm § 7).
 
                     ## 5. Root-Cause-Analyse
-                    Fuer Major NC und nach Bedarf fuer Minor NC erfolgt eine Root-Cause-Analyse (RCA). Akzeptierte Methoden:
+                    Fuer Major NC und nach Bedarf für Minor NC erfolgt eine Root-Cause-Analyse (RCA). Akzeptierte Methoden:
 
-                    - **5-Why-Methode** (Standard fuer Minor NC und Observations);
-                    - **Ishikawa-Diagramm** (Fischgraet) fuer komplexere Major NC mit mehreren Ursachenkategorien;
-                    - **formelle RCA** mit externen Expertinnen oder Experten fuer existenzbedrohende Major NC oder fuer DORA-major-incidents.
+                    - **5-Why-Methode** (Standard für Minor NC und Observations);
+                    - **Ishikawa-Diagramm** (Fischgraet) für komplexere Major NC mit mehreren Ursachenkategorien;
+                    - **formelle RCA** mit externen Expertinnen oder Experten für existenzbedrohende Major NC oder für DORA-major-incidents.
 
                     Die RCA-Methode wird durch Owner gewaehlt, die Wahl wird im CAPA-Datensatz dokumentiert.
 
@@ -638,7 +638,7 @@ policy:
                     Korrekturmassnahmen werden in zwei Klassen bestimmt:
 
                     - **Sofortmassnahme** (Containment) – kurzfristige Massnahme zur Eindaemmung der Auswirkungen, binnen 30 Tagen;
-                    - **dauerhafte Korrekturmassnahme** – Beseitigung der Ursache, binnen 90 Tagen fuer Major NC, binnen 90 Tagen fuer Minor NC.
+                    - **dauerhafte Korrekturmassnahme** – Beseitigung der Ursache, binnen 90 Tagen für Major NC, binnen 90 Tagen für Minor NC.
 
                     Genehmigung: Sofortmassnahme durch Owner und {{ roles.bcm_officer.fullName }}; dauerhafte Korrekturmassnahme bei Major NC durch Top-Management gemaess {{ approval.chain }}.
 
@@ -647,9 +647,9 @@ policy:
 
                     - Sofortmassnahme: 30 Tage nach Implementierung;
                     - dauerhafte Korrekturmassnahme: 90 Tage nach Implementierung;
-                    - bei systemischen Massnahmen: zusaetzliche Pruefung nach 180 und 365 Tagen.
+                    - bei systemischen Massnahmen: zusätzliche Pruefung nach 180 und 365 Tagen.
 
-                    Pruefung erfolgt durch unabhaengige Person, niemals durch Owner allein.
+                    Pruefung erfolgt durch unabhängige Person, niemals durch Owner allein.
 
                     ## 8. Dokumentationspflichten
                     Pflichtfelder im CAPA-System: Trigger, Klassifikation, RCA-Methode und -Ergebnis, Sofortmassnahme, dauerhafte Korrekturmassnahme, Genehmigung, Implementierungsdatum, Wirksamkeitsergebnis. Aufbewahrung gemaess Klausel 7.5; Aufbewahrungsfrist mindestens fuenf Jahre, bei DORA-Bezug mindestens sieben Jahre.
@@ -674,7 +674,7 @@ policy:
                     *Dieses Verfahren wurde durch das Top-Management der {{ tenant.legal_name }} gemaess Genehmigungskette {{ approval.chain }} verabschiedet und ist ab {{ generation_date }} verbindlich.*
                 section:
                     triggers:
-                        title: 'Trigger-Quellen fuer CAPA'
+                        title: 'Trigger-Quellen für CAPA'
                         body: |-
                             Audit-Findings (Klausel 9.2), Uebungs-Lessons-Learned, Vorfall-Erkenntnisse, externe Beschwerden, Selbstmeldungen, DORA-Lessons-Learned (Art. 13), Bedrohungslage-Aenderungen.
                     classification:
@@ -692,7 +692,7 @@ policy:
                     effectiveness:
                         title: 'Wirksamkeitspruefung'
                         body: |-
-                            Sofortmassnahme: Pruefung nach 30 Tagen; dauerhafte Korrekturmassnahme: 90 Tage; systemische Massnahmen: 180 und 365 Tage. Pruefung durch unabhaengige Person, niemals nur durch Owner.
+                            Sofortmassnahme: Pruefung nach 30 Tagen; dauerhafte Korrekturmassnahme: 90 Tage; systemische Massnahmen: 180 und 365 Tage. Pruefung durch unabhängige Person, niemals nur durch Owner.
                     escalation:
                         title: 'Eskalations-Schwellenwerte'
                         body: |-
@@ -708,12 +708,12 @@ policy:
                 tailoring_field:
                     capa_tool:
                         label: 'CAPA-Tool und Datenmodell der Organisation'
-                        placeholder: 'Beispiel: "CAPA-Modul des integrierten GRC-Tools (eingebunden in das ISMS-Tool). Pflichtfelder gemaess Verfahren. Zugriff fuer alle Owner und Internal Audit. Integration mit Audit-Modul und Vorfall-Modul."'
+                        placeholder: 'Beispiel: "CAPA-Modul des integrierten GRC-Tools (eingebunden in das ISMS-Tool). Pflichtfelder gemaess Verfahren. Zugriff für alle Owner und Internal Audit. Integration mit Audit-Modul und Vorfall-Modul."'
                     rca_threshold:
-                        label: 'Schwellenwerte fuer Wahl der RCA-Methode'
-                        placeholder: 'Beispiel: "5-Why fuer alle Minor NC und Observations. Ishikawa fuer Major NC mit mehr als zwei beteiligten Fachbereichen oder Vorfall-Schaden ueber 100 TEUR. Formelle RCA mit externer Expertin oder externem Experten fuer existenzbedrohende Major NC oder bei DORA-major-incident."'
+                        label: 'Schwellenwerte für Wahl der RCA-Methode'
+                        placeholder: 'Beispiel: "5-Why für alle Minor NC und Observations. Ishikawa für Major NC mit mehr als zwei beteiligten Fachbereichen oder Vorfall-Schaden ueber 100 TEUR. Formelle RCA mit externer Expertin oder externem Experten für existenzbedrohende Major NC oder bei DORA-major-incident."'
                     capa_kpi:
-                        label: 'CAPA-KPI fuer die Managementbewertung'
+                        label: 'CAPA-KPI für die Managementbewertung'
                         placeholder: 'Beispiel: "Schliessungsquote pro Quartal (Ziel ≥ 90 Prozent in SLA). Wiederhol-Quote (Ziel = 0 Prozent gleiche Major NC binnen 24 Monaten). Durchschnittliche Schliessungs-Dauer Major NC (Ziel ≤ 60 Tage). Durchschnittliche Schliessungs-Dauer Minor NC (Ziel ≤ 30 Tage)."'
         notfallhandbuch_bsi_2004:
             v1:
@@ -724,9 +724,9 @@ policy:
                     *Dokumentenklasse: Programm (uebergeordnete Dokumentation, die alle BCMS-Architekturbeschreibungen buendelt) | Regulatorische Grundlage: BSI 200-4:2023 Kapitel 7 ("Notfallhandbuch"), Querverweise: ISO 22301:2019 Klauseln 4–10 (Gesamt-BCMS), ISO/IEC 27001:2022 A.5.29 und A.5.30, BSI Grundschutz Baustein DER.4 ("Notfallmanagement"), KRITIS-Dachgesetz §§ 11–13 (Resilienzpflichten), KRITIS-Stufenmodell-2023 des BBK | Geltungsbeginn: {{ generation_date }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: jaehrlich gemaess BSI 200-4 Kap. 7.4 sowie ad hoc bei wesentlichen Aenderungen | Klassifikation: Intern-Vertraulich*
 
                     ## 1. Zweck und Verbindlichkeit
-                    Das Notfallhandbuch buendelt saemtliche Architektur-, Governance- und Verfahrensdokumente des Notfallmanagements der {{ tenant.legal_name }} in einem konsolidierten Referenzdokument gemaess BSI 200-4:2023 Kapitel 7. Es ist die zentrale Anlaufstelle fuer alle im Notfall- oder Krisenfall handelnden Personen, fuer Aufsichtsbehoerden und fuer interne und externe Auditoren.
+                    Das Notfallhandbuch buendelt saemtliche Architektur-, Governance- und Verfahrensdokumente des Notfallmanagements der {{ tenant.legal_name }} in einem konsolidierten Referenzdokument gemaess BSI 200-4:2023 Kapitel 7. Es ist die zentrale Anlaufstelle für alle im Notfall- oder Krisenfall handelnden Personen, für Aufsichtsbehoerden und für interne und externe Auditoren.
 
-                    Fuer Tenants mit BSI-200-4-Adoption ist das Notfallhandbuch verbindlich. Fuer KRITIS-Betreiber im Sinne des KRITIS-Dachgesetzes (KRITIS-DachG) erfuellt das Notfallhandbuch zusammen mit dem KRITIS-Stufenmodell-2023 des Bundesamtes fuer Bevoelkerungsschutz und Katastrophenhilfe (BBK) die Nachweispflicht der resilienzorientierten Stabsorganisation gemaess §§ 11–13 KRITIS-DachG.
+                    Fuer Tenants mit BSI-200-4-Adoption ist das Notfallhandbuch verbindlich. Fuer KRITIS-Betreiber im Sinne des KRITIS-Dachgesetzes (KRITIS-DachG) erfuellt das Notfallhandbuch zusammen mit dem KRITIS-Stufenmodell-2023 des Bundesamtes für Bevoelkerungsschutz und Katastrophenhilfe (BBK) die Nachweispflicht der resilienzorientierten Stabsorganisation gemaess §§ 11–13 KRITIS-DachG.
 
                     Das Notfallhandbuch ersetzt nicht die im BCMS getrennt zu fuehrenden Einzeldokumente; es buendelt sie und stellt deren Zusammenwirken nachvollziehbar dar.
 
@@ -755,15 +755,15 @@ policy:
                     ## 4. Governance und Verantwortlichkeiten
                     Gemaess BSI 200-4 Kap. 4.4:
 
-                    - **Top-Management** – Letztverantwortung fuer das Notfallmanagement gemaess BSI 200-4 Kap. 4.1; jaehrliche Genehmigung der Notfallleitlinie und des Notfallhandbuchs.
+                    - **Top-Management** – Letztverantwortung für das Notfallmanagement gemaess BSI 200-4 Kap. 4.1; jaehrliche Genehmigung der Notfallleitlinie und des Notfallhandbuchs.
                     - **Notfallbeauftragte/r** – {{ roles.bcm_officer.fullName }}: operative Steuerung des Notfallmanagements, Schnittstelle zu BIA, BC-Strategie und BC-Plaenen.
                     - **Stellvertretung Notfallbeauftragte/r** – verbindlich gemaess BSI 200-4 Kap. 4.4 Stellvertreterprinzip.
                     - **Vorsitz Krisenstab** – {{ roles.crisis_team_lead.fullName }}: Krisenstabsleitung gemaess BSI 200-4 Kap. 5.4.
                     - **Informationssicherheitsbeauftragte/r (ISB)** – {{ roles.isb.fullName }}: Schnittstelle zu IKT-Vorfaellen und Cyber-Krisen.
-                    - **BC-Plan-Verantwortliche** – pro Geschaeftsprozess; Verantwortung fuer Aktualitaet und Test.
+                    - **BC-Plan-Verantwortliche** – pro Geschaeftsprozess; Verantwortung für Aktualitaet und Test.
 
                     ## 5. KRITIS-Bezug und Stufenmodell-2023
-                    Sofern die {{ tenant.legal_name }} KRITIS-Betreiberin ist, gilt zusaetzlich:
+                    Sofern die {{ tenant.legal_name }} KRITIS-Betreiberin ist, gilt zusätzlich:
 
                     - **KRITIS-Stufenmodell-2023** des BBK – Klassifikation der KRITIS-Anlage in Stufen 1 bis 4; je Stufe definierte Resilienzmindeststandards;
                     - **KRITIS-DachG § 13** – verbindliche Resilienzpruefungen alle zwei Jahre;
@@ -772,7 +772,7 @@ policy:
                     - **BSIG § 8a** – Stand der Technik in der KRITIS-Praxis;
                     - **BSIG § 32** – Meldepflichten gemaess NIS2-Umsetzung.
 
-                    Fuer KRITIS-Anlagen wird zusaetzlich ein KRITIS-Annex zum Notfallhandbuch gefuehrt mit Stufenklassifikation, Resilienzmassnahmen und Schnittstellen zur Behoerde (BSI Bonn, BBK Bonn, ggf. zustaendige Landesbehoerde).
+                    Fuer KRITIS-Anlagen wird zusätzlich ein KRITIS-Annex zum Notfallhandbuch gefuehrt mit Stufenklassifikation, Resilienzmassnahmen und Schnittstellen zur Behoerde (BSI Bonn, BBK Bonn, ggf. zustaendige Landesbehoerde).
 
                     ## 6. Schnittstellen zu anderen Managementsystemen
                     Das Notfallmanagement der {{ tenant.legal_name }} ist mit weiteren Managementsystemen verzahnt:
@@ -789,7 +789,7 @@ policy:
                     - primaerer Krisenstabsraum mit gesicherter Telekommunikation, redundanter Stromversorgung und Out-of-Band-Verbindung;
                     - Ausweich-Krisenstabsraum an einem geographisch getrennten Standort;
                     - ausgedruckte Notfall-Kontaktlisten und BC-Plaene in beiden Krisenstabsraeumen;
-                    - Notverpflegung fuer 24 Stunden Stabsarbeit;
+                    - Notverpflegung für 24 Stunden Stabsarbeit;
                     - bei Cyber-Krise: isolierte Infrastruktur (dedizierte Mobiltelefone, externer Cloud-Dienst mit Out-of-Band-Authentifizierung).
 
                     ## 8. Glossar
@@ -823,7 +823,7 @@ policy:
                     - **Aufbewahrungsfrist** – mindestens fuenf Jahre, bei DORA-Bezug mindestens sieben Jahre, bei KRITIS-Bezug mindestens fuenf Jahre.
 
                     ## 10. Notfall-Erstreaktions-Karte
-                    Anlage des Notfallhandbuchs ist die Notfall-Erstreaktions-Karte (auf einem oder zwei DIN-A4-Seiten ausgedruckt verteilt im Unternehmen). Sie enthaelt: Notruf-Nummern (110, 112), Notfallhotline der {{ tenant.legal_name }}, Erstreaktions-Schritte fuer fuenf Standardszenarien (Brand, Cyber, Stromausfall, Standortausfall, Personenschaden), Verhaltensregeln und Eskalationsweg.
+                    Anlage des Notfallhandbuchs ist die Notfall-Erstreaktions-Karte (auf einem oder zwei DIN-A4-Seiten ausgedruckt verteilt im Unternehmen). Sie enthaelt: Notruf-Nummern (110, 112), Notfallhotline der {{ tenant.legal_name }}, Erstreaktions-Schritte für fuenf Standardszenarien (Brand, Cyber, Stromausfall, Standortausfall, Personenschaden), Verhaltensregeln und Eskalationsweg.
 
                     ## 11. KRITIS-Annex (sofern zutreffend)
                     Sofern KRITIS-Bezug:
@@ -833,7 +833,7 @@ policy:
                     - Schnittstelle zu BSI Bonn, BBK Bonn, zustaendiger Landesbehoerde;
                     - Resilienzmassnahmen gemaess KRITIS-DachG § 13;
                     - Stoerungsmelde-Vorlagen gemaess KRITIS-DachG § 14;
-                    - Verlautbarungs-Hilfe fuer behoerdliche Krisenkommunikation.
+                    - Verlautbarungs-Hilfe für behoerdliche Krisenkommunikation.
 
                     ## 12. Pruef- und Aenderungszyklus
                     Das Notfallhandbuch wird mindestens jaehrlich (Kadenz {{ bcm.review_interval_months }} Monate) ueberprueft sowie ad hoc bei wesentlichen Aenderungen (Geltungsbereichs-Aenderung, regulatorische Aenderung, Eintritt eines major incident, geaenderte Bedrohungslage, organisatorische Restrukturierung). Genehmigung Aenderungen ueber {{ approval.chain }}.
@@ -885,4 +885,4 @@ policy:
                         placeholder: 'Beispiel: "Vorstand vollstaendig (5 Personen). Krisenstab inkl. Stellvertretungen (18 Personen). BC-Plan-Verantwortliche pro kritischer Geschaeftsprozess (12 Personen). Internal Audit Leitung (1 Person). Datenschutzbeauftragte/r (1 Person). Konzernmutter Konzern-CISO (1 Person). Insgesamt 38 Personen mit Distribution-Tracking im Dokumenten-Modul."'
                     emergency_quick_reference:
                         label: 'Inhalt der Notfall-Erstreaktions-Karte'
-                        placeholder: 'Beispiel: "Seite 1: Notruf 110 / 112; Notfallhotline der Organisation: +49 800 1234567 (24/7); Notfallbeauftragte/r {{ roles.bcm_officer.fullName }} Mobil: 0151-XXXXXXX. Seite 2: Erstreaktion fuer Brand (3 Schritte), Cyber (3 Schritte), Stromausfall (3 Schritte), Standortausfall (3 Schritte), Personenschaden (3 Schritte). Verhaltensregel: Sammelpunkt physisch Konferenzzentrum Hauptgebaeude EG."'
+                        placeholder: 'Beispiel: "Seite 1: Notruf 110 / 112; Notfallhotline der Organisation: +49 800 1234567 (24/7); Notfallbeauftragte/r {{ roles.bcm_officer.fullName }} Mobil: 0151-XXXXXXX. Seite 2: Erstreaktion für Brand (3 Schritte), Cyber (3 Schritte), Stromausfall (3 Schritte), Standortausfall (3 Schritte), Personenschaden (3 Schritte). Verhaltensregel: Sammelpunkt physisch Konferenzzentrum Hauptgebaeude EG."'

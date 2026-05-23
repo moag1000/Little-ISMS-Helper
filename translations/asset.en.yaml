@@ -234,14 +234,14 @@ asset:
     owner_user: -- Select owner --
     owner_person: -- Select Person from master data --
   type:
-    information: Information
-    software: Software
-    hardware: Hardware
-    service: Service
-    personnel: Personnel
-    physical: Physical
-    ai_agent: AI Agent
-    data: Data
+    information: 'Information'
+    software: 'Software (application, library, OS)'
+    hardware: 'Hardware (server, workstation, network device)'
+    service: 'Service (cloud, SaaS, external provider)'
+    personnel: 'Personnel'
+    physical: 'Physical (building, room, lock)'
+    ai_agent: 'AI Agent (EU AI Act)'
+    data: 'Data'
     network: Network
     facility: Facility
     other: Other

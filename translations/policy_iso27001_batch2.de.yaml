@@ -14,7 +14,7 @@ policy:
                     ## 2. Geltungsbereich
                     Geltungsbereich ist saemtliche IT-Verarbeitung im ISMS-Scope ({{ tenant.scope_statement }}). Eingeschlossen sind eigene Server, Clients, mobile Endgeraete, Netzkomponenten, Cloud-Tenants ({{ cloud.providers }}), SaaS-Plattformen, Industrie- und Steuerungssysteme (sofern im Scope), Code-Signing-Pipelines, eMail-Gateways, VPN- und Zero-Trust-Gateways, Backup-Systeme, externe Datentraeger sowie Druck- und Archivierungs-Schnittstellen. Erfasst sind alle Mitarbeitenden, Auftragnehmer, Praktikantinnen und Praktikanten sowie Auftragsverarbeiter im Sinne von DSGVO Art. 28.
 
-                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 wird der Klimawandel als externer Faktor in die Bewertung kryptografischer Verfahren einbezogen: Energieaufwand groesserer Schluessellaengen und PQC-Verfahren wird im Rahmen der Beschaffung und Algorithmen-Auswahl beruecksichtigt; Standortrisiken (Hitze, Kuehlversagen) fuer HSM und Schluesselverwaltungs-Infrastruktur sind Teil der Risikobeurteilung gemaess Klausel 6.1.2.
+                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 wird der Klimawandel als externer Faktor in die Bewertung kryptografischer Verfahren einbezogen: Energieaufwand groesserer Schluessellaengen und PQC-Verfahren wird im Rahmen der Beschaffung und Algorithmen-Auswahl beruecksichtigt; Standortrisiken (Hitze, Kuehlversagen) für HSM und Schluesselverwaltungs-Infrastruktur sind Teil der Risikobeurteilung gemaess Klausel 6.1.2.
 
                     ## 3. Risiko- und Schutzbedarfsausrichtung
                     Kryptografische Verfahren werden risikobasiert gemaess der Datenklassifizierung ({{ data.classification_levels }}) und dem Schutzbedarf der Informations-Assets ausgewaehlt. Die Wirksamkeitsbewertung beruecksichtigt Vertraulichkeitsdauer der Information ("Harvest-Now-Decrypt-Later"-Risiko), regulatorische Mindeststandards, das aktuelle Bedrohungsbild (Threat-Intelligence, A.5.7) sowie die Risikoneigung {{ risk.appetite_tier }} der Organisation.
@@ -22,13 +22,13 @@ policy:
                     ## 4. Zugelassene Algorithmen und Mindest-Schluessellaengen
                     Verbindlich sind die nachfolgenden Verfahren ({{ crypto.algorithms }}); Abweichungen beduerfen der Genehmigung gemaess Abschnitt 12:
 
-                    - **Symmetrische Verschluesselung:** AES-256 in den Modi GCM (bevorzugt fuer Neuanbindungen wegen integrierter Authentifizierung), CCM oder XTS (Vollverschluesselung). AES-128 nur fuer Bestandssysteme bis Migration; ChaCha20-Poly1305 fuer mobile/eingebettete Plattformen ohne AES-Hardware.
-                    - **Asymmetrische Verfahren:** RSA mit Mindest-Schluessellaenge 3072 Bit (ab 2030: 4096 Bit), ECDSA P-256 oder P-384, Ed25519 fuer Signaturen, ECDH P-256/P-384 oder X25519 fuer Schluesselaustausch.
+                    - **Symmetrische Verschluesselung:** AES-256 in den Modi GCM (bevorzugt für Neuanbindungen wegen integrierter Authentifizierung), CCM oder XTS (Vollverschluesselung). AES-128 nur für Bestandssysteme bis Migration; ChaCha20-Poly1305 für mobile/eingebettete Plattformen ohne AES-Hardware.
+                    - **Asymmetrische Verfahren:** RSA mit Mindest-Schluessellaenge 3072 Bit (ab 2030: 4096 Bit), ECDSA P-256 oder P-384, Ed25519 für Signaturen, ECDH P-256/P-384 oder X25519 für Schluesselaustausch.
                     - **Hash-Verfahren:** SHA-256, SHA-384, SHA-512 oder SHA-3-Familie. SHA-1 und MD5 sind sicherheitsrelevant verboten; eine Restnutzung in nicht-sicherheitskritischen Pruefsummen ist zulaessig.
                     - **Schluesselableitung und Passwort-Hashing:** Argon2id (bevorzugt), scrypt oder PBKDF2 mit mindestens 600 000 Iterationen.
-                    - **Transportverschluesselung:** TLS 1.3 ist Zielgroesse fuer alle Neuanbindungen; TLS 1.2 weiterhin zulaessig mit Forward-Secrecy-Suiten. Verbote: SSL aller Versionen, TLS 1.0/1.1, NULL-/EXPORT-/anonymen Suiten.
+                    - **Transportverschluesselung:** TLS 1.3 ist Zielgroesse für alle Neuanbindungen; TLS 1.2 weiterhin zulaessig mit Forward-Secrecy-Suiten. Verbote: SSL aller Versionen, TLS 1.0/1.1, NULL-/EXPORT-/anonymen Suiten.
                     - **Disk- und File-Encryption:** LUKS2/dm-crypt (Linux), BitLocker mit XTS-AES-256 (Windows), FileVault (macOS); Mobilgeraete gemaess Hersteller-Plattform-Verschluesselung mit Schluesselhinterlegung im MDM.
-                    - **Code- und Container-Signing:** Sigstore/Cosign oder gleichwertige Verfahren fuer Container-Images; PE-/JAR-/RPM-Signing mit Hersteller-Schluesseln aus HSM.
+                    - **Code- und Container-Signing:** Sigstore/Cosign oder gleichwertige Verfahren für Container-Images; PE-/JAR-/RPM-Signing mit Hersteller-Schluesseln aus HSM.
                     - **Quantenresistente Verfahren (Hybrid):** ML-KEM (FIPS 203) und ML-DSA (FIPS 204) als Hybrid-Komponenten gemaess BSI TR-02102-1 ab Pilot-Roadmap (siehe Abschnitt 11).
 
                     Verbotene Verfahren: DES, 3DES (final ab 2026), RC4, Blowfish, anonyme Diffie-Hellman-Gruppen, statische DH-Gruppen kleiner als 2048 Bit, MD5/SHA-1 in sicherheitsrelevanten Funktionen, RSA kleiner als 2048 Bit.
@@ -37,14 +37,14 @@ policy:
                     Jeder kryptografische Schluessel durchlaeuft die Phasen Erzeugung, Verteilung, Speicherung, Nutzung, Rotation, Sperrung, Vernichtung. Saemtliche Phasenuebergaenge sind im zentralen Schluessel-Inventar ({{ crypto.key_inventory_system }}) revisionssicher zu dokumentieren.
 
                     - **Erzeugung:** ausschliesslich in HSM oder Software-KMS mit FIPS 140-3 Level 2 (Mindeststandard) und qualifizierten Zufallszahlengeneratoren (TRNG oder zertifizierter PRNG).
-                    - **Verteilung:** ausschliesslich verschluesselt; Schluesselsplitting nach M-of-N-Prinzip fuer Wurzel- und Master-Schluessel.
+                    - **Verteilung:** ausschliesslich verschluesselt; Schluesselsplitting nach M-of-N-Prinzip für Wurzel- und Master-Schluessel.
                     - **Speicherung:** Hardcoded Secrets in Quellcode, Konfigurationsdateien oder Container-Images sind verboten und gelten als kritisches Sicherheitsereignis. Geheimnisse werden im zentralen Secret-Management-System ({{ crypto.secret_manager }}) verwaltet.
                     - **Rotation:** Default-Intervalle: Datenverschluesselungs-Schluessel mindestens alle 24 Monate; TLS-Server-Zertifikate alle 12 Monate; Code-Signing alle 36 Monate; JWT-Signing alle 6 Monate; PIM/PAM-Token alle 90 Tage; SSH-Hostkeys bei Re-Image. Kuerzere Intervalle sind zulaessig; Verlaengerungen beduerfen einer dokumentierten Risikoakzeptanz.
                     - **Sperrung:** kompromittierte Schluessel sind innerhalb von 1 Stunde nach Bekanntwerden zu sperren; CRL/OCSP-Aktualisierung innerhalb 4 Stunden.
                     - **Vernichtung:** kryptografisches Loeschen oder physische Zerstoerung des Speichermediums (DIN 66399 Schutzklasse mindestens 3); Bestaetigungsnachweis 7 Jahre archivieren.
 
                     ## 6. Public-Key-Infrastruktur (PKI) und Zertifikate
-                    Eine interne Zwei-Stufen-PKI (offline Root-CA, online Issuing-CA) wird gemaess BSI CON.1.A19 betrieben. Externe Zertifikate ausschliesslich von oeffentlich vertrauenswuerdigen CAs nach CA/Browser-Forum-Baseline-Requirements. Lifecycle-Verwaltung umfasst automatisierte Ablauf-Ueberwachung, Pre-Expiry-Alerting (60/30/7 Tage), unterbrechungsfreie Erneuerung sowie Revocation-Management ueber CRL und/oder OCSP-Stapling. ACME (RFC 8555) ist fuer interne Service-Identitaeten zugelassen.
+                    Eine interne Zwei-Stufen-PKI (offline Root-CA, online Issuing-CA) wird gemaess BSI CON.1.A19 betrieben. Externe Zertifikate ausschliesslich von oeffentlich vertrauenswuerdigen CAs nach CA/Browser-Forum-Baseline-Requirements. Lifecycle-Verwaltung umfasst automatisierte Ablauf-Ueberwachung, Pre-Expiry-Alerting (60/30/7 Tage), unterbrechungsfreie Erneuerung sowie Revocation-Management ueber CRL und/oder OCSP-Stapling. ACME (RFC 8555) ist für interne Service-Identitaeten zugelassen.
 
                     ## 7. Verantwortlichkeiten (RACI)
                     | Aktivitaet | R | A | C | I |
@@ -60,13 +60,13 @@ policy:
                     Bei Cloud- und SaaS-Diensten ist BYOK / HYOK zu praeferieren, wo regulatorisch erforderlich (DORA Art. 28, BAIT/MaRisk-Erbe). Anbieter-eigene Schluessel sind nur akzeptabel, wenn vertraglich Schluessel-Trennung, Mandantenisolation, Audit-Recht und Schluessel-Vernichtungsbestaetigungen zugesichert sind. Schluessel-Hoheit ist im Verzeichnis von Verarbeitungstaetigkeiten (DSGVO Art. 30) zu dokumentieren.
 
                     ## 9. Sichere Implementierung
-                    Eigenentwicklungen verwenden ausschliesslich anerkannte kryptografische Bibliotheken ({{ crypto.libraries }} – z. B. libsodium, BoringSSL, Bouncy Castle, .NET Cryptography). Eigenentwicklung kryptografischer Primitive ist verboten ("don't roll your own crypto"). Code-Reviews pruefen typische Implementierungsfehler (statische IVs, Padding-Oracle, Nonce-Reuse, Timing-Side-Channels). Statische Code-Analyse und SAST-Regelwerke fuer Kryptografie sind in der CI-Pipeline zu aktivieren (siehe Secure-Development-Richtlinie).
+                    Eigenentwicklungen verwenden ausschliesslich anerkannte kryptografische Bibliotheken ({{ crypto.libraries }} – z. B. libsodium, BoringSSL, Bouncy Castle, .NET Cryptography). Eigenentwicklung kryptografischer Primitive ist verboten ("don't roll your own crypto"). Code-Reviews pruefen typische Implementierungsfehler (statische IVs, Padding-Oracle, Nonce-Reuse, Timing-Side-Channels). Statische Code-Analyse und SAST-Regelwerke für Kryptografie sind in der CI-Pipeline zu aktivieren (siehe Secure-Development-Richtlinie).
 
                     ## 10. Schluessel-Recovery und Hinterlegung
-                    Fuer Vollverschluesselungs-Schluessel (BitLocker, FileVault, LUKS) wird ein Key-Escrow im MDM bzw. Active-Directory-Recovery realisiert; Zugriff erfolgt unter Vier-Augen-Prinzip mit Audit-Logging. Backup-Schluessel sind getrennt von den Backup-Daten zu verwahren; Recovery-Tests gemaess Backup-Richtlinie (A.8.13) muessen Schluessel-Restore mit umfassen.
+                    Fuer Vollverschluesselungs-Schluessel (BitLocker, FileVault, LUKS) wird ein Key-Escrow im MDM bzw. Active-Directory-Recovery realisiert; Zugriff erfolgt unter Vier-Augen-Prinzip mit Audit-Logging. Backup-Schluessel sind getrennt von den Backup-Daten zu verwahren; Recovery-Tests gemaess Backup-Richtlinie (A.8.13) müssen Schluessel-Restore mit umfassen.
 
                     ## 11. Post-Quanten-Kryptografie (PQC)
-                    Die Organisation verfolgt einen abgestuften Hybrid-Ansatz gemaess BSI-TR-02102-1 und NIST-PQC-Standards. Schritte: (1) PQC-Inventar mit Schutzdauer-Bewertung; (2) Identifikation Harvest-Now-Decrypt-Later-Daten (Schutzdauer groesser 5 Jahre); (3) Hybrid-Pilot fuer TLS und Code-Signing bis {{ pqc.hybrid_pilot_due }}; (4) priorisierte Migration vertraulicher Langzeit-Daten; (5) Lieferanten- und Cloud-Provider-Verpflichtung zur PQC-Roadmap. Fortschritt wird im Management Review (Klausel 9.3) berichtet.
+                    Die Organisation verfolgt einen abgestuften Hybrid-Ansatz gemaess BSI-TR-02102-1 und NIST-PQC-Standards. Schritte: (1) PQC-Inventar mit Schutzdauer-Bewertung; (2) Identifikation Harvest-Now-Decrypt-Later-Daten (Schutzdauer groesser 5 Jahre); (3) Hybrid-Pilot für TLS und Code-Signing bis {{ pqc.hybrid_pilot_due }}; (4) priorisierte Migration vertraulicher Langzeit-Daten; (5) Lieferanten- und Cloud-Provider-Verpflichtung zur PQC-Roadmap. Fortschritt wird im Management Review (Klausel 9.3) berichtet.
 
                     ## 12. Ausnahmen und Abweichungen
                     Abweichungen beduerfen einer dokumentierten Risikoakzeptanz durch CISO {{ roles.ciso.fullName }} mit Bezug auf das Risikoregister, befristet auf maximal 12 Monate, mit kompensierenden Massnahmen und festgelegtem Re-Review. Abweichungen werden quartalsweise dem ISMS-Lenkungskreis berichtet.
@@ -95,11 +95,11 @@ policy:
                         body: |
                             Die folgenden Algorithmen und Mindest-Schluessellaengen sind verbindlich anzuwenden ({{ crypto.allowed_algorithms }}):
 
-                            - **Symmetrische Verschluesselung:** AES-256 (CBC, GCM, CCM); fuer neue Implementierungen ist AES-256-GCM zu bevorzugen wegen integrierter Authentifizierung. AES-128 ist fuer bestehende Systeme zulaessig, fuer neue Implementierungen jedoch zu vermeiden.
-                            - **Asymmetrische Verschluesselung:** RSA mit Mindest-Schluessellaenge 3072 Bit, ECDSA P-256 oder P-384, Ed25519 fuer Signaturverfahren.
-                            - **Hash-Verfahren:** SHA-256, SHA-384, SHA-512, SHA-3-Familie. SHA-1 und MD5 sind ausschliesslich fuer Nicht-Sicherheits-Anwendungsfaelle (z.B. Pruefsummen) zulaessig.
-                            - **Schluesselableitung:** PBKDF2 mit min. 600.000 Iterationen, scrypt, Argon2id (bevorzugt fuer Passwort-Hashing).
-                            - **Transportverschluesselung:** TLS 1.2 als Minimum, TLS 1.3 ist die strategische Zielgroesse fuer alle Neuanbindungen ab dem Geschaeftsjahr 2026.
+                            - **Symmetrische Verschluesselung:** AES-256 (CBC, GCM, CCM); für neue Implementierungen ist AES-256-GCM zu bevorzugen wegen integrierter Authentifizierung. AES-128 ist für bestehende Systeme zulaessig, für neue Implementierungen jedoch zu vermeiden.
+                            - **Asymmetrische Verschluesselung:** RSA mit Mindest-Schluessellaenge 3072 Bit, ECDSA P-256 oder P-384, Ed25519 für Signaturverfahren.
+                            - **Hash-Verfahren:** SHA-256, SHA-384, SHA-512, SHA-3-Familie. SHA-1 und MD5 sind ausschliesslich für Nicht-Sicherheits-Anwendungsfaelle (z.B. Pruefsummen) zulaessig.
+                            - **Schluesselableitung:** PBKDF2 mit min. 600.000 Iterationen, scrypt, Argon2id (bevorzugt für Passwort-Hashing).
+                            - **Transportverschluesselung:** TLS 1.2 als Minimum, TLS 1.3 ist die strategische Zielgroesse für alle Neuanbindungen ab dem Geschaeftsjahr 2026.
 
                             **Verbotene Verfahren:** DES, 3DES (ab 2026 vollstaendig), RC4, Blowfish, MD5 (sicherheitskritisch), SHA-1 (sicherheitskritisch), RSA <2048 Bit, statische Diffie-Hellman-Gruppen <2048 Bit, alle TLS-Versionen <1.2, SSL in jeder Version. Cipher-Suites mit NULL-Encryption, EXPORT-Grade oder anonymem Schluesselaustausch sind kategorisch verboten.
                     3:
@@ -117,7 +117,7 @@ policy:
                     4:
                         title: 'PKI und Zertifikate'
                         body: |
-                            Eine interne Public-Key-Infrastruktur wird fuer interne Anwendungen, Service-zu-Service-Kommunikation und Maschinen-Identitaeten betrieben. Externe Zertifikate (z.B. fuer oeffentlich erreichbare Webdienste) stammen ausschliesslich von oeffentlich vertrauenswuerdigen CAs nach CA/Browser-Forum-Baseline-Requirements.
+                            Eine interne Public-Key-Infrastruktur wird für interne Anwendungen, Service-zu-Service-Kommunikation und Maschinen-Identitaeten betrieben. Externe Zertifikate (z.B. für oeffentlich erreichbare Webdienste) stammen ausschliesslich von oeffentlich vertrauenswuerdigen CAs nach CA/Browser-Forum-Baseline-Requirements.
 
                             Die Zertifikats-Lifecycle-Verwaltung umfasst automatisierte Ueberwachung der Ablaufdaten, Pre-Expiry-Alerting (60/30/7 Tage), unterbrechungsfreie Erneuerung und Revocation-Management ueber CRL und/oder OCSP.
                     5:
@@ -155,13 +155,13 @@ policy:
                 tailoring_field:
                     1:
                         label: 'Krypto-Baseline-Quelle'
-                        placeholder: 'z.B. BSI TR-02102-1 Stand 2026 in Verbindung mit NIST FIPS 140-3 Level 2 fuer alle Schluesselspeicher.'
+                        placeholder: 'z.B. BSI TR-02102-1 Stand 2026 in Verbindung mit NIST FIPS 140-3 Level 2 für alle Schluesselspeicher.'
                     2:
                         label: 'Eingesetzte KMS/HSM-Loesung'
-                        placeholder: 'z.B. AWS KMS in eu-central-1 fuer Cloud-Dienste, dedizierte HSM-Cluster in Frankfurt fuer On-Premises-Anwendungen.'
+                        placeholder: 'z.B. AWS KMS in eu-central-1 für Cloud-Dienste, dedizierte HSM-Cluster in Frankfurt für On-Premises-Anwendungen.'
                     3:
                         label: 'PQC-Migrationsfenster'
-                        placeholder: 'z.B. Hybrid-TLS-Pilot ab Q3/2026, vollstaendige PQC-Bereitschaft bis Ende 2028 fuer alle nach aussen exponierten Dienste.'
+                        placeholder: 'z.B. Hybrid-TLS-Pilot ab Q3/2026, vollstaendige PQC-Bereitschaft bis Ende 2028 für alle nach aussen exponierten Dienste.'
 
         backup:
             v1:
@@ -172,7 +172,7 @@ policy:
                     *Dokumentenklasse: Themenrichtlinie | Norm-Anker: ISO/IEC 27001:2022 A.8.13 (Information backup) | ISO/IEC 27002:2022 § 8.13 | A.5.29/A.5.30 (ICT continuity) | BSI CON.3 (Datensicherungskonzept) | BSI 200-4 BCM | DSGVO Art. 32 Abs. 1 lit. c | DORA Art. 12 (ICT business continuity, backup) | NIS2 Art. 21 Abs. 2 lit. c | Edition: {{ policy.edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
 
                     ## 1. Zweck
-                    Diese Richtlinie regelt verbindlich Strategie, Verfahren, Umfang, Aufbewahrung, Schutz, Wiederherstellungs- und Test-Anforderungen fuer die Datensicherung im Geltungsbereich des Informationssicherheits-Managementsystems der {{ tenant.legal_name }}. Sie setzt ISO/IEC 27001:2022 Annex A 8.13 (woertlich gefordertes ISMS-Dokument) um und ergaenzt die Anforderungen aus BSI CON.3 (Datensicherungskonzept), BSI 200-4 (BCM-Standard), DSGVO Art. 32 Abs. 1 lit. c, EU-DORA Art. 12 sowie NIS2 Art. 21 Abs. 2 lit. c. Ziel ist die Wiederherstellbarkeit von Informationen, Anwendungen und Systemen innerhalb der vereinbarten RPO/RTO sowie die Resilienz gegen Ransomware und destruktive Angriffe.
+                    Diese Richtlinie regelt verbindlich Strategie, Verfahren, Umfang, Aufbewahrung, Schutz, Wiederherstellungs- und Test-Anforderungen für die Datensicherung im Geltungsbereich des Informationssicherheits-Managementsystems der {{ tenant.legal_name }}. Sie setzt ISO/IEC 27001:2022 Annex A 8.13 (woertlich gefordertes ISMS-Dokument) um und ergaenzt die Anforderungen aus BSI CON.3 (Datensicherungskonzept), BSI 200-4 (BCM-Standard), DSGVO Art. 32 Abs. 1 lit. c, EU-DORA Art. 12 sowie NIS2 Art. 21 Abs. 2 lit. c. Ziel ist die Wiederherstellbarkeit von Informationen, Anwendungen und Systemen innerhalb der vereinbarten RPO/RTO sowie die Resilienz gegen Ransomware und destruktive Angriffe.
 
                     ## 2. Geltungsbereich
                     Erfasst sind saemtliche Informations-Assets im ISMS-Scope ({{ tenant.scope_statement }}): Produktivdaten, Datenbanken, virtuelle Maschinen, Container, Konfigurationen ("Infrastructure-as-Code"), Quellcode-Repositories, Identity-Stores, Verschluesselungs-Schluessel (siehe Krypto-Richtlinie), Anwendungs-Logs (siehe Logging-Richtlinie), eMail-Postfaecher, Kollaborationsdaten (Files, Wikis), SaaS-Mandanten ({{ saas.systems_in_scope }}), Mobilgeraete (sofern dienstliche Daten lokal vorgehalten werden), Endbenutzer-Profile soweit erforderlich. Backup-Schluessel werden in der Krypto-Richtlinie geregelt.
@@ -181,9 +181,9 @@ policy:
 
                     ## 3. Schutzziele und Prinzipien
                     - **3-2-1-1-0-Regel:** mindestens 3 Kopien (1 Produktiv + 2 Backups), auf 2 unterschiedlichen Medientypen, davon 1 raeumlich getrennt (off-site), 1 offline/immutable (Air-Gap oder Object-Lock), 0 Fehler bei Restore-Tests.
-                    - **Immutable Backups:** WORM/Object-Lock fuer mindestens eine Kopie zur Ransomware-Resilienz; Mindest-Sperrfrist gemaess Aufbewahrungsstufe.
+                    - **Immutable Backups:** WORM/Object-Lock für mindestens eine Kopie zur Ransomware-Resilienz; Mindest-Sperrfrist gemaess Aufbewahrungsstufe.
                     - **Verschluesselung:** Backup-Daten in transit und at rest gemaess Krypto-Richtlinie (A.8.24); Schluesselverwaltung getrennt von Backup-Daten.
-                    - **Trennung der Pflichten:** Backup-Operatoren haben keine Loesch- oder Schluessel-Hoheit; Vier-Augen-Prinzip fuer destruktive Operationen.
+                    - **Trennung der Pflichten:** Backup-Operatoren haben keine Loesch- oder Schluessel-Hoheit; Vier-Augen-Prinzip für destruktive Operationen.
                     - **Mandanten-Trennung:** kein Cross-Tenant-Restore; tenant_id-basierte Isolation auch im Backup-System.
 
                     ## 4. RPO, RTO und Klassifizierung
@@ -200,17 +200,17 @@ policy:
 
                     ## 5. Backup-Verfahren und Frequenz
                     - **Voll-Sicherung:** mindestens woechentlich (Sonntag), bei Tier-0/1 auch zweimal woechentlich.
-                    - **Inkrementell / differentiell:** taeglich, ergaenzend Snapshots im Stundenraster fuer Tier 0.
+                    - **Inkrementell / differentiell:** taeglich, ergaenzend Snapshots im Stundenraster für Tier 0.
                     - **Datenbank-Sicherung:** Transaction-Log-Backups gemaess RPO-Vorgabe; Online-Backup mit Konsistenzpruefung.
                     - **Konfigurations-Backup:** automatisierte Sicherung Infrastructure-as-Code, Netzkonfigurationen, IAM-Policies; mindestens taeglich.
-                    - **SaaS-Backup:** Drittanbieter-Backup oder API-basierte Eigensicherung fuer M365, Google Workspace, Salesforce o. Ae.; SaaS-Anbieter-eigene Aufbewahrung allein erfuellt die Anforderungen nicht.
+                    - **SaaS-Backup:** Drittanbieter-Backup oder API-basierte Eigensicherung für M365, Google Workspace, Salesforce o. Ae.; SaaS-Anbieter-eigene Aufbewahrung allein erfuellt die Anforderungen nicht.
                     - **Endpoint-Backup:** dienstliche Daten ueber Cloud-Sync oder Endpoint-Backup-Loesung; lokale Personal-Stores sind verboten.
 
                     ## 6. Aufbewahrung
-                    Aufbewahrungs-Default: Tagessicherungen 30 Tage, Wochensicherungen 12 Wochen, Monatssicherungen 12 Monate, Jahressicherungen 7 Jahre (handels-/steuerrechtliche Aufzeichnungen 10 Jahre AO §§ 146-147). DSGVO-Loeschpflichten (Art. 17, Art. 5 Abs. 1 lit. e) gelten auch fuer Backups: Loeschkonzepte sind im Verarbeitungsverzeichnis zu dokumentieren; Time-to-Live wird so gewaehlt, dass Loeschanspruch automatisch innerhalb der dokumentierten Frist greift.
+                    Aufbewahrungs-Default: Tagessicherungen 30 Tage, Wochensicherungen 12 Wochen, Monatssicherungen 12 Monate, Jahressicherungen 7 Jahre (handels-/steuerrechtliche Aufzeichnungen 10 Jahre AO §§ 146-147). DSGVO-Loeschpflichten (Art. 17, Art. 5 Abs. 1 lit. e) gelten auch für Backups: Loeschkonzepte sind im Verarbeitungsverzeichnis zu dokumentieren; Time-to-Live wird so gewaehlt, dass Loeschanspruch automatisch innerhalb der dokumentierten Frist greift.
 
                     ## 7. Wiederherstellungstests
-                    - **Frequenz:** mindestens quartalsweise pro Tier-0/1-System; jaehrlich fuer Tier-2/3; vollstaendiger DR-Test (Site-Switch) mindestens jaehrlich.
+                    - **Frequenz:** mindestens quartalsweise pro Tier-0/1-System; jaehrlich für Tier-2/3; vollstaendiger DR-Test (Site-Switch) mindestens jaehrlich.
                     - **Restore-Szenarien:** Datei-/DB-Restore, System-Restore, Bare-Metal-Restore, geo-redundanter Site-Wechsel, Ransomware-Recovery aus Immutable-Backup.
                     - **Akzeptanzkriterien:** Datenintegritaet (Pruefsumme, Sample-Validierung durch Fach), Erreichen der RPO/RTO, vollstaendige Anwendungsfunktion.
                     - **Dokumentation:** Test-Protokoll, Abweichungen, Massnahmen; Ergebnisse fliessen in das Management Review (Klausel 9.3) und in BCM-Uebungs-Bericht.
@@ -227,9 +227,9 @@ policy:
 
                     ## 9. Schutz der Backup-Infrastruktur
                     - Netzsegmentierung (Backup-Netz logisch und physisch getrennt).
-                    - Privileged-Access-Management fuer Backup-Konsolen; MFA Pflicht.
+                    - Privileged-Access-Management für Backup-Konsolen; MFA Pflicht.
                     - Zentrales Logging der Administrationszugriffe (siehe Logging-Richtlinie A.8.15/A.8.16).
-                    - Detection-Use-Cases im SIEM fuer Massenloeschungen, Konfigurations-Aenderungen und ungewoehnliche Restore-Versuche.
+                    - Detection-Use-Cases im SIEM für Massenloeschungen, Konfigurations-Aenderungen und ungewoehnliche Restore-Versuche.
                     - Lieferantenzugriff (Wartung) nur ueber dokumentierte Wartungsfenster, Vier-Augen, Session-Logging.
 
                     ## 10. Cloud- und Auftragsverarbeiter
@@ -256,7 +256,7 @@ policy:
                         body: |
                             Diese Richtlinie stellt sicher, dass {{ tenant.legal_name }} im Falle von Datenverlust durch Hardware-Ausfall, Software-Fehler, menschliches Versagen, Schadsoftware (insbesondere Ransomware) oder Naturkatastrophen die Verfuegbarkeit und Integritaet von Informationen innerhalb der vereinbarten Wiederherstellungszeiten wiederherstellen kann.
 
-                            Sie leitet sich aus den Anforderungen des ICT-Continuity-Managements (A.5.30) ab und ist eng verzahnt mit der Business-Continuity-Strategie. Die in dieser Richtlinie definierten Recovery Point Objectives (RPO) und Recovery Time Objectives (RTO) bilden die technische Grundlage fuer die in den BC-Planungen festgelegten Geschaeftskontinuitaets-Ziele.
+                            Sie leitet sich aus den Anforderungen des ICT-Continuity-Managements (A.5.30) ab und ist eng verzahnt mit der Business-Continuity-Strategie. Die in dieser Richtlinie definierten Recovery Point Objectives (RPO) und Recovery Time Objectives (RTO) bilden die technische Grundlage für die in den BC-Planungen festgelegten Geschaeftskontinuitaets-Ziele.
                     2:
                         title: 'Backup-Strategie und Architektur'
                         body: |
@@ -276,7 +276,7 @@ policy:
                     3:
                         title: 'Verschluesselung und Integritaetsschutz'
                         body: |
-                            Alle Backup-Medien sind im Ruhezustand mit AES-256 zu verschluesseln. Die fuer die Backup-Verschluesselung verwendeten Schluessel werden getrennt vom Backup-Inhalt aufbewahrt; siehe Kryptografie-Richtlinie. Bei Cloud-Backups gilt das Customer-Managed-Key-Prinzip — der Cloud-Anbieter darf nicht mit den Klartext-Daten in Beruehrung kommen.
+                            Alle Backup-Medien sind im Ruhezustand mit AES-256 zu verschluesseln. Die für die Backup-Verschluesselung verwendeten Schluessel werden getrennt vom Backup-Inhalt aufbewahrt; siehe Kryptografie-Richtlinie. Bei Cloud-Backups gilt das Customer-Managed-Key-Prinzip — der Cloud-Anbieter darf nicht mit den Klartext-Daten in Beruehrung kommen.
 
                             Die Integritaet der Backups wird durch kryptografische Pruefsummen (SHA-256 oder hoeher) bei Erstellung und vor jeder Wiederherstellung verifiziert. Beschaedigte Backups gelten als nicht-existent und sind unverzueglich erneut zu erstellen.
 
@@ -302,15 +302,15 @@ policy:
 
                             Die Loeschung ueberschreibender Backup-Generationen erfolgt durch das Backup-System automatisch nach Ablauf der konfigurierten Aufbewahrungsfrist. Bei manuellen Loeschungen (z.B. Reaktion auf Datenschutz-Loeschanfragen) ist das Vier-Augen-Prinzip einzuhalten und die Loeschung im Audit-Trail zu dokumentieren mit Begruendung, Antragsteller und ausfuehrender Person.
 
-                            Bei Aussonderung von Backup-Speichermedien (Bandlaufwerke, ausgemusterte Disks) erfolgt die Datentraeger-Vernichtung nach BSI-Richtlinie (z.B. fuer Magnetmedien Sicherheitsstufe H-3 oder hoeher gemaess DIN 66399). Externe Vernichtungs-Dienstleister werden vertraglich gebunden und stellen ein Vernichtungsprotokoll aus.
+                            Bei Aussonderung von Backup-Speichermedien (Bandlaufwerke, ausgemusterte Disks) erfolgt die Datentraeger-Vernichtung nach BSI-Richtlinie (z.B. für Magnetmedien Sicherheitsstufe H-3 oder hoeher gemaess DIN 66399). Externe Vernichtungs-Dienstleister werden vertraglich gebunden und stellen ein Vernichtungsprotokoll aus.
                     7:
                         title: 'Rollen und Verantwortlichkeiten'
                         body: |
-                            **Backup-Owner ({{ roles.ciso.fullName }}):** Gesamtverantwortung fuer diese Richtlinie, Genehmigung von Ausnahmen, Eskalationspunkt bei kritischen Befunden.
+                            **Backup-Owner ({{ roles.ciso.fullName }}):** Gesamtverantwortung für diese Richtlinie, Genehmigung von Ausnahmen, Eskalationspunkt bei kritischen Befunden.
 
                             **IT-Operations / Backup-Team:** Operative Durchfuehrung der Backup-Operationen, Restore-Tests, Verfuegbarkeitsmonitoring.
 
-                            **Asset-Owner / Geschaeftsprozess-Verantwortliche:** Klassifikation der schutzbeduerftigen Daten, Festlegung von RPO/RTO-Anforderungen, Abnahme der Restore-Tests fuer ihre Systeme.
+                            **Asset-Owner / Geschaeftsprozess-Verantwortliche:** Klassifikation der schutzbeduerftigen Daten, Festlegung von RPO/RTO-Anforderungen, Abnahme der Restore-Tests für ihre Systeme.
 
                             **Internal Audit:** Stichprobenartige Pruefung der Compliance mit dieser Richtlinie, Bewertung der Restore-Test-Ergebnisse, Berichtslinie an den Pruefungsausschuss.
 
@@ -339,7 +339,7 @@ policy:
                     *Dokumentenklasse: Themenrichtlinie | Norm-Anker: ISO/IEC 27001:2022 A.8.15 (Logging), A.8.16 (Monitoring activities), A.8.17 (Clock synchronization) | ISO/IEC 27002:2022 §§ 8.15-8.17 | BSI OPS.1.1.5 (Protokollierung) | BSI DER.1 (Detektion sicherheitsrelevanter Ereignisse) | DSGVO Art. 5 Abs. 1 lit. c, Art. 25, Art. 32 | BetrVG § 87 Abs. 1 Nr. 6 | NIS2 Art. 21 Abs. 2 lit. f, Art. 23 | DORA Art. 10, 17, 19 | Edition: {{ policy.edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
 
                     ## 1. Zweck
-                    Diese Richtlinie regelt verbindlich Umfang, Verfahren, Schutz, Aufbewahrung, Auswertung und Loeschung sicherheitsrelevanter Protokolldaten der {{ tenant.legal_name }}. Sie setzt ISO/IEC 27001:2022 Annex A 8.15-8.17 in Verbindung mit BSI OPS.1.1.5 verbindlich um und schafft die Grundlage fuer Detektion, forensische Aufklaerung, Erfuellung gesetzlicher Aufzeichnungspflichten sowie Wirksamkeitsnachweis der Sicherheitsmassnahmen. Erfuellt zugleich Anforderungen aus DSGVO Art. 32, NIS2 Art. 21/23 und DORA Art. 17/19.
+                    Diese Richtlinie regelt verbindlich Umfang, Verfahren, Schutz, Aufbewahrung, Auswertung und Loeschung sicherheitsrelevanter Protokolldaten der {{ tenant.legal_name }}. Sie setzt ISO/IEC 27001:2022 Annex A 8.15-8.17 in Verbindung mit BSI OPS.1.1.5 verbindlich um und schafft die Grundlage für Detektion, forensische Aufklaerung, Erfuellung gesetzlicher Aufzeichnungspflichten sowie Wirksamkeitsnachweis der Sicherheitsmassnahmen. Erfuellt zugleich Anforderungen aus DSGVO Art. 32, NIS2 Art. 21/23 und DORA Art. 17/19.
 
                     ## 2. Geltungsbereich
                     Erfasst sind saemtliche IT-Komponenten im ISMS-Scope ({{ tenant.scope_statement }}): Server, Clients, Netzkomponenten (Firewall, Switch, Router, WLAN-Controller, Loadbalancer), Anwendungen, Datenbanken, Identity-Provider, Cloud-/SaaS-Tenants, EDR/AV/HIPS, IDS/NDR/WAF, SOAR/SIEM, Vulnerability-Scanner, OT/ICS (sofern im Scope), physische Sicherheitssysteme (Zutritt, Video gemaess gesonderter Datenschutz-Vorgaben).
@@ -374,7 +374,7 @@ policy:
                     - Zugriffe auf das Logging-/SIEM-System ("Logging des Loggings")
 
                     ## 6. Zeitsynchronisation (A.8.17)
-                    Alle Systeme verwenden NTP gegen authentifizierte Zeit-Quellen (Stratum 1 oder 2). Drift wird zentral ueberwacht; Abweichungen groesser 1 Sekunde fuehren zur Alarmierung. Voraussetzung fuer forensisch verwertbare Korrelation.
+                    Alle Systeme verwenden NTP gegen authentifizierte Zeit-Quellen (Stratum 1 oder 2). Drift wird zentral ueberwacht; Abweichungen groesser 1 Sekunde fuehren zur Alarmierung. Voraussetzung für forensisch verwertbare Korrelation.
 
                     ## 7. Zentrale Protokollierung und Schutz (A.8.16)
                     Alle relevanten Logs werden in eine zentrale, gehaertete SIEM-/Log-Plattform ({{ logging.siem_platform }}) konsolidiert. Transport TLS 1.2 oder hoeher (siehe Krypto-Richtlinie). Manipulationsschutz: Append-only-Speicher, Hash-Verkettung oder revisionssichere Aufbewahrung (WORM). Administrative Zugriffe auf das SIEM unterliegen Vier-Augen-Prinzip und werden ihrerseits revisionsfaehig protokolliert. Hochverfuegbarkeit: aktive Spiegelung an redundanten Standorten ({{ logging.dr_site }}).
@@ -386,13 +386,13 @@ policy:
                     - Anwendungs-Audit-Logs mit Personenbezug: 6 Monate online, danach automatische Loeschung sofern keine laufende Auswertung
                     - Netz-Flow-Daten (NetFlow): 90 Tage rolling
                     - Protokolle zur Erfuellung handels-/steuerrechtlicher Pflichten: 10 Jahre (AO §§ 146-147)
-                    - DORA-relevante Telemetrie: gemaess DORA Art. 17 mindestens 10 Jahre fuer schwerwiegende Vorfaelle
+                    - DORA-relevante Telemetrie: gemaess DORA Art. 17 mindestens 10 Jahre für schwerwiegende Vorfaelle
 
                     ## 9. Detektion und Korrelation
-                    Das SOC ({{ soc.location }}) betreibt definierte Use-Case-Regeln, MITRE-ATT&CK-gemappt, mit halbjaehrlicher Wirksamkeitsmessung gegen Threat-Intelligence (A.5.7). Falsch-Positiv-Quoten sind KPI. Anomalie-Detektion via maschinellem Lernen ausschliesslich auf nicht-personenbezogenen oder pseudonymisierten Daten. Detektions-Use-Cases muessen vor Aktivierung im Aenderungsverfahren freigegeben werden.
+                    Das SOC ({{ soc.location }}) betreibt definierte Use-Case-Regeln, MITRE-ATT&CK-gemappt, mit halbjaehrlicher Wirksamkeitsmessung gegen Threat-Intelligence (A.5.7). Falsch-Positiv-Quoten sind KPI. Anomalie-Detektion via maschinellem Lernen ausschliesslich auf nicht-personenbezogenen oder pseudonymisierten Daten. Detektions-Use-Cases müssen vor Aktivierung im Aenderungsverfahren freigegeben werden.
 
                     ## 10. Cloud- und SaaS-Logs
-                    Bei Cloud-Diensten ({{ cloud.providers }}) sind mandantenfaehige Audit-Logs (Cloud Audit Logs, Azure Sign-In Logs, AWS CloudTrail, M365 Unified Audit Log) zu aktivieren und in das zentrale SIEM zu exportieren. Vertraege mit Cloud-Anbietern muessen Zugriff auf Audit-Logs sowie eine Mindestaufbewahrungsfrist von 90 Tagen vorsehen (Cross-Ref OPS.2.2). DORA-pflichtige TPP-Vertraege ({{ dora.thirdparty_providers }}) sehen zusaetzliche Telemetrie-Bereitstellung vor.
+                    Bei Cloud-Diensten ({{ cloud.providers }}) sind mandantenfaehige Audit-Logs (Cloud Audit Logs, Azure Sign-In Logs, AWS CloudTrail, M365 Unified Audit Log) zu aktivieren und in das zentrale SIEM zu exportieren. Vertraege mit Cloud-Anbietern müssen Zugriff auf Audit-Logs sowie eine Mindestaufbewahrungsfrist von 90 Tagen vorsehen (Cross-Ref OPS.2.2). DORA-pflichtige TPP-Vertraege ({{ dora.thirdparty_providers }}) sehen zusätzliche Telemetrie-Bereitstellung vor.
 
                     ## 11. Verantwortlichkeiten (RACI)
                     | Aktivitaet | R | A | C | I |
@@ -428,10 +428,10 @@ policy:
 
                             Folgende Grundsaetze sind verbindlich:
 
-                            - **Datensparsamkeit:** Es werden nur Daten protokolliert, die fuer die definierten Zwecke erforderlich sind (DSGVO Art. 5 Abs. 1 lit. c).
-                            - **Zweckbindung:** Logdaten duerfen ausschliesslich fuer Sicherheits- und Compliance-Zwecke ausgewertet werden.
+                            - **Datensparsamkeit:** Es werden nur Daten protokolliert, die für die definierten Zwecke erforderlich sind (DSGVO Art. 5 Abs. 1 lit. c).
+                            - **Zweckbindung:** Logdaten duerfen ausschliesslich für Sicherheits- und Compliance-Zwecke ausgewertet werden.
                             - **Manipulationsschutz:** Logs sind in Append-Only-Speichern oder mit kryptografischer Integritaetssicherung zu schuetzen.
-                            - **Zeitsynchronisation:** Alle Systeme verwenden NTP gegen einen authentifizierten Zeit-Server (Stratum 1 oder 2) — Voraussetzung fuer forensisch verwertbare Korrelation (A.8.17).
+                            - **Zeitsynchronisation:** Alle Systeme verwenden NTP gegen einen authentifizierten Zeit-Server (Stratum 1 oder 2) — Voraussetzung für forensisch verwertbare Korrelation (A.8.17).
                     2:
                         title: 'Mindest-Logging-Anforderungen'
                         body: |
@@ -473,7 +473,7 @@ policy:
                         body: |
                             Logdaten sind selbst Schutzobjekte. Sie sind:
                             - vor unberechtigter Veraenderung zu schuetzen (Append-Only-Speicher, WORM-Storage oder kryptografisches Hashing);
-                            - vor unberechtigter Loeschung zu schuetzen (separate Berechtigungen fuer Logging-Admins, Vier-Augen-Prinzip bei Loeschoperationen);
+                            - vor unberechtigter Loeschung zu schuetzen (separate Berechtigungen für Logging-Admins, Vier-Augen-Prinzip bei Loeschoperationen);
                             - vor unberechtigtem Zugriff zu schuetzen (Need-to-know, separates SIEM-RBAC).
 
                             Die Vertraulichkeit der Logdaten wird ueber rollenbasierte Zugriffskontrollen sichergestellt. Lese-Zugriff auf personenbezogene Audit-Trails wird ausschliesslich an Mitarbeitende des Security-Operations-Teams und der Internal-Audit-Funktion vergeben; jeder Zugriff wird protokolliert (Meta-Logging). Exporte aus dem SIEM unterliegen einer Freigabe durch {{ roles.ciso.fullName }} und werden klassifiziert behandelt.
@@ -482,7 +482,7 @@ policy:
                     7:
                         title: 'Rollen und Verantwortlichkeiten'
                         body: |
-                            **{{ roles.ciso.fullName }} (CISO):** Policy-Owner; verantwortlich fuer die Wirksamkeit der Detektion und Korrelation, Eskalationspunkt fuer Verdachtsfaelle.
+                            **{{ roles.ciso.fullName }} (CISO):** Policy-Owner; verantwortlich für die Wirksamkeit der Detektion und Korrelation, Eskalationspunkt für Verdachtsfaelle.
 
                             **Security-Operations-Team:** Operative Pflege der SIEM-Use-Cases, Triage und Response auf Alerts, Berichtslinie an den CISO.
 
@@ -490,7 +490,7 @@ policy:
 
                             **Datenschutzbeauftragter:** Pruefung neuer personenbezogener Use-Cases, Mitzeichnung der Auswertungen mit Personenbezug, Mitwirkung bei der Datenschutz-Folgenabschaetzung.
 
-                            **Betriebsrat (Deutschland):** Mitbestimmung gemaess BetrVG; Zustimmung zur Logging-Konfiguration und zu Use-Cases; jaehrliche Berichtspflicht ueber die durchgefuehrten Auswertungen mit Personenbezug.
+                            **Betriebsrat (Deutschland):** Mitbestimmung gemaess BetrVG; Zustimmung zur Logging-Konfiguration und zu Use-Cases; jaehrliche Berichtspflicht ueber die durchgeführten Auswertungen mit Personenbezug.
                     8:
                         title: 'Ueberpruefung'
                         body: |
@@ -520,7 +520,7 @@ policy:
                     ## 2. Geltungsbereich
                     Erfasst sind alle Hardware- und Software-Komponenten im ISMS-Scope ({{ tenant.scope_statement }}): Endpunkte, Server, virtuelle Maschinen, Container, Container-Images, Netzkomponenten, Firmware, Cloud-Workloads, Cloud-Services (IaaS/PaaS/SaaS), Datenbanken, Anwendungen, Bibliotheken (inkl. Open-Source-Abhaengigkeiten), mobile Endgeraete (siehe Mobile-Device-Richtlinie), OT/ICS (sofern im Scope) sowie eingesetzte Drittsysteme.
 
-                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 wird der Klimawandel als externer Faktor in die Patch-Planung einbezogen: Hitzeperioden mit erhoehtem Lastrisiko fuer Rechenzentren werden in die Wahl von Wartungsfenstern und in die Risiko-Abwaegung "Patch-jetzt vs. spaeter" beruecksichtigt; klimabedingte Standort- und Lieferketten-Stoerungen werden im Aenderungsverfahren bewertet.
+                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 wird der Klimawandel als externer Faktor in die Patch-Planung einbezogen: Hitzeperioden mit erhoehtem Lastrisiko für Rechenzentren werden in die Wahl von Wartungsfenstern und in die Risiko-Abwaegung "Patch-jetzt vs. spaeter" beruecksichtigt; klimabedingte Standort- und Lieferketten-Stoerungen werden im Aenderungsverfahren bewertet.
 
                     ## 3. Grundsaetze
                     - **Risiko-basierte Priorisierung:** CVSS 4.0 + EPSS + Exploit-Verfuegbarkeit (CISA KEV) + Asset-Kritikalitaet + Bedrohungslage.
@@ -538,7 +538,7 @@ policy:
                     - Externe Pentests, Bug-Bounty-Reports, koordinierte Disclosure
                     - Lieferanten-Notfallmeldungen (DORA Art. 28)
 
-                    ## 5. SLA fuer Schwachstellen-Behebung
+                    ## 5. SLA für Schwachstellen-Behebung
                     Die nachfolgenden SLA gelten als Default; strengere Werte koennen durch Asset- oder Vertrags-Vorgaben gefordert sein:
 
                     | Kritikalitaet | Definition (CVSS 4.0 / Exploit) | SLA Internet-exponiert | SLA intern |
@@ -554,7 +554,7 @@ policy:
                     1. **Identifikation:** automatisierte Schwachstellen-Scans und Feed-Konsumption (taeglich).
                     2. **Bewertung:** Korrelation mit Asset-Inventar, Bedrohungslage; Risiko-Score und SLA-Zuweisung.
                     3. **Test:** Patch in Staging/Pre-Prod, automatisierte Regressions-/Sicherheitstests.
-                    4. **Freigabe:** Change Advisory Board (CAB) bei Major-Patches; Standard-Change fuer freigegebene Patch-Klassen.
+                    4. **Freigabe:** Change Advisory Board (CAB) bei Major-Patches; Standard-Change für freigegebene Patch-Klassen.
                     5. **Roll-out:** geplante Wartungsfenster ({{ patch.maintenance_windows }}), gestaffelt nach Stages, Health-Checks.
                     6. **Verifikation:** Re-Scan, Bestaetigung der Behebung, Schliessen des Tickets.
                     7. **Dokumentation:** Aenderungs-Historie im CMDB; Bericht an ISMS-Lenkungskreis.
@@ -599,24 +599,24 @@ policy:
                     1:
                         title: 'Zielsetzung und Grundsaetze'
                         body: |
-                            Diese Richtlinie stellt sicher, dass {{ tenant.legal_name }} Schwachstellen in IT-Systemen rechtzeitig erkennt, bewertet und behebt, bevor sie ausgenutzt werden koennen. Sie definiert verbindliche Service-Level-Agreements (SLAs) fuer die Behebung von Schwachstellen entsprechend ihrer Kritikalitaet und etabliert ein durchgehend dokumentiertes Vulnerability-Management.
+                            Diese Richtlinie stellt sicher, dass {{ tenant.legal_name }} Schwachstellen in IT-Systemen rechtzeitig erkennt, bewertet und behebt, bevor sie ausgenutzt werden koennen. Sie definiert verbindliche Service-Level-Agreements (SLAs) für die Behebung von Schwachstellen entsprechend ihrer Kritikalitaet und etabliert ein durchgehend dokumentiertes Vulnerability-Management.
 
                             Grundsaetze: Risiko-basierte Priorisierung (CVSS 4.0 + EPSS + Exploit-Verfuegbarkeit), Asset-Inventar als Voraussetzung (Bezug zu A.5.9), klare Verantwortlichkeiten je Asset-Typ, Trennung von Erkennung und Behebung (Vier-Augen-Prinzip).
 
-                            Das Vulnerability-Management ist in das uebergeordnete Risiko-Management eingebunden: jede unbehandelte Schwachstelle oberhalb der Schwellwerte fuer „High" stellt ein technisches Risiko dar, das im Risikoregister gefuehrt wird. Die Entscheidung ueber Behebung versus dokumentierte Risikoakzeptanz erfolgt nach den Eskalationsstufen der Risk-Treatment-Plan-Richtlinie.
+                            Das Vulnerability-Management ist in das uebergeordnete Risiko-Management eingebunden: jede unbehandelte Schwachstelle oberhalb der Schwellwerte für „High" stellt ein technisches Risiko dar, das im Risikoregister gefuehrt wird. Die Entscheidung ueber Behebung versus dokumentierte Risikoakzeptanz erfolgt nach den Eskalationsstufen der Risk-Treatment-Plan-Richtlinie.
                     2:
                         title: 'Schwachstellen-Quellen und kontinuierliche Erfassung'
                         body: |
                             {{ tenant.legal_name }} bezieht Schwachstellen-Informationen aus mindestens den folgenden Quellen:
 
-                            - **CVE/NVD:** Standard-Datenbank fuer oeffentlich bekannte Schwachstellen.
+                            - **CVE/NVD:** Standard-Datenbank für oeffentlich bekannte Schwachstellen.
                             - **Hersteller-Advisories:** Direkte Benachrichtigungen aller eingesetzten Software- und Hardware-Hersteller.
-                            - **BSI WID/CERT-Bund:** Warnmeldungen des Bundesamtes fuer Sicherheit in der Informationstechnik.
+                            - **BSI WID/CERT-Bund:** Warnmeldungen des Bundesamtes für Sicherheit in der Informationstechnik.
                             - **Threat Intelligence:** Verbindung zur Threat-Intelligence-Richtlinie; aktive Exploits werden priorisiert behandelt.
                             - **Eigene Scans:** Authentisierte und unauthentisierte Schwachstellen-Scans.
-                            - **Penetrationstests:** Mindestens jaehrliche externe Pentests fuer kritische Systeme.
+                            - **Penetrationstests:** Mindestens jaehrliche externe Pentests für kritische Systeme.
 
-                            Schwachstellen-Scans erfolgen mindestens woechentlich auf internen Systemen und mindestens taeglich auf extern erreichbaren Systemen. Container-Images werden bei jedem Build und zusaetzlich kontinuierlich auf neue Schwachstellen geprueft (Continuous Scanning).
+                            Schwachstellen-Scans erfolgen mindestens woechentlich auf internen Systemen und mindestens taeglich auf extern erreichbaren Systemen. Container-Images werden bei jedem Build und zusätzlich kontinuierlich auf neue Schwachstellen geprueft (Continuous Scanning).
                     3:
                         title: 'Bewertung und Priorisierung'
                         body: |
@@ -642,7 +642,7 @@ policy:
                     5:
                         title: 'Notfall-Patching und Change-Management'
                         body: |
-                            Reguläre Patches durchlaufen den ueblichen Change-Management-Prozess (A.8.32). Notfall-Patches fuer Critical-Schwachstellen koennen unter dem Notfall-Verfahren (Emergency Change) ausgerollt werden mit verkuerzter Approval-Kette: Genehmigung durch Bereitschafts-CISO oder benannten Stellvertreter, retrospektive Dokumentation innerhalb von 5 Werktagen.
+                            Reguläre Patches durchlaufen den ueblichen Change-Management-Prozess (A.8.32). Notfall-Patches für Critical-Schwachstellen koennen unter dem Notfall-Verfahren (Emergency Change) ausgerollt werden mit verkuerzter Approval-Kette: Genehmigung durch Bereitschafts-CISO oder benannten Stellvertreter, retrospektive Dokumentation innerhalb von 5 Werktagen.
 
                             Zur Risikominderung sind Patch-Tests in einer separaten Test- oder Staging-Umgebung verpflichtend. Ausnahmen aus zeitkritischen Gruenden (z.B. aktiv ausgenutzte Schwachstelle, Zero-Day) erfordern eine Dokumentation der Risikoabwaegung. Bei kritischen Produktionssystemen erfolgt der Rollout phasenweise (Canary-Deployment) mit definierten Rollback-Kriterien.
 
@@ -658,7 +658,7 @@ policy:
                         body: |
                             Der Vulnerability-Management-Status wird monatlich an die Geschaeftsleitung berichtet mit folgenden KPIs: Anzahl offener Schwachstellen je Severity, durchschnittliche Time-to-Remediate, Anzahl SLA-Verletzungen, Top 10 ungepatchte Systeme, Trend-Analyse.
 
-                            Quartalsweise wird ein erweiterter Bericht erstellt, der zusaetzlich enthaelt: Coverage-Quote des Asset-Inventars, Wirksamkeit der eingesetzten Scanning-Tools (False-Positive-Rate, Detection-Rate gegenueber bekannten Benchmarks), Veraenderungen der Bedrohungslage, Reife der Vulnerability-Management-Prozesse gemessen am CMMI-Modell. Auf strategischer Ebene wird die Zielarchitektur jaehrlich gegen die NIST-Cybersecurity-Framework-Funktion „Identify" und „Detect" gespiegelt.
+                            Quartalsweise wird ein erweiterter Bericht erstellt, der zusätzlich enthaelt: Coverage-Quote des Asset-Inventars, Wirksamkeit der eingesetzten Scanning-Tools (False-Positive-Rate, Detection-Rate gegenueber bekannten Benchmarks), Veraenderungen der Bedrohungslage, Reife der Vulnerability-Management-Prozesse gemessen am CMMI-Modell. Auf strategischer Ebene wird die Zielarchitektur jaehrlich gegen die NIST-Cybersecurity-Framework-Funktion „Identify" und „Detect" gespiegelt.
 
                             Die KPIs fliessen in die Bewertung der Wirksamkeit des ISMS gemaess ISO 27001 Klausel 9.1 ein und werden in der Management-Bewertung (Klausel 9.3) erlaeutert.
                     8:
@@ -666,9 +666,9 @@ policy:
                         body: |
                             **{{ roles.ciso.fullName }} (CISO):** Policy-Owner, Genehmigung von Risikoakzeptanzen, Eskalationspunkt bei kritischen Schwachstellen.
 
-                            **Vulnerability Management Lead:** Operative Verantwortung fuer die Scanning-Pipeline, Vulnerability-Triage, Reporting.
+                            **Vulnerability Management Lead:** Operative Verantwortung für die Scanning-Pipeline, Vulnerability-Triage, Reporting.
 
-                            **Asset-Owner:** Verantwortlich fuer die SLA-konforme Behebung der Schwachstellen in den eigenen Systemen, Mitwirkung an Risikobewertungen.
+                            **Asset-Owner:** Verantwortlich für die SLA-konforme Behebung der Schwachstellen in den eigenen Systemen, Mitwirkung an Risikobewertungen.
 
                             **IT-Operations:** Operative Durchfuehrung des Patchings, Pflege der Patch-Test-Umgebung, Rollout in Produktion.
 
@@ -706,7 +706,7 @@ policy:
 
                     ## 3. Schutzschichten (Defense in Depth)
                     - **Praevention am Perimeter:** eMail-Sicherheits-Gateway mit Sandbox, URL-Reputation, Anhang-Detonation; Web-Proxy/Secure-Web-Gateway mit Reputations- und Inhalts-Filter; DNS-Filter (DNS-RPZ).
-                    - **Praevention am Endpunkt:** EDR/XDR mit Next-Gen-AV, Verhaltens- und ML-Erkennung, Application-Allow-Listing fuer Tier-0-Systeme, Hardware-basierter Speicherschutz, Tamper-Protection, USB-Geraete-Steuerung.
+                    - **Praevention am Endpunkt:** EDR/XDR mit Next-Gen-AV, Verhaltens- und ML-Erkennung, Application-Allow-Listing für Tier-0-Systeme, Hardware-basierter Speicherschutz, Tamper-Protection, USB-Geraete-Steuerung.
                     - **Detektion und Reaktion:** SIEM-Integration (siehe Logging-Richtlinie A.8.15/A.8.16), SOC-Use-Cases, automatisierte Isolation kompromittierter Hosts, Threat-Hunting auf Basis MITRE-ATT&CK.
                     - **Resilienz:** Backups gemaess Backup-Richtlinie inkl. immutable Sicherungen; Wiederherstellungstests pro Quartal; vorbereitete Krisenkommunikation.
 
@@ -719,13 +719,13 @@ policy:
                     - **Application Control:** Allow-Listing auf hoch schutzbeduerftigen Systemen; Block-Listing als Mindeststandard.
 
                     ## 5. eMail-, Web- und Identity-Schutz
-                    - eMail: SPF, DKIM, DMARC mit Reject-Policy; Banner fuer externe Absender; Phishing-Reporting-Button mit SOC-Anbindung.
-                    - Web: Allow- bzw. Block-Listing fuer Hochrisiko-Kategorien; Inhaltskontrolle fuer ausfuehrbare Downloads.
-                    - Identity: MFA fuer privilegierte Konten und Remote-Zugang; Conditional Access mit Risikoindikatoren; Schutz gegen MFA-Fatigue.
-                    - Macros: Office-Makros aus Internet-Quellen blockiert (Microsoft "blocked-by-default"); Ausnahmen nur fuer signierte interne Vorlagen.
+                    - eMail: SPF, DKIM, DMARC mit Reject-Policy; Banner für externe Absender; Phishing-Reporting-Button mit SOC-Anbindung.
+                    - Web: Allow- bzw. Block-Listing für Hochrisiko-Kategorien; Inhaltskontrolle für ausfuehrbare Downloads.
+                    - Identity: MFA für privilegierte Konten und Remote-Zugang; Conditional Access mit Risikoindikatoren; Schutz gegen MFA-Fatigue.
+                    - Macros: Office-Makros aus Internet-Quellen blockiert (Microsoft "blocked-by-default"); Ausnahmen nur für signierte interne Vorlagen.
 
                     ## 6. Awareness
-                    Pflicht-Schulungen mindestens jaehrlich fuer alle Beschaeftigten; rollenbasierte Vertiefung fuer Risiko-Gruppen (Finanzbuchhaltung, HR, Geschaeftsleitung). Phishing-Simulationen mindestens halbjaehrlich; auffaellige Klick-Quoten loesen Nachschulungen aus. Reporting-Quote ("phish reported") ist KPI. Inhalte werden mit BSI Empfehlungen und ENISA-Material abgeglichen.
+                    Pflicht-Schulungen mindestens jaehrlich für alle Beschaeftigten; rollenbasierte Vertiefung für Risiko-Gruppen (Finanzbuchhaltung, HR, Geschaeftsleitung). Phishing-Simulationen mindestens halbjaehrlich; auffaellige Klick-Quoten loesen Nachschulungen aus. Reporting-Quote ("phish reported") ist KPI. Inhalte werden mit BSI Empfehlungen und ENISA-Material abgeglichen.
 
                     ## 7. Spezifische Bedrohungen
                     - **Ransomware:** Backup-Disziplin (3-2-1-1-0); Netz-Segmentierung; Application-Allow-Listing auf Tier 0; Detection auf Verschluesselungs-Patterns; Krisenkommunikations-Playbook gemaess Incident-Response-Richtlinie.
@@ -766,7 +766,7 @@ policy:
                     1:
                         title: 'Zielsetzung und Bedrohungslage'
                         body: |
-                            Schadsoftware (Viren, Wuermer, Trojaner, Ransomware, Spyware, Cryptominer) zaehlt zu den groessten Risiken fuer die Vertraulichkeit, Integritaet und Verfuegbarkeit der Informationen von {{ tenant.legal_name }}. Diese Richtlinie etabliert ein mehrschichtiges Schutzkonzept (Defense in Depth), das technische Kontrollen mit organisatorischen Massnahmen und Mitarbeitenden-Sensibilisierung verbindet.
+                            Schadsoftware (Viren, Wuermer, Trojaner, Ransomware, Spyware, Cryptominer) zaehlt zu den groessten Risiken für die Vertraulichkeit, Integritaet und Verfuegbarkeit der Informationen von {{ tenant.legal_name }}. Diese Richtlinie etabliert ein mehrschichtiges Schutzkonzept (Defense in Depth), das technische Kontrollen mit organisatorischen Massnahmen und Mitarbeitenden-Sensibilisierung verbindet.
 
                             Sie adressiert insbesondere die in den letzten Jahren dominanten Bedrohungs-Szenarien: Phishing-induzierter Initial-Access, Ransomware-as-a-Service, Living-off-the-Land-Techniken und Supply-Chain-Kompromittierungen.
 
@@ -777,7 +777,7 @@ policy:
                             Die folgenden technischen Massnahmen sind verbindlich:
 
                             - **Endpoint Detection & Response (EDR):** Auf allen Endpoints und Servern ist eine zugelassene EDR-Loesung mit aktiver Verhaltensanalyse installiert. Reine signaturbasierte AV-Loesungen sind unzureichend.
-                            - **Email-Security-Gateway:** Vorgeschalteter SPAM- und Malware-Filter mit Sandboxing fuer unbekannte Anhaenge, URL-Rewriting und DMARC/DKIM/SPF-Pruefung.
+                            - **Email-Security-Gateway:** Vorgeschalteter SPAM- und Malware-Filter mit Sandboxing für unbekannte Anhaenge, URL-Rewriting und DMARC/DKIM/SPF-Pruefung.
                             - **Web-Filter / Secure Web Gateway:** Filtering bekannt boesartiger URLs, Kategorien-basiertes Blockieren risikoreicher Web-Inhalte.
                             - **Application Allowlisting:** Auf produktiven Servern und besonders schuetzenswerten Endpoints (z.B. Admin-Workstations) ist Application-Allowlisting aktiv.
                             - **Macro-Schutz:** Office-Makros aus dem Internet sind standardmaessig blockiert; Ausnahmen erfordern eine signierte Vertrauensstellung und dokumentierte Genehmigung.
@@ -797,10 +797,10 @@ policy:
 
                             - **Onboarding-Schulung:** Im Rahmen der Initial-Schulung zur Informationssicherheit (siehe HR-Sicherheits-Richtlinie).
                             - **Jaehrliches Refresher-Training:** Mit aktualisierten Inhalten zu aktuellen Bedrohungen.
-                            - **Phishing-Simulationen:** Mindestens quartalsweise durchgefuehrt; Ergebnisse fliessen in zielgerichtete Nachschulungen.
+                            - **Phishing-Simulationen:** Mindestens quartalsweise durchgeführt; Ergebnisse fliessen in zielgerichtete Nachschulungen.
                             - **Meldepflicht:** Verdaechtige Emails, Pop-ups oder System-Verhalten ist unverzueglich an die zentrale Meldestelle zu melden.
 
-                            Zielgruppen-spezifische Schulungen werden fuer besonders gefaehrdete Funktionen ergaenzt: Geschaeftsleitung und Assistenten (CEO-Fraud, Spear-Phishing), Finanzbereich (Business-Email-Compromise, Fake-Invoice), IT-Administratoren (Supply-Chain-Angriffe, gezielte Software-Manipulationen), HR (CV-Phishing, gefaelschte Bewerbungen mit Malware-Anhang). Schulungserfolge werden ueber Wissens-Quizze ueberprueft; nicht bestandene Quizze fuehren zu einer Wiederholungs-Schulung innerhalb von 14 Tagen.
+                            Zielgruppen-spezifische Schulungen werden für besonders gefaehrdete Funktionen ergaenzt: Geschaeftsleitung und Assistenten (CEO-Fraud, Spear-Phishing), Finanzbereich (Business-Email-Compromise, Fake-Invoice), IT-Administratoren (Supply-Chain-Angriffe, gezielte Software-Manipulationen), HR (CV-Phishing, gefaelschte Bewerbungen mit Malware-Anhang). Schulungserfolge werden ueber Wissens-Quizze ueberprueft; nicht bestandene Quizze fuehren zu einer Wiederholungs-Schulung innerhalb von 14 Tagen.
 
                             Die Awareness-Kommunikation erfolgt nicht nur ueber formale Schulungen, sondern auch ueber regelmaessige Sicherheits-News (Quartals-Newsletter, Intranet-Hinweise zu aktuellen Phishing-Wellen) und ueber Just-in-Time-Hinweise (z.B. Banner bei verdaechtigen externen Mails, „External-Sender"-Markierung).
                     5:
@@ -836,7 +836,7 @@ policy:
                         placeholder: 'z.B. quartalsweise Phishing-Simulation ueber das interne Awareness-Training-System mit gestaffelten Schwierigkeitsstufen je Funktionsgruppe.'
                     3:
                         label: 'Behandlung Removable Media und USB-Stick-Stance'
-                        placeholder: 'z.B. USB-Massenspeicher per GPO disabled; Ausnahmen ueber DLP-Tool fuer 14 fest registrierte hardware-verschluesselte Sticks; Quartalsbericht ueber Verwendung.'
+                        placeholder: 'z.B. USB-Massenspeicher per GPO disabled; Ausnahmen ueber DLP-Tool für 14 fest registrierte hardware-verschluesselte Sticks; Quartalsbericht ueber Verwendung.'
 
         secure_configuration:
             v1:
@@ -847,7 +847,7 @@ policy:
                     *Dokumentenklasse: Themenrichtlinie | Norm-Anker: ISO/IEC 27001:2022 A.8.9 (Configuration management), A.8.27 (Secure system architecture and engineering principles), A.8.32 (Change management) | ISO/IEC 27002:2022 §§ 8.9, 8.27, 8.32 | BSI SYS.1.x, SYS.2.x, NET.1.x, APP.x | DSGVO Art. 25, 32 | DORA Art. 9, 13 | NIS2 Art. 21 Abs. 2 lit. e | Edition: {{ policy.edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
 
                     ## 1. Zweck
-                    Diese Richtlinie regelt verbindlich die Festlegung, Dokumentation, Implementierung, Ueberwachung und Pruefung sicherer Konfigurationen ("Hardening Baselines") fuer Hardware, Software, Services und Netzkomponenten im Geltungsbereich des ISMS der {{ tenant.legal_name }}. Sie setzt ISO/IEC 27001:2022 A.8.9 in Verbindung mit den BSI-Bausteinen SYS.1.x/SYS.2.x/NET/APP verbindlich um und erfuellt zugleich Anforderungen aus DSGVO Art. 25/32, DORA Art. 9/13 und NIS2 Art. 21. Ziel ist die Minimierung der Angriffsflaeche durch konsistente, reproduzierbare und ueberpruefbare Konfigurationen ("Secure by Default", "Least Functionality").
+                    Diese Richtlinie regelt verbindlich die Festlegung, Dokumentation, Implementierung, Ueberwachung und Pruefung sicherer Konfigurationen ("Hardening Baselines") für Hardware, Software, Services und Netzkomponenten im Geltungsbereich des ISMS der {{ tenant.legal_name }}. Sie setzt ISO/IEC 27001:2022 A.8.9 in Verbindung mit den BSI-Bausteinen SYS.1.x/SYS.2.x/NET/APP verbindlich um und erfuellt zugleich Anforderungen aus DSGVO Art. 25/32, DORA Art. 9/13 und NIS2 Art. 21. Ziel ist die Minimierung der Angriffsflaeche durch konsistente, reproduzierbare und ueberpruefbare Konfigurationen ("Secure by Default", "Least Functionality").
 
                     ## 2. Geltungsbereich
                     Erfasst sind Server (Linux, Windows), Client-Betriebssysteme, mobile Endgeraete, Container und Container-Orchestrierung (Kubernetes, OpenShift), Datenbanken, Web- und App-Server, Identity-Provider, Netzkomponenten (Firewall, Switch, Router, Loadbalancer, WLAN), Cloud-Services (IaaS, PaaS), SaaS-Tenants ({{ saas.systems_in_scope }}), DevOps-Toolchains, OT/ICS sofern im Scope. Geltungsbereich ist {{ tenant.scope_statement }}.
@@ -865,12 +865,12 @@ policy:
                     ## 4. Hardening-Baselines
                     Verbindliche Baselines basieren auf anerkannten Quellen:
 
-                    - CIS Benchmarks (Level 1 mindestens; Level 2 fuer hoch schutzbeduerftige Systeme)
+                    - CIS Benchmarks (Level 1 mindestens; Level 2 für hoch schutzbeduerftige Systeme)
                     - DISA STIGs (fuer ausgewaehlte Plattformen)
                     - BSI IT-Grundschutz-Bausteine SYS.1.x, SYS.2.x, NET.x, APP.x
                     - Hersteller-Hardening-Guides (Microsoft Security Baselines, RedHat Hardening, Cisco Hardening)
                     - Cloud-Provider-Best-Practices (AWS Foundations, CIS Azure, GCP CIS)
-                    - Eigene zusaetzliche Anforderungen (z. B. zentrales Logging, Monitoring-Agent, EDR)
+                    - Eigene zusätzliche Anforderungen (z. B. zentrales Logging, Monitoring-Agent, EDR)
 
                     Abweichungen pro System sind mit Risikoakzeptanz dokumentiert (Risikoregister) und befristet.
 
@@ -879,15 +879,15 @@ policy:
                     2. **Realisierung:** Provisionierung via IaC; Templates zentral versioniert.
                     3. **Inventarisierung:** CMDB mit Soll-Konfiguration; Asset-Bezug A.5.9.
                     4. **Ueberwachung:** kontinuierliche Compliance-Scans, Drift-Detection ({{ posture.tools }}).
-                    5. **Aenderung:** Change-Management gemaess A.8.32; CAB-Freigaben fuer Major Changes.
+                    5. **Aenderung:** Change-Management gemaess A.8.32; CAB-Freigaben für Major Changes.
                     6. **Re-Hardening:** quartalsweise Review der Baselines; ad hoc bei Bedrohungslage.
                     7. **Aussonderung:** sichere Loeschung gemaess Krypto-Richtlinie.
 
                     ## 6. Spezifische Hardening-Anforderungen (Auszug)
-                    - **Authentifizierung:** MFA fuer privilegierte Zugaenge; lokale Standard-Konten deaktivieren; Service-Accounts non-interactive.
+                    - **Authentifizierung:** MFA für privilegierte Zugaenge; lokale Standard-Konten deaktivieren; Service-Accounts non-interactive.
                     - **Netz:** keine offenen, unauthentifizierten Management-Ports; SSH nur Key-Auth, kein Root-Login; HTTPS-only mit modernen TLS-Suiten.
                     - **Logging:** zentrale Anbindung verpflichtend (siehe Logging-Richtlinie).
-                    - **Updates:** automatische Sicherheits-Updates fuer Standard-Komponenten; Ausnahmen begruendet.
+                    - **Updates:** automatische Sicherheits-Updates für Standard-Komponenten; Ausnahmen begruendet.
                     - **Cloud:** Public-Buckets verboten ohne Risikoakzeptanz; Default-VPC-Regeln gehaertet; Cloud-Posture-Management aktiv.
                     - **Container:** Distroless/Minimal-Images; non-root-User; Read-Only-Rootfs; Image-Signing (Sigstore/Cosign); Schwachstellen-Scan im Build.
                     - **Kubernetes:** PSP/Pod-Security-Standards "restricted"; Network-Policies "deny-by-default"; RBAC-Least-Privilege.
@@ -934,9 +934,9 @@ policy:
                         body: |
                             Pro Technologie-Familie ist eine verbindliche Konfigurations-Baseline festgelegt:
 
-                            - **Workstations und Server:** CIS Benchmarks Level 1 als Minimum, Level 2 fuer Systeme mit erhoehtem Schutzbedarf; ergaenzt um BSI-IT-Grundschutz-Anforderungen wo zutreffend.
-                            - **Netzwerk-Geraete:** CIS Benchmarks fuer gaengige Hersteller; herstellerseitige Hardening-Guides.
-                            - **Datenbanken:** CIS Benchmarks fuer die jeweils eingesetzten DBMS.
+                            - **Workstations und Server:** CIS Benchmarks Level 1 als Minimum, Level 2 für Systeme mit erhoehtem Schutzbedarf; ergaenzt um BSI-IT-Grundschutz-Anforderungen wo zutreffend.
+                            - **Netzwerk-Geraete:** CIS Benchmarks für gaengige Hersteller; herstellerseitige Hardening-Guides.
+                            - **Datenbanken:** CIS Benchmarks für die jeweils eingesetzten DBMS.
                             - **Cloud-Konten:** CIS Benchmarks for AWS/Azure/GCP, ergaenzt um die Cloud-Provider-Best-Practices.
                             - **Container und Kubernetes:** CIS Benchmarks for Docker und Kubernetes.
 
@@ -948,7 +948,7 @@ policy:
 
                             Vor der Inbetriebnahme erfolgt ein Konfigurations-Compliance-Check, dessen Ergebnis dokumentiert wird. Ein erfolgreicher Check ist Teil der Service-Acceptance-Kriterien.
 
-                            Die Versionierung erfolgt nach dem Prinzip der Single Source of Truth: jede Konfiguration ist in einem Git-Repository versioniert mit signierten Commits, Pull-Request-Reviews und protokollierter Deployment-Pipeline. Konfigurations-Artefakte werden mit dem zugehoerigen Asset-Inventar (A.5.9) verknuepft, sodass jederzeit nachvollziehbar ist, welche Baseline auf welchem System aktiv ist und wer die letzte Aenderung verantwortet hat.
+                            Die Versionierung erfolgt nach dem Prinzip der Single Source of Truth: jede Konfiguration ist in einem Git-Repository versioniert mit signierten Commits, Pull-Request-Reviews und protokollierter Deployment-Pipeline. Konfigurations-Artefakte werden mit dem zugehoerigen Asset-Inventar (A.5.9) verknüpft, sodass jederzeit nachvollziehbar ist, welche Baseline auf welchem System aktiv ist und wer die letzte Aenderung verantwortet hat.
 
                             Sensitive Konfigurations-Bestandteile (Secrets, Crypto-Keys, API-Tokens) werden ueber das zentrale Secret-Management bezogen und niemals in Plaintext im Konfigurations-Repository hinterlegt. Die Secrets-Injection erfolgt zur Deploy-Zeit ueber zugelassene Mechanismen (z.B. Kubernetes-Secrets via External Secrets Operator, Cloud-Native-Secret-Stores).
                     4:
@@ -962,7 +962,7 @@ policy:
 
                             Persistente Drifts ohne nachvollziehbaren Grund werden als Anomalie behandelt und im SIEM korreliert.
 
-                            Beispiele kritischer Drifts: Deaktivierung lokaler Firewall, Aenderung von SSH-Konfigurationen (Erlauben von Passwort-Auth, Erlauben von Root-Login), Aenderungen am Audit-Logging, Aenderung von Berechtigungen auf sicherheitsrelevanten Dateien, Aenderung von TLS-Konfigurationen unterhalb der Mindeststandards. Bei diesen Drifts wird zusaetzlich ein Sicherheitsereignis erfasst und gemaess Incident-Management-Prozess behandelt.
+                            Beispiele kritischer Drifts: Deaktivierung lokaler Firewall, Aenderung von SSH-Konfigurationen (Erlauben von Passwort-Auth, Erlauben von Root-Login), Aenderungen am Audit-Logging, Aenderung von Berechtigungen auf sicherheitsrelevanten Dateien, Aenderung von TLS-Konfigurationen unterhalb der Mindeststandards. Bei diesen Drifts wird zusätzlich ein Sicherheitsereignis erfasst und gemaess Incident-Management-Prozess behandelt.
                     5:
                         title: 'Ausnahmen'
                         body: |
@@ -988,7 +988,7 @@ policy:
 
                             **Plattform-Owner je Technologie-Familie:** Pflege der Baseline-Definitionen, Bewertung neuer CIS-Benchmark-Versionen, Umsetzung von Baseline-Updates.
 
-                            **Asset-Owner:** Verantwortlich fuer die Anwendung der Baseline auf den eigenen Systemen, Mitwirkung bei Drift-Korrekturen.
+                            **Asset-Owner:** Verantwortlich für die Anwendung der Baseline auf den eigenen Systemen, Mitwirkung bei Drift-Korrekturen.
 
                             **DevOps / Platform Engineering:** Bereitstellung und Wartung der Configuration-Management- und Drift-Detection-Tooling-Pipelines.
 
@@ -1000,13 +1000,13 @@ policy:
                 tailoring_field:
                     1:
                         label: 'Baseline-Quellen je Technologie-Familie'
-                        placeholder: 'z.B. CIS L1 fuer Workstations, CIS L2 + BSI SYS.1.3 fuer Linux-Server, CIS for Kubernetes v1.9 fuer alle Cluster, AWS CIS 2.0 fuer Cloud-Konten.'
+                        placeholder: 'z.B. CIS L1 für Workstations, CIS L2 + BSI SYS.1.3 für Linux-Server, CIS for Kubernetes v1.9 für alle Cluster, AWS CIS 2.0 für Cloud-Konten.'
                     2:
                         label: 'Configuration-Management-Tooling'
-                        placeholder: 'z.B. zentrales Ansible-Tooling fuer On-Premises-Server, Terraform fuer AWS-Ressourcen, GitOps mit Argo CD fuer Kubernetes-Konfigurationen.'
+                        placeholder: 'z.B. zentrales Ansible-Tooling für On-Premises-Server, Terraform für AWS-Ressourcen, GitOps mit Argo CD für Kubernetes-Konfigurationen.'
                     3:
                         label: 'Drift-Detection-Tooling und Reaktionszeit'
-                        placeholder: 'z.B. AWS Config + Custom-Rules mit 1h-Reaktionszeit fuer Cloud, OSQuery + Daily-Reporting fuer Endpoints, kubectl-diff in CI fuer Cluster.'
+                        placeholder: 'z.B. AWS Config + Custom-Rules mit 1h-Reaktionszeit für Cloud, OSQuery + Daily-Reporting für Endpoints, kubectl-diff in CI für Cluster.'
 
         network_security:
             v1:
@@ -1027,7 +1027,7 @@ policy:
                     ## 3. Grundsaetze
                     - **Default Deny:** Alles verboten, was nicht explizit erlaubt ist.
                     - **Mikrosegmentierung:** Workload- und Identitaets-basierte Segmentierung statt rein L3-Zonen.
-                    - **Verschluesselung in transit:** TLS 1.2+, IPsec, mTLS gemaess Krypto-Richtlinie; auch innerhalb interner Netze fuer schutzbeduerftige Daten.
+                    - **Verschluesselung in transit:** TLS 1.2+, IPsec, mTLS gemaess Krypto-Richtlinie; auch innerhalb interner Netze für schutzbeduerftige Daten.
                     - **Identity-First:** jeder Netz-Zugriff identitaets-authentisiert (User oder Workload-Identity).
                     - **Continuous Monitoring:** Telemetrie in SIEM/NDR; Anomalie-Detektion.
                     - **Aenderungs-Disziplin:** Firewall- und Routing-Aenderungen ueber Change-Management mit Vier-Augen.
@@ -1053,22 +1053,22 @@ policy:
                     - DDoS-Schutz auf Volumetric-/Protocol-/Application-Ebene; Tests jaehrlich.
                     - eMail-Sicherheits-Gateway mit Sandboxing (siehe Malware-Richtlinie).
                     - DNS-Filter (RPZ) mit Threat-Feeds; eigene rekursive Resolver.
-                    - Reverse-Proxy / API-Gateway fuer alle externen Schnittstellen; OAuth2/OIDC Standard.
+                    - Reverse-Proxy / API-Gateway für alle externen Schnittstellen; OAuth2/OIDC Standard.
 
                     ## 6. Outbound- und Web-Filterung (A.8.23)
                     Egress-Verkehr ueber Secure-Web-Gateway / Cloud-Proxy mit Kategorien-Filter, Reputation, TLS-Inspektion (mit Datenschutz-Beachtung und Mitbestimmung). Hochrisiko-Kategorien (Anonymisierer, Malware-Distribution, Krypto-Mining) sind blockiert. Nicht-zertifizierte SaaS-Nutzung wird ueber CASB erkannt und kontrolliert ("Shadow IT"-Reduktion).
 
                     ## 7. Drahtlose Netze (BSI NET.2.x)
                     - WPA3-Enterprise mit 802.1X / EAP-TLS Standard; WPA2-Enterprise als Uebergang.
-                    - Getrennte SSIDs fuer Mitarbeitende, Gaeste, IoT/OT.
+                    - Getrennte SSIDs für Mitarbeitende, Gaeste, IoT/OT.
                     - Gast-WLAN ohne Zugriff auf interne Ressourcen; nur Internet ueber separate Egress-Strecke.
                     - Rogue-AP-Erkennung; physische Pruefung Standorte mindestens jaehrlich.
 
                     ## 8. Remote-Zugriff und Zero Trust
-                    Remote-Zugriff ausschliesslich ueber: (a) ZTNA-Plattform mit Identitaets- und Geraete-Compliance-Pruefung (bevorzugt) oder (b) klassisches VPN mit MFA, Geraete-Zertifikat und Posture-Check. Privilegierter Remote-Zugriff zusaetzlich ueber PAM mit Session-Recording. Kein direkter Lieferanten-Zugriff ohne kontrolliertes Wartungsfenster und Vier-Augen.
+                    Remote-Zugriff ausschliesslich ueber: (a) ZTNA-Plattform mit Identitaets- und Geraete-Compliance-Pruefung (bevorzugt) oder (b) klassisches VPN mit MFA, Geraete-Zertifikat und Posture-Check. Privilegierter Remote-Zugriff zusätzlich ueber PAM mit Session-Recording. Kein direkter Lieferanten-Zugriff ohne kontrolliertes Wartungsfenster und Vier-Augen.
 
                     ## 9. Cloud-Netz-Sicherheit
-                    Cloud-VPCs/VNets mit Default-Deny-Security-Groups; Private-Endpoints fuer Cloud-Services; Service-zu-Service-Auth ueber Workload-Identitaet. Kein Public-IP fuer Datenspeicher. Cloud-Posture-Management ({{ posture.tools }}) ueberwacht kontinuierlich. Cloud-Interconnect (z. B. Direct Connect, ExpressRoute) statt Internet wo wirtschaftlich sinnvoll und sicherheitsrelevant.
+                    Cloud-VPCs/VNets mit Default-Deny-Security-Groups; Private-Endpoints für Cloud-Services; Service-zu-Service-Auth ueber Workload-Identitaet. Kein Public-IP für Datenspeicher. Cloud-Posture-Management ({{ posture.tools }}) ueberwacht kontinuierlich. Cloud-Interconnect (z. B. Direct Connect, ExpressRoute) statt Internet wo wirtschaftlich sinnvoll und sicherheitsrelevant.
 
                     ## 10. Verantwortlichkeiten (RACI)
                     | Aktivitaet | R | A | C | I |
@@ -1105,7 +1105,7 @@ policy:
                         body: |
                             Diese Richtlinie schuetzt die Vertraulichkeit, Integritaet und Verfuegbarkeit der ueber das Netzwerk uebertragenen Informationen und stellt sicher, dass Netzwerke und Netzwerk-Services kontrolliert betrieben werden. Sie folgt einer „Defense in Depth"-Architektur mit klar definierten Sicherheitszonen und einer schrittweisen Migration in Richtung Zero-Trust-Networking.
 
-                            Grundsaetze: „Default Deny" (alles verboten, was nicht explizit erlaubt ist), Segmentierung nach Schutzbedarf und Funktion, Verschluesselung in Transit fuer alle Daten ausserhalb derselben Sicherheitszone, Ueberwachung der Netzwerk-Aktivitaet (siehe Logging-Richtlinie), regelmaessige Ueberpruefung der Firewall-Regeln.
+                            Grundsaetze: „Default Deny" (alles verboten, was nicht explizit erlaubt ist), Segmentierung nach Schutzbedarf und Funktion, Verschluesselung in Transit für alle Daten ausserhalb derselben Sicherheitszone, Ueberwachung der Netzwerk-Aktivitaet (siehe Logging-Richtlinie), regelmaessige Ueberpruefung der Firewall-Regeln.
 
                             Die Netzwerk-Sicherheit ist eng mit der Informations-Klassifizierung verzahnt: die zulaessigen Verarbeitungs- und Uebertragungsorte je Klassifikationsstufe ergeben sich aus der Klassifikationsrichtlinie und sind im Zonen-Modell technisch umgesetzt. Streng vertrauliche Daten werden ausschliesslich in der Restricted-Zone verarbeitet; Uebertragungen zwischen Zonen erfordern explizite Verschluesselung und Auditierung.
                     2:
@@ -1129,7 +1129,7 @@ policy:
 
                             1. **Antrag** mit fachlicher Begruendung, Quelle, Ziel, Port/Protokoll, Anwendungsfall, gewuenschte Geltungsdauer.
                             2. **Pruefung** durch Network Security Team auf Notwendigkeit und Konformitaet zu dieser Richtlinie.
-                            3. **Genehmigung** im Vier-Augen-Prinzip; bei kritischer Risiko-Klasse zusaetzlich {{ roles.ciso.fullName }}.
+                            3. **Genehmigung** im Vier-Augen-Prinzip; bei kritischer Risiko-Klasse zusätzlich {{ roles.ciso.fullName }}.
                             4. **Umsetzung** ausschliesslich ueber automatisierte Tooling-Pipeline (Configuration as Code).
                             5. **Halbjaehrliche Ueberpruefung** aller aktiven Regeln auf fortbestehenden Bedarf; ungenutzte Regeln werden entfernt.
                             6. **Loeschung** auf Antrag oder bei Wegfall des Anwendungsfalls.
@@ -1146,7 +1146,7 @@ policy:
                         body: |
                             Ausgehender Web-Traffic durchlaeuft ein Secure Web Gateway mit Kategorie-basierter Filterung. Folgende Kategorien sind verbindlich blockiert: bekanntermassen boesartig (Malware, Command-and-Control, Phishing), Anonymizer/Proxy-Dienste, nicht klassifizierte Newly-Registered-Domains, Cryptocurrency-Mining.
 
-                            DNS-Resolver werden zentral kontrolliert; DoH/DoT zu nicht-kontrollierten externen Resolvern ist auf Endpoints geblockt. Interne DNS-Server fuehren Threat-Intelligence-basiertes Sinkholing fuer bekanntermassen boesartige Domains.
+                            DNS-Resolver werden zentral kontrolliert; DoH/DoT zu nicht-kontrollierten externen Resolvern ist auf Endpoints geblockt. Interne DNS-Server fuehren Threat-Intelligence-basiertes Sinkholing für bekanntermassen boesartige Domains.
                     6:
                         title: 'Erkennung und Reaktion'
                         body: |
@@ -1164,17 +1164,17 @@ policy:
                         body: |
                             Netzwerk-Services Dritter (Internet-Carrier, MPLS-Anbieter, SaaS-Connectivity) sind durch Service-Level-Agreements abgesichert, die mindestens umfassen: Verfuegbarkeit, Verschluesselungsanforderungen, Reaktionszeiten bei Sicherheitsereignissen, Audit-Rechte, Daten-Lokalisierung.
 
-                            Bei kritischen Netzwerk-Services (z.B. Internet-Anbindung, MPLS, SD-WAN) ist eine Multi-Carrier-Strategie zu pruefen, um Single-Points-of-Failure zu vermeiden. Bei DORA-Anwendbarkeit gilt zusaetzlich: Eintragung als ICT-Drittdienstleister im Register-of-Information, vertragliche Aufnahme der DORA-Pflichtklauseln (Art. 30), Exit-Strategie und Concentration-Risk-Bewertung.
+                            Bei kritischen Netzwerk-Services (z.B. Internet-Anbindung, MPLS, SD-WAN) ist eine Multi-Carrier-Strategie zu pruefen, um Single-Points-of-Failure zu vermeiden. Bei DORA-Anwendbarkeit gilt zusätzlich: Eintragung als ICT-Drittdienstleister im Register-of-Information, vertragliche Aufnahme der DORA-Pflichtklauseln (Art. 30), Exit-Strategie und Concentration-Risk-Bewertung.
                     9:
                         title: 'Rollen und Verantwortlichkeiten'
                         body: |
-                            **Network Security Lead:** Operative Verantwortung fuer die Umsetzung dieser Richtlinie, Pflege der Firewall-Rule-Base, Steuerung der halbjaehrlichen Re-Certifications.
+                            **Network Security Lead:** Operative Verantwortung für die Umsetzung dieser Richtlinie, Pflege der Firewall-Rule-Base, Steuerung der halbjaehrlichen Re-Certifications.
 
                             **{{ roles.ciso.fullName }} (CISO):** Genehmigung von Ausnahmen und kritischen Firewall-Regeln, Eskalationspunkt, Berichtslinie an die Geschaeftsleitung.
 
-                            **Cloud-Plattform-Owner:** Verantwortung fuer die Umsetzung der Zonen-Modell-Anforderungen in Cloud-VPCs, Konfiguration der Cloud-Native-Security-Groups.
+                            **Cloud-Plattform-Owner:** Verantwortung für die Umsetzung der Zonen-Modell-Anforderungen in Cloud-VPCs, Konfiguration der Cloud-Native-Security-Groups.
 
-                            **Asset-Owner:** Anforderung neuer Konnektivitaet, Verantwortung fuer den fortbestehenden Bedarf von Firewall-Regeln in den eigenen Systemen, Mitwirkung bei Re-Certifications.
+                            **Asset-Owner:** Anforderung neuer Konnektivitaet, Verantwortung für den fortbestehenden Bedarf von Firewall-Regeln in den eigenen Systemen, Mitwirkung bei Re-Certifications.
 
                             **Internal Audit:** Stichprobenartige Pruefung der Firewall-Rule-Base und der Zonen-Trennung, Bericht an den Pruefungsausschuss.
                     10:

@@ -25,7 +25,7 @@ policy:
                     Je nach Datentraeger und Klasse gelten folgende Verfahren:
 
                     - **Papier:** Aktenvernichter mit DIN-66399-konformer Sicherheitsstufe oder zertifizierter externer Dienstleister;
-                    - **Magnetische Datentraeger (HDDs):** sicheres Ueberschreiben (mind. 1 Pass mit ATA Secure Erase oder NIST SP 800-88), bei Schutzklasse 2/3 zusaetzlich Degaussing oder physische Zerstoerung;
+                    - **Magnetische Datentraeger (HDDs):** sicheres Ueberschreiben (mind. 1 Pass mit ATA Secure Erase oder NIST SP 800-88), bei Schutzklasse 2/3 zusätzlich Degaussing oder physische Zerstoerung;
                     - **SSDs:** Crypto-Erase mit anschliessender physischer Zerstoerung; Ueberschreiben allein gilt als nicht ausreichend;
                     - **Optische Datentraeger:** physische Zerstoerung (Schreddern);
                     - **Cloud-Daten:** Anbieter-Loeschbestaetigung; bei sehr hoher Schutzklasse Crypto-Erase via Schluessel-Vernichtung.
@@ -37,7 +37,7 @@ policy:
                     Vernichtungs- und Loeschvorgaenge werden mit Datum, Verantwortlicher Person, Asset-Bezug, Verfahren und Sicherheitsstufe dokumentiert. Externe Dienstleister liefern Vernichtungs-Zertifikate; diese werden im Asset-Inventar verlinkt.
 
                     ## 7. Cloud-Daten
-                    Bei Beendigung von Cloud-Vertraegen wird die Anbieter-Loeschbestaetigung eingeholt; bei hoher Schutzklasse zusaetzlich der Crypto-Erase-Mechanismus aktiviert. Klauseln dazu sind im Cloud-Vertragsstandard enthalten (Cross-Ref OPS.2.2).
+                    Bei Beendigung von Cloud-Vertraegen wird die Anbieter-Loeschbestaetigung eingeholt; bei hoher Schutzklasse zusätzlich der Crypto-Erase-Mechanismus aktiviert. Klauseln dazu sind im Cloud-Vertragsstandard enthalten (Cross-Ref OPS.2.2).
 
                     ## 8. Mobile Geraete
                     Bei Verlust, Diebstahl oder Geraete-Tausch wird via MDM ein Remote-Wipe ausgeloest. Bei BYOD ist die selektive Loeschung dienstlicher Daten geregelt (Container-Wipe).
@@ -46,7 +46,7 @@ policy:
                     Vor Loeschung werden gesetzliche und vertragliche Aufbewahrungsfristen geprueft (z. B. AO §147, HGB §257; DSGVO Art. 17 Abs. 3 Ausnahmen).
 
                     ## 10. Notfall-Vernichtung
-                    Bei Verlust oder Diebstahl wird der Vorfall unverzueglich an den ISB {{ roles.isb.fullName }} gemeldet (Cross-Ref DER.2.1); falls relevant erfolgt zusaetzlich Meldung an die Aufsichtsbehoerde (Cross-Ref CON.2 Datenschutz, Art. 33 DSGVO).
+                    Bei Verlust oder Diebstahl wird der Vorfall unverzueglich an den ISB {{ roles.isb.fullName }} gemeldet (Cross-Ref DER.2.1); falls relevant erfolgt zusätzlich Meldung an die Aufsichtsbehoerde (Cross-Ref CON.2 Datenschutz, Art. 33 DSGVO).
 
                     ---
                     *Cross-Ref ISO/IEC 27002:2022 § 7.10, 7.14, 8.10. Genehmigt: {{ approval.chain }}.*
@@ -86,39 +86,39 @@ policy:
                 tailoring_field:
                     disposal_provider:
                         label: 'Externer Vernichtungsdienstleister'
-                        placeholder: 'Beispiel: "Reisswolf GmbH (DIN-66399-zertifiziert) fuer Papier P-4; SecData GmbH fuer HDDs T-5; jaehrliches Audit."'
+                        placeholder: 'Beispiel: "Reisswolf GmbH (DIN-66399-zertifiziert) für Papier P-4; SecData GmbH für HDDs T-5; jaehrliches Audit."'
                     security_levels:
                         label: 'Verbindliche Sicherheitsstufen'
-                        placeholder: 'Beispiel: "Papier mind. P-4 fuer alles ausser oeffentlich; HDDs Schutzklasse 2 → T-5; Personalakten und Patientendaten T-6."'
+                        placeholder: 'Beispiel: "Papier mind. P-4 für alles ausser oeffentlich; HDDs Schutzklasse 2 → T-5; Personalakten und Patientendaten T-6."'
                     cloud_termination:
                         label: 'Cloud-Vertragsbeendigung – Verfahren'
                         placeholder: 'Beispiel: "Bei Vertragsende AWS: Schluessel-Vernichtung via KMS DeleteKey + Anbieter-Loeschbestaetigung; Frist 30 Tage."'
 
         business_travel_directive:
             v1:
-                title: 'Richtlinie fuer Auslandsreisen / Mobiles Arbeiten'
+                title: 'Richtlinie für Auslandsreisen / Mobiles Arbeiten'
                 body: |-
                     # Reise-Richtlinie der {{ tenant.legal_name }}
 
                     *Norm-Anker: BSI 200-2 | Bausteine: CON.7.A1 (Sicherheitsrichtlinie Auslandsreisen), A2 (Sensibilisierung), A3 (Vorschriften), A4 (Verschluesselung), A5 (oeffentliche WLANs), A6 (Blickschutz/Lauschangriffe) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: 24 Monate*
 
                     ## 1. Zweck
-                    Diese Richtlinie regelt sicherheitsrelevante Aspekte bei Dienstreisen, insbesondere Auslandsreisen, fuer alle Beschaeftigten der {{ tenant.legal_name }}.
+                    Diese Richtlinie regelt sicherheitsrelevante Aspekte bei Dienstreisen, insbesondere Auslandsreisen, für alle Beschaeftigten der {{ tenant.legal_name }}.
 
                     ## 2. Geltungsbereich
                     Saemtliche Dienstreisen (national und international), insbesondere bei Mitnahme von Endgeraeten, Datentraegern oder vertraulichen Unterlagen.
 
                     ## 3. Erlaubte Geraete
-                    Bei Reisen ins Ausland werden bevorzugt **Travel-Notebooks** und **Travel-Phones** ohne dauerhafte Datenspeicherung eingesetzt. Persoenliche Endgeraete (BYOD) sind fuer Auslandsreisen in Hochrisikolaender nicht zugelassen.
+                    Bei Reisen ins Ausland werden bevorzugt **Travel-Notebooks** und **Travel-Phones** ohne dauerhafte Datenspeicherung eingesetzt. Persoenliche Endgeraete (BYOD) sind für Auslandsreisen in Hochrisikolaender nicht zugelassen.
 
-                    ## 4. Datenklassifikation fuer Reise
+                    ## 4. Datenklassifikation für Reise
                     Vor Reise wird festgelegt, welche Daten mitgefuehrt werden duerfen. Streng vertrauliche Daten und VS-NfD (Behoerden) sind grundsaetzlich nicht im Ausland mitzufuehren, sofern dies nicht zwingend ist und kompensierende Massnahmen ergriffen werden.
 
                     ## 5. Verschluesselungspflicht (CON.7.A4)
                     Festplatten und externe Datentraeger sind zwingend verschluesselt (Cross-Ref CON.1). Mobile Endgeraete besitzen Geraete-Verschluesselung mit starker PIN/Passwort-Sperre und Biometrie als Zweitfaktor.
 
                     ## 6. Verbindungssicherheit (CON.7.A5)
-                    VPN-Pflicht fuer alle dienstlichen Verbindungen; oeffentliche WLANs werden grundsaetzlich nicht ohne VPN genutzt. Hotspot ueber Firmen-Smartphone ist bevorzugt.
+                    VPN-Pflicht für alle dienstlichen Verbindungen; oeffentliche WLANs werden grundsaetzlich nicht ohne VPN genutzt. Hotspot ueber Firmen-Smartphone ist bevorzugt.
 
                     ## 7. Verhalten bei Grenzkontrollen
                     Bei Grenzkontrollen in Hochrisikolaendern werden Travel-Geraete bevorzugt; Geraete duerfen ggf. abgegeben werden, wenn dies rechtlich gefordert wird. Nach Rueckreise erfolgt Forensik-Pruefung des Geraets, bevor es ins Unternehmensnetz zurueckgefuehrt wird.
@@ -130,7 +130,7 @@ policy:
                     Privacy-Filter sind verpflichtend bei Reise. Vertrauliche Telefonate sind in oeffentlichen Bereichen zu vermeiden; Notebook-Kamera und Mikrofon sind ausserhalb von Konferenzen zu deaktivieren.
 
                     ## 10. Sensibilisierung (CON.7.A2)
-                    Vor jeder Reise in ein Hochrisikoland erfolgt eine Briefing-Massnahme; gilt insbesondere fuer Reisen nach VR China, Russland, Iran, Nordkorea sowie weitere durch BfV / Auswaertiges Amt benannte Laender.
+                    Vor jeder Reise in ein Hochrisikoland erfolgt eine Briefing-Massnahme; gilt insbesondere für Reisen nach VR China, Russland, Iran, Nordkorea sowie weitere durch BfV / Auswaertiges Amt benannte Laender.
 
                     ## 11. Spezielle Laenderregelungen
                     Aktuelle Hinweise des BfV (Wirtschaftsschutz) und des Auswaertigen Amts werden vor Reise konsultiert. Bei US-Reisen wird die CLOUD-Act-Risikoeinschaetzung beachtet (Cross-Ref OPS.2.2).
@@ -204,7 +204,7 @@ policy:
 
                     ## 4. Sicherheitsanforderungen je Phase
                     - **Anforderung:** Schutzziele (CIA), Datenklassifikation, regulatorische Anforderungen werden festgelegt;
-                    - **Design:** Threat Modeling fuer Anwendungen mit hohem Schutzbedarf (Cross-Ref CON.8.A19); Architektur-Reviews;
+                    - **Design:** Threat Modeling für Anwendungen mit hohem Schutzbedarf (Cross-Ref CON.8.A19); Architektur-Reviews;
                     - **Implementierung:** Secure Coding Guidelines (z. B. OWASP-Cheatsheets, CERT-C); 4-Augen-Prinzip bei Code-Reviews;
                     - **Test:** Unit-Tests, Integrationstests, SAST (CON.8.A20), DAST (CON.8.A21), ggf. Pentest und Fuzzing (CON.8.A22);
                     - **Freigabe:** Freigabeprozess gemaess Software-Test- und Freigabe-Richtlinie (Cross-Ref OPS.1.1.6);
@@ -221,7 +221,7 @@ policy:
                     Entwicklerinnen und Entwickler erhalten regelmaessig Schulungen zu sicherer Entwicklung (Secure Coding, Bedrohungsmodelle, sichere Frameworks). Cross-Ref Awareness-Richtlinie ORP.3.
 
                     ## 8. Code-Review-Pflicht
-                    Jede Aenderung wird durch eine zweite Person reviewt (4-Augen-Prinzip). Sicherheitsrelevante Aenderungen erhalten zusaetzlich Security-Review durch ISB-Vertrauensperson oder externe Stelle.
+                    Jede Aenderung wird durch eine zweite Person reviewt (4-Augen-Prinzip). Sicherheitsrelevante Aenderungen erhalten zusätzlich Security-Review durch ISB-Vertrauensperson oder externe Stelle.
 
                     ## 9. Versionsverwaltung (CON.8.A6)
                     Quellcode wird in einem zentralen, zugriffskontrollierten Versionsverwaltungssystem (Git) verwaltet. Branching-Strategie, Tagging und Release-Prozess sind dokumentiert. Geheimnisse (Passwoerter, Schluessel, Tokens) werden NIEMALS im Repository abgelegt; Secrets-Management via Vault / KMS.
@@ -258,7 +258,7 @@ policy:
                     code_review:
                         title: 'Code-Review'
                         body: |-
-                            4-Augen-Prinzip; sicherheitsrelevante Aenderungen mit zusaetzlichem Security-Review.
+                            4-Augen-Prinzip; sicherheitsrelevante Aenderungen mit zusätzlichem Security-Review.
                     version_control:
                         title: 'Versionsverwaltung'
                         body: |-
@@ -277,7 +277,7 @@ policy:
                         placeholder: 'Beispiel: "SAST mit Sonar, DAST mit OWASP ZAP; Pentests jaehrlich durch externe Stelle; Container-Scan via Trivy in CI/CD."'
                     threat_modeling:
                         label: 'Threat Modeling'
-                        placeholder: 'Beispiel: "STRIDE-Modell fuer alle neuen Anwendungen mit hohem Schutzbedarf; Workshop-Format quartalsweise; Ergebnisse im Architektur-Repository."'
+                        placeholder: 'Beispiel: "STRIDE-Modell für alle neuen Anwendungen mit hohem Schutzbedarf; Workshop-Format quartalsweise; Ergebnisse im Architektur-Repository."'
                     secrets_management:
                         label: 'Secrets-Management'
                         placeholder: 'Beispiel: "HashiCorp Vault als zentraler Secrets-Tresor; Pre-Commit-Hook gegen Hardcoded-Secrets; jaehrliches Audit der Repos."'
@@ -358,7 +358,7 @@ policy:
                 tailoring_field:
                     sftp_solution:
                         label: 'Sicher-File-Transfer'
-                        placeholder: 'Beispiel: "Wir verwenden Cryptshare als Sicher-File-Transfer fuer Daten ueber 25 MB; Aufbewahrung 14 Tage; AES-256 mit benutzerverwaltetem Passwort."'
+                        placeholder: 'Beispiel: "Wir verwenden Cryptshare als Sicher-File-Transfer für Daten ueber 25 MB; Aufbewahrung 14 Tage; AES-256 mit benutzerverwaltetem Passwort."'
                     nda_template:
                         label: 'NDA-Mustertext'
                         placeholder: 'Beispiel: "Standard-NDA-Vorlage Version 3.2 (DE/EN); Pflege durch Recht/DSB; Unterzeichnung in DocuSign mit Audit-Trail."'
@@ -375,14 +375,14 @@ policy:
                     *Norm-Anker: BSI 200-2 | Bausteine: CON.10.A1 (Authentisierung), A2 (Zugriffskontrolle), A3 (Sichere Konfiguration), A4 (Schutz vertraulicher Daten), A5 (Protokollierung) | OWASP-Bezug: Top 10, ASVS L2/L3 | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich*
 
                     ## 1. Zweck
-                    Diese Richtlinie ergaenzt die Software-Entwicklungsrichtlinie um spezifische Vorgaben fuer Webanwendungen, die durch die {{ tenant.legal_name }} entwickelt oder betrieben werden. Sie ist fuer Anwendungen mit Web-Frontend, REST/GraphQL-APIs und Webservices verbindlich.
+                    Diese Richtlinie ergaenzt die Software-Entwicklungsrichtlinie um spezifische Vorgaben für Webanwendungen, die durch die {{ tenant.legal_name }} entwickelt oder betrieben werden. Sie ist für Anwendungen mit Web-Frontend, REST/GraphQL-APIs und Webservices verbindlich.
 
                     ## 2. Geltungsbereich
                     Erfasst sind alle Webanwendungen (intern und extern) sowie REST/GraphQL-Schnittstellen, Webservices und Web-Komponenten in Mobile-Anwendungen.
 
                     ## 3. Authentisierung (CON.10.A1)
                     - Sichere Session-Verwaltung mit ausreichend zufaelligen Tokens, HttpOnly- und Secure-Flags;
-                    - MFA fuer privilegierte und schutzbeduerftige Anwendungen (Cross-Ref ORP.4.A22);
+                    - MFA für privilegierte und schutzbeduerftige Anwendungen (Cross-Ref ORP.4.A22);
                     - Brute-Force-Schutz mit Rate-Limiting und Account-Lockout-Logik (mit Schutz vor Lockout-Missbrauch);
                     - Sichere Passwort-Speicherung via Argon2id / bcrypt (Cross-Ref CON.1).
 
@@ -399,7 +399,7 @@ policy:
                     - Output-Encoding kontextabhaengig (HTML, JS, URL).
 
                     ## 6. Verschluesselung (CON.10.A4)
-                    Saemtliche Verbindungen via TLS 1.2+ (vorzugsweise 1.3); Session-Cookies mit Secure-Flag; sensible Felder zusaetzlich verschluesselt; HSTS Pflicht (Cross-Ref CON.1).
+                    Saemtliche Verbindungen via TLS 1.2+ (vorzugsweise 1.3); Session-Cookies mit Secure-Flag; sensible Felder zusätzlich verschluesselt; HSTS Pflicht (Cross-Ref CON.1).
 
                     ## 7. Logging (CON.10.A5)
                     Sicherheitsrelevante Ereignisse werden protokolliert: Authentifizierungs-Versuche (Erfolg/Misserfolg), Privileg-Eskalationen, Zugriff auf vertrauliche Daten, Anomalien (Cross-Ref OPS.1.1.5).
@@ -411,7 +411,7 @@ policy:
                     - Standard-Konten und Beispieldaten entfernt.
 
                     ## 9. Vulnerability-Management
-                    Regelmaessiges Schwachstellen-Scanning, jaehrlicher Pentest fuer kritische Anwendungen (Cross-Ref OPS.1.1.3); CVE-Monitoring fuer eingesetzte Bibliotheken; Patch-SLA gemaess Patch-Richtlinie.
+                    Regelmaessiges Schwachstellen-Scanning, jaehrlicher Pentest für kritische Anwendungen (Cross-Ref OPS.1.1.3); CVE-Monitoring für eingesetzte Bibliotheken; Patch-SLA gemaess Patch-Richtlinie.
 
                     ---
                     *Cross-Ref ISO/IEC 27002:2022 § 8.26 + OWASP Top 10 + ASVS L2/L3. Genehmigt: {{ approval.chain }}.*
@@ -419,7 +419,7 @@ policy:
                     authentication:
                         title: 'Authentisierung'
                         body: |-
-                            Sichere Session-Verwaltung; MFA fuer privilegiert; Brute-Force-Schutz; Argon2id/bcrypt (CON.10.A1).
+                            Sichere Session-Verwaltung; MFA für privilegiert; Brute-Force-Schutz; Argon2id/bcrypt (CON.10.A1).
                     authorization:
                         title: 'Zugriffskontrolle'
                         body: |-
@@ -447,7 +447,7 @@ policy:
                 tailoring_field:
                     waf_solution:
                         label: 'Web-Application-Firewall'
-                        placeholder: 'Beispiel: "Cloud-WAF Cloudflare vor allen externen Anwendungen; OWASP Core Rule Set; eigene Regeln fuer interne API-Schemata."'
+                        placeholder: 'Beispiel: "Cloud-WAF Cloudflare vor allen externen Anwendungen; OWASP Core Rule Set; eigene Regeln für interne API-Schemata."'
                     pentest_cadence:
                         label: 'Pentest-Frequenz'
                         placeholder: 'Beispiel: "Jaehrlicher Blackbox-Pentest aller extern erreichbaren Anwendungen; halbjaehrlicher Whitebox bei kritischen Anwendungen; Findings in Risk-Register."'
@@ -470,7 +470,7 @@ policy:
                     Erfasst sind alle administrativen Taetigkeiten an Servern, Datenbanken, Netzwerk-Komponenten, Cloud-Diensten, ICS/OT-Systemen und Anwendungen.
 
                     ## 3. Trennung administrativer und persoenlicher Accounts (OPS.1.1.2.A15)
-                    Administrative Taetigkeiten erfolgen ausschliesslich ueber separate Admin-Accounts; persoenliche Accounts werden NICHT fuer administrative Taetigkeiten verwendet. Standard-Konten (root, administrator, sa) sind deaktiviert oder mit komplexen, regelmaessig rotierten Passwoertern versehen und werden nur bei Notfall mit dokumentierter Begruendung verwendet.
+                    Administrative Taetigkeiten erfolgen ausschliesslich ueber separate Admin-Accounts; persoenliche Accounts werden NICHT für administrative Taetigkeiten verwendet. Standard-Konten (root, administrator, sa) sind deaktiviert oder mit komplexen, regelmaessig rotierten Passwoertern versehen und werden nur bei Notfall mit dokumentierter Begruendung verwendet.
 
                     ## 4. Privileged-Access-Workflows (OPS.1.1.2.A21)
                     Privilegierte Zugaenge werden ueber eine PAM-Loesung verwaltet:
@@ -775,7 +775,7 @@ policy:
                     - Anomalien (z. B. unerwartete Verbindungen, Datenexfiltration).
 
                     ## 4. Protokollformat (OPS.1.1.5.A2)
-                    Strukturiertes Format wird bevorzugt: CEF, Syslog (RFC 5424), JSON. Cross-Plattform-Konsistenz durch Vorgaben fuer Feldnamen und Severity-Levels.
+                    Strukturiertes Format wird bevorzugt: CEF, Syslog (RFC 5424), JSON. Cross-Plattform-Konsistenz durch Vorgaben für Feldnamen und Severity-Levels.
 
                     ## 5. Zentrale Sammelstelle (SIEM)
                     Saemtliche Logs werden in das zentrale SIEM eingespeist (Cross-Ref DER.1). Das SIEM korreliert Ereignisse, generiert Alarme und unterstuetzt forensische Auswertung.
@@ -783,7 +783,7 @@ policy:
                     ## 6. Aufbewahrungsfristen (OPS.1.1.5.A3)
                     Aufbewahrungsfristen orientieren sich an gesetzlichen, vertraglichen und betrieblichen Anforderungen:
 
-                    - Mindestens 30 Tage fuer Routine-Logs;
+                    - Mindestens 30 Tage für Routine-Logs;
                     - 12 Monate bei KRITIS-Komponenten gemaess BSIG-Praxis;
                     - laengere Fristen bei Forensik-relevanten Logs (regulatorisch z. B. bis 10 Jahre).
 
@@ -807,7 +807,7 @@ policy:
                     SIEM-Alarme werden klassifiziert (P1-P4) und an die zustaendige Instanz weitergeleitet (SOC, ISB, IT-Betrieb). Eskalation an Krisenstab bei P1.
 
                     ## 11. Zeitsynchronisation (NTP)
-                    Saemtliche IT-Systeme synchronisieren ihre Uhren ueber autorisierte NTP-Quellen (BSI-Empfehlung: NTP-Server PTB.de oder vergleichbar). Korrekte Zeitstempel sind Voraussetzung fuer forensische Auswertung.
+                    Saemtliche IT-Systeme synchronisieren ihre Uhren ueber autorisierte NTP-Quellen (BSI-Empfehlung: NTP-Server PTB.de oder vergleichbar). Korrekte Zeitstempel sind Voraussetzung für forensische Auswertung.
 
                     ---
                     *Cross-Ref ISO/IEC 27002:2022 § 8.15 (Logging), § 8.16 (Monitoring), § 8.17 (Clock synchronization). Genehmigt: {{ approval.chain }}.*
@@ -883,10 +883,10 @@ policy:
                     - Akzeptanztests durch Fachverantwortliche.
 
                     ## 4. Test-Umgebung
-                    Test-Umgebungen sind von Produktiv-Umgebungen getrennt; Daten sind anonymisiert / synthetisch (Cross-Ref CON.2 Datenschutz). Bei Datenschutz-relevanten Aenderungen wird eine Datenschutz-Pruefung durchgefuehrt.
+                    Test-Umgebungen sind von Produktiv-Umgebungen getrennt; Daten sind anonymisiert / synthetisch (Cross-Ref CON.2 Datenschutz). Bei Datenschutz-relevanten Aenderungen wird eine Datenschutz-Pruefung durchgeführt.
 
                     ## 5. Test-Daten
-                    Echtdaten in Tests sind nur ausnahmsweise und mit dokumentierter Begruendung sowie zusaetzlichen Schutzmassnahmen zugelassen. Standard ist Pseudonymisierung oder synthetische Daten.
+                    Echtdaten in Tests sind nur ausnahmsweise und mit dokumentierter Begruendung sowie zusätzlichen Schutzmassnahmen zugelassen. Standard ist Pseudonymisierung oder synthetische Daten.
 
                     ## 6. Bewertung der Testergebnisse (OPS.1.1.6.A3)
                     Testergebnisse werden bewertet:
@@ -938,7 +938,7 @@ policy:
                 tailoring_field:
                     test_levels:
                         label: 'Test-Stufen je Aenderungs-Typ'
-                        placeholder: 'Beispiel: "Standard-Patches: Funktion + Regression; Major-Release: zusaetzlich Last + Pentest; Datenschutz-relevante Aenderungen mit DSFA-Light."'
+                        placeholder: 'Beispiel: "Standard-Patches: Funktion + Regression; Major-Release: zusätzlich Last + Pentest; Datenschutz-relevante Aenderungen mit DSFA-Light."'
                     release_workflow:
                         label: 'Release-Workflow'
                         placeholder: 'Beispiel: "Release-PR mit 4 Genehmigern: Product-Owner, IT-Betrieb, ISB, ggf. Datenschutzbeauftragter; Freigabe in Confluence-Page mit elektronischer Signatur."'

@@ -18,13 +18,13 @@ policy:
                     2. **Integritaet** – Informationen und Verarbeitungsmethoden bleiben unveraendert und vollstaendig. Manipulation und unbeabsichtigte Veraenderung werden verhindert oder zuverlaessig erkannt.
                     3. **Verfuegbarkeit** – Informationen, IT-Verfahren und IT-Systeme stehen Berechtigten zum erforderlichen Zeitpunkt zur Verfuegung. Geschaeftsfortfuehrung und Wiederanlauf sind durch das Notfallmanagement gemaess Baustein DER.4 und BSI-Standard 200-4 sichergestellt.
                     4. **Authentizitaet und Verbindlichkeit** – Identitaeten von Nutzenden, Systemen und Daten sind verifiziert; Handlungen sind beweissicher zuordenbar (Cross-Ref ORP.4, OPS.1.1.5).
-                    5. **Compliance** – Saemtliche fuer die {{ tenant.legal_name }} anwendbaren gesetzlichen, regulatorischen und vertraglichen Anforderungen werden eingehalten.
+                    5. **Compliance** – Saemtliche für die {{ tenant.legal_name }} anwendbaren gesetzlichen, regulatorischen und vertraglichen Anforderungen werden eingehalten.
 
                     ## 3. Verbindung zwischen Geschaefts- und Sicherheitszielen
-                    Die Leitungsebene erkennt an, dass die Erreichung der Geschaefts- bzw. Aufgabenziele unmittelbar von der Verlaesslichkeit der Informationsverarbeitung abhaengt. Konkret werden die genannten Sicherheitsziele wie folgt mit den Geschaeftszielen verknuepft: Verfuegbarkeit kritischer Geschaeftsprozesse stuetzt die Erbringung vertraglich zugesicherter Leistungen; Integritaet sichert verlaessliche Entscheidungsgrundlagen; Vertraulichkeit schuetzt Wettbewerbsfaehigkeit, Geschaefts- und Betriebsgeheimnisse, personenbezogene Daten Betroffener sowie ggf. amtliche Verschlusssachen.
+                    Die Leitungsebene erkennt an, dass die Erreichung der Geschaefts- bzw. Aufgabenziele unmittelbar von der Verlaesslichkeit der Informationsverarbeitung abhaengt. Konkret werden die genannten Sicherheitsziele wie folgt mit den Geschaeftszielen verknüpft: Verfuegbarkeit kritischer Geschaeftsprozesse stuetzt die Erbringung vertraglich zugesicherter Leistungen; Integritaet sichert verlaessliche Entscheidungsgrundlagen; Vertraulichkeit schuetzt Wettbewerbsfaehigkeit, Geschaefts- und Betriebsgeheimnisse, personenbezogene Daten Betroffener sowie ggf. amtliche Verschlusssachen.
 
                     ## 4. Bezug zu gesetzlichen und regulatorischen Verpflichtungen
-                    Diese Leitlinie wird unter Beruecksichtigung der folgenden Rechtsgrundlagen erlassen, soweit sie auf die {{ tenant.legal_name }} anwendbar sind: BSIG (insbesondere § 8a KRITIS-Pflichten und § 8b Meldepflichten), KRITIS-DachG, NIS2-UmsuG, DSGVO (Verordnung (EU) 2016/679) und BDSG, sektorspezifische Aufsichtsanforderungen (z. B. BaFin, BNetzA, BfDI), sowie ggf. Sicherheitsueberpruefungsgesetz (SUEG) und Geheimschutzhandbuch fuer den Umgang mit Verschlusssachen. Die Identifikation einschlaegiger Anforderungen wird durch den Informationssicherheitsbeauftragten (ISB) {{ roles.isb.fullName }} laufend gepflegt.
+                    Diese Leitlinie wird unter Beruecksichtigung der folgenden Rechtsgrundlagen erlassen, soweit sie auf die {{ tenant.legal_name }} anwendbar sind: BSIG (insbesondere § 8a KRITIS-Pflichten und § 8b Meldepflichten), KRITIS-DachG, NIS2-UmsuG, DSGVO (Verordnung (EU) 2016/679) und BDSG, sektorspezifische Aufsichtsanforderungen (z. B. BaFin, BNetzA, BfDI), sowie ggf. Sicherheitsueberpruefungsgesetz (SUEG) und Geheimschutzhandbuch für den Umgang mit Verschlusssachen. Die Identifikation einschlaegiger Anforderungen wird durch den Informationssicherheitsbeauftragten (ISB) {{ roles.isb.fullName }} laufend gepflegt.
 
                     ## 5. Geltungsbereich
                     Der Geltungsbereich dieser Leitlinie ist organisatorisch, geographisch und technisch festgelegt:
@@ -33,25 +33,25 @@ policy:
                     - **Geographisch:** Saemtliche Standorte der {{ tenant.legal_name }} sowie ggf. extern betriebene Rechenzentren und Cloud-Standorte gemaess der Cloud-Nutzungsrichtlinie (Baustein OPS.2.2).
                     - **Technisch:** Alle Anwendungen, IT-Systeme, ICS/OT-Systeme, Raeume und Kommunikationsverbindungen, die im Rahmen der Strukturanalyse nach BSI 200-2 Kap. 5 erfasst sind.
 
-                    Aus dem Geltungsbereich ausgeschlossene Bereiche sind im ISMS-Konzept dokumentiert und begruendet. Dort, wo Auftragsverarbeitungen oder Outsourcing-Beziehungen bestehen, gelten die Anforderungen dieser Leitlinie sinngemaess fuer den jeweiligen Dienstleister (Cross-Ref OPS.2.3).
+                    Aus dem Geltungsbereich ausgeschlossene Bereiche sind im ISMS-Konzept dokumentiert und begruendet. Dort, wo Auftragsverarbeitungen oder Outsourcing-Beziehungen bestehen, gelten die Anforderungen dieser Leitlinie sinngemaess für den jeweiligen Dienstleister (Cross-Ref OPS.2.3).
 
                     ## 6. Wahl der Vorgehensweise
                     Die {{ tenant.legal_name }} setzt das ISMS gemaess der Vorgehensweise **{{ bsi.tier }}-Absicherung** nach BSI-Standard 200-2 um. Diese Wahl spiegelt das Schutzbedarfsniveau, die Geschaeftskritikalitaet und die regulatorische Pflichtenlage wider. Die Methodik der Schutzbedarfsfeststellung ist in einem separaten Methode-Dokument geregelt; die Modellierung erfolgt anhand des IT-Grundschutz-Kompendiums in der Edition {{ bsi.kompendium_edition }}.
 
                     ## 7. Sicherheitsorganisation
-                    Die Verantwortlichkeiten fuer Informationssicherheit sind eindeutig zugeordnet (Baustein ISMS.1.A1, A3):
+                    Die Verantwortlichkeiten für Informationssicherheit sind eindeutig zugeordnet (Baustein ISMS.1.A1, A3):
 
                     - **Leitungsebene:** Gesamtverantwortung gemaess ISMS.1.A1, Bereitstellung von Ressourcen, Genehmigung dieser Leitlinie sowie der untergeordneten Richtlinien, Durchfuehrung der jaehrlichen Managementbewertung.
                     - **Informationssicherheitsbeauftragter (ISB):** {{ roles.isb.fullName }} – steuerndes Organ des ISMS, direkt der Leitungsebene unterstellt (nicht der IT-Leitung), ausgestattet mit den erforderlichen Befugnissen und Ressourcen gemaess ISMS.1.A3.
                     - **IS-Management-Team:** {{ roles.is_management_team }} – beraet den ISB, abstimmt schichtenuebergreifende Sicherheitsmassnahmen, sitzt mindestens quartalsweise zusammen.
                     - **Datenschutzbeauftragter (DSB):** {{ roles.dpo.fullName }} – stimmt sich mit dem ISB ab; gemaess BSI-Empfehlung und DSGVO Art. 38 ist Personenidentitaet zwischen ISB und DSB unzulaessig.
                     - **Notfallbeauftragter:** {{ roles.notfallbeauftragter.fullName }} – verantwortet die Umsetzung des Notfallmanagements gemaess DER.4 und BSI 200-4.
-                    - **Anwendungs- und Systemverantwortliche:** Fachlich und betrieblich verantwortlich fuer die Sicherheit der ihnen zugeordneten Zielobjekte.
+                    - **Anwendungs- und Systemverantwortliche:** Fachlich und betrieblich verantwortlich für die Sicherheit der ihnen zugeordneten Zielobjekte.
 
                     Eskalationswege, Berichtspflichten und Sitzungsfrequenzen sind in der separaten Sicherheitsorganisations-Richtlinie geregelt.
 
                     ## 8. Verbindlichkeit
-                    Diese Leitlinie ist fuer alle Beschaeftigten und Beauftragten der {{ tenant.legal_name }} verbindlich. Verstoesse werden gemaess der Personalrichtlinie (Baustein ORP.2) sanktioniert und koennen disziplinarische, arbeits-, zivil- oder strafrechtliche Konsequenzen nach sich ziehen. Auftragnehmer und externe Dienstleister werden vertraglich gemaess der Outsourcing-Richtlinie (Baustein OPS.2.3) verpflichtet.
+                    Diese Leitlinie ist für alle Beschaeftigten und Beauftragten der {{ tenant.legal_name }} verbindlich. Verstoesse werden gemaess der Personalrichtlinie (Baustein ORP.2) sanktioniert und koennen disziplinarische, arbeits-, zivil- oder strafrechtliche Konsequenzen nach sich ziehen. Auftragnehmer und externe Dienstleister werden vertraglich gemaess der Outsourcing-Richtlinie (Baustein OPS.2.3) verpflichtet.
 
                     ## 9. Verpflichtung zur kontinuierlichen Verbesserung
                     Die Leitungsebene verpflichtet sich gemaess BSI 200-1 Kap. 9 zur kontinuierlichen Aufrechterhaltung und Verbesserung des ISMS. Hierzu zaehlen insbesondere: regelmaessige Wirksamkeitspruefungen, Auswertung von Sicherheitsvorfaellen und Audit-Ergebnissen (Cross-Ref DER.2.1), interne Audits, externe Pruefungen (z. B. nach BSIG § 8a bei KRITIS-Pflicht), Managementbewertung (mindestens jaehrlich), Ableitung von Korrektur- und Vorbeugungsmassnahmen.
@@ -95,7 +95,7 @@ policy:
                     obligation:
                         title: 'Verbindlichkeit'
                         body: |-
-                            Diese Leitlinie ist fuer alle Beschaeftigten verbindlich. Verstoesse koennen disziplinarische, arbeits-, zivil- oder strafrechtliche Konsequenzen haben.
+                            Diese Leitlinie ist für alle Beschaeftigten verbindlich. Verstoesse koennen disziplinarische, arbeits-, zivil- oder strafrechtliche Konsequenzen haben.
                     improvement:
                         title: 'Kontinuierliche Verbesserung'
                         body: |-
@@ -124,7 +124,7 @@ policy:
                     *Norm-Anker: BSI-Standard 200-2 Kap. 5–9 | Baustein: ISMS.1.A6 (Basis-Anforderung), ISMS.1.A7, ISMS.1.A11 | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich + bei Strukturaenderung*
 
                     ## 1. Zweck und Geltungsbereich
-                    Dieses Sicherheitskonzept dokumentiert die Umsetzung des ISMS der {{ tenant.legal_name }} nach BSI IT-Grundschutz und konkretisiert die in der IT-Sicherheitsleitlinie (ISMS.1.A4) festgelegten Vorgaben fuer die Vorgehensweise **{{ bsi.tier }}-Absicherung**. Es folgt der Methodik nach BSI 200-2 Kap. 5 bis 9 und verbindet die Strukturanalyse, Schutzbedarfsfeststellung, Modellierung, Grundschutz-Check, Risikoanalyse, Konsolidierung der Massnahmen sowie den Realisierungsplan zu einem konsistenten Gesamtsystem.
+                    Dieses Sicherheitskonzept dokumentiert die Umsetzung des ISMS der {{ tenant.legal_name }} nach BSI IT-Grundschutz und konkretisiert die in der IT-Sicherheitsleitlinie (ISMS.1.A4) festgelegten Vorgaben für die Vorgehensweise **{{ bsi.tier }}-Absicherung**. Es folgt der Methodik nach BSI 200-2 Kap. 5 bis 9 und verbindet die Strukturanalyse, Schutzbedarfsfeststellung, Modellierung, Grundschutz-Check, Risikoanalyse, Konsolidierung der Massnahmen sowie den Realisierungsplan zu einem konsistenten Gesamtsystem.
 
                     ## 2. Strukturanalyse (BSI 200-2 Kap. 5)
                     Die Strukturanalyse erfasst die Zielobjekte des Informationsverbunds:
@@ -138,22 +138,22 @@ policy:
                     Die Erfassung erfolgt im Asset-Inventar des ISMS-Tools und wird mindestens jaehrlich sowie anlassbezogen aktualisiert.
 
                     ## 3. Schutzbedarfsfeststellung (BSI 200-2 Kap. 6)
-                    Die Schutzbedarfsfeststellung wird gemaess der separaten Methode-Dokumentation **Schutzbedarfsfeststellung** durchgefuehrt. Sie kategorisiert je Zielobjekt den Schutzbedarf in den Schutzzielen Vertraulichkeit, Integritaet und Verfuegbarkeit nach den BSI-Stufen *normal*, *hoch* und *sehr hoch*. Vererbungsregeln (Maximumprinzip, ggf. Verteilungs- und Kumulationseffekt) werden gemaess BSI 200-2 Kap. 6.2 angewendet.
+                    Die Schutzbedarfsfeststellung wird gemaess der separaten Methode-Dokumentation **Schutzbedarfsfeststellung** durchgeführt. Sie kategorisiert je Zielobjekt den Schutzbedarf in den Schutzzielen Vertraulichkeit, Integritaet und Verfuegbarkeit nach den BSI-Stufen *normal*, *hoch* und *sehr hoch*. Vererbungsregeln (Maximumprinzip, ggf. Verteilungs- und Kumulationseffekt) werden gemaess BSI 200-2 Kap. 6.2 angewendet.
 
                     ## 4. Modellierung (BSI 200-2 Kap. 7)
-                    Die Modellierung ordnet jedem Zielobjekt die anwendbaren Bausteine des IT-Grundschutz-Kompendiums Edition {{ bsi.kompendium_edition }} zu. Bei {{ bsi.tier }}-Absicherung werden dabei mindestens die Basis-Anforderungen verbindlich; Standard-Anforderungen werden bei normalem Schutzbedarf grundsaetzlich umgesetzt; bei hohem oder sehr hohem Schutzbedarf werden zusaetzlich die Hoch-Anforderungen sowie eine Risikoanalyse nach BSI 200-3 durchgefuehrt.
+                    Die Modellierung ordnet jedem Zielobjekt die anwendbaren Bausteine des IT-Grundschutz-Kompendiums Edition {{ bsi.kompendium_edition }} zu. Bei {{ bsi.tier }}-Absicherung werden dabei mindestens die Basis-Anforderungen verbindlich; Standard-Anforderungen werden bei normalem Schutzbedarf grundsaetzlich umgesetzt; bei hohem oder sehr hohem Schutzbedarf werden zusätzlich die Hoch-Anforderungen sowie eine Risikoanalyse nach BSI 200-3 durchgeführt.
 
                     ## 5. IT-Grundschutz-Check (BSI 200-2 Kap. 8)
-                    Der Grundschutz-Check stellt fuer jeden modellierten Baustein und jede Anforderung den Umsetzungsstatus fest: *entbehrlich*, *ja*, *teilweise* oder *nein*. Er bildet die Soll/Ist-Luecke und ist die zentrale Eingabe fuer die Massnahmenpriorisierung.
+                    Der Grundschutz-Check stellt für jeden modellierten Baustein und jede Anforderung den Umsetzungsstatus fest: *entbehrlich*, *ja*, *teilweise* oder *nein*. Er bildet die Soll/Ist-Luecke und ist die zentrale Eingabe für die Massnahmenpriorisierung.
 
                     ## 6. Risikoanalyse (BSI 200-3)
-                    Eine ergaenzende Risikoanalyse wird durchgefuehrt fuer Zielobjekte mit Schutzbedarf hoch oder sehr hoch, fuer Zielobjekte mit individuell hohem Risiko (z. B. ICS/OT, KRITIS-Komponenten) sowie verpflichtend bei Kern-Absicherung gemaess BSI 200-2 Kap. 8.2. Die Methodik orientiert sich an BSI 200-3 und nutzt die elementare Gefaehrdungsliste des IT-Grundschutz-Kompendiums.
+                    Eine ergaenzende Risikoanalyse wird durchgeführt für Zielobjekte mit Schutzbedarf hoch oder sehr hoch, für Zielobjekte mit individuell hohem Risiko (z. B. ICS/OT, KRITIS-Komponenten) sowie verpflichtend bei Kern-Absicherung gemaess BSI 200-2 Kap. 8.2. Die Methodik orientiert sich an BSI 200-3 und nutzt die elementare Gefaehrdungsliste des IT-Grundschutz-Kompendiums.
 
                     ## 7. Konsolidierung der Sicherheitsmassnahmen
                     Die im Grundschutz-Check und in der Risikoanalyse identifizierten Massnahmen werden zu einem Massnahmenkatalog konsolidiert. Doppelungen werden bereinigt, Abhaengigkeiten und Reihenfolgen festgelegt, Effizienzeffekte (z. B. zentrale Massnahmen statt dezentraler Einzelloesungen) genutzt.
 
                     ## 8. Realisierungsplan (BSI 200-2 Kap. 9)
-                    Der Realisierungsplan enthaelt fuer jede umzusetzende Massnahme: Zustaendigkeit (Verantwortliche und Mitwirkende), Ressourcen, Termine, Priorisierung anhand Risikohoehe und Wirtschaftlichkeit, Restrisikoabschaetzung sowie Meilensteine. Die Plan-Aktualisierung erfolgt mindestens quartalsweise im IS-Management-Team.
+                    Der Realisierungsplan enthaelt für jede umzusetzende Massnahme: Zustaendigkeit (Verantwortliche und Mitwirkende), Ressourcen, Termine, Priorisierung anhand Risikohoehe und Wirtschaftlichkeit, Restrisikoabschaetzung sowie Meilensteine. Die Plan-Aktualisierung erfolgt mindestens quartalsweise im IS-Management-Team.
 
                     ## 9. Aufrechterhaltung und Verbesserung (ISMS.1.A7, A11)
                     Das ISMS-Konzept wird gepflegt durch: regelmaessige Wirksamkeitspruefungen, anlassbezogene Aktualisierung bei wesentlichen Aenderungen (z. B. neuer Geschaeftsprozess, neue IT-Systeme, regulatorische Aenderungen), jaehrliche Managementbewertung sowie Auswertung von Sicherheitsvorfaellen.
@@ -180,7 +180,7 @@ policy:
                     risk_analysis:
                         title: 'Risikoanalyse'
                         body: |-
-                            Ergaenzend nach BSI 200-3 fuer Zielobjekte mit hohem/sehr hohem Schutzbedarf oder bei Kern-Absicherung.
+                            Ergaenzend nach BSI 200-3 für Zielobjekte mit hohem/sehr hohem Schutzbedarf oder bei Kern-Absicherung.
                     consolidation:
                         title: 'Konsolidierung'
                         body: |-
@@ -216,11 +216,11 @@ policy:
                     Diese Richtlinie regelt die Aufbau- und Ablauforganisation der Informationssicherheit der {{ tenant.legal_name }}. Sie legt Rollen, Verantwortlichkeiten, Befugnisse und Berichtswege fest und stellt sicher, dass das ISMS in saemtliche Geschaeftsprozesse integriert ist (ISMS.1.A8).
 
                     ## 2. Geltungsbereich
-                    Diese Richtlinie gilt fuer alle Beschaeftigten, Beauftragten und Auftragnehmer der {{ tenant.legal_name }} im Rahmen ihrer Mitwirkung am ISMS.
+                    Diese Richtlinie gilt für alle Beschaeftigten, Beauftragten und Auftragnehmer der {{ tenant.legal_name }} im Rahmen ihrer Mitwirkung am ISMS.
 
                     ## 3. Rollen und Verantwortlichkeiten
                     ### 3.1 Leitungsebene (ISMS.1.A1)
-                    Die Leitungsebene traegt die nicht delegierbare Gesamtverantwortung fuer die Informationssicherheit. Sie genehmigt diese Richtlinie sowie die IT-Sicherheitsleitlinie, stellt erforderliche Ressourcen bereit, fuehrt mindestens jaehrlich eine Managementbewertung durch und integriert Informationssicherheit in die strategische Steuerung.
+                    Die Leitungsebene traegt die nicht delegierbare Gesamtverantwortung für die Informationssicherheit. Sie genehmigt diese Richtlinie sowie die IT-Sicherheitsleitlinie, stellt erforderliche Ressourcen bereit, fuehrt mindestens jaehrlich eine Managementbewertung durch und integriert Informationssicherheit in die strategische Steuerung.
 
                     ### 3.2 Informationssicherheitsbeauftragter (ISB)
                     Der ISB {{ roles.isb.fullName }} steuert das ISMS operativ. Er ist gemaess BSI-Empfehlung direkt der Leitungsebene unterstellt (nicht der IT-Leitung). Aufgaben:
@@ -280,11 +280,11 @@ policy:
                     bereichs_isbs:
                         title: 'Bereichs-/Projekt-ISBs'
                         body: |-
-                            Bei Standard- oder Kern-Absicherung benannt fuer Bereiche oder Projekte.
+                            Bei Standard- oder Kern-Absicherung benannt für Bereiche oder Projekte.
                     asset_owners:
                         title: 'Anwendungs- und Systemverantwortliche'
                         body: |-
-                            Fachlich-betriebliche Verantwortung fuer Zielobjekte; Schutzbedarfsentscheidung; Massnahmenumsetzung.
+                            Fachlich-betriebliche Verantwortung für Zielobjekte; Schutzbedarfsentscheidung; Massnahmenumsetzung.
                     dpo_interface:
                         title: 'Datenschutzbeauftragter'
                         body: |-
@@ -306,7 +306,7 @@ policy:
                         placeholder: 'Beispiel: "ISB (Vorsitz), IT-Leiter, Anwendungs-Verantwortlicher Kernsystem A, DSB, Notfallbeauftragter, Compliance-Manager; tagt jeden ersten Donnerstag im Quartal."'
                     escalation_to_authorities:
                         label: 'Externe Eskalation – konkretisiert'
-                        placeholder: 'Beispiel: "Bei KRITIS-Vorfaellen Meldung an BSI gemaess BSIG § 8b unverzueglich; bei DSGVO-Verletzung an BfDI binnen 72h; sektoral zusaetzlich an BaFin."'
+                        placeholder: 'Beispiel: "Bei KRITIS-Vorfaellen Meldung an BSI gemaess BSIG § 8b unverzueglich; bei DSGVO-Verletzung an BfDI binnen 72h; sektoral zusätzlich an BaFin."'
 
         organisation_directive:
             v1:
@@ -317,13 +317,13 @@ policy:
                     *Norm-Anker: BSI 200-2 | Bausteine: ORP.1.A1 (Festlegung Verantwortlichkeiten), ORP.1.A2 (Aufgaben/Zustaendigkeiten), ORP.1.A3 (Pflichten der Mitarbeitenden), ORP.1.A4 (Vertretungsregelungen) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: 24 Monate*
 
                     ## 1. Zweck
-                    Diese Richtlinie konkretisiert die in der IT-Sicherheitsleitlinie festgelegten Vorgaben fuer die organisatorischen Sicherheitsregelungen am Arbeitsplatz und im Umgang mit Informationen. Sie schafft die Grundlage fuer ein einheitliches und nachvollziehbares Verhalten aller Beschaeftigten im Sinne der Bausteine ORP.1, ORP.2 und ORP.3 sowie der Cross-Refs zu ISO/IEC 27002:2022 § 5.4.
+                    Diese Richtlinie konkretisiert die in der IT-Sicherheitsleitlinie festgelegten Vorgaben für die organisatorischen Sicherheitsregelungen am Arbeitsplatz und im Umgang mit Informationen. Sie schafft die Grundlage für ein einheitliches und nachvollziehbares Verhalten aller Beschaeftigten im Sinne der Bausteine ORP.1, ORP.2 und ORP.3 sowie der Cross-Refs zu ISO/IEC 27002:2022 § 5.4.
 
                     ## 2. Geltungsbereich
-                    Diese Richtlinie gilt fuer alle Beschaeftigten, Auftragnehmer, Praktikantinnen und Praktikanten sowie alle weiteren Personen, die sich in den Liegenschaften der {{ tenant.legal_name }} aufhalten oder Informations-Assets der Organisation nutzen.
+                    Diese Richtlinie gilt für alle Beschaeftigten, Auftragnehmer, Praktikantinnen und Praktikanten sowie alle weiteren Personen, die sich in den Liegenschaften der {{ tenant.legal_name }} aufhalten oder Informations-Assets der Organisation nutzen.
 
                     ## 3. Allgemeine Verhaltensregeln am Arbeitsplatz
-                    1. **Clean Desk:** Beim Verlassen des Arbeitsplatzes – auch fuer kurze Zeit – sind vertrauliche Unterlagen wegzuschliessen, Bildschirme zu sperren und tragbare Geraete (Notebook, Smartphone) gegen unbefugten Zugriff zu sichern.
+                    1. **Clean Desk:** Beim Verlassen des Arbeitsplatzes – auch für kurze Zeit – sind vertrauliche Unterlagen wegzuschliessen, Bildschirme zu sperren und tragbare Geraete (Notebook, Smartphone) gegen unbefugten Zugriff zu sichern.
                     2. **Bildschirmsperre:** Bildschirme sperren automatisch nach hoechstens 10 Minuten Inaktivitaet; manuelle Sperre vor Verlassen ist Pflicht.
                     3. **Schluesselverwaltung:** Schluessel und Berechtigungsmittel sind sorgsam zu verwahren, Verlust ist unverzueglich dem Service-Desk zu melden.
 
@@ -333,10 +333,10 @@ policy:
                     ## 5. Umgang mit Informationen unterschiedlicher Vertraulichkeit
                     Die {{ tenant.legal_name }} verwendet das folgende Klassifikationsschema (zu konkretisieren im Tailoring-Feld):
 
-                    - **oeffentlich** – fuer die Veroeffentlichung freigegeben;
+                    - **oeffentlich** – für die Veroeffentlichung freigegeben;
                     - **intern** – nicht oeffentlich, aber innerhalb der Organisation frei verfuegbar;
                     - **vertraulich** – nur Befugte mit Need-to-know;
-                    - **streng vertraulich** – besonders schutzbeduerftig, zusaetzliche Schutzmassnahmen (Verschluesselung, separater Aufbewahrungsort).
+                    - **streng vertraulich** – besonders schutzbeduerftig, zusätzliche Schutzmassnahmen (Verschluesselung, separater Aufbewahrungsort).
 
                     Behoerden setzen ggf. das Verschlusssachen-Schema (VS-NfD, VS-V, Geheim, Streng-Geheim) gemaess Geheimschutzhandbuch ein.
 
@@ -379,13 +379,13 @@ policy:
                 tailoring_field:
                     classification_scheme:
                         label: 'Klassifikationsschema – Konkretisierung'
-                        placeholder: 'Beispiel: "Wir verwenden 4-stufig oeffentlich/intern/vertraulich/streng vertraulich; fuer VS-Aufgaben gilt zusaetzlich VS-NfD nach Geheimschutzhandbuch."'
+                        placeholder: 'Beispiel: "Wir verwenden 4-stufig oeffentlich/intern/vertraulich/streng vertraulich; für VS-Aufgaben gilt zusätzlich VS-NfD nach Geheimschutzhandbuch."'
                     deputy_named:
                         label: 'Vertretungsregelung – Verantwortliche'
                         placeholder: 'Beispiel: "Die Vertretung des ISB {{ roles.isb.fullName }} wird durch Frau Mueller (Senior Security Engineer) gewaehrleistet; Vertretungsschulung jaehrlich."'
                     visitor_zones:
                         label: 'Besucherregelung – sensible Bereiche'
-                        placeholder: 'Beispiel: "RZ-Zone und Vorstandsetage erfordern Begleitung; in der Produktion gelten zusaetzliche Sicherheitseinweisungen vor Betreten."'
+                        placeholder: 'Beispiel: "RZ-Zone und Vorstandsetage erfordern Begleitung; in der Produktion gelten zusätzliche Sicherheitseinweisungen vor Betreten."'
 
         personnel_directive:
             v1:
@@ -399,14 +399,14 @@ policy:
                     Diese Richtlinie regelt die personalbezogenen Sicherheitsaspekte ueber den gesamten Beschaeftigungslebenszyklus: Eintritt, Aufgabenwechsel, Austritt sowie Vertretung und Vorbeugung gegen Personalausfall.
 
                     ## 2. Geltungsbereich
-                    Diese Richtlinie gilt fuer alle Beschaeftigten (unbefristet, befristet, Probezeit), Auftragnehmer, Werkstudierende, Praktikantinnen und Praktikanten sowie sonstige extern tatigen Personen mit Zugang zu Informations-Assets der {{ tenant.legal_name }}.
+                    Diese Richtlinie gilt für alle Beschaeftigten (unbefristet, befristet, Probezeit), Auftragnehmer, Werkstudierende, Praktikantinnen und Praktikanten sowie sonstige extern tatigen Personen mit Zugang zu Informations-Assets der {{ tenant.legal_name }}.
 
                     ## 3. Onboarding (ORP.2.A1)
                     Vor Beginn der Taetigkeit:
 
                     - Vertragliche Verpflichtung auf Datenschutz und Geheimhaltung;
                     - Belehrung gemaess § 5 BDSG / DSGVO Art. 32 Abs. 4 sowie ggf. Verschwiegenheits-Verpflichtung nach § 203 StGB / Berufs- oder Amtsgeheimnis;
-                    - Hintergrundpruefung fuer sicherheitsrelevante Positionen, ggf. Sicherheitsueberpruefung nach SUEG (Behoerdenkontext);
+                    - Hintergrundpruefung für sicherheitsrelevante Positionen, ggf. Sicherheitsueberpruefung nach SUEG (Behoerdenkontext);
                     - Aushaendigung und Bestaetigung der Lektuere der IT-Sicherheitsleitlinie und der einschlaegigen untergeordneten Richtlinien;
                     - Vergabe von Berechtigungen ueber das definierte IAM-Verfahren (Cross-Ref ORP.4);
                     - Erstschulung gemaess Awareness-Richtlinie (ORP.3) innerhalb der ersten 30 Tage.
@@ -473,13 +473,13 @@ policy:
                 tailoring_field:
                     background_check_scope:
                         label: 'Hintergrundpruefung – Umfang'
-                        placeholder: 'Beispiel: "Fuehrungszeugnis fuer alle Positionen mit Zugang zu kritischen Systemen; SUEG-Ue1 fuer VS-NfD-Bereich; Bonitaetspruefung fuer Treasury-Funktionen."'
+                        placeholder: 'Beispiel: "Fuehrungszeugnis für alle Positionen mit Zugang zu kritischen Systemen; SUEG-Ue1 für VS-NfD-Bereich; Bonitaetspruefung für Treasury-Funktionen."'
                     offboarding_grace:
                         label: 'Offboarding – Karenzzeiten'
                         placeholder: 'Beispiel: "Sperrung der Zugaenge zum Stichtag 17:00 Uhr des letzten Arbeitstages; Datentraeger-Wipe binnen 30 Tagen; Wettbewerbsklausel 12 Monate."'
                     deputy_training:
                         label: 'Vertretungsuebung'
-                        placeholder: 'Beispiel: "Jaehrliche 2-taegige Vertretungs-Hospitation fuer Schluesselrollen; dokumentiert in Schulungsmatrix."'
+                        placeholder: 'Beispiel: "Jaehrliche 2-taegige Vertretungs-Hospitation für Schluesselrollen; dokumentiert in Schulungsmatrix."'
 
         awareness_directive:
             v1:
@@ -490,7 +490,7 @@ policy:
                     *Norm-Anker: BSI 200-2 | Bausteine: ORP.3.A1 (Schulungsbedarfsermittlung), ORP.3.A2 (Schulungs- und Sensibilisierungsprogramm), ORP.3.A3 (Sensibilisierung der Leitungsebene), ORP.3.A4 (Konzeption Awareness) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich (Schulungsplan), Inhalte alle 2 Jahre*
 
                     ## 1. Zweck
-                    Diese Richtlinie etabliert ein konsequentes Schulungs- und Sensibilisierungsprogramm fuer Informationssicherheit. Ziel ist es, dass alle Beschaeftigten ihre Rolle im ISMS verstehen, sichere Arbeitspraktiken anwenden und Vorfaelle zuverlaessig melden (ORP.3, ISO/IEC 27002:2022 § 6.3, ISO/IEC 27001:2022 Klauseln 7.2 + 7.3).
+                    Diese Richtlinie etabliert ein konsequentes Schulungs- und Sensibilisierungsprogramm für Informationssicherheit. Ziel ist es, dass alle Beschaeftigten ihre Rolle im ISMS verstehen, sichere Arbeitspraktiken anwenden und Vorfaelle zuverlaessig melden (ORP.3, ISO/IEC 27002:2022 § 6.3, ISO/IEC 27001:2022 Klauseln 7.2 + 7.3).
 
                     ## 2. Schulungsbedarfsermittlung (ORP.3.A1)
                     Zielgruppenspezifischer Bedarf wird mindestens jaehrlich ermittelt:
@@ -506,7 +506,7 @@ policy:
 
                     - **Erstschulung** beim Eintritt (binnen 30 Tagen);
                     - **Wiederholungsschulung** mindestens jaehrlich;
-                    - **Spezialschulungen** fuer Admins (Patch-Mgmt, Haertung, Logging) und sensible Bereiche;
+                    - **Spezialschulungen** für Admins (Patch-Mgmt, Haertung, Logging) und sensible Bereiche;
                     - **Awareness-Massnahmen** wie Phishing-Tests, Plakate, Newsletter, E-Learning-Module;
                     - **Bedarfsschulungen** anlassbezogen (z. B. nach Vorfall, neue Technologie, regulatorische Aenderung).
 
@@ -558,7 +558,7 @@ policy:
                         placeholder: 'Beispiel: "Quartalsweise Phishing-Kampagne mit eskalierender Schwierigkeit; Klickrate <5 % als KPI; betroffene Mitarbeitende erhalten Just-in-time-Microlearning."'
                     delivery_channels:
                         label: 'Schulungs-Kanaele'
-                        placeholder: 'Beispiel: "E-Learning ueber LMS XY (verpflichtend), Praesenztraining fuer Admins halbjaehrlich, monatlicher Awareness-Newsletter, Plakate in Pausenraeumen."'
+                        placeholder: 'Beispiel: "E-Learning ueber LMS XY (verpflichtend), Praesenztraining für Admins halbjaehrlich, monatlicher Awareness-Newsletter, Plakate in Pausenraeumen."'
 
         iam_directive:
             v1:
@@ -569,16 +569,16 @@ policy:
                     *Norm-Anker: BSI 200-2 | Bausteine: ORP.4.A1 (Einrichtung/Loeschung Benutzerkennungen), A2 (Berechtigungen), A3 (Dokumentation), A4 (Berechtigungs-Review), A5 (Zutrittsberechtigung), A8 (Passwortgebrauch), A9 (Identifikation/Authentisierung), A22 (Mehr-Faktor-Authentisierung) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich (Berechtigungsreview), Konzept alle 24 Monate*
 
                     ## 1. Zweck
-                    Diese Richtlinie regelt die Verwaltung von Identitaeten und Berechtigungen fuer den Zugang zu Informations-Assets, IT-Systemen und Liegenschaften der {{ tenant.legal_name }}. Ziel ist die Sicherstellung von Need-to-know und Least-Privilege bei voller Nachvollziehbarkeit (ORP.4 + ISO/IEC 27002:2022 § 5.15–5.18, 8.2, 8.3, 8.5).
+                    Diese Richtlinie regelt die Verwaltung von Identitaeten und Berechtigungen für den Zugang zu Informations-Assets, IT-Systemen und Liegenschaften der {{ tenant.legal_name }}. Ziel ist die Sicherstellung von Need-to-know und Least-Privilege bei voller Nachvollziehbarkeit (ORP.4 + ISO/IEC 27002:2022 § 5.15–5.18, 8.2, 8.3, 8.5).
 
                     ## 2. Geltungsbereich
-                    Diese Richtlinie gilt fuer alle Beschaeftigten, externen Mitarbeitenden, Service- und Notfall-Accounts sowie technische Konten (Service-Accounts, Maschinen-Identitaeten).
+                    Diese Richtlinie gilt für alle Beschaeftigten, externen Mitarbeitenden, Service- und Notfall-Accounts sowie technische Konten (Service-Accounts, Maschinen-Identitaeten).
 
                     ## 3. Antrags-, Genehmigungs- und Rueckgabe-Prozess (ORP.4.A1, A2)
                     Accounts und Berechtigungen werden ausschliesslich ueber den dokumentierten IAM-Prozess beantragt:
 
                     - Antrag durch Vorgesetzte oder Beauftragte mit fachlicher Begruendung;
-                    - Genehmigung durch Anwendungs-/System-Verantwortlichen (ggf. zusaetzlich ISB bei privilegierten Berechtigungen);
+                    - Genehmigung durch Anwendungs-/System-Verantwortlichen (ggf. zusätzlich ISB bei privilegierten Berechtigungen);
                     - Umsetzung durch IT-Betrieb mit Dokumentation;
                     - Rueckgabe / Entzug bei Aufgabenwechsel oder Austritt (Cross-Ref ORP.2).
 
@@ -642,7 +642,7 @@ policy:
                     mfa:
                         title: 'Mehr-Faktor-Authentisierung'
                         body: |-
-                            Pflicht fuer Admins, externe Zugaenge, Cloud, hohe Schutzbedarfsklassen (ORP.4.A22).
+                            Pflicht für Admins, externe Zugaenge, Cloud, hohe Schutzbedarfsklassen (ORP.4.A22).
                     pam:
                         title: 'Privileged Access Management'
                         body: |-
@@ -683,22 +683,22 @@ policy:
                     *Norm-Anker: BSI 200-2 + BSI TR-02102 (alle Teile) | Bausteine: CON.1.A1 (Auswahl Verfahren), A2 (Datensicherung), A3 (Verschluesselung Kommunikation), A4 (Schluesselmanagement), A6 (Kryptokonzept) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: 24 Monate + bei jedem TR-02102-Update*
 
                     ## 1. Zweck
-                    Dieses Kryptokonzept regelt den Einsatz kryptographischer Verfahren zum Schutz der Vertraulichkeit, Integritaet und Authentizitaet von Informationen der {{ tenant.legal_name }}. Massgeblich sind die jeweils aktuellen Empfehlungen der BSI Technische Richtlinie 02102 (TR-02102-1 fuer Verfahren und Schluessellaengen, -2 fuer TLS, -3 fuer IPsec, -4 fuer SSH).
+                    Dieses Kryptokonzept regelt den Einsatz kryptographischer Verfahren zum Schutz der Vertraulichkeit, Integritaet und Authentizitaet von Informationen der {{ tenant.legal_name }}. Massgeblich sind die jeweils aktuellen Empfehlungen der BSI Technische Richtlinie 02102 (TR-02102-1 für Verfahren und Schluessellaengen, -2 für TLS, -3 für IPsec, -4 für SSH).
 
                     ## 2. Geltungsbereich
-                    Dieses Konzept gilt fuer alle Anwendungen, IT-Systeme, Datentraeger, Backups und Kommunikationsverbindungen, in denen kryptographische Verfahren zum Einsatz kommen oder kommen sollen.
+                    Dieses Konzept gilt für alle Anwendungen, IT-Systeme, Datentraeger, Backups und Kommunikationsverbindungen, in denen kryptographische Verfahren zum Einsatz kommen oder kommen sollen.
 
                     ## 3. Klassifikation der zu schuetzenden Daten (CON.1.A1)
-                    Die Eignung der Verfahren wird anhand der Schutzbedarfsfeststellung bestimmt. Daten mit Schutzbedarf hoch oder sehr hoch erhalten verstaerkte Verfahren (laengere Schluessel, zusaetzliche Schluesseltrennung, ggf. Hardware-Sicherheitsmodule).
+                    Die Eignung der Verfahren wird anhand der Schutzbedarfsfeststellung bestimmt. Daten mit Schutzbedarf hoch oder sehr hoch erhalten verstaerkte Verfahren (laengere Schluessel, zusätzliche Schluesseltrennung, ggf. Hardware-Sicherheitsmodule).
 
                     ## 4. Anwendungsfaelle
                     Folgende Anwendungsfaelle sind verbindlich kryptographisch geschuetzt:
 
                     - **Transport:** TLS 1.2 oder hoeher (TLS 1.3 ab 2027 Standard); E-Mail-Vertraulichkeit ueber S/MIME oder OpenPGP nach Anwendungsfall;
-                    - **Daten in Ruhe:** Festplattenverschluesselung (z. B. BitLocker, LUKS), Datenbank-Verschluesselung bei sensiblen Tabellen, File-Encryption fuer Spezialfaelle;
+                    - **Daten in Ruhe:** Festplattenverschluesselung (z. B. BitLocker, LUKS), Datenbank-Verschluesselung bei sensiblen Tabellen, File-Encryption für Spezialfaelle;
                     - **Backups:** Verschluesselte Speicherung gemaess CON.3 (Cross-Ref Datensicherungskonzept);
-                    - **Mobile Datentraeger:** Verschluesselungs-Pflicht fuer USB-Sticks, externe Festplatten, mobile Endgeraete;
-                    - **Datenbanken:** Verschluesselung sensibler Felder zusaetzlich zu Transport- und Speicher-Verschluesselung;
+                    - **Mobile Datentraeger:** Verschluesselungs-Pflicht für USB-Sticks, externe Festplatten, mobile Endgeraete;
+                    - **Datenbanken:** Verschluesselung sensibler Felder zusätzlich zu Transport- und Speicher-Verschluesselung;
                     - **Authentisierung:** Hashing mit modernen, salt-basierten Verfahren (z. B. Argon2id, scrypt, bcrypt).
 
                     ## 5. Erlaubte Algorithmen und Mindest-Schluessellaengen
@@ -731,7 +731,7 @@ policy:
                     - Zertifikats-Inventar mit Ablauf-Monitoring (Verhinderung Ausfall durch Zertifikats-Verfall).
 
                     ## 8. Verantwortlichkeiten
-                    Krypto-Officer: Verantwortlich fuer das Kryptokonzept, die HSM-Administration und das Schluesselverzeichnis. Backup-Owner: Verantwortlich fuer kryptographische Sicherung der Backups. Endpoint-Verantwortliche: Verantwortlich fuer Festplattenverschluesselung der Endgeraete.
+                    Krypto-Officer: Verantwortlich für das Kryptokonzept, die HSM-Administration und das Schluesselverzeichnis. Backup-Owner: Verantwortlich für kryptographische Sicherung der Backups. Endpoint-Verantwortliche: Verantwortlich für Festplattenverschluesselung der Endgeraete.
 
                     ## 9. Notfallregelung
                     Bei Kompromittierung oder Verdacht auf Kompromittierung von Schluesselmaterial: Sofort-Sperrung, Re-Issue, Audit der betroffenen Daten und Meldung an den ISB {{ roles.isb.fullName }}; ggf. Vorfall-Behandlung gemaess DER.2.1.
@@ -794,7 +794,7 @@ policy:
                     *Norm-Anker: BSI 200-2 + DSGVO + BDSG | Bausteine: CON.2.A1 (Umsetzung Standard-Datenschutzmodell), CON.2.A2 (Sensibilisierung) | Methodik: Standard-Datenschutzmodell (SDM) V3.0 der DSK | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich*
 
                     ## 1. Zweck
-                    Diese Richtlinie integriert die Datenschutz-Anforderungen aus DSGVO (Verordnung (EU) 2016/679) und BDSG (insb. § 22 BDSG fuer besondere Kategorien) in das ISMS nach BSI IT-Grundschutz. Sie konkretisiert den Baustein CON.2 und nutzt das Standard-Datenschutzmodell der Datenschutzkonferenz als methodische Klammer.
+                    Diese Richtlinie integriert die Datenschutz-Anforderungen aus DSGVO (Verordnung (EU) 2016/679) und BDSG (insb. § 22 BDSG für besondere Kategorien) in das ISMS nach BSI IT-Grundschutz. Sie konkretisiert den Baustein CON.2 und nutzt das Standard-Datenschutzmodell der Datenschutzkonferenz als methodische Klammer.
 
                     > **Hinweis:** Sofern bei der {{ tenant.legal_name }} bereits ein DPO-Wizard / PIMS-Modul aktiv ist (Cross-Ref ISO/IEC 27701:2025), gilt die dort etablierte Datenschutz-Leitlinie als fuehrend; diese Richtlinie wirkt dann ergaenzend mit Bezug auf die BSI-Methodik, ohne Doppelerzeugung.
 
@@ -805,25 +805,25 @@ policy:
                     Das VVT wird im DPO-Modul gefuehrt und mit dem Asset-Inventar des ISMS verschnitten. Jede Verarbeitung enthaelt Zweck, Rechtsgrundlage, Datenkategorien, Empfaenger, Drittlandtransfers, Loeschfristen und technisch-organisatorische Massnahmen.
 
                     ## 4. Rechtsgrundlagen
-                    Als Rechtsgrundlagen kommen vorrangig in Betracht: Art. 6 Abs. 1 lit. a (Einwilligung), b (Vertrag), c (rechtliche Verpflichtung), e (oeffentliche Aufgabe), f (berechtigtes Interesse). Besondere Kategorien (Art. 9) erfordern zusaetzliche Erlaubnistatbestaende; § 22 BDSG ergaenzt fuer den deutschen Kontext (insb. fuer Beschaeftigtenkontext und Praevention von Berufskrankheiten).
+                    Als Rechtsgrundlagen kommen vorrangig in Betracht: Art. 6 Abs. 1 lit. a (Einwilligung), b (Vertrag), c (rechtliche Verpflichtung), e (oeffentliche Aufgabe), f (berechtigtes Interesse). Besondere Kategorien (Art. 9) erfordern zusätzliche Erlaubnistatbestaende; § 22 BDSG ergaenzt für den deutschen Kontext (insb. für Beschaeftigtenkontext und Praevention von Berufskrankheiten).
 
                     ## 5. Betroffenenrechte
                     Verfahren zur Bearbeitung der Betroffenenrechte (Auskunft, Berichtigung, Loeschung, Einschraenkung, Datenuebertragbarkeit, Widerspruch) sind im DSR-Modul implementiert. Reaktionsfrist: i. d. R. 1 Monat (Art. 12 Abs. 3).
 
                     ## 6. Datenschutz-Folgenabschaetzung (Art. 35 DSGVO)
-                    DSFA-Pflichtige Verarbeitungen werden im DPIA-Modul identifiziert und durchgefuehrt. Der DSB wird konsultiert (Art. 35 Abs. 2). Bei verbleibendem hohen Risiko erfolgt vorherige Konsultation der Aufsichtsbehoerde (Art. 36).
+                    DSFA-Pflichtige Verarbeitungen werden im DPIA-Modul identifiziert und durchgeführt. Der DSB wird konsultiert (Art. 35 Abs. 2). Bei verbleibendem hohen Risiko erfolgt vorherige Konsultation der Aufsichtsbehoerde (Art. 36).
 
                     ## 7. Meldepflicht bei Datenschutzverletzungen (Art. 33/34 DSGVO)
-                    Datenschutzverletzungen werden binnen 72 Stunden an die zustaendige Aufsichtsbehoerde gemeldet (Art. 33), bei hohem Risiko zusaetzlich an die Betroffenen (Art. 34). Der entsprechende Workflow ist im Modul DataBreach implementiert (Cross-Ref DER.2.1).
+                    Datenschutzverletzungen werden binnen 72 Stunden an die zustaendige Aufsichtsbehoerde gemeldet (Art. 33), bei hohem Risiko zusätzlich an die Betroffenen (Art. 34). Der entsprechende Workflow ist im Modul DataBreach implementiert (Cross-Ref DER.2.1).
 
                     ## 8. Auftragsverarbeitung
                     Auftragsverarbeiter werden sorgfaeltig ausgewaehlt (Cross-Ref OPS.2.3); ein AVV gemaess Art. 28 ist obligatorisch. Sub-Auftragnehmer beduerfen vorheriger Genehmigung; Audit-Rechte werden vertraglich abgesichert.
 
                     ## 9. Drittlandtransfers
-                    Drittlandtransfers (Art. 44–49) werden nur auf Basis tragfaehiger Garantien (Angemessenheits-Beschluss, Standardvertragsklauseln plus Transfer Impact Assessment, Binding Corporate Rules) durchgefuehrt. Schrems-II-konforme Pruefungen sind dokumentiert.
+                    Drittlandtransfers (Art. 44–49) werden nur auf Basis tragfaehiger Garantien (Angemessenheits-Beschluss, Standardvertragsklauseln plus Transfer Impact Assessment, Binding Corporate Rules) durchgeführt. Schrems-II-konforme Pruefungen sind dokumentiert.
 
                     ## 10. Standard-Datenschutzmodell
-                    Die SDM-Schutzziele Vertraulichkeit, Integritaet, Verfuegbarkeit, Datenminimierung, Transparenz, Intervenierbarkeit und Nichtverkettung werden auf jede Verarbeitung angewendet. Cross-Ref BSI-Schutzziele (Vertraulichkeit, Integritaet, Verfuegbarkeit) plus zusaetzliche datenschutzspezifische Ziele.
+                    Die SDM-Schutzziele Vertraulichkeit, Integritaet, Verfuegbarkeit, Datenminimierung, Transparenz, Intervenierbarkeit und Nichtverkettung werden auf jede Verarbeitung angewendet. Cross-Ref BSI-Schutzziele (Vertraulichkeit, Integritaet, Verfuegbarkeit) plus zusätzliche datenschutzspezifische Ziele.
 
                     ---
                     *Cross-Ref ISO/IEC 27002:2022 § 5.34 + ISO/IEC 27701:2025 (PIMS). Genehmigt: {{ approval.chain }}.*
@@ -839,7 +839,7 @@ policy:
                     legal_basis:
                         title: 'Rechtsgrundlagen'
                         body: |-
-                            Art. 6 Abs. 1 + Art. 9 + § 22 BDSG fuer besondere Kategorien.
+                            Art. 6 Abs. 1 + Art. 9 + § 22 BDSG für besondere Kategorien.
                     rights:
                         title: 'Betroffenenrechte'
                         body: |-
@@ -851,7 +851,7 @@ policy:
                     breach:
                         title: 'Meldepflicht Datenschutzverletzungen'
                         body: |-
-                            72h-Meldung an Aufsichtsbehoerde (Art. 33), bei hohem Risiko zusaetzlich Betroffene (Art. 34).
+                            72h-Meldung an Aufsichtsbehoerde (Art. 33), bei hohem Risiko zusätzlich Betroffene (Art. 34).
                     processor:
                         title: 'Auftragsverarbeitung'
                         body: |-
@@ -863,7 +863,7 @@ policy:
                     sdm:
                         title: 'Standard-Datenschutzmodell'
                         body: |-
-                            SDM-Schutzziele V3.0 zusaetzlich zur BSI-CIA (Datensparsamkeit, Transparenz, Intervenierbarkeit, Nichtverkettung).
+                            SDM-Schutzziele V3.0 zusätzlich zur BSI-CIA (Datensparsamkeit, Transparenz, Intervenierbarkeit, Nichtverkettung).
                 tailoring_field:
                     dpo_module_status:
                         label: 'DPO-Modul / PIMS – Status'
@@ -884,7 +884,7 @@ policy:
                     *Norm-Anker: BSI 200-2 | Bausteine: CON.3.A1–A6 (Basis), A8–A10 (Standard), A11–A15 (Hoch) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich + bei Architekturaenderung*
 
                     ## 1. Zweck
-                    Dieses Konzept regelt die Sicherung der Daten der {{ tenant.legal_name }} zum Schutz vor Verlust, Veraenderung und Nichtverfuegbarkeit. Es konkretisiert Baustein CON.3 und erfuellt zusaetzlich die ISO/IEC 27002:2022-Anforderung § 8.13 (Information backup).
+                    Dieses Konzept regelt die Sicherung der Daten der {{ tenant.legal_name }} zum Schutz vor Verlust, Veraenderung und Nichtverfuegbarkeit. Es konkretisiert Baustein CON.3 und erfuellt zusätzlich die ISO/IEC 27002:2022-Anforderung § 8.13 (Information backup).
 
                     ## 2. Geltungsbereich
                     Erfasst werden alle produktiven IT-Systeme, Anwendungen und Datenbanken im Informationsverbund inkl. virtueller, physischer und cloud-basierter Komponenten.
@@ -893,15 +893,15 @@ policy:
                     Je System werden die Einflussfaktoren erhoben: Schutzbedarf, RPO (Recovery Point Objective), RTO (Recovery Time Objective), Datenvolumen, Aenderungsrate, gesetzliche Aufbewahrung, Abhaengigkeiten von anderen Systemen.
 
                     ## 4. Backup-Strategie (3-2-1)
-                    Es gilt die BSI-empfohlene 3-2-1-Strategie: 3 Datenkopien, auf 2 unterschiedlichen Medien, davon 1 Kopie offsite. Bei hohem oder sehr hohem Schutzbedarf gilt 3-2-1-1-0 mit zusaetzlich einer unveraenderlichen (immutable) Kopie und null Wiederherstellungs-Fehlern in den Tests.
+                    Es gilt die BSI-empfohlene 3-2-1-Strategie: 3 Datenkopien, auf 2 unterschiedlichen Medien, davon 1 Kopie offsite. Bei hohem oder sehr hohem Schutzbedarf gilt 3-2-1-1-0 mit zusätzlich einer unveraenderlichen (immutable) Kopie und null Wiederherstellungs-Fehlern in den Tests.
 
                     ## 5. Backup-Verfahren (CON.3.A2)
                     Je System wird das Verfahren festgelegt:
 
                     - Vollsicherung in definierten Abstaenden;
                     - Differenzielle oder inkrementelle Sicherung dazwischen;
-                    - Datenbanken mit Transaktions-Log-Sicherung fuer Point-in-Time-Recovery;
-                    - Image-Backups fuer kritische Server.
+                    - Datenbanken mit Transaktions-Log-Sicherung für Point-in-Time-Recovery;
+                    - Image-Backups für kritische Server.
 
                     ## 6. Aufbewahrungsfristen
                     Aufbewahrungsfristen orientieren sich an gesetzlichen Vorgaben (z. B. AO, HGB), vertraglichen Pflichten und dem Geschaeftsbedarf. Sie sind je System dokumentiert.
@@ -910,10 +910,10 @@ policy:
                     Backups werden geschuetzt durch Verschluesselung (Cross-Ref CON.1), Zugriffskontrolle, raeumliche Trennung, ggf. Air-Gap und Immutability (gegen Ransomware). Backup-Server / -Speicher liegen in separater Sicherheitszone.
 
                     ## 8. Wiederherstellungstest (CON.3.A8)
-                    Wiederherstellungstests werden mindestens jaehrlich durchgefuehrt; bei hohem Schutzbedarf mindestens halbjaehrlich. Ergebnisse werden dokumentiert; Abweichungen fuehren zu Korrekturmassnahmen.
+                    Wiederherstellungstests werden mindestens jaehrlich durchgeführt; bei hohem Schutzbedarf mindestens halbjaehrlich. Ergebnisse werden dokumentiert; Abweichungen fuehren zu Korrekturmassnahmen.
 
                     ## 9. Verantwortliche
-                    Je System ist ein Backup-Owner benannt. Der IT-Betrieb fuehrt die Sicherungen durch und ist fuer Monitoring, Logs und Alarmierung verantwortlich (Cross-Ref OPS.1.1.5).
+                    Je System ist ein Backup-Owner benannt. Der IT-Betrieb fuehrt die Sicherungen durch und ist für Monitoring, Logs und Alarmierung verantwortlich (Cross-Ref OPS.1.1.5).
 
                     ## 10. Spezialfaelle
                     - **Cloud-Backups:** Cloud-Anbieter sichern im SaaS-Default haeufig **nicht** die Anwendungsdaten; eigene Sicherung erforderlich (Cross-Ref OPS.2.2);
@@ -953,11 +953,11 @@ policy:
                     responsibilities:
                         title: 'Verantwortliche'
                         body: |-
-                            Backup-Owner je System; IT-Betrieb fuer Durchfuehrung, Monitoring, Alarmierung.
+                            Backup-Owner je System; IT-Betrieb für Durchfuehrung, Monitoring, Alarmierung.
                     cloud_special:
                         title: 'Spezialfaelle'
                         body: |-
-                            Cloud-Backup ist Anwender-Verantwortung; MDM fuer Mobile; DB-Standby je RTO.
+                            Cloud-Backup ist Anwender-Verantwortung; MDM für Mobile; DB-Standby je RTO.
                     documentation:
                         title: 'Dokumentation'
                         body: |-
@@ -971,4 +971,4 @@ policy:
                         placeholder: 'Beispiel: "Object-Lock auf S3-kompatiblem Storage mit 30 Tagen Compliance-Modus; offsite Replikation in 2. RZ; jaehrlicher Ransomware-Recovery-Test."'
                     cloud_backup_owner:
                         label: 'Cloud-Backup – Verantwortlicher'
-                        placeholder: 'Beispiel: "M365-Daten werden zusaetzlich ueber Backup-Solution Veeam fuer M365 gesichert; Verantwortlich: M365-Owner Frau Mueller."'
+                        placeholder: 'Beispiel: "M365-Daten werden zusätzlich ueber Backup-Solution Veeam für M365 gesichert; Verantwortlich: M365-Owner Frau Mueller."'
