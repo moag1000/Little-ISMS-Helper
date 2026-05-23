@@ -42,16 +42,52 @@ class CorrectiveActionController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
+
+        // Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — sourceType filter (ADR 2026-05-23).
+        $validSourceTypes = [
+            CorrectiveAction::SOURCE_TYPE_AUDIT_FINDING,
+            CorrectiveAction::SOURCE_TYPE_INCIDENT,
+            CorrectiveAction::SOURCE_TYPE_CHANGE_REQUEST,
+            CorrectiveAction::SOURCE_TYPE_MANUAL,
+        ];
+        $sourceTypeFilter = (string) $request->query->get('source_type', '');
+        if ($sourceTypeFilter !== '' && !in_array($sourceTypeFilter, $validSourceTypes, true)) {
+            $sourceTypeFilter = '';
+        }
+
         $criteria = $tenant instanceof Tenant ? ['tenant' => $tenant] : [];
-        $actions = $this->repository->findBy($criteria, ['createdAt' => 'DESC']);
+        $allActions = $this->repository->findBy($criteria, ['createdAt' => 'DESC']);
+
+        // Count per source_type for chip labels (uses unfiltered set so chip counts stay stable).
+        $countsBySourceType = [
+            CorrectiveAction::SOURCE_TYPE_AUDIT_FINDING => 0,
+            CorrectiveAction::SOURCE_TYPE_INCIDENT => 0,
+            CorrectiveAction::SOURCE_TYPE_CHANGE_REQUEST => 0,
+            CorrectiveAction::SOURCE_TYPE_MANUAL => 0,
+        ];
+        foreach ($allActions as $ca) {
+            $st = $ca->getSourceType();
+            $countsBySourceType[$st] = ($countsBySourceType[$st] ?? 0) + 1;
+        }
+
+        $actions = $sourceTypeFilter === ''
+            ? $allActions
+            : array_values(array_filter(
+                $allActions,
+                static fn (CorrectiveAction $ca): bool => $ca->getSourceType() === $sourceTypeFilter
+            ));
+
         $overdue = $tenant instanceof Tenant ? $this->repository->findOverdue($tenant) : [];
 
         return $this->render('corrective_action/index.html.twig', [
             'actions' => $actions,
             'overdue_count' => count($overdue),
+            'source_type_filter' => $sourceTypeFilter,
+            'counts_by_source_type' => $countsBySourceType,
+            'total_count' => count($allActions),
         ]);
     }
 

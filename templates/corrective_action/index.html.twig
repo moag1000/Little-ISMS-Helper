@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_entity_card.html.twig' as _fa_entity_card %}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
 
 {% block title %}{{ 'corrective_action.page.title'|trans({}, 'audits') }}{% endblock %}
 
@@ -35,6 +36,29 @@
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning' } } %}
             {% block alert_body %}{{ 'corrective_action.alert.overdue'|trans({'%count%': overdue_count}, 'audits') }}{% endblock %}
         {% endembed %}
+    {% endif %}
+
+    {# Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — sourceType filter (ADR 2026-05-23). #}
+    {% if total_count is defined and total_count > 0 %}
+        <div class="mb-3" aria-label="{{ 'corrective_action.filter.source_type'|trans({}, 'audits') }}">
+            <div class="fa-filter-chip-group" role="group" aria-label="{{ 'corrective_action.filter.source_type'|trans({}, 'audits') }}">
+                <a href="{{ path('app_corrective_action_index') }}"
+                   class="fa-filter-chip{{ source_type_filter == '' ? ' fa-filter-chip--active' : '' }}"
+                   {% if source_type_filter == '' %}aria-current="true"{% endif %}>
+                    {{ 'corrective_action.filter.all'|trans({}, 'audits') }}
+                    <span class="badge bg-light text-dark ms-1">{{ total_count }}</span>
+                </a>
+                {% for st in ['audit_finding', 'incident', 'change_request', 'manual'] %}
+                    {% set count = counts_by_source_type[st] ?? 0 %}
+                    <a href="{{ path('app_corrective_action_index', { source_type: st }) }}"
+                       class="fa-filter-chip{{ source_type_filter == st ? ' fa-filter-chip--active' : '' }}"
+                       {% if source_type_filter == st %}aria-current="true"{% endif %}>
+                        {{ ('corrective_action.source_type.' ~ st)|trans({}, 'audits') }}
+                        <span class="badge bg-light text-dark ms-1">{{ count }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
     {% endif %}
 
     {% if actions is empty %}
