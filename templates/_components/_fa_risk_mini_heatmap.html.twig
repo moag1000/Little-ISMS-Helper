@@ -26,6 +26,8 @@
 {% set _residual = residual|default(false) %}
 
 <div class="fa-risk-mini-heatmap{% if _residual %} fa-risk-mini-heatmap--residual{% endif %}"
+     role="group"
+     aria-label="{{ 'risk.heatmap.legend.title'|trans({}, 'risk') }}"
      data-controller="risk-mini-heatmap"
      data-risk-mini-heatmap-probability-selector-value="{{ probability_selector }}"
      data-risk-mini-heatmap-impact-selector-value="{{ impact_selector }}"
@@ -68,7 +70,7 @@
     </div>
 
     <div class="fa-risk-mini-heatmap__axes">
-        <span class="fa-risk-mini-heatmap__axis-x">{{ 'risk.guidance.impact_title'|trans({}, 'risk') }} →</span>
-        <span class="fa-risk-mini-heatmap__axis-y">↑ {{ 'risk.guidance.probability_title'|trans({}, 'risk') }}</span>
+        <span class="fa-risk-mini-heatmap__axis-x">{{ 'risk.heatmap.axis.impact'|trans({}, 'risk') }} →</span>
+        <span class="fa-risk-mini-heatmap__axis-y">↑ {{ 'risk.heatmap.axis.probability'|trans({}, 'risk') }}</span>
     </div>
 </div>
