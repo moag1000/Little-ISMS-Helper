@@ -945,6 +945,7 @@ class AssetControllerTest extends WebTestCase
             'asset[name]' => 'Test Name',
             'asset[assetType]' => 'Hardware',
             'asset[owner]' => '',  // Empty legacy owner
+            'asset[ownerUser]' => '',  // Override default_to_current_user pre-fill (#631) to assert validator-trigger
             'asset[confidentialityValue]' => 2,
             'asset[integrityValue]' => 2,
             'asset[availabilityValue]' => 2,

@@ -18,6 +18,7 @@ use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -36,7 +37,14 @@ final class RiskType extends AbstractType implements SectionMapInterface
 
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly Security $security,
     ) {
+    }
+
+    // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+    protected function getSecurityForOwnerPicker(): ?Security
+    {
+        return $this->security;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -180,6 +188,8 @@ final class RiskType extends AbstractType implements SectionMapInterface
             'person_help'        => 'risk.help.risk_owner_person',
             'deputies_label'     => 'risk.field.risk_owner_deputies',
             'deputies_help'      => 'risk.help.risk_owner_deputies',
+            // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish
+            'default_to_current_user' => true,
         ]);
 
         $builder

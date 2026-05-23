@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace App\Tests\Form\Trait;
 
+use App\Entity\User;
 use App\Form\Trait\OwnerPickerFormTrait;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Unit-tests for OwnerPickerFormTrait (audit-s4 P-1).
@@ -21,6 +27,7 @@ use Symfony\Component\Form\FormFactoryInterface;
  *  - propagates configurable property-paths so divergent entity layouts
  *    (Risk uses riskOwner, Asset uses ownerUser) work without a schema
  *    change.
+ *  - default_to_current_user pre-fills new entities (Junior-ISB-Audit 4.11)
  *
  * Uses KernelTestCase so the Doctrine-Bridge Form-Extension is wired by
  * the real container (the trait uses EntityType, which needs Doctrine
@@ -112,6 +119,120 @@ final class OwnerPickerFormTraitTest extends KernelTestCase
             'deputies field must be a multi-select',
         );
     }
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish.
+     *
+     * Verifies the PRE_SET_DATA listener attached by the trait fires on a
+     * NEW entity and pre-fills the User-slot with the currently
+     * authenticated user. We intentionally bypass the EntityType
+     * choice-validation (which would otherwise reject a transient User
+     * not persisted via the test EntityManager) by inspecting the entity
+     * BEFORE it reaches the EntityType normalizer — i.e. via a higher-
+     * priority listener that captures the entity state right after the
+     * trait's listener has run.
+     */
+    #[Test]
+    public function defaultToCurrentUserPreFillsNewEntity(): void
+    {
+        $currentUser = new User();
+        $entity = new OwnerPickerPreFillFixtureEntity();
+        self::assertNull($entity->getOwnerUser(), 'pre-condition: entity starts with no owner');
+
+        OwnerPickerTraitFixtureType_DefaultUser::$injectedUser = $currentUser;
+        $observed = $this->buildFormAndCaptureEntity(
+            OwnerPickerTraitFixtureType_DefaultUser::class,
+            $entity,
+        );
+
+        self::assertSame(
+            $currentUser,
+            $observed['ownerUser'],
+            'new entity must be pre-filled with the current authenticated user',
+        );
+    }
+
+    /**
+     * Existing owner must never be overwritten — only NEW entities get the
+     * pre-fill. Critical to avoid silently re-assigning persisted ownership.
+     */
+    #[Test]
+    public function defaultToCurrentUserDoesNotOverwriteExistingOwner(): void
+    {
+        $existingOwner = new User();
+        $currentUser = new User();
+        $entity = new OwnerPickerPreFillFixtureEntity();
+        $entity->setOwnerUser($existingOwner);
+
+        OwnerPickerTraitFixtureType_DefaultUser::$injectedUser = $currentUser;
+        $observed = $this->buildFormAndCaptureEntity(
+            OwnerPickerTraitFixtureType_DefaultUser::class,
+            $entity,
+        );
+
+        self::assertSame(
+            $existingOwner,
+            $observed['ownerUser'],
+            'existing owner must survive untouched',
+        );
+    }
+
+    /**
+     * Opt-out (default) must NOT touch the entity — backward-compat guard.
+     */
+    #[Test]
+    public function withoutOptInPreFillIsSkipped(): void
+    {
+        $currentUser = new User();
+        $entity = new OwnerPickerPreFillFixtureEntity();
+
+        OwnerPickerTraitFixtureType_NoDefaultUser::$injectedUser = $currentUser;
+        $observed = $this->buildFormAndCaptureEntity(
+            OwnerPickerTraitFixtureType_NoDefaultUser::class,
+            $entity,
+        );
+
+        self::assertNull(
+            $observed['ownerUser'],
+            'without opt-in, no pre-fill must happen (backward-compat)',
+        );
+    }
+
+    /**
+     * Builds a form via the FormFactory, captures the entity's owner-user
+     * value right after the trait's PRE_SET_DATA listener has fired, and
+     * returns it before downstream EntityType validation runs (which
+     * would reject transient Users with "must be managed" errors).
+     *
+     * @return array{ownerUser: ?User}
+     */
+    private function buildFormAndCaptureEntity(string $formTypeClass, OwnerPickerPreFillFixtureEntity $entity): array
+    {
+        $captured = ['ownerUser' => null];
+        $builder = $this->formFactory->createBuilder($formTypeClass, $entity);
+        // Attach a lower-priority listener so it runs AFTER the trait's
+        // listener (which uses default priority 0). PRE_SET_DATA listeners
+        // are invoked in descending priority order; we capture last.
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            static function (FormEvent $event) use (&$captured): void {
+                $data = $event->getData();
+                if ($data instanceof OwnerPickerPreFillFixtureEntity) {
+                    $captured['ownerUser'] = $data->getOwnerUser();
+                }
+            },
+            -100,
+        );
+
+        try {
+            $builder->getForm();
+        } catch (\Throwable) {
+            // EntityType choice-loader will throw if the User is transient.
+            // The listener has already captured what we need, so swallow.
+        }
+
+        return $captured;
+    }
 }
 
 /**
@@ -167,5 +288,117 @@ class OwnerPickerTraitFixtureType_Custom extends AbstractType
             'translation_prefix' => 'risk',
             'user_label'         => 'risk.field.risk_owner',
         ]);
+    }
+}
+
+/**
+ * Stand-in entity for pre-fill tests. Mirrors the Asset/Risk/BP/Incident
+ * `ownerUser` slot accessor contract without dragging in the full Doctrine
+ * mapping.
+ */
+class OwnerPickerPreFillFixtureEntity
+{
+    private ?User $ownerUser = null;
+    private mixed $ownerPerson = null;
+    private mixed $owner = null;
+
+    public function getOwnerUser(): ?User
+    {
+        return $this->ownerUser;
+    }
+    public function setOwnerUser(?User $ownerUser): static
+    {
+        $this->ownerUser = $ownerUser;
+        return $this;
+    }
+    public function getOwnerPerson(): mixed
+    {
+        return $this->ownerPerson;
+    }
+    public function setOwnerPerson(mixed $ownerPerson): static
+    {
+        $this->ownerPerson = $ownerPerson;
+        return $this;
+    }
+    public function getOwner(): mixed
+    {
+        return $this->owner;
+    }
+    public function setOwner(mixed $owner): static
+    {
+        $this->owner = $owner;
+        return $this;
+    }
+}
+
+/**
+ * Fixture FormType with `default_to_current_user` opt-in.
+ * Uses a stubbed Security service that returns a pre-set User instance.
+ */
+class OwnerPickerTraitFixtureType_DefaultUser extends AbstractType
+{
+    use OwnerPickerFormTrait;
+
+    public static ?User $injectedUser = null;
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $this->addOwnerPicker($builder, [
+            'user_field'              => 'ownerUser',
+            'person_field'            => 'ownerPerson',
+            'translation_prefix'      => 'asset',
+            'default_to_current_user' => true,
+        ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(['data_class' => OwnerPickerPreFillFixtureEntity::class]);
+    }
+
+    protected function getSecurityForOwnerPicker(): ?Security
+    {
+        if (self::$injectedUser === null) {
+            return null;
+        }
+        $user = self::$injectedUser;
+        return new class($user) extends Security {
+            public function __construct(private readonly User $injectedUser)
+            {
+                // Skip parent constructor — we override only getUser() so the
+                // rest of the Security surface stays untouched for the
+                // pre-fill use-case.
+            }
+
+            public function getUser(): ?UserInterface
+            {
+                return $this->injectedUser;
+            }
+        };
+    }
+}
+
+/**
+ * Fixture FormType WITHOUT the opt-in — backward-compat baseline.
+ */
+class OwnerPickerTraitFixtureType_NoDefaultUser extends AbstractType
+{
+    use OwnerPickerFormTrait;
+
+    public static ?User $injectedUser = null;
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $this->addOwnerPicker($builder, [
+            'user_field'         => 'ownerUser',
+            'person_field'       => 'ownerPerson',
+            'translation_prefix' => 'asset',
+            // default_to_current_user intentionally omitted (false)
+        ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(['data_class' => OwnerPickerPreFillFixtureEntity::class]);
     }
 }
