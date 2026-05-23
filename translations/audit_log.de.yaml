@@ -6,6 +6,8 @@ audit_log:
         title: 'Audit Log'
         subtitle: 'Vollständige Protokollierung aller Aktivitäten im ISMS zur Sicherstellung der Revisionssicherheit'
         monitoring_subtitle: 'Sicherheits- und Aktivitätsprotokoll'
+        statistics_title: 'Audit Log Statistiken'
+        statistics_subtitle: 'Statistische Auswertung der Protokolleinträge'
     section:
         statistics: Statistik
         filters: Filter

@@ -6,6 +6,8 @@ audit_log:
         title: 'Audit Log'
         subtitle: 'Complete logging of all activities in the ISMS to ensure auditability'
         monitoring_subtitle: 'Security and activity log'
+        statistics_title: 'Audit Log Statistics'
+        statistics_subtitle: 'Statistical analysis of log entries'
     section:
         statistics: Statistics
         filters: Filters

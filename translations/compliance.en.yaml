@@ -773,6 +773,8 @@ compliance:
         tooltip:
             review_requirements: 'Review each requirement and mark whether it applies to your organization. Non-applicable requirements won''t count towards your compliance score.'
             implement_requirements: 'Link requirements to existing controls or create new controls to implement them. This shows how you''re fulfilling each requirement.'
+        framework_loaded: 'Framework Loaded'
+        loaded_count: '%count% requirements loaded'
         review_applicable: 'Review & Mark Applicable'
         reviewed_count: '%reviewed% of %total% reviewed'
         action:

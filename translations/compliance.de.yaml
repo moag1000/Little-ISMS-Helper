@@ -773,6 +773,8 @@ compliance:
         tooltip:
             review_requirements: 'Prüfen Sie jede Anforderung und markieren Sie, ob sie für Ihre Organisation gilt. Nicht anwendbare Anforderungen werden nicht zur Compliance-Quote gezählt.'
             implement_requirements: 'Verknüpfen Sie Anforderungen mit bestehenden Controls oder erstellen Sie neue Controls zur Umsetzung. Dies zeigt, wie Sie jede Anforderung erfüllen.'
+        framework_loaded: 'Framework geladen'
+        loaded_count: '%count% Anforderungen geladen'
         review_applicable: 'Prüfen & Anwendbarkeit markieren'
         reviewed_count: '%reviewed% von %total% geprüft'
         action:
