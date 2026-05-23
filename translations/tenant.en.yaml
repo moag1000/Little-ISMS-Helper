@@ -1,9 +1,9 @@
 tenant:
     title: 'Tenant Management'
-    subtitle: 'Manage organizations and tenants'
+    subtitle: 'Manage your tenants (each tenant maps to the organization or subsidiary inside the ISMS scope per ISO 27001 Cl. 4.3).'
     empty: 'No tenants available'
     switch_hint: 'Switch'
-    switch_header: 'Switch tenant'
+    switch_header: 'Switch organization/tenant'
     orphan_users:
         title: '%count% user account(s) without tenant assignment'
         body: 'These accounts can sign in but cannot see any ISMS data (controls, risks, processing activities) because every query is scoped to a tenant. Assign the tenant via User Management or use Data Repair in bulk mode.'

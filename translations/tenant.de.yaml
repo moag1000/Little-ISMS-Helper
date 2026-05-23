@@ -1,9 +1,9 @@
 tenant:
     title: Mandantenverwaltung
-    subtitle: 'Verwalten Sie Organisationen und Mandanten'
+    subtitle: 'Verwalten Sie Ihre Mandanten (entspricht der Organisation oder Tochtergesellschaft im ISMS-Scope nach ISO 27001 Kl. 4.3).'
     empty: 'Keine Mandanten vorhanden'
     switch_hint: 'Wechseln'
-    switch_header: 'Mandant wechseln'
+    switch_header: 'Organisation/Mandant wechseln'
     orphan_users:
         title: '%count% Benutzerkonto/-konten ohne Mandantenzuweisung'
         body: 'Diese Konten können sich anmelden, sehen aber keine ISMS-Daten (Controls, Risiken, VVT-Einträge), weil jede Abfrage an einen Mandanten gekoppelt ist. Bitte den Mandanten in der Benutzerverwaltung setzen oder die Daten-Reparatur im Bulk-Modus nutzen.'
