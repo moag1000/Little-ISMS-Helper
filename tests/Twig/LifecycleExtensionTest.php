@@ -51,7 +51,8 @@ final class LifecycleExtensionTest extends TestCase
         $security = $this->createMock(Security::class);
         $entity   = new Document();
 
-        $security->method('isGranted')
+        $security->expects(self::once())
+            ->method('isGranted')
             ->with('lifecycle.document_lifecycle.submit_for_review', $entity)
             ->willReturn(true);
 

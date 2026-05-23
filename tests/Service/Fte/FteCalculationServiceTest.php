@@ -45,6 +45,7 @@ class FteCalculationServiceTest extends TestCase
     public function calculateSsoJitSavingsReturnsCorrectValue(): void
     {
         $this->calibrationRepo
+            ->expects(self::once())
             ->method('getMinutesFor')
             ->with($this->tenant, FteCalibrationConstant::OP_MANUAL_USER_PROVISIONING)
             ->willReturn(20.0);
@@ -71,6 +72,7 @@ class FteCalculationServiceTest extends TestCase
     public function calculateBulkImportSavingsForRisk(): void
     {
         $this->calibrationRepo
+            ->expects(self::once())
             ->method('getMinutesFor')
             ->with($this->tenant, FteCalibrationConstant::OP_MANUAL_RISK_CREATION)
             ->willReturn(5.0);
@@ -85,6 +87,7 @@ class FteCalculationServiceTest extends TestCase
     public function calculateBulkImportSavingsForAsset(): void
     {
         $this->calibrationRepo
+            ->expects(self::once())
             ->method('getMinutesFor')
             ->with($this->tenant, FteCalibrationConstant::OP_MANUAL_ASSET_CREATION)
             ->willReturn(3.0);
@@ -119,6 +122,7 @@ class FteCalculationServiceTest extends TestCase
     public function calculateEvidenceReuseSavingsWithMultipleFrameworks(): void
     {
         $this->calibrationRepo
+            ->expects(self::once())
             ->method('getMinutesFor')
             ->with($this->tenant, FteCalibrationConstant::OP_SINGLE_FRAMEWORK_EVIDENCE_MAINTENANCE)
             ->willReturn(8.0);

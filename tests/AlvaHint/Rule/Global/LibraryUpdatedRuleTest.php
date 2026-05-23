@@ -63,7 +63,8 @@ final class LibraryUpdatedRuleTest extends TestCase
         $this->writeYaml('bsi-it-grundschutz-2024.yaml', '2024.2');
 
         $framework = $this->makeFramework('BSI-GRUNDSCHUTZ-2024', '2024.1');
-        $this->frameworkRepo->method('findOneBy')
+        $this->frameworkRepo->expects(self::once())
+            ->method('findOneBy')
             ->with(['code' => 'BSI-GRUNDSCHUTZ-2024'])
             ->willReturn($framework);
 
@@ -84,7 +85,8 @@ final class LibraryUpdatedRuleTest extends TestCase
         $this->writeYaml('bsi-it-grundschutz-2024.yaml', '2024.1');
 
         $framework = $this->makeFramework('BSI-GRUNDSCHUTZ-2024', '2024.1');
-        $this->frameworkRepo->method('findOneBy')
+        $this->frameworkRepo->expects(self::once())
+            ->method('findOneBy')
             ->with(['code' => 'BSI-GRUNDSCHUTZ-2024'])
             ->willReturn($framework);
 
