@@ -22,7 +22,10 @@
     ]
 }) }}
 
-{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+{# C3-03 (S14, 2026-05-23) — conditional-fields Stimulus controller
+   toggles acknowledgementAudience visibility based on
+   requiresAcknowledgement checkbox. #}
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'data-controller': 'conditional-fields'}}) }}
 {% include '_components/_auto_form.html.twig' with {
     'form': form,
     'layout': 'outline-rail',
@@ -39,7 +42,7 @@
         },
         'lifecycle': {
             'label': 'document.section.lifecycle'|trans({}, 'document'),
-            'fields': ['version', 'reviewIntervalMonths', 'requiresAcknowledgement']
+            'fields': ['version', 'reviewIntervalMonths', 'requiresAcknowledgement', 'acknowledgementAudience']
         },
         'ownership': {
             'label': 'document.section.ownership'|trans({}, 'document'),
@@ -59,6 +62,7 @@
         'version': 4,
         'reviewIntervalMonths': 4,
         'requiresAcknowledgement': 4,
+        'acknowledgementAudience': 12,
         'inheritable': 6,
         'overrideAllowed': 6,
         'file': 12

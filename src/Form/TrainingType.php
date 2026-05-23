@@ -34,7 +34,7 @@ final class TrainingType extends AbstractType implements SectionMapInterface
     {
         return [
             'overview'     => ['title', 'description', 'trainingType', 'deliveryMethod'],
-            'schedule'     => ['scheduledDate', 'durationMinutes', 'completionDate'],
+            'schedule'     => ['scheduledDate', 'durationMinutes', 'completionDate', 'recurrenceMonths'],
             'audience'     => ['targetAudience', 'participantUsers', 'participants', 'attendeeCount'],
             'team'         => ['trainerUser', 'trainerPerson', 'trainerDeputyPersons', 'trainer'],
             'verification' => ['status', 'mandatory', 'coveredControls', 'complianceRequirements'],
@@ -225,6 +225,20 @@ final class TrainingType extends AbstractType implements SectionMapInterface
                 'label' => 'training.field.completion_date',
                 'widget' => 'single_text',
                 'required' => false,
+            ])
+            // Junior-ISB-Audit C3-02 (S14, 2026-05-23) — Awareness recurrence
+            // (ISO 27001 A.6.3). NULL = one-off, integer >=1 = months cadence
+            // picked up by `app:training-send-reminders` cron.
+            ->add('recurrenceMonths', IntegerType::class, [
+                'label' => 'training.field.recurrence_months',
+                'required' => false,
+                'attr' => [
+                    'min' => 1,
+                    'max' => 60,
+                    'step' => 1,
+                    'placeholder' => 'training.placeholder.recurrence_months',
+                ],
+                'help' => 'training.help.recurrence_months',
             ]);
 
         // S4 P-1 Wave-2 — Trainer compound slot. Replaces the inline
