@@ -343,6 +343,23 @@ audit_finding:
         created: 'Feststellung erstellt.'
         updated: 'Feststellung aktualisiert.'
         deleted: 'Feststellung gelöscht.'
+    # C5-03 — Severity × Type Korrelationshilfe (ISO 19011 Cl. 6.4.8).
+    # Reine UX-Empfehlung, kein Server-Validator: Junior-Implementer sehen,
+    # welche Typ-Wahl konventionell zur Schwere passt, dürfen aber bei
+    # auditorialem Urteil davon abweichen.
+    correlation:
+        critical_to_major_nc:
+            match: 'Konvention: Kritische Findings sind üblicherweise Major Nonconformities (ISO 19011 Cl. 6.4.8).'
+            suggest: 'Hinweis: Kritische Findings werden üblicherweise als Major Nonconformity klassifiziert (ISO 19011 Cl. 6.4.8). Begründen Sie eine abweichende Einstufung im Evidenz-Feld.'
+        high_to_major_nc:
+            match: 'Konvention: Hochkritische Findings sind üblicherweise Major Nonconformities.'
+            suggest: 'Hinweis: Hochkritische Findings werden üblicherweise als Major Nonconformity klassifiziert. Erwägen Sie diese Einstufung oder begründen Sie die Abweichung.'
+        medium_to_minor_nc:
+            match: 'Konvention: Mittelschwere Findings entsprechen typischerweise Minor Nonconformities.'
+            suggest: 'Hinweis: Mittelschwere Findings sind typischerweise Minor Nonconformities oder Observations.'
+        low_to_observation:
+            match: 'Konvention: Geringfügige Findings sind üblicherweise Observations oder Opportunities for Improvement.'
+            suggest: 'Hinweis: Geringfügige Findings werden üblicherweise als Observation oder Opportunity for Improvement dokumentiert — Major-NC wirkt überzogen.'
 
 corrective_action:
     page:

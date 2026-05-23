@@ -45,7 +45,9 @@
                 {% endblock %}
                 {% block card_body %}
                     {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'audit-form'}}) }}
+                    {# C5-04 — `conditional-fields` controller toggles the scoped-assets row
+                       when scopeType=asset (ISO 19011 Cl. 5.5.2). #}
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'audit-form', 'data-controller': 'conditional-fields'}}) }}
 
                     {# Basic Information Section #}
                     <fieldset class="mb-4">
