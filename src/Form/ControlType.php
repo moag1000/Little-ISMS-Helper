@@ -84,6 +84,10 @@ final class ControlType extends AbstractType
                     new NotBlank(),
                 ],
             ])
+            // Junior-ISB-Audit-2026-05-22 S-07: the radios are discovered by
+            // name-pattern (`[applicable]`) inside the `applicability-toggle`
+            // Stimulus controller (see `configureOptions` form-root
+            // data-controller below); no per-radio attrs needed.
             ->add('applicable', ChoiceType::class, [
                 'label' => 'control.field.applicable',
                 'choices' => [
@@ -98,6 +102,9 @@ final class ControlType extends AbstractType
                 ],
                 'help' => 'control.help.applicable_explained',
             ])
+            // Junior-ISB-Audit-2026-05-22 S-07: declared as Stimulus target so
+            // the controller can toggle aria-required + visible `*` marker
+            // when `applicable=false` (ISO 27001 6.1.3 d / 8.3 b).
             ->add('justification', TextareaType::class, [
                 'label' => 'control.field.justification',
                 'required' => false,
@@ -338,13 +345,16 @@ final class ControlType extends AbstractType
             'data_class' => Control::class,
             'allow_control_id_edit' => false, // Default: Control ID kann nicht geändert werden
             'translation_domain' => 'control',
-            // applicability-toggle Stimulus controller toggles the visual *-marker
-            // on the justification field when applicable=no. ISO 27001 Cl. 6.1.3 d
-            // requires a written justification for non-applicable controls — the
-            // server-side validateJustificationWhenNotApplicable() callback enforces
-            // it; this just communicates the requirement *before* form submission.
+            // Junior-ISB-Audit-2026-05-22 S-07: wire the form root into the
+            // `applicability-toggle` Stimulus controller so the visible
+            // required-marker on `justification` follows the `applicable`
+            // radio state (mirrors validateJustificationWhenNotApplicable).
+            // ISO 27001 Cl. 6.1.3 d requires a written justification for
+            // non-applicable controls — server enforces, this just communicates
+            // the requirement before form submission.
             'attr' => [
                 'data-controller' => 'applicability-toggle',
+                'data-applicability-toggle-required-when-value' => 'false',
             ],
             'constraints' => [
                 new Callback([$this, 'validateResponsibleSlot']),

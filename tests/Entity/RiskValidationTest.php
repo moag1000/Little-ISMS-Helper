@@ -16,13 +16,16 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Junior-ISB-Audit-2026-05-22 K-05 + M-02 — entity-level Assert\Callback
+ * Junior-ISB-Audit-2026-05-22 K-05 + M-02 + S-02 — entity-level Assert\Callback
  * coverage.
  *
  *  - K-05: validateOwnerEitherOr — at least one of riskOwner (User) or
  *    riskOwnerPerson (Person) must be set; both null is a violation.
  *  - M-02: validateSubjectBound — at least one of asset / person / location
  *    / supplier must be linked; all-null is a violation (ISO 27001 Cl. 6.1.2 c).
+ *  - S-02: validateTreatmentStrategyRequired — once the Risk leaves the
+ *    Identified draft state, the treatment strategy must not be null
+ *    (ISO 27001 Cl. 6.1.3 a-b).
  */
 final class RiskValidationTest extends TestCase
 {
@@ -153,6 +156,118 @@ final class RiskValidationTest extends TestCase
             'asset',
             $paths,
             'Expected NO violation at path "asset" when an Asset is bound. Got: ' . implode(', ', $paths)
+        );
+    }
+
+    // ── S-02 coverage ────────────────────────────────────────────────────
+
+    #[Test]
+    public function treatmentStrategy_draftIdentifiedAndNull_passes(): void
+    {
+        $risk = $this->makeValidRisk();
+        $risk->setRiskOwner(new User()); // satisfy K-05
+        $risk->setAsset(new Asset());    // satisfy M-02
+        $risk->setStatus(RiskStatus::Identified);
+        $risk->setTreatmentStrategy(null); // draft Risk → strategy may be empty
+
+        $violations = $this->validator->validate($risk);
+
+        $paths = [];
+        foreach ($violations as $v) {
+            $paths[] = $v->getPropertyPath();
+        }
+        $this->assertNotContains(
+            'treatmentStrategy',
+            $paths,
+            'Expected NO violation at path "treatmentStrategy" when Risk is in Identified (draft) state. Got: ' . implode(', ', $paths)
+        );
+    }
+
+    #[Test]
+    public function treatmentStrategy_assessedAndNull_yieldsViolation(): void
+    {
+        $risk = $this->makeValidRisk();
+        $risk->setRiskOwner(new User()); // satisfy K-05
+        $risk->setAsset(new Asset());    // satisfy M-02
+        $risk->setStatus(RiskStatus::Assessed);
+        $risk->setTreatmentStrategy(null);
+
+        $violations = $this->validator->validate($risk);
+
+        $paths = [];
+        foreach ($violations as $v) {
+            $paths[] = $v->getPropertyPath();
+        }
+        $this->assertContains(
+            'treatmentStrategy',
+            $paths,
+            'Expected violation at path "treatmentStrategy" when Risk is Assessed and strategy is null (ISO 27001 Cl. 6.1.3 a-b). Got: ' . implode(', ', $paths)
+        );
+    }
+
+    #[Test]
+    public function treatmentStrategy_inTreatmentAndNull_yieldsViolation(): void
+    {
+        $risk = $this->makeValidRisk();
+        $risk->setRiskOwner(new User()); // satisfy K-05
+        $risk->setAsset(new Asset());    // satisfy M-02
+        $risk->setStatus(RiskStatus::InTreatment);
+        $risk->setTreatmentStrategy(null);
+
+        $violations = $this->validator->validate($risk);
+
+        $paths = [];
+        foreach ($violations as $v) {
+            $paths[] = $v->getPropertyPath();
+        }
+        $this->assertContains(
+            'treatmentStrategy',
+            $paths,
+            'Expected violation at path "treatmentStrategy" when Risk is InTreatment and strategy is null. Got: ' . implode(', ', $paths)
+        );
+    }
+
+    #[Test]
+    public function treatmentStrategy_acceptedAndNull_yieldsViolation(): void
+    {
+        $risk = $this->makeValidRisk();
+        $risk->setRiskOwner(new User()); // satisfy K-05
+        $risk->setAsset(new Asset());    // satisfy M-02
+        $risk->setStatus(RiskStatus::Accepted);
+        $risk->setTreatmentStrategy(null);
+
+        $violations = $this->validator->validate($risk);
+
+        $paths = [];
+        foreach ($violations as $v) {
+            $paths[] = $v->getPropertyPath();
+        }
+        $this->assertContains(
+            'treatmentStrategy',
+            $paths,
+            'Expected violation at path "treatmentStrategy" when Risk is Accepted and strategy is null. Got: ' . implode(', ', $paths)
+        );
+    }
+
+    #[Test]
+    public function treatmentStrategy_assessedWithMitigate_passes(): void
+    {
+        $risk = $this->makeValidRisk();
+        $risk->setRiskOwner(new User()); // satisfy K-05
+        $risk->setAsset(new Asset());    // satisfy M-02
+        $risk->setStatus(RiskStatus::Assessed);
+        $risk->setTreatmentStrategy(TreatmentStrategy::Mitigate);
+
+        $violations = $this->validator->validate($risk);
+
+        $paths = [];
+        foreach ($violations as $v) {
+            $paths[] = $v->getPropertyPath();
+        }
+        $this->assertNotContains(
+            'treatmentStrategy',
+            $paths,
+            'Expected NO violation at path "treatmentStrategy" when Risk is Assessed and strategy is Mitigate. Got: ' . implode(', ', $paths)
         );
     }
 }

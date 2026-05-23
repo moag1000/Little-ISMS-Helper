@@ -527,6 +527,10 @@ risk:
   # Assert\Callback validateSubjectBound — ISO 27001 Cl. 6.1.2 c).
   validator:
     subject_required: 'Mindestens ein betroffenes Asset / Person / Standort / Lieferant ist erforderlich (ISO 27001 Cl. 6.1.2 c).'
+    # Junior-ISB-Audit-2026-05-22 S-02: Treatment-Plan-Pflicht ab Status
+    # "Assessed" (entity-level Assert\Callback validateTreatmentStrategyRequired
+    # — ISO 27001 Cl. 6.1.3 a-b). Draft / Identified-Risiken duerfen leer sein.
+    treatment_strategy_required: 'Risikobehandlungsstrategie erforderlich (mitigieren / transferieren / akzeptieren / vermeiden) — bei Risiken jenseits des Identifiziert-Zustands ist die Auswahl nach ISO 27001 Cl. 6.1.3 a-b Pflicht.'
   link_incident:
     section_title: 'Verknüpfte Vorfälle'
     add_link: 'Vorfall verknüpfen'
