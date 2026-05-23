@@ -399,6 +399,6 @@ class BCExerciseTest extends TestCase
         $this->assertEquals('bc_exercises.exercise_type.component_test', $exercise->getExerciseTypeDescription());
 
         $exercise->setExerciseType('unknown_type');
-        $this->assertEquals('bc_exercises.exercise_type.unknown', $exercise->getExerciseTypeDescription());
+        $this->assertEquals('bc_exercises.exercise_type.unknown_type', $exercise->getExerciseTypeDescription());
     }
 }
