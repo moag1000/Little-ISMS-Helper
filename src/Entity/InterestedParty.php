@@ -42,9 +42,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_party_type', columns: ['party_type'])]
 #[ORM\Index(name: 'idx_party_importance', columns: ['importance'])]
 #[ORM\Index(name: 'idx_interested_party_tenant', columns: ['tenant_id'])]
+#[ORM\Index(name: 'idx_interested_party_status', columns: ['status'])]
 #[ORM\HasLifecycleCallbacks]
 class InterestedParty
 {
+    // Junior-ISB-Audit-2026-05-22 S-01: Lifecycle places (ISO 27001 Cl. 4.2 + 9.3.2 c).
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_IN_REVIEW = 'in_review';
+    public const STATUS_ARCHIVED = 'archived';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -166,6 +173,24 @@ class InterestedParty
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $issues = null;
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 S-01: Lifecycle status (ISO 27001 Cl. 4.2 + 9.3.2 c).
+     * Owned by `interested_party_lifecycle` — never call setStatus() directly
+     * outside the initial-marking bootstrap; route transitions through
+     * LifecycleService::transition().
+     */
+    #[ORM\Column(length: 30, options: ['default' => self::STATUS_DRAFT])]
+    #[Groups(['interested_party:read'])]
+    private string $status = self::STATUS_DRAFT;
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 S-01: Optimistic-lock guard for concurrent
+     * lifecycle transitions (HTTP 409 via OptimisticLockException).
+     */
+    #[ORM\Version]
+    #[ORM\Column(name: 'lock_version', type: 'integer', options: ['default' => 0])]
+    private int $lockVersion = 0;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['interested_party:read'])]
@@ -413,6 +438,36 @@ class InterestedParty
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 S-01: marking-store accessor for the
+     * `interested_party_lifecycle` state-machine (ISO 27001 Cl. 4.2 + 9.3.2 c).
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 S-01: marking-store mutator. Only the
+     * Symfony Workflow component / LifecycleService should invoke this in
+     * production code — call-sites that need a transition must go through
+     * LifecycleService::transition().
+     */
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 S-01: Optimistic-lock version exposed
+     * for the LifecycleService HTTP 409 path.
+     */
+    public function getLockVersion(): int
+    {
+        return $this->lockVersion;
     }
 
     /**
