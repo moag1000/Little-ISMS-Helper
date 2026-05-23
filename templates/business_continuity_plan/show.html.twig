@@ -72,7 +72,16 @@
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="label">{{ 'bc_plans.field.business_process'|trans({}, 'bc_plans') }}:</span>
-                    <span class="value"><a href="{{ path('app_business_process_show', {id: bc_plan.businessProcess.id}) }}">{{ bc_plan.businessProcess.name }}</a></span>
+                    <span class="value">
+                        <a href="{{ path('app_business_process_show', {id: bc_plan.businessProcess.id}) }}">{{ bc_plan.businessProcess.name }}</a>
+                        {# T15.12: surface inherited RTO/RPO from linked BP so juniors see where the plan's recovery targets come from (ISO 22301 Cl. 8.4.2). #}
+                        {% if bc_plan.businessProcess.rto is not null or bc_plan.businessProcess.rpo is not null %}
+                            <small class="text-muted ms-2">
+                                ({{ 'bc_plans.field.rto'|trans({}, 'bc_plans') }}:&nbsp;{{ bc_plan.businessProcess.rto|default('—') }}h
+                                · {{ 'bc_plans.field.rpo'|trans({}, 'bc_plans') }}:&nbsp;{{ bc_plan.businessProcess.rpo|default('—') }}h)
+                            </small>
+                        {% endif %}
+                    </span>
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'bc_plans.field.plan_owner'|trans({}, 'bc_plans') }}:</span>
