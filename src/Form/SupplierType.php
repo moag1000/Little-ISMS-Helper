@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\Asset;
 use App\Entity\Supplier;
 use App\Entity\SupplierCriticalityLevel;
 use App\Entity\Tenant;
@@ -11,9 +12,11 @@ use App\Form\DataTransformer\CommaOrLinesListTransformer;
 use App\Form\DataTransformer\SubcontractorChainTransformer;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Type\JsonOrLinesTextareaType;
+use App\Repository\AssetRepository;
 use App\Repository\SupplierCriticalityLevelRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -206,6 +209,31 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                     'rows' => 2,
                     'placeholder' => 'supplier.placeholder.certifications',
                 ],
+            ])
+            // S14 Cluster A C1-05 — expose the existing supportedAssets M2M.
+            // Tenant-scoped; tom-select for searchable multi-select UX.
+            // ISO 27001 A.5.21 / DORA Art. 28 — supplier-asset linkage.
+            ->add('supportedAssets', EntityType::class, [
+                'class'         => Asset::class,
+                'choice_label'  => 'name',
+                'multiple'      => true,
+                'expanded'      => false,
+                'required'      => false,
+                'by_reference'  => false,
+                'label'         => 'supplier.field.supported_assets',
+                'help'          => 'supplier.help.supported_assets',
+                'attr'          => [
+                    'data-controller' => 'tom-select',
+                ],
+                'query_builder' => function ($r) {
+                    /** @var AssetRepository $r */
+                    $qb = $r->createQueryBuilder('a')->orderBy('a.name', 'ASC');
+                    $tenant = $this->tenantContext->getCurrentTenant();
+                    if ($tenant !== null) {
+                        $qb->andWhere('a.tenant = :tenant')->setParameter('tenant', $tenant);
+                    }
+                    return $qb;
+                },
             ])
         ;
 
@@ -569,6 +597,10 @@ final class SupplierType extends AbstractType implements SectionMapInterface
                 'hasISO27001',
                 'hasISO22301',
                 'certifications',
+            ],
+            // S14 Cluster A C1-05 — supplier ↔ asset linkage (ISO 27001 A.5.21).
+            'linkage' => [
+                'supportedAssets',
             ],
             'privacy' => [
                 'hasDPA',

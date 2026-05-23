@@ -24,6 +24,7 @@ import FaToastController from './controllers/fa_toast_controller.js';
 import FaBulkSelectController from './controllers/fa_bulk_select_controller.js';
 import FaTableSortController from './controllers/fa_table_sort_controller.js';
 import ReauthModalController from './controllers/reauth_modal_controller.js';
+import QuickCreateModalController from './controllers/quick_create_modal_controller.js';
 
 const app = startStimulusApp();
 
@@ -59,3 +60,4 @@ app.register('fa-toast', FaToastController);
 app.register('fa-bulk-select', FaBulkSelectController);
 app.register('fa-table-sort', FaTableSortController);
 app.register('reauth-modal', ReauthModalController);
+app.register('quick-create-modal', QuickCreateModalController);

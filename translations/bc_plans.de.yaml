@@ -6,6 +6,9 @@ bc_plans:
   action:
     add_new: Neuen BC‑Plan anlegen
     create_first: Ersten BC‑Plan anlegen
+    # S14 Cluster A — Quick-Create-Trigger im BC-Plan-Formular
+    quick_create_crisis_team: Krisenstab schnell anlegen
+    new_business_process: Neuen Geschäftsprozess anlegen
   empty:
     title: Noch keine Business-Continuity-Pläne hinterlegt
     body: 'BC-Pläne sichern die Wiederanlauffähigkeit kritischer Geschäftsprozesse. Pro Prozess dokumentieren Sie Aktivierungskriterien, Wiederanlaufverfahren, Team und Kommunikationsplan — Voraussetzung für ISO 22301 §8.4.'

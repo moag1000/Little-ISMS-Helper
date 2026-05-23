@@ -81,5 +81,17 @@
         }
     } %}
     {{ form_end(form) }}
+
+    {# S14 Cluster A — C1-01 Quick-Create Asset for supportingAssets picker. #}
+    <div class="quick-create-empty-state-row mt-3 d-flex flex-wrap gap-3 align-items-center" aria-label="{{ 'quick_create.cta'|trans({}, 'quick_create') }}">
+        <span class="text-muted small">{{ 'quick_create.hint.missing_asset'|trans({}, 'quick_create') }}</span>
+        {% include '_components/_quick_create_modal.html.twig' with {
+            entityType:     'asset',
+            targetSelectId: 'business_process_supportingAssets',
+            modalId:        'quickCreateAssetModal',
+            triggerLabel:   ('business_process.action.quick_create_asset'|trans({}, 'business_process')),
+            title:          ('business_process.action.quick_create_asset'|trans({}, 'business_process')),
+        } only %}
+    </div>
 </div>
 {% endblock %}
