@@ -422,6 +422,8 @@ processing_activity:
     compliance:
         pass: 'Pass'
         fail: 'Fail'
+    form:
+        legal_basis: 'Legal basis (Art. 6 GDPR)'
     field:
         name: Name
         status: Status
@@ -611,6 +613,9 @@ data_breach:
         incident: 'Related Security Incident (optional)'
         processing_activity: 'Processing Activity (ROPA)'
         severity: 'Severity'
+        affected_data_subjects: 'Number of affected data subjects'
+        requires_authority_notification: 'Notification to supervisory authority required (Art. 33 GDPR)'
+        requires_subject_notification: 'Notification of data subjects required (Art. 34 GDPR)'
         data_protection_officer_person: 'DPO (Person master data)'
         data_protection_officer_deputies: 'DPO Deputies'
         assessor_person: 'Assessor (Person master data)'
