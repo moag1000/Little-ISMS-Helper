@@ -201,6 +201,15 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $this->testPlan->setActivationCriteria('System downtime exceeds 30 minutes');
         $this->testPlan->setRecoveryProcedures('1. Notify team\n2. Assess damage\n3. Execute recovery');
         $this->testPlan->setNextReviewDate(new \DateTime('+1 year'));
+        // Junior-ISB-Audit-2026-05-22 C2-06: validateTeamSlot requires non-empty
+        // responseTeamMembers OR linked crisisTeams for plans in active/published.
+        $this->testPlan->setResponseTeamMembers([[
+            'role' => 'incident_commander',
+            'userId' => null,
+            'name' => 'Test Incident Commander',
+            'contact' => '+49 123 456789',
+            'responsibilities' => 'Overall responsibility',
+        ]]);
         $this->entityManager->persist($this->testPlan);
 
         $this->entityManager->flush();

@@ -30,6 +30,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Business Continuity Plan Entity for ISO 22301
  *
  * Documents recovery procedures and strategies for business processes
+ *
+ * Junior-ISB-Audit-2026-05-22 C2-06: 3-team-worlds consolidation —
+ * responseTeamMembers canonical, crisisTeams reusable, bcTeam deprecated.
  */
 #[ApiResource(
     operations: [
@@ -87,10 +90,26 @@ class BusinessContinuityPlan
     private ?string $planOwner = null;
 
     /**
-     * BC Team members
+     * Junior-ISB-Audit-2026-05-22 C2-06: Doppelpflege-Deprecation — use $responseTeamMembers.
+     *
+     * Freetext BC team roster. Superseded by the structured
+     * {@see self::$responseTeamMembers} JSON field (per ISO 22301 §8.5.3 with
+     * roles incident_commander/comms_lead/recovery_lead/technical_lead) which is
+     * the canonical per-plan team store, and by the optional
+     * {@see self::$crisisTeams} ManyToMany collection for cross-plan reusable
+     * crisis teams (ISO 22301 §8.4.2). The column is retained for backward
+     * compatibility with pre-S13 records ("Legacy-Mode für Bestandsdaten");
+     * a cleanup migration dropping the column is scheduled for S14 after one
+     * release cycle.
+     *
+     * Do NOT write to this field in new code. The Form input is `disabled`,
+     * the show-page renders it only when non-empty inside a "Legacy"-info
+     * alert, and the API exposes it read-only via the `bc_plan:read` group.
+     *
+     * @deprecated since S13 (2026-05-23) — use {@see self::$responseTeamMembers}.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    #[Groups(['bc_plan:read'])]
     private ?string $bcTeam = null;
 
     /**
@@ -417,11 +436,22 @@ class BusinessContinuityPlan
         return $this;
     }
 
+    /**
+     * @deprecated since S13 (2026-05-23) — use {@see self::getResponseTeamMembers()}.
+     *             Junior-ISB-Audit-2026-05-22 C2-06: Doppelpflege-Deprecation.
+     */
     public function getBcTeam(): ?string
     {
         return $this->bcTeam;
     }
 
+    /**
+     * @deprecated since S13 (2026-05-23) — use {@see self::setResponseTeamMembers()}.
+     *             Junior-ISB-Audit-2026-05-22 C2-06: Doppelpflege-Deprecation.
+     *             Retained for fixture/seed compatibility only — the Form
+     *             input is disabled and the show-page renders the value
+     *             read-only inside a "Legacy"-info alert.
+     */
     public function setBcTeam(?string $bcTeam): static
     {
         $this->bcTeam = $bcTeam;

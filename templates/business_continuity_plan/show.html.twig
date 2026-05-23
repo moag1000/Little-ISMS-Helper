@@ -99,10 +99,19 @@
             </div>
             {% endif %}
 
+            {# Junior-ISB-Audit-2026-05-22 C2-06: bcTeam Freitext deprecated —
+               canonical per-plan team lives in responseTeamMembers (JsonStructured),
+               cross-plan reusable teams live in crisisTeams (M2M). Legacy value
+               rendered read-only inside an info-alert only when populated. #}
             {% if bc_plan.bcTeam %}
             <div class="detail-section">
-                <h3>{{ 'common.team_members'|trans({}, 'messages') }}</h3>
-                <p>{{ bc_plan.bcTeam|nl2br }}</p>
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info' } } %}
+                    {% block alert_body %}
+                        <div class="fa-alert__title">{{ 'bc_plans.legacy.bc_team_title'|trans({}, 'bc_plans') }}</div>
+                        <p class="fa-alert__message">{{ 'bc_plans.legacy.bc_team_hint'|trans({}, 'bc_plans') }}</p>
+                        <p class="fa-alert__message">{{ bc_plan.bcTeam|nl2br }}</p>
+                    {% endblock %}
+                {% endembed %}
             </div>
             {% endif %}
 
