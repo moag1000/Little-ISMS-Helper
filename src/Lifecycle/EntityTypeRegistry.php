@@ -132,6 +132,15 @@ final class EntityTypeRegistry
             'class' => \App\Entity\InterestedParty::class,
             'workflow' => 'interested_party_lifecycle',
         ],
+        // Junior-ISB-Audit Phase-2 Lifecycle — NotificationDelivery 6-stage
+        // delivery pipeline (ISO 27001 Cl. 7.4 + DORA Art. 19 — incident
+        // reporting evidence must be end-to-end-traceable, not just
+        // dispatch-logged). Tenant lifecycle deferred — 78-entity multi-tenancy
+        // core exceeds the foundation-first 5-callsite threshold; see PR body.
+        'notification-delivery' => [
+            'class' => \App\Entity\Notification\NotificationDelivery::class,
+            'workflow' => 'notification_delivery_lifecycle',
+        ],
     ];
 
     /** @return array{class: class-string, workflow: string}|null */
