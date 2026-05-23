@@ -1,5 +1,9 @@
 <?php
 
+// @em-write-allowed: Quick-Create API is a thin JSON endpoint that materializes a
+// minimal-viable entity stub. Wrapping each entity-type in its own service would
+// be over-engineering for a single-statement persist+flush.
+
 declare(strict_types=1);
 
 namespace App\Controller\Api;
