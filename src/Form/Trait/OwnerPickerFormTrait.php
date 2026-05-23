@@ -7,8 +7,12 @@ namespace App\Form\Trait;
 use App\Entity\Person;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * OwnerPickerFormTrait — audit-s4 P-1.
@@ -66,6 +70,7 @@ trait OwnerPickerFormTrait
      *     legacy_field?: string|null,
      *     translation_prefix?: string,
      *     required?: bool,
+     *     default_to_current_user?: bool,
      *     user_label?: string,
      *     user_help?: string,
      *     user_placeholder?: string,
@@ -87,6 +92,7 @@ trait OwnerPickerFormTrait
         $legacyField   = $config['legacy_field']   ?? null;
         $prefix        = $config['translation_prefix'] ?? 'common';
         $required      = $config['required'] ?? false;
+        $defaultToCurrentUser = $config['default_to_current_user'] ?? false;
 
         $builder->add($userField, EntityType::class, [
             'label'        => $config['user_label']       ?? $prefix . '.field.owner_user',
@@ -148,5 +154,66 @@ trait OwnerPickerFormTrait
                 'help'     => $config['legacy_help'] ?? $prefix . '.help.owner_legacy',
             ]);
         }
+
+        // Junior-ISB-Audit-2026-05-22 4.11: Owner pre-fill — UX-Polish.
+        // When opt-in and the form binds to a NEW entity (no existing owner),
+        // pre-fill the User-slot of the owner-picker with the currently
+        // authenticated user. Existing values are never overwritten. The
+        // listener silently no-ops when no Security service is available
+        // (consumer did not implement getSecurityForOwnerPicker), so legacy
+        // FormTypes remain untouched.
+        if ($defaultToCurrentUser) {
+            $security = $this->getSecurityForOwnerPicker();
+            if ($security !== null) {
+                $currentUser = $security->getUser();
+                if ($currentUser instanceof User) {
+                    $builder->addEventListener(
+                        FormEvents::PRE_SET_DATA,
+                        static function (FormEvent $event) use ($userField, $currentUser): void {
+                            $entity = $event->getData();
+                            // Only act on entities — never overwrite a
+                            // persisted owner during edit. A new entity is
+                            // either null (no data_class binding) or has no
+                            // owner-user value yet.
+                            if ($entity === null) {
+                                return;
+                            }
+                            $accessor = PropertyAccess::createPropertyAccessor();
+                            if (!$accessor->isReadable($entity, $userField)) {
+                                return;
+                            }
+                            $existing = $accessor->getValue($entity, $userField);
+                            if ($existing !== null) {
+                                return;
+                            }
+                            if (!$accessor->isWritable($entity, $userField)) {
+                                return;
+                            }
+                            $accessor->setValue($entity, $userField, $currentUser);
+                        },
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Override hook for owner-picker pre-fill (Junior-ISB-Audit-2026-05-22 4.11).
+     *
+     * Consumers that opt-in via `default_to_current_user => true` MUST also
+     * implement this method to expose their injected Security service. The
+     * default returns null so backward-compat is preserved — legacy FormTypes
+     * that do not opt-in are not required to wire up Security.
+     *
+     * Typical implementation:
+     *
+     *   protected function getSecurityForOwnerPicker(): ?Security
+     *   {
+     *       return $this->security;
+     *   }
+     */
+    protected function getSecurityForOwnerPicker(): ?Security
+    {
+        return null;
     }
 }
