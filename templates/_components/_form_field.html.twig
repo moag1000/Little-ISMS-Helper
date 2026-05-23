@@ -8,6 +8,13 @@
    Backward-compat: legacy params `label_key`, `help_key`, `tooltip_key`,
    `translation_domain`, `required`, `automatic` are still accepted; their
    semantics are preserved via attr-merging on the underlying form-row.
+
+   Junior-ISB-Audit-2026-05-22 S14 #17 (BP-Tooltips Drawer Pattern):
+   When a `drawer_key` is provided, the verbose help-text is moved into an
+   Aurora `fa-drawer` (side-sheet) opened via a "Mehr Info..." button. The
+   inline help-text stays as a 30-sec summary. Drawer markup must be mounted
+   once per page via `_components/_fa_help_drawer.html.twig` inside the same
+   `data-controller="help-drawer"` scope.
 #}
 
 {% set field_id = field.vars.id %}
@@ -17,10 +24,18 @@
 {% set trans_domain = translation_domain|default('messages') %}
 {% set help_text = help_key is defined ? (help_key|trans({}, trans_domain)) : (help|default(null)) %}
 {% set explicit_tooltip = tooltip_key is defined ? (tooltip_key|trans({}, trans_domain)) : (tooltip|default(null)) %}
+{% set drawer_body = drawer_key is defined and drawer_key ? (drawer_key|trans({}, trans_domain)) : null %}
 {% set is_automatic = automatic|default(false) %}
 {% set tooltip_text = explicit_tooltip ? explicit_tooltip : help_text %}
 {% if is_automatic and not explicit_tooltip %}
     {% set tooltip_text = 'form.automatic_value'|trans({}, 'messages') %}
+{% endif %}
+
+{# When a drawer is available, the verbose content lives there — suppress the
+   sidecar Bootstrap tooltip-icon to avoid duplicating the info in two places.
+#}
+{% if drawer_body %}
+    {% set tooltip_text = null %}
 {% endif %}
 
 {# Inject is-automatic class + aria-required + caller-supplied help into the
@@ -54,4 +69,25 @@
     </div>
 {% else %}
     {{ form_row(field, field_vars) }}
+{% endif %}
+
+{#
+    Junior-ISB-Audit-2026-05-22 S14 #17: BP-Tooltips Drawer Pattern.
+    Render the "Mehr Info..." trigger below the field when a drawer_key is
+    provided. The verbose help-content is passed via data-attrs and rendered
+    by the shared help_drawer Stimulus controller into the single page-level
+    fa-drawer instance.
+#}
+{% if drawer_body %}
+    {% set field_label_text = field.vars.label is iterable
+        ? (field.vars.label.label|default(field.vars.name)|trans({}, trans_domain))
+        : (field.vars.label ? (field.vars.label|trans({}, trans_domain)) : field.vars.name) %}
+    <button type="button"
+            class="btn btn-link btn-sm p-0 mt-1 fairy-help-drawer-trigger"
+            data-action="click->help-drawer#open"
+            data-help-drawer-title-param="{{ field_label_text }}"
+            data-help-drawer-body-param="{{ drawer_body }}"
+            aria-label="{{ 'common.more_info_aria'|trans({'%field%': field_label_text}, 'messages') }}">
+        <i class="fa-icon fa-icon--status-info me-1" aria-hidden="true"></i>{{ 'common.more_info'|trans({}, 'messages') }}
+    </button>
 {% endif %}

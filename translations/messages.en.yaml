@@ -137,6 +137,9 @@ common:
     tenant_not_found: 'No active tenant — please log in to a workspace before using this feature.'
     please_select: 'Please select...'
     next: Next
+    # Junior-ISB-Audit-2026-05-22 S14 #17: BP-Tooltips Drawer Pattern.
+    more_info: 'More info...'
+    more_info_aria: 'Open full help for "%field%"'
     yes: 'Yes'
     no: 'No'
     form:
