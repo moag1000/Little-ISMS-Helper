@@ -6,7 +6,7 @@ src/Form/BCExerciseType.php:124:facilitator
 src/Form/BCExerciseType.php:157:observers
 src/Form/DataSubjectRequestType.php:75:dataSubjectEmail
 src/Form/IncidentType.php:210:affectedSystems
-src/Form/InterestedPartyType.php:63:contactPerson
+src/Form/InterestedPartyType.php:69:contactPerson
 src/Form/InternalAuditType.php:173:leadAuditor
 src/Form/InternalAuditType.php:193:auditTeam
 src/Form/LocationType.php:106:country
