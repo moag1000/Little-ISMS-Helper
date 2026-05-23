@@ -562,6 +562,15 @@ processing_activity:
     confirm_delete: 'Do you really want to delete this processing activity?'
     dashboard:
         incomplete_activities: 'Incomplete Activities (%count%)'
+        overall_score: 'Overall VVT Compliance Score'
+        activities_complete: '%complete% of %total% activities complete'
+        dpias_completed: '%done%/%required% DPIAs completed'
+        kpi:
+            total_activities: 'Total Activities'
+            active: '%count% active'
+            high_risk: 'High Risk'
+            missing_dpia: '%count% missing DPIA'
+            completeness_rate: 'Completeness Rate'
     show:
         linked_controls: 'Linked ISO 27001 Controls'
         linked_assets: 'Linked Assets'
