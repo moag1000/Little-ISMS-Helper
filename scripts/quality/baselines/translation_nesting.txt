@@ -157,10 +157,10 @@ translations/data_management.de.yaml:1:data
 translations/data_management.en.yaml:1:data
 translations/data_subject_request.de.yaml:5:dsr
 translations/data_subject_request.en.yaml:5:dsr
-translations/document.de.yaml:271:evidence_reverification
-translations/document.de.yaml:305:iso_9001_bridge
-translations/document.en.yaml:268:evidence_reverification
-translations/document.en.yaml:302:iso_9001_bridge
+translations/document.de.yaml:275:evidence_reverification
+translations/document.de.yaml:309:iso_9001_bridge
+translations/document.en.yaml:272:evidence_reverification
+translations/document.en.yaml:306:iso_9001_bridge
 translations/eu_authorities.de.yaml:229:authority
 translations/eu_authorities.de.yaml:303:dora
 translations/eu_authorities.en.yaml:229:authority

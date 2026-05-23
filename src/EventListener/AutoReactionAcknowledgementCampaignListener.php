@@ -85,11 +85,28 @@ final class AutoReactionAcknowledgementCampaignListener
             $repo = $em->getRepository(PolicyAcknowledgement::class);
 
             // Audit V3 W2-C4: tenant-scoped active-user query.
-            $userRepo = $em->getRepository(User::class);
-            $users = $userRepo->findBy([
-                'isActive' => true,
-                'tenant' => $tenant,
-            ]);
+            //
+            // Junior-ISB-Audit C3-03 (S14, 2026-05-23) — ISO 27001 Cl. 7.3 +
+            // A.6.3: when the document carries an explicit
+            // `acknowledgementAudience` selection, the campaign fan-out
+            // restricts to that list. Empty selection preserves the
+            // legacy behaviour of fanning out to every active tenant user.
+            $audience = $document->getAcknowledgementAudience();
+            if (!$audience->isEmpty()) {
+                $users = [];
+                foreach ($audience as $user) {
+                    /** @var User $user */
+                    if ($user->isActive() && $user->getTenant() === $tenant) {
+                        $users[] = $user;
+                    }
+                }
+            } else {
+                $userRepo = $em->getRepository(User::class);
+                $users = $userRepo->findBy([
+                    'isActive' => true,
+                    'tenant' => $tenant,
+                ]);
+            }
 
             $created = 0;
             foreach ($users as $user) {
