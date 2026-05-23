@@ -124,7 +124,7 @@ bc_plans:
     version: Aktuelle Versionsnummer des BC-Plans
     last_tested: Datum des letzten BC-Plan-Tests (Übungen gemäß ISO 22301:2019 Klausel
       8.5)
-    next_test_date: Datum des nächsten geplanten BC-Plan-Tests
+    next_test_date: 'Datum des nächsten geplanten BC-Plan-Tests. ISO 22301:2019 Kl. 8.5 verlangt regelmäßige Übungen (Mindestintervall typischerweise 12 Monate). Ohne nachweisbaren Test gilt der Plan im Audit als ungeprüft.'
     last_review_date: Datum der letzten Planüberprüfung
     next_review_date: Datum der nächsten geplanten Überprüfung (mindestens jährlich
       gemäß ISO 22301)
