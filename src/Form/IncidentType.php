@@ -13,7 +13,9 @@ use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
+use App\Repository\TenantPolicySettingRepository;
 use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -39,7 +41,40 @@ final class IncidentType extends AbstractType
 
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly TenantContext $tenantContext,
+        private readonly TenantPolicySettingRepository $tenantPolicySettingRepository,
     ) {
+    }
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 Schicht-5: Module-Gate-Polish (T11.7).
+     *
+     * Returns true when the current tenant is flagged as a KRITIS-operator
+     * via the tenant-policy-setting `org.is_kritis_operator`. KRITIS is a
+     * BSI-Kritis-V regulatory designation (essential service operator),
+     * not a feature-module — it lives as a per-tenant setting per
+     * KritisOperatorReadinessRule. Used to decide whether to show an
+     * "activate KRITIS-operator-status for full NIS2 detection" hint
+     * in the NIS2 reporting section.
+     */
+    private function isKritisOperator(): bool
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            return false;
+        }
+        $setting = $this->tenantPolicySettingRepository->findOneByTenantAndKey(
+            $tenant,
+            'org.is_kritis_operator',
+        );
+        if ($setting === null) {
+            return false;
+        }
+        $value = $setting->getValue();
+        if (is_array($value) && array_key_exists('value', $value)) {
+            $value = $value['value'];
+        }
+        return $value === true || $value === 'true' || $value === 1 || $value === '1';
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -267,6 +302,15 @@ final class IncidentType extends AbstractType
         // — moved here to keep the form Aurora-clean for tenants without an EU-cyber
         // reporting obligation. Templates already wrap the corresponding fieldset in
         // {% if is_module_active('nis2_dora') %}.
+        //
+        // Junior-ISB-Audit-2026-05-22 Schicht-5: Module-Gate-Polish (T11.7).
+        // When nis2_dora is active but the tenant has NOT flagged itself as a
+        // KRITIS-operator (`org.is_kritis_operator`), the help-text on the entry
+        // field guides the user to set the KRITIS flag for sector-specific
+        // mandatory-field detection. See isKritisOperator() above.
+        $nis2CategoryHelp = $this->isModuleActive('nis2_dora') && !$this->isKritisOperator()
+            ? 'incident.help.nis2_category_kritis_hint'
+            : 'incident.help.nis2_category';
         if ($this->isModuleActive('nis2_dora')) {
             $builder
                 // NIS2 Article 23 - Reporting Timeline Fields
@@ -280,7 +324,7 @@ final class IncidentType extends AbstractType
                     ],
                     'required' => false,
                     'placeholder' => 'incident.placeholder.nis2_category',
-                    'help' => 'incident.help.nis2_category',
+                    'help' => $nis2CategoryHelp,
                     'choice_translation_domain' => 'incident',
                 ])
                 ->add('earlyWarningReportedAt', DateTimeType::class, [
