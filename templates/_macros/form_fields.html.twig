@@ -51,7 +51,7 @@
         <label for="{{ name }}" class="form-label">
             {{ label }}
             {% if required %}
-                <span class="required" aria-label="required">*</span>
+                <span class="required" aria-label="{{ 'common.required'|trans({}, 'messages') }}">*</span>
             {% endif %}
         </label>
         <input type="{{ type }}"
@@ -106,7 +106,7 @@
         <label for="{{ name }}" class="form-label">
             {{ label }}
             {% if required %}
-                <span class="required" aria-label="required">*</span>
+                <span class="required" aria-label="{{ 'common.required'|trans({}, 'messages') }}">*</span>
             {% endif %}
         </label>
         <textarea class="form-control fa-cyber-input__field {{ error ? 'is-invalid' : '' }} {{ css_class }}"
@@ -155,7 +155,7 @@
         <label for="{{ name }}" class="form-label">
             {{ label }}
             {% if required %}
-                <span class="required" aria-label="required">*</span>
+                <span class="required" aria-label="{{ 'common.required'|trans({}, 'messages') }}">*</span>
             {% endif %}
         </label>
         <select class="form-select fa-cyber-input__field {{ error ? 'is-invalid' : '' }} {{ css_class }}"
@@ -208,7 +208,7 @@
         <label for="{{ name }}" class="form-label">
             {{ label }}
             {% if required %}
-                <span class="required" aria-label="required">*</span>
+                <span class="required" aria-label="{{ 'common.required'|trans({}, 'messages') }}">*</span>
             {% endif %}
         </label>
         <input type="password"

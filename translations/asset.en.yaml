@@ -309,6 +309,8 @@ asset:
     inherited: Inherited value
     driven_by: Driven by
   ai_agent:
+    flash:
+      no_tenant: 'No tenant assigned — AI Agent inventory requires a tenant context.'
     section:
       title: AI Agent Inventory
       subtitle: EU AI Act / ISO 42001 / MRIS MHC-13

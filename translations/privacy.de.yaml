@@ -294,6 +294,9 @@ privacy:
 
 
 processing_activity:
+    error:
+        invalid_csrf: 'Ungültiges CSRF-Token.'
+    clone_suffix: '(Kopie)'
     title: 'VVT - Verzeichnis von Verarbeitungstätigkeiten'
     subtitle: 'Art. 30 DSGVO - Verzeichnis von Verarbeitungstätigkeiten'
     page:

@@ -90,8 +90,8 @@
         <div class="fa-form-layout__body">
 
             {# ── Outline rail ──────────────────────────────────────────────── #}
-            <nav class="fa-form-layout__outline" aria-label="Abschnitte">
-                <div class="fa-form-layout__outline-title">Abschnitte</div>
+            <nav class="fa-form-layout__outline" aria-label="{{ 'form.outline.aria_label'|trans({}, 'messages') }}">
+                <div class="fa-form-layout__outline-title">{{ 'form.outline.title'|trans({}, 'messages') }}</div>
                 <ul class="fa-form-layout__outline-list">
                     {% for section in sections %}
                         {%- set sectionStatus = section.status ?? 'pending' -%}

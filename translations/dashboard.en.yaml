@@ -4,6 +4,20 @@ dashboard:
   action:
     customize: Customize
     role_dashboards: Role Dashboards
+  settings:
+    title: 'Customize Dashboard'
+    subtitle: 'Widget visibility'
+    intro: 'Choose which widgets are shown on your dashboard.'
+    group:
+      stats: 'Statistic Cards'
+      charts: 'Charts'
+      widgets: 'Widgets'
+    widget:
+      stats_cards: 'Statistics Overview (Assets, Risks, Controls, Incidents)'
+      risk_chart: 'Risk Distribution'
+      asset_chart: 'Assets by Category'
+      activity_feed: 'Recent Activity'
+      quick_actions: 'Quick Actions'
   role:
     ciso: CISO Dashboard
     risk_manager: Risk Manager
