@@ -409,6 +409,9 @@ corrective_action:
     section:
         description: 'Beschreibung & Ursachenanalyse'
         verification: 'Wirksamkeitsbewertung'
+        root_cause_intro: 'Root-Cause-Analyse nach ISO 27001 Kl. 10.1: WARUM ist die Abweichung entstanden? 5-Why-Methode (5× „Warum?" fragen), Ishikawa (Mensch/Maschine/Material/Methode/Mitwelt/Messung) oder FMEA. Reines „User-Fehler" ist KEINE Ursache — drill weiter.'
+        action_plan_intro: 'Maßnahmenplan nach ISO 27001 Kl. 10.1 b/c: WAS wird konkret unternommen (Korrektur + Vorbeugung), WER ist zuständig, BIS WANN? Vertretung nicht vergessen — der Plan muss auch im Urlaub funktionieren.'
+        verification_intro: 'Wirksamkeitsbewertung nach ISO 27001 Kl. 10.1 d: NACH Umsetzung prüfen, ob die Ursache wirklich beseitigt wurde. Belege (Re-Audit, Trend-KPI, Stichprobe) sind Pflicht — ohne Verifizierung ist die CAPA nicht abschließbar.'
     alert:
         overdue: '%count% überfällige Maßnahme(n).'
     message:
