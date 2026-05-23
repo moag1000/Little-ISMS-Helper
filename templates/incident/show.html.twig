@@ -398,7 +398,7 @@
                         {% for ca in linkedCorrectiveActions %}
                             <li class="mb-2">
                                 <a href="{{ path('app_corrective_action_show', { id: ca.id }) }}">
-                                    <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--util-arrow-right me-1" aria-hidden="true"></i>
                                     {{ ca.title }}
                                 </a>
                                 <span class="badge bg-light text-dark ms-1">{{ ('corrective_action.status.' ~ ca.status)|trans({}, 'audits') }}</span>
