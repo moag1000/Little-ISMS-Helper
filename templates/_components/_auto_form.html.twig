@@ -184,7 +184,8 @@
                 'tooltips':           tooltips,
                 'exclude_fields':     exclude_fields,
                 'automatic_fields':   automatic_fields,
-                'translation_domain': passed_translation_domain
+                'translation_domain': passed_translation_domain,
+                'section_intro':      section_def.intro|default(null)
             } %}
         {% endset %}
 
@@ -252,7 +253,8 @@
                 'tooltips':           tooltips,
                 'exclude_fields':     exclude_fields,
                 'automatic_fields':   automatic_fields,
-                'translation_domain': passed_translation_domain
+                'translation_domain': passed_translation_domain,
+                'section_intro':      section.intro|default(null)
             } %}
         </fieldset>
     {% endfor %}

@@ -207,7 +207,9 @@ risk:
     basic_info: Grundinformationen
     gdpr_assessment: DSGVO-Bewertung
     inherent_risk: Inhärentes Risiko (Brutto-Risiko)
+    inherent_risk_intro: 'Brutto-Risiko = Bewertung VOR Maßnahmen. Vergeben Sie Eintrittswahrscheinlichkeit (1-5) und Schadensauswirkung (1-5). Die Mini-Heatmap unten zeigt live in welcher Band (Niedrig/Mittel/Hoch/Kritisch) Ihr Score landet (ISO 27005 Cl. 8.4).'
     residual_risk: Restrisiko (Netto-Risiko)
+    residual_risk_intro: 'Netto-Risiko = Bewertung NACH umgesetzten Maßnahmen (Controls). Wenn die Treatment-Strategie noch nicht implementiert ist, können diese Felder leer bleiben — sie werden später nachgepflegt (ISO 27005 Cl. 8.5).'
     treatment: Risikobehandlung
     acceptance: Risikoakzeptanz
     # Junior-ISB-Audit-2026-05-22 K-06: Decision-Trail section groups the 5
