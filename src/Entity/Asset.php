@@ -187,6 +187,15 @@ class Asset
      * Monetary value of the asset for risk impact calculation.
      * ⚠️ SAFE GUARD: This field must ALWAYS be set manually by users.
      * NEVER auto-calculate from vulnerabilityScore or other sources to prevent circular dependencies.
+     *
+     * TODO Junior-ISB-Audit-S14: Audit row #15 labels this a "dead field" because
+     * AssetType form no longer renders it (Finding #9). However, the field is
+     * still actively READ by RiskImpactCalculatorService + 3 show-templates
+     * (asset/incident/risk show). Full removal requires: (1) deprecate
+     * RiskImpactCalculatorService.monetaryValue → migrate to acquisitionValue
+     * /currentValue, (2) replace template renders with currentValue, (3) backfill
+     * migration (copy monetaryValue → currentValue if currentValue is null),
+     * (4) DROP COLUMN migration. Scope > 1h — kept as backlog item.
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]

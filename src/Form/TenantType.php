@@ -164,6 +164,15 @@ final class TenantType extends AbstractType
                 'help' => 'corporate.field.nace_code_help',
                 'required' => false,
                 'attr' => ['maxlength' => 20, 'placeholder' => '62.03'],
+                // Junior-ISB-Audit-2026-05-22 S14: NACE Rev. 2 format check.
+                // EU 1893/2006 — section letter + 2 digits + optional .NN[.N].
+                // Optional letter prefix to accept legacy "62.01" entries without breaking BC.
+                'constraints' => [
+                    new Assert\Regex(
+                        pattern: '/^[A-U]?\d{2}(\.\d{1,2})?$/',
+                        message: 'tenant.validation.nace_code_format',
+                    ),
+                ],
             ])
             // @no-module-gate-required: NIS-2 classification fields drive module activation —
             //   they must be visible on the primary tenant form regardless of module state,

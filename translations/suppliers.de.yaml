@@ -248,6 +248,10 @@ supplier:
         na: k.A.
     confirm:
         delete: 'Möchten Sie diesen Lieferanten wirklich löschen?'
+    # Junior-ISB-Audit-2026-05-22 S14: LEI/NACE Regex Validators
+    validation:
+        lei_code_format: 'Ungültiges LEI-Format. ISO 17442:2020 verlangt genau 20 alphanumerische Großbuchstaben/Ziffern (z. B. 5299005PUWHO5BV24X20).'
+        nace_code_format: 'Ungültiges NACE-Format. EU NACE Rev. 2 erwartet Sektionsbuchstabe A–U + 2 Ziffern, optional .NN (z. B. J62.01).'
     risk:
         message:
             critical: 'Kritisches Risiko – sofortige Maßnahmen erforderlich'
