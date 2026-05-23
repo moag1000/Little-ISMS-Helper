@@ -122,7 +122,7 @@
                 actions: [
                     { label: 'interested_party.action.create_first'|trans({}, 'interested_parties'), variant: 'primary', icon: 'plus', href: path('app_interested_party_new') }
                 ],
-                help_link: 'interested_party.help.empty_link'|trans({}, 'interested_parties')
+                help_link: path('app_help_glossary', {_locale: app.request.locale}) ~ '#glossary-interested-parties'
             }) }}
             {% endif %}
         {% endblock %}

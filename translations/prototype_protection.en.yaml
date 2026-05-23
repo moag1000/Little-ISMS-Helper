@@ -40,6 +40,7 @@ prototype_protection:
         overall_result: 'Overall result'
     placeholder:
         assessor_person: '-- Person from master data --'
+        title: 'e.g. Next-gen EV platform Q3 2026'
     help:
         scope: 'Program, model series, vehicle variant or event this assessment applies to.'
         required_labels: 'Multi-select — all prototype labels applicable to the scope.'
