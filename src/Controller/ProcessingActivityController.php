@@ -168,7 +168,7 @@ class ProcessingActivityController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('activate' . $processingActivity->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->addFlash('danger', $this->translator->trans('processing_activity.error.invalid_csrf', [], 'privacy'));
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
         }
 
@@ -245,11 +245,11 @@ class ProcessingActivityController extends AbstractController
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
         if (!$this->isCsrfTokenValid('clone' . $processingActivity->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Invalid CSRF token');
+            $this->addFlash('danger', $this->translator->trans('processing_activity.error.invalid_csrf', [], 'privacy'));
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
         }
 
-        $newName = $processingActivity->getName() . ' (Copy)';
+        $newName = $processingActivity->getName() . ' ' . $this->translator->trans('processing_activity.clone_suffix', [], 'privacy');
         $clone = $this->processingActivityService->clone($processingActivity, $newName);
 
         $this->addFlash('success', $this->translator->trans('processing_activity.cloned', [], 'messages'));

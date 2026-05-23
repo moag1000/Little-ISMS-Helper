@@ -297,6 +297,9 @@ privacy:
         highest_risk: 'Highest risk'
         summary: 'Assessment summary'
 processing_activity:
+    error:
+        invalid_csrf: 'Invalid CSRF token.'
+    clone_suffix: '(Copy)'
     title: 'VVT - Record of Processing Activities'
     subtitle: 'Art. 30 GDPR - Record of Processing Activities'
     page:
