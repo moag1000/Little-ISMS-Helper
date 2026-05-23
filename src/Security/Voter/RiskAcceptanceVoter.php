@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * RiskAcceptanceVoter
@@ -21,17 +22,15 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *  Score 13–19  → ROLE_ADMIN     (high risk — senior approval)
  *  Score 20–25  → ROLE_SUPER_ADMIN (critical risk — executive sign-off)
  */
+// Junior-ISB-Audit-2026-05-22 #582-followup: RiskAcceptanceVoter hierarchy-aware
 final class RiskAcceptanceVoter extends Voter
 {
     public const string APPROVE = 'risk_acceptance_approve';
 
-    /** Role hierarchy: lower index = more privileged. */
-    private const array ROLE_HIERARCHY = [
-        'ROLE_SUPER_ADMIN',
-        'ROLE_ADMIN',
-        'ROLE_MANAGER',
-        'ROLE_USER',
-    ];
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -51,7 +50,7 @@ final class RiskAcceptanceVoter extends Voter
         $score = $risk->getRiskScore();
         $requiredRole = $this->resolveRequiredRole($score);
 
-        return $this->userHasMinRole($user, $requiredRole);
+        return $this->hasRole($user, $requiredRole);
     }
 
     /**
@@ -69,19 +68,16 @@ final class RiskAcceptanceVoter extends Voter
 
     /**
      * Returns true when the user holds $requiredRole or any role above it in
-     * the hierarchy (ROLE_ADMIN satisfies ROLE_MANAGER, etc.).
+     * Symfony's `role_hierarchy` (ROLE_ADMIN reaches ROLE_MANAGER, etc.).
+     *
+     * Expands the user's directly assigned roles via the configured
+     * RoleHierarchyInterface so an admin with only `ROLE_ADMIN` in the DB row
+     * still satisfies subordinate role checks (`ROLE_MANAGER`, `ROLE_USER`).
      */
-    private function userHasMinRole(User $user, string $requiredRole): bool
+    private function hasRole(User $user, string $requiredRole): bool
     {
-        $userRoles = $user->getRoles();
-        $requiredIndex = array_search($requiredRole, self::ROLE_HIERARCHY, true);
+        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
 
-        foreach (self::ROLE_HIERARCHY as $index => $role) {
-            if ($index <= $requiredIndex && in_array($role, $userRoles, true)) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($requiredRole, $reachable, true);
     }
 }
