@@ -127,6 +127,7 @@ class AdminModuleController extends AbstractController
             $this->addFlash('error', $result['error']);
 
             if (isset($result['dependents'])) {
+                // @flash-domain-fallback-ok: 3-arg trans with explicit 'messages' domain — gate regex false-positive on nested array literal
                 $this->addFlash('warning', $this->translator->trans('module.warning.disable_dependents_first', ['dependents' => implode(', ', $result['dependents'])], 'messages'));
             }
         }
