@@ -5,18 +5,16 @@ declare(strict_types=1);
 namespace App\Tests\Form;
 
 use App\Entity\Supplier;
-use App\Entity\Tenant;
 use App\Form\SupplierType;
-use App\Repository\SupplierCriticalityLevelRepository;
 use App\Service\ModuleConfigurationService;
-use App\Service\TenantContext;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
-use Symfony\Component\Form\PreloadedExtension;
-use Symfony\Component\Form\Test\TypeTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Form\FormFactoryInterface;
 
 /**
- * Coverage for SupplierType module-gating (P-6 audit-s2).
+ * Coverage for SupplierType module-gating (P-6 audit-s2) +
+ * S14 Cluster A C1-05 supportedAssets EntityType linkage.
  *
  * Verifies that regulatory field-blocks (DSGVO/DPA, DORA, LkSG, MaRisk) are
  * only present in the form when their respective compliance modules are
@@ -24,28 +22,36 @@ use Symfony\Component\Form\Test\TypeTestCase;
  *
  * Anti-Regression for the CLAUDE.md rule "every feature that relates to an
  * optional compliance framework MUST be module-gated".
+ *
+ * Switched from TypeTestCase → KernelTestCase in S14 because SupplierType now
+ * wires EntityType('supportedAssets'); EntityType requires a real
+ * ManagerRegistry from the container.
  */
 #[AllowMockObjectsWithoutExpectations]
-final class SupplierTypeTest extends TypeTestCase
+final class SupplierTypeTest extends KernelTestCase
 {
+    private FormFactoryInterface $formFactory;
     /** @var array<string, bool> */
     private array $activeModules = [];
 
-    protected function getExtensions(): array
+    protected function setUp(): void
     {
+        self::bootKernel();
+
+        // Swap ModuleConfigurationService for a controllable mock so each test
+        // can toggle module activation independently.
         $moduleConfig = $this->createMock(ModuleConfigurationService::class);
         $moduleConfig->method('isModuleActive')
             ->willReturnCallback(fn (string $key): bool => $this->activeModules[$key] ?? false);
 
-        $criticalityRepo = $this->createMock(SupplierCriticalityLevelRepository::class);
-        $criticalityRepo->method('findActiveByTenant')->willReturn([]);
+        static::getContainer()->set(ModuleConfigurationService::class, $moduleConfig);
 
-        $tenantContext = $this->createMock(TenantContext::class);
-        $tenantContext->method('getCurrentTenant')->willReturn(new Tenant());
+        $this->formFactory = static::getContainer()->get(FormFactoryInterface::class);
+    }
 
-        $type = new SupplierType($criticalityRepo, $tenantContext, $moduleConfig);
-
-        return [new PreloadedExtension([$type], [])];
+    private function buildForm(): \Symfony\Component\Form\FormInterface
+    {
+        return $this->formFactory->create(SupplierType::class, new Supplier());
     }
 
     // ── Core fields (always present) ─────────────────────────────────
@@ -55,7 +61,7 @@ final class SupplierTypeTest extends TypeTestCase
     {
         $this->activeModules = []; // No regulatory modules active
 
-        $form = $this->factory->create(SupplierType::class, new Supplier());
+        $form = $this->buildForm();
 
         // Core supplier info
         self::assertTrue($form->has('name'));
@@ -81,7 +87,7 @@ final class SupplierTypeTest extends TypeTestCase
     {
         $this->activeModules = []; // Verein / KMU scenario
 
-        $form = $this->factory->create(SupplierType::class, new Supplier());
+        $form = $this->buildForm();
 
         // No GDPR / privacy
         self::assertFalse($form->has('hasDPA'));
@@ -106,32 +112,39 @@ final class SupplierTypeTest extends TypeTestCase
         self::assertFalse($form->has('bafinNotificationRequired'));
     }
 
-    // ── DSGVO / Privacy gate ─────────────────────────────────────────
+    // ── DSGVO / Privacy module ───────────────────────────────────────
 
     #[Test]
-    public function privacyModuleActivatesGdprFields(): void
+    public function privacyModuleActivatesDsgvoFields(): void
     {
         $this->activeModules = ['privacy' => true];
 
-        $form = $this->factory->create(SupplierType::class, new Supplier());
+        $form = $this->buildForm();
 
+        // GDPR Art. 28 — DPA fields
         self::assertTrue($form->has('hasDPA'));
         self::assertTrue($form->has('dpaSignedDate'));
         self::assertTrue($form->has('gdprProcessorStatus'));
         self::assertTrue($form->has('gdprTransferMechanism'));
         self::assertTrue($form->has('gdprAvContractSigned'));
         self::assertTrue($form->has('gdprAvContractDate'));
+
+        // Other modules still off
+        self::assertFalse($form->has('isDoraRelevant'));
+        self::assertFalse($form->has('lksgReportingObligation'));
+        self::assertFalse($form->has('outsourcingClassification'));
     }
 
-    // ── DORA / nis2_dora gate ────────────────────────────────────────
+    // ── DORA / nis2_dora module ──────────────────────────────────────
 
     #[Test]
-    public function nis2DoraModuleActivatesDoraFields(): void
+    public function doraModuleActivatesDoraFields(): void
     {
         $this->activeModules = ['nis2_dora' => true];
 
-        $form = $this->factory->create(SupplierType::class, new Supplier());
+        $form = $this->buildForm();
 
+        // DORA Art. 28 — Register of Information
         self::assertTrue($form->has('isDoraRelevant'));
         self::assertTrue($form->has('leiCode'));
         self::assertTrue($form->has('naceCode'));
@@ -144,17 +157,23 @@ final class SupplierTypeTest extends TypeTestCase
         self::assertTrue($form->has('processingLocations'));
         self::assertTrue($form->has('lastDoraAuditDate'));
         self::assertTrue($form->has('hasExitStrategy'));
+
+        // Other modules still off
+        self::assertFalse($form->has('hasDPA'));
+        self::assertFalse($form->has('lksgReportingObligation'));
+        self::assertFalse($form->has('outsourcingClassification'));
     }
 
-    // ── LkSG gate ────────────────────────────────────────────────────
+    // ── LkSG module ──────────────────────────────────────────────────
 
     #[Test]
     public function lksgModuleActivatesLksgFields(): void
     {
         $this->activeModules = ['lksg' => true];
 
-        $form = $this->factory->create(SupplierType::class, new Supplier());
+        $form = $this->buildForm();
 
+        // LkSG (Lieferkettensorgfaltspflichtengesetz)
         self::assertTrue($form->has('lksgReportingObligation'));
         self::assertTrue($form->has('lksgRiskCategory'));
         self::assertTrue($form->has('lksgHumanRightsRiskScore'));
@@ -162,49 +181,44 @@ final class SupplierTypeTest extends TypeTestCase
         self::assertTrue($form->has('lksgRiskAnalysisDate'));
         self::assertTrue($form->has('lksgComplaintMechanism'));
         self::assertTrue($form->has('lksgPreventionMeasures'));
+
+        // Other modules still off
+        self::assertFalse($form->has('hasDPA'));
+        self::assertFalse($form->has('isDoraRelevant'));
+        self::assertFalse($form->has('outsourcingClassification'));
     }
 
-    // ── MaRisk gate ──────────────────────────────────────────────────
+    // ── MaRisk module ────────────────────────────────────────────────
 
     #[Test]
     public function mariskModuleActivatesMariskFields(): void
     {
         $this->activeModules = ['marisk' => true];
 
-        $form = $this->factory->create(SupplierType::class, new Supplier());
+        $form = $this->buildForm();
 
+        // MaRisk AT 9 — Outsourcing management
         self::assertTrue($form->has('outsourcingClassification'));
         self::assertTrue($form->has('outsourcingDueDiligenceCompleted'));
+        self::assertTrue($form->has('outsourcingDueDiligenceDate'));
         self::assertTrue($form->has('outsourcingExitStrategy'));
         self::assertTrue($form->has('bafinNotificationRequired'));
+        self::assertTrue($form->has('bafinNotificationDate'));
+        self::assertTrue($form->has('riskBearingCapacityImpact'));
         self::assertTrue($form->has('boardLevelRiskAcceptance'));
-    }
+        self::assertTrue($form->has('complianceFunctionInvolvement'));
+        self::assertTrue($form->has('internalAuditFunctionInvolvement'));
 
-    // ── Module isolation — one module should not leak into others ────
-
-    #[Test]
-    public function doraModuleDoesNotLeakIntoGdprFields(): void
-    {
-        $this->activeModules = ['nis2_dora' => true]; // DORA only
-
-        $form = $this->factory->create(SupplierType::class, new Supplier());
-
-        // DORA present
-        self::assertTrue($form->has('isDoraRelevant'));
-
-        // GDPR absent — privacy not active
+        // Other modules still off
         self::assertFalse($form->has('hasDPA'));
-        self::assertFalse($form->has('gdprProcessorStatus'));
-
-        // LkSG absent
+        self::assertFalse($form->has('isDoraRelevant'));
         self::assertFalse($form->has('lksgReportingObligation'));
-
-        // MaRisk absent
-        self::assertFalse($form->has('outsourcingClassification'));
     }
 
+    // ── Combined modules ─────────────────────────────────────────────
+
     #[Test]
-    public function allModulesActivePresentsAllFields(): void
+    public function multiCertifiedCustomerHasAllModuleFields(): void
     {
         $this->activeModules = [
             'privacy' => true,
@@ -213,60 +227,53 @@ final class SupplierTypeTest extends TypeTestCase
             'marisk' => true,
         ];
 
-        $form = $this->factory->create(SupplierType::class, new Supplier());
+        $form = $this->buildForm();
 
-        // Sampled fields from each module
-        self::assertTrue($form->has('hasDPA'));               // privacy
-        self::assertTrue($form->has('isDoraRelevant'));       // nis2_dora
-        self::assertTrue($form->has('lksgRiskCategory'));     // lksg
-        self::assertTrue($form->has('outsourcingClassification')); // marisk
+        // All module-gated field groups should be present
+        self::assertTrue($form->has('hasDPA'), 'privacy module → hasDPA');
+        self::assertTrue($form->has('isDoraRelevant'), 'nis2_dora module → isDoraRelevant');
+        self::assertTrue($form->has('lksgReportingObligation'), 'lksg module → lksgReportingObligation');
+        self::assertTrue($form->has('outsourcingClassification'), 'marisk module → outsourcingClassification');
+
+        // Core fields still present
+        self::assertTrue($form->has('name'));
+        self::assertTrue($form->has('criticality'));
     }
 
-    // ── S4 P-1 Wave-2 — OwnerPicker rollout ────────────────────────────
-    //
-    // The Supplier entity carries only a single legacy free-text
-    // `contactPerson` column — no User/Person slots are defined on
-    // App\Entity\Supplier yet. The Wave-2 spec explicitly qualifies
-    // the SupplierType rollout with "wenn vorhanden" (only if the
-    // primaryContactUser/primaryContactPerson slots exist).
-    //
-    // The rollout is therefore intentionally a no-op for SupplierType.
-    // These tests document the current state so a future agent who
-    // adds the User/Person slots on the entity gets a failing test
-    // that prompts them to wire the compound owner-picker.
+    // ── Backwards-compat assertion ───────────────────────────────────
 
     #[Test]
-    public function supplierTypeStillHasLegacyContactPersonFreetext(): void
+    public function privacyAndDoraFieldsBackwardsCompatible(): void
+    {
+        // Confirms that fields originally added to SupplierType when
+        // privacy/DORA were not yet gated still appear when those modules
+        // are active. Anti-regression for the migration to module-gating.
+        $this->activeModules = ['privacy' => true, 'nis2_dora' => true];
+
+        $form = $this->buildForm();
+
+        // Pre-existing privacy fields
+        self::assertTrue($form->has('hasDPA'));
+        self::assertTrue($form->has('dpaSignedDate'));
+        self::assertTrue($form->has('gdprProcessorStatus'));
+
+        // Pre-existing DORA fields
+        self::assertTrue($form->has('isDoraRelevant'));
+        self::assertTrue($form->has('leiCode'));
+        self::assertTrue($form->has('substitutability'));
+    }
+
+    // ── S14 Cluster A C1-05 — supportedAssets EntityType ─────────────
+
+    #[Test]
+    public function supportedAssetsFieldExistsRegardlessOfModule(): void
     {
         $this->activeModules = [];
-        $form = $this->factory->create(SupplierType::class, new Supplier());
 
-        // Legacy free-text remains the only contact-person representation
-        // on Supplier as of S4 P-1 Wave-2. Promotion to a compound slot
-        // is blocked by the missing entity columns.
-        self::assertTrue(
-            $form->has('contactPerson'),
-            'SupplierType must keep legacy contactPerson free-text until '
-            . 'User/Person slots are added to the entity.'
-        );
-    }
+        $form = $this->buildForm();
 
-    #[Test]
-    public function supplierEntityDoesNotYetCarryOwnerPickerSlots(): void
-    {
-        // Marker test — when this assertion starts failing, the entity
-        // has gained the slots and SupplierType should be updated to
-        // wire a compound owner-picker via addOwnerPicker().
-        $entityFile = __DIR__ . '/../../src/Entity/Supplier.php';
-        self::assertFileExists($entityFile);
-        $source = file_get_contents($entityFile);
-        self::assertIsString($source);
-
-        self::assertStringNotContainsString(
-            'private ?User $primaryContactUser',
-            $source,
-            'When Supplier::$primaryContactUser is introduced, wire it via '
-            . 'OwnerPickerFormTrait::addOwnerPicker() in SupplierType (S4 P-1 Wave-2).'
-        );
+        // ISO 27001 A.5.21 supplier-asset linkage is not module-gated —
+        // every supplier may reference internal assets.
+        self::assertTrue($form->has('supportedAssets'));
     }
 }

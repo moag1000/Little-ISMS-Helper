@@ -6,6 +6,9 @@ bc_plans:
   action:
     add_new: Add New BC Plan
     create_first: Create first BC plan
+    # S14 Cluster A — Quick-Create triggers in BC plan form
+    quick_create_crisis_team: Quick-create crisis team
+    new_business_process: Create new business process
   empty:
     title: No business continuity plans yet
     body: 'BC plans secure the recovery of critical business processes. For each process, document activation criteria, recovery procedures, team, and communication plan — required by ISO 22301 §8.4.'

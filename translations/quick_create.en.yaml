@@ -1,0 +1,23 @@
+quick_create:
+  cta: Quick create
+  hint:
+    missing_entry: 'Entry missing from the picker?'
+    missing_asset: 'Asset not created yet?'
+  modal:
+    title: Create new entry
+    subtitle: Name only — refine details later
+  field:
+    name: Name
+  placeholder:
+    name: 'e.g. CRM database, IT crisis team, Order-to-Cash'
+  help:
+    name: The new entry is created as a stub and immediately selectable in the parent field.
+  action:
+    create: Create
+    cancel: Cancel
+    close: Close
+  error:
+    name_required: Please enter a name.
+    network: Network error. Please retry.
+  toast:
+    success: 'Created: %label%'

@@ -10,6 +10,6 @@ src/Form/InterestedPartyType.php:63:contactPerson
 src/Form/InternalAuditType.php:154:leadAuditor
 src/Form/InternalAuditType.php:174:auditTeam
 src/Form/LocationType.php:106:country
-src/Form/SupplierType.php:63:contactPerson
-src/Form/SupplierType.php:326:countryOfHeadOffice
+src/Form/SupplierType.php:66:contactPerson
+src/Form/SupplierType.php:354:countryOfHeadOffice
 src/Form/TrainingType.php:139:participants

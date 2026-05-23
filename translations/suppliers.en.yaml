@@ -53,6 +53,7 @@ supplier:
         privacy: 'Privacy (GDPR Art. 28)'
         related_assets: 'Related Assets'
         related_risks: 'Related Risks'
+        linkage: 'Asset linkage'
     field:
         name: Name
         description: Description
@@ -111,6 +112,8 @@ supplier:
         lksg_risk_analysis_date: 'LkSG risk-analysis date'
         lksg_complaint_mechanism: 'Complaint mechanism'
         lksg_prevention_measures: 'Prevention and remediation measures'
+        # S14 Cluster A C1-05 — Asset linkage (ISO 27001 A.5.21)
+        supported_assets: 'Supported assets'
     lksg_risk:
         low: 'Low'
         medium: 'Medium'
@@ -178,6 +181,7 @@ supplier:
         lksg_risk_analysis_date: 'Date of the most recent documented LkSG risk analysis for this supplier.'
         lksg_complaint_mechanism: 'Complaint channel description or URL per LkSG § 8.'
         lksg_prevention_measures: 'Prevention and remediation measures (LkSG § 6/7); attach evidence as Documents.'
+        supported_assets: 'Which internal assets (data, systems, locations) does this supplier support? (ISO 27001 A.5.21)'
     placeholder:
         name: 'e.g. Acme IT Services Inc.'
         description: 'Describe the supplier and their services...'
