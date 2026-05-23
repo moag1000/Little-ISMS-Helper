@@ -91,10 +91,16 @@ change_request:
         verification_date: 'Datum der Verifikation'
         results: 'Ergebnisse und Resultate'
         clause_reference: 'Klauselreferenz'
+        related_finding: 'Verknüpfte Feststellung'
+        related_corrective_action: 'Verknüpfte Korrekturmaßnahme'
     placeholder:
         clause_reference: 'z.B. ISO 27001 §6.3, DORA Art. 6'
+        related_finding: '-- Feststellung wählen (optional) --'
+        related_corrective_action: '-- Korrekturmaßnahme wählen (optional) --'
     help:
         clause_reference: 'Optionales ISO 27001 / DORA / NIS2 Klausel-Tag für §6.3 geplante Änderungen oder §8.1 operative Maßnahmen-Differenzierung'
+        related_finding: 'ISO 27001 Cl. 10.1 — Lineage zur Feststellung, die diesen Change ausgelöst hat (optional, aber empfohlen für Audit-Trail).'
+        related_corrective_action: 'ISO 27001 Cl. 10.1 — Lineage zur Korrekturmaßnahme, die diesen Change als Umsetzungsbaustein nutzt (optional).'
     edit: Bearbeiten
     confirm:
         delete: Löschen

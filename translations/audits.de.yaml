@@ -368,6 +368,7 @@ corrective_action:
         verified_by: 'Wirksamkeit geprüft durch'
         verified_at: 'Wirksamkeitsprüfung am'
         previous_capa: 'Folge-CAPA zu unwirksamer Maßnahme'
+        related_controls: 'Betroffene Controls'
     placeholder:
         finding: '-- Feststellung auswählen --'
         responsible_person_user: '-- Benutzer auswählen --'
@@ -375,6 +376,7 @@ corrective_action:
     help:
         description: 'Konkrete Maßnahme zur Behebung der Abweichung'
         root_cause_analysis: 'Warum ist die Abweichung aufgetreten? (5-Why / Ishikawa / FMEA)'
+        related_controls: 'Eine Maßnahme kann mehrere ISO-27001-Controls adressieren (z.B. A.8.15 + A.8.16). Mehrfachauswahl möglich.'
         effectiveness_review_date: 'ISO 27001 10.1 fordert Wirksamkeitsbewertung nach Umsetzung'
         effectiveness_notes: 'Ergebnis der Wirksamkeitsprüfung — warum wirksam/unwirksam'
         effectiveness_evidence: 'Pflicht-Beleg (Re-Audit, Re-Test-Bericht, Evidenz-Dokument-ID) — wird beim Status "Wirksam/Unwirksam bestätigt" erzwungen.'
@@ -408,6 +410,10 @@ corrective_action:
             title: 'Maßnahme unwirksam — Folge-CAPA Pflicht'
             body: 'ISO 27001 Cl. 10.1 b: Bei unwirksamer Korrekturmaßnahme muss erneut bewertet und behandelt werden. Folge-CAPA mit Bezug zur ursprünglichen Maßnahme #%id% (%title%) anlegen.'
             cta: 'Folge-CAPA jetzt anlegen'
+        effectiveness_review_due:
+            title: 'Wirksamkeitsprüfung steht an'
+            body: 'ISO 27001 Cl. 10.1 d + Cl. 9.1.1: Die Wirksamkeitsprüfung für Maßnahme #%id% (%title%) ist für den %date% terminiert (in %daysUntil% Tagen). Bitte Wirksamkeitsbeleg dokumentieren und Status auf "Wirksam/Unwirksam bestätigt" setzen.'
+            cta: 'Wirksamkeitsprüfung durchführen'
     new:
         followup_banner:
             title: 'Folge-CAPA zu unwirksamer Maßnahme'
