@@ -26,6 +26,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_ca_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_ca_finding', columns: ['finding_id'])]
 #[ORM\Index(name: 'idx_ca_source_incident', columns: ['source_incident_id'])]
+#[ORM\Index(name: 'idx_ca_source_change_request', columns: ['source_change_request_id'])]
 #[ORM\Index(name: 'idx_ca_source_type', columns: ['source_type'])]
 #[ORM\Index(name: 'idx_ca_status', columns: ['status'])]
 class CorrectiveAction
@@ -80,6 +81,16 @@ class CorrectiveAction
     #[ORM\ManyToOne(targetEntity: Incident::class)]
     #[ORM\JoinColumn(name: 'source_incident_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?Incident $sourceIncident = null;
+
+    /**
+     * Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — ChangeRequest source link.
+     * Set when this CA was opened *because of* a routine ChangeRequest that
+     * surfaced a nonconformity. Inverse direction of ChangeRequest.relatedCorrectiveAction
+     * (which links operational executions back to a triggering CA).
+     */
+    #[ORM\ManyToOne(targetEntity: ChangeRequest::class)]
+    #[ORM\JoinColumn(name: 'source_change_request_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?ChangeRequest $sourceChangeRequest = null;
 
     /**
      * Junior-ISB-Audit-2026-05-22 C2-05 — Source / trigger type.
@@ -251,6 +262,19 @@ class CorrectiveAction
     public function setSourceType(string $sourceType): static
     {
         $this->sourceType = $sourceType;
+        return $this;
+    }
+
+    // Junior-ISB-Audit-2026-05-22 M-07 Phase-1
+    public function getSourceChangeRequest(): ?ChangeRequest
+    {
+        return $this->sourceChangeRequest;
+    }
+
+    // Junior-ISB-Audit-2026-05-22 M-07 Phase-1
+    public function setSourceChangeRequest(?ChangeRequest $changeRequest): static
+    {
+        $this->sourceChangeRequest = $changeRequest;
         return $this;
     }
 

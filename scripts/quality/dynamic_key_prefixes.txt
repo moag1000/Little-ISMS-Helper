@@ -67,6 +67,7 @@ consent.identifier_type	2
 consent.method	1
 consent.status	2
 control.status	2
+corrective_action.source_type
 corrective_action.status	3
 coverage.impact.help	1
 coverage.impact.title	1

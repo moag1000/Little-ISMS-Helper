@@ -390,10 +390,33 @@
                 </div>
             {% endif %}
 
+            {# Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — structured CAPA card (preferred display). #}
+            {% if linkedCorrectiveActions is defined and linkedCorrectiveActions|length > 0 %}
+                <div class="detail-section">
+                    <h3 class="h5">{{ 'incident.section.linked_corrective_actions'|trans({}, 'incident') }}</h3>
+                    <ul class="list-unstyled mb-0">
+                        {% for ca in linkedCorrectiveActions %}
+                            <li class="mb-2">
+                                <a href="{{ path('app_corrective_action_show', { id: ca.id }) }}">
+                                    <i class="fa-icon fa-icon--util-arrow-right me-1" aria-hidden="true"></i>
+                                    {{ ca.title }}
+                                </a>
+                                <span class="badge bg-light text-dark ms-1">{{ ('corrective_action.status.' ~ ca.status)|trans({}, 'audits') }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {# Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — freetext shown only as legacy alert (ADR 2026-05-23). #}
             {% if incident.correctiveActions %}
                 <div class="detail-section">
-                    <h3 class="h5">{{ 'incident.field.corrective_actions'|trans({}, 'incident') }}</h3>
-                    <p>{{ incident.correctiveActions }}</p>
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', title: 'incident.section.corrective_actions_legacy'|trans({}, 'incident') } } %}
+                        {% block alert_body %}
+                            <p class="mb-1">{{ incident.correctiveActions }}</p>
+                            <small class="text-muted">{{ 'incident.section.corrective_actions_legacy_hint'|trans({}, 'incident') }}</small>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             {% endif %}
 
