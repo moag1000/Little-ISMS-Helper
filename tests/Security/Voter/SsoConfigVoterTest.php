@@ -22,7 +22,7 @@ final class SsoConfigVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter  = new SsoConfigVoter();
+        $this->voter  = new SsoConfigVoter(VoterTestHelper::createRoleHierarchy());
         $this->tenant = $this->createMock(Tenant::class);
         $this->tenant->method('getId')->willReturn(1);
     }

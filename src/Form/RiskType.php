@@ -28,8 +28,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 final class RiskType extends AbstractType implements SectionMapInterface
 {
@@ -406,52 +404,15 @@ final class RiskType extends AbstractType implements SectionMapInterface
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        // Junior-ISB-Audit-2026-05-22 K-05 / M-02: Form-level Callback
+        // constraints removed — entity-level Assert\Callback methods
+        // validateOwnerEitherOr() + validateSubjectBound() on App\Entity\Risk
+        // now own these rules so both the form-submit path AND the
+        // API Platform write-paths (POST/PUT) hit the same gate.
         $resolver->setDefaults([
             'data_class' => Risk::class,
             'translation_domain' => 'risk',
-            'constraints' => [
-                new Callback([$this, 'validateRiskOwnerSlot']),
-                new Callback([$this, 'validateRiskSubjectSlot']),
-            ],
         ]);
-    }
-
-    public function validateRiskOwnerSlot(?Risk $entity, ExecutionContextInterface $context): void
-    {
-        if ($entity === null) {
-            return;
-        }
-        if ($entity->getRiskOwner() === null && $entity->getRiskOwnerPerson() === null) {
-            $context->buildViolation('risk.error.owner_required_user_or_person')
-                ->atPath('riskOwner')
-                ->addViolation();
-        }
-    }
-
-    /**
-     * ISO 27001 Cl. 6.1.2 c — risks MUST be tied to identifiable assets,
-     * persons, locations, suppliers, or business processes. A risk
-     * "in general" without subject is a textbook Major-NC at external
-     * audit: the auditor's first question is "which asset/process?" and
-     * "weiss nicht" wins them their finding.
-     *
-     * Junior-ISB-audit P0-02: the form previously let users save risks
-     * with no subject reference at all. This callback closes that hole.
-     */
-    public function validateRiskSubjectSlot(?Risk $entity, ExecutionContextInterface $context): void
-    {
-        if ($entity === null) {
-            return;
-        }
-        if ($entity->getAsset() === null
-            && $entity->getPerson() === null
-            && $entity->getLocation() === null
-            && $entity->getSupplier() === null
-        ) {
-            $context->buildViolation('risk.error.subject_required')
-                ->atPath('asset')
-                ->addViolation();
-        }
     }
 
     /**
@@ -497,6 +458,18 @@ final class RiskType extends AbstractType implements SectionMapInterface
                 'acceptanceApprovedAt',
                 'acceptanceJustification',
                 'acceptanceExpiryDate',
+            ],
+            // Junior-ISB-Audit-2026-05-22 K-06: decision-trail audit fields.
+            // ISO 27001 Cl. 6.1.2.d (likelihood/impact justifications) +
+            // Cl. 6.1.3 e + Cl. 8.3 (treatment decision rationale +
+            // approver + approval date). Previously living as orphan
+            // Sonstiges-leak — now grouped into a dedicated section.
+            'decision_trail' => [
+                'likelihoodJustification',
+                'impactJustification',
+                'decisionRationale',
+                'decisionApprovedByUser',
+                'decisionApprovalDate',
             ],
             // privacy module fields (DSGVO Art. 24/32/35 — conditional)
             'privacy' => [

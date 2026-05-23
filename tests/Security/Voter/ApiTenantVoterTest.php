@@ -28,7 +28,7 @@ class ApiTenantVoterTest extends TestCase
         $security->method('isGranted')->willReturnCallback(
             fn(string $role): bool => $role === 'ROLE_ADMIN' && $this->currentUserIsAdmin
         );
-        $this->voter = new ApiTenantVoter($security);
+        $this->voter = new ApiTenantVoter($security, VoterTestHelper::createRoleHierarchy());
     }
 
     private bool $currentUserIsAdmin = false;

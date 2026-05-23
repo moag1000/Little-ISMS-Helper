@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Authorization voter for Bsi2004ExerciseLog.
@@ -20,6 +21,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class Bsi2004ExerciseLogVoter extends Voter
 {
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
     public const string VIEW    = 'VIEW';
     public const string EDIT    = 'EDIT';
     public const string CONFIRM = 'CONFIRM';
@@ -41,7 +47,7 @@ final class Bsi2004ExerciseLogVoter extends Voter
         /** @var Bsi2004ExerciseLog $log */
         $log = $subject;
 
-        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+        if ($this->hasRole($user, 'ROLE_ADMIN')) {
             return true;
         }
 
@@ -62,6 +68,8 @@ final class Bsi2004ExerciseLogVoter extends Voter
 
     private function hasRole(User $user, string $role): bool
     {
-        return in_array($role, $user->getRoles(), true);
+        $reachable = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+
+        return in_array($role, $reachable, true);
     }
 }

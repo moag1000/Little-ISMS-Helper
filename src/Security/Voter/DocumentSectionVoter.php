@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * DocumentSectionVoter — Phase 4-C / Sprint W3-C "DPO Veto Mechanic".
@@ -31,6 +32,16 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 final class DocumentSectionVoter extends Voter
 {
     use HoldingTreeAccessTrait;
+
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy,
+    ) {
+    }
+
+    protected function getRoleHierarchy(): RoleHierarchyInterface
+    {
+        return $this->roleHierarchy;
+    }
 
     public const string VIEW    = 'DOCUMENT_SECTION_VIEW';
     public const string APPROVE = 'DOCUMENT_SECTION_APPROVE';
@@ -63,7 +74,7 @@ final class DocumentSectionVoter extends Voter
 
         // ROLE_SUPER_ADMIN bypasses every check — consistent with the
         // rest of the voter suite (PolicyWizardVoter, DocumentVoter, …).
-        if (in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true)) {
+        if ($this->hasAnyRole($user, ['ROLE_SUPER_ADMIN'])) {
             return true;
         }
 
@@ -136,7 +147,7 @@ final class DocumentSectionVoter extends Voter
      */
     private function hasAnyRole(User $user, array $roles): bool
     {
-        $userRoles = $user->getRoles();
+        $userRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
         foreach ($roles as $role) {
             if (in_array($role, $userRoles, true)) {
                 return true;

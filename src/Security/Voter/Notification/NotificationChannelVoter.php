@@ -10,6 +10,7 @@ use App\Service\ModuleConfigurationService;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Controls access to NotificationChannel entities.
@@ -26,6 +27,7 @@ final class NotificationChannelVoter extends Voter
 
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly RoleHierarchyInterface $roleHierarchy,
     ) {}
 
     protected function supports(string $attribute, mixed $subject): bool
@@ -49,8 +51,10 @@ final class NotificationChannelVoter extends Voter
             return false;
         }
 
+        $reachableRoles = $this->roleHierarchy->getReachableRoleNames($user->getRoles());
+
         // Admins bypass tenant check
-        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+        if (in_array('ROLE_ADMIN', $reachableRoles, true)) {
             return true;
         }
 
@@ -62,7 +66,7 @@ final class NotificationChannelVoter extends Voter
         return match ($attribute) {
             self::VIEW   => true,
             self::EDIT,
-            self::DELETE => in_array('ROLE_MANAGER', $user->getRoles(), true),
+            self::DELETE => in_array('ROLE_MANAGER', $reachableRoles, true),
             default      => false,
         };
     }

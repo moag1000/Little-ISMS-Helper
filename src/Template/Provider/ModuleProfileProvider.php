@@ -11,16 +11,20 @@ use App\Template\TemplateProviderInterface;
 /**
  * Industry / size profiles that map to a curated `active_modules` set.
  *
- * Foundation P-14. Four typical organisational shapes:
+ * Foundation P-14. Five typical organisational shapes:
  *  - `kmu`               — small/medium business
  *  - `konzern`           — group / holding
  *  - `verein`            — small association / not-for-profit
  *  - `finanzdienstleister` — financial services (BaFin/DORA/MaRisk)
+ *  - `automotive_supplier` — automotive supplier (TISAX/Prototype Protection)
  *
  * The entityClass is `Tenant::class` and `prefill['activeModules']` carries
  * the module-key list. The Apply-Controller has a dedicated branch that
  * passes this list to `ModuleConfigurationService::setActiveModules()` (or
  * the equivalent migration path) rather than creating a new entity row.
+ *
+ * Junior-ISB-Audit-2026-05-22 M-04: Auto-Zulieferer (automotive_supplier)
+ * added as 5th profile to address TISAX/Prototype-Protection scope.
  */
 final class ModuleProfileProvider implements TemplateProviderInterface
 {
@@ -112,6 +116,32 @@ final class ModuleProfileProvider implements TemplateProviderInterface
                     'quantitative_risk',
                     'eu_authority_reporting',
                     'notifications',
+                ],
+            ],
+            // Junior-ISB-Audit-2026-05-22 M-04: Automotive supplier profile.
+            // Driven by OEM-mandated TISAX assessment + Prototype-Protection
+            // requirements. Suppliers in this segment carry NIS2 / DORA exposure
+            // through their banking + IT-services value chain, but their core
+            // certification driver is TISAX.
+            'automotive_supplier' => [
+                'name_de' => 'Auto-Zulieferer (TISAX / Prototypenschutz)',
+                'name_en' => 'Automotive supplier (TISAX / Prototype Protection)',
+                'description_de' => 'Automotive-Zulieferer mit TISAX-Pflicht durch OEM. Aktiviert Standard-ISMS-Module plus TISAX, TISAX-ISA, Prototypenschutz und Lieferanten-Management.',
+                'description_en' => 'Automotive supplier with TISAX requirement from OEM. Activates standard ISMS modules plus TISAX, TISAX-ISA, prototype protection, and supplier management.',
+                'modules' => [
+                    'core',
+                    'assets',
+                    'risks',
+                    'controls',
+                    'incidents',
+                    'audits',
+                    'training',
+                    'documents',
+                    'suppliers',
+                    'privacy',
+                    'workflows',
+                    'tisax',
+                    'tisax_isa',
                 ],
             ],
         ];

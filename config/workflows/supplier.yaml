@@ -1,3 +1,10 @@
+# Junior-ISB-Audit-2026-05-22 K-04 — Wave Y.6 Supplier-Lifecycle (DORA Art. 28)
+#
+# Supplier state-machine. Foundation shipped in Sprint Y.5; K-04 closes the
+# remaining gap: `terminate_from_evaluation` now requires four-eyes approval
+# in line with DORA Art. 28 (early termination of an ICT third-party service
+# provider relationship — even pre-contract — is an audit-relevant decision
+# that the regulator expects to be dual-controlled).
 framework:
     workflows:
         supplier_lifecycle:
@@ -49,9 +56,14 @@ framework:
                         roles: [ROLE_CISO, ROLE_MANAGER]
                         four_eyes: true
                         reason_required: true
+                # K-04 (DORA Art. 28): even early termination during the
+                # evaluation phase must be dual-controlled — the decision to
+                # walk away from a vetted ICT-third-party-candidate is
+                # regulator-visible and must be auditable.
                 terminate_from_evaluation:
                     from: evaluation
                     to: terminated
                     metadata:
-                        roles: [ROLE_MANAGER]
+                        roles: [ROLE_CISO, ROLE_MANAGER]
+                        four_eyes: true
                         reason_required: true

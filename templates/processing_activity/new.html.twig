@@ -20,6 +20,35 @@
         badge: { icon: 'plus', label: '' }
     }) }}
 
+    {# Foundation P-14 — VVT Template Library (M-05). Lets the DPO start from
+       a curated GDPR Art. 30 starter VVT instead of a blank form. #}
+    {% set _system_templates = system_templates('App\\Entity\\ProcessingActivity') %}
+    {% if _system_templates|length > 0 %}
+        <div class="fa-template-cta my-3 p-3 border rounded bg-body-tertiary d-flex flex-wrap align-items-center gap-3">
+            <div class="flex-grow-1">
+                <div class="fw-semibold">
+                    <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i>
+                    {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
+                </div>
+                <div class="small text-body-secondary">
+                    {{ 'system_templates.cta.hint'|trans({}, 'system_templates') }}
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-primary"
+                    data-controller="fa-modal-dispatcher"
+                    data-action="click->fa-modal-dispatcher#open"
+                    data-fa-modal-id="systemTemplateModalVvtNew">
+                {{ 'system_templates.cta.button'|trans({}, 'system_templates') }}
+            </button>
+        </div>
+        {% include '_components/_system_template_selector.html.twig' with {
+            templates: _system_templates,
+            entity_class: 'App\\Entity\\ProcessingActivity',
+            redirect_to: 'app_processing_activity_index',
+            modal_id: 'systemTemplateModalVvtNew'
+        } %}
+    {% endif %}
+
     {{ form_start(form) }}
 
     {% include '_components/_auto_form.html.twig' with {

@@ -7,9 +7,13 @@ namespace App\Form;
 use App\Entity\Asset;
 use App\Entity\Control;
 use App\Entity\ProcessingActivity;
+use App\Entity\Supplier;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Form\Trait\OwnerPickerFormTrait;
+use App\Form\Type\JsonStructuredType;
+use App\Repository\SupplierRepository;
 use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -35,6 +39,7 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
 
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -396,6 +401,23 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'required' => true,
                 'choice_translation_domain' => 'privacy',
             ])
+            // Junior-ISB-Audit-2026-05-22 M-08: DSGVO Art. 26 Joint-Controller-Doku
+            // Joint controllers are typically EXTERNAL partner organisations
+            // (other legal entities the data is jointly controlled with), so a
+            // structured JSON list is the canonical shape — not an M2M to Tenant.
+            // Art. 26(1) requires the arrangement (responsibilities split), Art. 26(2)
+            // requires the essence to be made available to data subjects.
+            ->add('jointControllerDetails', JsonStructuredType::class, [
+                'label' => 'processing_activity.form.joint_controller_details',
+                'help' => 'processing_activity.help.joint_controller_details_json',
+                'required' => false,
+                'attr' => [
+                    'rows' => 6,
+                    'data-depends-on' => 'processing_activity_isJointController',
+                    'data-depends-on-value' => '1',
+                    'placeholder' => 'processing_activity.placeholder.joint_controller_details',
+                ],
+            ])
 
             // ============================================================================
             // Risk & DPIA (Art. 35)
@@ -528,6 +550,30 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
             ])
         ;
 
+        // Junior-ISB-Audit-2026-05-22 K-02: Art. 28 DSGVO Auftragsverarbeiter-Dokumentation
+        // M2M ProcessingActivity ↔ Supplier — exposes the existing entity relationship
+        // (src/Entity/ProcessingActivity.php::$processorSuppliers) so DSGVO Art. 30(1)(d)
+        // + Art. 28 documentation is fillable from the VVT form. Module-gated to `privacy`
+        // per CLAUDE.md "Module-Awareness" convention.
+        if ($this->isModuleActive('privacy')) {
+            $builder->add('processorSuppliers', EntityType::class, [
+                'label' => 'processing_activity.field.processor_suppliers',
+                'help' => 'processing_activity.help.processor_suppliers',
+                'class' => Supplier::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'by_reference' => false,
+                'required' => false,
+                'query_builder' => function (SupplierRepository $r) {
+                    return $r->createQueryBuilder('s')
+                        ->where('s.tenant = :tenant')
+                        ->setParameter('tenant', $this->tenantContext->getCurrentTenant())
+                        ->orderBy('s.name', 'ASC');
+                },
+                'attr' => ['data-controller' => 'tom-select'],
+            ]);
+        }
+
         // S4 P-1 Wave-2 — OwnerPicker rollout (P-1).
         // Contact-Person compound slot: contactPersonUser (User) +
         // contactPerson (Person) + contactDeputyPersons (Multi-Person).
@@ -628,7 +674,11 @@ final class ProcessingActivityType extends AbstractType implements SectionMapInt
                 'thirdCountries',
                 'transferSafeguards',
                 'involvesProcessors',
+                // Junior-ISB-Audit-2026-05-22 K-02: Art. 28 DSGVO Auftragsverarbeiter-Dokumentation
+                'processorSuppliers',
                 'isJointController',
+                // Junior-ISB-Audit-2026-05-22 M-08: DSGVO Art. 26 Joint-Controller-Doku
+                'jointControllerDetails',
             ],
             'retention' => [
                 'retentionPeriod',

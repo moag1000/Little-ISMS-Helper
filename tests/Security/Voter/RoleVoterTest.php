@@ -20,7 +20,7 @@ class RoleVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new RoleVoter();
+        $this->voter = new RoleVoter(VoterTestHelper::createRoleHierarchy());
     }
 
     private function createUser(array $roles = ['ROLE_USER'], bool $isActive = true, array $permissions = []): User

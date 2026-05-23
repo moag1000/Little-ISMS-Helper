@@ -347,6 +347,10 @@ class Incident
         $this->reportedByDeputyPersons = new ArrayCollection();
         $this->criticalServicesAffected = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+        // Junior-ISB-Audit-2026-05-22 K-01: SLA-Countdown anchor needs an unambiguous start time.
+        // GDPR Art. 33 (1) / NIS2 Art. 23 (4) 72h notification deadlines are measured from
+        // detectedAt; Doctrine never calls __construct on hydration, so editing an existing
+        // incident does NOT overwrite the persisted value.
         $this->detectedAt = new DateTimeImmutable();
     }
 

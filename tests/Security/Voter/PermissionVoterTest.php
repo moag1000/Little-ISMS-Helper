@@ -22,7 +22,7 @@ class PermissionVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new PermissionVoter();
+        $this->voter = new PermissionVoter(VoterTestHelper::createRoleHierarchy());
     }
 
     private function createUser(array $roles = ['ROLE_USER'], array $permissions = []): User
