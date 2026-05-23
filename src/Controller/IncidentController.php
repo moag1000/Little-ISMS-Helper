@@ -10,6 +10,7 @@ use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use Exception;
 use DateTime;
+use App\Entity\CorrectiveAction;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Form\IncidentType;
@@ -422,6 +423,13 @@ class IncidentController extends AbstractController
         // F16: structured risk cross-links
         $riskIncidentLinks = $this->riskIncidentLinkRepository->findByIncident($incident);
 
+        // Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — structured CAPAs auto-materialised
+        // from this Incident (per ADR 2026-05-23). Used to show "Legacy"-alert near the
+        // freetext field + link the analyst to the structured record.
+        $linkedCorrectiveActions = $this->entityManager
+            ->getRepository(CorrectiveAction::class)
+            ->findBy(['sourceIncident' => $incident], ['createdAt' => 'DESC']);
+
         return $this->render('incident/show.html.twig', [
             'incident' => $incident,
             'auditLogs' => $recentAuditLogs,
@@ -435,6 +443,8 @@ class IncidentController extends AbstractController
             'riskIncidentLinks' => $riskIncidentLinks,
             // V3 W3-Aurora: Comments thread
             'comments' => $comments,
+            // Junior-ISB-Audit-2026-05-22 M-07 Phase-1: structured CAPAs for this incident
+            'linkedCorrectiveActions' => $linkedCorrectiveActions,
         ]);
     }
     #[Route('/incident/{id}/edit', name: 'app_incident_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]

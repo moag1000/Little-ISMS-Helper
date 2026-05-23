@@ -406,6 +406,15 @@ corrective_action:
         verified_effective: 'Wirksam bestätigt'
         verified_ineffective: 'Unwirksam — neue Maßnahme nötig'
         cancelled: 'Abgebrochen'
+    # Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — CAPA-Welt source-type filter (ADR 2026-05-23).
+    source_type:
+        audit_finding: 'Aus Auditfeststellung'
+        incident: 'Aus Vorfall'
+        change_request: 'Aus Änderungsantrag'
+        manual: 'Manuell angelegt'
+    filter:
+        all: 'Alle'
+        source_type: 'Filter nach Quelle'
     section:
         description: 'Beschreibung & Ursachenanalyse'
         verification: 'Wirksamkeitsbewertung'

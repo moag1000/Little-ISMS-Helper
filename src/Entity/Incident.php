@@ -186,10 +186,28 @@ class Incident
     #[Groups(['incident:read', 'incident:write'])]
     private ?string $rootCause = null;
 
+    /**
+     * Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — Legacy freetext column.
+     *
+     * @deprecated since 2026-05-23 (ADR docs/decisions/2026-05-23-capa-canonical-process.md).
+     *             Structured corrective actions now live in {@see \App\Entity\CorrectiveAction}
+     *             (source_type = 'incident', sourceIncident = this). The freetext is
+     *             retained as the analyst's UX entry point and pre-populates the
+     *             auto-materialised CA via
+     *             {@see \App\Listener\AutoReactionCorrectiveActionListenerForIncident}.
+     *             Canonical reporting reads CorrectiveAction, not this column.
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
     private ?string $correctiveActions = null;
 
+    /**
+     * Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — Legacy freetext column.
+     *
+     * @deprecated since 2026-05-23 (ADR docs/decisions/2026-05-23-capa-canonical-process.md).
+     *             Preventive measures should be tracked as a CorrectiveAction with
+     *             actionType = 'preventive'. Retained for migration period only.
+     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
     private ?string $preventiveActions = null;

@@ -65,6 +65,10 @@ incident:
     affected_systems: Betroffene Systeme & Assets
     affected_systems_legacy: 'Legacy — betroffene Systeme (Freitext, veraltet)'
     affected_systems_legacy_hint: 'Veraltetes Freitextfeld aus Altbeständen. Pflege erfolgt jetzt strukturiert über die Asset-Verknüpfungen (ISO 27001 A.5.26 + DORA Art. 17).'
+    # Junior-ISB-Audit-2026-05-22 M-07 Phase-1 — CAPA-Welt freetext markers (ADR 2026-05-23).
+    linked_corrective_actions: 'Strukturierte Korrekturmaßnahmen'
+    corrective_actions_legacy: 'Legacy — Korrekturmaßnahmen (Freitext, veraltet)'
+    corrective_actions_legacy_hint: 'Veraltetes Freitextfeld. Strukturierte Erfassung erfolgt jetzt als Korrekturmaßnahme (ISO 27001 Cl. 10.1) — bei Vorfällen mit Schweregrad ≥ hoch und dokumentierter Ursache wird automatisch eine CAPA angelegt.'
     analysis: Analyse & Maßnahmen
     nis2_reporting: NIS2‑Meldung
     nis2_info: Aktivieren Sie diesen Abschnitt, wenn der Vorfall NIS2‑relevant ist.
