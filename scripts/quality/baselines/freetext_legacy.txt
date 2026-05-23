@@ -12,4 +12,4 @@ src/Form/InternalAuditType.php:193:auditTeam
 src/Form/LocationType.php:106:country
 src/Form/SupplierType.php:66:contactPerson
 src/Form/SupplierType.php:368:countryOfHeadOffice
-src/Form/TrainingType.php:139:participants
+src/Form/TrainingType.php:147:participants
