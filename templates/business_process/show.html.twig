@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 {% trans_default_domain 'business_process' %}
 
 {% block title %}{{ business_process.name }}{% endblock %}
@@ -33,6 +34,14 @@
             { label: 'business_process.action.bia_view'|trans({}, 'bcm'), variant: 'primary', icon: 'nav-bar-chart', href: path('app_business_process_bia', {'id': business_process.id}) },
             { label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'ui-edit', href: path('app_business_process_edit', {'id': business_process.id}) }
         ]
+    }) }}
+
+    {# 9001-bridge: Business-Process = Prozesslandkarte (9001 Cl. 4.4). P-12 show-page mirror of #614. #}
+    {{ _fa_norm_bridge.render({
+        from_norm: 'ISO 22301 8.3',
+        to_norm:   'ISO 9001 4.4 / 7.1',
+        bridge_text: ('iso_9001_bridge.business_process'|trans({}, 'business_process')),
+        prominence: 'subtle'
     }) }}
 
     {# Inline POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
