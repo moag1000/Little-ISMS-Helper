@@ -43,7 +43,12 @@ class MfaServiceTest extends TestCase
             $this->auditLogger,
             $this->logger,
             $this->mfaEncryptionService,
-            'Test ISMS'
+            'Test ISMS',
+            // Argon2 minimum-cost options — reduces backup-code hashing from
+            // ~125 ms/hash to ~0.5 ms/hash. Algorithm (Argon2id) is unchanged,
+            // so production code-path is still exercised. See
+            // config/packages/test/services.yaml for the container-side override.
+            ['memory_cost' => 1024, 'time_cost' => 1, 'threads' => 1],
         );
     }
 

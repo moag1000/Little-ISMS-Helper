@@ -27,6 +27,13 @@ final class MfaService
     private const int BACKUP_CODES_COUNT = 10;
     private const int BACKUP_CODE_LENGTH = 8; // 5 minutes
 
+    /**
+     * @param array<string, int> $passwordHashOptions Argon2 cost options passed to
+     *     {@see password_hash()}. Defaults to PHP's compile-time Argon2 defaults
+     *     (production-safe). Override in the test environment via
+     *     `config/packages/test/services.yaml` to skip the ~125 ms-per-hash cost
+     *     for backup-code hashing in {@see self::hashBackupCodes()}.
+     */
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly MfaTokenRepository $mfaTokenRepository,
@@ -34,6 +41,7 @@ final class MfaService
         private readonly LoggerInterface $logger,
         private readonly MfaEncryptionService $mfaEncryptionService,
         private readonly string $appName = 'Little ISMS Helper',
+        private readonly array $passwordHashOptions = [],
     ) {
     }
 
@@ -354,7 +362,12 @@ final class MfaService
      */
     private function hashBackupCodes(array $codes): array
     {
-        return array_map(fn($code): string => password_hash((string) $code, PASSWORD_ARGON2ID), $codes);
+        $options = $this->passwordHashOptions;
+
+        return array_map(
+            fn($code): string => password_hash((string) $code, PASSWORD_ARGON2ID, $options),
+            $codes,
+        );
     }
 
     /**

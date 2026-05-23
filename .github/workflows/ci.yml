@@ -58,7 +58,11 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           extensions: intl, pdo, pdo_mysql, gd, zip, opcache, mbstring, xml
-          coverage: xdebug
+          # pcov is ~10x faster than xdebug for line-coverage collection (only
+          # capability we need — coverage-clover output, no debugger / no
+          # step-through). Switching shaves several minutes off the test job's
+          # wall-clock without changing the resulting clover report shape.
+          coverage: pcov
           tools: composer:v2
 
       - name: Get Composer cache directory
