@@ -288,6 +288,7 @@ risk:
     decision_rationale: 'ISO 31000 §6.5.4 — Begründung für die getroffene Risikobehandlungsentscheidung (Mitigieren / Akzeptieren / Übertragen / Vermeiden).'
     decision_approved_by_user: 'Person, die die Risikobehandlungsentscheidung formal genehmigt hat (ROLE_MANAGER oder höher erforderlich).'
     decision_approval_date: Datum der formalen Genehmigung der Risikobehandlungsentscheidung.
+    iso27005: 'ISO 27005 — Information Security Risk Management. Definiert Risiko-Identifikation, -Bewertung, -Behandlung als Vertiefung zu ISO 27001 Kl. 6.1.2 / 6.1.3.'
   tooltip:
     probability: '<strong>🎲 Wie wahrscheinlich ist der Eintritt?</strong><br><em>Frage:
       Wie oft könnte dieses Risiko eintreten?</em><br><br><strong>1</strong> = Sehr

@@ -32,6 +32,14 @@
     prominence: 'subtle'
 }) }}
 
+{# ISO 27005 reference — Junior-ISB-Audit-2026-05-22 item 5.5. Always visible. #}
+{{ _fa_norm_bridge.render({
+    from_norm: 'ISO 27001 6.1.2',
+    to_norm:   'ISO 27005',
+    bridge_text: ('risk.help.iso27005'|trans({}, 'risk')),
+    prominence: 'always_visible'
+}) }}
+
 {{ form_start(form) }}
 
 {# Build sections map dynamically — GDPR section only when 'privacy' module is active (T31/S2-P6). #}
