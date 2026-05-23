@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'risk' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_norm_bridge.html.twig' as _fa_norm_bridge %}
 
 {% block title %}{{ 'risk.edit'|trans({}, 'risk') }} - {{ parent() }}{% endblock %}
 
@@ -22,6 +23,14 @@
     actions: [
         { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_show', {id: risk.id}), variant: 'secondary', icon: 'util-arrow-left' }
     ]
+}) }}
+
+{# ISO 27005 reference — Junior-ISB-Audit-2026-05-22 item 5.5. Always visible. #}
+{{ _fa_norm_bridge.render({
+    from_norm: 'ISO 27001 6.1.2',
+    to_norm:   'ISO 27005',
+    bridge_text: ('risk.help.iso27005'|trans({}, 'risk')),
+    prominence: 'always_visible'
 }) }}
 
 {{ form_start(form) }}

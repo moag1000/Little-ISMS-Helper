@@ -32,6 +32,14 @@
         prominence: 'subtle'
     }) }}
 
+    {# ISO 27001 A.5.30 ICT-Continuity reference — Junior-ISB-Audit-2026-05-22 item 4.8. Always visible. #}
+    {{ _fa_norm_bridge.render({
+        from_norm: 'ISO 22301 8.3',
+        to_norm:   'ISO 27001 A.5.30',
+        bridge_text: ('business_process.help.a5_30_ict'|trans({}, 'business_process')),
+        prominence: 'always_visible'
+    }) }}
+
     {#
         Junior-ISB-Audit-2026-05-22 S14 #17: BP-Tooltips Drawer Pattern.
         Wrap form + drawer in `data-controller="help-drawer"` scope so the
