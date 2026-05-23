@@ -1329,6 +1329,32 @@ class Risk
         }
     }
 
+    // Junior-ISB-Audit-2026-05-22 S-02: ISO 27001 Cl. 6.1.3 a-b Treatment-Plan-Pflicht
+    /**
+     * Once a Risk has left the initial draft-like state (Identified), the
+     * organisation is required by ISO 27001 Cl. 6.1.3 a-b to have selected
+     * a treatment option (mitigate / transfer / accept / avoid). Allowing a
+     * Risk to sit in `assessed`/`in_treatment`/`treated`/`monitored`/`closed`/
+     * `accepted` without a strategy is a textbook Major-NC at external audit
+     * — the auditor cannot see how the organisation decided to handle the
+     * risk. Draft / Identified Risks may still leave the field empty so
+     * scoping work is not blocked.
+     */
+    #[Assert\Callback]
+    public function validateTreatmentStrategyRequired(ExecutionContextInterface $context): void
+    {
+        // Identified is the draft-like initial state — strategy may be empty.
+        if ($this->status === null || $this->status === RiskStatus::Identified) {
+            return;
+        }
+
+        if ($this->treatmentStrategy === null) {
+            $context->buildViolation('risk.validator.treatment_strategy_required')
+                ->atPath('treatmentStrategy')
+                ->addViolation();
+        }
+    }
+
     // -------------------------------------------------------------------------
     // Justification & Decision fields (T31.1.2)
     // -------------------------------------------------------------------------
