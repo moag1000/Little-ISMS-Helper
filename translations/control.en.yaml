@@ -132,6 +132,7 @@ control:
   bulk:
     title: 'Bulk applicability (change several controls at once)'
     hint: 'Power-user tool for CM — enter control IDs, set applicable/N/A, optional reason.'
+    power_user_badge: 'Power-user'
     ids: 'Control IDs (comma separated)'
     status: 'Status'
     applicable: 'Applicable'
