@@ -78,6 +78,7 @@ training:
     completion_date: Completion Date
     trainer_legacy: Trainer (free text, legacy)
     program_type: Programme Classification (§7.3)
+    recurrence_months: 'Recurrence cadence (months)'
   new_help: Plan a new training and inform the target audience in time.
   edit_help: Edit details, schedule or target audience of this training.
   participants_count: Participants
@@ -96,6 +97,7 @@ training:
     trainer_user: -- Select trainer --
     trainer_person: '-- Person from master data --'
     program_type: '-- Select programme type --'
+    recurrence_months: 'e.g. 12 for annually'
   help:
     duration: Duration in minutes (15-480)
     participants: Participant names (one per line or comma-separated)
@@ -110,6 +112,7 @@ training:
     trainer_person: 'Person without system login as trainer. Order: User > Person > legacy text.'
     trainer_deputy_persons: 'Additional persons with deputy role for the training.'
     program_type: 'Programme classification per ISO 27001 §7.3 Awareness – used for reporting and analysis.'
+    recurrence_months: 'ISO 27001 A.6.3 recommends annual awareness training. When set, the ISMS-Helper auto-sends reminders via the `app:training-send-reminders` cron. Leave empty for one-off events.'
   program_type:
     awareness: General Awareness
     role_specific: Role-Specific

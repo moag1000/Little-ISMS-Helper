@@ -192,6 +192,69 @@ class AutoReactionAcknowledgementCampaignListenerTest extends TestCase
         }
     }
 
+    #[Test]
+    public function audienceCollectionRestrictsCampaignFanOut(): void
+    {
+        // Junior-ISB-Audit C3-03 (S14, 2026-05-23) — ISO 27001 Cl. 7.3 + A.6.3:
+        // when the document carries an explicit `acknowledgementAudience`
+        // selection the campaign restricts to that list. The legacy
+        // tenant-wide active-user query MUST NOT be executed (regression
+        // guard against the previous "fan-out to everyone" behaviour).
+        $this->reactions->method('isEnabled')->willReturn(true);
+
+        $tenant = $this->createTenant(7);
+        $document = new Document();
+        $document->setTenant($tenant);
+        $document->setStatus('approved');
+        $document->setRequiresAcknowledgement(true);
+        $document->setVersion('1.0');
+
+        $u1 = $this->makeUser(101);
+        $u1->setTenant($tenant);
+        $u1->setIsActive(true);
+        $u2 = $this->makeUser(102);
+        $u2->setTenant($tenant);
+        $u2->setIsActive(true);
+        // Add only u1 to the audience — u2 must be skipped.
+        $document->addAcknowledgementAudience($u1);
+
+        $ackRepo = $this->createMock(PolicyAcknowledgementRepository::class);
+        $ackRepo->method('findOneFor')->willReturn(null);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $userRepoSentinel = false;
+        $em->method('getRepository')->willReturnCallback(static function (string $class) use ($ackRepo, &$userRepoSentinel) {
+            if ($class === User::class) {
+                $userRepoSentinel = true;
+                throw new \RuntimeException(
+                    'Listener fell back to tenant-wide user query despite explicit audience'
+                );
+            }
+            return match ($class) {
+                PolicyAcknowledgement::class => $ackRepo,
+                default => null,
+            };
+        });
+
+        $persisted = [];
+        $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
+
+        $args = $this->createPostUpdateArgs($document, $em);
+        $this->listener->postUpdate($document, $args);
+
+        $this->assertFalse(
+            $userRepoSentinel,
+            'Listener must NOT query User repo when explicit audience is present',
+        );
+
+        $ackRows = array_values(array_filter(
+            $persisted,
+            static fn($e) => $e instanceof PolicyAcknowledgement,
+        ));
+        $this->assertCount(1, $ackRows, 'One pending acknowledgement per audience user');
+        $this->assertSame($u1, $ackRows[0]->getUser());
+    }
+
     private function createTenant(int $id): Tenant
     {
         $tenant = new Tenant();

@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Document;
+use App\Entity\User;
 use App\Enum\DocumentStatus;
 use App\Form\SectionMapInterface;
 use App\Form\Trait\ModuleAwareFormTrait;
 use App\Repository\SystemSettingsRepository;
 use App\Service\ModuleConfigurationService;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -33,7 +35,14 @@ final class DocumentType extends AbstractType implements SectionMapInterface
         return [
             'overview'        => ['originalFilename', 'description', 'category', 'status'],
             'classification'  => ['tisaxInformationClassification'],
-            'lifecycle'       => ['version', 'reviewIntervalMonths', 'requiresAcknowledgement'],
+            'lifecycle'       => [
+                'version',
+                'reviewIntervalMonths',
+                'requiresAcknowledgement',
+                // Junior-ISB-Audit C3-03 (S14, 2026-05-23) — ISO 27001 Cl. 7.3 + A.6.3
+                // audience-picker that follows the requiresAcknowledgement toggle.
+                'acknowledgementAudience',
+            ],
             'ownership'       => ['inheritable', 'overrideAllowed'],
             'content'         => ['file', 'policyBody'],
         ];
@@ -133,18 +142,55 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                 'label' => 'document.field.requires_acknowledgement',
                 'help' => 'document.help.requires_acknowledgement',
                 'required' => false,
+                'attr' => [
+                    // Junior-ISB-Audit C3-03 — explicit ID so the Stimulus
+                    // conditional-fields controller can target the
+                    // acknowledgementAudience picker via data-depends-on.
+                    'id' => 'document_requiresAcknowledgement',
+                ],
+            ])
+            // Junior-ISB-Audit C3-03 (S14, 2026-05-23) — ISO 27001 Cl. 7.3
+            // (Awareness) + A.6.3 (Awareness, education and training):
+            // when a document requires user acknowledgement the audience
+            // must be auditable. Empty selection preserves legacy fan-out
+            // (every active tenant user). Hidden via Stimulus
+            // conditional-fields controller when
+            // `requiresAcknowledgement = false`.
+            ->add('acknowledgementAudience', EntityType::class, [
+                'label' => 'document.field.acknowledgement_audience',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'by_reference' => false,
+                'help' => 'document.help.acknowledgement_audience',
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                    'data-depends-on' => 'document_requiresAcknowledgement',
+                ],
             ])
             // V3 W2-LB-8 — Review-cycle cadence. Used by
             // DocumentApprovalListener to populate nextReviewDate
             // when the document is approved.
+            //
+            // Junior-ISB-Audit C3-04 (S14, 2026-05-23) — explicit default
+            // 12 months when the entity has no value (new documents).
+            // ISO 27001 Cl. 7.5.3 expects documented information to be
+            // reviewed at a defined cadence; "annual" is the published
+            // industry baseline.
             ->add('reviewIntervalMonths', IntegerType::class, [
                 'label' => 'document.field.review_interval_months',
                 'required' => false,
                 'help' => 'document.help.review_interval_months',
+                // Symfony coerces this scalar through the IntegerType
+                // DataTransformer; the setter normalises (max(1, ...)).
+                'empty_data' => '12',
                 'attr' => [
                     'min' => 1,
                     'max' => 60,
                     'step' => 1,
+                    'placeholder' => '12',
                 ],
             ])
             // Phase 9.P2.1 — holding policy inheritance flags. Only

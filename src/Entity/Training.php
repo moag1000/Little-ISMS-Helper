@@ -76,8 +76,8 @@ class Training
 
     #[ORM\Column(length: 255)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\NotBlank(message: 'training.validation.title_required')]
-    #[Assert\Length(max: 255, maxMessage: 'training.validation.title_max_length')]
+    #[Assert\NotBlank(message: 'Training title is required')]
+    #[Assert\Length(max: 255, maxMessage: 'Title cannot exceed { limit } characters')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -86,23 +86,23 @@ class Training
 
     #[ORM\Column(length: 100)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\NotBlank(message: 'training.validation.training_type_required')]
-    #[Assert\Length(max: 100, maxMessage: 'training.validation.training_type_max_length')]
+    #[Assert\NotBlank(message: 'Training type is required')]
+    #[Assert\Length(max: 100, maxMessage: 'Training type cannot exceed { limit } characters')]
     private ?string $trainingType = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\NotNull(message: 'training.validation.scheduled_date_required')]
+    #[Assert\NotNull(message: 'Scheduled date is required')]
     private ?DateTimeInterface $scheduledDate = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\Positive(message: 'training.validation.duration_positive')]
+    #[Assert\Positive(message: 'Duration must be a positive number')]
     private ?int $durationMinutes = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\Length(max: 100, maxMessage: 'training.validation.trainer_max_length')]
+    #[Assert\Length(max: 100, maxMessage: 'Trainer name cannot exceed { limit } characters')]
     private ?string $trainer = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -115,14 +115,14 @@ class Training
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\PositiveOrZero(message: 'training.validation.attendee_count_positive')]
+    #[Assert\PositiveOrZero(message: 'Attendee count must be zero or positive')]
     private ?int $attendeeCount = 0;
 
     #[ORM\Column(length: 50, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
     #[Assert\Choice(
         choices: ['in_person', 'online_live', 'e_learning', 'hybrid', 'workshop'],
-        message: 'training.validation.delivery_method_invalid'
+        message: 'Delivery method must be one of: { choices }'
     )]
     private ?string $deliveryMethod = null;
 
@@ -132,10 +132,10 @@ class Training
 
     #[ORM\Column(length: 50)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\NotBlank(message: 'training.validation.status_required')]
+    #[Assert\NotBlank(message: 'Status is required')]
     #[Assert\Choice(
         choices: ['planned', 'scheduled', 'in_progress', 'completed', 'cancelled'],
-        message: 'training.validation.status_invalid'
+        message: 'Status must be one of: { choices }'
     )]
     private ?string $status = 'planned';
 
@@ -194,6 +194,34 @@ class Training
     #[ORM\Column(length: 50, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
     private ?string $programType = null;
+
+    /**
+     * Junior-ISB-Audit C3-02 (S14, 2026-05-23) — Awareness-Recurrence.
+     *
+     * ISO 27001 A.6.3 expects awareness training to recur on a defined
+     * cadence (typically annually). This integer holds the cadence in
+     * months. NULL disables the recurrence/reminder cron for this
+     * training (one-off events). Typical values: 12 (annual), 6
+     * (semi-annual), 3 (quarterly). The cron command
+     * `app:training-send-reminders` reads this field together with
+     * {@see $lastReminderSentAt} to decide when to re-fire reminders.
+     */
+    #[ORM\Column(name: 'recurrence_months', type: Types::INTEGER, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
+    private ?int $recurrenceMonths = null;
+
+    /**
+     * Junior-ISB-Audit C3-02 (S14, 2026-05-23) — last reminder timestamp.
+     *
+     * Updated by `app:training-send-reminders` on every successful run.
+     * The cron computes `lastReminderSentAt + recurrenceMonths` and re-
+     * fires reminders once that point lies in the past. NULL means
+     * "no reminder ever sent" — the cron then fires immediately on the
+     * next run (subject to recurrenceMonths being set).
+     */
+    #[ORM\Column(name: 'last_reminder_sent_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['training:read'])]
+    private ?DateTimeInterface $lastReminderSentAt = null;
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -713,5 +741,32 @@ public function __construct()
     public function getLockVersion(): int
     {
         return $this->lockVersion;
+    }
+
+    // ── C3-02 (S14 Cluster C) — Recurrence + reminder timestamp ────────
+
+    public function getRecurrenceMonths(): ?int
+    {
+        return $this->recurrenceMonths;
+    }
+
+    public function setRecurrenceMonths(?int $recurrenceMonths): static
+    {
+        if ($recurrenceMonths !== null && $recurrenceMonths < 1) {
+            $recurrenceMonths = null;
+        }
+        $this->recurrenceMonths = $recurrenceMonths;
+        return $this;
+    }
+
+    public function getLastReminderSentAt(): ?DateTimeInterface
+    {
+        return $this->lastReminderSentAt;
+    }
+
+    public function setLastReminderSentAt(?DateTimeInterface $lastReminderSentAt): static
+    {
+        $this->lastReminderSentAt = $lastReminderSentAt;
+        return $this;
     }
 }
