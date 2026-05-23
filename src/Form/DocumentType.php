@@ -202,27 +202,33 @@ final class DocumentType extends AbstractType implements SectionMapInterface
                 ],
             ])
             // Phase 9.P2.1 — holding policy inheritance flags. Only
-            // meaningful on a holding tenant; standalone tenants can
-            // leave both at default.
+            // meaningful on a holding tenant; standalone tenants don't see
+            // them at all (Junior-ISB-Audit T8.7 — gating instead of
+            // perma-visible + perma-default).
             //
-            // TODO(S2-P6 module-key): no dedicated 'holding' module exists in
-            // config/modules.yaml today — the Holding-CISO concept is wired
-            // through tenant.parentTenantId + ROLE_GROUP_CISO rather than a
-            // feature-module toggle. Once a 'holding' module is registered
-            // (S2-A scope), wrap these two fields in
-            // $this->isModuleActive('holding') alongside tisaxInformationClassification
-            // below. Until then they stay visible on every tenant — harmless
-            // because standalone tenants just leave the defaults.
-            ->add('inheritable', CheckboxType::class, [
-                'label' => 'document.field.inheritable',
-                'help' => 'document.help.inheritable',
-                'required' => false,
-            ])
-            ->add('overrideAllowed', CheckboxType::class, [
-                'label' => 'document.field.override_allowed',
-                'help' => 'document.help.override_allowed',
-                'required' => false,
-            ])
+            // No 'holding' module exists in config/modules.yaml — the
+            // Holding-CISO concept is wired through tenant.parentTenantId +
+            // ROLE_GROUP_CISO. Gate on the tenant graph itself: a tenant
+            // with subsidiaries OR a parent is part of a corporate structure
+            // and the inheritance flags become meaningful. Single-tenant
+            // installs see neither field.
+        ;
+        $currentTenant = $this->tenantContext->getCurrentTenant();
+        $isCorporate = $currentTenant !== null && $currentTenant->isPartOfCorporateStructure();
+        if ($isCorporate) {
+            $builder
+                ->add('inheritable', CheckboxType::class, [
+                    'label' => 'document.field.inheritable',
+                    'help' => 'document.help.inheritable',
+                    'required' => false,
+                ])
+                ->add('overrideAllowed', CheckboxType::class, [
+                    'label' => 'document.field.override_allowed',
+                    'help' => 'document.help.override_allowed',
+                    'required' => false,
+                ]);
+        }
+        $builder
             ->add('file', FileType::class, [
                 'label' => 'document.field.file',
                 'mapped' => false, // File upload is handled separately
