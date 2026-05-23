@@ -416,3 +416,16 @@ alva_hint:
             title: 'Lifecycle transitions stalled'
             body: '%count% document(s) have been stuck in a non-terminal status (draft, in review, etc.) for over %days% days. Please review and advance to the next step.'
             action: 'View documents'
+    # P-19 — Form-Step-Inline-Hint pattern. Inline hints that appear WHILE
+    # the user is filling out a form (before save) — anchored next to the
+    # triggering field. No 72-h SLA, no tier 1, no dismissal persistence:
+    # these are pure "this is what saving will do" heads-ups.
+    form:
+        incident_data_breach:
+            title: 'Data-breach record will be auto-created on save'
+            body: 'Saving this incident will auto-create a DataBreach record prefilled from these fields. The GDPR Art. 33 72-hour countdown starts at the detection timestamp — plan supervisory-authority notification and data-subject communication early.'
+            action: 'How the 72-hour clock works'
+        risk_critical_severity:
+            title: 'Critical risk (score %score%) — verify board approval'
+            body: 'This risk reaches a critical score of %score%. ISO 27001 Cl. 5.3 + 6.1.3 f requires a Risk Owner with sufficient decision authority — for critical risks typically C-level / board (ROLE_CISO). Plan owner assignment and treatment decision accordingly.'
+            action: 'Open Risk-Owner convention'
