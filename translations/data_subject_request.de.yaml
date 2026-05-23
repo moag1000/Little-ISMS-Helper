@@ -176,6 +176,7 @@ dsr:
 
     # Flash-Meldungen
     flash:
+        invalid_csrf: "Ungültiges CSRF-Token."
         created: "Betroffenenanfrage erfolgreich erstellt."
         updated: "Betroffenenanfrage erfolgreich aktualisiert."
         completed: "Betroffenenanfrage als abgeschlossen markiert."

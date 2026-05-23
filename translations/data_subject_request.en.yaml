@@ -176,6 +176,7 @@ dsr:
 
     # Flash messages
     flash:
+        invalid_csrf: "Invalid CSRF token."
         created: "Data subject request created successfully."
         updated: "Data subject request updated successfully."
         completed: "Data subject request marked as completed."

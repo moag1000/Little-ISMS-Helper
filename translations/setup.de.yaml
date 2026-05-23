@@ -24,6 +24,8 @@ setup:
             db_test: 'Alva testet die Datenbank-Verbindung – einen Moment bitte.'
             admin: 'Alva legt den Admin-Benutzer an – einen Moment bitte.'
             frameworks: 'Alva richtet die Compliance-Frameworks ein – kann einige Sekunden dauern.'
+        success:
+            base_data: 'Stammdaten erfolgreich importiert.'
 
     # Index/Landing Page
     already_complete:

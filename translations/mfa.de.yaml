@@ -11,6 +11,12 @@ mfa:
     token_type_label: Token-Typ
     token:
         primary: 'Primärer Token'
+        success:
+            backup_regenerated: 'Backup-Codes erfolgreich neu generiert.'
+            disabled: 'MFA-Token erfolgreich deaktiviert.'
+            deleted: 'MFA-Token erfolgreich gelöscht.'
+        error:
+            invalid_csrf: 'Ungültiges CSRF-Token.'
     device_name: Gerätename
     enrolled_at: 'Registriert am'
     last_used: 'Zuletzt verwendet'

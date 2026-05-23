@@ -1,4 +1,26 @@
 admin:
+    industry_preset:
+        error:
+            not_found: 'Preset not found.'
+            invalid_csrf: 'Invalid CSRF token.'
+            tenant_required: 'Tenant context required.'
+    module:
+        error:
+            invalid_csrf: 'Invalid CSRF token.'
+    backup:
+        success:
+            uploaded: 'Backup file uploaded successfully: %filename%'
+        error:
+            no_file_uploaded: 'No file uploaded.'
+            invalid_file_format: 'Invalid file format. Only .json, .gz or .zip files are allowed.'
+            upload_failed: 'File upload failed: %message%'
+            no_import_data: 'No import data found.'
+    sso_provider:
+        success:
+            deleted: 'SSO provider deleted.'
+            role_mappings_saved: 'Role mappings saved.'
+        error:
+            discovery_failed: 'Discovery failed: %message%'
     title: Administration
     cancel: 'Cancel'
     tenant_management:
@@ -206,6 +228,12 @@ admin:
             view_all: 'View all'
     licensing:
         attributions_provided: 'Attributions Provided'
+        warning:
+            report_not_found: 'License report not found. Please generate it using the button below.'
+        success:
+            report_generated: 'License report generated successfully.'
+        error:
+            report_generation_failed: 'License report generation failed.'
     data_export:
         title: 'Data Export'
         format: 'Export Format'

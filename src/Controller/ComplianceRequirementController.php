@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -25,10 +26,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted('ROLE_USER')]
 class ComplianceRequirementController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
@@ -39,7 +43,18 @@ class ComplianceRequirementController extends AbstractController
         private readonly MrisMaturityService $mrisMaturityService,
         private readonly UserRepository $userRepository,
         private readonly PersonRepository $personRepository,
+        private readonly TranslatorInterface $translator,
     ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'compliance';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
 
     #[Route('/compliance/requirement', name: 'app_compliance_requirement_index', methods: ['GET'])]
     public function index(Request $request): Response
@@ -119,7 +134,7 @@ class ComplianceRequirementController extends AbstractController
             $this->entityManager->persist($complianceRequirement);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Compliance requirement created successfully.');
+            $this->flashSuccess('compliance.requirement.success.created');
 
             return $this->redirectToRoute('app_compliance_requirement_show', [
                 'id' => $complianceRequirement->getId()
@@ -198,11 +213,11 @@ class ComplianceRequirementController extends AbstractController
     public function setMrisMaturity(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
         if (!$this->isCsrfTokenValid('mris_maturity_' . $complianceRequirement->getId(), (string) $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('compliance.flash.error.invalid_csrf');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
         if ($complianceRequirement->getFramework()?->getCode() !== 'MRIS-v1.5') {
-            $this->addFlash('error', 'Reifegrad ist nur für MRIS-MHC-Requirements verfügbar.');
+            $this->flashError('compliance.requirement.error.mris_only');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
 
@@ -214,7 +229,7 @@ class ComplianceRequirementController extends AbstractController
         try {
             $this->mrisMaturityService->setTarget($complianceRequirement, $target);
             $this->mrisMaturityService->setCurrent($complianceRequirement, $current);
-            $this->addFlash('success', 'MRIS-Reifegrad gespeichert.');
+            $this->flashSuccess('compliance.requirement.success.mris_saved');
         } catch (\DomainException $e) {
             $this->addFlash('error', $e->getMessage());
         }
@@ -233,7 +248,7 @@ class ComplianceRequirementController extends AbstractController
             $complianceRequirement->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Compliance requirement updated successfully.');
+            $this->flashSuccess('compliance.requirement.success.updated');
 
             return $this->redirectToRoute('app_compliance_requirement_show', [
                 'id' => $complianceRequirement->getId()
@@ -256,7 +271,7 @@ class ComplianceRequirementController extends AbstractController
             $this->entityManager->remove($complianceRequirement);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Compliance requirement deleted successfully.');
+            $this->flashSuccess('compliance.requirement.success.deleted');
 
             if ($frameworkId) {
                 return $this->redirectToRoute('app_compliance_framework', ['id' => $frameworkId]);
@@ -273,19 +288,19 @@ class ComplianceRequirementController extends AbstractController
     public function quickUpdate(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
         if (!$this->isCsrfTokenValid('quick-update'.$complianceRequirement->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->flashError('compliance.flash.error.invalid_csrf');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
-            $this->addFlash('error', 'No tenant assigned to user. Please contact administrator.');
+            $this->flashError('compliance.requirement.error.no_tenant');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
 
         // SUPER_ADMIN without tenant cannot update fulfillment
         if (!$tenant instanceof Tenant) {
-            $this->addFlash('error', 'Cannot update fulfillment without tenant assignment.');
+            $this->flashError('compliance.requirement.error.fulfillment_no_tenant');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
 
@@ -294,7 +309,7 @@ class ComplianceRequirementController extends AbstractController
 
         // Check if user can edit (not inherited)
         if (!$this->complianceRequirementFulfillmentService->canEditFulfillment($fulfillment, $tenant)) {
-            $this->addFlash('error', 'Cannot edit inherited fulfillment from parent tenant.');
+            $this->flashError('compliance.requirement.error.inherited_fulfillment_readonly');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
 
@@ -366,7 +381,7 @@ class ComplianceRequirementController extends AbstractController
 
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Requirement fulfillment updated successfully for your tenant.');
+        $this->flashSuccess('compliance.requirement.success.fulfillment_updated');
 
         return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
     }

@@ -231,7 +231,7 @@ class ComplianceMappingController extends AbstractController
             $this->entityManager->persist($complianceMapping);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Compliance mapping created successfully.');
+            $this->addFlash('success', $this->translator?->trans('compliance.mapping.success.created', [], 'compliance') ?? 'compliance.mapping.success.created');
 
             return $this->redirectToRoute('app_compliance_mapping_show', [
                 'id' => $complianceMapping->getId()
@@ -267,7 +267,7 @@ class ComplianceMappingController extends AbstractController
             $complianceMapping->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Compliance mapping updated successfully.');
+            $this->addFlash('success', $this->translator?->trans('compliance.mapping.success.updated', [], 'compliance') ?? 'compliance.mapping.success.updated');
 
             return $this->redirectToRoute('app_compliance_mapping_show', [
                 'id' => $complianceMapping->getId()
@@ -288,7 +288,7 @@ class ComplianceMappingController extends AbstractController
             $this->entityManager->remove($complianceMapping);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Compliance mapping deleted successfully.');
+            $this->addFlash('success', $this->translator?->trans('compliance.mapping.success.deleted', [], 'compliance') ?? 'compliance.mapping.success.deleted');
         }
 
         return $this->redirectToRoute('app_compliance_mapping_index');
@@ -299,7 +299,7 @@ class ComplianceMappingController extends AbstractController
     public function analyze(Request $request, ComplianceMapping $complianceMapping): Response
     {
         if (!$this->isCsrfTokenValid('analyze'.$complianceMapping->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
+            $this->addFlash('error', $this->translator?->trans('compliance.flash.error.invalid_csrf', [], 'compliance') ?? 'compliance.flash.error.invalid_csrf');
             return $this->redirectToRoute('app_compliance_mapping_show', ['id' => $complianceMapping->getId()]);
         }
 
@@ -325,7 +325,7 @@ class ComplianceMappingController extends AbstractController
 
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Mapping analysis completed successfully.');
+        $this->addFlash('success', $this->translator?->trans('compliance.mapping.success.analysis_completed', [], 'compliance') ?? 'compliance.mapping.success.analysis_completed');
 
         return $this->redirectToRoute('app_compliance_mapping_show', ['id' => $complianceMapping->getId()]);
     }

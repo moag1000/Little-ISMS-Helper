@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\LocalizedFlashTrait;
 use Exception;
 use InvalidArgumentException;
 use DateTimeInterface;
@@ -57,6 +58,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_ADMIN')]
 class AdminBackupController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly BackupService $backupService,
         private readonly RestoreService $restoreService,
@@ -64,7 +67,18 @@ class AdminBackupController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly JobStatusService $jobStatusService,
         private readonly JobDispatcher $jobDispatcher,
+        private readonly TranslatorInterface $translator,
     ) {
+    }
+
+    protected function getFlashDomain(): string
+    {
+        return 'admin';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
     }
 
     #[Route('/admin/data/backup', name: 'data_backup_index', methods: ['GET'])]
@@ -237,7 +251,7 @@ class AdminBackupController extends AbstractController
 
             if (!$file) {
                 if (!$isXhr) {
-                    $this->addFlash('error', 'Keine Datei hochgeladen');
+                    $this->flashError('admin.backup.error.no_file_uploaded');
 
                     return $this->redirectToRoute('data_backup_index');
                 }
@@ -254,7 +268,7 @@ class AdminBackupController extends AbstractController
 
             if (!in_array($extension, $allowedExtensions)) {
                 if (!$isXhr) {
-                    $this->addFlash('error', 'Ungültiges Dateiformat. Nur .json, .gz oder .zip Dateien sind erlaubt.');
+                    $this->flashError('admin.backup.error.invalid_file_format');
 
                     return $this->redirectToRoute('data_backup_index');
                 }
@@ -281,7 +295,7 @@ class AdminBackupController extends AbstractController
             // backup index instead of returning a JsonResponse the browser
             // would render as raw text.
             if (!$isXhr) {
-                $this->addFlash('success', 'Backup-Datei erfolgreich hochgeladen: ' . $filename);
+                $this->addFlash('success', $this->translator->trans('admin.backup.success.uploaded', ['%filename%' => $filename], 'admin'));
 
                 return $this->redirectToRoute('data_backup_index');
             }
@@ -297,7 +311,7 @@ class AdminBackupController extends AbstractController
             ]);
 
             if (!$isXhr) {
-                $this->addFlash('error', 'Fehler beim Hochladen der Datei: ' . $e->getMessage());
+                $this->addFlash('error', $this->translator->trans('admin.backup.error.upload_failed', ['%message%' => $e->getMessage()], 'admin'));
 
                 return $this->redirectToRoute('data_backup_index');
             }
@@ -324,6 +338,7 @@ class AdminBackupController extends AbstractController
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
+                // @intentional-assertion: filename + path validation guard
                 throw new InvalidArgumentException('Invalid backup filename');
             }
 
@@ -331,6 +346,7 @@ class AdminBackupController extends AbstractController
             $filepath = $backupDir . '/' . $filename;
 
             if (!file_exists($filepath)) {
+                // @intentional-assertion: filename + path validation guard
                 throw new InvalidArgumentException('Backup file not found');
             }
 
@@ -365,6 +381,7 @@ class AdminBackupController extends AbstractController
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
+                // @intentional-assertion: filename + path validation guard
                 throw new InvalidArgumentException('Invalid backup filename');
             }
 
@@ -372,6 +389,7 @@ class AdminBackupController extends AbstractController
             $filepath = $backupDir . '/' . $filename;
 
             if (!file_exists($filepath)) {
+                // @intentional-assertion: filename + path validation guard
                 throw new InvalidArgumentException('Backup file not found');
             }
 
@@ -495,6 +513,7 @@ class AdminBackupController extends AbstractController
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
+                // @intentional-assertion: filename + path validation guard
                 throw new InvalidArgumentException('Invalid backup filename');
             }
 
@@ -502,6 +521,7 @@ class AdminBackupController extends AbstractController
             $filepath = $backupDir . '/' . $filename;
 
             if (!file_exists($filepath)) {
+                // @intentional-assertion: filename + path validation guard
                 throw new InvalidArgumentException('Backup file not found');
             }
 
@@ -637,6 +657,7 @@ class AdminBackupController extends AbstractController
             $data = json_decode($content, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
+                // @intentional-assertion: JSON-parse failure on import upload
                 throw new Exception('Invalid JSON: ' . json_last_error_msg());
             }
 
@@ -658,7 +679,7 @@ class AdminBackupController extends AbstractController
         $data = $request->getSession()->get('import_preview_data');
 
         if (!$data) {
-            $this->addFlash('error', 'No import data found');
+            $this->flashError('admin.backup.error.no_import_data');
             return $this->redirectToRoute('data_import_index');
         }
 
@@ -687,7 +708,7 @@ class AdminBackupController extends AbstractController
         $data = $request->getSession()->get('import_preview_data');
 
         if (!$data) {
-            $this->addFlash('error', 'No import data found');
+            $this->flashError('admin.backup.error.no_import_data');
             return $this->redirectToRoute('data_import_index');
         }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\LocalizedFlashTrait;
 use App\Entity\ComplianceRequirement;
 use App\Entity\Tenant;
 use DateTime;
@@ -28,9 +29,12 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ComplianceController extends AbstractController
 {
+    use LocalizedFlashTrait;
+
     public function __construct(
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
@@ -44,7 +48,22 @@ class ComplianceController extends AbstractController
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
         private readonly ?FrameworkMaturityService $frameworkMaturityService = null,
+        private readonly ?TranslatorInterface $translator = null,
     ) {}
+
+    protected function getFlashDomain(): string
+    {
+        return 'compliance';
+    }
+
+    protected function getTranslator(): TranslatorInterface
+    {
+        if ($this->translator === null) {
+            // @intentional-assertion: nullable-translator fallback exists only for test ctor compat
+            throw new \RuntimeException('TranslatorInterface not injected — flash methods unavailable.');
+        }
+        return $this->translator;
+    }
     #[Route('/compliance', name: 'app_compliance_index', methods: ['GET'])]
     public function index(): Response
     {
@@ -1532,7 +1551,7 @@ class ComplianceController extends AbstractController
         $framework2Id = $request->query->get('framework2');
 
         if (!$framework1Id || !$framework2Id) {
-            $this->addFlash('error', 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.');
+            $this->flashError('compliance.flash.error.select_two_frameworks');
             return $this->redirectToRoute('app_compliance_compare');
         }
 
@@ -1540,7 +1559,7 @@ class ComplianceController extends AbstractController
         $framework2 = $this->complianceFrameworkRepository->find($framework2Id);
 
         if (!$framework1 || !$framework2) {
-            $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
+            $this->flashError('compliance.flash.error.framework_not_found');
             return $this->redirectToRoute('app_compliance_compare');
         }
 
@@ -1657,7 +1676,7 @@ class ComplianceController extends AbstractController
         $framework2Id = $request->query->get('framework2');
 
         if (!$framework1Id || !$framework2Id) {
-            $this->addFlash('error', 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.');
+            $this->flashError('compliance.flash.error.select_two_frameworks');
             return $this->redirectToRoute('app_compliance_compare');
         }
 
@@ -1665,7 +1684,7 @@ class ComplianceController extends AbstractController
         $framework2 = $this->complianceFrameworkRepository->find($framework2Id);
 
         if (!$framework1 || !$framework2) {
-            $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
+            $this->flashError('compliance.flash.error.framework_not_found');
             return $this->redirectToRoute('app_compliance_compare');
         }
 
@@ -1831,7 +1850,7 @@ class ComplianceController extends AbstractController
         $framework2Id = $request->query->get('framework2');
 
         if (!$framework1Id || !$framework2Id) {
-            $this->addFlash('error', 'Bitte wählen Sie zwei Frameworks zum Vergleich aus.');
+            $this->flashError('compliance.flash.error.select_two_frameworks');
             return $this->redirectToRoute('app_compliance_compare');
         }
 
@@ -1839,7 +1858,7 @@ class ComplianceController extends AbstractController
         $framework2 = $this->complianceFrameworkRepository->find($framework2Id);
 
         if (!$framework1 || !$framework2) {
-            $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
+            $this->flashError('compliance.flash.error.framework_not_found');
             return $this->redirectToRoute('app_compliance_compare');
         }
 

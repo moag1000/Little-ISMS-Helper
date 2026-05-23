@@ -40,7 +40,14 @@ session:
     unique_devices: 'Eindeutige Geräte'
     error:
         invalid_token: 'Ungültiges CSRF-Token'
+        user_not_found: 'Benutzer wurde nicht gefunden.'
+    success:
+        terminated_user_sessions: '%count% aktive Sitzung(en) für Benutzer %user% erfolgreich beendet.'
+        terminated_single: 'Sitzung erfolgreich beendet.'
+    warning:
+        not_found_or_inactive: 'Sitzung nicht gefunden oder bereits inaktiv.'
     info:
+        no_active_sessions_for_user: 'Keine aktiven Sitzungen für Benutzer %user% gefunden.'
         termination_not_implemented: 'Sitzungsbeendigung erfordert zusätzliche Konfiguration (Datenbank-Session-Speicherung)'
     subtitle: 'Verwaltung aktiver Benutzersitzungen'
     user_activity: 'Benutzeraktivität und Session-Monitoring'

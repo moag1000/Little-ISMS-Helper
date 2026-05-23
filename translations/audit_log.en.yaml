@@ -1,4 +1,7 @@
 audit_log:
+    integrity:
+        disabled: 'Audit-log integrity verification is disabled (APP_AUDIT_HMAC_KEY missing).'
+        intact: 'Audit-log chain intact — no tampering detected.'
     page:
         title: 'Audit Log'
         subtitle: 'Complete logging of all activities in the ISMS to ensure auditability'

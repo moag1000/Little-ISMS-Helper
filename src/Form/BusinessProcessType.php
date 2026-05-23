@@ -87,39 +87,43 @@ final class BusinessProcessType extends AbstractType implements SectionMapInterf
                 'choice_translation_domain' => 'business_process',
                 'constraints' => [new NotBlank()],
             ])
+            // BIA-draft survival (UX-P0 #4.2): rto/rpo/mtpd are required for
+            // ISO 22301 Cl. 8.2.2 certification BUT must not block save-as-draft.
+            // Constraint dropped at form-level — finalization-time gate happens
+            // via the BIA-completeness lifecycle transition (see workflow).
             ->add('rto', IntegerType::class, [
                 'label' => 'business_process.field.rto',
+                'required' => false,
                 'attr' => [
                     'min' => 0,
                     'placeholder' => 'business_process.placeholder.rto',
                 ],
                 'help' => 'business_process.help.rto',
                 'constraints' => [
-                    new NotBlank(),
                     new Range(min: 0, max: 8760),
                 ],
             ])
             ->add('rpo', IntegerType::class, [
                 'label' => 'business_process.field.rpo',
+                'required' => false,
                 'attr' => [
                     'min' => 0,
                     'placeholder' => 'business_process.placeholder.rpo',
                 ],
                 'help' => 'business_process.help.rpo',
                 'constraints' => [
-                    new NotBlank(),
                     new Range(min: 0, max: 8760),
                 ],
             ])
             ->add('mtpd', IntegerType::class, [
                 'label' => 'business_process.field.mtpd',
+                'required' => false,
                 'attr' => [
                     'min' => 0,
                     'placeholder' => 'business_process.placeholder.mtpd',
                 ],
                 'help' => 'business_process.help.mtpd',
                 'constraints' => [
-                    new NotBlank(),
                     new Range(min: 0, max: 8760),
                 ],
             ])
