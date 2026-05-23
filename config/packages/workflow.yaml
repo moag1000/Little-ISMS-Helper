@@ -30,8 +30,10 @@ imports:
     - { resource: '../workflows/interested_party.yaml' }
     # Junior-ISB-Audit Phase-2 Lifecycle — NotificationDelivery 6-stage pipeline
     # (ISO 27001 Cl. 7.4 + DORA Art. 19 end-to-end notification traceability).
-    # Tenant lifecycle deferred — see PR body for foundation-first rationale.
     - { resource: '../workflows/notification_delivery.yaml' }
+    # Junior-ISB-Audit Phase-2 Lifecycle — RBAC core entities (Permission + Role)
+    - { resource: '../workflows/permission.yaml' }
+    - { resource: '../workflows/role.yaml' }
     # Sprint Y.2 — Regulatory approval-chain workflows (WorkflowInstance-based)
     - { resource: '../workflows/regulatory/gdpr_data_breach.yaml' }
     - { resource: '../workflows/regulatory/incident_high_severity.yaml' }
