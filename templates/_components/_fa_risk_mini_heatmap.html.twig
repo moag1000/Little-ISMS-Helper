@@ -1,0 +1,74 @@
+{#
+ # FairyAurora v4 — Risk Mini-Heatmap (T6.8 UX-P1)
+ #
+ # Live 5×5 risk-matrix that follows the probability + impact inputs while
+ # the user fills the Risk-form. Server-rendered grid + band-thresholds
+ # (SSoT: App\Risk\RiskMatrixThresholds). Stimulus controller
+ # `risk-mini-heatmap` highlights the active cell + updates score label.
+ #
+ # Usage:
+ #   {% include '_components/_fa_risk_mini_heatmap.html.twig' with {
+ #       probability_selector: '#risk_probability',
+ #       impact_selector: '#risk_impact',
+ #       residual: false,
+ #   } %}
+ #
+ # Props:
+ #   probability_selector  string — CSS selector for the prob-input (1-5)
+ #   impact_selector       string — CSS selector for the impact-input (1-5)
+ #   residual              bool   — render as residual-variant (gray border) (default false)
+ #
+ # Norm-Bezug: ISO 27005 (Risk-Matrix). Cell-band uses risk_threshold() SSoT.
+ #}
+{% set _critical_min = 20 %}
+{% set _high_min = 12 %}
+{% set _medium_min = 6 %}
+{% set _residual = residual|default(false) %}
+
+<div class="fa-risk-mini-heatmap{% if _residual %} fa-risk-mini-heatmap--residual{% endif %}"
+     data-controller="risk-mini-heatmap"
+     data-risk-mini-heatmap-probability-selector-value="{{ probability_selector }}"
+     data-risk-mini-heatmap-impact-selector-value="{{ impact_selector }}"
+     data-risk-mini-heatmap-band-critical-min-value="{{ _critical_min }}"
+     data-risk-mini-heatmap-band-high-min-value="{{ _high_min }}"
+     data-risk-mini-heatmap-band-medium-min-value="{{ _medium_min }}">
+
+    <div class="fa-risk-mini-heatmap__header">
+        <span class="fa-risk-mini-heatmap__title">
+            {{ (_residual ? 'risk.mini_heatmap.title_residual' : 'risk.mini_heatmap.title_inherent')|trans({}, 'risk') }}
+        </span>
+        <span class="fa-risk-mini-heatmap__score">
+            <span class="fa-risk-mini-heatmap__score-label">{{ 'risk.mini_heatmap.score'|trans({}, 'risk') }}:</span>
+            <span class="fa-risk-mini-heatmap__score-value" data-risk-mini-heatmap-target="scoreLabel">—</span>
+            <span class="fa-risk-mini-heatmap__band-badge"
+                  data-risk-mini-heatmap-target="bandLabel"
+                  data-label-critical="{{ 'risk.matrix.level.critical'|trans({}, 'risk') }} ({{ risk_threshold('critical') }})"
+                  data-label-high="{{ 'risk.matrix.level.high'|trans({}, 'risk') }} ({{ risk_threshold('high') }})"
+                  data-label-medium="{{ 'risk.matrix.level.medium'|trans({}, 'risk') }} ({{ risk_threshold('medium') }})"
+                  data-label-low="{{ 'risk.matrix.level.low'|trans({}, 'risk') }} ({{ risk_threshold('low') }})">—</span>
+        </span>
+    </div>
+
+    <div class="fa-risk-mini-heatmap__grid" role="presentation" aria-hidden="true">
+        {%- for p in 5..1 -%}
+            {%- for i in 1..5 -%}
+                {%- set _score = p * i -%}
+                {%- if _score >= _critical_min -%}{% set _tone = 'critical' %}
+                {%- elseif _score >= _high_min -%}{% set _tone = 'high' %}
+                {%- elseif _score >= _medium_min -%}{% set _tone = 'medium' %}
+                {%- else -%}{% set _tone = 'low' %}
+                {%- endif -%}
+                <span class="fa-risk-mini-heatmap__cell fa-risk-mini-heatmap__cell--{{ _tone }}"
+                      data-risk-mini-heatmap-target="cell"
+                      data-risk-mini-heatmap-cell-value="{{ p }}_{{ i }}"
+                      data-score="{{ _score }}"
+                      title="P{{ p }} × I{{ i }} = {{ _score }}">{{ _score }}</span>
+            {%- endfor -%}
+        {%- endfor -%}
+    </div>
+
+    <div class="fa-risk-mini-heatmap__axes">
+        <span class="fa-risk-mini-heatmap__axis-x">{{ 'risk.guidance.impact_title'|trans({}, 'risk') }} →</span>
+        <span class="fa-risk-mini-heatmap__axis-y">↑ {{ 'risk.guidance.probability_title'|trans({}, 'risk') }}</span>
+    </div>
+</div>
