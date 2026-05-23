@@ -152,6 +152,9 @@ services:
             tags: ['alva.hint_rule']
         App\AlvaHint\GlobalAlvaHintRuleInterface:
             tags: ['alva.global_hint_rule']
+        # P-19 — Form-Step-Inline-Hint rules auto-register via interface tag.
+        App\AlvaHint\AlvaHintFormRuleInterface:
+            tags: ['alva.form_hint_rule']
         App\Service\PolicyWizard\Step\StepInterface:
             tags: ['policy_wizard.step']
         App\Service\PolicyWizard\Mode\ModeHandlerInterface:
@@ -194,6 +197,13 @@ services:
         arguments:
             $rules: !tagged_iterator alva.hint_rule
             $globalRules: !tagged_iterator alva.global_hint_rule
+
+    # P-19 — Form-Step-Inline-Hint evaluator: collects every
+    # AlvaHintFormRuleInterface implementation tagged via _instanceof
+    # above so the API endpoint can fan out per form-edit AJAX call.
+    App\Service\AlvaHint\AlvaHintFormEvaluator:
+        arguments:
+            $rules: !tagged_iterator alva.form_hint_rule
 
     # Policy-Wizard W2 — collect every StepInterface implementation
     # into the StepEvaluator's $steps argument.
