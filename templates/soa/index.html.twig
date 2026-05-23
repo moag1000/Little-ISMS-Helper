@@ -174,13 +174,19 @@
     } only %}
 {% endif %}
 
-{# C3 Bulk-Edit Applicability (Sprint 3) — power-user tool for CM #}
+{# T7.5 (UX-P1): Power-user shortcut. The canonical bulk-edit path is the
+   checkbox-selection toolbar above (Aurora bulk-action-bar). This
+   <details>-disclosure exposes a comma-separated ID input for CMs who
+   paste control-ID lists from Excel — kept collapsed by default and
+   explicitly labelled as an alternative entry point so juniors are not
+   confused by two visible paths. #}
 {% if is_granted('ROLE_MANAGER') %}
     <details class="card fa-section mb-3">
         <summary class="card-header" style="cursor: pointer;">
             <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
             <strong>{{ 'control.bulk.title'|trans({}, 'control') }}</strong>
             <small class="text-muted ms-2">{{ 'control.bulk.hint'|trans({}, 'control') }}</small>
+            <span class="badge bg-secondary ms-2">{{ 'control.bulk.power_user_badge'|trans({}, 'control') }}</span>
         </summary>
         <div class="card-body">
             <form method="post" action="{{ path('app_soa_bulk_applicability') }}" class="row g-2 align-items-end">
