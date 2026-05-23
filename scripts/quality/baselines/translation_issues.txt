@@ -1,0 +1,17 @@
+# check_translation_issues.py baseline (S12 item 9 — 2026-05-23)
+# Format: <relative-path>:<line>: <issue-description>
+#
+# The check_translation_issues.py script itself has no --baseline flag; the
+# CI gate wraps it in inline bash that re-extracts these <file>:<line>: <desc>
+# triples from the script output and diffs against this file. NEW entries
+# (not present here) fail the gate; existing entries are tolerated until
+# remediated.
+#
+# Remediation policy: shrink this file over time. Do NOT extend it without
+# explicit ADR-level justification.
+dev/design_system.html.twig:166: Hardcoded text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula mauris in erat accumsan, vel varius odio lacinia. Suspendisse potenti.'
+dev/design_system.html.twig:361: Hardcoded text: 'Chip group with hrefs:'
+dev/design_system.html.twig:936: Untranslated placeholder: 'Was ist passiert? Welche Daten sind betroffen?'
+incident/_gdpr_breach_wizard_modal.html.twig:320: Hardcoded text: 'GDPR Art. 33 (Notification to supervisory authority)'
+incident/_gdpr_breach_wizard_modal.html.twig:321: Hardcoded text: 'GDPR Art. 34 (Communication to data subjects)'
+incident/_gdpr_breach_wizard_modal.html.twig:322: Hardcoded text: 'ISO 27001 A.16.1.6 (Learning from information security incidents)'
