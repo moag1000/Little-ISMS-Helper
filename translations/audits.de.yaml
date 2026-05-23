@@ -310,6 +310,7 @@ audit_finding:
         low: 'Niedrig'
     severity_choice:
         aria_label: 'Schweregrad der Feststellung'
+        legend_title: 'Schweregrad-Definitionen (ISO 19011 Cl. 6.4.8)'
         low:
             label: 'Niedrig'
             definition: 'Geringfügige Abweichung, kein direkter Compliance-Verstoß. Beispiel: Tippfehler in einer Verfahrensanweisung, fehlende Versionsnummer.'

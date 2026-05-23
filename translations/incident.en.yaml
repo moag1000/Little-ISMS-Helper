@@ -186,6 +186,7 @@ incident:
     critical: Critical
   severity_choice:
     aria_label: 'Severity selection'
+    legend_title: 'Severity definitions (ISO 27001 A.5.24)'
     low:
       label: Low
       definition: 'Local effect, manually handleable, no SLA impact. Example: single encrypted spam mail, isolated printer outage.'
