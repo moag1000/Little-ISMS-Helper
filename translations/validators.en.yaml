@@ -732,3 +732,7 @@ gstool_import:
 
 # User
 'user.validation.email_unique': 'There is already an account with this email.'
+
+# Supplier (T10.10 — LEI ISO 17442 + NACE Rev.2 format)
+'supplier.validation.lei_code.format': 'LEI code must be 20 characters: 18 alphanumeric + 2 check digits (ISO 17442).'
+'supplier.validation.nace_code.format': 'NACE code must follow the NN or NN.NN format (EU NACE Rev.2).'

@@ -87,6 +87,7 @@ training:
     program_type: '-- Programm-Typ wählen --'
     recurrence_months: 'z.B. 12 für jährlich'
   help:
+    status_readonly: 'Status wird vom Lifecycle-Workflow gesteuert (planned → scheduled → in_progress → completed/cancelled). Direkte Bearbeitung deaktiviert; nutzen Sie die Status-Aktionen in der Show-Seite.'
     duration: Dauer in Minuten (15-480)
     participants: Namen der Teilnehmer (ein Name pro Zeile oder kommasepariert)
     participants_legacy: 'Legacy-Freitext-Liste — nur für Migration. Bitte Multi-Select „Teilnehmende (Benutzer)“ nutzen.'
