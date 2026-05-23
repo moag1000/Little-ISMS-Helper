@@ -209,12 +209,12 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">Reference</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Detected</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Risk</th>
-                            <th scope="col">Affected Subjects</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.reference'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.title'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.detected'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.status'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.risk'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'data_breach.dashboard.col.affected_subjects'|trans({}, 'privacy') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}

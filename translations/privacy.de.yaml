@@ -781,6 +781,13 @@ data_breach:
         special_categories_label: 'Art. 9 DSGVO-Daten:'
         special_categories_help: 'Datenpannen mit Bezug zu Herkunft, politischer Meinung, religiöser Überzeugung, Gesundheitsdaten, sexueller Orientierung oder biometrischen/genetischen Daten.'
         recent_title: 'Aktuelle Datenpannen (letzte 30 Tage)'
+        col:
+            reference: 'Referenz'
+            title: 'Titel'
+            detected: 'Erkannt'
+            status: 'Status'
+            risk: 'Risiko'
+            affected_subjects: 'Betroffene Personen'
     success:
         updated: 'Datenschutzverletzung wurde aktualisiert.'
         deleted: 'Datenschutzverletzung wurde gelöscht.'

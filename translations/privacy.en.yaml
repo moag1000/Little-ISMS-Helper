@@ -644,6 +644,13 @@ data_breach:
         special_categories_label: 'Art. 9 Data (Special Categories):'
         special_categories_help: 'Breaches involving racial/ethnic origin, political opinions, religious beliefs, health data, sexual orientation, biometric/genetic data.'
         recent_title: 'Recent Breaches (Last 30 Days)'
+        col:
+            reference: 'Reference'
+            title: 'Title'
+            detected: 'Detected'
+            status: 'Status'
+            risk: 'Risk'
+            affected_subjects: 'Affected Subjects'
     success:
         updated: 'Data breach updated successfully.'
         deleted: 'Data breach deleted successfully.'
