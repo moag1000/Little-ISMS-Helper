@@ -47,8 +47,8 @@ class ComplianceController extends AbstractController
         private readonly PdfExportService $pdfExportService,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
         private readonly TenantContext $tenantContext,
-        private readonly TranslatorInterface $translator,
         private readonly ?FrameworkMaturityService $frameworkMaturityService = null,
+        private readonly ?TranslatorInterface $translator = null,
     ) {}
 
     protected function getFlashDomain(): string
@@ -58,6 +58,9 @@ class ComplianceController extends AbstractController
 
     protected function getTranslator(): TranslatorInterface
     {
+        if ($this->translator === null) {
+            throw new \RuntimeException('TranslatorInterface not injected — flash methods unavailable.');
+        }
         return $this->translator;
     }
     #[Route('/compliance', name: 'app_compliance_index', methods: ['GET'])]
